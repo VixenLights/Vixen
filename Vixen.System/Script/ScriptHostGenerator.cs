@@ -1,0 +1,140 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.IO;
+using Vixen.Sys;
+using System.Reflection;
+using System.CodeDom.Compiler;
+using Microsoft.CSharp;
+using Vixen.Module.Sequence;
+
+namespace Vixen.Script {
+	class ScriptHostGenerator {
+		private List<string> _errors = new List<string>();
+		private string[] _standardReferences = {
+            "System.dll",
+			"System.Core.dll",
+			"Microsoft.CSharp.dll",
+            "Vixen.dll"
+        };
+
+		static public readonly string UserScriptNamespace = "Vixen.User";
+
+		public UserScriptHost GenerateScript(ScriptSequenceBase sequence) {
+			List<string> files = new List<string>();
+			string fileName;
+
+			Assembly assembly = null;
+			string generatedClassName = string.Empty;
+			string entryPointName = string.Empty;
+			string generatedNamespace = string.Empty;
+
+			try {
+				// Emit the T4 template.
+				fileName = Path.GetTempFileName();
+				UserScriptSequence userSequence = new UserScriptSequence(sequence);
+				generatedClassName = userSequence.ClassName;
+				entryPointName = userSequence.EntryPointName;
+				generatedNamespace = userSequence.Namespace;
+				File.WriteAllText(fileName, userSequence.TransformText());
+				files.Add(fileName);
+
+				// Add the user's source files.
+				foreach(SourceFile sourceFile in sequence.SourceFiles) {
+					fileName = Path.Combine(Path.GetTempPath(), sourceFile.Name);
+					File.WriteAllText(fileName, sourceFile.Contents);
+					files.Add(fileName);
+				}
+
+				// Compile the sources.
+				assembly =_Compile(files, sequence);
+			} finally {
+				// Delete the temp files.
+				foreach(string tempFile in files) {
+					File.Delete(tempFile);
+				}
+			}
+
+			if(assembly != null) {
+				// Get the generated type.
+				Type type = assembly.GetType(string.Format("{0}.{1}", generatedNamespace, generatedClassName));
+				if(type != null) {
+					// Create and return an instance.
+					UserScriptHost scriptHost = Activator.CreateInstance(type) as UserScriptHost;
+					scriptHost.Sequence = sequence;
+					return scriptHost;
+				}
+			}
+
+			return null;
+		}
+
+		public IEnumerable<string> Errors {
+			get { return _errors; }
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="files"></param>
+		/// <returns>The file name of the compiled assembly.</returns>
+		private Assembly _Compile(List<string> files, ScriptSequenceBase sequence) {
+			// Assembly references come in two flavors:
+			// 1. Framework assemblies -- need only the file name.
+			// 2. Other assemblies -- need the qualified file name.
+			//*** for ui, do like VS and have separate tabs for selecting framework and
+			//    other assemblies
+			List<string> assemblyReferences = new List<string>();
+			_errors.Clear();
+
+			assemblyReferences.Add(Server.AssemblyFileName);
+			assemblyReferences.AddRange(sequence.FrameworkAssemblies);
+			assemblyReferences.AddRange(sequence.ExternalAssemblies);
+			assemblyReferences.AddRange(_standardReferences);
+
+			CompilerResults results = null;
+			using(CSharpCodeProvider codeProvider = new CSharpCodeProvider()) {
+				CompilerParameters compilerParameters = new CompilerParameters() {
+					GenerateInMemory = true,
+					IncludeDebugInformation = true //*** TESTING ONLY! Leaves a file behind.
+				};
+				compilerParameters.ReferencedAssemblies.AddRange(assemblyReferences.ToArray());
+
+				results = codeProvider.CompileAssemblyFromFile(compilerParameters, files.ToArray());
+			}
+
+			// Get any errors.
+			foreach(CompilerError error in results.Errors) {
+				_errors.Add(string.Format("{0} [{1}]: {2}", Path.GetFileName(error.FileName), error.Line, error.ErrorText));
+			}
+
+			return results.Errors.HasErrors ? null : results.CompiledAssembly;
+		}
+
+		static public string Mangle(string str) {
+			if(string.IsNullOrWhiteSpace(str)) throw new ArgumentException("Name cannot be empty.");
+
+			List<char> chars = new List<char>();
+
+			if(!char.IsLetter(str[0]) && str[0] != '_') {
+				chars.Add('_');
+			}
+
+			foreach(char ch in str) {
+				if(_IsValidSymbolChar(ch)) {
+					chars.Add(ch);
+				} else {
+					chars.Add('_');
+				}
+			}
+
+			return new string(chars.ToArray());
+		}
+
+		static private bool _IsValidSymbolChar(char ch) {
+			return char.IsLetterOrDigit(ch) || ch == '_';
+		}
+
+	}
+}
