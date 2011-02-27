@@ -1,0 +1,446 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{50B78623-FCF4-48AF-93FF-FA87C937028F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Vixen</RootNamespace>
+    <AssemblyName>Vixen</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\Vixen.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\Vixen.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Common\LiveListEnumerator.cs" />
+    <Compile Include="Execution\EnumeratedCommandNodeList.cs" />
+    <Compile Include="Execution\ExecutorChannelEnumerator.cs" />
+    <Compile Include="Hardware\IControllerHardwareModule.cs" />
+    <Compile Include="Module\Input\IInput.cs" />
+    <Compile Include="Module\Input\IInputInput.cs" />
+    <Compile Include="Module\Input\IInputModuleDescriptor.cs" />
+    <Compile Include="Module\Input\IInputModuleInstance.cs" />
+    <Compile Include="Module\Input\InputBase.cs" />
+    <Compile Include="Module\Input\InputInput.cs" />
+    <Compile Include="Module\Input\InputModuleImplementation.cs" />
+    <Compile Include="Module\Input\InputModuleManagement.cs" />
+    <Compile Include="Module\Input\InputModuleRepository.cs" />
+    <Compile Include="Module\Input\InputType.cs" />
+    <Compile Include="Module\Input\InputValueChangedEventArgs.cs" />
+    <Compile Include="Module\RuntimeBehavior\IRuntimeBehavior.cs" />
+    <Compile Include="Module\RuntimeBehavior\IRuntimeBehaviorModuleDescriptor.cs" />
+    <Compile Include="Module\RuntimeBehavior\IRuntimeBehaviorModuleInstance.cs" />
+    <Compile Include="Module\RuntimeBehavior\RuntimeBehaviorModuleImplementation.cs" />
+    <Compile Include="Module\RuntimeBehavior\RuntimeBehaviorModuleManagement.cs" />
+    <Compile Include="Module\RuntimeBehavior\RuntimeBehaviorModuleRepository.cs" />
+    <Compile Include="Module\RuntimeBehavior\RuntimeBehaviorType.cs" />
+    <Compile Include="Module\Sequence\ISequence.cs" />
+    <Compile Include="Module\Sequence\ISequenceModuleDescriptor.cs" />
+    <Compile Include="Module\Sequence\ISequenceModuleInstance.cs" />
+    <Compile Include="Module\Sequence\ScriptSequenceBase.cs" />
+    <Compile Include="Module\Sequence\SequenceBase.cs" />
+    <Compile Include="Module\Sequence\SequenceModuleImplementation.cs" />
+    <Compile Include="Module\Sequence\SequenceModuleManagement.cs" />
+    <Compile Include="Module\Sequence\SequenceModuleRepository.cs" />
+    <Compile Include="Module\Sequence\SequenceModuleType.cs" />
+    <Compile Include="Module\Trigger\TriggerBase.cs" />
+    <Compile Include="Module\Trigger\TriggerSetEventArgs.cs" />
+    <Compile Include="Script\UserScriptChannel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Sequence\SequenceBuffer.cs" />
+    <Compile Include="Sequence\SequenceStartedEventArgs.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Sys\Command.cs" />
+    <Compile Include="Sys\CommandNode.cs" />
+    <Compile Include="Sys\CommandNodeIntervalSync.cs" />
+    <Compile Include="Sys\DataMover.cs" />
+    <Compile Include="Sys\DebugLog.cs" />
+    <Compile Include="Sys\DelegateFactory.cs" />
+    <Compile Include="Sys\ErrorLog.cs" />
+    <Compile Include="Sys\FixtureDataMover.cs" />
+    <Compile Include="Sys\FixtureDefinition.cs" />
+    <Compile Include="Module\IModuleManagement.cs" />
+    <Compile Include="Module\IModuleRepository.cs" />
+    <Compile Include="Module\IModuleLoadNotification.cs" />
+    <Compile Include="Module\ModuleDataMover.cs" />
+    <Compile Include="Module\ModuleImplementation.cs" />
+    <Compile Include="Module\ModuleImplementationMethod.cs" />
+    <Compile Include="Module\ModuleManagement.cs" />
+    <Compile Include="Module\ModuleRepository.cs" />
+    <Compile Include="Module\App\AppModuleImplementation.cs" />
+    <Compile Include="Module\App\AppModuleManagement.cs" />
+    <Compile Include="Module\App\AppModuleRepository.cs" />
+    <Compile Include="Module\App\AppModuleType.cs" />
+    <Compile Include="Module\CommandEditor\CommandEditorModuleImplementation.cs" />
+    <Compile Include="Module\CommandEditor\CommandEditorModuleManagement.cs" />
+    <Compile Include="Module\CommandEditor\CommandEditorModuleRepository.cs" />
+    <Compile Include="Module\CommandEditor\CommandEditorModuleType.cs" />
+    <Compile Include="Module\CommandStandardExtension\CommandStandardExtensionModuleImplementation.cs" />
+    <Compile Include="Module\CommandStandardExtension\CommandStandardExtensionModuleManagement.cs" />
+    <Compile Include="Module\CommandStandardExtension\CommandStandardExtensionModuleRepository.cs" />
+    <Compile Include="Module\CommandStandardExtension\CommandStandardExtensionModuleType.cs" />
+    <Compile Include="Module\CommandStandardExtension\ICommandStandardExtension.cs" />
+    <Compile Include="Module\Editor\EditorModuleImplementation.cs" />
+    <Compile Include="Module\Editor\EditorModuleManagement.cs" />
+    <Compile Include="Module\Editor\EditorModuleRepository.cs" />
+    <Compile Include="Module\Editor\EditorModuleType.cs" />
+    <Compile Include="Module\FileTemplate\FileTemplateModuleImplementation.cs" />
+    <Compile Include="Module\FileTemplate\FileTemplateModuleManagement.cs" />
+    <Compile Include="Module\FileTemplate\FileTemplateModuleRepository.cs" />
+    <Compile Include="Module\FileTemplate\FileTemplateModuleType.cs" />
+    <Compile Include="Module\FileTemplate\IFileTemplate.cs" />
+    <Compile Include="Module\FileTemplate\IFileTemplateModuleDescriptor.cs" />
+    <Compile Include="Module\FileTemplate\IFileTemplateModuleInstance.cs" />
+    <Compile Include="Module\Output\OutputModuleImplementation.cs" />
+    <Compile Include="Module\Output\OutputModuleManagement.cs" />
+    <Compile Include="Module\Output\OutputModuleRepository.cs" />
+    <Compile Include="Module\Output\OutputModuleType.cs" />
+    <Compile Include="Module\CommandSpec\CommandSpecModuleImplementation.cs" />
+    <Compile Include="Module\CommandSpec\CommandSpecModuleManagement.cs" />
+    <Compile Include="Module\CommandSpec\CommandSpecModuleRepository.cs" />
+    <Compile Include="Module\CommandSpec\CommandSpecModuleType.cs" />
+    <Compile Include="Module\Transform\TransformModuleImplementation.cs" />
+    <Compile Include="Module\Transform\TransformModuleManagement.cs" />
+    <Compile Include="Module\Transform\TransformModuleRepository.cs" />
+    <Compile Include="Module\Transform\TransformModuleType.cs" />
+    <Compile Include="Module\Trigger\TriggerModuleImplementation.cs" />
+    <Compile Include="Module\Trigger\TriggerModuleManagement.cs" />
+    <Compile Include="Module\Trigger\TriggerModuleRepository.cs" />
+    <Compile Include="Module\Trigger\TriggerModuleType.cs" />
+    <Compile Include="Module\ModuleLoadNotifier.cs" />
+    <Compile Include="Sys\InfoLog.cs" />
+    <Compile Include="Sys\InputChannel.cs" />
+    <Compile Include="Sys\InsertDataStack.cs" />
+    <Compile Include="Sys\Log.cs" />
+    <Compile Include="Sys\LogEventArgs.cs" />
+    <Compile Include="Sys\Logging.cs" />
+    <Compile Include="Sys\LogItemEventArgs.cs" />
+    <Compile Include="Sys\OutputChannel.cs" />
+    <Compile Include="Sys\ProfileDefinition.cs" />
+    <Compile Include="Module\UnusedModuleManagement.cs" />
+    <Compile Include="Module\UnusedModuleRepository.cs" />
+    <Compile Include="Module\UnusedModuleType.cs" />
+    <Compile Include="Common\CommandParameterReference.cs" />
+    <Compile Include="Module\Transform\ITransform.cs" />
+    <Compile Include="Module\Transform\ITransformModuleDescriptor.cs" />
+    <Compile Include="Module\Transform\ITransformModuleInstance.cs" />
+    <Compile Include="Common\ConcurrentBagLiveEnumerator.cs" />
+    <Compile Include="Common\ConcurrentQueueLiveEnumerator.cs" />
+    <Compile Include="Common\ExecutorMessageEventArgs.cs" />
+    <Compile Include="Module\Editor\IEditor.cs" />
+    <Compile Include="Module\Editor\IEditorModuleDescriptor.cs" />
+    <Compile Include="Module\Editor\IEditorModuleInstance.cs" />
+    <Compile Include="Module\Editor\ISelection.cs" />
+    <Compile Include="Module\CommandSpec\ICommandSpec.cs" />
+    <Compile Include="Module\CommandSpec\ICommandSpecModuleDescriptor.cs" />
+    <Compile Include="Module\CommandSpec\ICommandSpecModuleInstance.cs" />
+    <Compile Include="Module\Trigger\AnalogTriggerInput.cs" />
+    <Compile Include="Module\Trigger\DigitalTriggerInput.cs" />
+    <Compile Include="Common\LiveEnumerator.cs" />
+    <Compile Include="Common\ModuleDataPath.cs" />
+    <Compile Include="Common\Definition.cs" />
+    <Compile Include="Sys\Interval.cs" />
+    <Compile Include="Sys\IntervalCollection.cs" />
+    <Compile Include="Sys\IFixtureContainer.cs" />
+    <Compile Include="Module\IModuleDataContainer.cs" />
+    <Compile Include="Sys\ITypedDataMover.cs" />
+    <Compile Include="Script\UserScript.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UserScript.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Script\UserScriptHost.cs" />
+    <Compile Include="Script\UserScriptCode.cs" />
+    <Compile Include="Script\UserScriptFixture.cs" />
+    <Compile Include="Script\ScriptHostGenerator.cs" />
+    <Compile Include="Execution\ScriptSequenceExecutor.cs" />
+    <Compile Include="Execution\SequenceExecutor.cs" />
+    <Compile Include="Module\Trigger\ITrigger.cs" />
+    <Compile Include="Module\Trigger\ITriggerModuleDescriptor.cs" />
+    <Compile Include="Module\Trigger\ITriggerModuleInstance.cs" />
+    <Compile Include="Module\Trigger\TriggerInput.cs" />
+    <Compile Include="Sys\Sequence.cs" />
+    <Compile Include="Script\SourceFile.cs" />
+    <Compile Include="Sys\UserData.cs" />
+    <Compile Include="Sys\ApplicationServices.cs" />
+    <Compile Include="Sys\Channel.cs" />
+    <Compile Include="Module\Trigger\AnalogInputTriggerCondition.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\AppCommand.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\CommandData.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\ControllerOutputUpdate.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\ControllerReference.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\DataPathAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Module\Trigger\DigitalInputTriggerCondition.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\ExecutorAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\Extensions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\Helper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\LatchedAppCommand.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\LatchedEventArgs.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\ModuleTypeAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\ObjectPreloadAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\ParameterValue.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\Paths.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Module\Trigger\TriggerInputType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Sys\IApplication.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Module\CommandEditor\ICommandEditorControl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Sequence\ISequence.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Execution\IExecutor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Hardware\IHardwareModule.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Module\IModuleDataModel.cs" />
+    <Compile Include="Module\IModuleDataSet.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Module\IModuleDescriptor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Module\IModuleInstance.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IO\ISequenceReader.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IO\ISequenceWriter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\ITimingSource.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\ITimingSourceFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Module\Trigger\ITriggerInput.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IO\ChannelReader.cs" />
+    <Compile Include="IO\ChannelWriter.cs" />
+    <Compile Include="Hardware\OutputController.cs" />
+    <Compile Include="Hardware\OutputControllerBuffer.cs" />
+    <Compile Include="Hardware\OutputControllerDefinition.cs" />
+    <Compile Include="Sys\Execution.cs" />
+    <Compile Include="Execution\ExecutionContext.cs" />
+    <Compile Include="Module\App\IApp.cs" />
+    <Compile Include="Module\App\IAppModuleDescriptor.cs" />
+    <Compile Include="Module\App\IAppModuleInstance.cs" />
+    <Compile Include="Sys\Program.cs" />
+    <Compile Include="Execution\ProgramExecutor.cs" />
+    <Compile Include="IO\ProgramReader.cs" />
+    <Compile Include="IO\ProgramWriter.cs" />
+    <Compile Include="Module\CommandEditor\ICommandEditorModuleDescriptor.cs" />
+    <Compile Include="Module\CommandEditor\ICommandEditorModuleInstance.cs" />
+    <Compile Include="Module\CommandStandardExtension\ICommandStandardExtensionModuleDescriptor.cs" />
+    <Compile Include="Sys\Fixture.cs" />
+    <Compile Include="IO\FixtureReader.cs" />
+    <Compile Include="IO\FixtureWriter.cs" />
+    <Compile Include="Module\CommandEditor\ICommandEditor.cs" />
+    <Compile Include="Module\CommandStandardExtension\ICommandStandardExtensionModuleInstance.cs" />
+    <Compile Include="Module\Output\IOutput.cs" />
+    <Compile Include="Module\Output\IOutputModuleDescriptor.cs" />
+    <Compile Include="Module\Output\IOutputModuleInstance.cs" />
+    <Compile Include="Module\ModuleDataSet.cs" />
+    <Compile Include="IO\ModulePackageDirectory.cs" />
+    <Compile Include="IO\ModulePackageDirectoryEntry.cs" />
+    <Compile Include="IO\ModulePackageFile.cs" />
+    <Compile Include="IO\ModulePackageReader.cs" />
+    <Compile Include="IO\ModulePackageWriter.cs" />
+    <Compile Include="Sys\Modules.cs" />
+    <Compile Include="Sys\Patch.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="IO\ScriptSequenceReader.cs" />
+    <Compile Include="IO\ScriptSequenceWriter.cs" />
+    <Compile Include="IO\SequenceReader.cs" />
+    <Compile Include="IO\SequenceWriter.cs" />
+    <Compile Include="Sys\Server.cs" />
+    <Compile Include="Sys\Standard.cs" />
+    <Compile Include="Script\UserScriptSequence.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UserScriptSequence.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Script\UserScriptSequenceCode.cs" />
+    <Compile Include="Sys\WarningLog.cs" />
+    <None Include="Script\UserScriptSequence.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>UserScriptSequence.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommandStandard\CommandStandard.csproj">
+      <Project>{ED76AB8D-4456-4CC4-B881-56A3DB4A229F}</Project>
+      <Name>CommandStandard</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Script\UserScript.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>UserScript.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
