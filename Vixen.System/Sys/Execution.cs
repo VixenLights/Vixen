@@ -41,7 +41,13 @@ namespace Vixen.Sys {
             }
         }
 
-		static public void QueueSequence(ISequenceModuleInstance sequence, string contextName = null) {
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="sequence"></param>
+		/// <param name="contextName"></param>
+		/// <returns>The resulting length of the queue.  0 if it cannot be added.</returns>
+		static public int QueueSequence(ISequenceModuleInstance sequence, string contextName = null) {
 			// Look for an execution context with that name.
 			ExecutionContext context = _contexts.Values.FirstOrDefault(x => x.Name.Equals(contextName, StringComparison.OrdinalIgnoreCase));
 			if(context != null) {
@@ -49,7 +55,7 @@ namespace Vixen.Sys {
 				// Can't just add the sequence to the program because it's executing and the
 				// thing executing it has likely cached the state.  Need to go through the
 				// appropriate layers.
-				context.Queue(sequence);
+				return context.Queue(sequence);
 			} else {
 				// Context does not exist.
 				// The context must be created and managed since the user is not doing it.
@@ -63,6 +69,8 @@ namespace Vixen.Sys {
 					ReleaseContext(context);
 				};
 				context.Play();
+				// It is the sequence playing now.
+				return 0;
 			}
 		}
     }

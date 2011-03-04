@@ -48,7 +48,7 @@ namespace Vixen.Module.Sequence {
 
 			//*** TESTING ***
 			OutputChannel channel = new OutputChannel(true) { Name = "Channel 1" };
-			channel.Patch.Add(new Guid("{4b64d9d6-0f0a-4d44-b764-d0c5cc0bc512}"), 0);
+			channel.Patch.Add(new Guid("{871b3155-29e3-4a9e-861b-d3cc7895bffc}"), 0);
 			Fixture fixture = new Fixture();
 			fixture.InsertChannel(channel);
 			this.InsertFixture(fixture);

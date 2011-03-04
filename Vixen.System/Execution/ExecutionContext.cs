@@ -58,10 +58,16 @@ namespace Vixen.Execution {
 			}
 		}
 
-		public void Queue(ISequenceModuleInstance sequence) {
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="sequence"></param>
+		/// <returns>The resulting length of the queue.  0 if it cannot be added.</returns>
+		public int Queue(ISequenceModuleInstance sequence) {
 			if(_programExecutor != null) {
-				_programExecutor.Queue(sequence);
+				return _programExecutor.Queue(sequence);
 			}
+			return 0;
 		}
 
 		private bool _Play(int startTime, int endTime) {

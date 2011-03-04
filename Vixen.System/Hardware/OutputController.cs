@@ -234,6 +234,20 @@ namespace Vixen.Hardware {
 			Stop(_GetRootControllers(controllers));
 		}
 
+		/// <summary>
+		/// References the controllers without starting them.
+		/// </summary>
+		/// <param name="controllers"></param>
+		static public void ReferenceControllers(IEnumerable<OutputController> controllers) {
+			foreach(OutputController controller in _GetRootControllers(controllers)) {
+				_IncrementRefCount(controller);
+			}
+		}
+
+		static public void DereferenceControllers(IEnumerable<OutputController> controllers) {
+			Stop(controllers);
+		}
+
 		static private IEnumerable<OutputController> _GetRootControllers(IEnumerable<OutputController> controllers) {
 			if(controllers == null) return Enumerable.Empty<OutputController>();
 			return controllers.Where(x => x.IsRootController);
@@ -552,7 +566,7 @@ namespace Vixen.Hardware {
 			// Singletons must have a single set of data, which means it can only be stored in one
 			// place, so that is the application-level store.  Otherwise it's the provided dataset.
 			// (May be from this controller, may be a program, may be a sequence...anything.)
-			IModuleDataSet data = controller.IsSingleton ? Vixen.Sys.Server.ModuleData : executableDataSet;
+			IModuleDataSet data = controller.IsSingleton ? Server.ModuleData : executableDataSet;
 			if(data != null) {
 				data.GetModuleTypeData(controller.HardwareModule);
 			}
@@ -560,7 +574,7 @@ namespace Vixen.Hardware {
 
 		static protected void Start(IEnumerable<OutputController> controllers) {
 			foreach(OutputController controller in controllers) {
-				if(_IncrementRefCount(controller) == 1 || !controller.IsSingleton) {
+				if(_IncrementRefCount(controller) > 0 || !controller.IsSingleton) {
 					_StartInstance(controller);
 				}
 			}
@@ -568,14 +582,22 @@ namespace Vixen.Hardware {
 
 		static protected void Stop(IEnumerable<OutputController> controllers) {
 			foreach(OutputController controller in controllers) {
-				if(_DecrementRefCount(controller) == 0 || !controller.IsSingleton) {
+				if(_DecrementRefCount(controller) <= 0 || !controller.IsSingleton) {
 					_StopInstance(controller);
 				}
 			}
 		}
 
+		static private void _StartInstance(OutputController controller) {
+			if(!controller.IsRunning) {
+				controller.HardwareModule.Startup();
+			}
+		}
+
 		static private void _StopInstance(OutputController controller) {
-			controller.HardwareModule.Shutdown();
+			if(controller.IsRunning) {
+				controller.HardwareModule.Shutdown();
+			}
 		}
 
 		static private OutputController _GetControllerInstance(OutputController controller) {
@@ -609,10 +631,6 @@ namespace Vixen.Hardware {
 			_refCounts[controller.Id] = ++count;
 
 			return count;
-		}
-
-		static private void _StartInstance(OutputController controller) {
-			controller.HardwareModule.Startup();
 		}
 
 		static private int _DecrementRefCount(OutputController controller) {

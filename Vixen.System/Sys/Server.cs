@@ -67,39 +67,45 @@ namespace Vixen.Sys {
 
         static public void Start(IApplication clientApplication) {
             if(_instance == null) {
-                _instance = new Server(clientApplication);
+				try {
+					_instance = new Server(clientApplication);
 
-				ModuleImplementation[] moduleImplementations = Internal.GetModuleTypes().ToArray();
-				// Do this after module types are discovered because the dynamics
-				// will need to know the module types loaded.
-				Server.ModuleManagement = new ModuleManagement(moduleImplementations);
-				Server.ModuleRepository = new ModuleRepository(moduleImplementations);
-				Server.ModuleLoadNotifier = new ModuleLoadNotifier(moduleImplementations);
+					ModuleImplementation[] moduleImplementations = Internal.GetModuleTypes().ToArray();
+					// Do this after module types are discovered because the dynamics
+					// will need to know the module types loaded.
+					Server.ModuleManagement = new ModuleManagement(moduleImplementations);
+					Server.ModuleRepository = new ModuleRepository(moduleImplementations);
+					Server.ModuleLoadNotifier = new ModuleLoadNotifier(moduleImplementations);
 
-				// Build branches for each module type.
-				foreach(ModuleImplementation moduleImplementation in moduleImplementations) {
-					Helper.EnsureDirectory(Path.Combine(Modules.Directory, moduleImplementation.ModuleTypeName));
+					// Build branches for each module type.
+					foreach(ModuleImplementation moduleImplementation in moduleImplementations) {
+						Helper.EnsureDirectory(Path.Combine(Modules.Directory, moduleImplementation.ModuleTypeName));
+					}
+
+					// Order is important here:
+					// 1. Load modules.
+					// 2. Load user data, which references the modules (deserializing module data).
+					// 3. Let the modules know they've been loaded, which may reference the user data (their module data).
+					// 4. Load pre-loaded object, which may reference data-initialized modules.
+
+					// Load all modules, regardless of type.
+					_LoadModules();
+
+					// Load user data.
+					Server.UserData = new UserData();
+
+					// Module managers can now be notified of each loaded instance.
+					_NotifyModulesLoaded();
+
+					// Load system-level non-module object instances after loading modules
+					// because some instances, such as hardware controllers, make use
+					// of modules.
+					_LoadObjects();
+				} catch(Exception ex) {
+					// The client is expected to have subscribed to the logging event
+					// so that it knows that an exception occurred during loading.
+					Logging.Error(ex);
 				}
-
-				// Order is important here:
-				// 1. Load modules.
-				// 2. Load user data, which references the modules (deserializing module data).
-				// 3. Let the modules know they've been loaded, which may reference the user data (their module data).
-				// 4. Load pre-loaded object, which may reference data-initialized modules.
-
-				// Load all modules, regardless of type.
-				_LoadModules();
-
-				// Load user data.
-				Server.UserData = new UserData();
-
-				// Module managers can now be notified of each loaded instance.
-				_NotifyModulesLoaded();
-
-				// Load system-level non-module object instances after loading modules
-				// because some instances, such as hardware controllers, make use
-				// of modules.
-				_LoadObjects();
             }
         }
 

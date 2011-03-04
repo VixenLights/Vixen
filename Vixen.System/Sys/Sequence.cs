@@ -14,6 +14,11 @@ using Vixen.Module.Input;
 namespace Vixen.Sys {
 	#region Static Sequence class
 	static class Sequence {
+		/// <summary>
+		/// Gets a new instance.
+		/// </summary>
+		/// <param name="fileName"></param>
+		/// <returns></returns>
 		static public Vixen.Module.Sequence.ISequenceModuleInstance Get(string fileName) {
 			// Get the sequence module manager.
 			Vixen.Module.Sequence.SequenceModuleManagement manager = Server.Internal.GetModuleManager<Vixen.Module.Sequence.ISequenceModuleInstance, Vixen.Module.Sequence.SequenceModuleManagement>();
@@ -23,6 +28,11 @@ namespace Vixen.Sys {
 			return instance;
 		}
 
+		/// <summary>
+		/// Loads an existing instance.
+		/// </summary>
+		/// <param name="fileName"></param>
+		/// <returns></returns>
 		static public Vixen.Module.Sequence.ISequenceModuleInstance Load(string fileName) {
 			// Get an instance of the appropriate sequence module.
 			Vixen.Module.Sequence.ISequenceModuleInstance instance = Get(fileName);
@@ -164,7 +174,7 @@ namespace Vixen.Sys {
 
 					// Update the interval collection.
 					if(value != Forever) {
-						if(IsUntimed) {
+						if(oldLength == Forever) {
 							// Forever -> Length
 							// Reset the interval collection with the new length.
 							Data.TimingInterval = Data.TimingInterval;

@@ -45,7 +45,7 @@ namespace Vixen.Execution {
                 _controllers = OutputController.InitializeControllers(null, 0).ToArray();
                 // Starting the controllers creates the living reference.  Until then,
                 // they're not running so there's no need to know of the reference.
-                OutputController.StartControllers(_controllers);
+				OutputController.ReferenceControllers(_controllers);
 
                 _startTime = startTime;
                 _endTime = endTime;
@@ -66,7 +66,7 @@ namespace Vixen.Execution {
 
         private void _ProgramEnded() {
             // Release our controller references.
-            OutputController.StopControllers(_controllers);
+			OutputController.DereferenceControllers(_controllers);
             _controllers = null;
             OnProgramEnded();
         }
@@ -149,6 +149,8 @@ namespace Vixen.Execution {
 					State = RunState.Playing;
 					_executor.Play(_currentSequenceStartTime, _currentSequenceEndTime);
 				}
+			} catch {
+				_executor = null;
 			} finally {
 				// Allow an exception to propogate after the caller's failure action
 				// has had a chance to execute.
@@ -249,12 +251,19 @@ namespace Vixen.Execution {
 			}
 		}
 
-		public void Queue(ISequenceModuleInstance sequence) {
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="sequence"></param>
+		/// <returns>The resulting length of the queue.  0 if it cannot be added.</returns>
+		public int Queue(ISequenceModuleInstance sequence) {
 			// _sequenceQueue will only be around if the program is being enumerated
 			// for execution.
 			if(_sequenceQueue != null) {
 				_sequenceQueue.Enqueue(sequence);
+				return _sequenceQueue.Count;
 			}
+			return 0;
 		}
 
 		#endregion

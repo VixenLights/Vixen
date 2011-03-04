@@ -111,11 +111,11 @@ namespace Vixen.Execution {
 					 from channel in fixture.Channels
 					 select channel).ToArray();
 
-				// Get the controllers.
-				// While the program executor has already done this to maintain a
-				// constant reference as sequences are iterated, we can't assume to
-				// always be in a program context (though we actually are).
-				// Besides, we need the controller references for the update buffer.
+				// Notify any subclass that we're ready to start and allow it to do
+				// anything it needs to prepare.
+				OnPlaying(StartTime, EndTime);
+				
+				// Get the controllers for the update buffer.
 				OutputControllers = OutputController.InitializeControllers(Sequence.ModuleDataSet, StartTime).ToArray();
 
 				// Create an update buffer.
@@ -123,9 +123,9 @@ namespace Vixen.Execution {
 
 				TimingSource = _GetTimingSource(TimingSourceId);
 
-				// Notify any subclass that we're ready to start and allow it to do
-				// anything it needs to prepare.
-				OnPlaying(StartTime, EndTime);
+				//// Notify any subclass that we're ready to start and allow it to do
+				//// anything it needs to prepare.
+				//OnPlaying(StartTime, EndTime);
 
 				// Initialize behaviors BEFORE data is pulled from the sequence,
 				// they may influence the data.
@@ -464,6 +464,8 @@ namespace Vixen.Execution {
 			}
 		}
 
+		// Because these are calculated values, changing the length of the sequence
+		// during execution will not affect the end time.
 		public int StartTime { get; protected set; }
 		public int EndTime { get; protected set; }
 

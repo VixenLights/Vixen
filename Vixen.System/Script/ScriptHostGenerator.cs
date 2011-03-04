@@ -96,8 +96,8 @@ namespace Vixen.Script {
 			CompilerResults results = null;
 			using(CSharpCodeProvider codeProvider = new CSharpCodeProvider()) {
 				CompilerParameters compilerParameters = new CompilerParameters() {
-					GenerateInMemory = true,
-					IncludeDebugInformation = true //*** TESTING ONLY! Leaves a file behind.
+					GenerateInMemory = true
+					//IncludeDebugInformation = true //FOR TESTING ONLY! Leaves a file behind.
 				};
 				compilerParameters.ReferencedAssemblies.AddRange(assemblyReferences.ToArray());
 

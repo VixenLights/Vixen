@@ -48,8 +48,15 @@ namespace Vixen.Script {
 
 		private void _PlayThread() {
 			try {
+				// User Startup procedure.
 				Startup();
+				// User Play procedure.
 				Play();
+				// User script has finished executing, but that means nothing about the
+				// execution time of the data.
+				// Wait until the executor ends the execution due to sequence length
+				// (or a user action) and aborts this thread.
+				Thread.Sleep(Timeout.Infinite);
 			} catch(ThreadAbortException) {
 				// Thank you for letting us know that the user wants to stop.
 				// You are dismissed.
@@ -58,6 +65,7 @@ namespace Vixen.Script {
 				// Any other exception needs to result in the end of the sequence.
 				OnError(ex.Message);
 			} finally {
+				// User Shutdown procedure.
 				Shutdown();
 				OnEnded();
 			}
