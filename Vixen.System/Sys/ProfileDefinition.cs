@@ -10,7 +10,7 @@ using Vixen.Module;
 
 namespace Vixen.Sys {
 	public class ProfileDefinition : Definition, IFixtureContainer, IModuleDataContainer {
-		private LinkedList<Fixture> _fixtures;
+		private LinkedList<Fixture> _fixtures = new LinkedList<Fixture>();
 
 		private const string DIRECTORY_NAME = "Profile";
 		private const string FILE_EXT = ".pro";
@@ -19,8 +19,6 @@ namespace Vixen.Sys {
 		/// Do not use.  Use ProfileDefinition.NewDefinition instead.
 		/// </summary>
 		public ProfileDefinition() {
-			// Since one member has to be in here (ModuleData), they will both be.
-			_fixtures = new LinkedList<Fixture>();
 			ModuleDataSet = new ModuleDataSet();
 		}
 

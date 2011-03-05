@@ -16,17 +16,17 @@ using Vixen.Module.FileTemplate;
 using Vixen.Module.CommandEditor;
 using Vixen.Module.CommandSpec;
 
-//Provides access to otherwise inaccessible members.
 namespace Vixen.Sys {
-    /// <summary>
-    /// For use by an external client, an IApplication instance.
-    /// </summary>
+	/// <summary>
+	/// Provides controlled access to otherwise inaccessible members and some convenience methods.
+	/// </summary>
     public class ApplicationServices {
         static internal IApplication ClientApplication;
 
 		static public IModuleDescriptor[] GetModuleDescriptors(string moduleType) {
 			return Modules.GetModuleDescriptors(moduleType);
 		}
+
 		static public IModuleDescriptor GetModuleDescriptor(Guid moduleTypeId) {
 			return Modules.GetDescriptorById(moduleTypeId);
 		}
@@ -39,8 +39,6 @@ namespace Vixen.Sys {
 			return Server.Internal.GetModuleTypes().Select(x => x.ModuleTypeName).ToArray();
 		}
 
-		//*** there needs to a loading counterpart to this as well
-		//-> Have it load anything not currently referenced?
 		static public void UnloadModule(Guid moduleTypeId, string moduleType) {
 			Modules.UnloadModule(moduleTypeId, moduleType);
 		}
@@ -90,10 +88,6 @@ namespace Vixen.Sys {
         static public Vixen.Module.Sequence.ISequenceModuleInstance LoadSequence(string fileName) {
 			return Vixen.Sys.Sequence.Load(fileName);
 		}
-
-        static public Program LoadProgram(string name) {
-            return Program.Load(name);
-        }
 
 		// Module type id : Timing source name
         static public Dictionary<Guid, string> GetTimingSources() {
