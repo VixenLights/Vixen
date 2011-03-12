@@ -13,8 +13,8 @@ using Vixen.Sequence;
 using Vixen.Module;
 using Vixen.Module.Editor;
 using Vixen.Module.FileTemplate;
-using Vixen.Module.CommandEditor;
-using Vixen.Module.CommandSpec;
+using Vixen.Module.EffectEditor;
+using Vixen.Module.Effect;
 
 namespace Vixen.Sys {
 	/// <summary>
@@ -65,10 +65,10 @@ namespace Vixen.Sys {
 			return Server.Internal.GetModuleManager<T>().GetAll().Cast<T>().ToArray();
 		}
 
-		static public ICommandEditorControl GetCommandEditorControl(Guid commandSpecId) {
+		static public IEffectEditorControl GetEffectEditorControl(Guid effectId) {
 			// Need the module-specific manager.
-			CommandEditorModuleManagement manager = Server.Internal.GetModuleManager<ICommandEditorModuleInstance, CommandEditorModuleManagement>();
-			return manager.GetCommandEditor(commandSpecId);
+			EffectEditorModuleManagement manager = Server.Internal.GetModuleManager<IEffectEditorModuleInstance, EffectEditorModuleManagement>();
+			return manager.GetEffectEditor(effectId);
 		}
 
 		//Maybe have an overload that takes a file type filter.
@@ -115,6 +115,10 @@ namespace Vixen.Sys {
 		static public void CommitTemplate(IFileTemplate template) {
 			FileTemplateModuleManagement manager = Server.Internal.GetModuleManager<IFileTemplateModuleInstance, FileTemplateModuleManagement>();
 			manager.SaveTemplateData(template as IFileTemplateModuleInstance);
+		}
+
+		static public string[] GetScriptLanguages() {
+			return Script.Registration.GetLanguages();
 		}
     }
 }

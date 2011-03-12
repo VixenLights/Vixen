@@ -34,7 +34,7 @@ namespace Vixen.Hardware {
 		static private Dictionary<Guid, OutputController> _instances = new Dictionary<Guid, OutputController>();
 		static private Dictionary<Guid, int> _refCounts = new Dictionary<Guid, int>();
 
-		[ObjectPreload]
+		[Preload]
 		static private void _Preload() {
 			OutputController controller;
 			// Need a controller to act as a generic timing source in case a sequence

@@ -5,30 +5,30 @@ using System.Text;
 using Vixen.Common;
 using Vixen.Sys;
 
-namespace Vixen.Module.CommandSpec {
-	class CommandSpecModuleRepository : IModuleRepository<ICommandSpecModuleInstance> {
+namespace Vixen.Module.Effect {
+	class EffectModuleRepository : IModuleRepository<IEffectModuleInstance> {
 		// Command name : command handler instance
-		private Dictionary<string, ICommandSpecModuleInstance> _instances = new Dictionary<string, ICommandSpecModuleInstance>();
+		private Dictionary<string, IEffectModuleInstance> _instances = new Dictionary<string, IEffectModuleInstance>();
 
-		public ICommandSpecModuleInstance Get(Guid id) {
+		public IEffectModuleInstance Get(Guid id) {
 			return _instances.Values.FirstOrDefault(x => x.TypeId == id);
 		}
 
-		public ICommandSpecModuleInstance[] GetAll() {
+		public IEffectModuleInstance[] GetAll() {
 			return _instances.Values.ToArray();
 		}
 
-		public ICommandSpecModuleInstance Get(string commandName) {
-			ICommandSpecModuleInstance instance;
+		public IEffectModuleInstance Get(string commandName) {
+			IEffectModuleInstance instance;
 			_instances.TryGetValue(commandName, out instance);
 			return instance;
 		}
 
 		public void Add(Guid id) {
 			// Get the module descriptor.
-			ICommandSpecModuleDescriptor descriptor = Modules.GetDescriptorById<ICommandSpecModuleDescriptor>(id);
+			IEffectModuleDescriptor descriptor = Modules.GetDescriptorById<IEffectModuleDescriptor>(id);
 			// Create an singleton instance.
-			ICommandSpecModuleInstance instance = Modules.GetById(id) as ICommandSpecModuleInstance;
+			IEffectModuleInstance instance = Modules.GetById(id) as IEffectModuleInstance;
 			// Add the instance to the dictionary.
 			_instances[instance.CommandName] = instance;
 		}

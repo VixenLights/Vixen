@@ -40,7 +40,7 @@ namespace Vixen.Sys {
 		}
 
         static private void _LoadObjects() {
-            Type attributeType = typeof(ObjectPreloadAttribute);
+            Type attributeType = typeof(PreloadAttribute);
 
             // Iterate types in the system assembly.
             foreach(Type type in Assembly.GetExecutingAssembly().GetTypes()) {

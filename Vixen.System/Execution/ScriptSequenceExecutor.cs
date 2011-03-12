@@ -14,7 +14,7 @@ using Vixen.Module.Sequence;
 
 namespace Vixen.Execution {
     class ScriptSequenceExecutor : SequenceExecutor {
-		private UserScriptHost _scriptHost;
+		private IUserScriptHost _scriptHost;
 
 		protected override void OnPlaying(int startTime, int endTime) {
 			base.OnPlaying(startTime, endTime);

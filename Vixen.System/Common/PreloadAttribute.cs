@@ -5,6 +5,6 @@ using System.Text;
 
 namespace Vixen.Common {
     [AttributeUsage(AttributeTargets.Method)]
-    class ObjectPreloadAttribute : Attribute {
+    class PreloadAttribute : Attribute {
     }
 }

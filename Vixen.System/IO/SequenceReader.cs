@@ -7,7 +7,7 @@ using System.IO;
 using Vixen.Sys;
 using Vixen.Common;
 using Vixen.Sequence;
-using Vixen.Module.CommandSpec;
+using Vixen.Module.Effect;
 using Vixen.Module.Input;
 
 namespace Vixen.IO {
@@ -59,7 +59,7 @@ namespace Vixen.IO {
 
 								// Command table
 								Guid[] commandTable;
-								_ReadCommandTable(reader, sequence, out commandTable);
+								_ReadEffectTable(reader, sequence, out commandTable);
 
 								// Channel id table
 								Guid[] channelIdTable;
@@ -84,15 +84,15 @@ namespace Vixen.IO {
 			}
 		}
 
-		private void _ReadCommandTable(XmlReader reader, T sequence, out Guid[] commandTable) {
-			List<Guid> commandSpecIds = new List<Guid>();
-			reader.ReadStartElement("CommandTable");
-			while(reader.IsStartElement("CommandSpec")) {
-				commandSpecIds.Add(new Guid(reader.ReadElementString()));
+		private void _ReadEffectTable(XmlReader reader, T sequence, out Guid[] effectTable) {
+			List<Guid> effectIds = new List<Guid>();
+			reader.ReadStartElement("EffectTable");
+			while(reader.IsStartElement("Effect")) {
+				effectIds.Add(new Guid(reader.ReadElementString()));
 			}
-			reader.ReadEndElement(); // CommandTable
+			reader.ReadEndElement(); // Effect
 
-			commandTable = commandSpecIds.ToArray();
+			effectTable = effectIds.ToArray();
 		}
 
 		private void _ReadChannelIdTable(XmlReader reader, T sequence, out Guid[] channelIdTable) {
@@ -130,10 +130,10 @@ namespace Vixen.IO {
 
 		private void _ReadDataNodes(XmlReader reader, T sequence, Guid[] commandTable, Guid[] channelIdTable) {
 			byte[] bytes = new byte[2 * sizeof(ushort) + sizeof(byte)];
-			int commandSpecIdIndex;
+			int effectIdIndex;
 			int channelIdIndex;
 			int channelIdCount;
-			Guid commandSpecId;
+			Guid effectId;
 			List<OutputChannel> channels = new List<OutputChannel>();
 			byte parameterCount;
 			List<object> parameters = new List<object>();
@@ -153,7 +153,7 @@ namespace Vixen.IO {
 					dataStream.Read(bytes, 0, bytes.Length);
 
 					// Index of the command spec id from the command table (word).
-					commandSpecIdIndex = BitConverter.ToUInt16(bytes, 0 * sizeof(ushort));
+					effectIdIndex = BitConverter.ToUInt16(bytes, 0 * sizeof(ushort));
 					// Referenced channel count (word).
 					channelIdCount = BitConverter.ToUInt16(bytes, 1 * sizeof(ushort));
 					// Parameter count (byte)
@@ -178,10 +178,10 @@ namespace Vixen.IO {
 						parameters.Add(ParameterValue.ReadFromStream(dataStream));
 					}
 
-					if(commandSpecIdIndex < commandTable.Length) {
-						commandSpecId = commandTable[commandSpecIdIndex];
-						if(Modules.IsValidId(commandSpecId)) {
-							sequence.InsertData(channels.ToArray(), startTime, timeSpan, new Command(commandSpecId, parameters.ToArray()));
+					if(effectIdIndex < commandTable.Length) {
+						effectId = commandTable[effectIdIndex];
+						if(Modules.IsValidId(effectId)) {
+							sequence.InsertData(channels.ToArray(), startTime, timeSpan, new Command(effectId, parameters.ToArray()));
 						}
 					}
 				}

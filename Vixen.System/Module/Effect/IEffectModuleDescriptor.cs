@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using CommandStandard;
 
-namespace Vixen.Module.CommandSpec {
-	public interface ICommandSpecModuleDescriptor : IModuleDescriptor {
+namespace Vixen.Module.Effect {
+	public interface IEffectModuleDescriptor : IModuleDescriptor {
 		string CommandName { get; }
 		CommandParameterSpecification[] Parameters { get; }
 	}

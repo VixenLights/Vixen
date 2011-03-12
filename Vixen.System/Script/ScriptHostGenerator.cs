@@ -6,7 +6,6 @@ using System.IO;
 using Vixen.Sys;
 using System.Reflection;
 using System.CodeDom.Compiler;
-using Microsoft.CSharp;
 using Vixen.Module.Sequence;
 
 namespace Vixen.Script {
@@ -15,13 +14,13 @@ namespace Vixen.Script {
 		private string[] _standardReferences = {
             "System.dll",
 			"System.Core.dll",
-			"Microsoft.CSharp.dll",
+			"Microsoft.CSharp.dll", // Required for dynamic.
             "Vixen.dll"
         };
 
 		static public readonly string UserScriptNamespace = "Vixen.User";
 
-		public UserScriptHost GenerateScript(ScriptSequenceBase sequence) {
+		public IUserScriptHost GenerateScript(ScriptSequenceBase sequence) {
 			List<string> files = new List<string>();
 			string fileName;
 
@@ -31,13 +30,15 @@ namespace Vixen.Script {
 			string generatedNamespace = string.Empty;
 
 			try {
-				// Emit the T4 template.
+				// Emit the T4 template to be compiled into the assembly.
 				fileName = Path.GetTempFileName();
-				UserScriptSequence userSequence = new UserScriptSequence(sequence);
-				generatedClassName = userSequence.ClassName;
-				entryPointName = userSequence.EntryPointName;
-				generatedNamespace = userSequence.Namespace;
-				File.WriteAllText(fileName, userSequence.TransformText());
+				//UserScriptSequence userSequence = new UserScriptSequence(sequence);
+				IScriptFrameworkGenerator frameworkGenerator = Script.Registration.GetScriptFrameworkGenerator(sequence.Language);
+				frameworkGenerator.Sequence = sequence;
+				generatedClassName = frameworkGenerator.ClassName;
+				entryPointName = frameworkGenerator.EntryPointName;
+				generatedNamespace = frameworkGenerator.Namespace;
+				File.WriteAllText(fileName, frameworkGenerator.TransformText());
 				files.Add(fileName);
 
 				// Add the user's source files.
@@ -48,7 +49,7 @@ namespace Vixen.Script {
 				}
 
 				// Compile the sources.
-				assembly =_Compile(files, sequence);
+				assembly =_Compile(files.ToArray(), sequence);
 			} finally {
 				// Delete the temp files.
 				foreach(string tempFile in files) {
@@ -61,7 +62,7 @@ namespace Vixen.Script {
 				Type type = assembly.GetType(string.Format("{0}.{1}", generatedNamespace, generatedClassName));
 				if(type != null) {
 					// Create and return an instance.
-					UserScriptHost scriptHost = Activator.CreateInstance(type) as UserScriptHost;
+					IUserScriptHost scriptHost = Activator.CreateInstance(type) as IUserScriptHost;
 					scriptHost.Sequence = sequence;
 					return scriptHost;
 				}
@@ -79,7 +80,7 @@ namespace Vixen.Script {
 		/// </summary>
 		/// <param name="files"></param>
 		/// <returns>The file name of the compiled assembly.</returns>
-		private Assembly _Compile(List<string> files, ScriptSequenceBase sequence) {
+		private Assembly _Compile(string[] files, ScriptSequenceBase sequence) {
 			// Assembly references come in two flavors:
 			// 1. Framework assemblies -- need only the file name.
 			// 2. Other assemblies -- need the qualified file name.
@@ -94,14 +95,15 @@ namespace Vixen.Script {
 			assemblyReferences.AddRange(_standardReferences);
 
 			CompilerResults results = null;
-			using(CSharpCodeProvider codeProvider = new CSharpCodeProvider()) {
+			//using(CodeDomProvider codeProvider = new Microsoft.CSharp.CSharpCodeProvider()) {
+			using(ICodeProvider codeProvider = Registration.GetCodeProvider(sequence.Language)) {
 				CompilerParameters compilerParameters = new CompilerParameters() {
 					GenerateInMemory = true
 					//IncludeDebugInformation = true //FOR TESTING ONLY! Leaves a file behind.
 				};
 				compilerParameters.ReferencedAssemblies.AddRange(assemblyReferences.ToArray());
 
-				results = codeProvider.CompileAssemblyFromFile(compilerParameters, files.ToArray());
+				results = codeProvider.CompileAssemblyFromFile(compilerParameters, files);
 			}
 
 			// Get any errors.

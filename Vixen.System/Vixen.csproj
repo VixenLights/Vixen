@@ -138,9 +138,31 @@
     <Compile Include="Module\Sequence\SequenceModuleType.cs" />
     <Compile Include="Module\Trigger\TriggerBase.cs" />
     <Compile Include="Module\Trigger\TriggerSetEventArgs.cs" />
+    <Compile Include="Script\CSharp\CodeProviderWrapper.cs" />
+    <Compile Include="Script\CSharp\Implementation.cs" />
+    <Compile Include="Script\ICodeProvider.cs" />
+    <Compile Include="Script\IScriptFrameworkGenerator.cs" />
+    <Compile Include="Script\IScriptSkeletonGenerator.cs" />
+    <Compile Include="Script\IUserScriptHost.cs" />
+    <Compile Include="Script\Registration.cs" />
+    <Compile Include="Script\ScriptTypeImplementation.cs" />
     <Compile Include="Script\UserScriptChannel.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Script\VB\CodeProviderWrapper.cs" />
+    <Compile Include="Script\VB\Implementation.cs" />
+    <Compile Include="Script\VB\ScriptFramework.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ScriptFramework.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Script\VB\ScriptFrameworkCode.cs" />
+    <Compile Include="Script\VB\Skeleton.cs">
+      <DependentUpon>Skeleton.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Script\VB\SkeletonCode.cs" />
     <Compile Include="Sequence\SequenceBuffer.cs" />
     <Compile Include="Sequence\SequenceStartedEventArgs.cs">
       <SubType>Code</SubType>
@@ -166,10 +188,10 @@
     <Compile Include="Module\App\AppModuleManagement.cs" />
     <Compile Include="Module\App\AppModuleRepository.cs" />
     <Compile Include="Module\App\AppModuleType.cs" />
-    <Compile Include="Module\CommandEditor\CommandEditorModuleImplementation.cs" />
-    <Compile Include="Module\CommandEditor\CommandEditorModuleManagement.cs" />
-    <Compile Include="Module\CommandEditor\CommandEditorModuleRepository.cs" />
-    <Compile Include="Module\CommandEditor\CommandEditorModuleType.cs" />
+    <Compile Include="Module\EffectEditor\EffectEditorModuleImplementation.cs" />
+    <Compile Include="Module\EffectEditor\EffectEditorModuleManagement.cs" />
+    <Compile Include="Module\EffectEditor\EffectEditorModuleRepository.cs" />
+    <Compile Include="Module\EffectEditor\EffectEditorModuleType.cs" />
     <Compile Include="Module\CommandStandardExtension\CommandStandardExtensionModuleImplementation.cs" />
     <Compile Include="Module\CommandStandardExtension\CommandStandardExtensionModuleManagement.cs" />
     <Compile Include="Module\CommandStandardExtension\CommandStandardExtensionModuleRepository.cs" />
@@ -190,10 +212,10 @@
     <Compile Include="Module\Output\OutputModuleManagement.cs" />
     <Compile Include="Module\Output\OutputModuleRepository.cs" />
     <Compile Include="Module\Output\OutputModuleType.cs" />
-    <Compile Include="Module\CommandSpec\CommandSpecModuleImplementation.cs" />
-    <Compile Include="Module\CommandSpec\CommandSpecModuleManagement.cs" />
-    <Compile Include="Module\CommandSpec\CommandSpecModuleRepository.cs" />
-    <Compile Include="Module\CommandSpec\CommandSpecModuleType.cs" />
+    <Compile Include="Module\Effect\EffectModuleImplementation.cs" />
+    <Compile Include="Module\Effect\EffectModuleManagement.cs" />
+    <Compile Include="Module\Effect\EffectModuleRepository.cs" />
+    <Compile Include="Module\Effect\EffectModuleType.cs" />
     <Compile Include="Module\Transform\TransformModuleImplementation.cs" />
     <Compile Include="Module\Transform\TransformModuleManagement.cs" />
     <Compile Include="Module\Transform\TransformModuleRepository.cs" />
@@ -226,9 +248,9 @@
     <Compile Include="Module\Editor\IEditorModuleDescriptor.cs" />
     <Compile Include="Module\Editor\IEditorModuleInstance.cs" />
     <Compile Include="Module\Editor\ISelection.cs" />
-    <Compile Include="Module\CommandSpec\ICommandSpec.cs" />
-    <Compile Include="Module\CommandSpec\ICommandSpecModuleDescriptor.cs" />
-    <Compile Include="Module\CommandSpec\ICommandSpecModuleInstance.cs" />
+    <Compile Include="Module\Effect\IEffect.cs" />
+    <Compile Include="Module\Effect\IEffectModuleDescriptor.cs" />
+    <Compile Include="Module\Effect\IEffectModuleInstance.cs" />
     <Compile Include="Module\Trigger\AnalogTriggerInput.cs" />
     <Compile Include="Module\Trigger\DigitalTriggerInput.cs" />
     <Compile Include="Common\LiveEnumerator.cs" />
@@ -239,13 +261,13 @@
     <Compile Include="Sys\IFixtureContainer.cs" />
     <Compile Include="Module\IModuleDataContainer.cs" />
     <Compile Include="Sys\ITypedDataMover.cs" />
-    <Compile Include="Script\UserScript.cs">
+    <Compile Include="Script\CSharp\Skeleton.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>UserScript.tt</DependentUpon>
+      <DependentUpon>Skeleton.tt</DependentUpon>
     </Compile>
     <Compile Include="Script\UserScriptHost.cs" />
-    <Compile Include="Script\UserScriptCode.cs" />
+    <Compile Include="Script\CSharp\SkeletonCode.cs" />
     <Compile Include="Script\UserScriptFixture.cs" />
     <Compile Include="Script\ScriptHostGenerator.cs" />
     <Compile Include="Execution\ScriptSequenceExecutor.cs" />
@@ -298,7 +320,7 @@
     <Compile Include="Common\ModuleTypeAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\ObjectPreloadAttribute.cs">
+    <Compile Include="Common\PreloadAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Common\ParameterValue.cs">
@@ -313,7 +335,7 @@
     <Compile Include="Sys\IApplication.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Module\CommandEditor\ICommandEditorControl.cs">
+    <Compile Include="Module\EffectEditor\IEffectEditorControl.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Sequence\ISequence.cs">
@@ -364,13 +386,13 @@
     <Compile Include="Execution\ProgramExecutor.cs" />
     <Compile Include="IO\ProgramReader.cs" />
     <Compile Include="IO\ProgramWriter.cs" />
-    <Compile Include="Module\CommandEditor\ICommandEditorModuleDescriptor.cs" />
-    <Compile Include="Module\CommandEditor\ICommandEditorModuleInstance.cs" />
+    <Compile Include="Module\EffectEditor\IEffectEditorModuleDescriptor.cs" />
+    <Compile Include="Module\EffectEditor\IEffectEditorModuleInstance.cs" />
     <Compile Include="Module\CommandStandardExtension\ICommandStandardExtensionModuleDescriptor.cs" />
     <Compile Include="Sys\Fixture.cs" />
     <Compile Include="IO\FixtureReader.cs" />
     <Compile Include="IO\FixtureWriter.cs" />
-    <Compile Include="Module\CommandEditor\ICommandEditor.cs" />
+    <Compile Include="Module\EffectEditor\IEffectEditor.cs" />
     <Compile Include="Module\CommandStandardExtension\ICommandStandardExtensionModuleInstance.cs" />
     <Compile Include="Module\Output\IOutput.cs" />
     <Compile Include="Module\Output\IOutputModuleDescriptor.cs" />
@@ -390,16 +412,24 @@
     <Compile Include="IO\SequenceWriter.cs" />
     <Compile Include="Sys\Server.cs" />
     <Compile Include="Sys\Standard.cs" />
-    <Compile Include="Script\UserScriptSequence.cs">
+    <Compile Include="Script\CSharp\ScriptFramework.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>UserScriptSequence.tt</DependentUpon>
+      <DependentUpon>ScriptFramework.tt</DependentUpon>
     </Compile>
-    <Compile Include="Script\UserScriptSequenceCode.cs" />
+    <Compile Include="Script\CSharp\ScriptFrameworkCode.cs" />
     <Compile Include="Sys\WarningLog.cs" />
-    <None Include="Script\UserScriptSequence.tt">
+    <None Include="Script\CSharp\ScriptFramework.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>UserScriptSequence.cs</LastGenOutput>
+      <LastGenOutput>ScriptFramework.cs</LastGenOutput>
+    </None>
+    <None Include="Script\VB\ScriptFramework.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ScriptFramework.cs</LastGenOutput>
+    </None>
+    <None Include="Script\VB\Skeleton.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>Skeleton.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -426,15 +456,14 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Script\UserScript.tt">
+    <None Include="Script\CSharp\Skeleton.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>UserScript.cs</LastGenOutput>
+      <LastGenOutput>Skeleton.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

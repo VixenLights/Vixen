@@ -8,8 +8,6 @@ namespace CommandStandard {
 	//If this were generic, you couldn't have a collection of them without
 	//the generic subclassing a non-generic class.  Any benefits?
 	public class CommandParameterSpecification {
-		public Type Type { get; internal set; }
-
 		private const char TYPE_NAME_DELIMITER = ' ';
 
 		private const string ATTR_PARAM_NAME = "name";
@@ -46,6 +44,8 @@ namespace CommandStandard {
 				m_name = value;
 			}
 		}
+
+		public Type Type { get; internal set; }
 
 		// Use for self-documentation
 		internal void SaveToXml(XmlNode node) {

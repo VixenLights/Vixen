@@ -7,7 +7,7 @@ using Vixen.Sys;
 using Vixen.Common;
 using System.IO;
 using Vixen.Sequence;
-using Vixen.Module.CommandSpec;
+using Vixen.Module.Effect;
 using Vixen.Module.Input;
 
 namespace Vixen.IO {
@@ -51,7 +51,7 @@ namespace Vixen.IO {
 
 					// Command table
 					Dictionary<Guid, int> commandTableIndex;
-					_WriteCommandTable(writer, out commandTableIndex);
+					_WriteEffectTable(writer, out commandTableIndex);
 
 					// Channel id table
 					Dictionary<Guid, int> channelIdTableIndex;
@@ -87,24 +87,24 @@ namespace Vixen.IO {
 			writer.WriteEndElement(); // ModuleData
 		}
 
-		private void _WriteCommandTable(XmlWriter writer, out Dictionary<Guid, int> commandTableIndex) {
+		private void _WriteEffectTable(XmlWriter writer, out Dictionary<Guid, int> effectTableIndex) {
 			// Commands are implemented by modules which are referenced by GUID ids.
 			// To avoid having every serialized command include a big fat GUID, which
 			// would cause a lot of disk bloat, we're going to have a table of
 			// command GUIDs that the data will reference by an index.
 
-			List<Guid> commandTable;
-			ICommandSpecModuleInstance[] commands = Server.ModuleManagement.GetAllCommandSpec();
+			List<Guid> effectTable;
+			IEffectModuleInstance[] commands = Server.ModuleManagement.GetAllEffect();
 
 			// All command specs in the system.
-			commandTable = commands.Select(x => x.TypeId).ToList();
+			effectTable = commands.Select(x => x.TypeId).ToList();
 			// Command spec type id : index within the table
-			commandTableIndex = commandTable.Select((id, index) => new { Id = id, Index = index }).ToDictionary(x => x.Id, x => x.Index);
-			writer.WriteStartElement("CommandTable");
-			foreach(Guid commandSpecTypeId in commandTable) {
-				writer.WriteElementString("CommandSpec", commandSpecTypeId.ToString());
+			effectTableIndex = effectTable.Select((id, index) => new { Id = id, Index = index }).ToDictionary(x => x.Id, x => x.Index);
+			writer.WriteStartElement("EffectTable");
+			foreach(Guid effectTypeId in effectTable) {
+				writer.WriteElementString("Effect", effectTypeId.ToString());
 			}
-			writer.WriteEndElement(); // CommandTable
+			writer.WriteEndElement(); // Effect
 		}
 
 		private void _WriteChannelIdTable(XmlWriter writer, out Dictionary<Guid, int> channelIdTableIndex) {

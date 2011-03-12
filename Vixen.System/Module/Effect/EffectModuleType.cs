@@ -5,14 +5,14 @@ using System.Text;
 using Vixen.Common;
 using Vixen.Sys;
 
-namespace Vixen.Module.CommandSpec {
-	class CommandSpecModuleType : IModuleLoadNotification {
+namespace Vixen.Module.Effect {
+	class EffectModuleType : IModuleLoadNotification {
 		public void ModuleLoaded(IModuleDescriptor descriptor) {
-			Server.ModuleRepository.AddCommandSpec(descriptor.TypeId);
+			Server.ModuleRepository.AddEffect(descriptor.TypeId);
 		}
 
 		public void ModuleUnloading(IModuleDescriptor descriptor) {
-			Server.ModuleRepository.RemoveCommandSpec(descriptor.TypeId);
+			Server.ModuleRepository.RemoveEffect(descriptor.TypeId);
 		}
 	}
 }

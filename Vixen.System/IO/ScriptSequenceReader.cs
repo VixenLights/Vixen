@@ -17,6 +17,9 @@ namespace Vixen.IO {
 
         protected override void ReadSequenceBody(XmlReader reader, ScriptSequenceBase sequence) {
 			string fileName;
+
+			// Language
+			Sequence.Language = reader.ReadElementString("Language");
 			
 			// Source files
 

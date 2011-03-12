@@ -35,10 +35,16 @@ namespace Vixen.Module.Sequence {
 			FrameworkAssemblies = new HashSet<string>();
 			ExternalAssemblies = new HashSet<string>();
 
-			// Create the first source file for them.
-			SourceFile sourceFile = CreateNewFile(CreateNewFileName());
-			UserScript userScript = new UserScript(this);
-			sourceFile.Contents = userScript.TransformText();
+			//// Create the first source file for them.
+			//SourceFile sourceFile = CreateNewFile(CreateNewFileName());
+			////UserScript userScript = new UserScript(this);
+			//IUserScript userScript = Script.Registration.GetScriptImplementation(Language);
+			//if(userScript != null) {
+			//    userScript.Sequence = this;
+			//} else {
+			//    throw new Exception("There is no script type " + Language);
+			//}
+			//sourceFile.Contents = userScript.TransformText();
 
 			// Required assembly references.
 			ExternalAssemblies.Add(Server.AssemblyFileName);
@@ -64,6 +70,25 @@ namespace Vixen.Module.Sequence {
 
         public List<SourceFile> SourceFiles { get; private set; }
 
+		private string _language;
+		public string Language {
+			get { return _language; }
+			set {
+				// Create the first source file for them.
+				// It has the skeleton in which they will write code.
+				IScriptSkeletonGenerator skeletonFileGenerator = Script.Registration.GetScriptSkeletonGenerator(value);
+				if(skeletonFileGenerator == null) {
+					throw new Exception("There is no script type " + value);
+				}
+				skeletonFileGenerator.Sequence = this;
+
+				_language = value;
+
+				SourceFile sourceFile = CreateNewFile(CreateNewFileName(Script.Registration.GetScriptFileExtension(_language)));
+				sourceFile.Contents = skeletonFileGenerator.TransformText();
+			}
+		}
+
 		public HashSet<string> FrameworkAssemblies { get; private set; }
 
 		public HashSet<string> ExternalAssemblies { get; private set; }
@@ -74,7 +99,7 @@ namespace Vixen.Module.Sequence {
 			return sourceFile;
 		}
 
-		protected string CreateNewFileName() {
+		protected string CreateNewFileName(string fileExtension) {
 			int count = 1;
 			string fileName;
 
@@ -84,7 +109,7 @@ namespace Vixen.Module.Sequence {
 				fileName = NEW_FILE_ROOT + count;
 			}
 
-			return fileName + ".cs";
+			return fileName + fileExtension;
 		}
 
 

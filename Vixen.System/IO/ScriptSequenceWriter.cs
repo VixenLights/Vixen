@@ -16,6 +16,9 @@ namespace Vixen.IO {
         protected override void WriteSequenceAttributes(XmlWriter writer) { }
 
         protected override void WriteSequenceBody(XmlWriter writer) {
+			// Language
+			writer.WriteElementString("Language", Sequence.Language);
+
             // Source files
 
             // Make sure source directory exists.
