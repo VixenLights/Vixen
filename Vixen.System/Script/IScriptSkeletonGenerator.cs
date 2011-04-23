@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Vixen.Module.Sequence;
+using Vixen.Sys;
 
 namespace Vixen.Script {
 	interface IScriptSkeletonGenerator {
-		ScriptSequenceBase Sequence { get; set; }
+		ScriptSequence Sequence { get; set; }
 		string TransformText();
 	}
 }

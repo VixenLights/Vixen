@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +7,7 @@ using Vixen.Sys;
 
 namespace Vixen.Module.Effect {
 	class EffectModuleRepository : IModuleRepository<IEffectModuleInstance> {
-		// Command name : command handler instance
+		// Effect name : command handler instance
 		private Dictionary<string, IEffectModuleInstance> _instances = new Dictionary<string, IEffectModuleInstance>();
 
 		public IEffectModuleInstance Get(Guid id) {
@@ -30,7 +30,7 @@ namespace Vixen.Module.Effect {
 			// Create an singleton instance.
 			IEffectModuleInstance instance = Modules.GetById(id) as IEffectModuleInstance;
 			// Add the instance to the dictionary.
-			_instances[instance.CommandName] = instance;
+			_instances[instance.EffectName] = instance;
 		}
 
 		object IModuleRepository.Get(Guid id) {
@@ -43,7 +43,7 @@ namespace Vixen.Module.Effect {
 
 		public void Remove(Guid id) {
 			// Remove the handler instance.
-			_instances.Remove(_instances.Values.FirstOrDefault(x => x.TypeId == id).CommandName);
+			_instances.Remove(_instances.Values.FirstOrDefault(x => x.TypeId == id).EffectName);
 		}
 	}
 }

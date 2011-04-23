@@ -46,7 +46,6 @@ namespace Vixen.Common {
             Helper.EnsureDirectory(_dataRootPath);
 
             Type attributeType = typeof(DataPathAttribute);
-			//string path;
             // Iterate types in the system assembly.
             foreach(Type type in Assembly.GetExecutingAssembly().GetTypes()) {
 				AddDataPaths(type, attributeType);
@@ -85,7 +84,6 @@ namespace Vixen.Common {
 					if(!Path.IsPathRooted(path)) {
 						// Assume it to be a data path; parent it to the ModuleData directory.
 						if(isWriteable) {
-							//path = Path.Combine(DataRootPath, path);
 							path = Path.Combine(ModuleFilesPath, path);
 							// Write back the resolved path.
 							if(mi is PropertyInfo) {

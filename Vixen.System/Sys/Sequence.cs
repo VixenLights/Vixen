@@ -3,41 +3,58 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Xml.Linq;
 using Vixen.Common;
 using Vixen.IO;
 using CommandStandard;
-using Vixen.Sequence;
+using Vixen.Execution;
 using Vixen.Module;
 using Vixen.Module.RuntimeBehavior;
-using Vixen.Module.Input;
+using Vixen.Module.Media;
+using Vixen.Module.Effect;
+using Vixen.Module.Sequence;
 
 namespace Vixen.Sys {
-	#region Static Sequence class
-	static class Sequence {
-		/// <summary>
-		/// Gets a new instance.
-		/// </summary>
-		/// <param name="fileName"></param>
-		/// <returns></returns>
-		static public Vixen.Module.Sequence.ISequenceModuleInstance Get(string fileName) {
-			// Get the sequence module manager.
-			Vixen.Module.Sequence.SequenceModuleManagement manager = Server.Internal.GetModuleManager<Vixen.Module.Sequence.ISequenceModuleInstance, Vixen.Module.Sequence.SequenceModuleManagement>();
-			// Get an instance of the appropriate sequence module.
-			Vixen.Module.Sequence.ISequenceModuleInstance instance = manager.Get(fileName);
+	/// <summary>
+	/// Base class for any sequence implementation.
+	/// </summary>
+	[Executor(typeof(SequenceExecutor))]
+	abstract public class Sequence : Vixen.Sys.ISequence {
+		private IntervalCollection _intervals = new IntervalCollection();
+		private long _length;
+		// Input channels are not in fixtures.  Fixtures are currently output-only.
+		private List<InputChannel> _inputChannels = new List<InputChannel>();
 
-			return instance;
+
+		private const string DIRECTORY_NAME = "Sequence";
+
+		[DataPath]
+		static private readonly string _directory = System.IO.Path.Combine(Paths.DataRootPath, DIRECTORY_NAME);
+
+		protected virtual string Directory {
+			get { return _directory; }
 		}
+
+		virtual protected XElement _WriteXml() { return null; }
+		virtual protected void _ReadXml(XElement element) { }
+
 
 		/// <summary>
 		/// Loads an existing instance.
 		/// </summary>
-		/// <param name="fileName"></param>
+		/// <param name="filePath"></param>
 		/// <returns></returns>
-		static public Vixen.Module.Sequence.ISequenceModuleInstance Load(string fileName) {
+		static public Sequence Load(string filePath) {
+			// Get the sequence module manager.
+			SequenceModuleManagement manager = VixenSystem.Internal.GetModuleManager<ISequenceModuleInstance, SequenceModuleManagement>();
 			// Get an instance of the appropriate sequence module.
-			Vixen.Module.Sequence.ISequenceModuleInstance instance = Get(fileName);
+			Sequence instance = manager.Get(filePath) as Sequence;
+			if(instance == null) throw new InvalidOperationException("No sequence type defined for file " + filePath);
+
 			// Load the sequence.
-			instance.Load(fileName);
+			SequenceReader reader = new SequenceReader();
+			reader.Read(filePath, instance);
+			instance.FilePath = filePath;
 
 			return instance;
 		}
@@ -52,110 +69,44 @@ namespace Vixen.Sys {
 				fileTypes.Add(descriptor.FileExtension);
 			}
 			// Find all files of those types in the data branch.
-			return fileTypes.SelectMany(x => Directory.GetFiles(Paths.DataRootPath, "*" + x, SearchOption.AllDirectories)).ToArray();
+			return fileTypes.SelectMany(x => System.IO.Directory.GetFiles(Paths.DataRootPath, "*" + x, SearchOption.AllDirectories)).ToArray();
 		}
-	}
-	#endregion
-
-	/// <summary>
-	/// Base class for any sequence implementation.
-	/// </summary>
-	/// <typeparam name="Reader">Reader for the sequence type.</typeparam>
-	/// <typeparam name="Writer">Writer for the sequence type</typeparam>
-	/// <typeparam name="SequenceType">The sequence type being implemented as you read this.</typeparam>
-	abstract public class Sequence<Reader, Writer, SequenceType> : ISequence
-		where Reader : ISequenceReader, new()
-		where Writer : ISequenceWriter, new()
-		where SequenceType : class, ISequence {
-		// Going with a linked list because List<> excels at random access while
-		// a LinkedList<> accells at sequential access. 
-		private LinkedList<Fixture> _fixtures = new LinkedList<Fixture>();
-		private IntervalCollection _intervals = new IntervalCollection();
-		private int _length;
-		// Input channels are not in fixtures.  Fixtures are currently output-only.
-		private List<InputChannel> _inputChannels = new List<InputChannel>();
 
 		/// <summary>
 		/// Use this to set the sequence's length when the sequence is untimed.
 		/// </summary>
-		public const int Forever = int.MaxValue;
+		public const long Forever = long.MaxValue;
 
 		protected Sequence() {
 			ModuleDataSet = new ModuleDataSet();
 			Name = "Unnamed sequence";
 			InsertDataListener = new InsertDataListenerStack();
 			InsertDataListener += _DataListener;
-			// Default behavior is to use the generic timer.
-			TimingSourceId = Guid.Empty;
 			Data = new CommandNodeIntervalSync(this, _inputChannels, _intervals);
-			RuntimeBehaviors = Server.ModuleManagement.GetAllRuntimeBehavior();
-			foreach(IRuntimeBehaviorModuleInstance runtimeBehavior in RuntimeBehaviors) {
-				ModuleDataSet.GetModuleTypeData(runtimeBehavior);
-			}
+			TimingProvider = new TimingProviders(this);
+			Media = new MediaCollection(ModuleDataSet);
+			RuntimeBehaviors = VixenSystem.ModuleManagement.GetAllRuntimeBehavior();
+			// The runtime behavior module instances will need data in the sequence's
+			// data set.
+			_LoadRuntimeBehaviorModuleData();
 		}
 
-		private void _DataListener(InsertDataParameters parameters) {
-			Data.AddCommand(new CommandNode(parameters.Command, parameters.Channels, parameters.StartTime, parameters.TimeSpan));
+		private bool _DataListener(CommandNode commandNode) {
+			Data.AddCommandWithSync(commandNode);
+			// Do not cancel the event.
+			return false;
 		}
 
-		abstract protected string Directory { get; }
-		// Cannot perform late-bound operations on generic types.
-		//[DataPath]
-		//static private readonly string _directory = Path.Combine(Paths.DataRootPath, DIRECTORY_NAME);
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="fileName">Must be a qualified file path.</param>
-		/// <returns></returns>
-		public void Load(string fileName) {
-			Reader reader = new Reader();
-			reader.Read(fileName, this);
-		}
-
-		public void Save(string fileName) {
-			if(string.IsNullOrWhiteSpace(fileName)) throw new InvalidOperationException("A name is required.");
-			string filePath = Path.Combine(this.Directory, Path.GetFileName(fileName));
-			Writer writer = new Writer();
+		public void Save(string filePath) {
+			if(string.IsNullOrWhiteSpace(filePath)) throw new InvalidOperationException("A name is required.");
+			filePath = Path.Combine(this.Directory, Path.GetFileName(filePath));
+			SequenceWriter writer = new SequenceWriter();
 			writer.Write(filePath, this);
-			this.FileName = filePath;
+			this.FilePath = filePath;
 		}
 
 		public void Save() {
-			Save(FileName);
-		}
-
-		public bool Masked {
-			get { return Fixtures.All(x => x.Masked); }
-			set {
-				foreach(Fixture fixture in Fixtures) {
-					fixture.Masked = value;
-				}
-			}
-		}
-
-		public void InsertFixture(Fixture fixture, bool overwrite = false) {
-			if(overwrite && _fixtures.Contains(fixture)) {
-				if(fixture.Equals(_fixtures.First)) {
-					_fixtures.Remove(fixture);
-					_fixtures.AddFirst(fixture);
-				} else {
-					LinkedListNode<Fixture> prior = _fixtures.Find(fixture);
-					_fixtures.Remove(fixture);
-					_fixtures.AddAfter(prior, fixture);
-				}
-			} else {
-				_fixtures.AddLast(fixture);
-			}
-			fixture.ParentSequence = this;
-		}
-
-		public void RemoveFixture(Fixture fixture) {
-			_fixtures.Remove(fixture);
-		}
-
-		public IEnumerable<Fixture> Fixtures {
-			get { return _fixtures; }
+			Save(FilePath);
 		}
 
 		/// <summary>
@@ -165,11 +116,11 @@ namespace Vixen.Sys {
 
 		public IModuleDataSet ModuleDataSet { get; private set; }
 
-		public int Length {
+		public long Length {
 			get { return _length; }
 			set {
 				if(value != _length) {
-					int oldLength = _length;
+					long oldLength = _length;
 					_length = value;
 
 					// Update the interval collection.
@@ -194,32 +145,12 @@ namespace Vixen.Sys {
 			}
 		}
 
-		public string FileName { get; set; }
+		public string FilePath { get; set; }
 
 		public InsertDataListenerStack InsertDataListener { get; set; }
 
-		public void InsertData(InsertDataParameters parameters) {
-			InsertData(parameters.Channels, parameters.StartTime, parameters.TimeSpan, parameters.Command);
-		}
-
-		public void InsertData(OutputChannel[] channels, int startTime, int timeSpan, Command command) {
-			InsertDataListener.InsertData(channels, startTime, timeSpan, command);
-		}
-
-		public IEnumerable<OutputChannel> OutputChannels {
-			get {
-				return
-					from fixture in Fixtures
-					from channel in fixture.Channels
-					select channel;
-			}
-		}
-
-		/// <summary>
-		/// Default behavior is a full update.
-		/// </summary>
-		virtual public UpdateBehavior UpdateBehavior {
-			get { return UpdateBehavior.FullUpdate; }
+		public void InsertData(ChannelNode[] targetNodes, long startTime, long timeSpan, Command command) {
+			InsertDataListener.InsertData(targetNodes, startTime, timeSpan, command);
 		}
 
 		public bool IsUntimed {
@@ -227,11 +158,269 @@ namespace Vixen.Sys {
 			set { Length = value ? Forever : 0; }
 		}
 
-		public Guid TimingSourceId { get; set; }
+		public TimingProviders TimingProvider { get; protected set; }
 
 		public CommandNodeIntervalSync Data { get; private set; }
 
 		// Every sequence will get a collection of all available runtime behaviors.
 		public IRuntimeBehaviorModuleInstance[] RuntimeBehaviors { get; private set; }
+
+		public MediaCollection Media { get; private set; }
+
+		private void _LoadRuntimeBehaviorModuleData() {
+			foreach(IRuntimeBehaviorModuleInstance runtimeBehavior in RuntimeBehaviors) {
+				ModuleDataSet.GetModuleTypeData(runtimeBehavior);
+			}
+		}
+
+		#region WriteXml
+		static public XElement WriteXml(Sequence sequence) {
+			Dictionary<Guid, int> effectTableIndex;
+			Dictionary<Guid, int> targetIdTableIndex;
+
+			XElement element = new XElement("Sequence",
+				new XAttribute("length", sequence.Length),
+				_WriteTimingSource(sequence),
+				_WriteModuleData(sequence),
+				_WriteIntervals(sequence),
+				_WriteEffectTable(sequence, out effectTableIndex),
+				_WriteTargetIdTable(sequence, out targetIdTableIndex),
+				_WriteDataNodes(sequence, effectTableIndex, targetIdTableIndex),
+				_WriteImplementationContent(sequence));
+
+			return element;
+		}
+
+		static private XElement _WriteTimingSource(Sequence sequence) {
+			return new XElement("TimingSource", TimingProviders.WriteXml(sequence.TimingProvider));
+		}
+
+		static private XElement _WriteModuleData(Sequence sequence) {
+			return new XElement("ModuleData", sequence.ModuleDataSet.Serialize());
+		}
+
+		static private XElement _WriteIntervals(Sequence sequence) {
+			return new XElement("Intervals", string.Join(",", sequence.Data.IntervalValues));
+		}
+
+		static private XElement _WriteEffectTable(Sequence sequence, out Dictionary<Guid, int> effectTableIndex) {
+			// Effects are implemented by modules which are referenced by GUID ids.
+			// To avoid having every serialized effect include a big fat GUID, which
+			// would cause a lot of disk bloat, we're going to have a table of
+			// command GUIDs that the data will reference by an index.
+
+			List<Guid> effectTable;
+			IEffectModuleInstance[] effects = VixenSystem.ModuleManagement.GetAllEffect();
+
+			// All command specs in the system.
+			effectTable = effects.Select(x => x.TypeId).ToList();
+			// Command spec type id : index within the table
+			effectTableIndex = effectTable.Select((id, index) => new { Id = id, Index = index }).ToDictionary(x => x.Id, x => x.Index);
+
+			return new XElement("EffectTable", effectTable.Select(x => new XElement("Effect", x.ToString())));
+		}
+
+		static private XElement _WriteTargetIdTable(Sequence sequence, out Dictionary<Guid, int> targetIdTableIndex) {
+			List<Guid> targetTable = Vixen.Sys.Execution.Nodes.Select(x => x.Id).ToList();
+			// Channel id : index within the table
+			targetIdTableIndex = targetTable.Select((id, index) => new { Id = id, Index = index }).ToDictionary(x => x.Id, x => x.Index);
+
+			return new XElement("TargetIdTable", targetTable.Select(x => new XElement("Target", x)));
+		}
+
+		static private XElement _WriteDataNodes(Sequence sequence, Dictionary<Guid, int> effectTableIndex, Dictionary<Guid, int> targetIdTableIndex) {
+			// Going to serialize data by channel.  Each channel will be represented.
+			// Intervals will be referenced by the time of each command serialized
+			// within a given channel.
+			// Store all in a binary stream converted to base-64.
+			string data = null;
+
+			using(MemoryStream stream = new System.IO.MemoryStream()) {
+				using(BinaryWriter dataWriter = new BinaryWriter(stream)) {
+					foreach(CommandNode commandNode in sequence.Data.GetCommands()) {
+						// Index of the command spec id from the command table (word).
+						dataWriter.Write((ushort)effectTableIndex[commandNode.Command.Effect.TypeId]);
+						// Referenced target count (word).
+						dataWriter.Write((ushort)commandNode.TargetNodes.Length);
+						// Parameter count (byte)
+						dataWriter.Write((byte)commandNode.Command.ParameterValues.Length);
+
+						// Start time (long).
+						dataWriter.Write(commandNode.StartTime);
+
+						// Time span (long).
+						dataWriter.Write(commandNode.TimeSpan);
+
+						// Referenced targets (index into target table, word).
+						foreach(ChannelNode node in commandNode.TargetNodes) {
+							dataWriter.Write((ushort)targetIdTableIndex[node.Id]);
+						}
+
+						dataWriter.Flush();
+
+						// Parameters (various)
+						foreach(object paramValue in commandNode.Command.ParameterValues) {
+							ParameterValue.WriteToStream(stream, paramValue);
+						}
+					}
+					data = Convert.ToBase64String(stream.GetBuffer(), 0, (int)stream.Length);
+				}
+			}
+
+			return new XElement("Data", data);
+		}
+
+		static private XElement _WriteImplementationContent(Sequence sequence) {
+			return new XElement("Implementation", sequence._WriteXml());
+		}
+		#endregion
+
+		#region ReadXml
+		static public void ReadXml(XElement element, Sequence sequence) {
+			Guid[] effectTable;
+			Guid[] targetIdTable;
+
+			//Already referencing the doc element.
+			sequence.Length = long.Parse(element.Attribute("length").Value);
+
+			// Timing
+			_ReadTimingSource(element, sequence);
+
+			// Module data
+			_ReadModuleData(element, sequence);
+
+			// Intervals
+			_ReadIntervals(element, sequence);
+
+			// Command table
+			_ReadEffectTable(element, out effectTable);
+
+			// Target id table
+			_ReadTargetIdTable(element, out targetIdTable);
+
+			// Data nodes
+			_ReadDataNodes(element, sequence, effectTable, targetIdTable);
+
+			// Things that need to wait for other sequence data:
+
+			// Runtime behavior module data
+			_ReadBehaviorData(element, sequence);
+
+			// Media module data
+			_ReadMedia(element, sequence);
+
+			// Subclass implementation data
+			_ReadImplementationContent(element, sequence);
+		}
+
+		private static void _ReadTimingSource(XElement element, Sequence sequence) {
+			element = element.Element("TimingSource");
+			sequence.TimingProvider = TimingProviders.ReadXml(element, sequence);
+		}
+
+		private static void _ReadModuleData(XElement element, Sequence sequence) {
+			string moduleDataString = element.Element("ModuleData").Value;
+			sequence.ModuleDataSet.Deserialize(moduleDataString);
+		}
+
+		private static void _ReadIntervals(XElement element, Sequence sequence) {
+			string[] intervalTimesString = element.Element("Intervals").Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			long[] intervalTimes = Array.ConvertAll(intervalTimesString, x => long.Parse(x));
+			sequence.Data.InsertIntervals(intervalTimes);
+		}
+
+		private static void _ReadEffectTable(XElement element, out Guid[] effectTable) {
+			effectTable = element
+				.Element("EffectTable")
+				.Elements("Effect")
+				.Select(x => new Guid(x.Value))
+				.ToArray();
+		}
+
+		private static void _ReadTargetIdTable(XElement element, out Guid[] targetIdTable) {
+			targetIdTable = element.Element("TargetIdTable").Elements("Target").Select(x => new Guid(x.Value)).ToArray();
+		}
+
+		private static void _ReadDataNodes(XElement element, Sequence sequence, Guid[] effectTable, Guid[] targetIdTable) {
+			byte[] bytes = new byte[sizeof(long)];
+			int effectIdIndex;
+			int targetIdIndex;
+			int targetIdCount;
+			Guid effectId;
+			List<ChannelNode> nodes = new List<ChannelNode>();
+			byte parameterCount;
+			List<object> parameters = new List<object>();
+			byte[] data;
+			long dataLength;
+			long startTime, timeSpan;
+
+			// Data is stored as a base-64 stream from a binary stream.
+			string dataString = element.Element("Data").Value;
+			data = Convert.FromBase64String(dataString);
+			using(MemoryStream dataStream = new MemoryStream(data)) {
+				dataLength = dataStream.Length;
+				while(dataStream.Position < dataLength) {
+					nodes.Clear();
+					parameters.Clear();
+
+					// Index of the command spec id from the command table (word).
+					dataStream.Read(bytes, 0, sizeof(ushort));
+					effectIdIndex = BitConverter.ToUInt16(bytes, 0);
+					// Referenced channel count (word).
+					dataStream.Read(bytes, 0, sizeof(ushort));
+					targetIdCount = BitConverter.ToUInt16(bytes, 0);
+					// Parameter count (byte)
+					parameterCount = (byte)dataStream.ReadByte();
+
+					// Start time (long).
+					dataStream.Read(bytes, 0, sizeof(long));
+					startTime = BitConverter.ToInt64(bytes, 0);
+
+					// Time span (long).
+					dataStream.Read(bytes, 0, sizeof(long));
+					timeSpan = BitConverter.ToInt64(bytes, 0);
+
+					// Referenced nodes (index into target table, word).
+					var targets = Vixen.Sys.Execution.Nodes; // ChannelNodes
+					ChannelNode node;
+					while(targetIdCount-- > 0) {
+						dataStream.Read(bytes, 0, sizeof(ushort));
+						targetIdIndex = BitConverter.ToUInt16(bytes, 0);
+						// Channel may no longer exist.
+						node = targets.FirstOrDefault(x => x.Id == targetIdTable[targetIdIndex]);
+						if(node != null) {
+							nodes.Add(node);
+						}
+					}
+					// Parameters (various)
+					while(parameterCount-- > 0) {
+						parameters.Add(ParameterValue.ReadFromStream(dataStream));
+					}
+
+					// Get the effect inserted into the sequence.
+					if(effectIdIndex < effectTable.Length) {
+						effectId = effectTable[effectIdIndex];
+						if(Modules.IsValidId(effectId)) {
+							sequence.InsertData(nodes.ToArray(), startTime, timeSpan, new Command(effectId, parameters.ToArray()));
+						}
+					}
+				}
+			}
+		}
+
+		private static void _ReadBehaviorData(XElement element, Sequence sequence) {
+			sequence._LoadRuntimeBehaviorModuleData();
+		}
+
+		private static void _ReadMedia(XElement element, Sequence sequence) {
+			sequence.Media = new MediaCollection(sequence.ModuleDataSet);
+		}
+
+		private static void _ReadImplementationContent(XElement element, Sequence sequence) {
+			sequence._ReadXml(element.Element("Implementation"));
+		}
+
+		#endregion
+
 	}
 }

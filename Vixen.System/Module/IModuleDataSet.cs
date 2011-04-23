@@ -14,7 +14,7 @@ namespace Vixen.Module {
 		bool Contains(Guid moduleTypeId);
 		bool Contains(Guid moduleTypeId, Guid moduleInstanceId);
 		IEnumerable<Guid> GetModuleTypes();
-		IEnumerable<Tuple<Guid, Guid>> GetInstances();
+		IEnumerable<T> GetInstances<T>() where T : class, IModuleInstance;
 		IEnumerable<IModuleDataModel> GetData();
         string Serialize();
         void SaveToParent(XElement parentNode);

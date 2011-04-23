@@ -9,19 +9,21 @@ using System.IO;
 using System.Xml;
 using Vixen.Hardware;
 using Vixen.Script;
-using Vixen.Sequence;
 using Vixen.Module;
 using Vixen.Module.Editor;
 using Vixen.Module.FileTemplate;
 using Vixen.Module.EffectEditor;
 using Vixen.Module.Effect;
+using Vixen.Module.Timing;
+using Vixen.Module.Media;
+using Vixen.Module.Sequence;
 
 namespace Vixen.Sys {
 	/// <summary>
 	/// Provides controlled access to otherwise inaccessible members and some convenience methods.
 	/// </summary>
     public class ApplicationServices {
-        static internal IApplication ClientApplication;
+        static internal IApplication ClientApplication = null;
 
 		static public IModuleDescriptor[] GetModuleDescriptors(string moduleType) {
 			return Modules.GetModuleDescriptors(moduleType);
@@ -36,7 +38,7 @@ namespace Vixen.Sys {
 		}
 
 		static public string[] GetModuleTypes() {
-			return Server.Internal.GetModuleTypes().Select(x => x.ModuleTypeName).ToArray();
+			return VixenSystem.Internal.GetModuleTypes().Select(x => x.ModuleTypeName).ToArray();
 		}
 
 		static public void UnloadModule(Guid moduleTypeId, string moduleType) {
@@ -51,7 +53,7 @@ namespace Vixen.Sys {
 		static public T Get<T>(Guid id)
 			where T : class, IModuleInstance {
 			// Must go through the module type manager so that it can affect the instance.
-			return Server.Internal.GetModuleManager<T>().Get(id) as T;
+			return VixenSystem.Internal.GetModuleManager<T>().Get(id) as T;
 		}
 
 		/// <summary>
@@ -62,12 +64,12 @@ namespace Vixen.Sys {
 		static public T[] GetAll<T>()
 			where T : class, IModuleInstance {
 			// Must go through the module type manager so that it can affect the instance.
-			return Server.Internal.GetModuleManager<T>().GetAll().Cast<T>().ToArray();
+			return VixenSystem.Internal.GetModuleManager<T>().GetAll().Cast<T>().ToArray();
 		}
 
 		static public IEffectEditorControl GetEffectEditorControl(Guid effectId) {
 			// Need the module-specific manager.
-			EffectEditorModuleManagement manager = Server.Internal.GetModuleManager<IEffectEditorModuleInstance, EffectEditorModuleManagement>();
+			EffectEditorModuleManagement manager = VixenSystem.Internal.GetModuleManager<IEffectEditorModuleInstance, EffectEditorModuleManagement>();
 			return manager.GetEffectEditor(effectId);
 		}
 
@@ -76,35 +78,22 @@ namespace Vixen.Sys {
 			return Vixen.Sys.Sequence.GetAllFileNames();
 		}
 
-		static public Vixen.Module.Sequence.ISequenceModuleInstance CreateSequence(string fileExtension) {
-			return Vixen.Sys.Sequence.Get(fileExtension);
+		static public ISequence CreateSequence(string fileExtension) {
+			SequenceModuleManagement manager = Vixen.Sys.VixenSystem.Internal.GetModuleManager<ISequenceModuleInstance, SequenceModuleManagement>();
+			return manager.Get(fileExtension) as ISequence;
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="fileName">Must be a qualified file path.</param>
-        /// <returns></returns>
-        static public Vixen.Module.Sequence.ISequenceModuleInstance LoadSequence(string fileName) {
-			return Vixen.Sys.Sequence.Load(fileName);
+		static public OutputController[] GetControllers() {
+			return OutputController.GetAll().ToArray();
 		}
-
-		// Module type id : Timing source name
-        static public Dictionary<Guid, string> GetTimingSources() {
-            return OutputController.GetTimingSources().ToDictionary(x => x, x => Modules.GetDescriptorById(x).TypeName);
-        }
-
-        static public OutputController[] GetConfiguredControllers(ISequence executable) {
-            return OutputController.GetAll(executable.ModuleDataSet).ToArray();
-        }
 
 		static public IEditorModuleInstance GetEditor(Guid id) {
-			EditorModuleManagement manager = Server.Internal.GetModuleManager<IEditorModuleInstance, EditorModuleManagement>();
+			EditorModuleManagement manager = VixenSystem.Internal.GetModuleManager<IEditorModuleInstance, EditorModuleManagement>();
 			return manager.Get(id);
 		}
 
 		static public IEditorModuleInstance GetEditor(string fileName) {
-			EditorModuleManagement manager = Server.Internal.GetModuleManager<IEditorModuleInstance, EditorModuleManagement>();
+			EditorModuleManagement manager = VixenSystem.Internal.GetModuleManager<IEditorModuleInstance, EditorModuleManagement>();
 			return manager.Get(fileName);
 		}
 
@@ -113,7 +102,7 @@ namespace Vixen.Sys {
 		/// </summary>
 		/// <param name="template"></param>
 		static public void CommitTemplate(IFileTemplate template) {
-			FileTemplateModuleManagement manager = Server.Internal.GetModuleManager<IFileTemplateModuleInstance, FileTemplateModuleManagement>();
+			FileTemplateModuleManagement manager = VixenSystem.Internal.GetModuleManager<IFileTemplateModuleInstance, FileTemplateModuleManagement>();
 			manager.SaveTemplateData(template as IFileTemplateModuleInstance);
 		}
 

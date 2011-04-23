@@ -15,7 +15,8 @@ namespace Vixen.Module.Sequence {
 	/// Base class for script sequence type module implementations.
 	/// </summary>
 	[Executor(typeof(ScriptSequenceExecutor))]
-    abstract public class ScriptSequenceBase : Sequence<ScriptSequenceReader, ScriptSequenceWriter, ScriptSequenceBase>, ISequenceModuleInstance {
+	//abstract public class ScriptSequenceBase : Sequence<ScriptSequenceReader, ScriptSequenceWriter, ScriptSequenceBase>, ISequenceModuleInstance {
+    abstract public class ScriptSequenceBase : Sequence {
 		private const string DIRECTORY_NAME = "Sequence";
         private const string SOURCE_DIRECTORY_NAME = "ScriptSource";
 		private const string NEW_FILE_ROOT = "NewFile";
@@ -47,17 +48,18 @@ namespace Vixen.Module.Sequence {
 			//sourceFile.Contents = userScript.TransformText();
 
 			// Required assembly references.
-			ExternalAssemblies.Add(Server.AssemblyFileName);
+			ExternalAssemblies.Add(VixenSystem.AssemblyFileName);
 			ExternalAssemblies.Add(CommandStandard.Standard.AssemblyFileName);
 			FrameworkAssemblies.Add("System.dll");
 			FrameworkAssemblies.Add("System.Core.dll");
 
-			//*** TESTING ***
-			OutputChannel channel = new OutputChannel(true) { Name = "Channel 1" };
-			channel.Patch.Add(new Guid("{871b3155-29e3-4a9e-861b-d3cc7895bffc}"), 0);
-			Fixture fixture = new Fixture();
-			fixture.InsertChannel(channel);
-			this.InsertFixture(fixture);
+			////*** TESTING ***
+			////OutputChannel channel = new OutputChannel(true) { Name = "Channel 1" };
+			//OutputChannel channel = new OutputChannel() { Name = "Channel 1" };
+			//channel.Patch.Add(new Guid("{871b3155-29e3-4a9e-861b-d3cc7895bffc}"), 0);
+			//Fixture fixture = new Fixture();
+			//fixture.InsertChannel(channel);
+			//this.InsertFixture(fixture);
 		}
 
 		override protected string Directory {

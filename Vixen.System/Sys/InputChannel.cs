@@ -5,15 +5,11 @@ using System.Text;
 using Vixen.Common;
 
 namespace Vixen.Sys {
-	public class InputChannel : Channel, IEnumerable<CommandNode> {
+	public class InputChannel : Channel , IEnumerable<CommandNode> {
 		private List<CommandNode> _data = new List<CommandNode>();
 
-		public InputChannel()
-			: base() {
-		}
-
-		public InputChannel(bool createId)
-			: base(createId) {
+		public InputChannel(string name)
+			: base(name) {
 		}
 
 		public IEnumerator<CommandNode> GetEnumerator() {

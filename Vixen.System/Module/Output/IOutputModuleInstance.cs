@@ -5,6 +5,6 @@ using System.Text;
 using Vixen.Hardware;
 
 namespace Vixen.Module.Output {
-	public interface IOutputModuleInstance : IOutput, IControllerHardwareModule {
+	public interface IOutputModuleInstance : IOutput, IHardwareModule {
     }
 }

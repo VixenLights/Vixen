@@ -6,12 +6,12 @@ using Vixen.Common;
 
 namespace Vixen.Sys {
 	public class Interval {
-		public Interval(int time) {
+		public Interval(long time) {
 			Time = time;
 		}
 
 		// Has to be settable so that it can be adjusted.
-		public int Time { get; set; }
+		public long Time { get; set; }
 
 		public override string ToString() {
 			return Time.ToString();
@@ -23,7 +23,7 @@ namespace Vixen.Sys {
 			}
 
 			public int GetHashCode(Interval obj) {
-				return obj.Time;
+				return obj.Time.GetHashCode();
 			}
 		}
 	}

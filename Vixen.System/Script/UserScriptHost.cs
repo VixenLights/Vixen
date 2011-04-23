@@ -15,11 +15,13 @@ namespace Vixen.Script {
 		public event EventHandler<ExecutorMessageEventArgs> Error;
 		public event EventHandler Ended;
 
-		virtual public ScriptSequenceBase Sequence { get; set; }
+		virtual public ScriptSequence Sequence { get; set; }
 
 		public void Start() {
 			if(_thread == null) {
 				_thread = new Thread(_PlayThread);
+				// Do NOT.
+				//_thread.IsBackground = true;
 				_thread.Start();
 			}
 		}

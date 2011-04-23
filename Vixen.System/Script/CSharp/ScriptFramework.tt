@@ -3,6 +3,7 @@
 <#@ import namespace="Vixen.Sys" #>
 <#@ import namespace="Vixen.Module.Effect" #>
 <#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections.Generic" #>
 <#@ assembly Name="System.Core" #>
 <#@ assembly Name="Microsoft.CSharp" #>
 using System;
@@ -19,28 +20,23 @@ using CommandStandard;
 
 namespace <#=Namespace#> {
 	public partial class <#=ClassName #> : UserScriptHost {
-		private UserScriptFixture[] _fixtures;
-		// Command name : command spec type id
-		private Dictionary<string, Guid> _commands = new Dictionary<string, Guid>();
+		private UserScriptNode[] _nodes;
+		// effect name : effect type id
+		private Dictionary<string, Guid> _effects = new Dictionary<string, Guid>();
 
 		public <#= ClassName #>() {
-			// Need to copy the command dictionary made in code, but in such a way that
-			// it can be built when this is executing..
+			_nodes = Vixen.Sys.Execution.Nodes.Select(x => new UserScriptNode(x)).ToArray();
 <#
-	//IEffectModuleInstance effect;
-	foreach(string commandName in _commands.Keys) {
-		//effect = _commands[commandName];
+	foreach(string effectName in _effects.Keys) {
 #>
-			_commands["<#=commandName#>"] = new Guid("<#=_commands[commandName].TypeId#>");
+			_effects["<#=effectName#>"] = new Guid("<#=_effects[effectName].TypeId#>");
 <# } #>		
 		}
 
-		override public ScriptSequenceBase Sequence { 
+		override public ScriptSequence Sequence { 
 			get { return base.Sequence; }
 			set {
 				base.Sequence = value;
-				_fixtures =
-					value.Fixtures.Select(x => new UserScriptFixture(x)).ToArray();
 			}
 		}
 
@@ -48,26 +44,28 @@ namespace <#=Namespace#> {
 		// Arg 1: int startTime
 		// Arg 2: int timeSpan
 		// Arg 3: Start of command-specific parameters
-		protected void _InvokeCommand(string commandName, params object[] args) {
+		//protected void _InvokeEffect(string effectName, params object[] args) {
+		protected void _InvokeEffect(string effectName, IEnumerable<UserScriptNode> targetNodes, long startTime, long timeSpan, params object[] args) {
 			Guid effectId;
-			if(_commands.TryGetValue(commandName, out effectId)) {
-				if(args.Length < 3) throw new ArgumentException("Invalid parameter count to invoke a command.");
-				// Argument 1: IEnumerable<UserScriptChannel>
-				IEnumerable<UserScriptChannel> channels = args[0] as IEnumerable<UserScriptChannel>;
-				if(channels == null) throw new ArgumentException("First parameter must be a channel collection.");
-				// Argument 2: int (start time)
-				int startTime = (int)args[1];
-				// Argument 3: int (time span)
-				int timeSpan = (int)args[2];
+			if(_effects.TryGetValue(effectName, out effectId)) {
+				//if(args.Length < 3) throw new ArgumentException("Invalid parameter count to invoke an effect.");
+				//// Argument 1: IEnumerable<UserScriptChannel>
+				//IEnumerable<UserScriptChannel> channels = args[0] as IEnumerable<UserScriptChannel>;
+				//if(channels == null) throw new ArgumentException("First parameter must be a channel collection.");
+				//// Argument 2: int (start time)
+				//int startTime = (int)args[1];
+				//// Argument 3: int (time span)
+				//int timeSpan = (int)args[2];
 				
-				Sequence.InsertData(channels.Select(x => x.Channel).ToArray() , startTime, timeSpan, new Command(effectId, args.Skip(3).ToArray()));
+				//Sequence.InsertData(channels.Select(x => x.Channel).ToArray() , startTime, timeSpan, new Command(effectId, args.Skip(3).ToArray()));
+				Sequence.InsertData(targetNodes.Select(x => x.Node).ToArray() , startTime, timeSpan, new Command(effectId, args.ToArray()));
 			}
 		}
 
 <#
-	foreach(string commandName in _commands.Keys) {
-		IEffectModuleInstance effect = _commands[commandName];
-		string commandParameters =
+	foreach(string effectName in _effects.Keys) {
+		IEffectModuleInstance effect = _effects[effectName];
+		string effectParameters =
 			string.Join(", ",
 			(from parameter in effect.Parameters
 			select parameter.ToString()).ToArray());
@@ -76,21 +74,24 @@ namespace <#=Namespace#> {
 			(from parameter in effect.Parameters
 			select parameter.Name).ToArray());
 #>
-		// Original name: <#=effect.CommandName#>
-		public void <#=commandName#>(IEnumerable<UserScriptChannel> channels, int startTime, int timeSpan, <#=commandParameters#>) {
-			_InvokeCommand("<#=commandName#>", channels, startTime, timeSpan, <#=parameterNames#>);
+		// Original name: <#=effect.EffectName#>
+		public void <#=effectName#>(IEnumerable<UserScriptNode> targetNodes, long startTime, long timeSpan, <#=effectParameters#>) {
+			_InvokeEffect("<#=effectName#>", targetNodes, startTime, timeSpan, <#=parameterNames#>);
 		}
 
-		public void <#=commandName#>(IEnumerable<UserScriptChannel> channels, int timeSpan, <#=commandParameters#>) {
-			_InvokeCommand("<#=commandName#>", channels, 0, timeSpan, <#=parameterNames#>);
+		public void <#=effectName#>(IEnumerable<UserScriptNode> targetNodes, long timeSpan, <#=effectParameters#>) {
+			_InvokeEffect("<#=effectName#>", targetNodes, 0, timeSpan, <#=parameterNames#>);
 		}
 
 <# } #>
-<# Fixture[] fixtures = _sequence.Fixtures.ToArray();
-	for(int i=0; i < fixtures.Length; i++) { #>
-		// Original name: <#=fixtures[i].Name#>
-		public dynamic <#= ScriptHostGenerator.Mangle(fixtures[i].Name)#> { 
-			get { return _fixtures[<#= i #>]; }
+<#
+	// This needs to match the node collection that the script created in its constructor.
+	ChannelNode[] nodes = Vixen.Sys.Execution.Nodes.ToArray();
+	List<string> usedNames = new List<string>();
+	for(int i=0; i < nodes.Length; i++) { #>
+		// Original name: <#=nodes[i].Name#>
+		public dynamic <#= ScriptHostGenerator.Fix(nodes[i].Name, usedNames)#> { 
+			get { return _nodes[<#= i #>]; }
 		}
 <# } #>
 	}

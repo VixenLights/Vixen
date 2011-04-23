@@ -4,20 +4,17 @@ using System.Linq;
 using System.Text;
 using Vixen.Common;
 using Vixen.Hardware;
-using Vixen.Sequence;
 using Vixen.Sys;
-using Vixen.Module.Sequence;
 
 namespace Vixen.Execution {
     class ProgramExecutor : IDisposable, IEnumerator<IExecutor> {
         private IEnumerator<IExecutor> _sequences;
         private IExecutor _executor;
-        private int _startTime, _endTime;
-        private int _currentSequenceStartTime, _currentSequenceEndTime;
-        private OutputController[] _controllers;
+		private long _startTime, _endTime;
+		private long _currentSequenceStartTime, _currentSequenceEndTime;
 
-        public const int START_ENTIRE_SEQUENCE = 0;
-        public const int END_ENTIRE_SEQUENCE = int.MaxValue;
+		public const long START_ENTIRE_SEQUENCE = 0;
+		public const long END_ENTIRE_SEQUENCE = long.MaxValue;
         public enum RunState { Stopped, Playing, Stopping };
 
         public event EventHandler ProgramStarted;
@@ -36,17 +33,9 @@ namespace Vixen.Execution {
 			get { return _startTime == START_ENTIRE_SEQUENCE && _endTime == END_ENTIRE_SEQUENCE; }
 		}
 
-        public void Play(int startTime, int endTime) {
+		public void Play(long startTime, long endTime) {
             if(this.Program == null) throw new Exception("No program has been specified");
             if(State == RunState.Stopped) {
-                // We are going to get a controller collection to force the reference count
-                // over 0 and keep it there while our sequences are executing to avoid having
-                // controllers shutdown and restart between sequences.
-                _controllers = OutputController.InitializeControllers(null, 0).ToArray();
-                // Starting the controllers creates the living reference.  Until then,
-                // they're not running so there's no need to know of the reference.
-				OutputController.ReferenceControllers(_controllers);
-
                 _startTime = startTime;
                 _endTime = endTime;
 				_sequences = this;
@@ -65,9 +54,6 @@ namespace Vixen.Execution {
         }
 
         private void _ProgramEnded() {
-            // Release our controller references.
-			OutputController.DereferenceControllers(_controllers);
-            _controllers = null;
             OnProgramEnded();
         }
 
@@ -141,10 +127,8 @@ namespace Vixen.Execution {
 
         private void _NextSequence(Action actionOnFail) {
             _executor = null;
-			// Not making use of _PlayAllSequences in here because that would keep
-			// the executor from being explicitly disposed by the enumerator.
 			try {
-				if(_sequences.MoveNext()) {
+				if(State != RunState.Stopping && _sequences.MoveNext()) {
 					_executor = _sequences.Current;
 					State = RunState.Playing;
 					_executor.Play(_currentSequenceStartTime, _currentSequenceEndTime);
@@ -185,7 +169,7 @@ namespace Vixen.Execution {
 		// This cannot be genericized because we need access to the event handlers
 		// inside this class.
 
-		private Queue<ISequenceModuleInstance> _sequenceQueue;
+		private Queue<ISequence> _sequenceQueue;
 		private IExecutor _cursor;
 
 		public IExecutor Current {
@@ -211,9 +195,10 @@ namespace Vixen.Execution {
 			// Anything left to play?
 			if(_sequenceQueue.Count > 0) {
 				// Get the sequence.
-				ISequenceModuleInstance sequence = _sequenceQueue.Dequeue();
+				ISequence sequence = _sequenceQueue.Dequeue();
 				// Get an executor for the sequence.
 				IExecutor sequenceExecutor = SequenceExecutor.GetExecutor(sequence);
+				if(sequenceExecutor == null) throw new InvalidOperationException("Sequence " + sequence.Name + " has no executor.");
 				
 				// Set the time span to be played.
 				_currentSequenceStartTime = Math.Max(0, _startTime);
@@ -235,10 +220,10 @@ namespace Vixen.Execution {
 			// be implemented.
 			if(this.Program != null) {
 				if(_PlayAllSequences) {
-					_sequenceQueue = new Queue<ISequenceModuleInstance>(this.Program.Sequences);
+					_sequenceQueue = new Queue<ISequence>(this.Program.Sequences);
 				} else {
-					_sequenceQueue = new Queue<ISequenceModuleInstance>();
-					ISequenceModuleInstance sequence = this.Program.Sequences.FirstOrDefault();
+					_sequenceQueue = new Queue<ISequence>();
+					ISequence sequence = this.Program.Sequences.FirstOrDefault();
 					if(sequence != null) {
 						_sequenceQueue.Enqueue(sequence);
 					}
@@ -256,7 +241,7 @@ namespace Vixen.Execution {
 		/// </summary>
 		/// <param name="sequence"></param>
 		/// <returns>The resulting length of the queue.  0 if it cannot be added.</returns>
-		public int Queue(ISequenceModuleInstance sequence) {
+		public int Queue(ISequence sequence) {
 			// _sequenceQueue will only be around if the program is being enumerated
 			// for execution.
 			if(_sequenceQueue != null) {

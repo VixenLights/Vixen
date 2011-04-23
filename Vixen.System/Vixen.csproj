@@ -105,10 +105,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\ITimed.cs" />
     <Compile Include="Common\LiveListEnumerator.cs" />
-    <Compile Include="Execution\EnumeratedCommandNodeList.cs" />
-    <Compile Include="Execution\ExecutorChannelEnumerator.cs" />
-    <Compile Include="Hardware\IControllerHardwareModule.cs" />
+    <Compile Include="Execution\ExecutorEffectEnumerator.cs" />
+    <Compile Include="IO\ChannelNodeDefinitionReader.cs" />
+    <Compile Include="IO\ChannelNodeDefinitionWriter.cs" />
+    <Compile Include="IO\IReader.cs" />
+    <Compile Include="IO\IWriter.cs" />
+    <Compile Include="IO\OutputControllerDefinitionReader.cs" />
+    <Compile Include="IO\OutputControllerDefinitionWriter.cs" />
+    <Compile Include="IO\OutputControllerReader.cs" />
+    <Compile Include="IO\OutputControllerWriter.cs" />
+    <Compile Include="Script\UserScriptNode.cs" />
+    <Compile Include="Script\VB\ScriptFramework.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ScriptFramework.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Sys\ChannelNode.cs" />
+    <Compile Include="Execution\IExecutionControl.cs" />
+    <Compile Include="Execution\ITimingProvider.cs" />
+    <Compile Include="Execution\MediaTimingProvider.cs" />
+    <Compile Include="Execution\SystemChannelEnumerator.cs" />
+    <Compile Include="Execution\TimedChannelEnumerator.cs" />
+    <Compile Include="Execution\TimingModuleTimingProvider.cs" />
+    <Compile Include="Execution\TimingProviders.cs" />
+    <Compile Include="Hardware\IOutputStateSource.cs" />
     <Compile Include="Module\Input\IInput.cs" />
     <Compile Include="Module\Input\IInputInput.cs" />
     <Compile Include="Module\Input\IInputModuleDescriptor.cs" />
@@ -120,6 +142,14 @@
     <Compile Include="Module\Input\InputModuleRepository.cs" />
     <Compile Include="Module\Input\InputType.cs" />
     <Compile Include="Module\Input\InputValueChangedEventArgs.cs" />
+    <Compile Include="Module\Media\IMedia.cs" />
+    <Compile Include="Module\Media\IMediaModuleDescriptor.cs" />
+    <Compile Include="Module\Media\IMediaModuleInstance.cs" />
+    <Compile Include="Module\Media\MediaModuleImplementation.cs" />
+    <Compile Include="Module\Media\MediaModuleManagement.cs" />
+    <Compile Include="Module\Media\MediaModuleRepository.cs" />
+    <Compile Include="Module\Media\MediaModuleType.cs" />
+    <Compile Include="Module\Timing\TimingModuleRepository.cs" />
     <Compile Include="Module\RuntimeBehavior\IRuntimeBehavior.cs" />
     <Compile Include="Module\RuntimeBehavior\IRuntimeBehaviorModuleDescriptor.cs" />
     <Compile Include="Module\RuntimeBehavior\IRuntimeBehaviorModuleInstance.cs" />
@@ -130,12 +160,16 @@
     <Compile Include="Module\Sequence\ISequence.cs" />
     <Compile Include="Module\Sequence\ISequenceModuleDescriptor.cs" />
     <Compile Include="Module\Sequence\ISequenceModuleInstance.cs" />
-    <Compile Include="Module\Sequence\ScriptSequenceBase.cs" />
-    <Compile Include="Module\Sequence\SequenceBase.cs" />
     <Compile Include="Module\Sequence\SequenceModuleImplementation.cs" />
     <Compile Include="Module\Sequence\SequenceModuleManagement.cs" />
     <Compile Include="Module\Sequence\SequenceModuleRepository.cs" />
     <Compile Include="Module\Sequence\SequenceModuleType.cs" />
+    <Compile Include="Module\Timing\ITiming.cs" />
+    <Compile Include="Module\Timing\ITimingModuleDescriptor.cs" />
+    <Compile Include="Module\Timing\ITimingModuleInstance.cs" />
+    <Compile Include="Module\Timing\TimingModuleImplementation.cs" />
+    <Compile Include="Module\Timing\TimingModuleManagement.cs" />
+    <Compile Include="Module\Timing\TimingModuleType.cs" />
     <Compile Include="Module\Trigger\TriggerBase.cs" />
     <Compile Include="Module\Trigger\TriggerSetEventArgs.cs" />
     <Compile Include="Script\CSharp\CodeProviderWrapper.cs" />
@@ -146,16 +180,8 @@
     <Compile Include="Script\IUserScriptHost.cs" />
     <Compile Include="Script\Registration.cs" />
     <Compile Include="Script\ScriptTypeImplementation.cs" />
-    <Compile Include="Script\UserScriptChannel.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Script\VB\CodeProviderWrapper.cs" />
     <Compile Include="Script\VB\Implementation.cs" />
-    <Compile Include="Script\VB\ScriptFramework.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ScriptFramework.tt</DependentUpon>
-    </Compile>
     <Compile Include="Script\VB\ScriptFrameworkCode.cs" />
     <Compile Include="Script\VB\Skeleton.cs">
       <DependentUpon>Skeleton.tt</DependentUpon>
@@ -163,8 +189,10 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Script\VB\SkeletonCode.cs" />
-    <Compile Include="Sequence\SequenceBuffer.cs" />
-    <Compile Include="Sequence\SequenceStartedEventArgs.cs">
+    <Compile Include="Sys\ChannelNodeDefinition.cs" />
+    <Compile Include="Sys\GroupNode.cs" />
+    <Compile Include="Sys\ScriptSequence.cs" />
+    <Compile Include="Sys\SequenceStartedEventArgs.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Sys\Command.cs" />
@@ -174,8 +202,6 @@
     <Compile Include="Sys\DebugLog.cs" />
     <Compile Include="Sys\DelegateFactory.cs" />
     <Compile Include="Sys\ErrorLog.cs" />
-    <Compile Include="Sys\FixtureDataMover.cs" />
-    <Compile Include="Sys\FixtureDefinition.cs" />
     <Compile Include="Module\IModuleManagement.cs" />
     <Compile Include="Module\IModuleRepository.cs" />
     <Compile Include="Module\IModuleLoadNotification.cs" />
@@ -232,8 +258,8 @@
     <Compile Include="Sys\LogEventArgs.cs" />
     <Compile Include="Sys\Logging.cs" />
     <Compile Include="Sys\LogItemEventArgs.cs" />
+    <Compile Include="Sys\MediaCollection.cs" />
     <Compile Include="Sys\OutputChannel.cs" />
-    <Compile Include="Sys\ProfileDefinition.cs" />
     <Compile Include="Module\UnusedModuleManagement.cs" />
     <Compile Include="Module\UnusedModuleRepository.cs" />
     <Compile Include="Module\UnusedModuleType.cs" />
@@ -258,7 +284,6 @@
     <Compile Include="Common\Definition.cs" />
     <Compile Include="Sys\Interval.cs" />
     <Compile Include="Sys\IntervalCollection.cs" />
-    <Compile Include="Sys\IFixtureContainer.cs" />
     <Compile Include="Module\IModuleDataContainer.cs" />
     <Compile Include="Sys\ITypedDataMover.cs" />
     <Compile Include="Script\CSharp\Skeleton.cs">
@@ -268,7 +293,6 @@
     </Compile>
     <Compile Include="Script\UserScriptHost.cs" />
     <Compile Include="Script\CSharp\SkeletonCode.cs" />
-    <Compile Include="Script\UserScriptFixture.cs" />
     <Compile Include="Script\ScriptHostGenerator.cs" />
     <Compile Include="Execution\ScriptSequenceExecutor.cs" />
     <Compile Include="Execution\SequenceExecutor.cs" />
@@ -278,6 +302,8 @@
     <Compile Include="Module\Trigger\TriggerInput.cs" />
     <Compile Include="Sys\Sequence.cs" />
     <Compile Include="Script\SourceFile.cs" />
+    <Compile Include="Sys\SystemClock.cs" />
+    <Compile Include="Execution\NodeManager.cs" />
     <Compile Include="Sys\UserData.cs" />
     <Compile Include="Sys\ApplicationServices.cs" />
     <Compile Include="Sys\Channel.cs" />
@@ -288,9 +314,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Common\CommandData.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Common\ControllerOutputUpdate.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Common\ControllerReference.cs">
@@ -338,7 +361,7 @@
     <Compile Include="Module\EffectEditor\IEffectEditorControl.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Sequence\ISequence.cs">
+    <Compile Include="Sys\ISequence.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Execution\IExecutor.cs">
@@ -357,28 +380,13 @@
     <Compile Include="Module\IModuleInstance.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="IO\ISequenceReader.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IO\ISequenceWriter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Common\ITimingSource.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Common\ITimingSourceFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Module\Trigger\ITriggerInput.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="IO\ChannelReader.cs" />
-    <Compile Include="IO\ChannelWriter.cs" />
     <Compile Include="Hardware\OutputController.cs" />
-    <Compile Include="Hardware\OutputControllerBuffer.cs" />
     <Compile Include="Hardware\OutputControllerDefinition.cs" />
     <Compile Include="Sys\Execution.cs" />
-    <Compile Include="Execution\ExecutionContext.cs" />
+    <Compile Include="Execution\ProgramContext.cs" />
     <Compile Include="Module\App\IApp.cs" />
     <Compile Include="Module\App\IAppModuleDescriptor.cs" />
     <Compile Include="Module\App\IAppModuleInstance.cs" />
@@ -389,9 +397,6 @@
     <Compile Include="Module\EffectEditor\IEffectEditorModuleDescriptor.cs" />
     <Compile Include="Module\EffectEditor\IEffectEditorModuleInstance.cs" />
     <Compile Include="Module\CommandStandardExtension\ICommandStandardExtensionModuleDescriptor.cs" />
-    <Compile Include="Sys\Fixture.cs" />
-    <Compile Include="IO\FixtureReader.cs" />
-    <Compile Include="IO\FixtureWriter.cs" />
     <Compile Include="Module\EffectEditor\IEffectEditor.cs" />
     <Compile Include="Module\CommandStandardExtension\ICommandStandardExtensionModuleInstance.cs" />
     <Compile Include="Module\Output\IOutput.cs" />
@@ -406,11 +411,9 @@
     <Compile Include="Sys\Modules.cs" />
     <Compile Include="Sys\Patch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="IO\ScriptSequenceReader.cs" />
-    <Compile Include="IO\ScriptSequenceWriter.cs" />
     <Compile Include="IO\SequenceReader.cs" />
     <Compile Include="IO\SequenceWriter.cs" />
-    <Compile Include="Sys\Server.cs" />
+    <Compile Include="Sys\VixenSystem.cs" />
     <Compile Include="Sys\Standard.cs" />
     <Compile Include="Script\CSharp\ScriptFramework.cs">
       <AutoGen>True</AutoGen>
@@ -463,6 +466,9 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="IO\What goes in IO.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

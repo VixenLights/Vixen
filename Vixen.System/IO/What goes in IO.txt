@@ -1,0 +1,2 @@
+﻿Readers/writers for objects that are wholly serialized to files.  Or, in other words,
+readers and writers for serialized object files.

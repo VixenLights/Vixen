@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Common;
-using Vixen.Sequence;
-using Vixen.Module.Sequence;
+using Vixen.Sys;
 
 namespace Vixen.Execution
 {
@@ -15,8 +14,8 @@ namespace Vixen.Execution
 		event EventHandler<ExecutorMessageEventArgs> Message;
 		event EventHandler<ExecutorMessageEventArgs> Error;
 
-		ISequenceModuleInstance Sequence { get; set; }
-		void Play(int startTime, int endTime);
+		ISequence Sequence { get; set; }
+		void Play(long startTime, long endTime);
 		void Pause();
 		void Resume();
 		void Stop();

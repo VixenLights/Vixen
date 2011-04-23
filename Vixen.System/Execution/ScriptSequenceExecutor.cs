@@ -8,19 +8,16 @@ using Vixen.Common;
 using Vixen.Sys;
 using Vixen.IO;
 using Vixen.Script;
-using System.Reflection;
-using Vixen.Sequence;
-using Vixen.Module.Sequence;
 
 namespace Vixen.Execution {
     class ScriptSequenceExecutor : SequenceExecutor {
 		private IUserScriptHost _scriptHost;
 
-		protected override void OnPlaying(int startTime, int endTime) {
+		protected override void OnPlaying(long startTime, long endTime) {
 			base.OnPlaying(startTime, endTime);
 
 			ScriptHostGenerator hostGenerator = new ScriptHostGenerator();
-			_scriptHost = hostGenerator.GenerateScript(this.Sequence as ScriptSequenceBase);
+			_scriptHost = hostGenerator.GenerateScript(this.Sequence as ScriptSequence);
 			string[] errors = hostGenerator.Errors.ToArray();
 			OnMessage(new ExecutorMessageEventArgs(string.Join(Environment.NewLine, errors)));
 			// An end time < start time means compile only.
@@ -47,13 +44,6 @@ namespace Vixen.Execution {
             base.OnStopping();
 			// May be the result of a natural end we caused or the user forcing a stop.
 			_StopScript();
-			// The script's job was to generate data for the channels.  That data remains
-			// in the channel and needs to be purged.
-			foreach(Fixture fixture in Sequence.Fixtures) {
-				foreach(Channel channel in fixture.Channels) {
-					channel.Clear();
-				}
-			}
         }
 
         public override void Dispose(bool disposing) {

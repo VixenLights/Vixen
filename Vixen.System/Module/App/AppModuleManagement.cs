@@ -7,7 +7,7 @@ using Vixen.Sys;
 namespace Vixen.Module.App {
 	class AppModuleManagement : IModuleManagement<IAppModuleInstance> {
 		public IAppModuleInstance Get(Guid id) {
-			return Server.ModuleRepository.GetApp(id);
+			return VixenSystem.ModuleRepository.GetApp(id);
 		}
 
 		object IModuleManagement.Get(Guid id) {
@@ -15,7 +15,7 @@ namespace Vixen.Module.App {
 		}
 
 		public IAppModuleInstance[] GetAll() {
-			return Server.ModuleRepository.GetAllApp();
+			return VixenSystem.ModuleRepository.GetAllApp();
 		}
 
 		object[] IModuleManagement.GetAll() {

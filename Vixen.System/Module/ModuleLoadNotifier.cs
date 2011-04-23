@@ -17,7 +17,7 @@ namespace Vixen.Module {
 			MethodInfo mi;
 			foreach(ModuleImplementation moduleImplementation in moduleImplementations) {
 				//Specific reflection, really fragile, dammit.
-				obj = moduleImplementation.GetType().GetProperty("LoadNotifier").GetValue(moduleImplementation, null);
+				obj = moduleImplementation.GetType().GetProperty("ModuleTypeLoader").GetValue(moduleImplementation, null);
 				mi = obj.GetType().GetMethod("ModuleLoaded");
 				_methods.Add(moduleImplementation.ModuleTypeName + "ModuleLoaded", new ModuleImplementationMethod<LateBoundProcedure>(mi, obj));
 				mi = obj.GetType().GetMethod("ModuleUnloading");

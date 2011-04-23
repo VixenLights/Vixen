@@ -3,35 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using CommandStandard.Types;
 
 namespace CommandStandard {
-    static public class Standard {
+	static public class Standard {
 		public const byte CustomCategory = 0xFF;
 
 		static public string AssemblyFileName {
 			get { return Assembly.GetExecutingAssembly().Location; }
 		}
 
-		static private bool _IsPlatform(Type type)
-		{
+		#region Private methods
+		static private bool _IsPlatform(Type type) {
 			return (type != null) ? type.HasAttribute(typeof(PlatformAttribute)) : false;
 		}
 
-		static private bool _IsCategory(Type type)
-		{
+		static private bool _IsCategory(Type type) {
 			return (type != null) ? type.HasAttribute(typeof(CategoryAttribute)) : false;
 		}
 
-		static private bool _IsCommand(Type type)
-		{
+		static private bool _IsCommand(Type type) {
 			return (type != null) ? type.HasAttribute(typeof(CommandAttribute)) : false;
 		}
 
-		static private string _GetCommandId(Type commandType)
-		{
+		static private string _GetCommandId(Type commandType) {
 			// Construct by climbing the parental hierarchy
-			if(_IsCommand(commandType))
-			{
+			if(_IsCommand(commandType)) {
 				Type categoryType = _GetCategory(commandType);
 				Type platformType = _GetPlatform(categoryType);
 				return CommandIdentifier.FormatCommandIdentifierString(
@@ -43,76 +40,65 @@ namespace CommandStandard {
 			return string.Empty;
 		}
 
-        static private Type _FindPlatform(byte platform) {
-            Type type = typeof(Standard).FindAttributedTypes(typeof(PlatformAttribute)).FirstOrDefault(x => x.HasFieldOfType<byte>(typeof(ValueAttribute), platform));
-            if(type == null) throw new InvalidOperationException("Invalid platform value.");
-            return type;
-        }
+		static private Type _FindPlatform(byte platform) {
+			Type type = typeof(Standard).FindAttributedTypes(typeof(PlatformAttribute)).FirstOrDefault(x => x.HasFieldOfType<byte>(typeof(ValueAttribute), platform));
+			if(type == null) throw new InvalidOperationException("Invalid platform value.");
+			return type;
+		}
 
-        static private Type _FindCategory(Type platformType, byte category) {
-            Type type = platformType.FindAttributedTypes(typeof(CategoryAttribute)).FirstOrDefault(x => x.HasFieldOfType<byte>(typeof(ValueAttribute), category));
-            if(type == null) throw new InvalidOperationException("Invalid category value.");
-            return type;
-        }
+		static private Type _FindCategory(Type platformType, byte category) {
+			Type type = platformType.FindAttributedTypes(typeof(CategoryAttribute)).FirstOrDefault(x => x.HasFieldOfType<byte>(typeof(ValueAttribute), category));
+			if(type == null) throw new InvalidOperationException("Invalid category value.");
+			return type;
+		}
 
-        static private Type _FindCommand(Type categoryType, byte index) {
-            Type type = categoryType.FindAttributedTypes(typeof(CommandAttribute)).FirstOrDefault(x => x.HasFieldOfType<byte>(typeof(ValueAttribute), index));
-            if(type == null) throw new InvalidOperationException("Invalid command value.");
-            return type;
-        }
+		static private Type _FindCommand(Type categoryType, byte index) {
+			Type type = categoryType.FindAttributedTypes(typeof(CommandAttribute)).FirstOrDefault(x => x.HasFieldOfType<byte>(typeof(ValueAttribute), index));
+			if(type == null) throw new InvalidOperationException("Invalid command value.");
+			return type;
+		}
 
-        static private byte _GetValue(Type standardClassType) {
-            return (byte)standardClassType.GetField("Value").GetValue(null);
-        }
+		static private byte _GetValue(Type standardClassType) {
+			return (byte)standardClassType.GetField("Value").GetValue(null);
+		}
 
-        static private byte _GetPlatformValue(Type platformType)
-		{
-			if(_IsPlatform(platformType))
-			{
+		static private byte _GetPlatformValue(Type platformType) {
+			if(_IsPlatform(platformType)) {
 				return (byte)platformType.GetField("Value").GetValue(null);
 			}
 			return 0;
 		}
 
-		static private byte _GetCategoryValue(Type categoryType)
-		{
-			if(_IsCategory(categoryType))
-			{
+		static private byte _GetCategoryValue(Type categoryType) {
+			if(_IsCategory(categoryType)) {
 				return (byte)categoryType.GetField("Value").GetValue(null);
 			}
 			return 0;
 		}
 
-		static private byte _GetCommandValue(Type commandType)
-		{
-			if(_IsCommand(commandType))
-			{
+		static private byte _GetCommandValue(Type commandType) {
+			if(_IsCommand(commandType)) {
 				return (byte)commandType.GetField("Value").GetValue(null);
 			}
 			return 0;
 		}
 
-		static private Type[] _GetPlatformCategories(Type platformType)
-		{
-			if(_IsPlatform(platformType))
-			{
+		static private Type[] _GetPlatformCategories(Type platformType) {
+			if(_IsPlatform(platformType)) {
 				return platformType.FindAttributedTypes(typeof(CategoryAttribute)).ToArray();
 			}
 			return null;
 		}
 
 		static private Type[] _GetCategoryCommands(Type categoryType) {
-			if(_IsCategory(categoryType))
-			{
+			if(_IsCategory(categoryType)) {
 				return categoryType.FindAttributedTypes(typeof(CommandAttribute)).ToArray();
 			}
 			return null;
 		}
 
-		static private CommandParameterSpecification[] _GetCommandParameters(Type commandType)
-		{
-			if(_IsCommand(commandType))
-			{
+		static private CommandParameterSpecification[] _GetCommandParameters(Type commandType) {
+			if(_IsCommand(commandType)) {
 				object value = null;
 				CommandParameterSignature parameters =
 					(from fi in commandType.GetFields(BindingFlags.Static | BindingFlags.Public)
@@ -126,20 +112,17 @@ namespace CommandStandard {
 			return null;
 		}
 
-		static private Type _GetCategory(Type commandType)
-		{
+		static private Type _GetCategory(Type commandType) {
 			Type declaringType = commandType.DeclaringType;
 			return _IsCategory(declaringType) ? declaringType : null;
 		}
 
-		static private Type _GetPlatform(Type categoryType)
-		{
+		static private Type _GetPlatform(Type categoryType) {
 			Type declaringType = categoryType.DeclaringType;
 			return _IsPlatform(declaringType) ? declaringType : null;
 		}
 
-		static private CommandSignature _GetCommandSignature(Type commandType)
-		{
+		static private CommandSignature _GetCommandSignature(Type commandType) {
 			// Name
 			string name = commandType.Name;
 
@@ -155,68 +138,63 @@ namespace CommandStandard {
 
 			return new CommandSignature(name, platformValue, categoryValue, commandValue, parameters);
 		}
+		#endregion
 
+		#region Public methods
+		static public IEnumerable<byte> GetPlatformValues() {
+			return
+				(from platformType in typeof(Standard).FindAttributedTypes(typeof(PlatformAttribute))
+				 select _GetValue(platformType));
+		}
 
+		static public IEnumerable<byte> GetCategoryValues(byte platformValue) {
+			Type platformType = _FindPlatform(platformValue);
+			return
+				(from categoryType in platformType.FindAttributedTypes(typeof(CategoryAttribute))
+				 select _GetValue(categoryType));
+		}
 
-
-
-        static public IEnumerable<byte> GetPlatformValues() {
-            return
-                (from platformType in typeof(Standard).FindAttributedTypes(typeof(PlatformAttribute))
-                 select _GetValue(platformType));
-        }
-
-        static public IEnumerable<byte> GetCategoryValues(byte platformValue) {
-            Type platformType = _FindPlatform(platformValue);
-            return
-                (from categoryType in platformType.FindAttributedTypes(typeof(CategoryAttribute))
-                 select _GetValue(categoryType));
-        }
-
-        static public IEnumerable<byte> GetCommandValues(byte platformValue, byte categoryValue) {
-            Type platformType = _FindPlatform(platformValue);
-            Type categoryType = _FindCategory(platformType, categoryValue);
-            return
+		static public IEnumerable<byte> GetCommandValues(byte platformValue, byte categoryValue) {
+			Type platformType = _FindPlatform(platformValue);
+			Type categoryType = _FindCategory(platformType, categoryValue);
+			return
 				(from commandType in categoryType.FindAttributedTypes(typeof(CommandAttribute))
-                 select _GetValue(commandType));
-        }
+				 select _GetValue(commandType));
+		}
 
-		static public CommandSignature[] GetCommandSignatures(byte platformValue, byte categoryValue)
-		{
+		static public CommandSignature[] GetCommandSignatures(byte platformValue, byte categoryValue) {
 			Type platformType;
 			Type categoryType;
 
-			if((platformType = _FindPlatform(platformValue)) != null)
-			{
-				if((categoryType = _FindCategory(platformType, categoryValue)) != null)
-				{
+			if((platformType = _FindPlatform(platformValue)) != null) {
+				if((categoryType = _FindCategory(platformType, categoryValue)) != null) {
 					return _GetCategoryCommands(categoryType).Select(x => _GetCommandSignature(x)).ToArray();
 				}
 			}
 			return null;
 		}
 
-        static public CommandSignature GetCommandSignature(byte platformValue, byte categoryValue, byte commandValue) {
-            string name = null;
-            CommandParameterSpecification[] parameters = null;
+		static public CommandSignature GetCommandSignature(byte platformValue, byte categoryValue, byte commandValue) {
+			string name = null;
+			CommandParameterSpecification[] parameters = null;
 
-            Type platformType;
-            Type categoryType;
-            Type commandType;
+			Type platformType;
+			Type categoryType;
+			Type commandType;
 
-            if((platformType = _FindPlatform(platformValue)) != null) {
-                if((categoryType = _FindCategory(platformType, categoryValue)) != null) {
-                    if((commandType = _FindCommand(categoryType, commandValue)) != null) {
-                        name = commandType.Name;
+			if((platformType = _FindPlatform(platformValue)) != null) {
+				if((categoryType = _FindCategory(platformType, categoryValue)) != null) {
+					if((commandType = _FindCommand(categoryType, commandValue)) != null) {
+						name = commandType.Name;
 						parameters = _GetCommandParameters(commandType);
-                    } else {
-                        return null;
-                    }
-                }
-            }
+					} else {
+						return null;
+					}
+				}
+			}
 
-            return new CommandSignature(name, platformValue, categoryValue, commandValue, parameters);
-        }
+			return new CommandSignature(name, platformValue, categoryValue, commandValue, parameters);
+		}
 
 		static public string GetPlatformName(byte platformValue) {
 			return _FindPlatform(platformValue).Name;
@@ -230,42 +208,114 @@ namespace CommandStandard {
 			return _FindCommand(_FindCategory(_FindPlatform(platformValue), categoryValue), commandIndex).Name;
 		}
 
+		public enum CombinationOperation {
+			HighestWins,
+			LowestWins,
+			Average,
+			AND,
+			OR,
+			XOR,
+			NAND,
+			NOR,
+			XNOR
+		}
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="command"></param>
+		/// <param name="leftParams"></param>
+		/// <param name="rightParams"></param>
+		/// <returns>Parameters for the combined value.</returns>
+		static public object[] Combine(CommandIdentifier command, object[] leftParams, object[] rightParams, CombinationOperation op = CombinationOperation.HighestWins) {
+			// Account for null command, which means it has no effect.
+			if(command == null) return leftParams;
 
+			switch(command.Platform) {
+				case Lighting.Value:
+					switch(command.Category) {
+						case Lighting.Monochrome.Value:
+							switch(command.CommandIndex) {
+								case Lighting.Monochrome.SetLevel.Value:
+									if(leftParams == null || leftParams.Length == 0) return rightParams;
+									if(rightParams == null || rightParams.Length == 0) return leftParams;
+									double leftLevel = (Level)leftParams[0];
+									double rightLevel = (Level)rightParams[0];
+									switch(op) {
+										case CombinationOperation.HighestWins:
+											return new object[] { Math.Max(leftLevel, rightLevel) };
+										case CombinationOperation.LowestWins:
+											return new object[] { Math.Min(leftLevel, rightLevel) };
+										case CombinationOperation.Average:
+											return new object[] { (leftLevel + rightLevel) / 2 };
+										case CombinationOperation.AND:
+											return new object[] { ((int)leftLevel & (int)rightLevel) };
+										case CombinationOperation.NAND:
+											return new object[] { ~((int)leftLevel & (int)rightLevel) };
+										case CombinationOperation.OR:
+											return new object[] { ((int)leftLevel | (int)rightLevel) };
+										case CombinationOperation.NOR:
+											return new object[] { ~((int)leftLevel | (int)rightLevel) };
+										case CombinationOperation.XOR:
+											return new object[] { ((int)leftLevel ^ (int)rightLevel) };
+										case CombinationOperation.XNOR:
+											return new object[] { ~((int)leftLevel ^ (int)rightLevel) };
+									}
+									break;
+							}
+							break;
+						case Lighting.Polychrome.Value:
+							switch(command.CommandIndex) {
+								case Lighting.Polychrome.SetColor.Value:
+									break;
+							}
+							break;
+					}
+					break;
+				case Media.Value:
+					break;
+				case Animatronics.Value:
+					break;
+				case Readerboard.Value:
+					break;
+			}
 
+			// Default to the left-hand parameters.
+			return leftParams;
+		}
+		#endregion
 
-        // ------------ Standard implementation ---------------
-        // All read-only fields, no callable methods //
+		#region Standard implementation
+		// All read-only fields, no callable methods //
 
-        // Category
-        [Platform]
-        static public class Lighting {
-            [Value]
-            public const byte Value = 0;
-            [Category]
-            static public class Monochrome {
-                [Value]
-                public const byte Value = 0;
-            
-                [Command]
-                static public class SetLevel {
-                    [Value]
-                    public const byte Value = 0;
-                    static public CommandParameterSignature Parameters =
-                        new CommandParameterSignature(new CommandParameterSpecification[] {
+		// Category
+		[Platform]
+		static public class Lighting {
+			[Value]
+			public const byte Value = 0;
+			[Category]
+			static public class Monochrome {
+				[Value]
+				public const byte Value = 0;
+
+				[Command]
+				static public class SetLevel {
+					[Value]
+					public const byte Value = 0;
+					static public CommandParameterSignature Parameters =
+						new CommandParameterSignature(new CommandParameterSpecification[] {
 							new CommandParameterSpecification("level", typeof(Types.Level))
 						});
 					static public string Id = _GetCommandId(typeof(SetLevel));
-                }
-            }
+				}
+			}
 
-            [Category]
-            static public class Polychrome {
-                [Value]
-                public const byte Value = 1;
+			[Category]
+			static public class Polychrome {
+				[Value]
+				public const byte Value = 1;
 
 				[Command]
-				static public class SetColor
-				{
+				static public class SetColor {
 					[Value]
 					public const byte Value = 0;
 					static public CommandParameterSignature Parameters =
@@ -276,31 +326,28 @@ namespace CommandStandard {
 				}
 			}
 
-            [Category]
-            static public class Custom {
-                [Value]
-                public const byte Value = CustomCategory;
-            }
+			[Category]
+			static public class Custom {
+				[Value]
+				public const byte Value = CustomCategory;
+			}
 
-        }
+		}
 
 		[Platform]
-		static public class Media
-		{
+		static public class Media {
 			[Value]
 			public const byte Value = 1;
 
 			[Category]
-			static public class Audio
-			{
+			static public class Audio {
 				[Value]
 				public const byte Value = 0;
 
-                // *Nothing that affects execution or positioning*
+				// *Nothing that affects execution or positioning*
 
 				[Command]
-				static public class FadeUp
-				{
+				static public class FadeUp {
 					[Value]
 					public const byte Value = 4;
 					static public CommandParameterSignature Parameters =
@@ -310,8 +357,7 @@ namespace CommandStandard {
 					static public string Id = _GetCommandId(typeof(FadeUp));
 				}
 				[Command]
-				static public class FadeDown
-				{
+				static public class FadeDown {
 					[Value]
 					public const byte Value = 5;
 					static public CommandParameterSignature Parameters =
@@ -321,8 +367,7 @@ namespace CommandStandard {
 					static public string Id = _GetCommandId(typeof(FadeDown));
 				}
 				[Command]
-				static public class SetVolume
-				{
+				static public class SetVolume {
 					[Value]
 					public const byte Value = 6;
 					static public CommandParameterSignature Parameters =
@@ -331,19 +376,17 @@ namespace CommandStandard {
 						});
 					static public string Id = _GetCommandId(typeof(SetVolume));
 				}
-            }
+			}
 
 			[Category]
-			static public class Video
-			{
+			static public class Video {
 				[Value]
 				public const byte Value = 1;
 
-                // *Nothing that affects execution or positioning*
-                
+				// *Nothing that affects execution or positioning*
+
 				[Command]
-				static public class FadeUp
-				{
+				static public class FadeUp {
 					[Value]
 					public const byte Value = 4;
 					static public CommandParameterSignature Parameters =
@@ -353,8 +396,7 @@ namespace CommandStandard {
 					static public string Id = _GetCommandId(typeof(FadeUp));
 				}
 				[Command]
-				static public class FadeDown
-				{
+				static public class FadeDown {
 					[Value]
 					public const byte Value = 5;
 					static public CommandParameterSignature Parameters =
@@ -372,37 +414,35 @@ namespace CommandStandard {
 			}
 		}
 
-        [Platform]
-        static public class Animatronics {
-            [Value]
-            public const byte Value = 2;
+		[Platform]
+		static public class Animatronics {
+			[Value]
+			public const byte Value = 2;
 
-            [Category]
-            static public class BasicPositioning {
-                [Value]
-                public const byte Value = 0;
+			[Category]
+			static public class BasicPositioning {
+				[Value]
+				public const byte Value = 0;
 
-                [Command]
-                static public class SetPosition {
-                    [Value]
-                    public const byte Value = 0;
-                    static public CommandParameterSignature Parameters =
+				[Command]
+				static public class SetPosition {
+					[Value]
+					public const byte Value = 0;
+					static public CommandParameterSignature Parameters =
 						new CommandParameterSignature(new CommandParameterSpecification[] {
 							new CommandParameterSpecification("position", typeof(Types.Position))
 						});
 					static public string Id = _GetCommandId(typeof(SetPosition));
-                }
-            }
+				}
+			}
 
 			[Category]
-			static public class TimedPositioning
-			{
+			static public class TimedPositioning {
 				[Value]
 				public const byte Value = 1;
 
 				[Command]
-				static public class SetPosition
-				{
+				static public class SetPosition {
 					[Value]
 					public const byte Value = 0;
 					static public CommandParameterSignature Parameters =
@@ -415,25 +455,24 @@ namespace CommandStandard {
 			}
 
 			[Category]
-            static public class Custom {
-                [Value]
-                public const byte Value = CustomCategory;
-            }
-        }
+			static public class Custom {
+				[Value]
+				public const byte Value = CustomCategory;
+			}
+		}
 
-        [Platform]
-        static public class Readerboard {
-            [Value]
-            public const byte Value = 3;
+		[Platform]
+		static public class Readerboard {
+			[Value]
+			public const byte Value = 3;
 
-            [Category]
-            static public class Text {
-                [Value]
-                public const byte Value = 0;
+			[Category]
+			static public class Text {
+				[Value]
+				public const byte Value = 0;
 
 				[Command]
-				static public class ScrollText
-				{
+				static public class ScrollText {
 					[Value]
 					public const byte Value = 0;
 					static public CommandParameterSignature Parameters =
@@ -445,24 +484,24 @@ namespace CommandStandard {
 						});
 					static public string Id = _GetCommandId(typeof(ScrollText));
 				}
-            }
+			}
 
 
 			[Category]
-			static public class Custom
-			{
+			static public class Custom {
 				[Value]
 				public const byte Value = CustomCategory;
 			}
-        }
-    }
+		}
+		#endregion
+	}
 
-    [AttributeUsage(AttributeTargets.Class)]
-    internal class PlatformAttribute : Attribute { }
-    [AttributeUsage(AttributeTargets.Class)]
-    internal class CategoryAttribute : Attribute { }
-    [AttributeUsage(AttributeTargets.Class)]
-    internal class CommandAttribute : Attribute { }
-    [AttributeUsage(AttributeTargets.Field)]
-    internal class ValueAttribute : Attribute { }
+	[AttributeUsage(AttributeTargets.Class)]
+	internal class PlatformAttribute : Attribute { }
+	[AttributeUsage(AttributeTargets.Class)]
+	internal class CategoryAttribute : Attribute { }
+	[AttributeUsage(AttributeTargets.Class)]
+	internal class CommandAttribute : Attribute { }
+	[AttributeUsage(AttributeTargets.Field)]
+	internal class ValueAttribute : Attribute { }
 }

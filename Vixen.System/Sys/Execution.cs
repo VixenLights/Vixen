@@ -4,42 +4,235 @@ using System.Linq;
 using System.Text;
 using Vixen.Hardware;
 using Vixen.Execution;
-using Vixen.Sequence;
-using Vixen.Module.Sequence;
+using System.Diagnostics;
+using Vixen.Common;
+using System.Threading;
 
 namespace Vixen.Sys {
-    public class Execution {
-        static private Dictionary<Guid, ExecutionContext> _contexts = new Dictionary<Guid, ExecutionContext>();
+	public class Execution {
+		static private Dictionary<Guid, ProgramContext> _contexts = new Dictionary<Guid, ProgramContext>();
+		static private SystemClock _systemTime = new SystemClock();
+		static private Thread _channelReadThread;
+		// Creating channels in here instead of VixenSystem so that the collection
+		// will be locally available for EffectRenderer instances.
+		static private Dictionary<OutputChannel, SystemChannelEnumerator> _channels = new Dictionary<OutputChannel, SystemChannelEnumerator>();
+		static private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
 
 		// These are system-level events.
 		static public event EventHandler ExecutionContextCreated;
 		static public event EventHandler ExecutionContextReleased;
+		static public event EventHandler NodesChanged {
+			add { Nodes.NodesChanged += value; }
+			remove { Nodes.NodesChanged -= value; }
+		}
 
-        static public ExecutionContext CreateContext(Program program) {
-            ExecutionContext context = new ExecutionContext(program);
-            _contexts[context.Id] = context;
+		private enum ExecutionState { Starting, Started, Stopping, Stopped };
+		static private volatile ExecutionState _state = ExecutionState.Stopped;
+
+		static Execution() {
+			// Load the controllers before creating the fixtures.
+			// Creating the fixtures will create channels which will create patches
+			// which will create sources for outputs that need to exist first.
+			OutputController.ReloadAll();
+			// Create the node manager.
+			Nodes = new NodeManager();
+			// Load channels.
+			foreach(OutputChannel channel in VixenSystem.UserData.LoadChannels()) {
+				_AddChannel(channel);
+			}
+			// Load branch nodes.
+			IEnumerable<ChannelNode> branchNodes = VixenSystem.UserData.LoadBranchNodes();
+			// Get the branch nodes into the node manager.
+			foreach(ChannelNode branchNode in branchNodes) {
+				Nodes.AddBranch(branchNode);
+			}
+		}
+
+		static public OutputChannel AddChannel(string channelName) {
+			channelName = _Uniquify(channelName);
+			OutputChannel channel = new OutputChannel(channelName);
+			_AddChannel(channel);
+			// Add a root node for the channel.
+			Nodes.AddChannelLeaf(channel);
+			return channel;
+		}
+
+		static private string _Uniquify(string name) {
+			if(_channels.Keys.Any(x => x.Name == name)) {
+				string originalName = name;
+				bool unique;
+				int counter = 2;
+				do {
+					name = originalName + "-" + counter++;
+					unique = !_channels.Keys.Any(x => x.Name == name);
+				} while(!unique);
+			}
+			return name;
+		}
+
+		static private void _AddChannel(OutputChannel channel) {
+			// Add to the channel dictionary.
+			_channels[channel] = null;
+			// Create an enumerator.
+			_SetChannelEnumerators(channel);
+		}
+
+		static public void RemoveChannel(OutputChannel channel) {
+			SystemChannelEnumerator enumerator;
+			if(_channels.TryGetValue(channel, out enumerator)) {
+				// Kill enumerator.
+				enumerator.Dispose();
+				// Remove from channel dictionary.
+				_channels.Remove(channel);
+				// Remove from nodes via node manager.
+				Nodes.RemoveChannelLeaf(channel);
+			}
+		}
+
+		static private void _SetChannelEnumerators(params OutputChannel[] channels) {
+			_SetChannelEnumerators(channels as IEnumerable<OutputChannel>);
+		}
+
+		static private void _SetChannelEnumerators(IEnumerable<OutputChannel> channels) {
+			foreach(OutputChannel channel in channels) {
+				_channels[channel] = new SystemChannelEnumerator(channel, _systemTime);
+			}
+		}
+
+		static private void _ResetChannelEnumerators() {
+			foreach(OutputChannel channel in Channels) {
+				_channels[channel].Dispose();
+				_channels[channel] = null;
+			}
+		}
+
+		static public IEnumerable<OutputChannel> Channels {
+			// The collection may be modified while they are iterating this collection,
+			// so return a copy.
+			get { return _channels.Keys.ToArray(); }
+		}
+
+		/// <summary>
+		/// Allows data to be executed.
+		/// </summary>
+		static public bool OpenExecution() {
+			if(_State == ExecutionState.Stopped) {
+				_State = ExecutionState.Starting;
+
+				// Open the channels.
+				_SetChannelEnumerators(Channels);
+
+				_systemTime.Start();
+				OutputController.StartAll();
+				_channelReadThread = new Thread(_ChannelReaderThread);
+				_channelReadThread.Start();
+				_State = ExecutionState.Started;
+				return true;
+			}
+			return false;
+		}
+
+		static public bool CloseExecution() {
+			if(_State == ExecutionState.Started) {
+				// Release all contexts.
+				// Releasing a context removes it from the collection, so
+				// enumerate a copy of the collection.
+				foreach(ProgramContext context in _contexts.Values.ToArray()) {
+					ReleaseContext(context);
+				}
+				// Stop reading from channels.
+				_State = ExecutionState.Stopping;
+				while(_State != ExecutionState.Stopped) { Thread.Sleep(1); }
+				_channelReadThread = null;
+				// Close the channels.
+				_ResetChannelEnumerators();
+				// Stop the controllers.
+				OutputController.StopAll();
+				// Stop internal timing.
+				_systemTime.Stop();
+				return true;
+			}
+			return false;
+		}
+
+		// Something went kaflooey with the threaded use of the _state variable,
+		// so it's been wrapped in the safe and fluffy blankets of this property.
+		static private ExecutionState _State {
+			get {
+				_lock.EnterReadLock();
+				try {
+					return _state;
+				} finally {
+					_lock.ExitReadLock();
+				}
+			}
+			set {
+				_lock.EnterWriteLock();
+				try {
+					_state = value;
+				} finally {
+					_lock.ExitWriteLock();
+				}
+			}
+		}
+
+		static private void _ChannelReaderThread() {
+			// Our mission:
+			// Read data from the channel enumerators and write to the channel patches.
+
+			while(_State != ExecutionState.Stopping) {
+				_UpdateChannelStates();
+				Thread.Sleep(1);
+			}
+			_State = ExecutionState.Stopped;
+		}
+
+		static private void _UpdateChannelStates() {
+			IEnumerator<CommandData> enumerator;
+			foreach(OutputChannel channel in Channels) {
+				enumerator = _channels[channel];
+				// Will return true if state has changed.
+				if(enumerator.MoveNext()) {
+					channel.Patch.Write(enumerator.Current);
+				}
+			}
+		}
+
+
+		static public ProgramContext CreateContext(Program program) {
+			ProgramContext context = new ProgramContext(program);
+			_contexts[context.Id] = context;
 			if(ExecutionContextCreated != null) {
 				ExecutionContextCreated(context, EventArgs.Empty);
 			}
-            
+
 			return context;
-        }
+		}
 
-        static public ExecutionContext CreateContext(ISequenceModuleInstance sequence) {
-            Program program = new Program(sequence.Name);
-            program.Add(sequence);
-            return CreateContext(program);
-        }
+		static public ProgramContext CreateContext(ISequence sequence) {
+			Program program = new Program(sequence.Name);
+			program.Add(sequence);
+			return CreateContext(program);
+		}
 
-        static public void ReleaseContext(ExecutionContext context) {
-            if(_contexts.ContainsKey(context.Id)) {
-                _contexts.Remove(context.Id);
-				if(ExecutionContextReleased != null) {
-					ExecutionContextReleased(context, EventArgs.Empty);
+		static public void ReleaseContext(ProgramContext context) {
+			// Double-check locking.
+			// Do we have the context?
+			// Great.  Lock.
+			// Do we still have the context?
+			// Okay, now we can release it.
+			if(_contexts.ContainsKey(context.Id)) {
+				lock(_contexts) {
+					if(_contexts.ContainsKey(context.Id)) {
+						_contexts.Remove(context.Id);
+						if(ExecutionContextReleased != null) {
+							ExecutionContextReleased(context, EventArgs.Empty);
+						}
+						context.Dispose();
+					}
 				}
-				context.Dispose();
-            }
-        }
+			}
+		}
 
 		/// <summary>
 		/// 
@@ -47,9 +240,9 @@ namespace Vixen.Sys {
 		/// <param name="sequence"></param>
 		/// <param name="contextName"></param>
 		/// <returns>The resulting length of the queue.  0 if it cannot be added.</returns>
-		static public int QueueSequence(ISequenceModuleInstance sequence, string contextName = null) {
+		static public int QueueSequence(ISequence sequence, string contextName = null) {
 			// Look for an execution context with that name.
-			ExecutionContext context = _contexts.Values.FirstOrDefault(x => x.Name.Equals(contextName, StringComparison.OrdinalIgnoreCase));
+			ProgramContext context = _contexts.Values.FirstOrDefault(x => x.Name.Equals(contextName, StringComparison.OrdinalIgnoreCase));
 			if(context != null) {
 				// Context already exists.  Add sequence to it.
 				// Can't just add the sequence to the program because it's executing and the
@@ -73,5 +266,90 @@ namespace Vixen.Sys {
 				return 0;
 			}
 		}
-    }
+
+		/// <summary>
+		/// Write data for immediate execution.
+		/// </summary>
+		/// <param name="state"></param>
+		static public void Write(IEnumerable<CommandNode> state) {
+			// Give the renderer a separate collection instance.
+			EffectRenderer renderer = new EffectRenderer(state.ToArray());
+			ThreadPool.QueueUserWorkItem((o) => renderer.Start());
+		}
+
+		static public NodeManager Nodes { get; private set; }
+
+		class EffectRenderer {
+			private long _timeStarted;
+			private Stack<CommandNode> _effects;
+			//*** to be user data
+			//-> and should be configurable during runtime
+			private int _intervalWidth = 50;
+			//*** to be user data, the offset to add to make live data more live
+			private int _syncDelta = 0;
+
+			public EffectRenderer(CommandNode[] state) {
+				_timeStarted = Execution._systemTime.Position;
+				_effects = new Stack<CommandNode>(state);
+			}
+
+			public void Start() {
+				CommandNode commandNode;
+				CommandData[][] data;
+				int channelIndex;
+				OutputChannel channel;
+				int intervalIndex;
+				CommandData dataItem;
+				long intervalTime = _systemTime.Position + _syncDelta;
+				OutputChannel[] targetChannels;
+
+				// Keep going while there is data to render and the system is running.
+				while(_effects.Count > 0 && _systemTime.IsRunning) {
+					commandNode = _effects.Pop();
+
+					if(commandNode.Command != null && commandNode.TargetNodes.Length > 0) {
+						// Get the channels that are to be affected by this effect.
+						// If they are targetting multiple nodes, the resulting channels
+						// will be treated as a single collection of channels.  There will be
+						// no differentiation between channels of different trees.
+						//targetChannels = commandNode.TargetNodes.SelectMany(x => Nodes.Resolve(x)).ToArray();
+						targetChannels = commandNode.TargetNodes.SelectMany(x => x).ToArray();
+						// Render the data.
+						// Need a collection of channels to render against, not nodes, so the
+						// effect can generate data for the ultimate channels.
+						data = commandNode.Command.Effect.Generate(targetChannels.Length, (int)(commandNode.TimeSpan / _intervalWidth), commandNode.Command.ParameterValues);
+						// Get it into the channels.
+						// Time is the priority, so iterate column-first.
+						// This also allows a complete state to be written across all affected channels sooner.
+						int channelCount = data.Length;
+						int intervalCount = data[0].Length;
+						for(intervalIndex = 0; intervalIndex < intervalCount; intervalIndex++) {
+							// Trying to get the whole state out atomically by having the
+							// write (this) and the reader (channel enumerator) lock on the
+							// channel.
+							foreach(OutputChannel targetChannel in targetChannels) {
+								Monitor.Enter(targetChannel);
+							}
+							for(channelIndex = 0; channelIndex < channelCount; channelIndex++) {
+								// Get the channel.
+								channel = targetChannels[channelIndex];
+								// Get the data destined for the channel at this time.
+								//dataItem = data[channelIndex][intervalIndex];
+								dataItem = data[channelIndex][intervalIndex] ?? CommandData.Empty;
+								channel.AddData(
+									new CommandData(intervalTime,
+										intervalTime + _intervalWidth,
+										dataItem.CommandIdentifier,
+										dataItem.ParameterValues));
+							}
+							intervalTime += _intervalWidth;
+							foreach(OutputChannel targetChannel in targetChannels) {
+								Monitor.Exit(targetChannel);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }

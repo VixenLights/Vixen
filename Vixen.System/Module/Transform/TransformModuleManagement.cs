@@ -22,7 +22,7 @@ namespace Vixen.Module.Transform {
 		}
 
 		public ITransformModuleInstance[] GetAll() {
-			return Server.ModuleRepository.GetAllTransform();
+			return VixenSystem.ModuleRepository.GetAllTransform();
 		}
 
 		object[] IModuleManagement.GetAll() {

@@ -24,9 +24,9 @@ namespace Vixen.Common {
 			return true;
 		}
 
-		static public XElement LoadXml(string fileName) {
-			if(File.Exists(fileName)) {
-				using(FileStream fileStream = new FileStream(fileName, FileMode.Open)) {
+		static public XElement LoadXml(string filePath) {
+			if(File.Exists(filePath)) {
+				using(FileStream fileStream = new FileStream(filePath, FileMode.Open)) {
 					using(StreamReader reader = new StreamReader(fileStream)) {
 						return XElement.Load(reader);
 					}

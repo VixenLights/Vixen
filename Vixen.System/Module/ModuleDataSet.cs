@@ -10,6 +10,8 @@ using Vixen.Sys;
 namespace Vixen.Module {
 	[DataContract]
     public class ModuleDataSet : IModuleDataSet {
+		// Type data     = (type id, type id)     : data model
+		// Instance data = (type id, instance id) : data model
 		private Dictionary<Tuple<Guid, Guid>, IModuleDataModel> _dataModels = new Dictionary<Tuple<Guid, Guid>, IModuleDataModel>();
 
 		private const string ROOT_ELEMENT = "ModuleDataSet";
@@ -196,8 +198,17 @@ namespace Vixen.Module {
 			return _dataModels.Keys.Select(x => x.Item1);
 		}
 
-		public IEnumerable<Tuple<Guid, Guid>> GetInstances() {
-			return _dataModels.Keys;
+		public IEnumerable<T> GetInstances<T>()
+			where T : class, IModuleInstance {
+			T instance;
+			foreach(Tuple<Guid, Guid> typeInstance in _dataModels.Keys) {
+				if(Modules.IsOfType(typeInstance.Item1, typeof(T))) {
+					instance = Modules.GetById(typeInstance.Item1) as T;
+					instance.InstanceId = typeInstance.Item2;
+					GetModuleInstanceData(instance);
+					yield return instance;
+				}
+			}
 		}
 
 		public IEnumerable<IModuleDataModel> GetData() {

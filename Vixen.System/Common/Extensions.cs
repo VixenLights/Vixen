@@ -67,5 +67,25 @@ namespace Vixen.Common
 				where type.GetCustomAttributes(attributeType, false).Length > 0
 				select type;
 		}
-    }
+
+		static public XElement GetXElement(this XmlNode node) {
+			XDocument xDoc = new XDocument();
+			using(XmlWriter xmlWriter = xDoc.CreateWriter())
+				node.WriteTo(xmlWriter);
+			return xDoc.Root;
+		}
+
+		static public XmlNode GetXmlNode(this XElement element) {
+			using(XmlReader xmlReader = element.CreateReader()) {
+				XmlDocument xmlDoc = new XmlDocument();
+				xmlDoc.Load(xmlReader);
+				return xmlDoc;
+			}
+		}
+
+		static public IEnumerable<T> AsEnumerable<T>(this T item) {
+			yield return item;
+		}
+
+	}
 }

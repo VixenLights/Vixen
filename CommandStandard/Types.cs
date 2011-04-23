@@ -36,6 +36,9 @@ namespace CommandStandard.Types {
 			return new Level(value);
 		}
 
+		public override string ToString() {
+			return _value.ToString();
+		}
 	}
 
 	public struct Time {
@@ -51,6 +54,10 @@ namespace CommandStandard.Types {
 
 		public static implicit operator Time(int value) {
 			return new Time(value);
+		}
+
+		public override string ToString() {
+			return _value.ToString();
 		}
 	}
 
@@ -68,6 +75,10 @@ namespace CommandStandard.Types {
 		public static implicit operator Color(int value) {
 			return new Color(value);
 		}
+
+		public override string ToString() {
+			return _value.ToString();
+		}
 	}
 
 	public struct Position {
@@ -84,6 +95,10 @@ namespace CommandStandard.Types {
 
 		public static implicit operator Position(double value) {
 			return new Position(value);
+		}
+
+		public override string ToString() {
+			return _value.ToString();
 		}
 	}
 

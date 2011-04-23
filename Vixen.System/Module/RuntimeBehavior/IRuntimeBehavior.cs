@@ -4,14 +4,13 @@ using System.Linq;
 using System.Text;
 using Vixen.Sys;
 using Vixen.Common;
-using Vixen.Module.Sequence;
+using Vixen.Module.Timing;
 
 namespace Vixen.Module.RuntimeBehavior {
 	public interface IRuntimeBehavior {
-		//void Initialize(ISequenceModuleInstance sequence, ITimingSource timingSource);
-		void Startup(ISequenceModuleInstance sequence, ITimingSource timingSource);
+		void Startup(ISequence sequence, ITiming timingSource);
 		void Shutdown();
-		IEnumerable<CommandNode> GenerateCommandNodes(InsertDataParameters parameters);
+		void Handle(CommandNode commandNode);
 		bool Enabled { get; set; }
 		Tuple<string, Action>[] BehaviorActions { get; }
 	}

@@ -2,32 +2,38 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Vixen.Common;
 
 namespace Vixen.Sys {
-	public class CommandNode {
-		private int _startTime;
-		private int _timeSpan;
+	public class CommandNode : ITimed {
+		private long _startTime;
+		private long _timeSpan;
 
-		public CommandNode(Command command, OutputChannel[] targetChannels, int startTime, int timeSpan) {
+		public CommandNode()
+			: this(null, null, 0, 0) {
+			// Default instance is empty.
+		}
+
+		public CommandNode(Command command, ChannelNode[] targetNodes, long startTime, long timeSpan) {
 			this.Command = command;
-			TargetChannels = targetChannels;
+			TargetNodes = targetNodes;
 			StartTime = startTime;
 			TimeSpan = timeSpan;
 		}
 
 		public Command Command { get; private set; }
-		
-		public OutputChannel[] TargetChannels { get; private set; }
+
+		public ChannelNode[] TargetNodes { get; private set; }
 
 		// These need to be writable to facilitate resyncing data to new intervals.
-		public int StartTime {
+		public long StartTime {
 			get { return _startTime; }
 			set {
 				_startTime = value;
 				EndTime = _startTime + _timeSpan;
 			}
 		}
-		public int TimeSpan {
+		public long TimeSpan {
 			get { return _timeSpan; }
 			set {
 				_timeSpan = value;
@@ -35,9 +41,13 @@ namespace Vixen.Sys {
 			}
 		}
 
-		public int EndTime { get; private set; }
+		public long EndTime { get; private set; }
 		
-		public bool IsRequired;
+		public bool IsEmpty {
+			get { return Command == null; }
+		}
+
+		static public readonly CommandNode Empty = new CommandNode();
 
 		public class Comparer : IComparer<CommandNode> {
 			public int Compare(CommandNode x, CommandNode y) {

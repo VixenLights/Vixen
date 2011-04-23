@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using Vixen.Sys;
-using Vixen.Sequence;
 
 namespace Vixen.IO {
     class ProgramWriter {

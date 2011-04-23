@@ -4,6 +4,6 @@ using System.Linq;
 using System.Text;
 
 namespace Vixen.Module.CommandStandardExtension {
-	class CommandStandardExtensionModuleManagement : UnusedModuleManagement<ICommandStandardExtension> {
+	class CommandStandardExtensionModuleManagement : UnusedModuleManagement<ICommandStandardExtensionModuleInstance> {
 	}
 }

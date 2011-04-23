@@ -8,11 +8,11 @@ using Vixen.Sys;
 namespace Vixen.Module.Effect {
 	class EffectModuleType : IModuleLoadNotification {
 		public void ModuleLoaded(IModuleDescriptor descriptor) {
-			Server.ModuleRepository.AddEffect(descriptor.TypeId);
+			VixenSystem.ModuleRepository.AddEffect(descriptor.TypeId);
 		}
 
 		public void ModuleUnloading(IModuleDescriptor descriptor) {
-			Server.ModuleRepository.RemoveEffect(descriptor.TypeId);
+			VixenSystem.ModuleRepository.RemoveEffect(descriptor.TypeId);
 		}
 	}
 }

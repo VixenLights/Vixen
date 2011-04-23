@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Vixen.Sequence;
 using CommandStandard;
 using Vixen.Module.Effect;
 using Vixen.Sys;
@@ -15,23 +14,23 @@ namespace Vixen.Script.VB {
 	// This class exists only to provide the templated UserScriptSequence with
 	// the necessary data.
 	public partial class ScriptFramework : IScriptFrameworkGenerator {
-		private ScriptSequenceBase _sequence;
+		private ScriptSequence _sequence;
 		// Command name : IEffectModuleInstance
-		private Dictionary<string, IEffectModuleInstance> _commands;
+		private Dictionary<string, IEffectModuleInstance> _effects;
 
 		public ScriptFramework() {
-			IEffectModuleInstance[] effects = Server.ModuleManagement.GetAllEffect();
-			_commands = new Dictionary<string,IEffectModuleInstance>();
-			foreach(var commandNames in effects.GroupBy(x => x.CommandName)) {
-				if(commandNames.Count() == 1) {
+			IEffectModuleInstance[] effects = VixenSystem.ModuleManagement.GetAllEffect();
+			_effects = new Dictionary<string,IEffectModuleInstance>();
+			foreach(var effectNames in effects.GroupBy(x => x.EffectName)) {
+				if(effectNames.Count() == 1) {
 					// Name is unique;
-					_commands[ScriptHostGenerator.Mangle(commandNames.Key)] = commandNames.First();
+					_effects[ScriptHostGenerator.Mangle(effectNames.Key)] = effectNames.First();
 				} else {
 					// Name is not unique.
 					// Append an index to each to make it unique.
 					int i=1;
-					foreach(var command in commandNames) {
-						_commands[ScriptHostGenerator.Mangle(commandNames.Key) + "_" + i++] = command;
+					foreach(var command in effectNames) {
+						_effects[ScriptHostGenerator.Mangle(effectNames.Key) + "_" + i++] = command;
 					}
 				}
 			}
@@ -43,7 +42,7 @@ namespace Vixen.Script.VB {
 
 		public string Namespace { get; private set; }
 
-		public ScriptSequenceBase Sequence {
+		public ScriptSequence Sequence {
 			get { return _sequence; }
 			set {
 				_sequence = value;

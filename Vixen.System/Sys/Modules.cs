@@ -63,7 +63,7 @@ namespace Vixen.Sys {
 			_activators.Remove(moduleTypeId);
 			_moduleDescriptors.Remove(moduleTypeId);
 			// Get the module type implementation and remove the module from the repository.
-			Server.Internal.GetModuleType(moduleType).Repository.Remove(moduleTypeId);
+			VixenSystem.Internal.GetModuleType(moduleType).Repository.Remove(moduleTypeId);
 		}
 
 		/// <summary>
@@ -82,6 +82,25 @@ namespace Vixen.Sys {
 			return instance;
 		}
 
+		/// <summary>
+		/// Determines if the module type represented by the type id is of the provided type.
+		/// </summary>
+		/// <param name="moduleTypeId"></param>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		static internal bool IsOfType(Guid moduleTypeId, Type type) {
+			// Example of type: IMediaModuleInstance
+			Type instanceType;
+			if(_activators.TryGetValue(moduleTypeId, out instanceType)) {
+				if(type.IsInterface) {
+					return instanceType.ImplementsInterface(type);
+				} else {
+					return instanceType.IsSubclassOf(type);
+				}
+			}
+			return false;
+		}
+
 		static public IModuleDescriptor GetDescriptorById(Guid moduleTypeId) {
 			IModuleDescriptor descriptor = null;
 			_moduleDescriptors.TryGetValue(moduleTypeId, out descriptor);
@@ -98,8 +117,9 @@ namespace Vixen.Sys {
 		/// </summary>
 		/// <typeparam name="T">Module instance type as specified by its ModuleImplementation.</typeparam>
 		/// <returns></returns>
-		static public IModuleDescriptor[] GetModuleDescriptors<T>() {
-			string moduleTypeName = Server.Internal.GetModuleTypes().First(x => x.ModuleInstanceType == typeof(T)).ModuleTypeName;
+		static public IModuleDescriptor[] GetModuleDescriptors<T>()
+			where T : class, IModuleInstance {
+			string moduleTypeName = VixenSystem.Internal.GetModuleTypes().First(x => x.ModuleInstanceType == typeof(T)).ModuleTypeName;
 			return _moduleDescriptors.Values.Where(x => x.ModuleTypeName == moduleTypeName).ToArray();
 		}
 

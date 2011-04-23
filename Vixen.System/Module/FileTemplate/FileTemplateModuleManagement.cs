@@ -18,7 +18,7 @@ namespace Vixen.Module.FileTemplate {
 		public IFileTemplateModuleInstance Get(Guid id) {
 			// Template modules are singletons.
 			// The repository assumes to instantiate the template's data.
-			return Server.ModuleRepository.GetFileTemplate(id);
+			return VixenSystem.ModuleRepository.GetFileTemplate(id);
 		}
 
 		object IModuleManagement.Get(Guid id) {
@@ -26,7 +26,7 @@ namespace Vixen.Module.FileTemplate {
 		}
 
 		public IFileTemplateModuleInstance[] GetAll() {
-			return Server.ModuleRepository.GetAllFileTemplate();
+			return VixenSystem.ModuleRepository.GetAllFileTemplate();
 		}
 
 		object[] IModuleManagement.GetAll() {

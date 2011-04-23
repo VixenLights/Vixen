@@ -14,7 +14,7 @@ namespace Vixen.Module {
 
 		public string ModuleTypeName { get; private set; } // i.e. "Output"
 		public Type ModuleInstanceType { get; private set; } // i.e. "IOutputModuleInstance"
-		public IModuleLoadNotification LoadNotifier { get; protected set; }
+		public IModuleLoadNotification ModuleTypeLoader { get; protected set; }
 
 		abstract public IModuleRepository Repository { get; protected set; }
 		abstract public IModuleManagement Management { get; protected set; }
@@ -22,9 +22,9 @@ namespace Vixen.Module {
 
 	abstract class ModuleImplementation<T> : ModuleImplementation
 		where T : class {
-		protected ModuleImplementation(IModuleLoadNotification moduleLoadNotifier, IModuleManagement<T> moduleManagement, IModuleRepository<T> moduleRepository)
+		protected ModuleImplementation(IModuleLoadNotification moduleTypeLoader, IModuleManagement<T> moduleManagement, IModuleRepository<T> moduleRepository)
 			: base(typeof(T)) {
-			this.LoadNotifier = moduleLoadNotifier;
+			this.ModuleTypeLoader = moduleTypeLoader;
 			this.Management = moduleManagement;
 			this.Repository = moduleRepository;
 		}

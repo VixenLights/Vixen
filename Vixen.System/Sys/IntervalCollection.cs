@@ -16,15 +16,15 @@ namespace Vixen.Sys {
 		/// </summary>
 		/// <param name="interval"></param>
 		/// <param name="length"></param>
-		public IntervalCollection(int interval, int length) {
-			List<int> times = new List<int>();
-			for(int i = 0; i < length; i += interval) {
+		public IntervalCollection(long interval, long length) {
+			List<long> times = new List<long>();
+			for(long i = 0; i < length; i += interval) {
 				times.Add(i);
 			}
 			InsertRange(times);
 		}
 
-		public void Insert(int time) {
+		public void Insert(long time) {
 			Interval newInterval = new Interval(time);
 
 			if(_intervals.Count > 0) {
@@ -49,7 +49,7 @@ namespace Vixen.Sys {
 			}
 		}
 
-		public void InsertRange(IEnumerable<int> times) {
+		public void InsertRange(IEnumerable<long> times) {
 			// Get the set of times that aren't already present in the collection.
 			var goodTimes = times.Except(_intervals.Select(x => x.Time));
 			// Insert the times.
@@ -58,32 +58,32 @@ namespace Vixen.Sys {
 			_intervals.Sort((left, right) => left.Time.CompareTo(right.Time));
 		}
 
-		public void Remove(int time) {
+		public void Remove(long time) {
 			Interval timeMark;
 			if((timeMark = _GetIntervalAt(time)) != null) {
 				_intervals.Remove(timeMark);
 			}
 		}
 
-		public void RemoveRange(int startTime, int endTime) {
+		public void RemoveRange(long startTime, long endTime) {
 			_intervals = _intervals.Where(x => x.Time < startTime || x.Time >= endTime).ToList();
 		}
 
-		public void Add(int timeSpan, int interval) {
+		public void Add(long timeSpan, long interval) {
 			if(interval == 0) return;
 
-			int time;
+			long time;
 			if(_intervals.Count == 0) {
 				time = 0;
 			} else {
 				time = _intervals[_intervals.Count - 1].Time + interval;
 			}
-			for(int i = 0; i < timeSpan; i += interval, time += interval) {
+			for(long i = 0; i < timeSpan; i += interval, time += interval) {
 				_intervals.Add(new Interval(time));
 			}
 		}
 
-		public bool Adjust(int oldTime, int newTime) {
+		public bool Adjust(long oldTime, long newTime) {
 			Interval timeMark;
 			if((timeMark = _GetIntervalAt(oldTime)) != null && _GetIntervalAt(newTime) == null) {
 				timeMark.Time = newTime;
@@ -92,7 +92,7 @@ namespace Vixen.Sys {
 			return false;
 		}
 
-		public IEnumerable<int> GetCountedSpanTimes(int startTime, int count) {
+		public IEnumerable<long> GetCountedSpanTimes(long startTime, int count) {
 			int startIndex = _intervals.FindIndex(x => x.Time >= startTime);
 			if(startIndex != -1) {
 				count = Math.Min(count, _intervals.Count - startIndex - 1);
@@ -108,8 +108,8 @@ namespace Vixen.Sys {
 		/// <param name="startTime"></param>
 		/// <param name="timeSpan">Exclusive.</param>
 		/// <returns></returns>
-		public IEnumerable<int> GetSpanTimes(int startTime, int timeSpan) {
-			int endTime = startTime + timeSpan;
+		public IEnumerable<long> GetSpanTimes(long startTime, long timeSpan) {
+			long endTime = startTime + timeSpan;
 			int startIndex = _intervals.FindIndex(x => x.Time >= startTime);
 			if(startIndex != -1) {
 				int endIndex = _intervals.FindIndex(x => x.Time >= endTime);
@@ -118,7 +118,7 @@ namespace Vixen.Sys {
 				}
 				return GetCountedSpanTimes(startTime,  endIndex - startIndex);
 			}
-			return Enumerable.Empty<int>();
+			return Enumerable.Empty<long>();
 		}
 		
 		/// <summary>
@@ -149,7 +149,7 @@ namespace Vixen.Sys {
 			_intervals.Clear();
 		}
 
-		private Interval _GetIntervalAt(int time) {
+		private Interval _GetIntervalAt(long time) {
 			return _intervals.FirstOrDefault(x => x.Time == time);
 		}
 

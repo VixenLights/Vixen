@@ -5,9 +5,7 @@ using System.Text;
 using Vixen.IO;
 using System.IO;
 using System.Xml;
-using Vixen.Sequence;
 using Vixen.Common;
-using Vixen.Module.Sequence;
 
 namespace Vixen.Sys {
 	public class Program {
@@ -15,7 +13,7 @@ namespace Vixen.Sys {
 
 		// Has to be a TimedSequence because otherwise there will be no end
 		// time to watch for to move the program along.
-		private List<ISequenceModuleInstance> _sequences = new List<ISequenceModuleInstance>();
+		private List<ISequence> _sequences = new List<ISequence>();
 
 		public const string Extension = ".pro";
 
@@ -52,13 +50,13 @@ namespace Vixen.Sys {
 
 		public string Name { get; set; }
 
-		public void Add(ISequenceModuleInstance sequence) {
+		public void Add(ISequence sequence) {
 			_sequences.Add(sequence);
 		}
 
 		// Has to be a TimedSequence because otherwise there will be no end
 		// time to watch for to move the program along.
-		public IEnumerable<ISequenceModuleInstance> Sequences {
+		public IEnumerable<ISequence> Sequences {
 			get { return _sequences; }
 		}
 

@@ -18,7 +18,7 @@ namespace Vixen.Module.Trigger {
 
 		abstract public void UpdateState();
 
-		public void Startup() {
+		public void Start() {
 			if(!IsRunning) {
 				// Call the subclass first in case its startup creates the triggers.
 				DoStartup();
@@ -35,7 +35,7 @@ namespace Vixen.Module.Trigger {
 
 		protected virtual void DoStartup() { }
 
-		public void Shutdown() {
+		public void Stop() {
 			// In opposite order of Startup...
 			if(IsRunning) {
 				// Stop monitoring the hardware.
@@ -92,7 +92,7 @@ namespace Vixen.Module.Trigger {
 		}
 
 		protected virtual void Dispose(bool disposing) {
-			Shutdown();
+			Stop();
 			_pause.Dispose();
 			_pause = null;
 		}

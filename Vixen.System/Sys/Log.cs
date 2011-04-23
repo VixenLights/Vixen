@@ -13,6 +13,15 @@ namespace Vixen.Sys {
 		
 		public string Name { get; private set; }
 
+		public virtual void Write(string qualifyingMessage, Exception ex) {
+			string text = qualifyingMessage + ":" + Environment.NewLine + ex.Message + Environment.NewLine;
+			while(ex.InnerException != null) {
+				text += ex.InnerException.Message + Environment.NewLine;
+				ex = ex.InnerException;
+			}
+			Write(text);
+		}
+
 		public virtual void Write(Exception ex) {
 			string text = ex.Message + Environment.NewLine;
 			while(ex.InnerException != null) {

@@ -20,7 +20,7 @@ namespace Vixen.Script {
 
 		static public readonly string UserScriptNamespace = "Vixen.User";
 
-		public IUserScriptHost GenerateScript(ScriptSequenceBase sequence) {
+		public IUserScriptHost GenerateScript(ScriptSequence sequence) {
 			List<string> files = new List<string>();
 			string fileName;
 
@@ -32,7 +32,6 @@ namespace Vixen.Script {
 			try {
 				// Emit the T4 template to be compiled into the assembly.
 				fileName = Path.GetTempFileName();
-				//UserScriptSequence userSequence = new UserScriptSequence(sequence);
 				IScriptFrameworkGenerator frameworkGenerator = Script.Registration.GetScriptFrameworkGenerator(sequence.Language);
 				frameworkGenerator.Sequence = sequence;
 				generatedClassName = frameworkGenerator.ClassName;
@@ -80,22 +79,19 @@ namespace Vixen.Script {
 		/// </summary>
 		/// <param name="files"></param>
 		/// <returns>The file name of the compiled assembly.</returns>
-		private Assembly _Compile(string[] files, ScriptSequenceBase sequence) {
+		private Assembly _Compile(string[] files, ScriptSequence sequence) {
 			// Assembly references come in two flavors:
 			// 1. Framework assemblies -- need only the file name.
 			// 2. Other assemblies -- need the qualified file name.
-			//*** for ui, do like VS and have separate tabs for selecting framework and
-			//    other assemblies
 			List<string> assemblyReferences = new List<string>();
 			_errors.Clear();
 
-			assemblyReferences.Add(Server.AssemblyFileName);
+			assemblyReferences.Add(VixenSystem.AssemblyFileName);
 			assemblyReferences.AddRange(sequence.FrameworkAssemblies);
 			assemblyReferences.AddRange(sequence.ExternalAssemblies);
 			assemblyReferences.AddRange(_standardReferences);
 
 			CompilerResults results = null;
-			//using(CodeDomProvider codeProvider = new Microsoft.CSharp.CSharpCodeProvider()) {
 			using(ICodeProvider codeProvider = Registration.GetCodeProvider(sequence.Language)) {
 				CompilerParameters compilerParameters = new CompilerParameters() {
 					GenerateInMemory = true
@@ -112,6 +108,14 @@ namespace Vixen.Script {
 			}
 
 			return results.Errors.HasErrors ? null : results.CompiledAssembly;
+		}
+
+		static public string Fix(string str, List<string> usedSet) {
+			string originalString = str;
+			str = Mangle(str);
+			str = EnsureUnique(str, usedSet);
+			usedSet.Add(str);
+			return str;
 		}
 
 		static public string Mangle(string str) {
@@ -132,6 +136,16 @@ namespace Vixen.Script {
 			}
 
 			return new string(chars.ToArray());
+		}
+
+		static private string EnsureUnique(string str, List<string> usedSet) {
+			int index;
+			// Static method, can't initialize in the declaration to reset it.
+			index = 2;
+			while(usedSet.Contains(str)) {
+				str = str + "_" + index++;
+			}
+			return str;
 		}
 
 		static private bool _IsValidSymbolChar(char ch) {

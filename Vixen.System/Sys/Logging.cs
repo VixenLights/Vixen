@@ -44,17 +44,23 @@ namespace Vixen.Sys {
 
 		// i.e. Error("I had an error.")
 		// i.e. Error(exception)
+		// i.e. Error("You can't do that.", exception)
 		public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result) {
 			result = null;
 			Log log;
 			if(_logs.TryGetValue(binder.Name, out log)) {
 				try {
-					if(args.Length > 0) {
+					if(args.Length == 1) {
 						if(args[0] is string) {
 							log.Write(args[0] as string);
 							return true;
 						} else if(args[0] is Exception) {
 							log.Write(args[0] as Exception);
+							return true;
+						}
+					} else if(args.Length == 2) {
+						if(args[0] is string && args[1] is Exception) {
+							log.Write(args[0] as string, args[1] as Exception);
 							return true;
 						}
 					}

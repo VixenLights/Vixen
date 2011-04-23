@@ -7,7 +7,7 @@ using Vixen.Sys;
 
 namespace Vixen.Module {
 	public class UnusedModuleManagement<T> : IModuleManagement<T>
-		where T : class {
+		where T : class, IModuleInstance {
 		public T Get(Guid id) {
 			return Modules.GetById(id) as T;
 		}

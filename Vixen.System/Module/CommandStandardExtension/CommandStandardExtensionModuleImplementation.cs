@@ -6,7 +6,7 @@ using Vixen.Common;
 
 namespace Vixen.Module.CommandStandardExtension {
 	[ModuleType("CommandStandardExtension")]
-	class CommandStandardExtensionModuleImplementation : ModuleImplementation<ICommandStandardExtension> {
+	class CommandStandardExtensionModuleImplementation : ModuleImplementation<ICommandStandardExtensionModuleInstance> {
 		public CommandStandardExtensionModuleImplementation()
 			: base(new CommandStandardExtensionModuleType(), new CommandStandardExtensionModuleManagement(), new CommandStandardExtensionModuleRepository()) {
 		}

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace CommandStandard {
-    public static class Extensions {
+    internal static class Extensions {
         public static bool HasAttribute(this Type t, Type attrType) {
             return t.GetCustomAttributes(attrType, false).Length > 0;
         }
