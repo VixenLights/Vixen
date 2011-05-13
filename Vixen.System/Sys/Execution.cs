@@ -192,7 +192,7 @@ namespace Vixen.Sys {
 			foreach(OutputChannel channel in Channels) {
 				enumerator = _channels[channel];
 				// Will return true if state has changed.
-				if(enumerator.MoveNext()) {
+				if(enumerator != null && enumerator.MoveNext()) {
 					channel.Patch.Write(enumerator.Current);
 				}
 			}
