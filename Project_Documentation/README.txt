@@ -10,4 +10,5 @@ diffs and merge.
 True documentation can be done using some open XML format of some kind.
 
 
-Document Rev A 
+Document Rev A
+small change
