@@ -10,7 +10,7 @@ using Vixen.Module.Output;
 namespace TestOutput {
 	public class Log : IOutputModuleInstance {
 		private bool _running = false;
-		private string _filePath = @"C:\Users\Development\Desktop\Log.txt";
+		private string _filePath = @".\Log.txt";
 		private StreamWriter _file;
 
 		public void SetOutputCount(int outputCount) { }
