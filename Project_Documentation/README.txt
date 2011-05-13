@@ -11,5 +11,3 @@ True documentation can be done using some open XML format of some kind.
 
 
 Document Rev A
-small change
-small change
