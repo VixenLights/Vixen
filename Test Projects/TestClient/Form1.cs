@@ -106,9 +106,15 @@ namespace TestClient
 			foreach(OutputController controller in _controllers) {
 				_AddControllerToView(controller);
 			}
+			
 			comboBoxLinkedTo.DisplayMember = "Name";
 			comboBoxLinkedTo.ValueMember = "Id";
 			comboBoxLinkedTo.DataSource = _controllers;
+
+			comboBoxControllerOutputsControllers.DisplayMember = "Name";
+			comboBoxControllerOutputsControllers.ValueMember = "Id";
+			comboBoxControllerOutputsControllers.DataSource = _controllers;
+
 			string[] combinationOperations = Enum.GetNames(typeof(CommandStandard.Standard.CombinationOperation));
 			comboBoxCombinationStrategy.DataSource = combinationOperations;
 		}
@@ -688,6 +694,51 @@ namespace TestClient
 			if(_SelectedController != null) {
 				_SelectedController.Delete();
 				_LoadControllers();
+			}
+		}
+
+		private void comboBoxControllerOutputsControllers_SelectedIndexChanged(object sender, EventArgs e) {
+			_ListControllerOutputs();
+		}
+
+		private void _ListControllerOutputs() {
+			OutputController controller = comboBoxControllerOutputsControllers.SelectedItem as OutputController;
+
+			//listBoxControllerOutputs.Items.Clear();
+			//if(controller != null) {
+			//    listBoxControllerOutputs.Items.AddRange(controller.Outputs);
+			//}
+			if(controller != null) {
+				listBoxControllerOutputs.DisplayMember = "Name";
+				listBoxControllerOutputs.ValueMember = "Name";
+				listBoxControllerOutputs.DataSource = controller.Outputs;
+			} else {
+				listBoxControllerOutputs.DataSource = null;
+			}
+		}
+
+		private void listBoxControllerOutputs_SelectedIndexChanged(object sender, EventArgs e) {
+			OutputController.Output output = listBoxControllerOutputs.SelectedItem as OutputController.Output;
+			if(output != null) {
+				textBoxControllerOutputName.Text = output.Name;
+			} else {
+				textBoxControllerOutputName.Text = string.Empty;
+			}
+		}
+
+		private void buttonUpdateControllerOutputName_Click(object sender, EventArgs e) {
+			OutputController.Output output = listBoxControllerOutputs.SelectedItem as OutputController.Output;
+			if(output != null) {
+				output.Name = textBoxControllerOutputName.Text;
+				_ListControllerOutputs();
+			}
+		}
+
+		private void buttonCommitControllerOutputChanges_Click(object sender, EventArgs e) {
+			OutputController controller = comboBoxControllerOutputsControllers.SelectedItem as OutputController;
+			if(controller != null) {
+				controller.Save();
+				MessageBox.Show("Committed.");
 			}
 		}
 

@@ -99,6 +99,16 @@
 			this.treeViewNodes = new System.Windows.Forms.TreeView();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.label2 = new System.Windows.Forms.Label();
+			this.comboBoxControllerOutputsControllers = new System.Windows.Forms.ComboBox();
+			this.label3 = new System.Windows.Forms.Label();
+			this.listBoxControllerOutputs = new System.Windows.Forms.ListBox();
+			this.label6 = new System.Windows.Forms.Label();
+			this.label7 = new System.Windows.Forms.Label();
+			this.textBoxControllerOutputName = new System.Windows.Forms.TextBox();
+			this.buttonUpdateControllerOutputName = new System.Windows.Forms.Button();
+			this.buttonCommitControllerOutputChanges = new System.Windows.Forms.Button();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -111,6 +121,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownEffectLength)).BeginInit();
 			this.tabPage8.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
+			this.tabPage3.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -204,6 +215,7 @@
 			// 
 			this.tabControl1.Controls.Add(this.tabPage1);
 			this.tabControl1.Controls.Add(this.tabPage2);
+			this.tabControl1.Controls.Add(this.tabPage3);
 			this.tabControl1.Controls.Add(this.tabPage5);
 			this.tabControl1.Controls.Add(this.tabPage6);
 			this.tabControl1.Controls.Add(this.tabPage7);
@@ -917,6 +929,107 @@
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "File";
 			// 
+			// tabPage3
+			// 
+			this.tabPage3.Controls.Add(this.buttonCommitControllerOutputChanges);
+			this.tabPage3.Controls.Add(this.buttonUpdateControllerOutputName);
+			this.tabPage3.Controls.Add(this.textBoxControllerOutputName);
+			this.tabPage3.Controls.Add(this.label7);
+			this.tabPage3.Controls.Add(this.label6);
+			this.tabPage3.Controls.Add(this.listBoxControllerOutputs);
+			this.tabPage3.Controls.Add(this.label3);
+			this.tabPage3.Controls.Add(this.comboBoxControllerOutputsControllers);
+			this.tabPage3.Controls.Add(this.label2);
+			this.tabPage3.Location = new System.Drawing.Point(4, 22);
+			this.tabPage3.Name = "tabPage3";
+			this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage3.Size = new System.Drawing.Size(512, 500);
+			this.tabPage3.TabIndex = 8;
+			this.tabPage3.Text = "Controller Outputs";
+			this.tabPage3.UseVisualStyleBackColor = true;
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(27, 25);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(51, 13);
+			this.label2.TabIndex = 0;
+			this.label2.Text = "Controller";
+			// 
+			// comboBoxControllerOutputsControllers
+			// 
+			this.comboBoxControllerOutputsControllers.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxControllerOutputsControllers.FormattingEnabled = true;
+			this.comboBoxControllerOutputsControllers.Location = new System.Drawing.Point(84, 22);
+			this.comboBoxControllerOutputsControllers.Name = "comboBoxControllerOutputsControllers";
+			this.comboBoxControllerOutputsControllers.Size = new System.Drawing.Size(364, 21);
+			this.comboBoxControllerOutputsControllers.TabIndex = 1;
+			this.comboBoxControllerOutputsControllers.SelectedIndexChanged += new System.EventHandler(this.comboBoxControllerOutputsControllers_SelectedIndexChanged);
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(27, 74);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(44, 13);
+			this.label3.TabIndex = 2;
+			this.label3.Text = "Outputs";
+			// 
+			// listBoxControllerOutputs
+			// 
+			this.listBoxControllerOutputs.FormattingEnabled = true;
+			this.listBoxControllerOutputs.Location = new System.Drawing.Point(30, 90);
+			this.listBoxControllerOutputs.Name = "listBoxControllerOutputs";
+			this.listBoxControllerOutputs.Size = new System.Drawing.Size(418, 264);
+			this.listBoxControllerOutputs.TabIndex = 3;
+			this.listBoxControllerOutputs.SelectedIndexChanged += new System.EventHandler(this.listBoxControllerOutputs_SelectedIndexChanged);
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(32, 372);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(299, 13);
+			this.label6.TabIndex = 4;
+			this.label6.Text = "There are other Output properties that could be edited as well.";
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(32, 418);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(71, 13);
+			this.label7.TabIndex = 5;
+			this.label7.Text = "Output name:";
+			// 
+			// textBoxControllerOutputName
+			// 
+			this.textBoxControllerOutputName.Location = new System.Drawing.Point(109, 415);
+			this.textBoxControllerOutputName.Name = "textBoxControllerOutputName";
+			this.textBoxControllerOutputName.Size = new System.Drawing.Size(236, 20);
+			this.textBoxControllerOutputName.TabIndex = 6;
+			// 
+			// buttonUpdateControllerOutputName
+			// 
+			this.buttonUpdateControllerOutputName.Location = new System.Drawing.Point(351, 412);
+			this.buttonUpdateControllerOutputName.Name = "buttonUpdateControllerOutputName";
+			this.buttonUpdateControllerOutputName.Size = new System.Drawing.Size(75, 23);
+			this.buttonUpdateControllerOutputName.TabIndex = 7;
+			this.buttonUpdateControllerOutputName.Text = "Update";
+			this.buttonUpdateControllerOutputName.UseVisualStyleBackColor = true;
+			this.buttonUpdateControllerOutputName.Click += new System.EventHandler(this.buttonUpdateControllerOutputName_Click);
+			// 
+			// buttonCommitControllerOutputChanges
+			// 
+			this.buttonCommitControllerOutputChanges.Location = new System.Drawing.Point(35, 459);
+			this.buttonCommitControllerOutputChanges.Name = "buttonCommitControllerOutputChanges";
+			this.buttonCommitControllerOutputChanges.Size = new System.Drawing.Size(110, 23);
+			this.buttonCommitControllerOutputChanges.TabIndex = 8;
+			this.buttonCommitControllerOutputChanges.Text = "Commit Changes";
+			this.buttonCommitControllerOutputChanges.UseVisualStyleBackColor = true;
+			this.buttonCommitControllerOutputChanges.Click += new System.EventHandler(this.buttonCommitControllerOutputChanges_Click);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -946,6 +1059,8 @@
 			this.tabPage8.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
+			this.tabPage3.ResumeLayout(false);
+			this.tabPage3.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1024,6 +1139,16 @@
 		private System.Windows.Forms.ComboBox comboBoxNodeTemplates;
 		private System.Windows.Forms.Button buttonDeleteController;
 		private System.Windows.Forms.Button buttonDeleteControllerDefinition;
+		private System.Windows.Forms.TabPage tabPage3;
+		private System.Windows.Forms.Button buttonUpdateControllerOutputName;
+		private System.Windows.Forms.TextBox textBoxControllerOutputName;
+		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.ListBox listBoxControllerOutputs;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.ComboBox comboBoxControllerOutputsControllers;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Button buttonCommitControllerOutputChanges;
 	}
 }
 

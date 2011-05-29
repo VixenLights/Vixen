@@ -521,6 +521,7 @@ namespace Vixen.Hardware {
 				new XElement("Outputs",
 					controller._outputs.Select(x =>
 						new XElement("Output",
+							new XAttribute("name", x.Name),
 							XElement.Parse(x.TransformModuleData.Serialize()), // First element within Output
 							new XElement("Transforms",
 								x.DataTransforms.Select(y =>
@@ -542,9 +543,19 @@ namespace Vixen.Hardware {
 
 			int outputIndex = 0;
 			foreach(XElement outputElement in element.Element("Outputs").Elements("Output")) {
+				// Data persisted in the controller instance may exceed the definition's
+				// output count.
 				if(outputIndex >= controller.OutputCount) break;
+				
+				// The outputs were created when the definition was loaded.
 				Output output = controller._outputs[outputIndex++];
+
+				output.Name = outputElement.Attribute("name").Value;
+
+				// Deserialize the output's transform dataset.
 				output.TransformModuleData.Deserialize(outputElement.FirstNode.ToString());
+
+				// Create transform instances for the outputs.
 				foreach(XElement transformElement in outputElement.Element("Transforms").Elements("Transform")) {
 					Guid moduleTypeId = Guid.Parse(transformElement.Attribute("typeId").Value);
 					Guid moduleInstanceId = Guid.Parse(transformElement.Attribute("instanceId").Value);
@@ -588,7 +599,11 @@ namespace Vixen.Hardware {
 				_owner = owner;
 				CurrentState = CommandData.Empty;
 				TransformModuleData = new ModuleDataSet();
+				Name = "Unnamed";
 			}
+
+			// Completely independent; nothing is current dependent upon this value.
+			public string Name { get; set; }
 
 			public ModuleDataSet TransformModuleData { get; private set; }
 
