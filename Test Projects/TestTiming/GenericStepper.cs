@@ -12,6 +12,10 @@ namespace TestTiming {
 		private long _timingOffset = 0;
 		private GenericStepperForm _form;
 
+		public GenericStepper() {
+			_form = new GenericStepperForm();
+		}
+
 		public void SetOutputCount(int outputCount) { }
 
 		public void UpdateState(CommandData[] outputStates) { }
@@ -21,7 +25,6 @@ namespace TestTiming {
 		}
 
 		public void Start() {
-			_form = new GenericStepperForm();
 			_form.Show();
 		}
 
