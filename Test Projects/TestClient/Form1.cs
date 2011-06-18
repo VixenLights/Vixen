@@ -54,9 +54,6 @@ namespace TestClient
 			comboBoxOutputModule.ValueMember = "Key";
 			comboBoxOutputModule.DataSource = ApplicationServices.GetAvailableModules("Output").ToArray();
 
-            // Controller definitions
-			_LoadControllerDefinitions();
-
             // Controllers
 			_LoadControllers();
 
@@ -98,6 +95,13 @@ namespace TestClient
 			_LoadNodeTemplates();
         }
 
+		private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
+			//*** using editor.IsModified, give them the chance to save any changes,
+			//    not save and close, or cancel the close
+			Logging.ItemLogged -= _ItemLogged;
+			Vixen.Sys.VixenSystem.Stop();
+		}
+		
 		private void _LoadControllers() {
 			listViewControllers.Items.Clear();
 			_controllers.Clear();
@@ -117,14 +121,6 @@ namespace TestClient
 
 			string[] combinationOperations = Enum.GetNames(typeof(CommandStandard.Standard.CombinationOperation));
 			comboBoxCombinationStrategy.DataSource = combinationOperations;
-		}
-
-		private void _LoadControllerDefinitions() {
-			listViewControllerDefinitions.Items.Clear();
-			foreach(string filePath in OutputControllerDefinition.GetAllFileNames()) {
-				OutputControllerDefinition def = OutputControllerDefinition.Load(filePath);
-				_AddControllerDefinitionToView(def);
-			}
 		}
 
 		private void _LoadNodeTemplates() {
@@ -283,36 +279,12 @@ namespace TestClient
         private void buttonShowEditor_Click(object sender, EventArgs e) {
         }
 
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
-			//*** using editor.IsModified, give them the chance to save any changes,
-			//    not save and close, or cancel the close
-			Logging.ItemLogged -= _ItemLogged;
-			Vixen.Sys.VixenSystem.Stop();
-        }
-
-        private void _AddControllerDefinitionToView(OutputControllerDefinition def) {
-            ListViewItem item = new ListViewItem(new string[] {
-                Path.GetFileNameWithoutExtension(def.FilePath), def.OutputCount.ToString(), def.HardwareModuleId.ToString()
-            });
-            item.Tag = def;
-            listViewControllerDefinitions.Items.Add(item);
-        }
-
         private void _AddControllerToView(OutputController controller) {
             ListViewItem item = new ListViewItem(new string[] {
-                controller.Name, controller.DefinitionFileName
+                controller.Name
             });
             item.Tag = controller;
             listViewControllers.Items.Add(item);
-        }
-
-        private OutputControllerDefinition _SelectedControllerDefinition {
-            get {
-				if(listViewControllerDefinitions.SelectedItems.Count > 0) {
-					return listViewControllerDefinitions.SelectedItems[0].Tag as OutputControllerDefinition;
-				}
-				return null;
-			}
         }
 
 		private OutputController _SelectedController {
@@ -333,43 +305,10 @@ namespace TestClient
 			}
 		}
 
-		private void listViewControllerDefinitions_SelectedIndexChanged(object sender, EventArgs e) {
-            if(listViewControllerDefinitions.SelectedItems.Count > 0) {
-                OutputControllerDefinition def = _SelectedControllerDefinition;
-				textBoxTypeName.Text = Path.GetFileNameWithoutExtension(def.FilePath);
-                numericUpDownOutputCount.Value = def.OutputCount;
-                comboBoxOutputModule.SelectedValue = def.HardwareModuleId;
-				labelSelectedDefinition.Text = textBoxTypeName.Text;
-            } else {
-                labelSelectedDefinition.Text = string.Empty;
-            }
-        }
-
-        private void buttonAddControllerDefinition_Click(object sender, EventArgs e) {
-            if(comboBoxOutputModule.SelectedItem != null) {
-				OutputControllerDefinition def = new OutputControllerDefinition(textBoxTypeName.Text, (int)numericUpDownOutputCount.Value, (Guid)comboBoxOutputModule.SelectedValue);
-				def.Save();
-                _AddControllerDefinitionToView(def);
-            }
-        }
-
-        private void buttonUpdateControllerDefinition_Click(object sender, EventArgs e) {
-            if(listViewControllerDefinitions.SelectedItems.Count > 0) {
-                ListViewItem item = listViewControllerDefinitions.SelectedItems[0];
-                OutputControllerDefinition def = (OutputControllerDefinition)item.Tag;
-                def.OutputCount = (int)numericUpDownOutputCount.Value;
-                def.HardwareModuleId = (Guid)comboBoxOutputModule.SelectedValue;
-                item.Tag = def;
-				item.SubItems[0].Text = Path.GetFileNameWithoutExtension(def.FilePath);
-                item.SubItems[1].Text = def.OutputCount.ToString();
-                item.SubItems[2].Text = def.HardwareModuleId.ToString();
-            }
-        }
-
 		private void buttonAddController_Click(object sender, EventArgs e) {
             string controllerName = textBoxControllerName.Text.Trim();
-            if(controllerName.Length != 0 && _SelectedControllerDefinition != null) {
-				OutputController controller = new OutputController(controllerName, _SelectedControllerDefinition.DefinitionFileName);
+            if(controllerName.Length != 0) {
+				OutputController controller = new OutputController(controllerName, (int)numericUpDownOutputCount.Value, (Guid)comboBoxOutputModule.SelectedValue);
 				controller.CombinationStrategy = _CombinationStrategy;
 				controller.Save();
 				_AddControllerToView(controller);
@@ -411,6 +350,8 @@ namespace TestClient
 			OutputController controller = _SelectedController;
 			if(controller != null) {
 				controller.CombinationStrategy = _CombinationStrategy;
+				controller.OutputCount = (int)numericUpDownOutputCount.Value;
+				controller.OutputModuleId = (Guid)comboBoxOutputModule.SelectedValue;
 				controller.Save(controller.FilePath);
 			}
 		}
@@ -682,14 +623,6 @@ namespace TestClient
 			}
 		}
 
-		private void buttonDeleteControllerDefinition_Click(object sender, EventArgs e) {
-			if(_SelectedControllerDefinition != null) {
-				_SelectedControllerDefinition.Delete();
-				_LoadControllerDefinitions();
-				_LoadControllers();
-			}
-		}
-
 		private void buttonDeleteController_Click(object sender, EventArgs e) {
 			if(_SelectedController != null) {
 				_SelectedController.Delete();
@@ -704,10 +637,6 @@ namespace TestClient
 		private void _ListControllerOutputs() {
 			OutputController controller = comboBoxControllerOutputsControllers.SelectedItem as OutputController;
 
-			//listBoxControllerOutputs.Items.Clear();
-			//if(controller != null) {
-			//    listBoxControllerOutputs.Items.AddRange(controller.Outputs);
-			//}
 			if(controller != null) {
 				listBoxControllerOutputs.DisplayMember = "Name";
 				listBoxControllerOutputs.ValueMember = "Name";

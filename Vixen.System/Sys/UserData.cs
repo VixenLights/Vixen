@@ -98,14 +98,14 @@ namespace Vixen.Sys {
 
 		public IEnumerable<OutputChannel> LoadChannels() {
 			XElement parentNode = _userData.Element(ELEMENT_CHANNELS);
-			IEnumerable<OutputChannel> channels = parentNode.Elements().Select(x => Channel.ReadXml<OutputChannel>(x));
+			IEnumerable<OutputChannel> channels = parentNode.Elements().Select(x => OutputChannel.ReadXml(x));
 			return channels;
 		}
 
 		private void _SaveChannels() {
 			XElement parentNode = _userData.Element(ELEMENT_CHANNELS);
 			parentNode.RemoveAll();
-			IEnumerable<XElement> elements = Vixen.Sys.Execution.Channels.Select(x => Channel.WriteXml(x));
+			IEnumerable<XElement> elements = Vixen.Sys.Execution.Channels.Select(x => OutputChannel.WriteXml(x));
 			parentNode.Add(elements);
 		}
 

@@ -73,7 +73,7 @@ namespace Vixen.Hardware {
 		}
 
 		static public OutputControllerDefinition Load(string filePath) {
-			filePath = Path.Combine(_controllerDefinitionDirectory, Path.GetFileName(filePath));
+			filePath = Path.Combine(_controllerDefinitionDirectory, Path.ChangeExtension(Path.GetFileNameWithoutExtension(filePath), FILE_EXT));
 			return Definition.Load<OutputControllerDefinition, OutputControllerDefinitionReader>(filePath);
 		}
 	}

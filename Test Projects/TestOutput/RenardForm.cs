@@ -31,10 +31,17 @@ namespace TestOutput {
 		public int OutputCount {
 			set {
 				_values = new byte[value];
-				_across = (int)Math.Sqrt(value);
-				_down = (int)Math.Round((double)value / _across, MidpointRounding.AwayFromZero);
-				_boxWidth = (ClientRectangle.Width / _across) - 1;
-				_boxHeight = (ClientRectangle.Height / _down) - 1;
+				if(value > 0) {
+					_across = (int)Math.Sqrt(value);
+					_down = (int)Math.Round((double)value / _across, MidpointRounding.AwayFromZero);
+					_boxWidth = (ClientRectangle.Width / _across) - 1;
+					_boxHeight = (ClientRectangle.Height / _down) - 1;
+				} else {
+					_across = 0;
+					_down = 0;
+					_boxWidth = 0;
+					_boxHeight = 0;
+				}
 			}
 		}
 

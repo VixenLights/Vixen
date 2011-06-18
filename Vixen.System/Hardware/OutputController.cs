@@ -17,18 +17,19 @@ using System.Diagnostics;
 
 namespace Vixen.Hardware {
 	public class OutputController : IEqualityComparer<ITransformModuleInstance>, IEnumerable<OutputController> {
-		private IOutput _outputHardware;
+		private Guid _outputModuleId;
+		private IOutputModuleInstance _outputModule = null;
 		private List<Output> _outputs = new List<Output>();
 		private Guid _linkedTo = Guid.Empty;
-		private IHardwareModule _hardwareModule = null;
 
 		private const string FILE_EXT = ".out";
 		private const string DIRECTORY_NAME = "Controller";
 		private const string ELEMENT_ROOT = "Controller";
-		private const string ATTR_DEFINITION_NAME = "definition";
 		private const string ATTR_ID = "id";
 		private const string ATTR_COMB_STRATEGY = "strategy";
 		private const string ATTR_LINKED_TO = "linkedTo";
+		private const string ATTR_OUTPUT_COUNT = "outputCount";
+		private const string ATTR_HARDWARE_ID = "hardwareId";
 
 		// Controller id : Controller
 		static private Dictionary<Guid, OutputController> _instances = new Dictionary<Guid, OutputController>();
@@ -68,25 +69,23 @@ namespace Vixen.Hardware {
 			_StartInstance(controller);
 		}
 
-		protected OutputController() {
-			Id = Guid.NewGuid();
-			InstanceId = Guid.NewGuid();
-			// Need to set the output count to cause the instantiation of the buffer.
-			OutputCount = 0;
-			CombinationStrategy = CommandStandard.Standard.CombinationOperation.HighestWins;
-		}
+		private OutputController() { }
 
 		/// <summary>
 		/// Creates a new instance.
 		/// </summary>
 		/// <param name="name"></param>
-		/// <param name="controllerDefinitionFileName"></param>
-		public OutputController(string name, string controllerDefinitionFileName)
-			: this() {
-			FilePath = Path.Combine(Directory, name + FILE_EXT);
-			_UseDefinition(controllerDefinitionFileName);
+		public OutputController(string name, int outputCount, Guid outputModuleId)
+			: this(name, outputCount, outputModuleId, CommandStandard.Standard.CombinationOperation.HighestWins) {
+		}
 
-			// Affect the instance with the controller template.
+		public OutputController(string name, int outputCount, Guid outputModuleId, CommandStandard.Standard.CombinationOperation combinationStrategy) {
+			Id = Guid.NewGuid();
+			FilePath = Path.Combine(Directory, name + FILE_EXT);
+			OutputCount = outputCount;
+			OutputModuleId = outputModuleId;
+
+			// Affect the instance with the controller template last.
 			FileTemplateModuleManagement manager = VixenSystem.Internal.GetModuleManager<IFileTemplateModuleInstance, FileTemplateModuleManagement>();
 			manager.ProjectTemplateInto(FILE_EXT, this);
 		}
@@ -105,6 +104,16 @@ namespace Vixen.Hardware {
 
 		public string FilePath { get; private set; }
 
+		// Must be a property for data binding.
+		public Guid OutputModuleId {
+			get { return _outputModuleId; }
+			set {
+				_outputModuleId = value;
+				// Go throught the module type manager always.
+				_outputModule = VixenSystem.Internal.GetModuleManager<IOutputModuleInstance, OutputModuleManagement>().Get(value);
+			}
+		}
+
 		public CommandStandard.Standard.CombinationOperation CombinationStrategy { get; set; }
 
 		[DataPath]
@@ -122,13 +131,13 @@ namespace Vixen.Hardware {
 
 		static public void PauseControllers() {
 			foreach(OutputController controller in _GetRootControllers()) {
-				controller.HardwareModule.Pause();
+				controller._outputModule.Pause();
 			}
 		}
 
 		static public void ResumeControllers() {
 			foreach(OutputController controller in _GetRootControllers()) {
-				controller.HardwareModule.Resume();
+				controller._outputModule.Resume();
 			}
 		}
 
@@ -145,7 +154,7 @@ namespace Vixen.Hardware {
 			// Updates start at the root controllers and cascade from there.
 			// Non-root controllers are not directly updated; they are only updated
 			// from a previous-linked controller.
-			if(IsRootController && OutputHardware != null) {
+			if(IsRootController && _ControllerChainOutputModule != null) {
 				// States need to be pulled in order, so we're getting them to update
 				// in parallel with no need to properly collate the results, then iterating
 				// the output in order.
@@ -158,25 +167,8 @@ namespace Vixen.Hardware {
 				// This must be done in order of the chain links so that data
 				// goes out the port in the correct order.
 				foreach(OutputController controller in this) {
-					controller.OutputHardware.UpdateState(_outputs.Select(x => x.CurrentState).ToArray());
+					controller._ControllerChainOutputModule.UpdateState(_outputs.Select(x => x.CurrentState).ToArray());
 				}
-			}
-		}
-
-		private void _UseDefinition(string fileName) {
-			DefinitionFileName = fileName;
-			OutputControllerDefinition controllerDefinition = OutputControllerDefinition.Load(fileName);
-			OutputCount = controllerDefinition.OutputCount;
-			// Go throught the module type manager always.
-			HardwareModule = VixenSystem.Internal.GetModuleManager<IOutputModuleInstance, OutputModuleManagement>().Get(controllerDefinition.HardwareModuleId);
-		}
-
-		virtual protected void HardwareModuleUpdated() {
-			OutputHardware = HardwareModule as IOutput;
-			// Need to use the backing field because we want to affect the output module
-			// used by this controller, not the root controller.
-			if(_outputHardware != null) {
-				_outputHardware.SetOutputCount(OutputCount);
 			}
 		}
 
@@ -201,10 +193,12 @@ namespace Vixen.Hardware {
 				controller._outputs.Add(newOutput);
 			}
 
-			controller.InstanceId = Guid.NewGuid();
-			if(HardwareModule != null) {
-				controller.HardwareModule = Modules.GetById(this.HardwareModule.TypeId) as IHardwareModule;
+			if(_outputModule != null) {
+				controller._outputModule = VixenSystem.Internal.GetModuleManager<IOutputModuleInstance, OutputModuleManagement>().Get(_outputModule.TypeId);
 			}
+			
+			controller.InstanceId = Guid.NewGuid();
+
 			return controller;
 		}
 
@@ -216,8 +210,8 @@ namespace Vixen.Hardware {
 			get { return _outputs.Count; }
 			set {
 				// Update the hardware.
-				if(_outputHardware != null) {
-					_outputHardware.SetOutputCount(value);
+				if(_outputModule != null) {
+					_outputModule.SetOutputCount(value);
 				}
 				// Adjust the outputs list.
 				if(value < _outputs.Count) {
@@ -236,8 +230,6 @@ namespace Vixen.Hardware {
 			}
 		}
 
-		public OutputController Prior { get; private set; }
-		public OutputController Next { get; private set; }
 		/// <summary>
 		/// States if this output controller instance can be a child of the specified output controller.
 		/// </summary>
@@ -285,15 +277,14 @@ namespace Vixen.Hardware {
 			get { return Prior == null && _linkedTo == Guid.Empty; }
 		}
 
-		private IOutput OutputHardware {
+		private IOutputModuleInstance _ControllerChainOutputModule {
 			get {
 				// When output controllers are linked, only the root controller will be
 				// connected to the port, therefore only it will have the output module
 				// used during execution.
-				if(Prior != null) return Prior.OutputHardware;
-				return _outputHardware;
+				if(Prior != null) return Prior._ControllerChainOutputModule;
+				return _outputModule;
 			}
-			set { _outputHardware = value; }
 		}
 
 		virtual protected void CommitState() {
@@ -370,6 +361,7 @@ namespace Vixen.Hardware {
 
 		static private void _HardwareUpdateThread() {
 			//*** this will be user data
+			//*** this is now pointless; Windows is going to do what it damn well pleases
 			int refreshRate = 50; // Updates/second
 			double frameLength = 1000d / refreshRate;
 			double frameStart;
@@ -386,9 +378,8 @@ namespace Vixen.Hardware {
 				}
 
 				timeLeft = frameEnd - currentTime.ElapsedMilliseconds;
-				// If we're within a millisecond, there's no use in sleeping.
 				if(timeLeft > 1) {
-					Thread.Sleep((int)(timeLeft));
+					Thread.Sleep((int)timeLeft);
 				}
 			}
 			_state = ExecutionState.Stopped;
@@ -398,24 +389,27 @@ namespace Vixen.Hardware {
 			if(!controller.IsRunning) {
 				// Fixup link to another controller.
 				controller.LinkTo(_instances.Values.FirstOrDefault(x => x.Id == controller._linkedTo));
-				// Get the module data for the controller's output module.
-				VixenSystem.ModuleData.GetModuleTypeData(controller.HardwareModule);
-				// Start the output module.
-				controller.HardwareModule.Start();
+				if(controller._outputModule != null) {
+					// Get the module data for the controller's output module.
+					VixenSystem.ModuleData.GetModuleTypeData(controller._outputModule);
+					// Start the output module.
+					controller._outputModule.Start();
+				}
 			}
 		}
 
 		static private void _StopInstance(OutputController controller) {
-			if(controller.IsRunning) {
-				controller.HardwareModule.Stop();
+			if(controller.IsRunning && controller._outputModule != null) {
+				controller._outputModule.Stop();
 			}
 		}
 
-		static public void AddSource(IOutputStateSource source, ControllerReference controllerReference) {
+		static public bool AddSource(IOutputStateSource source, ControllerReference controllerReference) {
 			OutputController controller;
 			if(_instances.TryGetValue(controllerReference.ControllerId, out controller)) {
-				controller.AddSource(source, controllerReference.OutputIndex);
+				return controller.AddSource(source, controllerReference.OutputIndex);
 			}
+			return false;
 		}
 
 		static public void RemoveSource(IOutputStateSource source, ControllerReference controllerReference) {
@@ -425,12 +419,12 @@ namespace Vixen.Hardware {
 			}
 		}
 
-		public IHardwareModule HardwareModule {
-			get { return _hardwareModule; }
-			protected set {
-				_hardwareModule = value;
-				HardwareModuleUpdated();
+		static public bool IsValidReference(ControllerReference controllerReference) {
+			OutputController controller;
+			if(_instances.TryGetValue(controllerReference.ControllerId, out controller)) {
+				return controllerReference.OutputIndex < controller.OutputCount;
 			}
+			return false;
 		}
 
 		/// <summary>
@@ -438,8 +432,8 @@ namespace Vixen.Hardware {
 		/// </summary>
 		/// <returns>True if the setup was successful and committed.  False if the user canceled.</returns>
 		public bool Setup() {
-			if(HardwareModule != null) {
-				if(HardwareModule.Setup()) {
+			if(_outputModule != null) {
+				if(_outputModule.Setup()) {
 					Commit();
 					return true;
 				}
@@ -457,10 +451,11 @@ namespace Vixen.Hardware {
 			_AddInstance(this);
 		}
 
-		public void AddSource(IOutputStateSource source, int outputIndex) {
+		public bool AddSource(IOutputStateSource source, int outputIndex) {
 			if(outputIndex < OutputCount) {
-				_outputs[outputIndex].AddSource(source);
+				return _outputs[outputIndex].AddSource(source);
 			}
+			return false;
 		}
 
 		public void RemoveSource(IOutputStateSource source, int outputIndex) {
@@ -469,16 +464,21 @@ namespace Vixen.Hardware {
 			}
 		}
 
-
 		// Must be properties for data binding.
-		public string DefinitionFileName { get; set; }
 		public Guid Id { get; set; }
+		
 		public string Name {
 			get { return Path.GetFileNameWithoutExtension(FilePath); }
 		}
+		
 		public Guid InstanceId { get; private set; }
+
+		public OutputController Prior { get; private set; }
+		
+		public OutputController Next { get; private set; }
+		
 		public bool IsRunning {
-			get { return (HardwareModule != null) ? HardwareModule.IsRunning : false; }
+			get { return (_outputModule != null) ? _outputModule.IsRunning : false; }
 		}
 
 		static public OutputController Load(string filePath) {
@@ -498,23 +498,11 @@ namespace Vixen.Hardware {
 			}
 		}
 
-		/// <summary>
-		/// Deletes all controllers based on the provided definition.
-		/// </summary>
-		/// <param name="definition"></param>
-		static public void DeleteAll(OutputControllerDefinition definition) {
-			// Taking a definition because nothing else has any reason to know what
-			// property of a definition a controller is referencing.
-			IEnumerable<OutputController> controllers = _instances.Values.Where(x => x.DefinitionFileName == definition.DefinitionFileName);
-			foreach(OutputController controller in controllers.ToArray()) {
-				controller.Delete();
-			}
-		}
-
 		static public XElement WriteXml(OutputController controller) {
 			controller.Commit();
 			return new XElement(ELEMENT_ROOT,
-				new XAttribute(ATTR_DEFINITION_NAME, controller.DefinitionFileName),
+				new XAttribute(ATTR_HARDWARE_ID, controller.OutputModuleId),
+				new XAttribute(ATTR_OUTPUT_COUNT, controller.OutputCount),
 				new XAttribute(ATTR_ID, controller.Id),
 				new XAttribute(ATTR_COMB_STRATEGY, controller.CombinationStrategy),
 				new XAttribute(ATTR_LINKED_TO, controller._linkedTo),
@@ -532,22 +520,20 @@ namespace Vixen.Hardware {
 
 		static public OutputController ReadXml(XElement element) {
 			OutputController controller = new OutputController();
-			controller.DefinitionFileName = element.Attribute(ATTR_DEFINITION_NAME).Value;
+			controller.OutputModuleId = new Guid(element.Attribute(ATTR_HARDWARE_ID).Value);
+			controller.OutputCount = int.Parse(element.Attribute(ATTR_OUTPUT_COUNT).Value);
 			controller.Id = Guid.Parse(element.Attribute(ATTR_ID).Value);
+			controller.InstanceId = Guid.NewGuid();
 			controller.CombinationStrategy = (CommandStandard.Standard.CombinationOperation)Enum.Parse(typeof(CommandStandard.Standard.CombinationOperation), element.Attribute(ATTR_COMB_STRATEGY).Value);
 			controller._linkedTo = Guid.Parse(element.Attribute(ATTR_LINKED_TO).Value);
 
-			//*** any reason why not do when setting DefinitionName?
-			//    Is there a time when it would be set without needing to load the definition?
-			controller._UseDefinition(controller.DefinitionFileName);
-
 			int outputIndex = 0;
 			foreach(XElement outputElement in element.Element("Outputs").Elements("Output")) {
-				// Data persisted in the controller instance may exceed the definition's
+				// Data persisted in the controller instance may exceed the
 				// output count.
 				if(outputIndex >= controller.OutputCount) break;
 				
-				// The outputs were created when the definition was loaded.
+				// The outputs were created when the output count was set.
 				Output output = controller._outputs[outputIndex++];
 
 				output.Name = outputElement.Attribute("name").Value;
@@ -625,28 +611,57 @@ namespace Vixen.Hardware {
 
 			//Not sure about this; may not want all of this behavior anytime a transform
 			//is added to an output
+			/// <summary>
+			/// Adds an instance of a transform to the output.
+			/// </summary>
+			/// <param name="transformTypeId">The module type id of the transform.</param>
+			/// <param name="transformInstanceId">Provide if known.  For example, for existing module instance data.  Otherwise, provide Guid.Emtpy.</param>
 			public void AddTransform(Guid transformTypeId, Guid transformInstanceId) {
 				// Create a new instance.
 				ITransformModuleInstance instance = VixenSystem.Internal.GetModuleManager<ITransformModuleInstance>().Get(transformTypeId) as ITransformModuleInstance;
-				instance.InstanceId = transformInstanceId;
+				// If an instance id is provided (creating an instance for existing module
+				// data), assign it.
+				if(transformInstanceId != Guid.Empty) {
+					instance.InstanceId = transformInstanceId;
+				}
 				// Create data for the instance.
 				TransformModuleData.GetModuleInstanceData(instance);
 				// Add the instance.
 				_dataTransforms.AddLast(instance);
 			}
 
+			/// <summary>
+			/// Adds a new instance of a transform to the output.
+			/// </summary>
+			public void AddTransform(Guid transformTypeId) {
+				AddTransform(transformTypeId, Guid.Empty);
+			}
+
+			/// <summary>
+			/// Adds an existing instance of a transform to the output.
+			/// </summary>
+			/// <param name="instance"></param>
 			public void AddTransform(ITransformModuleInstance instance) {
 				// Allowing multiple instances of a transform type.
 				// Create a new instance, but use the same data (clone).
 				ITransformModuleInstance newInstance = VixenSystem.Internal.GetModuleManager<ITransformModuleInstance>().Clone(instance) as ITransformModuleInstance;
-				// Add the data to our transform dataset.
-				this.TransformModuleData.Add(newInstance.ModuleData);
+				if(newInstance.ModuleData != null) {
+					// Add the data to our transform dataset.
+					this.TransformModuleData.Add(newInstance.ModuleData);
+				} else {
+					// Create data for the instance.
+					TransformModuleData.GetModuleInstanceData(newInstance);
+				}
 				// Add the instance.
 				_dataTransforms.AddLast(newInstance);
 			}
 
-			public void AddSource(IOutputStateSource source) {
-				_sources.AddLast(source);
+			public bool AddSource(IOutputStateSource source) {
+				if(!_sources.Contains(source)) {
+					_sources.AddLast(source);
+					return true;
+				}
+				return false;
 			}
 
 			public void RemoveSource(IOutputStateSource source) {

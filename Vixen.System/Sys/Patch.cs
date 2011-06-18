@@ -46,8 +46,10 @@ namespace Vixen.Sys {
 		}
 
 		private void _Add(ControllerReference controllerReference) {
-			_controllerReferences.Add(controllerReference);
-			OutputController.AddSource(this, controllerReference);
+			// _controllerReferences is a HashSet, not a list.
+			if(Hardware.OutputController.IsValidReference(controllerReference) && _controllerReferences.Add(controllerReference)) {
+				OutputController.AddSource(this, controllerReference);
+			}
 		}
 
 		public void Remove(ControllerReference controllerReference) {

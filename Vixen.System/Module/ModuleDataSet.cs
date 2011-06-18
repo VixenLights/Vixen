@@ -26,7 +26,9 @@ namespace Vixen.Module {
 		/// </summary>
 		/// <param name="module"></param>
 		public void GetModuleTypeData(IModuleInstance module) {
-			_GetModuleData(module, new Tuple<Guid, Guid>(module.TypeId, module.TypeId));
+			if(module != null) {
+				_GetModuleData(module, new Tuple<Guid, Guid>(module.TypeId, module.TypeId));
+			}
 		}
 
 		/// <summary>

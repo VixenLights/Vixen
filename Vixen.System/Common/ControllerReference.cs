@@ -14,20 +14,6 @@ namespace Vixen.Common {
 			OutputIndex = outputIndex;
 		}
 
-		static public XElement WriteXml(ControllerReference controllerReference) {
-			XElement element = new XElement("ControllerReference",
-				new XAttribute("controllerId", controllerReference.ControllerId),
-				new XAttribute("outputIndex", controllerReference.OutputIndex));
-			return element;
-		}
-
-		static public ControllerReference ReadXml(XElement element) {
-			return new ControllerReference(
-				new Guid(element.Attribute("controllerId").Value),
-				int.Parse(element.Attribute("outputIndex").Value)
-				);
-		}
-
         public override int GetHashCode() {
             return (ControllerId.ToString() + OutputIndex).GetHashCode();
         }
@@ -43,5 +29,19 @@ namespace Vixen.Common {
         public bool Equals(ControllerReference other) {
             return this.GetHashCode() == other.GetHashCode();
         }
-    }
+
+		static public XElement WriteXml(ControllerReference controllerReference) {
+			XElement element = new XElement("ControllerReference",
+				new XAttribute("controllerId", controllerReference.ControllerId),
+				new XAttribute("outputIndex", controllerReference.OutputIndex));
+			return element;
+		}
+
+		static public ControllerReference ReadXml(XElement element) {
+			return new ControllerReference(
+				new Guid(element.Attribute("controllerId").Value),
+				int.Parse(element.Attribute("outputIndex").Value)
+				);
+		}
+	}
 }

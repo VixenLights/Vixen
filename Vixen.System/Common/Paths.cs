@@ -6,28 +6,33 @@ using System.IO;
 using System.Reflection;
 
 namespace Vixen.Common {
-    static class Paths {
+    static public class Paths {
         // System- or user-defined parent directory of "Vixen" directory.
         static private string _dataRootPath = null;
 
-        private const string VIXEN_DIR = "Vixen";
+        private const string VIXEN_DATA_DIR = "Vixen";
 
         static Paths() {
-            BinaryRootPath = AppDomain.CurrentDomain.BaseDirectory;
-        }
+            //BinaryRootPath = AppDomain.CurrentDomain.BaseDirectory;
+			// Basing the binary directory on Vixen.dll instead of the current application's
+			// appdomain.  They will likely be the same thing, but at least we'll be based
+			// on the actual binary this way.
+			Assembly systemAssembly = Assembly.GetAssembly(typeof(Vixen.Sys.VixenSystem));
+			BinaryRootPath = Path.GetDirectoryName(systemAssembly.Location);
+		}
 
         static public string BinaryRootPath { get; private set; }
 
         static public string DataRootPath {
             get {
                 if(_dataRootPath == null) {
-                    _dataRootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), VIXEN_DIR);
+                    _dataRootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), VIXEN_DATA_DIR);
                 }
                 return _dataRootPath;
             }
             set {
-                if(!value.EndsWith(Path.DirectorySeparatorChar + VIXEN_DIR)) {
-                    value += Path.DirectorySeparatorChar + VIXEN_DIR;
+                if(!value.EndsWith(Path.DirectorySeparatorChar + VIXEN_DATA_DIR)) {
+                    value += Path.DirectorySeparatorChar + VIXEN_DATA_DIR;
                 }
                 // Want to be sure the directory can exist before making it the
                 // data directory.
@@ -38,7 +43,7 @@ namespace Vixen.Common {
             }
         }
 
-		static public string ModuleFilesPath {
+		static public string ModuleDataFilesPath {
 			get { return Path.Combine(DataRootPath, "Module Data Files"); }
 		}
 
@@ -84,7 +89,7 @@ namespace Vixen.Common {
 					if(!Path.IsPathRooted(path)) {
 						// Assume it to be a data path; parent it to the ModuleData directory.
 						if(isWriteable) {
-							path = Path.Combine(ModuleFilesPath, path);
+							path = Path.Combine(ModuleDataFilesPath, path);
 							// Write back the resolved path.
 							if(mi is PropertyInfo) {
 								(mi as PropertyInfo).SetValue(null, path, null);

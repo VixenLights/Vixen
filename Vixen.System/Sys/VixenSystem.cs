@@ -51,7 +51,7 @@ namespace Vixen.Sys {
             }
         }
 
-        static public void Start(IApplication clientApplication) {
+        static public void Start(IApplication clientApplication, bool openExecution = true) {
 			if(_state == RunState.Stopped) {
 				try {
 					_state = RunState.Starting;
@@ -112,7 +112,15 @@ namespace Vixen.Sys {
 					_NotifyModulesLoaded(otherModules);
 					_NotifyModulesLoaded(applicationModules);
 
-					Vixen.Sys.Execution.OpenExecution();
+					// Load the controllers before opening execution.
+					// Creating the fixtures will create channels which will create patches
+					// which will create sources for outputs that need to exist first.
+					OutputController.ReloadAll();
+					
+					if(openExecution) {
+						Vixen.Sys.Execution.OpenExecution();
+					}
+
 					_state = RunState.Started;
 				} catch(Exception ex) {
 					// The client is expected to have subscribed to the logging event
@@ -140,7 +148,9 @@ namespace Vixen.Sys {
 					try {
 						// Load the modules of the type.
 						Modules.LoadModules(filePath, moduleType.TypeName);
-					} catch(BadImageFormatException) { }
+					} catch(BadImageFormatException) {
+						VixenSystem.Logging.Warning("File " + filePath + " was not loaded due to BadImageFormatException.");
+					}
 				}
 			}
 		}
@@ -207,23 +217,39 @@ namespace Vixen.Sys {
 			static public U GetModuleManager<T, U>()
 				where T : class, IModuleInstance
 				where U : class, IModuleManagement<T> {
-				return _moduleTypes.Values.FirstOrDefault(x => x.ModuleInstanceType == typeof(T)).Management as U;
+				ModuleImplementation moduleImplementation = _moduleTypes.Values.FirstOrDefault(x => x.ModuleInstanceType == typeof(T));
+				if(moduleImplementation != null) {
+					return moduleImplementation.Management as U;
+				}
+				return null;
 			}
 
 			static public IModuleManagement GetModuleManager<T>()
 				where T : class, IModuleInstance {
-				return _moduleTypes.Values.FirstOrDefault(x => x.ModuleInstanceType == typeof(T)).Management;
+				ModuleImplementation moduleImplementation = _moduleTypes.Values.FirstOrDefault(x => x.ModuleInstanceType == typeof(T));
+				if(moduleImplementation != null) {
+					return moduleImplementation.Management;
+				}
+				return null;
 			}
 
 			static public U GetModuleRepository<T, U>()
 				where T : class, IModuleInstance
 				where U : class, IModuleRepository<T> {
-				return _moduleTypes.Values.FirstOrDefault(x => x.ModuleInstanceType == typeof(T)).Repository as U;
+				ModuleImplementation moduleImplementation = _moduleTypes.Values.FirstOrDefault(x => x.ModuleInstanceType == typeof(T));
+				if(moduleImplementation != null) {
+					return moduleImplementation.Repository as U;
+				}
+				return null;
 			}
 
 			static public IModuleRepository GetModuleRepository<T>()
 				where T : class, IModuleInstance {
-				return _moduleTypes.Values.FirstOrDefault(x => x.ModuleInstanceType == typeof(T)).Repository;
+				ModuleImplementation moduleImplementation = _moduleTypes.Values.FirstOrDefault(x => x.ModuleInstanceType == typeof(T));
+				if(moduleImplementation != null) {
+					return moduleImplementation.Repository;
+				}
+				return null;
 			}
 		}
 		#endregion

@@ -33,6 +33,11 @@ namespace Vixen.Sys {
 			return Modules.GetDescriptorById(moduleTypeId);
 		}
 
+		/// <summary>
+		/// Gets a dictionary of the available modules based on the descriptors of installed modules.
+		/// </summary>
+		/// <param name="moduleType"></param>
+		/// <returns></returns>
 		static public Dictionary<Guid, string> GetAvailableModules(string moduleType) {
 			return Modules.GetModuleDescriptors(moduleType).ToDictionary(x => x.TypeId, x => x.TypeName);
 		}
@@ -53,18 +58,26 @@ namespace Vixen.Sys {
 		static public T Get<T>(Guid id)
 			where T : class, IModuleInstance {
 			// Must go through the module type manager so that it can affect the instance.
-			return VixenSystem.Internal.GetModuleManager<T>().Get(id) as T;
+			IModuleManagement moduleManager = VixenSystem.Internal.GetModuleManager<T>();
+			if(moduleManager != null) {
+				return moduleManager.Get(id) as T;
+			}
+			return null;
 		}
 
 		/// <summary>
-		/// This does not do what you think it does.
+		/// Gets an instance of each module of the type.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
 		static public T[] GetAll<T>()
 			where T : class, IModuleInstance {
 			// Must go through the module type manager so that it can affect the instance.
-			return VixenSystem.Internal.GetModuleManager<T>().GetAll().Cast<T>().ToArray();
+			IModuleManagement moduleManager = VixenSystem.Internal.GetModuleManager<T>();
+			if(moduleManager != null) {
+				return moduleManager.GetAll().Cast<T>().ToArray();
+			}
+			return null;
 		}
 
 		static public IEffectEditorControl GetEffectEditorControl(Guid effectId) {
@@ -89,12 +102,18 @@ namespace Vixen.Sys {
 
 		static public IEditorModuleInstance GetEditor(Guid id) {
 			EditorModuleManagement manager = VixenSystem.Internal.GetModuleManager<IEditorModuleInstance, EditorModuleManagement>();
-			return manager.Get(id);
+			if(manager != null) {
+				return manager.Get(id);
+			}
+			return null;
 		}
 
 		static public IEditorModuleInstance GetEditor(string fileName) {
 			EditorModuleManagement manager = VixenSystem.Internal.GetModuleManager<IEditorModuleInstance, EditorModuleManagement>();
-			return manager.Get(fileName);
+			if(manager != null) {
+				return manager.Get(fileName);
+			}
+			return null;
 		}
 
 		/// <summary>

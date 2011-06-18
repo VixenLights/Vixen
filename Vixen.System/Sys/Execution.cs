@@ -30,10 +30,6 @@ namespace Vixen.Sys {
 		static private volatile ExecutionState _state = ExecutionState.Stopped;
 
 		static Execution() {
-			// Load the controllers before creating the fixtures.
-			// Creating the fixtures will create channels which will create patches
-			// which will create sources for outputs that need to exist first.
-			OutputController.ReloadAll();
 			// Create the node manager.
 			Nodes = new NodeManager();
 			// Load channels.
@@ -192,7 +188,7 @@ namespace Vixen.Sys {
 			foreach(OutputChannel channel in Channels) {
 				enumerator = _channels[channel];
 				// Will return true if state has changed.
-				if(enumerator != null && enumerator.MoveNext()) {
+				if(enumerator.MoveNext()) {
 					channel.Patch.Write(enumerator.Current);
 				}
 			}

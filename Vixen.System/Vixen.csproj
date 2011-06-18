@@ -57,7 +57,7 @@
     <OutputPath>bin\x86\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <CodeAnalysisLogFile>bin\Debug\Vixen.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
@@ -112,8 +112,6 @@
     <Compile Include="IO\ChannelNodeDefinitionWriter.cs" />
     <Compile Include="IO\IReader.cs" />
     <Compile Include="IO\IWriter.cs" />
-    <Compile Include="IO\OutputControllerDefinitionReader.cs" />
-    <Compile Include="IO\OutputControllerDefinitionWriter.cs" />
     <Compile Include="IO\OutputControllerReader.cs" />
     <Compile Include="IO\OutputControllerWriter.cs" />
     <Compile Include="Script\UserScriptNode.cs" />
@@ -384,7 +382,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Hardware\OutputController.cs" />
-    <Compile Include="Hardware\OutputControllerDefinition.cs" />
     <Compile Include="Sys\Execution.cs" />
     <Compile Include="Execution\ProgramContext.cs" />
     <Compile Include="Module\App\IApp.cs" />

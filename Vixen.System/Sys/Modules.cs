@@ -28,7 +28,10 @@ namespace Vixen.Sys {
 			if(string.IsNullOrEmpty(moduleTypeName)) return;
 			if(!File.Exists(filePath)) return;
 
-			Assembly assembly = Assembly.LoadFile(filePath);
+			//Assembly assembly = Assembly.LoadFile(filePath);
+			Assembly assembly = null;
+			assembly = Assembly.LoadFrom(filePath);
+
 			IModuleDescriptor moduleDescriptor = null;
 
 			// Look for concrete module descriptors.

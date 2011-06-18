@@ -58,19 +58,18 @@
 			this.buttonAddController = new System.Windows.Forms.Button();
 			this.textBoxControllerName = new System.Windows.Forms.TextBox();
 			this.label10 = new System.Windows.Forms.Label();
-			this.labelSelectedDefinition = new System.Windows.Forms.Label();
-			this.label9 = new System.Windows.Forms.Label();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.buttonDeleteControllerDefinition = new System.Windows.Forms.Button();
-			this.buttonUpdateControllerDefinition = new System.Windows.Forms.Button();
-			this.buttonAddControllerDefinition = new System.Windows.Forms.Button();
 			this.comboBoxOutputModule = new System.Windows.Forms.ComboBox();
 			this.numericUpDownOutputCount = new System.Windows.Forms.NumericUpDown();
-			this.textBoxTypeName = new System.Windows.Forms.TextBox();
-			this.listViewControllerDefinitions = new System.Windows.Forms.ListView();
-			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.buttonCommitControllerOutputChanges = new System.Windows.Forms.Button();
+			this.buttonUpdateControllerOutputName = new System.Windows.Forms.Button();
+			this.textBoxControllerOutputName = new System.Windows.Forms.TextBox();
+			this.label7 = new System.Windows.Forms.Label();
+			this.label6 = new System.Windows.Forms.Label();
+			this.listBoxControllerOutputs = new System.Windows.Forms.ListBox();
+			this.label3 = new System.Windows.Forms.Label();
+			this.comboBoxControllerOutputsControllers = new System.Windows.Forms.ComboBox();
+			this.label2 = new System.Windows.Forms.Label();
 			this.tabPage5 = new System.Windows.Forms.TabPage();
 			this.buttonFileTemplateSetup = new System.Windows.Forms.Button();
 			this.comboBoxFileTemplates = new System.Windows.Forms.ComboBox();
@@ -99,29 +98,21 @@
 			this.treeViewNodes = new System.Windows.Forms.TreeView();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.tabPage3 = new System.Windows.Forms.TabPage();
-			this.label2 = new System.Windows.Forms.Label();
-			this.comboBoxControllerOutputsControllers = new System.Windows.Forms.ComboBox();
-			this.label3 = new System.Windows.Forms.Label();
-			this.listBoxControllerOutputs = new System.Windows.Forms.ListBox();
-			this.label6 = new System.Windows.Forms.Label();
-			this.label7 = new System.Windows.Forms.Label();
-			this.textBoxControllerOutputName = new System.Windows.Forms.TextBox();
-			this.buttonUpdateControllerOutputName = new System.Windows.Forms.Button();
-			this.buttonCommitControllerOutputChanges = new System.Windows.Forms.Button();
+			this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.label8 = new System.Windows.Forms.Label();
+			this.label9 = new System.Windows.Forms.Label();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
 			this.groupBox2.SuspendLayout();
-			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownOutputCount)).BeginInit();
+			this.tabPage3.SuspendLayout();
 			this.tabPage5.SuspendLayout();
 			this.tabPage6.SuspendLayout();
 			this.tabPage7.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownEffectLength)).BeginInit();
 			this.tabPage8.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
-			this.tabPage3.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -259,7 +250,6 @@
 			// tabPage2
 			// 
 			this.tabPage2.Controls.Add(this.groupBox2);
-			this.tabPage2.Controls.Add(this.groupBox1);
 			this.tabPage2.Location = new System.Drawing.Point(4, 22);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -272,9 +262,13 @@
 			// 
 			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox2.Controls.Add(this.label9);
+			this.groupBox2.Controls.Add(this.label8);
 			this.groupBox2.Controls.Add(this.buttonDeleteController);
+			this.groupBox2.Controls.Add(this.comboBoxOutputModule);
 			this.groupBox2.Controls.Add(this.comboBoxCombinationStrategy);
 			this.groupBox2.Controls.Add(this.label24);
+			this.groupBox2.Controls.Add(this.numericUpDownOutputCount);
 			this.groupBox2.Controls.Add(this.buttonControllerSetup);
 			this.groupBox2.Controls.Add(this.buttonLinkController);
 			this.groupBox2.Controls.Add(this.buttonRemoveControllerLink);
@@ -285,11 +279,9 @@
 			this.groupBox2.Controls.Add(this.buttonAddController);
 			this.groupBox2.Controls.Add(this.textBoxControllerName);
 			this.groupBox2.Controls.Add(this.label10);
-			this.groupBox2.Controls.Add(this.labelSelectedDefinition);
-			this.groupBox2.Controls.Add(this.label9);
-			this.groupBox2.Location = new System.Drawing.Point(25, 221);
+			this.groupBox2.Location = new System.Drawing.Point(22, 19);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(465, 276);
+			this.groupBox2.Size = new System.Drawing.Size(465, 451);
 			this.groupBox2.TabIndex = 1;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Controller";
@@ -297,7 +289,7 @@
 			// buttonDeleteController
 			// 
 			this.buttonDeleteController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonDeleteController.Location = new System.Drawing.Point(288, 247);
+			this.buttonDeleteController.Location = new System.Drawing.Point(288, 422);
 			this.buttonDeleteController.Name = "buttonDeleteController";
 			this.buttonDeleteController.Size = new System.Drawing.Size(75, 23);
 			this.buttonDeleteController.TabIndex = 15;
@@ -311,7 +303,7 @@
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.comboBoxCombinationStrategy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxCombinationStrategy.FormattingEnabled = true;
-			this.comboBoxCombinationStrategy.Location = new System.Drawing.Point(126, 190);
+			this.comboBoxCombinationStrategy.Location = new System.Drawing.Point(126, 365);
 			this.comboBoxCombinationStrategy.Name = "comboBoxCombinationStrategy";
 			this.comboBoxCombinationStrategy.Size = new System.Drawing.Size(320, 21);
 			this.comboBoxCombinationStrategy.TabIndex = 14;
@@ -320,7 +312,7 @@
 			// 
 			this.label24.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label24.AutoSize = true;
-			this.label24.Location = new System.Drawing.Point(9, 193);
+			this.label24.Location = new System.Drawing.Point(9, 368);
 			this.label24.Name = "label24";
 			this.label24.Size = new System.Drawing.Size(108, 13);
 			this.label24.TabIndex = 13;
@@ -329,7 +321,7 @@
 			// buttonControllerSetup
 			// 
 			this.buttonControllerSetup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonControllerSetup.Location = new System.Drawing.Point(6, 247);
+			this.buttonControllerSetup.Location = new System.Drawing.Point(6, 422);
 			this.buttonControllerSetup.Name = "buttonControllerSetup";
 			this.buttonControllerSetup.Size = new System.Drawing.Size(75, 23);
 			this.buttonControllerSetup.TabIndex = 12;
@@ -340,7 +332,7 @@
 			// buttonLinkController
 			// 
 			this.buttonLinkController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonLinkController.Location = new System.Drawing.Point(303, 215);
+			this.buttonLinkController.Location = new System.Drawing.Point(303, 390);
 			this.buttonLinkController.Name = "buttonLinkController";
 			this.buttonLinkController.Size = new System.Drawing.Size(75, 23);
 			this.buttonLinkController.TabIndex = 11;
@@ -351,7 +343,7 @@
 			// buttonRemoveControllerLink
 			// 
 			this.buttonRemoveControllerLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonRemoveControllerLink.Location = new System.Drawing.Point(384, 215);
+			this.buttonRemoveControllerLink.Location = new System.Drawing.Point(384, 390);
 			this.buttonRemoveControllerLink.Name = "buttonRemoveControllerLink";
 			this.buttonRemoveControllerLink.Size = new System.Drawing.Size(75, 23);
 			this.buttonRemoveControllerLink.TabIndex = 10;
@@ -365,7 +357,7 @@
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.comboBoxLinkedTo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxLinkedTo.FormattingEnabled = true;
-			this.comboBoxLinkedTo.Location = new System.Drawing.Point(126, 217);
+			this.comboBoxLinkedTo.Location = new System.Drawing.Point(126, 392);
 			this.comboBoxLinkedTo.Name = "comboBoxLinkedTo";
 			this.comboBoxLinkedTo.Size = new System.Drawing.Size(169, 21);
 			this.comboBoxLinkedTo.TabIndex = 9;
@@ -374,7 +366,7 @@
 			// 
 			this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label11.AutoSize = true;
-			this.label11.Location = new System.Drawing.Point(63, 220);
+			this.label11.Location = new System.Drawing.Point(63, 395);
 			this.label11.Name = "label11";
 			this.label11.Size = new System.Drawing.Size(54, 13);
 			this.label11.TabIndex = 8;
@@ -383,7 +375,7 @@
 			// buttonUpdateController
 			// 
 			this.buttonUpdateController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonUpdateController.Location = new System.Drawing.Point(207, 247);
+			this.buttonUpdateController.Location = new System.Drawing.Point(207, 422);
 			this.buttonUpdateController.Name = "buttonUpdateController";
 			this.buttonUpdateController.Size = new System.Drawing.Size(75, 23);
 			this.buttonUpdateController.TabIndex = 6;
@@ -398,12 +390,13 @@
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.listViewControllers.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader4,
-            this.columnHeader5});
+            this.columnHeader5,
+            this.columnHeader6});
 			this.listViewControllers.FullRowSelect = true;
 			this.listViewControllers.Location = new System.Drawing.Point(19, 19);
 			this.listViewControllers.MultiSelect = false;
 			this.listViewControllers.Name = "listViewControllers";
-			this.listViewControllers.Size = new System.Drawing.Size(427, 97);
+			this.listViewControllers.Size = new System.Drawing.Size(427, 252);
 			this.listViewControllers.TabIndex = 5;
 			this.listViewControllers.UseCompatibleStateImageBehavior = false;
 			this.listViewControllers.View = System.Windows.Forms.View.Details;
@@ -416,13 +409,13 @@
 			// 
 			// columnHeader5
 			// 
-			this.columnHeader5.Text = "Type";
-			this.columnHeader5.Width = 218;
+			this.columnHeader5.Text = "Outputs";
+			this.columnHeader5.Width = 63;
 			// 
 			// buttonAddController
 			// 
 			this.buttonAddController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonAddController.Location = new System.Drawing.Point(126, 247);
+			this.buttonAddController.Location = new System.Drawing.Point(126, 422);
 			this.buttonAddController.Name = "buttonAddController";
 			this.buttonAddController.Size = new System.Drawing.Size(75, 23);
 			this.buttonAddController.TabIndex = 4;
@@ -434,7 +427,7 @@
 			// 
 			this.textBoxControllerName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxControllerName.Location = new System.Drawing.Point(126, 164);
+			this.textBoxControllerName.Location = new System.Drawing.Point(126, 286);
 			this.textBoxControllerName.Name = "textBoxControllerName";
 			this.textBoxControllerName.Size = new System.Drawing.Size(321, 20);
 			this.textBoxControllerName.TabIndex = 3;
@@ -443,83 +436,11 @@
 			// 
 			this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(79, 167);
+			this.label10.Location = new System.Drawing.Point(79, 289);
 			this.label10.Name = "label10";
 			this.label10.Size = new System.Drawing.Size(38, 13);
 			this.label10.TabIndex = 2;
 			this.label10.Text = "Name:";
-			// 
-			// labelSelectedDefinition
-			// 
-			this.labelSelectedDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.labelSelectedDefinition.AutoSize = true;
-			this.labelSelectedDefinition.Location = new System.Drawing.Point(123, 144);
-			this.labelSelectedDefinition.Name = "labelSelectedDefinition";
-			this.labelSelectedDefinition.Size = new System.Drawing.Size(16, 13);
-			this.labelSelectedDefinition.TabIndex = 1;
-			this.labelSelectedDefinition.Text = "   ";
-			// 
-			// label9
-			// 
-			this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(20, 144);
-			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(97, 13);
-			this.label9.TabIndex = 0;
-			this.label9.Text = "Selected definition:";
-			// 
-			// groupBox1
-			// 
-			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.groupBox1.Controls.Add(this.buttonDeleteControllerDefinition);
-			this.groupBox1.Controls.Add(this.buttonUpdateControllerDefinition);
-			this.groupBox1.Controls.Add(this.buttonAddControllerDefinition);
-			this.groupBox1.Controls.Add(this.comboBoxOutputModule);
-			this.groupBox1.Controls.Add(this.numericUpDownOutputCount);
-			this.groupBox1.Controls.Add(this.textBoxTypeName);
-			this.groupBox1.Controls.Add(this.listViewControllerDefinitions);
-			this.groupBox1.Location = new System.Drawing.Point(25, 27);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(465, 188);
-			this.groupBox1.TabIndex = 0;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "Definition";
-			// 
-			// buttonDeleteControllerDefinition
-			// 
-			this.buttonDeleteControllerDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonDeleteControllerDefinition.Location = new System.Drawing.Point(198, 159);
-			this.buttonDeleteControllerDefinition.Name = "buttonDeleteControllerDefinition";
-			this.buttonDeleteControllerDefinition.Size = new System.Drawing.Size(75, 23);
-			this.buttonDeleteControllerDefinition.TabIndex = 6;
-			this.buttonDeleteControllerDefinition.Text = "Delete";
-			this.buttonDeleteControllerDefinition.UseVisualStyleBackColor = true;
-			this.buttonDeleteControllerDefinition.Click += new System.EventHandler(this.buttonDeleteControllerDefinition_Click);
-			// 
-			// buttonUpdateControllerDefinition
-			// 
-			this.buttonUpdateControllerDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonUpdateControllerDefinition.Location = new System.Drawing.Point(117, 159);
-			this.buttonUpdateControllerDefinition.Name = "buttonUpdateControllerDefinition";
-			this.buttonUpdateControllerDefinition.Size = new System.Drawing.Size(75, 23);
-			this.buttonUpdateControllerDefinition.TabIndex = 5;
-			this.buttonUpdateControllerDefinition.Text = "Update";
-			this.buttonUpdateControllerDefinition.UseVisualStyleBackColor = true;
-			this.buttonUpdateControllerDefinition.Click += new System.EventHandler(this.buttonUpdateControllerDefinition_Click);
-			// 
-			// buttonAddControllerDefinition
-			// 
-			this.buttonAddControllerDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonAddControllerDefinition.Location = new System.Drawing.Point(36, 159);
-			this.buttonAddControllerDefinition.Name = "buttonAddControllerDefinition";
-			this.buttonAddControllerDefinition.Size = new System.Drawing.Size(75, 23);
-			this.buttonAddControllerDefinition.TabIndex = 4;
-			this.buttonAddControllerDefinition.Text = "Add";
-			this.buttonAddControllerDefinition.UseVisualStyleBackColor = true;
-			this.buttonAddControllerDefinition.Click += new System.EventHandler(this.buttonAddControllerDefinition_Click);
 			// 
 			// comboBoxOutputModule
 			// 
@@ -527,7 +448,7 @@
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.comboBoxOutputModule.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxOutputModule.FormattingEnabled = true;
-			this.comboBoxOutputModule.Location = new System.Drawing.Point(222, 120);
+			this.comboBoxOutputModule.Location = new System.Drawing.Point(126, 338);
 			this.comboBoxOutputModule.Name = "comboBoxOutputModule";
 			this.comboBoxOutputModule.Size = new System.Drawing.Size(211, 21);
 			this.comboBoxOutputModule.TabIndex = 3;
@@ -535,7 +456,7 @@
 			// numericUpDownOutputCount
 			// 
 			this.numericUpDownOutputCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.numericUpDownOutputCount.Location = new System.Drawing.Point(158, 121);
+			this.numericUpDownOutputCount.Location = new System.Drawing.Point(126, 312);
 			this.numericUpDownOutputCount.Maximum = new decimal(new int[] {
             65536,
             0,
@@ -555,46 +476,106 @@
             0,
             0});
 			// 
-			// textBoxTypeName
+			// tabPage3
 			// 
-			this.textBoxTypeName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.textBoxTypeName.Location = new System.Drawing.Point(23, 121);
-			this.textBoxTypeName.Name = "textBoxTypeName";
-			this.textBoxTypeName.Size = new System.Drawing.Size(126, 20);
-			this.textBoxTypeName.TabIndex = 1;
+			this.tabPage3.Controls.Add(this.buttonCommitControllerOutputChanges);
+			this.tabPage3.Controls.Add(this.buttonUpdateControllerOutputName);
+			this.tabPage3.Controls.Add(this.textBoxControllerOutputName);
+			this.tabPage3.Controls.Add(this.label7);
+			this.tabPage3.Controls.Add(this.label6);
+			this.tabPage3.Controls.Add(this.listBoxControllerOutputs);
+			this.tabPage3.Controls.Add(this.label3);
+			this.tabPage3.Controls.Add(this.comboBoxControllerOutputsControllers);
+			this.tabPage3.Controls.Add(this.label2);
+			this.tabPage3.Location = new System.Drawing.Point(4, 22);
+			this.tabPage3.Name = "tabPage3";
+			this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage3.Size = new System.Drawing.Size(512, 500);
+			this.tabPage3.TabIndex = 8;
+			this.tabPage3.Text = "Controller Outputs";
+			this.tabPage3.UseVisualStyleBackColor = true;
 			// 
-			// listViewControllerDefinitions
+			// buttonCommitControllerOutputChanges
 			// 
-			this.listViewControllerDefinitions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.listViewControllerDefinitions.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2,
-            this.columnHeader3});
-			this.listViewControllerDefinitions.FullRowSelect = true;
-			this.listViewControllerDefinitions.Location = new System.Drawing.Point(19, 19);
-			this.listViewControllerDefinitions.MultiSelect = false;
-			this.listViewControllerDefinitions.Name = "listViewControllerDefinitions";
-			this.listViewControllerDefinitions.Size = new System.Drawing.Size(427, 95);
-			this.listViewControllerDefinitions.TabIndex = 0;
-			this.listViewControllerDefinitions.UseCompatibleStateImageBehavior = false;
-			this.listViewControllerDefinitions.View = System.Windows.Forms.View.Details;
-			this.listViewControllerDefinitions.SelectedIndexChanged += new System.EventHandler(this.listViewControllerDefinitions_SelectedIndexChanged);
+			this.buttonCommitControllerOutputChanges.Location = new System.Drawing.Point(35, 459);
+			this.buttonCommitControllerOutputChanges.Name = "buttonCommitControllerOutputChanges";
+			this.buttonCommitControllerOutputChanges.Size = new System.Drawing.Size(110, 23);
+			this.buttonCommitControllerOutputChanges.TabIndex = 8;
+			this.buttonCommitControllerOutputChanges.Text = "Commit Changes";
+			this.buttonCommitControllerOutputChanges.UseVisualStyleBackColor = true;
+			this.buttonCommitControllerOutputChanges.Click += new System.EventHandler(this.buttonCommitControllerOutputChanges_Click);
 			// 
-			// columnHeader1
+			// buttonUpdateControllerOutputName
 			// 
-			this.columnHeader1.Text = "Type name";
-			this.columnHeader1.Width = 137;
+			this.buttonUpdateControllerOutputName.Location = new System.Drawing.Point(351, 412);
+			this.buttonUpdateControllerOutputName.Name = "buttonUpdateControllerOutputName";
+			this.buttonUpdateControllerOutputName.Size = new System.Drawing.Size(75, 23);
+			this.buttonUpdateControllerOutputName.TabIndex = 7;
+			this.buttonUpdateControllerOutputName.Text = "Update";
+			this.buttonUpdateControllerOutputName.UseVisualStyleBackColor = true;
+			this.buttonUpdateControllerOutputName.Click += new System.EventHandler(this.buttonUpdateControllerOutputName_Click);
 			// 
-			// columnHeader2
+			// textBoxControllerOutputName
 			// 
-			this.columnHeader2.Text = "Outputs";
+			this.textBoxControllerOutputName.Location = new System.Drawing.Point(109, 415);
+			this.textBoxControllerOutputName.Name = "textBoxControllerOutputName";
+			this.textBoxControllerOutputName.Size = new System.Drawing.Size(236, 20);
+			this.textBoxControllerOutputName.TabIndex = 6;
 			// 
-			// columnHeader3
+			// label7
 			// 
-			this.columnHeader3.Text = "Output module";
-			this.columnHeader3.Width = 156;
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(32, 418);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(71, 13);
+			this.label7.TabIndex = 5;
+			this.label7.Text = "Output name:";
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(32, 372);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(299, 13);
+			this.label6.TabIndex = 4;
+			this.label6.Text = "There are other Output properties that could be edited as well.";
+			// 
+			// listBoxControllerOutputs
+			// 
+			this.listBoxControllerOutputs.FormattingEnabled = true;
+			this.listBoxControllerOutputs.Location = new System.Drawing.Point(30, 90);
+			this.listBoxControllerOutputs.Name = "listBoxControllerOutputs";
+			this.listBoxControllerOutputs.Size = new System.Drawing.Size(418, 264);
+			this.listBoxControllerOutputs.TabIndex = 3;
+			this.listBoxControllerOutputs.SelectedIndexChanged += new System.EventHandler(this.listBoxControllerOutputs_SelectedIndexChanged);
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(27, 74);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(44, 13);
+			this.label3.TabIndex = 2;
+			this.label3.Text = "Outputs";
+			// 
+			// comboBoxControllerOutputsControllers
+			// 
+			this.comboBoxControllerOutputsControllers.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxControllerOutputsControllers.FormattingEnabled = true;
+			this.comboBoxControllerOutputsControllers.Location = new System.Drawing.Point(84, 22);
+			this.comboBoxControllerOutputsControllers.Name = "comboBoxControllerOutputsControllers";
+			this.comboBoxControllerOutputsControllers.Size = new System.Drawing.Size(364, 21);
+			this.comboBoxControllerOutputsControllers.TabIndex = 1;
+			this.comboBoxControllerOutputsControllers.SelectedIndexChanged += new System.EventHandler(this.comboBoxControllerOutputsControllers_SelectedIndexChanged);
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(27, 25);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(51, 13);
+			this.label2.TabIndex = 0;
+			this.label2.Text = "Controller";
 			// 
 			// tabPage5
 			// 
@@ -929,106 +910,30 @@
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "File";
 			// 
-			// tabPage3
+			// columnHeader6
 			// 
-			this.tabPage3.Controls.Add(this.buttonCommitControllerOutputChanges);
-			this.tabPage3.Controls.Add(this.buttonUpdateControllerOutputName);
-			this.tabPage3.Controls.Add(this.textBoxControllerOutputName);
-			this.tabPage3.Controls.Add(this.label7);
-			this.tabPage3.Controls.Add(this.label6);
-			this.tabPage3.Controls.Add(this.listBoxControllerOutputs);
-			this.tabPage3.Controls.Add(this.label3);
-			this.tabPage3.Controls.Add(this.comboBoxControllerOutputsControllers);
-			this.tabPage3.Controls.Add(this.label2);
-			this.tabPage3.Location = new System.Drawing.Point(4, 22);
-			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage3.Size = new System.Drawing.Size(512, 500);
-			this.tabPage3.TabIndex = 8;
-			this.tabPage3.Text = "Controller Outputs";
-			this.tabPage3.UseVisualStyleBackColor = true;
+			this.columnHeader6.Text = "Output module";
+			this.columnHeader6.Width = 176;
 			// 
-			// label2
+			// label8
 			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(27, 25);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(51, 13);
-			this.label2.TabIndex = 0;
-			this.label2.Text = "Controller";
+			this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.label8.AutoSize = true;
+			this.label8.Location = new System.Drawing.Point(45, 314);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(72, 13);
+			this.label8.TabIndex = 16;
+			this.label8.Text = "Output count:";
 			// 
-			// comboBoxControllerOutputsControllers
+			// label9
 			// 
-			this.comboBoxControllerOutputsControllers.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxControllerOutputsControllers.FormattingEnabled = true;
-			this.comboBoxControllerOutputsControllers.Location = new System.Drawing.Point(84, 22);
-			this.comboBoxControllerOutputsControllers.Name = "comboBoxControllerOutputsControllers";
-			this.comboBoxControllerOutputsControllers.Size = new System.Drawing.Size(364, 21);
-			this.comboBoxControllerOutputsControllers.TabIndex = 1;
-			this.comboBoxControllerOutputsControllers.SelectedIndexChanged += new System.EventHandler(this.comboBoxControllerOutputsControllers_SelectedIndexChanged);
-			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(27, 74);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(44, 13);
-			this.label3.TabIndex = 2;
-			this.label3.Text = "Outputs";
-			// 
-			// listBoxControllerOutputs
-			// 
-			this.listBoxControllerOutputs.FormattingEnabled = true;
-			this.listBoxControllerOutputs.Location = new System.Drawing.Point(30, 90);
-			this.listBoxControllerOutputs.Name = "listBoxControllerOutputs";
-			this.listBoxControllerOutputs.Size = new System.Drawing.Size(418, 264);
-			this.listBoxControllerOutputs.TabIndex = 3;
-			this.listBoxControllerOutputs.SelectedIndexChanged += new System.EventHandler(this.listBoxControllerOutputs_SelectedIndexChanged);
-			// 
-			// label6
-			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(32, 372);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(299, 13);
-			this.label6.TabIndex = 4;
-			this.label6.Text = "There are other Output properties that could be edited as well.";
-			// 
-			// label7
-			// 
-			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(32, 418);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(71, 13);
-			this.label7.TabIndex = 5;
-			this.label7.Text = "Output name:";
-			// 
-			// textBoxControllerOutputName
-			// 
-			this.textBoxControllerOutputName.Location = new System.Drawing.Point(109, 415);
-			this.textBoxControllerOutputName.Name = "textBoxControllerOutputName";
-			this.textBoxControllerOutputName.Size = new System.Drawing.Size(236, 20);
-			this.textBoxControllerOutputName.TabIndex = 6;
-			// 
-			// buttonUpdateControllerOutputName
-			// 
-			this.buttonUpdateControllerOutputName.Location = new System.Drawing.Point(351, 412);
-			this.buttonUpdateControllerOutputName.Name = "buttonUpdateControllerOutputName";
-			this.buttonUpdateControllerOutputName.Size = new System.Drawing.Size(75, 23);
-			this.buttonUpdateControllerOutputName.TabIndex = 7;
-			this.buttonUpdateControllerOutputName.Text = "Update";
-			this.buttonUpdateControllerOutputName.UseVisualStyleBackColor = true;
-			this.buttonUpdateControllerOutputName.Click += new System.EventHandler(this.buttonUpdateControllerOutputName_Click);
-			// 
-			// buttonCommitControllerOutputChanges
-			// 
-			this.buttonCommitControllerOutputChanges.Location = new System.Drawing.Point(35, 459);
-			this.buttonCommitControllerOutputChanges.Name = "buttonCommitControllerOutputChanges";
-			this.buttonCommitControllerOutputChanges.Size = new System.Drawing.Size(110, 23);
-			this.buttonCommitControllerOutputChanges.TabIndex = 8;
-			this.buttonCommitControllerOutputChanges.Text = "Commit Changes";
-			this.buttonCommitControllerOutputChanges.UseVisualStyleBackColor = true;
-			this.buttonCommitControllerOutputChanges.Click += new System.EventHandler(this.buttonCommitControllerOutputChanges_Click);
+			this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.label9.AutoSize = true;
+			this.label9.Location = new System.Drawing.Point(38, 341);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(79, 13);
+			this.label9.TabIndex = 17;
+			this.label9.Text = "Output module:";
 			// 
 			// Form1
 			// 
@@ -1047,9 +952,9 @@
 			this.tabPage2.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
-			this.groupBox1.ResumeLayout(false);
-			this.groupBox1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownOutputCount)).EndInit();
+			this.tabPage3.ResumeLayout(false);
+			this.tabPage3.PerformLayout();
 			this.tabPage5.ResumeLayout(false);
 			this.tabPage5.PerformLayout();
 			this.tabPage6.ResumeLayout(false);
@@ -1059,8 +964,6 @@
 			this.tabPage8.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
-			this.tabPage3.ResumeLayout(false);
-			this.tabPage3.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1080,21 +983,11 @@
 		private System.Windows.Forms.Button buttonShowEditor;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Button buttonUpdateControllerDefinition;
-        private System.Windows.Forms.Button buttonAddControllerDefinition;
+		private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.ComboBox comboBoxOutputModule;
-        private System.Windows.Forms.NumericUpDown numericUpDownOutputCount;
-        private System.Windows.Forms.TextBox textBoxTypeName;
-        private System.Windows.Forms.ListView listViewControllerDefinitions;
-        private System.Windows.Forms.ColumnHeader columnHeader1;
-        private System.Windows.Forms.ColumnHeader columnHeader2;
-        private System.Windows.Forms.ColumnHeader columnHeader3;
+		private System.Windows.Forms.NumericUpDown numericUpDownOutputCount;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label labelSelectedDefinition;
-        private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox textBoxControllerName;
         private System.Windows.Forms.Button buttonAddController;
         private System.Windows.Forms.ListView listViewControllers;
@@ -1138,7 +1031,6 @@
 		private System.Windows.Forms.Button buttonImportNodeTemplate;
 		private System.Windows.Forms.ComboBox comboBoxNodeTemplates;
 		private System.Windows.Forms.Button buttonDeleteController;
-		private System.Windows.Forms.Button buttonDeleteControllerDefinition;
 		private System.Windows.Forms.TabPage tabPage3;
 		private System.Windows.Forms.Button buttonUpdateControllerOutputName;
 		private System.Windows.Forms.TextBox textBoxControllerOutputName;
@@ -1149,6 +1041,9 @@
 		private System.Windows.Forms.ComboBox comboBoxControllerOutputsControllers;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Button buttonCommitControllerOutputChanges;
+		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.ColumnHeader columnHeader6;
 	}
 }
 
