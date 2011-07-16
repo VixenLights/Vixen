@@ -13,13 +13,11 @@ namespace CommandStandard {
 		private const string ATTR_PARAM_NAME = "name";
 		private const string ATTR_PARAM_TYPE = "type";
 
-		private string m_parameterString;
-		private string m_name;
+		private string _name;
 
 		public CommandParameterSpecification(string name, Type type) {
 			Name = name;
 			this.Type = type;
-			m_parameterString = _CreateParameterString();
 		}
 
 		internal CommandParameterSpecification(string parameterString) {
@@ -29,19 +27,17 @@ namespace CommandStandard {
 			}
 			this.Type = System.Type.GetType(parts[0].Trim(), true, true);
 			Name = parts[1].Trim();
-			m_parameterString = _CreateParameterString();
-		}
-
-		private string _CreateParameterString() {
-			return string.Format("{0}{1}{2}", this.Type.ToString(), TYPE_NAME_DELIMITER, Name);
 		}
 
 		public string Name {
-			get { return m_name; }
+			get { return _name; }
 			internal set {
+				if(value == null) throw new ArgumentNullException("Name");
 				if(value.Length == 0) throw new Exception("Parameters cannot have empty names.");
-				if(value.Contains(" ")) throw new Exception(string.Format("Parameter name ({0}) cannot contain spaces.", value));
-				m_name = value;
+				//Still true?
+				//-> Assumed to be language-dependent
+				//if(value.Contains(" ")) throw new Exception(string.Format("Parameter name ({0}) cannot contain spaces.", value));
+				_name = value;
 			}
 		}
 
@@ -62,7 +58,7 @@ namespace CommandStandard {
 		}
 
 		public override string ToString() {
-			return m_parameterString;
+			return this.Type.ToString() + " " + Name;
 		}
 	}
 
