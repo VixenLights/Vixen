@@ -16,13 +16,13 @@ namespace Vixen.Module {
 			foreach(ModuleImplementation moduleImplemenation in moduleImplemenations) {
 				obj = moduleImplemenation.GetType().GetProperty("Repository").GetValue(moduleImplemenation, null);
 				mi = obj.GetType().GetMethod("Add", new Type[] { typeof(Guid) });
-				_methods.Add("Add" + moduleImplemenation.ModuleTypeName, new ModuleImplementationMethod<LateBoundProcedure>(mi, obj));
+				_methods.Add("Add" + moduleImplemenation.TypeOfModule, new ModuleImplementationMethod<LateBoundProcedure>(mi, obj));
 				mi = obj.GetType().GetMethod("Get", new Type[] { typeof(Guid) });
-				_methods.Add("Get" + moduleImplemenation.ModuleTypeName, new ModuleImplementationMethod<LateBoundMethod>(mi, obj));
+				_methods.Add("Get" + moduleImplemenation.TypeOfModule, new ModuleImplementationMethod<LateBoundMethod>(mi, obj));
 				mi = obj.GetType().GetMethod("GetAll");
-				_methods.Add("GetAll" + moduleImplemenation.ModuleTypeName, new ModuleImplementationMethod<LateBoundMethod>(mi, obj));
+				_methods.Add("GetAll" + moduleImplemenation.TypeOfModule, new ModuleImplementationMethod<LateBoundMethod>(mi, obj));
 				mi = obj.GetType().GetMethod("Remove", new Type[] { typeof(Guid) });
-				_methods.Add("Remove" + moduleImplemenation.ModuleTypeName, new ModuleImplementationMethod<LateBoundProcedure>(mi, obj));
+				_methods.Add("Remove" + moduleImplemenation.TypeOfModule, new ModuleImplementationMethod<LateBoundProcedure>(mi, obj));
 			}
 		}
 

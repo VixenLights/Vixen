@@ -6,19 +6,19 @@ using Vixen.Common;
 using Vixen.Sys;
 
 namespace Vixen.Module {
-	class UnusedModuleRepository<T> : IModuleRepository<T>
+	class GenericModuleRepository<T> : IModuleRepository<T>
 		where T : class, IModuleInstance {
-		public void Add(Guid id) { }
-		
-		public T Get(Guid id) {
+		virtual public void Add(Guid id) { }
+
+		virtual public T Get(Guid id) {
 			return Modules.GetById(id) as T;
 		}
 
-		public T[] GetAll() {
+		virtual public T[] GetAll() {
 			return Modules.GetModuleDescriptors<T>().Select(x => Get(x.TypeId)).ToArray();
 		}
 
-		public void Remove(Guid id) { }
+		virtual public void Remove(Guid id) { }
 
 		object IModuleRepository.Get(Guid id) {
 			return Get(id);

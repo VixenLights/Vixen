@@ -11,7 +11,7 @@ namespace Vixen.Module {
 	}
 
 	public interface IModuleManagement<T> : IModuleManagement
-		where T : class {
+		where T : class, IModuleInstance {
 		new T Get(Guid id);
 		new T[] GetAll();
 		T Clone(T instance);

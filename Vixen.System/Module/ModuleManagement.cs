@@ -14,12 +14,12 @@ namespace Vixen.Module {
 			object obj;
 			MethodInfo mi;
 			foreach(ModuleImplementation moduleImplemenation in moduleImplemenations) {
-				//Specific reflection, really fragile, dammit.
+				//Specific reflection; really fragile, dammit.
 				obj = moduleImplemenation.GetType().GetProperty("Management").GetValue(moduleImplemenation, null);
 				mi = obj.GetType().GetMethod("Get", new Type[] { typeof(Guid) });
-				_methods.Add("Get" + moduleImplemenation.ModuleTypeName, new ModuleImplementationMethod<LateBoundMethod>(mi, obj));
+				_methods.Add("Get" + moduleImplemenation.TypeOfModule, new ModuleImplementationMethod<LateBoundMethod>(mi, obj));
 				mi = obj.GetType().GetMethod("GetAll");
-				_methods.Add("GetAll" + moduleImplemenation.ModuleTypeName, new ModuleImplementationMethod<LateBoundMethod>(mi, obj));
+				_methods.Add("GetAll" + moduleImplemenation.TypeOfModule, new ModuleImplementationMethod<LateBoundMethod>(mi, obj));
 			}
 		}
 

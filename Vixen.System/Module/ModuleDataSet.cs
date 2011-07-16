@@ -27,7 +27,7 @@ namespace Vixen.Module {
 		/// <param name="module"></param>
 		public void GetModuleTypeData(IModuleInstance module) {
 			if(module != null) {
-				_GetModuleData(module, new Tuple<Guid, Guid>(module.TypeId, module.TypeId));
+				_GetModuleData(module, new Tuple<Guid, Guid>(module.Descriptor.TypeId, module.Descriptor.TypeId));
 			}
 		}
 
@@ -38,7 +38,7 @@ namespace Vixen.Module {
 		/// </summary>
 		/// <param name="module"></param>
 		public void GetModuleInstanceData(IModuleInstance module) {
-			_GetModuleData(module, new Tuple<Guid,Guid>(module.TypeId,module.InstanceId));
+			_GetModuleData(module, new Tuple<Guid, Guid>(module.Descriptor.TypeId, module.InstanceId));
 		}
 
 		private void _GetModuleData(IModuleInstance module, Tuple<Guid,Guid> key) {
@@ -48,10 +48,10 @@ namespace Vixen.Module {
 			if(!_dataModels.TryGetValue(key, out dataModel)) {
 				// The module may not have defined a data model because it may not have a
 				// need for data.
-				Type moduleDataType = Modules.GetDescriptorById(module.TypeId).ModuleDataClass;
+				Type moduleDataType = Modules.GetDescriptorById(module.Descriptor.TypeId).ModuleDataClass;
 				if(moduleDataType != null) {
 					dataModel = Activator.CreateInstance(moduleDataType) as IModuleDataModel;
-					_SetPedigree(dataModel, module.TypeId, key.Item2);
+					_SetPedigree(dataModel, module.Descriptor.TypeId, key.Item2);
 					module.ModuleData = dataModel;
 					_Add(this, key, module);
 				} else {
@@ -205,7 +205,8 @@ namespace Vixen.Module {
 			T instance;
 			foreach(Tuple<Guid, Guid> typeInstance in _dataModels.Keys) {
 				if(Modules.IsOfType(typeInstance.Item1, typeof(T))) {
-					instance = Modules.GetById(typeInstance.Item1) as T;
+					IModuleManagement moduleManager = Modules.GetModuleManager<T>();
+					instance = moduleManager.Get(typeInstance.Item1) as T;
 					instance.InstanceId = typeInstance.Item2;
 					GetModuleInstanceData(instance);
 					yield return instance;
@@ -222,17 +223,29 @@ namespace Vixen.Module {
 		}
 
 		public IModuleDataSet Clone() {
+			ModuleDataSet newDataSet = new ModuleDataSet();
+			_Clone(this, newDataSet);
+			return newDataSet;
+		}
+
+		public void Clone(IModuleDataSet sourceDataSet) {
+			Clear();
+			_Clone(sourceDataSet as ModuleDataSet, this);
+		}
+
+		private void _Clone(ModuleDataSet source, ModuleDataSet destination) {
+			if(source == null) throw new ArgumentNullException("source");
+			if(destination == null) throw new ArgumentNullException("destination");
+
 			// Clone exactly, assuming unchanged type and instance ids for the
 			// modules the data belongs to.
-			ModuleDataSet newDataSet = new ModuleDataSet();
 			IModuleDataModel newModel;
-			foreach(IModuleDataModel dataModel in _dataModels.Values) {
+			foreach(IModuleDataModel dataModel in source._dataModels.Values) {
 				newModel = dataModel.Clone();
 				newModel.ModuleTypeId = dataModel.ModuleTypeId;
 				newModel.ModuleInstanceId = dataModel.ModuleInstanceId;
-				newDataSet.Add(newModel);
+				destination.Add(newModel);
 			}
-			return newDataSet;
 		}
 
 		/// <summary>
@@ -242,10 +255,10 @@ namespace Vixen.Module {
 		/// <param name="dataModel"></param>
 		/// <returns></returns>
 		public IModuleDataModel CloneTypeData(IModuleInstance sourceModule) {
-			if(_dataModels.ContainsKey(new Tuple<Guid, Guid>(sourceModule.TypeId, sourceModule.TypeId))) {
+			if(_dataModels.ContainsKey(new Tuple<Guid, Guid>(sourceModule.Descriptor.TypeId, sourceModule.Descriptor.TypeId))) {
 				IModuleDataModel newInstance = sourceModule.ModuleData.Clone();
-				newInstance.ModuleTypeId = sourceModule.TypeId;
-				newInstance.ModuleInstanceId = sourceModule.TypeId;
+				newInstance.ModuleTypeId = sourceModule.Descriptor.TypeId;
+				newInstance.ModuleInstanceId = sourceModule.Descriptor.TypeId;
 				return newInstance;
 			}
 			return null;
@@ -258,9 +271,9 @@ namespace Vixen.Module {
 		/// <param name="dataModel"></param>
 		/// <returns></returns>
 		public IModuleDataModel CloneInstanceData(IModuleInstance sourceModule, IModuleInstance destinationModule) {
-			if(_dataModels.ContainsKey(new Tuple<Guid, Guid>(sourceModule.TypeId, sourceModule.InstanceId))) {
+			if(_dataModels.ContainsKey(new Tuple<Guid, Guid>(sourceModule.Descriptor.TypeId, sourceModule.InstanceId))) {
 				IModuleDataModel newInstance = sourceModule.ModuleData.Clone();
-				newInstance.ModuleTypeId = sourceModule.TypeId;
+				newInstance.ModuleTypeId = sourceModule.Descriptor.TypeId;
 				newInstance.ModuleInstanceId = destinationModule.InstanceId;
 				return newInstance;
 			}

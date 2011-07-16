@@ -21,6 +21,7 @@ namespace Vixen.Module {
         void Deserialize(string xmlText);
 		void Clear();
 		IModuleDataSet Clone();
+		void Clone(IModuleDataSet sourceDataSet);
 		IModuleDataModel CloneTypeData(IModuleInstance sourceModule);
 		IModuleDataModel CloneInstanceData(IModuleInstance sourceModule, IModuleInstance destinationModule);
 	}

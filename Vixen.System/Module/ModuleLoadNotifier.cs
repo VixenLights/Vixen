@@ -19,9 +19,9 @@ namespace Vixen.Module {
 				//Specific reflection, really fragile, dammit.
 				obj = moduleImplementation.GetType().GetProperty("ModuleTypeLoader").GetValue(moduleImplementation, null);
 				mi = obj.GetType().GetMethod("ModuleLoaded");
-				_methods.Add(moduleImplementation.ModuleTypeName + "ModuleLoaded", new ModuleImplementationMethod<LateBoundProcedure>(mi, obj));
+				_methods.Add(moduleImplementation.TypeOfModule + "ModuleLoaded", new ModuleImplementationMethod<LateBoundProcedure>(mi, obj));
 				mi = obj.GetType().GetMethod("ModuleUnloading");
-				_methods.Add(moduleImplementation.ModuleTypeName + "ModuleUnloading", new ModuleImplementationMethod<LateBoundProcedure>(mi, obj));
+				_methods.Add(moduleImplementation.TypeOfModule + "ModuleUnloading", new ModuleImplementationMethod<LateBoundProcedure>(mi, obj));
 			}
 		}
 

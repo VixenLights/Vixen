@@ -13,7 +13,7 @@ namespace Vixen.Module {
 	}
 
 	interface IModuleRepository<T> : IModuleRepository
-		where T : class {
+		where T : class, IModuleInstance {
 		new T Get(Guid id);
 		new T[] GetAll();
 	}

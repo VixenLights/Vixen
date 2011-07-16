@@ -8,23 +8,23 @@ namespace Vixen.Module {
 	abstract class ModuleImplementation {
 		protected ModuleImplementation(Type moduleInstanceType) {
 			// Get the name from the ModuleTypeAttribute of the superclass.
-			this.ModuleTypeName = (this.GetType().GetCustomAttributes(typeof(ModuleTypeAttribute), true).First() as ModuleTypeAttribute).Name;
+			TypeOfModuleAttribute typeOfModule = (this.GetType().GetCustomAttributes(typeof(TypeOfModuleAttribute), true).FirstOrDefault() as TypeOfModuleAttribute);
+			if(typeOfModule == null) throw new InvalidOperationException("Type " + moduleInstanceType + " is not a valid module type.");
+			this.TypeOfModule = typeOfModule.Name;
 			ModuleInstanceType = moduleInstanceType;
 		}
 
-		public string ModuleTypeName { get; private set; } // i.e. "Output"
+		public string TypeOfModule { get; private set; } // i.e. "Output"
 		public Type ModuleInstanceType { get; private set; } // i.e. "IOutputModuleInstance"
-		public IModuleLoadNotification ModuleTypeLoader { get; protected set; }
 
 		abstract public IModuleRepository Repository { get; protected set; }
 		abstract public IModuleManagement Management { get; protected set; }
 	}
 
 	abstract class ModuleImplementation<T> : ModuleImplementation
-		where T : class {
-		protected ModuleImplementation(IModuleLoadNotification moduleTypeLoader, IModuleManagement<T> moduleManagement, IModuleRepository<T> moduleRepository)
+		where T : class, IModuleInstance {
+		protected ModuleImplementation(IModuleManagement<T> moduleManagement, IModuleRepository<T> moduleRepository)
 			: base(typeof(T)) {
-			this.ModuleTypeLoader = moduleTypeLoader;
 			this.Management = moduleManagement;
 			this.Repository = moduleRepository;
 		}

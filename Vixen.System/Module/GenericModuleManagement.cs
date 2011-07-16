@@ -6,17 +6,17 @@ using Vixen.Common;
 using Vixen.Sys;
 
 namespace Vixen.Module {
-	public class UnusedModuleManagement<T> : IModuleManagement<T>
+	public class GenericModuleManagement<T> : IModuleManagement<T>
 		where T : class, IModuleInstance {
-		public T Get(Guid id) {
-			return Modules.GetById(id) as T;
+		virtual public T Get(Guid id) {
+			return Modules.GetImplementation<T>().Repository.Get(id) as T;
 		}
 
 		object IModuleManagement.Get(Guid id) {
 			return Get(id);
 		}
 
-		public T[] GetAll() {
+		virtual public T[] GetAll() {
 			return Modules.GetModuleDescriptors<T>().Select(x => Get(x.TypeId)).ToArray();
 		}
 
@@ -24,7 +24,7 @@ namespace Vixen.Module {
 			return GetAll();
 		}
 
-		public T Clone(T instance) {
+		virtual public T Clone(T instance) {
 			// Can't clone something we know nothing about.
 			return null;
 		}
