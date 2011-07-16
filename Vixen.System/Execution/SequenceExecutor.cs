@@ -85,7 +85,7 @@ namespace Vixen.Execution {
 				OnPlaying(StartTime, EndTime);
 				
 				TimingSource = this.Sequence.TimingProvider.GetSelectedSource() ??
-					VixenSystem.Internal.GetModuleManager<ITimingModuleInstance, TimingModuleManagement>().GetDefault();
+					Modules.GetModuleManager<ITimingModuleInstance, TimingModuleManagement>().GetDefault();
 
 				// Initialize behaviors BEFORE data is pulled from the sequence,
 				// they may influence the data.

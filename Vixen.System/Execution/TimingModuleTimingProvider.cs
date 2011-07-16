@@ -19,7 +19,7 @@ namespace Vixen.Execution {
 		public ITiming GetTimingSource(ISequence sequence, string sourceName) {
 			IModuleDescriptor moduleDescriptor = Modules.GetModuleDescriptors<ITimingModuleInstance>().FirstOrDefault(x => x.TypeName == sourceName);
 			if(moduleDescriptor != null) {
-				return VixenSystem.ModuleManagement.GetTiming(moduleDescriptor.TypeId);
+				return Modules.ModuleManagement.GetTiming(moduleDescriptor.TypeId);
 			}
 			return null;
 		}
