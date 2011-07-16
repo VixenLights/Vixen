@@ -24,7 +24,7 @@ namespace Vixen.Sys {
 		/// <param name="filePath"></param>
 		/// <exception cref="NotImplementedException">There is no media module to support the selected file.</exception>
 		public void Add(string filePath) {
-			MediaModuleManagement manager = VixenSystem.Internal.GetModuleManager<IMediaModuleInstance, MediaModuleManagement>();
+			MediaModuleManagement manager = Modules.GetModuleManager<IMediaModuleInstance, MediaModuleManagement>();
 			IMediaModuleInstance instance = manager.Get(filePath);
 			if(instance != null) {
 				// Add new instance data to the dataset.
@@ -50,7 +50,7 @@ namespace Vixen.Sys {
 		public void RemoveAt(int index) {
 			if(index < _modules.Count) {
 				IMediaModuleInstance instance = _modules[index];
-				_moduleDataSet.Remove(instance.TypeId, instance.InstanceId);
+				_moduleDataSet.Remove(instance.Descriptor.TypeId, instance.InstanceId);
 				_modules.RemoveAt(index);
 			}
 		}
@@ -66,7 +66,7 @@ namespace Vixen.Sys {
 				IMediaModuleInstance instance = _modules[index];
 
 				// Remove the data of the existing instance.
-				_moduleDataSet.Remove(instance.TypeId, instance.InstanceId);
+				_moduleDataSet.Remove(instance.Descriptor.TypeId, instance.InstanceId);
 				// Add data for the new instance.
 				_moduleDataSet.GetModuleInstanceData(value);
 
@@ -101,7 +101,7 @@ namespace Vixen.Sys {
 
 		public bool Remove(IMediaModuleInstance item) {
 			if(_modules.Remove(item)) {
-				_moduleDataSet.Remove(item.TypeId, item.InstanceId);
+				_moduleDataSet.Remove(item.Descriptor.TypeId, item.InstanceId);
 				return true;
 			}
 			return false;

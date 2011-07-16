@@ -8,6 +8,7 @@ using Vixen.IO;
 using Vixen.Script;
 using System.IO;
 using Vixen.Execution;
+using Vixen.Module.Script;
 
 namespace Vixen.Sys {
 	/// <summary>
@@ -24,7 +25,7 @@ namespace Vixen.Sys {
 		[DataPath]
 		static private readonly string _sourceDirectory = Path.Combine(Paths.DataRootPath, SOURCE_DIRECTORY_NAME);
 
-		public ScriptSequence() {
+		protected ScriptSequence(string language) {
 			Length = Forever;
 
 			SourceFiles = new List<SourceFile>();
@@ -36,6 +37,8 @@ namespace Vixen.Sys {
 			ExternalAssemblies.Add(CommandStandard.Standard.AssemblyFileName);
 			FrameworkAssemblies.Add("System.dll");
 			FrameworkAssemblies.Add("System.Core.dll");
+
+			Language = language;
 		}
 
 		public string SourceDirectory {
@@ -49,16 +52,20 @@ namespace Vixen.Sys {
 			set {
 				// Create the first source file for them.
 				// It has the skeleton in which they will write code.
-				IScriptSkeletonGenerator skeletonFileGenerator = Script.Registration.GetScriptSkeletonGenerator(value);
+				SourceFiles.Clear();
+				ScriptModuleManagement manager = Modules.GetModuleManager<IScriptModuleInstance, ScriptModuleManagement>();
+				IScriptSkeletonGenerator skeletonFileGenerator = manager.GetSkeletonGenerator(value);
 				if(skeletonFileGenerator == null) {
 					throw new Exception("There is no script type " + value);
 				}
-				skeletonFileGenerator.Sequence = this;
 
 				_language = value;
 
-				SourceFile sourceFile = CreateNewFile(CreateNewFileName(Script.Registration.GetScriptFileExtension(_language)));
-				sourceFile.Contents = skeletonFileGenerator.TransformText();
+				string nameSpace = ScriptHostGenerator.UserScriptNamespace;
+				string className = ScriptHostGenerator.Mangle(Name);
+
+				SourceFile sourceFile = CreateNewFile(CreateNewFileName(manager.GetFileExtension(_language)));
+				sourceFile.Contents = skeletonFileGenerator.Generate(nameSpace, className);
 			}
 		}
 

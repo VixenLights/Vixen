@@ -7,6 +7,7 @@ using Vixen.Execution;
 using System.Diagnostics;
 using Vixen.Common;
 using System.Threading;
+using Vixen.Module.Effect;
 
 namespace Vixen.Sys {
 	public class Execution {
@@ -67,10 +68,8 @@ namespace Vixen.Sys {
 		}
 
 		static private void _AddChannel(OutputChannel channel) {
-			// Add to the channel dictionary.
-			_channels[channel] = null;
 			// Create an enumerator.
-			_SetChannelEnumerators(channel);
+			_CreateChannelEnumerators(channel);
 		}
 
 		static public void RemoveChannel(OutputChannel channel) {
@@ -85,11 +84,11 @@ namespace Vixen.Sys {
 			}
 		}
 
-		static private void _SetChannelEnumerators(params OutputChannel[] channels) {
-			_SetChannelEnumerators(channels as IEnumerable<OutputChannel>);
+		static private void _CreateChannelEnumerators(params OutputChannel[] channels) {
+			_CreateChannelEnumerators(channels as IEnumerable<OutputChannel>);
 		}
 
-		static private void _SetChannelEnumerators(IEnumerable<OutputChannel> channels) {
+		static private void _CreateChannelEnumerators(IEnumerable<OutputChannel> channels) {
 			foreach(OutputChannel channel in channels) {
 				_channels[channel] = new SystemChannelEnumerator(channel, _systemTime);
 			}
@@ -116,7 +115,7 @@ namespace Vixen.Sys {
 				_State = ExecutionState.Starting;
 
 				// Open the channels.
-				_SetChannelEnumerators(Channels);
+				_CreateChannelEnumerators(Channels);
 
 				_systemTime.Start();
 				OutputController.StartAll();
@@ -278,9 +277,6 @@ namespace Vixen.Sys {
 		class EffectRenderer {
 			private long _timeStarted;
 			private Stack<CommandNode> _effects;
-			//*** to be user data
-			//-> and should be configurable during runtime
-			private int _intervalWidth = 50;
 			//*** to be user data, the offset to add to make live data more live
 			private int _syncDelta = 0;
 
@@ -290,56 +286,41 @@ namespace Vixen.Sys {
 			}
 
 			public void Start() {
-				CommandNode commandNode;
-				CommandData[][] data;
-				int channelIndex;
-				OutputChannel channel;
-				int intervalIndex;
-				CommandData dataItem;
-				long intervalTime = _systemTime.Position + _syncDelta;
-				OutputChannel[] targetChannels;
-
 				// Keep going while there is data to render and the system is running.
 				while(_effects.Count > 0 && _systemTime.IsRunning) {
-					commandNode = _effects.Pop();
+					CommandNode commandNode = _effects.Pop();
 
 					if(commandNode.Command != null && commandNode.TargetNodes.Length > 0) {
 						// Get the channels that are to be affected by this effect.
 						// If they are targetting multiple nodes, the resulting channels
 						// will be treated as a single collection of channels.  There will be
 						// no differentiation between channels of different trees.
-						//targetChannels = commandNode.TargetNodes.SelectMany(x => Nodes.Resolve(x)).ToArray();
-						targetChannels = commandNode.TargetNodes.SelectMany(x => x).ToArray();
-						// Render the data.
-						// Need a collection of channels to render against, not nodes, so the
-						// effect can generate data for the ultimate channels.
-						data = commandNode.Command.Effect.Generate(targetChannels.Length, (int)(commandNode.TimeSpan / _intervalWidth), commandNode.Command.ParameterValues);
-						// Get it into the channels.
-						// Time is the priority, so iterate column-first.
-						// This also allows a complete state to be written across all affected channels sooner.
-						int channelCount = data.Length;
-						int intervalCount = data[0].Length;
-						for(intervalIndex = 0; intervalIndex < intervalCount; intervalIndex++) {
-							// Trying to get the whole state out atomically by having the
-							// write (this) and the reader (channel enumerator) lock on the
-							// channel.
-							foreach(OutputChannel targetChannel in targetChannels) {
+						Dictionary<Guid,OutputChannel> targetChannels = commandNode.TargetNodes.SelectMany(x => x).ToDictionary(x => x.Id);
+						
+						// Render the effect for the whole span of the command's time.
+						ChannelData channelData = commandNode.RenderEffectData(0, commandNode.TimeSpan);
+						
+						if(channelData != null) {
+							// Get it into the channels.
+							foreach(Guid channelId in channelData.Keys) {
+								OutputChannel targetChannel = targetChannels[channelId];
+
 								Monitor.Enter(targetChannel);
-							}
-							for(channelIndex = 0; channelIndex < channelCount; channelIndex++) {
-								// Get the channel.
-								channel = targetChannels[channelIndex];
-								// Get the data destined for the channel at this time.
-								//dataItem = data[channelIndex][intervalIndex];
-								dataItem = data[channelIndex][intervalIndex] ?? CommandData.Empty;
-								channel.AddData(
-									new CommandData(intervalTime,
-										intervalTime + _intervalWidth,
-										dataItem.CommandIdentifier,
-										dataItem.ParameterValues));
-							}
-							intervalTime += _intervalWidth;
-							foreach(OutputChannel targetChannel in targetChannels) {
+
+								// Offset the data's time frame by the command's time offset.
+								foreach(CommandData data in channelData[channelId]) {
+									CommandData targetChannelData = data ?? CommandData.Empty;
+									// The data from an effect is effect-local.
+									// Adding the command's start time makes it context-local.
+									// Adding the system time makes it system-local.
+									long systemTime = _systemTime.Position + _syncDelta;
+									// Can't assume the safety of the instance the provided by the effect,
+									// so create a local instance.
+									targetChannelData.StartTime += commandNode.StartTime + systemTime;
+									targetChannelData.EndTime += commandNode.StartTime + systemTime;
+									targetChannel.AddData(targetChannelData);
+								}
+
 								Monitor.Exit(targetChannel);
 							}
 						}

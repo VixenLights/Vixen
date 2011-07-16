@@ -17,6 +17,7 @@ using Vixen.Module.Effect;
 using Vixen.Module.Timing;
 using Vixen.Module.Media;
 using Vixen.Module.Sequence;
+using Vixen.Module.Script;
 
 namespace Vixen.Sys {
 	/// <summary>
@@ -25,8 +26,13 @@ namespace Vixen.Sys {
     public class ApplicationServices {
         static internal IApplication ClientApplication = null;
 
-		static public IModuleDescriptor[] GetModuleDescriptors(string moduleType) {
-			return Modules.GetModuleDescriptors(moduleType);
+		static public IModuleDescriptor[] GetModuleDescriptors(string typeOfModule) {
+			return Modules.GetModuleDescriptors(typeOfModule);
+		}
+		
+		static public IModuleDescriptor[] GetModuleDescriptors<T>()
+			where T : class, IModuleInstance {
+			return Modules.GetModuleDescriptors<T>();
 		}
 
 		static public IModuleDescriptor GetModuleDescriptor(Guid moduleTypeId) {
@@ -38,17 +44,19 @@ namespace Vixen.Sys {
 		/// </summary>
 		/// <param name="moduleType"></param>
 		/// <returns></returns>
-		static public Dictionary<Guid, string> GetAvailableModules(string moduleType) {
-			return Modules.GetModuleDescriptors(moduleType).ToDictionary(x => x.TypeId, x => x.TypeName);
+		static public Dictionary<Guid, string> GetAvailableModules<T>()
+			where T : class, IModuleInstance {
+			return Modules.GetModuleDescriptors<T>().ToDictionary(x => x.TypeId, x => x.TypeName);
 		}
 
-		static public string[] GetModuleTypes() {
-			return VixenSystem.Internal.GetModuleTypes().Select(x => x.ModuleTypeName).ToArray();
+		static public string[] GetTypesOfModules() {
+			return Modules.GetImplementations().Select(x => x.TypeOfModule).ToArray();
 		}
 
-		static public void UnloadModule(Guid moduleTypeId, string moduleType) {
-			Modules.UnloadModule(moduleTypeId, moduleType);
-		}
+		//*** Bring back when the user is allowed to load a module during runtime
+		//static public void UnloadModule(Guid moduleTypeId, string moduleType) {
+		//    Modules.UnloadModule(moduleTypeId, moduleType);
+		//}
 
 		/// <summary>
 		/// Gets an instance of a module.
@@ -57,8 +65,11 @@ namespace Vixen.Sys {
 		/// <returns></returns>
 		static public T Get<T>(Guid id)
 			where T : class, IModuleInstance {
-			// Must go through the module type manager so that it can affect the instance.
-			IModuleManagement moduleManager = VixenSystem.Internal.GetModuleManager<T>();
+			// Must go through the module type manager, instead of using
+			// Modules.GetById, so that the type manager can affect the instance.
+			// Modules.ModuleManagement can be called when the name of the module
+			// type is known, which it is not here.
+			IModuleManagement moduleManager = Modules.GetModuleManager<T>();
 			if(moduleManager != null) {
 				return moduleManager.Get(id) as T;
 			}
@@ -73,7 +84,7 @@ namespace Vixen.Sys {
 		static public T[] GetAll<T>()
 			where T : class, IModuleInstance {
 			// Must go through the module type manager so that it can affect the instance.
-			IModuleManagement moduleManager = VixenSystem.Internal.GetModuleManager<T>();
+			IModuleManagement moduleManager = Modules.GetModuleManager<T>();
 			if(moduleManager != null) {
 				return moduleManager.GetAll().Cast<T>().ToArray();
 			}
@@ -82,7 +93,7 @@ namespace Vixen.Sys {
 
 		static public IEffectEditorControl GetEffectEditorControl(Guid effectId) {
 			// Need the module-specific manager.
-			EffectEditorModuleManagement manager = VixenSystem.Internal.GetModuleManager<IEffectEditorModuleInstance, EffectEditorModuleManagement>();
+			EffectEditorModuleManagement manager = Modules.GetModuleManager<IEffectEditorModuleInstance, EffectEditorModuleManagement>();
 			return manager.GetEffectEditor(effectId);
 		}
 
@@ -92,7 +103,7 @@ namespace Vixen.Sys {
 		}
 
 		static public ISequence CreateSequence(string fileExtension) {
-			SequenceModuleManagement manager = Vixen.Sys.VixenSystem.Internal.GetModuleManager<ISequenceModuleInstance, SequenceModuleManagement>();
+			SequenceModuleManagement manager = Modules.GetModuleManager<ISequenceModuleInstance, SequenceModuleManagement>();
 			return manager.Get(fileExtension) as ISequence;
 		}
 
@@ -100,16 +111,14 @@ namespace Vixen.Sys {
 			return OutputController.GetAll().ToArray();
 		}
 
+		// Only exists to be alongside GetEditor(string) instead of making them look in
+		// multiple locations.
 		static public IEditorModuleInstance GetEditor(Guid id) {
-			EditorModuleManagement manager = VixenSystem.Internal.GetModuleManager<IEditorModuleInstance, EditorModuleManagement>();
-			if(manager != null) {
-				return manager.Get(id);
-			}
-			return null;
+			return Modules.ModuleManagement.GetEditor(id);
 		}
 
 		static public IEditorModuleInstance GetEditor(string fileName) {
-			EditorModuleManagement manager = VixenSystem.Internal.GetModuleManager<IEditorModuleInstance, EditorModuleManagement>();
+			EditorModuleManagement manager = Modules.GetModuleManager<IEditorModuleInstance, EditorModuleManagement>();
 			if(manager != null) {
 				return manager.Get(fileName);
 			}
@@ -121,12 +130,14 @@ namespace Vixen.Sys {
 		/// </summary>
 		/// <param name="template"></param>
 		static public void CommitTemplate(IFileTemplate template) {
-			FileTemplateModuleManagement manager = VixenSystem.Internal.GetModuleManager<IFileTemplateModuleInstance, FileTemplateModuleManagement>();
+			FileTemplateModuleManagement manager = Modules.GetModuleManager<IFileTemplateModuleInstance, FileTemplateModuleManagement>();
 			manager.SaveTemplateData(template as IFileTemplateModuleInstance);
 		}
 
 		static public string[] GetScriptLanguages() {
-			return Script.Registration.GetLanguages();
+			ScriptModuleManagement manager = Modules.GetModuleManager<IScriptModuleInstance, ScriptModuleManagement>();
+			return manager.GetLanguages();
 		}
-    }
+
+	}
 }

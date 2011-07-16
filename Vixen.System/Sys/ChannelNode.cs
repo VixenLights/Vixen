@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using Vixen.Common;
+using Vixen.Module.Property;
 
 //Having this be THE concrete class
 //vs.
@@ -15,10 +17,12 @@ namespace Vixen.Sys {
 		// subscriptions from the node manager.
 		static public event EventHandler Changed;
 
+		#region Constructors
 		private ChannelNode(Guid id, string name, OutputChannel channel, IEnumerable<ChannelNode> content)
 			: base(name, content) {
 			Id = id;
 			Channel = channel;
+			Properties = new PropertyManager(this);
 		}
 
 		public ChannelNode(string name, OutputChannel channel, IEnumerable<ChannelNode> content)
@@ -40,6 +44,7 @@ namespace Vixen.Sys {
 		public ChannelNode(string name, params ChannelNode[] content)
 			: this(name, null, content) {
 		}
+		#endregion
 
 		public OutputChannel Channel { get; internal set; }
 
@@ -63,19 +68,34 @@ namespace Vixen.Sys {
 		}
 
 		public ChannelNode Clone() {
+			ChannelNode node = null;
+
 			if(IsLeaf) {
 				// We're cloning a node, not the channel.
 				// Multiple nodes referencing a channel need to reference that same channel instance.
-				return new ChannelNode(Guid.NewGuid(), Name, this.Channel);
+				node = new ChannelNode(Guid.NewGuid(), Name, this.Channel);
 			} else {
-				return new ChannelNode(Guid.NewGuid(), Name, null, this.Children.Select(x => x.Clone()));
+				node = new ChannelNode(Guid.NewGuid(), Name, null, this.Children.Select(x => x.Clone()));
 			}
+
+			// Property data.
+			node.Properties.PropertyData.Clone(this.Properties.PropertyData);
+
+			// Properties
+			foreach(IPropertyModuleInstance property in this.Properties) {
+				node.Properties.Add(property.Descriptor.TypeId);
+			}
+
+			return node;
 		}
 
 		public bool IsLeaf {
 			get { return base.Children.Count() == 0; }
 		}
 
+		public PropertyManager Properties { get; private set; }
+
+		#region Overrides
 		public override void Add(GroupNode<OutputChannel> node) {
 			base.Add(node);
 			OnChanged(this);
@@ -101,7 +121,9 @@ namespace Vixen.Sys {
 		public override IEnumerator<OutputChannel> GetEnumerator() {
 			return GetChannelEnumerator().GetEnumerator();
 		}
+		#endregion
 
+		#region Enumerators
 		public IEnumerable<OutputChannel> GetChannelEnumerator() {
 			if(IsLeaf) {
 				// OutputChannel is already an enumerable, so AsEnumerable<> won't work.
@@ -124,7 +146,9 @@ namespace Vixen.Sys {
 				return Children.SelectMany(x => x.GetLeafEnumerator());//.GetEnumerator();
 			}
 		}
+		#endregion
 
+		#region Static members
 		static protected void OnChanged(ChannelNode value) {
 			if(Changed != null) {
 				Changed(value, EventArgs.Empty);
@@ -140,17 +164,20 @@ namespace Vixen.Sys {
 		}
 
 		static private XElement _WriteXml(ChannelNode node, bool includeChannelReferences = true) {
+			object channelElements;
 			if(node.IsLeaf) {
-				return new XElement("Node",
-					new XAttribute("name", node.Name),
-					new XAttribute("id", node.Id),
-					includeChannelReferences ? new XAttribute("channelId", node.Channel.Id.ToString()) : null);
+				// Leaf - reference the single channel by id
+				channelElements = includeChannelReferences ? new XAttribute("channelId", node.Channel.Id.ToString()) : null;
 			} else {
-				return new XElement("Node",
-					new XAttribute("name", node.Name),
-					new XAttribute("id", node.Id),
-					node.Children.Select(x => _WriteXml(x, includeChannelReferences)));
+				// Branch - include the child nodes inline
+				channelElements = node.Children.Select(x => _WriteXml(x, includeChannelReferences));
 			}
+			return new XElement("Node",
+				new XAttribute("name", node.Name),
+				new XAttribute("id", node.Id),
+				new XElement("Properties", node.Properties.Select(x => new XElement("Property", x.Descriptor.TypeId))),
+				new XElement("PropertyData", XElement.Parse(node.Properties.PropertyData.Serialize())),
+				channelElements);
 		}
 
 		/// <summary>
@@ -161,18 +188,36 @@ namespace Vixen.Sys {
 		static public ChannelNode ReadXml(XElement element) {
 			string name = element.Attribute("name").Value;
 			Guid id = Guid.Parse(element.Attribute("id").Value);
+
+			// Children or channel reference
+			ChannelNode node = null;
 			if(element.Attribute("channelId") == null) {
 				// Branch
-				return new ChannelNode(id, name, null, element.Elements("Node").Select(x => ReadXml(x)));
+				node = new ChannelNode(id, name, null, element.Elements("Node").Select(x => ReadXml(x)));
 			} else {
 				// Leaf
 				Guid channelId = Guid.Parse(element.Attribute("channelId").Value);
 				OutputChannel channel = Vixen.Sys.Execution.Channels.FirstOrDefault(x => x.Id == channelId);
 				if(channel != null) {
-					return new ChannelNode(id, name, channel, null);
+					node = new ChannelNode(id, name, channel, null);
 				}
-				return null;
 			}
+
+			if(node != null) {
+				// Property data
+				// It's not necessary to load the data before the properties, but it will
+				// save it from creating data for each module and then dumping it.
+				string moduleDataString = element.Element("PropertyData").InnerXml();
+				node.Properties.PropertyData.Deserialize(moduleDataString);
+
+				// Properties
+				foreach(XElement propertyElement in element.Element("Properties").Elements("Property")) {
+					node.Properties.Add(new Guid(propertyElement.Value));
+				}
+			}
+
+			return node;
 		}
+		#endregion
 	}
 }

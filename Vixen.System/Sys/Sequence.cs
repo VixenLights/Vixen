@@ -20,12 +20,6 @@ namespace Vixen.Sys {
 	/// </summary>
 	[Executor(typeof(SequenceExecutor))]
 	abstract public class Sequence : Vixen.Sys.ISequence {
-		private IntervalCollection _intervals = new IntervalCollection();
-		private long _length;
-		// Input channels are not in fixtures.  Fixtures are currently output-only.
-		private List<InputChannel> _inputChannels = new List<InputChannel>();
-
-
 		private const string DIRECTORY_NAME = "Sequence";
 
 		[DataPath]
@@ -46,7 +40,7 @@ namespace Vixen.Sys {
 		/// <returns></returns>
 		static public Sequence Load(string filePath) {
 			// Get the sequence module manager.
-			SequenceModuleManagement manager = VixenSystem.Internal.GetModuleManager<ISequenceModuleInstance, SequenceModuleManagement>();
+			SequenceModuleManagement manager = Modules.GetModuleManager<ISequenceModuleInstance, SequenceModuleManagement>();
 			// Get an instance of the appropriate sequence module.
 			Sequence instance = manager.Get(filePath) as Sequence;
 			if(instance == null) throw new InvalidOperationException("No sequence type defined for file " + filePath);
@@ -65,7 +59,8 @@ namespace Vixen.Sys {
 
 			// Iterate all of the sequence type descriptors and build a set of file types.
 			HashSet<string> fileTypes = new HashSet<string>();
-			foreach(Vixen.Module.Sequence.ISequenceModuleDescriptor descriptor in Modules.GetModuleDescriptors("Sequence")) {
+			IEnumerable<ISequenceModuleDescriptor> sequenceDescriptors = Modules.GetModuleDescriptors<ISequenceModuleInstance, ISequenceModuleDescriptor>();
+			foreach(ISequenceModuleDescriptor descriptor in sequenceDescriptors) {
 				fileTypes.Add(descriptor.FileExtension);
 			}
 			// Find all files of those types in the data branch.
@@ -82,17 +77,17 @@ namespace Vixen.Sys {
 			Name = "Unnamed sequence";
 			InsertDataListener = new InsertDataListenerStack();
 			InsertDataListener += _DataListener;
-			Data = new CommandNodeIntervalSync(this, _inputChannels, _intervals);
+			Data = new InputChannels(this);
 			TimingProvider = new TimingProviders(this);
 			Media = new MediaCollection(ModuleDataSet);
-			RuntimeBehaviors = VixenSystem.ModuleManagement.GetAllRuntimeBehavior();
+			RuntimeBehaviors = Modules.ModuleManagement.GetAllRuntimeBehavior();
 			// The runtime behavior module instances will need data in the sequence's
 			// data set.
 			_LoadRuntimeBehaviorModuleData();
 		}
 
 		private bool _DataListener(CommandNode commandNode) {
-			Data.AddCommandWithSync(commandNode);
+			Data.AddCommand(commandNode);
 			// Do not cancel the event.
 			return false;
 		}
@@ -116,34 +111,7 @@ namespace Vixen.Sys {
 
 		public IModuleDataSet ModuleDataSet { get; private set; }
 
-		public long Length {
-			get { return _length; }
-			set {
-				if(value != _length) {
-					long oldLength = _length;
-					_length = value;
-
-					// Update the interval collection.
-					if(value != Forever) {
-						if(oldLength == Forever) {
-							// Forever -> Length
-							// Reset the interval collection with the new length.
-							Data.TimingInterval = Data.TimingInterval;
-						} else {
-							// Length -> Length
-							if(value > oldLength) {
-								Data.AddIntervals(value - oldLength, Data.TimingInterval);
-							} else if(value < oldLength) {
-								Data.RemoveIntervals(value, oldLength);
-							}
-						}
-					} else {
-						// Length -> Forever (the only possibility)
-						Data.ClearIntervals();
-					}
-				}
-			}
-		}
+		public long Length { get; set; }
 
 		public string FilePath { get; set; }
 
@@ -160,7 +128,7 @@ namespace Vixen.Sys {
 
 		public TimingProviders TimingProvider { get; protected set; }
 
-		public CommandNodeIntervalSync Data { get; private set; }
+		public InputChannels Data { get; private set; }
 
 		// Every sequence will get a collection of all available runtime behaviors.
 		public IRuntimeBehaviorModuleInstance[] RuntimeBehaviors { get; private set; }
@@ -182,7 +150,7 @@ namespace Vixen.Sys {
 				new XAttribute("length", sequence.Length),
 				_WriteTimingSource(sequence),
 				_WriteModuleData(sequence),
-				_WriteIntervals(sequence),
+				//_WriteIntervals(sequence),
 				_WriteEffectTable(sequence, out effectTableIndex),
 				_WriteTargetIdTable(sequence, out targetIdTableIndex),
 				_WriteDataNodes(sequence, effectTableIndex, targetIdTableIndex),
@@ -199,10 +167,6 @@ namespace Vixen.Sys {
 			return new XElement("ModuleData", sequence.ModuleDataSet.Serialize());
 		}
 
-		static private XElement _WriteIntervals(Sequence sequence) {
-			return new XElement("Intervals", string.Join(",", sequence.Data.IntervalValues));
-		}
-
 		static private XElement _WriteEffectTable(Sequence sequence, out Dictionary<Guid, int> effectTableIndex) {
 			// Effects are implemented by modules which are referenced by GUID ids.
 			// To avoid having every serialized effect include a big fat GUID, which
@@ -210,10 +174,10 @@ namespace Vixen.Sys {
 			// command GUIDs that the data will reference by an index.
 
 			List<Guid> effectTable;
-			IEffectModuleInstance[] effects = VixenSystem.ModuleManagement.GetAllEffect();
+			IEffectModuleInstance[] effects = Modules.ModuleManagement.GetAllEffect();
 
 			// All command specs in the system.
-			effectTable = effects.Select(x => x.TypeId).ToList();
+			effectTable = effects.Select(x => x.Descriptor.TypeId).ToList();
 			// Command spec type id : index within the table
 			effectTableIndex = effectTable.Select((id, index) => new { Id = id, Index = index }).ToDictionary(x => x.Id, x => x.Index);
 
@@ -239,7 +203,7 @@ namespace Vixen.Sys {
 				using(BinaryWriter dataWriter = new BinaryWriter(stream)) {
 					foreach(CommandNode commandNode in sequence.Data.GetCommands()) {
 						// Index of the command spec id from the command table (word).
-						dataWriter.Write((ushort)effectTableIndex[commandNode.Command.Effect.TypeId]);
+						dataWriter.Write((ushort)effectTableIndex[commandNode.Command.EffectId]);
 						// Referenced target count (word).
 						dataWriter.Write((ushort)commandNode.TargetNodes.Length);
 						// Parameter count (byte)
@@ -259,8 +223,8 @@ namespace Vixen.Sys {
 						dataWriter.Flush();
 
 						// Parameters (various)
-						foreach(object paramValue in commandNode.Command.ParameterValues) {
-							ParameterValue.WriteToStream(stream, paramValue);
+						foreach(object parameterValue in commandNode.Command.ParameterValues) {
+							ParameterValue.WriteToStream(stream, parameterValue);
 						}
 					}
 					data = Convert.ToBase64String(stream.GetBuffer(), 0, (int)stream.Length);
@@ -288,9 +252,6 @@ namespace Vixen.Sys {
 
 			// Module data
 			_ReadModuleData(element, sequence);
-
-			// Intervals
-			_ReadIntervals(element, sequence);
 
 			// Command table
 			_ReadEffectTable(element, out effectTable);
@@ -321,12 +282,6 @@ namespace Vixen.Sys {
 		private static void _ReadModuleData(XElement element, Sequence sequence) {
 			string moduleDataString = element.Element("ModuleData").Value;
 			sequence.ModuleDataSet.Deserialize(moduleDataString);
-		}
-
-		private static void _ReadIntervals(XElement element, Sequence sequence) {
-			string[] intervalTimesString = element.Element("Intervals").Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-			long[] intervalTimes = Array.ConvertAll(intervalTimesString, x => long.Parse(x));
-			sequence.Data.InsertIntervals(intervalTimes);
 		}
 
 		private static void _ReadEffectTable(XElement element, out Guid[] effectTable) {
@@ -421,6 +376,5 @@ namespace Vixen.Sys {
 		}
 
 		#endregion
-
 	}
 }

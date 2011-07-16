@@ -27,7 +27,7 @@ namespace Vixen.Sys {
 		void InsertData(ChannelNode[] targetNodes, long startTime, long timeSpan, Command command);
 		InsertDataListenerStack InsertDataListener { get; set; }
 		TimingProviders TimingProvider { get; }
-		CommandNodeIntervalSync Data { get; }
+		InputChannels Data { get; }
 		IRuntimeBehaviorModuleInstance[] RuntimeBehaviors { get; }
 		MediaCollection Media { get; }
 	}
