@@ -86,7 +86,7 @@ namespace Vixen.Hardware {
 			OutputModuleId = outputModuleId;
 
 			// Affect the instance with the controller template last.
-			FileTemplateModuleManagement manager = VixenSystem.Internal.GetModuleManager<IFileTemplateModuleInstance, FileTemplateModuleManagement>();
+			FileTemplateModuleManagement manager = Modules.GetModuleManager<IFileTemplateModuleInstance, FileTemplateModuleManagement>();
 			manager.ProjectTemplateInto(FILE_EXT, this);
 		}
 
@@ -110,7 +110,7 @@ namespace Vixen.Hardware {
 			set {
 				_outputModuleId = value;
 				// Go throught the module type manager always.
-				_outputModule = VixenSystem.Internal.GetModuleManager<IOutputModuleInstance, OutputModuleManagement>().Get(value);
+				_outputModule = Modules.ModuleManagement.GetOutput(value);
 			}
 		}
 
@@ -194,7 +194,7 @@ namespace Vixen.Hardware {
 			}
 
 			if(_outputModule != null) {
-				controller._outputModule = VixenSystem.Internal.GetModuleManager<IOutputModuleInstance, OutputModuleManagement>().Get(_outputModule.TypeId);
+				controller._outputModule = Modules.ModuleManagement.GetOutput(_outputModule.Descriptor.TypeId);
 			}
 			
 			controller.InstanceId = Guid.NewGuid();
@@ -361,7 +361,7 @@ namespace Vixen.Hardware {
 
 		static private void _HardwareUpdateThread() {
 			//*** this will be user data
-			//*** this is now pointless; Windows is going to do what it damn well pleases
+			//*** this is at least partially pointless; Windows is going to do what it damn well pleases
 			int refreshRate = 50; // Updates/second
 			double frameLength = 1000d / refreshRate;
 			double frameStart;
@@ -514,7 +514,7 @@ namespace Vixen.Hardware {
 							new XElement("Transforms",
 								x.DataTransforms.Select(y =>
 									new XElement("Transform",
-										new XAttribute("typeId", y.TypeId),
+										new XAttribute("typeId", y.Descriptor.TypeId),
 										new XAttribute("instanceId", y.InstanceId))))))));
 		}
 
@@ -554,11 +554,11 @@ namespace Vixen.Hardware {
 
 		#region IEqualityComparer<ITransformModuleInstance>
 		public bool Equals(ITransformModuleInstance x, ITransformModuleInstance y) {
-			return x.TypeId == y.TypeId && x.InstanceId == y.InstanceId;
+			return x.Descriptor.TypeId == y.Descriptor.TypeId && x.InstanceId == y.InstanceId;
 		}
 
 		public int GetHashCode(ITransformModuleInstance obj) {
-			return (obj.TypeId.ToString() + obj.InstanceId.ToString()).GetHashCode();
+			return (obj.Descriptor.TypeId.ToString() + obj.InstanceId.ToString()).GetHashCode();
 		}
 		#endregion
 
@@ -598,7 +598,7 @@ namespace Vixen.Hardware {
 			}
 
 			public void RemoveTransform(Guid transformTypeId, Guid transformInstanceId) {
-				ITransformModuleInstance instance = _dataTransforms.FirstOrDefault(x => x.TypeId == transformTypeId && x.InstanceId == transformInstanceId);
+				ITransformModuleInstance instance = _dataTransforms.FirstOrDefault(x => x.Descriptor.TypeId == transformTypeId && x.InstanceId == transformInstanceId);
 				if(instance != null) {
 					// Remove from the transform list.
 					// (I believe that LinkedList<T>.Remove does not use an equality comparer
@@ -618,7 +618,7 @@ namespace Vixen.Hardware {
 			/// <param name="transformInstanceId">Provide if known.  For example, for existing module instance data.  Otherwise, provide Guid.Emtpy.</param>
 			public void AddTransform(Guid transformTypeId, Guid transformInstanceId) {
 				// Create a new instance.
-				ITransformModuleInstance instance = VixenSystem.Internal.GetModuleManager<ITransformModuleInstance>().Get(transformTypeId) as ITransformModuleInstance;
+				ITransformModuleInstance instance = Modules.ModuleManagement.GetTransform(transformTypeId);
 				// If an instance id is provided (creating an instance for existing module
 				// data), assign it.
 				if(transformInstanceId != Guid.Empty) {
@@ -644,7 +644,7 @@ namespace Vixen.Hardware {
 			public void AddTransform(ITransformModuleInstance instance) {
 				// Allowing multiple instances of a transform type.
 				// Create a new instance, but use the same data (clone).
-				ITransformModuleInstance newInstance = VixenSystem.Internal.GetModuleManager<ITransformModuleInstance>().Clone(instance) as ITransformModuleInstance;
+				ITransformModuleInstance newInstance = Modules.GetModuleManager<ITransformModuleInstance>().Clone(instance) as ITransformModuleInstance;
 				if(newInstance.ModuleData != null) {
 					// Add the data to our transform dataset.
 					this.TransformModuleData.Add(newInstance.ModuleData);
