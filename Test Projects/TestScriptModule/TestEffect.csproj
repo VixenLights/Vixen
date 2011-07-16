@@ -68,18 +68,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PulseInstance.cs" />
-    <Compile Include="PulseModule.cs" />
+    <Compile Include="Nested.cs" />
+    <Compile Include="NestedBehavior.cs" />
+    <Compile Include="NestedModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetLevel.cs" />
+    <Compile Include="SetLevelBehavior.cs" />
     <Compile Include="SetLevelModule.cs" />
-    <Compile Include="Spin.cs" />
-    <Compile Include="SpinModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\CommandStandard\CommandStandard.csproj">
       <Project>{ED76AB8D-4456-4CC4-B881-56A3DB4A229F}</Project>
       <Name>CommandStandard</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TestProperty\TestProperty.csproj">
+      <Project>{0CFE8D9B-ED0C-48F8-ACA3-D538321C16FD}</Project>
+      <Name>TestProperty</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Vixen.System\Vixen.csproj">
       <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
