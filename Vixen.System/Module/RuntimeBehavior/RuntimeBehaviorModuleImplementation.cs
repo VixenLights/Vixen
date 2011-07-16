@@ -5,10 +5,10 @@ using System.Text;
 using Vixen.Common;
 
 namespace Vixen.Module.RuntimeBehavior {
-	[ModuleType("RuntimeBehavior")]
+	[TypeOfModule("RuntimeBehavior")]
 	class RuntimeBehaviorModuleImplementation : ModuleImplementation<IRuntimeBehaviorModuleInstance> {
 		public RuntimeBehaviorModuleImplementation()
-			: base(new RuntimeBehaviorType(), new RuntimeBehaviorModuleManagement(), new RuntimeBehaviorModuleRepository()) {
+			: base(new RuntimeBehaviorModuleManagement(), new RuntimeBehaviorModuleRepository()) {
 		}
 	}
 }

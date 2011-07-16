@@ -6,44 +6,30 @@ using Vixen.Common;
 using Vixen.Sys;
 
 namespace Vixen.Module.Effect {
-	class EffectModuleRepository : IModuleRepository<IEffectModuleInstance> {
+	class EffectModuleRepository : GenericModuleRepository<IEffectModuleInstance> {
 		// Effect name : command handler instance
-		private Dictionary<string, IEffectModuleInstance> _instances = new Dictionary<string, IEffectModuleInstance>();
-
-		public IEffectModuleInstance Get(Guid id) {
-			return _instances.Values.FirstOrDefault(x => x.TypeId == id);
-		}
-
-		public IEffectModuleInstance[] GetAll() {
-			return _instances.Values.ToArray();
-		}
+		private Dictionary<string, Guid> _nameLookup = new Dictionary<string, Guid>();
 
 		public IEffectModuleInstance Get(string commandName) {
-			IEffectModuleInstance instance;
-			_instances.TryGetValue(commandName, out instance);
-			return instance;
+			Guid typeId;
+			if(_nameLookup.TryGetValue(commandName, out typeId)) {
+				return Get(typeId);
+			}
+			return null;
 		}
 
-		public void Add(Guid id) {
-			// Get the module descriptor.
+		override public void Add(Guid id) {
 			IEffectModuleDescriptor descriptor = Modules.GetDescriptorById<IEffectModuleDescriptor>(id);
-			// Create an singleton instance.
-			IEffectModuleInstance instance = Modules.GetById(id) as IEffectModuleInstance;
-			// Add the instance to the dictionary.
-			_instances[instance.EffectName] = instance;
+			if(descriptor != null) {
+				_nameLookup[descriptor.EffectName] = id;
+			}
 		}
 
-		object IModuleRepository.Get(Guid id) {
-			return Get(id);
-		}
-
-		object[] IModuleRepository.GetAll() {
-			return GetAll();
-		}
-
-		public void Remove(Guid id) {
-			// Remove the handler instance.
-			_instances.Remove(_instances.Values.FirstOrDefault(x => x.TypeId == id).EffectName);
+		override public void Remove(Guid id) {
+			IEffectModuleDescriptor descriptor = Modules.GetDescriptorById<IEffectModuleDescriptor>(id);
+			if(descriptor != null) {
+				_nameLookup.Remove(descriptor.EffectName);
+			}
 		}
 	}
 }

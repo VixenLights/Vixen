@@ -5,10 +5,10 @@ using System.Text;
 using Vixen.Common;
 
 namespace Vixen.Module.Effect {
-	[ModuleType("Effect")]
+	[TypeOfModule("Effect")]
 	class EffectModuleImplementation : ModuleImplementation<IEffectModuleInstance> {
 		public EffectModuleImplementation()
-			: base(new EffectModuleType(), new EffectModuleManagement(), new EffectModuleRepository()) {
+			: base(new EffectModuleManagement(), new EffectModuleRepository()) {
 		}
 	}
 }

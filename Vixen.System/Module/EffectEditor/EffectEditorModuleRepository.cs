@@ -11,7 +11,7 @@ namespace Vixen.Module.EffectEditor {
 		private Dictionary<Guid, IEffectEditorModuleInstance> _effectEditorCommandIndex = new Dictionary<Guid, IEffectEditorModuleInstance>();
 		// Command signature : command editor
 		private Dictionary<int, IEffectEditorModuleInstance> _effectEditorSignatureIndex = new Dictionary<int, IEffectEditorModuleInstance>();
-		// Distinct collection of all.
+		// Singleton collection.
 		private List<IEffectEditorModuleInstance> _effectEditors = new List<IEffectEditorModuleInstance>();
 
 		public IEffectEditorModuleInstance GetByEffectId(Guid moduleId) {
@@ -28,7 +28,7 @@ namespace Vixen.Module.EffectEditor {
 		}
 
 		public IEffectEditorModuleInstance Get(Guid id) {
-			return _effectEditors.FirstOrDefault(x => x.TypeId == id);
+			return _effectEditors.FirstOrDefault(x => x.Descriptor.TypeId == id);
 		}
 
 		public IEffectEditorModuleInstance[] GetAll() {
@@ -59,7 +59,7 @@ namespace Vixen.Module.EffectEditor {
 		}
 
 		public void Remove(Guid id) {
-			IEffectEditorModuleInstance instance = _effectEditors.FirstOrDefault(x => x.TypeId == id);
+			IEffectEditorModuleInstance instance = _effectEditors.FirstOrDefault(x => x.Descriptor.TypeId == id);
 			if(instance != null) {
 				// Remove from the name index.
 				_effectEditorCommandIndex.Remove(instance.EffectTypeId);

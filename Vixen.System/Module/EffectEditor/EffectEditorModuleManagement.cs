@@ -6,13 +6,13 @@ using Vixen.Sys;
 using Vixen.Module.Effect;
 
 namespace Vixen.Module.EffectEditor {
-	class EffectEditorModuleManagement : UnusedModuleManagement<IEffectEditorModuleInstance> {
+	class EffectEditorModuleManagement : GenericModuleManagement<IEffectEditorModuleInstance> {
 		public IEffectEditorControl GetEffectEditor(Guid effectId) {
 			IEffectEditorModuleInstance instance = null;
 
 			// Need the type-specific repository reference, doing more than basic
 			// repository operations.
-			EffectEditorModuleRepository repository = VixenSystem.Internal.GetModuleRepository<IEffectEditorModuleInstance, EffectEditorModuleRepository>();
+			EffectEditorModuleRepository repository = Modules.GetModuleRepository<IEffectEditorModuleInstance, EffectEditorModuleRepository>();
 			// Get the command spec descriptor.
 			IEffectModuleDescriptor descriptor = Modules.GetDescriptorById<IEffectModuleDescriptor>(effectId);
 			// Look up by command handler id first, then command signature.

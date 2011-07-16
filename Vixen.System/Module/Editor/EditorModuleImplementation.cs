@@ -5,10 +5,10 @@ using System.Text;
 using Vixen.Common;
 
 namespace Vixen.Module.Editor {
-	[ModuleType("Editor")]
+	[TypeOfModule("Editor")]
 	class EditorModuleImplementation : ModuleImplementation<IEditorModuleInstance> {
 		public EditorModuleImplementation()
-			: base(new EditorModuleType(), new EditorModuleManagement(), new EditorModuleRepository()) {
+			: base(new EditorModuleManagement(), new EditorModuleRepository()) {
 		}
 	}
 }

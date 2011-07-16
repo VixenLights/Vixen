@@ -18,7 +18,7 @@ namespace Vixen.Module.FileTemplate {
 		public IFileTemplateModuleInstance Get(Guid id) {
 			// Template modules are singletons.
 			// The repository assumes to instantiate the template's data.
-			return VixenSystem.ModuleRepository.GetFileTemplate(id);
+			return Modules.ModuleRepository.GetFileTemplate(id);
 		}
 
 		object IModuleManagement.Get(Guid id) {
@@ -26,7 +26,7 @@ namespace Vixen.Module.FileTemplate {
 		}
 
 		public IFileTemplateModuleInstance[] GetAll() {
-			return VixenSystem.ModuleRepository.GetAllFileTemplate();
+			return Modules.ModuleRepository.GetAllFileTemplate();
 		}
 
 		object[] IModuleManagement.GetAll() {
@@ -43,8 +43,10 @@ namespace Vixen.Module.FileTemplate {
 		}
 
 		public void ProjectTemplateInto(string fileType, object target) {
-			// Get the descriptor based on the file type.
-			IFileTemplateModuleDescriptor descriptor = Modules.GetModuleDescriptors("FileTemplate").Cast<IFileTemplateModuleDescriptor>().FirstOrDefault(x => x.FileType.Equals(fileType, StringComparison.OrdinalIgnoreCase));
+			// Get all file template module descriptors.
+			IEnumerable<IFileTemplateModuleDescriptor> fileTemplateDescriptors = Modules.GetModuleDescriptors<IFileTemplateModuleInstance, IFileTemplateModuleDescriptor>();
+			// Find the one for the file type.
+			IFileTemplateModuleDescriptor descriptor = fileTemplateDescriptors.FirstOrDefault(x => x.FileType.Equals(fileType, StringComparison.OrdinalIgnoreCase));
 			if(descriptor != null) {
 				// Get an instance of the module.
 				IFileTemplateModuleInstance instance = Get(descriptor.TypeId);
@@ -73,8 +75,7 @@ namespace Vixen.Module.FileTemplate {
 		}
 
 		private string _GetTemplateDataFileName(IFileTemplateModuleInstance instance) {
-			return Path.Combine(_directory, Path.ChangeExtension(FILE_NAME_ROOT, Modules.GetDescriptorById<IFileTemplateModuleDescriptor>(instance.TypeId).FileType));
+			return Path.Combine(_directory, Path.ChangeExtension(FILE_NAME_ROOT, Modules.GetDescriptorById<IFileTemplateModuleDescriptor>(instance.Descriptor.TypeId).FileType));
 		}
-
 	}
 }

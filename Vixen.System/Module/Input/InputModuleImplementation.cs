@@ -5,10 +5,10 @@ using System.Text;
 using Vixen.Common;
 
 namespace Vixen.Module.Input {
-	[ModuleType("Input")]
+	[TypeOfModule("Input")]
 	class InputModuleImplementation : ModuleImplementation<IInputModuleInstance> {
 		public InputModuleImplementation()
-			: base(new InputType(), new InputModuleManagement(), new InputModuleRepository()) {
+			: base(new InputModuleManagement(), new InputModuleRepository()) {
 		}
 	}
 }

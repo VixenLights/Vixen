@@ -5,10 +5,10 @@ using System.Text;
 using Vixen.Common;
 
 namespace Vixen.Module.App {
-	[ModuleType("App")]
+	[TypeOfModule("App")]
 	class AppModuleImplementation : ModuleImplementation<IAppModuleInstance> {
 		public AppModuleImplementation()
-			: base(new AppModuleType(), new AppModuleManagement(), new AppModuleRepository()) {
+			: base(new AppModuleManagement(), new AppModuleRepository()) {
 		}
 	}
 }

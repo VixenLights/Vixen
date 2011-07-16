@@ -4,6 +4,6 @@ using System.Linq;
 using System.Text;
 
 namespace Vixen.Module.Timing {
-	class TimingModuleRepository : UnusedModuleRepository<ITimingModuleInstance> {
+	class TimingModuleRepository : GenericModuleRepository<ITimingModuleInstance> {
 	}
 }

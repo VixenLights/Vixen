@@ -5,10 +5,10 @@ using System.Text;
 using Vixen.Common;
 
 namespace Vixen.Module.FileTemplate {
-	[ModuleType("FileTemplate")]
+	[TypeOfModule("FileTemplate")]
 	class FileTemplateModuleImplementation : ModuleImplementation<IFileTemplateModuleInstance> {
 		public FileTemplateModuleImplementation()
-			: base(new FileTemplateModuleType(), new FileTemplateModuleManagement(), new FileTemplateModuleRepository()) {
+			: base(new FileTemplateModuleManagement(), new FileTemplateModuleRepository()) {
 		}
 	}
 }

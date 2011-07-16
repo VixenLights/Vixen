@@ -4,6 +4,6 @@ using System.Linq;
 using System.Text;
 
 namespace Vixen.Module.Sequence {
-	class SequenceModuleType : UnusedModuleType {
+	class SequenceModuleType : GenericModuleType {
 	}
 }

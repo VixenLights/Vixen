@@ -4,6 +4,6 @@ using System.Linq;
 using System.Text;
 
 namespace Vixen.Module.RuntimeBehavior {
-	class RuntimeBehaviorModuleManagement : UnusedModuleManagement<IRuntimeBehaviorModuleInstance> {
+	class RuntimeBehaviorModuleManagement : GenericModuleManagement<IRuntimeBehaviorModuleInstance> {
 	}
 }

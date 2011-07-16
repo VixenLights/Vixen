@@ -5,7 +5,7 @@ using System.Text;
 using Vixen.Common;
 
 namespace Vixen.Module.Timing {
-	class TimingModuleManagement : UnusedModuleManagement<ITimingModuleInstance> {
+	class TimingModuleManagement : GenericModuleManagement<ITimingModuleInstance> {
 		// Don't want to implement the interface, just add additional members, so
 		// keep subclassing UnusedModuleManagement.
 		public ITimingModuleInstance GetDefault() {

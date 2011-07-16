@@ -5,10 +5,10 @@ using System.Text;
 using Vixen.Common;
 
 namespace Vixen.Module.Output {
-	[ModuleType("Output")]
+	[TypeOfModule("Output")]
 	class OutputModuleImplementation : ModuleImplementation<IOutputModuleInstance> {
 		public OutputModuleImplementation()
-			: base(new OutputModuleType(), new OutputModuleManagement(), new OutputModuleRepository()) {
+			: base(new OutputModuleManagement(), new OutputModuleRepository()) {
 		}
 	}
 }

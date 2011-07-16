@@ -5,10 +5,10 @@ using System.Text;
 using Vixen.Common;
 
 namespace Vixen.Module.CommandStandardExtension {
-	[ModuleType("CommandStandardExtension")]
+	[TypeOfModule("CommandStandardExtension")]
 	class CommandStandardExtensionModuleImplementation : ModuleImplementation<ICommandStandardExtensionModuleInstance> {
 		public CommandStandardExtensionModuleImplementation()
-			: base(new CommandStandardExtensionModuleType(), new CommandStandardExtensionModuleManagement(), new CommandStandardExtensionModuleRepository()) {
+			: base(new CommandStandardExtensionModuleManagement(), new CommandStandardExtensionModuleRepository()) {
 		}
 	}
 }

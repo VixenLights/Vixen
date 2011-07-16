@@ -6,7 +6,7 @@ using CommandStandard;
 
 namespace Vixen.Module.Effect {
 	public interface IEffectModuleDescriptor : IModuleDescriptor {
-		string CommandName { get; }
+		string EffectName { get; }
 		CommandParameterSpecification[] Parameters { get; }
 	}
 }

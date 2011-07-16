@@ -8,7 +8,7 @@ using Vixen.Common;
 using Vixen.Module.FileTemplate;
 
 namespace Vixen.Module.Sequence {
-	class SequenceModuleManagement : UnusedModuleManagement<ISequenceModuleInstance> {
+	class SequenceModuleManagement : GenericModuleManagement<ISequenceModuleInstance> {
 		/// <summary>
 		/// Creates a new instance.  Does not load any existing content.
 		/// </summary>
@@ -22,7 +22,7 @@ namespace Vixen.Module.Sequence {
 				ISequenceModuleInstance instance = Get(descriptor.TypeId);
 
 				// Apply any template that may exist.
-				FileTemplateModuleManagement manager = VixenSystem.Internal.GetModuleManager<IFileTemplateModuleInstance, FileTemplateModuleManagement>();
+				FileTemplateModuleManagement manager = Modules.GetModuleManager<IFileTemplateModuleInstance, FileTemplateModuleManagement>();
 				manager.ProjectTemplateInto(descriptor.FileExtension, instance);
 
 				return instance;

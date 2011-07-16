@@ -12,7 +12,7 @@ namespace Vixen.Module.Transform {
 		/// The commands and parameters affected by the transform, resulting from
 		/// TypesAffected.
 		/// </summary>
-		Dictionary<string, CommandParameterReference> CommandsAffected { get; set; }
+		CommandsAffected CommandsAffected { get; set; }
 		/// <summary>
 		/// This is useful for configuring multiple instances of the same kind of transform.
 		/// </summary>

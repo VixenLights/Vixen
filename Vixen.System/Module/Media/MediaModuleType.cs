@@ -4,6 +4,6 @@ using System.Linq;
 using System.Text;
 
 namespace Vixen.Module.Media {
-	class MediaModuleType : UnusedModuleType {
+	class MediaModuleType : GenericModuleType {
 	}
 }

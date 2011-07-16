@@ -5,10 +5,10 @@ using System.Text;
 using Vixen.Common;
 
 namespace Vixen.Module.Sequence {
-	[ModuleType("Sequence")]
+	[TypeOfModule("Sequence")]
 	class SequenceModuleImplementation : ModuleImplementation<ISequenceModuleInstance> {
 		public SequenceModuleImplementation()
-			: base(new SequenceModuleType(), new SequenceModuleManagement(), new SequenceModuleRepository()) {
+			: base(new SequenceModuleManagement(), new SequenceModuleRepository()) {
 		}
 	}
 }

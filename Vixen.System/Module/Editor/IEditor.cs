@@ -15,7 +15,7 @@ namespace Vixen.Module.Editor {
 		void NewSequence();
 		void Save(string filePath = null);
 		void Refresh();
-		Dictionary<string, string> EditorValues { get; }
+		EditorValues EditorValues { get; }
 		bool IsModified { get; }
 	}
 }

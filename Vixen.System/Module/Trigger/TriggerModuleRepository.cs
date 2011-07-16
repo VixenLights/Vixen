@@ -4,6 +4,6 @@ using System.Linq;
 using System.Text;
 
 namespace Vixen.Module.Trigger {
-	class TriggerModuleRepository : UnusedModuleRepository<ITriggerModuleInstance> {
+	class TriggerModuleRepository : GenericModuleRepository<ITriggerModuleInstance> {
 	}
 }

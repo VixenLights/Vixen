@@ -11,7 +11,7 @@ namespace Vixen.Module.Transform {
 		/// descriptor and the parameters affected within that command.
 		/// Set when the transform is loaded via Transform.Modules.Get.
 		/// </summary>
-		Dictionary<string, CommandParameterReference> CommandsAffected { get; set; }
+		CommandsAffected CommandsAffected { get; }
 		/// <summary>
 		/// Called by the controller when a command needs to be transformed.
 		/// The module needs to determine qualification on its own.

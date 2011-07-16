@@ -4,6 +4,6 @@ using System.Linq;
 using System.Text;
 
 namespace Vixen.Module.Output {
-	class OutputModuleType : UnusedModuleType {
+	class OutputModuleType : GenericModuleType {
 	}
 }

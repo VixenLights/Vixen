@@ -4,6 +4,6 @@ using System.Linq;
 using System.Text;
 
 namespace Vixen.Module.Editor {
-	class EditorModuleRepository : UnusedModuleRepository<IEditorModuleInstance> {
+	class EditorModuleRepository : GenericModuleRepository<IEditorModuleInstance> {
 	}
 }

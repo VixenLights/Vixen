@@ -5,10 +5,10 @@ using System.Text;
 using Vixen.Common;
 
 namespace Vixen.Module.Trigger {
-	[ModuleType("Trigger")]
+	[TypeOfModule("Trigger")]
 	class TriggerModuleImplementation : ModuleImplementation<ITriggerModuleInstance> {
 		public TriggerModuleImplementation()
-			: base(new TriggerModuleType(), new TriggerModuleManagement(), new TriggerModuleRepository()) {
+			: base(new TriggerModuleManagement(), new TriggerModuleRepository()) {
 		}
 	}
 }

@@ -29,7 +29,7 @@ namespace Vixen.Module.Transform {
 					 CommandId = grouping.Key,
 					 ParameterIndexes = grouping.Select(x => x.Index).ToArray()
 				 });
-			transformModuleDescriptor.CommandsAffected = parameterReferences.ToDictionary(x => x.CommandId, x => x);
+			transformModuleDescriptor.CommandsAffected = new CommandsAffected(parameterReferences.ToDictionary(x => x.CommandId, x => x));
 		}
 
 		public void ModuleUnloading(IModuleDescriptor descriptor) {

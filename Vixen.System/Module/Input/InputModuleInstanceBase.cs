@@ -4,27 +4,29 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace Vixen.Module.Trigger {
+namespace Vixen.Module.Input {
 	/// <summary>
 	/// Base class for trigger module implementations.
 	/// </summary>
-	abstract public class TriggerBase : ITriggerModuleInstance, IEquatable<TriggerBase>, IEquatable<ITriggerModuleInstance> {
+	abstract public class InputModuleInstanceBase : ModuleInstanceBase, IInputModuleInstance, IEquatable<InputModuleInstanceBase>, IEquatable<IInputModuleInstance>, IEqualityComparer<IInputModuleInstance>, IEqualityComparer<InputModuleInstanceBase> {
 		private Thread _stateUpdateThread;
 		private ManualResetEvent _pause = new ManualResetEvent(true);
 
-		public event EventHandler<TriggerSetEventArgs> TriggerSet;
+		public event EventHandler<InputValueChangedEventArgs> InputValueChanged;
 
-		abstract public ITriggerInput[] TriggerInputs { get; }
+		abstract public IInputInput[] InputInputs { get; }
 
 		abstract public void UpdateState();
+
+		public bool Enabled { get; set; }
 
 		public void Start() {
 			if(!IsRunning) {
 				// Call the subclass first in case its startup creates the triggers.
 				DoStartup();
 				// Subscribe to triggers.
-				foreach(ITriggerInput trigger in TriggerInputs) {
-					trigger.Set += _TriggerSet;
+				foreach(IInputInput input in InputInputs) {
+					input.ValueChanged += _InputValueChanged;
 				}
 				// Start monitoring the hardware.
 				_stateUpdateThread = new Thread(_StateUpdate);
@@ -42,8 +44,8 @@ namespace Vixen.Module.Trigger {
 				Resume();
 				IsRunning = false;
 				// Unsubscribe to triggers.
-				foreach(ITriggerInput trigger in TriggerInputs) {
-					trigger.Set -= _TriggerSet;
+				foreach(IInputInput input in InputInputs) {
+					input.ValueChanged -= _InputValueChanged;
 				}
 				// Notify the subclass.
 				DoShutdown();
@@ -78,15 +80,7 @@ namespace Vixen.Module.Trigger {
 
 		abstract public bool Setup();
 
-		abstract public Guid TypeId { get; }
-
-		public Guid InstanceId { get; set; }
-
-		virtual public IModuleDataModel ModuleData { get; set; }
-
-		public string TypeName { get; set; }
-
-		public void Dispose() {
+		override public void Dispose() {
 			Dispose(true);
 			GC.SuppressFinalize(this);
 		}
@@ -97,13 +91,13 @@ namespace Vixen.Module.Trigger {
 			_pause = null;
 		}
 
-		~TriggerBase() {
+		~InputModuleInstanceBase() {
 			Dispose(false);
 		}
 
-		private void _TriggerSet(object sender, EventArgs e) {
-			if(TriggerSet != null) {
-				TriggerSet(this, new TriggerSetEventArgs(sender as ITriggerInput));
+		private void _InputValueChanged(object sender, EventArgs e) {
+			if(InputValueChanged != null) {
+				InputValueChanged(this, new InputValueChangedEventArgs(sender as IInputInput));
 			}
 		}
 
@@ -117,13 +111,28 @@ namespace Vixen.Module.Trigger {
 			_stateUpdateThread = null;
 		}
 
-		public bool Equals(TriggerBase other) {
-			return this.InstanceId.Equals(other.InstanceId);
+		public bool Equals(InputModuleInstanceBase other) {
+			return base.Equals(this, other);
 		}
 
-		public bool Equals(ITriggerModuleInstance other) {
-			return this.InstanceId.Equals(other.InstanceId);
+		public bool Equals(IInputModuleInstance other) {
+			return base.Equals(this, other);
+		}
+
+		public bool Equals(IInputModuleInstance x, IInputModuleInstance y) {
+			return base.Equals(x, y);
+		}
+
+		public int GetHashCode(IInputModuleInstance obj) {
+			return base.GetHashCode(obj);
+		}
+
+		public bool Equals(InputModuleInstanceBase x, InputModuleInstanceBase y) {
+			return base.Equals(x, y);
+		}
+
+		public int GetHashCode(InputModuleInstanceBase obj) {
+			return base.GetHashCode(obj);
 		}
 	}
-
 }

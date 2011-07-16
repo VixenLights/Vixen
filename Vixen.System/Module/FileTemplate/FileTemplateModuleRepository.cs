@@ -12,7 +12,7 @@ namespace Vixen.Module.FileTemplate {
 			// Create an instance.
 			IFileTemplateModuleInstance instance = Modules.GetById(id) as IFileTemplateModuleInstance;
 			// Load data from user data.
-			FileTemplateModuleManagement manager = VixenSystem.Internal.GetModuleManager<IFileTemplateModuleInstance, FileTemplateModuleManagement>();
+			FileTemplateModuleManagement manager = Modules.GetModuleManager<IFileTemplateModuleInstance, FileTemplateModuleManagement>();
 			manager.LoadTemplateData(instance);
 			// Reference the instance.
 			_instances[id] = instance;

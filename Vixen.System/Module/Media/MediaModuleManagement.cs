@@ -6,7 +6,7 @@ using Vixen.Common;
 using Vixen.Sys;
 
 namespace Vixen.Module.Media {
-	class MediaModuleManagement : UnusedModuleManagement<IMediaModuleInstance> {
+	class MediaModuleManagement : GenericModuleManagement<IMediaModuleInstance> {
 		public IMediaModuleInstance Get(string filePath) {
 			string fileType = System.IO.Path.GetExtension(filePath);
 

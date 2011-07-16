@@ -6,6 +6,6 @@ using Vixen.Sys;
 using Vixen.Common;
 
 namespace Vixen.Module.Output {
-	class OutputModuleManagement : UnusedModuleManagement<IOutputModuleInstance> {
+	class OutputModuleManagement : GenericModuleManagement<IOutputModuleInstance> {
 	}
 }

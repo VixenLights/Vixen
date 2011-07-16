@@ -10,16 +10,16 @@ namespace Vixen.Module.Effect {
 	class EffectModuleManagement : IModuleManagement<IEffectModuleInstance> {
 		public IEffectModuleInstance Get(string commandName) {
 			// Need the type-specific repository.
-			EffectModuleRepository repository = VixenSystem.Internal.GetModuleRepository<IEffectModuleInstance, EffectModuleRepository>();
+			EffectModuleRepository repository = Modules.GetModuleRepository<IEffectModuleInstance, EffectModuleRepository>();
 			return repository.Get(commandName);
 		}
 
 		public IEffectModuleInstance Get(Guid id) {
-			return VixenSystem.ModuleRepository.GetEffect(id);
+			return Modules.ModuleRepository.GetEffect(id);
 		}
 
 		public IEffectModuleInstance[] GetAll() {
-			return VixenSystem.ModuleRepository.GetAllEffect();
+			return Modules.ModuleRepository.GetAllEffect();
 		}
 
 		public IEffectModuleInstance Clone(IEffectModuleInstance instance) {

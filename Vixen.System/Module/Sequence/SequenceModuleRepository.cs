@@ -4,6 +4,6 @@ using System.Linq;
 using System.Text;
 
 namespace Vixen.Module.Sequence {
-	class SequenceModuleRepository : UnusedModuleRepository<ISequenceModuleInstance> {
+	class SequenceModuleRepository : GenericModuleRepository<ISequenceModuleInstance> {
 	}
 }

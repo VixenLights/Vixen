@@ -5,7 +5,7 @@ using System.Text;
 using Vixen.Sys;
 
 namespace Vixen.Module.Editor {
-	class EditorModuleManagement : UnusedModuleManagement<IEditorModuleInstance> {
+	class EditorModuleManagement : GenericModuleManagement<IEditorModuleInstance> {
 		public IEditorModuleInstance Get(string filePath) {
 			string fileType = System.IO.Path.GetExtension(filePath);
 
