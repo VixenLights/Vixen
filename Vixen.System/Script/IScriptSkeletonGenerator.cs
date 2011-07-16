@@ -5,8 +5,7 @@ using System.Text;
 using Vixen.Sys;
 
 namespace Vixen.Script {
-	interface IScriptSkeletonGenerator {
-		ScriptSequence Sequence { get; set; }
-		string TransformText();
+	public interface IScriptSkeletonGenerator {
+		string Generate(string nameSpace, string className);
 	}
 }

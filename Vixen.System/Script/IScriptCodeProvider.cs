@@ -5,7 +5,7 @@ using System.Text;
 using System.CodeDom.Compiler;
 
 namespace Vixen.Script {
-	public interface ICodeProvider : IDisposable {
+	public interface IScriptCodeProvider : IDisposable {
 		CompilerResults CompileAssemblyFromFile(CompilerParameters options, string[] fileNames);
 	}
 }

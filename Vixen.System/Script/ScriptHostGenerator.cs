@@ -7,6 +7,7 @@ using Vixen.Sys;
 using System.Reflection;
 using System.CodeDom.Compiler;
 using Vixen.Module.Sequence;
+using Vixen.Module.Script;
 
 namespace Vixen.Script {
 	class ScriptHostGenerator {
@@ -25,19 +26,17 @@ namespace Vixen.Script {
 			string fileName;
 
 			Assembly assembly = null;
-			string generatedClassName = string.Empty;
-			string entryPointName = string.Empty;
-			string generatedNamespace = string.Empty;
+			string nameSpace = UserScriptNamespace;
+			string className = Mangle(sequence.Name);
 
 			try {
 				// Emit the T4 template to be compiled into the assembly.
 				fileName = Path.GetTempFileName();
-				IScriptFrameworkGenerator frameworkGenerator = Script.Registration.GetScriptFrameworkGenerator(sequence.Language);
-				frameworkGenerator.Sequence = sequence;
-				generatedClassName = frameworkGenerator.ClassName;
-				entryPointName = frameworkGenerator.EntryPointName;
-				generatedNamespace = frameworkGenerator.Namespace;
-				File.WriteAllText(fileName, frameworkGenerator.TransformText());
+				ScriptModuleManagement manager = Modules.GetModuleManager<IScriptModuleInstance, ScriptModuleManagement>();
+				IScriptFrameworkGenerator frameworkGenerator = manager.GetFrameworkGenerator(sequence.Language);
+
+				string fileContents = frameworkGenerator.Generate(nameSpace, className);
+				File.WriteAllText(fileName, fileContents);
 				files.Add(fileName);
 
 				// Add the user's source files.
@@ -58,7 +57,8 @@ namespace Vixen.Script {
 
 			if(assembly != null) {
 				// Get the generated type.
-				Type type = assembly.GetType(string.Format("{0}.{1}", generatedNamespace, generatedClassName));
+				//Type type = assembly.GetType(string.Format("{0}.{1}", generatedNamespace, generatedClassName));
+				Type type = assembly.GetType(string.Format("{0}.{1}", nameSpace, className));
 				if(type != null) {
 					// Create and return an instance.
 					IUserScriptHost scriptHost = Activator.CreateInstance(type) as IUserScriptHost;
@@ -91,8 +91,11 @@ namespace Vixen.Script {
 			assemblyReferences.AddRange(sequence.ExternalAssemblies);
 			assemblyReferences.AddRange(_standardReferences);
 
+			ScriptModuleManagement manager = Modules.GetModuleManager<IScriptModuleInstance, ScriptModuleManagement>();
+			IScriptCodeProvider codeProvider = manager.GetCodeProvider(sequence.Language);
+
 			CompilerResults results = null;
-			using(ICodeProvider codeProvider = Registration.GetCodeProvider(sequence.Language)) {
+			using(codeProvider) {
 				CompilerParameters compilerParameters = new CompilerParameters() {
 					GenerateInMemory = true
 					//IncludeDebugInformation = true //FOR TESTING ONLY! Leaves a file behind.
@@ -108,14 +111,6 @@ namespace Vixen.Script {
 			}
 
 			return results.Errors.HasErrors ? null : results.CompiledAssembly;
-		}
-
-		static public string Fix(string str, List<string> usedSet) {
-			string originalString = str;
-			str = Mangle(str);
-			str = EnsureUnique(str, usedSet);
-			usedSet.Add(str);
-			return str;
 		}
 
 		static public string Mangle(string str) {
@@ -138,19 +133,8 @@ namespace Vixen.Script {
 			return new string(chars.ToArray());
 		}
 
-		static private string EnsureUnique(string str, List<string> usedSet) {
-			int index;
-			// Static method, can't initialize in the declaration to reset it.
-			index = 2;
-			while(usedSet.Contains(str)) {
-				str = str + "_" + index++;
-			}
-			return str;
-		}
-
 		static private bool _IsValidSymbolChar(char ch) {
 			return char.IsLetterOrDigit(ch) || ch == '_';
 		}
-
 	}
 }
