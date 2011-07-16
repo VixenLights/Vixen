@@ -18,6 +18,7 @@ using Vixen.Module.Editor;
 using Vixen.Module.FileTemplate;
 using Vixen.Module.Effect;
 using Vixen.Module.EffectEditor;
+using Vixen.Module.Output;
 
 namespace TestClient
 {
@@ -52,14 +53,14 @@ namespace TestClient
             // Output modules
 			comboBoxOutputModule.DisplayMember = "Value";
 			comboBoxOutputModule.ValueMember = "Key";
-			comboBoxOutputModule.DataSource = ApplicationServices.GetAvailableModules("Output").ToArray();
+			comboBoxOutputModule.DataSource = ApplicationServices.GetAvailableModules<IOutputModuleInstance>().ToArray();
 
             // Controllers
 			_LoadControllers();
 
 			// Editors
 			ToolStripMenuItem item;
-			foreach(KeyValuePair<Guid,string> typeId_FileTypeName in ApplicationServices.GetAvailableModules("Editor")) {
+			foreach(KeyValuePair<Guid,string> typeId_FileTypeName in ApplicationServices.GetAvailableModules<IEditorModuleInstance>()) {
 				item = new ToolStripMenuItem(typeId_FileTypeName.Value);
 				item.Tag = typeId_FileTypeName.Key;
 				item.Click += (sender,e) => {
@@ -175,7 +176,7 @@ namespace TestClient
 
 			TreeNode typeNode;
 			TreeNode instanceNode;
-			foreach(string moduleType in ApplicationServices.GetModuleTypes()) {
+			foreach(string moduleType in ApplicationServices.GetTypesOfModules()) {
 				typeNode = new TreeNode();
 				treeViewLoadedModules.Nodes.Add(typeNode);
 				typeNode.Text = moduleType;
@@ -206,7 +207,7 @@ namespace TestClient
 			comboBox.DataSource = null;
 			comboBox.DisplayMember = "Value";
 			comboBox.ValueMember = "Key";
-			comboBox.DataSource = ApplicationServices.GetAvailableModules("FileTemplate").ToArray();
+			comboBox.DataSource = ApplicationServices.GetAvailableModules<IFileTemplateModuleInstance>().ToArray();
 		}
 
         private string SequenceName {
@@ -274,9 +275,6 @@ namespace TestClient
             } finally {
                 Cursor = Cursors.Default;
             }
-        }
-
-        private void buttonShowEditor_Click(object sender, EventArgs e) {
         }
 
         private void _AddControllerToView(OutputController controller) {
@@ -390,12 +388,12 @@ namespace TestClient
 		}
 
 		private void buttonUnloadModule_Click(object sender, EventArgs e) {
-			if(treeViewLoadedModules.SelectedNode != null && treeViewLoadedModules.SelectedNode.Level == 1) {
-				IModuleDescriptor descriptor = treeViewLoadedModules.SelectedNode.Tag as IModuleDescriptor;
-				string moduleType = treeViewLoadedModules.SelectedNode.Parent.Text;
-				ApplicationServices.UnloadModule(descriptor.TypeId, moduleType);
-				treeViewLoadedModules.Nodes.Remove(treeViewLoadedModules.SelectedNode);
-			}
+			//if(treeViewLoadedModules.SelectedNode != null && treeViewLoadedModules.SelectedNode.Level == 1) {
+			//    IModuleDescriptor descriptor = treeViewLoadedModules.SelectedNode.Tag as IModuleDescriptor;
+			//    string moduleType = treeViewLoadedModules.SelectedNode.Parent.Text;
+			//    ApplicationServices.UnloadModule(descriptor.TypeId, moduleType);
+			//    treeViewLoadedModules.Nodes.Remove(treeViewLoadedModules.SelectedNode);
+			//}
 		}
 
 		private void buttonRefreshLoadedModules_Click(object sender, EventArgs e) {
@@ -436,7 +434,7 @@ namespace TestClient
 				if(_editorControl != null) {
 					parameterValues = _editorControl.EffectParameterValues;
 				}
-				Command command = new Command(effect.TypeId, parameterValues);
+				Command command = new Command(effect.Descriptor.TypeId, parameterValues);
 				ChannelNode node = treeViewSystemChannels.SelectedNode.Tag as ChannelNode;
 				CommandNode commandNode = new CommandNode(command, new[] { node }, 0, (long)numericUpDownEffectLength.Value);
 				Vixen.Sys.Execution.Write(new [] { commandNode });
@@ -456,12 +454,9 @@ namespace TestClient
 		private IEffectEditorControl _GetEffectEditor(IEffectModuleInstance effect) {
 			IEffectEditorControl editorControl = null;
 			if(effect != null) {
-				editorControl = ApplicationServices.GetEffectEditorControl(effect.TypeId);
+				editorControl = ApplicationServices.GetEffectEditorControl(effect.Descriptor.TypeId);
 			}
 			return editorControl;
-		}
-
-		private void buttonCommandParameters_Click(object sender, EventArgs e) {
 		}
 
 		private IEffectModuleInstance _SelectedCommand {
@@ -669,6 +664,17 @@ namespace TestClient
 				controller.Save();
 				MessageBox.Show("Committed.");
 			}
+		}
+
+		private void buttonNodeProperties_Click(object sender, EventArgs e) {
+			ChannelNode channelNode = treeViewNodes.SelectedNode.Tag as ChannelNode;
+			using(NodePropertiesDialog nodePropertiesDialog = new NodePropertiesDialog(channelNode)) {
+				nodePropertiesDialog.ShowDialog();
+			}
+		}
+
+		private void treeViewNodes_AfterSelect(object sender, TreeViewEventArgs e) {
+			buttonNodeProperties.Enabled = treeViewNodes.SelectedNode != null;
 		}
 
     }

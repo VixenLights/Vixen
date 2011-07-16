@@ -5,39 +5,36 @@ using System.Text;
 using Vixen.Module.Timing;
 
 namespace GenericTimer {
-    public class Module : ITimingModuleDescriptor {
+    public class Module : TimingModuleDescriptorBase {
         // Catch anything that doesn't specify a timing source.
-        static internal Guid _typeId = Guid.Empty;
+        private Guid _typeId = Guid.Empty;
 
-        public Guid TypeId {
+        override public Guid TypeId {
             get { return _typeId; }
         }
 
-        public Type ModuleClass {
+		override public Type ModuleClass {
             get { return typeof(Timer); }
         }
 
-        public Type ModuleDataClass {
+		override public Type ModuleDataClass {
             get { return null; }
         }
 
-        public string Author {
+		override public string Author {
             get { throw new NotImplementedException(); }
         }
 
-        public string TypeName {
+		override public string TypeName {
             get { return "Generic timer"; }
         }
 
-        public string Description {
+		override public string Description {
             get { throw new NotImplementedException(); }
         }
 
-        public string Version {
+		override public string Version {
             get { throw new NotImplementedException(); }
         }
-
-		public string FileName { get; set; }
-		public string ModuleTypeName { get; set; }
 	}
 }

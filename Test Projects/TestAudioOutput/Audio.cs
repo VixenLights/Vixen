@@ -11,69 +11,46 @@ using Vixen.Module.Timing;
 
 namespace TestAudioOutput {
     // Single-card implementation
-    public class Audio : IMediaModuleInstance, ITiming {
+    public class Audio : MediaModuleInstanceBase, ITiming {
         private FmodInstance _audioSystem;
 		private AudioData _audioData;
 
-        ////In response to a load command...
-        //string filePath;
-        //_channel = _audioSystem.LoadSound(filePath, _channel);
-        //if(_channel != null)
-        //{
-        //}
-        ////In response to a play command...
-        //_audioSystem.Play(_channel);
-        ////To play from a non-zero position...
-        //_audioSystem.Play(_channel, true);
-        //_channel.Position = 1111;
-        //_channel.Paused = false;
-        ////In response to a stop command...
-        //_audioSystem.Stop(_channel);
-
-        public void Start() {
+        override public void Start() {
             if(_audioSystem != null && !_audioSystem.IsPlaying) {
                 _audioSystem.Play();
             }
         }
 
-        public void Stop() {
+		override public void Stop() {
             if(_audioSystem != null && _audioSystem.IsPlaying) {
 				_DisposeAudio();
             }
         }
 
-		public void Pause() {
+		override public void Pause() {
 			if(_audioSystem != null && !_audioSystem.IsPaused) {
 				_audioSystem.Pause();
 			}
 		}
 
-		public void Resume() {
+		override public void Resume() {
 			if(_audioSystem != null && _audioSystem.IsPaused) {
 				_audioSystem.Resume();
 			}
 		}
 
-		public Guid TypeId {
-            get { return AudioModule._typeId; }
-        }
-
-        public Guid InstanceId { get; set; }
-
-		public string TypeName { get; set; }
-
-        public IModuleDataModel ModuleData {
+		override public IModuleDataModel ModuleData {
 			get { return _audioData; }
 			set { _audioData = value as AudioData; }
         }
 
-        public void Setup() {
+		override public void Setup() {
 			using(AudioSetup audioSetup = new AudioSetup(_audioData)) {
                 audioSetup.ShowDialog();
             }
         }
 
-        public void Dispose() {
+		override public void Dispose() {
 			_DisposeAudio();
         }
 
@@ -85,15 +62,11 @@ namespace TestAudioOutput {
 			}
 		}
 
-		//public bool IsRunning {
-		//    get { return _audioSystem != null && _audioSystem.IsRunning; }
-		//}
-
-		public ITiming TimingSource {
+		override public ITiming TimingSource {
 			get { return this as ITiming; }
 		}
 
-		public string MediaFilePath {
+		override public string MediaFilePath {
 			get { return _audioData.FilePath; }
 			set { _audioData.FilePath = value; }
 		}
@@ -102,7 +75,7 @@ namespace TestAudioOutput {
 		// executed as media for the sequence.
 		// That means we're either media or media and timing, so only
 		// handle media execution entry points.
-		public void LoadMedia(long startTime) {
+		override public void LoadMedia(long startTime) {
 			_DisposeAudio();
 			_audioSystem = new FmodInstance(MediaFilePath);
 			_audioSystem.SetStartTime(startTime);
@@ -112,6 +85,5 @@ namespace TestAudioOutput {
 			get { return _audioSystem.Position; }
 			set { }
 		}
-
 	}
 }

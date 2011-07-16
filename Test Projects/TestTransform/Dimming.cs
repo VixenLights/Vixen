@@ -10,7 +10,7 @@ using Vixen.Sys;
 using CommandStandard.Types;
 
 namespace TestTransform {
-	public class Dimming : ITransformModuleInstance {
+	public class Dimming : TransformModuleInstanceBase {
 		private DimmingCurve _identityCurve;
 		private DimmingCurve _curve = null;
 		private DimmingData _moduleData;
@@ -19,15 +19,7 @@ namespace TestTransform {
 			_curve = _identityCurve = new DimmingCurve("Identity");
 		}
 
-		public Dictionary<string, CommandParameterReference> CommandsAffected { get; set; }
-
-		public Guid TypeId {
-			get { return Module._typeId; }
-		}
-
-		public Guid InstanceId { get; set; }
-
-		public IModuleDataModel ModuleData {
+		override public IModuleDataModel ModuleData {
 			get { return _moduleData; }
 			set {
 				if((_moduleData = value as DimmingData) != null) {
@@ -36,19 +28,12 @@ namespace TestTransform {
 			}
 		}
 
-		public string TypeName { get; set; }
-
-		//public int OutputIndex {
-		//    get { return _moduleData.OutputIndex; }
-		//    set { _moduleData.OutputIndex = value; }
-		//}
-
 		public string DimmingCurveName {
 			get { return _moduleData.DimmingCurveName; }
 			set { _moduleData.DimmingCurveName = value; }
 		}
 
-		public void Transform(CommandData command) {
+		override public void Transform(CommandData command) {
 			CommandParameterReference paramRef;
 			if(_curve != null && CommandsAffected.TryGetValue(command.CommandIdentifier, out paramRef)) {
 				foreach(int index in paramRef.ParameterIndexes) {
@@ -64,7 +49,7 @@ namespace TestTransform {
 			}
 		}
 
-		public void Setup() {
+		override public void Setup() {
 			using(SetupDialog setupDialog = new SetupDialog()) {
 				setupDialog.DimmingCurveName = this.DimmingCurveName;
 				if(setupDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
@@ -72,7 +57,5 @@ namespace TestTransform {
 				}
 			}
 		}
-
-		public void Dispose() { }
 	}
 }

@@ -13,8 +13,6 @@ namespace TestTemplate {
 		public ScriptSequenceTemplateData() {
 			Behaviors = new List<Guid>();
 			// Default values.
-			TimingInterval = 50;
-			//Length = int.MaxValue;
 			Length = Vixen.Sys.ScriptSequence.Forever;
 		}
 
@@ -23,9 +21,6 @@ namespace TestTemplate {
 
 		[DataMember]
 		public long Length { get; set; }
-
-		[DataMember]
-		public int TimingInterval { get; set; }
 
 		public Guid ModuleTypeId { get; set; }
 

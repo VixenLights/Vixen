@@ -10,7 +10,7 @@ using Vixen.Sys;
 using Vixen.Common;
 
 namespace TestTemplate {
-	public class ScriptSequenceTemplate : IFileTemplateModuleInstance {
+	public class ScriptSequenceTemplate : FileTemplateModuleInstanceBase {
 		private ScriptSequenceTemplateData _data;
 
 		public Guid[] EnabledBehaviors {
@@ -26,22 +26,16 @@ namespace TestTemplate {
 			set { _data.Length = value; }
 		}
 
-		public int TimingInterval {
-			get { return _data.TimingInterval; }
-			set { _data.TimingInterval = value; }
-		}
-
-		public void Project(object target) {
+		override public void Project(object target) {
 			ScriptSequence scriptSequence = target as ScriptSequence;
 
 			scriptSequence.Length = Length;
-			scriptSequence.Data.TimingInterval = TimingInterval;
 			foreach(IRuntimeBehaviorModuleInstance runtimeBehavior in scriptSequence.RuntimeBehaviors) {
-				runtimeBehavior.Enabled = EnabledBehaviors.Contains(runtimeBehavior.TypeId);
+				runtimeBehavior.Enabled = EnabledBehaviors.Contains(runtimeBehavior.Descriptor.TypeId);
 			}
 		}
 
-		public void Setup() {
+		override public void Setup() {
 			using(ScriptSequenceTemplateSetup dialog = new ScriptSequenceTemplateSetup(this)) {
 				if(dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 					ApplicationServices.CommitTemplate(this);
@@ -49,22 +43,9 @@ namespace TestTemplate {
 			}
 		}
 
-		public Guid TypeId {
-			get { return ScriptSequenceTemplateModule._typeId; }
-		}
-
-		public Guid InstanceId { get; set; }
-
-		public IModuleDataModel ModuleData {
+		override public IModuleDataModel ModuleData {
 			get { return _data; }
-			set {
-				_data = value as ScriptSequenceTemplateData;
-			}
-		}
-
-		public string TypeName { get; set; }
-
-		public void Dispose() {
+			set { _data = value as ScriptSequenceTemplateData; }
 		}
 	}
 }

@@ -6,44 +6,39 @@ using Vixen.Module;
 using Vixen.Module.Sequence;
 
 namespace TestSequences {
-	public class RecordingSequenceModule : ISequenceModuleDescriptor {
-		static internal Guid _typeId = new Guid("{8D61518B-22D9-4c44-8271-D08AC64D5B19}");
-		static internal string _fileExtension = ".rec";
+	public class RecordingSequenceModule : SequenceModuleDescriptorBase {
+		private Guid _typeId = new Guid("{8D61518B-22D9-4c44-8271-D08AC64D5B19}");
 
-		public string FileExtension {
-			get { return _fileExtension; }
+		override public string FileExtension {
+			get { return ".rec"; }
 		}
 
-		public Guid TypeId {
+		override public Guid TypeId {
 			get { return _typeId; }
 		}
 
-		public Type ModuleClass {
+		override public Type ModuleClass {
 			get { return typeof(Recording); }
 		}
 
-		public Type ModuleDataClass {
+		override public Type ModuleDataClass {
 			get { return null; }
 		}
 
-		public string Author {
+		override public string Author {
 			get { throw new NotImplementedException(); }
 		}
 
-		public string TypeName {
+		override public string TypeName {
 			get { return "Recording sequence"; }
 		}
 
-		public string Description {
+		override public string Description {
 			get { throw new NotImplementedException(); }
 		}
 
-		public string Version {
+		override public string Version {
 			get { throw new NotImplementedException(); }
 		}
-
-		public string FileName { get; set; }
-
-		public string ModuleTypeName { get; set; }
 	}
 }

@@ -9,7 +9,7 @@ namespace TestTemplate {
 	[DataContract]
 	public class InstanceReference {
 		public InstanceReference(IModuleInstance instance) {
-			TypeId = instance.TypeId;
+			TypeId = instance.Descriptor.TypeId;
 			InstanceId = instance.InstanceId;
 		}
 

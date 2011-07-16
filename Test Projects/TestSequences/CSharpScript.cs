@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using Vixen.Module;
 using Vixen.Module.Sequence;
-//using Vixen.Sequence;
 using Vixen.Sys;
 
 namespace TestSequences {
-	public class Timed : SequenceModuleInstanceBase {
+	public class CSharpScript : ScriptSequenceModuleInstanceBase {
+		public CSharpScript()
+			: base("C#") {
+		}
 	}
 }

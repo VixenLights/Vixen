@@ -18,7 +18,7 @@ namespace TestTemplate {
 			InitializeComponent();
 			_template = template;
 
-			foreach(IModuleDescriptor descriptor in ApplicationServices.GetModuleDescriptors("RuntimeBehavior")) {
+			foreach(IModuleDescriptor descriptor in ApplicationServices.GetModuleDescriptors<IRuntimeBehaviorModuleInstance>()) {
 				checkedListBoxRuntimeBehaviors.Items.Add(new DescriptorItem(descriptor), _template.EnabledBehaviors.Contains(descriptor.TypeId));
 			}
 
@@ -28,12 +28,11 @@ namespace TestTemplate {
 			} else {
 				textBoxLength.Text = template.Length.ToString();
 			}
-			textBoxTimingInterval.Text = template.TimingInterval.ToString();
 		}
 
 		private void buttonOK_Click(object sender, EventArgs e) {
 			long length;
-			int timingInterval;
+			//int timingInterval;
 
 			if(checkBoxForever.Checked) {
 				length = Vixen.Sys.ScriptSequence.Forever;
@@ -44,13 +43,7 @@ namespace TestTemplate {
 				}
 			}
 
-			if(!int.TryParse(textBoxTimingInterval.Text, out timingInterval)) {
-				MessageBox.Show("Timing interval is invalid.");
-				return;
-			}
-
 			_template.Length = length;
-			_template.TimingInterval = timingInterval;
 			_template.EnabledBehaviors = checkedListBoxRuntimeBehaviors.CheckedItems.Cast<DescriptorItem>().Select(x => x.Id).ToArray();
 		}
 

@@ -2,16 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Vixen.Common;
-using Vixen.Sys;
-using Vixen.Module.FileTemplate;
+using Vixen.Module;
+using Vixen.Module.Sequence;
 
-namespace TestTemplate {
-	public class OutputControllerTemplateModule : FileTemplateModuleDescriptorBase {
-		private Guid _typeId = new Guid("{D7C0DF55-C3E2-416e-AC23-BF3BCEFDCAEE}");
+namespace TestSequences {
+	public class VBScriptSequenceModule : SequenceModuleDescriptorBase {
+		private Guid _typeId = new Guid("{9A5F40EA-9150-471b-A76A-7BE43DA79972}");
 
-		override public string FileType {
-			get { return ".out"; }
+		override public string FileExtension {
+			get { return ".vbp"; }
+		}
+
+		override public string TypeName {
+			get { return "VB script sequence"; }
 		}
 
 		override public Guid TypeId {
@@ -19,19 +22,15 @@ namespace TestTemplate {
 		}
 
 		override public Type ModuleClass {
-			get { return typeof(OutputControllerTemplate); }
+			get { return typeof(VBScript); }
 		}
 
 		override public Type ModuleDataClass {
-			get { return typeof(OutputControllerTemplateData); }
+			get { return null; }
 		}
 
 		override public string Author {
 			get { throw new NotImplementedException(); }
-		}
-
-		override public string TypeName {
-			get { return "Output controller template"; }
 		}
 
 		override public string Description {

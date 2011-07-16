@@ -2,16 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Vixen.Common;
-using Vixen.Sys;
-using Vixen.Module.FileTemplate;
+using Vixen.Module;
+using Vixen.Module.Sequence;
 
-namespace TestTemplate {
-	public class OutputControllerTemplateModule : FileTemplateModuleDescriptorBase {
-		private Guid _typeId = new Guid("{D7C0DF55-C3E2-416e-AC23-BF3BCEFDCAEE}");
+namespace TestSequences {
+	public class CSharpScriptSequenceModule : SequenceModuleDescriptorBase {
+		private Guid _typeId = new Guid("{AC5AB571-797A-4814-ADF9-99E6FB227FBA}");
 
-		override public string FileType {
-			get { return ".out"; }
+		override public string FileExtension {
+			get { return ".csp"; }
 		}
 
 		override public Guid TypeId {
@@ -19,11 +18,11 @@ namespace TestTemplate {
 		}
 
 		override public Type ModuleClass {
-			get { return typeof(OutputControllerTemplate); }
+			get { return typeof(CSharpScript); }
 		}
 
 		override public Type ModuleDataClass {
-			get { return typeof(OutputControllerTemplateData); }
+			get { return null; }
 		}
 
 		override public string Author {
@@ -31,7 +30,7 @@ namespace TestTemplate {
 		}
 
 		override public string TypeName {
-			get { return "Output controller template"; }
+			get { return "C# script sequence"; }
 		}
 
 		override public string Description {

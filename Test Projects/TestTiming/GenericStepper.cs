@@ -8,53 +8,28 @@ using Vixen.Module;
 using Vixen.Module.Timing;
 
 namespace TestTiming {
-	public class GenericStepper : ITimingModuleInstance {
-		private long _timingOffset = 0;
+	public class GenericStepper : TimingModuleInstanceBase {
 		private GenericStepperForm _form;
 
-		public GenericStepper() {
+		override public void Start() {
 			_form = new GenericStepperForm();
-		}
-
-		public void SetOutputCount(int outputCount) { }
-
-		public void UpdateState(CommandData[] outputStates) { }
-
-		public void Initialize(long startTime) {
-			_timingOffset = startTime;
-		}
-
-		public void Start() {
 			_form.Show();
 		}
 
-		public void Stop() {
+		override public void Stop() {
 			_DestroyForm();
 		}
 
-		public void Pause() { }
+		override public void Pause() { }
 
-		public void Resume() { }
+		override public void Resume() { }
 
-		private void _DestroyForm() {
-			if(_form != null) {
-				_form.Hide();
-				_form.Dispose();
-				_form = null;
-			}
+		override public long Position {
+			get { return _form.Position; }
+			set { _form.Position = value; }
 		}
 
-		public Guid TypeId {
-			get { return GenericStepperModule._typeId; }
-		}
-
-		public Guid InstanceId { get; set; }
-
-		public IModuleDataModel ModuleData { get; set; }
-
-		public string TypeName { get; set; }
-
-		public void Dispose() {
+		override public void Dispose() {
 			_DestroyForm();
 			GC.SuppressFinalize(this);
 		}
@@ -63,9 +38,12 @@ namespace TestTiming {
 			_DestroyForm();
 		}
 
-		public long Position {
-			get { return _form.Position; }
-			set { _form.Position = value; }
+		private void _DestroyForm() {
+			if(_form != null) {
+				_form.Hide();
+				_form.Dispose();
+				_form = null;
+			}
 		}
 	}
 }

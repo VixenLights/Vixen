@@ -61,10 +61,6 @@
 			this.timer = new System.Windows.Forms.Timer(this.components);
 			this.buttonAffectSelectedOverTime = new System.Windows.Forms.Button();
 			this.label17 = new System.Windows.Forms.Label();
-			this.textBoxSequenceInterval = new System.Windows.Forms.TextBox();
-			this.label20 = new System.Windows.Forms.Label();
-			this.buttonSetInterval = new System.Windows.Forms.Button();
-			this.buttonEditInterval = new System.Windows.Forms.Button();
 			this.buttonMedia = new System.Windows.Forms.Button();
 			this.listViewTimingSources = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -422,42 +418,6 @@
 			this.label17.TabIndex = 33;
 			this.label17.Text = "Timing source";
 			// 
-			// textBoxSequenceInterval
-			// 
-			this.textBoxSequenceInterval.Location = new System.Drawing.Point(15, 316);
-			this.textBoxSequenceInterval.Name = "textBoxSequenceInterval";
-			this.textBoxSequenceInterval.Size = new System.Drawing.Size(43, 20);
-			this.textBoxSequenceInterval.TabIndex = 39;
-			// 
-			// label20
-			// 
-			this.label20.AutoSize = true;
-			this.label20.Location = new System.Drawing.Point(64, 319);
-			this.label20.Name = "label20";
-			this.label20.Size = new System.Drawing.Size(87, 13);
-			this.label20.TabIndex = 40;
-			this.label20.Text = "ms interval timing";
-			// 
-			// buttonSetInterval
-			// 
-			this.buttonSetInterval.Location = new System.Drawing.Point(166, 315);
-			this.buttonSetInterval.Name = "buttonSetInterval";
-			this.buttonSetInterval.Size = new System.Drawing.Size(43, 23);
-			this.buttonSetInterval.TabIndex = 41;
-			this.buttonSetInterval.Text = "Set";
-			this.buttonSetInterval.UseVisualStyleBackColor = true;
-			this.buttonSetInterval.Click += new System.EventHandler(this.buttonSetInterval_Click);
-			// 
-			// buttonEditInterval
-			// 
-			this.buttonEditInterval.Location = new System.Drawing.Point(215, 315);
-			this.buttonEditInterval.Name = "buttonEditInterval";
-			this.buttonEditInterval.Size = new System.Drawing.Size(43, 23);
-			this.buttonEditInterval.TabIndex = 42;
-			this.buttonEditInterval.Text = "Edit";
-			this.buttonEditInterval.UseVisualStyleBackColor = true;
-			this.buttonEditInterval.Click += new System.EventHandler(this.buttonEditInterval_Click);
-			// 
 			// buttonMedia
 			// 
 			this.buttonMedia.Location = new System.Drawing.Point(408, 164);
@@ -495,10 +455,6 @@
 			this.ClientSize = new System.Drawing.Size(619, 600);
 			this.Controls.Add(this.listViewTimingSources);
 			this.Controls.Add(this.buttonMedia);
-			this.Controls.Add(this.buttonEditInterval);
-			this.Controls.Add(this.buttonSetInterval);
-			this.Controls.Add(this.label20);
-			this.Controls.Add(this.textBoxSequenceInterval);
 			this.Controls.Add(this.label17);
 			this.Controls.Add(this.buttonAffectSelectedOverTime);
 			this.Controls.Add(this.numericUpDownSequenceLength);
@@ -572,10 +528,6 @@
 		private System.Windows.Forms.Button buttonQueue;
 		private System.Windows.Forms.TextBox textBoxQueueContextName;
 		private System.Windows.Forms.Label label19;
-		private System.Windows.Forms.TextBox textBoxSequenceInterval;
-		private System.Windows.Forms.Label label20;
-		private System.Windows.Forms.Button buttonSetInterval;
-		private System.Windows.Forms.Button buttonEditInterval;
 		private System.Windows.Forms.Button buttonMedia;
 		private System.Windows.Forms.ListView listViewTimingSources;
 		private System.Windows.Forms.ColumnHeader columnHeader1;

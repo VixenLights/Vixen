@@ -6,39 +6,35 @@ using Vixen.Module;
 using Vixen.Module.RuntimeBehavior;
 
 namespace TestRuntimeBehaviors {
-	public class RecordingModule : IRuntimeBehaviorModuleDescriptor {
-		static internal Guid _typeId = new Guid("{BEF934C3-B7C1-418f-8B25-CCD0566161FA}");
+	public class RecordingModule : RuntimeBehaviorModuleDescriptorBase {
+		private Guid _typeId = new Guid("{BEF934C3-B7C1-418f-8B25-CCD0566161FA}");
 
-		public Guid TypeId {
+		override public Guid TypeId {
 			get { return _typeId; }
 		}
 
-		public Type ModuleClass {
+		override public Type ModuleClass {
 			get { return typeof(Recording); }
 		}
 
-		public Type ModuleDataClass {
+		override public Type ModuleDataClass {
 			get { return typeof(RecordingData); }
 		}
 
-		public string Author {
+		override public string Author {
 			get { throw new NotImplementedException(); }
 		}
 
-		public string TypeName {
+		override public string TypeName {
 			get { return "Recording"; }
 		}
 
-		public string Description {
+		override public string Description {
 			get { throw new NotImplementedException(); }
 		}
 
-		public string Version {
+		override public string Version {
 			get { throw new NotImplementedException(); }
 		}
-
-		public string FileName { get; set; }
-
-		public string ModuleTypeName { get; set; }
 	}
 }

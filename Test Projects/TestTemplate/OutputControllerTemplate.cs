@@ -10,10 +10,10 @@ using Vixen.Common;
 using Vixen.Hardware;
 
 namespace TestTemplate {
-	public class OutputControllerTemplate : IFileTemplateModuleInstance {
+	public class OutputControllerTemplate : FileTemplateModuleInstanceBase {
 		private OutputControllerTemplateData _data;
 
-		public void Project(object newInstance) {
+		override public void Project(object newInstance) {
 			OutputControllerTemplateData data = ModuleData as OutputControllerTemplateData;
 			OutputController controller = newInstance as OutputController;
 
@@ -21,7 +21,6 @@ namespace TestTemplate {
 			ITransformModuleInstance[] transforms = _GetTransforms();
 
 			foreach(OutputController.Output output in controller.Outputs) {
-				// * Copied from Fixture (mostly) *
 				// This must be done in two steps so that we have the original
 				// instances (appropriate ones, that is) that belong to this output
 				// and instances of the missing ones from the template.
@@ -31,6 +30,18 @@ namespace TestTemplate {
 					output.AddTransform(templateTransform);
 				}
 			}
+
+			// Two dangers in doing this:
+			//1. It only happens when they intially create the controller, contrary to
+			//   their possible expectations.
+			//2. Renaming an output will not affect the channel name, contrary to
+			//   their possible expectations.
+			// Do they want seed channels created?
+			//if(_data.AutoCreateOutputChannels) {
+			//    foreach(OutputController.Output output in controller.Outputs) {
+			//        Vixen.Sys.Execution.AddChannel(output.Name);
+			//    }
+			//}
 		}
 
 		//*** replace _get/_set with a property?
@@ -44,7 +55,8 @@ namespace TestTemplate {
 			List<ITransformModuleInstance> transforms = new List<ITransformModuleInstance>();
 			ITransformModuleInstance transform;
 			foreach(InstanceReference transformReference in _data.Transforms) {
-				transform = VixenSystem.ModuleManagement.GetTransform(transformReference.TypeId) as ITransformModuleInstance;
+				//transform = VixenSystem.ModuleManagement.GetTransform(transformReference.TypeId) as ITransformModuleInstance;
+				transform = ApplicationServices.Get<ITransformModuleInstance>(transformReference.TypeId);
 				transform.InstanceId = transformReference.InstanceId;
 				// Get data for each instance from our transform module data set.
 				// Get as instance data, not type data.
@@ -63,22 +75,12 @@ namespace TestTemplate {
 			_data.Transforms.AddRange(transforms.Select(x => new InstanceReference(x)));
 		}
 
-		public Guid TypeId {
-			get { return OutputControllerTemplateModule._typeId; }
-		}
-
-		public Guid InstanceId { get; set; }
-
-		public IModuleDataModel ModuleData {
+		override public IModuleDataModel ModuleData {
 			get { return _data; }
-			set { 
-				_data = value as OutputControllerTemplateData;
-			}
+			set { _data = value as OutputControllerTemplateData; }
 		}
 
-		public string TypeName { get; set; }
-
-		public void Setup() {
+		override public void Setup() {
 			// The setup dialog needs the transform datum because it's going to be creating
 			// new instances and allowing the user to set them up.
 			using(OutputControllerTemplateSetup templateSetup = new OutputControllerTemplateSetup(_data.TransformData)) {
@@ -89,7 +91,5 @@ namespace TestTemplate {
 				}
 			}
 		}
-
-		public void Dispose() { }
 	}
 }

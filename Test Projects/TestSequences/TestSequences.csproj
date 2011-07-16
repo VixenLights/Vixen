@@ -73,11 +73,13 @@
   <ItemGroup>
     <Compile Include="Recording.cs" />
     <Compile Include="RecordingSequenceModule.cs" />
-    <Compile Include="Script.cs" />
+    <Compile Include="CSharpScript.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScriptSequenceModule.cs" />
+    <Compile Include="CSharpScriptSequenceModule.cs" />
     <Compile Include="Timed.cs" />
     <Compile Include="TimedSequenceModule.cs" />
+    <Compile Include="VBScript.cs" />
+    <Compile Include="VBScriptSequenceModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Vixen.System\Vixen.csproj">

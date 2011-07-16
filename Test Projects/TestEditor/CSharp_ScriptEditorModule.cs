@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Common;
-using Vixen.Sys;
-using Vixen.Module.FileTemplate;
+using Vixen.Module.Editor;
 
-namespace TestTemplate {
-	public class OutputControllerTemplateModule : FileTemplateModuleDescriptorBase {
-		private Guid _typeId = new Guid("{D7C0DF55-C3E2-416e-AC23-BF3BCEFDCAEE}");
+namespace TestEditor {
+	public class CSharp_ScriptEditorModule : EditorModuleDescriptorBase {
+		private Guid _typeId = new Guid("{CEFF9B1C-BB75-4f76-96C2-C0BBADB75035}");
+		private string[] _extensions = new string[] { ".csp" };
 
-		override public string FileType {
-			get { return ".out"; }
+		override public string[] FileExtensions {
+			get { return _extensions; }
 		}
 
 		override public Guid TypeId {
@@ -19,11 +19,11 @@ namespace TestTemplate {
 		}
 
 		override public Type ModuleClass {
-			get { return typeof(OutputControllerTemplate); }
+			get { return typeof(CSharp_ScriptEditor); }
 		}
 
 		override public Type ModuleDataClass {
-			get { return typeof(OutputControllerTemplateData); }
+			get { return null; }
 		}
 
 		override public string Author {
@@ -31,7 +31,7 @@ namespace TestTemplate {
 		}
 
 		override public string TypeName {
-			get { return "Output controller template"; }
+			get { return "Vixen script project"; }
 		}
 
 		override public string Description {

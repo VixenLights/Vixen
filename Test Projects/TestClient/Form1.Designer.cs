@@ -36,16 +36,18 @@
 			this.buttonWriteSequence = new System.Windows.Forms.Button();
 			this.buttonReadSequence = new System.Windows.Forms.Button();
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-			this.label5 = new System.Windows.Forms.Label();
-			this.buttonShowEditor = new System.Windows.Forms.Button();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.labelActiveEditor = new System.Windows.Forms.Label();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.label9 = new System.Windows.Forms.Label();
+			this.label8 = new System.Windows.Forms.Label();
 			this.buttonDeleteController = new System.Windows.Forms.Button();
+			this.comboBoxOutputModule = new System.Windows.Forms.ComboBox();
 			this.comboBoxCombinationStrategy = new System.Windows.Forms.ComboBox();
 			this.label24 = new System.Windows.Forms.Label();
+			this.numericUpDownOutputCount = new System.Windows.Forms.NumericUpDown();
 			this.buttonControllerSetup = new System.Windows.Forms.Button();
 			this.buttonLinkController = new System.Windows.Forms.Button();
 			this.buttonRemoveControllerLink = new System.Windows.Forms.Button();
@@ -55,11 +57,10 @@
 			this.listViewControllers = new System.Windows.Forms.ListView();
 			this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.buttonAddController = new System.Windows.Forms.Button();
 			this.textBoxControllerName = new System.Windows.Forms.TextBox();
 			this.label10 = new System.Windows.Forms.Label();
-			this.comboBoxOutputModule = new System.Windows.Forms.ComboBox();
-			this.numericUpDownOutputCount = new System.Windows.Forms.NumericUpDown();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
 			this.buttonCommitControllerOutputChanges = new System.Windows.Forms.Button();
 			this.buttonUpdateControllerOutputName = new System.Windows.Forms.Button();
@@ -82,7 +83,6 @@
 			this.comboBoxNodeTemplates = new System.Windows.Forms.ComboBox();
 			this.buttonImportNodeTemplate = new System.Windows.Forms.Button();
 			this.panelEditorControlContainer = new System.Windows.Forms.Panel();
-			this.buttonCommandParameters = new System.Windows.Forms.Button();
 			this.buttonFireEffect = new System.Windows.Forms.Button();
 			this.label23 = new System.Windows.Forms.Label();
 			this.numericUpDownEffectLength = new System.Windows.Forms.NumericUpDown();
@@ -94,13 +94,11 @@
 			this.buttonAddSystemFixtureChannel = new System.Windows.Forms.Button();
 			this.treeViewSystemChannels = new System.Windows.Forms.TreeView();
 			this.tabPage8 = new System.Windows.Forms.TabPage();
+			this.buttonNodeProperties = new System.Windows.Forms.Button();
 			this.buttonCreateNodeTemplate = new System.Windows.Forms.Button();
 			this.treeViewNodes = new System.Windows.Forms.TreeView();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.label8 = new System.Windows.Forms.Label();
-			this.label9 = new System.Windows.Forms.Label();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -181,27 +179,6 @@
 			// 
 			this.openFileDialog.CheckFileExists = false;
 			// 
-			// label5
-			// 
-			this.label5.AutoSize = true;
-			this.label5.Enabled = false;
-			this.label5.Location = new System.Drawing.Point(24, 26);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(34, 13);
-			this.label5.TabIndex = 13;
-			this.label5.Text = "Editor";
-			// 
-			// buttonShowEditor
-			// 
-			this.buttonShowEditor.Enabled = false;
-			this.buttonShowEditor.Location = new System.Drawing.Point(115, 21);
-			this.buttonShowEditor.Name = "buttonShowEditor";
-			this.buttonShowEditor.Size = new System.Drawing.Size(87, 23);
-			this.buttonShowEditor.TabIndex = 14;
-			this.buttonShowEditor.Text = "Show editor";
-			this.buttonShowEditor.UseVisualStyleBackColor = true;
-			this.buttonShowEditor.Click += new System.EventHandler(this.buttonShowEditor_Click);
-			// 
 			// tabControl1
 			// 
 			this.tabControl1.Controls.Add(this.tabPage1);
@@ -228,8 +205,6 @@
 			this.tabPage1.Controls.Add(this.buttonFindFile);
 			this.tabPage1.Controls.Add(this.buttonWriteSequence);
 			this.tabPage1.Controls.Add(this.buttonReadSequence);
-			this.tabPage1.Controls.Add(this.label5);
-			this.tabPage1.Controls.Add(this.buttonShowEditor);
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
@@ -286,6 +261,26 @@
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Controller";
 			// 
+			// label9
+			// 
+			this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.label9.AutoSize = true;
+			this.label9.Location = new System.Drawing.Point(38, 341);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(79, 13);
+			this.label9.TabIndex = 17;
+			this.label9.Text = "Output module:";
+			// 
+			// label8
+			// 
+			this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.label8.AutoSize = true;
+			this.label8.Location = new System.Drawing.Point(45, 314);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(72, 13);
+			this.label8.TabIndex = 16;
+			this.label8.Text = "Output count:";
+			// 
 			// buttonDeleteController
 			// 
 			this.buttonDeleteController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -296,6 +291,17 @@
 			this.buttonDeleteController.Text = "Delete";
 			this.buttonDeleteController.UseVisualStyleBackColor = true;
 			this.buttonDeleteController.Click += new System.EventHandler(this.buttonDeleteController_Click);
+			// 
+			// comboBoxOutputModule
+			// 
+			this.comboBoxOutputModule.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.comboBoxOutputModule.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxOutputModule.FormattingEnabled = true;
+			this.comboBoxOutputModule.Location = new System.Drawing.Point(126, 338);
+			this.comboBoxOutputModule.Name = "comboBoxOutputModule";
+			this.comboBoxOutputModule.Size = new System.Drawing.Size(211, 21);
+			this.comboBoxOutputModule.TabIndex = 3;
 			// 
 			// comboBoxCombinationStrategy
 			// 
@@ -317,6 +323,29 @@
 			this.label24.Size = new System.Drawing.Size(108, 13);
 			this.label24.TabIndex = 13;
 			this.label24.Text = "Combination strategy:";
+			// 
+			// numericUpDownOutputCount
+			// 
+			this.numericUpDownOutputCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.numericUpDownOutputCount.Location = new System.Drawing.Point(126, 312);
+			this.numericUpDownOutputCount.Maximum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            0});
+			this.numericUpDownOutputCount.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.numericUpDownOutputCount.Name = "numericUpDownOutputCount";
+			this.numericUpDownOutputCount.Size = new System.Drawing.Size(58, 20);
+			this.numericUpDownOutputCount.TabIndex = 2;
+			this.numericUpDownOutputCount.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
 			// 
 			// buttonControllerSetup
 			// 
@@ -412,6 +441,11 @@
 			this.columnHeader5.Text = "Outputs";
 			this.columnHeader5.Width = 63;
 			// 
+			// columnHeader6
+			// 
+			this.columnHeader6.Text = "Output module";
+			this.columnHeader6.Width = 176;
+			// 
 			// buttonAddController
 			// 
 			this.buttonAddController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -441,40 +475,6 @@
 			this.label10.Size = new System.Drawing.Size(38, 13);
 			this.label10.TabIndex = 2;
 			this.label10.Text = "Name:";
-			// 
-			// comboBoxOutputModule
-			// 
-			this.comboBoxOutputModule.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.comboBoxOutputModule.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxOutputModule.FormattingEnabled = true;
-			this.comboBoxOutputModule.Location = new System.Drawing.Point(126, 338);
-			this.comboBoxOutputModule.Name = "comboBoxOutputModule";
-			this.comboBoxOutputModule.Size = new System.Drawing.Size(211, 21);
-			this.comboBoxOutputModule.TabIndex = 3;
-			// 
-			// numericUpDownOutputCount
-			// 
-			this.numericUpDownOutputCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.numericUpDownOutputCount.Location = new System.Drawing.Point(126, 312);
-			this.numericUpDownOutputCount.Maximum = new decimal(new int[] {
-            65536,
-            0,
-            0,
-            0});
-			this.numericUpDownOutputCount.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-			this.numericUpDownOutputCount.Name = "numericUpDownOutputCount";
-			this.numericUpDownOutputCount.Size = new System.Drawing.Size(58, 20);
-			this.numericUpDownOutputCount.TabIndex = 2;
-			this.numericUpDownOutputCount.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
 			// 
 			// tabPage3
 			// 
@@ -654,6 +654,7 @@
 			this.buttonUnloadModule.TabIndex = 1;
 			this.buttonUnloadModule.Text = "Unload";
 			this.buttonUnloadModule.UseVisualStyleBackColor = true;
+			this.buttonUnloadModule.Visible = false;
 			this.buttonUnloadModule.Click += new System.EventHandler(this.buttonUnloadModule_Click);
 			// 
 			// treeViewLoadedModules
@@ -671,7 +672,6 @@
 			this.tabPage7.Controls.Add(this.comboBoxNodeTemplates);
 			this.tabPage7.Controls.Add(this.buttonImportNodeTemplate);
 			this.tabPage7.Controls.Add(this.panelEditorControlContainer);
-			this.tabPage7.Controls.Add(this.buttonCommandParameters);
 			this.tabPage7.Controls.Add(this.buttonFireEffect);
 			this.tabPage7.Controls.Add(this.label23);
 			this.tabPage7.Controls.Add(this.numericUpDownEffectLength);
@@ -718,18 +718,6 @@
 			this.panelEditorControlContainer.Name = "panelEditorControlContainer";
 			this.panelEditorControlContainer.Size = new System.Drawing.Size(0, 0);
 			this.panelEditorControlContainer.TabIndex = 34;
-			// 
-			// buttonCommandParameters
-			// 
-			this.buttonCommandParameters.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonCommandParameters.Enabled = false;
-			this.buttonCommandParameters.Location = new System.Drawing.Point(286, 372);
-			this.buttonCommandParameters.Name = "buttonCommandParameters";
-			this.buttonCommandParameters.Size = new System.Drawing.Size(75, 23);
-			this.buttonCommandParameters.TabIndex = 33;
-			this.buttonCommandParameters.Text = "Parameters";
-			this.buttonCommandParameters.UseVisualStyleBackColor = true;
-			this.buttonCommandParameters.Click += new System.EventHandler(this.buttonCommandParameters_Click);
 			// 
 			// buttonFireEffect
 			// 
@@ -856,6 +844,7 @@
 			// 
 			// tabPage8
 			// 
+			this.tabPage8.Controls.Add(this.buttonNodeProperties);
 			this.tabPage8.Controls.Add(this.buttonCreateNodeTemplate);
 			this.tabPage8.Controls.Add(this.treeViewNodes);
 			this.tabPage8.Location = new System.Drawing.Point(4, 22);
@@ -865,6 +854,17 @@
 			this.tabPage8.TabIndex = 7;
 			this.tabPage8.Text = "Nodes";
 			this.tabPage8.UseVisualStyleBackColor = true;
+			// 
+			// buttonNodeProperties
+			// 
+			this.buttonNodeProperties.Enabled = false;
+			this.buttonNodeProperties.Location = new System.Drawing.Point(150, 469);
+			this.buttonNodeProperties.Name = "buttonNodeProperties";
+			this.buttonNodeProperties.Size = new System.Drawing.Size(75, 23);
+			this.buttonNodeProperties.TabIndex = 2;
+			this.buttonNodeProperties.Text = "Properties";
+			this.buttonNodeProperties.UseVisualStyleBackColor = true;
+			this.buttonNodeProperties.Click += new System.EventHandler(this.buttonNodeProperties_Click);
 			// 
 			// buttonCreateNodeTemplate
 			// 
@@ -887,6 +887,7 @@
 			this.treeViewNodes.Name = "treeViewNodes";
 			this.treeViewNodes.Size = new System.Drawing.Size(463, 441);
 			this.treeViewNodes.TabIndex = 0;
+			this.treeViewNodes.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewNodes_AfterSelect);
 			this.treeViewNodes.DragDrop += new System.Windows.Forms.DragEventHandler(this.treeViewNodes_DragDrop);
 			this.treeViewNodes.DragOver += new System.Windows.Forms.DragEventHandler(this.treeViewNodes_DragOver);
 			this.treeViewNodes.GiveFeedback += new System.Windows.Forms.GiveFeedbackEventHandler(this.treeViewNodes_GiveFeedback);
@@ -909,31 +910,6 @@
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "File";
-			// 
-			// columnHeader6
-			// 
-			this.columnHeader6.Text = "Output module";
-			this.columnHeader6.Width = 176;
-			// 
-			// label8
-			// 
-			this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(45, 314);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(72, 13);
-			this.label8.TabIndex = 16;
-			this.label8.Text = "Output count:";
-			// 
-			// label9
-			// 
-			this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(38, 341);
-			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(79, 13);
-			this.label9.TabIndex = 17;
-			this.label9.Text = "Output module:";
 			// 
 			// Form1
 			// 
@@ -978,9 +954,7 @@
         private System.Windows.Forms.Button buttonFindFile;
         private System.Windows.Forms.Button buttonWriteSequence;
         private System.Windows.Forms.Button buttonReadSequence;
-        private System.Windows.Forms.OpenFileDialog openFileDialog;
-        private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.Button buttonShowEditor;
+		private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
 		private System.Windows.Forms.TabPage tabPage2;
@@ -1020,7 +994,6 @@
 		private System.Windows.Forms.Label label21;
 		private System.Windows.Forms.ComboBox comboBoxEffects;
 		private System.Windows.Forms.Panel panelEditorControlContainer;
-		private System.Windows.Forms.Button buttonCommandParameters;
 		private System.Windows.Forms.Button buttonControllerSetup;
 		private System.Windows.Forms.Label labelActiveEditor;
 		private System.Windows.Forms.ComboBox comboBoxCombinationStrategy;
@@ -1044,6 +1017,7 @@
 		private System.Windows.Forms.Label label9;
 		private System.Windows.Forms.Label label8;
 		private System.Windows.Forms.ColumnHeader columnHeader6;
+		private System.Windows.Forms.Button buttonNodeProperties;
 	}
 }
 

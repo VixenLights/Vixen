@@ -20,7 +20,8 @@ namespace TestTemplate {
 		public OutputControllerTemplateSetup(IModuleDataSet transformDatum) {
 			InitializeComponent();
 			_transformDatum = transformDatum;
-			_transformNames = ApplicationServices.GetAvailableModules("Transform");
+			//_transformNames = ApplicationServices.GetAvailableModules("Transform");
+			_transformNames = Vixen.Sys.ApplicationServices.GetAvailableModules<ITransformModuleInstance>();
 			comboBoxTransforms.DisplayMember = "Value";
 			comboBoxTransforms.ValueMember = "Key";
 			comboBoxTransforms.DataSource = _transformNames.ToArray();
@@ -32,7 +33,7 @@ namespace TestTemplate {
 			listBoxTransforms.ValueMember = "Key";
 			listBoxTransforms.DataSource = 
 				(from n in _transformNames
-				 join t in _templateTransforms on n.Key equals t.TypeId
+				 join t in _templateTransforms on n.Key equals t.Descriptor.TypeId
 				 select n).ToArray();
 		}
 
@@ -52,7 +53,7 @@ namespace TestTemplate {
 		private void buttonRemoveTransform_Click(object sender, EventArgs e) {
 			if(listBoxTransforms.SelectedItem != null) {
 				ITransformModuleInstance instance = _SelectedInstance;
-				_transformDatum.Remove(instance.TypeId, instance.InstanceId);
+				_transformDatum.Remove(instance.Descriptor.TypeId, instance.InstanceId);
 				_templateTransforms.RemoveAt(listBoxTransforms.SelectedIndex);
 				_UpdateTransformList();
 			}

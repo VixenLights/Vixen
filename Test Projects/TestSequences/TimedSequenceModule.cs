@@ -6,44 +6,39 @@ using Vixen.Module;
 using Vixen.Module.Sequence;
 
 namespace TestSequences {
-	public class TimedSequenceModule : ISequenceModuleDescriptor {
-		static internal Guid _typeId = new Guid("{4C258A3B-E725-4ae7-B50B-103F6AB8121E}");
-		static internal string _fileExtension = ".tim";
+	public class TimedSequenceModule : SequenceModuleDescriptorBase {
+		private Guid _typeId = new Guid("{4C258A3B-E725-4ae7-B50B-103F6AB8121E}");
 
-		public string FileExtension {
-			get { return _fileExtension; }
+		override public string FileExtension {
+			get { return ".tim"; }
 		}
 
-		public Guid TypeId {
+		override public Guid TypeId {
 			get { return _typeId; }
 		}
 
-		public Type ModuleClass {
+		override public Type ModuleClass {
 			get { return typeof(Timed); }
 		}
 
-		public Type ModuleDataClass {
+		override public Type ModuleDataClass {
 			get { return null; }
 		}
 
-		public string Author {
+		override public string Author {
 			get { throw new NotImplementedException(); }
 		}
 
-		public string TypeName {
+		override public string TypeName {
 			get { return "Timed sequence"; }
 		}
 
-		public string Description {
+		override public string Description {
 			get { throw new NotImplementedException(); }
 		}
 
-		public string Version {
+		override public string Version {
 			get { throw new NotImplementedException(); }
 		}
-
-		public string FileName { get; set; }
-
-		public string ModuleTypeName { get; set; }
 	}
 }

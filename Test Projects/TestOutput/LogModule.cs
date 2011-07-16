@@ -5,39 +5,35 @@ using System.Text;
 using Vixen.Module.Output;
 
 namespace TestOutput {
-	public class LogModule : IOutputModuleDescriptor {
-		static internal Guid _typeId = new Guid("{36AF9D3E-E965-49fc-A426-0AC496D15EF3}");
+	public class LogModule : OutputModuleDescriptorBase {
+		private Guid _typeId = new Guid("{36AF9D3E-E965-49fc-A426-0AC496D15EF3}");
 
-		public Guid TypeId {
+		override public Guid TypeId {
 			get { return _typeId; }
 		}
 
-		public Type ModuleClass {
+		override public Type ModuleClass {
 			get { return typeof(Log); }
 		}
 
-		public Type ModuleDataClass {
+		override public Type ModuleDataClass {
 			get { return null; }
 		}
 
-		public string Author {
+		override public string Author {
 			get { throw new NotImplementedException(); }
 		}
 
-		public string TypeName {
+		override public string TypeName {
 			get { return "Logger"; }
 		}
 
-		public string Description {
+		override public string Description {
 			get { throw new NotImplementedException(); }
 		}
 
-		public string Version {
+		override public string Version {
 			get { throw new NotImplementedException(); }
 		}
-
-		public string FileName { get; set; }
-
-		public string ModuleTypeName { get; set; }
 	}
 }

@@ -8,14 +8,14 @@ using Vixen.Module;
 using Vixen.Module.Output;
 
 namespace TestOutput {
-	public class Log : IOutputModuleInstance {
+	public class Log : OutputModuleInstanceBase {
 		private bool _running = false;
-		private string _filePath = @".\Log.txt";
+		private string _filePath = @"C:\Users\Development\Desktop\Log.txt";
 		private StreamWriter _file;
 
-		public void SetOutputCount(int outputCount) { }
+		override public void SetOutputCount(int outputCount) { }
 
-		public void UpdateState(CommandData[] outputStates) {
+		override public void UpdateState(CommandData[] outputStates) {
 			CommandData data;
 			for(int i = 0; i < outputStates.Length; i++) {
 				data = outputStates[i];
@@ -25,41 +25,23 @@ namespace TestOutput {
 			}
 		}
 
-		public bool IsRunning {
+		override public bool IsRunning {
 			get { return _running; }
 		}
 
-		public bool Setup() {
+		override public bool Setup() {
 			return false;
 		}
 
-		public Guid TypeId {
-			get { return LogModule._typeId; }
-		}
-
-		public Guid InstanceId { get; set; }
-
-		public IModuleDataModel ModuleData { get; set; }
-
-		public string TypeName { get; set; }
-
-		public void Dispose() { }
-
-		public void Start() {
+		override public void Start() {
 			_file = new StreamWriter(_filePath);
 			_running = true;
 		}
 
-		public void Stop() {
+		override public void Stop() {
 			_running = false;
 			_file.Flush();
 			_file.Dispose();
-		}
-
-		public void Pause() {
-		}
-
-		public void Resume() {
 		}
 	}
 }
