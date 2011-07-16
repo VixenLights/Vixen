@@ -14,33 +14,29 @@ namespace Vixen.Common {
 		public readonly object[] ParameterValues;
 
 		public CommandData()
-			: this(null, null) {
+			: this(0, 0, null, null) {
 			// Default instance is empty.
 		}
 
-		public CommandData(long startTime, long endTime, CommandIdentifier commandIdentifier, params object[] parameterValues) {
+		public CommandData(long startTime, long endTime, CommandIdentifier commandIdentifier, object[] parameterValues) {
 			StartTime = startTime;
 			EndTime = endTime;
 			this.CommandIdentifier = commandIdentifier;
 			ParameterValues = parameterValues ?? new object[] { };
 		}
 
-		public CommandData(CommandIdentifier commandIdentifier, params object[] parameterValues)
-			: this(0L, 0L, commandIdentifier, parameterValues) {
-		}
-
-		public CommandData(long startTime, long endTime, string name, byte platform, byte category, byte commandIndex, params object[] parameterValues)
+		public CommandData(long startTime, long endTime, string name, byte platform, byte category, byte commandIndex, object[] parameterValues)
 			: this(startTime, endTime, new CommandIdentifier(platform, category, commandIndex), parameterValues) {
 		}
 
-		public CommandData(string name, byte platform, byte category, byte commandIndex, params object[] parameterValues)
+		public CommandData(string name, byte platform, byte category, byte commandIndex, object[] parameterValues)
 			: this(0L, 0L, new CommandIdentifier(platform, category, commandIndex), parameterValues) {
 		}
 
-		public long StartTime { get; private set; }
-		public long EndTime { get; private set; }
+		public long StartTime { get; set; }
+		public long EndTime { get; set; }
 
-		static public readonly CommandData Empty = new CommandData(null, null);
+		static public readonly CommandData Empty = new CommandData(0, 0, null, null);
 
 		public bool IsEmpty {
 			get { return CommandIdentifier == null; }

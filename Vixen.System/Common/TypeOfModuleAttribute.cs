@@ -8,8 +8,8 @@ namespace Vixen.Common {
     // AllowMultiple - false
     // Inherited - true
     [AttributeUsage(AttributeTargets.Class)]
-    class ModuleTypeAttribute : Attribute {
-		public ModuleTypeAttribute(string moduleTypeName) {
+    class TypeOfModuleAttribute : Attribute {
+		public TypeOfModuleAttribute(string moduleTypeName) {
 			Name = moduleTypeName;
 		}
 

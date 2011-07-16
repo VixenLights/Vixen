@@ -83,6 +83,13 @@ namespace Vixen.Common
 			}
 		}
 
+		// http://stackoverflow.com/questions/3793/best-way-to-get-innerxml-of-an-xelement
+		static public string InnerXml(this XElement element) {
+			XmlReader reader = element.CreateReader();
+			reader.MoveToContent();
+			return reader.ReadInnerXml();
+		}
+
 		static public IEnumerable<T> AsEnumerable<T>(this T item) {
 			yield return item;
 		}
