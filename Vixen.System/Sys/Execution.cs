@@ -41,7 +41,7 @@ namespace Vixen.Sys {
 			IEnumerable<ChannelNode> branchNodes = VixenSystem.UserData.LoadBranchNodes();
 			// Get the branch nodes into the node manager.
 			foreach(ChannelNode branchNode in branchNodes) {
-				Nodes.AddBranch(branchNode);
+				Nodes.AddNode(branchNode);
 			}
 		}
 

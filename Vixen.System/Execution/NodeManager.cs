@@ -27,7 +27,7 @@ namespace Vixen.Execution {
 		/// </summary>
 		/// <param name="channel"></param>
 		public void AddChannelLeaf(OutputChannel channel) {
-			_rootNode.Add(new ChannelNode(channel.Name, channel));
+			_rootNode.AddChild(new ChannelNode(channel.Name, channel));
 		}
 
 		public void RemoveChannelLeaf(OutputChannel channel) {
@@ -35,40 +35,56 @@ namespace Vixen.Execution {
 			ChannelNode[] leafNodes = _rootNode.GetNodeEnumerator().Where(x => x.Channel == channel).ToArray();
 			// Remove all instances.
 			foreach(ChannelNode leafNode in leafNodes) {
-				leafNode.Remove();
+				// since we're effectively trying to remove the channel, we'll be removing
+				// ALL nodes with this channel, which means they will be removed from all parents.
+				leafNode.RemoveFromAllParents();
 			}
 		}
 
-		public void CopyNode(ChannelNode node, ChannelNode targetNode) {
-			if(targetNode == null) {
-				// When a node is copied to the root, we're going to assume to start a new branch.
-				// This would be necessary anyway for leaf nodes because it will contain
-				// a channel and there are already leaf nodes for every channel.
-				//*** this situation needs to be handled internally
-				ChannelNode newBranch = new ChannelNode(_Uniquify("Unnamed"), node.Clone());
-				_rootNode.Add(newBranch);
-			} else {
-				MoveNode(node.Clone(), targetNode);
-			}
+		public void CopyNode(ChannelNode node, ChannelNode target) {
+			target = target ?? _rootNode;
+			target.AddChild(node.Clone());
 		}
 
-		public void MoveNode(ChannelNode branch, ChannelNode targetNode) {
-			//Since no backlinks...
-			// Find which node references to this so it can be removed from that parent.
-			ChannelNode parentNode = _rootNode.GetNodeEnumerator().FirstOrDefault(x => x.Children.Contains(branch));
-			if(parentNode != null) {
-				parentNode.Remove(branch);
-			}
-			targetNode = targetNode ?? _rootNode;
-			targetNode.Add(branch);
-			//No backlinks to break
+		public void MoveNode(ChannelNode node, ChannelNode target, ChannelNode parent) {
+			// remove the node from its current parent first
+			RemoveNode(node, parent);
+
+			// add the node to the root node if a target wasn't given.	
+			target = target ?? _rootNode;
+			target.AddChild(node);
 		}
 
-		public void AddBranch(ChannelNode node) {
+		public void MirrorNode(ChannelNode node, ChannelNode target) {
+			target.AddChild(node);
+		}
+
+		public void AddNode(ChannelNode node) {
 			if(!_rootNode.Children.Contains(node)) {
 				node.Name = _Uniquify(node.Name);
-				_rootNode.Add(node);
+				_rootNode.AddChild(node);
 			}
+		}
+
+		public ChannelNode AddNewNode(string name) {
+			name = _Uniquify(name);
+			ChannelNode newNode = new ChannelNode(name);
+			AddNode(newNode);
+			return newNode;
+		}
+
+		public void RemoveNode(ChannelNode node, ChannelNode parent) {
+			// if the given parent is null, it's most likely a root node (ie. with
+			// a parent of our private _rootNode). Try to remove it from that instead.
+			if (parent == null) {
+				node.RemoveFromParent(_rootNode);
+			} else {
+				node.RemoveFromParent(parent);
+			}
+		}
+
+		public void RenameNode(ChannelNode node, string newName) {
+			node.Name = _Uniquify(newName);
 		}
 
 		private string _Uniquify(string name) {
@@ -92,6 +108,16 @@ namespace Vixen.Execution {
 			if(NodesChanged != null) {
 				NodesChanged(this, EventArgs.Empty);
 			}
+		}
+
+		public IEnumerable<ChannelNode> GetLeafNodes() {
+			// Don't want to return the root node.
+			return _rootNode.Children.SelectMany(x => x.GetLeafEnumerator());
+		}
+
+		public IEnumerable<ChannelNode> GetNonLeafNodes() {
+			// Don't want to return the root node.
+			return _rootNode.Children.SelectMany(x => x.GetNonLeafEnumerator());
 		}
 
 		public IEnumerator<ChannelNode> GetEnumerator() {

@@ -34,7 +34,7 @@ namespace Vixen.Sys {
 					channelNode.Channel = Vixen.Sys.Execution.AddChannel(channelNode.Name);
 				}
 				// Add the tree to the system trees.
-				Vixen.Sys.Execution.Nodes.AddBranch(newNode);
+				Vixen.Sys.Execution.Nodes.AddNode(newNode);
 			}
 		}
 

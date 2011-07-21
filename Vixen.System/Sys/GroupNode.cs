@@ -6,12 +6,14 @@ using System.Text;
 namespace Vixen.Sys {
 	abstract public class GroupNode<T> : IEnumerable<T> {
 		private List<GroupNode<T>> _children;
+		private List<GroupNode<T>> _parents;
 
 		protected GroupNode(string name, IEnumerable<GroupNode<T>> content) {
 			Name = name;
 			_children = new List<GroupNode<T>>(content ?? Enumerable.Empty<GroupNode<T>>());
-			foreach(GroupNode<T> child in _children) {
-				child.Parent = this;
+			_parents = new List<GroupNode<T>>(Enumerable.Empty<GroupNode<T>>());
+			foreach (GroupNode<T> child in _children) {
+				child.AddParent(this);
 			}
 		}
 		
@@ -21,25 +23,53 @@ namespace Vixen.Sys {
 
 		public string Name { get; set; }
 
-		virtual public GroupNode<T> Parent { get; private set; }
-
-		virtual public void Add(GroupNode<T> node) {
+		virtual public void AddChild(GroupNode<T> node) {
 			if(!_children.Contains(node)) {
 				_children.Add(node);
-				node.Parent = this;
+				node.AddParent(this);
 			}
 		}
 
-		virtual public bool Remove() {
-			if(Parent != null) {
-				return Parent.Remove(this);
+		private void AddParent(GroupNode<T> parent) {
+			if (!_parents.Contains(parent)) {
+				_parents.Add(parent);
+			}
+		}
+
+		virtual public bool RemoveFromParent(GroupNode<T> parent) {
+			// try to remove this node from the given parent.
+			if (!parent.RemoveChild(this)) {
+				return false;
+			}
+
+			// if we don't have any parents left, we're floating free: recurse down, and
+			// remove all children from this node. (This retains children that are also
+			// children of other nodes, not just this one).
+			if (Parents.Count() == 0) {
+				foreach (GroupNode<T> child in _children) {
+					child.RemoveFromParent(this);
+				}
+			}
+
+			return true;
+		}
+
+		virtual public void RemoveFromAllParents() {
+			foreach (GroupNode<T> parent in _parents) {
+				RemoveFromParent(parent);
+			}
+		}
+
+		virtual public bool RemoveChild(GroupNode<T> node) {
+			if(_children.Remove(node)) {
+				node.RemoveParent(this);
+				return true;
 			}
 			return false;
 		}
 
-		virtual public bool Remove(GroupNode<T> node) {
-			if(_children.Remove(node)) {
-				node.Parent = null;
+		private bool RemoveParent(GroupNode<T> parent) {
+			if (_parents.Remove(parent)) {
 				return true;
 			}
 			return false;
@@ -55,6 +85,10 @@ namespace Vixen.Sys {
 
 		virtual public IEnumerable<GroupNode<T>> Children {
 			get { return _children; }
+		}
+
+		virtual public IEnumerable<GroupNode<T>> Parents {
+			get { return _parents; }
 		}
 
 		virtual public IEnumerator<T> GetEnumerator() {

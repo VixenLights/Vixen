@@ -75,7 +75,7 @@ namespace Vixen.Sys {
 				// Multiple nodes referencing a channel need to reference that same channel instance.
 				node = new ChannelNode(Guid.NewGuid(), Name, this.Channel);
 			} else {
-				node = new ChannelNode(Guid.NewGuid(), Name, null, this.Children.Select(x => x.Clone()));
+				node = new ChannelNode(Guid.NewGuid(), Name, this.Channel, this.Children.Select(x => x.Clone()));
 			}
 
 			// Property data.
@@ -96,25 +96,25 @@ namespace Vixen.Sys {
 		public PropertyManager Properties { get; private set; }
 
 		#region Overrides
-		public override void Add(GroupNode<OutputChannel> node) {
-			base.Add(node);
+		public override void AddChild(GroupNode<OutputChannel> node) {
+			base.AddChild(node);
 			OnChanged(this);
 		}
 
-		public override bool Remove() {
-			bool result = base.Remove();
+		public override bool RemoveFromParent(GroupNode<OutputChannel> parent) {
+			bool result = base.RemoveFromParent(parent);
 			OnChanged(this);
 			return result;
 		}
 
-		public override bool Remove(GroupNode<OutputChannel> node) {
-			bool result = base.Remove(node);
+		public override bool RemoveChild(GroupNode<OutputChannel> node) {
+			bool result = base.RemoveChild(node);
 			OnChanged(this);
 			return result;
 		}
 
 		public override GroupNode<OutputChannel> Get(int index) {
-			if(IsLeaf) throw new InvalidOperationException("Cannot add nodes to a leaf.");
+			if(IsLeaf) throw new InvalidOperationException("Cannot get child nodes from a leaf.");
 			return base.Get(index);
 		}
 
@@ -143,7 +143,16 @@ namespace Vixen.Sys {
 				// OutputChannel is already an enumerable, so AsEnumerable<> won't work.
 				return (new[] { this });
 			} else {
-				return Children.SelectMany(x => x.GetLeafEnumerator());//.GetEnumerator();
+				return Children.SelectMany(x => x.GetLeafEnumerator());
+			}
+		}
+
+		public IEnumerable<ChannelNode> GetNonLeafEnumerator() {
+			if (IsLeaf) {
+				return Enumerable.Empty<ChannelNode>();
+			} else {
+				// "this" is already an enumerable, so AsEnumerable<> won't work.
+				return (new[] { this }).Concat(Children.SelectMany(x => x.GetNonLeafEnumerator()));
 			}
 		}
 		#endregion
