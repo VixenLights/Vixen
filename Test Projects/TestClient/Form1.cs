@@ -374,7 +374,9 @@ namespace TestClient
 		}
 
 		private void buttonLinkController_Click(object sender, EventArgs e) {
-			_SelectedController.LinkTo(_controllers.First(x => x.Id == (Guid)comboBoxLinkedTo.SelectedValue));
+            if (comboBoxLinkedTo.SelectedValue != null) {
+                _SelectedController.LinkTo(_controllers.First(x => x.Id == (Guid)comboBoxLinkedTo.SelectedValue));
+            }
 		}
 
 		private void buttonFileTemplateSetup_Click(object sender, EventArgs e) {
