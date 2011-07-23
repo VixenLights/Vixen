@@ -17,7 +17,7 @@ namespace Vixen.Sys {
 		// Creating channels in here instead of VixenSystem so that the collection
 		// will be locally available for EffectRenderer instances.
 		static private Dictionary<OutputChannel, SystemChannelEnumerator> _channels = new Dictionary<OutputChannel, SystemChannelEnumerator>();
-		static private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+		static private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
 
 		// These are system-level events.
 		static public event EventHandler ExecutionContextCreated;
@@ -75,12 +75,14 @@ namespace Vixen.Sys {
 		static public void RemoveChannel(OutputChannel channel) {
 			SystemChannelEnumerator enumerator;
 			if(_channels.TryGetValue(channel, out enumerator)) {
-				// Kill enumerator.
-				enumerator.Dispose();
-				// Remove from channel dictionary.
-				_channels.Remove(channel);
-				// Remove from nodes via node manager.
-				Nodes.RemoveChannelLeaf(channel);
+				lock(_channels) {
+					// Kill enumerator.
+					enumerator.Dispose();
+					// Remove from channel dictionary.
+					_channels.Remove(channel);
+					// Remove from nodes via node manager.
+					Nodes.RemoveChannelLeaf(channel);
+				}
 			}
 		}
 
@@ -89,15 +91,19 @@ namespace Vixen.Sys {
 		}
 
 		static private void _CreateChannelEnumerators(IEnumerable<OutputChannel> channels) {
-			foreach(OutputChannel channel in channels) {
-				_channels[channel] = new SystemChannelEnumerator(channel, _systemTime);
+			lock(_channels) {
+				foreach(OutputChannel channel in channels) {
+					_channels[channel] = new SystemChannelEnumerator(channel, _systemTime);
+				}
 			}
 		}
 
 		static private void _ResetChannelEnumerators() {
-			foreach(OutputChannel channel in Channels) {
-				_channels[channel].Dispose();
-				_channels[channel] = null;
+			lock(_channels) {
+				foreach(OutputChannel channel in Channels) {
+					_channels[channel].Dispose();
+					_channels[channel] = null;
+				}
 			}
 		}
 
@@ -185,10 +191,12 @@ namespace Vixen.Sys {
 		static private void _UpdateChannelStates() {
 			IEnumerator<CommandData> enumerator;
 			foreach(OutputChannel channel in Channels) {
-				enumerator = _channels[channel];
-				// Will return true if state has changed.
-				if(enumerator.MoveNext()) {
-					channel.Patch.Write(enumerator.Current);
+				lock(_channels) {
+					enumerator = _channels[channel];
+					// Will return true if state has changed.
+					if(enumerator.MoveNext()) {
+						channel.Patch.Write(enumerator.Current);
+					}
 				}
 			}
 		}
