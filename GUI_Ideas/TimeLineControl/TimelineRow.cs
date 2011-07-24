@@ -17,6 +17,8 @@ namespace Timeline
         public int Height { get; set; }
         public object Tag { get; set; }
 
+        public TimelineControl ParentControl { get; internal set; }
+
         public TimelineElementCollection Elements
         {
             get { return m_elements; }
@@ -25,14 +27,14 @@ namespace Timeline
 
         protected void m_elements_ElementAdded(object sender, ElementChangedEventArgs e)
         {
-            e.Element.Row = this;
+            e.Element.ParentRow = this;
             if (ElementAdded != null)
                 ElementAdded(this, e);
         }
 
         protected void m_elements_ElementRemoved(object sender, ElementChangedEventArgs e)
         {
-            e.Element.Row = null;
+            e.Element.ParentRow = null;
             if (ElementRemoved != null)
                 ElementRemoved(this, e);
         }

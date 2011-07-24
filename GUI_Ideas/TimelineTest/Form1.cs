@@ -53,6 +53,25 @@ namespace Timeline
 
 
             this.Controls.Add(tc);
+
+
+            tc.ElementsMoved += new EventHandler<ElementMovedEventArgs>(tc_ElementsMoved);
+        }
+
+        void tc_ElementsMoved(object sender, ElementMovedEventArgs e)
+        {
+            StringBuilder s = new StringBuilder("Elements moved:\n");
+            foreach (TimelineElement elem in e.MovedElements)
+                s.AppendLine(elem.Tag.ToString());
+            MessageBox.Show(s.ToString());
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            StringBuilder s = new StringBuilder("Elements at 2 sec:\n");
+            foreach (TimelineElement elem in tc.ElementsAtTime(TimeSpan.FromSeconds(2.0)))
+                s.AppendLine(elem.Tag.ToString());
+            MessageBox.Show(s.ToString());
         }
     }
 

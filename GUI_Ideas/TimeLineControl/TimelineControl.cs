@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using System.Drawing;
-using System.Collections;
-using System.Diagnostics;
+using System.Windows.Forms;
+using System.Collections.Generic;
 
 
 namespace Timeline
@@ -14,7 +10,6 @@ namespace Timeline
     {
         public TimelineControl()
         {
-
             SetDefaultOptions();
 
             this.DoubleBuffered = true;
@@ -22,9 +17,20 @@ namespace Timeline
             MaximumTime = TimeSpan.FromMinutes(1.0);
             VisibleTime = TimeSpan.FromSeconds(10.0);
 
-            //initializeDragTimer();
+            m_rows.RowAdded += new EventHandler<RowChangedEventArgs>(m_rows_RowAdded);
+            m_rows.RowRemoved += new EventHandler<RowChangedEventArgs>(m_rows_RowRemoved);
         }
 
+        
+        void m_rows_RowAdded(object sender, RowChangedEventArgs e)
+        {
+            e.Row.ParentControl = this;
+        }
+
+        void m_rows_RowRemoved(object sender, RowChangedEventArgs e)
+        {
+            e.Row.ParentControl = null;
+        }
         
         /// <summary>
         /// The maximum amount of time represented by this TimelineControl.
@@ -51,6 +57,210 @@ namespace Timeline
             }
         }
 
+        
+
+
+        private TimelineElementCollection m_selectedElements = new TimelineElementCollection();
+        public TimelineElementCollection SelectedElements { get { return m_selectedElements; } }
+
+
+        protected override void OnKeyPress(KeyPressEventArgs e)
+        {
+            //base.OnKeyPress(e);
+
+            if (e.KeyChar == (char)27)  // ESC
+            {
+                SelectedElements.Clear();
+                endDrag();  // do this regardless of if we're dragging or not.
+
+                this.Refresh();
+            }
+
+        }
+
+        #region Select / Drag
+
+        private const int DragThreshold = 4;
+        private enum DragState
+        {
+            /// <summary>
+            /// Not dragging, mouse is up.
+            /// </summary>
+            Normal = 0,
+
+            /// <summary>
+            /// Mouse down, but hasn't moved past threshold yet to be considered dragging
+            /// </summary>
+            Waiting,
+
+            /// <summary>
+            /// Actively dragging objects
+            /// </summary>
+            Dragging
+        }
+        private DragState m_dragState = DragState.Normal;
+
+        private Point m_oldLoc;
+        private TimelineElement m_mouseDownElement = null;
+
+        private bool CtrlPressed { get { return Form.ModifierKeys.HasFlag(Keys.Control); } }
+
+        private void dragWait(Point location)
+        {
+            m_dragState = DragState.Waiting;
+            m_oldLoc = location;
+        }
+
+        private void beginDrag()
+        {
+            m_dragState = DragState.Dragging;
+            this.Cursor = Cursors.SizeAll;
+        }
+
+        private void endDrag()
+        {
+            m_dragState = DragState.Normal;
+            this.Cursor = Cursors.Default;
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            m_mouseDownElement = elementAt(e.Location);
+
+            switch (e.Button)
+            {
+                case MouseButtons.Left:
+                    OnLeftMouseDown(e);
+                    break;
+                case MouseButtons.Middle:
+                    break;
+                case MouseButtons.None:
+                    break;
+                case MouseButtons.Right:
+                    break;
+                case MouseButtons.XButton1:
+                    break;
+                case MouseButtons.XButton2:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            switch (e.Button)
+            {
+                case MouseButtons.Left:
+                    OnLeftMouseUp(e);
+                    break;
+                case MouseButtons.Middle:
+                    break;
+                case MouseButtons.None:
+                    break;
+                case MouseButtons.Right:
+                    break;
+                case MouseButtons.XButton1:
+                    break;
+                case MouseButtons.XButton2:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void OnLeftMouseDown(MouseEventArgs e)
+        {
+            if (m_mouseDownElement == null)   // we clicked nothing - clear selection
+            {
+                SelectedElements.Clear();
+            }
+            else    // our mouse is down on something
+            {
+                if (m_mouseDownElement.IsSelected)
+                {
+                    // unselect
+                    if (CtrlPressed)
+                        SelectedElements.Remove(m_mouseDownElement);
+                }
+                else
+                {
+                    // select
+                    if (!CtrlPressed)
+                        SelectedElements.Clear();
+                    SelectedElements.AddUnique(m_mouseDownElement);
+                }
+
+                dragWait(e.Location);
+            }
+            this.Refresh();
+        }
+
+        public event EventHandler<ElementMovedEventArgs> ElementsMoved;
+
+        private void OnLeftMouseUp(MouseEventArgs e)
+        {
+            if (m_dragState == DragState.Dragging)
+            {
+                if (ElementsMoved != null)
+                {
+                    ElementMovedEventArgs evargs = new ElementMovedEventArgs();
+                    evargs.MovedElements = new TimelineElementCollection();
+                    foreach (TimelineElement elem in SelectedElements)
+                        evargs.MovedElements.Add(elem);
+                    ElementsMoved(this, evargs);
+                }
+                
+            }
+            else
+            {
+                // If we're not dragging on mouse up, it could be a click on one of multiple
+                // selected elements. (In which case we select only that one)
+                if (m_mouseDownElement != null && !CtrlPressed)
+                {
+                    SelectedElements.Clear();
+                    SelectedElements.Add(m_mouseDownElement);
+                }
+            }
+
+            endDrag();  // we always do this, even if we weren't dragging.
+
+            this.Refresh();
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            if (m_dragState == DragState.Normal)
+                return;
+
+            if (m_dragState == DragState.Waiting)
+            {
+                if (Math.Abs(e.X - m_oldLoc.X) > DragThreshold)
+                    beginDrag();
+            }
+            if (m_dragState == DragState.Dragging)
+            {
+                int dX = e.X - m_oldLoc.X;
+                m_oldLoc.X = e.X;
+
+                int dY = e.Y - m_oldLoc.Y;
+                m_oldLoc.Y = e.Y;
+
+                foreach (TimelineElement elem in SelectedElements)
+                {
+                    elem.Offset += pixelsToTime(dX);
+                }
+            }
+
+            this.Refresh();
+
+        }
+        #endregion
+
+
+        #region Drawing
+
+
         protected override void OnPaint(PaintEventArgs e)
         {
             try
@@ -73,7 +283,12 @@ namespace Timeline
                 {
                     foreach (TimelineElement element in row.Elements)
                     {
-                        DrawElement(e.Graphics, element);
+                        DrawElementOptions options = DrawElementOptions.Normal;
+
+                        if (SelectedElements.Contains(element))
+                            options |= DrawElementOptions.Selected;
+
+                        DrawElement(e.Graphics, element, options);
                     }
                 }
             }
@@ -85,136 +300,30 @@ namespace Timeline
         }
 
 
-
-        #region Drag
-
-
-        #region Click Filtering before Drag
-
-        /* So, this works, but it's a little flaky.  I'd go about it some different way, probably ingoring
-         * the OnClick event alltogether, and implementing my own OnClick type of event, using a combination
-         * of MouseDown / MouseUp.  It may not be needed at all anyway.
-         */
-
-        //private MouseEventArgs m_mouseDownInitialArgs;  // these are the args initially passed to OnMouseDown
-        //private bool m_inhibitClickEvent = false;       // ignore the next OnClick event
-
-        //private Timer m_dragTimer;
-        //private const int InitialDragDelay = 100;  // start stupid high for testing
-        //public int DragDelay
-        //{
-        //    get { return m_dragTimer.Interval; }
-        //    set { m_dragTimer.Interval = value; }
-        //}
-
-        //private void initializeDragTimer()
-        //{
-        //    m_dragTimer = new Timer();
-        //    m_dragTimer.Interval = InitialDragDelay;
-        //    m_dragTimer.Tick += new EventHandler(beginDrag);
-        //}
-
-
-        //void beginDrag(object sender, EventArgs e)
-        //{
-        //    m_dragTimer.Stop();
-        //    m_inhibitClickEvent = true;
-        //    m_dragElement = elementAt(m_mouseDownInitialArgs.Location);
-        //    if (m_dragElement != null)
-        //    {
-        //        m_mouseDownPoint = m_mouseDownInitialArgs.Location;
-        //        m_mouseDownOffset = m_dragElement.Offset;
-        //        this.Cursor = Cursors.SizeAll;
-        //    }
-        //}
-
-
-        //protected override void OnMouseDown(MouseEventArgs e)
-        //{
-        //    //base.OnMouseDown(e);
-
-        //    // When initially clicked, start the drag timer. If it expires (before OnClick cancels it)
-        //    // we consider it a drag, not a click. Thus, call beginDrag, and block the OnClick!
-        //    m_mouseDownInitialArgs = e;
-        //    m_dragTimer.Start();
-        //}
-
-        //protected override void OnClick(EventArgs e)
-        //{
-        //    //base.OnClick(e);
-
-        //    if (!m_inhibitClickEvent)
-        //    {
-        //        m_dragTimer.Stop();
-
-        //        Debug.WriteLine("{0} Click", DateTime.Now.Second);
-        //    }
-
-        //    m_inhibitClickEvent = false;
-        //}
-
-        #endregion
-
-
-        private TimelineElement m_dragElement = null;
-        private Point m_mouseDownPoint;
-        private TimeSpan m_mouseDownOffset;
-       
-
-        protected override void OnMouseDown(MouseEventArgs e)
+        [Flags]
+        protected enum DrawElementOptions
         {
-            m_dragElement = elementAt(e.Location);
-            if (m_dragElement != null)
-            {
-                m_mouseDownPoint = e.Location;
-                m_mouseDownOffset = m_dragElement.Offset;
-                this.Cursor = Cursors.SizeAll;
-            }
+            Normal      = 0x0,
+            Selected    = 0x1,
         }
-
-
-
-
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            //base.OnMouseUp(e);
-
-            m_dragElement = null;
-            this.Cursor = Cursors.Default;
-        }
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            //base.OnMouseMove(e);
-
-            if (m_dragElement != null)
-            {
-                // Displacement from original location
-                //(I figure this is better than an event-by-event displacement, for sake of cancel/undo)
-                int dX = e.X - m_mouseDownPoint.X;
-                int dY = e.Y - m_mouseDownPoint.Y;
-
-                // Calculate new placement
-                m_dragElement.Offset = m_mouseDownOffset + pixelsToTime(dX);
-                this.Refresh();
-            }
-
-        }
-        #endregion
-
 
         protected void DrawElement(Graphics g, TimelineElement element)
+        {
+            DrawElement(g, element, DrawElementOptions.Normal);
+        }
+        protected void DrawElement(Graphics g, TimelineElement element, DrawElementOptions options)
         {
             // Calculate x-coord from time offset
             int x = timeToPixels(element.Offset);
 
             // Calculate y-coord from row number
-            int y = topOfRow(element.Row);
+            int y = topOfRow(element.ParentRow);
 
             // Calculate width from duration
             int w = timeToPixels(element.Duration);
 
             // Calculate height from row
-            int h = element.Row.Height;
+            int h = element.ParentRow.Height;
 
             // Fill body
             Brush b = new SolidBrush(element.BackColor);
@@ -222,9 +331,12 @@ namespace Timeline
 
             // Draw border
             Pen border = new Pen(Color.Black);
+            border.Width = (options.HasFlag(DrawElementOptions.Selected)) ? 3.0f : 1.0f;
             g.DrawRectangle(border, x, y, w, h);
         }
 
+
+        #endregion
 
 
 
@@ -293,7 +405,26 @@ namespace Timeline
         public Color RowSeparatorColor { get; set; }
         #endregion
 
+        public TimelineElementCollection ElementsAtTime(TimeSpan time)
+        {
+            TimelineElementCollection col = new TimelineElementCollection();
+            foreach (TimelineRow row in Rows)
+            {
+                foreach (TimelineElement elem in row.Elements)
+                {
+                    if ((time >= elem.Offset) && (time <= (elem.Offset + elem.Duration)))
+                        col.Add(elem);
+                }
+            }
+
+            return col;
+        }
+
     }
 
 
+    public class ElementMovedEventArgs : EventArgs
+    {
+        public TimelineElementCollection MovedElements { get; internal set; }
+    }
 }

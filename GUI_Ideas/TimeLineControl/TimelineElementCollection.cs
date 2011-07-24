@@ -16,30 +16,43 @@ namespace Timeline
         internal event EventHandler<ElementChangedEventArgs> ElementAdded;
         internal event EventHandler<ElementChangedEventArgs> ElementRemoved;
 
-        public int Add(TimelineElement value)
+        public int Add(TimelineElement element)
         {
-            int ret = List.Add(value);
+            int ret = List.Add(element);
 
             if (ElementAdded != null)
-                ElementAdded(this, new ElementChangedEventArgs { Element = value });
+                ElementAdded(this, new ElementChangedEventArgs { Element = element });
             
             return ret;
         }
 
-        public void Remove(TimelineElement value)
+        public int AddUnique(TimelineElement element)
         {
-            List.Remove(value);
+            if (!Contains(element))
+                return Add(element);
+            return -1;
+        }
+
+
+        public void Remove(TimelineElement element)
+        {
+            List.Remove(element);
 
             if (ElementRemoved != null)
-                ElementRemoved(this, new ElementChangedEventArgs { Element = value });
+                ElementRemoved(this, new ElementChangedEventArgs { Element = element });
         }
 
-        public bool Contains(TimelineElement value)
+        public bool Contains(TimelineElement element)
         {
-            return List.Contains(value);
+            return List.Contains(element);
         }
 
+        public new void Clear()
+        {
+            List.Clear();
+        }
 
+        public bool Empty { get { return (List.Count == 0); } }
 
         #region Intentionally left out
         /*
