@@ -58,7 +58,12 @@ namespace Vixen.Sys {
 			get { return base.Children.Cast<ChannelNode>(); }
 		}
 
-		public bool Masked {
+		new public IEnumerable<ChannelNode> Parents {
+			get { return base.Parents.Cast<ChannelNode>(); }
+		}
+
+		public bool Masked
+		{
 			get { return this.All(x => x.Masked); }
 			set {
 				foreach(OutputChannel channel in this) {
@@ -91,6 +96,23 @@ namespace Vixen.Sys {
 
 		public bool IsLeaf {
 			get { return base.Children.Count() == 0; }
+		}
+
+		public List<ChannelNode> InvalidChildren() {
+
+			List<ChannelNode> result = new List<ChannelNode>();
+
+			// the node itself is an invalid child for itself!
+			result.Add(this);
+
+			// any children it already has are invalid.
+			result.AddRange(Children);
+
+			// any parents it has (all the way back to root) are invalid,
+			// otherwise that will create loops.
+			result.AddRange(GetAllParentNodes());
+
+			return result;
 		}
 
 		public PropertyManager Properties { get; private set; }
@@ -155,6 +177,10 @@ namespace Vixen.Sys {
 				return (new[] { this }).Concat(Children.SelectMany(x => x.GetNonLeafEnumerator()));
 			}
 		}
+
+		public IEnumerable<ChannelNode> GetAllParentNodes() {
+			return Parents.Concat(Parents.SelectMany(x => x.GetAllParentNodes()));
+		}
 		#endregion
 
 		#region Static members
@@ -173,10 +199,11 @@ namespace Vixen.Sys {
 		}
 
 		static private XElement _WriteXml(ChannelNode node, bool includeChannelReferences = true) {
-			object channelElements;
+			object channelElements = null;
 			if(node.IsLeaf) {
 				// Leaf - reference the single channel by id
-				channelElements = includeChannelReferences ? new XAttribute("channelId", node.Channel.Id.ToString()) : null;
+				if (includeChannelReferences && node.Channel != null)
+					channelElements = new XAttribute("channelId", node.Channel.Id.ToString());
 			} else {
 				// Branch - include the child nodes inline
 				channelElements = node.Children.Select(x => _WriteXml(x, includeChannelReferences));

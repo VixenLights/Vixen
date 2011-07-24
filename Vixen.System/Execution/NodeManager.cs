@@ -112,11 +112,13 @@ namespace Vixen.Execution {
 
 		public IEnumerable<ChannelNode> GetLeafNodes() {
 			// Don't want to return the root node.
+			// note: this may very well return duplicate nodes, if they are part of different groups.
 			return _rootNode.Children.SelectMany(x => x.GetLeafEnumerator());
 		}
 
 		public IEnumerable<ChannelNode> GetNonLeafNodes() {
 			// Don't want to return the root node.
+			// note: this may very well return duplicate nodes, if they are part of different groups.
 			return _rootNode.Children.SelectMany(x => x.GetNonLeafEnumerator());
 		}
 

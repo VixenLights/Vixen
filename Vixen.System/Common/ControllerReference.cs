@@ -30,6 +30,10 @@ namespace Vixen.Common {
             return this.GetHashCode() == other.GetHashCode();
         }
 
+		public override string ToString() {
+			return Vixen.Hardware.OutputController.Get(ControllerId).Name + "-" + OutputIndex;
+		}
+
 		static public XElement WriteXml(ControllerReference controllerReference) {
 			XElement element = new XElement("ControllerReference",
 				new XAttribute("controllerId", controllerReference.ControllerId),
