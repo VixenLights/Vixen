@@ -16,10 +16,16 @@ namespace Vixen.Sys {
 		// Making this static so there doesn't have to be potentially thousands of
 		// subscriptions from the node manager.
 		static public event EventHandler Changed;
+		static private Dictionary<Guid, ChannelNode> _allNodes = new Dictionary<Guid, ChannelNode>();
 
 		#region Constructors
 		private ChannelNode(Guid id, string name, OutputChannel channel, IEnumerable<ChannelNode> content)
 			: base(name, content) {
+			if (_allNodes.ContainsKey(id)) {
+				throw new InvalidOperationException("Trying to create a Channel Node that already exists!");
+			} else {
+				_allNodes[id] = this;
+			}
 			Id = id;
 			Channel = channel;
 			Properties = new PropertyManager(this);
@@ -190,6 +196,14 @@ namespace Vixen.Sys {
 			}
 		}
 
+		static public ChannelNode GetChannelNode(Guid id) {
+			if (_allNodes.ContainsKey(id)) {
+				return _allNodes[id];
+			} else {
+				return null;
+			}
+		}
+
 		static public XElement WriteXml(ChannelNode node) {
 			return _WriteXml(node, true);
 		}
@@ -224,6 +238,16 @@ namespace Vixen.Sys {
 		static public ChannelNode ReadXml(XElement element) {
 			string name = element.Attribute("name").Value;
 			Guid id = Guid.Parse(element.Attribute("id").Value);
+
+			// check if we have already loaded the node with this GUID (ie. if it's a node that's referenced twice,
+			// in different groups). If we have, return that node instead, and don't go any deeper into child nodes.
+			// (we'll just assume that the XML data for this one is identical to the earlier XML node that was written
+			// out. To be a bit more proper, we should probably change the WriteXML() to not fully write out repeat
+			// ChannelNodes, and instead do some sort of soft reference to the first one (ie. GUID only). )
+			ChannelNode existingNode = ChannelNode.GetChannelNode(id);
+			if (existingNode != null) {
+				return existingNode;
+			}
 
 			// Children or channel reference
 			ChannelNode node = null;

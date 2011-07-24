@@ -54,12 +54,6 @@ namespace Vixen.Sys {
 			return true;
 		}
 
-		virtual public void RemoveFromAllParents() {
-			foreach (GroupNode<T> parent in _parents) {
-				RemoveFromParent(parent);
-			}
-		}
-
 		virtual public bool RemoveChild(GroupNode<T> node) {
 			if(_children.Remove(node)) {
 				node.RemoveParent(this);

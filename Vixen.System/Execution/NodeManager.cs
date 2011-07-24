@@ -37,7 +37,9 @@ namespace Vixen.Execution {
 			foreach(ChannelNode leafNode in leafNodes) {
 				// since we're effectively trying to remove the channel, we'll be removing
 				// ALL nodes with this channel, which means they will be removed from all parents.
-				leafNode.RemoveFromAllParents();
+				foreach (ChannelNode parent in leafNode.Parents) {
+					leafNode.RemoveFromParent(parent);
+				}
 			}
 		}
 
