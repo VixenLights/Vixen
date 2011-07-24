@@ -16,15 +16,15 @@ namespace Vixen.Sys {
 		// Making this static so there doesn't have to be potentially thousands of
 		// subscriptions from the node manager.
 		static public event EventHandler Changed;
-		static private Dictionary<Guid, ChannelNode> _allNodes = new Dictionary<Guid, ChannelNode>();
+		static private Dictionary<Guid, ChannelNode> _instances = new Dictionary<Guid, ChannelNode>();
 
 		#region Constructors
 		private ChannelNode(Guid id, string name, OutputChannel channel, IEnumerable<ChannelNode> content)
 			: base(name, content) {
-			if (_allNodes.ContainsKey(id)) {
+			if (_instances.ContainsKey(id)) {
 				throw new InvalidOperationException("Trying to create a Channel Node that already exists!");
 			} else {
-				_allNodes[id] = this;
+				_instances[id] = this;
 			}
 			Id = id;
 			Channel = channel;
@@ -197,8 +197,8 @@ namespace Vixen.Sys {
 		}
 
 		static public ChannelNode GetChannelNode(Guid id) {
-			if (_allNodes.ContainsKey(id)) {
-				return _allNodes[id];
+			if (_instances.ContainsKey(id)) {
+				return _instances[id];
 			} else {
 				return null;
 			}
