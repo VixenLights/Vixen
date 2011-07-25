@@ -84,6 +84,7 @@ namespace Vixen.Hardware {
 			FilePath = Path.Combine(Directory, name + FILE_EXT);
 			OutputCount = outputCount;
 			OutputModuleId = outputModuleId;
+			CombinationStrategy = combinationStrategy;
 
 			// Affect the instance with the controller template last.
 			FileTemplateModuleManagement manager = Modules.GetModuleManager<IFileTemplateModuleInstance, FileTemplateModuleManagement>();
@@ -469,8 +470,28 @@ namespace Vixen.Hardware {
 		
 		public string Name {
 			get { return Path.GetFileNameWithoutExtension(FilePath); }
+			set {
+				value = _Uniquify(value);
+				string newPath = Path.Combine(Directory, value + FILE_EXT);
+				Save();
+				File.Move(FilePath, newPath);
+				FilePath = newPath;
+			}
 		}
-		
+
+		private string _Uniquify(string name) {
+			if (_instances.Values.Any(x => x.Name == name)) {
+				string originalName = name;
+				bool unique;
+				int counter = 2;
+				do {
+					name = originalName + "-" + counter++;
+					unique = !_instances.Values.Any(x => x.Name == name);
+				} while (!unique);
+			}
+			return name;
+		}
+
 		public Guid InstanceId { get; private set; }
 
 		public OutputController Prior { get; private set; }
