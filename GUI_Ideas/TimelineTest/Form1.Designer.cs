@@ -28,18 +28,29 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
+            this.buttonElemAt = new System.Windows.Forms.Button();
+            this.buttonReset = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // button1
+            // buttonElemAt
             // 
-            this.button1.Location = new System.Drawing.Point(13, 597);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.buttonElemAt.Location = new System.Drawing.Point(13, 597);
+            this.buttonElemAt.Name = "buttonElemAt";
+            this.buttonElemAt.Size = new System.Drawing.Size(115, 23);
+            this.buttonElemAt.TabIndex = 0;
+            this.buttonElemAt.Text = "Elements at 0:02";
+            this.buttonElemAt.UseVisualStyleBackColor = true;
+            this.buttonElemAt.Click += new System.EventHandler(this.buttonElemAt_Click);
+            // 
+            // buttonReset
+            // 
+            this.buttonReset.Location = new System.Drawing.Point(145, 596);
+            this.buttonReset.Name = "buttonReset";
+            this.buttonReset.Size = new System.Drawing.Size(75, 23);
+            this.buttonReset.TabIndex = 1;
+            this.buttonReset.Text = "Reset";
+            this.buttonReset.UseVisualStyleBackColor = true;
+            this.buttonReset.Click += new System.EventHandler(this.buttonReset_Click);
             // 
             // Form1
             // 
@@ -47,7 +58,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(931, 641);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.buttonReset);
+            this.Controls.Add(this.buttonElemAt);
             this.Name = "Form1";
             this.Text = "Form1";
             this.ResumeLayout(false);
@@ -56,7 +68,8 @@
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button buttonElemAt;
+        private System.Windows.Forms.Button buttonReset;
     }
 }
 

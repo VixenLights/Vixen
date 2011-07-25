@@ -17,17 +17,35 @@ namespace Timeline
             MaximumTime = TimeSpan.FromMinutes(1.0);
             VisibleTime = TimeSpan.FromSeconds(10.0);
 
-            m_rows.RowAdded += new EventHandler<RowChangedEventArgs>(m_rows_RowAdded);
-            m_rows.RowRemoved += new EventHandler<RowChangedEventArgs>(m_rows_RowRemoved);
+            m_rows.RowAdded += new EventHandler<RowAddedOrRemovedEventArgs>(m_rows_RowAdded);
+            m_rows.RowRemoved += new EventHandler<RowAddedOrRemovedEventArgs>(m_rows_RowRemoved);
+
+            // How the hell do I get this scrolling to not return to zero?
+            this.Scroll += new ScrollEventHandler(TimelineControl_Scroll);
+
+            this.HorizontalScroll.Enabled = true;
+            this.HorizontalScroll.Visible = true;
+            this.HorizontalScroll.Minimum = 0;
+            this.HorizontalScroll.Maximum = 10000;
+
+            this.VerticalScroll.Enabled = false;
+            this.VerticalScroll.Visible = true;
+
+            this.AutoScroll = false;
+        }
+
+        void TimelineControl_Scroll(object sender, ScrollEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("this.Scroll: {0}", e.NewValue);
         }
 
         
-        void m_rows_RowAdded(object sender, RowChangedEventArgs e)
+        void m_rows_RowAdded(object sender, RowAddedOrRemovedEventArgs e)
         {
             e.Row.ParentControl = this;
         }
 
-        void m_rows_RowRemoved(object sender, RowChangedEventArgs e)
+        void m_rows_RowRemoved(object sender, RowAddedOrRemovedEventArgs e)
         {
             e.Row.ParentControl = null;
         }
@@ -206,7 +224,7 @@ namespace Timeline
                 {
                     ElementMovedEventArgs evargs = new ElementMovedEventArgs();
                     evargs.MovedElements = new TimelineElementCollection();
-                    foreach (TimelineElement elem in SelectedElements)
+                    foreach (var elem in SelectedElements)
                         evargs.MovedElements.Add(elem);
                     ElementsMoved(this, evargs);
                 }
@@ -246,7 +264,7 @@ namespace Timeline
                 int dY = e.Y - m_oldLoc.Y;
                 m_oldLoc.Y = e.Y;
 
-                foreach (TimelineElement elem in SelectedElements)
+                foreach (var elem in SelectedElements)
                 {
                     elem.Offset += pixelsToTime(dX);
                 }
@@ -270,7 +288,7 @@ namespace Timeline
                 // Draw row separators
                 int curY = 0;
                 Pen p = new Pen(RowSeparatorColor);
-                foreach (TimelineRow row in Rows)
+                foreach (var row in Rows)
                 {
                     curY += row.Height;
                     Point left = new Point(0, curY);
@@ -279,9 +297,9 @@ namespace Timeline
                 }
 
                 // Draw each
-                foreach (TimelineRow row in Rows)
+                foreach (var row in Rows)
                 {
-                    foreach (TimelineElement element in row.Elements)
+                    foreach (var element in row.Elements)
                     {
                         DrawElementOptions options = DrawElementOptions.Normal;
 
@@ -356,7 +374,7 @@ namespace Timeline
         protected int topOfRow(TimelineRow row)
         {
             int top = 0;
-            foreach (TimelineRow searchrow in Rows)
+            foreach (var searchrow in Rows)
             {
                 if (searchrow == row)
                     return top;
@@ -370,7 +388,7 @@ namespace Timeline
             // First figure out which row we are in
             TimelineRow containingRow = null;
             int curheight = 0;
-            foreach (TimelineRow row in Rows)
+            foreach (var row in Rows)
             {
                 if (p.Y < curheight + row.Height)
                 {
@@ -384,7 +402,7 @@ namespace Timeline
                 return null;
 
             // Now figure out which element we are on
-            foreach (TimelineElement elem in containingRow.Elements)
+            foreach (var elem in containingRow.Elements)
             {
                 int elemX = timeToPixels(elem.Offset);
                 int elemW = timeToPixels(elem.Duration);
@@ -408,9 +426,9 @@ namespace Timeline
         public TimelineElementCollection ElementsAtTime(TimeSpan time)
         {
             TimelineElementCollection col = new TimelineElementCollection();
-            foreach (TimelineRow row in Rows)
+            foreach (var row in Rows)
             {
-                foreach (TimelineElement elem in row.Elements)
+                foreach (var elem in row.Elements)
                 {
                     if ((time >= elem.Offset) && (time <= (elem.Offset + elem.Duration)))
                         col.Add(elem);

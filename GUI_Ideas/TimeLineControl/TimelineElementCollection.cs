@@ -1,82 +1,80 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Timeline
 {
-    public class ElementChangedEventArgs : EventArgs
+    public class ElementAddedOrRemovedEventArgs : EventArgs
     {
         public TimelineElement Element { get; set; }
     }
 
     /// <summary>
-    /// A strongly-typed collection of TimelineElements
+    /// A collection of TimelineElements. Unline TimelineRowCollection,
+    /// the order of elements in the list does *not* matter, for the elements
+    /// Offset and Duration properties dictate their location in the row.
     /// </summary>
-    public class TimelineElementCollection : CollectionBase
+    public class TimelineElementCollection : IEnumerable<TimelineElement>
     {
-        internal event EventHandler<ElementChangedEventArgs> ElementAdded;
-        internal event EventHandler<ElementChangedEventArgs> ElementRemoved;
+        private List<TimelineElement> m_list = new List<TimelineElement>();
 
-        public int Add(TimelineElement element)
+        internal event EventHandler<ElementAddedOrRemovedEventArgs> ElementAdded;
+        internal event EventHandler<ElementAddedOrRemovedEventArgs> ElementRemoved;
+
+        public TimelineElement this[int index]
         {
-            int ret = List.Add(element);
-
-            if (ElementAdded != null)
-                ElementAdded(this, new ElementChangedEventArgs { Element = element });
-            
-            return ret;
+            get { return m_list[index]; }
+            set { m_list[index] = value; }
         }
 
-        public int AddUnique(TimelineElement element)
+        public void Add(TimelineElement element)
         {
-            if (!Contains(element))
-                return Add(element);
-            return -1;
+            m_list.Add(element);
+
+            if (ElementAdded != null)
+                ElementAdded(this, new ElementAddedOrRemovedEventArgs { Element = element });
+        }
+
+        public bool AddUnique(TimelineElement element)
+        {
+            if (m_list.Contains(element))
+                return false;
+
+            m_list.Add(element);
+            return true;
         }
 
 
         public void Remove(TimelineElement element)
         {
-            List.Remove(element);
+            m_list.Remove(element);
 
             if (ElementRemoved != null)
-                ElementRemoved(this, new ElementChangedEventArgs { Element = element });
+                ElementRemoved(this, new ElementAddedOrRemovedEventArgs { Element = element });
         }
 
         public bool Contains(TimelineElement element)
         {
-            return List.Contains(element);
+            return m_list.Contains(element);
         }
 
-        public new void Clear()
+        public void Clear()
         {
-            List.Clear();
+            m_list.Clear();
         }
 
-        public bool Empty { get { return (List.Count == 0); } }
+        public bool IsEmpty { get { return (m_list.Count == 0); } }
 
-        #region Intentionally left out
-        /*
-         * Intentionally not implemented function:
-         *  IndexOf
-         *  Insert
-         *  [] operator
-         */
 
-        /*
-        public TimelineElement this[int index]
+
+        public IEnumerator<TimelineElement> GetEnumerator()
         {
-            get { return (TimelineElement)List[index]; }
-            set { List[index] = value; }
+            return m_list.GetEnumerator();
         }
-        */
 
-        /*
-        public int IndexOf(TimelineElement value)
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return List.IndexOf(value);
+            return m_list.GetEnumerator();
         }
-        */
-        #endregion
-
     }
 }

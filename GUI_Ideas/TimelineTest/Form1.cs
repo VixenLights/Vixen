@@ -13,6 +13,7 @@ namespace Timeline
     {
         TimelineControl tc;
 
+
         public Form1()
         {
             InitializeComponent();
@@ -23,36 +24,31 @@ namespace Timeline
             tc.Size = new Size(800, 400);
             tc.BorderStyle = BorderStyle.Fixed3D;
             tc.BackColor = Color.FromKnownColor(KnownColor.ControlDark);
-            tc.AutoScroll = true;
-
-            // Row
-            var tr1 = new TimelineRow();
-            tr1.Height = 50;
-            tr1.Tag = "Row 1";
-            tc.Rows.Add(tr1);
-
-            var tr2 = new TimelineRow();
-            tr2.Height = 75;
-            tr2.Tag = "Row 2";
-            tc.Rows.Add(tr2);
-
-            // Element
-            var te = new TimelineElement();
-            te.BackColor = Color.Red;
-            te.Duration = TimeSpan.FromSeconds(3.5);
-            te.Offset = TimeSpan.FromSeconds(1.5);
-            te.Tag = "Red te";
-            tr2.Elements.Add(te);
-
-            var te2 = new TimelineElement();
-            te2.BackColor = Color.LightGreen;
-            te2.Duration = TimeSpan.FromSeconds(1.5);
-            te2.Offset = TimeSpan.FromSeconds(1.5);
-            te2.Tag = "Green te2";
-            tr1.Elements.Add(te2);
-
-
             this.Controls.Add(tc);
+
+            // Rows
+            tc.Rows.Add(new TimelineRow() { Height=50, Tag="Row 0" });
+            tc.Rows.Add(new TimelineRow() { Height=100, Tag="Row 1" });
+
+            // Elements
+            tc.Rows[0].Elements.Add(new TimelineElement()
+                {
+                    BackColor = Color.Red,
+                    Offset = TimeSpan.FromSeconds(1.5),
+                    Duration = TimeSpan.FromSeconds(3.5),
+                    Tag = "Red"
+                }
+            );
+
+            tc.Rows[1].Elements.Add(new TimelineElement()
+                {
+                    BackColor = Color.Green,
+                    Offset = TimeSpan.FromSeconds(0),
+                    Duration = TimeSpan.FromSeconds(2),
+                    Tag = "Green"
+                }
+            );
+            
 
 
             tc.ElementsMoved += new EventHandler<ElementMovedEventArgs>(tc_ElementsMoved);
@@ -66,12 +62,23 @@ namespace Timeline
             MessageBox.Show(s.ToString());
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void buttonElemAt_Click(object sender, EventArgs e)
         {
             StringBuilder s = new StringBuilder("Elements at 2 sec:\n");
             foreach (TimelineElement elem in tc.ElementsAtTime(TimeSpan.FromSeconds(2.0)))
                 s.AppendLine(elem.Tag.ToString());
             MessageBox.Show(s.ToString());
+        }
+
+
+
+        private void buttonReset_Click(object sender, EventArgs e)
+        {
+            tc.Rows[0].Elements[0].Offset = TimeSpan.FromSeconds(1.5);
+            tc.Rows[0].Elements[0].Duration = TimeSpan.FromSeconds(3.5);
+
+            tc.Rows[1].Elements[0].Offset = TimeSpan.FromSeconds(0);
+            tc.Rows[1].Elements[0].Duration = TimeSpan.FromSeconds(2);
         }
     }
 
