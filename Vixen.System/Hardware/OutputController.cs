@@ -468,15 +468,17 @@ namespace Vixen.Hardware {
 		// Must be properties for data binding.
 		public Guid Id { get; set; }
 		
+        public void Rename(string newName) {
+            newName = _Uniquify(newName);
+            string newPath = Path.Combine(Directory, newName + FILE_EXT);
+            Save();
+            File.Move(FilePath, newPath);
+            FilePath = newPath;
+        }
+
 		public string Name {
 			get { return Path.GetFileNameWithoutExtension(FilePath); }
-			set {
-				value = _Uniquify(value);
-				string newPath = Path.Combine(Directory, value + FILE_EXT);
-				Save();
-				File.Move(FilePath, newPath);
-				FilePath = newPath;
-			}
+			set { Rename(value); }
 		}
 
 		private string _Uniquify(string name) {
