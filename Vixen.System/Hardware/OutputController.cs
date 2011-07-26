@@ -81,6 +81,7 @@ namespace Vixen.Hardware {
 
 		public OutputController(string name, int outputCount, Guid outputModuleId, CommandStandard.Standard.CombinationOperation combinationStrategy) {
 			Id = Guid.NewGuid();
+			name = _Uniquify(name);
 			FilePath = Path.Combine(Directory, name + FILE_EXT);
 			OutputCount = outputCount;
 			OutputModuleId = outputModuleId;
@@ -317,9 +318,14 @@ namespace Vixen.Hardware {
 				// Stop the controller.
 				_StopInstance(controller);
 				// Remove it from any patching.
-				var references = Vixen.Sys.Execution.Nodes.SelectMany(x => x).SelectMany(x => x.Patch.ControllerReferences.Where(y => y.ControllerId == controller.Id).Select(z => new { x.Patch, ControllerReference = z }));
-				foreach(var reference in references) {
-					reference.Patch.Remove(reference.ControllerReference.ControllerId, reference.ControllerReference.OutputIndex);
+				foreach (ChannelNode node in Vixen.Sys.Execution.Nodes) {
+					if (node.Channel != null) {
+						foreach (ControllerReference cr in node.Channel.Patch) {
+							if (cr.ControllerId == controller.Id) {
+								node.Channel.Patch.Remove(cr);
+							}
+						}
+					}
 				}
 			}
 		}
