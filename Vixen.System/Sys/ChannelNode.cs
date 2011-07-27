@@ -52,7 +52,8 @@ namespace Vixen.Sys {
 		}
 		#endregion
 
-		public OutputChannel Channel { get; internal set; }
+		// TODO: this should be changed back to 'internal set'. We need to review the way ChannelNodes / OutputChannels will work.
+		public OutputChannel Channel { get; set; }
 
 		public Guid Id { get; private set; }
 
