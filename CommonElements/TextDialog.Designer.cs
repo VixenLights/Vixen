@@ -30,7 +30,7 @@
 			// labelPrompt
 			// 
 			this.labelPrompt.AutoSize = true;
-			this.labelPrompt.Location = new System.Drawing.Point(12, 9);
+			this.labelPrompt.Location = new System.Drawing.Point(12, 12);
 			this.labelPrompt.Name = "labelPrompt";
 			this.labelPrompt.Size = new System.Drawing.Size(13, 13);
 			this.labelPrompt.TabIndex = 0;
@@ -40,7 +40,7 @@
 			// 
 			this.textBoxResponse.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxResponse.Location = new System.Drawing.Point(15, 25);
+			this.textBoxResponse.Location = new System.Drawing.Point(15, 38);
 			this.textBoxResponse.Name = "textBoxResponse";
 			this.textBoxResponse.Size = new System.Drawing.Size(410, 20);
 			this.textBoxResponse.TabIndex = 1;
@@ -49,7 +49,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(437, 60);
+			this.ClientSize = new System.Drawing.Size(437, 76);
 			this.Controls.Add(this.textBoxResponse);
 			this.Controls.Add(this.labelPrompt);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
