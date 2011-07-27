@@ -31,7 +31,8 @@ namespace Vixen.Common {
         }
 
 		public override string ToString() {
-			return Vixen.Hardware.OutputController.Get(ControllerId).Name + "-" + OutputIndex;
+			// make the index human-friendly -- index it from 1.
+			return Vixen.Hardware.OutputController.Get(ControllerId).Name + " [" + (OutputIndex + 1) + "]";
 		}
 
 		static public XElement WriteXml(ControllerReference controllerReference) {
