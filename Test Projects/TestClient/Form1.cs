@@ -537,7 +537,7 @@ namespace TestClient
 			if(e.Effect == DragDropEffects.Copy) {
 				Vixen.Sys.Execution.Nodes.CopyNode(draggingNode, targetNode);
 			} else if(e.AllowedEffect == DragDropEffects.Move) {
-				Vixen.Sys.Execution.Nodes.MoveNode(draggingNode, targetNode);
+				//Vixen.Sys.Execution.Nodes.MoveNode(draggingNode, targetNode);
 			}
 		}
 

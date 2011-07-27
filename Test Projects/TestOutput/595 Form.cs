@@ -30,6 +30,8 @@ namespace TestOutput {
 
         public int OutputCount {
             set {
+				if (value == 0)
+					value = 1;
                 _values = new bool[value];
                 _across = (int)Math.Sqrt(value);
                 _down = (int)Math.Round((double)value / _across, MidpointRounding.AwayFromZero);
