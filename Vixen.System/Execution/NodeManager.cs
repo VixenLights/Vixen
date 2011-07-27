@@ -63,7 +63,6 @@ namespace Vixen.Execution {
 
 		public void AddNode(ChannelNode node) {
 			if(!_rootNode.Children.Contains(node)) {
-				node.Name = _Uniquify(node.Name);
 				_rootNode.AddChild(node);
 			}
 		}
