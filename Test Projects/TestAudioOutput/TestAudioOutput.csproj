@@ -153,12 +153,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)Test projects\TestClient\bin\debug\Modules\Media" /y
-copy "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)Test projects\TestClient\bin\debug\Modules\Media" /y
-rem copy "$(TargetDir)fmod.dll" "$(SolutionDir)Test projects\TestClient\bin\debug\Modules\Common" /y
-rem copy "$(TargetDir)fmod.pdb" "$(SolutionDir)Test projects\TestClient\bin\debug\Modules\Common" /y
-rem copy "$(ProjectDir)fmodex64.dll" "$(SolutionDir)Test projects\TestClient\bin\debug\Modules\Common" /y
-</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(TargetPath)" "$(SolutionDir)\Output\Modules\Media\" /y
+xcopy "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)\Output\Modules\Media\" /y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

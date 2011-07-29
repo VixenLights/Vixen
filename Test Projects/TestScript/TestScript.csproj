@@ -105,8 +105,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)Test projects\TestClient\bin\debug\Modules\Script" /y
-copy "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)Test projects\TestClient\bin\debug\Modules\Script" /y
+    <PostBuildEvent>xcopy "$(TargetPath)" "$(SolutionDir)\Output\Modules\Script\" /y
+xcopy "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)\Output\Modules\Script\" /y
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
