@@ -476,7 +476,7 @@ namespace VixenApplication
 			foreach (KeyValuePair<Guid, string> kvp in ApplicationServices.GetAvailableModules<IPropertyModuleInstance>()) {
 				properties.Add(new KeyValuePair<string, object>(kvp.Value, kvp.Key));
 			}
-			ListSelectDialog addForm = new ListSelectDialog("Add Property", (properties));
+			CommonElements.ListSelectDialog addForm = new CommonElements.ListSelectDialog("Add Property", (properties));
 			if (addForm.ShowDialog() == DialogResult.OK) {
 				_displayedNode.Properties.Add((Guid)addForm.selectedItem);
 				PopulatePropertiesList(_displayedNode);

@@ -1,4 +1,4 @@
-﻿namespace Comet
+﻿namespace CommonElements
 {
 	partial class ListSelectDialog
 	{
