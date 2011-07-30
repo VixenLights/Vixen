@@ -11,13 +11,13 @@ using Vixen.Common;
 using Vixen.Module.Editor;
 
 
-namespace Comet
+namespace VixenApplication
 {
-	public partial class Comet : Form, IApplication
+	public partial class VixenApplication : Form, IApplication
 	{
 		private Guid _guid = new Guid("7b903272-73d0-416c-94b1-6932758b1963");
 
-		public Comet()
+		public VixenApplication()
 		{
 			InitializeComponent();
 

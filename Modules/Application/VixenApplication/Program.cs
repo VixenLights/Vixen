@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace Comet
+namespace VixenApplication
 {
 	static class Program
 	{
@@ -15,7 +15,7 @@ namespace Comet
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new Comet());
+			Application.Run(new VixenApplication());
 		}
 	}
 }

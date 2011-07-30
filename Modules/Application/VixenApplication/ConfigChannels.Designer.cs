@@ -1,4 +1,4 @@
-﻿namespace Comet
+﻿namespace VixenApplication
 {
 	partial class ConfigChannels
 	{

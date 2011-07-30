@@ -11,7 +11,7 @@ using Vixen.Common;
 using Vixen.Hardware;
 using Vixen.Module.Property;
 
-namespace Comet
+namespace VixenApplication
 {
 	public partial class ConfigChannels : Form
 	{

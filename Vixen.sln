@@ -40,7 +40,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProperty", "Test Projec
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestScript", "Test Projects\TestScript\TestScript.csproj", "{FE524832-96C4-42B4-9A01-C9A0E62C1035}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Comet", "Modules\Application\Comet\Comet.csproj", "{8AE432FF-B954-4F3A-923D-BE60FC363419}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VixenApplication", "Modules\Application\VixenApplication\VixenApplication.csproj", "{8AE432FF-B954-4F3A-923D-BE60FC363419}"
 	ProjectSection(ProjectDependencies) = postProject
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 	EndProjectSection

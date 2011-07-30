@@ -1,6 +1,6 @@
-﻿namespace Comet
+﻿namespace VixenApplication
 {
-	partial class Comet
+	partial class VixenApplication
 	{
 		/// <summary>
 		/// Required designer variable.

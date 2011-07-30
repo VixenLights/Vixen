@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Comet
+namespace VixenApplication
 {
 	public partial class ConfigPatches : Form
 	{

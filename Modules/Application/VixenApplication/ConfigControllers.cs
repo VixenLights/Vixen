@@ -13,7 +13,7 @@ using Vixen.Module.Output;
 using Vixen.Common;
 
 
-namespace Comet
+namespace VixenApplication
 {
 	public partial class ConfigControllers : Form
 	{
