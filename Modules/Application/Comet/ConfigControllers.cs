@@ -161,7 +161,7 @@ namespace Comet
 					foreach (ControllerReference cr in refsToAdd) {
 						ChannelNode newNode = Vixen.Sys.Execution.Nodes.AddNewNode(cr.ToString());
 						if (newNode.Channel == null) {
-							newNode.Channel = new OutputChannel(cr.ToString());
+							newNode.Channel = Vixen.Sys.Execution.AddChannel(cr.ToString());
 						}
 						newNode.Channel.Patch.Add(cr);
 						channelsAdded++;

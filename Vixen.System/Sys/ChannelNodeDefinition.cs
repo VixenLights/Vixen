@@ -32,6 +32,10 @@ namespace Vixen.Sys {
 				foreach(ChannelNode channelNode in newNode.GetLeafEnumerator()) {
 					// Create a channel and reference it in the node.
 					channelNode.Channel = Vixen.Sys.Execution.AddChannel(channelNode.Name);
+
+					// TODO: is this even needed? I changed the Vixen.Sys.Execution.AddChannel() call above to not
+					// perform this following line, so explicitly added it here. However, it doesn't seem to make sense...
+					// Vixen.Sys.Execution.Nodes.AddChannelLeaf(channelNode.Channel);
 				}
 				// Add the tree to the system trees.
 				Vixen.Sys.Execution.Nodes.AddNode(newNode);

@@ -49,8 +49,6 @@ namespace Vixen.Sys {
 			channelName = _Uniquify(channelName);
 			OutputChannel channel = new OutputChannel(channelName);
 			_AddChannel(channel);
-			// Add a root node for the channel.
-			Nodes.AddChannelLeaf(channel);
 			return channel;
 		}
 

@@ -459,7 +459,7 @@ namespace Comet
 					_displayedNode.AddChild((ChannelNode)(item.Tag));
 				} else if (item.Tag is ControllerReference) {
 					if (_displayedNode.Channel == null) {
-						_displayedNode.Channel = new OutputChannel(_displayedNode.Name);
+						_displayedNode.Channel = Vixen.Sys.Execution.AddChannel(_displayedNode.Name);
 					}
 					_displayedNode.Channel.Patch.Add((ControllerReference)item.Tag);
 				} else {
