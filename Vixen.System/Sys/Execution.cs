@@ -78,8 +78,6 @@ namespace Vixen.Sys {
 					enumerator.Dispose();
 					// Remove from channel dictionary.
 					_channels.Remove(channel);
-					// Remove from nodes via node manager.
-					Nodes.RemoveChannelLeaf(channel);
 				}
 			}
 		}

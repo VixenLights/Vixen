@@ -308,6 +308,30 @@ namespace VixenApplication
 			if (node == null)
 				return;
 
+			// if it's a group, it can't have patches. If it isn't a group (leaf node), then
+			// it can only have patches if it already has some. If it doesn't have anything
+			// in it at the moment, it can have anything at all. Also change the selected item
+			// if it was on an invalid one.
+			if (node.IsLeaf) {
+				if (node.Channel != null && node.Channel.Patch.Count() > 0) {
+					radioButtonChannels.Enabled = false;
+					radioButtonGroups.Enabled = false;
+					radioButtonPatches.Enabled = true;
+					radioButtonPatches.Checked = true;
+				} else {
+					radioButtonChannels.Enabled = true;
+					radioButtonGroups.Enabled = true;
+					radioButtonPatches.Enabled = true;
+				}
+			} else {
+				radioButtonChannels.Enabled = true;
+				radioButtonGroups.Enabled = true;
+				radioButtonPatches.Enabled = false;
+				if (radioButtonPatches.Checked) {
+					radioButtonChannels.Checked = true;
+				}
+			}
+
 			listViewAddToNode.BeginUpdate();
 			listViewAddToNode.Items.Clear();
 
@@ -454,6 +478,10 @@ namespace VixenApplication
 
 		private void buttonAddToGroup_Click(object sender, EventArgs e)
 		{
+			if (listViewAddToNode.SelectedItems.Count <= 0) {
+				return;
+			}
+
 			foreach (ListViewItem item in listViewAddToNode.SelectedItems) {
 				if (item.Tag is ChannelNode) {
 					_displayedNode.AddChild((ChannelNode)(item.Tag));

@@ -46,7 +46,7 @@ namespace Vixen.Sys {
 			// remove all children from this node. (This retains children that are also
 			// children of other nodes, not just this one).
 			if (Parents.Count() == 0) {
-				foreach (GroupNode<T> child in _children) {
+				foreach (GroupNode<T> child in _children.ToList()) {
 					child.RemoveFromParent(this);
 				}
 			}

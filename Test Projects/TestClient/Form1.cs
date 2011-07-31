@@ -421,6 +421,7 @@ namespace TestClient
 			ChannelNode node = treeViewSystemChannels.SelectedNode.Tag as ChannelNode;
 			if(node != null) {
 				Vixen.Sys.Execution.RemoveChannel(node.Channel);
+				Vixen.Sys.Execution.Nodes.RemoveChannelLeaf(node.Channel);
 			}
 		}
 

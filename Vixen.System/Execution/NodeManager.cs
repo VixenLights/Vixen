@@ -45,7 +45,9 @@ namespace Vixen.Execution {
 
 		public void CopyNode(ChannelNode node, ChannelNode target) {
 			target = target ?? _rootNode;
-			target.AddChild(node.Clone());
+			ChannelNode NewNode = node.Clone();
+			NewNode.Name = _Uniquify(NewNode.Name);
+			AddChildToParent(NewNode, target);
 		}
 
 		public void MoveNode(ChannelNode node, ChannelNode target, ChannelNode parent) {
@@ -54,11 +56,11 @@ namespace Vixen.Execution {
 
 			// add the node to the root node if a target wasn't given.	
 			target = target ?? _rootNode;
-			target.AddChild(node);
+			AddChildToParent(node, target);
 		}
 
 		public void MirrorNode(ChannelNode node, ChannelNode target) {
-			target.AddChild(node);
+			AddChildToParent(node, target);
 		}
 
 		public void AddNode(ChannelNode node) {
@@ -86,6 +88,17 @@ namespace Vixen.Execution {
 
 		public void RenameNode(ChannelNode node, string newName) {
 			node.Name = _Uniquify(newName);
+		}
+
+		public void AddChildToParent(ChannelNode child, ChannelNode parent) {
+			// if an item is a group (or is becoming one), it can't have an output
+			// channel anymore. Remove it.
+			if (parent.Channel != null) {
+				Vixen.Sys.Execution.RemoveChannel(parent.Channel);
+				parent.Channel = null;
+			}
+
+			parent.AddChild(child);
 		}
 
 		private string _Uniquify(string name) {
