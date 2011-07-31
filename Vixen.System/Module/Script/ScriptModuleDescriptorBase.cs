@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace Vixen.Module.Script {
-	abstract public class ScriptModuleDescriptorBase : ModuleDescriptorBase, IScriptModuleDescriptor, IEqualityComparer<IScriptModuleDescriptor> {
+	abstract public class ScriptModuleDescriptorBase : ModuleDescriptorBase, IScriptModuleDescriptor, IEqualityComparer<IScriptModuleDescriptor>, IEquatable<IScriptModuleDescriptor>, IEqualityComparer<ScriptModuleDescriptorBase>, IEquatable<ScriptModuleDescriptorBase> {
 		abstract public override string TypeName { get; }
 
 		abstract public override Guid TypeId { get; }
@@ -35,6 +35,22 @@ namespace Vixen.Module.Script {
 
 		public int GetHashCode(IScriptModuleDescriptor obj) {
 			return base.GetHashCode();
+		}
+
+		public bool Equals(IScriptModuleDescriptor other) {
+			return base.Equals(other);
+		}
+
+		public bool Equals(ScriptModuleDescriptorBase x, ScriptModuleDescriptorBase y) {
+			return base.Equals(x, y);
+		}
+
+		public int GetHashCode(ScriptModuleDescriptorBase obj) {
+			return GetHashCode(obj as IScriptModuleDescriptor);
+		}
+
+		public bool Equals(ScriptModuleDescriptorBase other) {
+			return Equals(other as IScriptModuleDescriptor);
 		}
 	}
 }

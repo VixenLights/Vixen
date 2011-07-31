@@ -8,7 +8,7 @@ namespace Vixen.Module.Trigger {
 	/// <summary>
 	/// Base class for trigger module implementations.
 	/// </summary>
-	abstract public class TriggerModuleInstanceBase : ModuleInstanceBase, ITriggerModuleInstance, IEquatable<TriggerModuleInstanceBase>, IEquatable<ITriggerModuleInstance>, IEqualityComparer<ITriggerModuleInstance> {
+	abstract public class TriggerModuleInstanceBase : ModuleInstanceBase, ITriggerModuleInstance, IEquatable<TriggerModuleInstanceBase>, IEquatable<ITriggerModuleInstance>, IEqualityComparer<ITriggerModuleInstance>, IEqualityComparer<TriggerModuleInstanceBase> {
 		private Thread _stateUpdateThread;
 		private ManualResetEvent _pause = new ManualResetEvent(true);
 
@@ -78,12 +78,6 @@ namespace Vixen.Module.Trigger {
 
 		abstract public bool Setup();
 
-		//public Guid InstanceId { get; set; }
-
-		//virtual public IModuleDataModel ModuleData { get; set; }
-
-		//public IModuleDescriptor Descriptor { get; set; }
-
 		override public void Dispose() {
 			Dispose(true);
 			GC.SuppressFinalize(this);
@@ -115,20 +109,28 @@ namespace Vixen.Module.Trigger {
 			_stateUpdateThread = null;
 		}
 
-		public bool Equals(TriggerModuleInstanceBase other) {
-			return this.InstanceId.Equals(other.InstanceId);
-		}
-
-		public bool Equals(ITriggerModuleInstance other) {
-			return this.InstanceId.Equals(other.InstanceId);
-		}
-
 		public bool Equals(ITriggerModuleInstance x, ITriggerModuleInstance y) {
 			return base.Equals(x, y);
 		}
 
 		public int GetHashCode(ITriggerModuleInstance obj) {
 			return base.GetHashCode(obj);
+		}
+
+		public bool Equals(ITriggerModuleInstance other) {
+			return base.Equals(other);
+		}
+
+		public bool Equals(TriggerModuleInstanceBase other) {
+			return Equals(other as ITriggerModuleInstance);
+		}
+
+		public bool Equals(TriggerModuleInstanceBase x, TriggerModuleInstanceBase y) {
+			return Equals(x as ITriggerModuleInstance, y as ITriggerModuleInstance);
+		}
+
+		public int GetHashCode(TriggerModuleInstanceBase obj) {
+			return GetHashCode(obj as ITriggerModuleInstance);
 		}
 	}
 }

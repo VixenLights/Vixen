@@ -5,7 +5,7 @@ using System.Text;
 using Vixen.Sys;
 
 namespace Vixen.Module.Timing {
-	abstract public class TimingModuleInstanceBase : ModuleInstanceBase, ITimingModuleInstance, IEqualityComparer<ITimingModuleInstance> {
+	abstract public class TimingModuleInstanceBase : ModuleInstanceBase, ITimingModuleInstance, IEqualityComparer<ITimingModuleInstance>, IEquatable<ITimingModuleInstance>, IEqualityComparer<TimingModuleInstanceBase>, IEquatable<TimingModuleInstanceBase> {
 		abstract public long Position { get; set; }
 
 		abstract public void Start();
@@ -22,6 +22,22 @@ namespace Vixen.Module.Timing {
 
 		public int GetHashCode(ITimingModuleInstance obj) {
 			return base.GetHashCode(obj);
+		}
+
+		public bool Equals(ITimingModuleInstance other) {
+			return base.Equals(other);
+		}
+
+		public bool Equals(TimingModuleInstanceBase x, TimingModuleInstanceBase y) {
+			return Equals(x as ITimingModuleInstance, y as ITimingModuleInstance);
+		}
+
+		public int GetHashCode(TimingModuleInstanceBase obj) {
+			return GetHashCode(obj as ITimingModuleInstance);
+		}
+
+		public bool Equals(TimingModuleInstanceBase other) {
+			return Equals(other as ITimingModuleInstance);
 		}
 	}
 }

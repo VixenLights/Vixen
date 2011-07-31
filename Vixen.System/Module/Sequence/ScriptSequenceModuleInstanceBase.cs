@@ -5,7 +5,7 @@ using System.Text;
 using Vixen.Sys;
 
 namespace Vixen.Module.Sequence {
-	abstract public class ScriptSequenceModuleInstanceBase : ScriptSequence, ISequenceModuleInstance {
+	abstract public class ScriptSequenceModuleInstanceBase : ScriptSequence, ISequenceModuleInstance, IEqualityComparer<ISequenceModuleInstance>, IEquatable<ISequenceModuleInstance>, IEqualityComparer<ScriptSequenceModuleInstanceBase>, IEquatable<ScriptSequenceModuleInstanceBase> {
 		protected ScriptSequenceModuleInstanceBase(string language)
 			: base(language) {
 		}
@@ -21,5 +21,29 @@ namespace Vixen.Module.Sequence {
 		virtual public IModuleDescriptor Descriptor { get; set; }
 
 		virtual public void Dispose() { }
+
+		public bool Equals(ISequenceModuleInstance x, ISequenceModuleInstance y) {
+			return x.InstanceId == y.InstanceId;
+		}
+
+		public int GetHashCode(ISequenceModuleInstance obj) {
+			return obj.InstanceId.GetHashCode();
+		}
+
+		public bool Equals(ISequenceModuleInstance other) {
+			return Equals(this, other);
+		}
+
+		public bool Equals(ScriptSequenceModuleInstanceBase x, ScriptSequenceModuleInstanceBase y) {
+			return Equals(x as ISequenceModuleInstance, y as ISequenceModuleInstance);
+		}
+
+		public int GetHashCode(ScriptSequenceModuleInstanceBase obj) {
+			return GetHashCode(obj as ISequenceModuleInstance);
+		}
+
+		public bool Equals(ScriptSequenceModuleInstanceBase other) {
+			return Equals(other as ISequenceModuleInstance);
+		}
 	}
 }

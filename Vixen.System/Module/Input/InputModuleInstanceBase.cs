@@ -112,7 +112,7 @@ namespace Vixen.Module.Input {
 		}
 
 		public bool Equals(InputModuleInstanceBase other) {
-			return base.Equals(this, other);
+			return Equals(other as IInputModuleInstance);
 		}
 
 		public bool Equals(IInputModuleInstance other) {
@@ -128,11 +128,11 @@ namespace Vixen.Module.Input {
 		}
 
 		public bool Equals(InputModuleInstanceBase x, InputModuleInstanceBase y) {
-			return base.Equals(x, y);
+			return Equals(x as IInputModuleInstance, y as IInputModuleInstance);
 		}
 
 		public int GetHashCode(InputModuleInstanceBase obj) {
-			return base.GetHashCode(obj);
+			return GetHashCode(obj as IInputModuleInstance);
 		}
 	}
 }

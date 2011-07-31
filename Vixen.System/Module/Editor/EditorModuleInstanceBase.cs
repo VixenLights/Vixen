@@ -5,7 +5,7 @@ using System.Text;
 using Vixen.Sys;
 
 namespace Vixen.Module.Editor {
-	abstract public class EditorModuleInstanceBase : ModuleInstanceBase, IEditorModuleInstance, IEqualityComparer<IEditorModuleInstance> {
+	abstract public class EditorModuleInstanceBase : ModuleInstanceBase, IEditorModuleInstance, IEqualityComparer<IEditorModuleInstance>, IEquatable<IEditorModuleInstance>, IEqualityComparer<EditorModuleInstanceBase>, IEquatable<EditorModuleInstanceBase> {
 		virtual public ISequence Sequence { get; set; }
 
 		abstract public ISelection Selection { get; }
@@ -26,6 +26,22 @@ namespace Vixen.Module.Editor {
 
 		public int GetHashCode(IEditorModuleInstance obj) {
 			return base.GetHashCode(obj);
+		}
+
+		public bool Equals(IEditorModuleInstance other) {
+			return base.Equals(other);
+		}
+
+		public bool Equals(EditorModuleInstanceBase x, EditorModuleInstanceBase y) {
+			return Equals(x as IEditorModuleInstance, y as IEditorModuleInstance);
+		}
+
+		public int GetHashCode(EditorModuleInstanceBase obj) {
+			return GetHashCode(obj as IEditorModuleInstance);
+		}
+
+		public bool Equals(EditorModuleInstanceBase other) {
+			return Equals(other is IEditorModuleInstance);
 		}
 	}
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace Vixen.Module.Effect {
-	abstract public class EffectModuleDescriptorBase : ModuleDescriptorBase, IEffectModuleDescriptor, IEqualityComparer<IEffectModuleDescriptor> {
+	abstract public class EffectModuleDescriptorBase : ModuleDescriptorBase, IEffectModuleDescriptor, IEqualityComparer<IEffectModuleDescriptor>, IEquatable<IEffectModuleDescriptor>, IEqualityComparer<EffectModuleDescriptorBase>, IEquatable<EffectModuleDescriptorBase> {
 		abstract public override string TypeName { get; }
 
 		abstract public override Guid TypeId { get; }
@@ -29,6 +29,22 @@ namespace Vixen.Module.Effect {
 
 		public int GetHashCode(IEffectModuleDescriptor obj) {
 			return base.GetHashCode();
+		}
+
+		public bool Equals(IEffectModuleDescriptor other) {
+			return base.Equals(other);
+		}
+
+		public bool Equals(EffectModuleDescriptorBase x, EffectModuleDescriptorBase y) {
+			return Equals(x as IEffectModuleDescriptor, y as IEffectModuleDescriptor);
+		}
+
+		public int GetHashCode(EffectModuleDescriptorBase obj) {
+			return GetHashCode(obj as IEffectModuleDescriptor);
+		}
+
+		public bool Equals(EffectModuleDescriptorBase other) {
+			return Equals(other as IEffectModuleDescriptor);
 		}
 	}
 }

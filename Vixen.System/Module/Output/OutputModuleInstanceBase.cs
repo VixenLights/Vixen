@@ -6,7 +6,7 @@ using Vixen.Sys;
 using Vixen.Common;
 
 namespace Vixen.Module.Output {
-	abstract public class OutputModuleInstanceBase : ModuleInstanceBase, IOutputModuleInstance, IEqualityComparer<IOutputModuleInstance> {
+	abstract public class OutputModuleInstanceBase : ModuleInstanceBase, IOutputModuleInstance, IEqualityComparer<IOutputModuleInstance>, IEquatable<IOutputModuleInstance>, IEqualityComparer<OutputModuleInstanceBase>, IEquatable<OutputModuleInstanceBase> {
 		abstract public void SetOutputCount(int outputCount);
 
 		abstract public void UpdateState(CommandData[] outputStates);
@@ -44,6 +44,22 @@ namespace Vixen.Module.Output {
 
 		public int GetHashCode(IOutputModuleInstance obj) {
 			return base.GetHashCode(obj);
+		}
+
+		public bool Equals(IOutputModuleInstance other) {
+			return base.Equals(other);
+		}
+
+		public bool Equals(OutputModuleInstanceBase x, OutputModuleInstanceBase y) {
+			return Equals(x as IOutputModuleInstance, y as IOutputModuleInstance);
+		}
+
+		public int GetHashCode(OutputModuleInstanceBase obj) {
+			return GetHashCode(obj as IOutputModuleInstance);
+		}
+
+		public bool Equals(OutputModuleInstanceBase other) {
+			return Equals(other as IOutputModuleInstance);
 		}
 	}
 }

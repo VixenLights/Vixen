@@ -8,7 +8,7 @@ using CommandStandard;
 namespace Vixen.Module.Effect {
 	//This is where caching would take place, but the subclass can override/disable it
 	//-> Compose, template it
-	abstract public class EffectModuleInstanceBase : ModuleInstanceBase, IEffectModuleInstance, IEqualityComparer<IEffectModuleInstance> {
+	abstract public class EffectModuleInstanceBase : ModuleInstanceBase, IEffectModuleInstance, IEqualityComparer<IEffectModuleInstance>, IEquatable<IEffectModuleInstance>, IEqualityComparer<EffectModuleInstanceBase>, IEquatable<EffectModuleInstanceBase> {
 		//public bool IsDirty { get; set; }
 
 		public void PreRender(ChannelNode[] nodes, long timeSpan, object[] parameterValues) {
@@ -43,6 +43,22 @@ namespace Vixen.Module.Effect {
 
 		public int GetHashCode(IEffectModuleInstance obj) {
 			return base.GetHashCode(obj);
+		}
+
+		public bool Equals(IEffectModuleInstance other) {
+			return base.Equals(other);
+		}
+
+		public bool Equals(EffectModuleInstanceBase x, EffectModuleInstanceBase y) {
+			return Equals(x as IEffectModuleInstance, y as IEffectModuleInstance);
+		}
+
+		public int GetHashCode(EffectModuleInstanceBase obj) {
+			return GetHashCode(obj as IEffectModuleInstance);
+		}
+
+		public bool Equals(EffectModuleInstanceBase other) {
+			return Equals(other as IEffectModuleInstance);
 		}
 	}
 }

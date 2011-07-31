@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace Vixen.Module {
-	public abstract class ModuleInstanceBase : IModuleInstance, IEqualityComparer<IModuleInstance> {
+	public abstract class ModuleInstanceBase : IModuleInstance, IEqualityComparer<IModuleInstance>, IEquatable<IModuleInstance>, IEqualityComparer<ModuleInstanceBase>, IEquatable<ModuleInstanceBase> {
 		public Guid InstanceId { get; set; }
 
 		virtual public IModuleDataModel ModuleData { get; set; }
@@ -19,6 +19,33 @@ namespace Vixen.Module {
 
 		public int GetHashCode(IModuleInstance obj) {
 			return obj.InstanceId.GetHashCode();
+		}
+
+		public bool Equals(IModuleInstance other) {
+			return Equals(this, other);
+		}
+
+		public bool Equals(ModuleInstanceBase x, ModuleInstanceBase y) {
+			return Equals(x as IModuleInstance, y as IModuleInstance);
+		}
+
+		public int GetHashCode(ModuleInstanceBase obj) {
+			return GetHashCode(obj as IModuleInstance);
+		}
+
+		public bool Equals(ModuleInstanceBase other) {
+			return Equals(other as IModuleInstance);
+		}
+
+		public override bool Equals(object obj) {
+			if(obj is IModuleInstance) {
+				return Equals(obj as IModuleInstance);
+			}
+			return base.Equals(obj);
+		}
+
+		public override int GetHashCode() {
+			return GetHashCode(this as IModuleInstance);
 		}
 	}
 }

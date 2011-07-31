@@ -6,7 +6,7 @@ using Vixen.Sys;
 using Vixen.Module.Timing;
 
 namespace Vixen.Module.RuntimeBehavior {
-	abstract public class RuntimeBehaviorModuleInstanceBase : ModuleInstanceBase, IRuntimeBehaviorModuleInstance, IEqualityComparer<IRuntimeBehaviorModuleInstance> {
+	abstract public class RuntimeBehaviorModuleInstanceBase : ModuleInstanceBase, IRuntimeBehaviorModuleInstance, IEqualityComparer<IRuntimeBehaviorModuleInstance>, IEquatable<IRuntimeBehaviorModuleInstance>, IEqualityComparer<RuntimeBehaviorModuleInstanceBase>, IEquatable<RuntimeBehaviorModuleInstanceBase> {
 		abstract public void Startup(ISequence sequence, ITiming timingSource);
 
 		abstract public void Shutdown();
@@ -23,6 +23,22 @@ namespace Vixen.Module.RuntimeBehavior {
 
 		public int GetHashCode(IRuntimeBehaviorModuleInstance obj) {
 			return base.GetHashCode(obj);
+		}
+
+		public bool Equals(IRuntimeBehaviorModuleInstance other) {
+			return base.Equals(other);
+		}
+
+		public bool Equals(RuntimeBehaviorModuleInstanceBase x, RuntimeBehaviorModuleInstanceBase y) {
+			return Equals(x as IRuntimeBehaviorModuleInstance, y as IRuntimeBehaviorModuleInstance);
+		}
+
+		public int GetHashCode(RuntimeBehaviorModuleInstanceBase obj) {
+			return GetHashCode(obj as IRuntimeBehaviorModuleInstance);
+		}
+
+		public bool Equals(RuntimeBehaviorModuleInstanceBase other) {
+			return Equals(other as IRuntimeBehaviorModuleInstance);
 		}
 	}
 }
