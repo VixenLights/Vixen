@@ -5,6 +5,8 @@ using System.Text;
 
 namespace Vixen.Module.Output {
 	abstract public class OutputModuleDescriptorBase : ModuleDescriptorBase, IOutputModuleDescriptor, IEqualityComparer<IOutputModuleDescriptor>, IEquatable<IOutputModuleDescriptor>, IEqualityComparer<OutputModuleDescriptorBase>, IEquatable<OutputModuleDescriptorBase> {
+		private const int DEFAULT_UPDATE_INTERVAL = 20;
+
 		abstract public override string TypeName { get; }
 
 		abstract public override Guid TypeId { get; }
@@ -18,6 +20,10 @@ namespace Vixen.Module.Output {
 		abstract public override string Description { get; }
 
 		abstract public override string Version { get; }
+
+		virtual public int UpdateInterval {
+			get { return DEFAULT_UPDATE_INTERVAL; }
+		}
 
 		public bool Equals(IOutputModuleDescriptor x, IOutputModuleDescriptor y) {
 			return base.Equals(x, y);

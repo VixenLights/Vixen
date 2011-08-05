@@ -6,5 +6,6 @@ using Vixen.Hardware;
 
 namespace Vixen.Module.Output {
 	public interface IOutputModuleInstance : IOutput, IHardwareModule {
-    }
+		int UpdateInterval { get; }
+	}
 }

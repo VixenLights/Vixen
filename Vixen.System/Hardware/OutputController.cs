@@ -22,6 +22,13 @@ namespace Vixen.Hardware {
 		private List<Output> _outputs = new List<Output>();
 		private Guid _linkedTo = Guid.Empty;
 
+		// Controller id : Controller
+		static private Dictionary<Guid, OutputController> _instances = new Dictionary<Guid, OutputController>();
+
+		private enum ExecutionState { Stopped, Starting, Started, Stopping};
+		static private ExecutionState _stateAll = ExecutionState.Stopped;
+		static private Dictionary<Guid, HardwareUpdateThread> _updateThreads = new Dictionary<Guid, HardwareUpdateThread>();
+
 		private const string FILE_EXT = ".out";
 		private const string DIRECTORY_NAME = "Controller";
 		private const string ELEMENT_ROOT = "Controller";
@@ -31,20 +38,13 @@ namespace Vixen.Hardware {
 		private const string ATTR_OUTPUT_COUNT = "outputCount";
 		private const string ATTR_HARDWARE_ID = "hardwareId";
 
-		// Controller id : Controller
-		static private Dictionary<Guid, OutputController> _instances = new Dictionary<Guid, OutputController>();
-		static private Thread _updateThread;
-
-		private enum ExecutionState { Starting, Started, Stopping, Stopped };
-		static private ExecutionState _state = ExecutionState.Stopped;
-
 		static public void ReloadAll() {
 			// Stop the controllers.
-			foreach(OutputController controller in _instances.Values) {
-				_StopInstance(controller);
-			}
+			StopAll();
+
 			// Clear our references.
 			_instances.Clear();
+
 			// Reload.
 			foreach(string filePath in System.IO.Directory.GetFiles(Directory, "*" + FILE_EXT)) {
 				_AddInstance(OutputController.Load(filePath));
@@ -83,8 +83,8 @@ namespace Vixen.Hardware {
 			Id = Guid.NewGuid();
 			name = _Uniquify(name);
 			FilePath = Path.Combine(Directory, name + FILE_EXT);
-			OutputCount = outputCount;
 			OutputModuleId = outputModuleId;
+			OutputCount = outputCount;
 			CombinationStrategy = combinationStrategy;
 
 			// Affect the instance with the controller template last.
@@ -113,6 +113,9 @@ namespace Vixen.Hardware {
 				_outputModuleId = value;
 				// Go throught the module type manager always.
 				_outputModule = Modules.ModuleManagement.GetOutput(value);
+				if(OutputCount != 0) {
+					_outputModule.SetOutputCount(OutputCount);
+				}
 			}
 		}
 
@@ -302,7 +305,7 @@ namespace Vixen.Hardware {
 			_instances[controller.Id] = controller;
 
 			// Make sure the instance is running/not running like all the others.
-			if(_state == ExecutionState.Started) {
+			if(_stateAll == ExecutionState.Started) {
 				_StartInstance(controller);
 			} else {
 				_StopInstance(controller);
@@ -339,75 +342,64 @@ namespace Vixen.Hardware {
 		}
 
 		static public void StartAll() {
-			if(_state == ExecutionState.Stopped) {
-				_state = ExecutionState.Starting;
+			if(_stateAll == ExecutionState.Stopped) {
+				_stateAll = ExecutionState.Starting;
+				
 				// Start the hardware.
 				foreach(OutputController controller in _instances.Values) {
+					// Start the hardware.
 					_StartInstance(controller);
 				}
-
-				// Start the thread that updates the hardware.
-				_updateThread = new Thread(_HardwareUpdateThread);
-				_updateThread.Start();
-				_state = ExecutionState.Started;
+				
+				_stateAll = ExecutionState.Started;
 			}
 		}
 
 		static public void StopAll() {
-			if(_state == ExecutionState.Started) {
-				// Stop the thread that updates the hardware.
-				_state = ExecutionState.Stopping;
-				while(_state != ExecutionState.Stopped) Thread.Sleep(1);
+			if(_stateAll == ExecutionState.Started) {
+				_stateAll = ExecutionState.Stopping;
 
 				// Stop the hardware.
 				foreach(OutputController controller in _instances.Values) {
 					_StopInstance(controller);
 				}
+
+				_stateAll = ExecutionState.Stopping;
 			}
-		}
-
-		static private void _HardwareUpdateThread() {
-			//*** this will be user data
-			//*** this is at least partially pointless; Windows is going to do what it damn well pleases
-			int refreshRate = 50; // Updates/second
-			double frameLength = 1000d / refreshRate;
-			double frameStart;
-			double frameEnd;
-			Stopwatch currentTime = Stopwatch.StartNew();
-			double timeLeft;
-
-			while(_state != ExecutionState.Stopping) {
-				frameStart = currentTime.ElapsedMilliseconds;
-				frameEnd = frameStart + frameLength;
-
-				foreach(OutputController controller in _instances.Values) {
-					controller.Update();
-				}
-
-				timeLeft = frameEnd - currentTime.ElapsedMilliseconds;
-				if(timeLeft > 1) {
-					Thread.Sleep((int)timeLeft);
-				}
-			}
-			_state = ExecutionState.Stopped;
 		}
 
 		static private void _StartInstance(OutputController controller) {
 			if(!controller.IsRunning) {
 				// Fixup link to another controller.
 				controller.LinkTo(_instances.Values.FirstOrDefault(x => x.Id == controller._linkedTo));
+			
 				if(controller._outputModule != null) {
 					// Get the module data for the controller's output module.
 					VixenSystem.ModuleData.GetModuleTypeData(controller._outputModule);
 					// Start the output module.
 					controller._outputModule.Start();
 				}
+
+				// Create / Start the thread that updates the hardware.
+				HardwareUpdateThread thread = new HardwareUpdateThread(controller);
+				_updateThreads[controller.Id] = thread;
+				thread.Start();
 			}
 		}
 
 		static private void _StopInstance(OutputController controller) {
-			if(controller.IsRunning && controller._outputModule != null) {
-				controller._outputModule.Stop();
+			if(controller.IsRunning) {
+				// Stop the thread that updates the hardware.
+				HardwareUpdateThread thread;
+				if(_updateThreads.TryGetValue(controller.Id, out thread)) {
+					thread.Stop();
+					thread.WaitForFinish();
+				}
+
+				// Stop the hardware.
+				if(controller._outputModule != null) {
+					controller._outputModule.Stop();
+				}
 			}
 		}
 
@@ -510,6 +502,10 @@ namespace Vixen.Hardware {
 			get { return (_outputModule != null) ? _outputModule.IsRunning : false; }
 		}
 
+		public int UpdateInterval {
+			get { return _outputModule.UpdateInterval; }
+		}
+
 		static public OutputController Load(string filePath) {
 			OutputControllerReader reader = new OutputControllerReader();
 			OutputController controller = reader.Read(filePath) as OutputController;
@@ -525,6 +521,10 @@ namespace Vixen.Hardware {
 			if(File.Exists(FilePath)) {
 				File.Delete(FilePath);
 			}
+		}
+
+		public override string ToString() {
+			return Name;
 		}
 
 		static public XElement WriteXml(OutputController controller) {
@@ -771,6 +771,69 @@ namespace Vixen.Hardware {
 			public void Reset() {
 				_current = null;
 				_next = _root;
+			}
+		}
+		#endregion
+
+		#region class HardwareUpdateThread
+		class HardwareUpdateThread {
+			private Thread _thread;
+			private OutputController _controller;
+			private ExecutionState _threadState = ExecutionState.Stopped;
+			private EventWaitHandle _finished;
+			
+			private const int STOP_TIMEOUT = 4000;   // Four seconds should be plenty of time for a thread to stop.
+
+			public HardwareUpdateThread(OutputController controller) {
+				_controller = controller;
+				_thread = new Thread(_ThreadFunc);
+				_finished = new EventWaitHandle(false, EventResetMode.ManualReset);
+			}
+
+			public ExecutionState State { get { return _threadState; } }
+
+			public void Start() {
+				if(_threadState == ExecutionState.Stopped) {
+					_threadState = ExecutionState.Started;
+					_finished.Reset();
+					_thread.Start();
+				}
+			}
+
+			public void Stop() {
+				if(_threadState == ExecutionState.Started) {
+					_threadState = ExecutionState.Stopping;
+				}
+			}
+
+			public void WaitForFinish() {
+				if(!_finished.WaitOne(STOP_TIMEOUT)) {
+					// Timed out waiting for a stop.
+					//(This will prevent hangs in stopping, due to controller code failing to stop).
+					throw new TimeoutException("Controller " + _controller.Name + " failed to stop in the required amount of time.");
+				}
+			}
+
+			private void _ThreadFunc() {
+				long frameStart, frameEnd, timeLeft;
+				Stopwatch currentTime = Stopwatch.StartNew();
+
+				// Thread main loop
+				while(_threadState != ExecutionState.Stopping) {
+					frameStart = currentTime.ElapsedMilliseconds;
+					frameEnd = frameStart + _controller.UpdateInterval;
+
+					_controller.Update();
+
+					timeLeft = frameEnd - currentTime.ElapsedMilliseconds;
+					
+					if(timeLeft > 1) {
+						Thread.Sleep((int)timeLeft);
+					}
+				}
+
+				_threadState = ExecutionState.Stopped;
+				_finished.Set();
 			}
 		}
 		#endregion

@@ -5,5 +5,6 @@ using System.Text;
 
 namespace Vixen.Module.Output {
     public interface IOutputModuleDescriptor : IModuleDescriptor {
+		int UpdateInterval { get; }
     }
 }

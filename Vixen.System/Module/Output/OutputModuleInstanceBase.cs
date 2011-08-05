@@ -38,6 +38,10 @@ namespace Vixen.Module.Output {
 		virtual public void Resume() {
 		}
 
+		virtual public int UpdateInterval {
+			get { return (Descriptor as IOutputModuleDescriptor).UpdateInterval; }
+		}
+
 		public bool Equals(IOutputModuleInstance x, IOutputModuleInstance y) {
 			return base.Equals(x, y);
 		}

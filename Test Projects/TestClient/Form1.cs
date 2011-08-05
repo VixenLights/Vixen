@@ -279,7 +279,9 @@ namespace TestClient
 
         private void _AddControllerToView(OutputController controller) {
             ListViewItem item = new ListViewItem(new string[] {
-                controller.Name
+                controller.Name,
+				controller.OutputCount.ToString(),
+				ApplicationServices.GetModuleDescriptor<IOutputModuleDescriptor>(controller.OutputModuleId).TypeName
             });
             item.Tag = controller;
             listViewControllers.Items.Add(item);
@@ -306,8 +308,7 @@ namespace TestClient
 		private void buttonAddController_Click(object sender, EventArgs e) {
             string controllerName = textBoxControllerName.Text.Trim();
             if(controllerName.Length != 0) {
-				OutputController controller = new OutputController(controllerName, (int)numericUpDownOutputCount.Value, (Guid)comboBoxOutputModule.SelectedValue);
-				controller.CombinationStrategy = _CombinationStrategy;
+				OutputController controller = new OutputController(controllerName, (int)numericUpDownOutputCount.Value, (Guid)comboBoxOutputModule.SelectedValue, _CombinationStrategy);
 				controller.Save();
 				_AddControllerToView(controller);
 				_controllers.Add(controller);
@@ -358,6 +359,8 @@ namespace TestClient
 			OutputController controller = _SelectedController;
 			if(controller != null) {
 				textBoxControllerName.Text = controller.Name;
+				numericUpDownOutputCount.Value = controller.OutputCount;
+				comboBoxOutputModule.SelectedValue = controller.OutputModuleId;
 				_CombinationStrategy = controller.CombinationStrategy;
 				_UpdateLinkCombo();
 			}

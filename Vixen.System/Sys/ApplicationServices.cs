@@ -39,6 +39,11 @@ namespace Vixen.Sys {
 			return Modules.GetDescriptorById(moduleTypeId);
 		}
 
+		static public T GetModuleDescriptor<T>(Guid moduleTypeId)
+			where T : class, IModuleDescriptor {
+			return Modules.GetDescriptorById(moduleTypeId) as T;
+		}
+
 		/// <summary>
 		/// Gets a dictionary of the available modules based on the descriptors of installed modules.
 		/// </summary>
