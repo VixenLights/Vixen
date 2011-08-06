@@ -261,7 +261,11 @@ namespace Vixen.Sys {
 		static internal void PopulateRepositories() {
 			foreach(ModuleImplementation moduleImplementation in _moduleImplementationDescriptors.Keys) {
 				foreach(IModuleDescriptor moduleDescriptor in _moduleImplementationDescriptors[moduleImplementation]) {
-					moduleImplementation.Repository.Add(moduleDescriptor.TypeId);
+					try {
+						moduleImplementation.Repository.Add(moduleDescriptor.TypeId);
+					} catch(Exception ex) {
+						VixenSystem.Logging.Error("Error occurred while adding module " + moduleDescriptor.FileName, ex);
+					}
 				}
 			}
 		}
@@ -269,7 +273,11 @@ namespace Vixen.Sys {
 		static internal void ClearRepositories() {
 			foreach(ModuleImplementation moduleImplementation in _moduleImplementationDescriptors.Keys) {
 				foreach(IModuleDescriptor moduleDescriptor in _moduleImplementationDescriptors[moduleImplementation]) {
-					moduleImplementation.Repository.Remove(moduleDescriptor.TypeId);
+					try {
+						moduleImplementation.Repository.Remove(moduleDescriptor.TypeId);
+					} catch(Exception ex) {
+						VixenSystem.Logging.Error("Error occurred while removing module " + moduleDescriptor.FileName, ex);
+					}
 				}
 			}
 		}

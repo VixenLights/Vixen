@@ -19,10 +19,29 @@ namespace Vixen.Sys {
 		}
 
 		public CommandNode(Command command, ChannelNode[] targetNodes, long startTime, long timeSpan) {
-			this.Command = command;
+			Command = command;
 			TargetNodes = targetNodes;
 			StartTime = startTime;
 			TimeSpan = timeSpan;
+
+			if(!IsEmpty) {
+				// If the effect requires any properties, make sure the target nodes have those
+				// properties.
+				EffectModuleDescriptorBase effectDescriptor = Modules.GetDescriptorById<EffectModuleDescriptorBase>(command.EffectId);
+				if(!targetNodes.All(x => x.Properties.Select(y => y.Descriptor.TypeId).Intersect(effectDescriptor.PropertyDependencies).Count() == effectDescriptor.PropertyDependencies.Length)) {
+					List<string> message = new List<string>();
+					message.Add("The \"" + effectDescriptor.TypeName + "\" effect has property requirements that are missing:");
+					message.Add("");
+					foreach(ChannelNode channelNode in targetNodes) {
+						Guid[] missingPropertyIds = effectDescriptor.PropertyDependencies.Except(channelNode.Properties.Select(x => x.Descriptor.TypeId)).ToArray();
+						if(missingPropertyIds.Length > 0) {
+							message.Add((channelNode.Children.Count() > 0 ? "Group " : "Channel ") + channelNode.Name);
+							message.AddRange(missingPropertyIds.Select(x => " - Property " + Modules.GetDescriptorById(x).TypeName));
+						}
+					}
+					throw new InvalidOperationException(string.Join(Environment.NewLine, message));
+				}
+			}
 		}
 
 		public Command Command { get; private set; }

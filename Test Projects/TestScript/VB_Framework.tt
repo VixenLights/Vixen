@@ -54,6 +54,8 @@ Namespace <#=Namespace#>
 			End If
 		End Sub
 
+' == Effects ==
+
 <#
 	foreach(string effectName in Effects.Keys) {
 		IEffectModuleDescriptor effect = Effects[effectName];
@@ -76,6 +78,9 @@ Namespace <#=Namespace#>
 		End Sub
 
 <# } #>
+
+' == Nodes ==
+
 <#
 	// This needs to match the node collection that the script created in its constructor.
 	ChannelNode[] nodes = Vixen.Sys.Execution.Nodes.ToArray();

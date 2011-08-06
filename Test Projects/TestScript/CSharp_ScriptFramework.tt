@@ -46,6 +46,8 @@ namespace <#=Namespace#> {
 				Sequence.InsertData(targetNodes.Select(x => x.Node).ToArray() , startTime, timeSpan, new Command(effectId, args.ToArray()));
 			}
 		}
+		
+// == Effects ==
 
 <#
 	foreach(string effectName in Effects.Keys) {
@@ -69,6 +71,9 @@ namespace <#=Namespace#> {
 		}
 
 <# } #>
+
+		// == Nodes ==
+		
 <#
 	// This needs to match the node collection that the script created in its constructor.
 	ChannelNode[] nodes = Vixen.Sys.Execution.Nodes.ToArray();

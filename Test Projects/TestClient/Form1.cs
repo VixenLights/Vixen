@@ -443,8 +443,12 @@ namespace TestClient
 				}
 				Command command = new Command(effect.Descriptor.TypeId, parameterValues);
 				ChannelNode node = treeViewSystemChannels.SelectedNode.Tag as ChannelNode;
-				CommandNode commandNode = new CommandNode(command, new[] { node }, 0, (long)numericUpDownEffectLength.Value);
-				Vixen.Sys.Execution.Write(new [] { commandNode });
+				try {
+					CommandNode commandNode = new CommandNode(command, new[] { node }, 0, (long)numericUpDownEffectLength.Value);
+					Vixen.Sys.Execution.Write(new[] { commandNode });
+				} catch(Exception ex) {
+					MessageBox.Show(ex.Message);
+				}
 			}
 		}
 

@@ -323,7 +323,7 @@ namespace Vixen.Hardware {
 				// Remove it from any patching.
 				foreach (ChannelNode node in Vixen.Sys.Execution.Nodes) {
 					if (node.Channel != null) {
-						foreach (ControllerReference cr in node.Channel.Patch) {
+						foreach (ControllerReference cr in node.Channel.Patch.ToArray()) {
 							if (cr.ControllerId == controller.Id) {
 								node.Channel.Patch.Remove(cr);
 							}

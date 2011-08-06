@@ -23,6 +23,11 @@ namespace Vixen.Module.Effect {
 
 		abstract public CommandStandard.CommandParameterSpecification[] Parameters { get; }
 
+		/// <summary>
+		/// Which of the effect module's dependencies are properties.
+		/// </summary>
+		public Guid[] PropertyDependencies { get; set; }
+
 		public bool Equals(IEffectModuleDescriptor x, IEffectModuleDescriptor y) {
 			return base.Equals(x, y);
 		}

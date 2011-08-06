@@ -17,13 +17,6 @@ namespace Vixen.Sys {
 		long Length { get; set; }
 		bool IsUntimed { get; set; }
 		string FilePath { get; set; }
-		/// <summary>
-		/// Data entered here at runtime is handled only by runtime behaviors.
-		/// </summary>
-		/// <param name="channels"></param>
-		/// <param name="startTime"></param>
-		/// <param name="timeSpan"></param>
-		/// <param name="command"></param>
 		void InsertData(ChannelNode[] targetNodes, long startTime, long timeSpan, Command command);
 		InsertDataListenerStack InsertDataListener { get; set; }
 		TimingProviders TimingProvider { get; }

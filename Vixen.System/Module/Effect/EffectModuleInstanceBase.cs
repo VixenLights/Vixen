@@ -9,8 +9,6 @@ namespace Vixen.Module.Effect {
 	//This is where caching would take place, but the subclass can override/disable it
 	//-> Compose, template it
 	abstract public class EffectModuleInstanceBase : ModuleInstanceBase, IEffectModuleInstance, IEqualityComparer<IEffectModuleInstance>, IEquatable<IEffectModuleInstance>, IEqualityComparer<EffectModuleInstanceBase>, IEquatable<EffectModuleInstanceBase> {
-		//public bool IsDirty { get; set; }
-
 		public void PreRender(ChannelNode[] nodes, long timeSpan, object[] parameterValues) {
 			// This hook isn't used, but it's here for consistency and future use.
 			_PreRender(nodes, timeSpan, parameterValues);
@@ -31,6 +29,10 @@ namespace Vixen.Module.Effect {
 
 		public CommandParameterSpecification[] Parameters {
 			get { return (Descriptor as IEffectModuleDescriptor).Parameters; }
+		}
+
+		public Guid[] PropertyDependencies {
+			get { return (Descriptor as EffectModuleDescriptorBase).PropertyDependencies; }
 		}
 
 		public override string ToString() {

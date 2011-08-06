@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Vixen.Common;
 using Vixen.Sys;
+using Vixen.Module.Property;
 
 namespace Vixen.Module.Effect {
 	class EffectModuleRepository : GenericModuleRepository<IEffectModuleInstance> {
@@ -19,9 +20,12 @@ namespace Vixen.Module.Effect {
 		}
 
 		override public void Add(Guid id) {
-			IEffectModuleDescriptor descriptor = Modules.GetDescriptorById<IEffectModuleDescriptor>(id);
+			EffectModuleDescriptorBase descriptor = Modules.GetDescriptorById<EffectModuleDescriptorBase>(id);
 			if(descriptor != null) {
 				_nameLookup[descriptor.EffectName] = id;
+
+				// Determine which, if any, of the effect's dependencies are properties.
+				descriptor.PropertyDependencies = descriptor.Dependencies.Where(x => Modules.GetDescriptorById<IPropertyModuleDescriptor>(x) != null).ToArray();
 			}
 		}
 

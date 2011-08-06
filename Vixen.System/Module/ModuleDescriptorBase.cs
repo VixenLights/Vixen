@@ -24,7 +24,7 @@ namespace Vixen.Module {
 		public System.Reflection.Assembly Assembly { get; set; }
 
 		virtual public Guid[] Dependencies {
-			get { return null; }
+			get { return new Guid[] { }; }
 		}
 
 		public bool Equals(IModuleDescriptor x, IModuleDescriptor y) {

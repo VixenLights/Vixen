@@ -16,7 +16,7 @@ namespace TestScript
     using System;
     
     
-    #line 1 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\CSharp_ScriptFramework.tt"
+    #line 1 "C:\VixenDev\Test Projects\TestScript\CSharp_ScriptFramework.tt"
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "10.0.0.0")]
     public partial class CSharp_ScriptFramework : CSharp_ScriptFrameworkBase
     {
@@ -93,14 +93,14 @@ using CommandStandard;
 
 namespace ");
             
-            #line 21 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\CSharp_ScriptFramework.tt"
+            #line 21 "C:\VixenDev\Test Projects\TestScript\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Namespace));
             
             #line default
             #line hidden
             this.Write(" {\r\n\tpublic partial class ");
             
-            #line 22 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\CSharp_ScriptFramework.tt"
+            #line 22 "C:\VixenDev\Test Projects\TestScript\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ClassName));
             
             #line default
@@ -109,7 +109,7 @@ namespace ");
                     "t type id\r\n\t\tprivate Dictionary<string, Guid> _effects = new Dictionary<string, " +
                     "Guid>();\r\n\r\n\t\tpublic ");
             
-            #line 27 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\CSharp_ScriptFramework.tt"
+            #line 27 "C:\VixenDev\Test Projects\TestScript\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ClassName));
             
             #line default
@@ -117,7 +117,7 @@ namespace ");
             this.Write("() {\r\n\t\t\t_nodes = Vixen.Sys.Execution.Nodes.Select(x => new UserScriptNode(x)).To" +
                     "Array();\r\n");
             
-            #line 29 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\CSharp_ScriptFramework.tt"
+            #line 29 "C:\VixenDev\Test Projects\TestScript\CSharp_ScriptFramework.tt"
 
 	foreach(string effectName in Effects.Keys) {
 
@@ -126,21 +126,21 @@ namespace ");
             #line hidden
             this.Write("\t\t\t_effects[\"");
             
-            #line 32 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\CSharp_ScriptFramework.tt"
+            #line 32 "C:\VixenDev\Test Projects\TestScript\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(effectName));
             
             #line default
             #line hidden
             this.Write("\"] = new Guid(\"");
             
-            #line 32 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\CSharp_ScriptFramework.tt"
+            #line 32 "C:\VixenDev\Test Projects\TestScript\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Effects[effectName].TypeId));
             
             #line default
             #line hidden
             this.Write("\");\r\n");
             
-            #line 33 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\CSharp_ScriptFramework.tt"
+            #line 33 "C:\VixenDev\Test Projects\TestScript\CSharp_ScriptFramework.tt"
  } 
             
             #line default
@@ -161,10 +161,12 @@ namespace ");
 				Sequence.InsertData(targetNodes.Select(x => x.Node).ToArray() , startTime, timeSpan, new Command(effectId, args.ToArray()));
 			}
 		}
+		
+// == Effects ==
 
 ");
             
-            #line 50 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\CSharp_ScriptFramework.tt"
+            #line 52 "C:\VixenDev\Test Projects\TestScript\CSharp_ScriptFramework.tt"
 
 	foreach(string effectName in Effects.Keys) {
 		IEffectModuleDescriptor effect = Effects[effectName];
@@ -182,76 +184,77 @@ namespace ");
             #line hidden
             this.Write("\t\t// Original name: ");
             
-            #line 62 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\CSharp_ScriptFramework.tt"
+            #line 64 "C:\VixenDev\Test Projects\TestScript\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(effect.EffectName));
             
             #line default
             #line hidden
             this.Write("\r\n\t\tpublic void ");
             
-            #line 63 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\CSharp_ScriptFramework.tt"
+            #line 65 "C:\VixenDev\Test Projects\TestScript\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(effectName));
             
             #line default
             #line hidden
             this.Write("(IEnumerable<UserScriptNode> targetNodes, long startTime, long timeSpan, ");
             
-            #line 63 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\CSharp_ScriptFramework.tt"
+            #line 65 "C:\VixenDev\Test Projects\TestScript\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(effectParameters));
             
             #line default
             #line hidden
             this.Write(") {\r\n\t\t\t_InvokeEffect(\"");
             
-            #line 64 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\CSharp_ScriptFramework.tt"
+            #line 66 "C:\VixenDev\Test Projects\TestScript\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(effectName));
             
             #line default
             #line hidden
             this.Write("\", targetNodes, startTime, timeSpan, ");
             
-            #line 64 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\CSharp_ScriptFramework.tt"
+            #line 66 "C:\VixenDev\Test Projects\TestScript\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(parameterNames));
             
             #line default
             #line hidden
             this.Write(");\r\n\t\t}\r\n\r\n\t\tpublic void ");
             
-            #line 67 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\CSharp_ScriptFramework.tt"
+            #line 69 "C:\VixenDev\Test Projects\TestScript\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(effectName));
             
             #line default
             #line hidden
             this.Write("(IEnumerable<UserScriptNode> targetNodes, long timeSpan, ");
             
-            #line 67 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\CSharp_ScriptFramework.tt"
+            #line 69 "C:\VixenDev\Test Projects\TestScript\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(effectParameters));
             
             #line default
             #line hidden
             this.Write(") {\r\n\t\t\t_InvokeEffect(\"");
             
-            #line 68 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\CSharp_ScriptFramework.tt"
+            #line 70 "C:\VixenDev\Test Projects\TestScript\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(effectName));
             
             #line default
             #line hidden
             this.Write("\", targetNodes, 0, timeSpan, ");
             
-            #line 68 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\CSharp_ScriptFramework.tt"
+            #line 70 "C:\VixenDev\Test Projects\TestScript\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(parameterNames));
             
             #line default
             #line hidden
             this.Write(");\r\n\t\t}\r\n\r\n");
             
-            #line 71 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\CSharp_ScriptFramework.tt"
+            #line 73 "C:\VixenDev\Test Projects\TestScript\CSharp_ScriptFramework.tt"
  } 
             
             #line default
             #line hidden
+            this.Write("\r\n\t\t// == Nodes ==\r\n\t\t\r\n");
             
-            #line 72 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\CSharp_ScriptFramework.tt"
+            #line 77 "C:\VixenDev\Test Projects\TestScript\CSharp_ScriptFramework.tt"
 
 	// This needs to match the node collection that the script created in its constructor.
 	ChannelNode[] nodes = Vixen.Sys.Execution.Nodes.ToArray();
@@ -262,28 +265,28 @@ namespace ");
             #line hidden
             this.Write("\t\t// Original name: ");
             
-            #line 77 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\CSharp_ScriptFramework.tt"
+            #line 82 "C:\VixenDev\Test Projects\TestScript\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(nodes[i].Name));
             
             #line default
             #line hidden
             this.Write("\r\n\t\tpublic dynamic ");
             
-            #line 78 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\CSharp_ScriptFramework.tt"
+            #line 83 "C:\VixenDev\Test Projects\TestScript\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(_Fix(nodes[i].Name, usedNames)));
             
             #line default
             #line hidden
             this.Write(" { \r\n\t\t\tget { return _nodes[");
             
-            #line 79 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\CSharp_ScriptFramework.tt"
+            #line 84 "C:\VixenDev\Test Projects\TestScript\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(i));
             
             #line default
             #line hidden
             this.Write("]; }\r\n\t\t}\r\n");
             
-            #line 81 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\CSharp_ScriptFramework.tt"
+            #line 86 "C:\VixenDev\Test Projects\TestScript\CSharp_ScriptFramework.tt"
  } 
             
             #line default
