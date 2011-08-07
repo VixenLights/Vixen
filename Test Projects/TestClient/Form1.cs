@@ -240,7 +240,7 @@ namespace TestClient
 						}
 						// Call the save of the editor, not the save of the sequence, so that it can
 						// get its state committed.
-						ActiveEditor.Save();
+						ActiveEditor.Save(fileName);
 
 						textBoxSequenceName.Text = ActiveEditor.Sequence.Name;
 						MessageBox.Show("Success");
@@ -323,7 +323,7 @@ namespace TestClient
 			get {
 				// Don't want to clear our reference on Deactivate because
 				// it may be deactivated due to the client getting focus.
-				if((_activeEditor as Form).IsDisposed) {
+				if(_activeEditor != null && (_activeEditor as Form).IsDisposed) {
 					_activeEditor = null;
 					labelActiveEditor.Text = "(none)";
 				}

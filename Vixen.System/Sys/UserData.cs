@@ -117,7 +117,9 @@ namespace Vixen.Sys {
 		}
 
 		private void _SaveModuleData() {
-			ModuleData.SaveToParent(_userData.Element(ELEMENT_MODULE_DATA));
+			XElement parentNode = _userData.Element(ELEMENT_MODULE_DATA);
+			parentNode.RemoveNodes();
+			parentNode.Add(ModuleData.ToXElement());
 		}
 
 		public IEnumerable<ChannelNode> LoadBranchNodes() {

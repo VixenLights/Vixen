@@ -127,13 +127,9 @@ namespace Vixen.Module {
             return moduleDataSetElement.ToString();
         }
 
-        public void SaveToParent(XElement parentNode) {
-            parentNode.RemoveNodes();
-            string moduleData = Serialize();
-            if(!string.IsNullOrEmpty(moduleData)) {
-                parentNode.Add(XElement.Parse(moduleData));
-            }
-        }
+		public XElement ToXElement() {
+			return XElement.Parse(Serialize());
+		}
 
 		public void Deserialize(string xmlText) {
             _dataModels.Clear();
@@ -282,7 +278,7 @@ namespace Vixen.Module {
 		
 		static public void CreateEmptyDataSetFile(string fileName) {
 			ModuleDataSet dataSet = new ModuleDataSet();
-			XElement element = XElement.Parse(dataSet.Serialize());
+			XElement element = dataSet.ToXElement();
 			element.Save(fileName);
 		}
 
@@ -292,8 +288,7 @@ namespace Vixen.Module {
 		[DataMember]
 		public string SerializationGraph {
 			get {
-				string s = Serialize();
-				return s;
+				return Serialize();
 			}
 			set {
 				_dataModels = new Dictionary<Tuple<Guid, Guid>, IModuleDataModel>();

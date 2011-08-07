@@ -226,7 +226,7 @@ namespace Vixen.Sys {
 				new XAttribute("name", node.Name),
 				new XAttribute("id", node.Id),
 				new XElement("Properties", node.Properties.Select(x => new XElement("Property", x.Descriptor.TypeId))),
-				new XElement("PropertyData", XElement.Parse(node.Properties.PropertyData.Serialize())),
+				new XElement("PropertyData", node.Properties.PropertyData.ToXElement()),
 				channelElements);
 		}
 

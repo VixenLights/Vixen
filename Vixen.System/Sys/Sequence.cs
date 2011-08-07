@@ -164,7 +164,7 @@ namespace Vixen.Sys {
 		}
 
 		static private XElement _WriteModuleData(Sequence sequence) {
-			return new XElement("ModuleData", sequence.ModuleDataSet.Serialize());
+			return new XElement("ModuleData", sequence.ModuleDataSet.ToXElement());
 		}
 
 		static private XElement _WriteEffectTable(Sequence sequence, out Dictionary<Guid, int> effectTableIndex) {
@@ -280,7 +280,8 @@ namespace Vixen.Sys {
 		}
 
 		private static void _ReadModuleData(XElement element, Sequence sequence) {
-			string moduleDataString = element.Element("ModuleData").Value;
+			//string moduleDataString = element.Element("ModuleData").Value;
+			string moduleDataString = element.Element("ModuleData").InnerXml();
 			sequence.ModuleDataSet.Deserialize(moduleDataString);
 		}
 

@@ -539,7 +539,7 @@ namespace Vixen.Hardware {
 					controller._outputs.Select(x =>
 						new XElement("Output",
 							new XAttribute("name", x.Name),
-							XElement.Parse(x.TransformModuleData.Serialize()), // First element within Output
+							x.TransformModuleData.ToXElement(), // First element within Output
 							new XElement("Transforms",
 								x.DataTransforms.Select(y =>
 									new XElement("Transform",

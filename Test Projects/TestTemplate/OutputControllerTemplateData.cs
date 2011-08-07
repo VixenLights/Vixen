@@ -33,7 +33,7 @@ namespace TestTemplate {
 		private XElement _TransformModuleDatum {
 			get {
 				if(TransformData != null) {
-					return XElement.Parse(TransformData.Serialize());
+					return TransformData.ToXElement();
 				}
 				return null;
 			}

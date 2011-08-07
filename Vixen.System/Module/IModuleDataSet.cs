@@ -17,12 +17,12 @@ namespace Vixen.Module {
 		IEnumerable<T> GetInstances<T>() where T : class, IModuleInstance;
 		IEnumerable<IModuleDataModel> GetData();
         string Serialize();
-        void SaveToParent(XElement parentNode);
         void Deserialize(string xmlText);
 		void Clear();
 		IModuleDataSet Clone();
 		void Clone(IModuleDataSet sourceDataSet);
 		IModuleDataModel CloneTypeData(IModuleInstance sourceModule);
 		IModuleDataModel CloneInstanceData(IModuleInstance sourceModule, IModuleInstance destinationModule);
+		XElement ToXElement();
 	}
 }
