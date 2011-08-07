@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Vixen.IO;
 using System.IO;
 using System.Xml;
+using Vixen.IO;
+using Vixen.IO.Xml;
 using Vixen.Common;
 
 namespace Vixen.Sys {
@@ -17,13 +18,8 @@ namespace Vixen.Sys {
 
 		public const string Extension = ".pro";
 
-		public Program() {
-			// Used when loading a program.
-			Name = "Unnamed program";
-		}
-
 		public Program(string name) {
-			Name = name;
+			FilePath = Path.Combine(Program.Directory, Path.ChangeExtension(name, Program.Extension));
 		}
 
 		[DataPath]
@@ -43,12 +39,16 @@ namespace Vixen.Sys {
 		}
 
 		static private Program _LoadFromFile(string filePath) {
-			ProgramReader reader = new ProgramReader();
-			reader.Read(filePath);
-			return reader.Program;
+			IReader reader = new XmlProgramReader();
+			Program program = (Program)reader.Read(filePath);
+			return program;
 		}
 
-		public string Name { get; set; }
+		public string FilePath { get; set; }
+
+		public string Name {
+			get { return Path.GetFileNameWithoutExtension(FilePath); }
+		}
 
 		public void Add(ISequence sequence) {
 			_sequences.Add(sequence);
@@ -61,10 +61,8 @@ namespace Vixen.Sys {
 		}
 
 		public void Save() {
-			string filePath = Path.Combine(Program.Directory, this.Name + Program.Extension);
-			ProgramWriter writer = new ProgramWriter();
-			writer.Program = this;
-			writer.Write(filePath);
+			IWriter writer = new XmlProgramWriter();
+			writer.Write(FilePath, this);
 		}
 	}
 }

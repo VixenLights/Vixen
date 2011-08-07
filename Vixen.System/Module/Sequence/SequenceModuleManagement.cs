@@ -21,9 +21,9 @@ namespace Vixen.Module.Sequence {
 			if(descriptor != null) {
 				ISequenceModuleInstance instance = Get(descriptor.TypeId);
 
-				// Apply any template that may exist.
-				FileTemplateModuleManagement manager = Modules.GetModuleManager<IFileTemplateModuleInstance, FileTemplateModuleManagement>();
-				manager.ProjectTemplateInto(descriptor.FileExtension, instance);
+				//// Apply any template that may exist.
+				//FileTemplateModuleManagement manager = Modules.GetModuleManager<IFileTemplateModuleInstance, FileTemplateModuleManagement>();
+				//manager.ProjectTemplateInto(descriptor.FileExtension, instance);
 
 				return instance;
 			}

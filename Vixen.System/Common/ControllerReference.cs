@@ -34,19 +34,5 @@ namespace Vixen.Common {
 			// make the index human-friendly -- index it from 1.
 			return Vixen.Hardware.OutputController.Get(ControllerId).Name + " [" + (OutputIndex + 1) + "]";
 		}
-
-		static public XElement WriteXml(ControllerReference controllerReference) {
-			XElement element = new XElement("ControllerReference",
-				new XAttribute("controllerId", controllerReference.ControllerId),
-				new XAttribute("outputIndex", controllerReference.OutputIndex));
-			return element;
-		}
-
-		static public ControllerReference ReadXml(XElement element) {
-			return new ControllerReference(
-				new Guid(element.Attribute("controllerId").Value),
-				int.Parse(element.Attribute("outputIndex").Value)
-				);
-		}
 	}
 }

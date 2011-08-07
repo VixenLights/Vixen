@@ -23,7 +23,7 @@ namespace Vixen.Sys {
 
 		public string Name { get; set; }
 
-		public Guid Id { get; set; }
+		public Guid Id { get; protected set; }
 
 		// Both of these are required for Except(), Distinct(), Union() and Intersect().
 		// Equals(<type>) for IEquatable and GetHashCode() because that's needed anytime

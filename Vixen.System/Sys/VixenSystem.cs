@@ -3,15 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
-using Vixen.Common;
 using System.IO;
+using System.Xml.Linq;
+using Vixen.Common;
 using Vixen.Module;
 using Vixen.Module.Sequence;
 using Vixen.Execution;
 using Vixen.Hardware;
+using Vixen.IO;
+using Vixen.IO.Xml;
 
 namespace Vixen.Sys {
     public class VixenSystem {
+		private const string USER_DATA_FILE = "UserData.xml";
+		private const string ELEMENT_DATA_DIRECTORY = "DataDirectory";
+
 		static private Logging _logging;
 
 		private enum RunState { Stopped, Starting, Started, Stopping };
@@ -36,8 +42,9 @@ namespace Vixen.Sys {
 					Modules.LoadModules();
 
 					// Load user data
-					UserData = new UserData();
-					UserData.LoadModuleData();
+					string userDataFilePath = _GetUserDataFilePath();
+					IReader reader = new XmlUserDataReader();
+					UserData = (UserData)reader.Read(userDataFilePath);
 
 					// Add modules to repositories.
 					Modules.PopulateRepositories();
@@ -61,6 +68,32 @@ namespace Vixen.Sys {
 			}
         }
 
+		static private string _GetUserDataFilePath() {
+			// Look for a user data file in the binary directory.
+			string filePath = Path.Combine(Paths.BinaryRootPath, USER_DATA_FILE);
+			XElement element = Helper.LoadXml(filePath);
+			if(element != null) {
+				XElement dataDirectory = element.Element(ELEMENT_DATA_DIRECTORY);
+				if(dataDirectory != null) {
+					if(Directory.Exists(dataDirectory.Value)) {
+						// We have an alternate path and it does exist.
+						Paths.DataRootPath = dataDirectory.Value;
+					}
+				}
+			}
+
+			// Setting DataRootPath is the way to get the data branch built, but we
+			// don't want to do that until we have certainly determined the location
+			// of their data branch.  Otherwise we would create multiple branches and
+			// they will have an empty branch that is likely to raise questions.
+			// SO...we may or may not have already set it above, so we are going to
+			// set it to ensure the data branch exists.
+			Paths.DataRootPath = Paths.DataRootPath;
+
+			// Reset the expected location of the user data file.
+			return Path.Combine(Paths.DataRootPath, USER_DATA_FILE);
+		}
+
         static public void Stop() {
 			if(_state == RunState.Started) {
 				_state = RunState.Stopping;
@@ -72,7 +105,7 @@ namespace Vixen.Sys {
 			}
         }
 
-		static public ModuleDataSet ModuleData {
+		static public IModuleDataSet ModuleData {
 			get { return VixenSystem.UserData.ModuleData; }
 		}
 

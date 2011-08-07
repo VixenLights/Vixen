@@ -75,20 +75,5 @@ namespace Vixen.Execution {
 
 			throw new InvalidOperationException("Invalid provider type.");
 		}
-
-		static public XElement WriteXml(TimingProviders timingProviders) {
-			return new XElement("Selected",
-				new XAttribute("type", timingProviders._selectedProviderType ?? string.Empty),
-				new XAttribute("source", timingProviders._selectedSourceName ?? string.Empty)
-				);
-		}
-
-		static public TimingProviders ReadXml(XElement element, ISequence sequence) {
-			XElement selected = element.Element("Selected");
-			TimingProviders timingProviders = new TimingProviders(sequence);
-			timingProviders._selectedProviderType = selected.Attribute("type").Value;
-			timingProviders._selectedSourceName = selected.Attribute("source").Value;
-			return timingProviders;
-		}
 	}
 }

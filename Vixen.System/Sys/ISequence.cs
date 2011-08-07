@@ -11,7 +11,7 @@ using Vixen.Module.Media;
 
 namespace Vixen.Sys {
     public interface ISequence : IModuleDataContainer {
-        string Name { get; set; }
+        string Name { get; }
 		void Save();
 		void Save(string fileName);
 		long Length { get; set; }

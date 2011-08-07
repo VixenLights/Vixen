@@ -16,7 +16,11 @@ namespace Vixen.Sys {
 			this.Patch = new Patch();
 		}
 
-		private OutputChannel() { }
+		public OutputChannel(Guid id, string name, Patch patch) {
+			Id = id;
+			Name = name;
+			Patch = patch;
+		}
 
 		public Patch Patch {
 			get { return _patch; }
@@ -64,28 +68,6 @@ namespace Vixen.Sys {
 
 		public int GetHashCode(OutputChannel obj) {
 			return obj.Id.GetHashCode();
-		}
-
-
-		static public XElement WriteXml(OutputChannel channel) {
-			XElement element = new XElement("Channel",
-				new XAttribute("id", channel.Id),
-				new XAttribute("name", channel.Name),
-				new XElement("Patch",
-					channel.Patch.ControllerReferences.Select(x => ControllerReference.WriteXml(x))));
-			return element;
-		}
-
-		static public OutputChannel ReadXml(XElement element) {
-			OutputChannel instance = new OutputChannel() {
-				Id = new Guid(element.Attribute("id").Value),
-				Name = element.Attribute("name").Value,
-				Patch = new Patch(
-					element.Element("Patch").Elements()
-						.Select(x => ControllerReference.ReadXml(x))
-					),
-			};
-			return instance;
 		}
 	}
 }

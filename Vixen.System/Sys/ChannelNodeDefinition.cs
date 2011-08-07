@@ -17,8 +17,6 @@ namespace Vixen.Sys {
 		[DataPath]
 		static protected readonly string _channelNodeDefinitionDirectory = Path.Combine(Definition._definitionDirectory, DIRECTORY_NAME);
 
-		private ChannelNodeDefinition() { }
-
 		public ChannelNodeDefinition(string name, ChannelNode node) {
 			_node = node;
 			FilePath = Path.Combine(_channelNodeDefinitionDirectory, name + FILE_EXT);
@@ -49,7 +47,7 @@ namespace Vixen.Sys {
 		public void Save(string filePath) {
 			if(string.IsNullOrWhiteSpace(filePath)) throw new InvalidOperationException("A name is required.");
 			filePath = Path.Combine(_channelNodeDefinitionDirectory, Path.GetFileName(filePath));
-			base._Save<ChannelNodeDefinitionWriter>(filePath);
+			base._Save<Vixen.IO.Xml.XmlChannelNodeTemplateWriter>(filePath);
 		}
 
 		public void Save() {
@@ -65,17 +63,7 @@ namespace Vixen.Sys {
 
 		static public ChannelNodeDefinition Load(string filePath) {
 			filePath = Path.Combine(_channelNodeDefinitionDirectory, Path.GetFileName(filePath));
-			return Definition.Load<ChannelNodeDefinition, ChannelNodeDefinitionReader>(filePath);
-		}
-
-		static public XElement WriteXml(ChannelNodeDefinition value) {
-			return ChannelNode.WriteXmlTemplate(value._node);
-		}
-
-		static public ChannelNodeDefinition ReadXml(XElement element) {
-			ChannelNodeDefinition template = new ChannelNodeDefinition();
-			template._node = ChannelNode.ReadXml(element);
-			return template;
+			return Definition.Load<ChannelNodeDefinition, Vixen.IO.Xml.XmlChannelNodeTemplateReader>(filePath);
 		}
 	}
 }

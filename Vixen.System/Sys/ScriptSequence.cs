@@ -9,6 +9,7 @@ using Vixen.Script;
 using System.IO;
 using Vixen.Execution;
 using Vixen.Module.Script;
+using Vixen.IO.Xml;
 
 namespace Vixen.Sys {
 	/// <summary>
@@ -24,6 +25,13 @@ namespace Vixen.Sys {
 
 		[DataPath]
 		static private readonly string _sourceDirectory = Path.Combine(Paths.DataRootPath, SOURCE_DIRECTORY_NAME);
+
+		new static public ScriptSequence Load(string filePath) {
+			// Load the sequence.
+			IReader reader = new XmlScriptSequenceReader();
+			ScriptSequence instance = (ScriptSequence)reader.Read(filePath);
+			return instance;
+		}
 
 		protected ScriptSequence(string language) {
 			Length = Forever;
@@ -69,9 +77,9 @@ namespace Vixen.Sys {
 			}
 		}
 
-		public HashSet<string> FrameworkAssemblies { get; private set; }
+		public HashSet<string> FrameworkAssemblies { get; set; }
 
-		public HashSet<string> ExternalAssemblies { get; private set; }
+		public HashSet<string> ExternalAssemblies { get; set; }
 
 		public SourceFile CreateNewFile(string fileName) {
 			SourceFile sourceFile = new SourceFile(Path.GetFileName(fileName));
@@ -92,87 +100,8 @@ namespace Vixen.Sys {
 			return fileName + fileExtension;
 		}
 
-		#region _WriteXml
-		protected override XElement _WriteXml() {
-			return new XElement("Script",
-				_WriteLanguage(),
-				_WriteSourceFiles(),
-				_WriteFrameworkAssemblies(),
-				_WriteExternalAssemblies());
+		override protected IWriter _GetSequenceWriter() {
+			return new XmlScriptSequenceWriter();
 		}
-
-		private XElement _WriteLanguage() {
-			return new XElement("Language", Language);
-		}
-
-		private XElement _WriteSourceFiles() {
-			// Make sure source directory exists.
-			string sourcePath = Path.Combine(SourceDirectory, Name);
-			Helper.EnsureDirectory(sourcePath);
-
-			// Write the source files and their references.
-			return new XElement("SourceFiles", SourceFiles.Select(x => {
-				x.Save(sourcePath);
-				return new XElement("SourceFile",
-					new XAttribute("name", x.Name));
-			}));
-		}
-
-		private XElement _WriteFrameworkAssemblies() {
-			return new XElement("FrameworkAssemblies", FrameworkAssemblies.Select(x =>
-				new XElement("Assembly",
-					new XAttribute("name", x))));
-		}
-
-		private XElement _WriteExternalAssemblies() {
-			return new XElement("ExternalAssemblies", ExternalAssemblies.Select(x =>
-				new XElement("Assembly",
-					new XAttribute("name", x))));
-		}
-
-		#endregion
-
-		#region _ReadXml
-		protected override void _ReadXml(XElement element) {
-			element = element.Element("Script");
-			_ReadLanguage(element);
-			_ReadSourceFiles(element);
-			_ReadFrameworkAssemblies(element);
-			_ReadExternalAssemblies(element);
-		}
-
-		private void _ReadLanguage(XElement element) {
-			Language = element.Element("Language").Value;
-		}
-
-		private void _ReadSourceFiles(XElement element) {
-            string sourcePath = Path.Combine(SourceDirectory, Name);
-			SourceFiles.Clear();
-			IEnumerable<string> fileNames = element
-				.Element("SourceFiles")
-				.Elements("SourceFile")
-				.Select(x => x.Attribute("name").Value);
-			foreach(string fileName in fileNames) {
-				string filePath = Path.Combine(sourcePath, fileName);
-				SourceFiles.Add(SourceFile.Load(filePath));
-			}
-		}
-
-		private void _ReadFrameworkAssemblies(XElement element) {
-			FrameworkAssemblies = new HashSet<string>(
-				element
-					.Element("FrameworkAssemblies")
-					.Elements("Assembly")
-					.Select(x => x.Attribute("name").Value));
-		}
-
-		private void _ReadExternalAssemblies(XElement element) {
-			ExternalAssemblies = new HashSet<string>(
-				element
-					.Element("ExternalAssemblies")
-					.Elements("Assembly")
-					.Select(x => x.Attribute("name").Value));
-		}
-		#endregion
 	}
 }

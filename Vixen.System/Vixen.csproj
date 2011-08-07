@@ -108,12 +108,22 @@
     <Compile Include="Common\ITimed.cs" />
     <Compile Include="Common\LiveListEnumerator.cs" />
     <Compile Include="Execution\ExecutorEffectEnumerator.cs" />
-    <Compile Include="IO\ChannelNodeDefinitionReader.cs" />
-    <Compile Include="IO\ChannelNodeDefinitionWriter.cs" />
     <Compile Include="IO\IReader.cs" />
     <Compile Include="IO\IWriter.cs" />
-    <Compile Include="IO\OutputControllerReader.cs" />
-    <Compile Include="IO\OutputControllerWriter.cs" />
+    <Compile Include="IO\ReaderBase.cs" />
+    <Compile Include="IO\WriterBase.cs" />
+    <Compile Include="IO\Xml\XmlChannelNodeTemplateReader.cs" />
+    <Compile Include="IO\Xml\XmlChannelNodeTemplateWriter.cs" />
+    <Compile Include="IO\Xml\XmlControllerReader.cs" />
+    <Compile Include="IO\Xml\XmlControllerWriter.cs" />
+    <Compile Include="IO\Xml\XmlProgramReader.cs" />
+    <Compile Include="IO\Xml\XmlProgramWriter.cs" />
+    <Compile Include="IO\Xml\XmlScriptSequenceReader.cs" />
+    <Compile Include="IO\Xml\XmlScriptSequenceWriter.cs" />
+    <Compile Include="IO\Xml\XmlSequenceReader.cs" />
+    <Compile Include="IO\Xml\XmlSequenceWriter.cs" />
+    <Compile Include="IO\Xml\XmlUserDataReader.cs" />
+    <Compile Include="IO\Xml\XmlUserDataWriter.cs" />
     <Compile Include="Module\App\AppModuleInstanceBase.cs" />
     <Compile Include="Module\App\AppModuleDescriptorBase.cs" />
     <Compile Include="Module\CommandStandardExtension\CommandStandardExtensionModuleInstanceBase.cs" />
@@ -392,8 +402,6 @@
     <Compile Include="Module\App\IAppModuleInstance.cs" />
     <Compile Include="Sys\Program.cs" />
     <Compile Include="Execution\ProgramExecutor.cs" />
-    <Compile Include="IO\ProgramReader.cs" />
-    <Compile Include="IO\ProgramWriter.cs" />
     <Compile Include="Module\EffectEditor\IEffectEditorModuleDescriptor.cs" />
     <Compile Include="Module\EffectEditor\IEffectEditorModuleInstance.cs" />
     <Compile Include="Module\CommandStandardExtension\ICommandStandardExtensionModuleDescriptor.cs" />
@@ -403,16 +411,9 @@
     <Compile Include="Module\Output\IOutputModuleDescriptor.cs" />
     <Compile Include="Module\Output\IOutputModuleInstance.cs" />
     <Compile Include="Module\ModuleDataSet.cs" />
-    <Compile Include="IO\ModulePackageDirectory.cs" />
-    <Compile Include="IO\ModulePackageDirectoryEntry.cs" />
-    <Compile Include="IO\ModulePackageFile.cs" />
-    <Compile Include="IO\ModulePackageReader.cs" />
-    <Compile Include="IO\ModulePackageWriter.cs" />
     <Compile Include="Sys\Modules.cs" />
     <Compile Include="Sys\Patch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="IO\SequenceReader.cs" />
-    <Compile Include="IO\SequenceWriter.cs" />
     <Compile Include="Sys\VixenSystem.cs" />
     <Compile Include="Sys\Standard.cs" />
     <Compile Include="Sys\WarningLog.cs" />
@@ -442,9 +443,6 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="IO\What goes in IO.txt" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

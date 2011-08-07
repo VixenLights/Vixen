@@ -6,11 +6,6 @@ using System.Xml.Linq;
 using Vixen.Common;
 using Vixen.Module.Property;
 
-//Having this be THE concrete class
-//vs.
-//Having this be an abstract base for ChannelBranch and ChannelLeaf with an
-//external reader and writer that writes and checks for a channel id reference
-//when reading and uses that to determine whether to create a leaf or branch.
 namespace Vixen.Sys {
 	public class ChannelNode : GroupNode<OutputChannel> {
 		// Making this static so there doesn't have to be potentially thousands of
@@ -19,10 +14,10 @@ namespace Vixen.Sys {
 		static private Dictionary<Guid, ChannelNode> _instances = new Dictionary<Guid, ChannelNode>();
 
 		#region Constructors
-		private ChannelNode(Guid id, string name, OutputChannel channel, IEnumerable<ChannelNode> content)
+		public ChannelNode(Guid id, string name, OutputChannel channel, IEnumerable<ChannelNode> content)
 			: base(name, content) {
 			if (_instances.ContainsKey(id)) {
-				throw new InvalidOperationException("Trying to create a Channel Node that already exists!");
+				throw new InvalidOperationException("Trying to create a ChannelNode that already exists.");
 			} else {
 				_instances[id] = this;
 			}
@@ -202,81 +197,6 @@ namespace Vixen.Sys {
 			} else {
 				return null;
 			}
-		}
-
-		static public XElement WriteXml(ChannelNode node) {
-			return _WriteXml(node, true);
-		}
-
-		static public XElement WriteXmlTemplate(ChannelNode node) {
-			return _WriteXml(node, false);
-		}
-
-		static private XElement _WriteXml(ChannelNode node, bool includeChannelReferences = true) {
-			object channelElements = null;
-			if(node.IsLeaf) {
-				// Leaf - reference the single channel by id
-				if (includeChannelReferences && node.Channel != null)
-					channelElements = new XAttribute("channelId", node.Channel.Id.ToString());
-			} else {
-				// Branch - include the child nodes inline
-				channelElements = node.Children.Select(x => _WriteXml(x, includeChannelReferences));
-			}
-			return new XElement("Node",
-				new XAttribute("name", node.Name),
-				new XAttribute("id", node.Id),
-				new XElement("Properties", node.Properties.Select(x => new XElement("Property", x.Descriptor.TypeId))),
-				new XElement("PropertyData", node.Properties.PropertyData.ToXElement()),
-				channelElements);
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="element"></param>
-		/// <returns>May return null if the node references a non-existent channel.</returns>
-		static public ChannelNode ReadXml(XElement element) {
-			string name = element.Attribute("name").Value;
-			Guid id = Guid.Parse(element.Attribute("id").Value);
-
-			// check if we have already loaded the node with this GUID (ie. if it's a node that's referenced twice,
-			// in different groups). If we have, return that node instead, and don't go any deeper into child nodes.
-			// (we'll just assume that the XML data for this one is identical to the earlier XML node that was written
-			// out. To be a bit more proper, we should probably change the WriteXML() to not fully write out repeat
-			// ChannelNodes, and instead do some sort of soft reference to the first one (ie. GUID only). )
-			ChannelNode existingNode = ChannelNode.GetChannelNode(id);
-			if (existingNode != null) {
-				return existingNode;
-			}
-
-			// Children or channel reference
-			ChannelNode node = null;
-			if(element.Attribute("channelId") == null) {
-				// Branch
-				node = new ChannelNode(id, name, null, element.Elements("Node").Select(x => ReadXml(x)));
-			} else {
-				// Leaf
-				Guid channelId = Guid.Parse(element.Attribute("channelId").Value);
-				OutputChannel channel = Vixen.Sys.Execution.Channels.FirstOrDefault(x => x.Id == channelId);
-				if(channel != null) {
-					node = new ChannelNode(id, name, channel, null);
-				}
-			}
-
-			if(node != null) {
-				// Property data
-				// It's not necessary to load the data before the properties, but it will
-				// save it from creating data for each module and then dumping it.
-				string moduleDataString = element.Element("PropertyData").InnerXml();
-				node.Properties.PropertyData.Deserialize(moduleDataString);
-
-				// Properties
-				foreach(XElement propertyElement in element.Element("Properties").Elements("Property")) {
-					node.Properties.Add(new Guid(propertyElement.Value));
-				}
-			}
-
-			return node;
 		}
 		#endregion
 	}

@@ -31,16 +31,16 @@ namespace Vixen.Sys {
 		static private volatile ExecutionState _state = ExecutionState.Stopped;
 
 		static Execution() {
-			// Create the node manager.
-			Nodes = new NodeManager();
-			// Load channels.
-			foreach(OutputChannel channel in VixenSystem.UserData.LoadChannels()) {
+			// Get channels.
+			foreach(OutputChannel channel in VixenSystem.UserData.Channels) {
 				_AddChannel(channel);
 			}
-			// Load branch nodes.
-			IEnumerable<ChannelNode> branchNodes = VixenSystem.UserData.LoadBranchNodes();
+	
+			// Create the node manager.
+			Nodes = new NodeManager();
+
 			// Get the branch nodes into the node manager.
-			foreach(ChannelNode branchNode in branchNodes) {
+			foreach(ChannelNode branchNode in VixenSystem.UserData.Nodes) {
 				Nodes.AddNode(branchNode);
 			}
 		}
@@ -89,7 +89,9 @@ namespace Vixen.Sys {
 		static private void _CreateChannelEnumerators(IEnumerable<OutputChannel> channels) {
 			lock(_channels) {
 				foreach(OutputChannel channel in channels) {
-					_channels[channel] = new SystemChannelEnumerator(channel, _systemTime);
+					if(!_channels.ContainsKey(channel) || _channels[channel] == null) {
+						_channels[channel] = new SystemChannelEnumerator(channel, _systemTime);
+					}
 				}
 			}
 		}
@@ -208,8 +210,8 @@ namespace Vixen.Sys {
 			return context;
 		}
 
-		static public ProgramContext CreateContext(ISequence sequence) {
-			Program program = new Program(sequence.Name);
+		static public ProgramContext CreateContext(ISequence sequence, string contextName = null) {
+			Program program = new Program(contextName ?? sequence.Name);
 			program.Add(sequence);
 			return CreateContext(program);
 		}
@@ -251,11 +253,7 @@ namespace Vixen.Sys {
 			} else {
 				// Context does not exist.
 				// The context must be created and managed since the user is not doing it.
-				context = CreateContext(sequence);
-				// If they explicitly specified a context name, override the existing name.
-				if(!string.IsNullOrWhiteSpace(contextName)) {
-					context.Program.Name = contextName;
-				}
+				context = CreateContext(sequence, contextName);
 				// When the program ends, release the context.
 				context.ProgramEnded += (sender, e) => {
 					ReleaseContext(context);

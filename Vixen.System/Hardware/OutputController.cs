@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Diagnostics;
 using Vixen.Common;
 using Vixen.Sys;
 using Vixen.Module;
@@ -11,32 +14,23 @@ using Vixen.Module.Transform;
 using Vixen.Module.Output;
 using Vixen.Module.FileTemplate;
 using Vixen.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Diagnostics;
+using Vixen.IO.Xml;
 
 namespace Vixen.Hardware {
 	public class OutputController : IEqualityComparer<ITransformModuleInstance>, IEnumerable<OutputController> {
 		private Guid _outputModuleId;
 		private IOutputModuleInstance _outputModule = null;
 		private List<Output> _outputs = new List<Output>();
-		private Guid _linkedTo = Guid.Empty;
 
 		// Controller id : Controller
 		static private Dictionary<Guid, OutputController> _instances = new Dictionary<Guid, OutputController>();
 
-		private enum ExecutionState { Stopped, Starting, Started, Stopping};
+		private enum ExecutionState { Stopped, Starting, Started, Stopping };
 		static private ExecutionState _stateAll = ExecutionState.Stopped;
 		static private Dictionary<Guid, HardwareUpdateThread> _updateThreads = new Dictionary<Guid, HardwareUpdateThread>();
 
 		private const string FILE_EXT = ".out";
 		private const string DIRECTORY_NAME = "Controller";
-		private const string ELEMENT_ROOT = "Controller";
-		private const string ATTR_ID = "id";
-		private const string ATTR_COMB_STRATEGY = "strategy";
-		private const string ATTR_LINKED_TO = "linkedTo";
-		private const string ATTR_OUTPUT_COUNT = "outputCount";
-		private const string ATTR_HARDWARE_ID = "hardwareId";
 
 		static public void ReloadAll() {
 			// Stop the controllers.
@@ -69,27 +63,26 @@ namespace Vixen.Hardware {
 			_StartInstance(controller);
 		}
 
-		private OutputController() { }
-
-		/// <summary>
-		/// Creates a new instance.
-		/// </summary>
-		/// <param name="name"></param>
 		public OutputController(string name, int outputCount, Guid outputModuleId)
 			: this(name, outputCount, outputModuleId, CommandStandard.Standard.CombinationOperation.HighestWins) {
 		}
 
-		public OutputController(string name, int outputCount, Guid outputModuleId, CommandStandard.Standard.CombinationOperation combinationStrategy) {
-			Id = Guid.NewGuid();
+		public OutputController(string name, int outputCount, Guid outputModuleId, CommandStandard.Standard.CombinationOperation combinationStrategy)
+			: this(Guid.NewGuid(), Guid.NewGuid(), name, outputCount, outputModuleId, combinationStrategy) {
+		}
+
+		public OutputController(Guid id, Guid instanceId, string name, int outputCount, Guid outputModuleId, CommandStandard.Standard.CombinationOperation combinationStrategy = CommandStandard.Standard.CombinationOperation.HighestWins) {
+			Id = id;
+			InstanceId = instanceId;
 			name = _Uniquify(name);
-			FilePath = Path.Combine(Directory, name + FILE_EXT);
+			FilePath = Path.Combine(Directory, Path.ChangeExtension(name, FILE_EXT));
 			OutputModuleId = outputModuleId;
 			OutputCount = outputCount;
 			CombinationStrategy = combinationStrategy;
 
-			// Affect the instance with the controller template last.
-			FileTemplateModuleManagement manager = Modules.GetModuleManager<IFileTemplateModuleInstance, FileTemplateModuleManagement>();
-			manager.ProjectTemplateInto(FILE_EXT, this);
+			//// Affect the instance with the controller template last.
+			//FileTemplateModuleManagement manager = Modules.GetModuleManager<IFileTemplateModuleInstance, FileTemplateModuleManagement>();
+			//manager.ProjectTemplateInto(FILE_EXT, this);
 		}
 
 		public void Save() {
@@ -99,7 +92,7 @@ namespace Vixen.Hardware {
 		public void Save(string filePath) {
 			if(string.IsNullOrWhiteSpace(filePath)) throw new InvalidOperationException("A name is required.");
 			filePath = Path.Combine(Directory, Path.GetFileName(filePath));
-			OutputControllerWriter writer = new OutputControllerWriter();
+			IWriter writer = new XmlControllerWriter();
 			writer.Write(filePath, this);
 			this.FilePath = filePath;
 		}
@@ -201,7 +194,7 @@ namespace Vixen.Hardware {
 			if(_outputModule != null) {
 				controller._outputModule = Modules.ModuleManagement.GetOutput(_outputModule.Descriptor.TypeId);
 			}
-			
+
 			controller.InstanceId = Guid.NewGuid();
 
 			return controller;
@@ -274,12 +267,10 @@ namespace Vixen.Hardware {
 			return false;
 		}
 
-		public Guid LinkedTo {
-			get { return _linkedTo; }
-		}
+		public Guid LinkedTo { get; set; }
 
 		public bool IsRootController {
-			get { return Prior == null && _linkedTo == Guid.Empty; }
+			get { return Prior == null && LinkedTo == Guid.Empty; }
 		}
 
 		private IOutputModuleInstance _ControllerChainOutputModule {
@@ -294,15 +285,25 @@ namespace Vixen.Hardware {
 
 		virtual protected void CommitState() {
 			if(Prior != null) {
-				_linkedTo = Prior.Id;
+				LinkedTo = Prior.Id;
 			} else {
-				_linkedTo = Guid.Empty;
+				LinkedTo = Guid.Empty;
 			}
 		}
 
 		static protected void _AddInstance(OutputController controller) {
 			// Reference the instance.
 			_instances[controller.Id] = controller;
+
+			//Clean this up.
+			// Fix up any unresolved references.
+			List<Tuple<IOutputStateSource, ControllerReference>> references;
+			if(_unresolvedReferences.TryGetValue(controller.Id, out references)) {
+				foreach(Tuple<IOutputStateSource, ControllerReference> reference in references) {
+					AddSource(reference.Item1, reference.Item2);
+				}
+				_unresolvedReferences.Remove(controller.Id);
+			}
 
 			// Make sure the instance is running/not running like all the others.
 			if(_stateAll == ExecutionState.Started) {
@@ -321,10 +322,10 @@ namespace Vixen.Hardware {
 				// Stop the controller.
 				_StopInstance(controller);
 				// Remove it from any patching.
-				foreach (ChannelNode node in Vixen.Sys.Execution.Nodes) {
-					if (node.Channel != null) {
-						foreach (ControllerReference cr in node.Channel.Patch.ToArray()) {
-							if (cr.ControllerId == controller.Id) {
+				foreach(ChannelNode node in Vixen.Sys.Execution.Nodes) {
+					if(node.Channel != null) {
+						foreach(ControllerReference cr in node.Channel.Patch.ToArray()) {
+							if(cr.ControllerId == controller.Id) {
 								node.Channel.Patch.Remove(cr);
 							}
 						}
@@ -344,13 +345,12 @@ namespace Vixen.Hardware {
 		static public void StartAll() {
 			if(_stateAll == ExecutionState.Stopped) {
 				_stateAll = ExecutionState.Starting;
-				
+
 				// Start the hardware.
-				foreach(OutputController controller in _instances.Values) {
-					// Start the hardware.
-					_StartInstance(controller);
-				}
-				
+				// Running in parallel to prevent a bad actor from screwing up the other
+				// controllers' ability to start.
+				Parallel.ForEach(_instances.Values, _StartInstance);
+
 				_stateAll = ExecutionState.Started;
 			}
 		}
@@ -360,19 +360,24 @@ namespace Vixen.Hardware {
 				_stateAll = ExecutionState.Stopping;
 
 				// Stop the hardware.
-				foreach(OutputController controller in _instances.Values) {
-					_StopInstance(controller);
-				}
+				// Running in parallel to prevent a bad actor from screwing up the other
+				// controllers' ability to stop.
+				Parallel.ForEach(_instances.Values, _StopInstance);
 
-				_stateAll = ExecutionState.Stopping;
+				_stateAll = ExecutionState.Stopped;
 			}
 		}
 
 		static private void _StartInstance(OutputController controller) {
 			if(!controller.IsRunning) {
 				// Fixup link to another controller.
-				controller.LinkTo(_instances.Values.FirstOrDefault(x => x.Id == controller._linkedTo));
-			
+				OutputController parentController = _instances.Values.FirstOrDefault(x => x.Id == controller.LinkedTo);
+				if(parentController == null || controller.CanLinkTo(parentController)) {
+					controller.LinkTo(parentController);
+				} else {
+					VixenSystem.Logging.Error("Controller " + controller.Name + " is linked to controller " + parentController.Name + ", but it's an invalid link.");
+				}
+
 				if(controller._outputModule != null) {
 					// Get the module data for the controller's output module.
 					VixenSystem.ModuleData.GetModuleTypeData(controller._outputModule);
@@ -403,12 +408,20 @@ namespace Vixen.Hardware {
 			}
 		}
 
-		static public bool AddSource(IOutputStateSource source, ControllerReference controllerReference) {
+		//Clean this up.
+		// Controller id : List of (source, reference)
+		static private Dictionary<Guid, List<Tuple<IOutputStateSource,ControllerReference>>> _unresolvedReferences = new Dictionary<Guid,List<Tuple<IOutputStateSource,ControllerReference>>>();
+		static public void AddSource(IOutputStateSource source, ControllerReference controllerReference) {
 			OutputController controller;
 			if(_instances.TryGetValue(controllerReference.ControllerId, out controller)) {
-				return controller.AddSource(source, controllerReference.OutputIndex);
+				controller.AddSource(source, controllerReference.OutputIndex);
+			} else {
+				List<Tuple<IOutputStateSource, ControllerReference>> references;
+				if(!_unresolvedReferences.TryGetValue(controllerReference.ControllerId, out references)) {
+					_unresolvedReferences[controllerReference.ControllerId] = references = new List<Tuple<IOutputStateSource, ControllerReference>>();
+				}
+				references.Add(new Tuple<IOutputStateSource,ControllerReference>(source, controllerReference));
 			}
-			return false;
 		}
 
 		static public void RemoveSource(IOutputStateSource source, ControllerReference controllerReference) {
@@ -465,14 +478,14 @@ namespace Vixen.Hardware {
 
 		// Must be properties for data binding.
 		public Guid Id { get; set; }
-		
-        public void Rename(string newName) {
-            newName = _Uniquify(newName);
-            string newPath = Path.Combine(Directory, newName + FILE_EXT);
-            Save();
-            File.Move(FilePath, newPath);
-            FilePath = newPath;
-        }
+
+		public void Rename(string newName) {
+			newName = _Uniquify(newName);
+			string newPath = Path.Combine(Directory, newName + FILE_EXT);
+			Save();
+			File.Move(FilePath, newPath);
+			FilePath = newPath;
+		}
 
 		public string Name {
 			get { return Path.GetFileNameWithoutExtension(FilePath); }
@@ -480,14 +493,14 @@ namespace Vixen.Hardware {
 		}
 
 		private string _Uniquify(string name) {
-			if (_instances.Values.Any(x => x.Name == name)) {
+			if(_instances.Values.Any(x => x.Name == name)) {
 				string originalName = name;
 				bool unique;
 				int counter = 2;
 				do {
 					name = originalName + "-" + counter++;
 					unique = !_instances.Values.Any(x => x.Name == name);
-				} while (!unique);
+				} while(!unique);
 			}
 			return name;
 		}
@@ -495,9 +508,9 @@ namespace Vixen.Hardware {
 		public Guid InstanceId { get; private set; }
 
 		public OutputController Prior { get; private set; }
-		
+
 		public OutputController Next { get; private set; }
-		
+
 		public bool IsRunning {
 			get { return (_outputModule != null) ? _outputModule.IsRunning : false; }
 		}
@@ -507,10 +520,8 @@ namespace Vixen.Hardware {
 		}
 
 		static public OutputController Load(string filePath) {
-			OutputControllerReader reader = new OutputControllerReader();
+			IReader reader = new XmlControllerReader();
 			OutputController controller = reader.Read(filePath) as OutputController;
-			controller.FilePath = filePath;
-
 			return controller;
 		}
 
@@ -525,60 +536,6 @@ namespace Vixen.Hardware {
 
 		public override string ToString() {
 			return Name;
-		}
-
-		static public XElement WriteXml(OutputController controller) {
-			controller.Commit();
-			return new XElement(ELEMENT_ROOT,
-				new XAttribute(ATTR_HARDWARE_ID, controller.OutputModuleId),
-				new XAttribute(ATTR_OUTPUT_COUNT, controller.OutputCount),
-				new XAttribute(ATTR_ID, controller.Id),
-				new XAttribute(ATTR_COMB_STRATEGY, controller.CombinationStrategy),
-				new XAttribute(ATTR_LINKED_TO, controller._linkedTo),
-				new XElement("Outputs",
-					controller._outputs.Select(x =>
-						new XElement("Output",
-							new XAttribute("name", x.Name),
-							x.TransformModuleData.ToXElement(), // First element within Output
-							new XElement("Transforms",
-								x.DataTransforms.Select(y =>
-									new XElement("Transform",
-										new XAttribute("typeId", y.Descriptor.TypeId),
-										new XAttribute("instanceId", y.InstanceId))))))));
-		}
-
-		static public OutputController ReadXml(XElement element) {
-			OutputController controller = new OutputController();
-			controller.OutputModuleId = new Guid(element.Attribute(ATTR_HARDWARE_ID).Value);
-			controller.OutputCount = int.Parse(element.Attribute(ATTR_OUTPUT_COUNT).Value);
-			controller.Id = Guid.Parse(element.Attribute(ATTR_ID).Value);
-			controller.InstanceId = Guid.NewGuid();
-			controller.CombinationStrategy = (CommandStandard.Standard.CombinationOperation)Enum.Parse(typeof(CommandStandard.Standard.CombinationOperation), element.Attribute(ATTR_COMB_STRATEGY).Value);
-			controller._linkedTo = Guid.Parse(element.Attribute(ATTR_LINKED_TO).Value);
-
-			int outputIndex = 0;
-			foreach(XElement outputElement in element.Element("Outputs").Elements("Output")) {
-				// Data persisted in the controller instance may exceed the
-				// output count.
-				if(outputIndex >= controller.OutputCount) break;
-				
-				// The outputs were created when the output count was set.
-				Output output = controller._outputs[outputIndex++];
-
-				output.Name = outputElement.Attribute("name").Value;
-
-				// Deserialize the output's transform dataset.
-				output.TransformModuleData.Deserialize(outputElement.FirstNode.ToString());
-
-				// Create transform instances for the outputs.
-				foreach(XElement transformElement in outputElement.Element("Transforms").Elements("Transform")) {
-					Guid moduleTypeId = Guid.Parse(transformElement.Attribute("typeId").Value);
-					Guid moduleInstanceId = Guid.Parse(transformElement.Attribute("instanceId").Value);
-					output.AddTransform(moduleTypeId, moduleInstanceId);
-				}
-			}
-
-			return controller;
 		}
 
 		#region IEqualityComparer<ITransformModuleInstance>
@@ -705,7 +662,7 @@ namespace Vixen.Hardware {
 					long endTime = 0;
 					CommandStandard.CommandIdentifier commandIdentifier = null;
 					object[] parameters = new object[0];
-					
+
 					if(_sources.Count == 1) {
 						CommandData seed = _sources.First.Value.SourceState;
 						startTime = seed.StartTime;
@@ -781,7 +738,7 @@ namespace Vixen.Hardware {
 			private OutputController _controller;
 			private ExecutionState _threadState = ExecutionState.Stopped;
 			private EventWaitHandle _finished;
-			
+
 			private const int STOP_TIMEOUT = 4000;   // Four seconds should be plenty of time for a thread to stop.
 
 			public HardwareUpdateThread(OutputController controller) {
@@ -826,7 +783,7 @@ namespace Vixen.Hardware {
 					_controller.Update();
 
 					timeLeft = frameEnd - currentTime.ElapsedMilliseconds;
-					
+
 					if(timeLeft > 1) {
 						Thread.Sleep((int)timeLeft);
 					}
