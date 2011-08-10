@@ -2,6 +2,8 @@
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
+using System.Text;
 
 
 namespace Timeline
@@ -14,8 +16,9 @@ namespace Timeline
 
             this.DoubleBuffered = true;
 
+            // These must be initialized in this order, otherwise divide by zero occurrs.
+            VisibleTimeSpan = TimeSpan.FromSeconds(10.0);
             MaximumTime = TimeSpan.FromMinutes(1.0);
-            VisibleTime = TimeSpan.FromSeconds(10.0);
 
             m_rows.RowAdded += new EventHandler<RowAddedOrRemovedEventArgs>(m_rows_RowAdded);
             m_rows.RowRemoved += new EventHandler<RowAddedOrRemovedEventArgs>(m_rows_RowRemoved);
@@ -26,10 +29,10 @@ namespace Timeline
             this.HorizontalScroll.Enabled = true;
             this.HorizontalScroll.Visible = true;
             this.HorizontalScroll.Minimum = 0;
-            this.HorizontalScroll.Maximum = 10000;
 
             this.VerticalScroll.Enabled = false;
             this.VerticalScroll.Visible = true;
+
 
             this.AutoScroll = false;
         }
@@ -53,30 +56,37 @@ namespace Timeline
         /// <summary>
         /// The maximum amount of time represented by this TimelineControl.
         /// </summary>
-        public TimeSpan MaximumTime { get; set; }
+        public TimeSpan MaximumTime
+        {
+            get { return pixelsToTime(HorizontalScroll.Maximum); }
+            set { HorizontalScroll.Maximum = timeToPixels(value); }
+        }
 
         /// <summary>
         /// The amount of time currently visible. Adjusting this implements zoom along the X (time) axis.
         /// </summary>
-        public TimeSpan VisibleTime { get; set; }
+        public TimeSpan VisibleTimeSpan { get; set; }
 
-        protected TimelineRowCollection m_rows = new TimelineRowCollection();
-        public TimelineRowCollection Rows { get { return m_rows; } }
-
+        /// <summary>
+        /// The time at the left of the control (the visible beginning).
+        /// </summary>
+        public TimeSpan VisibleTimeStart
+        {
+            get { return pixelsToTime(HorizontalScroll.Value); }
+            set { HorizontalScroll.Value = timeToPixels(value); }
+        }
 
         /// <summary>
         /// Gets the amount of time represented by one horizontal pixel.
         /// </summary>
         protected TimeSpan TimePerPixel
         {
-            get
-            {
-                return TimeSpan.FromTicks(VisibleTime.Ticks / Width);
-            }
+            get { return TimeSpan.FromTicks(VisibleTimeSpan.Ticks / Width); }
         }
 
         
-
+        protected TimelineRowCollection m_rows = new TimelineRowCollection();
+        public TimelineRowCollection Rows { get { return m_rows; } }
 
         private TimelineElementCollection m_selectedElements = new TimelineElementCollection();
         public TimelineElementCollection SelectedElements { get { return m_selectedElements; } }
@@ -278,14 +288,9 @@ namespace Timeline
 
         #region Drawing
 
-
-        protected override void OnPaint(PaintEventArgs e)
+        private void _drawRows(Graphics g)
         {
-            try
-            {
-                base.OnPaint(e);
-
-                // Draw row separators
+            // Draw row separators
                 int curY = 0;
                 Pen p = new Pen(RowSeparatorColor);
                 foreach (var row in Rows)
@@ -293,22 +298,73 @@ namespace Timeline
                     curY += row.Height;
                     Point left = new Point(0, curY);
                     Point right = new Point(this.Width, curY);
-                    e.Graphics.DrawLine(p, left, right);
+                    g.DrawLine(p, left, right);
                 }
+        }
 
-                // Draw each
-                foreach (var row in Rows)
+        private void _drawGridlines(Graphics g)
+        {
+            // Draw vertical gridlines
+            int interval = timeToPixels(GridlineInterval);
+
+            // calculate first tick - (it is the first multiple of interval greater than start)
+            // believe it or not, this math is correct :-)
+            int start = HorizontalScroll.Value / interval * interval + interval;
+
+            for (int x = start; x < start + Width; x += interval)
+            {
+                Pen p = new Pen(Color.Black);
+                p.DashStyle = DashStyle.Dash;
+                g.DrawLine(p, x, 0, x, Height);
+            }
+
+        }
+
+        private void _drawElements(Graphics g)
+        {
+            // Draw each row
+            int top = 0;    // y-coord of top of current row
+            foreach (var row in Rows)
+            {
+                // Draw each element
+                foreach (var element in row.Elements)
                 {
-                    foreach (var element in row.Elements)
-                    {
-                        DrawElementOptions options = DrawElementOptions.Normal;
+                    DrawElementOptions options = DrawElementOptions.Normal;
 
-                        if (SelectedElements.Contains(element))
-                            options |= DrawElementOptions.Selected;
+                    if (SelectedElements.Contains(element))
+                        options |= DrawElementOptions.Selected;
 
-                        DrawElement(e.Graphics, element, options);
-                    }
+                    Point location = new Point(timeToPixels(element.Offset), top);
+                    Size size = new Size(timeToPixels(element.Duration), row.Height);
+
+                    // Translate the graphics so the element can draw at (0,0)
+                    Matrix m = new Matrix();
+                    m.Translate(location.X, location.Y);
+                    g.Transform = m;
+
+                    // Calculate the rectangle this element is to be drawn in.
+                    Rectangle rect = new Rectangle(0, 0, size.Width, size.Height);
+
+                    // Prevent the element from drawing outside its bounds
+                    g.Clip = new System.Drawing.Region(rect);
+
+                    element.Draw(g, rect, options);
                 }
+
+                top += row.Height;  // next row starts just below this row
+            }
+        }
+
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            try
+            {
+                base.OnPaint(e);
+
+                _drawRows(e.Graphics);
+                _drawGridlines(e.Graphics);
+                _drawElements(e.Graphics);
             }
             catch (Exception ex)
             {
@@ -316,43 +372,6 @@ namespace Timeline
                 throw;
             }
         }
-
-
-        [Flags]
-        protected enum DrawElementOptions
-        {
-            Normal      = 0x0,
-            Selected    = 0x1,
-        }
-
-        protected void DrawElement(Graphics g, TimelineElement element)
-        {
-            DrawElement(g, element, DrawElementOptions.Normal);
-        }
-        protected void DrawElement(Graphics g, TimelineElement element, DrawElementOptions options)
-        {
-            // Calculate x-coord from time offset
-            int x = timeToPixels(element.Offset);
-
-            // Calculate y-coord from row number
-            int y = topOfRow(element.ParentRow);
-
-            // Calculate width from duration
-            int w = timeToPixels(element.Duration);
-
-            // Calculate height from row
-            int h = element.ParentRow.Height;
-
-            // Fill body
-            Brush b = new SolidBrush(element.BackColor);
-            g.FillRectangle(b, x, y, w, h);
-
-            // Draw border
-            Pen border = new Pen(Color.Black);
-            border.Width = (options.HasFlag(DrawElementOptions.Selected)) ? 3.0f : 1.0f;
-            g.DrawRectangle(border, x, y, w, h);
-        }
-
 
         #endregion
 
@@ -419,8 +438,10 @@ namespace Timeline
         public void SetDefaultOptions()
         {
             RowSeparatorColor = Color.Black;
+            GridlineInterval = TimeSpan.FromSeconds(1.0);
         }
         public Color RowSeparatorColor { get; set; }
+        public TimeSpan GridlineInterval { get; set; }
         #endregion
 
         public TimelineElementCollection ElementsAtTime(TimeSpan time)
@@ -444,5 +465,14 @@ namespace Timeline
     public class ElementMovedEventArgs : EventArgs
     {
         public TimelineElementCollection MovedElements { get; internal set; }
+    }
+
+
+
+    [Flags]
+    public enum DrawElementOptions
+    {
+        Normal = 0x0,
+        Selected = 0x1,
     }
 }

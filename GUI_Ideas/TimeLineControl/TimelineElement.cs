@@ -86,5 +86,30 @@ namespace Timeline
         }
 
         #endregion
+
+        internal void Draw(Graphics graphics, Rectangle rect, DrawElementOptions options)
+        {
+        // BODY
+            // Fill
+            Brush b = new SolidBrush(BackColor);
+            graphics.FillRectangle(b, rect);
+
+        // BORDER
+            // Width - bold if selected
+            int b_wd = (options.HasFlag(DrawElementOptions.Selected)) ? 3 : 1;
+            
+            // Adjust the rect such that the border is completely inside it.
+            Rectangle b_rect = new Rectangle(
+                rect.Left + (b_wd / 2),
+                rect.Top + (b_wd / 2),
+                rect.Width - b_wd,
+                rect.Height - b_wd
+                );
+
+            // Draw it!
+            Pen border = new Pen(Color.Black);
+            border.Width = b_wd;
+            graphics.DrawRectangle(border, b_rect);
+        }
     }
 }
