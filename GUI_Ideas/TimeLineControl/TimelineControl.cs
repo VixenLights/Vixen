@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
 using System.Text;
+using System.Diagnostics;
 
 
 namespace Timeline
@@ -12,17 +13,14 @@ namespace Timeline
     {
         public TimelineControl()
         {
-            SetDefaultOptions();
+            
 
             this.DoubleBuffered = true;
-
-            // These must be initialized in this order, otherwise divide by zero occurrs.
-            VisibleTimeSpan = TimeSpan.FromSeconds(10.0);
-            MaximumTime = TimeSpan.FromMinutes(1.0);
 
             m_rows.RowAdded += new EventHandler<RowAddedOrRemovedEventArgs>(m_rows_RowAdded);
             m_rows.RowRemoved += new EventHandler<RowAddedOrRemovedEventArgs>(m_rows_RowRemoved);
 
+            /*
             // How the hell do I get this scrolling to not return to zero?
             this.Scroll += new ScrollEventHandler(TimelineControl_Scroll);
 
@@ -33,33 +31,52 @@ namespace Timeline
             this.VerticalScroll.Enabled = false;
             this.VerticalScroll.Visible = true;
 
-
             this.AutoScroll = false;
+             */
+
+            this.AutoScroll = true;
+            this.SetStyle(ControlStyles.ResizeRedraw, true);
         }
 
-        void TimelineControl_Scroll(object sender, ScrollEventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("this.Scroll: {0}", e.NewValue);
+            base.OnLoad(e);
+
+            SetDefaultOptions();
+
+            // These must be initialized in this order, otherwise divide by zero occurrs.
+            VisibleTimeSpan = TimeSpan.FromSeconds(10.0);
+            MaximumTime = TimeSpan.FromSeconds(60.0);
         }
+
+
+        protected override void OnScroll(ScrollEventArgs se)
+        {
+            base.OnScroll(se);
+            this.Invalidate();
+        }
+
+
+        //void TimelineControl_Scroll(object sender, ScrollEventArgs e)
+        //{
+        //    System.Diagnostics.Debug.WriteLine("this.Scroll: {0}", e.NewValue);
+        //}
 
         
-        void m_rows_RowAdded(object sender, RowAddedOrRemovedEventArgs e)
-        {
-            e.Row.ParentControl = this;
-        }
 
-        void m_rows_RowRemoved(object sender, RowAddedOrRemovedEventArgs e)
-        {
-            e.Row.ParentControl = null;
-        }
         
         /// <summary>
         /// The maximum amount of time represented by this TimelineControl.
         /// </summary>
         public TimeSpan MaximumTime
         {
+            /*
             get { return pixelsToTime(HorizontalScroll.Maximum); }
             set { HorizontalScroll.Maximum = timeToPixels(value); }
+             */
+
+            get { return pixelsToTime(this.AutoScrollMinSize.Width); }
+            set { AutoScrollMinSize = new Size(timeToPixels(value), AutoScrollMinSize.Height); }
         }
 
         /// <summary>
@@ -72,8 +89,12 @@ namespace Timeline
         /// </summary>
         public TimeSpan VisibleTimeStart
         {
+            /*
             get { return pixelsToTime(HorizontalScroll.Value); }
             set { HorizontalScroll.Value = timeToPixels(value); }
+             */
+            get { return pixelsToTime(AutoScrollOffset.X); }
+            set { AutoScrollOffset = new Point(timeToPixels(value), AutoScrollOffset.Y); }
         }
 
         /// <summary>
@@ -85,11 +106,36 @@ namespace Timeline
         }
 
         
-        protected TimelineRowCollection m_rows = new TimelineRowCollection();
-        public TimelineRowCollection Rows { get { return m_rows; } }
+        
 
         private TimelineElementCollection m_selectedElements = new TimelineElementCollection();
         public TimelineElementCollection SelectedElements { get { return m_selectedElements; } }
+
+        protected TimelineRowCollection m_rows = new TimelineRowCollection();
+        public TimelineRowCollection Rows { get { return m_rows; } }
+
+        void m_rows_RowAdded(object sender, RowAddedOrRemovedEventArgs e)
+        {
+            e.Row.ParentControl = this;
+        }
+
+        void m_rows_RowRemoved(object sender, RowAddedOrRemovedEventArgs e)
+        {
+            e.Row.ParentControl = null;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         protected override void OnKeyPress(KeyPressEventArgs e)
@@ -151,8 +197,20 @@ namespace Timeline
             this.Cursor = Cursors.Default;
         }
 
+        private void _translateMouseArgs(ref MouseEventArgs e)
+        {
+            // Translate this location based on the auto scroll position.
+            Point p = e.Location;
+            p.Offset(-AutoScrollPosition.X, -AutoScrollPosition.Y);
+
+            // Just "fix" it :-)
+            e = new MouseEventArgs(e.Button, e.Clicks, p.X, p.Y, e.Delta);
+        }
+
         protected override void OnMouseDown(MouseEventArgs e)
         {
+            _translateMouseArgs(ref e);
+
             m_mouseDownElement = elementAt(e.Location);
 
             switch (e.Button)
@@ -177,6 +235,8 @@ namespace Timeline
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
+            _translateMouseArgs(ref e);
+
             switch (e.Button)
             {
                 case MouseButtons.Left:
@@ -199,6 +259,8 @@ namespace Timeline
 
         private void OnLeftMouseDown(MouseEventArgs e)
         {
+            // e is already translated.
+
             if (m_mouseDownElement == null)   // we clicked nothing - clear selection
             {
                 SelectedElements.Clear();
@@ -228,6 +290,8 @@ namespace Timeline
 
         private void OnLeftMouseUp(MouseEventArgs e)
         {
+            // e is already translated
+
             if (m_dragState == DragState.Dragging)
             {
                 if (ElementsMoved != null)
@@ -258,6 +322,8 @@ namespace Timeline
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
+            _translateMouseArgs(ref e);
+
             if (m_dragState == DragState.Normal)
                 return;
 
@@ -322,6 +388,8 @@ namespace Timeline
 
         private void _drawElements(Graphics g)
         {
+            GraphicsState state = g.Save();
+
             // Draw each row
             int top = 0;    // y-coord of top of current row
             foreach (var row in Rows)
@@ -338,9 +406,10 @@ namespace Timeline
                     Size size = new Size(timeToPixels(element.Duration), row.Height);
 
                     // Translate the graphics so the element can draw at (0,0)
-                    Matrix m = new Matrix();
-                    m.Translate(location.X, location.Y);
-                    g.Transform = m;
+                    //Matrix m = new Matrix();
+                    //m.Translate(location.X, location.Y);
+                    //g.Transform = m;
+                    g.TranslateTransform(location.X, location.Y);
 
                     // Calculate the rectangle this element is to be drawn in.
                     Rectangle rect = new Rectangle(0, 0, size.Width, size.Height);
@@ -349,6 +418,8 @@ namespace Timeline
                     g.Clip = new System.Drawing.Region(rect);
 
                     element.Draw(g, rect, options);
+
+                    g.Restore(state);
                 }
 
                 top += row.Height;  // next row starts just below this row
@@ -360,11 +431,14 @@ namespace Timeline
         {
             try
             {
-                base.OnPaint(e);
+                _drawRows(e.Graphics);      // We can draw this pre-translation.
 
-                _drawRows(e.Graphics);
+                e.Graphics.TranslateTransform(this.AutoScrollPosition.X, this.AutoScrollPosition.Y);
+
                 _drawGridlines(e.Graphics);
                 _drawElements(e.Graphics);
+
+                base.OnPaint(e);
             }
             catch (Exception ex)
             {
@@ -402,8 +476,15 @@ namespace Timeline
             throw new Exception("row not found");
         }
 
+
+        /// <summary>
+        /// Returns the element located at the current point in screen coordinates
+        /// </summary>
+        /// <param name="p">Screen coordinates</param>
+        /// <returns>Element at given point, or null if none exists.</returns>
         protected TimelineElement elementAt(Point p)
         {
+            // Translate 
             // First figure out which row we are in
             TimelineRow containingRow = null;
             int curheight = 0;
