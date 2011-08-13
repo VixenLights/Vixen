@@ -7,13 +7,6 @@ using Vixen.Script;
 
 namespace Vixen.Module.Script {
 	class ScriptModuleManagement : GenericModuleManagement<IScriptModuleInstance> {
-		//public IScriptModuleInstance Get(string language) {
-		//    // Need the type-specific repository reference, doing more than basic
-		//    // repository operations.
-		//    ScriptModuleRepository repository = Modules.GetModuleRepository<IScriptModuleInstance, ScriptModuleRepository>();
-		//    return repository.Get(language);
-		//}
-
 		// Go through the repository so that the repository is the authority on what's available.
 		public IScriptSkeletonGenerator GetSkeletonGenerator(string language) {
 			ScriptModuleRepository repository = _GetRepository();

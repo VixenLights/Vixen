@@ -107,9 +107,9 @@ namespace Vixen.Sys {
 			return Vixen.Sys.Sequence.GetAllFileNames();
 		}
 
-		static public ISequence CreateSequence(string fileExtension) {
+		static public ISequence CreateSequence(string sequenceFileType) {
 			SequenceModuleManagement manager = Modules.GetModuleManager<ISequenceModuleInstance, SequenceModuleManagement>();
-			return manager.Get(fileExtension) as ISequence;
+			return manager.Get(sequenceFileType) as ISequence;
 		}
 
 		static public OutputController[] GetControllers() {

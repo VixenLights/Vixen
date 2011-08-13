@@ -16,22 +16,15 @@ namespace Vixen.Sys {
 	/// Base class for script sequence type module implementations.
 	/// </summary>
 	[Executor(typeof(ScriptSequenceExecutor))]
+	[SequenceReader(typeof(XmlScriptSequenceReader))]
 	abstract public class ScriptSequence : Sequence {
 		private string _language;
 
 		private const string DIRECTORY_NAME = "Sequence";
 		private const string SOURCE_DIRECTORY_NAME = "ScriptSource";
-		private const string NEW_FILE_ROOT = "NewFile";
 
 		[DataPath]
 		static private readonly string _sourceDirectory = Path.Combine(Paths.DataRootPath, SOURCE_DIRECTORY_NAME);
-
-		new static public ScriptSequence Load(string filePath) {
-			// Load the sequence.
-			IReader reader = new XmlScriptSequenceReader();
-			ScriptSequence instance = (ScriptSequence)reader.Read(filePath);
-			return instance;
-		}
 
 		protected ScriptSequence(string language) {
 			Length = Forever;
@@ -58,46 +51,66 @@ namespace Vixen.Sys {
 		public string Language {
 			get { return _language; }
 			set {
-				// Create the first source file for them.
-				// It has the skeleton in which they will write code.
 				SourceFiles.Clear();
 				ScriptModuleManagement manager = Modules.GetModuleManager<IScriptModuleInstance, ScriptModuleManagement>();
-				IScriptSkeletonGenerator skeletonFileGenerator = manager.GetSkeletonGenerator(value);
-				if(skeletonFileGenerator == null) {
+				if(!manager.GetLanguages().Any(x => string.Equals(x, value, StringComparison.OrdinalIgnoreCase))) {
 					throw new Exception("There is no script type " + value);
 				}
 
 				_language = value;
-
-				string nameSpace = ScriptHostGenerator.UserScriptNamespace;
-				string className = ScriptHostGenerator.Mangle(Name);
-
-				SourceFile sourceFile = CreateNewFile(CreateNewFileName(manager.GetFileExtension(_language)));
-				sourceFile.Contents = skeletonFileGenerator.Generate(nameSpace, className);
 			}
 		}
+
+		public string ClassName { get; set; }
 
 		public HashSet<string> FrameworkAssemblies { get; set; }
 
 		public HashSet<string> ExternalAssemblies { get; set; }
 
+		private bool _FileExists(string fileName) {
+			fileName = Path.GetFileNameWithoutExtension(fileName);
+			return SourceFiles.Any(x => string.Equals(x.Name, fileName, StringComparison.OrdinalIgnoreCase));
+		}
+
 		public SourceFile CreateNewFile(string fileName) {
-			SourceFile sourceFile = new SourceFile(Path.GetFileName(fileName));
-			SourceFiles.Add(sourceFile);
+			if(string.IsNullOrWhiteSpace(FilePath)) throw new Exception("Sequence FilePath must be set.");
+			if(string.IsNullOrWhiteSpace(Language)) throw new Exception("Sequence Language must be set.");
+			if(_FileExists(fileName)) throw new InvalidOperationException("File already exists with that name.");
+
+			// Get the appropriate extension onto the file name.
+			ScriptModuleManagement manager = Modules.GetModuleManager<IScriptModuleInstance, ScriptModuleManagement>();
+			fileName = Path.ChangeExtension(fileName, manager.GetFileExtension(Language));
+
+			SourceFile sourceFile = null;
+
+			if(SourceFiles.Count == 0) {
+				sourceFile = _CreateSkeletonFile(fileName);
+			} else {
+				sourceFile = _CreateBlankFile(fileName);
+			}
+
 			return sourceFile;
 		}
 
-		protected string CreateNewFileName(string fileExtension) {
-			int count = 1;
-			string fileName;
+		private SourceFile _CreateSkeletonFile(string fileName) {
+			ScriptModuleManagement manager = Modules.GetModuleManager<IScriptModuleInstance, ScriptModuleManagement>();
+			IScriptSkeletonGenerator skeletonFileGenerator = manager.GetSkeletonGenerator(Language);
+			
+			// Setting the class name any time the skeleton file is generated so that when
+			// the framework is generated, it will be part of the same class.
+			string nameSpace = ScriptHostGenerator.UserScriptNamespace;
+			ClassName = ScriptHostGenerator.Mangle(Name);
 
-			fileName = NEW_FILE_ROOT + count;
-			while(SourceFiles.Any(x => x.Name == fileName)) {
-				count++;
-				fileName = NEW_FILE_ROOT + count;
-			}
+			SourceFile sourceFile = _CreateBlankFile(fileName);
+			sourceFile.Contents = skeletonFileGenerator.Generate(nameSpace, ClassName);
 
-			return fileName + fileExtension;
+			return sourceFile;
+		}
+
+		private SourceFile _CreateBlankFile(string fileName) {
+			SourceFile sourceFile = new SourceFile(Path.GetFileName(fileName));
+			SourceFiles.Add(sourceFile);
+			return sourceFile;
 		}
 
 		override protected IWriter _GetSequenceWriter() {

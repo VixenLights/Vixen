@@ -13,6 +13,7 @@ namespace Vixen.IO.Xml {
 			ScriptSequence scriptSequence = (ScriptSequence)sequence;
 			element = element.Element("Script");
 			_ReadLanguage(element, scriptSequence);
+			_ReadClassName(element, scriptSequence);
 			_ReadSourceFiles(element, scriptSequence);
 			_ReadFrameworkAssemblies(element, scriptSequence);
 			_ReadExternalAssemblies(element, scriptSequence);
@@ -20,6 +21,10 @@ namespace Vixen.IO.Xml {
 
 		private void _ReadLanguage(XElement element, ScriptSequence scriptSequence) {
 			scriptSequence.Language = element.Element("Language").Value;
+		}
+
+		private void _ReadClassName(XElement element, ScriptSequence scriptSequence) {
+			scriptSequence.ClassName = element.Element("ClassName").Value;
 		}
 
 		private void _ReadSourceFiles(XElement element, ScriptSequence scriptSequence) {

@@ -38,6 +38,8 @@ namespace Vixen.IO.Xml {
 			Sequence sequence = manager.Get(filePath) as Sequence;
 			if(sequence == null) throw new InvalidOperationException("No sequence type defined for file " + filePath);
 
+			sequence.FilePath = filePath;
+
 			Guid[] effectTable;
 			Guid[] targetIdTable;
 

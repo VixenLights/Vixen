@@ -20,6 +20,7 @@ namespace Vixen.Sys {
 	/// Base class for any sequence implementation.
 	/// </summary>
 	[Executor(typeof(SequenceExecutor))]
+	[SequenceReader(typeof(XmlSequenceReader))]
 	abstract public class Sequence : Vixen.Sys.ISequence {
 		private const string DIRECTORY_NAME = "Sequence";
 
@@ -36,8 +37,7 @@ namespace Vixen.Sys {
 		/// <param name="filePath"></param>
 		/// <returns></returns>
 		static public Sequence Load(string filePath) {
-			// Load the sequence.
-			IReader reader = new XmlSequenceReader();
+			IReader reader = new XmlAnySequenceReader();
 			Sequence instance = (Sequence)reader.Read(filePath);
 			return instance;
 		}
@@ -64,7 +64,6 @@ namespace Vixen.Sys {
 		protected Sequence() {
 			ModuleDataSet = new ModuleDataSet();
 			
-			//Name = "Unnamed sequence";
 			FilePath = "";
 
 			InsertDataListener = new InsertDataListenerStack();
@@ -102,7 +101,7 @@ namespace Vixen.Sys {
 			Save(FilePath);
 		}
 
-		public string Name {
+		virtual public string Name {
 			get { return Path.GetFileNameWithoutExtension(FilePath); }
 		}
 
@@ -110,7 +109,7 @@ namespace Vixen.Sys {
 
 		public long Length { get; set; }
 
-		public string FilePath { get; set; }
+		virtual public string FilePath { get; set; }
 
 		public InsertDataListenerStack InsertDataListener { get; set; }
 

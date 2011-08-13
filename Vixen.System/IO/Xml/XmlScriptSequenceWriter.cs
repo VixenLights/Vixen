@@ -15,6 +15,7 @@ namespace Vixen.IO.Xml {
 			ScriptSequence scriptSequence = (ScriptSequence)sequence;
 			return new XElement("Script",
 				_WriteLanguage(scriptSequence),
+				_WriteClassName(scriptSequence),
 				_WriteSourceFiles(scriptSequence),
 				_WriteFrameworkAssemblies(scriptSequence),
 				_WriteExternalAssemblies(scriptSequence));
@@ -22,6 +23,10 @@ namespace Vixen.IO.Xml {
 
 		private XElement _WriteLanguage(ScriptSequence sequence) {
 			return new XElement("Language", sequence.Language);
+		}
+
+		private XElement _WriteClassName(ScriptSequence sequence) {
+			return new XElement("ClassName", sequence.ClassName);
 		}
 
 		private XElement _WriteSourceFiles(ScriptSequence sequence) {

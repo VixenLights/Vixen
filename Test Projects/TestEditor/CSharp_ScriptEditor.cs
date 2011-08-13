@@ -29,14 +29,8 @@ namespace TestEditor {
 			get { return _sequence as ISequence; }
 			set {
 				if((_sequence = value as ScriptSequence) != null) {
-					foreach(SourceFile sourceFile in _sequence.SourceFiles) {
-						TabPage tabPage = new TabPage(sourceFile.Name);
-						SourceFileTabPage sourceControl = new SourceFileTabPage(sourceFile);
-						_sources.Add(sourceControl);
-						tabPage.Controls.Add(sourceControl);
-						sourceControl.Dock = DockStyle.Fill;
-						tabControl.TabPages.Add(tabPage);
-					}
+					// Display any source files.
+					_sequence.SourceFiles.ForEach(_AddFile);
 				}
 			}
 		}
@@ -47,7 +41,31 @@ namespace TestEditor {
 
 		public void NewSequence() {
 			this.Sequence = ApplicationServices.CreateSequence(".csp");
-			// The template for this file type turned on live behavior.
+			using(CommonElements.TextDialog textDialog = new CommonElements.TextDialog("Name for the new script sequence:")) {
+				if(textDialog.ShowDialog() == DialogResult.OK) {
+					if(!string.IsNullOrWhiteSpace(textDialog.Response)) {
+						_sequence.FilePath = textDialog.Response;
+						// Add the initial file.
+						SourceFile file = _sequence.CreateNewFile("NewFile");
+						_AddFile(file);
+					} else {
+						// They provided a bad name.
+						MessageBox.Show("Name is required.");
+					}
+				} else {
+					// They canceled.
+					this.Sequence = null;
+				}
+			}
+		}
+
+		private void _AddFile(SourceFile sourceFile) {
+			TabPage tabPage = new TabPage(sourceFile.Name);
+			SourceFileTabPage sourceControl = new SourceFileTabPage(sourceFile);
+			_sources.Add(sourceControl);
+			tabPage.Controls.Add(sourceControl);
+			sourceControl.Dock = DockStyle.Fill;
+			tabControl.TabPages.Add(tabPage);
 		}
 
 		public void Save(string filePath = null) {

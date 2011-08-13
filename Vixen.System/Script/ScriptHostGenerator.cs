@@ -27,7 +27,6 @@ namespace Vixen.Script {
 
 			Assembly assembly = null;
 			string nameSpace = UserScriptNamespace;
-			string className = Mangle(sequence.Name);
 
 			try {
 				// Emit the T4 template to be compiled into the assembly.
@@ -35,7 +34,7 @@ namespace Vixen.Script {
 				ScriptModuleManagement manager = Modules.GetModuleManager<IScriptModuleInstance, ScriptModuleManagement>();
 				IScriptFrameworkGenerator frameworkGenerator = manager.GetFrameworkGenerator(sequence.Language);
 
-				string fileContents = frameworkGenerator.Generate(nameSpace, className);
+				string fileContents = frameworkGenerator.Generate(nameSpace, sequence.ClassName);
 				File.WriteAllText(fileName, fileContents);
 				files.Add(fileName);
 
@@ -57,8 +56,7 @@ namespace Vixen.Script {
 
 			if(assembly != null) {
 				// Get the generated type.
-				//Type type = assembly.GetType(string.Format("{0}.{1}", generatedNamespace, generatedClassName));
-				Type type = assembly.GetType(string.Format("{0}.{1}", nameSpace, className));
+				Type type = assembly.GetType(string.Format("{0}.{1}", nameSpace, sequence.ClassName));
 				if(type != null) {
 					// Create and return an instance.
 					IUserScriptHost scriptHost = Activator.CreateInstance(type) as IUserScriptHost;

@@ -8,7 +8,5 @@ namespace Vixen.Module.Property {
 	public interface IProperty {
 		ChannelNode Owner { get; set; }
 		void Setup();
-		//string[] GetPropertyValueNames();
-		//string GetPropertyValue(string valueName);
 	}
 }

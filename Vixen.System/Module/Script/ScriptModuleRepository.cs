@@ -38,13 +38,6 @@ namespace Vixen.Module.Script {
 			_languageIndex.Remove(descriptor.Language);
 		}
 
-		//public IScriptModuleInstance Get(string language) {
-		//    Guid typeId;
-		//    if(_languageIndex.TryGetValue(language, out typeId)) {
-		//        return Get(typeId);
-		//    }
-		//    return null;
-		//}
 		public IScriptSkeletonGenerator GetSkeletonGenerator(string language) {
 			Guid typeId;
 			if(_languageIndex.TryGetValue(language, out typeId)) {

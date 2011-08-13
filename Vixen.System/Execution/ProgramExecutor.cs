@@ -133,7 +133,8 @@ namespace Vixen.Execution {
 					State = RunState.Playing;
 					_executor.Play(_currentSequenceStartTime, _currentSequenceEndTime);
 				}
-			} catch {
+			} catch(Exception ex) {
+				VixenSystem.Logging.Error(ex);
 				_executor = null;
 			} finally {
 				// Allow an exception to propogate after the caller's failure action

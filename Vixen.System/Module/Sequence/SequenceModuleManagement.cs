@@ -12,10 +12,10 @@ namespace Vixen.Module.Sequence {
 		/// <summary>
 		/// Creates a new instance.  Does not load any existing content.
 		/// </summary>
-		/// <param name="fileNameOrExtension"></param>
+		/// <param name="sequenceFileType"></param>
 		/// <returns></returns>
-		public ISequenceModuleInstance Get(string fileNameOrExtension) {
-			string fileType = Path.GetExtension(fileNameOrExtension);
+		public ISequenceModuleInstance Get(string sequenceFileType) {
+			string fileType = Path.GetExtension(sequenceFileType);
 
 			ISequenceModuleDescriptor descriptor = Modules.GetModuleDescriptors<ISequenceModuleInstance>().Cast<ISequenceModuleDescriptor>().FirstOrDefault(x => x.FileExtension.Equals(fileType, StringComparison.OrdinalIgnoreCase));
 			if(descriptor != null) {

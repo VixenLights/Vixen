@@ -35,8 +35,6 @@ namespace Vixen.Execution {
 				} else {
 					throw new Exception("Script did not compile.");
 				}
-			} else {
-				throw new Exception("Compile done.");
 			}
         }
 

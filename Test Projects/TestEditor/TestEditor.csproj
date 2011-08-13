@@ -111,6 +111,10 @@
       <Project>{ED76AB8D-4456-4CC4-B881-56A3DB4A229F}</Project>
       <Name>CommandStandard</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\CommonElements\CommonElements.csproj">
+      <Project>{4EA6B667-2A25-47E8-810B-7CF1C6A8DB9A}</Project>
+      <Name>CommonElements</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Vixen.System\Vixen.csproj">
       <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
       <Name>Vixen</Name>
