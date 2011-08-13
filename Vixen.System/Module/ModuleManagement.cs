@@ -10,16 +10,18 @@ namespace Vixen.Module {
 	class ModuleManagement : DynamicObject {
 		private Dictionary<string, ModuleImplementationMethod> _methods = new Dictionary<string, ModuleImplementationMethod>();
 
-		public ModuleManagement(ModuleImplementation[] moduleImplemenations) {
+		public ModuleManagement(ModuleImplementation[] moduleImplementations) {
 			object obj;
 			MethodInfo mi;
-			foreach(ModuleImplementation moduleImplemenation in moduleImplemenations) {
+			foreach(ModuleImplementation moduleImplementation in moduleImplementations) {
 				//Specific reflection; really fragile, dammit.
-				obj = moduleImplemenation.GetType().GetProperty("Management").GetValue(moduleImplemenation, null);
+				obj = moduleImplementation.GetType().GetProperty("Management").GetValue(moduleImplementation, null);
 				mi = obj.GetType().GetMethod("Get", new Type[] { typeof(Guid) });
-				_methods.Add("Get" + moduleImplemenation.TypeOfModule, new ModuleImplementationMethod<LateBoundMethod>(mi, obj));
+				_methods.Add("Get" + moduleImplementation.TypeOfModule, new ModuleImplementationMethod<LateBoundMethod>(mi, obj));
 				mi = obj.GetType().GetMethod("GetAll");
-				_methods.Add("GetAll" + moduleImplemenation.TypeOfModule, new ModuleImplementationMethod<LateBoundMethod>(mi, obj));
+				_methods.Add("GetAll" + moduleImplementation.TypeOfModule, new ModuleImplementationMethod<LateBoundMethod>(mi, obj));
+				mi = obj.GetType().GetMethod("Clone", new Type[] { moduleImplementation.ModuleInstanceType });
+				_methods.Add("Clone" + moduleImplementation.TypeOfModule, new ModuleImplementationMethod<LateBoundMethod>(mi, obj));
 			}
 		}
 

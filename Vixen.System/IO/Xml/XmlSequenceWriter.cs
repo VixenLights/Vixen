@@ -11,7 +11,6 @@ using Vixen.Module.Effect;
 namespace Vixen.IO.Xml {
 	class XmlSequenceWriter : IWriter {
 		private const string ELEMENT_SEQUENCE = "Sequence";
-		private const string ATTR_LENGTH = "length";
 		private const string ELEMENT_TIMING_SOURCE = "TimingSource";
 		private const string ELEMENT_MODULE_DATA = "ModuleData";
 		private const string ELEMENT_EFFECT_TABLE = "EffectTable";
@@ -21,6 +20,7 @@ namespace Vixen.IO.Xml {
 		private const string ELEMENT_DATA = "Data";
 		private const string ELEMENT_IMPLEMENTATION_CONTENT = "Implementation";
 		private const string ELEMENT_SELECTED_TIMING = "Selected";
+		private const string ATTR_LENGTH = "length";
 		private const string ATTR_SELECTED_TIMING_TYPE = "type";
 		private const string ATTR_SELECTED_TIMING_SOURCE = "source";
 

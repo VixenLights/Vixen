@@ -8,16 +8,17 @@ using Vixen.Hardware;
 namespace Vixen.IO.Xml {
 	class XmlControllerWriter : IWriter {
 		private const string ELEMENT_ROOT = "Controller";
+		private const string ELEMENT_OUTPUTS = "Outputs";
+		private const string ELEMENT_OUTPUT = "Output";
+		private const string ELEMENT_TRANSFORMS = "Transforms";
+		private const string ELEMENT_TRANSFORM = "Transform";
+		private const string ELEMENT_TRANSFORM_DATA = "TransformData";
 		private const string ATTR_ID = "id";
 		private const string ATTR_COMB_STRATEGY = "strategy";
 		private const string ATTR_LINKED_TO = "linkedTo";
 		private const string ATTR_OUTPUT_COUNT = "outputCount";
 		private const string ATTR_HARDWARE_ID = "hardwareId";
-		private const string ELEMENT_OUTPUTS = "Outputs";
-		private const string ELEMENT_OUTPUT = "Output";
 		private const string ATTR_NAME = "name";
-		private const string ELEMENT_TRANSFORMS = "Transforms";
-		private const string ELEMENT_TRANSFORM = "Transform";
 		private const string ATTR_TYPE_ID = "typeId";
 		private const string ATTR_INSTANCE_ID = "instanceId";
 
@@ -37,16 +38,32 @@ namespace Vixen.IO.Xml {
 				new XAttribute(ATTR_ID, controller.Id),
 				new XAttribute(ATTR_COMB_STRATEGY, controller.CombinationStrategy),
 				new XAttribute(ATTR_LINKED_TO, controller.LinkedTo),
+
+				new XElement(ELEMENT_TRANSFORM_DATA, _CreateTransformModuleDataContent(controller)),
 				new XElement(ELEMENT_OUTPUTS,
-					controller.Outputs.Select(x =>
+					controller.Outputs.Select((x, index) =>
 						new XElement(ELEMENT_OUTPUT,
 							new XAttribute(ATTR_NAME, x.Name),
-							x.TransformModuleData.ToXElement(), // First element within Output
 							new XElement(ELEMENT_TRANSFORMS,
-								x.DataTransforms.Select(y =>
-									new XElement(ELEMENT_TRANSFORM,
-										new XAttribute(ATTR_TYPE_ID, y.Descriptor.TypeId),
-										new XAttribute(ATTR_INSTANCE_ID, y.InstanceId))))))));
+								_CreateOutputTransformContent(controller, index))))));
+		}
+
+		private XElement _CreateTransformModuleDataContent(OutputController controller) {
+			if(controller.OutputModule != null) {
+				return controller.OutputModule.TransformModuleData.ToXElement();
+			}
+			return null;
+		}
+
+		private IEnumerable<XElement> _CreateOutputTransformContent(OutputController controller, int outputIndex) {
+			if(controller.OutputModule != null) {
+				return controller.OutputModule.GetOutputTransforms(outputIndex).Select(x =>
+					new XElement(ELEMENT_TRANSFORM,
+						new XAttribute(ATTR_TYPE_ID, x.Descriptor.TypeId),
+						new XAttribute(ATTR_INSTANCE_ID, x.InstanceId)));
+
+			}
+			return null;
 		}
 	}
 }

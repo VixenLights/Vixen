@@ -19,11 +19,11 @@ namespace TestOutput {
             _sw = new Stopwatch();
         }
 
-		override public void SetOutputCount(int outputCount) {
+		override protected void _SetOutputCount(int outputCount) {
             _form.OutputCount = outputCount;
         }
 
-		override public void UpdateState(CommandData[] outputStates) {
+		override protected void _UpdateState(CommandData[] outputStates) {
             if(_updateCount++ == 0) {
                 _sw.Reset();
                 _sw.Start();

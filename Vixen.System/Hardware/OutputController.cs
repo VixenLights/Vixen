@@ -17,7 +17,7 @@ using Vixen.IO;
 using Vixen.IO.Xml;
 
 namespace Vixen.Hardware {
-	public class OutputController : IEqualityComparer<ITransformModuleInstance>, IEnumerable<OutputController> {
+	public class OutputController : IEnumerable<OutputController> {
 		private Guid _outputModuleId;
 		private IOutputModuleInstance _outputModule = null;
 		private List<Output> _outputs = new List<Output>();
@@ -107,9 +107,13 @@ namespace Vixen.Hardware {
 				// Go throught the module type manager always.
 				_outputModule = Modules.ModuleManagement.GetOutput(value);
 				if(OutputCount != 0) {
-					_outputModule.SetOutputCount(OutputCount);
+					_outputModule.OutputCount = OutputCount;
 				}
 			}
+		}
+
+		public IOutputModuleInstance OutputModule {
+			get { return _outputModule; }
 		}
 
 		public CommandStandard.Standard.CombinationOperation CombinationStrategy { get; set; }
@@ -177,19 +181,7 @@ namespace Vixen.Hardware {
 			// Wipe out instance link references or the stale references will prevent links.
 			controller.Prior = null;
 			controller.Next = null;
-			// Need to manually create the output collection so transforms get in
-			// and we're not referencing the same collection.
-			controller._outputs = new List<Output>();
-			Output newOutput;
-			foreach(Output output in this._outputs) {
-				//*** make clone call to output and have it handle the transforms and patching
-				newOutput = new Output(this);
-				newOutput.TransformModuleData.Deserialize(output.TransformModuleData.Serialize());
-				foreach(ITransformModuleInstance transform in output.DataTransforms) {
-					newOutput.AddTransform(transform);
-				}
-				controller._outputs.Add(newOutput);
-			}
+			controller._outputs = this._outputs.Select(x => new Output(this)).ToList();
 
 			if(_outputModule != null) {
 				controller._outputModule = Modules.ModuleManagement.GetOutput(_outputModule.Descriptor.TypeId);
@@ -209,15 +201,12 @@ namespace Vixen.Hardware {
 			set {
 				// Update the hardware.
 				if(_outputModule != null) {
-					_outputModule.SetOutputCount(value);
+					_outputModule.OutputCount = value;
 				}
 				// Adjust the outputs list.
 				if(value < _outputs.Count) {
 					_outputs.RemoveRange(value, _outputs.Count - value);
 				} else {
-					//*** When an existing controller has its output count initially set when it's being
-					//    loaded, the template affects it.  This should only happen when initially creating
-					//    the controller?
 					Output output;
 					while(_outputs.Count < value) {
 						// Create a new output.
@@ -538,16 +527,6 @@ namespace Vixen.Hardware {
 			return Name;
 		}
 
-		#region IEqualityComparer<ITransformModuleInstance>
-		public bool Equals(ITransformModuleInstance x, ITransformModuleInstance y) {
-			return x.Descriptor.TypeId == y.Descriptor.TypeId && x.InstanceId == y.InstanceId;
-		}
-
-		public int GetHashCode(ITransformModuleInstance obj) {
-			return (obj.Descriptor.TypeId.ToString() + obj.InstanceId.ToString()).GetHashCode();
-		}
-		#endregion
-
 		#region IEnumerable<OutputController>
 		public IEnumerator<OutputController> GetEnumerator() {
 			if(IsRootController) {
@@ -564,83 +543,16 @@ namespace Vixen.Hardware {
 		#region class Output
 		public class Output {
 			private OutputController _owner;
-			private LinkedList<ITransformModuleInstance> _dataTransforms = new LinkedList<ITransformModuleInstance>();
 			private LinkedList<IOutputStateSource> _sources = new LinkedList<IOutputStateSource>();
 
 			public Output(OutputController owner) {
 				_owner = owner;
 				CurrentState = CommandData.Empty;
-				TransformModuleData = new ModuleDataSet();
 				Name = "Unnamed";
 			}
 
 			// Completely independent; nothing is current dependent upon this value.
 			public string Name { get; set; }
-
-			public ModuleDataSet TransformModuleData { get; private set; }
-
-			public ITransformModuleInstance[] DataTransforms {
-				get { return _dataTransforms.ToArray(); }
-			}
-
-			public void RemoveTransform(Guid transformTypeId, Guid transformInstanceId) {
-				ITransformModuleInstance instance = _dataTransforms.FirstOrDefault(x => x.Descriptor.TypeId == transformTypeId && x.InstanceId == transformInstanceId);
-				if(instance != null) {
-					// Remove from the transform list.
-					// (I believe that LinkedList<T>.Remove does not use an equality comparer
-					// and goes by reference equality.)
-					_dataTransforms.Remove(instance);
-					// Remove from the transform module data.
-					TransformModuleData.Remove(transformTypeId, transformInstanceId);
-				}
-			}
-
-			//Not sure about this; may not want all of this behavior anytime a transform
-			//is added to an output
-			/// <summary>
-			/// Adds an instance of a transform to the output.
-			/// </summary>
-			/// <param name="transformTypeId">The module type id of the transform.</param>
-			/// <param name="transformInstanceId">Provide if known.  For example, for existing module instance data.  Otherwise, provide Guid.Emtpy.</param>
-			public void AddTransform(Guid transformTypeId, Guid transformInstanceId) {
-				// Create a new instance.
-				ITransformModuleInstance instance = Modules.ModuleManagement.GetTransform(transformTypeId);
-				// If an instance id is provided (creating an instance for existing module
-				// data), assign it.
-				if(transformInstanceId != Guid.Empty) {
-					instance.InstanceId = transformInstanceId;
-				}
-				// Create data for the instance.
-				TransformModuleData.GetModuleInstanceData(instance);
-				// Add the instance.
-				_dataTransforms.AddLast(instance);
-			}
-
-			/// <summary>
-			/// Adds a new instance of a transform to the output.
-			/// </summary>
-			public void AddTransform(Guid transformTypeId) {
-				AddTransform(transformTypeId, Guid.Empty);
-			}
-
-			/// <summary>
-			/// Adds an existing instance of a transform to the output.
-			/// </summary>
-			/// <param name="instance"></param>
-			public void AddTransform(ITransformModuleInstance instance) {
-				// Allowing multiple instances of a transform type.
-				// Create a new instance, but use the same data (clone).
-				ITransformModuleInstance newInstance = Modules.GetModuleManager<ITransformModuleInstance>().Clone(instance) as ITransformModuleInstance;
-				if(newInstance.ModuleData != null) {
-					// Add the data to our transform dataset.
-					this.TransformModuleData.Add(newInstance.ModuleData);
-				} else {
-					// Create data for the instance.
-					TransformModuleData.GetModuleInstanceData(newInstance);
-				}
-				// Add the instance.
-				_dataTransforms.AddLast(newInstance);
-			}
 
 			public bool AddSource(IOutputStateSource source) {
 				if(!_sources.Contains(source)) {
@@ -682,12 +594,6 @@ namespace Vixen.Hardware {
 						}
 					}
 					CurrentState = new CommandData(startTime, endTime, commandIdentifier, parameters);
-					// Transform it.
-					if(parameters != null && parameters.Length > 0) {
-						foreach(ITransformModuleInstance transform in _dataTransforms) {
-							transform.Transform(CurrentState);
-						}
-					}
 				}
 			}
 

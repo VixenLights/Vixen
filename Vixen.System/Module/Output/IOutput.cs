@@ -3,12 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Common;
+using Vixen.Module.Transform;
 
 namespace Vixen.Module.Output {
     public interface IOutput {
         // As defined by the owning controller.
-        void SetOutputCount(int outputCount);
+        int OutputCount { get; set; }
         // One command for each output as defined by the owning controller.
         void UpdateState(CommandData[] outputStates);
+		IEnumerable<ITransformModuleInstance> BaseTransforms { get; set; }
+		void AddTransform(int outputIndex, Guid transformTypeId, Guid transformInstanceId = default(Guid));
+		void RemoveTransform(int outputIndex, Guid transformTypeId, Guid transformInstanceId);
+		IEnumerable<ITransformModuleInstance> GetOutputTransforms(int outputIndex);
+		IModuleDataSet TransformModuleData { get; set; }
     }
 }

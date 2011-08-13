@@ -13,9 +13,9 @@ namespace TestOutput {
 		private string _filePath = @"C:\Users\Development\Desktop\Log.txt";
 		private StreamWriter _file;
 
-		override public void SetOutputCount(int outputCount) { }
+		override protected void _SetOutputCount(int outputCount) { }
 
-		override public void UpdateState(CommandData[] outputStates) {
+		override protected void _UpdateState(CommandData[] outputStates) {
 			CommandData data;
 			for(int i = 0; i < outputStates.Length; i++) {
 				data = outputStates[i];
