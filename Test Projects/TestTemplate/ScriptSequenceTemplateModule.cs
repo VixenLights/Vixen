@@ -4,15 +4,11 @@ using System.Linq;
 using System.Text;
 using Vixen.Common;
 using Vixen.Sys;
-using Vixen.Module.FileTemplate;
+using Vixen.Module.ModuleTemplate;
 
 namespace TestTemplate {
-	public class ScriptSequenceTemplateModule : FileTemplateModuleDescriptorBase {
+	public class ScriptSequenceTemplateModule : ModuleTemplateModuleDescriptorBase {
 		private Guid _typeId = new Guid("{F46FB19C-28D6-458e-8646-96E23A59BD96}");
-
-		override public string FileType {
-			get { return ".scr"; }
-		}
 
 		override public Guid TypeId {
 			get { return _typeId; }

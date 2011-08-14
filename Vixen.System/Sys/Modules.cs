@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
-using Vixen.Module;
-using Vixen.Common;
 using System.IO;
+using Vixen.Common;
+using Vixen.Module;
+using Vixen.Module.ModuleTemplate;
 
 namespace Vixen.Sys {
 	class Modules {
@@ -183,6 +184,10 @@ namespace Vixen.Sys {
 				instance = Activator.CreateInstance(instanceType) as IModuleInstance;
 				instance.InstanceId = Guid.NewGuid();
 				instance.Descriptor = GetDescriptorById(moduleTypeId);
+
+				// See if there are any templates to apply to the instance.
+				ModuleTemplateModuleManagement manager = Modules.GetModuleManager<IModuleTemplateModuleInstance, ModuleTemplateModuleManagement>();
+				manager.ProjectTemplateInto(instance);
 			}
 			return instance;
 		}

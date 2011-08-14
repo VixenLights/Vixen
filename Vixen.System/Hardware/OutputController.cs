@@ -10,9 +10,7 @@ using System.Diagnostics;
 using Vixen.Common;
 using Vixen.Sys;
 using Vixen.Module;
-using Vixen.Module.Transform;
 using Vixen.Module.Output;
-using Vixen.Module.FileTemplate;
 using Vixen.IO;
 using Vixen.IO.Xml;
 
@@ -79,10 +77,6 @@ namespace Vixen.Hardware {
 			OutputModuleId = outputModuleId;
 			OutputCount = outputCount;
 			CombinationStrategy = combinationStrategy;
-
-			//// Affect the instance with the controller template last.
-			//FileTemplateModuleManagement manager = Modules.GetModuleManager<IFileTemplateModuleInstance, FileTemplateModuleManagement>();
-			//manager.ProjectTemplateInto(FILE_EXT, this);
 		}
 
 		public void Save() {

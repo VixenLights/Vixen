@@ -64,7 +64,7 @@ namespace CommandStandard {
         }
 
         public static implicit operator string(CommandIdentifier value) {
-            return _ToString(value.Platform, value.Category, value.CommandIndex);
+            return (value != null) ? _ToString(value.Platform, value.Category, value.CommandIndex) : null;
         }
 
         public static implicit operator CommandIdentifier(string value) {

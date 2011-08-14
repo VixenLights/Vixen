@@ -83,7 +83,11 @@ namespace Vixen.Module.Output {
 		}
 
 		public void UpdateState(CommandData[] outputStates) {
-			// Transform 
+			// Make a copy of the state so that we're not modifying the actual state
+			// with the transforms.
+			outputStates = outputStates.Select(x => new CommandData(x.StartTime, x.EndTime, x.CommandIdentifier, x.ParameterValues.ToArray())).ToArray();
+
+			// Transform...
 			for(int i = 0; i < outputStates.Length; i++) {
 				List<ITransformModuleInstance> outputTransforms = _outputTransforms[i];
 				foreach(ITransformModuleInstance transform in outputTransforms) {
@@ -91,6 +95,7 @@ namespace Vixen.Module.Output {
 				}
 			}
 
+			// Send on to the output module.
 			_UpdateState(outputStates);
 		}
 

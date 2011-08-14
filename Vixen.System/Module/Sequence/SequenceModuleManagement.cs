@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 using Vixen.Sys;
 using Vixen.Common;
-using Vixen.Module.FileTemplate;
+using Vixen.Module.ModuleTemplate;
 
 namespace Vixen.Module.Sequence {
 	class SequenceModuleManagement : GenericModuleManagement<ISequenceModuleInstance> {
@@ -20,10 +20,6 @@ namespace Vixen.Module.Sequence {
 			ISequenceModuleDescriptor descriptor = Modules.GetModuleDescriptors<ISequenceModuleInstance>().Cast<ISequenceModuleDescriptor>().FirstOrDefault(x => x.FileExtension.Equals(fileType, StringComparison.OrdinalIgnoreCase));
 			if(descriptor != null) {
 				ISequenceModuleInstance instance = Get(descriptor.TypeId);
-
-				//// Apply any template that may exist.
-				//FileTemplateModuleManagement manager = Modules.GetModuleManager<IFileTemplateModuleInstance, FileTemplateModuleManagement>();
-				//manager.ProjectTemplateInto(descriptor.FileExtension, instance);
 
 				return instance;
 			}

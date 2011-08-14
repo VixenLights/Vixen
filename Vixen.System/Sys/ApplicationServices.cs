@@ -11,7 +11,7 @@ using Vixen.Hardware;
 using Vixen.Script;
 using Vixen.Module;
 using Vixen.Module.Editor;
-using Vixen.Module.FileTemplate;
+using Vixen.Module.ModuleTemplate;
 using Vixen.Module.EffectEditor;
 using Vixen.Module.Effect;
 using Vixen.Module.Timing;
@@ -130,14 +130,15 @@ namespace Vixen.Sys {
 			return null;
 		}
 
-		/// <summary>
-		/// Commits the template's data back to its backing store.
-		/// </summary>
-		/// <param name="template"></param>
-		static public void CommitTemplate(IFileTemplate template) {
-			FileTemplateModuleManagement manager = Modules.GetModuleManager<IFileTemplateModuleInstance, FileTemplateModuleManagement>();
-			manager.SaveTemplateData(template as IFileTemplateModuleInstance);
-		}
+		///// <summary>
+		///// Commits the template's data back to its backing store.
+		///// </summary>
+		///// <param name="template"></param>
+		//static public void CommitTemplate(IModuleTemplateModuleInstance template) {
+		//    //ModuleTemplateModuleManagement manager = Modules.GetModuleManager<IModuleTemplateModuleInstance, ModuleTemplateModuleManagement>();
+		//    //manager.SaveTemplateData(template as IModuleTemplateModuleInstance);
+		//    //VixenSystem.ModuleData...?
+		//}
 
 		static public string[] GetScriptLanguages() {
 			ScriptModuleManagement manager = Modules.GetModuleManager<IScriptModuleInstance, ScriptModuleManagement>();

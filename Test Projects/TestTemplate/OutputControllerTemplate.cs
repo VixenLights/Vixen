@@ -3,48 +3,55 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Module;
-using Vixen.Module.FileTemplate;
+using Vixen.Module.ModuleTemplate;
 using Vixen.Module.Transform;
+using Vixen.Module.Output;
 using Vixen.Sys;
 using Vixen.Common;
 using Vixen.Hardware;
 
 namespace TestTemplate {
-	public class OutputControllerTemplate : FileTemplateModuleInstanceBase {
+	public class OutputControllerTemplate : ModuleTemplateModuleInstanceBase {
 		private OutputControllerTemplateData _data;
 
-		override public void Project(object newInstance) {
-			OutputControllerTemplateData data = ModuleData as OutputControllerTemplateData;
-			OutputController controller = newInstance as OutputController;
-
+		public override void Project(IModuleInstance target) {
+			IOutputModuleInstance outputModule = target as IOutputModuleInstance;
 			// Get instances of the transforms we reference.
 			ITransformModuleInstance[] transforms = _GetTransforms();
-
-			//foreach(OutputController.Output output in controller.Outputs) {
-			//    // This must be done in two steps so that we have the original
-			//    // instances (appropriate ones, that is) that belong to this output
-			//    // and instances of the missing ones from the template.
-			//    var alreadyHave = output.DataTransforms.Intersect(transforms, controller);
-			//    // Add any transforms in the template but not in the output.
-			//    foreach(ITransformModuleInstance templateTransform in transforms.Except(alreadyHave)) {
-			//        output.AddTransform(templateTransform);
-			//    }
-			//}
-
-			// Two dangers in doing this:
-			//1. It only happens when they intially create the controller, contrary to
-			//   their possible expectations.
-			//2. Renaming an output will not affect the channel name, contrary to
-			//   their possible expectations.
-			// Do they want seed channels created?
-			//if(_data.AutoCreateOutputChannels) {
-			//    foreach(OutputController.Output output in controller.Outputs) {
-			//        Vixen.Sys.Execution.AddChannel(output.Name);
-			//    }
-			//}
+			
+			outputModule.BaseTransforms = transforms;
 		}
+		//override public void Project(object newInstance) {
+		//    OutputControllerTemplateData data = ModuleData as OutputControllerTemplateData;
+		//    OutputController controller = newInstance as OutputController;
 
-		//*** replace _get/_set with a property?
+		//    // Get instances of the transforms we reference.
+		//    ITransformModuleInstance[] transforms = _GetTransforms();
+
+		//    //foreach(OutputController.Output output in controller.Outputs) {
+		//    //    // This must be done in two steps so that we have the original
+		//    //    // instances (appropriate ones, that is) that belong to this output
+		//    //    // and instances of the missing ones from the template.
+		//    //    var alreadyHave = output.DataTransforms.Intersect(transforms, controller);
+		//    //    // Add any transforms in the template but not in the output.
+		//    //    foreach(ITransformModuleInstance templateTransform in transforms.Except(alreadyHave)) {
+		//    //        output.AddTransform(templateTransform);
+		//    //    }
+		//    //}
+
+		//    // Two dangers in doing this:
+		//    //1. It only happens when they intially create the controller, contrary to
+		//    //   their possible expectations.
+		//    //2. Renaming an output will not affect the channel name, contrary to
+		//    //   their possible expectations.
+		//    // Do they want seed channels created?
+		//    //if(_data.AutoCreateOutputChannels) {
+		//    //    foreach(OutputController.Output output in controller.Outputs) {
+		//    //        Vixen.Sys.Execution.AddChannel(output.Name);
+		//    //    }
+		//    //}
+		//}
+
 		/// <summary>
 		/// Instantiates a collection of transforms according to our module data and
 		/// provides each with data from our transform module dataset.
@@ -87,7 +94,8 @@ namespace TestTemplate {
 				templateSetup.Transforms = _GetTransforms();
 				if(templateSetup.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 					_SetTransforms(templateSetup.Transforms);
-					ApplicationServices.CommitTemplate(this);
+					//Template data is now stored in application module data in UserData
+					//ApplicationServices.CommitTemplate(this);
 				}
 			}
 		}

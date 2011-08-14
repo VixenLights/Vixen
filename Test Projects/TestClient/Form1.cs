@@ -15,7 +15,7 @@ using Vixen.Hardware;
 using Vixen.Module;
 using Vixen.Module.Sequence;
 using Vixen.Module.Editor;
-using Vixen.Module.FileTemplate;
+using Vixen.Module.ModuleTemplate;
 using Vixen.Module.Effect;
 using Vixen.Module.EffectEditor;
 using Vixen.Module.Output;
@@ -207,7 +207,7 @@ namespace TestClient
 			comboBox.DataSource = null;
 			comboBox.DisplayMember = "Value";
 			comboBox.ValueMember = "Key";
-			comboBox.DataSource = ApplicationServices.GetAvailableModules<IFileTemplateModuleInstance>().ToArray();
+			comboBox.DataSource = ApplicationServices.GetAvailableModules<IModuleTemplateModuleInstance>().ToArray();
 		}
 
         private string SequenceName {
@@ -386,7 +386,7 @@ namespace TestClient
 			if(comboBoxFileTemplates.SelectedItem != null) {
 				Guid id = (Guid)comboBoxFileTemplates.SelectedValue;
 				// Get the template module instance.
-				IFileTemplate template = ApplicationServices.Get<IFileTemplateModuleInstance>(id) as IFileTemplate;
+				IModuleTemplate template = ApplicationServices.Get<IModuleTemplateModuleInstance>(id) as IModuleTemplate;
 				// Setup!
 				template.Setup();
 			}

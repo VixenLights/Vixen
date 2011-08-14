@@ -35,7 +35,7 @@ namespace TestTransform {
 
 		override public void Transform(CommandData command) {
 			CommandParameterReference paramRef;
-			if(_curve != null && CommandsAffected.TryGetValue(command.CommandIdentifier, out paramRef)) {
+			if(_curve != null && !command.IsEmpty && CommandsAffected.TryGetValue(command.CommandIdentifier, out paramRef)) {
 				foreach(int index in paramRef.ParameterIndexes) {
 					// Get the existing value.
 					Level level = (Level)command.ParameterValues[index];
