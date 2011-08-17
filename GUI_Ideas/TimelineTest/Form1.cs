@@ -167,12 +167,12 @@ namespace Timeline
 
 		private void buttonZoomIn_Click(object sender, EventArgs e)
 		{
-			tg.VisibleTimeSpan = TimeSpan.FromTicks((long)(tg.VisibleTimeSpan.Ticks * (2.0 / 3.0)));
+			timelineControl1.VisibleTimeSpan = TimeSpan.FromTicks((long)(timelineControl1.VisibleTimeSpan.Ticks * (2.0 / 3.0)));
 		}
 
 		private void buttonZoomOut_Click(object sender, EventArgs e)
 		{
-			tg.VisibleTimeSpan = TimeSpan.FromTicks((long)(tg.VisibleTimeSpan.Ticks * (3.0 / 2.0)));
+			timelineControl1.VisibleTimeSpan = TimeSpan.FromTicks((long)(timelineControl1.VisibleTimeSpan.Ticks * (3.0 / 2.0)));
 		}
 
 		private void buttonGenericDebug_Click(object sender, EventArgs e)

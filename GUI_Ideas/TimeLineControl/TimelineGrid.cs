@@ -14,10 +14,6 @@ namespace Timeline
 	{
 		#region Members
 
-		// member variables - times
-		private TimeSpan m_totalTime;							// the total time this control represents
-		private TimeSpan m_visibleTimeSpan;						// the time that is visible in the control
-
 		// member variables - rows and elements
 		private TimelineElementCollection m_selectedElements;	// the currently selected elementes in the control
 		private TimelineRowCollection m_rows;					// all rows displayed in the control
@@ -64,16 +60,14 @@ namespace Timeline
 			this.AutoScroll = true;
 			this.SetStyle(ControlStyles.ResizeRedraw, true);
 
-			// Reasonable defaults
-			m_visibleTimeSpan = TimeSpan.FromSeconds(10);
-			m_totalTime = TimeSpan.FromMinutes(2);
-
 			m_selectedElements = new TimelineElementCollection();
 			m_rows = new TimelineRowCollection();
 
-			m_snapPoints = new SortedDictionary<TimeSpan, int>();
+			TotalTime = TimeSpan.FromMinutes(1);
+			VisibleTimeSpan = TimeSpan.FromSeconds(10);
+			VisibleTimeStart = TimeSpan.FromSeconds(0);
 
-			AutoScrollOffset = new Point(50, 50);
+			m_snapPoints = new SortedDictionary<TimeSpan, int>();
 
 			m_rows.RowAdded += new EventHandler<RowAddedOrRemovedEventArgs>(m_rows_RowAdded);
 			m_rows.RowRemoved += new EventHandler<RowAddedOrRemovedEventArgs>(m_rows_RowRemoved);
@@ -93,47 +87,20 @@ namespace Timeline
 			SetDefaultOptions();
 		}
 
-
-		protected override void OnScroll(ScrollEventArgs se)
-		{
-			base.OnScroll(se);
-			Invalidate();
-		}
-
 		#endregion
 
 
 		#region Time & Display properties and methods
 
 		/// <summary>
-		/// The maximum amount of time represented by this TimelineControl.
+		/// The maximum amount of time represented by this Grid.
 		/// </summary>
-		public TimeSpan TotalTime
-		{
-			get { return m_totalTime; }
-			set
-			{
-				if (value <= TimeSpan.Zero)
-					return;
-
-				m_totalTime = value;
-				Invalidate();
-			}
-		}
+		public TimeSpan TotalTime { get; set; }
 
 		/// <summary>
 		/// The amount of time currently visible. Adjusting this implements zoom along the X (time) axis.
 		/// </summary>
-		public TimeSpan VisibleTimeSpan
-		{
-			get { return m_visibleTimeSpan; }
-			set
-			{
-				m_visibleTimeSpan = value;
-				Invalidate();
-			}
-
-		}
+		public TimeSpan VisibleTimeSpan { get; set; }
 
 		/// <summary>
 		/// The time at the left of the control (the visible beginning).
@@ -147,7 +114,6 @@ namespace Timeline
 					return;
 
 				AutoScrollPosition = new Point(timeToPixels(value), -AutoScrollPosition.Y);
-				Invalidate();
 			}
 		}
 
@@ -652,7 +618,7 @@ namespace Timeline
 
 				int totalHeight = _drawRows(e.Graphics);
 
-				AutoScrollMinSize = new Size(timeToPixels(m_totalTime), totalHeight);
+				AutoScrollMinSize = new Size(timeToPixels(TotalTime), totalHeight);
 
 				_drawGridlines(e.Graphics);
 				_drawSnapPoints(e.Graphics);

@@ -51,8 +51,8 @@
 			// 
 			this.splitContainer.Panel2.Controls.Add(this.timelineHeader);
 			this.splitContainer.Panel2.Controls.Add(this.timelineGrid);
-			this.splitContainer.Size = new System.Drawing.Size(793, 503);
-			this.splitContainer.SplitterDistance = 264;
+			this.splitContainer.Size = new System.Drawing.Size(853, 476);
+			this.splitContainer.SplitterDistance = 283;
 			this.splitContainer.TabIndex = 3;
 			// 
 			// timelineRowList
@@ -60,7 +60,7 @@
 			this.timelineRowList.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.timelineRowList.Location = new System.Drawing.Point(0, 0);
 			this.timelineRowList.Name = "timelineRowList";
-			this.timelineRowList.Size = new System.Drawing.Size(264, 503);
+			this.timelineRowList.Size = new System.Drawing.Size(283, 476);
 			this.timelineRowList.TabIndex = 2;
 			// 
 			// timelineHeader
@@ -68,7 +68,7 @@
 			this.timelineHeader.Dock = System.Windows.Forms.DockStyle.Top;
 			this.timelineHeader.Location = new System.Drawing.Point(0, 0);
 			this.timelineHeader.Name = "timelineHeader";
-			this.timelineHeader.Size = new System.Drawing.Size(525, 40);
+			this.timelineHeader.Size = new System.Drawing.Size(566, 40);
 			this.timelineHeader.TabIndex = 3;
 			// 
 			// timelineGrid
@@ -77,7 +77,7 @@
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.timelineGrid.AutoScroll = true;
-			this.timelineGrid.AutoScrollMinSize = new System.Drawing.Size(6300, 0);
+			this.timelineGrid.AutoScrollMinSize = new System.Drawing.Size(6792, 0);
 			this.timelineGrid.AutoScrollOffset = new System.Drawing.Point(50, 50);
 			this.timelineGrid.AutoSize = true;
 			this.timelineGrid.BackColor = System.Drawing.SystemColors.ControlDark;
@@ -86,7 +86,7 @@
 			this.timelineGrid.Location = new System.Drawing.Point(0, 40);
 			this.timelineGrid.Name = "timelineGrid";
 			this.timelineGrid.RowSeparatorColor = System.Drawing.Color.Black;
-			this.timelineGrid.Size = new System.Drawing.Size(525, 463);
+			this.timelineGrid.Size = new System.Drawing.Size(566, 436);
 			this.timelineGrid.TabIndex = 1;
 			this.timelineGrid.TotalTime = System.TimeSpan.Parse("00:02:00");
 			this.timelineGrid.VisibleTimeEnd = System.TimeSpan.Parse("00:00:10");
@@ -100,7 +100,7 @@
 			this.AutoSize = true;
 			this.Controls.Add(this.splitContainer);
 			this.Name = "TimelineControl";
-			this.Size = new System.Drawing.Size(793, 503);
+			this.Size = new System.Drawing.Size(853, 476);
 			this.splitContainer.Panel1.ResumeLayout(false);
 			this.splitContainer.Panel2.ResumeLayout(false);
 			this.splitContainer.Panel2.PerformLayout();
