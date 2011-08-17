@@ -595,35 +595,36 @@ namespace Timeline
 			foreach (var row in Rows) {
 				// Draw each element
 				foreach (var element in row.Elements) {
-					// Apparently you can only restore a state once. Doing this before the loop
-					// has no effect on the second iteration g.Restore().
-					GraphicsState state = g.Save();
+                    DrawElementOptions options = DrawElementOptions.Normal;
 
-					DrawElementOptions options = DrawElementOptions.Normal;
+                    if (SelectedElements.Contains(element))
+                        options |= DrawElementOptions.Selected;
 
-					if (SelectedElements.Contains(element))
-						options |= DrawElementOptions.Selected;
+                    Point location = new Point(timeToPixels(element.Offset), top);
+                    Size size = new Size(timeToPixels(element.Duration), row.Height);
 
-					Point location = new Point(timeToPixels(element.Offset), top);
-					Size size = new Size(timeToPixels(element.Duration), row.Height);
+                    // The rectangle where this element will be drawn
+                    Rectangle dstRect = new Rectangle(location, size);
 
-					// Translate the graphics so the element can draw at (0,0)
-					g.TranslateTransform(location.X, location.Y);
+                    // The rectangle this element will draw itself in
+                    Rectangle srcRect = new Rectangle(new Point(0, 0), size);
 
-					// Calculate the rectangle this element is to be drawn in.
-					Rectangle rect = new Rectangle(0, 0, size.Width, size.Height);
+                    // Perform the transformation and save the state.
+                    GraphicsContainer containerState = g.BeginContainer(dstRect, srcRect, GraphicsUnit.Pixel);
 
-					// Prevent the element from drawing outside its bounds
-					g.Clip = new System.Drawing.Region(rect);
+                    // Prevent the element from drawing outside its bounds
+                    g.Clip = new System.Drawing.Region(srcRect);
+                    
+                    element.Draw(g, srcRect, options);
 
-					element.Draw(g, rect, options);
-
-					g.Restore(state);
+                    g.EndContainer(containerState);
 				}
 
 				top += row.Height;  // next row starts just below this row
 			}
 		}
+
+
 
 
 		protected override void OnPaint(PaintEventArgs e)
