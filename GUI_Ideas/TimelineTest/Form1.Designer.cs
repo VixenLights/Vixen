@@ -35,7 +35,7 @@
 			this.buttonZoomOut = new System.Windows.Forms.Button();
 			this.buttonGenericDebug = new System.Windows.Forms.Button();
 			this.buttonGenericDebug2 = new System.Windows.Forms.Button();
-			this.tc = new Timeline.TimelineControl();
+			this.timelineControl1 = new Timeline.TimelineControl();
 			this.SuspendLayout();
 			// 
 			// buttonElemAt
@@ -108,22 +108,13 @@
 			this.buttonGenericDebug2.UseVisualStyleBackColor = true;
 			this.buttonGenericDebug2.Click += new System.EventHandler(this.buttonGenericDebug2_Click);
 			// 
-			// tc
+			// timelineControl1
 			// 
-			this.tc.AutoScroll = true;
-			this.tc.AutoScrollMinSize = new System.Drawing.Size(2718, 0);
-			this.tc.BackColor = System.Drawing.SystemColors.ControlDark;
-			this.tc.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.tc.GridlineInterval = System.TimeSpan.Parse("00:00:01");
-			this.tc.Location = new System.Drawing.Point(13, 12);
-			this.tc.Name = "tc";
-			this.tc.RowSeparatorColor = System.Drawing.Color.Black;
-			this.tc.Size = new System.Drawing.Size(906, 438);
-			this.tc.TabIndex = 2;
-			this.tc.TotalTime = System.TimeSpan.Parse("00:00:29.9999250");
-			this.tc.VisibleTimeEnd = System.TimeSpan.Parse("00:00:10");
-			this.tc.VisibleTimeSpan = System.TimeSpan.Parse("00:00:10");
-			this.tc.VisibleTimeStart = System.TimeSpan.Parse("00:00:00");
+			this.timelineControl1.AutoSize = true;
+			this.timelineControl1.Location = new System.Drawing.Point(12, 12);
+			this.timelineControl1.Name = "timelineControl1";
+			this.timelineControl1.Size = new System.Drawing.Size(907, 444);
+			this.timelineControl1.TabIndex = 8;
 			// 
 			// Form1
 			// 
@@ -131,12 +122,12 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.Control;
 			this.ClientSize = new System.Drawing.Size(931, 641);
+			this.Controls.Add(this.timelineControl1);
 			this.Controls.Add(this.buttonGenericDebug2);
 			this.Controls.Add(this.buttonGenericDebug);
 			this.Controls.Add(this.buttonZoomOut);
 			this.Controls.Add(this.buttonZoomIn);
 			this.Controls.Add(this.textBoxLog);
-			this.Controls.Add(this.tc);
 			this.Controls.Add(this.buttonReset);
 			this.Controls.Add(this.buttonElemAt);
 			this.Name = "Form1";
@@ -150,12 +141,12 @@
 
         private System.Windows.Forms.Button buttonElemAt;
         private System.Windows.Forms.Button buttonReset;
-        private TimelineControl tc;
         private System.Windows.Forms.TextBox textBoxLog;
 		private System.Windows.Forms.Button buttonZoomIn;
 		private System.Windows.Forms.Button buttonZoomOut;
 		private System.Windows.Forms.Button buttonGenericDebug;
 		private System.Windows.Forms.Button buttonGenericDebug2;
+		private TimelineControl timelineControl1;
     }
 }
 

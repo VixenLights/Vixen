@@ -44,7 +44,7 @@ namespace Timeline
 		// we shouldn't be changing parent controls from here. Whatever is doing the move
 		// from one control to another should be calling the parent control methods (Add,
 		// Remove) to move the row instead.
-        public TimelineControl ParentControl { get; internal set; }
+        public TimelineGrid ParentControl { get; internal set; }
 
         public TimelineElementCollection Elements
         {

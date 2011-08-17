@@ -45,11 +45,23 @@
     <Compile Include="TimelineControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="TimelineControl.Designer.cs">
+      <DependentUpon>TimelineControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TimelineGrid.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TimelineElement.cs" />
     <Compile Include="TimelineElementCollection.cs" />
+    <Compile Include="TimelineHeader.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="TimelineRow.cs" />
     <Compile Include="TimelineRowCollection.cs" />
+    <Compile Include="TimelineRowList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
