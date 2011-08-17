@@ -12,28 +12,19 @@ namespace Timeline
 {
     public partial class Form1 : Form
     {
-        TimelineControl tc;
+        //TimelineControl tc;
 
 
         public Form1()
         {
             InitializeComponent();
 
-            // Timeline
-            tc = new TimelineControl();
-            tc.Location = new Point(50, 50);
-            tc.Size = new Size(800, 400);
-            tc.BorderStyle = BorderStyle.Fixed3D;
-            tc.BackColor = Color.FromKnownColor(KnownColor.ControlDark);
-            this.Controls.Add(tc);
-
             // Rows
-            tc.Rows.Add(new TimelineRow() { Height=50, Tag="Row 0" });
             tc.Rows.Add(new TimelineRow() { Height=50,  Tag="Row 0" });
             tc.Rows.Add(new TimelineRow() { Height=100, Tag="Row 1" });
             tc.Rows.Add(new TimelineRow() { Height=100, Tag="Row 2" });
             tc.Rows.Add(new TimelineRow() { Height=100, Tag="Row 3" });
-            tc.Rows.Add(new TimelineRow() { Height=800, Tag="Row 4" });
+            tc.Rows.Add(new TimelineRow() { Height=100, Tag="Row 4" });
 
             // Elements
             tc.Rows[0].Elements.Add(new TimelineElement()
@@ -172,6 +163,29 @@ namespace Timeline
             tc.Rows[1].Elements[0].Offset = TimeSpan.FromSeconds(0);
             tc.Rows[1].Elements[0].Duration = TimeSpan.FromSeconds(2);
         }
+
+		private void buttonZoomIn_Click(object sender, EventArgs e)
+		{
+			tc.VisibleTimeSpan = TimeSpan.FromTicks((long)(tc.VisibleTimeSpan.Ticks * (2.0 / 3.0)));
+		}
+
+		private void buttonZoomOut_Click(object sender, EventArgs e)
+		{
+			tc.VisibleTimeSpan = TimeSpan.FromTicks((long)(tc.VisibleTimeSpan.Ticks * (3.0 / 2.0)));
+		}
+
+		private void buttonGenericDebug_Click(object sender, EventArgs e)
+		{
+			_logMessage("tc total time: " + tc.TotalTime);
+			_logMessage("tc visible time span: " + tc.VisibleTimeSpan);
+			_logMessage("tc visible time start: " + tc.VisibleTimeStart);
+			_logMessage("tc visible time end: " + tc.VisibleTimeEnd);
+		}
+
+		private void buttonGenericDebug2_Click(object sender, EventArgs e)
+		{
+			tc.VisibleTimeStart = TimeSpan.FromSeconds(5);
+		}
     }
 
 

@@ -10,173 +10,269 @@ using System.ComponentModel;
 
 namespace Timeline
 {
-    public class TimelineControl : UserControl
-    {
-        private TimeSpan m_visibleTimeSpan;
+	public class TimelineControl : UserControl
+	{
+		#region Members
 
+		// member variables - times
+		private TimeSpan m_totalTime;							// the total time this control represents
+		private TimeSpan m_visibleTimeSpan;						// the time that is visible in the control
 
-        public TimelineControl()
-        {
-            this.DoubleBuffered = true;
-            this.AutoScroll = true;
-            this.SetStyle(ControlStyles.ResizeRedraw, true);
+		// member variables - rows and elements
+		private TimelineElementCollection m_selectedElements;	// the currently selected elementes in the control
+		private TimelineRowCollection m_rows;					// all rows displayed in the control
 
-            // Reasonable defaults
-            m_visibleTimeSpan = TimeSpan.FromSeconds(10);
-            this.MaximumTime = TimeSpan.FromMinutes(2);
+		// member variables - dragging, snapping, etc.
+		private const int DragThreshold = 4;					// how many pixels the mouse must move before the elements start dragging
+		private DragState m_dragState = DragState.Normal;		// the current dragging state
+		private Point m_oldLoc;									// the location of the mouse at last draw; used to update the dragging
+		private TimelineElement m_mouseDownElement = null;		// the element under the cursor on a mouse click
+		private SortedDictionary<int, Tuple<int, int>> m_snapPixels;	// a mapping of pixel location to a tuple of <snapped pixel location, snap level/priority>
+		private SortedDictionary<TimeSpan, int> m_snapPoints;	// a collection of the snap points (as TimeSpans) to use in the control
 
-            m_rows.RowAdded += new EventHandler<RowAddedOrRemovedEventArgs>(m_rows_RowAdded);
-            m_rows.RowRemoved += new EventHandler<RowAddedOrRemovedEventArgs>(m_rows_RowRemoved);
-        }
+		// member variables - drawing items
+		private int m_timelineHeight = 20;						// the height (in pixels) of the actual timeline at the top
+		private int m_timelineSegments = 4;						// how many subdivisions between each labeled marker in the timeline
+		private int m_treeWidth = 100;							// width of the tree of all rows at the LHS
 
-        protected override void OnLoad(EventArgs e)
-        {
-            base.OnLoad(e);
-
-            SetDefaultOptions();
-        }
-
-
-        protected override void OnScroll(ScrollEventArgs se)
-        {
-            base.OnScroll(se);
-            this.Invalidate();
-        }
+		// Events
+		public event EventHandler<ElementEventArgs> ElementDoubleClicked;
+		public event EventHandler<MultiElementEventArgs> ElementsMoved;
 
 
 
-        
+		// Enumerations
+		private enum DragState
+		{
+			/// <summary>
+			/// Not dragging, mouse is up.
+			/// </summary>
+			Normal = 0,
 
-        
-        /// <summary>
-        /// The maximum amount of time represented by this TimelineControl.
-        /// </summary>
-        public TimeSpan MaximumTime
-        {
-            get { return pixelsToTime(this.AutoScrollMinSize.Width); }
-            set
-            {
-                AutoScrollMinSize = new Size(timeToPixels(value), AutoScrollMinSize.Height);
-                Invalidate();
-            }
-        }
+			/// <summary>
+			/// Mouse down, but hasn't moved past threshold yet to be considered dragging
+			/// </summary>
+			Waiting,
 
-        /// <summary>
-        /// The amount of time currently visible. Adjusting this implements zoom along the X (time) axis.
-        /// </summary>
-        public TimeSpan VisibleTimeSpan
-        {
-            get { return m_visibleTimeSpan; }
-            set
-            {
-                m_visibleTimeSpan = value;
-                Invalidate();
-            }
-            
-        }
+			/// <summary>
+			/// Actively dragging objects
+			/// </summary>
+			Dragging,
+		}
+		#endregion
 
-        /// <summary>
-        /// The time at the left of the control (the visible beginning).
-        /// </summary>
-        public TimeSpan VisibleTimeStart
-        {
-            get { return pixelsToTime(AutoScrollOffset.X); }
-            set
-            {
-                AutoScrollOffset = new Point(timeToPixels(value), AutoScrollOffset.Y);
-                Invalidate();
-            }
-        }
+
+		#region Initialization / Setup
+
+		public TimelineControl()
+		{
+			this.DoubleBuffered = true;
+			this.AutoScroll = true;
+			this.SetStyle(ControlStyles.ResizeRedraw, true);
+
+			// Reasonable defaults
+			m_visibleTimeSpan = TimeSpan.FromSeconds(10);
+			m_totalTime = TimeSpan.FromMinutes(2);
+
+			m_selectedElements = new TimelineElementCollection();
+			m_rows = new TimelineRowCollection();
+
+			m_snapPoints = new SortedDictionary<TimeSpan, int>();
+
+			m_rows.RowAdded += new EventHandler<RowAddedOrRemovedEventArgs>(m_rows_RowAdded);
+			m_rows.RowRemoved += new EventHandler<RowAddedOrRemovedEventArgs>(m_rows_RowRemoved);
+		}
+
+		public void SetDefaultOptions()
+		{
+			RowSeparatorColor = Color.Black;
+			GridlineInterval = TimeSpan.FromSeconds(1.0);
+			BorderStyle = BorderStyle.Fixed3D;
+			BackColor = Color.FromKnownColor(KnownColor.ControlDark);
+		}
+
+		protected override void OnLoad(EventArgs e)
+		{
+			base.OnLoad(e);
+			SetDefaultOptions();
+		}
+
+
+		protected override void OnScroll(ScrollEventArgs se)
+		{
+			base.OnScroll(se);
+			Invalidate();
+		}
+
+		#endregion
+
+
+		#region Time & Display properties and methods
+
+		/// <summary>
+		/// The maximum amount of time represented by this TimelineControl.
+		/// </summary>
+		public TimeSpan TotalTime
+		{
+			get { return m_totalTime; }
+			set
+			{
+				if (value <= TimeSpan.Zero)
+					return;
+
+				m_totalTime = value;
+				Invalidate();
+			}
+		}
+
+		/// <summary>
+		/// The amount of time currently visible. Adjusting this implements zoom along the X (time) axis.
+		/// </summary>
+		public TimeSpan VisibleTimeSpan
+		{
+			get { return m_visibleTimeSpan; }
+			set
+			{
+				m_visibleTimeSpan = value;
+				Invalidate();
+			}
+
+		}
+
+		/// <summary>
+		/// The time at the left of the control (the visible beginning).
+		/// </summary>
+		public TimeSpan VisibleTimeStart
+		{
+			get { return pixelsToTime(-AutoScrollPosition.X); }
+			set
+			{
+				if (value < TimeSpan.Zero)
+					return;
+
+				AutoScrollPosition = new Point(timeToPixels(value), -AutoScrollPosition.Y);
+				Invalidate();
+			}
+		}
 
 		public TimeSpan VisibleTimeEnd
 		{
 			get { return VisibleTimeStart + VisibleTimeSpan; }
+			set
+			{
+				VisibleTimeStart = value - VisibleTimeSpan;
+			}
 		}
 
-        /// <summary>
-        /// Gets the amount of time represented by one horizontal pixel.
-        /// </summary>
-        protected TimeSpan TimePerPixel
-        {
-            get { return TimeSpan.FromTicks(VisibleTimeSpan.Ticks / Width); }
-        }
+		/// <summary>
+		/// Gets the amount of time represented by one horizontal pixel.
+		/// </summary>
+		protected TimeSpan TimePerPixel
+		{
+			get { return TimeSpan.FromTicks(VisibleTimeSpan.Ticks / Width); }
+		}
 
-        
-        
-        // TODO JRR 8/16 - Right now, one can use SelectedElements.CollectionChanged to be 
-        // notified when the selection changes. However, it seems to be "noisy" - see test app
-        // output.  I propse adding a SelectionChanged event which filters this. Or try and
-        // clean up the code causing the noisy-ness (if possible).
-        private TimelineElementCollection m_selectedElements = new TimelineElementCollection();
-        public TimelineElementCollection SelectedElements { get { return m_selectedElements; } }
+		private int timeToPixels(TimeSpan t)
+		{
+			return (int)(t.Ticks / this.TimePerPixel.Ticks);
+		}
 
-        private TimelineRowCollection m_rows = new TimelineRowCollection();
-        public TimelineRowCollection Rows { get { return m_rows; } }
+		private TimeSpan pixelsToTime(int px)
+		{
+			return TimeSpan.FromTicks(px * this.TimePerPixel.Ticks);
+		}
 
-        void m_rows_RowAdded(object sender, RowAddedOrRemovedEventArgs e)
-        {
-            e.Row.ParentControl = this;
-        }
-
-        void m_rows_RowRemoved(object sender, RowAddedOrRemovedEventArgs e)
-        {
-            e.Row.ParentControl = null;
-        }
-
-        
+		#endregion
 
 
+		#region Row & Element properties and methods
+
+		// TODO JRR 8/16 - Right now, one can use SelectedElements.CollectionChanged to be 
+		// notified when the selection changes. However, it seems to be "noisy" - see test app
+		// output.  I propse adding a SelectionChanged event which filters this. Or try and
+		// clean up the code causing the noisy-ness (if possible).
+		public TimelineElementCollection SelectedElements { get { return m_selectedElements; } }
+		public TimelineRowCollection Rows { get { return m_rows; } }
+
+		void m_rows_RowAdded(object sender, RowAddedOrRemovedEventArgs e)
+		{
+			e.Row.ParentControl = this;
+		}
+
+		void m_rows_RowRemoved(object sender, RowAddedOrRemovedEventArgs e)
+		{
+			e.Row.ParentControl = null;
+		}
+
+		/// <summary>
+		/// Returns the element located at the current point in screen coordinates
+		/// </summary>
+		/// <param name="p">Screen coordinates</param>
+		/// <returns>Element at given point, or null if none exists.</returns>
+		protected TimelineElement elementAt(Point p)
+		{
+			// Translate 
+			// First figure out which row we are in
+			TimelineRow containingRow = null;
+			int curheight = 0;
+			foreach (var row in Rows) {
+				if (p.Y < curheight + row.Height) {
+					containingRow = row;
+					break;
+				}
+				curheight += row.Height;
+			}
+
+			if (containingRow == null)
+				return null;
+
+			// Now figure out which element we are on
+			foreach (var elem in containingRow.Elements) {
+				int elemX = timeToPixels(elem.Offset);
+				int elemW = timeToPixels(elem.Duration);
+				if (p.X >= elemX && p.X <= elemX + elemW)
+					return elem;
+			}
+
+			return null;
+		}
 
 
-        protected override void OnKeyPress(KeyPressEventArgs e)
-        {
-            //base.OnKeyPress(e);
+		public TimelineElementCollection ElementsAtTime(TimeSpan time)
+		{
+			TimelineElementCollection col = new TimelineElementCollection();
+			foreach (var row in Rows) {
+				foreach (var elem in row.Elements) {
+					if ((time >= elem.Offset) && (time <= (elem.Offset + elem.Duration)))
+						col.Add(elem);
+				}
+			}
 
-            if (e.KeyChar == (char)27)  // ESC
+			return col;
+		}
+
+		#endregion
+
+
+		#region UI: Keypresses, Mouse events, Selecting, Dragging, Snapping
+
+		private bool CtrlPressed { get { return Form.ModifierKeys.HasFlag(Keys.Control); } }
+
+		protected override void OnKeyPress(KeyPressEventArgs e)
+		{
+			if (e.KeyChar == (char)27)  // ESC
             {
-                SelectedElements.Clear();
-                endDrag();  // do this regardless of if we're dragging or not.
+				SelectedElements.Clear();
+				endDrag();  // do this regardless of if we're dragging or not.
 
-                this.Refresh();
-            }
-
-        }
-
-
-        #region Select / Drag
-
-        private const int DragThreshold = 4;
-        private enum DragState
-        {
-            /// <summary>
-            /// Not dragging, mouse is up.
-            /// </summary>
-            Normal = 0,
-
-            /// <summary>
-            /// Mouse down, but hasn't moved past threshold yet to be considered dragging
-            /// </summary>
-            Waiting,
-
-            /// <summary>
-            /// Actively dragging objects
-            /// </summary>
-            Dragging,
+				this.Refresh();
+			}
 		}
-        private DragState m_dragState = DragState.Normal;
 
-        private Point m_oldLoc;
-        private TimelineElement m_mouseDownElement = null;
-
-		// mapping of pixel location to a tuple of <snapped pixel location, snap level/priority>
-		private SortedDictionary<int, Tuple<int, int>> m_snapPixels;
-
-        private bool CtrlPressed { get { return Form.ModifierKeys.HasFlag(Keys.Control); } }
-
-        private void dragWait(Point location)
-        {
-            m_dragState = DragState.Waiting;
-            m_oldLoc = location;
+		private void dragWait(Point location)
+		{
+			m_dragState = DragState.Waiting;
+			m_oldLoc = location;
 
 			// calculate all the snap points (in pixels) for all selected elements
 			// for every visible drag point (and a width either side, so they can snap
@@ -216,164 +312,164 @@ namespace Timeline
 					}
 				}
 			}
-        }
+		}
 
-        private void beginDrag()
-        {
-            m_dragState = DragState.Dragging;
-            this.Cursor = Cursors.SizeAll;
-        }
+		private void beginDrag()
+		{
+			m_dragState = DragState.Dragging;
+			this.Cursor = Cursors.SizeAll;
+		}
 
-        private void endDrag()
-        {
-            m_dragState = DragState.Normal;
-            this.Cursor = Cursors.Default;
-        }
+		private void endDrag()
+		{
+			m_dragState = DragState.Normal;
+			this.Cursor = Cursors.Default;
+		}
 
-        /// <summary>
-        /// Translates a MouseEventArgs so that its coordinates represent the coordinates on the underlying timeline, taking into account scroll position.
-        /// </summary>
-        /// <param name="e"></param>
-        private void _translateMouseArgs(ref MouseEventArgs e)
-        {
-            // Translate this location based on the auto scroll position.
-            Point p = e.Location;
-            p.Offset(-AutoScrollPosition.X, -AutoScrollPosition.Y);
+		public bool AddSnapTime(TimeSpan time, int level)
+		{
+			if (m_snapPoints.ContainsKey(time))
+				return false;
 
-            // Just "fix" it :-)
-            e = new MouseEventArgs(e.Button, e.Clicks, p.X, p.Y, e.Delta);
-        }
+			m_snapPoints[time] = level;
+			return true;
+		}
 
-        protected override void OnMouseDown(MouseEventArgs e)
-        {
-            _translateMouseArgs(ref e);
+		public bool RemoveSnapTime(TimeSpan time)
+		{
+			return m_snapPoints.Remove(time);
+		}
 
-            m_mouseDownElement = elementAt(e.Location);
 
-            switch (e.Button)
+
+		/// <summary>
+		/// Translates a MouseEventArgs so that its coordinates represent the coordinates on the underlying timeline, taking into account scroll position.
+		/// </summary>
+		/// <param name="e"></param>
+		private void _translateMouseArgs(ref MouseEventArgs e)
+		{
+			// Translate this location based on the auto scroll position.
+			Point p = e.Location;
+			p.Offset(-AutoScrollPosition.X, -AutoScrollPosition.Y);
+
+			// Just "fix" it :-)
+			e = new MouseEventArgs(e.Button, e.Clicks, p.X, p.Y, e.Delta);
+		}
+
+		protected override void OnMouseDown(MouseEventArgs e)
+		{
+			_translateMouseArgs(ref e);
+
+			m_mouseDownElement = elementAt(e.Location);
+
+			switch (e.Button) {
+				case MouseButtons.Left:
+					OnLeftMouseDown(e);
+					break;
+				case MouseButtons.Middle:
+					break;
+				case MouseButtons.None:
+					break;
+				case MouseButtons.Right:
+					break;
+				case MouseButtons.XButton1:
+					break;
+				case MouseButtons.XButton2:
+					break;
+				default:
+					break;
+			}
+		}
+
+		protected override void OnMouseUp(MouseEventArgs e)
+		{
+			_translateMouseArgs(ref e);
+
+			switch (e.Button) {
+				case MouseButtons.Left:
+					OnLeftMouseUp(e);
+					break;
+				case MouseButtons.Middle:
+					break;
+				case MouseButtons.None:
+					break;
+				case MouseButtons.Right:
+					break;
+				case MouseButtons.XButton1:
+					break;
+				case MouseButtons.XButton2:
+					break;
+				default:
+					break;
+			}
+		}
+
+
+		private void OnLeftMouseDown(MouseEventArgs e)
+		{
+			// e is already translated.
+
+			if (m_mouseDownElement == null)   // we clicked nothing - clear selection
             {
-                case MouseButtons.Left:
-                    OnLeftMouseDown(e);
-                    break;
-                case MouseButtons.Middle:
-                    break;
-                case MouseButtons.None:
-                    break;
-                case MouseButtons.Right:
-                    break;
-                case MouseButtons.XButton1:
-                    break;
-                case MouseButtons.XButton2:
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            _translateMouseArgs(ref e);
-
-            switch (e.Button)
+				SelectedElements.Clear();
+			} else    // our mouse is down on something
             {
-                case MouseButtons.Left:
-                    OnLeftMouseUp(e);
-                    break;
-                case MouseButtons.Middle:
-                    break;
-                case MouseButtons.None:
-                    break;
-                case MouseButtons.Right:
-                    break;
-                case MouseButtons.XButton1:
-                    break;
-                case MouseButtons.XButton2:
-                    break;
-                default:
-                    break;
-            }
-        }
+				if (m_mouseDownElement.IsSelected) {
+					// unselect
+					if (CtrlPressed)
+						SelectedElements.Remove(m_mouseDownElement);
+				} else {
+					// select
+					if (!CtrlPressed)
+						SelectedElements.Clear();
+					SelectedElements.AddUnique(m_mouseDownElement);
+				}
+
+				dragWait(e.Location);
+			}
+			this.Refresh();
+		}
 
 
-        private void OnLeftMouseDown(MouseEventArgs e)
-        {
-            // e is already translated.
+		private void OnLeftMouseUp(MouseEventArgs e)
+		{
+			// e is already translated
 
-            if (m_mouseDownElement == null)   // we clicked nothing - clear selection
-            {
-                SelectedElements.Clear();
-            }
-            else    // our mouse is down on something
-            {
-                if (m_mouseDownElement.IsSelected)
-                {
-                    // unselect
-                    if (CtrlPressed)
-                        SelectedElements.Remove(m_mouseDownElement);
-                }
-                else
-                {
-                    // select
-                    if (!CtrlPressed)
-                        SelectedElements.Clear();
-                    SelectedElements.AddUnique(m_mouseDownElement);
-                }
+			if (m_dragState == DragState.Dragging) {
+				if (ElementsMoved != null) {
+					MultiElementEventArgs evargs = new MultiElementEventArgs();
+					evargs.Elements = new TimelineElementCollection();
+					foreach (var elem in SelectedElements)
+						evargs.Elements.Add(elem);
+					ElementsMoved(this, evargs);
+				}
 
-                dragWait(e.Location);
-            }
-            this.Refresh();
-        }
+			} else {
+				// If we're not dragging on mouse up, it could be a click on one of multiple
+				// selected elements. (In which case we select only that one)
+				if (m_mouseDownElement != null && !CtrlPressed) {
+					SelectedElements.Clear();
+					SelectedElements.Add(m_mouseDownElement);
+				}
+			}
 
+			endDrag();  // we always do this, even if we weren't dragging.
 
+			this.Refresh();
+		}
 
-        public event EventHandler<MultiElementEventArgs> ElementsMoved;
-
-        private void OnLeftMouseUp(MouseEventArgs e)
-        {
-            // e is already translated
-
-            if (m_dragState == DragState.Dragging)
-            {
-                if (ElementsMoved != null)
-                {
-                    MultiElementEventArgs evargs = new MultiElementEventArgs();
-                    evargs.Elements = new TimelineElementCollection();
-                    foreach (var elem in SelectedElements)
-                        evargs.Elements.Add(elem);
-                    ElementsMoved(this, evargs);
-                }
-                
-            }
-            else
-            {
-                // If we're not dragging on mouse up, it could be a click on one of multiple
-                // selected elements. (In which case we select only that one)
-                if (m_mouseDownElement != null && !CtrlPressed)
-                {
-                    SelectedElements.Clear();
-                    SelectedElements.Add(m_mouseDownElement);
-                }
-            }
-
-            endDrag();  // we always do this, even if we weren't dragging.
-
-            this.Refresh();
-        }
-
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            if (m_dragState == DragState.Normal)
-                return;
+		protected override void OnMouseMove(MouseEventArgs e)
+		{
+			if (m_dragState == DragState.Normal)
+				return;
 
 			_translateMouseArgs(ref e);
 
-            if (m_dragState == DragState.Waiting)
-            {
-                if (Math.Abs(e.X - m_oldLoc.X) > DragThreshold)
-                    beginDrag();
-            }
-            if (m_dragState == DragState.Dragging)
-            {
+			if (m_dragState == DragState.Waiting) {
+				if (Math.Abs(e.X - m_oldLoc.X) > DragThreshold)
+					beginDrag();
+			}
+			if (m_dragState == DragState.Dragging) {
 				/*
                 // Determine if the mouse has moved outside the control.
                 int dragOutX = 0;   // How far outside (used for scroll speed)
@@ -408,87 +504,86 @@ namespace Timeline
 				int dX = updatedX - m_oldLoc.X;
 				m_oldLoc.X = updatedX;
 
-                int dY = e.Y - m_oldLoc.Y;
-                m_oldLoc.Y = e.Y;
+				int dY = e.Y - m_oldLoc.Y;
+				m_oldLoc.Y = e.Y;
 
 				if (dX != 0) {
 					foreach (var elem in SelectedElements) {
 						elem.Offset += pixelsToTime(dX);
 					}
 				}
-            }
+			}
 
-            this.Refresh();
+			this.Refresh();
 
-        }
+		}
 
-        protected override void OnMouseClick(MouseEventArgs e)
-        {
-            //base.OnMouseClick(e);
-        }
+		protected override void OnMouseClick(MouseEventArgs e)
+		{
+			//base.OnMouseClick(e);
+		}
 
-        protected override void  OnMouseDoubleClick(MouseEventArgs e)
-        {
-            _translateMouseArgs(ref e);
+		protected override void OnMouseDoubleClick(MouseEventArgs e)
+		{
+			_translateMouseArgs(ref e);
 
-            TimelineElement elem = elementAt(e.Location);
+			TimelineElement elem = elementAt(e.Location);
 
-            if (elem != null)
-            {
-                if (ElementDoubleClicked != null)
-                    ElementDoubleClicked(this, new ElementEventArgs() { Element = elem });
-            }
-            else
-            {
-                // Raise the base class event, b/c the control was clicked, not an element in it.
-                base.OnMouseDoubleClick(e);
-            }
-        }
+			if (elem != null) {
+				if (ElementDoubleClicked != null)
+					ElementDoubleClicked(this, new ElementEventArgs() { Element = elem });
+			} else {
+				// Raise the base class event, b/c the control was clicked, not an element in it.
+				base.OnMouseDoubleClick(e);
+			}
+		}
 
-        /// <summary>
-        /// Occurs when an element is double clicked.
-        /// </summary>
-        public event EventHandler<ElementEventArgs> ElementDoubleClicked;
+		#endregion
 
 
-        #endregion
+		#region Drawing methods & properties
+
+		public Color RowSeparatorColor { get; set; }
+		public TimeSpan GridlineInterval { get; set; }
+
+		private void _drawTimeline(Graphics g)
+		{
+			SolidBrush brush = new SolidBrush(Color.CadetBlue);
+			g.FillRectangle(brush, 0, 0, Width, Height);
 
 
+		}
 
+		private int _drawRows(Graphics g)
+		{
+			// Draw row separators
+			int curY = 0;
+			Pen p = new Pen(RowSeparatorColor);
+			foreach (var row in Rows) {
+				curY += row.Height;
+				Point left = new Point((-AutoScrollPosition.X), curY);
+				Point right = new Point((-AutoScrollPosition.X) + Width, curY);
+				g.DrawLine(p, left, right);
+			}
 
-
-        #region Drawing
-
-        private void _drawRows(Graphics g)
-        {
-            // Draw row separators
-                int curY = 0;
-                Pen p = new Pen(RowSeparatorColor);
-                foreach (var row in Rows)
-                {
-                    curY += row.Height;
-                    Point left = new Point(0, curY);
-                    Point right = new Point(this.Width, curY);
-                    g.DrawLine(p, left, right);
-                }
-        }
+			return curY;
+		}
 
 		private void _drawGridlines(Graphics g)
 		{
 			// Draw vertical gridlines
 			int interval = timeToPixels(GridlineInterval);
 
-            // calculate first tick - (it is the first multiple of interval greater than start)
-            // believe it or not, this math is correct :-)
-            int start = (-AutoScrollPosition.X) / interval * interval + interval;
+			// calculate first tick - (it is the first multiple of interval greater than start)
+			// believe it or not, this math is correct :-)
+			int start = (-AutoScrollPosition.X) / interval * interval + interval;
 
-            for (int x = start; x < start + Width; x += interval)
-            {
-                Pen p = new Pen(Color.Black);
-                p.DashStyle = DashStyle.Dash;
-                g.DrawLine(p, x, 0, x, Height);
+			for (int x = start; x < start + Width; x += interval) {
+				Pen p = new Pen(Color.Black);
+				p.DashStyle = DashStyle.Dash;
+				g.DrawLine(p, x, (-AutoScrollPosition.Y), x, (-AutoScrollPosition.Y) + Height);
 
-            }
+			}
 		}
 
 		private void _drawSnapPoints(Graphics g)
@@ -506,174 +601,84 @@ namespace Timeline
 		}
 
 		private void _drawElements(Graphics g)
-        {
-            // Draw each row
-            int top = 0;    // y-coord of top of current row
-            foreach (var row in Rows)
-            {
-                // Draw each element
-                foreach (var element in row.Elements)
-                {
-                    // Apparently you can only restore a state once. Doing this before the loop
-                    // has no effect on the second iteration g.Restore().
-                    GraphicsState state = g.Save();
+		{
+			// Draw each row
+			int top = 0;    // y-coord of top of current row
+			foreach (var row in Rows) {
+				// Draw each element
+				foreach (var element in row.Elements) {
+					// Apparently you can only restore a state once. Doing this before the loop
+					// has no effect on the second iteration g.Restore().
+					GraphicsState state = g.Save();
 
-                    DrawElementOptions options = DrawElementOptions.Normal;
+					DrawElementOptions options = DrawElementOptions.Normal;
 
-                    if (SelectedElements.Contains(element))
-                        options |= DrawElementOptions.Selected;
+					if (SelectedElements.Contains(element))
+						options |= DrawElementOptions.Selected;
 
-                    Point location = new Point(timeToPixels(element.Offset), top);
-                    Size size = new Size(timeToPixels(element.Duration), row.Height);
+					Point location = new Point(timeToPixels(element.Offset), top);
+					Size size = new Size(timeToPixels(element.Duration), row.Height);
 
-                    // Translate the graphics so the element can draw at (0,0)
-                    g.TranslateTransform(location.X, location.Y);
+					// Translate the graphics so the element can draw at (0,0)
+					g.TranslateTransform(location.X, location.Y);
 
-                    // Calculate the rectangle this element is to be drawn in.
-                    Rectangle rect = new Rectangle(0, 0, size.Width, size.Height);
+					// Calculate the rectangle this element is to be drawn in.
+					Rectangle rect = new Rectangle(0, 0, size.Width, size.Height);
 
-                    // Prevent the element from drawing outside its bounds
-                    g.Clip = new System.Drawing.Region(rect);
+					// Prevent the element from drawing outside its bounds
+					g.Clip = new System.Drawing.Region(rect);
 
-                    element.Draw(g, rect, options);
+					element.Draw(g, rect, options);
 
-                    g.Restore(state);   
-                }
+					g.Restore(state);
+				}
 
-                top += row.Height;  // next row starts just below this row
-            }
-        }
+				top += row.Height;  // next row starts just below this row
+			}
+		}
 
 
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            try
-            {
-                _drawRows(e.Graphics);      // We can draw this pre-translation.
+		protected override void OnPaint(PaintEventArgs e)
+		{
+			try {
+				Region a = e.Graphics.Clip;
+				RectangleF b = e.Graphics.ClipBounds;
+				RectangleF c = e.Graphics.VisibleClipBounds;
 
-                
+				GraphicsContainer timelineContainer = e.Graphics.BeginContainer(
+					new Rectangle(0, 0, Width, m_timelineHeight),
+					new Rectangle(0, 0, Width, Height),
+					GraphicsUnit.Pixel);
 
-                e.Graphics.TranslateTransform(this.AutoScrollPosition.X, this.AutoScrollPosition.Y);
+				Region d = e.Graphics.Clip;
+				RectangleF f = e.Graphics.ClipBounds;
+				RectangleF g = e.Graphics.VisibleClipBounds;
+
+				_drawTimeline(e.Graphics);
+
+				e.Graphics.EndContainer(timelineContainer);
+
+
+				e.Graphics.TranslateTransform(this.AutoScrollPosition.X, this.AutoScrollPosition.Y);
+				int totalHeight = _drawRows(e.Graphics);
+
+				AutoScrollMinSize = new Size(timeToPixels(m_totalTime), totalHeight);
+
 				_drawGridlines(e.Graphics);
 				_drawSnapPoints(e.Graphics);
 				_drawElements(e.Graphics);
 
-                base.OnPaint(e);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Unhandled Exception while drawing TimelineControl:\n\n" + ex.Message);
-                throw;
-            }
-        }
-
-        #endregion
-
-
-
-
-        #region Utility Functions
-        private int timeToPixels(TimeSpan t)
-        {
-            return (int)(t.Ticks / this.TimePerPixel.Ticks);
-        }
-
-        private TimeSpan pixelsToTime(int px)
-        {
-            return TimeSpan.FromTicks(px * this.TimePerPixel.Ticks);
-        }
-
-
-        /// <summary>
-        /// Returns the element located at the current point in screen coordinates
-        /// </summary>
-        /// <param name="p">Screen coordinates</param>
-        /// <returns>Element at given point, or null if none exists.</returns>
-        protected TimelineElement elementAt(Point p)
-        {
-            // Translate 
-            // First figure out which row we are in
-            TimelineRow containingRow = null;
-            int curheight = 0;
-            foreach (var row in Rows)
-            {
-                if (p.Y < curheight + row.Height)
-                {
-                    containingRow = row;
-                    break;
-                }
-                curheight += row.Height;
-            }
-
-            if (containingRow == null)
-                return null;
-
-            // Now figure out which element we are on
-            foreach (var elem in containingRow.Elements)
-            {
-                int elemX = timeToPixels(elem.Offset);
-                int elemW = timeToPixels(elem.Duration);
-                if (p.X >= elemX && p.X <= elemX + elemW)
-                    return elem;
-            }
-
-            return null;
-        }
-
-        #endregion
-
-
-		#region Snapping implementation
-
-		private SortedDictionary<TimeSpan, int> m_snapPoints = new SortedDictionary<TimeSpan, int>();
-
-		public bool AddSnapTime(TimeSpan time, int level)
-		{
-			if (m_snapPoints.ContainsKey(time))
-				return false;
-
-			m_snapPoints[time] = level;
-			return true;
+				base.OnPaint(e);
+			} catch (Exception ex) {
+				MessageBox.Show("Unhandled Exception while drawing TimelineControl:\n\n" + ex.Message);
+				throw;
+			}
 		}
-
-		public bool RemoveSnapTime(TimeSpan time)
-		{
-			return m_snapPoints.Remove(time);
-		}
-
 
 		#endregion
 
-        #region Options
-        public void SetDefaultOptions()
-        {
-            RowSeparatorColor = Color.Black;
-            GridlineInterval = TimeSpan.FromSeconds(1.0);
-            BorderStyle = BorderStyle.Fixed3D;
-            BackColor = Color.FromKnownColor(KnownColor.ControlDark);
-        }
-        public Color RowSeparatorColor { get; set; }
-        public TimeSpan GridlineInterval { get; set; }
-        #endregion
 
-        public TimelineElementCollection ElementsAtTime(TimeSpan time)
-        {
-            TimelineElementCollection col = new TimelineElementCollection();
-            foreach (var row in Rows)
-            {
-                foreach (var elem in row.Elements)
-                {
-                    if ((time >= elem.Offset) && (time <= (elem.Offset + elem.Duration)))
-                        col.Add(elem);
-                }
-            }
-
-            return col;
-        }
-
-    }
-
-
+	}
 
     [Flags]
     public enum DrawElementOptions

@@ -28,72 +28,121 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.buttonElemAt = new System.Windows.Forms.Button();
-            this.buttonReset = new System.Windows.Forms.Button();
-            this.tc = new Timeline.TimelineControl();
-            this.textBoxLog = new System.Windows.Forms.TextBox();
-            this.SuspendLayout();
-            // 
-            // buttonElemAt
-            // 
-            this.buttonElemAt.Location = new System.Drawing.Point(13, 597);
-            this.buttonElemAt.Name = "buttonElemAt";
-            this.buttonElemAt.Size = new System.Drawing.Size(115, 23);
-            this.buttonElemAt.TabIndex = 0;
-            this.buttonElemAt.Text = "Elements at 0:02";
-            this.buttonElemAt.UseVisualStyleBackColor = true;
-            this.buttonElemAt.Click += new System.EventHandler(this.buttonElemAt_Click);
-            // 
-            // buttonReset
-            // 
-            this.buttonReset.Location = new System.Drawing.Point(145, 596);
-            this.buttonReset.Name = "buttonReset";
-            this.buttonReset.Size = new System.Drawing.Size(75, 23);
-            this.buttonReset.TabIndex = 1;
-            this.buttonReset.Text = "Reset";
-            this.buttonReset.UseVisualStyleBackColor = true;
-            this.buttonReset.Click += new System.EventHandler(this.buttonReset_Click);
-            // 
-            // tc
-            // 
-            this.tc.AutoScroll = true;
-            this.tc.AutoScrollOffset = new System.Drawing.Point(453, 0);
-            this.tc.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.tc.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.tc.GridlineInterval = System.TimeSpan.Parse("00:00:01");
-            this.tc.Location = new System.Drawing.Point(13, 12);
-            this.tc.MaximumTime = System.TimeSpan.Parse("00:00:00");
-            this.tc.Name = "tc";
-            this.tc.RowSeparatorColor = System.Drawing.Color.Black;
-            this.tc.Size = new System.Drawing.Size(906, 438);
-            this.tc.TabIndex = 2;
-            this.tc.VisibleTimeSpan = System.TimeSpan.Parse("00:00:10");
-            this.tc.VisibleTimeStart = System.TimeSpan.Parse("00:00:04.9999875");
-            // 
-            // textBoxLog
-            // 
-            this.textBoxLog.Location = new System.Drawing.Point(395, 533);
-            this.textBoxLog.Multiline = true;
-            this.textBoxLog.Name = "textBoxLog";
-            this.textBoxLog.ReadOnly = true;
-            this.textBoxLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxLog.Size = new System.Drawing.Size(524, 86);
-            this.textBoxLog.TabIndex = 3;
-            // 
-            // Form1
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(931, 641);
-            this.Controls.Add(this.textBoxLog);
-            this.Controls.Add(this.tc);
-            this.Controls.Add(this.buttonReset);
-            this.Controls.Add(this.buttonElemAt);
-            this.Name = "Form1";
-            this.Text = "Form1";
-            this.ResumeLayout(false);
-            this.PerformLayout();
+			this.buttonElemAt = new System.Windows.Forms.Button();
+			this.buttonReset = new System.Windows.Forms.Button();
+			this.textBoxLog = new System.Windows.Forms.TextBox();
+			this.buttonZoomIn = new System.Windows.Forms.Button();
+			this.buttonZoomOut = new System.Windows.Forms.Button();
+			this.buttonGenericDebug = new System.Windows.Forms.Button();
+			this.buttonGenericDebug2 = new System.Windows.Forms.Button();
+			this.tc = new Timeline.TimelineControl();
+			this.SuspendLayout();
+			// 
+			// buttonElemAt
+			// 
+			this.buttonElemAt.Location = new System.Drawing.Point(13, 597);
+			this.buttonElemAt.Name = "buttonElemAt";
+			this.buttonElemAt.Size = new System.Drawing.Size(115, 23);
+			this.buttonElemAt.TabIndex = 0;
+			this.buttonElemAt.Text = "Elements at 0:02";
+			this.buttonElemAt.UseVisualStyleBackColor = true;
+			this.buttonElemAt.Click += new System.EventHandler(this.buttonElemAt_Click);
+			// 
+			// buttonReset
+			// 
+			this.buttonReset.Location = new System.Drawing.Point(145, 596);
+			this.buttonReset.Name = "buttonReset";
+			this.buttonReset.Size = new System.Drawing.Size(75, 23);
+			this.buttonReset.TabIndex = 1;
+			this.buttonReset.Text = "Reset";
+			this.buttonReset.UseVisualStyleBackColor = true;
+			this.buttonReset.Click += new System.EventHandler(this.buttonReset_Click);
+			// 
+			// textBoxLog
+			// 
+			this.textBoxLog.Location = new System.Drawing.Point(395, 472);
+			this.textBoxLog.Multiline = true;
+			this.textBoxLog.Name = "textBoxLog";
+			this.textBoxLog.ReadOnly = true;
+			this.textBoxLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.textBoxLog.Size = new System.Drawing.Size(524, 147);
+			this.textBoxLog.TabIndex = 3;
+			// 
+			// buttonZoomIn
+			// 
+			this.buttonZoomIn.Location = new System.Drawing.Point(12, 554);
+			this.buttonZoomIn.Name = "buttonZoomIn";
+			this.buttonZoomIn.Size = new System.Drawing.Size(75, 23);
+			this.buttonZoomIn.TabIndex = 4;
+			this.buttonZoomIn.Text = "Zoom In";
+			this.buttonZoomIn.UseVisualStyleBackColor = true;
+			this.buttonZoomIn.Click += new System.EventHandler(this.buttonZoomIn_Click);
+			// 
+			// buttonZoomOut
+			// 
+			this.buttonZoomOut.Location = new System.Drawing.Point(104, 554);
+			this.buttonZoomOut.Name = "buttonZoomOut";
+			this.buttonZoomOut.Size = new System.Drawing.Size(75, 23);
+			this.buttonZoomOut.TabIndex = 5;
+			this.buttonZoomOut.Text = "Zoom Out";
+			this.buttonZoomOut.UseVisualStyleBackColor = true;
+			this.buttonZoomOut.Click += new System.EventHandler(this.buttonZoomOut_Click);
+			// 
+			// buttonGenericDebug
+			// 
+			this.buttonGenericDebug.Location = new System.Drawing.Point(234, 533);
+			this.buttonGenericDebug.Name = "buttonGenericDebug";
+			this.buttonGenericDebug.Size = new System.Drawing.Size(119, 44);
+			this.buttonGenericDebug.TabIndex = 6;
+			this.buttonGenericDebug.Text = "Generic Debug";
+			this.buttonGenericDebug.UseVisualStyleBackColor = true;
+			this.buttonGenericDebug.Click += new System.EventHandler(this.buttonGenericDebug_Click);
+			// 
+			// buttonGenericDebug2
+			// 
+			this.buttonGenericDebug2.Location = new System.Drawing.Point(234, 483);
+			this.buttonGenericDebug2.Name = "buttonGenericDebug2";
+			this.buttonGenericDebug2.Size = new System.Drawing.Size(119, 44);
+			this.buttonGenericDebug2.TabIndex = 7;
+			this.buttonGenericDebug2.Text = "Generic Debug 2";
+			this.buttonGenericDebug2.UseVisualStyleBackColor = true;
+			this.buttonGenericDebug2.Click += new System.EventHandler(this.buttonGenericDebug2_Click);
+			// 
+			// tc
+			// 
+			this.tc.AutoScroll = true;
+			this.tc.AutoScrollMinSize = new System.Drawing.Size(2718, 0);
+			this.tc.BackColor = System.Drawing.SystemColors.ControlDark;
+			this.tc.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.tc.GridlineInterval = System.TimeSpan.Parse("00:00:01");
+			this.tc.Location = new System.Drawing.Point(13, 12);
+			this.tc.Name = "tc";
+			this.tc.RowSeparatorColor = System.Drawing.Color.Black;
+			this.tc.Size = new System.Drawing.Size(906, 438);
+			this.tc.TabIndex = 2;
+			this.tc.TotalTime = System.TimeSpan.Parse("00:00:29.9999250");
+			this.tc.VisibleTimeEnd = System.TimeSpan.Parse("00:00:10");
+			this.tc.VisibleTimeSpan = System.TimeSpan.Parse("00:00:10");
+			this.tc.VisibleTimeStart = System.TimeSpan.Parse("00:00:00");
+			// 
+			// Form1
+			// 
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.BackColor = System.Drawing.SystemColors.Control;
+			this.ClientSize = new System.Drawing.Size(931, 641);
+			this.Controls.Add(this.buttonGenericDebug2);
+			this.Controls.Add(this.buttonGenericDebug);
+			this.Controls.Add(this.buttonZoomOut);
+			this.Controls.Add(this.buttonZoomIn);
+			this.Controls.Add(this.textBoxLog);
+			this.Controls.Add(this.tc);
+			this.Controls.Add(this.buttonReset);
+			this.Controls.Add(this.buttonElemAt);
+			this.Name = "Form1";
+			this.Text = "Form1";
+			this.ResumeLayout(false);
+			this.PerformLayout();
 
         }
 
@@ -103,6 +152,10 @@
         private System.Windows.Forms.Button buttonReset;
         private TimelineControl tc;
         private System.Windows.Forms.TextBox textBoxLog;
+		private System.Windows.Forms.Button buttonZoomIn;
+		private System.Windows.Forms.Button buttonZoomOut;
+		private System.Windows.Forms.Button buttonGenericDebug;
+		private System.Windows.Forms.Button buttonGenericDebug2;
     }
 }
 
