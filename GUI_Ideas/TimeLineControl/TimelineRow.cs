@@ -12,8 +12,8 @@ namespace Timeline
 
         public TimelineRow()
         {
-            m_elements.ElementAdded += new EventHandler<ElementAddedOrRemovedEventArgs>(m_elements_ElementAdded);
-            m_elements.ElementRemoved += new EventHandler<ElementAddedOrRemovedEventArgs>(m_elements_ElementRemoved);
+            m_elements.ElementAdded += new EventHandler<ElementEventArgs>(m_elements_ElementAdded);
+            m_elements.ElementRemoved += new EventHandler<ElementEventArgs>(m_elements_ElementRemoved);
         }
 
         #region Properties
@@ -54,7 +54,7 @@ namespace Timeline
         #endregion
 
         // Event handlers to forward the added/removed events up from the collection
-        protected void m_elements_ElementAdded(object sender, ElementAddedOrRemovedEventArgs e)
+        protected void m_elements_ElementAdded(object sender, ElementEventArgs e)
         {
             e.Element.ParentRow = this;
             if (ElementAdded != null)
@@ -63,7 +63,7 @@ namespace Timeline
             updateParent();
         }
 
-        protected void m_elements_ElementRemoved(object sender, ElementAddedOrRemovedEventArgs e)
+        protected void m_elements_ElementRemoved(object sender, ElementEventArgs e)
         {
             e.Element.ParentRow = null;
             if (ElementRemoved != null)
@@ -73,8 +73,8 @@ namespace Timeline
         }
 
         // These events are forwarded up from the internal container
-        internal event EventHandler<ElementAddedOrRemovedEventArgs> ElementAdded;
-        internal event EventHandler<ElementAddedOrRemovedEventArgs> ElementRemoved;
+        internal event EventHandler<ElementEventArgs> ElementAdded;
+        internal event EventHandler<ElementEventArgs> ElementRemoved;
 
 
         private void updateParent()

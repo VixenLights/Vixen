@@ -5,37 +5,28 @@ using System.Collections.Generic;
 using System.Drawing.Drawing2D;
 using System.Text;
 using System.Diagnostics;
+using System.ComponentModel;
 
 
 namespace Timeline
 {
     public class TimelineControl : UserControl
     {
+        private TimeSpan m_visibleTimeSpan;
+
+
         public TimelineControl()
         {
-            
-
             this.DoubleBuffered = true;
+            this.AutoScroll = true;
+            this.SetStyle(ControlStyles.ResizeRedraw, true);
+
+            // Reasonable defaults
+            m_visibleTimeSpan = TimeSpan.FromSeconds(10);
+            this.MaximumTime = TimeSpan.FromMinutes(2);
 
             m_rows.RowAdded += new EventHandler<RowAddedOrRemovedEventArgs>(m_rows_RowAdded);
             m_rows.RowRemoved += new EventHandler<RowAddedOrRemovedEventArgs>(m_rows_RowRemoved);
-
-            /*
-            // How the hell do I get this scrolling to not return to zero?
-            this.Scroll += new ScrollEventHandler(TimelineControl_Scroll);
-
-            this.HorizontalScroll.Enabled = true;
-            this.HorizontalScroll.Visible = true;
-            this.HorizontalScroll.Minimum = 0;
-
-            this.VerticalScroll.Enabled = false;
-            this.VerticalScroll.Visible = true;
-
-            this.AutoScroll = false;
-             */
-
-            this.AutoScroll = true;
-            this.SetStyle(ControlStyles.ResizeRedraw, true);
         }
 
         protected override void OnLoad(EventArgs e)
@@ -43,10 +34,6 @@ namespace Timeline
             base.OnLoad(e);
 
             SetDefaultOptions();
-
-            // These must be initialized in this order, otherwise divide by zero occurrs.
-            VisibleTimeSpan = TimeSpan.FromSeconds(10.0);
-            MaximumTime = TimeSpan.FromSeconds(60.0);
         }
 
 
@@ -57,10 +44,6 @@ namespace Timeline
         }
 
 
-        //void TimelineControl_Scroll(object sender, ScrollEventArgs e)
-        //{
-        //    System.Diagnostics.Debug.WriteLine("this.Scroll: {0}", e.NewValue);
-        //}
 
         
 
@@ -70,31 +53,39 @@ namespace Timeline
         /// </summary>
         public TimeSpan MaximumTime
         {
-            /*
-            get { return pixelsToTime(HorizontalScroll.Maximum); }
-            set { HorizontalScroll.Maximum = timeToPixels(value); }
-             */
-
             get { return pixelsToTime(this.AutoScrollMinSize.Width); }
-            set { AutoScrollMinSize = new Size(timeToPixels(value), AutoScrollMinSize.Height); }
+            set
+            {
+                AutoScrollMinSize = new Size(timeToPixels(value), AutoScrollMinSize.Height);
+                Invalidate();
+            }
         }
 
         /// <summary>
         /// The amount of time currently visible. Adjusting this implements zoom along the X (time) axis.
         /// </summary>
-        public TimeSpan VisibleTimeSpan { get; set; }
+        public TimeSpan VisibleTimeSpan
+        {
+            get { return m_visibleTimeSpan; }
+            set
+            {
+                m_visibleTimeSpan = value;
+                Invalidate();
+            }
+            
+        }
 
         /// <summary>
         /// The time at the left of the control (the visible beginning).
         /// </summary>
         public TimeSpan VisibleTimeStart
         {
-            /*
-            get { return pixelsToTime(HorizontalScroll.Value); }
-            set { HorizontalScroll.Value = timeToPixels(value); }
-             */
             get { return pixelsToTime(AutoScrollOffset.X); }
-            set { AutoScrollOffset = new Point(timeToPixels(value), AutoScrollOffset.Y); }
+            set
+            {
+                AutoScrollOffset = new Point(timeToPixels(value), AutoScrollOffset.Y);
+                Invalidate();
+            }
         }
 
 		public TimeSpan VisibleTimeEnd
@@ -112,11 +103,14 @@ namespace Timeline
 
         
         
-
+        // TODO JRR 8/16 - Right now, one can use SelectedElements.CollectionChanged to be 
+        // notified when the selection changes. However, it seems to be "noisy" - see test app
+        // output.  I propse adding a SelectionChanged event which filters this. Or try and
+        // clean up the code causing the noisy-ness (if possible).
         private TimelineElementCollection m_selectedElements = new TimelineElementCollection();
         public TimelineElementCollection SelectedElements { get { return m_selectedElements; } }
 
-        protected TimelineRowCollection m_rows = new TimelineRowCollection();
+        private TimelineRowCollection m_rows = new TimelineRowCollection();
         public TimelineRowCollection Rows { get { return m_rows; } }
 
         void m_rows_RowAdded(object sender, RowAddedOrRemovedEventArgs e)
@@ -129,6 +123,7 @@ namespace Timeline
             e.Row.ParentControl = null;
         }
 
+        
 
 
 
@@ -146,6 +141,7 @@ namespace Timeline
             }
 
         }
+
 
         #region Select / Drag
 
@@ -234,6 +230,10 @@ namespace Timeline
             this.Cursor = Cursors.Default;
         }
 
+        /// <summary>
+        /// Translates a MouseEventArgs so that its coordinates represent the coordinates on the underlying timeline, taking into account scroll position.
+        /// </summary>
+        /// <param name="e"></param>
         private void _translateMouseArgs(ref MouseEventArgs e)
         {
             // Translate this location based on the auto scroll position.
@@ -294,6 +294,7 @@ namespace Timeline
             }
         }
 
+
         private void OnLeftMouseDown(MouseEventArgs e)
         {
             // e is already translated.
@@ -323,7 +324,9 @@ namespace Timeline
             this.Refresh();
         }
 
-        public event EventHandler<ElementMovedEventArgs> ElementsMoved;
+
+
+        public event EventHandler<MultiElementEventArgs> ElementsMoved;
 
         private void OnLeftMouseUp(MouseEventArgs e)
         {
@@ -333,10 +336,10 @@ namespace Timeline
             {
                 if (ElementsMoved != null)
                 {
-                    ElementMovedEventArgs evargs = new ElementMovedEventArgs();
-                    evargs.MovedElements = new TimelineElementCollection();
+                    MultiElementEventArgs evargs = new MultiElementEventArgs();
+                    evargs.Elements = new TimelineElementCollection();
                     foreach (var elem in SelectedElements)
-                        evargs.MovedElements.Add(elem);
+                        evargs.Elements.Add(elem);
                     ElementsMoved(this, evargs);
                 }
                 
@@ -371,6 +374,29 @@ namespace Timeline
             }
             if (m_dragState == DragState.Dragging)
             {
+				/*
+                // Determine if the mouse has moved outside the control.
+                int dragOutX = 0;   // How far outside (used for scroll speed)
+                if (e.X < 0)
+                    dragOutX = e.X;
+                else if (e.X > this.Width)
+                    dragOutX = e.X - this.Width;
+
+                int dragOutY = 0;   // How far outside (used for scroll speed)
+                if (e.Y < 0)
+                    dragOutY = e.Y;
+                else if (e.Y > this.Height)
+                    dragOutY = e.Y - this.Height;
+
+                if (dragOutX != 0 || dragOutY != 0)
+                    Debug.WriteLine("dragOutX = {0}   dragOutY = {1}", dragOutX, dragOutY);
+                
+                
+                // Calculate delta to move element
+                int dX = e.X - m_oldLoc.X;
+                m_oldLoc.X = e.X;
+				*/
+
 				int updatedX = e.X;
 
 				// if the cursor position is in a snap location, change the position
@@ -395,7 +421,40 @@ namespace Timeline
             this.Refresh();
 
         }
+
+        protected override void OnMouseClick(MouseEventArgs e)
+        {
+            //base.OnMouseClick(e);
+        }
+
+        protected override void  OnMouseDoubleClick(MouseEventArgs e)
+        {
+            _translateMouseArgs(ref e);
+
+            TimelineElement elem = elementAt(e.Location);
+
+            if (elem != null)
+            {
+                if (ElementDoubleClicked != null)
+                    ElementDoubleClicked(this, new ElementEventArgs() { Element = elem });
+            }
+            else
+            {
+                // Raise the base class event, b/c the control was clicked, not an element in it.
+                base.OnMouseDoubleClick(e);
+            }
+        }
+
+        /// <summary>
+        /// Occurs when an element is double clicked.
+        /// </summary>
+        public event EventHandler<ElementEventArgs> ElementDoubleClicked;
+
+
         #endregion
+
+
+
 
 
         #region Drawing
@@ -419,16 +478,17 @@ namespace Timeline
 			// Draw vertical gridlines
 			int interval = timeToPixels(GridlineInterval);
 
-			// calculate first tick - (it is the first multiple of interval greater than start)
-			// believe it or not, this math is correct :-)
-			int start = HorizontalScroll.Value / interval * interval + interval;
+            // calculate first tick - (it is the first multiple of interval greater than start)
+            // believe it or not, this math is correct :-)
+            int start = (-AutoScrollPosition.X) / interval * interval + interval;
 
-			for (int x = start; x < start + Width; x += interval) {
-				Pen p = new Pen(Color.Black);
-				p.DashStyle = DashStyle.Dash;
-				g.DrawLine(p, x, 0, x, Height);
-			}
+            for (int x = start; x < start + Width; x += interval)
+            {
+                Pen p = new Pen(Color.Black);
+                p.DashStyle = DashStyle.Dash;
+                g.DrawLine(p, x, 0, x, Height);
 
+            }
 		}
 
 		private void _drawSnapPoints(Graphics g)
@@ -447,8 +507,6 @@ namespace Timeline
 
 		private void _drawElements(Graphics g)
         {
-            GraphicsState state = g.Save();
-
             // Draw each row
             int top = 0;    // y-coord of top of current row
             foreach (var row in Rows)
@@ -456,6 +514,10 @@ namespace Timeline
                 // Draw each element
                 foreach (var element in row.Elements)
                 {
+                    // Apparently you can only restore a state once. Doing this before the loop
+                    // has no effect on the second iteration g.Restore().
+                    GraphicsState state = g.Save();
+
                     DrawElementOptions options = DrawElementOptions.Normal;
 
                     if (SelectedElements.Contains(element))
@@ -465,9 +527,6 @@ namespace Timeline
                     Size size = new Size(timeToPixels(element.Duration), row.Height);
 
                     // Translate the graphics so the element can draw at (0,0)
-                    //Matrix m = new Matrix();
-                    //m.Translate(location.X, location.Y);
-                    //g.Transform = m;
                     g.TranslateTransform(location.X, location.Y);
 
                     // Calculate the rectangle this element is to be drawn in.
@@ -478,7 +537,7 @@ namespace Timeline
 
                     element.Draw(g, rect, options);
 
-                    g.Restore(state);
+                    g.Restore(state);   
                 }
 
                 top += row.Height;  // next row starts just below this row
@@ -492,8 +551,9 @@ namespace Timeline
             {
                 _drawRows(e.Graphics);      // We can draw this pre-translation.
 
-                e.Graphics.TranslateTransform(this.AutoScrollPosition.X, this.AutoScrollPosition.Y);
+                
 
+                e.Graphics.TranslateTransform(this.AutoScrollPosition.X, this.AutoScrollPosition.Y);
 				_drawGridlines(e.Graphics);
 				_drawSnapPoints(e.Graphics);
 				_drawElements(e.Graphics);
@@ -521,19 +581,6 @@ namespace Timeline
         private TimeSpan pixelsToTime(int px)
         {
             return TimeSpan.FromTicks(px * this.TimePerPixel.Ticks);
-        }
-
-
-        protected int topOfRow(TimelineRow row)
-        {
-            int top = 0;
-            foreach (var searchrow in Rows)
-            {
-                if (searchrow == row)
-                    return top;
-                top += searchrow.Height;
-            }
-            throw new Exception("row not found");
         }
 
 
@@ -602,6 +649,8 @@ namespace Timeline
         {
             RowSeparatorColor = Color.Black;
             GridlineInterval = TimeSpan.FromSeconds(1.0);
+            BorderStyle = BorderStyle.Fixed3D;
+            BackColor = Color.FromKnownColor(KnownColor.ControlDark);
         }
         public Color RowSeparatorColor { get; set; }
         public TimeSpan GridlineInterval { get; set; }
@@ -622,14 +671,6 @@ namespace Timeline
             return col;
         }
 
-    }
-
-
-
-
-	public class ElementMovedEventArgs : EventArgs
-    {
-        public TimelineElementCollection MovedElements { get; internal set; }
     }
 
 

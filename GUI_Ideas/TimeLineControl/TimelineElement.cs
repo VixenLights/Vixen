@@ -105,4 +105,16 @@ namespace Timeline
             graphics.DrawRectangle(border, rect);
         }
     }
+
+
+    public class ElementEventArgs : EventArgs
+    {
+        public TimelineElement Element { get; internal set; }
+    }
+
+    public class MultiElementEventArgs : EventArgs
+    {
+        public TimelineElementCollection Elements { get; internal set; }
+    }
+
 }
