@@ -40,7 +40,7 @@ namespace Timeline
             if (m_list.Contains(element))
                 return false;
 
-            m_list.Add(element);
+            Add(element);
             return true;
         }
 

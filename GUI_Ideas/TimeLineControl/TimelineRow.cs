@@ -39,6 +39,11 @@ namespace Timeline
         // TODO: implement set, such that when assigning a new timeline control to it,
         // it is removed from the parent control, and added to the new one :-)
         // Do the same for TimelineElement, where it will be even more useful.
+		// MS 15/08: can't do this nicely, I think? The way the parent TimelineControl
+		// uses events (RowAdded, RowRemoved) to enforce this ParentControl variable means
+		// we shouldn't be changing parent controls from here. Whatever is doing the move
+		// from one control to another should be calling the parent control methods (Add,
+		// Remove) to move the row instead.
         public TimelineControl ParentControl { get; internal set; }
 
         public TimelineElementCollection Elements

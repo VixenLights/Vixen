@@ -48,7 +48,9 @@ namespace Timeline
                     Tag = "Green"
                 }
             );
-            
+
+			tc.AddSnapTime(TimeSpan.FromSeconds(3.3), 5);
+			tc.AddSnapTime(TimeSpan.FromSeconds(4.6), 10);
 
 
             tc.ElementsMoved += new EventHandler<ElementMovedEventArgs>(tc_ElementsMoved);

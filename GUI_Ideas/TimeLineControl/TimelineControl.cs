@@ -97,6 +97,11 @@ namespace Timeline
             set { AutoScrollOffset = new Point(timeToPixels(value), AutoScrollOffset.Y); }
         }
 
+		public TimeSpan VisibleTimeEnd
+		{
+			get { return VisibleTimeStart + VisibleTimeSpan; }
+		}
+
         /// <summary>
         /// Gets the amount of time represented by one horizontal pixel.
         /// </summary>
@@ -123,16 +128,6 @@ namespace Timeline
         {
             e.Row.ParentControl = null;
         }
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -170,12 +165,15 @@ namespace Timeline
             /// <summary>
             /// Actively dragging objects
             /// </summary>
-            Dragging
-        }
+            Dragging,
+		}
         private DragState m_dragState = DragState.Normal;
 
         private Point m_oldLoc;
         private TimelineElement m_mouseDownElement = null;
+
+		// mapping of pixel location to a tuple of <snapped pixel location, snap level/priority>
+		private SortedDictionary<int, Tuple<int, int>> m_snapPixels;
 
         private bool CtrlPressed { get { return Form.ModifierKeys.HasFlag(Keys.Control); } }
 
@@ -183,6 +181,45 @@ namespace Timeline
         {
             m_dragState = DragState.Waiting;
             m_oldLoc = location;
+
+			// calculate all the snap points (in pixels) for all selected elements
+			// for every visible drag point (and a width either side, so they can snap
+			// to non-visible points that are close)
+			m_snapPixels = new SortedDictionary<int, Tuple<int, int>>();
+
+			foreach (KeyValuePair<TimeSpan, int> kvp in m_snapPoints) {
+				if ((kvp.Key >= VisibleTimeStart - VisibleTimeSpan) &&
+					(kvp.Key <= VisibleTimeEnd + VisibleTimeSpan)) {
+
+					int snapTimePixelCentre = timeToPixels(kvp.Key);
+					int snapRange = kvp.Value;
+					int snapLevel = kvp.Value;
+
+					foreach (TimelineElement element in m_selectedElements) {
+						int elementPixelStart = timeToPixels(element.Offset);
+						int elementPixelEnd = timeToPixels(element.Offset + element.Duration);
+
+						// iterate through all pixels for this particular snap point, for this element
+						//for (int curPixel = snapTimePixelCentre - snapRange; curPixel < snapTimePixelCentre + snapRange; curPixel++) {
+						for (int offset = -snapRange; offset <= snapRange; offset++) {
+
+							// calculate the relative pixel (to the mouse location) for this point
+							int rp = location.X + snapTimePixelCentre + offset - elementPixelStart;
+
+							// see if that pixel is already in the snap-map, and if it's of a higher priority
+							if (!(m_snapPixels.ContainsKey(rp) && m_snapPixels[rp].Item2 >= snapLevel)) {
+								m_snapPixels[rp] = new Tuple<int, int>(rp - offset, snapLevel);
+							}
+
+							// do the same for the element end
+							rp = location.X + snapTimePixelCentre + offset - elementPixelEnd;
+							if (!(m_snapPixels.ContainsKey(rp) && m_snapPixels[rp].Item2 >= snapLevel)) {
+								m_snapPixels[rp] = new Tuple<int, int>(rp - offset, snapLevel);
+							}
+						}
+					}
+				}
+			}
         }
 
         private void beginDrag()
@@ -322,10 +359,10 @@ namespace Timeline
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            _translateMouseArgs(ref e);
-
             if (m_dragState == DragState.Normal)
                 return;
+
+			_translateMouseArgs(ref e);
 
             if (m_dragState == DragState.Waiting)
             {
@@ -334,16 +371,25 @@ namespace Timeline
             }
             if (m_dragState == DragState.Dragging)
             {
-                int dX = e.X - m_oldLoc.X;
-                m_oldLoc.X = e.X;
+				int updatedX = e.X;
+
+				// if the cursor position is in a snap location, change the position
+				// we update elements to be, to the snapped position
+				if (m_snapPixels.ContainsKey(e.X)) {
+					updatedX = m_snapPixels[e.X].Item1;
+				}
+
+				int dX = updatedX - m_oldLoc.X;
+				m_oldLoc.X = updatedX;
 
                 int dY = e.Y - m_oldLoc.Y;
                 m_oldLoc.Y = e.Y;
 
-                foreach (var elem in SelectedElements)
-                {
-                    elem.Offset += pixelsToTime(dX);
-                }
+				if (dX != 0) {
+					foreach (var elem in SelectedElements) {
+						elem.Offset += pixelsToTime(dX);
+					}
+				}
             }
 
             this.Refresh();
@@ -368,25 +414,38 @@ namespace Timeline
                 }
         }
 
-        private void _drawGridlines(Graphics g)
-        {
-            // Draw vertical gridlines
-            int interval = timeToPixels(GridlineInterval);
+		private void _drawGridlines(Graphics g)
+		{
+			// Draw vertical gridlines
+			int interval = timeToPixels(GridlineInterval);
 
-            // calculate first tick - (it is the first multiple of interval greater than start)
-            // believe it or not, this math is correct :-)
-            int start = HorizontalScroll.Value / interval * interval + interval;
+			// calculate first tick - (it is the first multiple of interval greater than start)
+			// believe it or not, this math is correct :-)
+			int start = HorizontalScroll.Value / interval * interval + interval;
 
-            for (int x = start; x < start + Width; x += interval)
-            {
-                Pen p = new Pen(Color.Black);
-                p.DashStyle = DashStyle.Dash;
-                g.DrawLine(p, x, 0, x, Height);
-            }
+			for (int x = start; x < start + Width; x += interval) {
+				Pen p = new Pen(Color.Black);
+				p.DashStyle = DashStyle.Dash;
+				g.DrawLine(p, x, 0, x, Height);
+			}
 
-        }
+		}
 
-        private void _drawElements(Graphics g)
+		private void _drawSnapPoints(Graphics g)
+		{
+			// iterate through all snap points, and if it's visible, draw it
+			foreach (KeyValuePair<TimeSpan, int> kvp in m_snapPoints) {
+				int px = timeToPixels(kvp.Key);
+				if (kvp.Key >= VisibleTimeStart && kvp.Key < VisibleTimeEnd) {
+					int x = timeToPixels(kvp.Key);
+					Pen p = new Pen(Color.Blue);
+					p.DashPattern = new float[] { kvp.Value, kvp.Value };
+					g.DrawLine(p, x, 0, x, Height);
+				}
+			}
+		}
+
+		private void _drawElements(Graphics g)
         {
             GraphicsState state = g.Save();
 
@@ -435,8 +494,9 @@ namespace Timeline
 
                 e.Graphics.TranslateTransform(this.AutoScrollPosition.X, this.AutoScrollPosition.Y);
 
-                _drawGridlines(e.Graphics);
-                _drawElements(e.Graphics);
+				_drawGridlines(e.Graphics);
+				_drawSnapPoints(e.Graphics);
+				_drawElements(e.Graphics);
 
                 base.OnPaint(e);
             }
@@ -515,6 +575,28 @@ namespace Timeline
 
         #endregion
 
+
+		#region Snapping implementation
+
+		private SortedDictionary<TimeSpan, int> m_snapPoints = new SortedDictionary<TimeSpan, int>();
+
+		public bool AddSnapTime(TimeSpan time, int level)
+		{
+			if (m_snapPoints.ContainsKey(time))
+				return false;
+
+			m_snapPoints[time] = level;
+			return true;
+		}
+
+		public bool RemoveSnapTime(TimeSpan time)
+		{
+			return m_snapPoints.Remove(time);
+		}
+
+
+		#endregion
+
         #region Options
         public void SetDefaultOptions()
         {
@@ -543,7 +625,9 @@ namespace Timeline
     }
 
 
-    public class ElementMovedEventArgs : EventArgs
+
+
+	public class ElementMovedEventArgs : EventArgs
     {
         public TimelineElementCollection MovedElements { get; internal set; }
     }
