@@ -56,7 +56,6 @@ namespace Timeline
 
 		public TimelineGrid()
 		{
-			//this.DoubleBuffered = true;
 			this.AutoScroll = true;
 			this.SetStyle(ControlStyles.ResizeRedraw, true);
 
@@ -78,7 +77,6 @@ namespace Timeline
 			RowSeparatorColor = Color.Black;
             MajorGridlineColor = Color.FromArgb(120, 120, 120);
 			GridlineInterval = TimeSpan.FromSeconds(1.0);
-			BorderStyle = BorderStyle.Fixed3D;
             BackColor = Color.FromArgb(140, 140, 140);
 		}
 
@@ -97,11 +95,6 @@ namespace Timeline
 		/// The maximum amount of time represented by this Grid.
 		/// </summary>
 		public TimeSpan TotalTime { get; set; }
-
-		/// <summary>
-		/// The amount of time currently visible. Adjusting this implements zoom along the X (time) axis.
-		/// </summary>
-		//public TimeSpan VisibleTimeSpan { get; set; }
 
 		/// <summary>
 		/// The time at the left of the control (the visible beginning).
@@ -126,24 +119,6 @@ namespace Timeline
 				VisibleTimeStart = value - VisibleTimeSpan;
 			}
 		}
-
-		/// <summary>
-		/// Gets the amount of time represented by one horizontal pixel.
-		/// </summary>
-        //protected TimeSpan TimePerPixel
-        //{
-        //    get { return TimeSpan.FromTicks(VisibleTimeSpan.Ticks / Width); }
-        //}
-
-        //private int timeToPixels(TimeSpan t)
-        //{
-        //    return (int)(t.Ticks / this.TimePerPixel.Ticks);
-        //}
-
-        //private TimeSpan pixelsToTime(int px)
-        //{
-        //    return TimeSpan.FromTicks(px * this.TimePerPixel.Ticks);
-        //}
 
 		#endregion
 
@@ -598,24 +573,6 @@ namespace Timeline
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			try {
-				//Region a = e.Graphics.Clip;
-				//RectangleF b = e.Graphics.ClipBounds;
-				//RectangleF c = e.Graphics.VisibleClipBounds;
-
-				//GraphicsContainer timelineContainer = e.Graphics.BeginContainer(
-				//    new Rectangle(0, 0, Width, m_timelineHeight),
-				//    new Rectangle(0, 0, Width, Height),
-				//    GraphicsUnit.Pixel);
-
-				//Region d = e.Graphics.Clip;
-				//RectangleF f = e.Graphics.ClipBounds;
-				//RectangleF g = e.Graphics.VisibleClipBounds;
-
-				//_drawTimeline(e.Graphics);
-
-				//e.Graphics.EndContainer(timelineContainer);
-
-
 				e.Graphics.TranslateTransform(this.AutoScrollPosition.X, this.AutoScrollPosition.Y);
 
 				int totalHeight = _drawRows(e.Graphics);
@@ -634,8 +591,6 @@ namespace Timeline
 		}
 
 		#endregion
-
-
 
     }
 

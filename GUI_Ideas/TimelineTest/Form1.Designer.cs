@@ -111,10 +111,15 @@
 			// timelineControl1
 			// 
 			this.timelineControl1.AutoSize = true;
+			this.timelineControl1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.timelineControl1.Location = new System.Drawing.Point(12, 12);
 			this.timelineControl1.Name = "timelineControl1";
 			this.timelineControl1.Size = new System.Drawing.Size(907, 444);
 			this.timelineControl1.TabIndex = 8;
+			this.timelineControl1.TotalTime = System.TimeSpan.Parse("00:02:00");
+			this.timelineControl1.VisibleTimeEnd = System.TimeSpan.Parse("00:00:10");
+			this.timelineControl1.VisibleTimeSpan = System.TimeSpan.Parse("00:00:10");
+			this.timelineControl1.VisibleTimeStart = System.TimeSpan.Parse("00:00:00");
 			// 
 			// Form1
 			// 
