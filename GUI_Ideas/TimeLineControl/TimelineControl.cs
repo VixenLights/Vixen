@@ -12,6 +12,8 @@ namespace Timeline
 {
 	public partial class TimelineControl : UserControl
 	{
+		private int lastSplitterXPos;
+
 		public TimelineControl()
 		{
 			InitializeComponent();
@@ -22,6 +24,9 @@ namespace Timeline
 			TotalTime = TimeSpan.FromMinutes(2);
 			VisibleTimeStart = TimeSpan.FromSeconds(0);
 
+			splitContainer.Panel1MinSize = 100;
+			splitContainer.Panel2MinSize = 100;
+			lastSplitterXPos = splitContainer.SplitterDistance;
 
 			timelineGrid.Scroll += new ScrollEventHandler(OnGridScrolled);
 		}
@@ -73,16 +78,7 @@ namespace Timeline
 
 		#endregion
 
-
-
-		void OnGridScrolled(object sender, ScrollEventArgs e)
-		{
-			if (e.ScrollOrientation == ScrollOrientation.HorizontalScroll) {
-                timelineHeader.VisibleTimeStart = timelineGrid.VisibleTimeStart;
-				timelineHeader.Invalidate();
-			}
-		}
-
+		#region Methods
 
 		// Zoom in or out (ie. change the visible time span): give a scale < 1.0
 		// and it zooms in, > 1.0 and it zooms out.
@@ -95,7 +91,30 @@ namespace Timeline
 			timelineHeader.VisibleTimeStart = timelineGrid.VisibleTimeStart;
 		}
 
+		#endregion
 
+		#region Events
+
+		private void OnGridScrolled(object sender, ScrollEventArgs e)
+		{
+			if (e.ScrollOrientation == ScrollOrientation.HorizontalScroll) {
+                timelineHeader.VisibleTimeStart = timelineGrid.VisibleTimeStart;
+				timelineHeader.Invalidate();
+			}
+		}
+
+		private void splitContainer_SplitterMoved(object sender, SplitterEventArgs e)
+		{
+			// figure out the splitter movement, and the relative change in size of the grid (new panel size / old panel size)
+			double dx = e.SplitX - lastSplitterXPos;
+			double gridScale = (double)splitContainer.Panel2.Width / (splitContainer.Panel2.Width + dx);
+
+			// update the grid visible time, and record the last splitter position
+			VisibleTimeSpan = TimeSpan.FromTicks((long)(VisibleTimeSpan.Ticks * gridScale));
+			lastSplitterXPos = e.SplitX;
+		}
+
+		#endregion
 
 
 
@@ -114,5 +133,6 @@ namespace Timeline
 		{
 			get { return this.timelineHeader; }
 		}
+
 	}
 }

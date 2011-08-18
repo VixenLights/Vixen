@@ -185,7 +185,7 @@ namespace Timeline
 
 		private void buttonGenericDebug2_Click(object sender, EventArgs e)
 		{
-			tg.VisibleTimeStart = TimeSpan.FromSeconds(5);
+			timelineControl1.VisibleTimeStart = TimeSpan.FromSeconds(5);
 		}
     }
 

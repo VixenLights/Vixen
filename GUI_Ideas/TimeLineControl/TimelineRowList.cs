@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace Timeline
 {
-	public partial class TimelineRowList : UserControl
+	public partial class TimelineRowList : TimelineControlBase
 	{
 		public TimelineRowList()
 		{

@@ -40,6 +40,7 @@
 			// 
 			// buttonElemAt
 			// 
+			this.buttonElemAt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.buttonElemAt.Location = new System.Drawing.Point(13, 597);
 			this.buttonElemAt.Name = "buttonElemAt";
 			this.buttonElemAt.Size = new System.Drawing.Size(115, 23);
@@ -50,6 +51,7 @@
 			// 
 			// buttonReset
 			// 
+			this.buttonReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.buttonReset.Location = new System.Drawing.Point(145, 596);
 			this.buttonReset.Name = "buttonReset";
 			this.buttonReset.Size = new System.Drawing.Size(75, 23);
@@ -60,6 +62,7 @@
 			// 
 			// textBoxLog
 			// 
+			this.textBoxLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBoxLog.Location = new System.Drawing.Point(395, 472);
 			this.textBoxLog.Multiline = true;
 			this.textBoxLog.Name = "textBoxLog";
@@ -70,6 +73,7 @@
 			// 
 			// buttonZoomIn
 			// 
+			this.buttonZoomIn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.buttonZoomIn.Location = new System.Drawing.Point(12, 554);
 			this.buttonZoomIn.Name = "buttonZoomIn";
 			this.buttonZoomIn.Size = new System.Drawing.Size(75, 23);
@@ -80,6 +84,7 @@
 			// 
 			// buttonZoomOut
 			// 
+			this.buttonZoomOut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.buttonZoomOut.Location = new System.Drawing.Point(104, 554);
 			this.buttonZoomOut.Name = "buttonZoomOut";
 			this.buttonZoomOut.Size = new System.Drawing.Size(75, 23);
@@ -90,6 +95,7 @@
 			// 
 			// buttonGenericDebug
 			// 
+			this.buttonGenericDebug.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.buttonGenericDebug.Location = new System.Drawing.Point(234, 533);
 			this.buttonGenericDebug.Name = "buttonGenericDebug";
 			this.buttonGenericDebug.Size = new System.Drawing.Size(119, 44);
@@ -100,6 +106,7 @@
 			// 
 			// buttonGenericDebug2
 			// 
+			this.buttonGenericDebug2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.buttonGenericDebug2.Location = new System.Drawing.Point(234, 483);
 			this.buttonGenericDebug2.Name = "buttonGenericDebug2";
 			this.buttonGenericDebug2.Size = new System.Drawing.Size(119, 44);
@@ -110,6 +117,9 @@
 			// 
 			// timelineControl1
 			// 
+			this.timelineControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.timelineControl1.AutoSize = true;
 			this.timelineControl1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.timelineControl1.Location = new System.Drawing.Point(12, 12);

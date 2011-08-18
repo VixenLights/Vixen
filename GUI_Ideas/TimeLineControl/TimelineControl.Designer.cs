@@ -54,6 +54,8 @@
 			this.splitContainer.Size = new System.Drawing.Size(853, 476);
 			this.splitContainer.SplitterDistance = 283;
 			this.splitContainer.TabIndex = 3;
+			this.splitContainer.SplitterMoving += new System.Windows.Forms.SplitterCancelEventHandler(this.splitContainer_SplitterMoving);
+			this.splitContainer.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer_SplitterMoved);
 			// 
 			// timelineRowList
 			// 
@@ -62,6 +64,8 @@
 			this.timelineRowList.Name = "timelineRowList";
 			this.timelineRowList.Size = new System.Drawing.Size(283, 476);
 			this.timelineRowList.TabIndex = 2;
+			this.timelineRowList.VisibleTimeSpan = System.TimeSpan.Parse("00:00:10");
+			this.timelineRowList.VisibleTimeStart = System.TimeSpan.Parse("00:00:00");
 			// 
 			// timelineHeader
 			// 
