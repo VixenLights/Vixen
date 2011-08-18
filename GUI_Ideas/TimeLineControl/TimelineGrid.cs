@@ -23,7 +23,7 @@ namespace Timeline
 		private DragState m_dragState = DragState.Normal;		// the current dragging state
 		private Point m_oldLoc;									// the location of the mouse at last draw; used to update the dragging
 		private TimelineElement m_mouseDownElement = null;		// the element under the cursor on a mouse click
-		private SortedDictionary<int, Tuple<int, int>> m_snapPixels;	// a mapping of pixel location to a tuple of <snapped pixel location, snap level/priority>
+		private SortedDictionary<int, SnapDetails> m_snapPixels;	// a mapping of pixel location to details to snap to
 		private SortedDictionary<TimeSpan, int> m_snapPoints;	// a collection of the snap points (as TimeSpans) to use in the control
 
 		// Events
@@ -211,7 +211,7 @@ namespace Timeline
 			// calculate all the snap points (in pixels) for all selected elements
 			// for every visible drag point (and a width either side, so they can snap
 			// to non-visible points that are close)
-			m_snapPixels = new SortedDictionary<int, Tuple<int, int>>();
+			m_snapPixels = new SortedDictionary<int, SnapDetails>();
 
 			foreach (KeyValuePair<TimeSpan, int> kvp in m_snapPoints) {
 				if ((kvp.Key >= VisibleTimeStart - VisibleTimeSpan) &&
@@ -226,21 +226,79 @@ namespace Timeline
 						int elementPixelEnd = (int)timeToPixels(element.Offset + element.Duration);
 
 						// iterate through all pixels for this particular snap point, for this element
-						//for (int curPixel = snapTimePixelCentre - snapRange; curPixel < snapTimePixelCentre + snapRange; curPixel++) {
 						for (int offset = -snapRange; offset <= snapRange; offset++) {
 
 							// calculate the relative pixel (to the mouse location) for this point
 							int rp = location.X + snapTimePixelCentre + offset - elementPixelStart;
 
-							// see if that pixel is already in the snap-map, and if it's of a higher priority
-							if (!(m_snapPixels.ContainsKey(rp) && m_snapPixels[rp].Item2 >= snapLevel)) {
-								m_snapPixels[rp] = new Tuple<int, int>(rp - offset, snapLevel);
+							bool addNewSnapDetail = false;
+
+							// if it doesn't have a Snap entry for this item, make one
+							if (!m_snapPixels.ContainsKey(rp)) {
+								addNewSnapDetail = true;
+							} else {
+								// if it does, we have to figure out an intelligent way to combine them. If it's
+								// going to snap to the same pixel, then just add it to the list. Also update
+								// the priority if needed.
+								if (m_snapPixels[rp].DestinationPixel == rp - offset) {
+									m_snapPixels[rp].SnapElements[element] = kvp.Key;
+									m_snapPixels[rp].SnapLevel = Math.Max(m_snapPixels[rp].SnapLevel, snapLevel);
+								}
+								// if it's not going to snap to the same pixel as the existing one, then only
+								// update it if the new one's of a higher priority.
+								else {
+									if (m_snapPixels[rp].SnapLevel < snapLevel) {
+										addNewSnapDetail = true;
+									}
+								}
 							}
 
-							// do the same for the element end
+							// add the new one if needed
+							if (addNewSnapDetail) {
+								SnapDetails sd = new SnapDetails();
+								sd.DestinationPixel = rp - offset;
+								sd.SnapLevel = snapLevel;
+								sd.SnapElements = new Dictionary<TimelineElement, TimeSpan>();
+								sd.SnapElements[element] = kvp.Key;
+								m_snapPixels[rp] = sd;
+							}
+
+
+							// do the same for the end of the element
+							addNewSnapDetail = false;
 							rp = location.X + snapTimePixelCentre + offset - elementPixelEnd;
-							if (!(m_snapPixels.ContainsKey(rp) && m_snapPixels[rp].Item2 >= snapLevel)) {
-								m_snapPixels[rp] = new Tuple<int, int>(rp - offset, snapLevel);
+
+
+
+
+							// if it doesn't have a Snap entry for this item, make one
+							if (!m_snapPixels.ContainsKey(rp)) {
+								addNewSnapDetail = true;
+							} else {
+								// if it does, we have to figure out an intelligent way to combine them. If it's
+								// going to snap to the same pixel, then just add it to the list. Also update
+								// the priority if needed.
+								if (m_snapPixels[rp].DestinationPixel == rp - offset) {
+									m_snapPixels[rp].SnapElements[element] = kvp.Key - element.Duration;
+									m_snapPixels[rp].SnapLevel = Math.Max(m_snapPixels[rp].SnapLevel, snapLevel);
+								}
+									// if it's not going to snap to the same pixel as the existing one, then only
+									// update it if the new one's of a higher priority.
+								else {
+									if (m_snapPixels[rp].SnapLevel < snapLevel) {
+										addNewSnapDetail = true;
+									}
+								}
+							}
+
+							// add the new one if needed
+							if (addNewSnapDetail) {
+								SnapDetails sd = new SnapDetails();
+								sd.DestinationPixel = rp - offset;
+								sd.SnapLevel = snapLevel;
+								sd.SnapElements = new Dictionary<TimelineElement, TimeSpan>();
+								sd.SnapElements[element] = kvp.Key - element.Duration;
+								m_snapPixels[rp] = sd;
 							}
 						}
 					}
@@ -432,7 +490,7 @@ namespace Timeline
 				// if the cursor position is in a snap location, change the position
 				// we update elements to be, to the snapped position
 				if (m_snapPixels.ContainsKey(e.X)) {
-					updatedX = m_snapPixels[e.X].Item1;
+					updatedX = m_snapPixels[e.X].DestinationPixel;
 				}
 
 				int dX = updatedX - m_oldLoc.X;
@@ -442,8 +500,12 @@ namespace Timeline
 				m_oldLoc.Y = e.Y;
 
 				if (dX != 0) {
-					foreach (var elem in SelectedElements) {
-						elem.Offset += pixelsToTime(dX);
+					foreach (TimelineElement element in SelectedElements) {
+						if (m_snapPixels.ContainsKey(e.X) && m_snapPixels[e.X].SnapElements.ContainsKey(element)) {
+							element.Offset = m_snapPixels[e.X].SnapElements[element];
+						} else {
+							element.Offset += pixelsToTime(dX);
+						}
 					}
 				}
 			}
@@ -587,6 +649,12 @@ namespace Timeline
 
 		#endregion
 
+		private class SnapDetails
+		{
+			public int DestinationPixel;
+			public int SnapLevel;
+			public Dictionary<TimelineElement, TimeSpan> SnapElements;
+		}
     }
 
     [Flags]
