@@ -632,11 +632,9 @@ namespace Timeline
 			try {
 				e.Graphics.TranslateTransform(this.AutoScrollPosition.X, this.AutoScrollPosition.Y);
 
-				int totalHeight = _drawRows(e.Graphics);
-
-				AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), totalHeight);
-
 				_drawGridlines(e.Graphics);
+				int totalHeight = _drawRows(e.Graphics);
+				AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), totalHeight);
 				_drawSnapPoints(e.Graphics);
 				_drawElements(e.Graphics);
 
