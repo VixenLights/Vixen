@@ -64,8 +64,11 @@ namespace Timeline
 
 		public TimeSpan VisibleTimeEnd
 		{
-			get { return timelineGrid.VisibleTimeEnd; }
-			set { timelineGrid.VisibleTimeEnd = value; }
+			get { return VisibleTimeStart + VisibleTimeSpan; }
+			set
+			{
+				VisibleTimeStart = value - VisibleTimeSpan;
+			}
 		}
 
 		#endregion
@@ -78,6 +81,18 @@ namespace Timeline
                 timelineHeader.VisibleTimeStart = timelineGrid.VisibleTimeStart;
 				timelineHeader.Invalidate();
 			}
+		}
+
+
+		// Zoom in or out (ie. change the visible time span): give a scale < 1.0
+		// and it zooms in, > 1.0 and it zooms out.
+		public void Zoom(double scale)
+		{
+			if (scale <= 0.0)
+				return;
+
+			VisibleTimeSpan = TimeSpan.FromTicks((long)(VisibleTimeSpan.Ticks * scale));
+			timelineHeader.VisibleTimeStart = timelineGrid.VisibleTimeStart;
 		}
 
 

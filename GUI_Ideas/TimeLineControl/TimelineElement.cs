@@ -97,13 +97,22 @@ namespace Timeline
         // BORDER
             // Width - bold if selected
             int b_wd = (options.HasFlag(DrawElementOptions.Selected)) ? 3 : 1;
-            
-            // Draw it!
+
+			// Adjust the rect such that the border is completely inside it.
+			Rectangle b_rect = new Rectangle(
+				rect.Left + (b_wd / 2),
+				rect.Top + (b_wd / 2),
+				rect.Width - b_wd,
+				rect.Height - b_wd
+				);
+			
+			// Draw it!
             Pen border = new Pen(Color.Black);
             border.Width = b_wd;
-			border.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
-            graphics.DrawRectangle(border, rect);
-        }
+			//border.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
+			//graphics.DrawRectangle(border, rect);
+			graphics.DrawRectangle(border, b_rect);
+		}
     }
 
 

@@ -107,17 +107,13 @@ namespace Timeline
 				if (value < TimeSpan.Zero)
 					return;
 
-				AutoScrollPosition = new Point(timeToPixels(value), -AutoScrollPosition.Y);
+				AutoScrollPosition = new Point((int)timeToPixels(value), -AutoScrollPosition.Y);
 			}
 		}
 
 		public TimeSpan VisibleTimeEnd
 		{
 			get { return VisibleTimeStart + VisibleTimeSpan; }
-			set
-			{
-				VisibleTimeStart = value - VisibleTimeSpan;
-			}
 		}
 
 		#endregion
@@ -166,8 +162,8 @@ namespace Timeline
 
 			// Now figure out which element we are on
 			foreach (var elem in containingRow.Elements) {
-				int elemX = timeToPixels(elem.Offset);
-				int elemW = timeToPixels(elem.Duration);
+				Single elemX = timeToPixels(elem.Offset);
+				Single elemW = timeToPixels(elem.Duration);
 				if (p.X >= elemX && p.X <= elemX + elemW)
 					return elem;
 			}
@@ -221,13 +217,13 @@ namespace Timeline
 				if ((kvp.Key >= VisibleTimeStart - VisibleTimeSpan) &&
 					(kvp.Key <= VisibleTimeEnd + VisibleTimeSpan)) {
 
-					int snapTimePixelCentre = timeToPixels(kvp.Key);
+					int snapTimePixelCentre = (int)timeToPixels(kvp.Key);
 					int snapRange = kvp.Value;
 					int snapLevel = kvp.Value;
 
 					foreach (TimelineElement element in m_selectedElements) {
-						int elementPixelStart = timeToPixels(element.Offset);
-						int elementPixelEnd = timeToPixels(element.Offset + element.Duration);
+						int elementPixelStart = (int)timeToPixels(element.Offset);
+						int elementPixelEnd = (int)timeToPixels(element.Offset + element.Duration);
 
 						// iterate through all pixels for this particular snap point, for this element
 						//for (int curPixel = snapTimePixelCentre - snapRange; curPixel < snapTimePixelCentre + snapRange; curPixel++) {
@@ -503,13 +499,13 @@ namespace Timeline
 		private void _drawGridlines(Graphics g)
 		{
 			// Draw vertical gridlines
-			int interval = timeToPixels(GridlineInterval);
+			Single interval = timeToPixels(GridlineInterval);
 
 			// calculate first tick - (it is the first multiple of interval greater than start)
 			// believe it or not, this math is correct :-)
-			int start = (-AutoScrollPosition.X) / interval * interval + interval;
+			Single start = timeToPixels(VisibleTimeStart) - (timeToPixels(VisibleTimeStart) % interval) + interval;
 
-			for (int x = start; x < start + Width; x += interval) {
+			for (Single x = start; x < start + Width; x += interval) {
 				Pen p = new Pen(MajorGridlineColor);
 				p.DashStyle = DashStyle.Dash;
 				g.DrawLine(p, x, (-AutoScrollPosition.Y), x, (-AutoScrollPosition.Y) + Height);
@@ -521,9 +517,8 @@ namespace Timeline
 		{
 			// iterate through all snap points, and if it's visible, draw it
 			foreach (KeyValuePair<TimeSpan, int> kvp in m_snapPoints) {
-				int px = timeToPixels(kvp.Key);
 				if (kvp.Key >= VisibleTimeStart && kvp.Key < VisibleTimeEnd) {
-					int x = timeToPixels(kvp.Key);
+					Single x = timeToPixels(kvp.Key);
 					Pen p = new Pen(Color.Blue);
 					p.DashPattern = new float[] { kvp.Value, kvp.Value };
                     g.DrawLine(p, x, 0, x, AutoScrollMinSize.Height);
@@ -543,8 +538,8 @@ namespace Timeline
                     if (SelectedElements.Contains(element))
                         options |= DrawElementOptions.Selected;
 
-                    Point location = new Point(timeToPixels(element.Offset), top);
-                    Size size = new Size(timeToPixels(element.Duration), row.Height);
+					Point location = new Point((int)timeToPixels(element.Offset), top);
+					Size size = new Size((int)timeToPixels(element.Duration), row.Height);
 
                     // The rectangle where this element will be drawn
                     Rectangle dstRect = new Rectangle(location, size);
@@ -577,7 +572,7 @@ namespace Timeline
 
 				int totalHeight = _drawRows(e.Graphics);
 
-				AutoScrollMinSize = new Size(timeToPixels(TotalTime), totalHeight);
+				AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), totalHeight);
 
 				_drawGridlines(e.Graphics);
 				_drawSnapPoints(e.Graphics);

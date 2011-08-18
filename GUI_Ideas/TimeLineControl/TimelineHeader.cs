@@ -56,11 +56,11 @@ namespace Timeline
 
         private void drawTicks(Graphics graphics, TimeSpan interval, int width, double height)
         {
-            Single pxint = timeToPixelsF(interval);
+            Single pxint = timeToPixels(interval);
 
             // calculate first tick - (it is the first multiple of interval greater than start)
             // believe it or not, this math is correct :-)
-			Single start = timeToPixelsF(VisibleTimeStart) - (timeToPixelsF(VisibleTimeStart) % pxint) + pxint;
+			Single start = timeToPixels(VisibleTimeStart) - (timeToPixels(VisibleTimeStart) % pxint) + pxint;
 
             for (Single x = start; x < start + Width; x += pxint)   
             {

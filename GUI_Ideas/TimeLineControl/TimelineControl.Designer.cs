@@ -93,7 +93,6 @@
 			this.timelineGrid.Size = new System.Drawing.Size(566, 436);
 			this.timelineGrid.TabIndex = 1;
 			this.timelineGrid.TotalTime = System.TimeSpan.Parse("00:02:00");
-			this.timelineGrid.VisibleTimeEnd = System.TimeSpan.Parse("00:00:10");
 			this.timelineGrid.VisibleTimeSpan = System.TimeSpan.Parse("00:00:10");
 			this.timelineGrid.VisibleTimeStart = System.TimeSpan.Parse("00:00:00");
 			// 

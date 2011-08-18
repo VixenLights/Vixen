@@ -30,12 +30,7 @@ namespace Timeline
         public TimeSpan VisibleTimeSpan { get; set; }
 
 
-		protected int timeToPixels(TimeSpan t)
-		{
-			return (int)(t.Ticks / this.TimePerPixel.Ticks);
-		}
-
-		protected Single timeToPixelsF(TimeSpan t)
+		protected Single timeToPixels(TimeSpan t)
 		{
 			return (Single)t.Ticks / (Single)TimePerPixel.Ticks;
 		}
