@@ -10,7 +10,7 @@ using System.ComponentModel;
 
 namespace Timeline
 {
-	public class TimelineGrid : UserControl
+	public class TimelineGrid : TimelineControlBase
 	{
 		#region Members
 
@@ -56,7 +56,7 @@ namespace Timeline
 
 		public TimelineGrid()
 		{
-			this.DoubleBuffered = true;
+			//this.DoubleBuffered = true;
 			this.AutoScroll = true;
 			this.SetStyle(ControlStyles.ResizeRedraw, true);
 
@@ -76,9 +76,10 @@ namespace Timeline
 		public void SetDefaultOptions()
 		{
 			RowSeparatorColor = Color.Black;
+            MajorGridlineColor = Color.FromArgb(120, 120, 120);
 			GridlineInterval = TimeSpan.FromSeconds(1.0);
 			BorderStyle = BorderStyle.Fixed3D;
-			BackColor = Color.FromKnownColor(KnownColor.ControlDark);
+            BackColor = Color.FromArgb(140, 140, 140);
 		}
 
 		protected override void OnLoad(EventArgs e)
@@ -100,12 +101,12 @@ namespace Timeline
 		/// <summary>
 		/// The amount of time currently visible. Adjusting this implements zoom along the X (time) axis.
 		/// </summary>
-		public TimeSpan VisibleTimeSpan { get; set; }
+		//public TimeSpan VisibleTimeSpan { get; set; }
 
 		/// <summary>
 		/// The time at the left of the control (the visible beginning).
 		/// </summary>
-		public TimeSpan VisibleTimeStart
+		public override TimeSpan VisibleTimeStart
 		{
 			get { return pixelsToTime(-AutoScrollPosition.X); }
 			set
@@ -129,20 +130,20 @@ namespace Timeline
 		/// <summary>
 		/// Gets the amount of time represented by one horizontal pixel.
 		/// </summary>
-		protected TimeSpan TimePerPixel
-		{
-			get { return TimeSpan.FromTicks(VisibleTimeSpan.Ticks / Width); }
-		}
+        //protected TimeSpan TimePerPixel
+        //{
+        //    get { return TimeSpan.FromTicks(VisibleTimeSpan.Ticks / Width); }
+        //}
 
-		private int timeToPixels(TimeSpan t)
-		{
-			return (int)(t.Ticks / this.TimePerPixel.Ticks);
-		}
+        //private int timeToPixels(TimeSpan t)
+        //{
+        //    return (int)(t.Ticks / this.TimePerPixel.Ticks);
+        //}
 
-		private TimeSpan pixelsToTime(int px)
-		{
-			return TimeSpan.FromTicks(px * this.TimePerPixel.Ticks);
-		}
+        //private TimeSpan pixelsToTime(int px)
+        //{
+        //    return TimeSpan.FromTicks(px * this.TimePerPixel.Ticks);
+        //}
 
 		#endregion
 
@@ -506,6 +507,7 @@ namespace Timeline
 		#region Drawing methods & properties
 
 		public Color RowSeparatorColor { get; set; }
+        public Color MajorGridlineColor { get; set; }
 		public TimeSpan GridlineInterval { get; set; }
 
 		private int _drawRows(Graphics g)
@@ -533,7 +535,7 @@ namespace Timeline
 			int start = (-AutoScrollPosition.X) / interval * interval + interval;
 
 			for (int x = start; x < start + Width; x += interval) {
-				Pen p = new Pen(Color.Black);
+				Pen p = new Pen(MajorGridlineColor);
 				p.DashStyle = DashStyle.Dash;
 				g.DrawLine(p, x, (-AutoScrollPosition.Y), x, (-AutoScrollPosition.Y) + Height);
 
@@ -549,7 +551,7 @@ namespace Timeline
 					int x = timeToPixels(kvp.Key);
 					Pen p = new Pen(Color.Blue);
 					p.DashPattern = new float[] { kvp.Value, kvp.Value };
-					g.DrawLine(p, x, 0, x, Height);
+                    g.DrawLine(p, x, 0, x, AutoScrollMinSize.Height);
 				}
 			}
 		}
@@ -634,7 +636,8 @@ namespace Timeline
 		#endregion
 
 
-	}
+
+    }
 
     [Flags]
     public enum DrawElementOptions

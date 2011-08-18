@@ -20,7 +20,7 @@ namespace Timeline
 
 			// Reasonable defaults
 			TotalTime = TimeSpan.FromMinutes(2);
-			VisibleTimeSpan = TimeSpan.FromSeconds(10);
+			//VisibleTimeSpan = TimeSpan.FromSeconds(10);
 			VisibleTimeStart = TimeSpan.FromSeconds(0);
 
 
@@ -46,7 +46,7 @@ namespace Timeline
 			{
 				timelineGrid.VisibleTimeSpan = value;
 				timelineGrid.Invalidate();
-				timelineHeader.DisplayedTimeSpan = value;
+				timelineHeader.VisibleTimeSpan = value;
 				timelineHeader.Invalidate();
 			}
 		}
@@ -58,7 +58,8 @@ namespace Timeline
 			{
 				timelineGrid.VisibleTimeStart = value;
 				timelineGrid.Invalidate();
-				timelineHeader.DisplayedTimeStart = value;
+				//timelineHeader.DisplayedTimeStart = value;
+                timelineHeader.VisibleTimeStart = value;
 				timelineHeader.Invalidate();
 			}
 		}
@@ -76,7 +77,8 @@ namespace Timeline
 		void OnGridScrolled(object sender, ScrollEventArgs e)
 		{
 			if (e.ScrollOrientation == ScrollOrientation.HorizontalScroll) {
-				timelineHeader.DisplayedTimeStart = timelineGrid.VisibleTimeStart;
+				//timelineHeader.DisplayedTimeStart = timelineGrid.VisibleTimeStart;
+                timelineHeader.VisibleTimeStart = timelineGrid.VisibleTimeStart;
 				timelineHeader.Invalidate();
 			}
 		}

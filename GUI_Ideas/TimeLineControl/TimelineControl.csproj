@@ -48,6 +48,9 @@
     <Compile Include="TimelineControl.Designer.cs">
       <DependentUpon>TimelineControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="TimelineControlBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="TimelineGrid.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -62,6 +65,11 @@
     <Compile Include="TimelineRowList.cs">
       <SubType>UserControl</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TimelineControl.resx">
+      <DependentUpon>TimelineControl.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
