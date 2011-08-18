@@ -21,11 +21,11 @@ namespace Timeline
 			tg = timelineControl1.Grid;
 
             // Rows
-            tg.Rows.Add(new TimelineRow() { Height=50,  Tag="Row 0" });
-            tg.Rows.Add(new TimelineRow() { Height=100, Tag="Row 1" });
-            tg.Rows.Add(new TimelineRow() { Height=100, Tag="Row 2" });
-            tg.Rows.Add(new TimelineRow() { Height=100, Tag="Row 3" });
-            tg.Rows.Add(new TimelineRow() { Height=100, Tag="Row 4" });
+			tg.Rows.Add(new TimelineRow() { Height = 50, Name = "Row 0" });
+			tg.Rows.Add(new TimelineRow() { Height = 100, Name = "Row 1" });
+			tg.Rows.Add(new TimelineRow() { Height = 100, Name = "Row 2" });
+			tg.Rows.Add(new TimelineRow() { Height = 100, Name = "Row 3" });
+			tg.Rows.Add(new TimelineRow() { Height = 100, Name = "Row 4" });
 
             // Elements
             tg.Rows[0].Elements.Add(new TimelineElement()

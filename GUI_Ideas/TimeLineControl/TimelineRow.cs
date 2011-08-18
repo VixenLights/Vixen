@@ -32,7 +32,14 @@ namespace Timeline
             set { m_tag = value; updateParent(); }
         }
 
-        #endregion
+		private string m_name;
+		public string Name
+		{
+			get { return m_name; }
+			set { m_name = value; updateParent(); }
+		}
+
+		#endregion
 
         #region Special Properties
 

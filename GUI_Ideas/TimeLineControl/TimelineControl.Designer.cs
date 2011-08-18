@@ -27,6 +27,9 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			Timeline.TimelineRowCollection timelineRowCollection1 = new Timeline.TimelineRowCollection();
+			Timeline.TimelineRowCollection timelineRowCollection2 = new Timeline.TimelineRowCollection();
+			Timeline.TimelineRowCollection timelineRowCollection3 = new Timeline.TimelineRowCollection();
 			this.splitContainer = new System.Windows.Forms.SplitContainer();
 			this.timelineRowList = new Timeline.TimelineRowList();
 			this.timelineHeader = new Timeline.TimelineHeader();
@@ -58,11 +61,16 @@
 			// 
 			// timelineRowList
 			// 
-			this.timelineRowList.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.timelineRowList.Location = new System.Drawing.Point(0, 0);
+			this.timelineRowList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.timelineRowList.AutoSize = true;
+			this.timelineRowList.Location = new System.Drawing.Point(0, 40);
 			this.timelineRowList.Name = "timelineRowList";
-			this.timelineRowList.Size = new System.Drawing.Size(283, 476);
+			this.timelineRowList.Rows = timelineRowCollection1;
+			this.timelineRowList.Size = new System.Drawing.Size(283, 436);
 			this.timelineRowList.TabIndex = 2;
+			this.timelineRowList.topOffset = 0;
 			this.timelineRowList.VisibleTimeSpan = System.TimeSpan.Parse("00:00:10");
 			this.timelineRowList.VisibleTimeStart = System.TimeSpan.Parse("00:00:00");
 			// 
@@ -73,6 +81,7 @@
 			this.timelineHeader.MajorTickInterval = System.TimeSpan.Parse("00:00:01");
 			this.timelineHeader.MinorTicksPerMajor = 4;
 			this.timelineHeader.Name = "timelineHeader";
+			this.timelineHeader.Rows = timelineRowCollection2;
 			this.timelineHeader.Size = new System.Drawing.Size(566, 40);
 			this.timelineHeader.TabIndex = 3;
 			this.timelineHeader.VisibleTimeSpan = System.TimeSpan.Parse("00:00:10");
@@ -92,12 +101,15 @@
 			this.timelineGrid.Location = new System.Drawing.Point(0, 40);
 			this.timelineGrid.MajorGridlineColor = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(120)))), ((int)(((byte)(120)))));
 			this.timelineGrid.Name = "timelineGrid";
+			this.timelineGrid.Rows = timelineRowCollection3;
 			this.timelineGrid.RowSeparatorColor = System.Drawing.Color.Black;
 			this.timelineGrid.Size = new System.Drawing.Size(566, 436);
 			this.timelineGrid.TabIndex = 1;
 			this.timelineGrid.TotalTime = System.TimeSpan.Parse("00:02:00");
+			this.timelineGrid.VerticalOffset = 0;
 			this.timelineGrid.VisibleTimeSpan = System.TimeSpan.Parse("00:00:10");
 			this.timelineGrid.VisibleTimeStart = System.TimeSpan.Parse("00:00:00");
+			this.timelineGrid.Load += new System.EventHandler(this.timelineGrid_Load);
 			// 
 			// TimelineControl
 			// 
@@ -108,6 +120,7 @@
 			this.Name = "TimelineControl";
 			this.Size = new System.Drawing.Size(853, 476);
 			this.splitContainer.Panel1.ResumeLayout(false);
+			this.splitContainer.Panel1.PerformLayout();
 			this.splitContainer.Panel2.ResumeLayout(false);
 			this.splitContainer.Panel2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();

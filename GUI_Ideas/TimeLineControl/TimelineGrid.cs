@@ -14,11 +14,8 @@ namespace Timeline
 	{
 		#region Members
 
-		// member variables - rows and elements
 		private TimelineElementCollection m_selectedElements;	// the currently selected elementes in the control
-		private TimelineRowCollection m_rows;					// all rows displayed in the control
 
-		// member variables - dragging, snapping, etc.
 		private const int DragThreshold = 4;					// how many pixels the mouse must move before the elements start dragging
 		private DragState m_dragState = DragState.Normal;		// the current dragging state
 		private Point m_oldLoc;									// the location of the mouse at last draw; used to update the dragging
@@ -60,16 +57,11 @@ namespace Timeline
 			this.SetStyle(ControlStyles.ResizeRedraw, true);
 
 			m_selectedElements = new TimelineElementCollection();
-			m_rows = new TimelineRowCollection();
 
 			TotalTime = TimeSpan.FromMinutes(1);
-			VisibleTimeSpan = TimeSpan.FromSeconds(10);
 			VisibleTimeStart = TimeSpan.FromSeconds(0);
 
 			m_snapPoints = new SortedDictionary<TimeSpan, int>();
-
-			m_rows.RowAdded += new EventHandler<RowAddedOrRemovedEventArgs>(m_rows_RowAdded);
-			m_rows.RowRemoved += new EventHandler<RowAddedOrRemovedEventArgs>(m_rows_RowRemoved);
 		}
 
 		public void SetDefaultOptions()
@@ -107,6 +99,7 @@ namespace Timeline
 				if (value < TimeSpan.Zero)
 					return;
 
+				// TODO: check negatives here: either they need to both be negative, or neither
 				AutoScrollPosition = new Point((int)timeToPixels(value), -AutoScrollPosition.Y);
 			}
 		}
@@ -116,6 +109,18 @@ namespace Timeline
 			get { return VisibleTimeStart + VisibleTimeSpan; }
 		}
 
+		public int VerticalOffset
+		{
+			get { return -AutoScrollPosition.Y; }
+			set
+			{
+				if (value < 0)
+					return;
+
+				// TODO: check negatives here: either they need to both be negative, or neither
+				AutoScrollPosition = new Point(-AutoScrollPosition.X, value);
+			}
+		}
 		#endregion
 
 
@@ -126,17 +131,6 @@ namespace Timeline
 		// output.  I propse adding a SelectionChanged event which filters this. Or try and
 		// clean up the code causing the noisy-ness (if possible).
 		public TimelineElementCollection SelectedElements { get { return m_selectedElements; } }
-		public TimelineRowCollection Rows { get { return m_rows; } }
-
-		void m_rows_RowAdded(object sender, RowAddedOrRemovedEventArgs e)
-		{
-			e.Row.ParentControl = this;
-		}
-
-		void m_rows_RowRemoved(object sender, RowAddedOrRemovedEventArgs e)
-		{
-			e.Row.ParentControl = null;
-		}
 
 		/// <summary>
 		/// Returns the element located at the current point in screen coordinates
@@ -170,7 +164,6 @@ namespace Timeline
 
 			return null;
 		}
-
 
 		public TimelineElementCollection ElementsAtTime(TimeSpan time)
 		{

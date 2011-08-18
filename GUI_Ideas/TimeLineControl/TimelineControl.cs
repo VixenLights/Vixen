@@ -28,8 +28,16 @@ namespace Timeline
 			splitContainer.Panel2MinSize = 100;
 			lastSplitterXPos = splitContainer.SplitterDistance;
 
+			Rows = new TimelineRowCollection();
+			Rows.RowAdded += new EventHandler<RowAddedOrRemovedEventArgs>(TimelineRowAdded);
+			Rows.RowRemoved += new EventHandler<RowAddedOrRemovedEventArgs>(TimelineRowRemoved);
+			timelineGrid.Rows = Rows;
+			timelineRowList.Rows = Rows;
+
 			timelineGrid.Scroll += new ScrollEventHandler(OnGridScrolled);
 		}
+
+
 
 		#region Properties
 
@@ -76,6 +84,9 @@ namespace Timeline
 			}
 		}
 
+		public TimelineRowCollection Rows { get; set; }
+
+
 		#endregion
 
 		#region Methods
@@ -93,13 +104,16 @@ namespace Timeline
 
 		#endregion
 
-		#region Events
+		#region Event Handlers
 
 		private void OnGridScrolled(object sender, ScrollEventArgs e)
 		{
 			if (e.ScrollOrientation == ScrollOrientation.HorizontalScroll) {
-                timelineHeader.VisibleTimeStart = timelineGrid.VisibleTimeStart;
+				timelineHeader.VisibleTimeStart = timelineGrid.VisibleTimeStart;
 				timelineHeader.Invalidate();
+			} else {
+				timelineRowList.topOffset = timelineGrid.VerticalOffset;
+				timelineRowList.Invalidate();
 			}
 		}
 
@@ -112,9 +126,24 @@ namespace Timeline
 			// update the grid visible time, and record the last splitter position
 			VisibleTimeSpan = TimeSpan.FromTicks((long)(VisibleTimeSpan.Ticks * gridScale));
 			lastSplitterXPos = e.SplitX;
+
+			// the row list will need to be redrawn, as it has changed width
+			timelineRowList.Invalidate();
 		}
 
+		void TimelineRowAdded(object sender, RowAddedOrRemovedEventArgs e)
+		{
+			e.Row.ParentControl = timelineGrid;
+		}
+
+		void TimelineRowRemoved(object sender, RowAddedOrRemovedEventArgs e)
+		{
+			e.Row.ParentControl = null;
+		}
+
+
 		#endregion
+
 
 
 
@@ -132,6 +161,11 @@ namespace Timeline
 		public TimelineHeader Header
 		{
 			get { return this.timelineHeader; }
+		}
+
+		private void timelineGrid_Load(object sender, EventArgs e)
+		{
+
 		}
 
 	}

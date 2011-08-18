@@ -8,11 +8,11 @@ namespace Timeline
 {
     public abstract class TimelineControlBase : UserControl
     {
-
         internal TimelineControlBase()
         {
-            this.DoubleBuffered = true;
-            this.VisibleTimeSpan = TimeSpan.FromSeconds(10.0);
+            DoubleBuffered = true;
+            VisibleTimeSpan = TimeSpan.FromSeconds(10.0);
+			Rows = new TimelineRowCollection();
         }
 
         /// <summary>
@@ -22,7 +22,6 @@ namespace Timeline
         {
             get { return TimeSpan.FromTicks(VisibleTimeSpan.Ticks / Width); }
         }
-
 
         /// <summary>
         /// The amount of time currently visible. Adjusting this implements zoom along the X (time) axis.
@@ -41,5 +40,9 @@ namespace Timeline
         }
 
         public virtual TimeSpan VisibleTimeStart { get; set; }
+
+		// Rows are now obtained from the main TimelineControl, which should set up the
+		// reference when it initializes itself and the grid.
+		public TimelineRowCollection Rows { get; set; }
     }
 }
