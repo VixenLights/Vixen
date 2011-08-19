@@ -26,7 +26,7 @@ namespace VixenApplication
 			initializeEditorTypes();
 		}
 
-		private void Comet_FormClosing(object sender, FormClosingEventArgs e)
+		private void VixenApp_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			Vixen.Sys.VixenSystem.Stop();
 		}

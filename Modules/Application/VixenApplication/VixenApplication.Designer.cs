@@ -185,17 +185,17 @@
 			this.tabControlMain.Size = new System.Drawing.Size(460, 413);
 			this.tabControlMain.TabIndex = 0;
 			// 
-			// Comet
+			// VixenApplication
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(484, 518);
 			this.Controls.Add(this.tabControlMain);
 			this.Controls.Add(this.label1);
-			this.Name = "Comet";
+			this.Name = "VixenApplication";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Vixen";
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Comet_FormClosing);
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.VixenApp_FormClosing);
 			this.tabPageDisplaySetup.ResumeLayout(false);
 			this.tabPageSequences.ResumeLayout(false);
 			this.tabPageSequences.PerformLayout();
