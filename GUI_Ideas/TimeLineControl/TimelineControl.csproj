@@ -56,12 +56,10 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TimelineElement.cs" />
-    <Compile Include="TimelineElementCollection.cs" />
     <Compile Include="TimelineHeader.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="TimelineRow.cs" />
-    <Compile Include="TimelineRowCollection.cs" />
     <Compile Include="TimelineRowList.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -18,6 +18,7 @@ namespace Timeline
         {
             InitializeComponent();
 
+			// temporary hack to get this working; need to implement proper interfaces in the TimelineControl
 			tg = timelineControl1.Grid;
 
             // Rows
@@ -90,7 +91,7 @@ namespace Timeline
 
             tg.ElementsMoved += new EventHandler<MultiElementEventArgs>(tc_ElementsMoved);
             tg.ElementDoubleClicked += new EventHandler<ElementEventArgs>(tc_ElementDoubleClicked);
-            tg.SelectedElements.CollectionChanged += new EventHandler(SelectedElements_CollectionChanged);
+            //tg.SelectedElements.CollectionChanged += new EventHandler(SelectedElements_CollectionChanged);
 
             tg.MouseClick += new MouseEventHandler(tc_MouseClick);
             tg.MouseDown += new MouseEventHandler(tc_MouseDown);
@@ -131,10 +132,10 @@ namespace Timeline
             _logMessage("Elements at 2 sec: " + _elementList(elems));
         }
 
-        void SelectedElements_CollectionChanged(object sender, EventArgs e)
-        {
-            _logMessage("Selected elements: " + _elementList((TimelineElementCollection)sender));
-        }
+		//void SelectedElements_CollectionChanged(object sender, EventArgs e)
+		//{
+		//    _logMessage("Selected elements: " + _elementList((TimelineElementCollection)sender));
+		//}
 
 
         

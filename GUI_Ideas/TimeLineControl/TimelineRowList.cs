@@ -11,17 +11,32 @@ namespace Timeline
 {
 	public partial class TimelineRowList : TimelineControlBase
 	{
+		private int m_topOffset;
+		private List<TimelineRow> m_rows;
+
 		public TimelineRowList()
 		{
-			topOffset = 0;
+			TopOffset = 0;
 		}
 
 		// the offset at the top (when the control is scrolled)
-		public int topOffset { get; set; }
+		public int TopOffset
+		{
+			get { return m_topOffset; }
+			set { m_topOffset = value; Refresh(); }
+		}
+
+		// only temporary; this will be changed to another data class later
+		public List<TimelineRow> Rows
+		{
+			get { return m_rows; }
+			set { m_rows = value; }
+		}
+
 
 		private void _drawRows(Graphics g)
 		{
-			int offset = -topOffset;
+			int offset = -TopOffset;
 
 			SolidBrush background = new SolidBrush(Color.LightBlue);
 			SolidBrush text = new SolidBrush(Color.Black);

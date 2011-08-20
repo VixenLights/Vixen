@@ -12,22 +12,32 @@ namespace Timeline
         {
             DoubleBuffered = true;
             VisibleTimeSpan = TimeSpan.FromSeconds(10.0);
-			Rows = new TimelineRowCollection();
         }
 
-        /// <summary>
+		/// <summary>
+		/// The amount of time currently visible. Adjusting this implements zoom along the X (time) axis.
+		/// </summary>
+		private TimeSpan m_visibleTimeSpan;
+		public virtual TimeSpan VisibleTimeSpan
+		{
+			get { return m_visibleTimeSpan; }
+			set { m_visibleTimeSpan = value; Refresh(); }
+		}
+
+		private TimeSpan m_visibleTimeStart;
+		public virtual TimeSpan VisibleTimeStart
+		{
+			get { return m_visibleTimeStart; }
+			set { m_visibleTimeStart = value; Refresh(); }
+		}
+
+		/// <summary>
         /// Gets the amount of time represented by one horizontal pixel.
         /// </summary>
         public TimeSpan TimePerPixel
         {
             get { return TimeSpan.FromTicks(VisibleTimeSpan.Ticks / Width); }
         }
-
-        /// <summary>
-        /// The amount of time currently visible. Adjusting this implements zoom along the X (time) axis.
-        /// </summary>
-        public TimeSpan VisibleTimeSpan { get; set; }
-
 
 		protected Single timeToPixels(TimeSpan t)
 		{
@@ -38,11 +48,5 @@ namespace Timeline
         {
             return TimeSpan.FromTicks(px * this.TimePerPixel.Ticks);
         }
-
-        public virtual TimeSpan VisibleTimeStart { get; set; }
-
-		// Rows are now obtained from the main TimelineControl, which should set up the
-		// reference when it initializes itself and the grid.
-		public TimelineRowCollection Rows { get; set; }
     }
 }

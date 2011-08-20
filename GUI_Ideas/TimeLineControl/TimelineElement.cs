@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Collections.Generic;
 
 namespace Timeline
 {
@@ -16,78 +17,51 @@ namespace Timeline
         public TimeSpan Offset
         {
             get { return m_offset; }
-            set { m_offset = value; updateParent(); }
+			set { m_offset = value; _ElementChanged(); }
         }
 
         private TimeSpan m_duration;
         public TimeSpan Duration
         {
             get { return m_duration; }
-            set { m_duration = value; updateParent(); }
+			set { m_duration = value; _ElementChanged(); }
         }
 
         private Color m_backColor = Color.White;
         public Color BackColor
         {
             get { return m_backColor; }
-            set { m_backColor = value; updateParent(); }
+			set { m_backColor = value; _ElementChanged(); }
         }
 
         private object m_tag = null;
         public object Tag
         {
             get { return m_tag; }
-            set { m_tag = value; updateParent(); }
+			set { m_tag = value; _ElementChanged(); }
         }
 
-        #endregion
+		private bool m_selected = false;
+		public bool Selected
+		{
+			get { return m_selected; }
+			set { m_selected = value; _ElementChanged(); _ElementSelected(); }
+		}
 
-        #region Special Properties
+		#endregion
 
-        /// <summary>
-        /// The TimelineRow to which this element belongs, or null if not contained in a TimelineRow.
-        /// </summary>
-        public TimelineRow ParentRow { get; internal set; }
+		#region Events
 
-        /// <summary>
-        /// Returns true if the element is selected in the parent TimelineControl.
-        /// </summary>
-        public bool IsSelected
-        {
-            get
-            {
-                if (ParentRow == null || ParentRow.ParentControl == null)
-                    return false;
-                return ParentRow.ParentControl.SelectedElements.Contains(this);
-            }
-        }
+		internal static event EventHandler ElementChanged;
+		internal static event EventHandler ElementSelected;
 
-        #endregion
+		private void _ElementChanged() { if (ElementChanged != null) ElementChanged(this, EventArgs.Empty); }
+		private void _ElementSelected() { if (ElementSelected != null) ElementSelected(this, EventArgs.Empty); }
 
-        #region Public methods
+		#endregion
 
-        public bool Select()
-        {
-            if (ParentRow == null || ParentRow.ParentControl == null)
-                return false;
-            ParentRow.ParentControl.SelectedElements.AddUnique(this);
-            return true;
-        }
 
-        #endregion
-
-        #region Private methods
-
-        private void updateParent()
-        {
-            if (ParentRow == null || ParentRow.ParentControl == null)
-                return;
-            ParentRow.ParentControl.Refresh();
-        }
-
-        #endregion
-
-        internal void Draw(Graphics graphics, Rectangle rect, DrawElementOptions options)
+		internal void Draw(Graphics graphics, Rectangle rect)
         {
         // BODY
             // Fill
@@ -96,7 +70,7 @@ namespace Timeline
 
         // BORDER
             // Width - bold if selected
-            int b_wd = (options.HasFlag(DrawElementOptions.Selected)) ? 3 : 1;
+            int b_wd = Selected ? 3 : 1;
 
 			// Adjust the rect such that the border is completely inside it.
 			Rectangle b_rect = new Rectangle(
@@ -115,15 +89,18 @@ namespace Timeline
 		}
     }
 
+	public class ElementEventArgs : EventArgs
+	{
+		public ElementEventArgs(TimelineElement te)
+		{
+			Element = te;
+		}
 
-    public class ElementEventArgs : EventArgs
-    {
-        public TimelineElement Element { get; internal set; }
-    }
+		public TimelineElement Element { get; internal set; }
+	}
 
-    public class MultiElementEventArgs : EventArgs
-    {
-        public TimelineElementCollection Elements { get; internal set; }
-    }
-
+	public class MultiElementEventArgs : EventArgs
+	{
+		public List<TimelineElement> Elements { get; internal set; }
+	}
 }

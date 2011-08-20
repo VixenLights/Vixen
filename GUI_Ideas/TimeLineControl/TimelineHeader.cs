@@ -39,10 +39,6 @@ namespace Timeline
 		private const int minPxBetweenTimeLabels = 10;
 
 
-
-
-
-
         protected override void OnPaint(PaintEventArgs e)
         {
             e.Graphics.FillRectangle(new SolidBrush(Color.Gray), 0, 0, Size.Width, Size.Height);

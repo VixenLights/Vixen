@@ -28,63 +28,41 @@ namespace Timeline
 			splitContainer.Panel2MinSize = 100;
 			lastSplitterXPos = splitContainer.SplitterDistance;
 
-			Rows = new TimelineRowCollection();
-			Rows.RowAdded += new EventHandler<RowAddedOrRemovedEventArgs>(TimelineRowAdded);
-			Rows.RowRemoved += new EventHandler<RowAddedOrRemovedEventArgs>(TimelineRowRemoved);
+			timelineGrid.Scroll += new ScrollEventHandler(OnGridScrolled);
+
+			// need to change this soon, to have two different data types, one for the headers/labels, and one of actual rows
+			Rows = new List<TimelineRow>();
 			timelineGrid.Rows = Rows;
 			timelineRowList.Rows = Rows;
-
-			timelineGrid.Scroll += new ScrollEventHandler(OnGridScrolled);
 		}
-
-
 
 		#region Properties
 
 		public TimeSpan TotalTime
 		{
 			get { return timelineGrid.TotalTime; }
-			set
-			{
-				timelineGrid.TotalTime = value;
-				timelineGrid.Invalidate();
-			}
+			set { timelineGrid.TotalTime = value; }
 		}
 
 		public TimeSpan VisibleTimeSpan
 		{
 			get { return timelineGrid.VisibleTimeSpan; }
-			set
-			{
-				timelineGrid.VisibleTimeSpan = value;
-				timelineHeader.VisibleTimeSpan = value;
-				timelineGrid.Invalidate();
-				timelineHeader.Invalidate();
-			}
+			set {timelineGrid.VisibleTimeSpan = timelineHeader.VisibleTimeSpan = value; }
 		}
 
 		public TimeSpan VisibleTimeStart
 		{
 			get { return timelineGrid.VisibleTimeStart; }
-			set
-			{
-				timelineGrid.VisibleTimeStart = value;
-                timelineHeader.VisibleTimeStart = value;
-				timelineGrid.Invalidate();
-				timelineHeader.Invalidate();
-			}
+			set { timelineGrid.VisibleTimeStart = timelineHeader.VisibleTimeStart = value; }
 		}
 
 		public TimeSpan VisibleTimeEnd
 		{
 			get { return VisibleTimeStart + VisibleTimeSpan; }
-			set
-			{
-				VisibleTimeStart = value - VisibleTimeSpan;
-			}
+			set { VisibleTimeStart = value - VisibleTimeSpan; }
 		}
 
-		public TimelineRowCollection Rows { get; set; }
+		public List<TimelineRow> Rows { get; set; }
 
 
 		#endregion
@@ -110,10 +88,8 @@ namespace Timeline
 		{
 			if (e.ScrollOrientation == ScrollOrientation.HorizontalScroll) {
 				timelineHeader.VisibleTimeStart = timelineGrid.VisibleTimeStart;
-				timelineHeader.Invalidate();
 			} else {
-				timelineRowList.topOffset = timelineGrid.VerticalOffset;
-				timelineRowList.Invalidate();
+				timelineRowList.TopOffset = timelineGrid.VerticalOffset;
 			}
 		}
 
@@ -130,17 +106,6 @@ namespace Timeline
 			// the row list will need to be redrawn, as it has changed width
 			timelineRowList.Invalidate();
 		}
-
-		void TimelineRowAdded(object sender, RowAddedOrRemovedEventArgs e)
-		{
-			e.Row.ParentControl = timelineGrid;
-		}
-
-		void TimelineRowRemoved(object sender, RowAddedOrRemovedEventArgs e)
-		{
-			e.Row.ParentControl = null;
-		}
-
 
 		#endregion
 
@@ -161,11 +126,6 @@ namespace Timeline
 		public TimelineHeader Header
 		{
 			get { return this.timelineHeader; }
-		}
-
-		private void timelineGrid_Load(object sender, EventArgs e)
-		{
-
 		}
 
 	}
