@@ -7,23 +7,17 @@ using Vixen.Sys;
 using Vixen.Common;
 
 namespace Vixen.IO.Xml {
-	class XmlChannelNodeTemplateReader : IReader {
+	class XmlChannelNodeTemplateReader : XmlReaderBase<ChannelNodeDefinition> {
 		private const string ELEMENT_NODE = "Node";
-		private const string ATTR_NAME = "name";
-		private const string ATTR_ID = "id";
 		private const string ELEMENT_PROPERTIES = "Properties";
 		private const string ELEMENT_PROPERTY = "Property";
 		private const string ELEMENT_PROPERTY_DATA = "PropertyData";
+		private const string ATTR_NAME = "name";
+		private const string ATTR_ID = "id";
 		
-		public object Read(string filePath) {
-			XElement element = Helper.LoadXml(filePath);
-			return CreateObject(element);
-		}
-
-		public ChannelNodeDefinition CreateObject(XElement element) {
-			ChannelNode node = _ReadNode(element);
-			ChannelNodeDefinition template = new ChannelNodeDefinition(node.Name, node);
-			//template._node = ChannelNode.ReadXml(element);
+		override protected ChannelNodeDefinition _CreateObject(XElement element, string filePath) {
+			ChannelNodeDefinition template = new ChannelNodeDefinition();
+			template.FilePath = filePath;
 			return template;
 		}
 
@@ -61,6 +55,13 @@ namespace Vixen.IO.Xml {
 			}
 
 			return node;
+		}
+
+		protected override void _PopulateObject(ChannelNodeDefinition obj, XElement element) {
+		}
+
+		protected override IEnumerable<Func<XElement, XElement>> _ProvideMigrations(int versionAt, int targetVersion) {
+			return new Func<XElement, XElement>[] { };
 		}
 	}
 }

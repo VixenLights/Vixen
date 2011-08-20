@@ -13,8 +13,6 @@ namespace Vixen.Module.ModuleTemplate {
 			IModuleTemplateModuleInstance instance = Modules.GetById(id) as IModuleTemplateModuleInstance;
 			// Load data from user data.
 			VixenSystem.ModuleData.GetModuleTypeData(instance);
-			//ModuleTemplateModuleManagement manager = Modules.GetModuleManager<IModuleTemplateModuleInstance, ModuleTemplateModuleManagement>();
-			//manager.LoadTemplateData(instance);
 			// Reference the instance.
 			_instances[id] = instance;
 		}

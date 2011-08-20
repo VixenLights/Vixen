@@ -9,8 +9,9 @@ using Vixen.IO.Xml;
 using Vixen.Common;
 
 namespace Vixen.Sys {
-	public class Program {
+	public class Program : IVersioned {
 		private const string DIRECTORY_NAME = "Program";
+		private const int VERSION = 1;
 
 		// Has to be a TimedSequence because otherwise there will be no end
 		// time to watch for to move the program along.
@@ -63,6 +64,10 @@ namespace Vixen.Sys {
 		public void Save() {
 			IWriter writer = new XmlProgramWriter();
 			writer.Write(FilePath, this);
+		}
+
+		public int Version {
+			get { return VERSION; }
 		}
 	}
 }

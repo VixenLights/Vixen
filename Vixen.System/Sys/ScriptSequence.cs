@@ -22,6 +22,7 @@ namespace Vixen.Sys {
 
 		private const string DIRECTORY_NAME = "Sequence";
 		private const string SOURCE_DIRECTORY_NAME = "ScriptSource";
+		private const int VERSION = 1;
 
 		[DataPath]
 		static private readonly string _sourceDirectory = Path.Combine(Paths.DataRootPath, SOURCE_DIRECTORY_NAME);
@@ -115,6 +116,10 @@ namespace Vixen.Sys {
 
 		override protected IWriter _GetSequenceWriter() {
 			return new XmlScriptSequenceWriter();
+		}
+
+		public override int Version {
+			get { return VERSION; }
 		}
 	}
 }

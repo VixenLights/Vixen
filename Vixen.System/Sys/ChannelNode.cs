@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using Vixen.IO;
 using Vixen.Common;
 using Vixen.Module.Property;
 
 namespace Vixen.Sys {
-	public class ChannelNode : GroupNode<OutputChannel> {
+	public class ChannelNode : GroupNode<OutputChannel>, IVersioned {
 		// Making this static so there doesn't have to be potentially thousands of
 		// subscriptions from the node manager.
 		static public event EventHandler Changed;
 		static private Dictionary<Guid, ChannelNode> _instances = new Dictionary<Guid, ChannelNode>();
+
+		private const int VERSION = 1;
 
 		#region Constructors
 		public ChannelNode(Guid id, string name, OutputChannel channel, IEnumerable<ChannelNode> content)
@@ -117,6 +120,10 @@ namespace Vixen.Sys {
 		}
 
 		public PropertyManager Properties { get; private set; }
+
+		public int Version {
+			get { return VERSION; }
+		}
 
 		#region Overrides
 		public override void AddChild(GroupNode<OutputChannel> node) {

@@ -9,7 +9,7 @@ using Vixen.Common;
 using Vixen.Module;
 
 namespace Vixen.IO.Xml {
-	class XmlUserDataReader : IReader {
+	class XmlUserDataReader : XmlReaderBase<UserData> {
 		private OutputChannel[] _channels;
 
 		private const string ELEMENT_ROOT = "UserData";
@@ -27,22 +27,8 @@ namespace Vixen.IO.Xml {
 		private const string ATTR_NAME = "name";
 		private const string ATTR_CHANNEL_ID = "channelId";
 
-		public object Read(string filePath) {
-			XElement element = Helper.LoadXml(filePath);
-			UserData userData = CreateObject(element);
-			return userData;
-		}
-
-		public UserData CreateObject(XElement element) {
-			// Alternate data path handled by VixenSystem.
-			IModuleDataSet moduleData = _ReadModuleData(element);
-			_channels = _ReadChannels(element);
-			ChannelNode[] nodes = _ReadNodes(element);
-
+		override protected UserData _CreateObject(XElement element, string filePath) {
 			UserData userData = new UserData();
-			userData.ModuleData = moduleData;
-			userData.Channels = _channels;
-			userData.Nodes = nodes;
 
 			return userData;
 		}
@@ -132,6 +118,21 @@ namespace Vixen.IO.Xml {
 				new Guid(element.Attribute("controllerId").Value),
 				int.Parse(element.Attribute("outputIndex").Value)
 				);
+		}
+
+		protected override void _PopulateObject(UserData obj, XElement element) {
+			// Alternate data path handled by VixenSystem.
+			IModuleDataSet moduleData = _ReadModuleData(element);
+			_channels = _ReadChannels(element);
+			ChannelNode[] nodes = _ReadNodes(element);
+
+			obj.ModuleData = moduleData;
+			obj.Channels = _channels;
+			obj.Nodes = nodes;
+		}
+
+		protected override IEnumerable<Func<XElement, XElement>> _ProvideMigrations(int versionAt, int targetVersion) {
+			return new Func<XElement, XElement>[] { };
 		}
 	}
 }

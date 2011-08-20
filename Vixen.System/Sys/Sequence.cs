@@ -21,8 +21,9 @@ namespace Vixen.Sys {
 	/// </summary>
 	[Executor(typeof(SequenceExecutor))]
 	[SequenceReader(typeof(XmlSequenceReader))]
-	abstract public class Sequence : Vixen.Sys.ISequence {
+	abstract public class Sequence : Vixen.Sys.ISequence, IVersioned {
 		private const string DIRECTORY_NAME = "Sequence";
+		private const int VERSION = 1;
 
 		[DataPath]
 		static private readonly string _directory = System.IO.Path.Combine(Paths.DataRootPath, DIRECTORY_NAME);
@@ -130,5 +131,9 @@ namespace Vixen.Sys {
 		public IRuntimeBehaviorModuleInstance[] RuntimeBehaviors { get; private set; }
 
 		public MediaCollection Media { get; set; }
+
+		virtual public int Version {
+			get { return VERSION; }
+		}
 	}
 }

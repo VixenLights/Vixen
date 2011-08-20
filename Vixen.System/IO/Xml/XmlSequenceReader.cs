@@ -10,7 +10,7 @@ using Vixen.Module.Sequence;
 using Vixen.Module.RuntimeBehavior;
 
 namespace Vixen.IO.Xml {
-	class XmlSequenceReader : IReader {
+	class XmlSequenceReader : XmlReaderBase<Sequence> {
 		private const string ELEMENT_SEQUENCE = "Sequence";
 		private const string ATTR_LENGTH = "length";
 		private const string ELEMENT_TIMING_SOURCE = "TimingSource";
@@ -25,13 +25,7 @@ namespace Vixen.IO.Xml {
 		private const string ATTR_SELECTED_TIMING_TYPE = "type";
 		private const string ATTR_SELECTED_TIMING_SOURCE = "source";
 
-		public object Read(string filePath) {
-			XElement element = Helper.LoadXml(filePath);
-			Sequence sequence = CreateObject(element, filePath);
-			return sequence;
-		}
-
-		public Sequence CreateObject(XElement element, string filePath) {
+		override protected Sequence _CreateObject(XElement element, string filePath) {
 			// Get the specific sequence module manager.
 			SequenceModuleManagement manager = Modules.GetModuleManager<ISequenceModuleInstance, SequenceModuleManagement>();
 			// Get an instance of the appropriate sequence module.
@@ -40,44 +34,11 @@ namespace Vixen.IO.Xml {
 
 			sequence.FilePath = filePath;
 
-			Guid[] effectTable;
-			Guid[] targetIdTable;
-
-			//Already referencing the doc element.
-			sequence.Length = long.Parse(element.Attribute("length").Value);
-
-			// Timing
-			_ReadTimingSource(element, sequence);
-
-			// Module data
-			_ReadModuleData(element, sequence);
-
-			// Command table
-			_ReadEffectTable(element, out effectTable);
-
-			// Target id table
-			_ReadTargetIdTable(element, out targetIdTable);
-
-			// Data nodes
-			_ReadDataNodes(element, sequence, effectTable, targetIdTable);
-
-			// Things that need to wait for other sequence data:
-
-			// Runtime behavior module data
-			_ReadBehaviorData(element, sequence);
-
-			// Media module data
-			_ReadMedia(element, sequence);
-
-			// Subclass implementation data
-			_ReadImplementationContent(element, sequence);
-
 			return sequence;
 		}
 
 		private void _ReadTimingSource(XElement element, Sequence sequence) {
 			element = element.Element(ELEMENT_TIMING_SOURCE).Element(ELEMENT_SELECTED_TIMING);
-			//sequence.TimingProvider = TimingProviders.ReadXml(element, sequence);
 
 			string providerType = element.Attribute(ATTR_SELECTED_TIMING_TYPE).Value;
 			string sourceName = element.Attribute(ATTR_SELECTED_TIMING_SOURCE).Value;
@@ -192,5 +153,43 @@ namespace Vixen.IO.Xml {
 		}
 
 		virtual protected void _ReadContent(XElement element, Sequence sequence) { }
+
+		protected override void _PopulateObject(Sequence obj, XElement element) {
+			Guid[] effectTable;
+			Guid[] targetIdTable;
+
+			//Already referencing the doc element.
+			obj.Length = long.Parse(element.Attribute("length").Value);
+
+			// Timing
+			_ReadTimingSource(element, obj);
+
+			// Module data
+			_ReadModuleData(element, obj);
+
+			// Command table
+			_ReadEffectTable(element, out effectTable);
+
+			// Target id table
+			_ReadTargetIdTable(element, out targetIdTable);
+
+			// Data nodes
+			_ReadDataNodes(element, obj, effectTable, targetIdTable);
+
+			// Things that need to wait for other sequence data:
+
+			// Runtime behavior module data
+			_ReadBehaviorData(element, obj);
+
+			// Media module data
+			_ReadMedia(element, obj);
+
+			// Subclass implementation data
+			_ReadImplementationContent(element, obj);
+		}
+
+		protected override IEnumerable<Func<XElement, XElement>> _ProvideMigrations(int versionAt, int targetVersion) {
+			return new Func<XElement, XElement>[] { };
+		}
 	}
 }

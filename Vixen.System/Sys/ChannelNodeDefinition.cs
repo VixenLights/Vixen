@@ -6,26 +6,45 @@ using System.IO;
 using System.Xml.Linq;
 using Vixen.Common;
 using Vixen.IO;
+using Vixen.IO.Xml;
 
 namespace Vixen.Sys {
-	public class ChannelNodeDefinition : Definition {
-		private ChannelNode _node;
+	public class ChannelNodeDefinition : IVersioned {
+		private string _filePath;
 
 		private const string DIRECTORY_NAME = "Template";
 		private const string FILE_EXT = ".nod";
+		private const int VERSION = 1;
 
 		[DataPath]
-		static protected readonly string _channelNodeDefinitionDirectory = Path.Combine(Definition._definitionDirectory, DIRECTORY_NAME);
+		static private readonly string DefinitionDirectory = Path.Combine(Paths.DataRootPath, DIRECTORY_NAME);
 
-		public ChannelNodeDefinition(string name, ChannelNode node) {
-			_node = node;
-			FilePath = Path.Combine(_channelNodeDefinitionDirectory, name + FILE_EXT);
+		public ChannelNodeDefinition(string name = null, ChannelNode node = null) {
+			if(name != null) {
+				FilePath = name;
+			}
+			Node = node;
+		}
+
+		public ChannelNode Node { get; set; }
+
+		public string FilePath {
+			get { return _filePath; }
+			set { _filePath = Path.Combine(DefinitionDirectory, Path.GetFileNameWithoutExtension(value) + FILE_EXT); }
+		}
+
+		public string DefinitionFileName {
+			get { return Path.GetFileName(FilePath); }
+		}
+
+		public string Name {
+			get { return Path.GetFileNameWithoutExtension(FilePath); }
 		}
 
 		public void Import(params string[] instanceNames) {
 			foreach(string instanceName in instanceNames) {
 				// Create a new tree instance.
-				ChannelNode newNode = _node.Clone();
+				ChannelNode newNode = Node.Clone();
 				newNode.Name = instanceName;
 				foreach(ChannelNode channelNode in newNode.GetLeafEnumerator()) {
 					// Create a channel and reference it in the node.
@@ -41,13 +60,16 @@ namespace Vixen.Sys {
 		}
 
 		static public IEnumerable<string> GetAllFileNames() {
-			return Directory.GetFiles(_channelNodeDefinitionDirectory, "*" + FILE_EXT);
+			return Directory.GetFiles(DefinitionDirectory, "*" + FILE_EXT);
 		}
 
 		public void Save(string filePath) {
 			if(string.IsNullOrWhiteSpace(filePath)) throw new InvalidOperationException("A name is required.");
-			filePath = Path.Combine(_channelNodeDefinitionDirectory, Path.GetFileName(filePath));
-			base._Save<Vixen.IO.Xml.XmlChannelNodeTemplateWriter>(filePath);
+			filePath = Path.Combine(DefinitionDirectory, Path.GetFileName(filePath));
+
+			IWriter writer = new XmlChannelNodeTemplateWriter();
+			writer.Write(filePath, this);
+			this.FilePath = filePath;
 		}
 
 		public void Save() {
@@ -61,9 +83,17 @@ namespace Vixen.Sys {
 			}
 		}
 
+		public int Version {
+			get { return VERSION; }
+		}
+
 		static public ChannelNodeDefinition Load(string filePath) {
-			filePath = Path.Combine(_channelNodeDefinitionDirectory, Path.GetFileName(filePath));
-			return Definition.Load<ChannelNodeDefinition, Vixen.IO.Xml.XmlChannelNodeTemplateReader>(filePath);
+			filePath = Path.Combine(DefinitionDirectory, Path.GetFileName(filePath));
+
+			XmlChannelNodeTemplateReader reader = new XmlChannelNodeTemplateReader();
+			ChannelNodeDefinition definition = reader.Read(filePath);
+
+			return definition;
 		}
 	}
 }

@@ -15,7 +15,7 @@ using Vixen.IO;
 using Vixen.IO.Xml;
 
 namespace Vixen.Hardware {
-	public class OutputController : IEnumerable<OutputController> {
+	public class OutputController : IEnumerable<OutputController>, IVersioned {
 		private Guid _outputModuleId;
 		private IOutputModuleInstance _outputModule = null;
 		private List<Output> _outputs = new List<Output>();
@@ -29,6 +29,7 @@ namespace Vixen.Hardware {
 
 		private const string FILE_EXT = ".out";
 		private const string DIRECTORY_NAME = "Controller";
+		private const int VERSION = 1;
 
 		static public void ReloadAll() {
 			// Stop the controllers.
@@ -515,6 +516,10 @@ namespace Vixen.Hardware {
 			if(File.Exists(FilePath)) {
 				File.Delete(FilePath);
 			}
+		}
+
+		public int Version {
+			get { return VERSION; }
 		}
 
 		public override string ToString() {

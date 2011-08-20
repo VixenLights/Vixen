@@ -17,10 +17,11 @@ using Vixen.IO.Xml;
 //  RootNodes
 
 namespace Vixen.Sys {
-	class UserData {
+	class UserData : IVersioned {
 		private string _alternateDataPath;
 
 		private const string USER_DATA_FILE = "UserData.xml";
+		private const int VERSION = 1;
 
 		public UserData() {
 			ModuleData = new ModuleDataSet();
@@ -52,6 +53,10 @@ namespace Vixen.Sys {
 			string filePath = Path.Combine(Paths.DataRootPath, USER_DATA_FILE);
 			IWriter writer = new XmlUserDataWriter();
 			writer.Write(filePath, this);
+		}
+
+		public int Version {
+			get { return VERSION; }
 		}
 	}
 }

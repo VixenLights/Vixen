@@ -7,7 +7,7 @@ using Vixen.Sys;
 using Vixen.Common;
 
 namespace Vixen.IO.Xml {
-	class XmlUserDataWriter : IWriter {
+	class XmlUserDataWriter : XmlWriterBase<UserData> {
 		private const string ELEMENT_ROOT = "UserData";
 		private const string ELEMENT_MODULE_DATA = "ModuleData";
 		private const string ELEMENT_DATA_DIRECTORY = "DataDirectory";
@@ -23,15 +23,7 @@ namespace Vixen.IO.Xml {
 		private const string ATTR_NAME = "name";
 		private const string ATTR_CHANNEL_ID = "channelId";
 
-		public void Write(string filePath, object value) {
-			if(!(value is UserData)) throw new InvalidOperationException("Attempt to serialize a " + value.GetType().ToString() + " as a UserData.");
-			
-			UserData userData = (UserData)value;
-			XElement doc = CreateContent(userData);
-			doc.Save(filePath);
-		}
-
-		public XElement CreateContent(UserData userData) {
+		override protected XElement _CreateContent(UserData userData) {
 			return new XElement(ELEMENT_ROOT,
 				_WriteAlternateDataDirectory(userData),
 				_WriteModuleData(userData),

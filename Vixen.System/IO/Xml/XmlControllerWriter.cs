@@ -6,7 +6,7 @@ using System.Xml.Linq;
 using Vixen.Hardware;
 
 namespace Vixen.IO.Xml {
-	class XmlControllerWriter : IWriter {
+	class XmlControllerWriter : XmlWriterBase<OutputController> {
 		private const string ELEMENT_ROOT = "Controller";
 		private const string ELEMENT_OUTPUTS = "Outputs";
 		private const string ELEMENT_OUTPUT = "Output";
@@ -22,15 +22,7 @@ namespace Vixen.IO.Xml {
 		private const string ATTR_TYPE_ID = "typeId";
 		private const string ATTR_INSTANCE_ID = "instanceId";
 
-		public void Write(string filePath, object value) {
-			if(!(value is OutputController)) throw new InvalidOperationException("Attempt to serialize a " + value.GetType().ToString() + " as an OutputController.");
-
-			OutputController controller = (OutputController)value;
-			XElement doc = CreateContent(controller);
-			doc.Save(filePath);
-		}
-
-		public XElement CreateContent(OutputController controller) {
+		override protected XElement _CreateContent(OutputController controller) {
 			controller.Commit();
 			return new XElement(ELEMENT_ROOT,
 				new XAttribute(ATTR_HARDWARE_ID, controller.OutputModuleId),

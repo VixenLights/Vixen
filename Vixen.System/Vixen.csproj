@@ -110,9 +110,10 @@
     <Compile Include="Common\SequenceReaderAttribute.cs" />
     <Compile Include="Execution\ExecutorEffectEnumerator.cs" />
     <Compile Include="IO\IReader.cs" />
+    <Compile Include="IO\IVersioned.cs" />
     <Compile Include="IO\IWriter.cs" />
-    <Compile Include="IO\ReaderBase.cs" />
-    <Compile Include="IO\WriterBase.cs" />
+    <Compile Include="IO\Xml\XmlReaderBase.cs" />
+    <Compile Include="IO\Xml\XmlWriterBase.cs" />
     <Compile Include="IO\Xml\XmlAnySequenceReader.cs" />
     <Compile Include="IO\Xml\XmlChannelNodeTemplateReader.cs" />
     <Compile Include="IO\Xml\XmlChannelNodeTemplateWriter.cs" />
@@ -308,7 +309,6 @@
     <Compile Include="Module\Trigger\DigitalTriggerInput.cs" />
     <Compile Include="Common\LiveEnumerator.cs" />
     <Compile Include="Common\ModuleDataPath.cs" />
-    <Compile Include="Common\Definition.cs" />
     <Compile Include="Module\IModuleDataContainer.cs" />
     <Compile Include="Sys\ITypedDataMover.cs" />
     <Compile Include="Script\UserScriptHost.cs" />

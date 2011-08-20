@@ -9,7 +9,7 @@ using Vixen.Common;
 using Vixen.Module.Effect;
 
 namespace Vixen.IO.Xml {
-	class XmlSequenceWriter : IWriter {
+	class XmlSequenceWriter : XmlWriterBase<Sequence> {
 		private const string ELEMENT_SEQUENCE = "Sequence";
 		private const string ELEMENT_TIMING_SOURCE = "TimingSource";
 		private const string ELEMENT_MODULE_DATA = "ModuleData";
@@ -24,15 +24,7 @@ namespace Vixen.IO.Xml {
 		private const string ATTR_SELECTED_TIMING_TYPE = "type";
 		private const string ATTR_SELECTED_TIMING_SOURCE = "source";
 
-		public void Write(string filePath, object value) {
-			if(!(value is Sequence)) throw new InvalidOperationException("Attempt to serialize a " + value.GetType().ToString() + " as a Sequence.");
-
-			Sequence controller = (Sequence)value;
-			XElement doc = CreateContent(controller);
-			doc.Save(filePath);
-		}
-
-		public XElement CreateContent(Sequence sequence) {
+		override protected XElement _CreateContent(Sequence sequence) {
 			Dictionary<Guid, int> effectTableIndex;
 			Dictionary<Guid, int> targetIdTableIndex;
 
