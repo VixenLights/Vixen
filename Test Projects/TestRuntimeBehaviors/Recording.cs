@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Sys;
-using Vixen.Common;
 using Vixen.Module;
 using Vixen.Module.RuntimeBehavior;
 using Vixen.Module.Timing;

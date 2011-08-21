@@ -5,7 +5,7 @@ using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Vixen.Common {
+namespace Vixen.Sys {
     public class LatchedAppCommand : AppCommand {
         private bool _isChecked;
         private ToolStripMenuItem _menuItem;

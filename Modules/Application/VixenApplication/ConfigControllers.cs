@@ -7,10 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Vixen.Hardware;
-using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Output;
-using Vixen.Common;
+using Vixen.Sys;
 
 
 namespace VixenApplication

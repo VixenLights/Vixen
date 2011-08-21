@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Vixen.Common {
+namespace Vixen.Sys {
     /// <summary>
     /// Decorate properties and fields that return data directories that
     /// need to be present.

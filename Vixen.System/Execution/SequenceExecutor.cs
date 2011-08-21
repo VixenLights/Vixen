@@ -4,7 +4,6 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using System.Reflection;
-using Vixen.Common;
 // Using System.Timers.Timer because it exposes a SynchronizingObject member that lets
 // you specify the thread context for the Elapsed event.
 using System.Timers;

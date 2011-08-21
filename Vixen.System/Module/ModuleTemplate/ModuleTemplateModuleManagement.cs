@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Vixen.Sys;
 using System.IO;
 using System.Xml.Linq;
-using Vixen.Common;
+using Vixen.Sys;
 
 namespace Vixen.Module.ModuleTemplate {
 	class ModuleTemplateModuleManagement : IModuleManagement<IModuleTemplateModuleInstance> {

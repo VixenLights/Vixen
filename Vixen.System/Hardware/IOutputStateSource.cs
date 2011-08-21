@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Vixen.Common;
+using Vixen.Sys;
 
 namespace Vixen.Hardware {
 	public interface IOutputStateSource {

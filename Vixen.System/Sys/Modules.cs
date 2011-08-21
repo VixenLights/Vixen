@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.IO;
-using Vixen.Common;
+using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.ModuleTemplate;
 

@@ -105,9 +105,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\ITimed.cs" />
-    <Compile Include="Common\LiveListEnumerator.cs" />
-    <Compile Include="Common\SequenceReaderAttribute.cs" />
+    <Compile Include="Sys\ITimed.cs" />
+    <Compile Include="Sys\LiveListEnumerator.cs" />
+    <Compile Include="Sys\SequenceReaderAttribute.cs" />
     <Compile Include="Execution\ExecutorEffectEnumerator.cs" />
     <Compile Include="IO\IReader.cs" />
     <Compile Include="IO\IVersioned.cs" />
@@ -290,13 +290,13 @@
     <Compile Include="Sys\OutputChannel.cs" />
     <Compile Include="Module\GenericModuleManagement.cs" />
     <Compile Include="Module\GenericModuleRepository.cs" />
-    <Compile Include="Common\CommandParameterReference.cs" />
+    <Compile Include="Sys\CommandParameterReference.cs" />
     <Compile Include="Module\Transform\ITransform.cs" />
     <Compile Include="Module\Transform\ITransformModuleDescriptor.cs" />
     <Compile Include="Module\Transform\ITransformModuleInstance.cs" />
-    <Compile Include="Common\ConcurrentBagLiveEnumerator.cs" />
-    <Compile Include="Common\ConcurrentQueueLiveEnumerator.cs" />
-    <Compile Include="Common\ExecutorMessageEventArgs.cs" />
+    <Compile Include="Sys\ConcurrentBagLiveEnumerator.cs" />
+    <Compile Include="Sys\ConcurrentQueueLiveEnumerator.cs" />
+    <Compile Include="Sys\ExecutorMessageEventArgs.cs" />
     <Compile Include="Module\Editor\IEditor.cs" />
     <Compile Include="Module\Editor\IEditorModuleDescriptor.cs" />
     <Compile Include="Module\Editor\IEditorModuleInstance.cs" />
@@ -306,8 +306,8 @@
     <Compile Include="Module\Effect\IEffectModuleInstance.cs" />
     <Compile Include="Module\Trigger\AnalogTriggerInput.cs" />
     <Compile Include="Module\Trigger\DigitalTriggerInput.cs" />
-    <Compile Include="Common\LiveEnumerator.cs" />
-    <Compile Include="Common\ModuleDataPath.cs" />
+    <Compile Include="Sys\LiveEnumerator.cs" />
+    <Compile Include="Sys\ModuleDataPath.cs" />
     <Compile Include="Script\UserScriptHost.cs" />
     <Compile Include="Script\ScriptHostGenerator.cs" />
     <Compile Include="Execution\ScriptSequenceExecutor.cs" />
@@ -326,43 +326,43 @@
     <Compile Include="Module\Trigger\AnalogInputTriggerCondition.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\AppCommand.cs">
+    <Compile Include="Sys\AppCommand.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\CommandData.cs">
+    <Compile Include="Sys\CommandData.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\ControllerReference.cs">
+    <Compile Include="Sys\ControllerReference.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\DataPathAttribute.cs">
+    <Compile Include="Sys\DataPathAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Module\Trigger\DigitalInputTriggerCondition.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\ExecutorAttribute.cs">
+    <Compile Include="Sys\ExecutorAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\Extensions.cs">
+    <Compile Include="Sys\Extensions.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\Helper.cs">
+    <Compile Include="Sys\Helper.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\LatchedAppCommand.cs">
+    <Compile Include="Sys\LatchedAppCommand.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\LatchedEventArgs.cs">
+    <Compile Include="Sys\LatchedEventArgs.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\TypeOfModuleAttribute.cs">
+    <Compile Include="Sys\TypeOfModuleAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\ParameterValue.cs">
+    <Compile Include="Sys\ParameterValue.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\Paths.cs">
+    <Compile Include="Sys\Paths.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Sys\IApplication.cs">

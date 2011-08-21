@@ -5,7 +5,6 @@ using System.Text;
 using System.Xml.Linq;
 using System.IO;
 using Vixen.Sys;
-using Vixen.Common;
 using Vixen.Module.Sequence;
 
 namespace Vixen.IO.Xml {

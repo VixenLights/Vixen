@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 using System.Reflection;
 
-namespace Vixen.Common {
+namespace Vixen.Sys {
     static public class Paths {
         // System- or user-defined parent directory of "Vixen" directory.
         static private string _dataRootPath = null;

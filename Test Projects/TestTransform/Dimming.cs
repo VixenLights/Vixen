@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using Vixen.Module;
 using Vixen.Module.Transform;
-using Vixen.Common;
 using Vixen.Sys;
 using CommandStandard.Types;
 

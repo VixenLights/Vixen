@@ -7,7 +7,6 @@ using Vixen.Module.ModuleTemplate;
 using Vixen.Module.RuntimeBehavior;
 using Vixen.Module.Sequence;
 using Vixen.Sys;
-using Vixen.Common;
 
 namespace TestTemplate {
 	public class ScriptSequenceTemplate : ModuleTemplateModuleInstanceBase {

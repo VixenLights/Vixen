@@ -5,7 +5,7 @@ using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Vixen.Common {
+namespace Vixen.Sys {
     // The application will have an array of these.
     // Each one represents a top-level menu, a context menu, or a toolbar.
     public class AppCommand {

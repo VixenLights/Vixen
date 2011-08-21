@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using Vixen.Common;
+using Vixen.Sys;
 using Vixen.Module.Timing;
 
 namespace TestTiming {

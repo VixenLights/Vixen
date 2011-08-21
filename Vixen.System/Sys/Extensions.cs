@@ -6,7 +6,7 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Reflection;
 
-namespace Vixen.Common
+namespace Vixen.Sys
 {
 	static public class Extensions
 	{

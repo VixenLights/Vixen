@@ -6,7 +6,7 @@ using System.IO;
 using System.Xml;
 using Vixen.IO;
 using Vixen.IO.Xml;
-using Vixen.Common;
+using Vixen.Sys;
 
 namespace Vixen.Sys {
 	public class Program : IVersioned {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Vixen.Common;
+using Vixen.Sys;
 using CommandStandard;
 using System.Collections.Concurrent;
 using System.Xml.Linq;

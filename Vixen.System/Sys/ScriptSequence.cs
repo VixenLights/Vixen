@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
-using Vixen.Common;
+using Vixen.Sys;
 using Vixen.IO;
 using Vixen.Script;
 using System.IO;

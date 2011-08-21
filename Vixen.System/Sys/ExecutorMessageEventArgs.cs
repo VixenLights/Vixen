@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Vixen.Common {
+namespace Vixen.Sys {
 	public class ExecutorMessageEventArgs : EventArgs {
 		public ExecutorMessageEventArgs(string value) {
 			Message = value;

@@ -5,7 +5,7 @@ using System.Text;
 using System.Reflection;
 using System.IO;
 using System.Xml.Linq;
-using Vixen.Common;
+using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Sequence;
 using Vixen.Execution;

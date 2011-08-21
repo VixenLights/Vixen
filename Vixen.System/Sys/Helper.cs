@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 using System.Xml.Linq;
 
-namespace Vixen.Common {
+namespace Vixen.Sys {
 	static class Helper {
 		/// <summary>
 		/// 

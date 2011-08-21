@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Vixen.Sys;
-using Vixen.Common;
 using Vixen.Module.Timing;
 
 namespace Vixen.Execution {

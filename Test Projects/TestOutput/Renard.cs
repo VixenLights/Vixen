@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Vixen.Common;
+using Vixen.Sys;
 using System.Diagnostics;
 using Vixen.Module;
 using Vixen.Module.Output;

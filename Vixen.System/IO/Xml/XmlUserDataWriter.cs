@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using Vixen.Sys;
-using Vixen.Common;
 
 namespace Vixen.IO.Xml {
 	class XmlUserDataWriter : XmlWriterBase<UserData> {

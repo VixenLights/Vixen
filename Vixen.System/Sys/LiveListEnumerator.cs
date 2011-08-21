@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Vixen.Common {
+namespace Vixen.Sys {
 	// Makes more sense for this to not subclass LiveEnumerator.
 	class LiveListEnumerator<T> : IEnumerator<T> {
 		private List<T> _list;

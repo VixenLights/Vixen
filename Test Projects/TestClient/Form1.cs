@@ -10,7 +10,6 @@ using System.Xml;
 using System.IO;
 using Vixen.IO;
 using Vixen.Sys;
-using Vixen.Common;
 using Vixen.Hardware;
 using Vixen.Module;
 using Vixen.Module.Sequence;

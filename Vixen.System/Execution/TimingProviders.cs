@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.Xml.Linq;
-using Vixen.Sys;
 using Vixen.Module.Timing;
-using Vixen.Common;
+using Vixen.Sys;
 
 namespace Vixen.Execution {
 	public class TimingProviders {

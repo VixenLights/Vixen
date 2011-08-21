@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Xml;
-using Vixen.Common;
 using Vixen.Sys;
 using Vixen.IO;
 using Vixen.Script;

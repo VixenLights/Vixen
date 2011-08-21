@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Collections.Concurrent;
 using System.Xml.Linq;
-using Vixen.Common;
+using Vixen.Sys;
 
 namespace Vixen.Sys {
 	public class OutputChannel : Channel, IEnumerable<CommandData>, IEqualityComparer<OutputChannel> {

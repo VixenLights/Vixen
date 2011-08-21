@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using Vixen.IO;
-using Vixen.Common;
+using Vixen.Sys;
 using Vixen.Module.Property;
 
 namespace Vixen.Sys {

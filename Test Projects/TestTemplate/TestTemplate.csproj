@@ -108,8 +108,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetPath)" "$(SolutionDir)\Output\Modules\FileTemplate\" /y
-xcopy "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)\Output\Modules\FileTemplate\" /y
+    <PostBuildEvent>xcopy "$(TargetPath)" "$(SolutionDir)\Output\Modules\ModuleTemplate\" /y
+xcopy "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)\Output\Modules\ModuleTemplate\" /y
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

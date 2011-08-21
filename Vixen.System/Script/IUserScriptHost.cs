@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Vixen.Common;
-//using Vixen.Module.Sequence;
 using Vixen.Sys;
 
 namespace Vixen.Script {

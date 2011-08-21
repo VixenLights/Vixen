@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 
-namespace Vixen.Common {
+namespace Vixen.Sys {
     public class ControllerReference : IEquatable<ControllerReference> {
         public Guid ControllerId;
         public int OutputIndex;

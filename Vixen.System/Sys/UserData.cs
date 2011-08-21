@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 using System.Xml;
 using System.Xml.Linq;
-using Vixen.Common;
+using Vixen.Sys;
 using Vixen.Module;
 using Vixen.IO;
 using Vixen.IO.Xml;

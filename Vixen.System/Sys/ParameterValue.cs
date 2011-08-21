@@ -6,7 +6,7 @@ using System.IO;
 using CommandStandard.Types;
 using System.Runtime.Serialization;
 
-namespace Vixen.Common {
+namespace Vixen.Sys {
 	static class ParameterValue {
 		private enum DataType : byte { Level, Color, Time, Position, String, Value };
 

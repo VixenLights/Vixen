@@ -13,7 +13,6 @@ using System.Text;
 using System.Threading;
 using System.Dynamic;
 using Vixen.Sys;
-using Vixen.Common;
 using Vixen.Module.Sequence;
 using Vixen.Script;
 using CommandStandard;

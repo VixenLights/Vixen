@@ -7,7 +7,6 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using Vixen.Common;
 using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Output;

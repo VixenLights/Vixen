@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using System.IO;
-using Vixen.Common;
+using Vixen.Sys;
 
 namespace Vixen.IO.Xml {
 	abstract class XmlReaderBase<T> : IReader 

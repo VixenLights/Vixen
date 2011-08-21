@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Vixen.Sys;
-using Vixen.Common;
 using CommandStandard;
 using Vixen.Script;
 using Vixen.Module;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Vixen.Common {
+namespace Vixen.Sys {
     public class LatchedEventArgs : EventArgs {
         public LatchedEventArgs(bool checkedState) {
             CheckedState = checkedState;

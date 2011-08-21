@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Vixen.Common {
+namespace Vixen.Sys {
 	[AttributeUsage(AttributeTargets.Class)]
 	class ExecutorAttribute : Attribute {
 		// Because generic attributes are not allowed...

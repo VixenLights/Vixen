@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using CommandStandard;
 
-namespace Vixen.Common {
+namespace Vixen.Sys {
 	/// <summary>
 	/// An instance of a command, meaning the command id and the parameter values needed
 	/// to fulfill the command.

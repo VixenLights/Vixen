@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Sys;
-using Vixen.Common;
 
 namespace Vixen.Module.Transform {
 	abstract public class TransformModuleInstanceBase : ModuleInstanceBase, ITransformModuleInstance, IEqualityComparer<ITransformModuleInstance>, IEquatable<ITransformModuleInstance>, IEqualityComparer<TransformModuleInstanceBase>, IEquatable<TransformModuleInstanceBase> {

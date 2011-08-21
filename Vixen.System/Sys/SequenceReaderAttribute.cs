@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Vixen.IO;
 
-namespace Vixen.Common {
+namespace Vixen.Sys {
 	[AttributeUsage(AttributeTargets.Class)]
 	class SequenceReaderAttribute : Attribute {
 		public SequenceReaderAttribute(Type sequenceReaderClass) {

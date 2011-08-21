@@ -5,7 +5,7 @@ using System.Text;
 using Vixen.Hardware;
 using Vixen.Execution;
 using System.Diagnostics;
-using Vixen.Common;
+using Vixen.Sys;
 using System.Threading;
 using Vixen.Module.Effect;
 

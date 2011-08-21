@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Vixen.Common {
+namespace Vixen.Sys {
 	/// <summary>
 	/// The directory will be a child of ModuleData.
 	/// </summary>
