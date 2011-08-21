@@ -5,7 +5,7 @@ using System.Text;
 using System.Collections.Concurrent;
 
 namespace Vixen.Common {
-	public class ConcurrentBagLiveEnumerator<T> : LiveEnumerator<T, ConcurrentBag<T>> {
+	class ConcurrentBagLiveEnumerator<T> : LiveEnumerator<T, ConcurrentBag<T>> {
 		public ConcurrentBagLiveEnumerator(ConcurrentBag<T> collection)
 			: base(collection) {
 		}

@@ -6,7 +6,7 @@ using System.Dynamic;
 using Vixen.Sys;
 
 namespace Vixen.Script {
-	public class UserScriptNode : DynamicObject, IEnumerable<UserScriptNode> {
+	class UserScriptNode : DynamicObject, IEnumerable<UserScriptNode> {
 		// Node name : Node (branch or leaf)
 		private Dictionary<string, UserScriptNode> _children = new Dictionary<string, UserScriptNode>();
 

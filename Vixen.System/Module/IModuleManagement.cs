@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 
 namespace Vixen.Module {
-	public interface IModuleManagement {
+	interface IModuleManagement {
 		object Get(Guid id);
 		object[] GetAll();
 		object Clone(object instance);
 	}
 
-	public interface IModuleManagement<T> : IModuleManagement
+	interface IModuleManagement<T> : IModuleManagement
 		where T : class, IModuleInstance {
 		new T Get(Guid id);
 		new T[] GetAll();

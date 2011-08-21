@@ -10,7 +10,7 @@ using Vixen.Module.RuntimeBehavior;
 using Vixen.Module.Media;
 
 namespace Vixen.Sys {
-    public interface ISequence : IModuleDataContainer {
+    public interface ISequence {//: IModuleDataContainer {
         string Name { get; }
 		void Save();
 		void Save(string fileName);
@@ -23,5 +23,6 @@ namespace Vixen.Sys {
 		InputChannels Data { get; }
 		IRuntimeBehaviorModuleInstance[] RuntimeBehaviors { get; }
 		MediaCollection Media { get; }
+		IModuleDataSet ModuleDataSet { get; }
 	}
 }

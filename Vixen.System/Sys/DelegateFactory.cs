@@ -6,8 +6,8 @@ using System.Reflection;
 using System.Linq.Expressions;
 
 namespace Vixen.Sys {
-	public delegate object LateBoundMethod(object target, params object[] arguments);
-	public delegate void LateBoundProcedure(object target, params object[] arguments);
+	delegate object LateBoundMethod(object target, params object[] arguments);
+	delegate void LateBoundProcedure(object target, params object[] arguments);
 
 	static class DelegateFactory {
 		static public T Create<T>(MethodInfo method) {

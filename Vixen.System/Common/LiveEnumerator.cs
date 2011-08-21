@@ -9,7 +9,7 @@ namespace Vixen.Common {
 	/// </summary>
 	/// <typeparam name="T">Element type</typeparam>
 	/// <typeparam name="U">Collection type</typeparam>
-	abstract public class LiveEnumerator<T,U> : IEnumerator<T> {
+	abstract class LiveEnumerator<T,U> : IEnumerator<T> {
 		private T _current;
 		private T _next;
 		private bool _nextIsValid;

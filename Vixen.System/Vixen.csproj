@@ -139,6 +139,7 @@
     <Compile Include="Module\Effect\ChannelData.cs" />
     <Compile Include="Module\Effect\EffectModuleInstanceBase.cs" />
     <Compile Include="Module\Effect\EffectModuleDescriptorBase.cs" />
+    <Compile Include="Module\ModuleDataModelBase.cs" />
     <Compile Include="Module\ModuleTemplate\ModuleTemplateModuleInstanceBase.cs" />
     <Compile Include="Module\ModuleTemplate\ModuleTemplateModuleDescriptorBase.cs" />
     <Compile Include="Module\Input\InputModuleDescriptorBase.cs" />
@@ -238,13 +239,11 @@
     <Compile Include="Sys\Command.cs" />
     <Compile Include="Sys\CommandNode.cs" />
     <Compile Include="Sys\InputChannels.cs" />
-    <Compile Include="Sys\DataMover.cs" />
     <Compile Include="Sys\DebugLog.cs" />
     <Compile Include="Sys\DelegateFactory.cs" />
     <Compile Include="Sys\ErrorLog.cs" />
     <Compile Include="Module\IModuleManagement.cs" />
     <Compile Include="Module\IModuleRepository.cs" />
-    <Compile Include="Module\ModuleDataMover.cs" />
     <Compile Include="Module\ModuleImplementation.cs" />
     <Compile Include="Module\ModuleImplementationMethod.cs" />
     <Compile Include="Module\ModuleManagement.cs" />
@@ -309,8 +308,6 @@
     <Compile Include="Module\Trigger\DigitalTriggerInput.cs" />
     <Compile Include="Common\LiveEnumerator.cs" />
     <Compile Include="Common\ModuleDataPath.cs" />
-    <Compile Include="Module\IModuleDataContainer.cs" />
-    <Compile Include="Sys\ITypedDataMover.cs" />
     <Compile Include="Script\UserScriptHost.cs" />
     <Compile Include="Script\ScriptHostGenerator.cs" />
     <Compile Include="Execution\ScriptSequenceExecutor.cs" />

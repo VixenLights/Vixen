@@ -6,7 +6,7 @@ using Vixen.Common;
 using Vixen.Sys;
 
 namespace Vixen.Module {
-	public class GenericModuleManagement<T> : IModuleManagement<T>
+	class GenericModuleManagement<T> : IModuleManagement<T>
 		where T : class, IModuleInstance {
 		virtual public T Get(Guid id) {
 			return Modules.GetImplementation<T>().Repository.Get(id) as T;

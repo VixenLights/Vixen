@@ -26,7 +26,7 @@ namespace TestClient
 	{
         private Guid _applicationId = new Guid("{623EFEE5-3D39-4cee-8C1E-C0C43D8604F7}");
 		private List<OutputController> _controllers = new List<OutputController>();
-		private ITypedDataMover[] _dataMovers;
+		//private ITypedDataMover[] _dataMovers;
 		private IEffectEditorControl _editorControl;
 		private List<IEditorModuleInstance> _openEditors = new List<IEditorModuleInstance>();
 		private IEditorModuleInstance _activeEditor = null;
@@ -77,7 +77,7 @@ namespace TestClient
 			}
 
 			// Data movers
-			_dataMovers = DataMover.GetAllMovers().ToArray();
+			//_dataMovers = DataMover.GetAllMovers().ToArray();
 
 			// File templates
 			_LoadFileTemplates(comboBoxFileTemplates);

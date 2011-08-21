@@ -4,23 +4,23 @@ using System.Linq;
 using System.Text;
 
 namespace Vixen.Module {
-	public interface IModuleDataModel {
+	public abstract class ModuleDataModelBase : IModuleDataModel {
 		/// <summary>
 		/// Module type that the data model belongs to.
 		/// </summary>
-		Guid ModuleTypeId { get; set; }
+		public Guid ModuleTypeId { get; set; }
 		/// <summary>
 		/// Module data set that the data model was created from.
 		/// </summary>
-		IModuleDataSet ModuleDataSet { get; set; }
+		public IModuleDataSet ModuleDataSet { get; set; }
 		/// <summary>
 		/// The InstanceId of the of module that the data model belongs to.
 		/// </summary>
-		Guid ModuleInstanceId { get; set; }
+		public Guid ModuleInstanceId { get; set; }
 		/// <summary>
 		/// Performs a deep cloning of the data object.
 		/// </summary>
 		/// <returns></returns>
-		IModuleDataModel Clone();
+		abstract public IModuleDataModel Clone();
 	}
 }

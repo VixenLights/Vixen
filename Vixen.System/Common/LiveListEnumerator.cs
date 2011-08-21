@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Vixen.Common {
 	// Makes more sense for this to not subclass LiveEnumerator.
-	public class LiveListEnumerator<T> : IEnumerator<T> {
+	class LiveListEnumerator<T> : IEnumerator<T> {
 		private List<T> _list;
 		private T _current;
 		private int _index;
