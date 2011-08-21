@@ -27,6 +27,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TimelineControl));
 			this.splitContainer = new System.Windows.Forms.SplitContainer();
 			this.timelineRowList = new Timeline.TimelineRowList();
 			this.timelineHeader = new Timeline.TimelineHeader();
@@ -61,7 +62,6 @@
 			this.timelineRowList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.timelineRowList.AutoSize = true;
 			this.timelineRowList.Location = new System.Drawing.Point(0, 40);
 			this.timelineRowList.Name = "timelineRowList";
 			this.timelineRowList.Size = new System.Drawing.Size(283, 436);
@@ -92,10 +92,12 @@
 			this.timelineGrid.AutoScrollOffset = new System.Drawing.Point(50, 50);
 			this.timelineGrid.AutoSize = true;
 			this.timelineGrid.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(140)))), ((int)(((byte)(140)))));
+			this.timelineGrid.DragThreshold = 8;
 			this.timelineGrid.GridlineInterval = System.TimeSpan.Parse("00:00:01");
 			this.timelineGrid.Location = new System.Drawing.Point(0, 40);
 			this.timelineGrid.MajorGridlineColor = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(120)))), ((int)(((byte)(120)))));
 			this.timelineGrid.Name = "timelineGrid";
+			this.timelineGrid.OnlySnapToCurrentRow = false;
 			this.timelineGrid.RowSeparatorColor = System.Drawing.Color.Black;
 			this.timelineGrid.Size = new System.Drawing.Size(566, 436);
 			this.timelineGrid.TabIndex = 1;
@@ -113,7 +115,6 @@
 			this.Name = "TimelineControl";
 			this.Size = new System.Drawing.Size(853, 476);
 			this.splitContainer.Panel1.ResumeLayout(false);
-			this.splitContainer.Panel1.PerformLayout();
 			this.splitContainer.Panel2.ResumeLayout(false);
 			this.splitContainer.Panel2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();

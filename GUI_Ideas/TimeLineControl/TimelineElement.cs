@@ -17,7 +17,7 @@ namespace Timeline
         public TimeSpan Offset
         {
             get { return m_offset; }
-			set { m_offset = value; _ElementChanged(); }
+			set { if (value < TimeSpan.Zero) return; m_offset = value; _ElementChanged(); }
         }
 
         private TimeSpan m_duration;

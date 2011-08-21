@@ -60,6 +60,9 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="TimelineRow.cs" />
+    <Compile Include="TimelineRowLabel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="TimelineRowList.cs">
       <SubType>UserControl</SubType>
     </Compile>

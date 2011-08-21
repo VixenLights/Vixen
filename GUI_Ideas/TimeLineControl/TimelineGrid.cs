@@ -20,7 +20,6 @@ namespace Timeline
 		private Rectangle m_ignoreDragArea;						// the area in which move movements should be ignored, before we start dragging
 		private TimelineElement m_mouseDownElement = null;		// the element under the cursor on a mouse click
 		private SortedDictionary<int, SnapDetails> m_snapPixels;	// a mapping of pixel location to details to snap to
-		private SortedDictionary<TimeSpan, int> m_snapPoints;	// a collection of the snap points (as TimeSpans) to use in the control
 		private TimeSpan m_totalTime;							// the total amount of time this grid represents
 
 		#endregion
@@ -39,11 +38,14 @@ namespace Timeline
 			MajorGridlineColor = Color.FromArgb(120, 120, 120);
 			GridlineInterval = TimeSpan.FromSeconds(1.0);
 			BackColor = Color.FromArgb(140, 140, 140);
+			OnlySnapToCurrentRow = false;		// setting this to 'true' doesn't quite work yet.
+			DragThreshold = 8;
 
 			m_rows = new List<TimelineRow>();
-			m_snapPoints = new SortedDictionary<TimeSpan, int>();
+			SnapPoints = new SortedDictionary<TimeSpan, int>();
 
-			TimelineElement.ElementChanged += new EventHandler(ElementChangedHandler);
+			TimelineElement.ElementChanged += ElementChangedHandler;
+			TimelineRow.RowChanged += RowChangedHandler;
 		}
 
 		#endregion
@@ -116,9 +118,12 @@ namespace Timeline
 			}
 		}
 
+		public SortedDictionary<TimeSpan, int> SnapPoints { get; set; }
 		public Color RowSeparatorColor { get; set; }
 		public Color MajorGridlineColor { get; set; }
 		public TimeSpan GridlineInterval { get; set; }
+		public bool OnlySnapToCurrentRow { get; set; }
+		public int DragThreshold { get; set; }
 
 		private bool CtrlPressed { get { return Form.ModifierKeys.HasFlag(Keys.Control); } }
 
@@ -139,6 +144,13 @@ namespace Timeline
 		#region Event Handlers
 
 		protected void ElementChangedHandler(object sender, EventArgs e)
+		{
+			// when dragging, the control will manuall refresh after it's done, in case multiple elements are changing.
+			if (m_dragState != DragState.Dragging) 
+				Refresh();
+		}
+
+		protected void RowChangedHandler(object sender, EventArgs e)
 		{
 			Refresh();
 		}
@@ -219,11 +231,15 @@ namespace Timeline
 		{
 			// e is already translated.
 
-			if (m_mouseDownElement == null)   // we clicked nothing - clear selection
+			// we clicked nothing - clear selection
+			if (m_mouseDownElement == null)
             {
-				ClearSelectedElements();
-			} else    // our mouse is down on something
-            {
+				if (!CtrlPressed)
+					ClearSelectedElements();
+			}
+			// our mouse is down on something
+			else
+			{
 				if (m_mouseDownElement.Selected) {
 					// unselect
 					if (CtrlPressed)
@@ -273,7 +289,7 @@ namespace Timeline
 			if (m_dragState == DragState.Waiting) {
 				if (!m_ignoreDragArea.Contains(e.Location)) {
 					//begin the dragging process
-					beginDrag();
+					beginDrag(e.Location);
 				}
 			}
 			if (m_dragState == DragState.Dragging) {
@@ -322,10 +338,10 @@ namespace Timeline
 							element.Offset += pixelsToTime(dX);
 						}
 					}
+					this.Refresh();
 				}
 			}
 
-			this.Refresh();
 
 		}
 
@@ -352,14 +368,12 @@ namespace Timeline
 		}
 
 		/// <summary>
-		/// Returns the element located at the current point in screen coordinates
+		/// Returns the row located at the current point in screen coordinates
 		/// </summary>
 		/// <param name="p">Screen coordinates</param>
-		/// <returns>Element at given point, or null if none exists.</returns>
-		protected TimelineElement elementAt(Point p)
+		/// <returns>Row at given point, or null if none exists.</returns>
+		protected TimelineRow rowAt(Point p)
 		{
-			// Translate 
-			// First figure out which row we are in
 			TimelineRow containingRow = null;
 			int curheight = 0;
 			foreach (TimelineRow row in Rows) {
@@ -369,6 +383,19 @@ namespace Timeline
 				}
 				curheight += row.Height;
 			}
+
+			return containingRow;
+		}
+
+		/// <summary>
+		/// Returns the element located at the current point in screen coordinates
+		/// </summary>
+		/// <param name="p">Screen coordinates</param>
+		/// <returns>Element at given point, or null if none exists.</returns>
+		protected TimelineElement elementAt(Point p)
+		{
+			// First figure out which row we are in
+			TimelineRow containingRow = rowAt(p);
 
 			if (containingRow == null)
 				return null;
@@ -406,16 +433,21 @@ namespace Timeline
 		{
 			// begin the dragging process -- calculate a area outside which a drag starts
 			m_dragState = DragState.Waiting;
-			Size drag = SystemInformation.DragSize;
-			m_ignoreDragArea = new Rectangle(new Point(location.X - drag.Width / 2, location.Y - drag.Height / 2), drag);
+			m_ignoreDragArea = new Rectangle(location.X - DragThreshold, location.Y - DragThreshold, DragThreshold*2, DragThreshold*2);
 			m_lastMouseLocation = location;
+		}
+
+		private void beginDrag(Point location)
+		{
+			m_dragState = DragState.Dragging;
+			this.Cursor = Cursors.Hand;
 
 			// calculate all the snap points (in pixels) for all selected elements
 			// for every visible drag point (and a width either side, so they can snap
 			// to non-visible points that are close)
 			m_snapPixels = new SortedDictionary<int, SnapDetails>();
 
-			foreach (KeyValuePair<TimeSpan, int> kvp in m_snapPoints) {
+			foreach (KeyValuePair<TimeSpan, int> kvp in SnapPoints) {
 				if ((kvp.Key >= VisibleTimeStart - VisibleTimeSpan) &&
 					(kvp.Key <= VisibleTimeEnd + VisibleTimeSpan)) {
 
@@ -423,7 +455,19 @@ namespace Timeline
 					int snapRange = kvp.Value;
 					int snapLevel = kvp.Value;
 
-					foreach (TimelineElement element in SelectedElements) {
+					List<TimelineElement> snapElements;
+
+					if (OnlySnapToCurrentRow) {
+						TimelineRow row = rowAt(location);
+						if (row != null)
+							snapElements = row.SelectedElements;
+						else
+							snapElements = new List<TimelineElement>();
+					} else {
+						snapElements = SelectedElements;
+					}
+
+					foreach (TimelineElement element in snapElements) {
 						int elementPixelStart = (int)timeToPixels(element.Offset);
 						int elementPixelEnd = (int)timeToPixels(element.Offset + element.Duration);
 
@@ -446,8 +490,8 @@ namespace Timeline
 									m_snapPixels[rp].SnapElements[element] = kvp.Key;
 									m_snapPixels[rp].SnapLevel = Math.Max(m_snapPixels[rp].SnapLevel, snapLevel);
 								}
-								// if it's not going to snap to the same pixel as the existing one, then only
-								// update it if the new one's of a higher priority.
+									// if it's not going to snap to the same pixel as the existing one, then only
+									// update it if the new one's of a higher priority.
 								else {
 									if (m_snapPixels[rp].SnapLevel < snapLevel) {
 										addNewSnapDetail = true;
@@ -508,30 +552,10 @@ namespace Timeline
 			}
 		}
 
-		private void beginDrag()
-		{
-			m_dragState = DragState.Dragging;
-			this.Cursor = Cursors.Hand;
-		}
-
 		private void endDrag()
 		{
 			m_dragState = DragState.Normal;
 			this.Cursor = Cursors.Default;
-		}
-
-		public bool AddSnapTime(TimeSpan time, int level)
-		{
-			if (m_snapPoints.ContainsKey(time))
-				return false;
-
-			m_snapPoints[time] = level;
-			return true;
-		}
-
-		public bool RemoveSnapTime(TimeSpan time)
-		{
-			return m_snapPoints.Remove(time);
 		}
 
 		#endregion
@@ -545,6 +569,9 @@ namespace Timeline
 			int curY = 0;
 			Pen p = new Pen(RowSeparatorColor);
 			foreach (TimelineRow row in Rows) {
+				if (!row.Visible)
+					continue;
+
 				curY += row.Height;
 				Point left = new Point((-AutoScrollPosition.X), curY);
 				Point right = new Point((-AutoScrollPosition.X) + Width, curY);
@@ -574,7 +601,7 @@ namespace Timeline
 		private void _drawSnapPoints(Graphics g)
 		{
 			// iterate through all snap points, and if it's visible, draw it
-			foreach (KeyValuePair<TimeSpan, int> kvp in m_snapPoints) {
+			foreach (KeyValuePair<TimeSpan, int> kvp in SnapPoints) {
 				if (kvp.Key >= VisibleTimeStart && kvp.Key < VisibleTimeEnd) {
 					Single x = timeToPixels(kvp.Key);
 					Pen p = new Pen(Color.Blue);
@@ -589,6 +616,9 @@ namespace Timeline
 			// Draw each row
 			int top = 0;    // y-coord of top of current row
 			foreach (TimelineRow row in Rows) {
+				if (!row.Visible)
+					continue;
+
 				// Draw each element
 				foreach (var element in row.Elements) {
 

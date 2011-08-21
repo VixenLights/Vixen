@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
@@ -29,11 +30,6 @@ namespace Timeline
 			lastSplitterXPos = splitContainer.SplitterDistance;
 
 			timelineGrid.Scroll += new ScrollEventHandler(OnGridScrolled);
-
-			// need to change this soon, to have two different data types, one for the headers/labels, and one of actual rows
-			Rows = new List<TimelineRow>();
-			timelineGrid.Rows = Rows;
-			timelineRowList.Rows = Rows;
 		}
 
 		#region Properties
@@ -62,9 +58,6 @@ namespace Timeline
 			set { VisibleTimeStart = value - VisibleTimeSpan; }
 		}
 
-		public List<TimelineRow> Rows { get; set; }
-
-
 		#endregion
 
 		#region Methods
@@ -79,6 +72,69 @@ namespace Timeline
 			VisibleTimeSpan = TimeSpan.FromTicks((long)(VisibleTimeSpan.Ticks * scale));
 			timelineHeader.VisibleTimeStart = timelineGrid.VisibleTimeStart;
 		}
+
+		private void AddRowToControls(TimelineRow row, TimelineRowLabel label)
+		{
+			timelineGrid.Rows.Add(row);
+			timelineRowList.Controls.Add(label);
+		}
+
+		// adds a given row to the control, optionally as a child of the given parent
+		public void AddRow(TimelineRow row, TimelineRow parent = null)
+		{
+			if (parent != null)
+				parent.AddChildRow(row);
+
+			AddRowToControls(row, row.RowLabel);
+		}
+
+		// adds a new, empty row with a default label with the given name, as a child of the (optional) given parent
+		public TimelineRow AddRow(string name, TimelineRow parent = null, int height = 50)
+		{
+			TimelineRow row = new TimelineRow();
+
+			row.Name = name;
+			row.Height = height;
+
+			if (parent != null)
+				parent.AddChildRow(row);
+
+			AddRowToControls(row, row.RowLabel);
+
+			return row;
+		}
+
+		// adds a new, empty row with the given label, as a child of the (optional) given parent
+		public TimelineRow AddRow(TimelineRowLabel label, TimelineRow parent = null, int height = 50)
+		{
+			TimelineRow row = new TimelineRow(label);
+
+			row.Height = height;
+
+			if (parent != null)
+				parent.AddChildRow(row);
+
+			AddRowToControls(row, row.RowLabel);
+
+			return row;
+		}
+
+
+		public bool AddSnapTime(TimeSpan time, int level)
+		{
+			if (timelineGrid.SnapPoints.ContainsKey(time))
+				return false;
+
+			timelineGrid.SnapPoints[time] = level;
+			return true;
+		}
+
+		public bool RemoveSnapTime(TimeSpan time)
+		{
+			return timelineGrid.SnapPoints.Remove(time);
+		}
+
+
 
 		#endregion
 
@@ -104,29 +160,9 @@ namespace Timeline
 			lastSplitterXPos = e.SplitX;
 
 			// the row list will need to be redrawn, as it has changed width
-			timelineRowList.Invalidate();
+			timelineRowList.Refresh();
 		}
 
 		#endregion
-
-
-
-
-		// only temporary: remove later on, once there are interfaces for everything in the control
-		public TimelineGrid Grid
-		{
-			get { return this.timelineGrid; }
-		}
-
-		public TimelineRowList RowList
-		{
-			get { return this.timelineRowList; }
-		}
-
-		public TimelineHeader Header
-		{
-			get { return this.timelineHeader; }
-		}
-
 	}
 }

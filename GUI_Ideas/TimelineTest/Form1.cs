@@ -12,91 +12,87 @@ namespace Timeline
 {
     public partial class Form1 : Form
 	{
-		TimelineGrid tg;
-
         public Form1()
         {
             InitializeComponent();
 
-			// temporary hack to get this working; need to implement proper interfaces in the TimelineControl
-			tg = timelineControl1.Grid;
-
             // Rows
-			tg.Rows.Add(new TimelineRow() { Height = 50, Name = "Row 0" });
-			tg.Rows.Add(new TimelineRow() { Height = 100, Name = "Row 1" });
-			tg.Rows.Add(new TimelineRow() { Height = 100, Name = "Row 2" });
-			tg.Rows.Add(new TimelineRow() { Height = 100, Name = "Row 3" });
-			tg.Rows.Add(new TimelineRow() { Height = 100, Name = "Row 4" });
+			TimelineRow row1 = timelineControl1.AddRow("Row 1");
+			TimelineRow row2 = timelineControl1.AddRow("Row 2", row1);
+			TimelineRow row3 = timelineControl1.AddRow("Row 3", row1);
+			TimelineRow row4 = timelineControl1.AddRow("Row 4", row1);
+			TimelineRow row5 = timelineControl1.AddRow("Row 5", row4);
+			TimelineRow row6 = timelineControl1.AddRow("Row 6", row4);
+			TimelineRow row7 = timelineControl1.AddRow("Row 7", row4);
+			TimelineRow row8 = timelineControl1.AddRow("Row 8");
+			TimelineRow row9 = timelineControl1.AddRow("Row 9");
+			TimelineRow row10 = timelineControl1.AddRow("Row 10");
+			TimelineRow row11 = timelineControl1.AddRow("Row 11");
 
-            // Elements
-            tg.Rows[0].Elements.Add(new TimelineElement()
-                {
-                    BackColor = Color.Red,
-                    Offset = TimeSpan.FromSeconds(1.5),
-                    Duration = TimeSpan.FromSeconds(3.5),
-                    Tag = "Red"
-                }
-            );
 
-            tg.Rows[1].Elements.Add(new TimelineElement()
-                {
-                    BackColor = Color.Green,
-                    Offset = TimeSpan.FromSeconds(0),
-                    Duration = TimeSpan.FromSeconds(2),
-                    Tag = "Green"
-                }
-            );
+			// Elements
+			row1.Elements.Add(new TimelineElement() {
+				BackColor = Color.Red,
+				Offset = TimeSpan.FromSeconds(1.5),
+				Duration = TimeSpan.FromSeconds(3.5),
+				Tag = "Red"
+			}
+			);
+
+			row2.Elements.Add(new TimelineElement() {
+				BackColor = Color.Green,
+				Offset = TimeSpan.FromSeconds(0),
+				Duration = TimeSpan.FromSeconds(2),
+				Tag = "Green"
+			}
+			);
+
+			row2.Elements.Add(new TimelineElement() {
+				BackColor = Color.Blue,
+				Offset = TimeSpan.FromSeconds(4),
+				Duration = TimeSpan.FromSeconds(1),
+				Tag = "Blue"
+			}
+			);
+
+			row3.Elements.Add(new TimelineElement() {
+				BackColor = Color.Orange,
+				Offset = TimeSpan.FromSeconds(4),
+				Duration = TimeSpan.FromSeconds(1),
+				Tag = "Orange"
+			}
+			);
+
+			row4.Elements.Add(new TimelineElement() {
+				BackColor = Color.Purple,
+				Offset = TimeSpan.FromSeconds(4),
+				Duration = TimeSpan.FromSeconds(1),
+				Tag = "Purple"
+			}
+			);
+
+
+			row5.Elements.Add(new TimelineElement() {
+				BackColor = Color.Black,
+				Offset = TimeSpan.FromSeconds(4),
+				Duration = TimeSpan.FromSeconds(1),
+				Tag = "Black"
+			}
+			);
             
-            tg.Rows[1].Elements.Add(new TimelineElement()
-                {
-                    BackColor = Color.Blue,
-                    Offset = TimeSpan.FromSeconds(4),
-                    Duration = TimeSpan.FromSeconds(1),
-                    Tag = "Blue"
-                }
-            );
 
-            tg.Rows[2].Elements.Add(new TimelineElement()
-                {
-                    BackColor = Color.Orange,
-                    Offset = TimeSpan.FromSeconds(4),
-                    Duration = TimeSpan.FromSeconds(1),
-                    Tag = "Orange"
-                }
-            );
-
-            tg.Rows[3].Elements.Add(new TimelineElement()
-                {
-                    BackColor = Color.Purple,
-                    Offset = TimeSpan.FromSeconds(4),
-                    Duration = TimeSpan.FromSeconds(1),
-                    Tag = "Purple"
-                }
-            );
+			timelineControl1.AddSnapTime(TimeSpan.FromSeconds(3.3), 5);
+			timelineControl1.AddSnapTime(TimeSpan.FromSeconds(4.6), 10);
 
 
-            tg.Rows[4].Elements.Add(new TimelineElement()
-                {
-                    BackColor = Color.Black,
-                    Offset = TimeSpan.FromSeconds(4),
-                    Duration = TimeSpan.FromSeconds(1),
-                    Tag = "Black"
-                }
-            );
-            
-
-			tg.AddSnapTime(TimeSpan.FromSeconds(3.3), 5);
-			tg.AddSnapTime(TimeSpan.FromSeconds(4.6), 10);
-
-
-            tg.ElementsMoved += new EventHandler<MultiElementEventArgs>(tc_ElementsMoved);
-            tg.ElementDoubleClicked += new EventHandler<ElementEventArgs>(tc_ElementDoubleClicked);
+			//tg.ElementsMoved += new EventHandler<MultiElementEventArgs>(tc_ElementsMoved);
+			//tg.ElementDoubleClicked += new EventHandler<ElementEventArgs>(tc_ElementDoubleClicked);
             //tg.SelectedElements.CollectionChanged += new EventHandler(SelectedElements_CollectionChanged);
 
-            tg.MouseClick += new MouseEventHandler(tc_MouseClick);
-            tg.MouseDown += new MouseEventHandler(tc_MouseDown);
-            tg.MouseDoubleClick += new MouseEventHandler(tc_MouseDoubleClick);
-            tg.MouseUp += new MouseEventHandler(tc_MouseUp);
+			//tg.MouseClick += new MouseEventHandler(tc_MouseClick);
+			//tg.MouseDown += new MouseEventHandler(tc_MouseDown);
+			//tg.MouseDoubleClick += new MouseEventHandler(tc_MouseDoubleClick);
+			//tg.MouseUp += new MouseEventHandler(tc_MouseUp);
         }
 
 
@@ -128,8 +124,8 @@ namespace Timeline
 
         void buttonElemAt_Click(object sender, EventArgs e)
         {
-            var elems = tg.ElementsAtTime(TimeSpan.FromSeconds(2.0));
-            _logMessage("Elements at 2 sec: " + _elementList(elems));
+			//var elems = tg.ElementsAtTime(TimeSpan.FromSeconds(2.0));
+			//_logMessage("Elements at 2 sec: " + _elementList(elems));
         }
 
 		//void SelectedElements_CollectionChanged(object sender, EventArgs e)
@@ -159,11 +155,11 @@ namespace Timeline
 
         private void buttonReset_Click(object sender, EventArgs e)
         {
-            tg.Rows[0].Elements[0].Offset = TimeSpan.FromSeconds(1.5);
-            tg.Rows[0].Elements[0].Duration = TimeSpan.FromSeconds(3.5);
+			//tg.Rows[0].Elements[0].Offset = TimeSpan.FromSeconds(1.5);
+			//tg.Rows[0].Elements[0].Duration = TimeSpan.FromSeconds(3.5);
 
-            tg.Rows[1].Elements[0].Offset = TimeSpan.FromSeconds(0);
-            tg.Rows[1].Elements[0].Duration = TimeSpan.FromSeconds(2);
+			//tg.Rows[1].Elements[0].Offset = TimeSpan.FromSeconds(0);
+			//tg.Rows[1].Elements[0].Duration = TimeSpan.FromSeconds(2);
         }
 
 		private void buttonZoomIn_Click(object sender, EventArgs e)
@@ -178,10 +174,10 @@ namespace Timeline
 
 		private void buttonGenericDebug_Click(object sender, EventArgs e)
 		{
-			_logMessage("tc total time: " + tg.TotalTime);
-			_logMessage("tc visible time span: " + tg.VisibleTimeSpan);
-			_logMessage("tc visible time start: " + tg.VisibleTimeStart);
-			_logMessage("tc visible time end: " + tg.VisibleTimeEnd);
+			//_logMessage("tc total time: " + tg.TotalTime);
+			//_logMessage("tc visible time span: " + tg.VisibleTimeSpan);
+			//_logMessage("tc visible time start: " + tg.VisibleTimeStart);
+			//_logMessage("tc visible time end: " + tg.VisibleTimeEnd);
 		}
 
 		private void buttonGenericDebug2_Click(object sender, EventArgs e)

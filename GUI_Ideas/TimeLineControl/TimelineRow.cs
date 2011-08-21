@@ -11,12 +11,20 @@ namespace Timeline
 	{
 		protected List<TimelineElement> m_elements = new List<TimelineElement>();
 
-		public TimelineRow()
+		public TimelineRow(TimelineRowLabel trl)
 		{
 			// actually, we don't want to listen for this event in every row; since the 
 			// whole grid gets redrawn anyway, we can just listen and handle the event
 			// at the grid level instead.
-			//TimelineElement.ElementChanged += new EventHandler(ElementChangedHandler);
+			//TimelineElement.ElementChanged += new ElementChangedHandler;
+
+			RowLabel = trl;
+			ChildRows = new List<TimelineRow>();
+		}
+
+		public TimelineRow()
+			: this(new TimelineRowLabel())
+		{
 		}
 
 		#region Properties
@@ -25,7 +33,7 @@ namespace Timeline
 		public int Height
 		{
 			get { return m_height; }
-			set { m_height = value; _RowChanged(); }
+			set { RowLabel.Height = m_height = value; _RowChanged(); }
 		}
 
 		private object m_tag;
@@ -35,11 +43,10 @@ namespace Timeline
 			set { m_tag = value; _RowChanged(); }
 		}
 
-		private string m_name;
 		public string Name
 		{
-			get { return m_name; }
-			set { m_name = value; _RowChanged(); }
+			get { return RowLabel.Name; }
+			set { RowLabel.Name = value; _RowChanged(); }
 		}
 
 		public List<TimelineElement> Elements
@@ -65,6 +72,75 @@ namespace Timeline
 			get { return (m_elements.Count == 0); }
 		}
 
+		private TimelineRowLabel m_rowLabel;
+		public TimelineRowLabel RowLabel
+		{
+			get { return m_rowLabel; }
+			set
+			{
+				if (m_rowLabel != null) {
+					m_rowLabel.ParentRow = null;
+					m_rowLabel.TreeToggled -= TreeToggledHandler;
+				}
+
+				m_rowLabel = value;
+				m_rowLabel.ParentRow = this;
+				m_rowLabel.TreeToggled += TreeToggledHandler;
+
+				_RowChanged();
+			}
+		}
+
+		private TimelineRow m_parentRow;
+		public TimelineRow ParentRow
+		{
+			get { return m_parentRow; }
+			set { m_parentRow = value; }
+		}
+
+		public int ParentDepth
+		{
+			get
+			{
+				if (ParentRow == null)
+					return 0;
+				else
+					return ParentRow.ParentDepth + 1;
+			}
+		}
+
+		protected List<TimelineRow> ChildRows { get; set; }
+
+		private bool m_treeOpen;
+		public bool TreeOpen
+		{
+			get { return m_treeOpen; }
+			set
+			{
+				if (m_treeOpen == value)
+					return;
+
+				foreach (TimelineRow row in ChildRows)
+					row.Visible = value;
+
+				m_treeOpen = value;
+				_RowChanged();
+			}
+		}
+
+		public bool Visible
+		{
+			get { return RowLabel.Visible; }
+			set
+			{
+				foreach (TimelineRow row in ChildRows)
+					row.Visible = value;
+
+				RowLabel.Visible = value;
+				_RowChanged();
+			}
+		}
+
 		#endregion
 
 
@@ -85,8 +161,13 @@ namespace Timeline
 
 		protected void ElementChangedHandler(object sender, EventArgs e)
 		{
-			if (Contains(sender as TimelineElement))
+			if (ContainsElement(sender as TimelineElement))
 				_RowChanged();
+		}
+
+		protected void TreeToggledHandler(object sender, EventArgs e)
+		{
+			TreeOpen = !TreeOpen;
 		}
 
 		#endregion
@@ -99,7 +180,7 @@ namespace Timeline
 			get { return m_elements[index]; }
 		}
 
-		public void Add(TimelineElement element)
+		public void AddElement(TimelineElement element)
 		{
 			m_elements.Add(element);
 
@@ -107,31 +188,44 @@ namespace Timeline
 			_RowChanged();
 		}
 
-		public bool AddUnique(TimelineElement element)
+		public bool AddUniqueElement(TimelineElement element)
 		{
 			if (m_elements.Contains(element))
 				return false;
 
-			Add(element);
+			AddElement(element);
 			return true;
 		}
 
-		public void Remove(TimelineElement element)
+		public void RemoveElement(TimelineElement element)
 		{
 			m_elements.Remove(element);
 			_ElementRemoved(element);
 			_RowChanged();
 		}
 
-		public bool Contains(TimelineElement element)
+		public bool ContainsElement(TimelineElement element)
 		{
 			return m_elements.Contains(element);
 		}
 
-		public void Clear()
+		public void ClearElements()
 		{
 			m_elements.Clear();
 			_RowChanged();
+		}
+
+		public void AddChildRow(TimelineRow row)
+		{
+			ChildRows.Add(row);
+			row.ParentRow = this;
+			row.Visible = TreeOpen;
+		}
+
+		public void RemoveChildRow(TimelineRow row)
+		{
+			ChildRows.Remove(row);
+			row.ParentRow = null;
 		}
 
 		public IEnumerator<TimelineElement> GetEnumerator()
