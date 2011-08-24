@@ -37,6 +37,8 @@ namespace Timeline
 			MajorGridlineColor = Color.FromArgb(120, 120, 120);
 			GridlineInterval = TimeSpan.FromSeconds(1.0);
 			BackColor = Color.FromArgb(140, 140, 140);
+			SelectionColor = Color.FromArgb(100, 40, 100, 160);
+			SelectionBorder = Color.Blue;
 			OnlySnapToCurrentRow = false;		// setting this to 'true' doesn't quite work yet.
 			DragThreshold = 8;
 
@@ -116,9 +118,12 @@ namespace Timeline
 		public SortedDictionary<TimeSpan, int> SnapPoints { get; set; }
 		public Color RowSeparatorColor { get; set; }
 		public Color MajorGridlineColor { get; set; }
+		public Color SelectionColor { get; set; }
+		public Color SelectionBorder { get; set; }
 		public TimeSpan GridlineInterval { get; set; }
 		public bool OnlySnapToCurrentRow { get; set; }
 		public int DragThreshold { get; set; }
+		public Rectangle SelectedArea { get; set; }
 
 		private bool CtrlPressed { get { return Form.ModifierKeys.HasFlag(Keys.Control); } }
 
@@ -229,8 +234,12 @@ namespace Timeline
 			// we clicked nothing - clear selection
 			if (m_mouseDownElement == null)
             {
-				if (!CtrlPressed)
+				if (!CtrlPressed) {
 					ClearSelectedElements();
+					m_dragState = DragState.Selecting;
+					SelectedArea = new Rectangle(e.X, e.Y, 0, 0);
+					m_lastMouseLocation = e.Location;
+				}
 			}
 			// our mouse is down on something
 			else
@@ -260,6 +269,8 @@ namespace Timeline
 				MultiElementEventArgs evargs = new MultiElementEventArgs { Elements = SelectedElements };
 				_ElementsMoved(evargs);
 
+			} else if (m_dragState == DragState.Selecting) {
+				SelectedArea = new Rectangle();
 			} else {
 				// If we're not dragging on mouse up, it could be a click on one of multiple
 				// selected elements. (In which case we select only that one)
@@ -336,8 +347,14 @@ namespace Timeline
 					this.Refresh();
 				}
 			}
+			if (m_dragState == DragState.Selecting) {
+				// for the selecting, we're using the "last mouse location" variable to record the original click point.
+				Point topLeft = new Point(Math.Min(m_lastMouseLocation.X, e.X), Math.Min(m_lastMouseLocation.Y, e.Y));
+				Point bottomRight = new Point(Math.Max(m_lastMouseLocation.X, e.X), Math.Max(m_lastMouseLocation.Y, e.Y));
 
-
+				SelectedArea = new Rectangle(topLeft.X, topLeft.Y, bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y);
+				Invalidate();
+			}
 		}
 
 		protected override void OnMouseDoubleClick(MouseEventArgs e)
@@ -372,6 +389,9 @@ namespace Timeline
 			TimelineRow containingRow = null;
 			int curheight = 0;
 			foreach (TimelineRow row in Rows) {
+				if (!row.Visible)
+					continue;
+
 				if (p.Y < curheight + row.Height) {
 					containingRow = row;
 					break;
@@ -641,6 +661,18 @@ namespace Timeline
 			}
 		}
 
+		private void _drawSelection(Graphics g)
+		{
+			if (SelectedArea == null)
+				return;
+
+			SolidBrush b = new SolidBrush(SelectionColor);
+			Pen p = new Pen(SelectionBorder);
+
+			g.FillRectangle(b, SelectedArea);
+			g.DrawRectangle(p, SelectedArea);
+		}
+
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			try {
@@ -651,8 +683,8 @@ namespace Timeline
 				AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), totalHeight);
 				_drawSnapPoints(e.Graphics);
 				_drawElements(e.Graphics);
+				_drawSelection(e.Graphics);
 
-				base.OnPaint(e);
 			} catch (Exception ex) {
 				MessageBox.Show("Unhandled Exception while drawing TimelineGrid:\n\n" + ex.Message);
 				throw;
@@ -686,5 +718,12 @@ namespace Timeline
 		/// Actively dragging objects
 		/// </summary>
 		Dragging,
+
+		/// <summary>
+		/// Like "Dragging", but dragging on the background, not an object
+		/// </summary>
+		Selecting,
+
+
 	}
 }
