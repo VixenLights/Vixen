@@ -10,6 +10,13 @@ namespace TestProperty {
 	public class RGB : PropertyModuleInstanceBase {
 		private RGBData _data;
 
+		public override void SetDefaultValues() {
+			OutputChannel[] channels = Owner.GetChannelEnumerator().ToArray();
+			_data.RedChannelId = (channels.Length > 0) ? channels[0].Id : Guid.Empty;
+			_data.GreenChannelId = (channels.Length > 1) ? channels[1].Id : Guid.Empty;
+			_data.BlueChannelId = (channels.Length > 2) ? channels[2].Id : Guid.Empty;
+		}
+
 		override public void Setup() {
 			OutputChannel[] channels = Owner.GetChannelEnumerator().ToArray();
 

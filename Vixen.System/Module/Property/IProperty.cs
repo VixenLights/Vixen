@@ -8,5 +8,13 @@ namespace Vixen.Module.Property {
 	public interface IProperty {
 		ChannelNode Owner { get; set; }
 		void Setup();
+		/// <summary>
+		/// Set or reset the property's values to a property-specific default.
+		/// </summary>
+		void SetDefaultValues();
+		/// <summary>
+		/// Clones the property-specific values of sourceProperty so that they're appropriate for the local values.
+		/// </summary>
+		void CloneValues(IProperty sourceProperty);
 	}
 }
