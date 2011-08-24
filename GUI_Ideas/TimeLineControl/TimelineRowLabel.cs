@@ -12,19 +12,15 @@ namespace Timeline
 	public class TimelineRowLabel : UserControl
 	{
 		public TimelineRowLabel(TimelineRow parentRow)
+			: this()
 		{
 			ParentRow = parentRow;
-			init();
 		}
 
 		public TimelineRowLabel()
 		{
-			init();
-		}
-
-		private void init()
-		{
 			DoubleBuffered = true;
+			this.SetStyle(ControlStyles.ResizeRedraw, true);
 		}
 
 		#region Properties
@@ -79,10 +75,15 @@ namespace Timeline
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			SolidBrush backgroundBrush = new SolidBrush(Color.LightBlue);
-			SolidBrush closeBrush = new SolidBrush(Color.Blue);
+			SolidBrush closeBrush;
 			SolidBrush text = new SolidBrush(Color.Black);
 			Pen border = new Pen(Color.DarkBlue, 4);
 			Font f = new Font("Arial", 12);
+
+			if (ParentRow.ChildRows.Count > 0)
+				closeBrush = new SolidBrush(Color.Blue);
+			else
+				closeBrush = new SolidBrush(Color.LightBlue);
 
 			ToggleButton = new Rectangle(0, 0, ToggleTreeButtonWidth, Height);
 			LabelArea = new Rectangle(ToggleTreeButtonWidth, 0, Width - ToggleTreeButtonWidth, Height);

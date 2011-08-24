@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace Timeline
 {
-    public abstract class TimelineControlBase : UserControl
+    public class TimelineControlBase : UserControl
     {
 		protected TimeSpan m_timePerPixel;
 		private TimeSpan m_visibleTimeStart;
@@ -19,8 +19,8 @@ namespace Timeline
 			VisibleTimeStart = TimeSpan.FromSeconds(0);
         }
 
-		#region Virtual Properties
-		// These can be overridden in derived classes (namely TimelineControl)
+		#region Properties
+		// These can all be overridden in derived classes if needed.
 
 		public virtual TimeSpan VisibleTimeStart
 		{
@@ -37,24 +37,21 @@ namespace Timeline
 			set { m_timePerPixel = value; Invalidate(); }
 		}
 
-		#endregion
-
-
 		/// <summary>
 		/// The amount of time currently visible.
 		/// </summary> 
-		public TimeSpan VisibleTimeSpan
+		public virtual TimeSpan VisibleTimeSpan
 		{
 			get { return TimeSpan.FromTicks(Width * TimePerPixel.Ticks); }
 		}
-		
-		public TimeSpan VisibleTimeEnd
+
+		public virtual TimeSpan VisibleTimeEnd
 		{
 			get { return VisibleTimeStart + VisibleTimeSpan; }
 			set { VisibleTimeStart = value - VisibleTimeSpan; }
 		}
 
-
+		#endregion
 
 
 		protected Single timeToPixels(TimeSpan t)

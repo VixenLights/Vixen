@@ -109,7 +109,7 @@ namespace Timeline
 			}
 		}
 
-		protected List<TimelineRow> ChildRows { get; set; }
+		public List<TimelineRow> ChildRows { get; set; }
 
 		private bool m_treeOpen;
 		public bool TreeOpen
@@ -133,8 +133,8 @@ namespace Timeline
 			get { return RowLabel.Visible; }
 			set
 			{
-				foreach (TimelineRow row in ChildRows)
-					row.Visible = value;
+				//foreach (TimelineRow row in ChildRows)
+				//    row.Visible = value;
 
 				RowLabel.Visible = value;
 				_RowChanged();

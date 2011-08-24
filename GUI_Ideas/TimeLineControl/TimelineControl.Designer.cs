@@ -55,7 +55,6 @@
 			this.splitContainer.Size = new System.Drawing.Size(853, 476);
 			this.splitContainer.SplitterDistance = 283;
 			this.splitContainer.TabIndex = 3;
-			this.splitContainer.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer_SplitterMoved);
 			// 
 			// timelineRowList
 			// 

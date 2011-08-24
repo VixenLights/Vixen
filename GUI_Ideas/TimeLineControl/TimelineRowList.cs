@@ -12,16 +12,20 @@ namespace Timeline
 {
 	public partial class TimelineRowList : UserControl
 	{
-		private int m_topOffset;
 
 		public TimelineRowList()
 		{
 			TopOffset = 0;
 			DottedLineColor = Color.Black;
+			RowLabels = new List<TimelineRowLabel>();
 			DoubleBuffered = true;
+			this.SetStyle(ControlStyles.ResizeRedraw, true);
 		}
 
+		#region Properties
+
 		// the offset at the top (when the control is scrolled)
+		private int m_topOffset;
 		public int TopOffset
 		{
 			get { return m_topOffset; }
@@ -30,11 +34,40 @@ namespace Timeline
 
 		public Color DottedLineColor { get; set; }
 
+		// for some reason, even though the Control.Controls collection is supposed
+		// to be a list (and therefore ordered), it's not adding controls in the order
+		// we add them. So we're keeping our own list of controls.
+		private List<TimelineRowLabel> RowLabels { get; set; }
+
+		#endregion
+
+
+		#region Methods
+
+		public void AddRowLabel(TimelineRowLabel trl)
+		{
+			RowLabels.Add(trl);
+			Controls.Add(trl);
+		}
+
+		public void RemoveRowLabel(TimelineRowLabel trl)
+		{
+			RowLabels.Remove(trl);
+			Controls.Remove(trl);
+		}
+
+		#endregion
+
+
+		#region Drawing
 
 		protected override void OnLayout(LayoutEventArgs e)
 		{
+			if (RowLabels == null)
+				return;
+
 			int offset = -TopOffset;
-			foreach (TimelineRowLabel trl in Controls) {
+			foreach (TimelineRowLabel trl in RowLabels) {
 				if (trl.Visible) {
 					int x = trl.ParentRow.ParentDepth * TimelineRowLabel.ToggleTreeButtonWidth;
 					trl.Location = new Point(x, offset);
@@ -46,6 +79,9 @@ namespace Timeline
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
+			if (RowLabels == null)
+				return;
+
 			int inset = TimelineRowLabel.ToggleTreeButtonWidth;
 			// TODO: here's to hoping they don't want to go more than 20 levels deep...
 			int[] dottedLineTops = new int[20];
@@ -55,7 +91,7 @@ namespace Timeline
 			line.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
 
 			int top = -TopOffset;
-			foreach (TimelineRowLabel trl in Controls) {
+			foreach (TimelineRowLabel trl in RowLabels) {
 				if (trl.Visible) {
 					int depth = trl.ParentRow.ParentDepth;
 
@@ -81,5 +117,7 @@ namespace Timeline
 				}
 			}
 		}
+
+		#endregion
 	}
 }

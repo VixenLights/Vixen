@@ -85,6 +85,17 @@ namespace Timeline
 			}
 		}
 
+		public override TimeSpan VisibleTimeSpan
+		{
+			get
+			{
+				if (timelineGrid != null)
+					return timelineGrid.VisibleTimeSpan;
+				else
+					return TimeSpan.Zero;
+			}
+		}
+
 
 		#endregion
 
@@ -103,7 +114,7 @@ namespace Timeline
 		private void AddRowToControls(TimelineRow row, TimelineRowLabel label)
 		{
 			timelineGrid.Rows.Add(row);
-			timelineRowList.Controls.Add(label);
+			timelineRowList.AddRowLabel(label);
 		}
 
 		// adds a given row to the control, optionally as a child of the given parent
@@ -174,14 +185,6 @@ namespace Timeline
 			} else {
 				timelineRowList.TopOffset = timelineGrid.VerticalOffset;
 			}
-		}
-
-
-		private void splitContainer_SplitterMoved(object sender, SplitterEventArgs e)
-		{
-			//TODO JRR - not sure why this is. The grid is okay?!
-			// the row list will need to be redrawn, as it has changed width
-			timelineRowList.Refresh();
 		}
 
 		#endregion
