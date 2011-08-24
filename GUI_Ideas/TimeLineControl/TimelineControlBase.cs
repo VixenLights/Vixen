@@ -8,39 +8,60 @@ namespace Timeline
 {
     public abstract class TimelineControlBase : UserControl
     {
+		protected TimeSpan m_timePerPixel;
+		private TimeSpan m_visibleTimeStart;
+
         internal TimelineControlBase()
         {
             DoubleBuffered = true;
-            VisibleTimeSpan = TimeSpan.FromSeconds(10.0);
+
+			TimePerPixel = TimeSpan.FromTicks(100000);
+			VisibleTimeStart = TimeSpan.FromSeconds(0);
         }
 
-		/// <summary>
-		/// The amount of time currently visible. Adjusting this implements zoom along the X (time) axis.
-		/// </summary>
-		private TimeSpan m_visibleTimeSpan;
-		public virtual TimeSpan VisibleTimeSpan
-		{
-			get { return m_visibleTimeSpan; }
-			set { m_visibleTimeSpan = value; Refresh(); }
-		}
+		#region Virtual Properties
+		// These can be overridden in derived classes (namely TimelineControl)
 
-		private TimeSpan m_visibleTimeStart;
 		public virtual TimeSpan VisibleTimeStart
 		{
 			get { return m_visibleTimeStart; }
-			set { m_visibleTimeStart = value; Refresh(); }
+			set { m_visibleTimeStart = value; Invalidate(); }
 		}
 
 		/// <summary>
-        /// Gets the amount of time represented by one horizontal pixel.
-        /// </summary>
-        public TimeSpan TimePerPixel
-        {
-            get { return TimeSpan.FromTicks(VisibleTimeSpan.Ticks / Width); }
-        }
+		/// Gets or sets the amount of time represented by one horizontal pixel.
+		/// </summary>
+		public virtual TimeSpan TimePerPixel
+		{
+			get { return m_timePerPixel; }
+			set { m_timePerPixel = value; Invalidate(); }
+		}
+
+		#endregion
+
+
+		/// <summary>
+		/// The amount of time currently visible.
+		/// </summary> 
+		public TimeSpan VisibleTimeSpan
+		{
+			get { return TimeSpan.FromTicks(Width * TimePerPixel.Ticks); }
+		}
+		
+		public TimeSpan VisibleTimeEnd
+		{
+			get { return VisibleTimeStart + VisibleTimeSpan; }
+			set { VisibleTimeStart = value - VisibleTimeSpan; }
+		}
+
+
+
 
 		protected Single timeToPixels(TimeSpan t)
 		{
+			if (TimePerPixel.Ticks == 0)
+				throw new DivideByZeroException("Time per pixel is zero!");
+
 			return (Single)t.Ticks / (Single)TimePerPixel.Ticks;
 		}
 
@@ -48,5 +69,6 @@ namespace Timeline
         {
             return TimeSpan.FromTicks(px * this.TimePerPixel.Ticks);
         }
+		
     }
 }

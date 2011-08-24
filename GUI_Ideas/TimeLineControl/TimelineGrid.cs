@@ -33,7 +33,6 @@ namespace Timeline
 			this.SetStyle(ControlStyles.ResizeRedraw, true);
 
 			TotalTime = TimeSpan.FromMinutes(1);
-			VisibleTimeStart = TimeSpan.FromSeconds(0);
 			RowSeparatorColor = Color.Black;
 			MajorGridlineColor = Color.FromArgb(120, 120, 120);
 			GridlineInterval = TimeSpan.FromSeconds(1.0);
@@ -78,10 +77,6 @@ namespace Timeline
 			}
 		}
 
-		public TimeSpan VisibleTimeEnd
-		{
-			get { return VisibleTimeStart + VisibleTimeSpan; }
-		}
 
 		public int VerticalOffset
 		{

@@ -128,7 +128,6 @@
 			this.timelineControl1.TabIndex = 8;
 			this.timelineControl1.TotalTime = System.TimeSpan.Parse("00:02:00");
 			this.timelineControl1.VisibleTimeEnd = System.TimeSpan.Parse("00:00:10");
-			this.timelineControl1.VisibleTimeSpan = System.TimeSpan.Parse("00:00:10");
 			this.timelineControl1.VisibleTimeStart = System.TimeSpan.Parse("00:00:00");
 			// 
 			// Form1

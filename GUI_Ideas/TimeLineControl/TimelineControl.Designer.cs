@@ -67,8 +67,6 @@
 			this.timelineRowList.Size = new System.Drawing.Size(283, 436);
 			this.timelineRowList.TabIndex = 2;
 			this.timelineRowList.TopOffset = 0;
-			this.timelineRowList.VisibleTimeSpan = System.TimeSpan.Parse("00:00:10");
-			this.timelineRowList.VisibleTimeStart = System.TimeSpan.Parse("00:00:00");
 			// 
 			// timelineHeader
 			// 
@@ -79,7 +77,6 @@
 			this.timelineHeader.Name = "timelineHeader";
 			this.timelineHeader.Size = new System.Drawing.Size(566, 40);
 			this.timelineHeader.TabIndex = 3;
-			this.timelineHeader.VisibleTimeSpan = System.TimeSpan.Parse("00:00:10");
 			this.timelineHeader.VisibleTimeStart = System.TimeSpan.Parse("00:00:00");
 			// 
 			// timelineGrid
@@ -103,7 +100,6 @@
 			this.timelineGrid.TabIndex = 1;
 			this.timelineGrid.TotalTime = System.TimeSpan.Parse("00:02:00");
 			this.timelineGrid.VerticalOffset = 0;
-			this.timelineGrid.VisibleTimeSpan = System.TimeSpan.Parse("00:00:10");
 			this.timelineGrid.VisibleTimeStart = System.TimeSpan.Parse("00:00:00");
 			// 
 			// TimelineControl

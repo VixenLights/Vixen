@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace Timeline
 {
-	public partial class TimelineRowList : TimelineControlBase
+	public partial class TimelineRowList : UserControl
 	{
 		private int m_topOffset;
 
@@ -18,6 +18,7 @@ namespace Timeline
 		{
 			TopOffset = 0;
 			DottedLineColor = Color.Black;
+			DoubleBuffered = true;
 		}
 
 		// the offset at the top (when the control is scrolled)

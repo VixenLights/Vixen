@@ -11,9 +11,8 @@ using System.Diagnostics;
 
 namespace Timeline
 {
-	public partial class TimelineControl : UserControl
+	public partial class TimelineControl : TimelineControlBase
 	{
-		private int lastSplitterXPos;
 
 		public TimelineControl()
 		{
@@ -23,40 +22,69 @@ namespace Timeline
 
 			// Reasonable defaults
 			TotalTime = TimeSpan.FromMinutes(2);
-			VisibleTimeStart = TimeSpan.FromSeconds(0);
 
+			// Splitter
 			splitContainer.Panel1MinSize = 100;
 			splitContainer.Panel2MinSize = 100;
-			lastSplitterXPos = splitContainer.SplitterDistance;
+			splitContainer.FixedPanel = FixedPanel.Panel1;
 
 			timelineGrid.Scroll += new ScrollEventHandler(OnGridScrolled);
 		}
+
 
 		#region Properties
 
 		public TimeSpan TotalTime
 		{
-			get { return timelineGrid.TotalTime; }
-			set { timelineGrid.TotalTime = value; }
+			get
+			{
+				if (timelineGrid != null)
+					return timelineGrid.TotalTime;
+				else
+					return TimeSpan.Zero;
+			}
+			set
+			{
+				if (timelineGrid != null)
+					timelineGrid.TotalTime = value;
+			}
 		}
 
-		public TimeSpan VisibleTimeSpan
+
+		public override TimeSpan VisibleTimeStart
 		{
-			get { return timelineGrid.VisibleTimeSpan; }
-			set {timelineGrid.VisibleTimeSpan = timelineHeader.VisibleTimeSpan = value; }
+			get
+			{
+				if (timelineGrid != null)
+					return timelineGrid.VisibleTimeStart;
+				else
+					return TimeSpan.Zero;
+			}
+			set
+			{
+				if (timelineGrid != null && timelineHeader != null)
+					timelineGrid.VisibleTimeStart = timelineHeader.VisibleTimeStart = value;
+			}
 		}
 
-		public TimeSpan VisibleTimeStart
+		public override TimeSpan TimePerPixel
 		{
-			get { return timelineGrid.VisibleTimeStart; }
-			set { timelineGrid.VisibleTimeStart = timelineHeader.VisibleTimeStart = value; }
+			get
+			{
+				if (timelineGrid != null)
+					return timelineGrid.TimePerPixel;
+				else
+					return TimeSpan.Zero;
+			}
+			set
+			{
+				if (timelineGrid != null)
+					timelineGrid.TimePerPixel = value;
+				if (timelineHeader != null)
+					timelineHeader.TimePerPixel = value;
+			}
 		}
 
-		public TimeSpan VisibleTimeEnd
-		{
-			get { return VisibleTimeStart + VisibleTimeSpan; }
-			set { VisibleTimeStart = value - VisibleTimeSpan; }
-		}
 
 		#endregion
 
@@ -69,8 +97,7 @@ namespace Timeline
 			if (scale <= 0.0)
 				return;
 
-			VisibleTimeSpan = TimeSpan.FromTicks((long)(VisibleTimeSpan.Ticks * scale));
-			timelineHeader.VisibleTimeStart = timelineGrid.VisibleTimeStart;
+			TimePerPixel = TimePerPixel.Scale(scale);
 		}
 
 		private void AddRowToControls(TimelineRow row, TimelineRowLabel label)
@@ -149,20 +176,15 @@ namespace Timeline
 			}
 		}
 
+
 		private void splitContainer_SplitterMoved(object sender, SplitterEventArgs e)
 		{
-			// figure out the splitter movement, and the relative change in size of the grid (new panel size / old panel size)
-			double dx = e.SplitX - lastSplitterXPos;
-			double gridScale = (double)splitContainer.Panel2.Width / (splitContainer.Panel2.Width + dx);
-
-			// update the grid visible time, and record the last splitter position
-			VisibleTimeSpan = TimeSpan.FromTicks((long)(VisibleTimeSpan.Ticks * gridScale));
-			lastSplitterXPos = e.SplitX;
-
+			//TODO JRR - not sure why this is. The grid is okay?!
 			// the row list will need to be redrawn, as it has changed width
 			timelineRowList.Refresh();
 		}
 
 		#endregion
+	
 	}
 }

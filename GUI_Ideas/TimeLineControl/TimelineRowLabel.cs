@@ -14,10 +14,17 @@ namespace Timeline
 		public TimelineRowLabel(TimelineRow parentRow)
 		{
 			ParentRow = parentRow;
+			init();
 		}
 
 		public TimelineRowLabel()
 		{
+			init();
+		}
+
+		private void init()
+		{
+			DoubleBuffered = true;
 		}
 
 		#region Properties
