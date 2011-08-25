@@ -172,6 +172,8 @@ namespace Timeline
 
 		protected override void OnKeyPress(KeyPressEventArgs e)
 		{
+			base.OnKeyPress(e);
+
 			if (e.KeyChar == (char)27)  // ESC
             {
 				SelectedElements.Clear();
@@ -195,6 +197,8 @@ namespace Timeline
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
+			base.OnMouseDown(e);
+
 			_translateMouseArgs(ref e);
 
 			m_mouseDownElement = elementAt(e.Location);
@@ -220,6 +224,8 @@ namespace Timeline
 
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
+			base.OnMouseUp(e);
+
 			_translateMouseArgs(ref e);
 
 			switch (e.Button) {
@@ -243,7 +249,9 @@ namespace Timeline
 
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
-			base.OnMouseWheel(e);
+			// don't call the base mouse wheel event; it scrolls the grid
+			// left and right if there isn't any vertical movement
+			//base.OnMouseWheel(e);
 		}
 
 		private void OnLeftMouseDown(MouseEventArgs e)
@@ -312,6 +320,8 @@ namespace Timeline
 
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
+			base.OnMouseMove(e);
+
 			if (m_dragState == DragState.Normal)
 				return;
 
@@ -439,6 +449,8 @@ namespace Timeline
 
 		protected override void OnMouseDoubleClick(MouseEventArgs e)
 		{
+			base.OnMouseDoubleClick(e);
+
 			_translateMouseArgs(ref e);
 
 			TimelineElement elem = elementAt(e.Location);

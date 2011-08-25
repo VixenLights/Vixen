@@ -29,8 +29,6 @@ namespace Timeline
 			splitContainer.FixedPanel = FixedPanel.Panel1;
 
 			timelineGrid.Scroll += OnGridScrolled;
-			timelineRowList.MouseWheel += MouseWheelHandler;
-			timelineGrid.MouseWheel += MouseWheelHandler;
 		}
 
 
@@ -225,6 +223,5 @@ namespace Timeline
 		}
 
 		#endregion
-	
 	}
 }

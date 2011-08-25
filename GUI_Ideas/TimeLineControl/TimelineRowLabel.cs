@@ -75,6 +75,8 @@ namespace Timeline
 
 		protected override void OnMouseClick(MouseEventArgs e)
 		{
+			base.OnMouseClick(e);
+
 			if (MousePosContainsResizeBar(e))
 				return;
 
@@ -88,6 +90,8 @@ namespace Timeline
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
+			base.OnMouseDown(e);
+
 			if (e.Button == MouseButtons.Left) {
 				if (MousePosContainsResizeBar(e)) {
 					Resizing = true;
@@ -98,6 +102,8 @@ namespace Timeline
 
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
+			base.OnMouseUp(e);
+
 			if (e.Button == MouseButtons.Left) {
 				Resizing = false;
 			}
@@ -105,6 +111,8 @@ namespace Timeline
 
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
+			base.OnMouseMove(e);
+
 			if (MousePosContainsResizeBar(e))
 				this.Cursor = Cursors.HSplit;
 			else

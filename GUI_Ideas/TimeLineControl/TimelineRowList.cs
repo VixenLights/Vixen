@@ -51,10 +51,6 @@ namespace Timeline
 
 		#region Events
 
-		public event EventHandler<MouseEventArgs> MouseWheel;
-
-		private void _MouseWheel(MouseEventArgs args) { if (MouseWheel != null) MouseWheel(this, args); }
-	
 		#endregion
 
 
@@ -63,17 +59,6 @@ namespace Timeline
 		protected void LabelVisibleChangedHandler(object sender, EventArgs e)
 		{
 			Invalidate();
-		}
-
-		protected override void OnMouseWheel(MouseEventArgs e)
-		{
-			base.OnMouseWheel(e);
-			_MouseWheel(e);
-		}
-
-		protected void MouseWheelHandler(object sender, MouseEventArgs e)
-		{
-			_MouseWheel(e);
 		}
 
 		#endregion
@@ -86,7 +71,6 @@ namespace Timeline
 			RowLabels.Add(trl);
 			Controls.Add(trl);
 			trl.VisibleChanged += LabelVisibleChangedHandler;
-			trl.MouseWheel += MouseWheelHandler;
 		}
 
 		public void RemoveRowLabel(TimelineRowLabel trl)
@@ -94,7 +78,6 @@ namespace Timeline
 			RowLabels.Remove(trl);
 			Controls.Remove(trl);
 			trl.VisibleChanged -= LabelVisibleChangedHandler;
-			trl.MouseWheel -= MouseWheelHandler;
 		}
 
 		#endregion
