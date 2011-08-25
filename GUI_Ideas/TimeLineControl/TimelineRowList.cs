@@ -42,18 +42,30 @@ namespace Timeline
 		#endregion
 
 
+		#region Event Handlers
+
+		protected void LabelVisibleChangedHandler(object sender, EventArgs e)
+		{
+			Invalidate();
+		}
+
+		#endregion
+
+
 		#region Methods
 
 		public void AddRowLabel(TimelineRowLabel trl)
 		{
 			RowLabels.Add(trl);
 			Controls.Add(trl);
+			trl.VisibleChanged += LabelVisibleChangedHandler;
 		}
 
 		public void RemoveRowLabel(TimelineRowLabel trl)
 		{
 			RowLabels.Remove(trl);
 			Controls.Remove(trl);
+			trl.VisibleChanged -= LabelVisibleChangedHandler;
 		}
 
 		#endregion
@@ -86,6 +98,7 @@ namespace Timeline
 			// TODO: here's to hoping they don't want to go more than 20 levels deep...
 			int[] dottedLineTops = new int[20];
 			Point[] dottedLineBottoms = new Point[20];
+			bool[] dottedLineLevelNeedsDrawing = new bool[20];
 			int lastDepth = 0;
 			Pen line = new Pen(DottedLineColor);
 			line.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
@@ -97,9 +110,12 @@ namespace Timeline
 
 					// if we've gone back up the tree (eg. new branch), draw the dotted
 					// line for that last depth that we saw
-					if (depth < lastDepth && dottedLineBottoms[lastDepth] != null) {
-						Point p = dottedLineBottoms[lastDepth];
-						e.Graphics.DrawLine(line, p, new Point(p.X, dottedLineTops[lastDepth-1]));
+					for (int i = depth + 1; i <= lastDepth; i++) {
+						if (dottedLineLevelNeedsDrawing[i] && dottedLineBottoms[i] != null) {
+							Point p = dottedLineBottoms[i];
+							e.Graphics.DrawLine(line, p, new Point(p.X, dottedLineTops[i - 1]));
+							dottedLineLevelNeedsDrawing[i] = false;
+						}
 					}
 
 					// if this is an indented row, draw a dotted line out and record its
@@ -109,6 +125,7 @@ namespace Timeline
 						Point lineEnd = new Point(depth * inset, lineStart.Y);
 						e.Graphics.DrawLine(line, lineStart, lineEnd);
 						dottedLineBottoms[depth] = lineStart;
+						dottedLineLevelNeedsDrawing[depth] = true;
 					}
 
 					lastDepth = depth;
@@ -116,6 +133,15 @@ namespace Timeline
 					dottedLineTops[depth] = top;
 				}
 			}
+
+			// draw any connecting lines needed if the last rows were offset
+			for (int i = 1; i < dottedLineLevelNeedsDrawing.Length; i++) {
+				if (dottedLineLevelNeedsDrawing[i] && dottedLineBottoms[i] != null) {
+					Point p = dottedLineBottoms[i];
+					e.Graphics.DrawLine(line, p, new Point(p.X, dottedLineTops[i - 1]));
+				}
+			}
+
 		}
 
 		#endregion

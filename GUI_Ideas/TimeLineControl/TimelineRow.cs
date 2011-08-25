@@ -120,6 +120,8 @@ namespace Timeline
 				if (m_treeOpen == value)
 					return;
 
+				// if we're opening a tree, show all our children, and vice versa.
+				// the Visible property will take care of the rest.
 				foreach (TimelineRow row in ChildRows)
 					row.Visible = value;
 
@@ -133,8 +135,11 @@ namespace Timeline
 			get { return RowLabel.Visible; }
 			set
 			{
-				//foreach (TimelineRow row in ChildRows)
-				//    row.Visible = value;
+				// if we're being told to show or not (ie. a tree is being closed
+				// or opened), then show or hide all our children. However, only
+				// show them if our tree is currently open as well.
+				foreach (TimelineRow row in ChildRows)
+				    row.Visible = value && TreeOpen;
 
 				RowLabel.Visible = value;
 				_RowChanged();

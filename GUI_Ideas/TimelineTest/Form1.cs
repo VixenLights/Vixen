@@ -28,6 +28,9 @@ namespace Timeline
 			TimelineRow row9 = timelineControl1.AddRow("Row 9");
 			TimelineRow row10 = timelineControl1.AddRow("Row 10");
 			TimelineRow row11 = timelineControl1.AddRow("Row 11");
+			TimelineRow row12 = timelineControl1.AddRow("Row 12", row11);
+			TimelineRow row13 = timelineControl1.AddRow("Row 13", row12);
+			TimelineRow row14 = timelineControl1.AddRow("Row 14", row13);
 
 
 			// Elements

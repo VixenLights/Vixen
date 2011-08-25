@@ -187,6 +187,12 @@ namespace Timeline
 			}
 		}
 
+		protected override void OnResize(EventArgs e)
+		{
+			base.OnResize(e);
+			timelineRowList.TopOffset = timelineGrid.VerticalOffset;
+		}
+
 		#endregion
 	
 	}
