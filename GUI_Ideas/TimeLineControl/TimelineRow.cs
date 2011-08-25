@@ -81,11 +81,13 @@ namespace Timeline
 				if (m_rowLabel != null) {
 					m_rowLabel.ParentRow = null;
 					m_rowLabel.TreeToggled -= TreeToggledHandler;
+					m_rowLabel.HeightChanged -= HeightChangedHandler;
 				}
 
 				m_rowLabel = value;
 				m_rowLabel.ParentRow = this;
 				m_rowLabel.TreeToggled += TreeToggledHandler;
+				m_rowLabel.HeightChanged += HeightChangedHandler;
 
 				_RowChanged();
 			}
@@ -173,6 +175,11 @@ namespace Timeline
 		protected void TreeToggledHandler(object sender, EventArgs e)
 		{
 			TreeOpen = !TreeOpen;
+		}
+
+		protected void HeightChangedHandler(object sender, RowHeightChangedEventArgs e)
+		{
+			Height = Height + e.HeightChange;
 		}
 
 		#endregion
