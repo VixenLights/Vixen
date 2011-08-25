@@ -6,6 +6,12 @@ namespace Timeline
 {
     public class TimelineElement
     {
+		private TimeSpan m_startTime;
+		private TimeSpan m_duration;
+		private Color m_backColor = Color.White;
+		private object m_tag = null;
+		private bool m_selected = false;
+
         public TimelineElement()
         {
         }
@@ -13,35 +19,53 @@ namespace Timeline
 
         #region Properties
 
-        private TimeSpan m_offset;
-        public TimeSpan Offset
+        /// <summary>
+        /// Gets or sets the starting time of this element (left side).
+        /// </summary>
+        public TimeSpan StartTime
         {
-            get { return m_offset; }
-			set { if (value < TimeSpan.Zero) return; m_offset = value; _ElementChanged(); }
+            get { return m_startTime; }
+			set
+			{
+				if (value < TimeSpan.Zero)
+					return;
+				m_startTime = value;
+				_ElementChanged();
+			}
         }
 
-        private TimeSpan m_duration;
+		/// <summary>
+		/// Gets or sets the time duration of this element (width).
+		/// </summary>
         public TimeSpan Duration
         {
             get { return m_duration; }
 			set { m_duration = value; _ElementChanged(); }
         }
 
-        private Color m_backColor = Color.White;
+		/// <summary>
+		/// Gets or sets the ending time of this element (right side).
+		/// Changing this value adjusts the duration. The start time is unaffected.
+		/// </summary>
+		public TimeSpan EndTime
+		{
+			get { return StartTime + Duration; }
+			set { Duration = (value - StartTime); }
+		}
+
+
         public Color BackColor
         {
             get { return m_backColor; }
 			set { m_backColor = value; _ElementChanged(); }
         }
 
-        private object m_tag = null;
         public object Tag
         {
             get { return m_tag; }
 			set { m_tag = value; _ElementChanged(); }
         }
 
-		private bool m_selected = false;
 		public bool Selected
 		{
 			get { return m_selected; }
@@ -61,7 +85,7 @@ namespace Timeline
 		#endregion
 
 
-		internal void Draw(Graphics graphics, Rectangle rect)
+		public virtual void Draw(Graphics graphics, Rectangle rect)
         {
         // BODY
             // Fill

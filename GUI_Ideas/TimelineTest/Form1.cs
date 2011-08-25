@@ -33,7 +33,7 @@ namespace Timeline
 			// Elements
 			row1.Elements.Add(new TimelineElement() {
 				BackColor = Color.Red,
-				Offset = TimeSpan.FromSeconds(1.5),
+				StartTime = TimeSpan.FromSeconds(1.5),
 				Duration = TimeSpan.FromSeconds(3.5),
 				Tag = "Red"
 			}
@@ -41,7 +41,7 @@ namespace Timeline
 
 			row2.Elements.Add(new TimelineElement() {
 				BackColor = Color.Green,
-				Offset = TimeSpan.FromSeconds(0),
+				StartTime = TimeSpan.FromSeconds(0),
 				Duration = TimeSpan.FromSeconds(2),
 				Tag = "Green"
 			}
@@ -49,7 +49,7 @@ namespace Timeline
 
 			row2.Elements.Add(new TimelineElement() {
 				BackColor = Color.Blue,
-				Offset = TimeSpan.FromSeconds(4),
+				StartTime = TimeSpan.FromSeconds(4),
 				Duration = TimeSpan.FromSeconds(1),
 				Tag = "Blue"
 			}
@@ -57,7 +57,7 @@ namespace Timeline
 
 			row3.Elements.Add(new TimelineElement() {
 				BackColor = Color.Orange,
-				Offset = TimeSpan.FromSeconds(4),
+				StartTime = TimeSpan.FromSeconds(4),
 				Duration = TimeSpan.FromSeconds(1),
 				Tag = "Orange"
 			}
@@ -65,7 +65,7 @@ namespace Timeline
 
 			row4.Elements.Add(new TimelineElement() {
 				BackColor = Color.Purple,
-				Offset = TimeSpan.FromSeconds(4),
+				StartTime = TimeSpan.FromSeconds(4),
 				Duration = TimeSpan.FromSeconds(1),
 				Tag = "Purple"
 			}
@@ -74,7 +74,7 @@ namespace Timeline
 
 			row5.Elements.Add(new TimelineElement() {
 				BackColor = Color.Black,
-				Offset = TimeSpan.FromSeconds(4),
+				StartTime = TimeSpan.FromSeconds(4),
 				Duration = TimeSpan.FromSeconds(1),
 				Tag = "Black"
 			}

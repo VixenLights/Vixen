@@ -29,7 +29,7 @@ namespace Timeline
 		public int TopOffset
 		{
 			get { return m_topOffset; }
-			set { m_topOffset = value; PerformLayout(); Refresh(); }
+			set { m_topOffset = value; PerformLayout(); Invalidate(true); }
 		}
 
 		public Color DottedLineColor { get; set; }

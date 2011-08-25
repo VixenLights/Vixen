@@ -60,7 +60,7 @@ namespace Timeline
 		public TimeSpan TotalTime
 		{
 			get { return m_totalTime; }
-			set { m_totalTime = value; Refresh(); }
+			set { m_totalTime = value; Invalidate(); }
 		}
 
 		/// <summary>
@@ -145,14 +145,14 @@ namespace Timeline
 
 		protected void ElementChangedHandler(object sender, EventArgs e)
 		{
-			// when dragging, the control will manuall refresh after it's done, in case multiple elements are changing.
+			// when dragging, the control will invalidate after it's done, in case multiple elements are changing.
 			if (m_dragState != DragState.Dragging) 
-				Refresh();
+				Invalidate();
 		}
 
 		protected void RowChangedHandler(object sender, EventArgs e)
 		{
-			Refresh();
+			Invalidate();
 		}
 
 		protected override void OnKeyPress(KeyPressEventArgs e)
@@ -257,7 +257,7 @@ namespace Timeline
 
 				dragWait(e.Location);
 			}
-			this.Refresh();
+			Invalidate();
 		}
 
 
@@ -282,7 +282,7 @@ namespace Timeline
 
 			endDrag();  // we always do this, even if we weren't dragging.
 
-			this.Refresh();
+			Invalidate();
 		}
 
 		protected override void OnMouseMove(MouseEventArgs e)
@@ -339,12 +339,12 @@ namespace Timeline
 				if (dX != 0) {
 					foreach (TimelineElement element in SelectedElements) {
 						if (m_snapPixels.ContainsKey(e.X) && m_snapPixels[e.X].SnapElements.ContainsKey(element)) {
-							element.Offset = m_snapPixels[e.X].SnapElements[element];
+							element.StartTime = m_snapPixels[e.X].SnapElements[element];
 						} else {
-							element.Offset += pixelsToTime(dX);
+							element.StartTime += pixelsToTime(dX);
 						}
 					}
-					this.Refresh();
+					Invalidate();
 				}
 			}
 			if (m_dragState == DragState.Selecting) {
@@ -352,9 +352,64 @@ namespace Timeline
 				Point topLeft = new Point(Math.Min(m_lastMouseLocation.X, e.X), Math.Min(m_lastMouseLocation.Y, e.Y));
 				Point bottomRight = new Point(Math.Max(m_lastMouseLocation.X, e.X), Math.Max(m_lastMouseLocation.Y, e.Y));
 
-				SelectedArea = new Rectangle(topLeft.X, topLeft.Y, bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y);
+				SelectedArea = Util.RectangleFromPoints(topLeft, bottomRight);
+				selectElementsWithin(SelectedArea);
 				Invalidate();
 			}
+		}
+
+		// TODO: Considering that the selection is determined by a flag in each element,
+		// this is (IMHO) as optimized as this can be.  To do much better, the "selected elements"
+		// should instead be a list. (Which can be cleared O(1)). However, that would cause each element
+		// draw() to do a lookup in the selected elements list.
+		//
+		// With "selected" flag in element:  draw one: O(1)   draw all: O(n)		select: O(n)
+		// With "selected elements" list:    draw one: O(n)   draw all: O(n^2)		select: less than O(n_row)
+		// 
+		// Thus, until proven otherwise, I say we leave it like this. A cursory look at CPU usage says we
+		// are no worse than Windows Explorer (although it would be hard to be much worse.)
+		private void selectElementsWithin(Rectangle SelectedArea)
+		{
+			TimelineRow startRow = rowAt(SelectedArea.Location);
+			TimelineRow endRow = rowAt(SelectedArea.BottomRight());
+
+			TimeSpan selStart = pixelsToTime(SelectedArea.Left);
+			TimeSpan selEnd = pixelsToTime(SelectedArea.Right);
+
+			// Iterate all elements of only the rows within our selection.
+			bool startFound = false, endFound = false;
+			foreach (var row in Rows)
+			{
+				if (
+					!row.Visible	||					// row is invisible
+					endFound		||					// we already passed the end row
+					(!startFound && (row != startRow))	//we haven't found the first row, and this isn't it
+					)
+				{
+					row.Elements.ForEach(elem => elem.Selected = false);
+					continue;
+				}
+
+				 
+				// If we already found the first row, or we haven't, but this is it
+				if (startFound || row == startRow)
+				{
+					startFound = true;
+
+					// This row is in our selection
+					foreach (var elem in row.Elements)
+					{
+						elem.Selected = (elem.StartTime < selEnd && elem.EndTime > selStart);
+					}
+
+					if (row == endRow)
+					{
+						endFound = true;
+						continue;
+					}
+				}
+
+			} // end foreach
 		}
 
 		protected override void OnMouseDoubleClick(MouseEventArgs e)
@@ -417,7 +472,7 @@ namespace Timeline
 
 			// Now figure out which element we are on
 			foreach (TimelineElement elem in containingRow.Elements) {
-				Single elemX = timeToPixels(elem.Offset);
+				Single elemX = timeToPixels(elem.StartTime);
 				Single elemW = timeToPixels(elem.Duration);
 				if (p.X >= elemX && p.X <= elemX + elemW)
 					return elem;
@@ -431,7 +486,7 @@ namespace Timeline
 			List<TimelineElement> result = new List<TimelineElement>();
 			foreach (TimelineRow row in Rows) {
 				foreach (TimelineElement elem in row.Elements) {
-					if ((time >= elem.Offset) && (time < (elem.Offset + elem.Duration)))
+					if ((time >= elem.StartTime) && (time < (elem.StartTime + elem.Duration)))
 						result.Add(elem);
 				}
 			}
@@ -483,8 +538,8 @@ namespace Timeline
 					}
 
 					foreach (TimelineElement element in snapElements) {
-						int elementPixelStart = (int)timeToPixels(element.Offset);
-						int elementPixelEnd = (int)timeToPixels(element.Offset + element.Duration);
+						int elementPixelStart = (int)timeToPixels(element.StartTime);
+						int elementPixelEnd = (int)timeToPixels(element.StartTime + element.Duration);
 
 						// iterate through all pixels for this particular snap point, for this element
 						for (int offset = -snapRange; offset <= snapRange; offset++) {
@@ -582,15 +637,19 @@ namespace Timeline
 		{
 			// Draw row separators
 			int curY = 0;
-			Pen p = new Pen(RowSeparatorColor);
-			foreach (TimelineRow row in Rows) {
-				if (!row.Visible)
-					continue;
 
-				curY += row.Height;
-				Point left = new Point((-AutoScrollPosition.X), curY);
-				Point right = new Point((-AutoScrollPosition.X) + Width, curY);
-				g.DrawLine(p, left, right);
+			using (Pen p = new Pen(RowSeparatorColor))
+			{
+				foreach (TimelineRow row in Rows)
+				{
+					if (!row.Visible)
+						continue;
+
+					curY += row.Height;
+					Point left = new Point((-AutoScrollPosition.X), curY);
+					Point right = new Point((-AutoScrollPosition.X) + Width, curY);
+					g.DrawLine(p, left, right);
+				}
 			}
 
 			return curY;
@@ -605,23 +664,29 @@ namespace Timeline
 			// believe it or not, this math is correct :-)
 			Single start = timeToPixels(VisibleTimeStart) - (timeToPixels(VisibleTimeStart) % interval) + interval;
 
-			for (Single x = start; x < start + Width; x += interval) {
-				Pen p = new Pen(MajorGridlineColor);
+			using (Pen p = new Pen(MajorGridlineColor))
+			{
 				p.DashStyle = DashStyle.Dash;
-				g.DrawLine(p, x, (-AutoScrollPosition.Y), x, (-AutoScrollPosition.Y) + Height);
-
+				for (Single x = start; x < start + Width; x += interval)
+				{
+					g.DrawLine(p, x, (-AutoScrollPosition.Y), x, (-AutoScrollPosition.Y) + Height);
+				}
 			}
 		}
 
 		private void _drawSnapPoints(Graphics g)
 		{
-			// iterate through all snap points, and if it's visible, draw it
-			foreach (KeyValuePair<TimeSpan, int> kvp in SnapPoints) {
-				if (kvp.Key >= VisibleTimeStart && kvp.Key < VisibleTimeEnd) {
-					Single x = timeToPixels(kvp.Key);
-					Pen p = new Pen(Color.Blue);
-					p.DashPattern = new float[] { kvp.Value, kvp.Value };
-                    g.DrawLine(p, x, 0, x, AutoScrollMinSize.Height);
+			using (Pen p = new Pen(Color.Blue))
+			{
+				// iterate through all snap points, and if it's visible, draw it
+				foreach (KeyValuePair<TimeSpan, int> kvp in SnapPoints)
+				{
+					if (kvp.Key >= VisibleTimeStart && kvp.Key < VisibleTimeEnd)
+					{
+						Single x = timeToPixels(kvp.Key);
+						p.DashPattern = new float[] { kvp.Value, kvp.Value };
+						g.DrawLine(p, x, 0, x, AutoScrollMinSize.Height);
+					}
 				}
 			}
 		}
@@ -637,7 +702,7 @@ namespace Timeline
 				// Draw each element
 				foreach (var element in row.Elements) {
 
-					Point location = new Point((int)timeToPixels(element.Offset), top);
+					Point location = new Point((int)timeToPixels(element.StartTime), top);
 					Size size = new Size((int)timeToPixels(element.Duration), row.Height);
 
                     // The rectangle where this element will be drawn
@@ -666,11 +731,14 @@ namespace Timeline
 			if (SelectedArea == null)
 				return;
 
-			SolidBrush b = new SolidBrush(SelectionColor);
-			Pen p = new Pen(SelectionBorder);
-
-			g.FillRectangle(b, SelectedArea);
-			g.DrawRectangle(p, SelectedArea);
+			using (SolidBrush b = new SolidBrush(SelectionColor))
+			{
+				g.FillRectangle(b, SelectedArea);
+			}
+			using (Pen p = new Pen(SelectionBorder))
+			{
+				g.DrawRectangle(p, SelectedArea);
+			}
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
