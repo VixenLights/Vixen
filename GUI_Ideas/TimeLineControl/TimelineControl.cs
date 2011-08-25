@@ -28,7 +28,9 @@ namespace Timeline
 			splitContainer.Panel2MinSize = 100;
 			splitContainer.FixedPanel = FixedPanel.Panel1;
 
-			timelineGrid.Scroll += new ScrollEventHandler(OnGridScrolled);
+			timelineGrid.Scroll += OnGridScrolled;
+			timelineRowList.MouseWheel += MouseWheelHandler;
+			timelineGrid.MouseWheel += MouseWheelHandler;
 		}
 
 
@@ -93,6 +95,24 @@ namespace Timeline
 					return timelineGrid.VisibleTimeSpan;
 				else
 					return TimeSpan.Zero;
+			}
+		}
+
+		public int VerticalOffset
+		{
+			get
+			{
+				if (timelineGrid != null)
+					return timelineGrid.VerticalOffset;
+				else
+					return 0;
+			}
+			set
+			{
+				if (timelineGrid != null) {
+					timelineGrid.VerticalOffset = value;
+					timelineRowList.VerticalOffset = timelineGrid.VerticalOffset;
+				}
 			}
 		}
 
@@ -183,14 +203,25 @@ namespace Timeline
 			if (e.ScrollOrientation == ScrollOrientation.HorizontalScroll) {
 				timelineHeader.VisibleTimeStart = timelineGrid.VisibleTimeStart;
 			} else {
-				timelineRowList.TopOffset = timelineGrid.VerticalOffset;
+				timelineRowList.VerticalOffset = timelineGrid.VerticalOffset;
 			}
 		}
 
 		protected override void OnResize(EventArgs e)
 		{
 			base.OnResize(e);
-			timelineRowList.TopOffset = timelineGrid.VerticalOffset;
+			timelineRowList.VerticalOffset = timelineGrid.VerticalOffset;
+		}
+
+		private void MouseWheelHandler(object sender, MouseEventArgs e)
+		{
+			VerticalOffset += -(e.Delta / 4);
+		}
+
+		protected override void OnMouseWheel(MouseEventArgs e)
+		{
+			base.OnMouseWheel(e);
+			MouseWheelHandler(this, e);
 		}
 
 		#endregion

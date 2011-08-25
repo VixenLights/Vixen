@@ -76,7 +76,7 @@ namespace Timeline
 			set
 			{
 				if (value < TimeSpan.Zero)
-					return;
+					value = TimeSpan.Zero;
 
 				// TODO: check negatives here: either they need to both be negative, or neither
 				AutoScrollPosition = new Point((int)timeToPixels(value), -AutoScrollPosition.Y);
@@ -90,7 +90,7 @@ namespace Timeline
 			set
 			{
 				if (value < 0)
-					return;
+					value = 0;
 
 				// TODO: check negatives here: either they need to both be negative, or neither
 				AutoScrollPosition = new Point(-AutoScrollPosition.X, value);
@@ -241,6 +241,10 @@ namespace Timeline
 			}
 		}
 
+		protected override void OnMouseWheel(MouseEventArgs e)
+		{
+			base.OnMouseWheel(e);
+		}
 
 		private void OnLeftMouseDown(MouseEventArgs e)
 		{

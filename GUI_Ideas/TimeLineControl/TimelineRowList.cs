@@ -15,7 +15,7 @@ namespace Timeline
 
 		public TimelineRowList()
 		{
-			TopOffset = 0;
+			VerticalOffset = 0;
 			DottedLineColor = Color.Black;
 			RowLabels = new List<TimelineRowLabel>();
 			DoubleBuffered = true;
@@ -25,11 +25,18 @@ namespace Timeline
 		#region Properties
 
 		// the offset at the top (when the control is scrolled)
-		private int m_topOffset;
-		public int TopOffset
+		private int m_verticalOffset;
+		public int VerticalOffset
 		{
-			get { return m_topOffset; }
-			set { m_topOffset = value; PerformLayout(); Invalidate(true); }
+			get { return m_verticalOffset; }
+			set
+			{
+				if (value < 0)
+					value = 0;
+				m_verticalOffset = value;
+				PerformLayout();
+				Invalidate(true);
+			}
 		}
 
 		public Color DottedLineColor { get; set; }
@@ -42,11 +49,31 @@ namespace Timeline
 		#endregion
 
 
+		#region Events
+
+		public event EventHandler<MouseEventArgs> MouseWheel;
+
+		private void _MouseWheel(MouseEventArgs args) { if (MouseWheel != null) MouseWheel(this, args); }
+	
+		#endregion
+
+
 		#region Event Handlers
 
 		protected void LabelVisibleChangedHandler(object sender, EventArgs e)
 		{
 			Invalidate();
+		}
+
+		protected override void OnMouseWheel(MouseEventArgs e)
+		{
+			base.OnMouseWheel(e);
+			_MouseWheel(e);
+		}
+
+		protected void MouseWheelHandler(object sender, MouseEventArgs e)
+		{
+			_MouseWheel(e);
 		}
 
 		#endregion
@@ -59,6 +86,7 @@ namespace Timeline
 			RowLabels.Add(trl);
 			Controls.Add(trl);
 			trl.VisibleChanged += LabelVisibleChangedHandler;
+			trl.MouseWheel += MouseWheelHandler;
 		}
 
 		public void RemoveRowLabel(TimelineRowLabel trl)
@@ -66,6 +94,7 @@ namespace Timeline
 			RowLabels.Remove(trl);
 			Controls.Remove(trl);
 			trl.VisibleChanged -= LabelVisibleChangedHandler;
+			trl.MouseWheel -= MouseWheelHandler;
 		}
 
 		#endregion
@@ -78,7 +107,7 @@ namespace Timeline
 			if (RowLabels == null)
 				return;
 
-			int offset = -TopOffset;
+			int offset = -VerticalOffset;
 			foreach (TimelineRowLabel trl in RowLabels) {
 				if (trl.Visible) {
 					int x = trl.ParentRow.ParentDepth * TimelineRowLabel.ToggleTreeButtonWidth;
@@ -103,7 +132,7 @@ namespace Timeline
 			Pen line = new Pen(DottedLineColor);
 			line.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
 
-			int top = -TopOffset;
+			int top = -VerticalOffset;
 			foreach (TimelineRowLabel trl in RowLabels) {
 				if (trl.Visible) {
 					int depth = trl.ParentRow.ParentDepth;

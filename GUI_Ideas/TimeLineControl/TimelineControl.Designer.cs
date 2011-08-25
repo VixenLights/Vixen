@@ -65,7 +65,7 @@
 			this.timelineRowList.Name = "timelineRowList";
 			this.timelineRowList.Size = new System.Drawing.Size(283, 436);
 			this.timelineRowList.TabIndex = 2;
-			this.timelineRowList.TopOffset = 0;
+			this.timelineRowList.VerticalOffset = 0;
 			// 
 			// timelineHeader
 			// 
