@@ -21,6 +21,7 @@ namespace Timeline
 		private TimelineElement m_mouseDownElement = null;		// the element under the cursor on a mouse click
 		private SortedDictionary<int, SnapDetails> m_snapPixels;	// a mapping of pixel location to details to snap to
 		private TimeSpan m_totalTime;							// the total amount of time this grid represents
+		private TimeSpan m_cursorPosition;						// the current grid 'cursor' position (line drawn vertically)
 
 		#endregion
 
@@ -39,6 +40,9 @@ namespace Timeline
 			BackColor = Color.FromArgb(140, 140, 140);
 			SelectionColor = Color.FromArgb(100, 40, 100, 160);
 			SelectionBorder = Color.Blue;
+			CursorColor = Color.FromArgb(150, 50, 50, 50);
+			CursorWidth = 2.5F;
+			CursorPosition = TimeSpan.Zero;
 			OnlySnapToCurrentRow = false;		// setting this to 'true' doesn't quite work yet.
 			DragThreshold = 8;
 
@@ -115,17 +119,28 @@ namespace Timeline
 			}
 		}
 
+		public TimeSpan CursorPosition
+		{
+			get { return m_cursorPosition; }
+			set { m_cursorPosition = value; Invalidate();  }
+		}
+
+		private bool CtrlPressed { get { return Form.ModifierKeys.HasFlag(Keys.Control); } }
+
 		public SortedDictionary<TimeSpan, int> SnapPoints { get; set; }
-		public Color RowSeparatorColor { get; set; }
-		public Color MajorGridlineColor { get; set; }
-		public Color SelectionColor { get; set; }
-		public Color SelectionBorder { get; set; }
 		public TimeSpan GridlineInterval { get; set; }
 		public bool OnlySnapToCurrentRow { get; set; }
 		public int DragThreshold { get; set; }
 		public Rectangle SelectedArea { get; set; }
+	
+		// drawing colours, information, etc.
+		public Color RowSeparatorColor { get; set; }
+		public Color MajorGridlineColor { get; set; }
+		public Color SelectionColor { get; set; }
+		public Color SelectionBorder { get; set; }
+		public Color CursorColor { get; set; }
+		public Single CursorWidth { get; set; }
 
-		private bool CtrlPressed { get { return Form.ModifierKeys.HasFlag(Keys.Control); } }
 
 		#endregion
 
@@ -270,6 +285,12 @@ namespace Timeline
 				_ElementsMoved(evargs);
 
 			} else if (m_dragState == DragState.Selecting) {
+				// we will only be Selecting if we clicked on the grid background, so on mouse up, check if
+				// we didn't move (or very far): if so, move the cursor to the clicked position.
+				if (SelectedArea.Width < 2 && SelectedArea.Height < 2) {
+					CursorPosition = pixelsToTime(e.X);
+				}
+
 				SelectedArea = new Rectangle();
 			} else {
 				// If we're not dragging on mouse up, it could be a click on one of multiple
@@ -741,6 +762,14 @@ namespace Timeline
 			}
 		}
 
+		private void _drawCursor(Graphics g)
+		{
+			using (Pen p = new Pen(CursorColor, CursorWidth)) {
+				g.DrawLine(p, timeToPixels(CursorPosition), 0, timeToPixels(CursorPosition), AutoScrollMinSize.Height);
+			}
+		}
+
+
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			try {
@@ -752,6 +781,7 @@ namespace Timeline
 				_drawSnapPoints(e.Graphics);
 				_drawElements(e.Graphics);
 				_drawSelection(e.Graphics);
+				_drawCursor(e.Graphics);
 
 			} catch (Exception ex) {
 				MessageBox.Show("Unhandled Exception while drawing TimelineGrid:\n\n" + ex.Message);
