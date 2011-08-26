@@ -53,6 +53,7 @@ namespace Timeline
 			//  later, we will need to attach/detach from each event manually.
 			TimelineElement.ElementChanged += ElementChangedHandler;
 			TimelineRow.RowChanged += RowChangedHandler;
+			TimelineRow.RowSelectedChanged += RowSelectedChangedHandler;
 		}
 
 		#endregion
@@ -170,6 +171,20 @@ namespace Timeline
 			Invalidate();
 		}
 
+		protected void RowSelectedChangedHandler(object sender, ModifierKeysEventArgs e)
+		{
+			TimelineRow selectedRow = sender as TimelineRow;
+
+			// I know this could be done in a fancy LINQ-style something-or-other...
+			// ...I really should learn that stuff. :-)
+
+			// if CTRL wasn't down, then we want to clear all the other rows
+			if (!e.ModifierKeys.HasFlag(Keys.Control)) {
+				ClearSelectedRows();
+				selectedRow.Selected = true;
+			}
+		}
+
 		protected override void OnKeyPress(KeyPressEventArgs e)
 		{
 			base.OnKeyPress(e);
@@ -257,6 +272,10 @@ namespace Timeline
 		private void OnLeftMouseDown(MouseEventArgs e)
 		{
 			// e is already translated.
+
+			if (!CtrlPressed) {
+				ClearSelectedRows();
+			}
 
 			// we clicked nothing - clear selection
 			if (m_mouseDownElement == null)
@@ -469,6 +488,16 @@ namespace Timeline
 		{
 			foreach (TimelineElement te in SelectedElements)
 				te.Selected = false;
+		}
+
+		public void ClearSelectedRows()
+		{
+			foreach (TimelineRow row in Rows) {
+				row.Selected = false;
+				foreach (TimelineElement te in row.Elements) {
+					te.Selected = false;
+				}
+			}
 		}
 
 		/// <summary>
@@ -723,16 +752,22 @@ namespace Timeline
 			int curY = 0;
 
 			using (Pen p = new Pen(RowSeparatorColor))
+			using (SolidBrush b = new SolidBrush(SelectionColor))
 			{
 				foreach (TimelineRow row in Rows)
 				{
 					if (!row.Visible)
 						continue;
 
+					Point selectedTopLeft = new Point((-AutoScrollPosition.X), curY);
 					curY += row.Height;
-					Point left = new Point((-AutoScrollPosition.X), curY);
-					Point right = new Point((-AutoScrollPosition.X) + Width, curY);
-					g.DrawLine(p, left, right);
+					Point selectedBottomRight = new Point((-AutoScrollPosition.X) + Width, curY);
+					Point lineLeft = new Point((-AutoScrollPosition.X), curY);
+					Point lineRight = new Point((-AutoScrollPosition.X) + Width, curY);
+					
+					if (row.Selected)
+						g.FillRectangle(b, Util.RectangleFromPoints(selectedTopLeft, selectedBottomRight));
+					g.DrawLine(p, lineLeft, lineRight);
 				}
 			}
 

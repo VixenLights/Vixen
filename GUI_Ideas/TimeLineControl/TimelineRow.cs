@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace Timeline
 {
@@ -150,6 +151,25 @@ namespace Timeline
 			}
 		}
 
+		private bool m_selected;
+		public bool Selected
+		{
+			get { return m_selected; }
+			set
+			{
+				if (m_selected == value)
+					return;
+
+				// select all the child elements if we're being selected, or vice versa
+				foreach (TimelineElement te in Elements) {
+					te.Selected = value;
+				}
+
+				m_selected = value;
+				_RowChanged();
+			}
+		}
+
 		#endregion
 
 
@@ -158,10 +178,12 @@ namespace Timeline
 		internal event EventHandler<ElementEventArgs> ElementAdded;
 		internal event EventHandler<ElementEventArgs> ElementRemoved;
 		internal static event EventHandler RowChanged;
+		internal static event EventHandler<ModifierKeysEventArgs> RowSelectedChanged;
 
 		private void _ElementAdded(TimelineElement te) { if (ElementAdded != null) ElementAdded(this, new ElementEventArgs(te)); }
 		private void _ElementRemoved(TimelineElement te) { if (ElementRemoved != null) ElementRemoved(this, new ElementEventArgs(te)); }
 		private void _RowChanged() { if (RowChanged != null) RowChanged(this, EventArgs.Empty); }
+		private void _RowSelectedChanged(Keys k) { if (RowSelectedChanged != null) RowSelectedChanged(this, new ModifierKeysEventArgs(k)); }
 
 		#endregion
 
@@ -184,9 +206,15 @@ namespace Timeline
 			Height = Height + e.HeightChange;
 		}
 
-		protected void LabelClickedHandler(object sender, EventArgs e)
+		protected void LabelClickedHandler(object sender, ModifierKeysEventArgs e)
 		{
-			
+			if (e.ModifierKeys.HasFlag(Keys.Control)) {
+				Selected = !Selected;
+			} else {
+				Selected = true;
+			}
+
+			_RowSelectedChanged(e.ModifierKeys);
 		}
 
 		#endregion

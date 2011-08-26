@@ -53,11 +53,11 @@ namespace Timeline
 		#region Events
 
 		internal event EventHandler TreeToggled;
-		internal event EventHandler LabelClicked;
+		internal event EventHandler<ModifierKeysEventArgs> LabelClicked;
 		internal event EventHandler<RowHeightChangedEventArgs> HeightChanged;
 
 		private void _TreeToggled() { if (TreeToggled != null) TreeToggled(this, EventArgs.Empty); }
-		private void _LabelClicked() { if (LabelClicked != null) LabelClicked(this, EventArgs.Empty); }
+		private void _LabelClicked(Keys k) { if (LabelClicked != null) LabelClicked(this, new ModifierKeysEventArgs(k)); }
 		private void _HeightChanged(int dh) { if (HeightChanged != null) HeightChanged(this, new RowHeightChangedEventArgs(dh)); }
 
 		#endregion
@@ -84,7 +84,7 @@ namespace Timeline
 				// if it's within the toggle button, toggle the tree
 				_TreeToggled();
 			} else if (LabelArea.Contains(e.Location)) {
-				_LabelClicked();
+				_LabelClicked(Form.ModifierKeys);
 			}
 		}
 

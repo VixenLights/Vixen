@@ -16,13 +16,13 @@ namespace Timeline
 			Element = te;
 		}
 
-		public TimelineElement Element { get; internal set; }
+		public TimelineElement Element { get; private set; }
 	}
 
 
 	public class MultiElementEventArgs : EventArgs
 	{
-		public List<TimelineElement> Elements { get; internal set; }
+		public List<TimelineElement> Elements { get; set; }
 	}
 
 
@@ -33,7 +33,7 @@ namespace Timeline
 			HeightChange = heightChange;
 		}
 
-		public int HeightChange { get; internal set; }
+		public int HeightChange { get; private set; }
 	}
 
 
@@ -44,7 +44,18 @@ namespace Timeline
 			Time = t;
 		}
 
-		public TimeSpan Time { get; internal set; }
+		public TimeSpan Time { get; private set; }
+	}
+
+
+	public class ModifierKeysEventArgs : EventArgs
+	{
+		public ModifierKeysEventArgs(Keys k)
+		{
+			ModifierKeys = k;
+		}
+
+		public Keys ModifierKeys { get; private set; }
 	}
 
 
