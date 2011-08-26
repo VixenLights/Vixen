@@ -49,6 +49,8 @@ namespace Timeline
 			m_rows = new List<TimelineRow>();
 			SnapPoints = new SortedDictionary<TimeSpan, int>();
 
+			// thse changed events are static for the class. If we make them per element or row
+			//  later, we will need to attach/detach from each event manually.
 			TimelineElement.ElementChanged += ElementChangedHandler;
 			TimelineRow.RowChanged += RowChangedHandler;
 		}
@@ -103,10 +105,6 @@ namespace Timeline
 			set { m_rows = value; }
 		}
 
-		// TODO JRR 8/16 - Right now, one can use SelectedElements.CollectionChanged to be 
-		// notified when the selection changes. However, it seems to be "noisy" - see test app
-		// output.  I propse adding a SelectionChanged event which filters this. Or try and
-		// clean up the code causing the noisy-ness (if possible).
 		public List<TimelineElement> SelectedElements
 		{
 			get
@@ -122,7 +120,7 @@ namespace Timeline
 		public TimeSpan CursorPosition
 		{
 			get { return m_cursorPosition; }
-			set { m_cursorPosition = value; Invalidate();  }
+			set { m_cursorPosition = value; _CursorMoved(value); Invalidate(); }
 		}
 
 		private bool CtrlPressed { get { return Form.ModifierKeys.HasFlag(Keys.Control); } }
@@ -149,9 +147,11 @@ namespace Timeline
 
 		public event EventHandler<ElementEventArgs> ElementDoubleClicked;
 		public event EventHandler<MultiElementEventArgs> ElementsMoved;
+		public event EventHandler<TimeSpanEventArgs> CursorMoved;
 
 		private void _ElementDoubleClicked(TimelineElement te) { if (ElementDoubleClicked != null) ElementDoubleClicked(this, new ElementEventArgs(te)); }
 		private void _ElementsMoved(MultiElementEventArgs args) { if (ElementsMoved != null) ElementsMoved(this, args); }
+		private void _CursorMoved(TimeSpan t) { if (CursorMoved != null) CursorMoved(this, new TimeSpanEventArgs(t)); }
 
 		#endregion
 

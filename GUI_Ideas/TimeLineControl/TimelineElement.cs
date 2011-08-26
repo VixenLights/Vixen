@@ -112,19 +112,4 @@ namespace Timeline
 			graphics.DrawRectangle(border, b_rect);
 		}
     }
-
-	public class ElementEventArgs : EventArgs
-	{
-		public ElementEventArgs(TimelineElement te)
-		{
-			Element = te;
-		}
-
-		public TimelineElement Element { get; internal set; }
-	}
-
-	public class MultiElementEventArgs : EventArgs
-	{
-		public List<TimelineElement> Elements { get; internal set; }
-	}
 }

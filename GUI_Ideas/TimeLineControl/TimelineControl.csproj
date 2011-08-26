@@ -52,6 +52,7 @@
     <Compile Include="TimelineControlBase.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="TimelineEventArgs.cs" />
     <Compile Include="TimelineGrid.cs">
       <SubType>UserControl</SubType>
     </Compile>

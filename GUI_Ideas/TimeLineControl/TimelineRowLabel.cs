@@ -161,14 +161,4 @@ namespace Timeline
 		#endregion
 
 	}
-
-	public class RowHeightChangedEventArgs : EventArgs
-	{
-		public RowHeightChangedEventArgs(int heightChange)
-		{
-			HeightChange = heightChange;
-		}
-
-		public int HeightChange { get; internal set; }
-	}
 }

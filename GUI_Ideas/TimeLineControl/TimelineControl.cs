@@ -202,8 +202,37 @@ namespace Timeline
 		}
 
 
+		public void AlignSelectedElementsLeft()
+		{
+			timelineGrid.AlignSelectedElementsLeft();
+		}
+
 
 		#endregion
+
+
+		#region Events
+
+		public event EventHandler<ElementEventArgs> ElementDoubleClicked
+		{
+			add { timelineGrid.ElementDoubleClicked += value; }
+			remove { timelineGrid.ElementDoubleClicked -= value; }
+		}
+
+		public event EventHandler<MultiElementEventArgs> ElementsMoved
+		{
+			add { timelineGrid.ElementsMoved += value; }
+			remove { timelineGrid.ElementsMoved -= value; }
+		}
+
+		public event EventHandler<TimeSpanEventArgs> CursorMoved
+		{
+			add { timelineGrid.CursorMoved += value; }
+			remove { timelineGrid.CursorMoved -= value; }
+		}
+
+		#endregion
+
 
 		#region Event Handlers
 
@@ -222,8 +251,9 @@ namespace Timeline
 			timelineRowList.VerticalOffset = timelineGrid.VerticalOffset;
 		}
 
-		private void MouseWheelHandler(object sender, MouseEventArgs e)
+		protected override void OnMouseWheel(MouseEventArgs e)
 		{
+			base.OnMouseWheel(e);
 			if (Form.ModifierKeys.HasFlag(Keys.Control)) {
 				// holding the control key zooms the horizontal axis, by 10% per mouse wheel tick
 				// TODO: should we zoom the vertial rows as well?
@@ -237,17 +267,9 @@ namespace Timeline
 			}
 		}
 
-		protected override void OnMouseWheel(MouseEventArgs e)
-		{
-			base.OnMouseWheel(e);
-			MouseWheelHandler(this, e);
-		}
+
 
 		#endregion
 
-		public void AlignSelectedElementsLeft()
-		{
-			timelineGrid.AlignSelectedElementsLeft();
-		}
 	}
 }
