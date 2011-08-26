@@ -249,8 +249,8 @@ namespace Timeline
 
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
-			// don't call the base mouse wheel event; it scrolls the grid
-			// left and right if there isn't any vertical movement
+			// don't call the base mouse wheel event; it scrolls the grid left and right
+			// if there isn't any vertical movement available (ie. no vertical scrollbar)
 			//base.OnMouseWheel(e);
 		}
 

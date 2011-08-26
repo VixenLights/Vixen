@@ -62,6 +62,12 @@ namespace Timeline
 			}
 			set
 			{
+				if (value < TimeSpan.Zero)
+					value = TimeSpan.Zero;
+
+				if (value > TotalTime - VisibleTimeSpan)
+					value = TotalTime - VisibleTimeSpan;
+
 				if (timelineGrid != null && timelineHeader != null)
 					timelineGrid.VisibleTimeStart = timelineHeader.VisibleTimeStart = value;
 			}
@@ -126,7 +132,12 @@ namespace Timeline
 			if (scale <= 0.0)
 				return;
 
-			TimePerPixel = TimePerPixel.Scale(scale);
+			// cap the scale to the total time displayed
+			if (VisibleTimeSpan.Scale(scale) > TotalTime) {
+				TimePerPixel = TimeSpan.FromTicks(TotalTime.Ticks / timelineGrid.Width);
+			} else {
+				TimePerPixel = TimePerPixel.Scale(scale);
+			}
 		}
 
 		private void AddRowToControls(TimelineRow row, TimelineRowLabel label)
@@ -213,7 +224,17 @@ namespace Timeline
 
 		private void MouseWheelHandler(object sender, MouseEventArgs e)
 		{
-			VerticalOffset += -(e.Delta / 4);
+			if (Form.ModifierKeys.HasFlag(Keys.Control)) {
+				// holding the control key zooms the horizontal axis, by 10% per mouse wheel tick
+				// TODO: should we zoom the vertial rows as well?
+				Zoom(1.0 - ((double)e.Delta / 1200.0));
+			} else if (Form.ModifierKeys.HasFlag(Keys.Shift)) {
+				// holding the skift key moves the horizontal axis, by 10% of the visible time span per mouse wheel tick
+				VisibleTimeStart += VisibleTimeSpan.Scale(-((double)e.Delta / 1200.0));
+			} else {
+				// moving the mouse wheel with no modifiers moves the display vertically, 30 pixels per mouse wheel tick
+				VerticalOffset += -(e.Delta / 4);
+			}
 		}
 
 		protected override void OnMouseWheel(MouseEventArgs e)
