@@ -223,5 +223,10 @@ namespace Timeline
 		}
 
 		#endregion
+
+		public void AlignSelectedElementsLeft()
+		{
+			timelineGrid.AlignSelectedElementsLeft();
+		}
 	}
 }

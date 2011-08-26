@@ -531,6 +531,53 @@ namespace Timeline
 			return result;
 		}
 
+
+
+		public void AlignSelectedElementsLeft()
+		{
+			// Find the leftmost element in each row.
+			var leftmostEachRow = new Dictionary<TimelineRow,TimelineElement>();
+			TimelineElement leftmost = null;
+			foreach (var row in Rows)
+			{
+				TimelineElement leftMostThisRow = null;
+				foreach (var elem in row.Elements)
+				{
+					if (!elem.Selected)
+						continue;
+
+					// Record leftmost element for this row.
+					if (leftMostThisRow == null || (elem.StartTime < leftMostThisRow.StartTime))
+						leftMostThisRow	= elem;
+
+					// Record altogether leftmost element.
+					if (leftmost == null || (elem.StartTime < leftmost.StartTime))
+						leftmost = elem;
+				}
+				leftmostEachRow.Add(row, leftMostThisRow);
+			}
+
+
+			// Now adjust all elements in each row, such that the leftmost element (in this row)
+			// is at the same start time as the alltogether leftmost element.
+			foreach (var row in Rows)
+			{
+				TimeSpan thisRowAdjust = TimeSpan.Zero;
+
+				TimelineElement leftmostThisRow = leftmostEachRow[row];
+				if (leftmostThisRow != null)
+					thisRowAdjust = leftmostThisRow.StartTime - leftmost.StartTime;
+
+				foreach (var elem in row.Elements)
+				{
+					if (!elem.Selected)
+						continue;
+
+					elem.StartTime -= thisRowAdjust;
+				}
+			}
+
+		}
 		#endregion
 
 

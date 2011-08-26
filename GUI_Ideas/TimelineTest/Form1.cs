@@ -187,6 +187,11 @@ namespace Timeline
 		{
 			timelineControl1.VisibleTimeStart = TimeSpan.FromSeconds(5);
 		}
+
+		private void buttonAlignLeft_Click(object sender, EventArgs e)
+		{
+			timelineControl1.AlignSelectedElementsLeft();
+		}
     }
 
 

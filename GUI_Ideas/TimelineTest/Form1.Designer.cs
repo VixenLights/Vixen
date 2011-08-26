@@ -36,6 +36,7 @@
 			this.buttonGenericDebug = new System.Windows.Forms.Button();
 			this.buttonGenericDebug2 = new System.Windows.Forms.Button();
 			this.timelineControl1 = new Timeline.TimelineControl();
+			this.buttonAlignLeft = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// buttonElemAt
@@ -126,9 +127,21 @@
 			this.timelineControl1.Name = "timelineControl1";
 			this.timelineControl1.Size = new System.Drawing.Size(907, 444);
 			this.timelineControl1.TabIndex = 8;
+			this.timelineControl1.TimePerPixel = System.TimeSpan.Parse("00:00:00.0100000");
 			this.timelineControl1.TotalTime = System.TimeSpan.Parse("00:02:00");
-			this.timelineControl1.VisibleTimeEnd = System.TimeSpan.Parse("00:00:10");
+			this.timelineControl1.VerticalOffset = 0;
+			this.timelineControl1.VisibleTimeEnd = System.TimeSpan.Parse("00:00:06.1600000");
 			this.timelineControl1.VisibleTimeStart = System.TimeSpan.Parse("00:00:00");
+			// 
+			// buttonAlignLeft
+			// 
+			this.buttonAlignLeft.Location = new System.Drawing.Point(13, 521);
+			this.buttonAlignLeft.Name = "buttonAlignLeft";
+			this.buttonAlignLeft.Size = new System.Drawing.Size(41, 23);
+			this.buttonAlignLeft.TabIndex = 9;
+			this.buttonAlignLeft.Text = "| <--";
+			this.buttonAlignLeft.UseVisualStyleBackColor = true;
+			this.buttonAlignLeft.Click += new System.EventHandler(this.buttonAlignLeft_Click);
 			// 
 			// Form1
 			// 
@@ -136,6 +149,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.Control;
 			this.ClientSize = new System.Drawing.Size(931, 641);
+			this.Controls.Add(this.buttonAlignLeft);
 			this.Controls.Add(this.timelineControl1);
 			this.Controls.Add(this.buttonGenericDebug2);
 			this.Controls.Add(this.buttonGenericDebug);
@@ -161,6 +175,7 @@
 		private System.Windows.Forms.Button buttonGenericDebug;
 		private System.Windows.Forms.Button buttonGenericDebug2;
 		private TimelineControl timelineControl1;
+		private System.Windows.Forms.Button buttonAlignLeft;
     }
 }
 
