@@ -225,7 +225,8 @@ namespace Timeline
 			if (m_dragAutoscrollDistance.Width != 0) {
 				TimeSpan offset = pixelsToTime(m_dragAutoscrollDistance.Width / 8);
 
-				OffsetElementsByTime(SelectedElements, offset);
+				if (m_dragState == DragState.Dragging)
+					OffsetElementsByTime(SelectedElements, offset);
 
 				// move the view window. Note: this is done after the element movement to prevent some graphical artifacts.
 				VisibleTimeStart += offset;
@@ -387,7 +388,7 @@ namespace Timeline
 				int rightBoundary = (int)timeToPixels(latestTime - VisibleTimeStart);
 
 				// if the mouse moved left, only add it to the scroll size if:
-				// 1) the elements are hard left (or more) in the window
+				// 1) the elements are hard left (or more) in the viewport
 				// 2) the elements are hard right, and we are moving right. This provides deceleration.
 				//    Cap this value to 0.
 				if (d.X < 0) {
@@ -405,9 +406,13 @@ namespace Timeline
 						m_dragAutoscrollDistance.Width = Math.Min(0, m_dragAutoscrollDistance.Width + d.X);
 				}
 
-				m_dragAutoscrollDistance.Height = (e.Y < 0) ? e.Y : ((e.Y > Height) ? e.Y - Height : 0);
+				// if the left and right boundaries are within the viewport, then stop all
+				// horizontal scrolling. This can happen if the user scrolls, and mouse-wheels
+				// (to zoom out). the control is stuck scrolling, and can't be stopped.
+				if (leftBoundary > 0 && rightBoundary < ClientSize.Width)
+					m_dragAutoscrollDistance.Width = 0;
 
-				//Debug.WriteLine("mousemove,  dragging: earliestTime = {0}   latestTime = {1}   leftBoundary = {2}   rightBoundary = {3}   m_dragAutoscrollDistance = {4}", earliestTime, latestTime, leftBoundary, rightBoundary, m_dragAutoscrollDistance);
+				m_dragAutoscrollDistance.Height = (e.Y < 0) ? e.Y : ((e.Y > Height) ? e.Y - Height : 0);
 
 				// if we're outside the control, start the timer if needed. If not, vice-versa.
 				if (m_dragAutoscrollDistance.Width != 0 || m_dragAutoscrollDistance.Height != 0) {
