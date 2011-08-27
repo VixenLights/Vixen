@@ -85,7 +85,7 @@ namespace Timeline
 		/// </summary>
 		public override TimeSpan VisibleTimeStart
 		{
-			get { return pixelsToTime(-AutoScrollPosition.X); }
+			get { return base.VisibleTimeStart; }
 			set
 			{
 				if (value < TimeSpan.Zero)
@@ -94,12 +94,8 @@ namespace Timeline
 				if (value > TotalTime - VisibleTimeSpan)
 					value = TotalTime - VisibleTimeSpan;
 
-				int newPos = (int)timeToPixels(value);
-
-				if (-AutoScrollPosition.X == newPos)
-					return;
-
-				AutoScrollPosition = new Point(newPos, -AutoScrollPosition.Y);
+				base.VisibleTimeStart = value;
+				AutoScrollPosition = new Point((int)timeToPixels(value), -AutoScrollPosition.Y);
 				_VisibleTimeStartChanged();
 			}
 		}
@@ -247,6 +243,14 @@ namespace Timeline
             {
 				SelectedElements.Clear();
 				endDrag();  // do this regardless of if we're dragging or not.
+			}
+		}
+
+		protected override void OnScroll(ScrollEventArgs se)
+		{
+			base.OnScroll(se);
+			if (se.ScrollOrientation == ScrollOrientation.HorizontalScroll) {
+				base.VisibleTimeStart = pixelsToTime(-AutoScrollPosition.X);
 			}
 		}
 
