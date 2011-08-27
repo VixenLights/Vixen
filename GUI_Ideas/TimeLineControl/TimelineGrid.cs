@@ -174,6 +174,8 @@ namespace Timeline
 		// private properties
 		private bool CtrlPressed { get { return Form.ModifierKeys.HasFlag(Keys.Control); } }
 		private Timer ScrollTimer { get; set; }
+		private int CurrentDraggingRowIndex { get; set; }
+
 		#endregion
 
 
@@ -373,7 +375,6 @@ namespace Timeline
 				if (!m_ignoreDragArea.Contains(e.Location)) {
 					//begin the dragging process
 					beginDrag(gridLocation);
-					m_dragAutoscrollDistance.Height = m_dragAutoscrollDistance.Width = 0;
 				}
 			}
 			if (m_dragState == DragState.Dragging) {
@@ -440,6 +441,99 @@ namespace Timeline
 					//        element.StartTime += pixelsToTime(dX);
 					//    }
 					//}
+				}
+
+				// if we've moved vertically, we may need to move elements between rows
+				if (d.Y != 0) {
+					int rowIndex = Rows.IndexOf(rowAt(gridLocation));
+					if (rowIndex != CurrentDraggingRowIndex) {
+
+						// figure out how many visible rows we need to move the elements by
+						int visibleRowsToMove = 0;
+						int direction = (rowIndex - CurrentDraggingRowIndex > 0) ? 1 : -1;
+
+						for (int i = CurrentDraggingRowIndex; i != rowIndex; i += direction) {
+							if (Rows[i].Visible)
+								visibleRowsToMove += direction;
+						}
+
+						// find the highest and lowest rows with selected elements in them
+						int topElementRowIndex = Rows.IndexOf(GetHighestRowForElements(SelectedElements));
+						int bottomElementRowIndex = Rows.IndexOf(GetLowestRowForElements(SelectedElements));
+
+						// if we're moving up in the list, make sure there's enough rows above to move the elements into
+						if (visibleRowsToMove < 0) {
+							int availableRows = 0;
+							for (int i = topElementRowIndex - 1; i >= 0; i--) {
+								if (Rows[i].Visible)
+									availableRows++;
+
+								if (availableRows >= -visibleRowsToMove)
+									break;
+							}
+
+							if (availableRows < -visibleRowsToMove)
+								visibleRowsToMove = -availableRows;
+						}
+
+
+						// check for row availability for downwards movement, as well
+						if (visibleRowsToMove > 0) {
+							int availableRows = 0;
+							for (int i = bottomElementRowIndex + 1; i < Rows.Count; i++) {
+								if (Rows[i].Visible)
+									availableRows++;
+
+								if (availableRows >= visibleRowsToMove)
+									break;
+							}
+
+							if (availableRows < visibleRowsToMove)
+								visibleRowsToMove = availableRows;
+						}
+
+						if (visibleRowsToMove != 0) {
+							List<TimelineElement> elementsStillToMove = SelectedElements;
+							List<TimelineElement> elementsMovedThisIteration = new List<TimelineElement>();
+
+							for (int i = 0; i < Rows.Count; i++) {
+								if (!Rows[i].Visible)
+									continue;
+
+								foreach (TimelineElement element in elementsStillToMove) {
+									if (Rows[i].ContainsElement(element)) {
+										int delta = 0;
+										for (int newRow = i + direction; newRow >= 0 && newRow < Rows.Count; newRow += direction) {
+											if (!Rows[newRow].Visible)
+												continue;
+
+											delta++;
+
+											if (delta >= Math.Abs(visibleRowsToMove)) {
+												Rows[i].RemoveElement(element);
+												Rows[newRow].AddElement(element);
+												elementsMovedThisIteration.Add(element);
+
+												if (CurrentDraggingRowIndex == i)
+													CurrentDraggingRowIndex = newRow;
+
+												break;
+											}
+										}
+									}
+								}
+
+								// what's a nicer way to do this? if we try and remove the element above,
+								// while iterating through the list, it complains bitterly.
+								foreach (TimelineElement element in elementsMovedThisIteration) {
+									elementsStillToMove.Remove(element);
+								}
+
+								elementsMovedThisIteration.Clear();
+							}
+						}
+					}
+
 				}
 			}
 			if (m_dragState == DragState.Selecting) {
@@ -557,6 +651,10 @@ namespace Timeline
 			return result;
 		}
 
+		// TODO: as per Jono's comment below, if we find performance lacking with large data sets,
+		// implement lists of selected elements for both rows and the grid (listens for events from
+		// child elements, and attaches/removes them to/from the list).
+
 		// TODO: Considering that the selection is determined by a flag in each element,
 		// this is (IMHO) as optimized as this can be.  To do much better, the "selected elements"
 		// should instead be a list. (Which can be cleared O(1)). However, that would cause each element
@@ -605,6 +703,32 @@ namespace Timeline
 				}
 
 			} // end foreach
+		}
+
+		public TimelineRow GetHighestRowForElements(IEnumerable<TimelineElement> elements)
+		{
+			for (int i = 0; i < Rows.Count; i++) {
+				foreach (TimelineElement element in elements) {
+					if (Rows[i].ContainsElement(element)) {
+						return Rows[i];
+					}
+				}
+			}
+
+			return null;
+		}
+
+		public TimelineRow GetLowestRowForElements(IEnumerable<TimelineElement> elements)
+		{
+			for (int i = Rows.Count - 1; i >= 0; i--) {
+				foreach (TimelineElement element in elements) {
+					if (Rows[i].ContainsElement(element)) {
+						return Rows[i];
+					}
+				}
+			}
+
+			return null;
 		}
 
 		public TimeSpan GetEarliestTimeForElements(IEnumerable<TimelineElement> elements)
@@ -711,6 +835,10 @@ namespace Timeline
 		{
 			m_dragState = DragState.Dragging;
 			this.Cursor = Cursors.Hand;
+
+			m_dragAutoscrollDistance.Height = m_dragAutoscrollDistance.Width = 0;
+
+			CurrentDraggingRowIndex = Rows.IndexOf(rowAt(location));
 
 			// calculate all the snap points (in pixels) for all selected elements
 			// for every visible drag point (and a width either side, so they can snap

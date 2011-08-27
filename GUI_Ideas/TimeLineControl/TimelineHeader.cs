@@ -47,6 +47,7 @@ namespace Timeline
             // (ie. Drawing coordinates take into account where we start at in time)
             e.Graphics.TranslateTransform(-timeToPixels(VisibleTimeStart), 0);
 
+			// TODO: do something intelligent with the scales for these. Try scaling based on the zoom again maybe?
             drawTicks(e.Graphics, MajorTickInterval, 2, 0.5);
             drawTicks(e.Graphics, MinorTickInterval, 1, 0.25);
 			drawTimes(e.Graphics);
