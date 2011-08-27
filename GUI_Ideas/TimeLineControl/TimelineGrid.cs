@@ -273,15 +273,12 @@ namespace Timeline
 		{
 			// e is already translated.
 
-			if (!CtrlPressed) {
-				ClearSelectedRows();
-			}
-
 			// we clicked nothing - clear selection
 			if (m_mouseDownElement == null)
             {
 				if (!CtrlPressed) {
 					ClearSelectedElements();
+					ClearSelectedRows();
 					m_dragState = DragState.Selecting;
 					SelectedArea = new Rectangle(e.X, e.Y, 0, 0);
 					m_lastMouseLocation = e.Location;
@@ -296,8 +293,10 @@ namespace Timeline
 						m_mouseDownElement.Selected = false;
 				} else {
 					// select
-					if (!CtrlPressed)
+					if (!CtrlPressed) {
 						ClearSelectedElements();
+						ClearSelectedRows();
+					}
 					m_mouseDownElement.Selected = true;
 				}
 
