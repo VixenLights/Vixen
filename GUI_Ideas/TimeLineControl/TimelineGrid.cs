@@ -228,6 +228,11 @@ namespace Timeline
 				if (m_dragState == DragState.Dragging)
 					OffsetElementsByTime(SelectedElements, offset);
 
+				if (m_dragState == DragState.Selecting) {
+					Point gridLocation = _translateMouseArgs(m_lastMouseLocation);
+					UpdateSelectionRectangle(gridLocation);
+				}
+
 				// move the view window. Note: this is done after the element movement to prevent some graphical artifacts.
 				VisibleTimeStart += offset;
 			}
@@ -414,7 +419,7 @@ namespace Timeline
 
 				m_dragAutoscrollDistance.Height = (e.Y < 0) ? e.Y : ((e.Y > Height) ? e.Y - Height : 0);
 
-				// if we're outside the control, start the timer if needed. If not, vice-versa.
+				// if we're scrolling, start the timer if needed. If not, vice-versa.
 				if (m_dragAutoscrollDistance.Width != 0 || m_dragAutoscrollDistance.Height != 0) {
 					if (!ScrollTimer.Enabled)
 						ScrollTimer.Start();
@@ -438,13 +443,24 @@ namespace Timeline
 				}
 			}
 			if (m_dragState == DragState.Selecting) {
-				// for the selecting, we're using the "last mouse location" variable to record the original click point.
-				Point topLeft = new Point(Math.Min(m_selectionRectangleStart.X, gridLocation.X), Math.Min(m_selectionRectangleStart.Y, gridLocation.Y));
-				Point bottomRight = new Point(Math.Max(m_selectionRectangleStart.X, gridLocation.X), Math.Max(m_selectionRectangleStart.Y, gridLocation.Y));
+				// TODO: see if more of this can be merged with the dragging state code above, it's a bit
+				// similar, but also different enough
+				Point d = new Point(e.X - m_lastMouseLocation.X, e.Y - m_lastMouseLocation.Y);
+				m_lastMouseLocation = e.Location;
 
-				SelectedArea = Util.RectangleFromPoints(topLeft, bottomRight);
-				selectElementsWithin(SelectedArea);
-				Invalidate();
+				m_dragAutoscrollDistance.Width = (e.X < 0) ? e.X : ((e.X > ClientSize.Width) ? e.X - ClientSize.Width : 0);
+				m_dragAutoscrollDistance.Height = (e.Y < 0) ? e.Y : ((e.Y > Height) ? e.Y - Height : 0);
+
+				// if we're scrolling, start the timer if needed. If not, vice-versa.
+				if (m_dragAutoscrollDistance.Width != 0 || m_dragAutoscrollDistance.Height != 0) {
+					if (!ScrollTimer.Enabled)
+						ScrollTimer.Start();
+				} else {
+					if (ScrollTimer.Enabled)
+						ScrollTimer.Stop();
+				}
+
+				UpdateSelectionRectangle(gridLocation);
 			}
 		}
 
@@ -813,6 +829,17 @@ namespace Timeline
 			if (ScrollTimer.Enabled)
 				ScrollTimer.Stop();
 		}
+
+		private void UpdateSelectionRectangle(Point gridLocation)
+		{
+			Point topLeft = new Point(Math.Min(m_selectionRectangleStart.X, gridLocation.X), Math.Min(m_selectionRectangleStart.Y, gridLocation.Y));
+			Point bottomRight = new Point(Math.Max(m_selectionRectangleStart.X, gridLocation.X), Math.Max(m_selectionRectangleStart.Y, gridLocation.Y));
+
+			SelectedArea = Util.RectangleFromPoints(topLeft, bottomRight);
+			selectElementsWithin(SelectedArea);
+			Invalidate();
+		}
+
 
 		#endregion
 
