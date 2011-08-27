@@ -9,7 +9,7 @@ namespace Timeline
     public class TimelineControlBase : UserControl
     {
 		protected TimeSpan m_timePerPixel;
-		private TimeSpan m_visibleTimeStart;
+		protected TimeSpan m_visibleTimeStart;
 
         internal TimelineControlBase()
         {
@@ -42,7 +42,7 @@ namespace Timeline
 		/// </summary> 
 		public virtual TimeSpan VisibleTimeSpan
 		{
-			get { return TimeSpan.FromTicks(Width * TimePerPixel.Ticks); }
+			get { return TimeSpan.FromTicks(ClientSize.Width * TimePerPixel.Ticks); }
 		}
 
 		public virtual TimeSpan VisibleTimeEnd

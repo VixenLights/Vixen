@@ -28,7 +28,9 @@ namespace Timeline
 			splitContainer.Panel2MinSize = 100;
 			splitContainer.FixedPanel = FixedPanel.Panel1;
 
-			timelineGrid.Scroll += OnGridScrolled;
+			timelineGrid.Scroll += GridScrolledHandler;
+			timelineGrid.VerticalOffsetChanged += GridScrollVerticalHandler;
+			timelineGrid.VisibleTimeStartChanged += GridScrollHorizontalHandler;
 		}
 
 
@@ -62,14 +64,8 @@ namespace Timeline
 			}
 			set
 			{
-				if (value < TimeSpan.Zero)
-					value = TimeSpan.Zero;
-
-				if (value > TotalTime - VisibleTimeSpan)
-					value = TotalTime - VisibleTimeSpan;
-
-				if (timelineGrid != null && timelineHeader != null)
-					timelineGrid.VisibleTimeStart = timelineHeader.VisibleTimeStart = value;
+				if (timelineGrid != null)
+					timelineGrid.VisibleTimeStart = value;
 			}
 		}
 
@@ -113,15 +109,14 @@ namespace Timeline
 			}
 			set
 			{
-				if (timelineGrid != null) {
+				if (timelineGrid != null)
 					timelineGrid.VerticalOffset = value;
-					timelineRowList.VerticalOffset = timelineGrid.VerticalOffset;
-				}
 			}
 		}
 
 
 		#endregion
+
 
 		#region Methods
 
@@ -132,11 +127,12 @@ namespace Timeline
 			if (scale <= 0.0)
 				return;
 
-			// cap the scale to the total time displayed
 			if (VisibleTimeSpan.Scale(scale) > TotalTime) {
 				TimePerPixel = TimeSpan.FromTicks(TotalTime.Ticks / timelineGrid.Width);
 			} else {
 				TimePerPixel = TimePerPixel.Scale(scale);
+				if (VisibleTimeEnd > TotalTime)
+					VisibleTimeEnd = TotalTime;
 			}
 		}
 
@@ -236,12 +232,24 @@ namespace Timeline
 
 		#region Event Handlers
 
-		private void OnGridScrolled(object sender, ScrollEventArgs e)
+		private void GridScrollVerticalHandler(object sender, EventArgs e)
 		{
-			if (e.ScrollOrientation == ScrollOrientation.HorizontalScroll) {
-				timelineHeader.VisibleTimeStart = timelineGrid.VisibleTimeStart;
-			} else {
+			if (timelineRowList != null)
 				timelineRowList.VerticalOffset = timelineGrid.VerticalOffset;
+		}
+
+		private void GridScrollHorizontalHandler(object sender, EventArgs e)
+		{
+			if (timelineHeader != null)
+				timelineHeader.VisibleTimeStart = timelineGrid.VisibleTimeStart;
+		}
+
+		private void GridScrolledHandler(object sender, ScrollEventArgs e)
+		{
+		    if (e.ScrollOrientation == ScrollOrientation.HorizontalScroll) {
+				GridScrollHorizontalHandler(sender, e);
+		    } else {
+				GridScrollVerticalHandler(sender, e);
 			}
 		}
 

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Timeline
 {
-    public class TimelineElement
+    public class TimelineElement : IComparable<TimelineElement>
     {
 		private TimeSpan m_startTime;
 		private TimeSpan m_duration;
@@ -28,7 +28,8 @@ namespace Timeline
 			set
 			{
 				if (value < TimeSpan.Zero)
-					return;
+					value = TimeSpan.Zero;
+
 				m_startTime = value;
 				_ElementChanged();
 			}
@@ -85,6 +86,22 @@ namespace Timeline
 		#endregion
 
 
+		#region Methods
+
+		public int CompareTo(TimelineElement other)
+		{
+			int rv = StartTime.CompareTo(other.StartTime);
+			if (rv != 0)
+				return rv;
+			else
+				return EndTime.CompareTo(other.EndTime);
+		}
+
+		#endregion
+
+
+		#region Drawing
+
 		public virtual void Draw(Graphics graphics, Rectangle rect)
         {
         // BODY
@@ -111,5 +128,6 @@ namespace Timeline
 			//graphics.DrawRectangle(border, rect);
 			graphics.DrawRectangle(border, b_rect);
 		}
-    }
+		#endregion
+	}
 }

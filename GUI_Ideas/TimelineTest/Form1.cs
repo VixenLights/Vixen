@@ -82,6 +82,22 @@ namespace Timeline
 				Tag = "Black"
 			}
 			);
+
+			row13.Elements.Add(new TimelineElement() {
+				BackColor = Color.CornflowerBlue,
+				StartTime = TimeSpan.FromSeconds(6),
+				Duration = TimeSpan.FromSeconds(3),
+				Tag = "CornflowerBlue"
+			}
+			);
+			
+			row14.Elements.Add(new TimelineElement() {
+				BackColor = Color.Firebrick,
+				StartTime = TimeSpan.FromSeconds(2),
+				Duration = TimeSpan.FromSeconds(7),
+				Tag = "Firebrick"
+			}
+			);
             
 
 			timelineControl1.AddSnapTime(TimeSpan.FromSeconds(3.3), 5);

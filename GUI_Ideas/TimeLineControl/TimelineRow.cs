@@ -10,7 +10,7 @@ namespace Timeline
     /// </summary>
 	public class TimelineRow : IEnumerable<TimelineElement>
 	{
-		protected List<TimelineElement> m_elements = new List<TimelineElement>();
+		protected SortedSet<TimelineElement> m_elements = new SortedSet<TimelineElement>();
 
 		public TimelineRow(TimelineRowLabel trl)
 		{
@@ -50,7 +50,7 @@ namespace Timeline
 			set { RowLabel.Name = value; _RowChanged(); }
 		}
 
-		public List<TimelineElement> Elements
+		public SortedSet<TimelineElement> Elements
 		{
 			get { return m_elements; }
 		}
@@ -221,11 +221,6 @@ namespace Timeline
 
 
 		#region Methods
-
-		public TimelineElement this[int index]
-		{
-			get { return m_elements[index]; }
-		}
 
 		public void AddElement(TimelineElement element)
 		{

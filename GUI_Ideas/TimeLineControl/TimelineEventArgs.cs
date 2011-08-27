@@ -57,6 +57,4 @@ namespace Timeline
 
 		public Keys ModifierKeys { get; private set; }
 	}
-
-
 }
