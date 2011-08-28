@@ -31,7 +31,7 @@ namespace Timeline
 					value = TimeSpan.Zero;
 
 				m_startTime = value;
-				_ElementChanged();
+				_ElementMoved();
 			}
         }
 
@@ -41,7 +41,7 @@ namespace Timeline
         public TimeSpan Duration
         {
             get { return m_duration; }
-			set { m_duration = value; _ElementChanged(); }
+			set { m_duration = value; _ElementMoved(); }
         }
 
 		/// <summary>
@@ -58,30 +58,39 @@ namespace Timeline
         public Color BackColor
         {
             get { return m_backColor; }
-			set { m_backColor = value; _ElementChanged(); }
+			set { m_backColor = value; _ElementContentChanged(); }
         }
 
         public object Tag
         {
             get { return m_tag; }
-			set { m_tag = value; _ElementChanged(); }
+			set { m_tag = value; _ElementContentChanged(); }
         }
 
 		public bool Selected
 		{
 			get { return m_selected; }
-			set { m_selected = value; _ElementChanged(); _ElementSelected(); }
+			set
+			{
+				if (m_selected == value)
+					return;
+				
+				m_selected = value;
+				_ElementSelectedChanged();
+			}
 		}
 
 		#endregion
 
 		#region Events
 
-		internal static event EventHandler ElementChanged;
-		internal static event EventHandler ElementSelected;
+		internal event EventHandler ElementContentChanged;
+		internal event EventHandler ElementSelectedChanged;
+		internal event EventHandler ElementMoved;
 
-		private void _ElementChanged() { if (ElementChanged != null) ElementChanged(this, EventArgs.Empty); }
-		private void _ElementSelected() { if (ElementSelected != null) ElementSelected(this, EventArgs.Empty); }
+		private void _ElementContentChanged() { if (ElementContentChanged != null) ElementContentChanged(this, EventArgs.Empty); }
+		private void _ElementSelectedChanged() { if (ElementSelectedChanged != null) ElementSelectedChanged(this, EventArgs.Empty); }
+		private void _ElementMoved() { if (ElementMoved != null) ElementMoved(this, EventArgs.Empty); }
 
 		#endregion
 

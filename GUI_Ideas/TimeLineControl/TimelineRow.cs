@@ -10,15 +10,17 @@ namespace Timeline
     /// </summary>
 	public class TimelineRow : IEnumerable<TimelineElement>
 	{
-		protected SortedSet<TimelineElement> m_elements = new SortedSet<TimelineElement>();
+		// the elements contained in this row. Must be kept sorted; however, we can't use a SortedList
+		// or similar, as the elements within the list may have their times updated by the grid, which
+		// puts their order out.
+		protected List<TimelineElement> m_elements = new List<TimelineElement>();
+
+		// a list of the selected elements. This should always be a subset of the element list above,
+		// and is kept just to save having to iterate through all elements when retrieving selected elements.
+		protected List<TimelineElement> m_selectedElements = new List<TimelineElement>();
 
 		public TimelineRow(TimelineRowLabel trl)
 		{
-			// actually, we don't want to listen for this event in every row; since the 
-			// whole grid gets redrawn anyway, we can just listen and handle the event
-			// at the grid level instead.
-			//TimelineElement.ElementChanged += new ElementChangedHandler;
-
 			RowLabel = trl;
 			ChildRows = new List<TimelineRow>();
 		}
@@ -50,22 +52,14 @@ namespace Timeline
 			set { RowLabel.Name = value; _RowChanged(); }
 		}
 
-		public SortedSet<TimelineElement> Elements
+		protected List<TimelineElement> Elements
 		{
 			get { return m_elements; }
 		}
 
 		public List<TimelineElement> SelectedElements
 		{
-			get
-			{
-				List<TimelineElement> result = new List<TimelineElement>();
-				foreach (TimelineElement te in Elements) {
-					if (te.Selected)
-						result.Add(te);
-				}
-				return result;
-			}
+			get { return m_selectedElements; }
 		}
 
 		public bool IsEmpty
@@ -190,10 +184,25 @@ namespace Timeline
 
 		#region Event Handlers
 
-		protected void ElementChangedHandler(object sender, EventArgs e)
+		protected void ElementContentChangedHandler(object sender, EventArgs e)
 		{
-			if (ContainsElement(sender as TimelineElement))
-				_RowChanged();
+			_RowChanged();
+		}
+
+		protected void ElementMovedHandler(object sender, EventArgs e)
+		{
+			m_elements.Sort();
+			_RowChanged();
+		}
+
+		protected void ElementSelectedHandler(object sender, EventArgs e)
+		{
+			if ((sender as TimelineElement).Selected)
+				m_selectedElements.Add(sender as TimelineElement);
+			else
+				m_selectedElements.Remove(sender as TimelineElement);
+
+			_RowChanged();
 		}
 
 		protected void TreeToggledHandler(object sender, EventArgs e)
@@ -225,7 +234,12 @@ namespace Timeline
 		public void AddElement(TimelineElement element)
 		{
 			m_elements.Add(element);
-
+			if (element.Selected)
+				m_selectedElements.Add(element);
+			element.ElementContentChanged += ElementContentChangedHandler;
+			element.ElementMoved += ElementMovedHandler;
+			element.ElementSelectedChanged += ElementSelectedHandler;
+			m_elements.Sort();
 			_ElementAdded(element);
 			_RowChanged();
 		}
@@ -242,6 +256,12 @@ namespace Timeline
 		public void RemoveElement(TimelineElement element)
 		{
 			m_elements.Remove(element);
+			if (element.Selected)
+				m_selectedElements.Remove(element);
+			element.ElementContentChanged -= ElementContentChangedHandler;
+			element.ElementMoved -= ElementMovedHandler;
+			element.ElementSelectedChanged -= ElementSelectedHandler;
+			m_elements.Sort();
 			_ElementRemoved(element);
 			_RowChanged();
 		}
@@ -249,6 +269,11 @@ namespace Timeline
 		public bool ContainsElement(TimelineElement element)
 		{
 			return m_elements.Contains(element);
+		}
+
+		public int IndexOfElement(TimelineElement element)
+		{
+			return m_elements.IndexOf(element);
 		}
 
 		public void ClearElements()

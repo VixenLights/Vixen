@@ -33,16 +33,49 @@ namespace Timeline
 			TimelineRow row14 = timelineControl1.AddRow("Row 14", row13);
 
 
-			// Elements
-			row1.Elements.Add(new TimelineElement() {
-				BackColor = Color.Red,
-				StartTime = TimeSpan.FromSeconds(1.5),
-				Duration = TimeSpan.FromSeconds(3.5),
-				Tag = "Red"
-			}
-			);
+			//// Elements
+			//row1.AddElement(new TimelineElement() {
+			//    BackColor = Color.AliceBlue,
+			//    StartTime = TimeSpan.FromSeconds(1),
+			//    Duration = TimeSpan.FromSeconds(3.5),
+			//    Tag = "AliceBlue"
+			//}
+			//);
 
-			row2.Elements.Add(new TimelineElement() {
+			//row1.AddElement(new TimelineElement() {
+			//    BackColor = Color.Bisque,
+			//    StartTime = TimeSpan.FromSeconds(3),
+			//    Duration = TimeSpan.FromSeconds(3.5),
+			//    Tag = "Bisque"
+			//}
+			//);
+
+			//row1.AddElement(new TimelineElement() {
+			//    BackColor = Color.Chocolate,
+			//    StartTime = TimeSpan.FromSeconds(2),
+			//    Duration = TimeSpan.FromSeconds(3.5),
+			//    Tag = "Chocolate"
+			//}
+			//);
+
+
+
+			////row1.RemoveElement(row1.Elements.ToList()[1]);
+
+			//row1.AddElement(new TimelineElement() {
+			//    BackColor = Color.DeepPink,
+			//    StartTime = TimeSpan.FromSeconds(2.2),
+			//    Duration = TimeSpan.FromSeconds(3.5),
+			//    Tag = "DeepPink"
+			//}
+			//);
+
+
+
+
+
+
+			row2.AddElement(new TimelineElement() {
 				BackColor = Color.Green,
 				StartTime = TimeSpan.FromSeconds(0),
 				Duration = TimeSpan.FromSeconds(2),
@@ -50,7 +83,7 @@ namespace Timeline
 			}
 			);
 
-			row2.Elements.Add(new TimelineElement() {
+			row2.AddElement(new TimelineElement() {
 				BackColor = Color.Blue,
 				StartTime = TimeSpan.FromSeconds(4),
 				Duration = TimeSpan.FromSeconds(1),
@@ -58,7 +91,7 @@ namespace Timeline
 			}
 			);
 
-			row3.Elements.Add(new TimelineElement() {
+			row3.AddElement(new TimelineElement() {
 				BackColor = Color.Orange,
 				StartTime = TimeSpan.FromSeconds(4),
 				Duration = TimeSpan.FromSeconds(1),
@@ -66,7 +99,7 @@ namespace Timeline
 			}
 			);
 
-			row4.Elements.Add(new TimelineElement() {
+			row4.AddElement(new TimelineElement() {
 				BackColor = Color.Purple,
 				StartTime = TimeSpan.FromSeconds(4),
 				Duration = TimeSpan.FromSeconds(1),
@@ -75,7 +108,7 @@ namespace Timeline
 			);
 
 
-			row5.Elements.Add(new TimelineElement() {
+			row5.AddElement(new TimelineElement() {
 				BackColor = Color.Black,
 				StartTime = TimeSpan.FromSeconds(4),
 				Duration = TimeSpan.FromSeconds(1),
@@ -83,15 +116,15 @@ namespace Timeline
 			}
 			);
 
-			row13.Elements.Add(new TimelineElement() {
+			row13.AddElement(new TimelineElement() {
 				BackColor = Color.CornflowerBlue,
 				StartTime = TimeSpan.FromSeconds(6),
 				Duration = TimeSpan.FromSeconds(3),
 				Tag = "CornflowerBlue"
 			}
 			);
-			
-			row14.Elements.Add(new TimelineElement() {
+
+			row14.AddElement(new TimelineElement() {
 				BackColor = Color.Firebrick,
 				StartTime = TimeSpan.FromSeconds(2),
 				Duration = TimeSpan.FromSeconds(7),
