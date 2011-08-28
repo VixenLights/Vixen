@@ -445,95 +445,7 @@ namespace Timeline
 
 				// if we've moved vertically, we may need to move elements between rows
 				if (d.Y != 0) {
-					int rowIndex = Rows.IndexOf(rowAt(gridLocation));
-					if (rowIndex != CurrentDraggingRowIndex) {
-
-						// figure out how many visible rows we need to move the elements by
-						int visibleRowsToMove = 0;
-						int direction = (rowIndex - CurrentDraggingRowIndex > 0) ? 1 : -1;
-
-						for (int i = CurrentDraggingRowIndex; i != rowIndex; i += direction) {
-							if (Rows[i].Visible)
-								visibleRowsToMove += direction;
-						}
-
-						// find the highest and lowest rows with selected elements in them
-						int topElementRowIndex = Rows.IndexOf(GetHighestRowForElements(SelectedElements));
-						int bottomElementRowIndex = Rows.IndexOf(GetLowestRowForElements(SelectedElements));
-
-						// if we're moving up in the list, make sure there's enough rows above to move the elements into
-						if (visibleRowsToMove < 0) {
-							int availableRows = 0;
-							for (int i = topElementRowIndex - 1; i >= 0; i--) {
-								if (Rows[i].Visible)
-									availableRows++;
-
-								if (availableRows >= -visibleRowsToMove)
-									break;
-							}
-
-							if (availableRows < -visibleRowsToMove)
-								visibleRowsToMove = -availableRows;
-						}
-
-
-						// check for row availability for downwards movement, as well
-						if (visibleRowsToMove > 0) {
-							int availableRows = 0;
-							for (int i = bottomElementRowIndex + 1; i < Rows.Count; i++) {
-								if (Rows[i].Visible)
-									availableRows++;
-
-								if (availableRows >= visibleRowsToMove)
-									break;
-							}
-
-							if (availableRows < visibleRowsToMove)
-								visibleRowsToMove = availableRows;
-						}
-
-						if (visibleRowsToMove != 0) {
-							List<TimelineElement> elementsStillToMove = SelectedElements;
-							List<TimelineElement> elementsMovedThisIteration = new List<TimelineElement>();
-
-							for (int i = 0; i < Rows.Count; i++) {
-								if (!Rows[i].Visible)
-									continue;
-
-								foreach (TimelineElement element in elementsStillToMove) {
-									if (Rows[i].ContainsElement(element)) {
-										int delta = 0;
-										for (int newRow = i + direction; newRow >= 0 && newRow < Rows.Count; newRow += direction) {
-											if (!Rows[newRow].Visible)
-												continue;
-
-											delta++;
-
-											if (delta >= Math.Abs(visibleRowsToMove)) {
-												Rows[i].RemoveElement(element);
-												Rows[newRow].AddElement(element);
-												elementsMovedThisIteration.Add(element);
-
-												if (CurrentDraggingRowIndex == i)
-													CurrentDraggingRowIndex = newRow;
-
-												break;
-											}
-										}
-									}
-								}
-
-								// what's a nicer way to do this? if we try and remove the element above,
-								// while iterating through the list, it complains bitterly.
-								foreach (TimelineElement element in elementsMovedThisIteration) {
-									elementsStillToMove.Remove(element);
-								}
-
-								elementsMovedThisIteration.Clear();
-							}
-						}
-					}
-
+					MoveElementsVerticallyToLocation(SelectedElements, gridLocation);
 				}
 			}
 			if (m_dragState == DragState.Selecting) {
@@ -817,6 +729,112 @@ namespace Timeline
 
 			Invalidate();
 		}
+
+		public void MoveElementsVerticallyToLocation(IEnumerable<TimelineElement> elements, Point gridLocation)
+		{
+			int rowIndex;
+			if (rowAt(gridLocation) == null)
+				rowIndex = CurrentDraggingRowIndex;
+			else
+				rowIndex = Rows.IndexOf(rowAt(gridLocation));
+
+			if (rowIndex == CurrentDraggingRowIndex)
+				return;
+
+			// figure out how many visible rows we need to move the elements by
+			int visibleRowsToMove = 0;
+			int direction = (rowIndex - CurrentDraggingRowIndex > 0) ? 1 : -1;
+
+			for (int i = CurrentDraggingRowIndex; i != rowIndex; i += direction) {
+				if (Rows[i].Visible)
+					visibleRowsToMove += direction;
+			}
+
+			// find the highest and lowest rows with selected elements in them
+			int topElementRowIndex = Rows.IndexOf(GetHighestRowForElements(elements));
+			int bottomElementRowIndex = Rows.IndexOf(GetLowestRowForElements(elements));
+
+			// if we're moving up in the list, make sure there's enough rows above to move the elements into
+			if (visibleRowsToMove < 0) {
+				int availableRows = 0;
+				for (int i = topElementRowIndex - 1; i >= 0; i--) {
+					if (Rows[i].Visible)
+						availableRows++;
+
+					if (availableRows >= -visibleRowsToMove)
+						break;
+				}
+
+				if (availableRows < -visibleRowsToMove)
+					visibleRowsToMove = -availableRows;
+			}
+
+
+			// check for row availability for downwards movement, as well
+			if (visibleRowsToMove > 0) {
+				int availableRows = 0;
+				for (int i = bottomElementRowIndex + 1; i < Rows.Count; i++) {
+					if (Rows[i].Visible)
+						availableRows++;
+
+					if (availableRows >= visibleRowsToMove)
+						break;
+				}
+
+				if (availableRows < visibleRowsToMove)
+					visibleRowsToMove = availableRows;
+			}
+
+			// we may have reduced the rows to move to 0 above (if we're already at a limit), if so, we're done
+			if (visibleRowsToMove != 0) {
+				List<TimelineElement> elementsStillToMove = new List<TimelineElement>(elements);
+				List<TimelineElement> elementsMovedThisIteration = new List<TimelineElement>();
+				bool currentRowIndexHasBeenUpdated = false;
+
+				// go through all the rows. If any of them contain an element that needs to be moved,
+				// move it up/down by the appropriate number of visible rows. Skip hidden ones.
+				for (int i = 0; i < Rows.Count; i++) {
+					if (!Rows[i].Visible)
+						continue;
+
+					// go through each element that hasn't been moved yet, and move it if it's in this row.
+					foreach (TimelineElement element in elementsStillToMove) {
+						if (Rows[i].ContainsElement(element)) {
+							for (int newRow = i + direction, delta = 0; newRow >= 0 && newRow < Rows.Count; newRow += direction) {
+								if (!Rows[newRow].Visible)
+									continue;
+
+								delta++;
+
+								if (delta >= Math.Abs(visibleRowsToMove)) {
+									Rows[i].RemoveElement(element);
+									Rows[newRow].AddElement(element);
+									elementsMovedThisIteration.Add(element);
+
+									// while we're here, we can update the current row index that the mouse is on, for future
+									// reference. However, only if it's the same as the row being moved.
+									if (!currentRowIndexHasBeenUpdated && CurrentDraggingRowIndex == i) {
+										CurrentDraggingRowIndex = newRow;
+										currentRowIndexHasBeenUpdated = true;
+									}
+
+									break;
+								}
+							}
+						}
+					}
+
+					// what's a nicer way to do this? if we try and remove the element above,
+					// while iterating through the list, it complains bitterly.
+					foreach (TimelineElement element in elementsMovedThisIteration) {
+						elementsStillToMove.Remove(element);
+					}
+
+					elementsMovedThisIteration.Clear();
+				}
+			}
+		}
+
 
 		#endregion
 
