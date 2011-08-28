@@ -33,47 +33,6 @@ namespace Timeline
 			TimelineRow row14 = timelineControl1.AddRow("Row 14", row13);
 
 
-			//// Elements
-			//row1.AddElement(new TimelineElement() {
-			//    BackColor = Color.AliceBlue,
-			//    StartTime = TimeSpan.FromSeconds(1),
-			//    Duration = TimeSpan.FromSeconds(3.5),
-			//    Tag = "AliceBlue"
-			//}
-			//);
-
-			//row1.AddElement(new TimelineElement() {
-			//    BackColor = Color.Bisque,
-			//    StartTime = TimeSpan.FromSeconds(3),
-			//    Duration = TimeSpan.FromSeconds(3.5),
-			//    Tag = "Bisque"
-			//}
-			//);
-
-			//row1.AddElement(new TimelineElement() {
-			//    BackColor = Color.Chocolate,
-			//    StartTime = TimeSpan.FromSeconds(2),
-			//    Duration = TimeSpan.FromSeconds(3.5),
-			//    Tag = "Chocolate"
-			//}
-			//);
-
-
-
-			////row1.RemoveElement(row1.Elements.ToList()[1]);
-
-			//row1.AddElement(new TimelineElement() {
-			//    BackColor = Color.DeepPink,
-			//    StartTime = TimeSpan.FromSeconds(2.2),
-			//    Duration = TimeSpan.FromSeconds(3.5),
-			//    Tag = "DeepPink"
-			//}
-			//);
-
-
-
-
-
 
 			row2.AddElement(new TimelineElement() {
 				BackColor = Color.Green,
