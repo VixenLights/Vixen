@@ -93,7 +93,6 @@
 			this.timelineGrid.Location = new System.Drawing.Point(0, 40);
 			this.timelineGrid.MajorGridlineColor = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(120)))), ((int)(((byte)(120)))));
 			this.timelineGrid.Name = "timelineGrid";
-			this.timelineGrid.OnlySnapToCurrentRow = false;
 			this.timelineGrid.RowSeparatorColor = System.Drawing.Color.Black;
 			this.timelineGrid.Size = new System.Drawing.Size(566, 436);
 			this.timelineGrid.TabIndex = 1;

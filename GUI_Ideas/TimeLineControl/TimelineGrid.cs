@@ -47,7 +47,7 @@ namespace Timeline
 			CursorColor = Color.FromArgb(150, 50, 50, 50);
 			CursorWidth = 2.5F;
 			CursorPosition = TimeSpan.Zero;
-			OnlySnapToCurrentRow = false;
+			OnlySnapToCurrentRow = true;
 			DragThreshold = 8;
 			m_dragAutoscrollDistance.Height = m_dragAutoscrollDistance.Width = 0;
 			StaticSnapPoints = new SortedDictionary<TimeSpan, List<SnapDetails>>();
@@ -734,15 +734,15 @@ namespace Timeline
 			// if we're only snapping to things in the current row.) Also, record the row this element is in
 			// as well, since we'll need it later on, and it saves recalculating multiple times
 			List<Tuple<TimelineElement, TimelineRow>> elementsToCheckSnapping = new List<Tuple<TimelineElement, TimelineRow>>();
-			if (!OnlySnapToCurrentRow) {
-				foreach (TimelineElement element in elements) {
-					elementsToCheckSnapping.Add(new Tuple<TimelineElement,TimelineRow>(element, RowContainingElement(element)));
-				}
-			} else {
+			if (OnlySnapToCurrentRow) {
 				TimelineRow targetRow = Rows[CurrentRowIndexUnderMouse];
 				foreach (TimelineElement element in elements) {
 					if (targetRow.ContainsElement(element))
-						elementsToCheckSnapping.Add(new Tuple<TimelineElement,TimelineRow>(element, targetRow));
+						elementsToCheckSnapping.Add(new Tuple<TimelineElement, TimelineRow>(element, targetRow));
+				}
+			} else {
+				foreach (TimelineElement element in elements) {
+					elementsToCheckSnapping.Add(new Tuple<TimelineElement, TimelineRow>(element, RowContainingElement(element)));
 				}
 			}
 
@@ -770,7 +770,7 @@ namespace Timeline
 
 						// calculate the best side (start or end) to snap to the snap time
 						if (startInRange && endInRange) {
-							if ((Math.Abs((element.StartTime - details.SnapTime).Ticks)) > (Math.Abs((element.EndTime - details.SnapTime).Ticks)))
+							if (details.SnapTime - element.StartTime + offset < element.EndTime + offset - details.SnapTime)
 								snappedOffset = details.SnapTime - element.StartTime;
 							else
 								snappedOffset = details.SnapTime - element.EndTime;
@@ -827,40 +827,42 @@ namespace Timeline
 			if (visibleRowsToMove > 0 && visibleRowsToMove > visibleRows.Count - 1 - bottomElementVisibleRowIndex)
 				visibleRowsToMove = visibleRows.Count - 1 - bottomElementVisibleRowIndex;
 
-			if (visibleRowsToMove != 0) {
+			if (visibleRowsToMove == 0)
+				return;
 
-				Dictionary<TimelineElement, bool> elementsToMove = new Dictionary<TimelineElement, bool>();
-				foreach (TimelineElement e in elements) {
-					elementsToMove.Add(e, false);
-				}
-
-				for (int i = 0; i < visibleRows.Count; i++) {
-					List<TimelineElement> elementsMoved = new List<TimelineElement>();
-
-					// go through each element that hasn't been moved yet, and move it if it's in this row.
-					foreach (KeyValuePair<TimelineElement, bool> kvp in elementsToMove) {
-						TimelineElement element = kvp.Key;
-						bool moved = kvp.Value;
-
-						// if the element has already been moved, ignore it
-						if (moved)
-							continue;
-
-						// if the current element is in the current visble row, move it to wherever it needs
-						// to go, and also flag that it has been moved
-						if (visibleRows[i].ContainsElement(element)) {
-							visibleRows[i].RemoveElement(element);
-							visibleRows[i + visibleRowsToMove].AddElement(element);
-							elementsMoved.Add(element);
-						}
-					}
-
-					foreach (TimelineElement e in elementsMoved)
-						elementsToMove[e] = true;
-				}
-
-				CurrentRowIndexUnderMouse = Rows.IndexOf(visibleRows[(visibleRows.IndexOf(Rows[CurrentRowIndexUnderMouse]) + visibleRowsToMove)]);
+			Dictionary<TimelineElement, bool> elementsToMove = new Dictionary<TimelineElement, bool>();
+			foreach (TimelineElement e in elements) {
+				elementsToMove.Add(e, false);
 			}
+
+			for (int i = 0; i < visibleRows.Count; i++) {
+				List<TimelineElement> elementsMoved = new List<TimelineElement>();
+
+				// go through each element that hasn't been moved yet, and move it if it's in this row.
+				foreach (KeyValuePair<TimelineElement, bool> kvp in elementsToMove) {
+					TimelineElement element = kvp.Key;
+					bool moved = kvp.Value;
+
+					// if the element has already been moved, ignore it
+					if (moved)
+						continue;
+
+					// if the current element is in the current visble row, move it to wherever it needs
+					// to go, and also flag that it has been moved
+					if (visibleRows[i].ContainsElement(element)) {
+						visibleRows[i].RemoveElement(element);
+						visibleRows[i + visibleRowsToMove].AddElement(element);
+						elementsMoved.Add(element);
+					}
+				}
+
+				foreach (TimelineElement e in elementsMoved)
+					elementsToMove[e] = true;
+			}
+
+			CurrentRowIndexUnderMouse = Rows.IndexOf(visibleRows[(visibleRows.IndexOf(Rows[CurrentRowIndexUnderMouse]) + visibleRowsToMove)]);
+
+			Invalidate();
 		}
 
 		private void RecalculateAllStaticSnapPoints()
@@ -937,7 +939,16 @@ namespace Timeline
 
 			// iterate through the rows, calculating snap points for every single element in each row that has any selected elements
 			foreach (TimelineRow row in Rows) {
-				if (row.SelectedElements.Count == 0)
+				// This would skip generating snap points for elements on any rows that have nothing selected.
+				// However, we still need to do that; as we might be dragging elements vertically into rows that
+				// (currently) have nothing selected. So we'll generate for everything, but that's going to be
+				// quite overkill. So, the big TODO: here is to regenerate element snap points for only rows with
+				// selected elements, but also regenerate them whenever we move vertically.
+				//if (row.SelectedElements.Count == 0)
+				//    continue;
+
+				// skip any elements in rows that aren't visible.
+				if (!row.Visible)
 					continue;
 
 				foreach (TimelineElement element in row) {
