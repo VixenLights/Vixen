@@ -397,8 +397,8 @@ namespace Timeline
 				// (we subtract VisibleTimeStart to make it relative to the control, instead of the grid canvas.)
 				TimeSpan earliestTime = GetEarliestTimeForElements(SelectedElements);
 				TimeSpan latestTime = GetLatestTimeForElements(SelectedElements);
-				int leftBoundary = (int)timeToPixels(earliestTime - VisibleTimeStart);
-				int rightBoundary = (int)timeToPixels(latestTime - VisibleTimeStart);
+				int leftBoundary = (int)timeToPixels(earliestTime - VisibleTimeStart + DragTimeLeftOver);
+				int rightBoundary = (int)timeToPixels(latestTime - VisibleTimeStart + DragTimeLeftOver);
 
 				// if the mouse moved left, only add it to the scroll size if:
 				// 1) the elements are hard left (or more) in the viewport
