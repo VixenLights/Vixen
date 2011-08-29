@@ -21,7 +21,6 @@ namespace Timeline
 		private Point m_selectionRectangleStart;				// the location (on the grid canvas) where the selection box starts.
 		private Rectangle m_ignoreDragArea;						// the area in which move movements should be ignored, before we start dragging
 		private TimelineElement m_mouseDownElement = null;		// the element under the cursor on a mouse click
-		private SortedDictionary<int, SnapDetails> m_snapPixels;	// a mapping of pixel location to details to snap to
 		private TimeSpan m_totalTime;							// the total amount of time this grid represents
 		private TimeSpan m_cursorPosition;						// the current grid 'cursor' position (line drawn vertically)
 		private Size m_dragAutoscrollDistance;					// how far in either dimension the mouse has moved outside a bounding area,
@@ -48,12 +47,13 @@ namespace Timeline
 			CursorColor = Color.FromArgb(150, 50, 50, 50);
 			CursorWidth = 2.5F;
 			CursorPosition = TimeSpan.Zero;
-			OnlySnapToCurrentRow = false;		// setting this to 'true' doesn't quite work yet.
+			OnlySnapToCurrentRow = false;
 			DragThreshold = 8;
 			m_dragAutoscrollDistance.Height = m_dragAutoscrollDistance.Width = 0;
+			StaticSnapPoints = new SortedDictionary<TimeSpan, List<SnapDetails>>();
+			SnapPriorityForElements = 5;
 
 			m_rows = new List<TimelineRow>();
-			SnapPoints = new SortedDictionary<TimeSpan, int>();
 			ScrollTimer = new Timer();
 			ScrollTimer.Interval = 20;
 			ScrollTimer.Enabled = false;
@@ -109,6 +109,7 @@ namespace Timeline
 				TimeSpan start = VisibleTimeStart;
 				base.TimePerPixel = value;
 				VisibleTimeStart = start;
+				RecalculateAllStaticSnapPoints();
 			}
 		}
 
@@ -156,9 +157,9 @@ namespace Timeline
 			set { m_cursorPosition = value; _CursorMoved(value); Invalidate(); }
 		}
 
-		public SortedDictionary<TimeSpan, int> SnapPoints { get; set; }
 		public TimeSpan GridlineInterval { get; set; }
 		public bool OnlySnapToCurrentRow { get; set; }
+		public int SnapPriorityForElements { get; set; }
 		public int DragThreshold { get; set; }
 		public Rectangle SelectedArea { get; set; }
 	
@@ -173,7 +174,10 @@ namespace Timeline
 		// private properties
 		private bool CtrlPressed { get { return Form.ModifierKeys.HasFlag(Keys.Control); } }
 		private Timer ScrollTimer { get; set; }
-		private int CurrentDraggingRowIndex { get; set; }
+		private int CurrentRowIndexUnderMouse { get; set; }
+		private SortedDictionary<TimeSpan, List<SnapDetails>> StaticSnapPoints { get; set; }
+		private SortedDictionary<TimeSpan, List<SnapDetails>> CurrentDragSnapPoints { get; set; }
+		private TimeSpan DragTimeLeftOver { get; set; }
 
 		#endregion
 
@@ -221,8 +225,17 @@ namespace Timeline
 			if (m_dragAutoscrollDistance.Width != 0) {
 				TimeSpan offset = pixelsToTime(m_dragAutoscrollDistance.Width / 8);
 
-				if (m_dragState == DragState.Dragging)
-					OffsetElementsByTime(SelectedElements, offset);
+				if (m_dragState == DragState.Dragging) {
+					// don't do any dragging if we're hard left in the viewport and trying to drag left, or
+					// the same at the other end: otherwise the 'desired time' counter (of time left still
+					// to drag) continually gets incremented
+					if (!(m_dragAutoscrollDistance.Width < 0 && VisibleTimeStart == TimeSpan.Zero) &&
+						!(m_dragAutoscrollDistance.Width > 0 && VisibleTimeEnd == TotalTime)) {
+						TimeSpan desiredMoveTime = DragTimeLeftOver + offset;
+						TimeSpan realMoveTime = OffsetElementsByTime(SelectedElements, desiredMoveTime);
+						DragTimeLeftOver = desiredMoveTime - realMoveTime;
+					}
+				}
 
 				if (m_dragState == DragState.Selecting) {
 					Point gridLocation = _translateMouseArgs(m_lastMouseLocation);
@@ -425,16 +438,9 @@ namespace Timeline
                 
 				// only move the elements here if we aren't going to be auto-dragging while scrolling in the timer events.
 				if (d.X != 0 && m_dragAutoscrollDistance.Width == 0) {
-					OffsetElementsByTime(SelectedElements, pixelsToTime(d.X));
-
-					// TODO: when reimplementing the snapping, put it in the OffsetElementsByTime method
-					//foreach (TimelineElement element in SelectedElements) {
-					//    if (m_snapPixels.ContainsKey(gridLocation.X) && m_snapPixels[gridLocation.X].SnapElements.ContainsKey(element)) {
-					//        element.StartTime = m_snapPixels[gridLocation.X].SnapElements[element];
-					//    } else {
-					//        element.StartTime += pixelsToTime(dX);
-					//    }
-					//}
+					TimeSpan desiredMoveTime = DragTimeLeftOver + pixelsToTime(d.X);
+					TimeSpan realMoveTime = OffsetElementsByTime(SelectedElements, desiredMoveTime);
+					DragTimeLeftOver = desiredMoveTime - realMoveTime;
 				}
 
 				// if we've moved vertically, we may need to move elements between rows
@@ -538,6 +544,15 @@ namespace Timeline
 					return elem;
 			}
 
+			return null;
+		}
+
+		protected TimelineRow RowContainingElement(TimelineElement element)
+		{
+			foreach (TimelineRow row in Rows) {
+				if (row.ContainsElement(element))
+					return row;
+			}
 			return null;
 		}
 
@@ -693,38 +708,94 @@ namespace Timeline
 
 		}
 
-		public void OffsetElementsByTime(IEnumerable<TimelineElement> elements, TimeSpan offset)
+		public TimeSpan OffsetElementsByTime(IEnumerable<TimelineElement> elements, TimeSpan offset)
 		{
-			// TODO: this is where the snapping should happen, will need to add it back in later.
-
 			// check to see if the offset that is applied to all elements will take it outside
 			// the total time at all. If so, use a smaller offset, or none at all.
+			TimeSpan earliest = GetEarliestTimeForElements(elements);
+			TimeSpan latest = GetLatestTimeForElements(elements);
 
 			// if we're going backwards, check that the earliest time isn't already at zero, or
 			// that the move will try to take it past 0.
-			if (offset.Ticks < 0) {
-				TimeSpan earliest = GetEarliestTimeForElements(elements);
-				if (earliest < -offset) {
-					offset = -earliest;
-				}
+			if (offset.Ticks < 0 && earliest < -offset) {
+				offset = -earliest;
 			}
 
 			// same for moving forwards.
-			if (offset.Ticks > 0) {
-				TimeSpan latest = GetLatestTimeForElements(elements);
-				if (TotalTime - latest < offset)
-					offset = TotalTime - latest;
+			if (offset.Ticks > 0 && TotalTime - latest < offset) {
+				offset = TotalTime - latest;
 			}
 
 			// if the offset was zero, or was set to it, we don't need to do anything else now.
 			if (offset == TimeSpan.Zero)
-				return;
+				return offset;
 
+			// grab all the elements we need to check for snapping against things (ie. filter them based on row
+			// if we're only snapping to things in the current row.) Also, record the row this element is in
+			// as well, since we'll need it later on, and it saves recalculating multiple times
+			List<Tuple<TimelineElement, TimelineRow>> elementsToCheckSnapping = new List<Tuple<TimelineElement, TimelineRow>>();
+			if (!OnlySnapToCurrentRow) {
+				foreach (TimelineElement element in elements) {
+					elementsToCheckSnapping.Add(new Tuple<TimelineElement,TimelineRow>(element, RowContainingElement(element)));
+				}
+			} else {
+				TimelineRow targetRow = Rows[CurrentRowIndexUnderMouse];
+				foreach (TimelineElement element in elements) {
+					if (targetRow.ContainsElement(element))
+						elementsToCheckSnapping.Add(new Tuple<TimelineElement,TimelineRow>(element, targetRow));
+				}
+			}
+
+			// now go through all the elements we need against snap points, and check them
+			SnapDetails bestSnapPoint = null;
+			TimeSpan snappedOffset = offset;
+			foreach (Tuple<TimelineElement, TimelineRow> tuple in elementsToCheckSnapping) {
+				TimelineElement element = tuple.Item1;
+				TimelineRow thisElementsRow = tuple.Item2;
+				foreach (KeyValuePair<TimeSpan, List<SnapDetails>> kvp in CurrentDragSnapPoints) {
+					foreach (SnapDetails details in kvp.Value) {
+						// skip this point if it's not any higher priority than our highest so far
+						if (bestSnapPoint != null && details.SnapLevel <= bestSnapPoint.SnapLevel)
+							continue;
+
+						// skip this one if it's not for the row that the current element is on
+						if (details.SnapRow != null && details.SnapRow != thisElementsRow)
+							continue;
+
+						// figure out if the element start time or end times are in the snap range; if not, skip it
+						bool startInRange = (element.StartTime + offset > details.SnapStart && element.StartTime + offset < details.SnapEnd);
+						bool endInRange = (element.EndTime + offset > details.SnapStart && element.EndTime + offset < details.SnapEnd);
+						if (!startInRange && !endInRange)
+							continue;
+
+						// calculate the best side (start or end) to snap to the snap time
+						if (startInRange && endInRange) {
+							if ((Math.Abs((element.StartTime - details.SnapTime).Ticks)) > (Math.Abs((element.EndTime - details.SnapTime).Ticks)))
+								snappedOffset = details.SnapTime - element.StartTime;
+							else
+								snappedOffset = details.SnapTime - element.EndTime;
+						} else {
+							if (startInRange)
+								snappedOffset = details.SnapTime - element.StartTime;
+							else
+								snappedOffset = details.SnapTime - element.EndTime;
+						}
+
+						bestSnapPoint = details;
+					}
+				}
+			}
+
+			// by now, we should know what the most applicable snap point is (or none at all), and we've
+			// also figured out along the way what the actual offset should be to snap the elements to. So have at it.
 			foreach (TimelineElement e in elements) {
-				e.StartTime += offset;
+				e.StartTime += snappedOffset;
 			}
 
 			Invalidate();
+
+			// return the amount of time that the elements were *actually* moved, rather than the amount they were intended to
+			return snappedOffset;
 		}
 
 		public void MoveElementsVerticallyToLocation(IEnumerable<TimelineElement> elements, Point gridLocation)
@@ -734,7 +805,7 @@ namespace Timeline
 			if (destRow == null)
 				return;
 
-			if (Rows.IndexOf(destRow) == CurrentDraggingRowIndex)
+			if (Rows.IndexOf(destRow) == CurrentRowIndexUnderMouse)
 				return;
 
 			List<TimelineRow> visibleRows = new List<TimelineRow>();
@@ -744,7 +815,7 @@ namespace Timeline
 					visibleRows.Add(Rows[i]);
 			}
 
-			int visibleRowsToMove = visibleRows.IndexOf(destRow) - visibleRows.IndexOf(Rows[CurrentDraggingRowIndex]);
+			int visibleRowsToMove = visibleRows.IndexOf(destRow) - visibleRows.IndexOf(Rows[CurrentRowIndexUnderMouse]);
 
 			// find the highest and lowest visible rows with selected elements in them
 			int topElementVisibleRowIndex = visibleRows.IndexOf(GetHighestRowForElements(elements, true));
@@ -762,7 +833,6 @@ namespace Timeline
 				foreach (TimelineElement e in elements) {
 					elementsToMove.Add(e, false);
 				}
-
 
 				for (int i = 0; i < visibleRows.Count; i++) {
 					List<TimelineElement> elementsMoved = new List<TimelineElement>();
@@ -789,8 +859,53 @@ namespace Timeline
 						elementsToMove[e] = true;
 				}
 
-				CurrentDraggingRowIndex = Rows.IndexOf(visibleRows[(visibleRows.IndexOf(Rows[CurrentDraggingRowIndex]) + visibleRowsToMove)]);
+				CurrentRowIndexUnderMouse = Rows.IndexOf(visibleRows[(visibleRows.IndexOf(Rows[CurrentRowIndexUnderMouse]) + visibleRowsToMove)]);
 			}
+		}
+
+		private void RecalculateAllStaticSnapPoints()
+		{
+			if (StaticSnapPoints == null)
+				return;
+
+			SortedDictionary<TimeSpan, List<SnapDetails>> newPoints = new SortedDictionary<TimeSpan, List<SnapDetails>>();
+			foreach (KeyValuePair<TimeSpan, List<SnapDetails>> kvp in StaticSnapPoints) {
+				newPoints[kvp.Key] = new List<SnapDetails>();
+				foreach (SnapDetails details in kvp.Value) {
+					newPoints[kvp.Key].Add(CalculateSnapDetailsForPoint(details.SnapTime, details.SnapLevel));
+				}
+			}
+			StaticSnapPoints = newPoints;
+		}
+
+		private SnapDetails CalculateSnapDetailsForPoint(TimeSpan snapTime, int level)
+		{
+			SnapDetails result = new SnapDetails();
+			result.SnapLevel = level;
+			result.SnapTime = snapTime;
+
+			// the start time and end times for specified points are 2 pixels
+			// per snap level away from the snap time.
+			result.SnapStart = snapTime - TimeSpan.FromTicks(TimePerPixel.Ticks * level * 2);
+			result.SnapEnd = snapTime + TimeSpan.FromTicks(TimePerPixel.Ticks * level * 2);
+			return result;
+		}
+
+		public bool AddSnapPoint(TimeSpan snapTime, int level)
+		{
+			// even though we can have multiple snap details snapping to a given timespan,
+			// this part is only for statc snap points, common to all rows. So for now,
+			// we don't want to allow them.
+			if (StaticSnapPoints.ContainsKey(snapTime))
+				return false;
+
+			StaticSnapPoints.Add(snapTime, new List<SnapDetails> { CalculateSnapDetailsForPoint(snapTime, level) } );
+			return true;
+		}
+
+		public bool RemoveSnapPoint(TimeSpan snapTime)
+		{
+			return StaticSnapPoints.Remove(snapTime);
 		}
 
 
@@ -813,115 +928,40 @@ namespace Timeline
 			this.Cursor = Cursors.Hand;
 
 			m_dragAutoscrollDistance.Height = m_dragAutoscrollDistance.Width = 0;
+			DragTimeLeftOver = TimeSpan.Zero;
+			CurrentRowIndexUnderMouse = Rows.IndexOf(rowAt(location));
 
-			CurrentDraggingRowIndex = Rows.IndexOf(rowAt(location));
+			// build up a full set of snap points/details, from (a) the static snap points for the grid, and
+			// (b) calculated snap points for this move (ie. other elements in the row[s]).
+			CurrentDragSnapPoints = new SortedDictionary<TimeSpan,List<SnapDetails>>(StaticSnapPoints);
 
-			// calculate all the snap points (in pixels) for all selected elements
-			// for every visible drag point (and a width either side, so they can snap
-			// to non-visible points that are close)
-			m_snapPixels = new SortedDictionary<int, SnapDetails>();
+			// iterate through the rows, calculating snap points for every single element in each row that has any selected elements
+			foreach (TimelineRow row in Rows) {
+				if (row.SelectedElements.Count == 0)
+					continue;
 
-			foreach (KeyValuePair<TimeSpan, int> kvp in SnapPoints) {
-				if ((kvp.Key >= VisibleTimeStart - VisibleTimeSpan) &&
-					(kvp.Key <= VisibleTimeEnd + VisibleTimeSpan)) {
+				foreach (TimelineElement element in row) {
+					// skip it if it's a selected element; we don't want to snap to them, as they'll be moving as well
+					if (element.Selected)
+						continue;
 
-					int snapTimePixelCentre = (int)timeToPixels(kvp.Key);
-					int snapRange = kvp.Value;
-					int snapLevel = kvp.Value;
+					// if it's a non-selected element, generate snap points for it; for the start and end times. Also record the
+					// row its from in the generated point, so when snapping we can check against only elements from this row.
+					SnapDetails details = CalculateSnapDetailsForPoint(element.StartTime, SnapPriorityForElements);
+					details.SnapRow = row;
 
-					List<TimelineElement> snapElements;
-
-					if (OnlySnapToCurrentRow) {
-						TimelineRow row = rowAt(location);
-						if (row != null)
-							snapElements = row.SelectedElements;
-						else
-							snapElements = new List<TimelineElement>();
-					} else {
-						snapElements = SelectedElements;
+					if (!CurrentDragSnapPoints.ContainsKey(details.SnapTime)) {
+						CurrentDragSnapPoints[details.SnapTime] = new List<SnapDetails>();
 					}
+					CurrentDragSnapPoints[details.SnapTime].Add(details);
 
-					foreach (TimelineElement element in snapElements) {
-						int elementPixelStart = (int)timeToPixels(element.StartTime);
-						int elementPixelEnd = (int)timeToPixels(element.StartTime + element.Duration);
+					details = CalculateSnapDetailsForPoint(element.EndTime, SnapPriorityForElements);
+					details.SnapRow = row;
 
-						// iterate through all pixels for this particular snap point, for this element
-						for (int offset = -snapRange; offset <= snapRange; offset++) {
-
-							// calculate the relative pixel (to the mouse location) for this point
-							int rp = location.X + snapTimePixelCentre + offset - elementPixelStart;
-
-							bool addNewSnapDetail = false;
-
-							// if it doesn't have a Snap entry for this item, make one
-							if (!m_snapPixels.ContainsKey(rp)) {
-								addNewSnapDetail = true;
-							} else {
-								// if it does, we have to figure out an intelligent way to combine them. If it's
-								// going to snap to the same pixel, then just add it to the list. Also update
-								// the priority if needed.
-								if (m_snapPixels[rp].DestinationPixel == rp - offset) {
-									m_snapPixels[rp].SnapElements[element] = kvp.Key;
-									m_snapPixels[rp].SnapLevel = Math.Max(m_snapPixels[rp].SnapLevel, snapLevel);
-								}
-									// if it's not going to snap to the same pixel as the existing one, then only
-									// update it if the new one's of a higher priority.
-								else {
-									if (m_snapPixels[rp].SnapLevel < snapLevel) {
-										addNewSnapDetail = true;
-									}
-								}
-							}
-
-							// add the new one if needed
-							if (addNewSnapDetail) {
-								SnapDetails sd = new SnapDetails();
-								sd.DestinationPixel = rp - offset;
-								sd.SnapLevel = snapLevel;
-								sd.SnapElements = new Dictionary<TimelineElement, TimeSpan>();
-								sd.SnapElements[element] = kvp.Key;
-								m_snapPixels[rp] = sd;
-							}
-
-
-							// do the same for the end of the element
-							addNewSnapDetail = false;
-							rp = location.X + snapTimePixelCentre + offset - elementPixelEnd;
-
-
-
-
-							// if it doesn't have a Snap entry for this item, make one
-							if (!m_snapPixels.ContainsKey(rp)) {
-								addNewSnapDetail = true;
-							} else {
-								// if it does, we have to figure out an intelligent way to combine them. If it's
-								// going to snap to the same pixel, then just add it to the list. Also update
-								// the priority if needed.
-								if (m_snapPixels[rp].DestinationPixel == rp - offset) {
-									m_snapPixels[rp].SnapElements[element] = kvp.Key - element.Duration;
-									m_snapPixels[rp].SnapLevel = Math.Max(m_snapPixels[rp].SnapLevel, snapLevel);
-								}
-									// if it's not going to snap to the same pixel as the existing one, then only
-									// update it if the new one's of a higher priority.
-								else {
-									if (m_snapPixels[rp].SnapLevel < snapLevel) {
-										addNewSnapDetail = true;
-									}
-								}
-							}
-
-							// add the new one if needed
-							if (addNewSnapDetail) {
-								SnapDetails sd = new SnapDetails();
-								sd.DestinationPixel = rp - offset;
-								sd.SnapLevel = snapLevel;
-								sd.SnapElements = new Dictionary<TimelineElement, TimeSpan>();
-								sd.SnapElements[element] = kvp.Key - element.Duration;
-								m_snapPixels[rp] = sd;
-							}
-						}
+					if (!CurrentDragSnapPoints.ContainsKey(details.SnapTime)) {
+						CurrentDragSnapPoints[details.SnapTime] = new List<SnapDetails>();
 					}
+					CurrentDragSnapPoints[details.SnapTime].Add(details);
 				}
 			}
 		}
@@ -1002,12 +1042,14 @@ namespace Timeline
 			using (Pen p = new Pen(Color.Blue))
 			{
 				// iterate through all snap points, and if it's visible, draw it
-				foreach (KeyValuePair<TimeSpan, int> kvp in SnapPoints)
+
+				foreach (KeyValuePair<TimeSpan, List<SnapDetails>> kvp in StaticSnapPoints)
 				{
+					SnapDetails details = kvp.Value[0];
 					if (kvp.Key >= VisibleTimeStart && kvp.Key < VisibleTimeEnd)
 					{
 						Single x = timeToPixels(kvp.Key);
-						p.DashPattern = new float[] { kvp.Value, kvp.Value };
+						p.DashPattern = new float[] { details.SnapLevel, details.SnapLevel };
 						g.DrawLine(p, x, 0, x, AutoScrollMinSize.Height);
 					}
 				}
@@ -1096,9 +1138,11 @@ namespace Timeline
 
 	class SnapDetails
 	{
-		public int DestinationPixel;
-		public int SnapLevel;
-		public Dictionary<TimelineElement, TimeSpan> SnapElements;
+		public TimeSpan SnapTime;	// the particular time to snap to
+		public TimeSpan SnapStart;	// the start time that should snap to this time; ie. before or equal to the snap time
+		public TimeSpan SnapEnd;	// the end time that should snap to this time; ie. after or equal to the snap time
+		public int SnapLevel;		// the "priority" of this snap point; bigger is higher priority
+		public TimelineRow SnapRow;	// the rows that this point should affect; null if all rows
 	}
 
 	// Enumerations

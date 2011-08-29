@@ -34,6 +34,14 @@ namespace Timeline
 
 
 
+			row1.AddElement(new TimelineElement() {
+				BackColor = Color.Red,
+				StartTime = TimeSpan.FromSeconds(1.2),
+				Duration = TimeSpan.FromSeconds(3),
+				Tag = "Red"
+			}
+			);
+
 			row2.AddElement(new TimelineElement() {
 				BackColor = Color.Green,
 				StartTime = TimeSpan.FromSeconds(0),
@@ -94,6 +102,7 @@ namespace Timeline
 
 			timelineControl1.AddSnapTime(TimeSpan.FromSeconds(3.3), 5);
 			timelineControl1.AddSnapTime(TimeSpan.FromSeconds(4.6), 10);
+			timelineControl1.AddSnapTime(TimeSpan.FromSeconds(20), 40);
 
 
 			timelineControl1.ElementsMoved += new EventHandler<MultiElementEventArgs>(tc_ElementsMoved);

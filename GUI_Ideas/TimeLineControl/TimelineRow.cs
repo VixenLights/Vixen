@@ -268,6 +268,9 @@ namespace Timeline
 
 		public bool ContainsElement(TimelineElement element)
 		{
+			// TODO: improve this function. m_elements is now a sorted list,
+			// but it doesn't know that it is, so will iterate through everything.
+			// We can more intelligently search through it.
 			return m_elements.Contains(element);
 		}
 

@@ -185,16 +185,12 @@ namespace Timeline
 
 		public bool AddSnapTime(TimeSpan time, int level)
 		{
-			if (timelineGrid.SnapPoints.ContainsKey(time))
-				return false;
-
-			timelineGrid.SnapPoints[time] = level;
-			return true;
+			return timelineGrid.AddSnapPoint(time, level);
 		}
 
 		public bool RemoveSnapTime(TimeSpan time)
 		{
-			return timelineGrid.SnapPoints.Remove(time);
+			return timelineGrid.RemoveSnapPoint(time);
 		}
 
 
