@@ -228,6 +228,24 @@ namespace Timeline
 
 		#region Event Handlers
 
+        // TODO: we need to add proper drag-n-drop support onto the control, from other controls.
+        // eg. like having a toolbar of elements that can be dragged and dropped onto the control
+        // to add a new element. I think there's .NET support for drag-and-drop stuff, no idea how
+        // to use it though.
+        // I would imagine that to do the drag/drop, we would temporarily add an element to whatever
+        // row has been dragged over, and then move it around as needed. If they drag off, we delete
+        // it. Or something like that?
+
+        // TODO: we need support for key presses on the control. A few I can think of:
+        //       - delete key, to delete selected elements
+        //       - arrow keys, to move the viewport around (maybe ~20 pixels at a time or something?)
+        //       - maybe CTRL-arrow keys, to do large scrolling?
+
+        // TODO: oh, we need cut-copy-paste support, too. Should that be done in the control, or
+        // should the control just raise events for the keystrokes that the client can handle? I'm
+        // thinking the latter.
+
+
 		private void GridScrollVerticalHandler(object sender, EventArgs e)
 		{
 			if (timelineRowList != null)

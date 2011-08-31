@@ -1069,6 +1069,27 @@ namespace Timeline
 
 		private void _drawElements(Graphics g)
 		{
+            // TODO: draw elements overlapping nicely. Two options:
+            //       1) if X elements are overlapping, draw each element 1/X of the height of the row.
+            //          since the elements in a row are guaranteed to be ordered based on start time,
+            //          it should be easy to iterate through and calculate which ones overlap and draw them.
+            //          however, we may have problems as the elements get reordered as we drag them over
+            //          each other, and the start times change -- they would jump position. Also may look
+            //          weird squishing one 10s element into 1/2 row just because it overlaps with another
+            //          for 100ms at the end, etc.
+            //
+            //       2) draw them all full height, but for X overlapping elements, draw the overlapping sections
+            //          at 100%/x opacity. That way, the overlapping bits will be semi-transparent and we can
+            //          see both (or all) of them. We would need to change the way it draws a bit; the element
+            //          Draw() call will need to return a "canvas" or something, then, if possible, we can fade
+            //          bits of that returned canvas to suit (since we know which bits will overlap, but the
+            //          element won't).
+            //
+            // I'm thinking option 2 might be easier and potentially look nicer (especially if we end up masking
+            // on the effect data when using it for the sequencer...). The only problem is if we can do the
+            // partial alpha on some of the canvas, etc., and if .NET supports all that drawing stuff.
+
+
 			// Draw each row
 			int top = 0;    // y-coord of top of current row
 			foreach (TimelineRow row in Rows) {
