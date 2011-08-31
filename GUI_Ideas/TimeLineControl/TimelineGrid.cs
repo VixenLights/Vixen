@@ -178,6 +178,8 @@ namespace Timeline
 		private SortedDictionary<TimeSpan, List<SnapDetails>> StaticSnapPoints { get; set; }
 		private SortedDictionary<TimeSpan, List<SnapDetails>> CurrentDragSnapPoints { get; set; }
 		private TimeSpan DragTimeLeftOver { get; set; }
+		private bool ResizingElement { get; set; }
+		private bool ResizingFront { get; set; }
 
 		#endregion
 
@@ -307,8 +309,17 @@ namespace Timeline
 						m_dragAutoscrollDistance.Height = m_dragAutoscrollDistance.Width = 0;
 					}
 				}
-					// our mouse is down on something
-				else {
+				// our mouse is down on something
+				else if (ResizingElement) {
+					// if we were hovering over the edge of an element -- able to resize --
+					// start resizing it straight away, don't stuff around with selections
+					// or waiting to go outside drag thresholds. TODO: is that smart? Or stupid?
+					if (!m_mouseDownElement.Selected)
+						m_mouseDownElement.Selected = true;
+
+					m_lastMouseLocation = e.Location;
+					beginDrag(gridLocation);
+				} else {
 					if (m_mouseDownElement.Selected) {
 						// unselect
 						if (CtrlPressed)
@@ -375,8 +386,32 @@ namespace Timeline
 
 			Point gridLocation = _translateMouseArgs(e.Location);
 
-			if (m_dragState == DragState.Normal)
+			if (m_dragState == DragState.Normal) {
+				// if we're near the edge of an element, change the cursor to a 'resize'
+				TimelineElement element = elementAt(gridLocation);
+
+				if (element != null) {
+					int maxGrabWidth = Math.Min(12, (int)(timeToPixels(element.Duration) / 2));		// cap it to 12 pixels. Officially pulled out my arse.
+					if (gridLocation.X >= timeToPixels(element.StartTime) && gridLocation.X < timeToPixels(element.StartTime) + maxGrabWidth) {
+						ResizingElement = true;
+						ResizingFront = true;
+					} else if (gridLocation.X <= timeToPixels(element.EndTime) && gridLocation.X > timeToPixels(element.EndTime) - maxGrabWidth) {
+						ResizingElement = true;
+						ResizingFront = false;
+					} else {
+						ResizingElement = false;
+					}
+				} else {
+					ResizingElement = false;
+				}
+
+				if (ResizingElement)
+					Cursor = Cursors.SizeWE;
+				else
+					Cursor = Cursors.Default;
+
 				return;
+			}
 
 			if (m_dragState == DragState.Waiting) {
 				if (!m_ignoreDragArea.Contains(e.Location)) {
@@ -393,39 +428,45 @@ namespace Timeline
 				Point d = new Point(e.X - m_lastMouseLocation.X, e.Y - m_lastMouseLocation.Y);
 				m_lastMouseLocation = e.Location;
 
-				// calculate the points at which we should start dragging; ie. account for any selected elements.
-				// (we subtract VisibleTimeStart to make it relative to the control, instead of the grid canvas.)
-				TimeSpan earliestTime = GetEarliestTimeForElements(SelectedElements);
-				TimeSpan latestTime = GetLatestTimeForElements(SelectedElements);
-				int leftBoundary = (int)timeToPixels(earliestTime - VisibleTimeStart + DragTimeLeftOver);
-				int rightBoundary = (int)timeToPixels(latestTime - VisibleTimeStart + DragTimeLeftOver);
+				// only stuff around figuring out the best way to do dragging if we're really dragging; if we're
+				// resizing, then do a simple calculation
+				if (!ResizingElement) {
+					// calculate the points at which we should start dragging; ie. account for any selected elements.
+					// (we subtract VisibleTimeStart to make it relative to the control, instead of the grid canvas.)
+					TimeSpan earliestTime = GetEarliestTimeForElements(SelectedElements);
+					TimeSpan latestTime = GetLatestTimeForElements(SelectedElements);
+					int leftBoundary = (int)timeToPixels(earliestTime - VisibleTimeStart + DragTimeLeftOver);
+					int rightBoundary = (int)timeToPixels(latestTime - VisibleTimeStart + DragTimeLeftOver);
 
-				// if the mouse moved left, only add it to the scroll size if:
-				// 1) the elements are hard left (or more) in the viewport
-				// 2) the elements are hard right, and we are moving right. This provides deceleration.
-				//    Cap this value to 0.
-				if (d.X < 0) {
-					if (leftBoundary <= 0)
-						m_dragAutoscrollDistance.Width += d.X;
-					else if (rightBoundary >= ClientSize.Width && m_dragAutoscrollDistance.Width > 0)
-						m_dragAutoscrollDistance.Width = Math.Max(0, m_dragAutoscrollDistance.Width + d.X);
+					// if the mouse moved left, only add it to the scroll size if:
+					// 1) the elements are hard left (or more) in the viewport
+					// 2) the elements are hard right, and we are moving right. This provides deceleration.
+					//    Cap this value to 0.
+					if (d.X < 0) {
+						if (leftBoundary <= 0)
+							m_dragAutoscrollDistance.Width += d.X;
+						else if (rightBoundary >= ClientSize.Width && m_dragAutoscrollDistance.Width > 0)
+							m_dragAutoscrollDistance.Width = Math.Max(0, m_dragAutoscrollDistance.Width + d.X);
+					}
+
+					// if the mouse moved right, do the inverse of the above rules.
+					if (d.X > 0) {
+						if (rightBoundary >= ClientSize.Width)
+							m_dragAutoscrollDistance.Width += d.X;
+						else if (leftBoundary <= 0 && m_dragAutoscrollDistance.Width < 0)
+							m_dragAutoscrollDistance.Width = Math.Min(0, m_dragAutoscrollDistance.Width + d.X);
+					}
+
+					// if the left and right boundaries are within the viewport, then stop all
+					// horizontal scrolling. This can happen if the user scrolls, and mouse-wheels
+					// (to zoom out). the control is stuck scrolling, and can't be stopped.
+					if (leftBoundary > 0 && rightBoundary < ClientSize.Width)
+						m_dragAutoscrollDistance.Width = 0;
+				} else {
+					m_dragAutoscrollDistance.Width = (e.X < 0) ? e.X : ((e.X > ClientSize.Width) ? e.X - ClientSize.Width : 0);
 				}
 
-				// if the mouse moved right, do the inverse of the above rules.
-				if (d.X > 0) {
-					if (rightBoundary >= ClientSize.Width)
-						m_dragAutoscrollDistance.Width += d.X;
-					else if (leftBoundary <= 0 && m_dragAutoscrollDistance.Width < 0)
-						m_dragAutoscrollDistance.Width = Math.Min(0, m_dragAutoscrollDistance.Width + d.X);
-				}
-
-				// if the left and right boundaries are within the viewport, then stop all
-				// horizontal scrolling. This can happen if the user scrolls, and mouse-wheels
-				// (to zoom out). the control is stuck scrolling, and can't be stopped.
-				if (leftBoundary > 0 && rightBoundary < ClientSize.Width)
-					m_dragAutoscrollDistance.Width = 0;
-
-				m_dragAutoscrollDistance.Height = (e.Y < 0) ? e.Y : ((e.Y > Height) ? e.Y - Height : 0);
+				m_dragAutoscrollDistance.Height = (e.Y < 0) ? e.Y : ((e.Y > ClientSize.Height) ? e.Y - ClientSize.Height : 0);
 
 				// if we're scrolling, start the timer if needed. If not, vice-versa.
 				if (m_dragAutoscrollDistance.Width != 0 || m_dragAutoscrollDistance.Height != 0) {
@@ -444,7 +485,7 @@ namespace Timeline
 				}
 
 				// if we've moved vertically, we may need to move elements between rows
-				if (d.Y != 0) {
+				if (d.Y != 0 && !ResizingElement) {
 					MoveElementsVerticallyToLocation(SelectedElements, gridLocation);
 				}
 			}
@@ -717,12 +758,12 @@ namespace Timeline
 
 			// if we're going backwards, check that the earliest time isn't already at zero, or
 			// that the move will try to take it past 0.
-			if (offset.Ticks < 0 && earliest < -offset) {
+			if (offset.Ticks < 0 && earliest < -offset && !ResizingElement) {
 				offset = -earliest;
 			}
 
 			// same for moving forwards.
-			if (offset.Ticks > 0 && TotalTime - latest < offset) {
+			if (offset.Ticks > 0 && TotalTime - latest < offset && !ResizingElement) {
 				offset = TotalTime - latest;
 			}
 
@@ -765,6 +806,15 @@ namespace Timeline
 						// figure out if the element start time or end times are in the snap range; if not, skip it
 						bool startInRange = (element.StartTime + offset > details.SnapStart && element.StartTime + offset < details.SnapEnd);
 						bool endInRange = (element.EndTime + offset > details.SnapStart && element.EndTime + offset < details.SnapEnd);
+
+						// if we're resizing, ignore snapping on the end of the element that is not getting resized.
+						if (ResizingElement) {
+							if (ResizingFront)
+								endInRange = false;
+							else
+								startInRange = false;
+						}
+
 						if (!startInRange && !endInRange)
 							continue;
 
@@ -789,7 +839,25 @@ namespace Timeline
 			// by now, we should know what the most applicable snap point is (or none at all), and we've
 			// also figured out along the way what the actual offset should be to snap the elements to. So have at it.
 			foreach (TimelineElement e in elements) {
-				e.StartTime += snappedOffset;
+				if (ResizingElement) {
+					if (ResizingFront) {
+						// don't do any resizing if it will make the element smaller than 6 pixels.
+						// (figure scientifically confirmed to be pulled out my arse.)
+						if (e.Duration - snappedOffset > pixelsToTime(6)) {
+							e.MoveStartTime(snappedOffset);
+						}
+					} else {
+						if (e.Duration + snappedOffset > pixelsToTime(6)) {
+							// resize it to fit within the total time if it would exceed it
+							if (e.StartTime + e.Duration + snappedOffset > TotalTime)
+								snappedOffset = TotalTime - e.StartTime - e.Duration;
+
+							e.Duration += snappedOffset;
+						}
+					}
+				} else {
+					e.StartTime += snappedOffset;
+				}
 			}
 
 			Invalidate();
@@ -927,7 +995,10 @@ namespace Timeline
 		private void beginDrag(Point location)
 		{
 			m_dragState = DragState.Dragging;
-			this.Cursor = Cursors.Hand;
+			if (ResizingElement)
+				Cursor = Cursors.SizeWE;
+			else
+				Cursor = Cursors.Hand;
 
 			m_dragAutoscrollDistance.Height = m_dragAutoscrollDistance.Width = 0;
 			DragTimeLeftOver = TimeSpan.Zero;

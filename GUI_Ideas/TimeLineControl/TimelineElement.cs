@@ -106,6 +106,15 @@ namespace Timeline
 				return EndTime.CompareTo(other.EndTime);
 		}
 
+		public void MoveStartTime(TimeSpan offset)
+		{
+			if (m_startTime + offset < TimeSpan.Zero)
+				offset = -m_startTime;
+
+			m_duration -= offset;
+			StartTime += offset;
+		}
+
 		#endregion
 
 
