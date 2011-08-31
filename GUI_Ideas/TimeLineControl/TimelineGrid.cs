@@ -308,18 +308,8 @@ namespace Timeline
 						m_selectionRectangleStart = gridLocation;
 						m_dragAutoscrollDistance.Height = m_dragAutoscrollDistance.Width = 0;
 					}
-				}
-				// our mouse is down on something
-				else if (ResizingElement) {
-					// if we were hovering over the edge of an element -- able to resize --
-					// start resizing it straight away, don't stuff around with selections
-					// or waiting to go outside drag thresholds. TODO: is that smart? Or stupid?
-					if (!m_mouseDownElement.Selected)
-						m_mouseDownElement.Selected = true;
-
-					m_lastMouseLocation = e.Location;
-					beginDrag(gridLocation);
 				} else {
+					// our mouse is down on something
 					if (m_mouseDownElement.Selected) {
 						// unselect
 						if (CtrlPressed)
@@ -333,7 +323,12 @@ namespace Timeline
 						m_mouseDownElement.Selected = true;
 					}
 
-					dragWait(e.Location);
+					if (ResizingElement) {
+						m_lastMouseLocation = e.Location;
+						beginDrag(gridLocation);
+					} else {
+						dragWait(e.Location);
+					}
 				}
 				Invalidate();
 			}
