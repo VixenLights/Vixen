@@ -71,8 +71,8 @@
 			// 
 			this.timelineHeader.Dock = System.Windows.Forms.DockStyle.Top;
 			this.timelineHeader.Location = new System.Drawing.Point(0, 0);
-			this.timelineHeader.MajorTickInterval = System.TimeSpan.Parse("00:00:01");
-			this.timelineHeader.MinorTicksPerMajor = 4;
+			//this.timelineHeader.MajorTickInterval = System.TimeSpan.Parse("00:00:01");
+			//this.timelineHeader.MinorTicksPerMajor = 4;
 			this.timelineHeader.Name = "timelineHeader";
 			this.timelineHeader.Size = new System.Drawing.Size(566, 40);
 			this.timelineHeader.TabIndex = 3;

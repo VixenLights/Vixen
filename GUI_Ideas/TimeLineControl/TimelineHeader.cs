@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
+using System.Diagnostics;
 
 namespace Timeline
 {
@@ -14,10 +15,12 @@ namespace Timeline
 	{
 		public TimelineHeader()
 		{
-            MajorTickInterval = TimeSpan.FromSeconds(1.0);
-            MinorTicksPerMajor = 4;
+			updateValues();
+            //MajorTickInterval = TimeSpan.FromSeconds(1.0);
+            //MinorTicksPerMajor = 4;
 		}
 
+		/*
         private TimeSpan m_majorTick;
         public TimeSpan MajorTickInterval
         {
@@ -35,6 +38,7 @@ namespace Timeline
         {
             get { return TimeSpan.FromTicks(MajorTickInterval.Ticks / MinorTicksPerMajor); }
         }
+		*/
 
 		private const int minPxBetweenTimeLabels = 10;
 
@@ -48,9 +52,9 @@ namespace Timeline
             e.Graphics.TranslateTransform(-timeToPixels(VisibleTimeStart), 0);
 
 			// TODO: do something intelligent with the scales for these. Try scaling based on the zoom again maybe?
-            drawTicks(e.Graphics, MajorTickInterval, 2, 0.5);
-            drawTicks(e.Graphics, MinorTickInterval, 1, 0.25);
-			drawTimes(e.Graphics);
+            drawTicks(e.Graphics, MajorTick, 2, 0.5);
+            drawTicks(e.Graphics, MinorTick, 1, 0.25);
+			//drawTimes(e.Graphics);
         }
 
         private void drawTicks(Graphics graphics, TimeSpan interval, int width, double height)
@@ -72,6 +76,215 @@ namespace Timeline
         }
 
 
+
+		private Font m_font = null;
+
+		private int m_digits;
+		private TimeSpan  m_MinorTick;	//m_MajorTick
+		private int m_minorTicksPerMajor;
+
+		public TimeSpan MinorTick { get { return m_MinorTick; } }
+		public TimeSpan MajorTick { get { return m_MinorTick.Scale(m_minorTicksPerMajor); } }
+
+		protected override void OnResize(EventArgs e)
+		{
+			updateValues();
+			base.OnResize(e);
+		}
+
+		private void updateValues()
+		{
+			// Calculate the correct font size based on height
+			int desiredPixelHeight = (this.Size.Height / 2) - 4;
+
+			if (m_font != null)
+				m_font.Dispose();
+			m_font = new Font("Arial", desiredPixelHeight, GraphicsUnit.Pixel);
+
+			calculateTickSizes();
+		}
+
+		private void calculateTickSizes()
+		{
+			// Adapted from from Audacity, Ruler.cpp
+
+			// As a heuristic, we want at least 16 pixels between each minor tick
+			//var minSec = pixelsToTime(16).TotalSeconds;
+			
+			var t = pixelsToTime(16);
+			double minor; //, major;
+
+			if (t.TotalSeconds > 0.5)
+			{
+				if (t.TotalSeconds < 1.0)
+				{
+					minor = 1.0;
+					m_minorTicksPerMajor = 5;	//major = 5.0;
+				}
+				else if (t.TotalSeconds < 5.0)
+				{
+					minor = 5.0;
+					m_minorTicksPerMajor = 3; //major = 15.0;
+				}
+				else if (t.TotalSeconds < 10.0)
+				{
+					minor = 10.0;
+					m_minorTicksPerMajor = 3; //major = 30.0;
+				}
+				else if (t.TotalSeconds < 15.0)
+				{
+					minor = 15.0;
+					m_minorTicksPerMajor = 4; //major = 60.0;
+				}
+				else if (t.TotalSeconds < 30.0)
+				{
+					minor = 30.0;
+					m_minorTicksPerMajor = 2; //major = 60.0;
+				}
+
+				//else if (minSec < 60.0)
+				else if (t.TotalMinutes < 1.0)
+				{ // 1 min
+					minor = 60.0;
+					m_minorTicksPerMajor = 5;	//major = 300.0;
+				}
+				//else if (minSec < 300.0)
+				else if (t.TotalMinutes < 5.0)
+				{ // 5 min
+					minor = 300.0;
+					m_minorTicksPerMajor = 3;	//major = 900.0;
+				}
+				//else if (minSec < 600.0)
+				else if (t.TotalMinutes < 10.0)
+				{ // 10 min
+					minor = 600.0;
+					m_minorTicksPerMajor = 3;	//major = 1800.0;
+				}
+				//else if (minSec < 900.0)
+				else if (t.TotalMinutes < 15.0)
+				{ // 15 min
+					minor = 900.0;
+					m_minorTicksPerMajor = 4;	//major = 3600.0;
+				}
+				//else if (minSec < 1800.0)
+				else if (t.TotalMinutes < 30.0)
+				{ // 30 min
+					minor = 1800.0;
+					m_minorTicksPerMajor = 2;	//major = 3600.0;
+				}
+				
+				//else if (minSec < 3600.0)
+				else if (t.TotalHours < 1.0)
+				{ // 1 hr
+					minor = 3600.0;
+					m_minorTicksPerMajor = 6;	//major = 6 * 3600.0;
+				}
+				//else if (minSec < 6 * 3600.0)
+				else if (t.TotalHours < 6.0)
+				{ // 6 hrs
+					minor = 6 * 3600.0;
+					m_minorTicksPerMajor = 4;	//major = 24 * 3600.0;
+				}
+
+				//else if (minSec < 24 * 3600.0)
+				else if (t.TotalDays < 1.0)
+				{ // 1 day
+					minor = 24 * 3600.0;
+					m_minorTicksPerMajor = 7;	//major = 7 * 24 * 3600.0;
+				}
+
+				else
+				{
+					minor = 24.0 * 7.0 * 3600.0; // 1 week
+					m_minorTicksPerMajor = 1;	//major = 24.0 * 7.0 * 3600.0;
+				}
+
+			}
+			else
+			{
+				// Fractional seconds
+				double d = 0.000001;
+				m_digits = 6;
+				for (; ; )
+				{
+					if (t.TotalSeconds < d)
+					{
+						minor = d;
+						m_minorTicksPerMajor = 5; //major = d * 5.0;
+						goto done;
+					}
+					d *= 5.0;
+					if (t.TotalSeconds < d)
+					{
+						minor = d;
+						m_minorTicksPerMajor = 2; //major = d * 2.0;
+						goto done;
+					}
+					d *= 2.0;
+					m_digits--;
+				}
+			}
+
+			done:
+			//m_MajorTick = TimeSpan.FromSeconds(major);
+			m_MinorTick = TimeSpan.FromSeconds(minor);
+		}
+
+		private string labelString(TimeSpan t)
+		{
+			// Adapted from from Audacity, Ruler.cpp
+
+			double d = t.TotalSeconds;
+			string timeFormat = string.Empty;
+
+			if (m_MinorTick >= TimeSpan.FromHours(1))
+			{
+				// Round time to nearest hour
+				t = TimeSpan.FromHours((int)t.TotalHours);
+				timeFormat = @"hh\:mm\:ss";
+			}
+			else if (m_MinorTick >= TimeSpan.FromMinutes(1))
+			{
+				// Round time to nearest minute
+				t = TimeSpan.FromMinutes((int)t.TotalMinutes);
+
+				if (t > TimeSpan.FromHours(1))
+					timeFormat = @"hh\:mm\:ss";
+				else
+					timeFormat = @"mm\:ss";
+			}
+			else if (m_MinorTick >= TimeSpan.FromSeconds(1))
+			{
+				// Round time to nearest second
+				t = TimeSpan.FromSeconds((int)t.TotalSeconds);
+
+				if (t > TimeSpan.FromHours(1))
+					timeFormat = @"hh\:mm\:ss";
+				else if (t > TimeSpan.FromMinutes(1))
+					timeFormat = @"mm\:ss";
+				else
+					timeFormat = @"\:ss";
+			}
+			else	// m_MinorTickNew < 1 sec
+			{
+				if (t > TimeSpan.FromHours(1))
+					timeFormat = @"hh\:mm\:ss\.";
+				else if (t > TimeSpan.FromMinutes(1))
+					timeFormat = @"mm\:ss\.";
+
+				StringBuilder frac = new StringBuilder();
+				for (int i=0; i < m_digits; i++)
+					frac.Append('f');
+
+				timeFormat += frac.ToString();
+			}
+
+			Debug.WriteLine("MinorTick: {0}    timeFormat: {1}", m_MinorTick, timeFormat);
+			return t.ToString(timeFormat);
+		}
+
+
+		/*
         private void drawTimes(Graphics graphics)
         {
 			Font f = new Font("Arial", 8);
@@ -105,5 +318,6 @@ namespace Timeline
 				}
 			}
 		}
+		 */
 	}
 }
