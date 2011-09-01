@@ -265,10 +265,12 @@ namespace Timeline
 
 		protected override void OnScroll(ScrollEventArgs se)
 		{
-			base.OnScroll(se);
 			if (se.ScrollOrientation == ScrollOrientation.HorizontalScroll) {
 				base.VisibleTimeStart = pixelsToTime(-AutoScrollPosition.X);
 			}
+
+			// This MUST be done last! Otherwise, event handlers get called with the OLD values.
+			base.OnScroll(se);
 		}
 
 		#endregion
