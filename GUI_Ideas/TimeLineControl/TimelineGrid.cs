@@ -6,6 +6,7 @@ using System.Drawing.Drawing2D;
 using System.Text;
 using System.Diagnostics;
 using System.ComponentModel;
+using System.Drawing.Imaging;
 
 
 namespace Timeline
@@ -487,13 +488,11 @@ namespace Timeline
 				}
 			}
 			if (m_dragState == DragState.Selecting) {
-				// TODO: see if more of this can be merged with the dragging state code above, it's a bit
-				// similar, but also different enough
 				Point d = new Point(e.X - m_lastMouseLocation.X, e.Y - m_lastMouseLocation.Y);
 				m_lastMouseLocation = e.Location;
 
 				m_dragAutoscrollDistance.Width = (e.X < 0) ? e.X : ((e.X > ClientSize.Width) ? e.X - ClientSize.Width : 0);
-				m_dragAutoscrollDistance.Height = (e.Y < 0) ? e.Y : ((e.Y > Height) ? e.Y - Height : 0);
+				m_dragAutoscrollDistance.Height = (e.Y < 0) ? e.Y : ((e.Y > ClientSize.Height) ? e.Y - ClientSize.Height : 0);
 
 				// if we're scrolling, start the timer if needed. If not, vice-versa.
 				if (m_dragAutoscrollDistance.Width != 0 || m_dragAutoscrollDistance.Height != 0) {
@@ -1137,55 +1136,113 @@ namespace Timeline
 
 		private void _drawElements(Graphics g)
 		{
-            // TODO: draw elements overlapping nicely. Two options:
-            //       1) if X elements are overlapping, draw each element 1/X of the height of the row.
-            //          since the elements in a row are guaranteed to be ordered based on start time,
-            //          it should be easy to iterate through and calculate which ones overlap and draw them.
-            //          however, we may have problems as the elements get reordered as we drag them over
-            //          each other, and the start times change -- they would jump position. Also may look
-            //          weird squishing one 10s element into 1/2 row just because it overlaps with another
-            //          for 100ms at the end, etc.
-            //
-            //       2) draw them all full height, but for X overlapping elements, draw the overlapping sections
-            //          at 100%/x opacity. That way, the overlapping bits will be semi-transparent and we can
-            //          see both (or all) of them. We would need to change the way it draws a bit; the element
-            //          Draw() call will need to return a "canvas" or something, then, if possible, we can fade
-            //          bits of that returned canvas to suit (since we know which bits will overlap, but the
-            //          element won't).
-            //
-            // I'm thinking option 2 might be easier and potentially look nicer (especially if we end up masking
-            // on the effect data when using it for the sequencer...). The only problem is if we can do the
-            // partial alpha on some of the canvas, etc., and if .NET supports all that drawing stuff.
-
-
 			// Draw each row
 			int top = 0;    // y-coord of top of current row
 			foreach (TimelineRow row in Rows) {
 				if (!row.Visible)
 					continue;
 
-				// Draw each element
-				foreach (var element in row) {
+				// a list of generated bitmaps, with starttime and endtime for where they are supposed to be drawn.
+				List<BitmapDrawDetails> bitmapsToDraw = new List<BitmapDrawDetails>();
+				TimeSpan currentlyDrawnTo = TimeSpan.Zero;
+				TimeSpan desiredDrawTo = TimeSpan.Zero;
+				for (int i = 0; i < row.ElementCount; i++) {
+					TimelineElement currentElement = row.GetElementAtIndex(i);
+					desiredDrawTo = currentElement.StartTime;
 
-					Point location = new Point((int)timeToPixels(element.StartTime), top);
-					Size size = new Size((int)timeToPixels(element.Duration), row.Height);
+					// if this is the last element, draw everything
+					if (i == row.ElementCount - 1) {
+						desiredDrawTo = TotalTime;
+					}
 
-                    // The rectangle where this element will be drawn
-                    Rectangle dstRect = new Rectangle(location, size);
+					Size size = new Size((int)timeToPixels(currentElement.Duration), row.Height);
+					Bitmap elementImage = currentElement.Draw(size);
+					bitmapsToDraw.Add(new BitmapDrawDetails() { bmp = elementImage, startTime = currentElement.StartTime, duration = currentElement.Duration });
 
-                    // The rectangle this element will draw itself in
-                    Rectangle srcRect = new Rectangle(new Point(0, 0), size);
+					while (currentlyDrawnTo < desiredDrawTo) {
+						// if there's nothing left to draw, the rest of it is empty; skip to the desired draw point
+						if (bitmapsToDraw.Count == 0) {
+							currentlyDrawnTo = desiredDrawTo;
+							break;
+						}
 
-                    // Perform the transformation and save the state.
-                    GraphicsContainer containerState = g.BeginContainer(dstRect, srcRect, GraphicsUnit.Pixel);
+						// find how many bitmaps are going to be in this next segment, and also take note of the earliest time they finish
+						TimeSpan segmentDuration = TimeSpan.MaxValue;
+						TimeSpan earliestStart = TimeSpan.MaxValue;
+						int bitmapLayers = 0;
+						foreach (BitmapDrawDetails drawDetails in bitmapsToDraw) {
+							TimeSpan start = drawDetails.startTime;
+							TimeSpan duration = drawDetails.duration;
+							if (start == currentlyDrawnTo) {
+								bitmapLayers++;
+								if (duration < segmentDuration)
+									segmentDuration = duration;
+							} else if (start - currentlyDrawnTo < segmentDuration) {
+								segmentDuration = start - currentlyDrawnTo;
+							}
 
-                    // Prevent the element from drawing outside its bounds
-                    g.Clip = new System.Drawing.Region(srcRect);
-                    
-                    element.Draw(g, srcRect);
+							// record the earliest start time for drawable blocks we've found; if we
+							// don't draw anything here, we just skip through to this time later
+							if (start < earliestStart)
+								earliestStart = start;
+						}
 
-                    g.EndContainer(containerState);
+						bool firstDraw = true;
+						foreach (BitmapDrawDetails drawDetails in bitmapsToDraw.ToArray()) {
+							Bitmap bmp = drawDetails.bmp;
+							TimeSpan start = drawDetails.startTime;
+							TimeSpan duration = drawDetails.duration;
+
+							// only draw elements that are at the point we are currently drawing from
+							if (start != currentlyDrawnTo)
+								continue;
+
+							PointF location = new PointF(timeToPixels(start), top);
+
+							if (duration != segmentDuration) {
+								// it must be longer; crop the bitmap into a smaller one
+								float croppedWidth = timeToPixels(segmentDuration);
+								Bitmap croppedBitmap = bmp.Clone(new RectangleF(0, 0, croppedWidth, bmp.Height), System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+								drawDetails.bmp = bmp.Clone(new RectangleF(croppedWidth, 0, bmp.Width - croppedWidth, bmp.Height), bmp.PixelFormat);
+								drawDetails.startTime = start + segmentDuration;
+								drawDetails.duration = duration - segmentDuration;
+							}
+
+							if (firstDraw) {
+								g.DrawImage(bmp, location);
+								firstDraw = false;
+							} else {
+								// get the bitmap data in a nice, quick format
+								BitmapData bmpdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+								IntPtr ptr = bmpdata.Scan0;
+								int bytes = bmpdata.Stride * bmp.Height;
+								byte[] argbValues = new byte[bytes];
+								System.Runtime.InteropServices.Marshal.Copy(ptr, argbValues, 0, bytes);
+
+								// set the alpha to 100/bitmapLayers percent
+								byte value = (byte)(255 / bitmapLayers);
+								for (int counter = 0; counter < argbValues.Length; counter += 4)
+									argbValues[counter] = value;
+
+								// put the bitmap data back
+								System.Runtime.InteropServices.Marshal.Copy(argbValues, 0, ptr, bytes);
+								bmp.UnlockBits(bmpdata);
+								g.DrawImage(bmp, location);
+							}
+
+							if (duration == segmentDuration) {
+								bitmapsToDraw.Remove(drawDetails);
+							}
+						}
+
+						if (segmentDuration < TimeSpan.MaxValue)
+							currentlyDrawnTo += segmentDuration;
+						else
+							currentlyDrawnTo = earliestStart;
+					}
+
 				}
+
 
 				top += row.Height;  // next row starts just below this row
 			}
@@ -1216,21 +1273,15 @@ namespace Timeline
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			try {
-				e.Graphics.TranslateTransform(this.AutoScrollPosition.X, this.AutoScrollPosition.Y);
+			e.Graphics.TranslateTransform(this.AutoScrollPosition.X, this.AutoScrollPosition.Y);
 
-				_drawGridlines(e.Graphics);
-				int totalHeight = _drawRows(e.Graphics);
-				AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), totalHeight);
-				_drawSnapPoints(e.Graphics);
-				_drawElements(e.Graphics);
-				_drawSelection(e.Graphics);
-				_drawCursor(e.Graphics);
-
-			} catch (Exception ex) {
-				MessageBox.Show("Unhandled Exception while drawing TimelineGrid:\n\n" + ex.Message);
-				throw;
-			}
+			_drawGridlines(e.Graphics);
+			int totalHeight = _drawRows(e.Graphics);
+			AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), totalHeight);
+			_drawSnapPoints(e.Graphics);
+			_drawElements(e.Graphics);
+			_drawSelection(e.Graphics);
+			_drawCursor(e.Graphics);
 		}
 
 		#endregion
@@ -1243,6 +1294,13 @@ namespace Timeline
 		public TimeSpan SnapEnd;	// the end time that should snap to this time; ie. after or equal to the snap time
 		public int SnapLevel;		// the "priority" of this snap point; bigger is higher priority
 		public TimelineRow SnapRow;	// the rows that this point should affect; null if all rows
+	}
+
+	class BitmapDrawDetails
+	{
+		public Bitmap bmp;			// the bitmap to be drawn from the start time onwards
+		public TimeSpan startTime;	// the start time that this bitmap should be drawn from
+		public TimeSpan duration;	// how long (time) this bitmap should be drawn for
 	}
 
 	// Enumerations

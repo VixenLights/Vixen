@@ -120,31 +120,33 @@ namespace Timeline
 
 		#region Drawing
 
-		public virtual void Draw(Graphics graphics, Rectangle rect)
-        {
-        // BODY
-            // Fill
-            Brush b = new SolidBrush(BackColor);
-            graphics.FillRectangle(b, rect);
+		public virtual Bitmap Draw(Size imageSize)
+		{
+			Brush b = new SolidBrush(BackColor);
+			Bitmap result = new Bitmap(imageSize.Width, imageSize.Height);
 
-        // BORDER
-            // Width - bold if selected
-            int b_wd = Selected ? 3 : 1;
+			Graphics g = Graphics.FromImage(result);
+			g.FillRectangle(b, 0, 0, imageSize.Width, imageSize.Height);
+
+			// Width - bold if selected
+			int b_wd = Selected ? 3 : 1;
 
 			// Adjust the rect such that the border is completely inside it.
 			Rectangle b_rect = new Rectangle(
-				rect.Left + (b_wd / 2),
-				rect.Top + (b_wd / 2),
-				rect.Width - b_wd,
-				rect.Height - b_wd
+				(b_wd / 2),
+				(b_wd / 2),
+				imageSize.Width - b_wd,
+				imageSize.Height - b_wd
 				);
 			
 			// Draw it!
-            Pen border = new Pen(Color.Black);
-            border.Width = b_wd;
+			Pen border = new Pen(Color.Black);
+			border.Width = b_wd;
 			//border.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
 			//graphics.DrawRectangle(border, rect);
-			graphics.DrawRectangle(border, b_rect);
+			g.DrawRectangle(border, b_rect);
+
+			return result;
 		}
 		#endregion
 	}

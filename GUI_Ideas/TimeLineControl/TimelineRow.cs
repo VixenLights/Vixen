@@ -164,6 +164,8 @@ namespace Timeline
 			}
 		}
 
+		public int ElementCount { get { return m_elements.Count; } }
+
 		#endregion
 
 
@@ -277,6 +279,14 @@ namespace Timeline
 		public int IndexOfElement(TimelineElement element)
 		{
 			return m_elements.IndexOf(element);
+		}
+
+		public TimelineElement GetElementAtIndex(int index)
+		{
+			if (index < 0 || index >= m_elements.Count)
+				return null;
+
+			return m_elements[index];
 		}
 
 		public void ClearElements()

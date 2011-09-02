@@ -32,7 +32,7 @@ namespace Timeline
 			TimelineRow row13 = timelineControl1.AddRow("Row 13", row12);
 			TimelineRow row14 = timelineControl1.AddRow("Row 14", row13);
 
-
+			row1.TreeOpen = true;
 
 			row1.AddElement(new TimelineElement() {
 				BackColor = Color.Red,
