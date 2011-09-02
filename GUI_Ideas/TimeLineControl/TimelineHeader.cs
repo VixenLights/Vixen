@@ -249,7 +249,7 @@ namespace Timeline
 				}
 			}
 
-			Debug.WriteLine("update():  t={0}    minor={1}   minPerMaj={2}", t, m_MinorTick, m_minorTicksPerMajor);
+			//Debug.WriteLine("update():  t={0}    minor={1}   minPerMaj={2}", t, m_MinorTick, m_minorTicksPerMajor);
 		}
 
 		private string labelString(TimeSpan t)
@@ -303,7 +303,7 @@ namespace Timeline
 				timeFormat += frac.ToString();
 			}
 
-			Debug.WriteLine("MinorTick: {0}    timeFormat: {1}", m_MinorTick, timeFormat);
+			//Debug.WriteLine("MinorTick: {0}    timeFormat: {1}", m_MinorTick, timeFormat);
 			return t.ToString(timeFormat);
 		}
 
@@ -345,6 +345,37 @@ namespace Timeline
 				}
 			}
 		}
+
+
+
+		#region Mouse Events
+
+
+
+		protected override void OnMouseEnter(EventArgs e)
+		{
+			base.OnMouseEnter(e);
+			Cursor = Cursors.Hand;
+		}
+
+		protected override void OnMouseLeave(EventArgs e)
+		{
+			base.OnMouseLeave(e);
+			Cursor = Cursors.Default;
+		}
+
+		protected override void OnMouseClick(MouseEventArgs e)
+		{
+			//base.OnMouseClick(e);
+			TimeSpan t = pixelsToTime(e.X) + VisibleTimeStart;
+
+			if (Click != null)
+				Click(this, new TimeSpanEventArgs(t));
+		}
+
+		public new event EventHandler<TimeSpanEventArgs> Click;
+
+		#endregion
 
 
 	}

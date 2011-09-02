@@ -31,6 +31,7 @@ namespace Timeline
 			timelineGrid.Scroll += GridScrolledHandler;
 			timelineGrid.VerticalOffsetChanged += GridScrollVerticalHandler;
 			timelineGrid.VisibleTimeStartChanged += GridScrollHorizontalHandler;
+			timelineHeader.Click += HeaderClickedHandler;
 		}
 
 
@@ -265,6 +266,11 @@ namespace Timeline
 		    } else {
 				GridScrollVerticalHandler(sender, e);
 			}
+		}
+
+		private void HeaderClickedHandler(object sender, TimeSpanEventArgs e)
+		{
+			Debug.WriteLine("Header clicked at {0}", e.Time);
 		}
 
 		protected override void OnResize(EventArgs e)

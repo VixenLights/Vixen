@@ -241,7 +241,7 @@ namespace Timeline
 				}
 
 				if (m_dragState == DragState.Selecting) {
-					Point gridLocation = _translateMouseArgs(m_lastMouseLocation);
+					Point gridLocation = translateLocation(m_lastMouseLocation);
 					UpdateSelectionRectangle(gridLocation);
 				}
 
@@ -280,10 +280,10 @@ namespace Timeline
 		#region Event Handlers - mouse events
 
 		/// <summary>
-		/// Translates a MouseEventArgs so that its coordinates represent the coordinates on the underlying timeline, taking into account scroll position.
+		/// Translates a location (Point) so that its coordinates represent the coordinates on the underlying timeline, taking into account scroll position.
 		/// </summary>
 		/// <param name="e"></param>
-		private Point _translateMouseArgs(Point originalLocation)
+		protected Point translateLocation(Point originalLocation)
 		{
 			// Translate this location based on the auto scroll position.
 			Point p = originalLocation;
@@ -295,7 +295,7 @@ namespace Timeline
 		{
 			base.OnMouseDown(e);
 
-			Point gridLocation = _translateMouseArgs(e.Location);
+			Point gridLocation = translateLocation(e.Location);
 			m_mouseDownElement = elementAt(gridLocation);
 
 			if (e.Button == MouseButtons.Left) {
@@ -341,7 +341,7 @@ namespace Timeline
 		{
 			base.OnMouseUp(e);
 
-			Point gridLocation = _translateMouseArgs(e.Location);
+			Point gridLocation = translateLocation(e.Location);
 
 			if (e.Button == MouseButtons.Left) {
 				if (m_dragState == DragState.Dragging) {
@@ -378,11 +378,27 @@ namespace Timeline
 			//base.OnMouseWheel(e);
 		}
 
+		protected override void OnMouseHWheel(MouseEventArgs args)
+		{
+			//base.OnMouseHWheel(args);
+
+			Debug.WriteLine("Grid OnMouseHWheel: delta={0}", args.Delta);
+
+			//AutoScrollPosition = new Point(-AutoScrollPosition.X + args.Delta/12, -AutoScrollPosition.Y);
+
+			double scale;
+			if (args.Delta > 0)
+				scale = 0.10;
+			else
+				scale = -0.10;
+			VisibleTimeStart += VisibleTimeSpan.Scale(scale);
+		}
+
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
 
-			Point gridLocation = _translateMouseArgs(e.Location);
+			Point gridLocation = translateLocation(e.Location);
 
 			if (m_dragState == DragState.Normal) {
 				// if we're near the edge of an element, change the cursor to a 'resize'
@@ -511,7 +527,7 @@ namespace Timeline
 		{
 			base.OnMouseDoubleClick(e);
 
-			Point gridLocation = _translateMouseArgs(e.Location);
+			Point gridLocation = translateLocation(e.Location);
 			TimelineElement elem = elementAt(gridLocation);
 
 			if (elem != null) {
@@ -994,7 +1010,7 @@ namespace Timeline
 			if (ResizingElement)
 				Cursor = Cursors.SizeWE;
 			else
-				Cursor = Cursors.Hand;
+				Cursor = Cursors.SizeAll;
 
 			m_dragAutoscrollDistance.Height = m_dragAutoscrollDistance.Width = 0;
 			DragTimeLeftOver = TimeSpan.Zero;
