@@ -33,15 +33,22 @@ namespace Timeline
 		
         protected override void OnPaint(PaintEventArgs e)
         {
-            e.Graphics.FillRectangle(new SolidBrush(Color.Gray), 0, 0, Size.Width, Size.Height);
+			try
+			{
+				e.Graphics.FillRectangle(new SolidBrush(Color.Gray), 0, 0, Size.Width, Size.Height);
 
-            // Translate the graphics to work the same way the timeline grid does
-            // (ie. Drawing coordinates take into account where we start at in time)
-            e.Graphics.TranslateTransform(-timeToPixels(VisibleTimeStart), 0);
+				// Translate the graphics to work the same way the timeline grid does
+				// (ie. Drawing coordinates take into account where we start at in time)
+				e.Graphics.TranslateTransform(-timeToPixels(VisibleTimeStart), 0);
 
-            drawTicks(e.Graphics, MajorTick, 2, 0.5);
-            drawTicks(e.Graphics, MinorTick, 1, 0.25);
-			drawTimes(e.Graphics);
+				drawTicks(e.Graphics, MajorTick, 2, 0.5);
+				drawTicks(e.Graphics, MinorTick, 1, 0.25);
+				drawTimes(e.Graphics);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("Exception in TimelineHeader.OnPaint():\n\n\t" + ex.Message + "\n\nBacktrace:\n\n\t" + ex.StackTrace);
+			}
         }
 
 		/*

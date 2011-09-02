@@ -1290,15 +1290,22 @@ namespace Timeline
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			e.Graphics.TranslateTransform(this.AutoScrollPosition.X, this.AutoScrollPosition.Y);
+			try
+			{
+				e.Graphics.TranslateTransform(this.AutoScrollPosition.X, this.AutoScrollPosition.Y);
 
-			_drawGridlines(e.Graphics);
-			int totalHeight = _drawRows(e.Graphics);
-			AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), totalHeight);
-			_drawSnapPoints(e.Graphics);
-			_drawElements(e.Graphics);
-			_drawSelection(e.Graphics);
-			_drawCursor(e.Graphics);
+				_drawGridlines(e.Graphics);
+				int totalHeight = _drawRows(e.Graphics);
+				AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), totalHeight);
+				_drawSnapPoints(e.Graphics);
+				_drawElements(e.Graphics);
+				_drawSelection(e.Graphics);
+				_drawCursor(e.Graphics);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("Exception in TimelineGrid.OnPaint():\n\n\t" + ex.Message + "\n\nBacktrace:\n\n\t" + ex.StackTrace);
+			}
 		}
 
 		#endregion
