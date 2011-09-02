@@ -50,6 +50,9 @@ namespace Timeline
 			}
 			);
 
+
+
+
 			row2.AddElement(new TimelineElement() {
 				BackColor = Color.Blue,
 				StartTime = TimeSpan.FromSeconds(4),
@@ -73,6 +76,62 @@ namespace Timeline
 				Tag = "Purple"
 			}
 			);
+
+
+
+
+			row2.AddElement(new TimelineElement() {
+				BackColor = Color.Blue,
+				StartTime = TimeSpan.FromSeconds(2),
+				Duration = TimeSpan.FromSeconds(1),
+				Tag = "Blue"
+			}
+			);
+
+			row3.AddElement(new TimelineElement() {
+				BackColor = Color.Orange,
+				StartTime = TimeSpan.FromSeconds(2),
+				Duration = TimeSpan.FromSeconds(1),
+				Tag = "Orange"
+			}
+			);
+
+			row4.AddElement(new TimelineElement() {
+				BackColor = Color.Purple,
+				StartTime = TimeSpan.FromSeconds(2),
+				Duration = TimeSpan.FromSeconds(1),
+				Tag = "Purple"
+			}
+			);
+
+
+
+
+			row5.AddElement(new TimelineElement() {
+				BackColor = Color.FromArgb(255, 255, 0, 0),
+				StartTime = TimeSpan.FromSeconds(0),
+				Duration = TimeSpan.FromSeconds(2),
+				Tag = "Red"
+			}
+			);
+
+			row5.AddElement(new TimelineElement() {
+				BackColor = Color.FromArgb(255, 0, 255, 0),
+				StartTime = TimeSpan.FromSeconds(1),
+				Duration = TimeSpan.FromSeconds(2),
+				Tag = "Green"
+			}
+			);
+
+			row5.AddElement(new TimelineElement() {
+				BackColor = Color.FromArgb(255, 0, 0, 255),
+				StartTime = TimeSpan.FromSeconds(2),
+				Duration = TimeSpan.FromSeconds(2),
+				Tag = "Blue"
+			}
+			);
+
+
 
 
 			row5.AddElement(new TimelineElement() {

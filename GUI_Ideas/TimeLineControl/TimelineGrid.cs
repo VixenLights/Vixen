@@ -1171,7 +1171,7 @@ namespace Timeline
 						desiredDrawTo = TotalTime;
 					}
 
-					Size size = new Size((int)timeToPixels(currentElement.Duration), row.Height);
+					Size size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height);
 					Bitmap elementImage = currentElement.Draw(size);
 					bitmapsToDraw.Add(new BitmapDrawDetails() { bmp = elementImage, startTime = currentElement.StartTime, duration = currentElement.Duration });
 
@@ -1222,6 +1222,7 @@ namespace Timeline
 								drawDetails.bmp = bmp.Clone(new RectangleF(croppedWidth, 0, bmp.Width - croppedWidth, bmp.Height), bmp.PixelFormat);
 								drawDetails.startTime = start + segmentDuration;
 								drawDetails.duration = duration - segmentDuration;
+								bmp = croppedBitmap;
 							}
 
 							if (firstDraw) {
@@ -1237,7 +1238,7 @@ namespace Timeline
 
 								// set the alpha to 100/bitmapLayers percent
 								byte value = (byte)(255 / bitmapLayers);
-								for (int counter = 0; counter < argbValues.Length; counter += 4)
+								for (int counter = 3; counter < argbValues.Length; counter += 4)
 									argbValues[counter] = value;
 
 								// put the bitmap data back
