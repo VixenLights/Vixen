@@ -7,6 +7,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Renard", "Output\Renard\Ren
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Generic", "Timing\Generic\Generic.csproj", "{D5B54EEF-5D27-4E30-9073-847C9996C552}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Output", "Output", "{DA7CFC2A-5668-4B31-A467-B8CECD98AA2B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Timing", "Timing", "{E0BEB875-212F-4F44-BE52-0E9C4DDC95BB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sequence", "Sequence", "{B78A448A-6343-474F-AE12-D0BBF294ABBB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timed", "Sequence\Timed\Timed.csproj", "{45E1228A-F714-41D5-BB9B-A776F2B23143}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -25,8 +33,18 @@ Global
 		{D5B54EEF-5D27-4E30-9073-847C9996C552}.Debug|x86.Build.0 = Debug|x86
 		{D5B54EEF-5D27-4E30-9073-847C9996C552}.Release|x86.ActiveCfg = Release|x86
 		{D5B54EEF-5D27-4E30-9073-847C9996C552}.Release|x86.Build.0 = Release|x86
+		{45E1228A-F714-41D5-BB9B-A776F2B23143}.Debug|x86.ActiveCfg = Debug|x86
+		{45E1228A-F714-41D5-BB9B-A776F2B23143}.Debug|x86.Build.0 = Debug|x86
+		{45E1228A-F714-41D5-BB9B-A776F2B23143}.Release|x86.ActiveCfg = Release|x86
+		{45E1228A-F714-41D5-BB9B-A776F2B23143}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4ADC4F0D-2F3B-4F4D-A5FC-C6AEB6B222CE} = {DA7CFC2A-5668-4B31-A467-B8CECD98AA2B}
+		{2149D717-7256-477B-BEC5-F9E7E6E93885} = {DA7CFC2A-5668-4B31-A467-B8CECD98AA2B}
+		{D5B54EEF-5D27-4E30-9073-847C9996C552} = {E0BEB875-212F-4F44-BE52-0E9C4DDC95BB}
+		{45E1228A-F714-41D5-BB9B-A776F2B23143} = {B78A448A-6343-474F-AE12-D0BBF294ABBB}
 	EndGlobalSection
 EndGlobal
