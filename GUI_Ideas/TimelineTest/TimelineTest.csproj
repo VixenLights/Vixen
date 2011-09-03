@@ -78,7 +78,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TimeLineControl\TimelineControl.csproj">
+    <ProjectReference Include="..\..\CommonElements\TimeLineControl\TimelineControl.csproj">
       <Project>{BE246522-FE6B-4BA5-BD55-9CE30FCBF02F}</Project>
       <Name>TimelineControl</Name>
     </ProjectReference>

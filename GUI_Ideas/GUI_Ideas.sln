@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimelineControl", "TimeLineControl\TimelineControl.csproj", "{BE246522-FE6B-4BA5-BD55-9CE30FCBF02F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimelineTest", "TimelineTest\TimelineTest.csproj", "{663AFC15-80CD-474A-8AAE-5B2AF5899A30}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DragDropTest1", "DragDropTest1\DragDropTest1.csproj", "{81F19BD5-B106-43A4-9FBF-42B2B0C8A6E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimelineControl", "..\CommonElements\TimeLineControl\TimelineControl.csproj", "{BE246522-FE6B-4BA5-BD55-9CE30FCBF02F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,16 +17,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BE246522-FE6B-4BA5-BD55-9CE30FCBF02F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BE246522-FE6B-4BA5-BD55-9CE30FCBF02F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BE246522-FE6B-4BA5-BD55-9CE30FCBF02F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{BE246522-FE6B-4BA5-BD55-9CE30FCBF02F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{BE246522-FE6B-4BA5-BD55-9CE30FCBF02F}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{BE246522-FE6B-4BA5-BD55-9CE30FCBF02F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BE246522-FE6B-4BA5-BD55-9CE30FCBF02F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BE246522-FE6B-4BA5-BD55-9CE30FCBF02F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{BE246522-FE6B-4BA5-BD55-9CE30FCBF02F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{BE246522-FE6B-4BA5-BD55-9CE30FCBF02F}.Release|x86.ActiveCfg = Release|Any CPU
 		{663AFC15-80CD-474A-8AAE-5B2AF5899A30}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{663AFC15-80CD-474A-8AAE-5B2AF5899A30}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{663AFC15-80CD-474A-8AAE-5B2AF5899A30}.Debug|Mixed Platforms.Build.0 = Debug|x86
@@ -47,6 +37,16 @@ Global
 		{81F19BD5-B106-43A4-9FBF-42B2B0C8A6E2}.Release|Mixed Platforms.Build.0 = Release|x86
 		{81F19BD5-B106-43A4-9FBF-42B2B0C8A6E2}.Release|x86.ActiveCfg = Release|x86
 		{81F19BD5-B106-43A4-9FBF-42B2B0C8A6E2}.Release|x86.Build.0 = Release|x86
+		{BE246522-FE6B-4BA5-BD55-9CE30FCBF02F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE246522-FE6B-4BA5-BD55-9CE30FCBF02F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE246522-FE6B-4BA5-BD55-9CE30FCBF02F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{BE246522-FE6B-4BA5-BD55-9CE30FCBF02F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{BE246522-FE6B-4BA5-BD55-9CE30FCBF02F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BE246522-FE6B-4BA5-BD55-9CE30FCBF02F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE246522-FE6B-4BA5-BD55-9CE30FCBF02F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE246522-FE6B-4BA5-BD55-9CE30FCBF02F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{BE246522-FE6B-4BA5-BD55-9CE30FCBF02F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{BE246522-FE6B-4BA5-BD55-9CE30FCBF02F}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
