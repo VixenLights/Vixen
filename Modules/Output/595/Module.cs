@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Output;
-using Vixen.Sys;
 using CommandStandard;
 using CommandStandard.Types;
 
@@ -36,14 +36,15 @@ namespace VixenModules.Output._595 {
 			return true;
 		}
 
-		protected override void _SetOutputCount(int outputCount) {
-			_outputCount = outputCount;
-		}
-
 		public override IModuleDataModel ModuleData {
 			get { return _moduleData; }
 			set { _moduleData = value as Data; }
 		}
+
+		protected override void _SetOutputCount(int outputCount) {
+			_outputCount = outputCount;
+		}
+
 		protected override void _UpdateState(CommandData[] outputStates) {
 			if(_moduleData.Port != 0) {
 				// The first bit clocked will end up on the last channel, so the channels 

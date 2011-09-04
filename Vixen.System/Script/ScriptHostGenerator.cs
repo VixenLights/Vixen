@@ -31,7 +31,7 @@ namespace Vixen.Script {
 			try {
 				// Emit the T4 template to be compiled into the assembly.
 				fileName = Path.GetTempFileName();
-				ScriptModuleManagement manager = Modules.GetModuleManager<IScriptModuleInstance, ScriptModuleManagement>();
+				ScriptModuleManagement manager = Modules.GetManager<IScriptModuleInstance, ScriptModuleManagement>();
 				IScriptFrameworkGenerator frameworkGenerator = manager.GetFrameworkGenerator(sequence.Language);
 
 				string fileContents = frameworkGenerator.Generate(nameSpace, sequence.ClassName);
@@ -89,7 +89,7 @@ namespace Vixen.Script {
 			assemblyReferences.AddRange(sequence.ExternalAssemblies);
 			assemblyReferences.AddRange(_standardReferences);
 
-			ScriptModuleManagement manager = Modules.GetModuleManager<IScriptModuleInstance, ScriptModuleManagement>();
+			ScriptModuleManagement manager = Modules.GetManager<IScriptModuleInstance, ScriptModuleManagement>();
 			IScriptCodeProvider codeProvider = manager.GetCodeProvider(sequence.Language);
 
 			CompilerResults results = null;

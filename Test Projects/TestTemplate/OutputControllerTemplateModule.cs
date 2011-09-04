@@ -37,13 +37,13 @@ namespace TestTemplate {
 			get { throw new NotImplementedException(); }
 		}
 
-		public override Guid[] Dependencies {
-			get {
-				return new[] {
-					new Guid("{989A88B6-9348-466c-A50F-321FAFD2183A}"),
-					new Guid("{5E867382-36E4-45a3-A4CA-A220081D1167}")
-				};
-			}
-		}
+		//public override Guid[] Dependencies {
+		//    get {
+		//        return new[] {
+		//            new Guid("{989A88B6-9348-466c-A50F-321FAFD2183A}"),
+		//            new Guid("{5E867382-36E4-45a3-A4CA-A220081D1167}")
+		//        };
+		//    }
+		//}
 	}
 }

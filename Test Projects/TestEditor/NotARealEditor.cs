@@ -17,10 +17,12 @@ using Vixen.Module.Timing;
 using Vixen.Execution;
 
 namespace TestEditor {
-	public partial class NotARealEditor : Form, IEditorModuleInstance {
+	public partial class NotARealEditor : Form, IEditorUserInterface {
+		//public event EventHandler<EditorClosingEventArgs> Closing;
+
 		private Vixen.Sys.ISequence _sequence;
 		private ProgramContext _context = null;
-		private NotARealEditorDataModel _moduleData;
+		//private NotARealEditorDataModel _moduleData;
 		private ITiming _timingSource;
 
 		public NotARealEditor() {
@@ -215,8 +217,11 @@ namespace TestEditor {
 						}
 					}
 
-					_sequence.ModuleDataSet.GetModuleTypeData(this);
-					_moduleData.LastOpened = DateTime.Now;
+					// Example of storing at the sequence level.
+					_sequence.ModuleDataSet.GetModuleTypeData(OwnerModule);
+					// Example of storing at the application level.
+					//VixenSystem.ModuleData.GetModuleTypeData(this);
+					ModuleData.LastOpened = DateTime.Now;
 				}
 			}
 		}
@@ -239,11 +244,14 @@ namespace TestEditor {
 
 		public EditorValues EditorValues { get; private set; }
 
-		public Guid InstanceId { get; set; }
+		//public Guid InstanceId { get; set; }
 
-		public IModuleDataModel ModuleData {
-			get { return _moduleData; }
-			set { _moduleData = value as NotARealEditorDataModel; }
+		//public IModuleDataModel ModuleData {
+		//    get { return _moduleData; }
+		//    set { _moduleData = value as NotARealEditorDataModel; }
+		//}
+		private NotARealEditorDataModel ModuleData {
+			get { return OwnerModule.ModuleData as NotARealEditorDataModel; }
 		}
 
 		public IModuleDescriptor Descriptor { get; set; }
@@ -294,5 +302,11 @@ namespace TestEditor {
 		private void listViewTimingSources_SelectedIndexChanged(object sender, EventArgs e) {
 			_SetTimingSource();
 		}
+
+		public void Start() {
+			Show();
+		}
+
+		public IEditorModuleInstance OwnerModule { get; set; }
 	}
 }

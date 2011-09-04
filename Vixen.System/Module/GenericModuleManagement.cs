@@ -16,7 +16,7 @@ namespace Vixen.Module {
 		}
 
 		virtual public T[] GetAll() {
-			return Modules.GetModuleDescriptors<T>().Select(x => Get(x.TypeId)).ToArray();
+			return Modules.GetDescriptors<T>().Select(x => Get(x.TypeId)).ToArray();
 		}
 
 		object[] IModuleManagement.GetAll() {

@@ -27,12 +27,12 @@ namespace Vixen.Sys {
         static internal IApplication ClientApplication = null;
 
 		static public IModuleDescriptor[] GetModuleDescriptors(string typeOfModule) {
-			return Modules.GetModuleDescriptors(typeOfModule);
+			return Modules.GetDescriptors(typeOfModule);
 		}
 		
 		static public IModuleDescriptor[] GetModuleDescriptors<T>()
 			where T : class, IModuleInstance {
-			return Modules.GetModuleDescriptors<T>();
+			return Modules.GetDescriptors<T>();
 		}
 
 		static public IModuleDescriptor GetModuleDescriptor(Guid moduleTypeId) {
@@ -51,7 +51,7 @@ namespace Vixen.Sys {
 		/// <returns></returns>
 		static public Dictionary<Guid, string> GetAvailableModules<T>()
 			where T : class, IModuleInstance {
-			return Modules.GetModuleDescriptors<T>().ToDictionary(x => x.TypeId, x => x.TypeName);
+			return Modules.GetDescriptors<T>().ToDictionary(x => x.TypeId, x => x.TypeName);
 		}
 
 		static public string[] GetTypesOfModules() {
@@ -74,7 +74,7 @@ namespace Vixen.Sys {
 			// Modules.GetById, so that the type manager can affect the instance.
 			// Modules.ModuleManagement can be called when the name of the module
 			// type is known, which it is not here.
-			IModuleManagement moduleManager = Modules.GetModuleManager<T>();
+			IModuleManagement moduleManager = Modules.GetManager<T>();
 			if(moduleManager != null) {
 				return moduleManager.Get(id) as T;
 			}
@@ -89,7 +89,7 @@ namespace Vixen.Sys {
 		static public T[] GetAll<T>()
 			where T : class, IModuleInstance {
 			// Must go through the module type manager so that it can affect the instance.
-			IModuleManagement moduleManager = Modules.GetModuleManager<T>();
+			IModuleManagement moduleManager = Modules.GetManager<T>();
 			if(moduleManager != null) {
 				return moduleManager.GetAll().Cast<T>().ToArray();
 			}
@@ -98,7 +98,7 @@ namespace Vixen.Sys {
 
 		static public IEffectEditorControl GetEffectEditorControl(Guid effectId) {
 			// Need the module-specific manager.
-			EffectEditorModuleManagement manager = Modules.GetModuleManager<IEffectEditorModuleInstance, EffectEditorModuleManagement>();
+			EffectEditorModuleManagement manager = Modules.GetManager<IEffectEditorModuleInstance, EffectEditorModuleManagement>();
 			return manager.GetEffectEditor(effectId);
 		}
 
@@ -108,7 +108,7 @@ namespace Vixen.Sys {
 		}
 
 		static public ISequence CreateSequence(string sequenceFileType) {
-			SequenceModuleManagement manager = Modules.GetModuleManager<ISequenceModuleInstance, SequenceModuleManagement>();
+			SequenceModuleManagement manager = Modules.GetManager<ISequenceModuleInstance, SequenceModuleManagement>();
 			return manager.Get(sequenceFileType) as ISequence;
 		}
 
@@ -116,32 +116,24 @@ namespace Vixen.Sys {
 			return OutputController.GetAll().ToArray();
 		}
 
-		// Only exists to be alongside GetEditor(string) instead of making them look in
-		// multiple locations.
-		static public IEditorModuleInstance GetEditor(Guid id) {
-			return Modules.ModuleManagement.GetEditor(id);
+		static public IEditorUserInterface GetEditor(Guid id) {
+			EditorModuleManagement manager = Modules.GetManager<IEditorModuleInstance, EditorModuleManagement>();
+			if(manager != null) {
+				return manager.Get(id);
+			}
+			return null;
 		}
 
-		static public IEditorModuleInstance GetEditor(string fileName) {
-			EditorModuleManagement manager = Modules.GetModuleManager<IEditorModuleInstance, EditorModuleManagement>();
+		static public IEditorUserInterface GetEditor(string fileName) {
+			EditorModuleManagement manager = Modules.GetManager<IEditorModuleInstance, EditorModuleManagement>();
 			if(manager != null) {
 				return manager.Get(fileName);
 			}
 			return null;
 		}
 
-		///// <summary>
-		///// Commits the template's data back to its backing store.
-		///// </summary>
-		///// <param name="template"></param>
-		//static public void CommitTemplate(IModuleTemplateModuleInstance template) {
-		//    //ModuleTemplateModuleManagement manager = Modules.GetModuleManager<IModuleTemplateModuleInstance, ModuleTemplateModuleManagement>();
-		//    //manager.SaveTemplateData(template as IModuleTemplateModuleInstance);
-		//    //VixenSystem.ModuleData...?
-		//}
-
 		static public string[] GetScriptLanguages() {
-			ScriptModuleManagement manager = Modules.GetModuleManager<IScriptModuleInstance, ScriptModuleManagement>();
+			ScriptModuleManagement manager = Modules.GetManager<IScriptModuleInstance, ScriptModuleManagement>();
 			return manager.GetLanguages();
 		}
 

@@ -27,8 +27,8 @@ namespace TestClient
 		private List<OutputController> _controllers = new List<OutputController>();
 		//private ITypedDataMover[] _dataMovers;
 		private IEffectEditorControl _editorControl;
-		private List<IEditorModuleInstance> _openEditors = new List<IEditorModuleInstance>();
-		private IEditorModuleInstance _activeEditor = null;
+		private List<IEditorUserInterface> _openEditors = new List<IEditorUserInterface>();
+		private IEditorUserInterface _activeEditor = null;
 		private bool _dragCapture = false;
 
 		public Form1()
@@ -65,11 +65,13 @@ namespace TestClient
 				item.Click += (sender,e) => {
 					ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
 					Guid editorModuleId = (Guid)menuItem.Tag;
-					IEditorModuleInstance editor = _GetEditor(editorModuleId);
+					IEditorUserInterface editor = ApplicationServices.GetEditor(editorModuleId);
 					if(editor != null) {
 						editor.NewSequence();
-						this.SequenceName = editor.Sequence.Name;
-						_OpenEditor(editor);
+						if(editor.Sequence != null) { // Null if canceled
+							SequenceName = editor.Sequence.Name;
+							_OpenEditor(editor);
+						}
 					}
 				};
 				fileToolStripMenuItem.DropDownItems.Add(item);
@@ -256,8 +258,8 @@ namespace TestClient
             Cursor = Cursors.WaitCursor;
             try {
 				// Go through the editor
-				IEditorModuleInstance editor = _GetEditor(textBoxSequenceFileName.Text);
 				Sequence sequence = Vixen.Sys.Sequence.Load(textBoxSequenceFileName.Text);
+				IEditorUserInterface editor = _GetEditor(textBoxSequenceFileName.Text);
 				if(editor != null) {
 					if(sequence != null) {
 						editor.Sequence = sequence;
@@ -318,11 +320,11 @@ namespace TestClient
             }
         }
 
-		public IEditorModuleInstance ActiveEditor {
+		public IEditorUserInterface ActiveEditor {
 			get {
 				// Don't want to clear our reference on Deactivate because
 				// it may be deactivated due to the client getting focus.
-				if(_activeEditor != null && (_activeEditor as Form).IsDisposed) {
+				if(_activeEditor != null && _activeEditor.IsDisposed) {
 					_activeEditor = null;
 					labelActiveEditor.Text = "(none)";
 				}
@@ -330,17 +332,17 @@ namespace TestClient
 			}
         }
 
-		public IEditorModuleInstance[] AllEditors {
+		public IEditorUserInterface[] AllEditors {
 			get { return _openEditors.ToArray(); }
 		}
 
         public AppCommand AppCommands { get; private set; }
 
-		private IEditorModuleInstance _GetEditor(string sequenceFileName) {
+		private IEditorUserInterface _GetEditor(string sequenceFileName) {
 			return ApplicationServices.GetEditor(sequenceFileName);
 		}
-		
-		private IEditorModuleInstance _GetEditor(Guid editorModuleId) {
+
+		private IEditorUserInterface _GetEditor(Guid editorModuleId) {
 			return ApplicationServices.GetEditor(editorModuleId);
 		}
 
@@ -489,20 +491,21 @@ namespace TestClient
 			}
 		}
 
-		private void _OpenEditor(IEditorModuleInstance editor) {
-			_openEditors.Add(editor);
-			//ick, I know
-			Form editorForm = editor as Form;
-			editorForm.FormClosing += (sender, e) => {
-				if(!_CloseEditor(sender as IEditorModuleInstance)) {
+		private void _OpenEditor(IEditorUserInterface editorUI) {
+			_openEditors.Add(editorUI);
+
+			editorUI.Closing += (sender, e) => {
+				if(!_CloseEditor(sender as IEditorUserInterface)) {
 					e.Cancel = true;
 				}
 			};
-			editorForm.Activated += (sender, e) => {
-				_activeEditor = sender as IEditorModuleInstance;
+
+			editorUI.Activated += (sender, e) => {
+				_activeEditor = sender as IEditorUserInterface;
 				labelActiveEditor.Text = _activeEditor.Sequence.Name;
 			};
-			editorForm.Show();
+			
+			editorUI.Start();
 		}
 
 		/// <summary>
@@ -510,14 +513,12 @@ namespace TestClient
 		/// </summary>
 		/// <param name="editor"></param>
 		/// <returns>True if the editor is to close.</returns>
-		private bool _CloseEditor(IEditorModuleInstance editor) {
+		private bool _CloseEditor(IEditorUserInterface editor) {
 			if(_openEditors.Contains(editor)) {
 				if(editor.IsModified) {
 					//*** give them the change to save, not save, or cancel the close
 				}
 				_openEditors.Remove(editor);
-				//ick, again
-				Form editorForm = editor as Form;
 				editor.Dispose();
 			}
 			return true;

@@ -34,7 +34,7 @@ namespace Vixen.Module.Script {
 		}
 
 		private ScriptModuleRepository _GetRepository() {
-			return Modules.GetModuleRepository<IScriptModuleInstance, ScriptModuleRepository>();
+			return Modules.GetRepository<IScriptModuleInstance, ScriptModuleRepository>();
 		}
 	}
 }

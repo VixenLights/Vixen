@@ -499,6 +499,7 @@ namespace Vixen.Hardware {
 		}
 
 		public int UpdateInterval {
+			//*** module will be null if it's missing after the controller's been created
 			get { return _outputModule.UpdateInterval; }
 		}
 

@@ -49,7 +49,7 @@ namespace Vixen.Sys {
 
 			// Iterate all of the sequence type descriptors and build a set of file types.
 			HashSet<string> fileTypes = new HashSet<string>();
-			IEnumerable<ISequenceModuleDescriptor> sequenceDescriptors = Modules.GetModuleDescriptors<ISequenceModuleInstance, ISequenceModuleDescriptor>();
+			IEnumerable<ISequenceModuleDescriptor> sequenceDescriptors = Modules.GetDescriptors<ISequenceModuleInstance, ISequenceModuleDescriptor>();
 			foreach(ISequenceModuleDescriptor descriptor in sequenceDescriptors) {
 				fileTypes.Add(descriptor.FileExtension);
 			}

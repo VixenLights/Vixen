@@ -12,8 +12,8 @@ namespace Vixen.Sys {
     /// </summary>
     public interface IApplication {
         Guid ApplicationId { get; }
-		IEditorModuleInstance ActiveEditor { get; }
-		IEditorModuleInstance[] AllEditors { get; }
+		IEditorUserInterface ActiveEditor { get; }
+		IEditorUserInterface[] AllEditors { get; }
         AppCommand AppCommands { get; }
         /// <summary>
         /// Notifies the application that it needs to be refreshed.

@@ -6,5 +6,6 @@ using System.Text;
 namespace Vixen.Module.Editor {
 	public interface IEditorModuleDescriptor : IModuleDescriptor {
 		string[] FileExtensions { get; }
+		Type EditorUserInterfaceClass { get; }
 	}
 }

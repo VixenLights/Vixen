@@ -21,6 +21,8 @@ namespace Vixen.Module.Editor {
 
 		abstract public string[] FileExtensions { get; }
 
+		abstract public Type EditorUserInterfaceClass { get; }
+
 		public bool Equals(IEditorModuleDescriptor x, IEditorModuleDescriptor y) {
 			return base.Equals(x, y);
 		}

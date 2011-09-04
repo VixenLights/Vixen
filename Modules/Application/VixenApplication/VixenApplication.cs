@@ -40,14 +40,14 @@ namespace VixenApplication
 			get { return _guid; }
 		}
 
-		private IEditorModuleInstance _activeEditor = null;
-		public IEditorModuleInstance ActiveEditor
+		private IEditorUserInterface _activeEditor = null;
+		public IEditorUserInterface ActiveEditor
 		{
 			get
 			{
 				// Don't want to clear our reference on Deactivate because
 				// it may be deactivated due to the client getting focus.
-				if ((_activeEditor as Form).IsDisposed)
+				if (_activeEditor.IsDisposed)
 				{
 					_activeEditor = null;
 				}
@@ -55,8 +55,8 @@ namespace VixenApplication
 			}
 		}
 
-		private List<IEditorModuleInstance> _openEditors = new List<IEditorModuleInstance>();
-		public IEditorModuleInstance[] AllEditors
+		private List<IEditorUserInterface> _openEditors = new List<IEditorUserInterface>();
+		public IEditorUserInterface[] AllEditors
 		{
 			get { return _openEditors.ToArray(); }
 		}
@@ -74,9 +74,8 @@ namespace VixenApplication
 				{
 					ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
 					Guid editorModuleId = (Guid)menuItem.Tag;
-					IEditorModuleInstance editor = ApplicationServices.GetEditor(editorModuleId);
-					if (editor != null)
-					{
+					IEditorUserInterface editor = ApplicationServices.GetEditor(editorModuleId);
+					if(editor != null) {
 						editor.NewSequence();
 						_OpenEditor(editor);
 					}
@@ -85,25 +84,24 @@ namespace VixenApplication
 			}
 		}
 
-		private void _OpenEditor(IEditorModuleInstance editor)
+		private void _OpenEditor(IEditorUserInterface editorUI)
 		{
-			_openEditors.Add(editor);
-			Form editorForm = editor as Form;
-			editorForm.FormClosing += (sender, e) =>
-			{
-				if (!_CloseEditor(sender as IEditorModuleInstance))
-				{
+			_openEditors.Add(editorUI);
+
+			editorUI.Closing += (sender, e) => {
+				if(!_CloseEditor(sender as IEditorUserInterface)) {
 					e.Cancel = true;
 				}
 			};
-			editorForm.Activated += (sender, e) =>
-			{
-				_activeEditor = sender as IEditorModuleInstance;
+
+			editorUI.Activated += (sender, e) => {
+				_activeEditor = sender as IEditorUserInterface;
 			};
-			editorForm.Show();
+
+			editorUI.Start();
 		}
 
-		private bool _CloseEditor(IEditorModuleInstance editor)
+		private bool _CloseEditor(IEditorUserInterface editor)
 		{
 			if (_openEditors.Contains(editor))
 			{

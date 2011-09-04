@@ -14,7 +14,7 @@ using Vixen.Module.Editor;
 using Vixen.Execution;
 
 namespace TestEditor {
-	public partial class CSharp_ScriptEditor : Form, IEditorModuleInstance {
+	public partial class CSharp_ScriptEditor : Form, IEditorUserInterface {
 		private ScriptSequence _sequence;
 		private ProgramContext _context = null;
 		private List<SourceFileTabPage> _sources = new List<SourceFileTabPage>();
@@ -167,5 +167,12 @@ namespace TestEditor {
 			}
 		}
 
+
+
+		public IEditorModuleInstance OwnerModule { get; set; }
+
+		public void Start() {
+			Show();
+		}
 	}
 }

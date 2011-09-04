@@ -28,7 +28,7 @@ namespace Vixen.IO.Xml {
 
 		private Sequence _CreateObject(string filePath) {
 			// Get the specific sequence module manager.
-			SequenceModuleManagement manager = Modules.GetModuleManager<ISequenceModuleInstance, SequenceModuleManagement>();
+			SequenceModuleManagement manager = Modules.GetManager<ISequenceModuleInstance, SequenceModuleManagement>();
 			
 			// Get an instance of the appropriate sequence module.
 			Sequence sequence = manager.Get(filePath) as Sequence;

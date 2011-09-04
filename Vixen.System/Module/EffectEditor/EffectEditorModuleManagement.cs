@@ -12,7 +12,7 @@ namespace Vixen.Module.EffectEditor {
 
 			// Need the type-specific repository reference, doing more than basic
 			// repository operations.
-			EffectEditorModuleRepository repository = Modules.GetModuleRepository<IEffectEditorModuleInstance, EffectEditorModuleRepository>();
+			EffectEditorModuleRepository repository = Modules.GetRepository<IEffectEditorModuleInstance, EffectEditorModuleRepository>();
 			// Get the command spec descriptor.
 			IEffectModuleDescriptor descriptor = Modules.GetDescriptorById<IEffectModuleDescriptor>(effectId);
 			// Look up by command handler id first, then command signature.

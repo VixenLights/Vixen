@@ -53,7 +53,7 @@ namespace Vixen.Sys {
 			get { return _language; }
 			set {
 				SourceFiles.Clear();
-				ScriptModuleManagement manager = Modules.GetModuleManager<IScriptModuleInstance, ScriptModuleManagement>();
+				ScriptModuleManagement manager = Modules.GetManager<IScriptModuleInstance, ScriptModuleManagement>();
 				if(!manager.GetLanguages().Any(x => string.Equals(x, value, StringComparison.OrdinalIgnoreCase))) {
 					throw new Exception("There is no script type " + value);
 				}
@@ -79,7 +79,7 @@ namespace Vixen.Sys {
 			if(_FileExists(fileName)) throw new InvalidOperationException("File already exists with that name.");
 
 			// Get the appropriate extension onto the file name.
-			ScriptModuleManagement manager = Modules.GetModuleManager<IScriptModuleInstance, ScriptModuleManagement>();
+			ScriptModuleManagement manager = Modules.GetManager<IScriptModuleInstance, ScriptModuleManagement>();
 			fileName = Path.ChangeExtension(fileName, manager.GetFileExtension(Language));
 
 			SourceFile sourceFile = null;
@@ -94,7 +94,7 @@ namespace Vixen.Sys {
 		}
 
 		private SourceFile _CreateSkeletonFile(string fileName) {
-			ScriptModuleManagement manager = Modules.GetModuleManager<IScriptModuleInstance, ScriptModuleManagement>();
+			ScriptModuleManagement manager = Modules.GetManager<IScriptModuleInstance, ScriptModuleManagement>();
 			IScriptSkeletonGenerator skeletonFileGenerator = manager.GetSkeletonGenerator(Language);
 			
 			// Setting the class name any time the skeleton file is generated so that when

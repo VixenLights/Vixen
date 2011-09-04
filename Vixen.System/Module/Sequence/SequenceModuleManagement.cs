@@ -16,7 +16,7 @@ namespace Vixen.Module.Sequence {
 		public ISequenceModuleInstance Get(string sequenceFileType) {
 			string fileType = Path.GetExtension(sequenceFileType);
 
-			ISequenceModuleDescriptor descriptor = Modules.GetModuleDescriptors<ISequenceModuleInstance>().Cast<ISequenceModuleDescriptor>().FirstOrDefault(x => x.FileExtension.Equals(fileType, StringComparison.OrdinalIgnoreCase));
+			ISequenceModuleDescriptor descriptor = Modules.GetDescriptors<ISequenceModuleInstance>().Cast<ISequenceModuleDescriptor>().FirstOrDefault(x => x.FileExtension.Equals(fileType, StringComparison.OrdinalIgnoreCase));
 			if(descriptor != null) {
 				ISequenceModuleInstance instance = Get(descriptor.TypeId);
 

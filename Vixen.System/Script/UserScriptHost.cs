@@ -7,8 +7,8 @@ using Vixen.Sys;
 using Vixen.Module.Sequence;
 
 namespace Vixen.Script {
-	// Public for VB inheritance.
-	abstract class UserScriptHost : IUserScriptHost {
+	// Public for script frameworks' usage.
+	abstract public class UserScriptHost : IUserScriptHost {
 		private Thread _thread = null;
 
 		public event EventHandler<ExecutorMessageEventArgs> Error;

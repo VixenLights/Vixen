@@ -19,11 +19,15 @@ namespace TestEditor {
 		}
 
 		override public Type ModuleClass {
-			get { return typeof(NotARealEditor); }
+			get { return typeof(NotARealEditorModuleInstance); }
 		}
 
 		override public Type ModuleDataClass {
 			get { return typeof(NotARealEditorDataModel); }
+		}
+
+		override public Type EditorUserInterfaceClass {
+			get { return typeof(NotARealEditor); }
 		}
 
 		override public string Author {

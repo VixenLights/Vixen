@@ -7,16 +7,26 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Renard", "Renard\Renard.csp
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4ADC4F0D-2F3B-4F4D-A5FC-C6AEB6B222CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4ADC4F0D-2F3B-4F4D-A5FC-C6AEB6B222CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4ADC4F0D-2F3B-4F4D-A5FC-C6AEB6B222CE}.Debug|x86.ActiveCfg = Debug|x86
 		{4ADC4F0D-2F3B-4F4D-A5FC-C6AEB6B222CE}.Debug|x86.Build.0 = Debug|x86
+		{4ADC4F0D-2F3B-4F4D-A5FC-C6AEB6B222CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4ADC4F0D-2F3B-4F4D-A5FC-C6AEB6B222CE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4ADC4F0D-2F3B-4F4D-A5FC-C6AEB6B222CE}.Release|x86.ActiveCfg = Release|x86
 		{4ADC4F0D-2F3B-4F4D-A5FC-C6AEB6B222CE}.Release|x86.Build.0 = Release|x86
+		{2149D717-7256-477B-BEC5-F9E7E6E93885}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2149D717-7256-477B-BEC5-F9E7E6E93885}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2149D717-7256-477B-BEC5-F9E7E6E93885}.Debug|x86.ActiveCfg = Debug|x86
 		{2149D717-7256-477B-BEC5-F9E7E6E93885}.Debug|x86.Build.0 = Debug|x86
+		{2149D717-7256-477B-BEC5-F9E7E6E93885}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2149D717-7256-477B-BEC5-F9E7E6E93885}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2149D717-7256-477B-BEC5-F9E7E6E93885}.Release|x86.ActiveCfg = Release|x86
 		{2149D717-7256-477B-BEC5-F9E7E6E93885}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection

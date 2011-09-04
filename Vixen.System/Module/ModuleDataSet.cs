@@ -201,7 +201,7 @@ namespace Vixen.Module {
 			T instance;
 			foreach(Tuple<Guid, Guid> typeInstance in _dataModels.Keys) {
 				if(Modules.IsOfType(typeInstance.Item1, typeof(T))) {
-					IModuleManagement moduleManager = Modules.GetModuleManager<T>();
+					IModuleManagement moduleManager = Modules.GetManager<T>();
 					instance = moduleManager.Get(typeInstance.Item1) as T;
 					instance.InstanceId = typeInstance.Item2;
 					GetModuleInstanceData(instance);

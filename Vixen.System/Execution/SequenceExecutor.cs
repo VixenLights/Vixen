@@ -61,8 +61,6 @@ namespace Vixen.Execution {
 			// to be executed against the sequence's time.  This has the side effect of
 			// allowing timed-live behavior without an explicit runtime behavior that has
 			// to manage timing on its own.
-			// Note: Data written to the entry point being used here is *not* synced with
-			// sequence interval timing.  It could be, using another entry point.
 			_sequence.Data.AddLive(commandNode);
 
 			// We don't want any handlers beyond the executor to get live data.
@@ -84,7 +82,7 @@ namespace Vixen.Execution {
 				OnPlaying(StartTime, EndTime);
 				
 				TimingSource = this.Sequence.TimingProvider.GetSelectedSource() ??
-					Modules.GetModuleManager<ITimingModuleInstance, TimingModuleManagement>().GetDefault();
+					Modules.GetManager<ITimingModuleInstance, TimingModuleManagement>().GetDefault();
 
 				// Initialize behaviors BEFORE data is pulled from the sequence,
 				// they may influence the data.

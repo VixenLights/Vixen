@@ -13,11 +13,11 @@ namespace Vixen.Execution {
 		}
 
 		public string[] GetAvailableTimingSources(ISequence sequence) {
-			return Modules.GetModuleDescriptors<ITimingModuleInstance>().Select(x => x.TypeName).ToArray();
+			return Modules.GetDescriptors<ITimingModuleInstance>().Select(x => x.TypeName).ToArray();
 		}
 
 		public ITiming GetTimingSource(ISequence sequence, string sourceName) {
-			IModuleDescriptor moduleDescriptor = Modules.GetModuleDescriptors<ITimingModuleInstance>().FirstOrDefault(x => x.TypeName == sourceName);
+			IModuleDescriptor moduleDescriptor = Modules.GetDescriptors<ITimingModuleInstance>().FirstOrDefault(x => x.TypeName == sourceName);
 			if(moduleDescriptor != null) {
 				return Modules.ModuleManagement.GetTiming(moduleDescriptor.TypeId);
 			}

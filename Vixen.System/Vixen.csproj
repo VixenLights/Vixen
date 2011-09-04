@@ -105,6 +105,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Module\Editor\IEditorUserInterface.cs" />
     <Compile Include="Sys\ITimed.cs" />
     <Compile Include="Sys\LiveListEnumerator.cs" />
     <Compile Include="Sys\SequenceReaderAttribute.cs" />

@@ -165,6 +165,8 @@ namespace Vixen.Sys {
 						// Set the assembly it was borne from.
 						moduleDescriptor.Assembly = assembly;
 						descriptors.Add(moduleDescriptor);
+					} else {
+						VixenSystem.Logging.Error("Tried to load module " + moduleDescriptor.TypeName + " from " + Path.GetFileName(filePath) + ", but the ModuleClass does not implement IModuleInstance.");
 					}
 				}
 			}
@@ -186,7 +188,7 @@ namespace Vixen.Sys {
 				instance.Descriptor = GetDescriptorById(moduleTypeId);
 
 				// See if there are any templates to apply to the instance.
-				ModuleTemplateModuleManagement manager = Modules.GetModuleManager<IModuleTemplateModuleInstance, ModuleTemplateModuleManagement>();
+				ModuleTemplateModuleManagement manager = Modules.GetManager<IModuleTemplateModuleInstance, ModuleTemplateModuleManagement>();
 				manager.ProjectTemplateInto(instance);
 			}
 			return instance;
@@ -227,7 +229,7 @@ namespace Vixen.Sys {
 		/// </summary>
 		/// <typeparam name="T">Module instance type as specified by its ModuleImplementation.</typeparam>
 		/// <returns></returns>
-		static public IModuleDescriptor[] GetModuleDescriptors<T>()
+		static public IModuleDescriptor[] GetDescriptors<T>()
 			where T : class, IModuleInstance {
 			ModuleImplementation moduleImplementation = GetImplementation<T>();
 			if(moduleImplementation != null) {
@@ -245,13 +247,13 @@ namespace Vixen.Sys {
 		/// <typeparam name="T">Module instance type as specified by its ModuleImplementation.</typeparam>
 		/// <typeparam name="U">IModuleDescriptor implemenatation to cast the results to.</typeparam>
 		/// <returns></returns>
-		static public U[] GetModuleDescriptors<T, U>()
+		static public U[] GetDescriptors<T, U>()
 			where T : class, IModuleInstance
 			where U : class, IModuleDescriptor {
-			return GetModuleDescriptors<T>().Cast<U>().ToArray();
+			return GetDescriptors<T>().Cast<U>().ToArray();
 		}
 
-		static public IModuleDescriptor[] GetModuleDescriptors(string typeOfModule) {
+		static public IModuleDescriptor[] GetDescriptors(string typeOfModule) {
 			ModuleImplementation moduleImplementation = _moduleImplementationDescriptors.Keys.FirstOrDefault(x => x.TypeOfModule == typeOfModule);
 			if(moduleImplementation != null) {
 				return _moduleImplementationDescriptors[moduleImplementation].ToArray();
@@ -287,7 +289,7 @@ namespace Vixen.Sys {
 			}
 		}
 
-		static public U GetModuleManager<T, U>()
+		static public U GetManager<T, U>()
 			where T : class, IModuleInstance
 			where U : class, IModuleManagement<T> {
 			ModuleImplementation moduleImplementation = GetImplementation<T>();
@@ -297,7 +299,7 @@ namespace Vixen.Sys {
 			return null;
 		}
 
-		static public IModuleManagement GetModuleManager<T>()
+		static public IModuleManagement GetManager<T>()
 			where T : class, IModuleInstance {
 			ModuleImplementation moduleImplementation = GetImplementation<T>();
 			if(moduleImplementation != null) {
@@ -306,7 +308,7 @@ namespace Vixen.Sys {
 			return null;
 		}
 
-		static public U GetModuleRepository<T, U>()
+		static public U GetRepository<T, U>()
 			where T : class, IModuleInstance
 			where U : class, IModuleRepository<T> {
 			ModuleImplementation moduleImplementation = GetImplementation<T>();
@@ -316,7 +318,7 @@ namespace Vixen.Sys {
 			return null;
 		}
 
-		static public IModuleRepository GetModuleRepository<T>()
+		static public IModuleRepository GetRepository<T>()
 			where T : class, IModuleInstance {
 			ModuleImplementation moduleImplementation = GetImplementation<T>();
 			if(moduleImplementation != null) {
