@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace _595 {
+namespace VixenModules.Output._595 {
 	partial class SetupDialog : Form {
 		private Data _data;
 

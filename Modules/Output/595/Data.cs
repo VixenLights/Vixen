@@ -5,7 +5,7 @@ using System.Text;
 using System.Runtime.Serialization;
 using Vixen.Module;
 
-namespace _595 {
+namespace VixenModules.Output._595 {
 	[DataContract]
 	public class Data : ModuleDataModelBase {
 		[DataMember]

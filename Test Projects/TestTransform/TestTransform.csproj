@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\Output\Modules\Transform\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -88,10 +88,12 @@
     <ProjectReference Include="..\..\CommandStandard\CommandStandard.csproj">
       <Project>{ED76AB8D-4456-4CC4-B881-56A3DB4A229F}</Project>
       <Name>CommandStandard</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Vixen.System\Vixen.csproj">
       <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
       <Name>Vixen</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -101,9 +103,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetPath)" "$(SolutionDir)\Output\Modules\Transform\" /y
-xcopy "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)\Output\Modules\Transform\" /y
-</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

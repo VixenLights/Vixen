@@ -78,9 +78,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\CommonElements\TimeLineControl\TimelineControl.csproj">
-      <Project>{BE246522-FE6B-4BA5-BD55-9CE30FCBF02F}</Project>
-      <Name>TimelineControl</Name>
+    <ProjectReference Include="..\..\CommonElements\CommonElements.csproj">
+      <Project>{4EA6B667-2A25-47E8-810B-7CF1C6A8DB9A}</Project>
+      <Name>CommonElements</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

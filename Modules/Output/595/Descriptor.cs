@@ -5,7 +5,7 @@ using System.Text;
 using Vixen.Module;
 using Vixen.Module.Output;
 
-namespace _595 {
+namespace VixenModules.Output._595 {
 	public class Descriptor : OutputModuleDescriptorBase {
 		private Guid _typeId = new Guid("{9B8E5BC9-474F-4a6c-BE6C-455E506E54BF}");
 

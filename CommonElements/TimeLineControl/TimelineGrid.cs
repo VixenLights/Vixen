@@ -9,7 +9,7 @@ using System.ComponentModel;
 using System.Drawing.Imaging;
 
 
-namespace Timeline
+namespace CommonElements.Timeline
 {
 	public class TimelineGrid : TimelineControlBase
 	{

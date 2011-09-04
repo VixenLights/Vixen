@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace Timeline
+namespace CommonElements.Timeline
 {
     /// <summary>
     /// Represents a row in a TimelineControl, which contains TimelineElements.

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Timeline
+namespace CommonElements.Timeline
 {
 	public partial class TimelineRowList : UserControl
 	{

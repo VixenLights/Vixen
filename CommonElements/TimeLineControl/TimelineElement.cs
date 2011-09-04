@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Collections.Generic;
 
-namespace Timeline
+namespace CommonElements.Timeline
 {
     public class TimelineElement : IComparable<TimelineElement>
     {

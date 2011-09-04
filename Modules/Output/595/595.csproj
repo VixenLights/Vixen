@@ -19,7 +19,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\Output\Modules\Output\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -38,7 +38,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommandStandard">
-      <HintPath>..\..\..\Vixen.System\bin\Debug\CommandStandard.dll</HintPath>
+      <HintPath>..\..\..\Output\CommandStandard.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -47,7 +48,8 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Vixen">
-      <HintPath>..\..\..\Vixen.System\bin\Debug\Vixen.dll</HintPath>
+      <HintPath>..\..\..\Output\Vixen.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>

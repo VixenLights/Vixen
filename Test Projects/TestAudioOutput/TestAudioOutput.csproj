@@ -37,7 +37,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\Output\Modules\Media\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -119,6 +119,7 @@
     <ProjectReference Include="..\..\CommandStandard\CommandStandard.csproj">
       <Project>{ED76AB8D-4456-4CC4-B881-56A3DB4A229F}</Project>
       <Name>CommandStandard</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Fmod64\fmod.csproj">
       <Project>{0FC608ED-BBAD-4F92-8CAD-61D94F13F435}</Project>
@@ -127,6 +128,7 @@
     <ProjectReference Include="..\..\Vixen.System\Vixen.csproj">
       <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
       <Name>Vixen</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -153,8 +155,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetPath)" "$(SolutionDir)\Output\Modules\Media\" /y
-xcopy "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)\Output\Modules\Media\" /y</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

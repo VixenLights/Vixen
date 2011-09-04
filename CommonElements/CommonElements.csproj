@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\Output\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -91,17 +91,31 @@
     <Compile Include="TextDialog.Designer.cs">
       <DependentUpon>TextDialog.cs</DependentUpon>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ListSelectDialog.resx">
-      <DependentUpon>ListSelectDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MultiSelectTreeview.resx">
-      <DependentUpon>MultiSelectTreeview.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TextDialog.resx">
-      <DependentUpon>TextDialog.cs</DependentUpon>
-    </EmbeddedResource>
+    <Compile Include="TimelineControl\ExtensionMethods.cs" />
+    <Compile Include="TimelineControl\TimelineControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TimelineControl\TimelineControl.designer.cs">
+      <DependentUpon>TimelineControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TimelineControl\TimelineControlBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TimelineControl\TimelineElement.cs" />
+    <Compile Include="TimelineControl\TimelineEventArgs.cs" />
+    <Compile Include="TimelineControl\TimelineGrid.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TimelineControl\TimelineHeader.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TimelineControl\TimelineRow.cs" />
+    <Compile Include="TimelineControl\TimelineRowLabel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TimelineControl\TimelineRowList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

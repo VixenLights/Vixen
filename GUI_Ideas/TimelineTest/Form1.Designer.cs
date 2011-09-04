@@ -35,7 +35,7 @@
 			this.buttonZoomOut = new System.Windows.Forms.Button();
 			this.buttonGenericDebug = new System.Windows.Forms.Button();
 			this.buttonGenericDebug2 = new System.Windows.Forms.Button();
-			this.timelineControl1 = new Timeline.TimelineControl();
+			this.timelineControl1 = new CommonElements.Timeline.TimelineControl();
 			this.buttonAlignLeft = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
@@ -174,7 +174,7 @@
 		private System.Windows.Forms.Button buttonZoomOut;
 		private System.Windows.Forms.Button buttonGenericDebug;
 		private System.Windows.Forms.Button buttonGenericDebug2;
-		private TimelineControl timelineControl1;
+		private CommonElements.Timeline.TimelineControl timelineControl1;
 		private System.Windows.Forms.Button buttonAlignLeft;
     }
 }

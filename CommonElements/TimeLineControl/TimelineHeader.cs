@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using System.Drawing.Drawing2D;
 using System.Diagnostics;
 
-namespace Timeline
+namespace CommonElements.Timeline
 {
 	public partial class TimelineHeader : TimelineControlBase
 	{

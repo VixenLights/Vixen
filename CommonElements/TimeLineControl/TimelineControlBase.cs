@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Diagnostics;
 
-namespace Timeline
+namespace CommonElements.Timeline
 {
     public class TimelineControlBase : UserControl
     {

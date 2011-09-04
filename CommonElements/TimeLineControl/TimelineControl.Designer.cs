@@ -1,4 +1,4 @@
-﻿namespace Timeline
+﻿namespace CommonElements.Timeline
 {
 	partial class TimelineControl
 	{

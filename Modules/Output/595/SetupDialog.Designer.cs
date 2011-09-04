@@ -1,4 +1,4 @@
-﻿namespace _595 {
+﻿namespace VixenModules.Output._595 {
 	partial class SetupDialog {
 		/// <summary>
 		/// Required designer variable.

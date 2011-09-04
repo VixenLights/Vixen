@@ -5,7 +5,7 @@ using System.Text;
 using Vixen.Module;
 using Vixen.Module.Timing;
 
-namespace Generic {
+namespace VixenModules.Timing.Generic {
 	public class Descriptor : TimingModuleDescriptorBase {
 		private Guid _typeId = Guid.Empty;
 

@@ -61,7 +61,7 @@
 			this.listViewProperties = new System.Windows.Forms.ListView();
 			this.buttonBulkRename = new System.Windows.Forms.Button();
 			this.buttonDeleteItem = new System.Windows.Forms.Button();
-			this.multiSelectTreeviewChannelsGroups = new MultiSelectTreeview.MultiSelectTreeview();
+			this.multiSelectTreeviewChannelsGroups = new CommonElements.MultiSelectTreeview();
 			this.label1 = new System.Windows.Forms.Label();
 			this.groupBoxSelected.SuspendLayout();
 			this.groupBoxProperties.SuspendLayout();
@@ -405,7 +405,7 @@
 		private System.Windows.Forms.Button buttonOk;
 		private System.Windows.Forms.Button buttonAddChannel;
 		private System.Windows.Forms.GroupBox groupBoxSelected;
-		private MultiSelectTreeview.MultiSelectTreeview multiSelectTreeviewChannelsGroups;
+		private CommonElements.MultiSelectTreeview multiSelectTreeviewChannelsGroups;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.TextBox textBoxName;
 		private System.Windows.Forms.Label label4;

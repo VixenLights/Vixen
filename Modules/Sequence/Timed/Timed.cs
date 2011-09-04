@@ -6,7 +6,7 @@ using Vixen.Module;
 using Vixen.Module.Sequence;
 using Vixen.Sys;
 
-namespace TestSequences {
-	public class Timed : SequenceModuleInstanceBase {
+namespace VixenModules.Sequence.Timed {
+	public class TimedSequence : SequenceModuleInstanceBase {
 	}
 }

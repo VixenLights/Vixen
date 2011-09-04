@@ -5,8 +5,8 @@ using System.Text;
 using Vixen.Module;
 using Vixen.Module.Sequence;
 
-namespace TestSequences {
-	public class TimedSequenceModule : SequenceModuleDescriptorBase {
+namespace VixenModules.Sequence.Timed {
+	public class TimedSequenceModuleDescriptor : SequenceModuleDescriptorBase {
 		private Guid _typeId = new Guid("{4C258A3B-E725-4AE7-B50B-103F6AB8121E}");
 
 		override public string FileExtension {
@@ -18,7 +18,7 @@ namespace TestSequences {
 		}
 
 		override public Type ModuleClass {
-			get { return typeof(Timed); }
+			get { return typeof(TimedSequence); }
 		}
 
 		override public Type ModuleDataClass {

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using Vixen.Sys;
-using Vixen.Sys;
 using Vixen.Module.ModuleTemplate;
 
 namespace Vixen.Module.Sequence {

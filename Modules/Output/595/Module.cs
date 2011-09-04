@@ -5,11 +5,11 @@ using System.Text;
 using System.Runtime.InteropServices;
 using Vixen.Module;
 using Vixen.Module.Output;
-using Vixen.Common;
+using Vixen.Sys;
 using CommandStandard;
 using CommandStandard.Types;
 
-namespace _595 {
+namespace VixenModules.Output._595 {
 	public class Module : OutputModuleInstanceBase {
 		[DllImport("inpout32", EntryPoint = "Inp32")]
 		private static extern short In(ushort port);
