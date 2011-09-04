@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Vixen.Module;
 
-namespace TimedSequenceEditor
+namespace VixenModules.Editor.TimedSequenceEditor
 {
 	class TimedSequenceEditorDataModel : IModuleDataModel
 	{

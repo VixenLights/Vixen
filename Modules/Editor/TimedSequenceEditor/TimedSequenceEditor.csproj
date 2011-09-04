@@ -19,7 +19,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\Output\Modules\Editor\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -37,15 +37,43 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CommonElements">
+      <HintPath>..\..\..\Output\CommonElements.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Timed">
+      <HintPath>..\..\..\Output\Modules\Sequence\Timed.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Vixen">
-      <HintPath>..\..\..\Vixen.System\bin\Debug\Vixen.dll</HintPath>
+      <HintPath>..\..\..\Output\Vixen.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="TimedSequenceEditorDataModel.cs" />
     <Compile Include="TimedSequenceEditor.cs" />
     <Compile Include="TimedSequenceEditorDescriptor.cs" />
+    <Compile Include="TimedSequenceEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TimedSequenceEditorForm.Designer.cs">
+      <DependentUpon>TimedSequenceEditorForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TimedSequenceEditorForm.resx">
+      <DependentUpon>TimedSequenceEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
