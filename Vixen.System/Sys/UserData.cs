@@ -24,12 +24,12 @@ namespace Vixen.Sys {
 		private const int VERSION = 1;
 
 		public UserData() {
-			ModuleData = new ModuleDataSet();
+			ModuleData = new ModuleStaticDataSet();
 		}
 
 		public string FilePath { get; private set; }
 
-		public IModuleDataSet ModuleData { get; set; }
+		public ModuleStaticDataSet ModuleData { get; set; }
 
 		public IEnumerable<OutputChannel> Channels { get; set; }
 

@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Runtime.Serialization;
 
 namespace Vixen.Module {
+	[DataContract]
 	public abstract class ModuleDataModelBase : IModuleDataModel {
 		/// <summary>
 		/// Module type that the data model belongs to.

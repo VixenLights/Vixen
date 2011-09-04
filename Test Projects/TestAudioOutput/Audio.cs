@@ -13,6 +13,7 @@ namespace TestAudioOutput {
     public class Audio : MediaModuleInstanceBase, ITiming {
         private FmodInstance _audioSystem;
 		private AudioData _audioData;
+		private AudioStaticData _audioStaticData;
 
         override public void Start() {
             if(_audioSystem != null && !_audioSystem.IsPlaying) {
@@ -42,6 +43,16 @@ namespace TestAudioOutput {
 			get { return _audioData; }
 			set { _audioData = value as AudioData; }
         }
+
+		public override IModuleDataModel StaticModuleData {
+			get { return _audioStaticData; }
+			set { 
+				_audioStaticData = value as AudioStaticData;
+				if(_audioStaticData.SomethingSpecial == 0) {
+					_audioStaticData.SomethingSpecial = 1;
+				}
+			}
+		}
 
 		override public void Setup() {
 			using(AudioSetup audioSetup = new AudioSetup(_audioData)) {

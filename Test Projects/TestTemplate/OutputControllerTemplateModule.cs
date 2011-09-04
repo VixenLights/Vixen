@@ -17,7 +17,7 @@ namespace TestTemplate {
 			get { return typeof(OutputControllerTemplate); }
 		}
 
-		override public Type ModuleDataClass {
+		override public Type ModuleStaticDataClass {
 			get { return typeof(OutputControllerTemplateData); }
 		}
 

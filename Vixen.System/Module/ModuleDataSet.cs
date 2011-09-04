@@ -9,7 +9,7 @@ using Vixen.Sys;
 
 namespace Vixen.Module {
 	[DataContract]
-    public class ModuleDataSet : IModuleDataSet {
+    public abstract class ModuleDataSet : IModuleDataSet {
 		// Type data     = (type id, type id)     : data model
 		// Instance data = (type id, instance id) : data model
 		private Dictionary<Tuple<Guid, Guid>, IModuleDataModel> _dataModels = new Dictionary<Tuple<Guid, Guid>, IModuleDataModel>();
@@ -27,8 +27,13 @@ namespace Vixen.Module {
 		/// <param name="module"></param>
 		public void GetModuleTypeData(IModuleInstance module) {
 			if(module != null) {
-				_GetModuleData(module, new Tuple<Guid, Guid>(module.Descriptor.TypeId, module.Descriptor.TypeId));
+				//_GetModuleData(module, new Tuple<Guid, Guid>(module.Descriptor.TypeId, module.Descriptor.TypeId));
+				module.ModuleData = RetrieveTypeData(module.Descriptor);
 			}
+		}
+
+		public IModuleDataModel RetrieveTypeData(IModuleDescriptor descriptor) {
+			return _GetModuleData(descriptor, descriptor.TypeId);
 		}
 
 		/// <summary>
@@ -38,29 +43,59 @@ namespace Vixen.Module {
 		/// </summary>
 		/// <param name="module"></param>
 		public void GetModuleInstanceData(IModuleInstance module) {
-			_GetModuleData(module, new Tuple<Guid, Guid>(module.Descriptor.TypeId, module.InstanceId));
+			if(module != null) {
+				//_GetModuleData(module, new Tuple<Guid, Guid>(module.Descriptor.TypeId, module.InstanceId));
+				module.ModuleData = RetrieveInstanceData(module);
+			}
 		}
 
-		private void _GetModuleData(IModuleInstance module, Tuple<Guid,Guid> key) {
+		public IModuleDataModel RetrieveInstanceData(IModuleInstance instance) {
+			return _GetModuleData(instance.Descriptor, instance.Descriptor.TypeId, instance.InstanceId);
+		}
+
+		private IModuleDataModel _GetModuleData(IModuleDescriptor descriptor, Guid moduleTypeId) {
+			return _GetModuleData(descriptor, moduleTypeId, Guid.Empty);
+		}
+
+		private IModuleDataModel _GetModuleData(IModuleDescriptor descriptor, Guid moduleTypeId, Guid moduleInstanceId) {
 			IModuleDataModel dataModel = null;
 
+			Tuple<Guid, Guid> key = new Tuple<Guid, Guid>(moduleTypeId, moduleInstanceId);
+			
 			// If there isn't any data, create it and add it to the dataset.
 			if(!_dataModels.TryGetValue(key, out dataModel)) {
 				// The module may not have defined a data model because it may not have a
 				// need for data.
-				Type moduleDataType = Modules.GetDescriptorById(module.Descriptor.TypeId).ModuleDataClass;
-				if(moduleDataType != null) {
-					dataModel = Activator.CreateInstance(moduleDataType) as IModuleDataModel;
-					_SetPedigree(dataModel, module.Descriptor.TypeId, key.Item2);
-					module.ModuleData = dataModel;
-					_Add(this, key, module);
-				} else {
-					module.ModuleData = null;
+				Type dataModelClass = _GetDataSetType(descriptor);
+				if(dataModelClass != null) {
+					dataModel = Activator.CreateInstance(dataModelClass) as IModuleDataModel;
+					_SetPedigree(dataModel, moduleTypeId, moduleInstanceId);
+					_Add(this, moduleTypeId, moduleInstanceId, dataModel);
 				}
-			} else {
-				module.ModuleData = dataModel;
 			}
+
+			return dataModel;
 		}
+		//private void _GetModuleData(IModuleInstance module, Tuple<Guid, Guid> key) {
+		//    IModuleDataModel dataModel = null;
+
+		//    // If there isn't any data, create it and add it to the dataset.
+		//    if(!_dataModels.TryGetValue(key, out dataModel)) {
+		//        // The module may not have defined a data model because it may not have a
+		//        // need for data.
+		//        Type moduleDataType = Modules.GetDescriptorById(module.Descriptor.TypeId).ModuleDataClass;
+		//        if(moduleDataType != null) {
+		//            dataModel = Activator.CreateInstance(moduleDataType) as IModuleDataModel;
+		//            _SetPedigree(dataModel, module.Descriptor.TypeId, key.Item2);
+		//            module.ModuleData = dataModel;
+		//            _Add(this, key, module);
+		//        } else {
+		//            module.ModuleData = null;
+		//        }
+		//    } else {
+		//        module.ModuleData = dataModel;
+		//    }
+		//}
 
 		private void _SetPedigree(IModuleDataModel dataModel, Guid owningModuleTypeId, Guid moduleInstanceId) {
 			// Where the data came from...
@@ -69,18 +104,20 @@ namespace Vixen.Module {
 			// Type of module it belongs to...
 			dataModel.ModuleTypeId = owningModuleTypeId;
 		}
+
 		public void Add(IModuleDataModel data) {
-			_Add(this, new Tuple<Guid,Guid>(data.ModuleTypeId, data.ModuleInstanceId), data);
+			_Add(this, data.ModuleTypeId, data.ModuleInstanceId, data);
 		}
 
-        static private void _Add(ModuleDataSet dataSet, Tuple<Guid,Guid> key, IModuleInstance module) {
-			_Add(dataSet, key, module.ModuleData);
-		}
+		//static private void _Add(ModuleDataSet dataSet, Tuple<Guid,Guid> key, IModuleInstance module) {
+		//    _Add(dataSet, key, module.ModuleData);
+		//}
 
-		static private void _Add(ModuleDataSet dataSet, Tuple<Guid,Guid> key, IModuleDataModel moduleData) {
-			if(dataSet == null) throw new ArgumentException("Cannot be null.", "dataSet");
-			if(key == null) throw new ArgumentException("Cannot be empty.", "key");
-			if(moduleData == null) throw new ArgumentException("Cannot be null.", "moduleData");
+		static private void _Add(ModuleDataSet dataSet, Guid moduleTypeId, Guid moduleInstanceId, IModuleDataModel moduleData) {
+			if(dataSet == null) throw new ArgumentNullException("dataSet");
+			if(moduleData == null) throw new ArgumentNullException("moduleData");
+
+			Tuple<Guid, Guid> key = new Tuple<Guid, Guid>(moduleTypeId, moduleInstanceId);
 
 			if(!dataSet._dataModels.ContainsKey(key)) {
 				dataSet._dataModels[key] = moduleData;
@@ -162,7 +199,9 @@ namespace Vixen.Module {
                     descriptor = Modules.GetDescriptorById(moduleTypeId);
                     if(descriptor != null) {
                         // Create the serializer for the module type's data model type.
-                        serializer = new DataContractSerializer(descriptor.ModuleDataClass);
+						//serializer = new DataContractSerializer(descriptor.ModuleDataClass);
+						Type dataSetType = _GetDataSetType(descriptor);
+						serializer = new DataContractSerializer(dataSetType);
                         dataModel = null;
                         using(MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(moduleElement.FirstNode.ToString()))) {
 							dataModel = serializer.ReadObject(stream) as IModuleDataModel;
@@ -170,7 +209,7 @@ namespace Vixen.Module {
 						
 						_SetPedigree(dataModel, moduleTypeId, moduleInstanceId);
 
-						_Add(this, new Tuple<Guid, Guid>(moduleTypeId, moduleInstanceId), dataModel);
+						_Add(this, moduleTypeId, moduleInstanceId, dataModel);
                     }
                 }
             }
@@ -219,7 +258,8 @@ namespace Vixen.Module {
 		}
 
 		public IModuleDataSet Clone() {
-			ModuleDataSet newDataSet = new ModuleDataSet();
+			//ModuleDataSet newDataSet = new ModuleDataSet();
+			ModuleDataSet newDataSet = Activator.CreateInstance(GetType()) as ModuleDataSet;
 			_Clone(this, newDataSet);
 			return newDataSet;
 		}
@@ -276,11 +316,11 @@ namespace Vixen.Module {
 			return null;
 		}
 		
-		static public void CreateEmptyDataSetFile(string fileName) {
-			ModuleDataSet dataSet = new ModuleDataSet();
-			XElement element = dataSet.ToXElement();
-			element.Save(fileName);
-		}
+		//static public void CreateEmptyDataSetFile(string fileName) {
+		//    ModuleDataSet dataSet = new ModuleDataSet();
+		//    XElement element = dataSet.ToXElement();
+		//    element.Save(fileName);
+		//}
 
 		/// <summary>
 		/// Used only for XML serialization.
@@ -295,5 +335,7 @@ namespace Vixen.Module {
 				Deserialize(value); 
 			}
 		}
+
+		abstract protected Type _GetDataSetType(IModuleDescriptor descriptor);
 	}
 }

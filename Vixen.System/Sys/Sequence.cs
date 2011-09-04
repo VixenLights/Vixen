@@ -63,7 +63,7 @@ namespace Vixen.Sys {
 		public const long Forever = long.MaxValue;
 
 		protected Sequence() {
-			ModuleDataSet = new ModuleDataSet();
+			ModuleDataSet = new ModuleLocalDataSet();
 			
 			FilePath = "";
 

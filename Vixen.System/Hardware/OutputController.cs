@@ -362,8 +362,6 @@ namespace Vixen.Hardware {
 				}
 
 				if(controller._outputModule != null) {
-					// Get the module data for the controller's output module.
-					VixenSystem.ModuleData.GetModuleTypeData(controller._outputModule);
 					// Start the output module.
 					controller._outputModule.Start();
 				}

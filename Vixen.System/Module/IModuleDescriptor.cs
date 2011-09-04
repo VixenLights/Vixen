@@ -21,7 +21,12 @@ namespace Vixen.Module {
 		/// this module type.
 		/// </summary>
 		Type ModuleDataClass { get; }
-        string Author { get; }
+		/// <summary>
+		/// Type of the module static data class associated with all instances of
+		/// this module type.
+		/// </summary>
+		Type ModuleStaticDataClass { get; }
+		string Author { get; }
         string Description { get; }
         string Version { get; }
 		/// <summary>

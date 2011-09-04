@@ -25,10 +25,6 @@ namespace TestSequences {
 			get { return typeof(VBScript); }
 		}
 
-		override public Type ModuleDataClass {
-			get { return null; }
-		}
-
 		override public string Author {
 			get { throw new NotImplementedException(); }
 		}

@@ -14,7 +14,11 @@ namespace Vixen.Sys {
 		static private Dictionary<Guid, Type> _activators = new Dictionary<Guid, Type>();
 		// Module type id : module descriptor
 		static private Dictionary<Guid, IModuleDescriptor> _moduleDescriptors = new Dictionary<Guid, IModuleDescriptor>();
+		// ModuleImplementation : descriptors for modules of that type
 		static private Dictionary<ModuleImplementation, List<IModuleDescriptor>> _moduleImplementationDescriptors = new Dictionary<ModuleImplementation, List<IModuleDescriptor>>();
+		// Module type id : module type's static data singleton
+		static private Dictionary<Guid, IModuleDataModel> _moduleStaticDataRepository = new Dictionary<Guid, IModuleDataModel>();
+
 		static public dynamic ModuleManagement { get; private set; }
 		static public dynamic ModuleRepository { get; private set; }
 
@@ -186,6 +190,7 @@ namespace Vixen.Sys {
 				instance = Activator.CreateInstance(instanceType) as IModuleInstance;
 				instance.InstanceId = Guid.NewGuid();
 				instance.Descriptor = GetDescriptorById(moduleTypeId);
+				instance.StaticModuleData = _GetModuleStaticData(instance);
 
 				// See if there are any templates to apply to the instance.
 				ModuleTemplateModuleManagement manager = Modules.GetManager<IModuleTemplateModuleInstance, ModuleTemplateModuleManagement>();
@@ -336,5 +341,18 @@ namespace Vixen.Sys {
 			return _moduleImplementationDescriptors.Keys.FirstOrDefault(x => x.ModuleInstanceType == typeof(T));
 		}
 
+		static private IModuleDataModel _GetModuleStaticData(IModuleInstance instance) {
+			// All instances of a given module type will share a single instance of that type's
+			// static data.  A change in one is reflected in all.
+			IModuleDataModel data = null;
+			if(!_moduleStaticDataRepository.TryGetValue(instance.Descriptor.TypeId, out data)) {
+				if(instance.Descriptor.ModuleStaticDataClass != null) {
+					data = VixenSystem.UserData.ModuleData.RetrieveTypeData(instance.Descriptor);
+					_moduleStaticDataRepository[instance.Descriptor.TypeId] = data;
+				}
+			}
+
+			return data;
+		}
 	}
 }

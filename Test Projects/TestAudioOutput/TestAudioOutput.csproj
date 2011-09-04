@@ -112,6 +112,7 @@
     <Compile Include="AudioSetup.Designer.cs">
       <DependentUpon>AudioSetup.cs</DependentUpon>
     </Compile>
+    <Compile Include="AudioStaticData.cs" />
     <Compile Include="FmodInstance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

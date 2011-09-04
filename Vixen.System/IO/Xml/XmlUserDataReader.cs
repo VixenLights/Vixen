@@ -32,9 +32,9 @@ namespace Vixen.IO.Xml {
 			return userData;
 		}
 
-		private IModuleDataSet _ReadModuleData(XElement element) {
+		private ModuleStaticDataSet _ReadModuleData(XElement element) {
 			XElement moduleDataElement = element.Element(ELEMENT_MODULE_DATA);
-			IModuleDataSet moduleData = new ModuleDataSet();
+			ModuleStaticDataSet moduleData = new ModuleStaticDataSet();
 
 			if(moduleDataElement != null) {
 				moduleData.Deserialize(moduleDataElement.ToString());
@@ -121,7 +121,7 @@ namespace Vixen.IO.Xml {
 
 		protected override void _PopulateObject(UserData obj, XElement element) {
 			// Alternate data path handled by VixenSystem.
-			IModuleDataSet moduleData = _ReadModuleData(element);
+			ModuleStaticDataSet moduleData = _ReadModuleData(element);
 			_channels = _ReadChannels(element);
 			ChannelNode[] nodes = _ReadNodes(element);
 

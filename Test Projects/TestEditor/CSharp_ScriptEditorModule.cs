@@ -22,10 +22,6 @@ namespace TestEditor {
 			get { return typeof(CSharp_EditorModuleInstance); }
 		}
 
-		override public Type ModuleDataClass {
-			get { return null; }
-		}
-
 		override public Type EditorUserInterfaceClass {
 			get { return typeof(CSharp_ScriptEditor); }
 		}

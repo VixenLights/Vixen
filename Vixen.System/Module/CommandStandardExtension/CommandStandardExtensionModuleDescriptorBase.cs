@@ -9,10 +9,6 @@ namespace Vixen.Module.CommandStandardExtension {
 
 		abstract public override Guid TypeId { get; }
 
-		abstract public override Type ModuleClass { get; }
-
-		abstract public override Type ModuleDataClass { get; }
-
 		abstract public override string Author { get; }
 
 		abstract public override string Description { get; }

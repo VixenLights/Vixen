@@ -21,6 +21,10 @@ namespace TestAudioOutput {
             get { return typeof(AudioData); }
         }
 
+		public override Type ModuleStaticDataClass {
+			get { return typeof(AudioStaticData); }
+		}
+
 		override public string Author {
             get { throw new NotImplementedException(); }
         }

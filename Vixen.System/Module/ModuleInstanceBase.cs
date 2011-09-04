@@ -9,6 +9,8 @@ namespace Vixen.Module {
 
 		virtual public IModuleDataModel ModuleData { get; set; }
 
+		virtual public IModuleDataModel StaticModuleData { get; set; }
+
 		virtual public IModuleDescriptor Descriptor { get; set; }
 
 		virtual public void Dispose() { }

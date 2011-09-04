@@ -10,9 +10,13 @@ namespace Vixen.Module {
 		/// </summary>
         Guid InstanceId { get; set; }
 		/// <summary>
-		/// Module's data model object, set by the system.
+		/// Module's non-static data model object.
 		/// </summary>
 		IModuleDataModel ModuleData { get; set; }
+		/// <summary>
+		/// Module's static data model object.
+		/// </summary>
+		IModuleDataModel StaticModuleData { get; set; }
 		/// <summary>
 		/// System-supplied reference to the descriptor for this instance.
 		/// </summary>

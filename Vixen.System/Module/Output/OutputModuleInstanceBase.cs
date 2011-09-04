@@ -12,7 +12,7 @@ namespace Vixen.Module.Output {
 		private int _outputCount;
 
 		protected OutputModuleInstanceBase() {
-			TransformModuleData = new ModuleDataSet();
+			TransformModuleData = new ModuleLocalDataSet();
 		}
 
 		public int OutputCount {

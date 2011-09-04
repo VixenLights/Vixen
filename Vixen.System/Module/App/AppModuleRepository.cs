@@ -15,8 +15,6 @@ namespace Vixen.Module.App {
 			_instances[id] = instance;
 			// Assign the AOM reference for the client application.
 			instance.Application = ApplicationServices.ClientApplication;
-			// Get the module's data from the user data.
-			VixenSystem.ModuleData.GetModuleTypeData(instance);
 			// Call Loading.
 			instance.Loading();
 		}

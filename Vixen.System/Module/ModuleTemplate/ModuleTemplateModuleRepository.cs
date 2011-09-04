@@ -11,8 +11,6 @@ namespace Vixen.Module.ModuleTemplate {
 		public void Add(Guid id) {
 			// Create an instance.
 			IModuleTemplateModuleInstance instance = Modules.GetById(id) as IModuleTemplateModuleInstance;
-			// Load data from user data.
-			VixenSystem.ModuleData.GetModuleTypeData(instance);
 			// Reference the instance.
 			_instances[id] = instance;
 		}

@@ -21,10 +21,6 @@ namespace TestCommandEditors {
 			get { return typeof(TestCommandEditor); }
 		}
 
-		override public Type ModuleDataClass {
-			get { return null; }
-		}
-
 		override public string Author {
 			get { throw new NotImplementedException(); }
 		}

@@ -13,7 +13,7 @@ namespace Vixen.Sys {
 
 		public PropertyManager(ChannelNode owner) {
 			_owner = owner;
-			PropertyData = new ModuleDataSet();
+			PropertyData = new ModuleLocalDataSet();
 		}
 
 		public IPropertyModuleInstance Add(Guid id) {

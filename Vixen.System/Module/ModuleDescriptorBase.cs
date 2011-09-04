@@ -11,7 +11,9 @@ namespace Vixen.Module {
 
 		abstract public Type ModuleClass { get; }
 
-		abstract public Type ModuleDataClass { get; }
+		virtual public Type ModuleDataClass { get { return null; } }
+
+		virtual public Type ModuleStaticDataClass { get { return null; } }
 
 		abstract public string Author { get; }
 

@@ -39,7 +39,7 @@ namespace Vixen.IO.Xml {
 		}
 
 		private IModuleDataSet _GetTransformModuleData(XElement element) {
-			IModuleDataSet moduleDataSet = new ModuleDataSet();
+			IModuleDataSet moduleDataSet = new ModuleLocalDataSet();
 
 			if(!element.IsEmpty) {
 				string moduleDataString = element.InnerXml();

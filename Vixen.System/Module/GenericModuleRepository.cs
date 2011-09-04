@@ -5,6 +5,9 @@ using System.Text;
 using Vixen.Sys;
 
 namespace Vixen.Module {
+	// The generic repository isn't actually a repository.  Any instances retrieved
+	// from it are created new.  Subclasses have to implement their proprietary
+	// repository scheme to fits their specific needs.
 	class GenericModuleRepository<T> : IModuleRepository<T>
 		where T : class, IModuleInstance {
 		virtual public void Add(Guid id) { }

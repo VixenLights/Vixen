@@ -105,10 +105,6 @@ namespace Vixen.Sys {
 			}
         }
 
-		static public IModuleDataSet ModuleData {
-			get { return VixenSystem.UserData.ModuleData; }
-		}
-
 		static public string AssemblyFileName {
 			get { return Assembly.GetExecutingAssembly().Location; }
 		}
