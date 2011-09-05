@@ -59,6 +59,9 @@ namespace Vixen.Sys {
 					}
 
 					_state = RunState.Started;
+				} catch(ReflectionTypeLoadException ex) {
+					Logging.Error("Loader exceptions:" + Environment.NewLine + ex.LoaderExceptions.Select(x => x.Message + Environment.NewLine));
+					_state = RunState.Stopped;
 				} catch(Exception ex) {
 					// The client is expected to have subscribed to the logging event
 					// so that it knows that an exception occurred during loading.

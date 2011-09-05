@@ -22,6 +22,7 @@ namespace Vixen.IO.Xml {
 		private const string ELEMENT_PROPERTIES = "Properties";
 		private const string ELEMENT_PROPERTY = "Property";
 		private const string ELEMENT_PROPERTY_DATA = "PropertyData";
+		private const string ELEMENT_IDENTITY = "Identity";
 		private const string ATTR_ID = "id";
 		private const string ATTR_NAME = "name";
 		private const string ATTR_CHANNEL_ID = "channelId";
@@ -30,6 +31,28 @@ namespace Vixen.IO.Xml {
 			UserData userData = new UserData();
 
 			return userData;
+		}
+
+		protected override void _PopulateObject(UserData obj, XElement element) {
+			Guid identity = _ReadIdentity(element);
+			// Alternate data path handled by VixenSystem.
+			ModuleStaticDataSet moduleData = _ReadModuleData(element);
+			_channels = _ReadChannels(element);
+			ChannelNode[] nodes = _ReadNodes(element);
+
+			obj.Identity = identity;
+			obj.ModuleData = moduleData;
+			obj.Channels = _channels;
+			obj.Nodes = nodes;
+		}
+
+		protected override IEnumerable<Func<XElement, XElement>> _ProvideMigrations(int versionAt, int targetVersion) {
+			if(versionAt < 2 && targetVersion >= 2) yield return _Version_1_to_2;
+		}
+
+		private Guid _ReadIdentity(XElement element) {
+			element = element.Element(ELEMENT_IDENTITY);
+			return Guid.Parse(element.Value);
 		}
 
 		private ModuleStaticDataSet _ReadModuleData(XElement element) {
@@ -57,11 +80,11 @@ namespace Vixen.IO.Xml {
 		}
 
 		private OutputChannel _ReadOutputChannel(XElement element) {
-			Guid id = new Guid(element.Attribute("id").Value);
-			string name = element.Attribute("name").Value;
+			Guid id = new Guid(element.Attribute(ATTR_ID).Value);
+			string name = element.Attribute(ATTR_NAME).Value;
 			Patch patch = new Patch(
 					element
-					.Element("Patch")
+					.Element(ELEMENT_PATCH)
 					.Elements()
 					.Select(_ReadControllerReference)
 					);
@@ -119,19 +142,9 @@ namespace Vixen.IO.Xml {
 				);
 		}
 
-		protected override void _PopulateObject(UserData obj, XElement element) {
-			// Alternate data path handled by VixenSystem.
-			ModuleStaticDataSet moduleData = _ReadModuleData(element);
-			_channels = _ReadChannels(element);
-			ChannelNode[] nodes = _ReadNodes(element);
-
-			obj.ModuleData = moduleData;
-			obj.Channels = _channels;
-			obj.Nodes = nodes;
-		}
-
-		protected override IEnumerable<Func<XElement, XElement>> _ProvideMigrations(int versionAt, int targetVersion) {
-			return new Func<XElement, XElement>[] { };
+		private XElement _Version_1_to_2(XElement element) {
+			element.Add(new XElement(ELEMENT_IDENTITY, Guid.NewGuid().ToString()));
+			return element;
 		}
 	}
 }

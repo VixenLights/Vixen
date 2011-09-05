@@ -12,6 +12,7 @@ using Vixen.IO.Xml;
 
 //UserData
 //  DataDirectory (may or may not exist, exists only in binary branch copy)
+//  Identity
 //  ModuleData
 //  Channels
 //  RootNodes
@@ -21,13 +22,15 @@ namespace Vixen.Sys {
 		private string _alternateDataPath;
 
 		private const string USER_DATA_FILE = "UserData.xml";
-		private const int VERSION = 1;
+		private const int VERSION = 2;
 
 		public UserData() {
 			ModuleData = new ModuleStaticDataSet();
 		}
 
 		public string FilePath { get; private set; }
+
+		public Guid Identity { get; set; }
 
 		public ModuleStaticDataSet ModuleData { get; set; }
 

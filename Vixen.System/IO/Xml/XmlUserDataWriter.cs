@@ -18,12 +18,14 @@ namespace Vixen.IO.Xml {
 		private const string ELEMENT_PROPERTIES = "Properties";
 		private const string ELEMENT_PROPERTY = "Property";
 		private const string ELEMENT_PROPERTY_DATA = "PropertyData";
+		private const string ELEMENT_IDENTITY = "Identity";
 		private const string ATTR_ID = "id";
 		private const string ATTR_NAME = "name";
 		private const string ATTR_CHANNEL_ID = "channelId";
 
 		override protected XElement _CreateContent(UserData userData) {
 			return new XElement(ELEMENT_ROOT,
+				new XElement(ELEMENT_IDENTITY, userData.Identity),
 				_WriteAlternateDataDirectory(userData),
 				_WriteModuleData(userData),
 				_WriteChannels(userData),
