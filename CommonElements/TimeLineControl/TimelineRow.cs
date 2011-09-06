@@ -171,10 +171,10 @@ namespace CommonElements.Timeline
 
 		#region Events
 
-		internal event EventHandler<ElementEventArgs> ElementAdded;
-		internal event EventHandler<ElementEventArgs> ElementRemoved;
-		internal static event EventHandler RowChanged;
-		internal static event EventHandler<ModifierKeysEventArgs> RowSelectedChanged;
+		public event EventHandler<ElementEventArgs> ElementAdded;
+		public event EventHandler<ElementEventArgs> ElementRemoved;
+		public static event EventHandler RowChanged;
+		public static event EventHandler<ModifierKeysEventArgs> RowSelectedChanged;
 
 		private void _ElementAdded(TimelineElement te) { if (ElementAdded != null) ElementAdded(this, new ElementEventArgs(te)); }
 		private void _ElementRemoved(TimelineElement te) { if (ElementRemoved != null) ElementRemoved(this, new ElementEventArgs(te)); }
@@ -289,10 +289,20 @@ namespace CommonElements.Timeline
 			return m_elements[index];
 		}
 
-		public void ClearElements()
+		public void ClearRowElements()
 		{
-			m_elements.Clear();
+			foreach (TimelineElement element in m_elements)
+				RemoveElement(element);
+
 			_RowChanged();
+		}
+
+		public void ClearAllElements()
+		{
+			foreach (TimelineRow child in ChildRows) {
+				child.ClearAllElements();
+			}
+			ClearRowElements();
 		}
 
 		public void AddChildRow(TimelineRow row)

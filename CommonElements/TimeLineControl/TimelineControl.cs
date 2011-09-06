@@ -200,6 +200,13 @@ namespace CommonElements.Timeline
 			timelineGrid.AlignSelectedElementsLeft();
 		}
 
+		public void ClearAllElements()
+		{
+			foreach (TimelineRow row in timelineGrid.Rows) {
+				row.ClearAllElements();
+			}
+		}
+
 
 		#endregion
 

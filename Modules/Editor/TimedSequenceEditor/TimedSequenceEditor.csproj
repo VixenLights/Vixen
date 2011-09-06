@@ -47,10 +47,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="Timed">
-      <HintPath>..\..\..\Output\Modules\Sequence\Timed.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Vixen">
       <HintPath>..\..\..\Output\Vixen.dll</HintPath>
       <Private>False</Private>
@@ -66,6 +62,7 @@
     <Compile Include="TimedSequenceEditorForm.Designer.cs">
       <DependentUpon>TimedSequenceEditorForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="TimedSequenceElement.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="TimedSequenceEditorForm.resx">
@@ -74,6 +71,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Sequence\Timed\Timed.csproj">
+      <Project>{45E1228A-F714-41D5-BB9B-A776F2B23143}</Project>
+      <Name>Timed</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

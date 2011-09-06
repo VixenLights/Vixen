@@ -66,7 +66,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public void Save(string filePath = null)
 		{
-			throw new NotImplementedException();
+			SaveSequence(filePath);
 		}
 
 		public ISelection Selection
@@ -80,13 +80,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			set { LoadSequence(value);  }
 		}
 
-		// TODO: should this be doing anything special? (returning a type, keeping track of
-		// the owner module instance that instantiated it, etc.)
 		public IEditorModuleInstance OwnerModule { get; set; }
 
 		public void Start()
 		{
-			throw new NotImplementedException(); 
+			Show();
 		}
 
 		#endregion
@@ -118,6 +116,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			// made the new row from the given node and add it to the control.
 			TimelineRow newRow = timelineControl.AddRow(node.Name, parentRow);
+			newRow.ElementRemoved += ElementRemovedFromRowHandler;
 
 			// Tag it with the node it refers to, and take note of which row the given channel node will refer to.
 			newRow.Tag = node;
@@ -142,42 +141,81 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			// clear out all the old data
-			// TODO
+			timelineControl.ClearAllElements();
 
 			// load the new data: get all the commands in the sequence, and make a new element for each of them.
 			foreach (CommandNode node in _sequence.Data.GetCommands()) {
-				// for each command, make a new element for every separate row its in; even though there's only
-				// a single command, if there are multiple copies of the same channel node that it is in (ie.
-				// belonging to different groups, etc.) then add a new element for each row. We can just track the
-				// elements, and change the other "identical" elements if one of them changes.
-				if (_channelNodeToRows.ContainsKey(node.TargetNodes.First())) {
-					List<TimelineRow> targetRows = _channelNodeToRows[node.TargetNodes.First()];
-					// make a new element for each row that represents the channel this command is in.
-					foreach (TimelineRow row in targetRows) {
-						TimelineElement element = new TimelineElement();
-						element.StartTime = TimeSpan.FromMilliseconds(node.StartTime);
-						element.Duration = TimeSpan.FromMilliseconds(node.TimeSpan);
-						if (_commandNodeToElements.ContainsKey(node))
-							_commandNodeToElements[node].Add(element);
-						else
-							_commandNodeToElements[node] = new List<TimelineElement> { element };
-					}
-				}
+				AddNewElementForCommandNode(node);
 			}
 		}
 
-		private void SaveSequence()
+		/// <summary>
+		/// Populates the TimelineControl grid with a new TimedSequenceElement for the given CommandNode.
+		/// </summary>
+		/// <param name="node">The CommandNode to make an element in the grid for.</param>
+		private void AddNewElementForCommandNode(CommandNode node)
 		{
-			if (_sequence != null)
-				_sequence.Save();
+			// for the command, make a new element for every separate row its in; even though there's only
+			// a single command, if there are multiple copies of the same channel node that it is in (ie.
+			// belonging to different groups, etc.) then add a new element for each row. We can just track the
+			// elements, and change the other "identical" elements if one of them changes.
+			if (_channelNodeToRows.ContainsKey(node.TargetNodes.First())) {
+				List<TimelineRow> targetRows = _channelNodeToRows[node.TargetNodes.First()];
+				// make a new element for each row that represents the channel this command is in.
+				foreach (TimelineRow row in targetRows) {
+					TimedSequenceElement element = new TimedSequenceElement();
+					element.StartTime = TimeSpan.FromMilliseconds(node.StartTime);
+					element.Duration = TimeSpan.FromMilliseconds(node.TimeSpan);
+					element.CommandNode = node;
+					element.ElementContentChanged += ElementContentChangedHandler;
+					element.ElementMoved += ElementMovedHandler;
+					if (_commandNodeToElements.ContainsKey(node))
+						_commandNodeToElements[node].Add(element);
+					else
+						_commandNodeToElements[node] = new List<TimelineElement> { element };
+				}
+			} else {
+				// we don't have a row for the channel this command is referencing; most likely, the row has
+				// been deleted, or we're opening someone else's sequence, etc. Big fat TODO: here for that, then.
+				// dunno what we want to do: prompt to add new channels for them? map them to others? etc.
+			}
+		}
+
+		private void SaveSequence(string filePath = null)
+		{
+			if (_sequence != null) {
+				if (filePath == null)
+					_sequence.Save();
+				else
+					_sequence.Save(filePath);
+			}
 		}
 
 
+		#endregion
 
 
+		#region Event Handlers
 
+		protected void ElementContentChangedHandler(object sender, EventArgs e)
+		{
+			TimedSequenceElement element = sender as TimedSequenceElement;
+			// TODO: I'm not sure if we will need to do anything here; if we are updating effect details,
+			// will the EffectEditors configure the CommandNode object directly?
+		}
 
+		protected void ElementMovedHandler(object sender, EventArgs e)
+		{
+			TimedSequenceElement element = sender as TimedSequenceElement;
+			element.CommandNode.StartTime = (long)element.StartTime.TotalMilliseconds;
+			element.CommandNode.TimeSpan = (long)element.Duration.TotalMilliseconds;
+		}
 
+		protected void ElementRemovedFromRowHandler(object sender, ElementEventArgs e)
+		{
+			e.Element.ElementContentChanged -= ElementContentChangedHandler;
+			e.Element.ElementMoved -= ElementMovedHandler;
+		}
 
 		#endregion
 

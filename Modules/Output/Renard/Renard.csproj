@@ -74,7 +74,7 @@
       <HintPath>..\..\..\Vixen.System\bin\Debug\CommandStandard.dll</HintPath>
     </Reference>
     <Reference Include="CommonElements">
-      <HintPath>..\..\..\CommonElements\bin\Debug\CommonElements.dll</HintPath>
+      <HintPath>..\..\..\Output\CommonElements.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

@@ -84,13 +84,13 @@ namespace CommonElements.Timeline
 
 		#region Events
 
-		internal event EventHandler ElementContentChanged;
-		internal event EventHandler ElementSelectedChanged;
-		internal event EventHandler ElementMoved;
+		public event EventHandler ElementContentChanged;
+		public event EventHandler ElementSelectedChanged;
+		public event EventHandler ElementMoved;
 
-		private void _ElementContentChanged() { if (ElementContentChanged != null) ElementContentChanged(this, EventArgs.Empty); }
-		private void _ElementSelectedChanged() { if (ElementSelectedChanged != null) ElementSelectedChanged(this, EventArgs.Empty); }
-		private void _ElementMoved() { if (ElementMoved != null) ElementMoved(this, EventArgs.Empty); }
+		protected void _ElementContentChanged() { if (ElementContentChanged != null) ElementContentChanged(this, EventArgs.Empty); }
+		protected void _ElementSelectedChanged() { if (ElementSelectedChanged != null) ElementSelectedChanged(this, EventArgs.Empty); }
+		protected void _ElementMoved() { if (ElementMoved != null) ElementMoved(this, EventArgs.Empty); }
 
 		#endregion
 
