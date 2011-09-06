@@ -688,6 +688,36 @@ namespace TestClient
 			buttonNodeProperties.Enabled = treeViewNodes.SelectedNode != null;
 		}
 
+		private void buttonGetContextFileName_Click(object sender, EventArgs e) {
+			if(openFileDialogContext.ShowDialog() == DialogResult.OK) {
+				textBoxTargetPackageFile.Text = openFileDialogContext.FileName;
+			}
+		}
+
+		private void buttonPackageContext_Click(object sender, EventArgs e) {
+			Cursor = Cursors.WaitCursor;
+			try {
+				ApplicationServices.PackageSystemContext(textBoxTargetPackageFile.Text);
+				MessageBox.Show("Package built.");
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message + Environment.NewLine + ex.StackTrace);
+			} finally {
+				Cursor = Cursors.Default;
+			}
+		}
+
+		private void buttonUnpackageContext_Click(object sender, EventArgs e) {
+			Cursor = Cursors.WaitCursor;
+			try {
+				string rootPath = ApplicationServices.UnpackageSystemContext(textBoxTargetPackageFile.Text);
+				MessageBox.Show("Package unwrapped at " + rootPath);
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message + Environment.NewLine + ex.StackTrace);
+			} finally {
+				Cursor = Cursors.Default;
+			}
+		}
+
     }
 
 }

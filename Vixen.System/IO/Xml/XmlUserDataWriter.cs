@@ -22,14 +22,28 @@ namespace Vixen.IO.Xml {
 		private const string ATTR_ID = "id";
 		private const string ATTR_NAME = "name";
 		private const string ATTR_CHANNEL_ID = "channelId";
+		private const string ATTR_IS_CONTEXT = "isContext";
 
 		override protected XElement _CreateContent(UserData userData) {
 			return new XElement(ELEMENT_ROOT,
-				new XElement(ELEMENT_IDENTITY, userData.Identity),
+				_WriteContextFlag(userData),
+				_WriteIdentity(userData),
 				_WriteAlternateDataDirectory(userData),
 				_WriteModuleData(userData),
 				_WriteChannels(userData),
 				_WriteBranchNodes(userData));
+		}
+
+		private XAttribute _WriteContextFlag(UserData userData) {
+			if(userData.IsContext) {
+				return new XAttribute(ATTR_IS_CONTEXT, true);
+			}
+			// If not a context, don't include the flag.
+			return null;
+		}
+
+		private XElement _WriteIdentity(UserData userData) {
+			return new XElement(ELEMENT_IDENTITY, userData.Identity);
 		}
 
 		private XElement _WriteAlternateDataDirectory(UserData userData) {

@@ -97,8 +97,15 @@
 			this.buttonNodeProperties = new System.Windows.Forms.Button();
 			this.buttonCreateNodeTemplate = new System.Windows.Forms.Button();
 			this.treeViewNodes = new System.Windows.Forms.TreeView();
+			this.tabPage4 = new System.Windows.Forms.TabPage();
+			this.buttonUnpackageContext = new System.Windows.Forms.Button();
+			this.buttonPackageContext = new System.Windows.Forms.Button();
+			this.textBoxTargetPackageFile = new System.Windows.Forms.TextBox();
+			this.buttonGetContextFileName = new System.Windows.Forms.Button();
+			this.label5 = new System.Windows.Forms.Label();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.openFileDialogContext = new System.Windows.Forms.OpenFileDialog();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -110,6 +117,7 @@
 			this.tabPage7.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownEffectLength)).BeginInit();
 			this.tabPage8.SuspendLayout();
+			this.tabPage4.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -188,11 +196,12 @@
 			this.tabControl1.Controls.Add(this.tabPage6);
 			this.tabControl1.Controls.Add(this.tabPage7);
 			this.tabControl1.Controls.Add(this.tabPage8);
+			this.tabControl1.Controls.Add(this.tabPage4);
 			this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tabControl1.Location = new System.Drawing.Point(0, 24);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(520, 526);
+			this.tabControl1.Size = new System.Drawing.Size(543, 526);
 			this.tabControl1.TabIndex = 24;
 			// 
 			// tabPage1
@@ -895,13 +904,76 @@
 			this.treeViewNodes.MouseDown += new System.Windows.Forms.MouseEventHandler(this.treeViewNodes_MouseDown);
 			this.treeViewNodes.MouseMove += new System.Windows.Forms.MouseEventHandler(this.treeViewNodes_MouseMove);
 			// 
+			// tabPage4
+			// 
+			this.tabPage4.Controls.Add(this.buttonUnpackageContext);
+			this.tabPage4.Controls.Add(this.buttonPackageContext);
+			this.tabPage4.Controls.Add(this.textBoxTargetPackageFile);
+			this.tabPage4.Controls.Add(this.buttonGetContextFileName);
+			this.tabPage4.Controls.Add(this.label5);
+			this.tabPage4.Location = new System.Drawing.Point(4, 22);
+			this.tabPage4.Name = "tabPage4";
+			this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage4.Size = new System.Drawing.Size(535, 500);
+			this.tabPage4.TabIndex = 9;
+			this.tabPage4.Text = "Context";
+			this.tabPage4.UseVisualStyleBackColor = true;
+			// 
+			// buttonUnpackageContext
+			// 
+			this.buttonUnpackageContext.Location = new System.Drawing.Point(129, 182);
+			this.buttonUnpackageContext.Name = "buttonUnpackageContext";
+			this.buttonUnpackageContext.Size = new System.Drawing.Size(75, 23);
+			this.buttonUnpackageContext.TabIndex = 4;
+			this.buttonUnpackageContext.Text = "Unpackage";
+			this.buttonUnpackageContext.UseVisualStyleBackColor = true;
+			this.buttonUnpackageContext.Click += new System.EventHandler(this.buttonUnpackageContext_Click);
+			// 
+			// buttonPackageContext
+			// 
+			this.buttonPackageContext.Location = new System.Drawing.Point(129, 140);
+			this.buttonPackageContext.Name = "buttonPackageContext";
+			this.buttonPackageContext.Size = new System.Drawing.Size(75, 23);
+			this.buttonPackageContext.TabIndex = 3;
+			this.buttonPackageContext.Text = "Package";
+			this.buttonPackageContext.UseVisualStyleBackColor = true;
+			this.buttonPackageContext.Click += new System.EventHandler(this.buttonPackageContext_Click);
+			// 
+			// textBoxTargetPackageFile
+			// 
+			this.textBoxTargetPackageFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.textBoxTargetPackageFile.Location = new System.Drawing.Point(129, 16);
+			this.textBoxTargetPackageFile.Name = "textBoxTargetPackageFile";
+			this.textBoxTargetPackageFile.Size = new System.Drawing.Size(398, 20);
+			this.textBoxTargetPackageFile.TabIndex = 2;
+			// 
+			// buttonGetContextFileName
+			// 
+			this.buttonGetContextFileName.Location = new System.Drawing.Point(129, 42);
+			this.buttonGetContextFileName.Name = "buttonGetContextFileName";
+			this.buttonGetContextFileName.Size = new System.Drawing.Size(75, 23);
+			this.buttonGetContextFileName.TabIndex = 1;
+			this.buttonGetContextFileName.Text = "Find";
+			this.buttonGetContextFileName.UseVisualStyleBackColor = true;
+			this.buttonGetContextFileName.Click += new System.EventHandler(this.buttonGetContextFileName_Click);
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(30, 19);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(93, 13);
+			this.label5.TabIndex = 0;
+			this.label5.Text = "Package file path:";
+			// 
 			// menuStrip1
 			// 
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(520, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(543, 24);
 			this.menuStrip1.TabIndex = 25;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -911,11 +983,15 @@
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "File";
 			// 
+			// openFileDialogContext
+			// 
+			this.openFileDialogContext.CheckFileExists = false;
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(520, 550);
+			this.ClientSize = new System.Drawing.Size(543, 550);
 			this.Controls.Add(this.tabControl1);
 			this.Controls.Add(this.menuStrip1);
 			this.MainMenuStrip = this.menuStrip1;
@@ -938,6 +1014,8 @@
 			this.tabPage7.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownEffectLength)).EndInit();
 			this.tabPage8.ResumeLayout(false);
+			this.tabPage4.ResumeLayout(false);
+			this.tabPage4.PerformLayout();
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.ResumeLayout(false);
@@ -1018,6 +1096,13 @@
 		private System.Windows.Forms.Label label8;
 		private System.Windows.Forms.ColumnHeader columnHeader6;
 		private System.Windows.Forms.Button buttonNodeProperties;
+		private System.Windows.Forms.TabPage tabPage4;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.TextBox textBoxTargetPackageFile;
+		private System.Windows.Forms.Button buttonGetContextFileName;
+		private System.Windows.Forms.OpenFileDialog openFileDialogContext;
+		private System.Windows.Forms.Button buttonPackageContext;
+		private System.Windows.Forms.Button buttonUnpackageContext;
 	}
 }
 

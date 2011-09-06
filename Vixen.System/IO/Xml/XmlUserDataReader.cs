@@ -26,20 +26,23 @@ namespace Vixen.IO.Xml {
 		private const string ATTR_ID = "id";
 		private const string ATTR_NAME = "name";
 		private const string ATTR_CHANNEL_ID = "channelId";
+		private const string ATTR_IS_CONTEXT = "isContext";
 
 		override protected UserData _CreateObject(XElement element, string filePath) {
-			UserData userData = new UserData();
+			UserData userData = new UserData() { FilePath = filePath };
 
 			return userData;
 		}
 
 		protected override void _PopulateObject(UserData obj, XElement element) {
+			bool isContext = _ReadContextFlag(element);
 			Guid identity = _ReadIdentity(element);
 			// Alternate data path handled by VixenSystem.
 			ModuleStaticDataSet moduleData = _ReadModuleData(element);
 			_channels = _ReadChannels(element);
 			ChannelNode[] nodes = _ReadNodes(element);
 
+			obj.IsContext = isContext;
 			obj.Identity = identity;
 			obj.ModuleData = moduleData;
 			obj.Channels = _channels;
@@ -48,6 +51,11 @@ namespace Vixen.IO.Xml {
 
 		protected override IEnumerable<Func<XElement, XElement>> _ProvideMigrations(int versionAt, int targetVersion) {
 			if(versionAt < 2 && targetVersion >= 2) yield return _Version_1_to_2;
+		}
+
+		private bool _ReadContextFlag(XElement element) {
+			// The presence of the flag is enough.  The value is immaterial.
+			return element.Attribute(ATTR_IS_CONTEXT) != null;
 		}
 
 		private Guid _ReadIdentity(XElement element) {

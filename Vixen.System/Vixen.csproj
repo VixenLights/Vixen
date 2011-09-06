@@ -105,9 +105,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IO\Xml\XmlContextReader.cs" />
+    <Compile Include="IO\Xml\XmlContextWriter.cs" />
     <Compile Include="Module\Editor\IEditorUserInterface.cs" />
     <Compile Include="Module\ModuleLocalDataSet.cs" />
     <Compile Include="Module\ModuleStaticDataSet.cs" />
+    <Compile Include="Sys\FilePackage.cs" />
+    <Compile Include="Sys\IPackageFileContent.cs" />
     <Compile Include="Sys\ITimed.cs" />
     <Compile Include="Sys\LiveListEnumerator.cs" />
     <Compile Include="Sys\SequenceReaderAttribute.cs" />
@@ -323,6 +327,7 @@
     <Compile Include="Script\SourceFile.cs" />
     <Compile Include="Sys\SystemClock.cs" />
     <Compile Include="Execution\NodeManager.cs" />
+    <Compile Include="Sys\SystemContext.cs" />
     <Compile Include="Sys\UserData.cs" />
     <Compile Include="Sys\ApplicationServices.cs" />
     <Compile Include="Sys\Channel.cs" />

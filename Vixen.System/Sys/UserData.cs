@@ -26,9 +26,10 @@ namespace Vixen.Sys {
 
 		public UserData() {
 			ModuleData = new ModuleStaticDataSet();
+			Identity = Guid.NewGuid();
 		}
 
-		public string FilePath { get; private set; }
+		public string FilePath { get; set; }
 
 		public Guid Identity { get; set; }
 
@@ -37,6 +38,8 @@ namespace Vixen.Sys {
 		public IEnumerable<OutputChannel> Channels { get; set; }
 
 		public IEnumerable<ChannelNode> Nodes { get; set; }
+
+		public bool IsContext { get; set; }
 
 		public string AlternateDataPath {
 			get { return _alternateDataPath; }
@@ -51,11 +54,10 @@ namespace Vixen.Sys {
 		}
 
 		public void Save() {
-			// It is up to whatever uses this data to make sure to commit their data objects
-			// to the data set.
-			string filePath = Path.Combine(Paths.DataRootPath, USER_DATA_FILE);
+			string filePath = FilePath ?? Path.Combine(Paths.DataRootPath, USER_DATA_FILE);
 			IWriter writer = new XmlUserDataWriter();
 			writer.Write(filePath, this);
+			FilePath = filePath;
 		}
 
 		public int Version {

@@ -51,7 +51,9 @@ namespace Vixen.IO.Xml {
 
 		abstract protected void _PopulateObject(T obj, XElement element);
 
-		abstract protected IEnumerable<Func<XElement, XElement>> _ProvideMigrations(int versionAt, int targetVersion);
+		virtual protected IEnumerable<Func<XElement, XElement>> _ProvideMigrations(int versionAt, int targetVersion) {
+			return new Func<XElement, XElement>[] { };
+		}
 
 		private bool _MigrateData(ref XElement element, IVersioned instance) {
 			int fileVersion = _GetFileVersion(element);

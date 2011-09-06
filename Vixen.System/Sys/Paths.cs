@@ -13,12 +13,10 @@ namespace Vixen.Sys {
         private const string VIXEN_DATA_DIR = "Vixen";
 
         static Paths() {
-            //BinaryRootPath = AppDomain.CurrentDomain.BaseDirectory;
 			// Basing the binary directory on Vixen.dll instead of the current application's
 			// appdomain.  They will likely be the same thing, but at least we'll be based
 			// on the actual binary this way.
-			Assembly systemAssembly = Assembly.GetAssembly(typeof(Vixen.Sys.VixenSystem));
-			BinaryRootPath = Path.GetDirectoryName(systemAssembly.Location);
+			BinaryRootPath = Path.GetDirectoryName(VixenSystem.AssemblyFileName);
 		}
 
         static public string BinaryRootPath { get; private set; }

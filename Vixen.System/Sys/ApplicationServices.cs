@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using CommandStandard;
 using Vixen.Sys;
 using Vixen.IO;
-using System.IO;
-using System.Xml;
+using Vixen.IO.Xml;
 using Vixen.Hardware;
 using Vixen.Script;
 using Vixen.Module;
@@ -137,5 +137,14 @@ namespace Vixen.Sys {
 			return manager.GetLanguages();
 		}
 
+		static public void PackageSystemContext(string targetFilePath) {
+			SystemContext context = SystemContext.PackageSystemContext(targetFilePath);
+			context.Save(targetFilePath);
+		}
+
+		static public string UnpackageSystemContext(string contextFilePath) {
+			SystemContext context = SystemContext.UnpackageSystemContext(contextFilePath);
+			return context.Explode(contextFilePath);
+		}
 	}
 }

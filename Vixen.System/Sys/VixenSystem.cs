@@ -17,6 +17,7 @@ namespace Vixen.Sys {
     public class VixenSystem {
 		private const string USER_DATA_FILE = "UserData.xml";
 		private const string ELEMENT_DATA_DIRECTORY = "DataDirectory";
+		private const string ATTRIBUTE_IS_CONTEXT = "isContext";
 
 		static private Logging _logging;
 
@@ -41,8 +42,13 @@ namespace Vixen.Sys {
 					// Load all modules.
 					Modules.LoadModules();
 
-					// Load user data
+					// The user data file generally resides in the data branch, but it
+					// may not be in the case of an alternate context.
 					string userDataFilePath = _GetUserDataFilePath();
+					// A user data file in the binary branch will give any alternate
+					// data branch to use.
+					Paths.DataRootPath = _GetUserDataPath();
+					// Load user data.
 					IReader reader = new XmlUserDataReader();
 					UserData = (UserData)reader.Read(userDataFilePath);
 
@@ -76,25 +82,35 @@ namespace Vixen.Sys {
 			string filePath = Path.Combine(Paths.BinaryRootPath, USER_DATA_FILE);
 			XElement element = Helper.LoadXml(filePath);
 			if(element != null) {
+				// Are we operating within a context?
+				if(element.Attribute(ATTRIBUTE_IS_CONTEXT) != null) {
+					// We're going to use the context's user data file and not the
+					// one in the data branch.
+					return filePath;
+				}
+			}
+
+			// Use the default path in the data branch.
+			return Path.Combine(Paths.DataRootPath, USER_DATA_FILE);
+		}
+
+		static private string _GetUserDataPath() {
+			// Look for a user data file in the binary directory.
+			string filePath = Path.Combine(Paths.BinaryRootPath, USER_DATA_FILE);
+			XElement element = Helper.LoadXml(filePath);
+			if(element != null) {
+				// Does it specify an alternate data path?
 				XElement dataDirectory = element.Element(ELEMENT_DATA_DIRECTORY);
 				if(dataDirectory != null) {
 					if(Directory.Exists(dataDirectory.Value)) {
 						// We have an alternate path and it does exist.
-						Paths.DataRootPath = dataDirectory.Value;
+						return dataDirectory.Value;
 					}
 				}
 			}
 
-			// Setting DataRootPath is the way to get the data branch built, but we
-			// don't want to do that until we have certainly determined the location
-			// of their data branch.  Otherwise we would create multiple branches and
-			// they will have an empty branch that is likely to raise questions.
-			// SO...we may or may not have already set it above, so we are going to
-			// set it to ensure the data branch exists.
-			Paths.DataRootPath = Paths.DataRootPath;
-
-			// Reset the expected location of the user data file.
-			return Path.Combine(Paths.DataRootPath, USER_DATA_FILE);
+			// Use the default path.
+			return Paths.DataRootPath;
 		}
 
         static public void Stop() {
