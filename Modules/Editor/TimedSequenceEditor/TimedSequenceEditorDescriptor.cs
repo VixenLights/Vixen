@@ -55,6 +55,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			get { return _extensions; }
 		}
 
+		public override Type EditorUserInterfaceClass
+		{
+			get { return typeof(TimedSequenceEditorForm); }
+		}
+
 		public override Guid[] Dependencies
 		{
 			get { return _dependencies; }

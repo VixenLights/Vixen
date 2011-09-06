@@ -15,7 +15,7 @@ using VixenModules.Sequence.Timed;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-	public partial class TimedSequenceEditorForm : Form
+	public partial class TimedSequenceEditorForm : Form, IEditorUserInterface
 	{
 		#region Member Variables
 
@@ -42,10 +42,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 
 
-		#region IEditor implementation
-		// (yes, even though this doesn't implement IEditor, it's wrapped by the TimedSequenceEditor,
-		// which does. The TimedSequenceEditor will just pass all calls through to this form, effectively.)
-
+		#region IEditorUserInterface implementation
 
 		// TODO: what is this supposed to be for?
 		public EditorValues EditorValues
@@ -81,6 +78,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			get { return _sequence; }
 			set { LoadSequence(value);  }
+		}
+
+		// TODO: should this be doing anything special? (returning a type, keeping track of
+		// the owner module instance that instantiated it, etc.)
+		public IEditorModuleInstance OwnerModule { get; set; }
+
+		public void Start()
+		{
+			throw new NotImplementedException(); 
 		}
 
 		#endregion
