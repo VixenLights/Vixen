@@ -32,7 +32,7 @@ namespace Vixen.Sys {
 		}
 
 		public virtual void Write(string text) {
-			text = "[" + DateTime.Now + "]" + Environment.NewLine + text + Environment.NewLine;
+			text = "[" + DateTime.Now + "]" + Environment.NewLine + text + Environment.NewLine + Environment.NewLine;
 			OnItemLogged(text);
 		}
 

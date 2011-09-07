@@ -31,17 +31,19 @@ namespace Vixen.Sys {
 		static private volatile ExecutionState _state = ExecutionState.Stopped;
 
 		static Execution() {
-			// Get channels.
-			foreach(OutputChannel channel in VixenSystem.UserData.Channels) {
-				_AddChannel(channel);
-			}
-	
 			// Create the node manager.
 			Nodes = new NodeManager();
 
-			// Get the branch nodes into the node manager.
-			foreach(ChannelNode branchNode in VixenSystem.UserData.Nodes) {
-				Nodes.AddNode(branchNode);
+			if(VixenSystem.UserData != null) {
+				// Get channels.
+				foreach(OutputChannel channel in VixenSystem.UserData.Channels) {
+					_AddChannel(channel);
+				}
+
+				// Get the branch nodes into the node manager.
+				foreach(ChannelNode branchNode in VixenSystem.UserData.Nodes) {
+					Nodes.AddNode(branchNode);
+				}
 			}
 		}
 

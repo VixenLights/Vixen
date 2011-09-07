@@ -33,7 +33,9 @@ namespace Vixen.IO.Xml {
 			}
 			
 			// Only after the data is current can it be applied to the object.
-			_PopulateObject(instance, element);
+			if(instance != null && element != null) {
+				_PopulateObject(instance, element);
+			}
 
 			return instance;
 		}
@@ -56,16 +58,18 @@ namespace Vixen.IO.Xml {
 		}
 
 		private bool _MigrateData(ref XElement element, IVersioned instance) {
-			int fileVersion = _GetFileVersion(element);
-			switch(Comparer<int>.Default.Compare(instance.Version, fileVersion)) {
-				case -1: // object version < file version
-					throw new Exception("This file was created by a newer version and cannot be loaded by this version.");
-				case 1: // object version > file version
-					IEnumerable<Func<XElement, XElement>> migrations = _ProvideMigrations(fileVersion, instance.Version);
-					foreach(Func<XElement, XElement> migration in migrations) {
-						element = migration(element);
-					}
-					return true;
+			if(element != null && instance != null) {
+				int fileVersion = _GetFileVersion(element);
+				switch(Comparer<int>.Default.Compare(instance.Version, fileVersion)) {
+					case -1: // object version < file version
+						throw new Exception("This file was created by a newer version and cannot be loaded by this version.");
+					case 1: // object version > file version
+						IEnumerable<Func<XElement, XElement>> migrations = _ProvideMigrations(fileVersion, instance.Version);
+						foreach(Func<XElement, XElement> migration in migrations) {
+							element = migration(element);
+						}
+						return true;
+				}
 			}
 
 			return false;

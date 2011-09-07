@@ -20,13 +20,15 @@ using Vixen.IO.Xml;
 namespace Vixen.Sys {
 	class UserData : IVersioned {
 		private string _alternateDataPath;
+		private IEnumerable<OutputChannel> _channels;
+		private IEnumerable<ChannelNode> _nodes;
 
 		private const string USER_DATA_FILE = "UserData.xml";
 		private const int VERSION = 2;
 
 		public UserData() {
-			ModuleData = new ModuleStaticDataSet();
 			Identity = Guid.NewGuid();
+			ModuleData = new ModuleStaticDataSet();
 		}
 
 		public string FilePath { get; set; }
@@ -35,9 +37,26 @@ namespace Vixen.Sys {
 
 		public ModuleStaticDataSet ModuleData { get; set; }
 
-		public IEnumerable<OutputChannel> Channels { get; set; }
+		// Doing it this way means that Channels and Nodes will never be null.
+		public IEnumerable<OutputChannel> Channels {
+			get {
+				if(_channels == null) {
+					_channels = new OutputChannel[0];
+				}
+				return _channels;
+			}
+			set { _channels = value; }
+		}
 
-		public IEnumerable<ChannelNode> Nodes { get; set; }
+		public IEnumerable<ChannelNode> Nodes {
+			get {
+				if(_nodes == null) {
+					_nodes = new ChannelNode[0];
+				}
+				return _nodes;
+			}
+			set { _nodes = value; }
+		}
 
 		public bool IsContext { get; set; }
 

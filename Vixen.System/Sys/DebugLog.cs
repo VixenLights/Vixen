@@ -8,5 +8,13 @@ namespace Vixen.Sys {
 		public DebugLog()
 			: base("Debug") {
 		}
+
+		public override void Write(Exception ex) {
+			base.Write(ex.ToString());
+		}
+
+		public override void Write(string qualifyingMessage, Exception ex) {
+			base.Write(ex.ToString());
+		}
 	}
 }

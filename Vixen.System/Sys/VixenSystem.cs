@@ -21,7 +21,7 @@ namespace Vixen.Sys {
 
 		static private Logging _logging;
 
-		private enum RunState { Stopped, Starting, Started, Stopping };
+		public enum RunState { Stopped, Starting, Started, Stopping };
 		static private RunState _state = RunState.Stopped;
 
         static public void Start(IApplication clientApplication, bool openExecution = true) {
@@ -66,16 +66,51 @@ namespace Vixen.Sys {
 
 					_state = RunState.Started;
 				} catch(ReflectionTypeLoadException ex) {
-					Logging.Error("Loader exceptions:" + Environment.NewLine + ex.LoaderExceptions.Select(x => x.Message + Environment.NewLine));
-					_state = RunState.Stopped;
+					Logging.Debug("Loader exceptions:" + Environment.NewLine + ex.LoaderExceptions.Select(x => x.Message + Environment.NewLine) + Environment.NewLine + "The system has been stopped.");
+					Stop();
 				} catch(Exception ex) {
 					// The client is expected to have subscribed to the logging event
 					// so that it knows that an exception occurred during loading.
-					Logging.Error("System loading", ex);
-					_state = RunState.Stopped;
+					Logging.Debug("Error during system startup; the system has been stopped", ex);
+					Stop();
 				}
 			}
         }
+
+        static public void Stop() {
+			if(_state == RunState.Starting || _state == RunState.Started) {
+				_state = RunState.Stopping;
+				ApplicationServices.ClientApplication = null;
+				Vixen.Sys.Execution.CloseExecution();
+				Modules.ClearRepositories();
+				if(UserData != null) {
+					UserData.Save();
+				}
+				_state = RunState.Stopped;
+			}
+        }
+
+		static public RunState State {
+			get { return _state; }
+		}
+
+		static public string AssemblyFileName {
+			get { return Assembly.GetExecutingAssembly().Location; }
+		}
+
+		static internal UserData UserData { get; private set; }
+
+		static public dynamic Logging {
+			get { return _logging; }
+		}
+
+		static private void _InitializeLogging() {
+			_logging = new Logging();
+			_logging.AddLog(new ErrorLog());
+			_logging.AddLog(new WarningLog());
+			_logging.AddLog(new InfoLog());
+			_logging.AddLog(new DebugLog());
+		}
 
 		static private string _GetUserDataFilePath() {
 			// Look for a user data file in the binary directory.
@@ -111,35 +146,6 @@ namespace Vixen.Sys {
 
 			// Use the default path.
 			return Paths.DataRootPath;
-		}
-
-        static public void Stop() {
-			if(_state == RunState.Started) {
-				_state = RunState.Stopping;
-				ApplicationServices.ClientApplication = null;
-				Vixen.Sys.Execution.CloseExecution();
-				Modules.ClearRepositories();
-				VixenSystem.UserData.Save();
-				_state = RunState.Stopped;
-			}
-        }
-
-		static public string AssemblyFileName {
-			get { return Assembly.GetExecutingAssembly().Location; }
-		}
-
-		static internal UserData UserData { get; private set; }
-
-		static public dynamic Logging {
-			get { return _logging; }
-		}
-
-		static private void _InitializeLogging() {
-			_logging = new Logging();
-			_logging.AddLog(new ErrorLog());
-			_logging.AddLog(new WarningLog());
-			_logging.AddLog(new InfoLog());
-			_logging.AddLog(new DebugLog());
 		}
 	}
 }
