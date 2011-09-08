@@ -7,6 +7,9 @@ using System.Xml.Linq;
 using Vixen.Sys;
 
 namespace Vixen.Sys {
+	/// <summary>
+	/// A logical channel of low-level CommandData that is intended to be executed by a controller.
+	/// </summary>
 	public class OutputChannel : Channel, IEnumerable<CommandData>, IEqualityComparer<OutputChannel> {
 		private Patch _patch;
 		private ConcurrentQueue<CommandData> _data = new ConcurrentQueue<CommandData>();

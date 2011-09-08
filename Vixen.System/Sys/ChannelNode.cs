@@ -8,6 +8,9 @@ using Vixen.Sys;
 using Vixen.Module.Property;
 
 namespace Vixen.Sys {
+	/// <summary>
+	/// A logical node that encapsulates a single OutputChannel or a branch/group of other ChannelNodes.
+	/// </summary>
 	public class ChannelNode : GroupNode<OutputChannel>, IVersioned {
 		// Making this static so there doesn't have to be potentially thousands of
 		// subscriptions from the node manager.

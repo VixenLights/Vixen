@@ -6,6 +6,9 @@ using System.Xml.Linq;
 using Vixen.Sys;
 
 namespace Vixen.Sys {
+	/// <summary>
+	/// A channel of high-level effect data that seeds a sequence.  Generally, there is only one in use, but more are allowed.
+	/// </summary>
 	public class InputChannel : Channel , IEnumerable<CommandNode> {
 		private List<CommandNode> _data = new List<CommandNode>();
 

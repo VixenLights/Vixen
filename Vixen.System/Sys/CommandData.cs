@@ -6,8 +6,8 @@ using CommandStandard;
 
 namespace Vixen.Sys {
 	/// <summary>
-	/// An instance of a command, meaning the command id and the parameter values needed
-	/// to fulfill the command.
+	/// An instance of a low-level command, with the parameter values and time frame needed
+	/// for execution by an Output module.
 	/// </summary>
 	public class CommandData : ITimed {
 		public readonly CommandIdentifier CommandIdentifier;
