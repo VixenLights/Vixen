@@ -95,7 +95,11 @@ namespace Vixen.IO.Xml {
 						// Referenced target count (word).
 						dataWriter.Write((ushort)commandNode.TargetNodes.Count);
 						// Parameter count (byte)
-						dataWriter.Write((byte)commandNode.Command.ParameterValues.Length);
+						if (commandNode.Command.ParameterValues == null) {
+							VixenSystem.Logging.Error("Effect " + commandNode.Command.EffectId + " serialized with null parameters. Please report this to the effect creator.");
+						} else {
+							dataWriter.Write((byte)commandNode.Command.ParameterValues.Length);
+						}
 
 						// Start time (long).
 						dataWriter.Write(commandNode.StartTime);
@@ -111,7 +115,7 @@ namespace Vixen.IO.Xml {
 						dataWriter.Flush();
 
 						// Parameters (various)
-						foreach(object parameterValue in commandNode.Command.ParameterValues) {
+						foreach(object parameterValue in commandNode.Command.ParameterValues ?? new object[0] ) {
 							ParameterValue.WriteToStream(stream, parameterValue);
 						}
 					}
