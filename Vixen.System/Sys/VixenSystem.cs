@@ -30,6 +30,13 @@ namespace Vixen.Sys {
 					_state = RunState.Starting;
 					ApplicationServices.ClientApplication = clientApplication;
 
+					// The user data file generally resides in the data branch, but it
+					// may not be in the case of an alternate context.
+					string userDataFilePath = _GetUserDataFilePath();
+					// A user data file in the binary branch will give any alternate
+					// data branch to use.
+					Paths.DataRootPath = _GetUserDataPath();
+
 					_InitializeLogging();
 
 					ModuleImplementation[] moduleImplementations = Modules.GetImplementations();
@@ -42,12 +49,6 @@ namespace Vixen.Sys {
 					// Load all modules.
 					Modules.LoadModules();
 
-					// The user data file generally resides in the data branch, but it
-					// may not be in the case of an alternate context.
-					string userDataFilePath = _GetUserDataFilePath();
-					// A user data file in the binary branch will give any alternate
-					// data branch to use.
-					Paths.DataRootPath = _GetUserDataPath();
 					// Load user data.
 					IReader reader = new XmlUserDataReader();
 					UserData = (UserData)reader.Read(userDataFilePath);
