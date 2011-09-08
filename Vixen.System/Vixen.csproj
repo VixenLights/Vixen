@@ -108,6 +108,14 @@
     <Compile Include="IO\Xml\XmlContextReader.cs" />
     <Compile Include="IO\Xml\XmlContextWriter.cs" />
     <Compile Include="Module\Editor\IEditorUserInterface.cs" />
+    <Compile Include="Module\MediaRenderer\IMediaRenderer.cs" />
+    <Compile Include="Module\MediaRenderer\IMediaRendererModuleDescriptor.cs" />
+    <Compile Include="Module\MediaRenderer\IMediaRendererModuleInstance.cs" />
+    <Compile Include="Module\MediaRenderer\MediaRendererModuleDescriptorBase.cs" />
+    <Compile Include="Module\MediaRenderer\MediaRendererModuleImplementation.cs" />
+    <Compile Include="Module\MediaRenderer\MediaRendererModuleInstanceBase.cs" />
+    <Compile Include="Module\MediaRenderer\MediaRendererModuleManagement.cs" />
+    <Compile Include="Module\MediaRenderer\MediaRendererModuleRepository.cs" />
     <Compile Include="Module\ModuleLocalDataSet.cs" />
     <Compile Include="Module\ModuleStaticDataSet.cs" />
     <Compile Include="Sys\FilePackage.cs" />
