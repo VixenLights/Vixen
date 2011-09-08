@@ -93,7 +93,7 @@ namespace Vixen.IO.Xml {
 						// Index of the command spec id from the command table (word).
 						dataWriter.Write((ushort)effectTableIndex[commandNode.Command.EffectId]);
 						// Referenced target count (word).
-						dataWriter.Write((ushort)commandNode.TargetNodes.Length);
+						dataWriter.Write((ushort)commandNode.TargetNodes.Count);
 						// Parameter count (byte)
 						dataWriter.Write((byte)commandNode.Command.ParameterValues.Length);
 

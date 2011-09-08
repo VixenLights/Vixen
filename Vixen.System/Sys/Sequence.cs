@@ -114,11 +114,20 @@ namespace Vixen.Sys {
 
 		public InsertDataListenerStack InsertDataListener { get; set; }
 
-		public void InsertData(ChannelNode[] targetNodes, long startTime, long timeSpan, Command command) {
-			InsertDataListener.InsertData(targetNodes, startTime, timeSpan, command);
+		public void InsertData(CommandNode commandNode)
+		{
+			InsertDataListener.InsertData(commandNode);
 		}
 
-		public bool IsUntimed {
+		public CommandNode InsertData(ChannelNode[] targetNodes, long startTime, long timeSpan, Command command)
+		{
+			CommandNode cn = new CommandNode(command, targetNodes, startTime, timeSpan);
+			InsertData(cn);
+			return cn;
+		}
+
+		public bool IsUntimed
+		{
 			get { return Length == Forever; }
 			set { Length = value ? Forever : 0; }
 		}

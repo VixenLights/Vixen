@@ -28,33 +28,21 @@
 		private void InitializeComponent()
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TimedSequenceEditorForm));
-			this.timelineControl = new CommonElements.Timeline.TimelineControl();
 			this.toolStripOperations = new System.Windows.Forms.ToolStrip();
 			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
 			this.menuStrip = new System.Windows.Forms.MenuStrip();
 			this.sequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripEffects = new System.Windows.Forms.ToolStrip();
-			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.timelineControl = new CommonElements.Timeline.TimelineControl();
+			this.addEffectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripOperations.SuspendLayout();
 			this.menuStrip.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// timelineControl
-			// 
-			this.timelineControl.AutoSize = true;
-			this.timelineControl.Location = new System.Drawing.Point(12, 77);
-			this.timelineControl.Name = "timelineControl";
-			this.timelineControl.Size = new System.Drawing.Size(1064, 661);
-			this.timelineControl.TabIndex = 0;
-			this.timelineControl.TimePerPixel = System.TimeSpan.Parse("00:00:00.0100000");
-			this.timelineControl.TotalTime = System.TimeSpan.Parse("00:02:00");
-			this.timelineControl.VerticalOffset = 0;
-			this.timelineControl.VisibleTimeEnd = System.TimeSpan.Parse("00:00:07.7700000");
-			this.timelineControl.VisibleTimeStart = System.TimeSpan.Parse("00:00:00");
 			// 
 			// toolStripOperations
 			// 
@@ -74,12 +62,14 @@
 			this.toolStripButton1.Name = "toolStripButton1";
 			this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
 			this.toolStripButton1.Text = "toolStripButton1";
+			this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
 			// 
 			// menuStrip
 			// 
 			this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.sequenceToolStripMenuItem,
-            this.editToolStripMenuItem});
+            this.editToolStripMenuItem,
+            this.addEffectToolStripMenuItem});
 			this.menuStrip.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip.Name = "menuStrip";
 			this.menuStrip.Size = new System.Drawing.Size(1088, 24);
@@ -104,12 +94,26 @@
 			this.newToolStripMenuItem.Text = "New";
 			this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
 			// 
+			// openToolStripMenuItem
+			// 
+			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+			this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.openToolStripMenuItem.Text = "Open...";
+			this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+			// 
 			// saveToolStripMenuItem
 			// 
 			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
 			this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.saveToolStripMenuItem.Text = "Save";
 			this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+			// 
+			// exitToolStripMenuItem
+			// 
+			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.exitToolStripMenuItem.Text = "Exit";
+			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
 			// editToolStripMenuItem
 			// 
@@ -125,19 +129,25 @@
 			this.toolStripEffects.TabIndex = 3;
 			this.toolStripEffects.Text = "Effects";
 			// 
-			// exitToolStripMenuItem
+			// timelineControl
 			// 
-			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.exitToolStripMenuItem.Text = "Exit";
-			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+			this.timelineControl.AutoSize = true;
+			this.timelineControl.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.timelineControl.Location = new System.Drawing.Point(12, 77);
+			this.timelineControl.Name = "timelineControl";
+			this.timelineControl.Size = new System.Drawing.Size(1064, 661);
+			this.timelineControl.TabIndex = 0;
+			this.timelineControl.TimePerPixel = System.TimeSpan.Parse("00:00:00.0100000");
+			this.timelineControl.TotalTime = System.TimeSpan.Parse("00:02:00");
+			this.timelineControl.VerticalOffset = 0;
+			this.timelineControl.VisibleTimeEnd = System.TimeSpan.Parse("00:00:07.7300000");
+			this.timelineControl.VisibleTimeStart = System.TimeSpan.Parse("00:00:00");
 			// 
-			// openToolStripMenuItem
+			// addEffectToolStripMenuItem
 			// 
-			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-			this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.openToolStripMenuItem.Text = "Open...";
-			this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+			this.addEffectToolStripMenuItem.Name = "addEffectToolStripMenuItem";
+			this.addEffectToolStripMenuItem.Size = new System.Drawing.Size(74, 20);
+			this.addEffectToolStripMenuItem.Text = "Add Effect";
 			// 
 			// TimedSequenceEditorForm
 			// 
@@ -175,5 +185,6 @@
 		private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem addEffectToolStripMenuItem;
 	}
 }

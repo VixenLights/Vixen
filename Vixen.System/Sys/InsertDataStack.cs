@@ -9,11 +9,11 @@ namespace Vixen.Sys {
 
 		private LinkedList<DataListener> _listeners = new LinkedList<DataListener>();
 
-		public void InsertData(ChannelNode[] targetNodes, long startTime, long timeSpan, Command command) {
+		public void InsertData(CommandNode commandNode) {
 			bool cancel = false;
 			IEnumerator<DataListener> enumerator = _listeners.GetEnumerator();
 			while(!cancel && enumerator.MoveNext()) {
-				cancel = enumerator.Current(new CommandNode(command, targetNodes, startTime, timeSpan));
+				cancel = enumerator.Current(commandNode);
 			}
 		}
 

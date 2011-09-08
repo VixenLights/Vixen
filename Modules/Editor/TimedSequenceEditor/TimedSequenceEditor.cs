@@ -9,11 +9,5 @@ namespace VixenModules.Editor.TimedSequenceEditor
 {
 	class TimedSequenceEditor : EditorModuleInstanceBase
 	{
-		private TimedSequenceEditorForm _form;
-
-		public TimedSequenceEditor()
-		{
-			_form = new TimedSequenceEditorForm();
-		}
 	}
 }

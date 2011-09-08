@@ -294,7 +294,7 @@ namespace Vixen.Sys {
 				while(_effects.Count > 0 && _systemTime.IsRunning) {
 					CommandNode commandNode = _effects.Pop();
 
-					if(commandNode.Command != null && commandNode.TargetNodes.Length > 0) {
+					if(commandNode.Command != null && commandNode.TargetNodes.Count > 0) {
 						// Get the channels that are to be affected by this effect.
 						// If they are targetting multiple nodes, the resulting channels
 						// will be treated as a single collection of channels.  There will be

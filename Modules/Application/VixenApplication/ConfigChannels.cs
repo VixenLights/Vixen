@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Vixen.Sys;
 using Vixen.Hardware;
 using Vixen.Module.Property;
+using System.Reflection;
 
 namespace VixenApplication
 {
@@ -30,6 +31,13 @@ namespace VixenApplication
 			InitializeComponent();
 			_displayedNode = null;
 			_tooltip = new ToolTip();
+
+			// set the lists and trees to be double buffered, to prevent the slight flickering.
+			// (http://www.csharp-examples.net/set-doublebuffered/)
+			typeof(Control).InvokeMember("DoubleBuffered", BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic, null, listViewAddToNode, new object[] { true });
+			typeof(Control).InvokeMember("DoubleBuffered", BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic, null, listViewNodeContents, new object[] { true });
+			typeof(Control).InvokeMember("DoubleBuffered", BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic, null, listViewProperties, new object[] { true });
+			typeof(Control).InvokeMember("DoubleBuffered", BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic, null, multiSelectTreeviewChannelsGroups, new object[] { true });
 		}
 
 		private void ConfigChannels_Load(object sender, EventArgs e)

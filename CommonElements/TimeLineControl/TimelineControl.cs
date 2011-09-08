@@ -11,7 +11,7 @@ using System.Diagnostics;
 
 namespace CommonElements.Timeline
 {
-	public partial class TimelineControl : TimelineControlBase
+	public partial class TimelineControl : TimelineControlBase, IEnumerable<TimelineRow>
 	{
 
 		public TimelineControl()
@@ -200,6 +200,9 @@ namespace CommonElements.Timeline
 			timelineGrid.AlignSelectedElementsLeft();
 		}
 
+		/// <summary>
+		/// Clears all elements from the grid, leaving the rows intact.
+		/// </summary>
 		public void ClearAllElements()
 		{
 			foreach (TimelineRow row in timelineGrid.Rows) {
@@ -207,6 +210,25 @@ namespace CommonElements.Timeline
 			}
 		}
 
+		/// <summary>
+		/// Clears all rows from the grid; effectively emptying the grid. Will also
+		/// clear all elements in the grid as well.
+		/// </summary>
+		public void ClearAllRows()
+		{
+			ClearAllElements();
+			timelineGrid.Rows.Clear();
+		}
+
+		public IEnumerator<TimelineRow> GetEnumerator()
+		{
+			return timelineGrid.GetEnumerator();
+		}
+
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		{
+			return timelineGrid.GetEnumerator();
+		}
 
 		#endregion
 
@@ -219,10 +241,10 @@ namespace CommonElements.Timeline
 			remove { timelineGrid.ElementDoubleClicked -= value; }
 		}
 
-		public event EventHandler<MultiElementEventArgs> ElementsMoved
+		public event EventHandler<MultiElementEventArgs> ElementsFinishedMoving
 		{
-			add { timelineGrid.ElementsMoved += value; }
-			remove { timelineGrid.ElementsMoved -= value; }
+			add { timelineGrid.ElementsFinishedMoving += value; }
+			remove { timelineGrid.ElementsFinishedMoving -= value; }
 		}
 
 		public event EventHandler<TimeSpanEventArgs> CursorMoved
@@ -230,6 +252,25 @@ namespace CommonElements.Timeline
 			add { timelineGrid.CursorMoved += value; }
 			remove { timelineGrid.CursorMoved -= value; }
 		}
+
+		public event EventHandler VisibleTimeStartChanged
+		{
+			add { timelineGrid.VisibleTimeStartChanged += value; }
+			remove { timelineGrid.VisibleTimeStartChanged -= value; }
+		}
+
+		public event EventHandler VerticalOffsetChanged
+		{
+			add { timelineGrid.VerticalOffsetChanged += value; }
+			remove { timelineGrid.VerticalOffsetChanged -= value; }
+		}
+
+		public event EventHandler<ElementRowChangeEventArgs> ElementChangedRows
+		{
+			add { timelineGrid.ElementChangedRows += value; }
+			remove { timelineGrid.ElementChangedRows -= value; }
+		}
+
 
 		#endregion
 

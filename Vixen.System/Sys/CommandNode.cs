@@ -20,7 +20,10 @@ namespace Vixen.Sys {
 
 		public CommandNode(Command command, ChannelNode[] targetNodes, long startTime, long timeSpan) {
 			Command = command;
-			TargetNodes = targetNodes;
+			if (targetNodes == null)
+				TargetNodes = new List<ChannelNode>();
+			else
+				TargetNodes = new List<ChannelNode>(targetNodes);
 			StartTime = startTime;
 			TimeSpan = timeSpan;
 
@@ -46,7 +49,7 @@ namespace Vixen.Sys {
 
 		public Command Command { get; private set; }
 
-		public ChannelNode[] TargetNodes { get; private set; }
+		public List<ChannelNode> TargetNodes { get; private set; }
 
 		public long StartTime {
 			get { return _startTime; }

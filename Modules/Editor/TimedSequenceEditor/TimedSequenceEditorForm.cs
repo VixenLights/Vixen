@@ -10,6 +10,9 @@ using Vixen.Execution;
 using Vixen.Sys;
 using Vixen.Module.Editor;
 using Vixen.Module.Sequence;
+using Vixen.Module.Effect;
+using Vixen.Module.EffectEditor;
+using Vixen.Module.Property;
 using CommonElements.Timeline;
 using VixenModules.Sequence.Timed;
 
@@ -21,7 +24,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private TimedSequence _sequence;
 		private Dictionary<CommandNode, List<TimelineElement>> _commandNodeToElements;
-		//private Dictionary<TimelineElement, CommandNode> _elementToCommandNode;
 		private Dictionary<ChannelNode, List<TimelineRow>> _channelNodeToRows;
 
 		#endregion
@@ -33,12 +35,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			InitializeComponent();
 
 			_commandNodeToElements = new Dictionary<CommandNode, List<TimelineElement>>();
-			//_elementToCommandNode = new Dictionary<TimelineElement, CommandNode>();
 			_channelNodeToRows = new Dictionary<ChannelNode, List<TimelineRow>>();
 
-			LoadSystemNodesToRows();
+			timelineControl.ElementChangedRows += ElementChangedRowsHandler;
+
+			LoadAvailableEffects();
 		}
 
+		private void LoadAvailableEffects()
+		{
+			foreach (IEffectModuleInstance effect in ApplicationServices.GetAll<IEffectModuleInstance>().Cast<IEffect>().ToArray()) {
+				ToolStripMenuItem item = new ToolStripMenuItem(effect.EffectName);
+				item.Tag = effect.InstanceId;
+				item.Click += (sender, e) => {
+
+				};
+				addEffectToolStripMenuItem.DropDownItems.Add(item);
+			}
+		}
 
 
 
@@ -52,11 +66,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public bool IsModified { get; private set; }
 
-		// TODO: what is this supposed to do; doesn't the framwork/main application
-		// set the sequence of the editor?
 		public void NewSequence()
 		{
-			throw new NotImplementedException();
+			// load all the system channels/groups to the control as rows. This will
+			// also clear the grid entirely, and start fresh.
+			LoadSystemNodesToRows();
+
+			_sequence = new TimedSequence();
+
+			// TODO: do other stuff here like setting default zooms, clearing snaps, etc.
 		}
 
 		public void RefreshSequence()
@@ -99,8 +117,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <summary>
 		/// Loads all nodes (groups/channels) currently in the system as rows in the timeline control.
 		/// </summary>
-		private void LoadSystemNodesToRows()
+		private void LoadSystemNodesToRows(bool clearCurrentRows = true)
 		{
+			if (clearCurrentRows)
+				timelineControl.ClearAllRows();
+
 			foreach (ChannelNode node in Vixen.Sys.Execution.Nodes.RootNodes) {
 				AddNodeAsRow(node, null);
 			}
@@ -127,7 +148,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			// iterate through all if its children, adding them as needed
 			foreach (ChannelNode child in node.Children) {
-				AddNodeAsRow(node, newRow);
+				AddNodeAsRow(child, newRow);
 			}
 		}
 
@@ -141,7 +162,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			// clear out all the old data
-			timelineControl.ClearAllElements();
+			LoadSystemNodesToRows();
 
 			// load the new data: get all the commands in the sequence, and make a new element for each of them.
 			foreach (CommandNode node in _sequence.Data.GetCommands()) {
@@ -183,12 +204,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void SaveSequence(string filePath = null)
 		{
-			if (_sequence != null) {
-				if (filePath == null)
-					_sequence.Save();
-				else
-					_sequence.Save(filePath);
+			if (_sequence == null) {
+				throw new NullReferenceException("Trying to save a sequence that is null!");
 			}
+
+			if (filePath == null) {
+				if (_sequence.FilePath.Trim() == "") {
+					// TODO: browse window to find a suitable name for a sequence?
+					string newPath = "./asdfasdf.tim";
+					_sequence.Save(newPath);
+				} else {
+					_sequence.Save();
+				}
+			} else {
+				_sequence.Save(filePath);
+			}
+
+			IsModified = false;
 		}
 
 
@@ -202,6 +234,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimedSequenceElement element = sender as TimedSequenceElement;
 			// TODO: I'm not sure if we will need to do anything here; if we are updating effect details,
 			// will the EffectEditors configure the CommandNode object directly?
+			IsModified = true;
 		}
 
 		protected void ElementMovedHandler(object sender, EventArgs e)
@@ -209,12 +242,25 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimedSequenceElement element = sender as TimedSequenceElement;
 			element.CommandNode.StartTime = (long)element.StartTime.TotalMilliseconds;
 			element.CommandNode.TimeSpan = (long)element.Duration.TotalMilliseconds;
+			IsModified = true;
 		}
 
 		protected void ElementRemovedFromRowHandler(object sender, ElementEventArgs e)
 		{
 			e.Element.ElementContentChanged -= ElementContentChangedHandler;
 			e.Element.ElementMoved -= ElementMovedHandler;
+			IsModified = true;
+		}
+
+		protected void ElementChangedRowsHandler(object sender, ElementRowChangeEventArgs e)
+		{
+			ChannelNode oldNode = e.OldRow.Tag as ChannelNode;
+			ChannelNode newNode = e.NewRow.Tag as ChannelNode;
+			TimedSequenceElement element = e.Element as TimedSequenceElement;
+			if (element.CommandNode.TargetNodes.Contains(oldNode))
+				element.CommandNode.TargetNodes.Remove(oldNode);
+
+			element.CommandNode.TargetNodes.Add(newNode);
 		}
 
 		#endregion
@@ -225,7 +271,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void newToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-
+			NewSequence();
 		}
 
 		private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -235,14 +281,28 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-
+			SaveSequence();
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-
+			Close();
 		}
 
 		#endregion
+
+		private void toolStripButton1_Click(object sender, EventArgs e)
+		{
+			Command command = new Command(new Guid("{603E3297-994C-4705-9F17-02A62ECC14B5}"), null);
+			CommandNode cn = _sequence.InsertData(new[] { timelineControl.First().Tag as ChannelNode }, 0, 2000, command);
+
+			TimedSequenceElement newItem = new TimedSequenceElement();
+			newItem.StartTime = TimeSpan.FromMilliseconds(cn.StartTime);
+			newItem.Duration = TimeSpan.FromMilliseconds(cn.TimeSpan);
+			newItem.BackColor = Color.DodgerBlue;
+			newItem.CommandNode = cn;
+
+			timelineControl.First().AddElement(newItem);
+		}
 	}
 }

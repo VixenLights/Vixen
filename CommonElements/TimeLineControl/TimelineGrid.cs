@@ -11,7 +11,7 @@ using System.Drawing.Imaging;
 
 namespace CommonElements.Timeline
 {
-	public class TimelineGrid : TimelineControlBase
+	public class TimelineGrid : TimelineControlBase, IEnumerable<TimelineRow>
 	{
 		#region Members
 
@@ -188,16 +188,18 @@ namespace CommonElements.Timeline
 		#region Events
 
 		public event EventHandler<ElementEventArgs> ElementDoubleClicked;
-		public event EventHandler<MultiElementEventArgs> ElementsMoved;
+		public event EventHandler<MultiElementEventArgs> ElementsFinishedMoving;
 		public event EventHandler<TimeSpanEventArgs> CursorMoved;
 		public event EventHandler VisibleTimeStartChanged;
 		public event EventHandler VerticalOffsetChanged;
+		public event EventHandler<ElementRowChangeEventArgs> ElementChangedRows;
 
 		private void _ElementDoubleClicked(TimelineElement te) { if (ElementDoubleClicked != null) ElementDoubleClicked(this, new ElementEventArgs(te)); }
-		private void _ElementsMoved(MultiElementEventArgs args) { if (ElementsMoved != null) ElementsMoved(this, args); }
+		private void _ElementsFinishedMoving(MultiElementEventArgs args) { if (ElementsFinishedMoving != null) ElementsFinishedMoving(this, args); }
 		private void _CursorMoved(TimeSpan t) { if (CursorMoved != null) CursorMoved(this, new TimeSpanEventArgs(t)); }
 		private void _VisibleTimeStartChanged() { if (VisibleTimeStartChanged != null) VisibleTimeStartChanged(this, EventArgs.Empty); }
 		private void _VerticalOffsetChanged() { if (VerticalOffsetChanged != null) VerticalOffsetChanged(this, EventArgs.Empty); }
+		private void _ElementChangedRows(TimelineElement element, TimelineRow oldRow, TimelineRow newRow) { if (ElementChangedRows != null) ElementChangedRows(this, new ElementRowChangeEventArgs(element, oldRow, newRow)); }
 
 		#endregion
 
@@ -346,7 +348,7 @@ namespace CommonElements.Timeline
 			if (e.Button == MouseButtons.Left) {
 				if (m_dragState == DragState.Dragging) {
 					MultiElementEventArgs evargs = new MultiElementEventArgs { Elements = SelectedElements };
-					_ElementsMoved(evargs);
+					_ElementsFinishedMoving(evargs);
 
 				} else if (m_dragState == DragState.Selecting) {
 					// we will only be Selecting if we clicked on the grid background, so on mouse up, check if
@@ -539,6 +541,16 @@ namespace CommonElements.Timeline
 
 
 		#region Methods - Rows, Elements
+
+		public IEnumerator<TimelineRow> GetEnumerator()
+		{
+			return Rows.GetEnumerator();
+		}
+
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
 
 		public void ClearSelectedElements()
 		{
@@ -933,6 +945,7 @@ namespace CommonElements.Timeline
 						visibleRows[i].RemoveElement(element);
 						visibleRows[i + visibleRowsToMove].AddElement(element);
 						elementsMoved.Add(element);
+						_ElementChangedRows(element, visibleRows[i], visibleRows[i + visibleRowsToMove]);
 					}
 				}
 
@@ -1309,7 +1322,8 @@ namespace CommonElements.Timeline
 		}
 
 		#endregion
-    }
+
+	}
 
 	class SnapDetails
 	{

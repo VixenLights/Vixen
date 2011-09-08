@@ -57,4 +57,18 @@ namespace CommonElements.Timeline
 
 		public Keys ModifierKeys { get; private set; }
 	}
+
+	public class ElementRowChangeEventArgs : EventArgs
+	{
+		public ElementRowChangeEventArgs(TimelineElement element, TimelineRow oldRow, TimelineRow newRow)
+		{
+			Element = element;
+			OldRow = oldRow;
+			NewRow = newRow;
+		}
+
+		public TimelineElement Element { get; private set; }
+		public TimelineRow OldRow { get; private set; }
+		public TimelineRow NewRow { get; private set; }
+	}
 }
