@@ -97,6 +97,7 @@ namespace Vixen.IO.Xml {
 						// Parameter count (byte)
 						if (commandNode.Command.ParameterValues == null) {
 							VixenSystem.Logging.Error("Effect " + commandNode.Command.EffectId + " serialized with null parameters. Please report this to the effect creator.");
+							dataWriter.Write((byte)0);
 						} else {
 							dataWriter.Write((byte)commandNode.Command.ParameterValues.Length);
 						}
