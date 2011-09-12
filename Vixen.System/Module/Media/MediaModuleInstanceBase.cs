@@ -9,7 +9,7 @@ namespace Vixen.Module.Media {
 	abstract public class MediaModuleInstanceBase : ModuleInstanceBase, IMediaModuleInstance, IEqualityComparer<IMediaModuleInstance>, IEquatable<IMediaModuleInstance>, IEqualityComparer<MediaModuleInstanceBase>, IEquatable<MediaModuleInstanceBase> {
 		abstract public string MediaFilePath { get; set; }
 
-		abstract public void LoadMedia(long startTime);
+		abstract public void LoadMedia(TimeSpan startTime);
 
 		abstract public ITiming TimingSource { get; }
 

@@ -28,7 +28,7 @@ namespace Vixen.IO.Xml {
 			Dictionary<Guid, int> targetIdTableIndex;
 
 			XElement element = new XElement(ELEMENT_SEQUENCE,
-				new XAttribute(ATTR_LENGTH, sequence.Length),
+				new XAttribute(ATTR_LENGTH, sequence.Length.Ticks),
 				_WriteTimingSource(sequence),
 				_WriteModuleData(sequence),
 				_WriteEffectTable(sequence, out effectTableIndex),
@@ -103,10 +103,10 @@ namespace Vixen.IO.Xml {
 						}
 
 						// Start time (long).
-						dataWriter.Write(commandNode.StartTime);
+						dataWriter.Write(commandNode.StartTime.Ticks);
 
 						// Time span (long).
-						dataWriter.Write(commandNode.TimeSpan);
+						dataWriter.Write(commandNode.TimeSpan.Ticks);
 
 						// Referenced targets (index into target table, word).
 						foreach(ChannelNode node in commandNode.TargetNodes) {

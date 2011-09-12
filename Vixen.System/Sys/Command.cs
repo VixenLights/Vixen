@@ -22,16 +22,16 @@ namespace Vixen.Sys {
 			get { return _effect.Descriptor.TypeId; }
 		}
 
-		public void PreRender(CommandNode commandNode, long commandTimeSpan) {
+		public void PreRender(CommandNode commandNode, TimeSpan commandTimeSpan) {
 			_effect.PreRender(commandNode.TargetNodes.ToArray(), commandTimeSpan, ParameterValues);
 		}
 
-		public ChannelData Render(CommandNode commandNode, long commandTimeSpan, long renderStartTime, long renderTimeSpan) {
+		public ChannelData Render(CommandNode commandNode, TimeSpan commandTimeSpan, TimeSpan renderStartTime, TimeSpan renderTimeSpan) {
 			// We're adding only the parameter values.
 			ChannelData data = _effect.Render(commandNode.TargetNodes.ToArray(), commandTimeSpan, ParameterValues);
 			
 			// And then restricting by time.
-			long renderEndTime = renderStartTime + renderTimeSpan;
+			TimeSpan renderEndTime = renderStartTime + renderTimeSpan;
 			data = ChannelData.Restrict(data, renderStartTime, renderEndTime);
 
 			return data;

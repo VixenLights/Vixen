@@ -12,7 +12,7 @@ namespace Vixen.Module.Media {
 		/// Load or prepare the media for execution starting at a given time offset.
 		/// </summary>
 		/// <param name="startTime">Time, in milliseconds, at which media is to start executing when Start is called.</param>
-		void LoadMedia(long startTime);
+		void LoadMedia(TimeSpan startTime);
 		ITiming TimingSource { get; }
 		void Setup();
 	}

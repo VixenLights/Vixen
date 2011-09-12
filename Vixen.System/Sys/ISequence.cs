@@ -13,11 +13,11 @@ namespace Vixen.Sys {
         string Name { get; }
 		void Save();
 		void Save(string fileName);
-		long Length { get; set; }
+		TimeSpan Length { get; set; }
 		bool IsUntimed { get; set; }
 		string FilePath { get; set; }
 		void InsertData(CommandNode commandNode);
-		CommandNode InsertData(ChannelNode[] targetNodes, long startTime, long timeSpan, Command command);
+		CommandNode InsertData(ChannelNode[] targetNodes, TimeSpan startTime, TimeSpan timeSpan, Command command);
 		InsertDataListenerStack InsertDataListener { get; set; }
 		TimingProviders TimingProvider { get; }
 		InputChannels Data { get; }

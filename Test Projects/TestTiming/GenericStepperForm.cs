@@ -15,10 +15,10 @@ namespace TestTiming {
 			InitializeComponent();
 		}
 
-		public long Position { get; set; }
+		public TimeSpan Position { get; set; }
 
 		private void buttonNext_Click(object sender, EventArgs e) {
-			Position += (long)numericUpDownStep.Value;
+			Position += TimeSpan.FromMilliseconds((double)numericUpDownStep.Value);
 			labelCurrentStep.Text = Position.ToString();
 		}
 	}

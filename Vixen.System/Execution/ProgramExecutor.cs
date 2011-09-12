@@ -9,11 +9,11 @@ namespace Vixen.Execution {
     class ProgramExecutor : IDisposable, IEnumerator<IExecutor> {
         private IEnumerator<IExecutor> _sequences;
         private IExecutor _executor;
-		private long _startTime, _endTime;
-		private long _currentSequenceStartTime, _currentSequenceEndTime;
+		private TimeSpan _startTime, _endTime;
+		private TimeSpan _currentSequenceStartTime, _currentSequenceEndTime;
 
-		public const long START_ENTIRE_SEQUENCE = 0;
-		public const long END_ENTIRE_SEQUENCE = long.MaxValue;
+		static public readonly TimeSpan START_ENTIRE_SEQUENCE = TimeSpan.Zero;
+		static public readonly TimeSpan END_ENTIRE_SEQUENCE = TimeSpan.MaxValue;
         public enum RunState { Stopped, Playing, Stopping };
 
         public event EventHandler ProgramStarted;
@@ -32,7 +32,7 @@ namespace Vixen.Execution {
 			get { return _startTime == START_ENTIRE_SEQUENCE && _endTime == END_ENTIRE_SEQUENCE; }
 		}
 
-		public void Play(long startTime, long endTime) {
+		public void Play(TimeSpan startTime, TimeSpan endTime) {
             if(this.Program == null) throw new Exception("No program has been specified");
             if(State == RunState.Stopped) {
                 _startTime = startTime;
@@ -201,7 +201,7 @@ namespace Vixen.Execution {
 				if(sequenceExecutor == null) throw new InvalidOperationException("Sequence " + sequence.Name + " has no executor.");
 				
 				// Set the time span to be played.
-				_currentSequenceStartTime = Math.Max(0, _startTime);
+				_currentSequenceStartTime = TimeSpan.Zero > _startTime ? TimeSpan.Zero : _startTime;
 				_currentSequenceEndTime = (_endTime == END_ENTIRE_SEQUENCE) ? sequence.Length : _endTime;
 
 				sequenceExecutor.SequenceStarted += OnSequenceStarted;

@@ -14,7 +14,7 @@ namespace Vixen.Execution
 		event EventHandler<ExecutorMessageEventArgs> Error;
 
 		ISequence Sequence { get; set; }
-		void Play(long startTime, long endTime);
+		void Play(TimeSpan startTime, TimeSpan endTime);
 		void Pause();
 		void Resume();
 		void Stop();

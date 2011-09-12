@@ -10,15 +10,15 @@ namespace Vixen.Sys {
 	/// Qualifies a Command with a start time and length.
 	/// </summary>
 	public class CommandNode : ITimed {
-		private long _startTime;
-		private long _timeSpan;
+		private TimeSpan _startTime;
+		private TimeSpan _timeSpan;
 
 		public CommandNode()
-			: this(null, null, 0, 0) {
+			: this(null, null, TimeSpan.Zero, TimeSpan.Zero) {
 			// Default instance is empty.
 		}
 
-		public CommandNode(Command command, ChannelNode[] targetNodes, long startTime, long timeSpan) {
+		public CommandNode(Command command, ChannelNode[] targetNodes, TimeSpan startTime, TimeSpan timeSpan) {
 			Command = command;
 			if (targetNodes == null)
 				TargetNodes = new List<ChannelNode>();
@@ -51,7 +51,7 @@ namespace Vixen.Sys {
 
 		public List<ChannelNode> TargetNodes { get; private set; }
 
-		public long StartTime {
+		public TimeSpan StartTime {
 			get { return _startTime; }
 			set {
 				_startTime = value;
@@ -60,7 +60,7 @@ namespace Vixen.Sys {
 			}
 		}
 
-		public long TimeSpan {
+		public TimeSpan TimeSpan {
 			get { return _timeSpan; }
 			set {
 				_timeSpan = value;
@@ -68,7 +68,7 @@ namespace Vixen.Sys {
 			}
 		}
 
-		public long EndTime { get; private set; }
+		public TimeSpan EndTime { get; private set; }
 		
 		public bool IsEmpty {
 			get { return Command == null; }
@@ -80,10 +80,11 @@ namespace Vixen.Sys {
 		/// <param name="renderStartTime">Relative to the start of the CommandNode.</param>
 		/// <param name="renderTimeSpan">Length of time to render.</param>
 		/// <returns></returns>
-		public ChannelData RenderEffectData(long renderStartTime, long renderTimeSpan) {
+		public ChannelData RenderEffectData(TimeSpan renderStartTime, TimeSpan renderTimeSpan) {
 			if(!IsEmpty) {
 				// We're providing the length of the desired effect and a relative start time for rendering.
-				return Command.Render(this, TimeSpan, renderStartTime - StartTime, Math.Min(TimeSpan, renderTimeSpan));
+				TimeSpan timeSpan = this.TimeSpan < renderTimeSpan ? this.TimeSpan : renderTimeSpan;
+				return Command.Render(this, this.TimeSpan, renderStartTime - StartTime, timeSpan);
 			}
 			return null;
 		}

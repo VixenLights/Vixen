@@ -279,10 +279,10 @@ namespace Vixen.Sys {
 		static public NodeManager Nodes { get; private set; }
 
 		class EffectRenderer {
-			private long _timeStarted;
+			private TimeSpan _timeStarted;
 			private Stack<CommandNode> _effects;
 			//*** to be user data, the offset to add to make live data more live
-			private int _syncDelta = 0;
+			private TimeSpan _syncDelta = TimeSpan.Zero;
 
 			public EffectRenderer(CommandNode[] state) {
 				_timeStarted = Execution._systemTime.Position;
@@ -302,7 +302,7 @@ namespace Vixen.Sys {
 						Dictionary<Guid,OutputChannel> targetChannels = commandNode.TargetNodes.SelectMany(x => x).ToDictionary(x => x.Id);
 						
 						// Render the effect for the whole span of the command's time.
-						ChannelData channelData = commandNode.RenderEffectData(0, commandNode.TimeSpan);
+						ChannelData channelData = commandNode.RenderEffectData(TimeSpan.Zero, commandNode.TimeSpan);
 						
 						if(channelData != null) {
 							// Get it into the channels.
@@ -317,7 +317,7 @@ namespace Vixen.Sys {
 									// The data from an effect is effect-local.
 									// Adding the command's start time makes it context-local.
 									// Adding the system time makes it system-local.
-									long systemTime = _systemTime.Position + _syncDelta;
+									TimeSpan systemTime = _systemTime.Position + _syncDelta;
 									// Can't assume the safety of the instance the provided by the effect,
 									// so create a local instance.
 									targetChannelData.StartTime += commandNode.StartTime + systemTime;

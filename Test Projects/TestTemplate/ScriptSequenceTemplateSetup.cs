@@ -31,13 +31,12 @@ namespace TestTemplate {
 		}
 
 		private void buttonOK_Click(object sender, EventArgs e) {
-			long length;
-			//int timingInterval;
+			TimeSpan length;
 
 			if(checkBoxForever.Checked) {
 				length = Vixen.Sys.ScriptSequence.Forever;
 			} else {
-				if(!long.TryParse(textBoxLength.Text, out length)) {
+				if(!TimeSpan.TryParse(textBoxLength.Text, out length)) {
 					MessageBox.Show("Length is invalid.");
 					return;
 				}

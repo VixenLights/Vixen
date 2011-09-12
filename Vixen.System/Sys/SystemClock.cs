@@ -9,8 +9,8 @@ namespace Vixen.Sys {
 	class SystemClock : ITiming {
 		private Stopwatch _time = new Stopwatch();
 
-		public long Position {
-			get { return _time.ElapsedMilliseconds; }
+		public TimeSpan Position {
+			get { return _time.Elapsed; }
 			set { }
 		}
 

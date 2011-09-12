@@ -9,19 +9,19 @@ namespace Vixen.Module.Effect {
 	//This is where caching would take place, but the subclass can override/disable it
 	//-> Compose, template it
 	abstract public class EffectModuleInstanceBase : ModuleInstanceBase, IEffectModuleInstance, IEqualityComparer<IEffectModuleInstance>, IEquatable<IEffectModuleInstance>, IEqualityComparer<EffectModuleInstanceBase>, IEquatable<EffectModuleInstanceBase> {
-		public void PreRender(ChannelNode[] nodes, long timeSpan, object[] parameterValues) {
+		public void PreRender(ChannelNode[] nodes, TimeSpan timeSpan, object[] parameterValues) {
 			// This hook isn't used, but it's here for consistency and future use.
 			_PreRender(nodes, timeSpan, parameterValues);
 		}
 
-		public ChannelData Render(ChannelNode[] nodes, long timeSpan, object[] parameterValues) {
+		public ChannelData Render(ChannelNode[] nodes, TimeSpan timeSpan, object[] parameterValues) {
 			//caching/dirty uses this hook
 			return _Render(nodes, timeSpan, parameterValues);
 		}
 
-		abstract protected void _PreRender(ChannelNode[] nodes, long timeSpan, object[] parameterValues);
+		abstract protected void _PreRender(ChannelNode[] nodes, TimeSpan timeSpan, object[] parameterValues);
 
-		abstract protected ChannelData _Render(ChannelNode[] nodes, long timeSpan, object[] parameterValues);
+		abstract protected ChannelData _Render(ChannelNode[] nodes, TimeSpan timeSpan, object[] parameterValues);
 
 		public string EffectName {
 			get { return (Descriptor as IEffectModuleDescriptor).EffectName; }

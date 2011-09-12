@@ -8,19 +8,19 @@ using Vixen.Module.Timing;
 namespace Vixen.Execution {
 	abstract class TimedChannelEnumerator<T> : IEnumerator<T>
 		where T : class, ITimed, new() {
-		private long _startTime;
-		private long _endTime;
+		private TimeSpan _startTime;
+		private TimeSpan _endTime;
 		private IEnumerable<T> _source;
 		private ITiming _timingSource;
 		private T _newFrame;
 		private IEnumerator<T> _enumerator;
-		private long _position;
+		private TimeSpan _position;
 		private T _emptyInstance = new T();
 		private T _currentFrame;
 
 		// enumerator.Current = 1-frame buffer
 
-		public TimedChannelEnumerator(IEnumerable<T> source, ITiming timingSource, long startTime, long endTime) {
+		public TimedChannelEnumerator(IEnumerable<T> source, ITiming timingSource, TimeSpan startTime, TimeSpan endTime) {
 			_source = source;
 			_timingSource = timingSource;
 			_startTime = startTime;

@@ -13,7 +13,7 @@ namespace Vixen.Module.Effect {
 			: base(data) {
 		}
 
-		static public ChannelData Restrict(ChannelData channelData, long startTime, long endTime) {
+		static public ChannelData Restrict(ChannelData channelData, TimeSpan startTime, TimeSpan endTime) {
 			return new ChannelData(channelData.ToDictionary(
 				x => x.Key,
 				x => x.Value.Where(y => !(y.StartTime >= endTime || y.EndTime < startTime)).ToArray()));

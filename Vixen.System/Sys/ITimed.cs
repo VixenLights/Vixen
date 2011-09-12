@@ -5,8 +5,8 @@ using System.Text;
 
 namespace Vixen.Sys {
 	interface ITimed {
-		long StartTime { get; }
-		long EndTime { get; }
+		TimeSpan StartTime { get; }
+		TimeSpan EndTime { get; }
 		bool IsEmpty { get; }
 	}
 }

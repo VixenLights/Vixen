@@ -7,14 +7,10 @@ using CommandStandard;
 
 namespace Vixen.Module.Effect {
     public interface IEffect {
-		///// <summary>
-		///// Set when parameters or time span have been modified.
-		///// </summary>
-		//bool IsDirty { get; set; }
 		/// <summary>
 		/// "You're not executing yet, but render as much as you can."
 		/// </summary>
-		void PreRender(ChannelNode[] nodes, long timeSpan, object[] parameterValues);
+		void PreRender(ChannelNode[] nodes, TimeSpan timeSpan, object[] parameterValues);
 		/// <summary>
 		/// "You're executing, give me everything."
 		/// </summary>
@@ -24,7 +20,7 @@ namespace Vixen.Module.Effect {
 		/// <param name="renderTimeSpan">Amount of time to render.</param>
 		/// <param name="parameterValues">Effect parameter values.</param>
 		/// <returns></returns>
-		ChannelData Render(ChannelNode[] nodes, long timeSpan, object[] parameterValues);
+		ChannelData Render(ChannelNode[] nodes, TimeSpan timeSpan, object[] parameterValues);
 		string EffectName { get; }
 		CommandParameterSpecification[] Parameters { get; }
     }

@@ -14,7 +14,7 @@ namespace TestScriptModule {
 	static internal class SetLevelBehavior {
 		static private CommandIdentifier _setLevelCommandId = Standard.Lighting.Monochrome.SetLevel.Id;
 
-		static public ChannelData Render(ChannelNode[] nodes, long timeSpan, object[] parameterValues) {
+		static public ChannelData Render(ChannelNode[] nodes, TimeSpan timeSpan, object[] parameterValues) {
 			ChannelData channelData = new ChannelData();
 
 			//Level level = (Level)parameterValues[0];
@@ -47,15 +47,15 @@ namespace TestScriptModule {
 			return node.Properties.Get(SetLevelModule._rgbProperty) as TestProperty.RGB;
 		}
 
-		static private void _RenderWithoutRgb(ChannelData channelData, ChannelNode node, long timeSpan, object[] parameterValues) {
+		static private void _RenderWithoutRgb(ChannelData channelData, ChannelNode node, TimeSpan timeSpan, object[] parameterValues) {
 			// Render all channels the same at the same time.
 			foreach(OutputChannel channel in node.GetChannelEnumerator()) {
-				CommandData data = new CommandData(0L, timeSpan, _setLevelCommandId, parameterValues);
+				CommandData data = new CommandData(TimeSpan.Zero, timeSpan, _setLevelCommandId, parameterValues);
 				channelData[channel.Id] = new[] { data };
 			}
 		}
 
-		static private void _RenderWithRgb(IPropertyModuleInstance property, ChannelData channelData, ChannelNode node, long timeSpan, object[] parameterValues) {
+		static private void _RenderWithRgb(IPropertyModuleInstance property, ChannelData channelData, ChannelNode node, TimeSpan timeSpan, object[] parameterValues) {
 			TestProperty.RGB rgbProperty = property as TestProperty.RGB;
 			// Split the time over the three channels in RGB order.
 			OutputChannel[] allChannels = node.GetChannelEnumerator().ToArray();
@@ -68,8 +68,8 @@ namespace TestScriptModule {
 												  blueChannel
 											  };
 			for(int i = 0; i < orderedChannels.Length; i++) {
-				long startTime = timeSpan / 3 * i;
-				long endTime = timeSpan / 3 * (i + 1);
+				TimeSpan startTime = TimeSpan.FromTicks(timeSpan.Ticks / 3 * i);
+				TimeSpan endTime = TimeSpan.FromTicks(timeSpan.Ticks / 3 * (i + 1));
 				CommandData data = new CommandData(startTime, endTime, _setLevelCommandId, parameterValues);
 				channelData[orderedChannels[i].Id] = new[] { data };
 			}

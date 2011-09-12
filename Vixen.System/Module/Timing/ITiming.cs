@@ -6,6 +6,6 @@ using Vixen.Execution;
 
 namespace Vixen.Module.Timing {
 	public interface ITiming : IExecutionControl {
-		long Position { get; set; }
+		TimeSpan Position { get; set; }
 	}
 }

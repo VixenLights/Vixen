@@ -34,7 +34,7 @@ namespace Vixen.Execution {
 			return _Play(ProgramExecutor.START_ENTIRE_SEQUENCE, ProgramExecutor.END_ENTIRE_SEQUENCE);
 		}
 
-		public bool Play(long startTime, long endTime) {
+		public bool Play(TimeSpan startTime, TimeSpan endTime) {
 			return _Play(startTime, endTime);
 		}
 
@@ -70,7 +70,7 @@ namespace Vixen.Execution {
 			return 0;
 		}
 
-		private bool _Play(long startTime, long endTime) {
+		private bool _Play(TimeSpan startTime, TimeSpan endTime) {
 			try {
 				if(!IsPlaying) {
 					_programExecutor.Play(startTime, endTime);

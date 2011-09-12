@@ -80,7 +80,7 @@ namespace Vixen.IO.Xml {
 			List<object> parameters = new List<object>();
 			byte[] data;
 			long dataLength;
-			long startTime, timeSpan;
+			TimeSpan startTime, timeSpan;
 
 			// Data is stored as a base-64 stream from a binary stream.
 			string dataString = element.Element(ELEMENT_DATA).Value;
@@ -102,11 +102,11 @@ namespace Vixen.IO.Xml {
 
 					// Start time (long).
 					dataStream.Read(bytes, 0, sizeof(long));
-					startTime = BitConverter.ToInt64(bytes, 0);
+					startTime = TimeSpan.FromTicks(BitConverter.ToInt64(bytes, 0));
 
 					// Time span (long).
 					dataStream.Read(bytes, 0, sizeof(long));
-					timeSpan = BitConverter.ToInt64(bytes, 0);
+					timeSpan = TimeSpan.FromTicks(BitConverter.ToInt64(bytes, 0));
 
 					// Referenced nodes (index into target table, word).
 					var targets = Vixen.Sys.Execution.Nodes; // ChannelNodes
@@ -158,7 +158,7 @@ namespace Vixen.IO.Xml {
 			Guid[] targetIdTable;
 
 			//Already referencing the doc element.
-			obj.Length = long.Parse(element.Attribute("length").Value);
+			obj.Length = TimeSpan.FromTicks(long.Parse(element.Attribute("length").Value));
 
 			// Timing
 			_ReadTimingSource(element, obj);

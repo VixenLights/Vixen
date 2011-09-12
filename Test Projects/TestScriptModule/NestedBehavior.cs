@@ -9,7 +9,7 @@ using CommandStandard.Types;
 
 namespace TestScriptModule {
 	static internal class NestedBehavior {
-		static public ChannelData Render(ChannelNode[] nodes, long timeSpan, object[] parameterValues) {
+		static public ChannelData Render(ChannelNode[] nodes, TimeSpan timeSpan, object[] parameterValues) {
 			ChannelData channelData = new ChannelData();
 			Level startLevel = (Level)parameterValues[0];
 			SetLevel setLevelEffect = _GetSetLevelEffect();
@@ -32,8 +32,8 @@ namespace TestScriptModule {
 											  };
 				for(int i = 0; i < orderedChannels.Length; i++) {
 					// Call the SetLevel effect 
-					long startTime = timeSpan / orderedChannels.Length * i;
-					long channelTimeSpan = timeSpan / orderedChannels.Length;
+					TimeSpan startTime = TimeSpan.FromTicks(timeSpan.Ticks / orderedChannels.Length * i);
+					TimeSpan channelTimeSpan = TimeSpan.FromTicks(timeSpan.Ticks / orderedChannels.Length);
 					Level level = (i + 1) * (startLevel / orderedChannels.Length);
 					ChannelData setLevelData = setLevelEffect.Render(new[] { node }, channelTimeSpan, new object[] { level });
 					// The data timing coming back from the effect is relative to that effect,

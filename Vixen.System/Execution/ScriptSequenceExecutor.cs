@@ -12,7 +12,7 @@ namespace Vixen.Execution {
     class ScriptSequenceExecutor : SequenceExecutor {
 		private IUserScriptHost _scriptHost;
 
-		protected override void OnPlaying(long startTime, long endTime) {
+		protected override void OnPlaying(TimeSpan startTime, TimeSpan endTime) {
 			base.OnPlaying(startTime, endTime);
 
 			ScriptHostGenerator hostGenerator = new ScriptHostGenerator();
@@ -25,7 +25,7 @@ namespace Vixen.Execution {
 					// Under the current implementation, this results in a thread being spawned.
 					// That thread is the actual execution path of their code.
 					_scriptHost.Ended += (sender, e) => {
-						EndTime = 0;
+						EndTime = TimeSpan.Zero;
 					};
 					_scriptHost.Error += (sender, e) => {
 						OnError(e);

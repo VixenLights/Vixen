@@ -67,7 +67,7 @@ namespace Vixen.Sys {
 		/// <param name="startTime">Inclusive.</param>
 		/// <param name="endTime">Exclusive.</param>
 		/// <returns>CommandNodes that overlap the time range, in StartTime order.</returns>
-		public IEnumerable<CommandNode> GetCommandRange(long startTime, long endTime) {
+		public IEnumerable<CommandNode> GetCommandRange(TimeSpan startTime, TimeSpan endTime) {
 			// Need any data that starts or ends within the time range.
 
 			// Need to return the data in a concurrent collection with a live

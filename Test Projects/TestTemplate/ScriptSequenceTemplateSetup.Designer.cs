@@ -89,7 +89,7 @@
 			// 
 			// textBoxLength
 			// 
-			this.textBoxLength.Location = new System.Drawing.Point(125, 197);
+			this.textBoxLength.Location = new System.Drawing.Point(90, 197);
 			this.textBoxLength.Name = "textBoxLength";
 			this.textBoxLength.Size = new System.Drawing.Size(53, 20);
 			this.textBoxLength.TabIndex = 11;
@@ -97,11 +97,11 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(184, 200);
+			this.label3.Location = new System.Drawing.Point(149, 200);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(20, 13);
+			this.label3.Size = new System.Drawing.Size(57, 13);
 			this.label3.TabIndex = 12;
-			this.label3.Text = "ms";
+			this.label3.Text = "(hh:mm:ss)";
 			// 
 			// checkBoxForever
 			// 

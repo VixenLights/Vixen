@@ -8,7 +8,7 @@ namespace TestAudioOutput {
     class FmodInstance : IDisposable {
         private fmod _audioSystem;
         private SoundChannel _channel;
-		private long _startTime;
+		private TimeSpan _startTime;
 
         public FmodInstance(string fileName) {
             _audioSystem = fmod.GetInstance(-1);
@@ -23,11 +23,11 @@ namespace TestAudioOutput {
                 Stop();
             }
             _channel = _audioSystem.LoadSound(fileName, _channel);
-            _startTime = 0;
+			_startTime = TimeSpan.Zero;
         }
 
-		public void SetStartTime(long time) {
-            _startTime = Math.Max(0, time);
+		public void SetStartTime(TimeSpan time) {
+			_startTime = TimeSpan.Zero > time ? TimeSpan.Zero : time;
         }
 
         public void Play() {
@@ -43,7 +43,7 @@ namespace TestAudioOutput {
             if(_channel != null && !_channel.IsPlaying) {
                 SetStartTime(_startTime);
                 _audioSystem.Play(_channel, true);
-                _channel.Position = (uint)_startTime;
+                _channel.Position = (uint)_startTime.TotalMilliseconds;
                 _channel.Paused = false;
             }
         }

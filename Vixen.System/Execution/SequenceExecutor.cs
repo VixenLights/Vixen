@@ -67,15 +67,15 @@ namespace Vixen.Execution {
 			return true;
 		}
 
-		public void Play(long startTime, long endTime) {
+		public void Play(TimeSpan startTime, TimeSpan endTime) {
 			if(this.Sequence != null) {
 				// Only hook the input stream during execution.
 				// Hook before starting the behaviors.
 				_sequence.InsertDataListener += _DataListener;
 
 				// Bound the execution range.
-				StartTime = Math.Min(startTime, this.Sequence.Length);
-				EndTime = Math.Min(endTime, this.Sequence.Length);
+				StartTime = startTime < this.Sequence.Length ? startTime : this.Sequence.Length;
+				EndTime = endTime < this.Sequence.Length ? endTime : this.Sequence.Length;
 
 				// Notify any subclass that we're ready to start and allow it to do
 				// anything it needs to prepare.
@@ -169,7 +169,7 @@ namespace Vixen.Execution {
 			} while(!transitionToReset);
 		}
 
-		virtual protected void OnPlaying(long startTime, long endTime) { }
+		virtual protected void OnPlaying(TimeSpan startTime, TimeSpan endTime) { }
 
 		public void Pause() {
 			if(_updateTimer.Enabled) {
@@ -291,8 +291,8 @@ namespace Vixen.Execution {
 
 		// Because these are calculated values, changing the length of the sequence
 		// during execution will not affect the end time.
-		public long StartTime { get; protected set; }
-		public long EndTime { get; protected set; }
+		public TimeSpan StartTime { get; protected set; }
+		public TimeSpan EndTime { get; protected set; }
 
 		static public IExecutor GetExecutor(ISequence executable) {
 			Type attributeType = typeof(ExecutorAttribute);

@@ -567,8 +567,8 @@ namespace Vixen.Hardware {
 				// Aggregate a state.
 				if(_sources.Count > 0) {
 
-					long startTime = 0;
-					long endTime = 0;
+					TimeSpan startTime = TimeSpan.Zero;
+					TimeSpan endTime = TimeSpan.Zero;
 					CommandStandard.CommandIdentifier commandIdentifier = null;
 					object[] parameters = new object[0];
 
@@ -580,8 +580,8 @@ namespace Vixen.Hardware {
 						parameters = seed.ParameterValues;
 					} else {
 						foreach(IOutputStateSource source in _sources) {
-							startTime = Math.Min(startTime, source.SourceState.StartTime);
-							endTime = Math.Max(endTime, source.SourceState.EndTime);
+							startTime = startTime < source.SourceState.StartTime ? startTime : source.SourceState.StartTime;
+							endTime = endTime > source.SourceState.EndTime ? endTime : source.SourceState.EndTime;
 							//*** need a better resolution for multiple commands than this
 							// First command wins
 							commandIdentifier = commandIdentifier ?? source.SourceState.CommandIdentifier;

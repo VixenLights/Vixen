@@ -85,14 +85,14 @@ namespace TestAudioOutput {
 		// executed as media for the sequence.
 		// That means we're either media or media and timing, so only
 		// handle media execution entry points.
-		override public void LoadMedia(long startTime) {
+		override public void LoadMedia(TimeSpan startTime) {
 			_DisposeAudio();
 			_audioSystem = new FmodInstance(MediaFilePath);
 			_audioSystem.SetStartTime(startTime);
 		}
 
-		public long Position {
-			get { return _audioSystem.Position; }
+		public TimeSpan Position {
+			get { return TimeSpan.FromMilliseconds(_audioSystem.Position); }
 			set { }
 		}
 	}

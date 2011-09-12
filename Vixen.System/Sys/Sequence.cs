@@ -60,7 +60,7 @@ namespace Vixen.Sys {
 		/// <summary>
 		/// Use this to set the sequence's length when the sequence is untimed.
 		/// </summary>
-		public const long Forever = long.MaxValue;
+		static public readonly TimeSpan Forever = TimeSpan.MaxValue;
 
 		protected Sequence() {
 			ModuleDataSet = new ModuleLocalDataSet();
@@ -108,7 +108,7 @@ namespace Vixen.Sys {
 
 		public IModuleDataSet ModuleDataSet { get; private set; }
 
-		public long Length { get; set; }
+		public TimeSpan Length { get; set; }
 
 		virtual public string FilePath { get; set; }
 
@@ -119,7 +119,7 @@ namespace Vixen.Sys {
 			InsertDataListener.InsertData(commandNode);
 		}
 
-		public CommandNode InsertData(ChannelNode[] targetNodes, long startTime, long timeSpan, Command command)
+		public CommandNode InsertData(ChannelNode[] targetNodes, TimeSpan startTime, TimeSpan timeSpan, Command command)
 		{
 			CommandNode cn = new CommandNode(command, targetNodes, startTime, timeSpan);
 			InsertData(cn);
@@ -129,7 +129,7 @@ namespace Vixen.Sys {
 		public bool IsUntimed
 		{
 			get { return Length == Forever; }
-			set { Length = value ? Forever : 0; }
+			set { Length = value ? Forever : TimeSpan.Zero; }
 		}
 
 		public TimingProviders TimingProvider { get; protected set; }

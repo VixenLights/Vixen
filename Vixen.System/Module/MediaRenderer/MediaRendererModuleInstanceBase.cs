@@ -8,8 +8,8 @@ using Vixen.Module.Media;
 namespace Vixen.Module.MediaRenderer {
 	abstract public class MediaRendererModuleInstanceBase : ModuleInstanceBase, IMediaRendererModuleInstance, IEqualityComparer<IMediaRendererModuleInstance>, IEquatable<IMediaRendererModuleInstance>, IEqualityComparer<MediaRendererModuleInstanceBase>, IEquatable<MediaRendererModuleInstanceBase> {
 		abstract public IMediaModuleInstance Media { get; set; }
-		
-		abstract public void Render(Graphics g, Rectangle invalidRect, long timeSpan);
+
+		abstract public void Render(Graphics g, Rectangle invalidRect, TimeSpan startTime, TimeSpan timeSpan);
 
 		abstract public void Setup();
 

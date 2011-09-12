@@ -23,7 +23,7 @@ namespace TestTiming {
 
 		override public void Resume() { }
 
-		override public long Position {
+		override public TimeSpan Position {
 			get { return _form.Position; }
 			set { _form.Position = value; }
 		}

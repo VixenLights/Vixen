@@ -20,7 +20,7 @@ namespace TestTemplate {
 		public List<Guid> Behaviors { get; set; }
 
 		[DataMember]
-		public long Length { get; set; }
+		public TimeSpan Length { get; set; }
 
 		public Guid ModuleTypeId { get; set; }
 

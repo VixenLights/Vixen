@@ -6,7 +6,7 @@ using Vixen.Sys;
 
 namespace Vixen.Module.Timing {
 	abstract public class TimingModuleInstanceBase : ModuleInstanceBase, ITimingModuleInstance, IEqualityComparer<ITimingModuleInstance>, IEquatable<ITimingModuleInstance>, IEqualityComparer<TimingModuleInstanceBase>, IEquatable<TimingModuleInstanceBase> {
-		abstract public long Position { get; set; }
+		abstract public TimeSpan Position { get; set; }
 
 		abstract public void Start();
 

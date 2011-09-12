@@ -20,7 +20,7 @@ namespace TestTemplate {
 			}
 		}
 
-		public long Length {
+		public TimeSpan Length {
 			get { return _data.Length; }
 			set { _data.Length = value; }
 		}
