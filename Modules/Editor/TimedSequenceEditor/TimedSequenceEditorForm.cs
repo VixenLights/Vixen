@@ -185,8 +185,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				// make a new element for each row that represents the channel this command is in.
 				foreach (TimelineRow row in targetRows) {
 					TimedSequenceElement element = new TimedSequenceElement();
-					element.StartTime = TimeSpan.FromMilliseconds(node.StartTime);
-					element.Duration = TimeSpan.FromMilliseconds(node.TimeSpan);
+					element.StartTime = node.StartTime;
+					element.Duration = node.TimeSpan;
 					element.CommandNode = node;
 					element.ElementContentChanged += ElementContentChangedHandler;
 					element.ElementMoved += ElementMovedHandler;
@@ -240,8 +240,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		protected void ElementMovedHandler(object sender, EventArgs e)
 		{
 			TimedSequenceElement element = sender as TimedSequenceElement;
-			element.CommandNode.StartTime = (long)element.StartTime.TotalMilliseconds;
-			element.CommandNode.TimeSpan = (long)element.Duration.TotalMilliseconds;
+			element.CommandNode.StartTime = element.StartTime;
+			element.CommandNode.TimeSpan = element.Duration;
 			IsModified = true;
 		}
 
@@ -294,11 +294,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void toolStripButton1_Click(object sender, EventArgs e)
 		{
 			Command command = new Command(new Guid("{603E3297-994C-4705-9F17-02A62ECC14B5}"), null);
-			CommandNode cn = _sequence.InsertData(new[] { timelineControl.First().Tag as ChannelNode }, 0, 2000, command);
+			CommandNode cn = _sequence.InsertData(new[] { timelineControl.First().Tag as ChannelNode },
+				TimeSpan.FromSeconds(0.0), TimeSpan.FromSeconds(2.0), command);
 
 			TimedSequenceElement newItem = new TimedSequenceElement();
-			newItem.StartTime = TimeSpan.FromMilliseconds(cn.StartTime);
-			newItem.Duration = TimeSpan.FromMilliseconds(cn.TimeSpan);
+			newItem.StartTime = cn.StartTime;
+			newItem.Duration = cn.TimeSpan;
 			newItem.BackColor = Color.DodgerBlue;
 			newItem.CommandNode = cn;
 

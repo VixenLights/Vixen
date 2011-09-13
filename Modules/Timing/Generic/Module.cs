@@ -9,20 +9,26 @@ using Vixen.Module.Timing;
 namespace VixenModules.Timing.Generic {
 	public class Module : TimingModuleInstanceBase {
 		private Stopwatch _stopwatch = new Stopwatch();
-		private long _offset = 0;
+		private TimeSpan _offset = TimeSpan.Zero;
 
 		public override void Pause() {
 			_stopwatch.Stop();
 		}
 
-		public override long Position {
-			get { return _stopwatch.ElapsedMilliseconds + _offset; }
-			set {
-				if(!_stopwatch.IsRunning) {
+		public override TimeSpan Position
+		{
+			get { return _stopwatch.Elapsed + _offset; }
+			set
+			{
+				if (!_stopwatch.IsRunning)
+				{
 					_offset = value;
 				}
 			}
 		}
+
+
+		
 
 		public override void Resume() {
 			if(!_stopwatch.IsRunning) {

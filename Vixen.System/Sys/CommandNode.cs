@@ -31,7 +31,9 @@ namespace Vixen.Sys {
 				// If the effect requires any properties, make sure the target nodes have those
 				// properties.
 				EffectModuleDescriptorBase effectDescriptor = Modules.GetDescriptorById<EffectModuleDescriptorBase>(command.EffectId);
-				if(!targetNodes.All(x => x.Properties.Select(y => y.Descriptor.TypeId).Intersect(effectDescriptor.PropertyDependencies).Count() == effectDescriptor.PropertyDependencies.Length)) {
+				if(effectDescriptor.PropertyDependencies != null &&
+					!targetNodes.All(x => x.Properties.Select(y => y.Descriptor.TypeId).Intersect(effectDescriptor.PropertyDependencies).Count() == effectDescriptor.PropertyDependencies.Length)) {
+
 					List<string> message = new List<string>();
 					message.Add("The \"" + effectDescriptor.TypeName + "\" effect has property requirements that are missing:");
 					message.Add("");
