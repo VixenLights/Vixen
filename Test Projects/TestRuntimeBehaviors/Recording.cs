@@ -37,7 +37,7 @@ namespace TestRuntimeBehaviors {
 				// Get a channel into the sequence's input channels.
 				Guid sequenceChannelId = _GetSequenceChannelId();
 				// Clear it.
-				_sequence.Data.ClearInputChannel(sequenceChannelId);
+				_sequence.Data.ClearEffectStream(sequenceChannelId);
 				// Copy our buffered data to it.
 				_sequence.Data.AddCommands(sequenceChannelId, _buffer);
 			}
@@ -45,7 +45,7 @@ namespace TestRuntimeBehaviors {
 
 		private Guid _GetSequenceChannelId() {
 			if(_sequenceChannelId == Guid.Empty) {
-				_sequenceChannelId = _sequence.Data.CreateInputChannel("Recording");
+				_sequenceChannelId = _sequence.Data.CreateEffectStream("Recording");
 			}
 			return _sequenceChannelId;
 		}
@@ -83,7 +83,7 @@ namespace TestRuntimeBehaviors {
 
 		private void _RemoveSequenceChannel() {
 			if(_sequenceChannelId != Guid.Empty) {
-				_sequence.Data.RemoveInputChannel(_sequenceChannelId);
+				_sequence.Data.RemoveEffectStream(_sequenceChannelId);
 				_sequenceChannelId = Guid.Empty;
 			}
 		}

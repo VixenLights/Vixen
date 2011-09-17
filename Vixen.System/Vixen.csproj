@@ -252,7 +252,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Sys\EffectNode.cs" />
-    <Compile Include="Sys\InputChannels.cs" />
+    <Compile Include="Sys\EffectStreams.cs" />
     <Compile Include="Sys\DebugLog.cs" />
     <Compile Include="Sys\DelegateFactory.cs" />
     <Compile Include="Sys\ErrorLog.cs" />
@@ -294,14 +294,14 @@
     <Compile Include="Module\Trigger\TriggerModuleManagement.cs" />
     <Compile Include="Module\Trigger\TriggerModuleRepository.cs" />
     <Compile Include="Sys\InfoLog.cs" />
-    <Compile Include="Sys\InputChannel.cs" />
+    <Compile Include="Sys\EffectStream.cs" />
     <Compile Include="Sys\InsertDataStack.cs" />
     <Compile Include="Sys\Log.cs" />
     <Compile Include="Sys\LogEventArgs.cs" />
     <Compile Include="Sys\Logging.cs" />
     <Compile Include="Sys\LogItemEventArgs.cs" />
     <Compile Include="Sys\MediaCollection.cs" />
-    <Compile Include="Sys\OutputChannel.cs" />
+    <Compile Include="Sys\Channel.cs" />
     <Compile Include="Module\GenericModuleManagement.cs" />
     <Compile Include="Module\GenericModuleRepository.cs" />
     <Compile Include="Sys\CommandParameterReference.cs" />
@@ -337,7 +337,6 @@
     <Compile Include="Sys\SystemContext.cs" />
     <Compile Include="Sys\UserData.cs" />
     <Compile Include="Sys\ApplicationServices.cs" />
-    <Compile Include="Sys\Channel.cs" />
     <Compile Include="Module\Trigger\AnalogInputTriggerCondition.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -12,7 +12,7 @@ namespace TestScript
     using System;
     
     
-    #line 1 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\VB_Skeleton.tt"
+    #line 1 "C:\VixenDev\Test Projects\TestScript\VB_Skeleton.tt"
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "10.0.0.0")]
     public partial class VB_Skeleton : VB_SkeletonBase
     {
@@ -77,14 +77,14 @@ namespace TestScript
             this.GenerationEnvironment = null;
             this.Write("Imports System\r\n\r\nNamespace ");
             
-            #line 4 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\VB_Skeleton.tt"
+            #line 4 "C:\VixenDev\Test Projects\TestScript\VB_Skeleton.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Namespace));
             
             #line default
             #line hidden
             this.Write(" \r\n\tPublic Class ");
             
-            #line 5 "C:\Users\Development\Documents\Visual Studio 2010\Projects\Vixen\2011\TestScript\VB_Skeleton.tt"
+            #line 5 "C:\VixenDev\Test Projects\TestScript\VB_Skeleton.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ClassName));
             
             #line default

@@ -67,7 +67,7 @@ namespace Vixen.IO.Xml {
 			return new XElement(ELEMENT_NODES, elements);
 		}
 
-		private XElement _WriteOutputChannel(OutputChannel outputChannel) {
+		private XElement _WriteOutputChannel(Channel outputChannel) {
 			XElement element = new XElement(ELEMENT_CHANNEL,
 				new XAttribute(ATTR_ID, outputChannel.Id),
 				new XAttribute(ATTR_NAME, outputChannel.Name),

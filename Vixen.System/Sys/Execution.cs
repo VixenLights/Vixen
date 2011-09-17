@@ -16,7 +16,7 @@ namespace Vixen.Sys {
 		static private Thread _channelReadThread;
 		// Creating channels in here instead of VixenSystem so that the collection
 		// will be locally available for EffectRenderer instances.
-		static private Dictionary<OutputChannel, SystemChannelEnumerator> _channels = new Dictionary<OutputChannel, SystemChannelEnumerator>();
+		static private Dictionary<Channel, SystemChannelEnumerator> _channels = new Dictionary<Channel, SystemChannelEnumerator>();
 		static private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
 
 		// These are system-level events.
@@ -36,7 +36,7 @@ namespace Vixen.Sys {
 
 			if(VixenSystem.UserData != null) {
 				// Get channels.
-				foreach(OutputChannel channel in VixenSystem.UserData.Channels) {
+				foreach(Channel channel in VixenSystem.UserData.Channels) {
 					_AddChannel(channel);
 				}
 
@@ -47,9 +47,9 @@ namespace Vixen.Sys {
 			}
 		}
 
-		static public OutputChannel AddChannel(string channelName) {
+		static public Channel AddChannel(string channelName) {
 			channelName = _Uniquify(channelName);
-			OutputChannel channel = new OutputChannel(channelName);
+			Channel channel = new Channel(channelName);
 			_AddChannel(channel);
 			return channel;
 		}
@@ -67,12 +67,12 @@ namespace Vixen.Sys {
 			return name;
 		}
 
-		static private void _AddChannel(OutputChannel channel) {
+		static private void _AddChannel(Channel channel) {
 			// Create an enumerator.
 			_CreateChannelEnumerators(channel);
 		}
 
-		static public void RemoveChannel(OutputChannel channel) {
+		static public void RemoveChannel(Channel channel) {
 			SystemChannelEnumerator enumerator;
 			if(_channels.TryGetValue(channel, out enumerator)) {
 				lock(_channels) {
@@ -84,13 +84,13 @@ namespace Vixen.Sys {
 			}
 		}
 
-		static private void _CreateChannelEnumerators(params OutputChannel[] channels) {
-			_CreateChannelEnumerators(channels as IEnumerable<OutputChannel>);
+		static private void _CreateChannelEnumerators(params Channel[] channels) {
+			_CreateChannelEnumerators(channels as IEnumerable<Channel>);
 		}
 
-		static private void _CreateChannelEnumerators(IEnumerable<OutputChannel> channels) {
+		static private void _CreateChannelEnumerators(IEnumerable<Channel> channels) {
 			lock(_channels) {
-				foreach(OutputChannel channel in channels) {
+				foreach(Channel channel in channels) {
 					if(!_channels.ContainsKey(channel) || _channels[channel] == null) {
 						_channels[channel] = new SystemChannelEnumerator(channel, _systemTime);
 					}
@@ -100,14 +100,14 @@ namespace Vixen.Sys {
 
 		static private void _ResetChannelEnumerators() {
 			lock(_channels) {
-				foreach(OutputChannel channel in Channels) {
+				foreach(Channel channel in Channels) {
 					_channels[channel].Dispose();
 					_channels[channel] = null;
 				}
 			}
 		}
 
-		static public IEnumerable<OutputChannel> Channels {
+		static public IEnumerable<Channel> Channels {
 			// The collection may be modified while they are iterating this collection,
 			// so return a copy.
 			get { return _channels.Keys.ToArray(); }
@@ -190,7 +190,7 @@ namespace Vixen.Sys {
 
 		static private void _UpdateChannelStates() {
 			IEnumerator<Command> enumerator;
-			foreach(OutputChannel channel in Channels) {
+			foreach(Channel channel in Channels) {
 				lock(_channels) {
 					enumerator = _channels[channel];
 					// Will return true if state has changed.
@@ -299,7 +299,7 @@ namespace Vixen.Sys {
 						// If they are targetting multiple nodes, the resulting channels
 						// will be treated as a single collection of channels.  There will be
 						// no differentiation between channels of different trees.
-						Dictionary<Guid,OutputChannel> targetChannels = commandNode.Effect.TargetNodes.SelectMany(x => x).ToDictionary(x => x.Id);
+						Dictionary<Guid,Channel> targetChannels = commandNode.Effect.TargetNodes.SelectMany(x => x).ToDictionary(x => x.Id);
 						
 						// Render the effect for the whole span of the command's time.
 						ChannelData channelData = commandNode.RenderEffectData(TimeSpan.Zero, commandNode.TimeSpan);
@@ -307,7 +307,7 @@ namespace Vixen.Sys {
 						if(channelData != null) {
 							// Get it into the channels.
 							foreach(Guid channelId in channelData.Keys) {
-								OutputChannel targetChannel = targetChannels[channelId];
+								Channel targetChannel = targetChannels[channelId];
 
 								Monitor.Enter(targetChannel);
 

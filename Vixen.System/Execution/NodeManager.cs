@@ -25,11 +25,11 @@ namespace Vixen.Execution {
 		/// Creates a leaf node for a new channel.
 		/// </summary>
 		/// <param name="channel"></param>
-		public void AddChannelLeaf(OutputChannel channel) {
+		public void AddChannelLeaf(Channel channel) {
 			_rootNode.AddChild(new ChannelNode(channel.Name, channel));
 		}
 
-		public void RemoveChannelLeaf(OutputChannel channel) {
+		public void RemoveChannelLeaf(Channel channel) {
 			// Find any leaf nodes that reference this channel.
 			ChannelNode[] leafNodes = _rootNode.GetNodeEnumerator().Where(x => x.Channel == channel).ToArray();
 			// Remove all instances.

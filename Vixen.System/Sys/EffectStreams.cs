@@ -10,54 +10,54 @@ using Vixen.Sys;
 // to the system for immediate execution at the appropriate time.
 
 namespace Vixen.Sys {
-	public class InputChannels {
+	public class EffectStreams {
 		private ISequence _owner;
-		// Data in these channels is pulled only at execution start.
-		// There will always be at least one input channel.
-		private List<InputChannel> _inputChannels = new List<InputChannel>();
-		private InputChannel _mainChannel;
+		// Data in these streams is pulled only at execution start.
+		// There will always be at least one effect stream.
+		private List<EffectStream> _effectStreams = new List<EffectStream>();
+		private EffectStream _mainStream;
 		private CommandNodeCollection _executingData = null;
 
-		public InputChannels(ISequence owner) {
+		public EffectStreams(ISequence owner) {
 			_owner = owner;
-			// The sequence will have at least one input channel to hold command data.
-			_mainChannel = new InputChannel("Main");
-			_inputChannels.Add(_mainChannel);
+			// The sequence will have at least one effect stream to hold command data.
+			_mainStream = new EffectStream("Main");
+			_effectStreams.Add(_mainStream);
 		}
 
 		#region CommandNodes
 		public IEnumerable<EffectNode> GetCommands() {
-			return _mainChannel;
+			return _mainStream;
 		}
 
-		public IEnumerable<EffectNode> GetCommands(Guid channelId) {
-			return _inputChannels.Where(x => x.Id == channelId).FirstOrDefault();
+		public IEnumerable<EffectNode> GetCommands(Guid streamId) {
+			return _effectStreams.Where(x => x.Id == streamId).FirstOrDefault();
 		}
 
 		// During authoring, as data is written to the sequence, it is stored in the
-		// sequence's main input channel.
+		// sequence's main effect stream.
 		public void AddCommand(EffectNode data) {
-			_mainChannel.AddData(data);
+			_mainStream.AddData(data);
 		}
 
 		// Not currently used.
-		public void AddCommand(Guid channelId, EffectNode data) {
-			InputChannel channel = _inputChannels.Where(x => x.Id == channelId).FirstOrDefault();
-			if(channel != null) {
-				channel.AddData(data);
+		public void AddCommand(Guid streamId, EffectNode data) {
+			EffectStream effectStream = _effectStreams.Where(x => x.Id == streamId).FirstOrDefault();
+			if(effectStream != null) {
+				effectStream.AddData(data);
 			}
 		}
 
 		// Used by the recording behavior.
 		public void AddCommands(IEnumerable<EffectNode> data) {
-			_mainChannel.AddData(data);
+			_mainStream.AddData(data);
 		}
 
 		// Not currently used.
-		public void AddCommands(Guid channelId, IEnumerable<EffectNode> data) {
-			InputChannel channel = _inputChannels.Where(x => x.Id == channelId).FirstOrDefault();
-			if(channel != null) {
-				channel.AddData(data);
+		public void AddCommands(Guid streamId, IEnumerable<EffectNode> data) {
+			EffectStream effectStream = _effectStreams.Where(x => x.Id == streamId).FirstOrDefault();
+			if(effectStream != null) {
+				effectStream.AddData(data);
 			}
 		}
 
@@ -74,7 +74,7 @@ namespace Vixen.Sys {
 			// enumerator so that scripts can dynamically add the effects they
 			// generate.
 			IEnumerable<EffectNode> data =
-				_inputChannels
+				_effectStreams
 					.SelectMany(x => x.Where(y =>
 						(y.StartTime >= startTime && y.StartTime < endTime) ||
 						(y.EndTime >= startTime && y.EndTime < endTime))
@@ -107,34 +107,32 @@ namespace Vixen.Sys {
 		}
 		#endregion
 
-		#region Input Channels
-		public Guid CreateInputChannel(string name) {
-			InputChannel channel = new InputChannel(name);
-			_inputChannels.Add(channel);
-			return channel.Id;
+		#region Effect Streams
+		public Guid CreateEffectStream(string name) {
+			EffectStream effectStream = new EffectStream(name);
+			_effectStreams.Add(effectStream);
+			return effectStream.Id;
 		}
 
-		public void ClearInputChannel(Guid channelId) {
+		public void ClearEffectStream(Guid effectStreamId) {
 			//*** dictionary!
-			InputChannel channel = _GetInputChannel(channelId);
-			if(channel != null) {
-				channel.Clear();
+			EffectStream effectStream = _GetEffectStream(effectStreamId);
+			if(effectStream != null) {
+				effectStream.Clear();
 			}
 		}
 
-		public void RemoveInputChannel(Guid channelId) {
-			InputChannel channel = _GetInputChannel(channelId);
-			if(channel != null) {
-				_inputChannels.Remove(channel);
+		public void RemoveEffectStream(Guid effectStreamId) {
+			EffectStream effectStream = _GetEffectStream(effectStreamId);
+			if(effectStream != null) {
+				_effectStreams.Remove(effectStream);
 			}
 		}
 		#endregion
 
-		#region Private
-		private InputChannel _GetInputChannel(Guid channelId) {
-			return _inputChannels.Where(x => x.Id == channelId).FirstOrDefault();
+		private EffectStream _GetEffectStream(Guid effectStreamId) {
+			return _effectStreams.Where(x => x.Id == effectStreamId).FirstOrDefault();
 		}
-		#endregion
 
 		#region CommandNodeCollection
 		class CommandNodeCollection : IEnumerable<EffectNode> {

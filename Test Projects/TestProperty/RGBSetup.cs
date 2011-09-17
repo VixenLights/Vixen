@@ -12,7 +12,7 @@ namespace TestProperty {
 	public partial class RGBSetup : Form {
 		private RGBData _data;
 
-		public RGBSetup(RGBData data, OutputChannel[] channels) {
+		public RGBSetup(RGBData data, Channel[] channels) {
 			InitializeComponent();
 			_data = data;
 			comboBoxRed.DisplayMember = "Name";
@@ -42,9 +42,9 @@ namespace TestProperty {
 
 		private void buttonOk_Click(object sender, EventArgs e) {
 			if(_Validate()) {
-				_data.RedChannelId = (comboBoxRed.SelectedItem as OutputChannel).Id;
-				_data.GreenChannelId = (comboBoxGreen.SelectedItem as OutputChannel).Id;
-				_data.BlueChannelId = (comboBoxBlue.SelectedItem as OutputChannel).Id;
+				_data.RedChannelId = (comboBoxRed.SelectedItem as Channel).Id;
+				_data.GreenChannelId = (comboBoxGreen.SelectedItem as Channel).Id;
+				_data.BlueChannelId = (comboBoxBlue.SelectedItem as Channel).Id;
 			}
 		}
 	}

@@ -21,7 +21,7 @@ namespace Vixen.Sys {
 		EffectNode InsertData(IEffectModuleInstance effect, TimeSpan startTime);
 		InsertDataListenerStack InsertDataListener { get; set; }
 		TimingProviders TimingProvider { get; }
-		InputChannels Data { get; }
+		EffectStreams Data { get; }
 		IRuntimeBehaviorModuleInstance[] RuntimeBehaviors { get; }
 		MediaCollection Media { get; }
 		IModuleDataSet ModuleDataSet { get; }

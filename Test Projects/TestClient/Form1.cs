@@ -415,7 +415,7 @@ namespace TestClient
 		private void buttonAddSystemFixtureChannel_Click(object sender, EventArgs e) {
 			using(CommonElements.TextDialog textDialog = new CommonElements.TextDialog("New channel name")) {
 				if(textDialog.ShowDialog() == DialogResult.OK) {
-					OutputChannel channel = Vixen.Sys.Execution.AddChannel(textDialog.Response);
+					Channel channel = Vixen.Sys.Execution.AddChannel(textDialog.Response);
 					Vixen.Sys.Execution.Nodes.AddChannelLeaf(channel);
 				}
 			}

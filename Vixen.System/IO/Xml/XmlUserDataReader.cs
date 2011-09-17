@@ -9,7 +9,7 @@ using Vixen.Module;
 
 namespace Vixen.IO.Xml {
 	class XmlUserDataReader : XmlReaderBase<UserData> {
-		private OutputChannel[] _channels;
+		private Channel[] _channels;
 
 		private const string ELEMENT_ROOT = "UserData";
 		private const string ELEMENT_MODULE_DATA = "ModuleData";
@@ -74,9 +74,9 @@ namespace Vixen.IO.Xml {
 			return moduleData;
 		}
 
-		private OutputChannel[] _ReadChannels(XElement element) {
+		private Channel[] _ReadChannels(XElement element) {
 			XElement parentNode = element.Element(ELEMENT_CHANNELS);
-			OutputChannel[] channels = parentNode.Elements().Select(_ReadOutputChannel).ToArray();
+			Channel[] channels = parentNode.Elements().Select(_ReadOutputChannel).ToArray();
 			return channels;
 		}
 
@@ -87,7 +87,7 @@ namespace Vixen.IO.Xml {
 			return rootNodes;
 		}
 
-		private OutputChannel _ReadOutputChannel(XElement element) {
+		private Channel _ReadOutputChannel(XElement element) {
 			Guid id = new Guid(element.Attribute(ATTR_ID).Value);
 			string name = element.Attribute(ATTR_NAME).Value;
 			Patch patch = new Patch(
@@ -96,7 +96,7 @@ namespace Vixen.IO.Xml {
 					.Elements()
 					.Select(_ReadControllerReference)
 					);
-			return new OutputChannel(id, name, patch);
+			return new Channel(id, name, patch);
 		}
 
 		private ChannelNode _ReadChannelNode(XElement element) {
@@ -121,7 +121,7 @@ namespace Vixen.IO.Xml {
 			} else {
 				// Leaf
 				Guid channelId = Guid.Parse(element.Attribute(ATTR_CHANNEL_ID).Value);
-				OutputChannel channel =_channels.FirstOrDefault(x => x.Id == channelId);
+				Channel channel =_channels.FirstOrDefault(x => x.Id == channelId);
 				if(channel != null) {
 					node = new ChannelNode(id, name, channel, null);
 				}

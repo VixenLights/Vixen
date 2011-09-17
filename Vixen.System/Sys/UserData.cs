@@ -20,7 +20,7 @@ using Vixen.IO.Xml;
 namespace Vixen.Sys {
 	class UserData : IVersioned {
 		private string _alternateDataPath;
-		private IEnumerable<OutputChannel> _channels;
+		private IEnumerable<Channel> _channels;
 		private IEnumerable<ChannelNode> _nodes;
 
 		private const string USER_DATA_FILE = "UserData.xml";
@@ -38,10 +38,10 @@ namespace Vixen.Sys {
 		public ModuleStaticDataSet ModuleData { get; set; }
 
 		// Doing it this way means that Channels and Nodes will never be null.
-		public IEnumerable<OutputChannel> Channels {
+		public IEnumerable<Channel> Channels {
 			get {
 				if(_channels == null) {
-					_channels = new OutputChannel[0];
+					_channels = new Channel[0];
 				}
 				return _channels;
 			}

@@ -39,7 +39,7 @@ namespace TestClient {
                 comboBoxOutput.SelectedIndex != -1 &&
                 comboBoxChannel.SelectedItem != null) {
                 OutputController controller = comboBoxController.SelectedItem as OutputController;
-				OutputChannel channel = comboBoxChannel.SelectedItem as OutputChannel;
+				Channel channel = comboBoxChannel.SelectedItem as Channel;
                 channel.Patch.Add(controller.Id, comboBoxOutput.SelectedIndex);
             } else {
                 MessageBox.Show("Fix selections");

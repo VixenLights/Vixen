@@ -11,7 +11,7 @@ namespace Vixen.Sys {
 	/// <summary>
 	/// A logical node that encapsulates a single OutputChannel or a branch/group of other ChannelNodes.
 	/// </summary>
-	public class ChannelNode : GroupNode<OutputChannel>, IVersioned {
+	public class ChannelNode : GroupNode<Channel>, IVersioned {
 		// Making this static so there doesn't have to be potentially thousands of
 		// subscriptions from the node manager.
 		static public event EventHandler Changed;
@@ -20,7 +20,7 @@ namespace Vixen.Sys {
 		private const int VERSION = 1;
 
 		#region Constructors
-		public ChannelNode(Guid id, string name, OutputChannel channel, IEnumerable<ChannelNode> content)
+		public ChannelNode(Guid id, string name, Channel channel, IEnumerable<ChannelNode> content)
 			: base(name, content) {
 			if (_instances.ContainsKey(id)) {
 				throw new InvalidOperationException("Trying to create a ChannelNode that already exists.");
@@ -32,7 +32,7 @@ namespace Vixen.Sys {
 			Properties = new PropertyManager(this);
 		}
 
-		public ChannelNode(string name, OutputChannel channel, IEnumerable<ChannelNode> content)
+		public ChannelNode(string name, Channel channel, IEnumerable<ChannelNode> content)
 			: this(Guid.NewGuid(), name, channel, content) {
 		}
 
@@ -40,11 +40,11 @@ namespace Vixen.Sys {
 			: this(name, null, content) {
 		}
 
-		private ChannelNode(Guid id, string name, OutputChannel channel, params ChannelNode[] content)
+		private ChannelNode(Guid id, string name, Channel channel, params ChannelNode[] content)
 			: this(id, name, channel, content as IEnumerable<ChannelNode>) {
 		}
 
-		public ChannelNode(string name, OutputChannel channel, params ChannelNode[] content)
+		public ChannelNode(string name, Channel channel, params ChannelNode[] content)
 			: this(name, channel, content as IEnumerable<ChannelNode>) {
 		}
 
@@ -53,7 +53,7 @@ namespace Vixen.Sys {
 		}
 		#endregion
 
-		public OutputChannel Channel { get; set; }
+		public Channel Channel { get; set; }
 
 		public Guid Id { get; private set; }
 
@@ -73,7 +73,7 @@ namespace Vixen.Sys {
 		{
 			get { return this.All(x => x.Masked); }
 			set {
-				foreach(OutputChannel channel in this) {
+				foreach(Channel channel in this) {
 					channel.Masked = value;
 				}
 			}
@@ -129,35 +129,35 @@ namespace Vixen.Sys {
 		}
 
 		#region Overrides
-		public override void AddChild(GroupNode<OutputChannel> node) {
+		public override void AddChild(GroupNode<Channel> node) {
 			base.AddChild(node);
 			OnChanged(this);
 		}
 
-		public override bool RemoveFromParent(GroupNode<OutputChannel> parent) {
+		public override bool RemoveFromParent(GroupNode<Channel> parent) {
 			bool result = base.RemoveFromParent(parent);
 			OnChanged(this);
 			return result;
 		}
 
-		public override bool RemoveChild(GroupNode<OutputChannel> node) {
+		public override bool RemoveChild(GroupNode<Channel> node) {
 			bool result = base.RemoveChild(node);
 			OnChanged(this);
 			return result;
 		}
 
-		public override GroupNode<OutputChannel> Get(int index) {
+		public override GroupNode<Channel> Get(int index) {
 			if(IsLeaf) throw new InvalidOperationException("Cannot get child nodes from a leaf.");
 			return base.Get(index);
 		}
 
-		public override IEnumerator<OutputChannel> GetEnumerator() {
+		public override IEnumerator<Channel> GetEnumerator() {
 			return GetChannelEnumerator().GetEnumerator();
 		}
 		#endregion
 
 		#region Enumerators
-		public IEnumerable<OutputChannel> GetChannelEnumerator() {
+		public IEnumerable<Channel> GetChannelEnumerator() {
 			if(IsLeaf) {
 				// OutputChannel is already an enumerable, so AsEnumerable<> won't work.
 				return (new[] { Channel });

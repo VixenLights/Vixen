@@ -49,7 +49,7 @@ namespace TestScriptModule {
 
 		static private void _RenderWithoutRgb(ChannelData channelData, ChannelNode node, TimeSpan timeSpan, object[] parameterValues) {
 			// Render all channels the same at the same time.
-			foreach(OutputChannel channel in node.GetChannelEnumerator()) {
+			foreach(Channel channel in node.GetChannelEnumerator()) {
 				Command data = new Command(TimeSpan.Zero, timeSpan, _setLevelCommandId, parameterValues);
 				channelData[channel.Id] = new[] { data };
 			}
@@ -58,11 +58,11 @@ namespace TestScriptModule {
 		static private void _RenderWithRgb(IPropertyModuleInstance property, ChannelData channelData, ChannelNode node, TimeSpan timeSpan, object[] parameterValues) {
 			TestProperty.RGB rgbProperty = property as TestProperty.RGB;
 			// Split the time over the three channels in RGB order.
-			OutputChannel[] allChannels = node.GetChannelEnumerator().ToArray();
-			OutputChannel redChannel = allChannels.First(x => x.Id == rgbProperty.RedChannelId);
-			OutputChannel greenChannel = allChannels.First(x => x.Id == rgbProperty.GreenChannelId);
-			OutputChannel blueChannel = allChannels.First(x => x.Id == rgbProperty.BlueChannelId);
-			OutputChannel[] orderedChannels = {
+			Channel[] allChannels = node.GetChannelEnumerator().ToArray();
+			Channel redChannel = allChannels.First(x => x.Id == rgbProperty.RedChannelId);
+			Channel greenChannel = allChannels.First(x => x.Id == rgbProperty.GreenChannelId);
+			Channel blueChannel = allChannels.First(x => x.Id == rgbProperty.BlueChannelId);
+			Channel[] orderedChannels = {
 												  redChannel,
 												  greenChannel,
 												  blueChannel

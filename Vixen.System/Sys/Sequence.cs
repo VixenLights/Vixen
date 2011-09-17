@@ -69,7 +69,7 @@ namespace Vixen.Sys {
 
 			InsertDataListener = new InsertDataListenerStack();
 			InsertDataListener += _DataListener;
-			Data = new InputChannels(this);
+			Data = new EffectStreams(this);
 			TimingProvider = new TimingProviders(this);
 			Media = new MediaCollection(ModuleDataSet);
 			RuntimeBehaviors = Modules.ModuleManagement.GetAllRuntimeBehavior();
@@ -134,7 +134,7 @@ namespace Vixen.Sys {
 
 		public TimingProviders TimingProvider { get; protected set; }
 
-		public InputChannels Data { get; private set; }
+		public EffectStreams Data { get; private set; }
 
 		// Every sequence will get a collection of all available runtime behaviors.
 		public IRuntimeBehaviorModuleInstance[] RuntimeBehaviors { get; private set; }
