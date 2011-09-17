@@ -11,13 +11,11 @@ namespace TestScriptModule {
 	public class SetLevel : EffectModuleInstanceBase {
 		private ChannelData _channelData = null;
 
-		override protected void _PreRender(ChannelNode[] nodes, TimeSpan timeSpan, object[] parameterValues) {
-			_channelData = SetLevelBehavior.Render(nodes, timeSpan, parameterValues);
+		protected override void _PreRender() {
+			_channelData = SetLevelBehavior.Render(TargetNodes, TimeSpan, ParameterValues);
 		}
 
-		override protected ChannelData _Render(ChannelNode[] nodes, TimeSpan timeSpan, object[] parameterValues) {
-			//Not actual use...
-			PreRender(nodes, timeSpan, parameterValues);
+		protected override ChannelData _Render() {
 			return _channelData;
 		}
 	}

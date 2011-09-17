@@ -10,7 +10,7 @@ namespace Vixen.Module.Output {
         // As defined by the owning controller.
         int OutputCount { get; set; }
         // One command for each output as defined by the owning controller.
-        void UpdateState(CommandData[] outputStates);
+        void UpdateState(Command[] outputStates);
 		IEnumerable<ITransformModuleInstance> BaseTransforms { get; set; }
 		void AddTransform(int outputIndex, Guid transformTypeId, Guid transformInstanceId = default(Guid));
 		void RemoveTransform(int outputIndex, Guid transformTypeId, Guid transformInstanceId);

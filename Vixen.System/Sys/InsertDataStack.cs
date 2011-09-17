@@ -5,11 +5,11 @@ using System.Text;
 
 namespace Vixen.Sys {
 	public class InsertDataListenerStack {
-		public delegate bool DataListener(CommandNode commandNode);
+		public delegate bool DataListener(EffectNode commandNode);
 
 		private LinkedList<DataListener> _listeners = new LinkedList<DataListener>();
 
-		public void InsertData(CommandNode commandNode) {
+		public void InsertData(EffectNode commandNode) {
 			bool cancel = false;
 			IEnumerator<DataListener> enumerator = _listeners.GetEnumerator();
 			while(!cancel && enumerator.MoveNext()) {

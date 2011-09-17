@@ -6,6 +6,6 @@ using Vixen.Sys;
 
 namespace Vixen.Hardware {
 	public interface IOutputStateSource {
-		CommandData SourceState { get; }
+		Command SourceState { get; }
 	}
 }

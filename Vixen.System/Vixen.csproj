@@ -209,7 +209,7 @@
     <Compile Include="Module\Input\IInputModuleDescriptor.cs" />
     <Compile Include="Module\Input\IInputModuleInstance.cs" />
     <Compile Include="Module\Input\InputModuleInstanceBase.cs" />
-    <Compile Include="Module\Input\InputInput.cs" />
+    <Compile Include="Module\Input\InputInputBase.cs" />
     <Compile Include="Module\Input\InputModuleImplementation.cs" />
     <Compile Include="Module\Input\InputModuleManagement.cs" />
     <Compile Include="Module\Input\InputModuleRepository.cs" />
@@ -251,8 +251,7 @@
     <Compile Include="Sys\SequenceStartedEventArgs.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Sys\Command.cs" />
-    <Compile Include="Sys\CommandNode.cs" />
+    <Compile Include="Sys\EffectNode.cs" />
     <Compile Include="Sys\InputChannels.cs" />
     <Compile Include="Sys\DebugLog.cs" />
     <Compile Include="Sys\DelegateFactory.cs" />
@@ -345,7 +344,7 @@
     <Compile Include="Sys\AppCommand.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Sys\CommandData.cs">
+    <Compile Include="Sys\Command.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Sys\ControllerReference.cs">

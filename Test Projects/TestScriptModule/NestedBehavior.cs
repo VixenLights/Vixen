@@ -35,12 +35,15 @@ namespace TestScriptModule {
 					TimeSpan startTime = TimeSpan.FromTicks(timeSpan.Ticks / orderedChannels.Length * i);
 					TimeSpan channelTimeSpan = TimeSpan.FromTicks(timeSpan.Ticks / orderedChannels.Length);
 					Level level = (i + 1) * (startLevel / orderedChannels.Length);
-					ChannelData setLevelData = setLevelEffect.Render(new[] { node }, channelTimeSpan, new object[] { level });
+					setLevelEffect.TargetNodes = new[] { node };
+					setLevelEffect.TimeSpan = channelTimeSpan;
+					setLevelEffect.ParameterValues = new object[] { level };
+					ChannelData setLevelData = setLevelEffect.Render();
 					// The data timing coming back from the effect is relative to that effect,
 					// so it needs to be offset to be relative to this effect.
 					Guid channelId = orderedChannels[i].Id;
-					CommandData[] data = setLevelData[channelId];
-					foreach(CommandData commandData in data) {
+					Command[] data = setLevelData[channelId];
+					foreach(Command commandData in data) {
 						commandData.StartTime += startTime;
 						commandData.EndTime += startTime;
 					}

@@ -5,11 +5,11 @@ using System.Text;
 using Vixen.Sys;
 
 namespace Vixen.Module.Effect {
-	public class ChannelData : Dictionary<Guid, CommandData[]> {
+	public class ChannelData : Dictionary<Guid, Command[]> {
 		public ChannelData() {
 		}
 
-		public ChannelData(IDictionary<Guid, CommandData[]> data)
+		public ChannelData(IDictionary<Guid, Command[]> data)
 			: base(data) {
 		}
 

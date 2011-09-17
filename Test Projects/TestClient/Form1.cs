@@ -437,15 +437,19 @@ namespace TestClient
 
 		private void buttonFireEffect_Click(object sender, EventArgs e) {
 			if(comboBoxEffects.SelectedItem != null && treeViewSystemChannels.SelectedNode != null) {
+				//*** effect can no longer be a singleton
 				IEffectModuleInstance effect = comboBoxEffects.SelectedItem as IEffectModuleInstance;
-				object[] parameterValues = null;
-				if(_editorControl != null) {
-					parameterValues = _editorControl.EffectParameterValues;
-				}
-				Command command = new Command(effect.Descriptor.TypeId, parameterValues);
 				ChannelNode node = treeViewSystemChannels.SelectedNode.Tag as ChannelNode;
+				TimeSpan timeSpan = TimeSpan.FromMilliseconds((double)numericUpDownEffectLength.Value);
+
+				effect = ApplicationServices.Get<IEffectModuleInstance>(effect.Descriptor.TypeId);
+				effect.TargetNodes = new[] { node };
+				effect.TimeSpan = timeSpan;
+				if(_editorControl != null) {
+					effect.ParameterValues = _editorControl.EffectParameterValues;
+				}
 				try {
-					CommandNode commandNode = new CommandNode(command, new[] { node }, TimeSpan.Zero, TimeSpan.FromMilliseconds((double)numericUpDownEffectLength.Value));
+					EffectNode commandNode = new EffectNode(effect, TimeSpan.Zero);
 					Vixen.Sys.Execution.Write(new[] { commandNode });
 				} catch(Exception ex) {
 					MessageBox.Show(ex.Message);

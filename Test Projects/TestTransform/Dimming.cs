@@ -32,7 +32,7 @@ namespace TestTransform {
 			set { _moduleData.DimmingCurveName = value; }
 		}
 
-		override public void Transform(CommandData command) {
+		override public void Transform(Command command) {
 			CommandParameterReference paramRef;
 			if(_curve != null && !command.IsEmpty && CommandsAffected.TryGetValue(command.CommandIdentifier, out paramRef)) {
 				foreach(int index in paramRef.ParameterIndexes) {

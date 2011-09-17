@@ -21,7 +21,7 @@ namespace Vixen.Execution {
 		private System.Timers.Timer _updateTimer;
 		private ISequence _sequence;
 		private IRuntimeBehaviorModuleInstance[] _runtimeBehaviors;
-		private IComparer<CommandNode> _commandNodeComparer = new CommandNode.Comparer();
+		private IComparer<EffectNode> _commandNodeComparer = new EffectNode.Comparer();
 		private ExecutorEffectEnumerator _sequenceDataEnumerator;
 
 		public event EventHandler<SequenceStartedEventArgs> SequenceStarted;
@@ -47,7 +47,7 @@ namespace Vixen.Execution {
 			}
 		}
 
-		private bool _DataListener(CommandNode commandNode) {
+		private bool _DataListener(EffectNode commandNode) {
 			// Data has been inserted into the sequence.
 			// Give every behavior a chance at the data.
 			foreach(IRuntimeBehavior behavior in _runtimeBehaviors) {
@@ -145,7 +145,7 @@ namespace Vixen.Execution {
 			// when to stop.
 			bool transitionToSet = false;
 			bool transitionToReset = false;
-			List<CommandNode> qualifiedCommands = new List<CommandNode>();
+			List<EffectNode> qualifiedCommands = new List<EffectNode>();
 
 			do {
 				if(IsRunning) transitionToSet = true;

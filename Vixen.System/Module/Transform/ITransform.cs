@@ -17,6 +17,6 @@ namespace Vixen.Module.Transform {
 		/// The module needs to determine qualification on its own.
 		/// </summary>
 		/// <param name="command"></param>
-		void Transform(CommandData command);
+		void Transform(Command command);
 	}
 }

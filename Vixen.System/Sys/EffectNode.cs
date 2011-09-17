@@ -9,35 +9,26 @@ namespace Vixen.Sys {
 	/// <summary>
 	/// Qualifies a Command with a start time and length.
 	/// </summary>
-	public class CommandNode : ITimed {
-		private TimeSpan _startTime;
-		private TimeSpan _timeSpan;
-
-		public CommandNode()
-			: this(null, null, TimeSpan.Zero, TimeSpan.Zero) {
+	public class EffectNode : ITimed {
+		public EffectNode()
+			: this(null, TimeSpan.Zero) {
 			// Default instance is empty.
 		}
 
-		public CommandNode(Command command, ChannelNode[] targetNodes, TimeSpan startTime, TimeSpan timeSpan) {
-			Command = command;
-			if (targetNodes == null)
-				TargetNodes = new List<ChannelNode>();
-			else
-				TargetNodes = new List<ChannelNode>(targetNodes);
+		public EffectNode(IEffectModuleInstance effect, TimeSpan startTime) {
+			Effect = effect;
 			StartTime = startTime;
-			TimeSpan = timeSpan;
 
 			if(!IsEmpty) {
 				// If the effect requires any properties, make sure the target nodes have those
 				// properties.
-				EffectModuleDescriptorBase effectDescriptor = Modules.GetDescriptorById<EffectModuleDescriptorBase>(command.EffectId);
-				if(effectDescriptor.PropertyDependencies != null &&
-					!targetNodes.All(x => x.Properties.Select(y => y.Descriptor.TypeId).Intersect(effectDescriptor.PropertyDependencies).Count() == effectDescriptor.PropertyDependencies.Length)) {
+				EffectModuleDescriptorBase effectDescriptor = Modules.GetDescriptorById<EffectModuleDescriptorBase>(effect.Descriptor.TypeId);
+				if(!effect.TargetNodes.All(x => x.Properties.Select(y => y.Descriptor.TypeId).Intersect(effectDescriptor.PropertyDependencies).Count() == effectDescriptor.PropertyDependencies.Length)) {
 
 					List<string> message = new List<string>();
 					message.Add("The \"" + effectDescriptor.TypeName + "\" effect has property requirements that are missing:");
 					message.Add("");
-					foreach(ChannelNode channelNode in targetNodes) {
+					foreach(ChannelNode channelNode in effect.TargetNodes) {
 						Guid[] missingPropertyIds = effectDescriptor.PropertyDependencies.Except(channelNode.Properties.Select(x => x.Descriptor.TypeId)).ToArray();
 						if(missingPropertyIds.Length > 0) {
 							message.Add((channelNode.Children.Count() > 0 ? "Group " : "Channel ") + channelNode.Name);
@@ -49,31 +40,29 @@ namespace Vixen.Sys {
 			}
 		}
 
-		public Command Command { get; private set; }
+		public IEffectModuleInstance Effect { get; private set; }
 
-		public List<ChannelNode> TargetNodes { get; private set; }
+		//public List<ChannelNode> TargetNodes { get; private set; }
 
-		public TimeSpan StartTime {
-			get { return _startTime; }
-			set {
-				_startTime = value;
-				EndTime = _startTime + _timeSpan;
-				// Effect rendering is done from 0, so a start time is irrelevant.
-			}
-		}
+		public TimeSpan StartTime { get; set; }
 
 		public TimeSpan TimeSpan {
-			get { return _timeSpan; }
-			set {
-				_timeSpan = value;
-				EndTime = _startTime + _timeSpan;
-			}
+			get { return (Effect != null) ? Effect.TimeSpan : TimeSpan.Zero; }
 		}
 
-		public TimeSpan EndTime { get; private set; }
+		public TimeSpan EndTime { 
+			get { return (Effect != null) ? StartTime + TimeSpan : StartTime; }
+		}
 		
 		public bool IsEmpty {
-			get { return Command == null; }
+			get { return Effect == null; }
+		}
+
+		public ChannelData RenderEffectData() {
+			if(!IsEmpty) {
+				return Effect.Render();
+			}
+			return null;
 		}
 
 		/// <summary>
@@ -85,17 +74,18 @@ namespace Vixen.Sys {
 		public ChannelData RenderEffectData(TimeSpan renderStartTime, TimeSpan renderTimeSpan) {
 			if(!IsEmpty) {
 				// We're providing the length of the desired effect and a relative start time for rendering.
-				TimeSpan timeSpan = this.TimeSpan < renderTimeSpan ? this.TimeSpan : renderTimeSpan;
-				return Command.Render(this, this.TimeSpan, renderStartTime - StartTime, timeSpan);
+				TimeSpan startTime = (renderStartTime > StartTime && renderStartTime < TimeSpan) ? renderStartTime : StartTime;
+				TimeSpan timeSpan = (renderTimeSpan + StartTime < TimeSpan) ? renderTimeSpan : TimeSpan - StartTime;
+				return Effect.Render(startTime, timeSpan);
 			}
 			return null;
 		}
 
-		static public readonly CommandNode Empty = new CommandNode();
+		static public readonly EffectNode Empty = new EffectNode();
 
 		#region IComparer<CommandNode>
-		public class Comparer : IComparer<CommandNode> {
-			public int Compare(CommandNode x, CommandNode y) {
+		public class Comparer : IComparer<EffectNode> {
+			public int Compare(EffectNode x, EffectNode y) {
 				return x.StartTime.CompareTo(y.StartTime);
 			}
 		}

@@ -23,7 +23,7 @@ namespace TestOutput {
             _form.OutputCount = outputCount;
         }
 
-		override protected void _UpdateState(CommandData[] outputStates) {
+		override protected void _UpdateState(Command[] outputStates) {
             if(_updateCount++ == 0) {
                 _sw.Reset();
                 _sw.Start();

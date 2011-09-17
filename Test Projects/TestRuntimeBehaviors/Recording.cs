@@ -12,7 +12,7 @@ namespace TestRuntimeBehaviors {
 		private Tuple<string, Action>[] _actions;
 		private ISequence _sequence;
 		private ITiming _timingSource;
-		private List<CommandNode> _buffer = new List<CommandNode>();
+		private List<EffectNode> _buffer = new List<EffectNode>();
 		private int _bufferItems;
 		private Guid _sequenceChannelId = Guid.Empty;
 		private RecordingData _moduleData;
@@ -50,7 +50,7 @@ namespace TestRuntimeBehaviors {
 			return _sequenceChannelId;
 		}
 
-		override public void Handle(CommandNode commandNode) {
+		override public void Handle(EffectNode commandNode) {
 			_buffer.Add(commandNode);
 		}
 

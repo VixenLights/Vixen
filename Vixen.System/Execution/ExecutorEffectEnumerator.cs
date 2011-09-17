@@ -6,8 +6,8 @@ using Vixen.Sys;
 using Vixen.Module.Timing;
 
 namespace Vixen.Execution {
-	class ExecutorEffectEnumerator : TimedChannelEnumerator<CommandNode> {
-		public ExecutorEffectEnumerator(IEnumerable<CommandNode> data, ITiming timingSource, TimeSpan sequenceStartTime, TimeSpan sequenceEndTime)
+	class ExecutorEffectEnumerator : TimedChannelEnumerator<EffectNode> {
+		public ExecutorEffectEnumerator(IEnumerable<EffectNode> data, ITiming timingSource, TimeSpan sequenceStartTime, TimeSpan sequenceEndTime)
 			: base(data, timingSource, sequenceStartTime, sequenceEndTime) {
 		}
 	}

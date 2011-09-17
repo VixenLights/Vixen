@@ -10,9 +10,9 @@ namespace Vixen.Sys {
 	/// <summary>
 	/// A logical channel of low-level CommandData that is intended to be executed by a controller.
 	/// </summary>
-	public class OutputChannel : Channel, IEnumerable<CommandData>, IEqualityComparer<OutputChannel> {
+	public class OutputChannel : Channel, IEnumerable<Command>, IEqualityComparer<OutputChannel> {
 		private Patch _patch;
-		private ConcurrentQueue<CommandData> _data = new ConcurrentQueue<CommandData>();
+		private ConcurrentQueue<Command> _data = new ConcurrentQueue<Command>();
 
 		public OutputChannel(string name)
 			: base(name) {
@@ -41,28 +41,28 @@ namespace Vixen.Sys {
 			set { this.Patch.Enabled = !value; }
 		}
 		
-		public IEnumerator<CommandData> GetEnumerator() {
+		public IEnumerator<Command> GetEnumerator() {
 			// We need an enumerator that is live and does not operate upon a snapshot
 			// of the data.
-			return new ConcurrentQueueLiveEnumerator<CommandData>(_data);
+			return new ConcurrentQueueLiveEnumerator<Command>(_data);
 		}
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
 			return this.GetEnumerator();
 		}
 
-		public void AddData(IEnumerable<CommandData> data) {
-			foreach(CommandData dataElement in data) {
+		public void AddData(IEnumerable<Command> data) {
+			foreach(Command dataElement in data) {
 				_data.Enqueue(dataElement);
 			}
 		}
 
-		public void AddData(CommandData data) {
+		public void AddData(Command data) {
 			_data.Enqueue(data);
 		}
 
 		public override void Clear() {
-			_data = new ConcurrentQueue<CommandData>();
+			_data = new ConcurrentQueue<Command>();
 		}
 
 		public bool Equals(OutputChannel x, OutputChannel y) {

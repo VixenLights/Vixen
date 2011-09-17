@@ -9,8 +9,8 @@ namespace Vixen.Sys {
 	/// <summary>
 	/// A channel of high-level effect data that seeds a sequence.  Generally, there is only one in use, but more are allowed.
 	/// </summary>
-	public class InputChannel : Channel , IEnumerable<CommandNode> {
-		private List<CommandNode> _data = new List<CommandNode>();
+	public class InputChannel : Channel , IEnumerable<EffectNode> {
+		private List<EffectNode> _data = new List<EffectNode>();
 
 		public InputChannel(string name)
 			: base(name) {
@@ -18,21 +18,21 @@ namespace Vixen.Sys {
 
 		private InputChannel() { }
 
-		public IEnumerator<CommandNode> GetEnumerator() {
+		public IEnumerator<EffectNode> GetEnumerator() {
 			// We need an enumerator that is live and does not operate upon a snapshot
 			// of the data.
-			return new LiveListEnumerator<CommandNode>(_data);
+			return new LiveListEnumerator<EffectNode>(_data);
 		}
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
 			return this.GetEnumerator();
 		}
 
-		public void AddData(CommandNode data) {
+		public void AddData(EffectNode data) {
 			_data.Add(data);
 		}
 
-		public void AddData(IEnumerable<CommandNode> data) {
+		public void AddData(IEnumerable<EffectNode> data) {
 			_data.AddRange(data);
 		}
 

@@ -9,19 +9,75 @@ namespace Vixen.Module.Effect {
 	//This is where caching would take place, but the subclass can override/disable it
 	//-> Compose, template it
 	abstract public class EffectModuleInstanceBase : ModuleInstanceBase, IEffectModuleInstance, IEqualityComparer<IEffectModuleInstance>, IEquatable<IEffectModuleInstance>, IEqualityComparer<EffectModuleInstanceBase>, IEquatable<EffectModuleInstanceBase> {
-		public void PreRender(ChannelNode[] nodes, TimeSpan timeSpan, object[] parameterValues) {
-			// This hook isn't used, but it's here for consistency and future use.
-			_PreRender(nodes, timeSpan, parameterValues);
+		private ChannelNode[] _targetNodes;
+		private TimeSpan _timeSpan;
+		private object[] _parameterValues;
+
+		protected EffectModuleInstanceBase() {
+			TargetNodes = new ChannelNode[0];
+			TimeSpan = TimeSpan.Zero;
+			ParameterValues = new object[0];
+			IsDirty = true;
 		}
 
-		public ChannelData Render(ChannelNode[] nodes, TimeSpan timeSpan, object[] parameterValues) {
-			//caching/dirty uses this hook
-			return _Render(nodes, timeSpan, parameterValues);
+		//*** This reflects the change in references, but not change in the content of
+		//    of the referenced objects.
+		virtual public bool IsDirty { get; protected set; }
+
+		virtual public ChannelNode[] TargetNodes {
+			get { return _targetNodes; }
+			set {
+				if(value != _targetNodes) {
+					_targetNodes = value;
+					IsDirty = true;
+				}
+			}
 		}
 
-		abstract protected void _PreRender(ChannelNode[] nodes, TimeSpan timeSpan, object[] parameterValues);
+		virtual public TimeSpan TimeSpan {
+			get { return _timeSpan; }
+			set {
+				if(value != _timeSpan) {
+					_timeSpan = value;
+					IsDirty = true;
+				}
+			}
+		}
 
-		abstract protected ChannelData _Render(ChannelNode[] nodes, TimeSpan timeSpan, object[] parameterValues);
+		virtual public object[] ParameterValues {
+			get { return _parameterValues; }
+			set {
+				if(value != _parameterValues) {
+					_parameterValues = value;
+					IsDirty = true;
+				}
+			}
+		}
+
+		public void PreRender() {
+			// System-side caching/dirty would use this hook.
+			_PreRender();
+			IsDirty = false;
+		}
+
+		public ChannelData Render() {
+			// System-side caching/dirty would use this hook.
+			if(IsDirty) {
+				PreRender();
+			}
+			return _Render();
+		}
+
+		public ChannelData Render(TimeSpan restrictingOffsetTime, TimeSpan restrictingTimeSpan) {
+			// System-side caching/dirty would use this hook.
+			ChannelData channelData = Render();
+			channelData = ChannelData.Restrict(channelData, restrictingOffsetTime, restrictingTimeSpan);
+			return channelData;
+		}
+
+		abstract protected void _PreRender();
+
+		abstract protected ChannelData _Render();
 
 		public string EffectName {
 			get { return (Descriptor as IEffectModuleDescriptor).EffectName; }

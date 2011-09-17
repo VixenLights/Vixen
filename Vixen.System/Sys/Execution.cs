@@ -189,7 +189,7 @@ namespace Vixen.Sys {
 		}
 
 		static private void _UpdateChannelStates() {
-			IEnumerator<CommandData> enumerator;
+			IEnumerator<Command> enumerator;
 			foreach(OutputChannel channel in Channels) {
 				lock(_channels) {
 					enumerator = _channels[channel];
@@ -270,7 +270,7 @@ namespace Vixen.Sys {
 		/// Write data for immediate execution.
 		/// </summary>
 		/// <param name="state"></param>
-		static public void Write(IEnumerable<CommandNode> state) {
+		static public void Write(IEnumerable<EffectNode> state) {
 			// Give the renderer a separate collection instance.
 			EffectRenderer renderer = new EffectRenderer(state.ToArray());
 			ThreadPool.QueueUserWorkItem((o) => renderer.Start());
@@ -280,26 +280,26 @@ namespace Vixen.Sys {
 
 		class EffectRenderer {
 			private TimeSpan _timeStarted;
-			private Stack<CommandNode> _effects;
+			private Stack<EffectNode> _effects;
 			//*** to be user data, the offset to add to make live data more live
 			private TimeSpan _syncDelta = TimeSpan.Zero;
 
-			public EffectRenderer(CommandNode[] state) {
+			public EffectRenderer(EffectNode[] state) {
 				_timeStarted = Execution._systemTime.Position;
-				_effects = new Stack<CommandNode>(state);
+				_effects = new Stack<EffectNode>(state);
 			}
 
 			public void Start() {
 				// Keep going while there is data to render and the system is running.
 				while(_effects.Count > 0 && _systemTime.IsRunning) {
-					CommandNode commandNode = _effects.Pop();
+					EffectNode commandNode = _effects.Pop();
 
-					if(commandNode.Command != null && commandNode.TargetNodes.Count > 0) {
+					if(!commandNode.IsEmpty && commandNode.Effect.TargetNodes.Length > 0) {
 						// Get the channels that are to be affected by this effect.
 						// If they are targetting multiple nodes, the resulting channels
 						// will be treated as a single collection of channels.  There will be
 						// no differentiation between channels of different trees.
-						Dictionary<Guid,OutputChannel> targetChannels = commandNode.TargetNodes.SelectMany(x => x).ToDictionary(x => x.Id);
+						Dictionary<Guid,OutputChannel> targetChannels = commandNode.Effect.TargetNodes.SelectMany(x => x).ToDictionary(x => x.Id);
 						
 						// Render the effect for the whole span of the command's time.
 						ChannelData channelData = commandNode.RenderEffectData(TimeSpan.Zero, commandNode.TimeSpan);
@@ -312,8 +312,8 @@ namespace Vixen.Sys {
 								Monitor.Enter(targetChannel);
 
 								// Offset the data's time frame by the command's time offset.
-								foreach(CommandData data in channelData[channelId]) {
-									CommandData targetChannelData = data ?? CommandData.Empty;
+								foreach(Command data in channelData[channelId]) {
+									Command targetChannelData = data ?? Command.Empty;
 									// The data from an effect is effect-local.
 									// Adding the command's start time makes it context-local.
 									// Adding the system time makes it system-local.

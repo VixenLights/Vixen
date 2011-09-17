@@ -11,12 +11,11 @@ namespace TestScriptModule {
 	public class Nested : EffectModuleInstanceBase {
 		private ChannelData _channelData = null;
 
-		override protected void _PreRender(ChannelNode[] nodes, TimeSpan timeSpan, object[] parameterValues) {
-			_channelData = NestedBehavior.Render(nodes, timeSpan, parameterValues);
+		protected override void _PreRender() {
+			_channelData = NestedBehavior.Render(TargetNodes, TimeSpan, ParameterValues);
 		}
 
-		override protected ChannelData _Render(ChannelNode[] nodes, TimeSpan timeSpan, object[] parameterValues) {
-			PreRender(nodes, timeSpan, parameterValues);
+		protected override ChannelData _Render() {
 			return _channelData;
 		}
 	}

@@ -73,11 +73,11 @@ namespace TestOutput {
 
 		//List<int> ms = new List<int>();
 		private double _fps;
-		public void UpdateState(double fps, CommandData[] outputStates) {
+		public void UpdateState(double fps, Command[] outputStates) {
 			_count++;
 			_fps = fps;
 
-			CommandData command;
+			Command command;
 			for(int i = 0; i < outputStates.Length; i++) {
 				command = outputStates[i];
 				// If there is no command to update state from, command will be non-null,

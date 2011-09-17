@@ -50,7 +50,7 @@ namespace TestScriptModule {
 		static private void _RenderWithoutRgb(ChannelData channelData, ChannelNode node, TimeSpan timeSpan, object[] parameterValues) {
 			// Render all channels the same at the same time.
 			foreach(OutputChannel channel in node.GetChannelEnumerator()) {
-				CommandData data = new CommandData(TimeSpan.Zero, timeSpan, _setLevelCommandId, parameterValues);
+				Command data = new Command(TimeSpan.Zero, timeSpan, _setLevelCommandId, parameterValues);
 				channelData[channel.Id] = new[] { data };
 			}
 		}
@@ -70,7 +70,7 @@ namespace TestScriptModule {
 			for(int i = 0; i < orderedChannels.Length; i++) {
 				TimeSpan startTime = TimeSpan.FromTicks(timeSpan.Ticks / 3 * i);
 				TimeSpan endTime = TimeSpan.FromTicks(timeSpan.Ticks / 3 * (i + 1));
-				CommandData data = new CommandData(startTime, endTime, _setLevelCommandId, parameterValues);
+				Command data = new Command(startTime, endTime, _setLevelCommandId, parameterValues);
 				channelData[orderedChannels[i].Id] = new[] { data };
 			}
 		}

@@ -544,7 +544,7 @@ namespace Vixen.Hardware {
 
 			public Output(OutputController owner) {
 				_owner = owner;
-				CurrentState = CommandData.Empty;
+				CurrentState = Command.Empty;
 				Name = "Unnamed";
 			}
 
@@ -573,7 +573,7 @@ namespace Vixen.Hardware {
 					object[] parameters = new object[0];
 
 					if(_sources.Count == 1) {
-						CommandData seed = _sources.First.Value.SourceState;
+						Command seed = _sources.First.Value.SourceState;
 						startTime = seed.StartTime;
 						endTime = seed.EndTime;
 						commandIdentifier = seed.CommandIdentifier;
@@ -590,11 +590,11 @@ namespace Vixen.Hardware {
 							parameters = CommandStandard.Standard.Combine(commandIdentifier, parameters, source.SourceState.ParameterValues, _owner.CombinationStrategy);
 						}
 					}
-					CurrentState = new CommandData(startTime, endTime, commandIdentifier, parameters);
+					CurrentState = new Command(startTime, endTime, commandIdentifier, parameters);
 				}
 			}
 
-			public CommandData CurrentState { get; private set; }
+			public Command CurrentState { get; private set; }
 		}
 		#endregion
 

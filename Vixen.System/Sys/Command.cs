@@ -2,41 +2,44 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Vixen.Sys;
-using Vixen.Module.Effect;
+using CommandStandard;
 
 namespace Vixen.Sys {
 	/// <summary>
-	/// Qualifies an effect with parameter values.
+	/// An instance of a low-level command, with the parameter values and time frame needed
+	/// for execution by an Output module.
 	/// </summary>
-	public class Command {
-		private IEffectModuleInstance _effect;
-		
-		public Command(Guid effectId, params object[] parameterValues) {
-			_effect = Modules.ModuleManagement.GetEffect(effectId);
-			if(_effect == null) throw new ArgumentException("Effect does not exist.");
-			ParameterValues = parameterValues;
+	public class Command : ITimed {
+		public readonly CommandIdentifier CommandIdentifier;
+		public readonly object[] ParameterValues;
+
+		public Command()
+			: this(TimeSpan.Zero, TimeSpan.Zero, null, null) {
+			// Default instance is empty.
 		}
 
-		public Guid EffectId {
-			get { return _effect.Descriptor.TypeId; }
+		public Command(TimeSpan startTime, TimeSpan endTime, CommandIdentifier commandIdentifier, object[] parameterValues) {
+			StartTime = startTime;
+			EndTime = endTime;
+			this.CommandIdentifier = commandIdentifier;
+			ParameterValues = parameterValues ?? new object[] { };
 		}
 
-		public void PreRender(CommandNode commandNode, TimeSpan commandTimeSpan) {
-			_effect.PreRender(commandNode.TargetNodes.ToArray(), commandTimeSpan, ParameterValues);
+		public Command(TimeSpan startTime, TimeSpan endTime, string name, byte platform, byte category, byte commandIndex, object[] parameterValues)
+			: this(startTime, endTime, new CommandIdentifier(platform, category, commandIndex), parameterValues) {
 		}
 
-		public ChannelData Render(CommandNode commandNode, TimeSpan commandTimeSpan, TimeSpan renderStartTime, TimeSpan renderTimeSpan) {
-			// We're adding only the parameter values.
-			ChannelData data = _effect.Render(commandNode.TargetNodes.ToArray(), commandTimeSpan, ParameterValues);
-			
-			// And then restricting by time.
-			TimeSpan renderEndTime = renderStartTime + renderTimeSpan;
-			data = ChannelData.Restrict(data, renderStartTime, renderEndTime);
-
-			return data;
+		public Command(string name, byte platform, byte category, byte commandIndex, object[] parameterValues)
+			: this(TimeSpan.Zero, TimeSpan.Zero, new CommandIdentifier(platform, category, commandIndex), parameterValues) {
 		}
 
-		public object[] ParameterValues { get; set; }
+		public TimeSpan StartTime { get; set; }
+		public TimeSpan EndTime { get; set; }
+
+		static public readonly Command Empty = new Command(TimeSpan.Zero, TimeSpan.Zero, null, null);
+
+		public bool IsEmpty {
+			get { return CommandIdentifier == null; }
+		}
 	}
 }

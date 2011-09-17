@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml.Linq;
 using System.IO;
 using Vixen.Sys;
+using Vixen.Module.Effect;
 using Vixen.Module.Sequence;
 using Vixen.Module.RuntimeBehavior;
 
@@ -129,7 +130,11 @@ namespace Vixen.IO.Xml {
 					if(effectIdIndex < effectTable.Length) {
 						effectId = effectTable[effectIdIndex];
 						if(Modules.IsValidId(effectId)) {
-							sequence.InsertData(nodes.ToArray(), startTime, timeSpan, new Command(effectId, parameters.ToArray()));
+							IEffectModuleInstance effect = Modules.ModuleManagement.GetEffect(effectId);
+							effect.TimeSpan = timeSpan;
+							effect.TargetNodes = nodes.ToArray();
+							effect.ParameterValues = parameters.ToArray();
+							sequence.InsertData(effect, startTime);
 						}
 					}
 				}

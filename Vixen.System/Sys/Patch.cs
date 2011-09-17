@@ -8,7 +8,7 @@ using Vixen.Hardware;
 namespace Vixen.Sys {
     public class Patch : IDisposable, IOutputStateSource, IEnumerable<ControllerReference> {
         private HashSet<ControllerReference> _controllerReferences = new HashSet<ControllerReference>();
-		private CommandData _state = new CommandData();
+		private Command _state = new Command();
 
         public Patch() {
             Enabled = true;
@@ -74,16 +74,16 @@ namespace Vixen.Sys {
 			}
 		}
 
-		public void Write(CommandData command) {
+		public void Write(Command command) {
 			SourceState = command;
 		}
 
-		public CommandData SourceState {
+		public Command SourceState {
 			get {
 				if(Enabled) {
 					return _state;
 				}
-				return CommandData.Empty;
+				return Command.Empty;
 			}
 			set {
 				if(Enabled) {

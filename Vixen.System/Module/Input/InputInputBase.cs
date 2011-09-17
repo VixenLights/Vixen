@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
+using Vixen.Module.Effect;
 using Vixen.Sys;
 
 namespace Vixen.Module.Input {
-	abstract class InputInput : IInputInput {
+	abstract class InputInputBase : IInputInput {
 		private double _value;
 
 		public event EventHandler ValueChanged;
 
-		public InputInput() { }
+		public InputInputBase() { }
 
-		public InputInput(Guid id) {
+		public InputInputBase(Guid id) {
 			this.Id = id;
 		}
 
@@ -33,7 +34,7 @@ namespace Vixen.Module.Input {
 			}
 		}
 
-		abstract public Command GetCommand();
+		abstract public IEffectModuleInstance Effect { get; }
 
 		virtual protected void OnValueChanged(EventArgs e) {
 			if(ValueChanged != null) {

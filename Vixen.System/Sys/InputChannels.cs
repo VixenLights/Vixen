@@ -26,22 +26,22 @@ namespace Vixen.Sys {
 		}
 
 		#region CommandNodes
-		public IEnumerable<CommandNode> GetCommands() {
+		public IEnumerable<EffectNode> GetCommands() {
 			return _mainChannel;
 		}
 
-		public IEnumerable<CommandNode> GetCommands(Guid channelId) {
+		public IEnumerable<EffectNode> GetCommands(Guid channelId) {
 			return _inputChannels.Where(x => x.Id == channelId).FirstOrDefault();
 		}
 
 		// During authoring, as data is written to the sequence, it is stored in the
 		// sequence's main input channel.
-		public void AddCommand(CommandNode data) {
+		public void AddCommand(EffectNode data) {
 			_mainChannel.AddData(data);
 		}
 
 		// Not currently used.
-		public void AddCommand(Guid channelId, CommandNode data) {
+		public void AddCommand(Guid channelId, EffectNode data) {
 			InputChannel channel = _inputChannels.Where(x => x.Id == channelId).FirstOrDefault();
 			if(channel != null) {
 				channel.AddData(data);
@@ -49,12 +49,12 @@ namespace Vixen.Sys {
 		}
 
 		// Used by the recording behavior.
-		public void AddCommands(IEnumerable<CommandNode> data) {
+		public void AddCommands(IEnumerable<EffectNode> data) {
 			_mainChannel.AddData(data);
 		}
 
 		// Not currently used.
-		public void AddCommands(Guid channelId, IEnumerable<CommandNode> data) {
+		public void AddCommands(Guid channelId, IEnumerable<EffectNode> data) {
 			InputChannel channel = _inputChannels.Where(x => x.Id == channelId).FirstOrDefault();
 			if(channel != null) {
 				channel.AddData(data);
@@ -67,13 +67,13 @@ namespace Vixen.Sys {
 		/// <param name="startTime">Inclusive.</param>
 		/// <param name="endTime">Exclusive.</param>
 		/// <returns>CommandNodes that overlap the time range, in StartTime order.</returns>
-		public IEnumerable<CommandNode> GetCommandRange(TimeSpan startTime, TimeSpan endTime) {
+		public IEnumerable<EffectNode> GetCommandRange(TimeSpan startTime, TimeSpan endTime) {
 			// Need any data that starts or ends within the time range.
 
 			// Need to return the data in a concurrent collection with a live
 			// enumerator so that scripts can dynamically add the effects they
 			// generate.
-			IEnumerable<CommandNode> data =
+			IEnumerable<EffectNode> data =
 				_inputChannels
 					.SelectMany(x => x.Where(y =>
 						(y.StartTime >= startTime && y.StartTime < endTime) ||
@@ -89,7 +89,7 @@ namespace Vixen.Sys {
 		/// method will be considered by the effect enumerator.
 		/// </summary>
 		/// <param name="data"></param>
-		public void AddLive(IEnumerable<CommandNode> data) {
+		public void AddLive(IEnumerable<EffectNode> data) {
 			if(_executingData != null) {
 				_executingData.AddRange(data);
 			}
@@ -100,7 +100,7 @@ namespace Vixen.Sys {
 		/// method will be considered by the effect enumerator.
 		/// </summary>
 		/// <param name="data"></param>
-		public void AddLive(CommandNode data) {
+		public void AddLive(EffectNode data) {
 			if(_executingData != null) {
 				_executingData.Add(data);
 			}
@@ -137,27 +137,27 @@ namespace Vixen.Sys {
 		#endregion
 
 		#region CommandNodeCollection
-		class CommandNodeCollection : IEnumerable<CommandNode> {
-			private ConcurrentQueue<CommandNode> _data;
+		class CommandNodeCollection : IEnumerable<EffectNode> {
+			private ConcurrentQueue<EffectNode> _data;
 
-			public CommandNodeCollection(IEnumerable<CommandNode> commandNodes) {
-				_data = new ConcurrentQueue<CommandNode>(commandNodes);
+			public CommandNodeCollection(IEnumerable<EffectNode> commandNodes) {
+				_data = new ConcurrentQueue<EffectNode>(commandNodes);
 			}
 
-			public void Add(CommandNode value) {
+			public void Add(EffectNode value) {
 				_data.Enqueue(value);
 			}
 
-			public void AddRange(IEnumerable<CommandNode> values) {
-				foreach(CommandNode value in values) {
+			public void AddRange(IEnumerable<EffectNode> values) {
+				foreach(EffectNode value in values) {
 					_data.Enqueue(value);
 				}
 			}
 
-			public IEnumerator<CommandNode> GetEnumerator() {
+			public IEnumerator<EffectNode> GetEnumerator() {
 				// We need an enumerator that is live and does not operate upon a snapshot
 				// of the data.
-				return new ConcurrentQueueLiveEnumerator<CommandNode>(_data);
+				return new ConcurrentQueueLiveEnumerator<EffectNode>(_data);
 			}
 
 			System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {

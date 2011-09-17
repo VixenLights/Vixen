@@ -15,8 +15,8 @@ namespace TestOutput {
 
 		override protected void _SetOutputCount(int outputCount) { }
 
-		override protected void _UpdateState(CommandData[] outputStates) {
-			CommandData data;
+		override protected void _UpdateState(Command[] outputStates) {
+			Command data;
 			for(int i = 0; i < outputStates.Length; i++) {
 				data = outputStates[i];
 				if(!data.IsEmpty) {

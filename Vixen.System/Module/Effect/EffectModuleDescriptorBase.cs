@@ -5,6 +5,11 @@ using System.Text;
 
 namespace Vixen.Module.Effect {
 	abstract public class EffectModuleDescriptorBase : ModuleDescriptorBase, IEffectModuleDescriptor, IEqualityComparer<IEffectModuleDescriptor>, IEquatable<IEffectModuleDescriptor>, IEqualityComparer<EffectModuleDescriptorBase>, IEquatable<EffectModuleDescriptorBase> {
+		protected EffectModuleDescriptorBase() {
+			Parameters = new CommandStandard.CommandParameterSpecification[0];
+			PropertyDependencies = new Guid[0];
+		}
+
 		abstract public override string TypeName { get; }
 
 		abstract public override Guid TypeId { get; }
@@ -19,12 +24,12 @@ namespace Vixen.Module.Effect {
 
 		abstract public string EffectName { get; }
 
-		abstract public CommandStandard.CommandParameterSpecification[] Parameters { get; }
+		virtual public CommandStandard.CommandParameterSpecification[] Parameters { get; set; }
 
 		/// <summary>
 		/// Which of the effect module's dependencies are properties.
 		/// </summary>
-		public Guid[] PropertyDependencies { get; set; }
+		virtual public Guid[] PropertyDependencies { get; set; }
 
 		public bool Equals(IEffectModuleDescriptor x, IEffectModuleDescriptor y) {
 			return base.Equals(x, y);

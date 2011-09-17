@@ -15,7 +15,7 @@ namespace Vixen.Module.Transform {
 			get { return (Descriptor as ITransformModuleDescriptor).CommandsAffected; }
 		}
 
-		abstract public void Transform(CommandData command);
+		abstract public void Transform(Command command);
 
 		public bool Equals(ITransformModuleInstance x, ITransformModuleInstance y) {
 			return base.Equals(x, y);

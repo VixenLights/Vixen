@@ -6,21 +6,32 @@ using Vixen.Sys;
 using CommandStandard;
 
 namespace Vixen.Module.Effect {
+	// Effect instances are no longer singletons that render for all, they now contain
+	// state necessary for rendering per-instance.
     public interface IEffect {
+		bool IsDirty { get; }
+
 		/// <summary>
-		/// "You're not executing yet, but render as much as you can."
+		/// Nodes the effect is being applied to as a single collection.
 		/// </summary>
-		void PreRender(ChannelNode[] nodes, TimeSpan timeSpan, object[] parameterValues);
+		ChannelNode[] TargetNodes { get; set; }
+
 		/// <summary>
-		/// "You're executing, give me everything."
+		/// The length of the entire effect.
 		/// </summary>
-		/// <param name="nodes">Nodes the effect is being applied to as a single collection.</param>
-		/// <param name="timeSpan">The length of the entire effect.</param>
-		/// <param name="renderStartTime">Start time of the desired data relative to the start of the effect.</param>
-		/// <param name="renderTimeSpan">Amount of time to render.</param>
-		/// <param name="parameterValues">Effect parameter values.</param>
-		/// <returns></returns>
-		ChannelData Render(ChannelNode[] nodes, TimeSpan timeSpan, object[] parameterValues);
+		TimeSpan TimeSpan { get; set; }
+
+		/// <summary>
+		/// Effect parameter values.
+		/// </summary>
+		object[] ParameterValues { get; set; }
+
+		void PreRender();
+		// Having two methods instead of a single one with default values so that the
+		// effect doesn't have to check to see if there is a time frame restriction
+		// with every call.
+		ChannelData Render();
+		ChannelData Render(TimeSpan restrictingOffsetTime, TimeSpan restrictingTimeSpan);
 		string EffectName { get; }
 		CommandParameterSpecification[] Parameters { get; }
     }

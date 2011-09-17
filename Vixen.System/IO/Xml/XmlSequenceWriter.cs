@@ -89,17 +89,17 @@ namespace Vixen.IO.Xml {
 
 			using(MemoryStream stream = new System.IO.MemoryStream()) {
 				using(BinaryWriter dataWriter = new BinaryWriter(stream)) {
-					foreach(CommandNode commandNode in sequence.Data.GetCommands()) {
+					foreach(EffectNode commandNode in sequence.Data.GetCommands()) {
 						// Index of the command spec id from the command table (word).
-						dataWriter.Write((ushort)effectTableIndex[commandNode.Command.EffectId]);
+						dataWriter.Write((ushort)effectTableIndex[commandNode.Effect.Descriptor.TypeId]);
 						// Referenced target count (word).
-						dataWriter.Write((ushort)commandNode.TargetNodes.Count);
+						dataWriter.Write((ushort)commandNode.Effect.TargetNodes.Length);
 						// Parameter count (byte)
-						if (commandNode.Command.ParameterValues == null) {
-							VixenSystem.Logging.Error("Effect " + commandNode.Command.EffectId + " serialized with null parameters. Please report this to the effect creator.");
+						if (commandNode.Effect.ParameterValues == null) {
+							VixenSystem.Logging.Error("Effect " + commandNode.Effect.Descriptor.TypeId + " serialized with null parameters. Please report this to the effect creator.");
 							dataWriter.Write((byte)0);
 						} else {
-							dataWriter.Write((byte)commandNode.Command.ParameterValues.Length);
+							dataWriter.Write((byte)commandNode.Effect.ParameterValues.Length);
 						}
 
 						// Start time (long).
@@ -109,14 +109,14 @@ namespace Vixen.IO.Xml {
 						dataWriter.Write(commandNode.TimeSpan.Ticks);
 
 						// Referenced targets (index into target table, word).
-						foreach(ChannelNode node in commandNode.TargetNodes) {
+						foreach(ChannelNode node in commandNode.Effect.TargetNodes) {
 							dataWriter.Write((ushort)targetIdTableIndex[node.Id]);
 						}
 
 						dataWriter.Flush();
 
 						// Parameters (various)
-						foreach(object parameterValue in commandNode.Command.ParameterValues ?? new object[0] ) {
+						foreach(object parameterValue in commandNode.Effect.ParameterValues ?? new object[0] ) {
 							ParameterValue.WriteToStream(stream, parameterValue);
 						}
 					}
