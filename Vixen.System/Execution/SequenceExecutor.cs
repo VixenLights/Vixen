@@ -156,7 +156,7 @@ namespace Vixen.Execution {
 
 				// Get everything that currently qualifies.
 				while(_sequenceDataEnumerator.MoveNext()) {
-					qualifiedCommands.Add(_sequenceDataEnumerator.Current);
+					qualifiedCommands.AddRange(_sequenceDataEnumerator.Current);
 				}
 
 				// Execute it as a single state.

@@ -572,22 +572,24 @@ namespace Vixen.Hardware {
 					CommandStandard.CommandIdentifier commandIdentifier = null;
 					object[] parameters = new object[0];
 
-					if(_sources.Count == 1) {
-						Command seed = _sources.First.Value.SourceState;
+					if(_sources.Count == 1 && _sources.First.Value.SourceState.Length == 1) {
+						Command seed = _sources.First.Value.SourceState[0];
 						startTime = seed.StartTime;
 						endTime = seed.EndTime;
 						commandIdentifier = seed.CommandIdentifier;
 						parameters = seed.ParameterValues;
 					} else {
 						foreach(IOutputStateSource source in _sources) {
-							startTime = startTime < source.SourceState.StartTime ? startTime : source.SourceState.StartTime;
-							endTime = endTime > source.SourceState.EndTime ? endTime : source.SourceState.EndTime;
-							//*** need a better resolution for multiple commands than this
-							// First command wins
-							commandIdentifier = commandIdentifier ?? source.SourceState.CommandIdentifier;
-							//// Last command wins
-							//commandIdentifier = source.SourceState.CommandIdentifier ?? commandIdentifier;
-							parameters = CommandStandard.Standard.Combine(commandIdentifier, parameters, source.SourceState.ParameterValues, _owner.CombinationStrategy);
+							foreach(Command sourceCommand in source.SourceState) {
+								startTime = startTime < sourceCommand.StartTime ? startTime : sourceCommand.StartTime;
+								endTime = endTime > sourceCommand.EndTime ? endTime : sourceCommand.EndTime;
+								//*** need a better resolution for multiple commands than this
+								// First command wins
+								commandIdentifier = commandIdentifier ?? sourceCommand.CommandIdentifier;
+								//// Last command wins
+								//commandIdentifier = source.SourceState.CommandIdentifier ?? commandIdentifier;
+								parameters = CommandStandard.Standard.Combine(commandIdentifier, parameters, sourceCommand.ParameterValues, _owner.CombinationStrategy);
+							}
 						}
 					}
 					CurrentState = new Command(startTime, endTime, commandIdentifier, parameters);

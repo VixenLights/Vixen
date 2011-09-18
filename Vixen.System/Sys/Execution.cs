@@ -189,7 +189,7 @@ namespace Vixen.Sys {
 		}
 
 		static private void _UpdateChannelStates() {
-			IEnumerator<Command> enumerator;
+			IEnumerator<Command[]> enumerator;
 			foreach(Channel channel in Channels) {
 				lock(_channels) {
 					enumerator = _channels[channel];

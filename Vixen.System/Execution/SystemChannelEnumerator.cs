@@ -6,7 +6,7 @@ using Vixen.Sys;
 using Vixen.Module.Timing;
 
 namespace Vixen.Execution {
-	class SystemChannelEnumerator : TimedChannelEnumerator<Command> {
+	class SystemChannelEnumerator : MultiStateEnumerator<Command, Command[]> {
 		public SystemChannelEnumerator(IEnumerable<Command> data, ITiming timingSource)
 			: base(data, timingSource, TimeSpan.Zero, TimeSpan.MaxValue) {
 		}
