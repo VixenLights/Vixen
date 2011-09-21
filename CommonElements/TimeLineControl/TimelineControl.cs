@@ -271,6 +271,12 @@ namespace CommonElements.Timeline
 			remove { timelineGrid.ElementChangedRows -= value; }
 		}
 
+		public event EventHandler<TimelineDropEventArgs> DataDropped
+		{
+			add { timelineGrid.DataDropped += value; }
+			remove { timelineGrid.DataDropped -= value; }
+		}
+
 
 		#endregion
 

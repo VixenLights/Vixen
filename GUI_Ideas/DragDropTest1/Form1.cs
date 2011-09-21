@@ -22,13 +22,25 @@ namespace DragDropTest1
 			this.treeView1.DragEnter += new DragEventHandler(treeView1_DragEnter);
 			this.treeView1.DragDrop += new DragEventHandler(treeView1_DragDrop);
 
+			// JR
+			listView1.MouseDown += listView1_MouseDown;
+
+			groupBoxDragTarget.AllowDrop = true;
+			groupBoxDragTarget.DragEnter += groupBoxDragTarget_DragEnter;
+			groupBoxDragTarget.DragLeave += groupBoxDragTarget_DragLeave;
+			groupBoxDragTarget.DragDrop += groupBoxDragTarget_DragDrop;
 		}
 
-		private void button1_Click(object sender, EventArgs e)
+
+
+		private void Form1_Load(object sender, EventArgs e)
 		{
-			this.PopulateListBox();
-			this.PopulateTreeView();
+			PopulateListBox();
+			PopulateTreeView();
+			jrPopulate();
 		}
+
+		#region Original Example
 
 		private void PopulateListBox()
 		{
@@ -77,11 +89,60 @@ namespace DragDropTest1
 			e.Effect = DragDropEffects.Move;
 		}
 
+
 		private void listBox1_MouseDown(object sender, MouseEventArgs e)
 		{
-			this.listBox1.DoDragDrop(this.listBox1.SelectedItem, DragDropEffects.Move);
+			if (listBox1.SelectedItem != null)
+				listBox1.DoDragDrop(listBox1.SelectedItem, DragDropEffects.Move);
 		}
 
+		#endregion
+
+
+
+		#region JRR
+
+		void jrPopulate()
+		{
+			listView1.Items.Add("Apples");
+			listView1.Items.Add("Pretzels");
+			listView1.Items.Add("Cheese");
+			listView1.Items.Add("Popcorn");
+		}
+
+		void listView1_MouseDown(object sender, MouseEventArgs e)
+		{
+			ListViewItem item = listView1.GetItemAt(e.X, e.Y);
+			listView1.SelectedItems.Clear();
+			item.Selected = true;
+
+			if (item == null)
+				return;
+			listView1.DoDragDrop(item, DragDropEffects.Move);
+		}
+
+		void groupBoxDragTarget_DragDrop(object sender, DragEventArgs e)
+		{
+			var data = e.Data.GetData(typeof(ListViewItem));
+
+
+			Point clientLoc = groupBoxDragTarget.PointToClient(new Point(e.X, e.Y));
+			string msg = string.Format("Data dropped:\n\t{0}\nat ({1},{2})", data, clientLoc.X, clientLoc.Y);
+			MessageBox.Show(msg);
+		}
+
+		void groupBoxDragTarget_DragLeave(object sender, EventArgs e)
+		{
+
+		}
+
+		void groupBoxDragTarget_DragEnter(object sender, DragEventArgs e)
+		{
+			e.Effect = DragDropEffects.Move;
+		}
+
+
+		#endregion
 
 	}
 }

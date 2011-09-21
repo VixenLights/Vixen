@@ -165,7 +165,7 @@ namespace Timeline
 			timelineControl1.AddSnapTime(TimeSpan.FromSeconds(20), 40);
 
 
-			timelineControl1.ElementsMoved += new EventHandler<MultiElementEventArgs>(tc_ElementsMoved);
+			//timelineControl1.ElementsMoved += new EventHandler<MultiElementEventArgs>(tc_ElementsMoved);
 			timelineControl1.ElementDoubleClicked += new EventHandler<ElementEventArgs>(tc_ElementDoubleClicked);
             //timelineControl1.SelectedElements.CollectionChanged += new EventHandler(SelectedElements_CollectionChanged);
 

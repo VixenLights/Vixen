@@ -64,7 +64,13 @@ namespace CommonElements.Timeline
 			//  later, we will need to attach/detach from each event manually.
 			TimelineRow.RowChanged += RowChangedHandler;
 			TimelineRow.RowSelectedChanged += RowSelectedChangedHandler;
+
+			// Drag-drop 9/20/2011
+			AllowDrop = true;
+			this.DragEnter += TimelineGrid_DragEnter;
+			this.DragDrop += TimelineGrid_DragDrop;
 		}
+
 
 		#endregion
 
@@ -568,7 +574,7 @@ namespace CommonElements.Timeline
 		/// <summary>
 		/// Returns the row located at the current point in screen coordinates
 		/// </summary>
-		/// <param name="p">Screen coordinates</param>
+		/// <param name="p">Screen coordinates - WRONG - It is client coordinates.</param>
 		/// <returns>Row at given point, or null if none exists.</returns>
 		protected TimelineRow rowAt(Point p)
 		{
@@ -591,7 +597,7 @@ namespace CommonElements.Timeline
 		/// <summary>
 		/// Returns the element located at the current point in screen coordinates
 		/// </summary>
-		/// <param name="p">Screen coordinates</param>
+		/// <param name="p">Screen coordinates - WRONG - It is client coordinates.</param>
 		/// <returns>Element at given point, or null if none exists.</returns>
 		protected TimelineElement elementAt(Point p)
 		{
@@ -1320,6 +1326,29 @@ namespace CommonElements.Timeline
 				MessageBox.Show("Exception in TimelineGrid.OnPaint():\n\n\t" + ex.Message + "\n\nBacktrace:\n\n\t" + ex.StackTrace);
 			}
 		}
+
+		#endregion
+
+		#region External Drag/Drop
+
+		void TimelineGrid_DragDrop(object sender, DragEventArgs e)
+		{
+			Point client = PointToClient(new Point(e.X, e.Y));
+
+			TimelineRow row = rowAt(client);
+			TimeSpan time = pixelsToTime(translateLocation(client).X);
+			IDataObject data = e.Data;
+
+			if (DataDropped != null)
+				DataDropped(this, new TimelineDropEventArgs(row, time, data));
+		}
+
+		void TimelineGrid_DragEnter(object sender, DragEventArgs e)
+		{
+			e.Effect = DragDropEffects.Copy;
+		}
+
+		internal event EventHandler<TimelineDropEventArgs> DataDropped;
 
 		#endregion
 

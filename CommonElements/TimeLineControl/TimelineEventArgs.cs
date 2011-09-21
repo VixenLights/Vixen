@@ -71,4 +71,18 @@ namespace CommonElements.Timeline
 		public TimelineRow OldRow { get; private set; }
 		public TimelineRow NewRow { get; private set; }
 	}
+
+	public class TimelineDropEventArgs : EventArgs
+	{
+		public TimelineDropEventArgs(TimelineRow row, TimeSpan time, IDataObject data)
+		{
+			Row = row;
+			Time = time;
+			Data = data;
+		}
+
+		public TimelineRow Row { get; private set; }
+		public TimeSpan Time { get; private set; }
+		public IDataObject Data { get; private set; }
+	}
 }

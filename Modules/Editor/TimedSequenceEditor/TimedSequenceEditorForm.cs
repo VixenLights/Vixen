@@ -15,6 +15,7 @@ using Vixen.Module.EffectEditor;
 using Vixen.Module.Property;
 using CommonElements.Timeline;
 using VixenModules.Sequence.Timed;
+using System.Diagnostics;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -40,19 +41,36 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			timelineControl.ElementChangedRows += ElementChangedRowsHandler;
 
 			LoadAvailableEffects();
+
+			// JRR drag/drop
+			timelineControl.DataDropped += timelineControl_DataDropped;
+			
 		}
+
 
 		private void LoadAvailableEffects()
 		{
-			foreach (IEffectModuleInstance effect in ApplicationServices.GetAll<IEffectModuleInstance>().Cast<IEffect>().ToArray()) {
-				ToolStripMenuItem item = new ToolStripMenuItem(effect.EffectName);
-				item.Tag = effect.InstanceId;
-				item.Click += (sender, e) => {
+			foreach (IEffectModuleInstance effect in ApplicationServices.GetAll<IEffectModuleInstance>()) {
+				// Add an entry to the menu
+				ToolStripMenuItem menuItem = new ToolStripMenuItem(effect.EffectName);
+
+				//TODO: We got an exception when this was called. the modified line worked (using Descriptor)
+				//menuItem.Tag = effect.InstanceId;
+				menuItem.Tag = effect.Descriptor.TypeId;
+				menuItem.Click += (sender, e) => {
 
 				};
-				addEffectToolStripMenuItem.DropDownItems.Add(item);
+				addEffectToolStripMenuItem.DropDownItems.Add(menuItem);
+
+				// Add a button to the tool strip
+				ToolStripItem tsItem = new ToolStripButton(effect.EffectName);
+				//tsItem.Tag = effect.InstanceId;
+				tsItem.Tag = effect.Descriptor.TypeId;
+				tsItem.MouseDown += toolStripEffects_Item_MouseDown;
+				toolStripEffects.Items.Add(tsItem);
 			}
 		}
+
 
 
 
@@ -184,10 +202,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				List<TimelineRow> targetRows = _channelNodeToRows[node.TargetNodes.First()];
 				// make a new element for each row that represents the channel this command is in.
 				foreach (TimelineRow row in targetRows) {
-					TimedSequenceElement element = new TimedSequenceElement();
-					element.StartTime = node.StartTime;
-					element.Duration = node.TimeSpan;
-					element.CommandNode = node;
+					
+					//TimedSequenceElement element = new TimedSequenceElement();
+					//element.StartTime = node.StartTime;
+					//element.Duration = node.TimeSpan;
+					//element.CommandNode = node;
+					TimedSequenceElement element = new TimedSequenceElement(node);
+
 					element.ElementContentChanged += ElementContentChangedHandler;
 					element.ElementMoved += ElementMovedHandler;
 					if (_commandNodeToElements.ContainsKey(node))
@@ -293,6 +314,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripButton1_Click(object sender, EventArgs e)
 		{
+			/*
 			Command command = new Command(new Guid("{603E3297-994C-4705-9F17-02A62ECC14B5}"), null);
 			CommandNode cn = _sequence.InsertData(new[] { timelineControl.First().Tag as ChannelNode },
 				TimeSpan.FromSeconds(0.0), TimeSpan.FromSeconds(2.0), command);
@@ -304,6 +326,60 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			newItem.CommandNode = cn;
 
 			timelineControl.First().AddElement(newItem);
+			 */
+
+			addEffect(new Guid("{603E3297-994C-4705-9F17-02A62ECC14B5}"), timelineControl.First(),
+				TimeSpan.FromSeconds(0.0), TimeSpan.FromSeconds(2.0));
 		}
+
+		/// <summary>
+		/// Adds an effect to the sequence and timelineControl.
+		/// </summary>
+		private void addEffect(Guid effectId, TimelineRow row, TimeSpan startTime, TimeSpan timeSpan)
+		{
+			ChannelNode targetNode = (ChannelNode)row.Tag;
+			Command command = new Command(effectId, null);
+			
+			CommandNode cmdNode = _sequence.InsertData(new[] { targetNode }, startTime, timeSpan, command);
+
+			TimedSequenceElement elem = new TimedSequenceElement(cmdNode);
+			elem.BackColor = Color.DodgerBlue;
+
+			row.AddElement(elem);
+		}
+
+
+
+		#region Effect Drag/Drop
+
+		void toolStripEffects_Item_MouseDown(object sender, MouseEventArgs e)
+		{
+			ToolStripItem item = sender as ToolStripItem;
+
+			DataObject data = new DataObject(DataFormats.Serializable, item.Tag);
+			item.GetCurrentParent().DoDragDrop(data, DragDropEffects.Copy);
+		}
+
+		void timelineControl_DataDropped(object sender, TimelineDropEventArgs e)
+		{
+			Guid effectGuid = (Guid)e.Data.GetData(DataFormats.Serializable);
+
+			//string msg = string.Format("About to add Row: {0}\nTime: {1}\nEffect GUID: {2}", e.Row, e.Time, effectGuid);
+			//MessageBox.Show(msg);
+
+			TimeSpan timeSpan = TimeSpan.FromSeconds(2.0);	// TODO: need a default value here. I suggest a per-effect default.
+			try
+			{
+				addEffect(effectGuid, e.Row, e.Time, timeSpan);
+			}
+			catch (Exception ex)
+			{
+				Debugger.Break();
+			}
+		}
+
+		#endregion
+
+
 	}
 }
