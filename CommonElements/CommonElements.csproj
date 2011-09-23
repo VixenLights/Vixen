@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -66,6 +67,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
@@ -75,6 +77,102 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ColorGradient\GradientEditPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ColorGradient\GradientEditPanel.designer.cs">
+      <DependentUpon>GradientEditPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ColorGradient\Gradient.cs" />
+    <Compile Include="ColorGradient\GradientCollection.cs" />
+    <Compile Include="ColorGradient\GradientCollectionEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ColorGradient\GradientCollectionEditor.designer.cs">
+      <DependentUpon>GradientCollectionEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ColorGradient\GradientEdit.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ColorGradient\Original Controls\OriginalGradientCollectionEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ColorGradient\Original Controls\OriginalGradientCollectionEditor.designer.cs">
+      <DependentUpon>OriginalGradientCollectionEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ColorGradient\Original Controls\OriginalGradientEditPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ColorGradient\Original Controls\OriginalGradientEditPanel.designer.cs">
+      <DependentUpon>OriginalGradientEditPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ColorPicker\ColorBgra.cs" />
+    <Compile Include="ColorPicker\ColorLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ColorPicker\ColorPicker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ColorPicker\ColorSelectionFader.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ColorPicker\ColorSelectionModules.cs" />
+    <Compile Include="ColorPicker\ColorSelectionModules_HSV.cs" />
+    <Compile Include="ColorPicker\ColorSelectionModules_LAB.cs" />
+    <Compile Include="ColorPicker\ColorSelectionModules_RGB.cs" />
+    <Compile Include="ColorPicker\ColorSelectionPlane.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ColorPicker\ColorSpaces.cs" />
+    <Compile Include="ColorPicker\ColorSpaceTypeConverter.cs" />
+    <Compile Include="ColorPicker\ColorUtility.cs" />
+    <Compile Include="ColorPicker\GDI32.cs" />
+    <Compile Include="ControlsEx\BorderedControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ControlsEx\BorderedScrollableControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ControlsEx\CollectionBase.cs" />
+    <Compile Include="ControlsEx\ExtendsList.cs" />
+    <Compile Include="ControlsEx\GraphicsEx.cs" />
+    <Compile Include="ControlsEx\ListControls\ActionList.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ControlsEx\ListControls\DisplayItems.cs" />
+    <Compile Include="ControlsEx\ListControls\DisplayList.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ControlsEx\ListControls\DisplayListDesigner.cs" />
+    <Compile Include="ControlsEx\ListControls\Layout.cs" />
+    <Compile Include="ControlsEx\ListControls\SingleLineDisplayList.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ControlsEx\ListControls\TableDisplayList.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ControlsEx\ScaleFactor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ControlsEx\UltimateWin32.cs" />
+    <Compile Include="ControlsEx\ValueControls\FloatingContainer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ControlsEx\ValueControls\MiniTracker.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ControlsEx\ValueControls\ValueControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ControlsEx\ValueControls\ValueScrollbar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ControlsEx\ValueControls\ValueUpDown.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ControlsEx\ZoomBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ListSelectDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -85,6 +183,11 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="SerialPortConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -123,6 +226,64 @@
       <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ColorGradient\GradientEditPanel.resx">
+      <DependentUpon>GradientEditPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ColorGradient\GradientCollectionEditor.resx">
+      <DependentUpon>GradientCollectionEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ColorGradient\Original Controls\OriginalGradientCollectionEditor.resx">
+      <DependentUpon>OriginalGradientCollectionEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ColorGradient\Original Controls\OriginalGradientEditPanel.resx">
+      <DependentUpon>OriginalGradientEditPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ColorPicker\ColorLabel.resx">
+      <DependentUpon>ColorLabel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ColorPicker\ColorPicker.resx">
+      <DependentUpon>ColorPicker.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ColorPicker\ColorSelectionFader.resx">
+      <DependentUpon>ColorSelectionFader.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ColorPicker\ColorSelectionPlane.resx">
+      <DependentUpon>ColorSelectionPlane.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ControlsEx\BorderedControl.resx">
+      <DependentUpon>BorderedControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ControlsEx\BorderedScrollableControl.resx">
+      <DependentUpon>BorderedScrollableControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ControlsEx\ValueControls\FloatingContainer.resx">
+      <DependentUpon>FloatingContainer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ControlsEx\ValueControls\ValueControl.resx">
+      <DependentUpon>ValueControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ControlsEx\ValueControls\ValueScrollbar.resx">
+      <DependentUpon>ValueScrollbar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ControlsEx\ValueControls\ValueUpDown.resx">
+      <DependentUpon>ValueUpDown.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ControlsEx\ZoomBar.resx">
+      <DependentUpon>ZoomBar.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ColorPicker\ColorPicker.cur" />
+    <Content Include="ControlsEx\std_zoomin.png" />
+    <Content Include="ControlsEx\std_zoomout.png" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
