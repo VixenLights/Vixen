@@ -11,7 +11,8 @@
     <RootNamespace>Timed</RootNamespace>
     <AssemblyName>Timed</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup>
@@ -50,8 +51,8 @@
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Timed.cs" />
-    <Compile Include="TimedSequenceModule.cs" />
+    <Compile Include="TimedSequence.cs" />
+    <Compile Include="TimedSequenceDescriptor.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Vixen, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">

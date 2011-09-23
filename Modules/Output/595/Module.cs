@@ -45,14 +45,15 @@ namespace VixenModules.Output._595 {
 			_outputCount = outputCount;
 		}
 
-		protected override void _UpdateState(CommandData[] outputStates) {
+		protected override void _UpdateState(Command[] outputStates)
+		{
 			if(_moduleData.Port != 0) {
 				// The first bit clocked will end up on the last channel, so the channels 
 				// need to be traversed backwards, from high to low.
 				outputStates = outputStates.Reverse().ToArray();
 				ushort controlPort = (ushort)(_moduleData.Port + 2);
 
-				foreach(CommandData commandData in outputStates) {
+				foreach (Command commandData in outputStates) {
 					if(commandData.CommandIdentifier.Platform == _ourPlatform &&
 						commandData.CommandIdentifier.Category == _ourCategory &&
 						commandData.CommandIdentifier.CommandIndex == _ourCommand) {

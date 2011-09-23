@@ -11,14 +11,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 {
 	class TimedSequenceElement : TimelineElement
 	{
-		public TimedSequenceElement(CommandNode commandNode)
+		public TimedSequenceElement(EffectNode effectNode)
 		{
-			StartTime = commandNode.StartTime;
-			Duration = commandNode.TimeSpan;
-			CommandNode = commandNode;
+			StartTime = effectNode.StartTime;
+			Duration = effectNode.TimeSpan;
+			Effect = effectNode;
 		}
 
-
-		public CommandNode CommandNode { get; set; }
+		public EffectNode Effect { get; set; }
 	}
 }

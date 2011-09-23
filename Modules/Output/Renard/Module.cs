@@ -20,7 +20,7 @@ namespace Renard {
 		private byte[] _p2Packet;
 		private byte[] _p1Zeroes;
 		private byte[] _p2Zeroes;
-		private Action<CommandData[]> _updateAction;
+		private Action<Command[]> _updateAction;
 
 		private SerialPort _port;
 
@@ -83,7 +83,8 @@ namespace Renard {
 			//_outputCount = outputCount;
 		}
 
-		protected override void _UpdateState(CommandData[] outputStates) {
+		protected override void _UpdateState(Command[] outputStates)
+		{
 			_updateAction(outputStates);
 		}
 
@@ -109,10 +110,11 @@ namespace Renard {
 		}
 
 		private void _SetUpdateAction() {
-			_updateAction = (_moduleData.ProtocolVersion == 1) ? (Action<CommandData[]>)_Protocol1Event : _Protocol2Event;
+			_updateAction = (_moduleData.ProtocolVersion == 1) ? (Action<Command[]>)_Protocol1Event : _Protocol2Event;
 		}
 
-		private void _Protocol1Event(CommandData[] outputStates) {
+		private void _Protocol1Event(Command[] outputStates)
+		{
 			int src_size = outputStates.Length;
 			int dst_index = 2;
 			int dst_size = 2 + 2 * src_size + (2 + 2 * src_size) / PAD_DISTANCE;
@@ -125,7 +127,7 @@ namespace Renard {
 			_p1Packet[0] = 0x7E;
 			_p1Packet[1] = 0x80;
 
-			foreach(CommandData commandData in outputStates) {
+			foreach (Command commandData in outputStates) {
 				if(commandData.CommandIdentifier.Platform == _ourPlatform &&
 					commandData.CommandIdentifier.Category == _ourCategory) {
 					byte level = (byte)(Level)commandData.ParameterValues[0];
@@ -174,7 +176,8 @@ namespace Renard {
 			}
 		}
 
-		private void _Protocol2Event(CommandData[] outputStates) {
+		private void _Protocol2Event(Command[] outputStates)
+		{
 			int startChannel, endChannel;
 			byte picIndex = 0x80;
 			int arrayIndex, arrayIndex2;
@@ -202,7 +205,7 @@ namespace Renard {
 				// The offset needs to be a value that, when added to any channel value,
 				// keeps it from being 0 (including wrap-around).
 				for(arrayIndex = startChannel; arrayIndex <= endChannel; arrayIndex++) {
-					CommandData commandData = outputStates[arrayIndex];
+					Command commandData = outputStates[arrayIndex];
 					if(commandData.CommandIdentifier.Platform != _ourPlatform || commandData.CommandIdentifier.Category != _ourCategory) continue;
 					byte level = (byte)(Level)commandData.ParameterValues[0];
 
