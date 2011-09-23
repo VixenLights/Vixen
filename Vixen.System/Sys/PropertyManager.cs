@@ -51,6 +51,11 @@ namespace Vixen.Sys {
 			return instance;
 		}
 
+		public bool Contains(Guid propertyTypeId)
+		{
+			return _items.ContainsKey(propertyTypeId);
+		}
+
 		public IModuleDataSet PropertyData {
 			get { return _propertyData; }
 			private set {
