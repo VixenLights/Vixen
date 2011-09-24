@@ -120,9 +120,6 @@ namespace TestClient
 			comboBoxControllerOutputsControllers.DisplayMember = "Name";
 			comboBoxControllerOutputsControllers.ValueMember = "Id";
 			comboBoxControllerOutputsControllers.DataSource = _controllers;
-
-			string[] combinationOperations = Enum.GetNames(typeof(CommandStandard.Standard.CombinationOperation));
-			comboBoxCombinationStrategy.DataSource = combinationOperations;
 		}
 
 		private void _LoadNodeTemplates() {
@@ -297,19 +294,10 @@ namespace TestClient
 			}
 		}
 
-		private CommandStandard.Standard.CombinationOperation _CombinationStrategy {
-			get {
-				return (CommandStandard.Standard.CombinationOperation)Enum.Parse(typeof(CommandStandard.Standard.CombinationOperation), comboBoxCombinationStrategy.SelectedItem as string);
-			}
-			set {
-				comboBoxCombinationStrategy.SelectedItem = value.ToString();
-			}
-		}
-
 		private void buttonAddController_Click(object sender, EventArgs e) {
             string controllerName = textBoxControllerName.Text.Trim();
             if(controllerName.Length != 0) {
-				OutputController controller = new OutputController(controllerName, (int)numericUpDownOutputCount.Value, (Guid)comboBoxOutputModule.SelectedValue, _CombinationStrategy);
+				OutputController controller = new OutputController(controllerName, (int)numericUpDownOutputCount.Value, (Guid)comboBoxOutputModule.SelectedValue);
 				controller.Save();
 				_AddControllerToView(controller);
 				_controllers.Add(controller);
@@ -349,7 +337,6 @@ namespace TestClient
 		private void buttonUpdateController_Click(object sender, EventArgs e) {
 			OutputController controller = _SelectedController;
 			if(controller != null) {
-				controller.CombinationStrategy = _CombinationStrategy;
 				controller.OutputCount = (int)numericUpDownOutputCount.Value;
 				controller.OutputModuleId = (Guid)comboBoxOutputModule.SelectedValue;
 				controller.Save(controller.FilePath);
@@ -362,7 +349,6 @@ namespace TestClient
 				textBoxControllerName.Text = controller.Name;
 				numericUpDownOutputCount.Value = controller.OutputCount;
 				comboBoxOutputModule.SelectedValue = controller.OutputModuleId;
-				_CombinationStrategy = controller.CombinationStrategy;
 				_UpdateLinkCombo();
 			}
 		}

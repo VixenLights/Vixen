@@ -8,9 +8,7 @@ using Vixen.Hardware;
 namespace Vixen.Sys {
     public class Patch : IDisposable, IOutputStateSource, IEnumerable<ControllerReference> {
         private HashSet<ControllerReference> _controllerReferences = new HashSet<ControllerReference>();
-		//may need to have a single Command.Empty
-		private Command[] _emptyState = new Command[0];
-		private Command[] _state = new Command[0];
+		private Command _state = Command.Empty;
 
         public Patch() {
             Enabled = true;
@@ -77,17 +75,17 @@ namespace Vixen.Sys {
 		}
 
 		// This is of Patch, not of the IOutputStateSource interface.
-		public void Write(Command[] command) {
+		public void Write(Command command) {
 			SourceState = command;
 		}
 
 		// This is of the IOutputStateSource interface, not of Patch.
-		public Command[] SourceState {
+		public Command SourceState {
 			get {
 				if(Enabled) {
 					return _state;
 				}
-				return _emptyState;
+				return Command.Empty;
 			}
 			set {
 				if(Enabled) {

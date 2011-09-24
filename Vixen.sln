@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vixen", "Vixen.System\Vixen.csproj", "{50B78623-FCF4-48AF-93FF-FA87C937028F}"
@@ -42,6 +42,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VixenApplication", "Modules
 	ProjectSection(ProjectDependencies) = postProject
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAppModule", "Test Projects\TestAppModule\TestAppModule.csproj", "{758A8F91-F351-4C1A-BCFD-741349B4B05C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -119,6 +121,8 @@ Global
 		{8AE432FF-B954-4F3A-923D-BE60FC363419}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8AE432FF-B954-4F3A-923D-BE60FC363419}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8AE432FF-B954-4F3A-923D-BE60FC363419}.Release|Any CPU.Build.0 = Release|Any CPU
+		{758A8F91-F351-4C1A-BCFD-741349B4B05C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{758A8F91-F351-4C1A-BCFD-741349B4B05C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

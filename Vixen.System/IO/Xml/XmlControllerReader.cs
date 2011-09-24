@@ -31,9 +31,8 @@ namespace Vixen.IO.Xml {
 			int outputCount = int.Parse(element.Attribute(ATTR_OUTPUT_COUNT).Value);
 			Guid id = Guid.Parse(element.Attribute(ATTR_ID).Value);
 			Guid instanceId = Guid.NewGuid();
-			CommandStandard.Standard.CombinationOperation combinationStrategy = (CommandStandard.Standard.CombinationOperation)Enum.Parse(typeof(CommandStandard.Standard.CombinationOperation), element.Attribute(ATTR_COMB_STRATEGY).Value);
 	
-			OutputController controller = new OutputController(id, instanceId, name, outputCount, outputModuleId, combinationStrategy);
+			OutputController controller = new OutputController(id, instanceId, name, outputCount, outputModuleId);
 
 			return controller;
 		}

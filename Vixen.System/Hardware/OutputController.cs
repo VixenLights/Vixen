@@ -62,21 +62,16 @@ namespace Vixen.Hardware {
 		}
 
 		public OutputController(string name, int outputCount, Guid outputModuleId)
-			: this(name, outputCount, outputModuleId, CommandStandard.Standard.CombinationOperation.HighestWins) {
+			: this(Guid.NewGuid(), Guid.NewGuid(), name, outputCount, outputModuleId) {
 		}
 
-		public OutputController(string name, int outputCount, Guid outputModuleId, CommandStandard.Standard.CombinationOperation combinationStrategy)
-			: this(Guid.NewGuid(), Guid.NewGuid(), name, outputCount, outputModuleId, combinationStrategy) {
-		}
-
-		public OutputController(Guid id, Guid instanceId, string name, int outputCount, Guid outputModuleId, CommandStandard.Standard.CombinationOperation combinationStrategy = CommandStandard.Standard.CombinationOperation.HighestWins) {
+		public OutputController(Guid id, Guid instanceId, string name, int outputCount, Guid outputModuleId) {
 			Id = id;
 			InstanceId = instanceId;
 			name = _Uniquify(name);
 			FilePath = Path.Combine(Directory, Path.ChangeExtension(name, FILE_EXT));
 			OutputModuleId = outputModuleId;
 			OutputCount = outputCount;
-			CombinationStrategy = combinationStrategy;
 		}
 
 		public void Save() {
@@ -109,8 +104,6 @@ namespace Vixen.Hardware {
 		public IOutputModuleInstance OutputModule {
 			get { return _outputModule; }
 		}
-
-		public CommandStandard.Standard.CombinationOperation CombinationStrategy { get; set; }
 
 		[DataPath]
 		static public string Directory {
@@ -567,32 +560,11 @@ namespace Vixen.Hardware {
 				// Aggregate a state.
 				if(_sources.Count > 0) {
 
-					TimeSpan startTime = TimeSpan.Zero;
-					TimeSpan endTime = TimeSpan.Zero;
-					CommandStandard.CommandIdentifier commandIdentifier = null;
-					object[] parameters = new object[0];
-
-					if(_sources.Count == 1 && _sources.First.Value.SourceState.Length == 1) {
-						Command seed = _sources.First.Value.SourceState[0];
-						startTime = seed.StartTime;
-						endTime = seed.EndTime;
-						commandIdentifier = seed.CommandIdentifier;
-						parameters = seed.ParameterValues;
+					if(_sources.Count == 1) {
+						CurrentState = _sources.First.Value.SourceState;
 					} else {
-						foreach(IOutputStateSource source in _sources) {
-							foreach(Command sourceCommand in source.SourceState) {
-								startTime = startTime < sourceCommand.StartTime ? startTime : sourceCommand.StartTime;
-								endTime = endTime > sourceCommand.EndTime ? endTime : sourceCommand.EndTime;
-								//*** need a better resolution for multiple commands than this
-								// First command wins
-								commandIdentifier = commandIdentifier ?? sourceCommand.CommandIdentifier;
-								//// Last command wins
-								//commandIdentifier = source.SourceState.CommandIdentifier ?? commandIdentifier;
-								parameters = CommandStandard.Standard.Combine(commandIdentifier, parameters, sourceCommand.ParameterValues, _owner.CombinationStrategy);
-							}
-						}
+						CurrentState = Command.Combine(_sources.Select(x => x.SourceState));
 					}
-					CurrentState = new Command(startTime, endTime, commandIdentifier, parameters);
 				}
 			}
 

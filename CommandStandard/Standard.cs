@@ -196,75 +196,19 @@ namespace CommandStandard {
 			return new CommandSignature(name, platformValue, categoryValue, commandValue, parameters);
 		}
 
-		static public string GetPlatformName(byte platformValue) {
-			return _FindPlatform(platformValue).Name;
-		}
-
-		static public string GetCategoryName(byte platformValue, byte categoryValue) {
-			return _FindCategory(_FindPlatform(platformValue), categoryValue).Name;
-		}
-
-		static public string GetCommandName(byte platformValue, byte categoryValue, byte commandIndex) {
-			return _FindCommand(_FindCategory(_FindPlatform(platformValue), categoryValue), commandIndex).Name;
-		}
-
-		public enum CombinationOperation {
-			HighestWins,
-			LowestWins,
-			Average,
-			AND,
-			OR,
-			XOR,
-			NAND,
-			NOR,
-			XNOR
-		}
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="command"></param>
-		/// <param name="leftParams"></param>
-		/// <param name="rightParams"></param>
-		/// <returns>Parameters for the combined value.</returns>
-		static public object[] Combine(CommandIdentifier command, object[] leftParams, object[] rightParams, CombinationOperation op = CombinationOperation.HighestWins) {
-			// Account for null command, which means it has no effect.
-			if(command == null) return leftParams;
-
-			switch(command.Platform) {
+		static public CommandParameterCombiner GetCommandParameterCombiner(byte platformValue, byte categoryValue, byte commandValue) {
+			//*** make a better way than a massive switch statement
+			switch(platformValue) {
 				case Lighting.Value:
-					switch(command.Category) {
+					switch(categoryValue) {
 						case Lighting.Monochrome.Value:
-							switch(command.CommandIndex) {
+							switch(commandValue) {
 								case Lighting.Monochrome.SetLevel.Value:
-									if(leftParams == null || leftParams.Length == 0) return rightParams;
-									if(rightParams == null || rightParams.Length == 0) return leftParams;
-									double leftLevel = (Level)leftParams[0];
-									double rightLevel = (Level)rightParams[0];
-									switch(op) {
-										case CombinationOperation.HighestWins:
-											return new object[] { Math.Max(leftLevel, rightLevel) };
-										case CombinationOperation.LowestWins:
-											return new object[] { Math.Min(leftLevel, rightLevel) };
-										case CombinationOperation.Average:
-											return new object[] { (leftLevel + rightLevel) / 2 };
-										case CombinationOperation.AND:
-											return new object[] { ((int)leftLevel & (int)rightLevel) };
-										case CombinationOperation.NAND:
-											return new object[] { ~((int)leftLevel & (int)rightLevel) };
-										case CombinationOperation.OR:
-											return new object[] { ((int)leftLevel | (int)rightLevel) };
-										case CombinationOperation.NOR:
-											return new object[] { ~((int)leftLevel | (int)rightLevel) };
-										case CombinationOperation.XOR:
-											return new object[] { ((int)leftLevel ^ (int)rightLevel) };
-										case CombinationOperation.XNOR:
-											return new object[] { ~((int)leftLevel ^ (int)rightLevel) };
-									}
-									break;
+									return Lighting.Monochrome.SetLevel.Combine;
 							}
 							break;
 						case Lighting.Polychrome.Value:
-							switch(command.CommandIndex) {
+							switch(commandValue) {
 								case Lighting.Polychrome.SetColor.Value:
 									break;
 							}
@@ -279,15 +223,44 @@ namespace CommandStandard {
 					break;
 			}
 
+			return null;
+		}
+
+		static public string GetPlatformName(byte platformValue) {
+			return _FindPlatform(platformValue).Name;
+		}
+
+		static public string GetCategoryName(byte platformValue, byte categoryValue) {
+			return _FindCategory(_FindPlatform(platformValue), categoryValue).Name;
+		}
+
+		static public string GetCommandName(byte platformValue, byte categoryValue, byte commandIndex) {
+			return _FindCommand(_FindCategory(_FindPlatform(platformValue), categoryValue), commandIndex).Name;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="command"></param>
+		/// <param name="leftParams"></param>
+		/// <param name="rightParams"></param>
+		/// <returns>Parameters for the combined value.</returns>
+		static public object[] Combine(CommandIdentifier command, object[] leftParams, object[] rightParams) {
+			// Account for null command, which means it has no effect.
+			if(command == null) return leftParams;
+
+			CommandParameterCombiner combiner = GetCommandParameterCombiner(command.Platform, command.Category, command.CommandIndex);
+			if(combiner != null) {
+				return combiner(leftParams, rightParams);
+			}
+
 			// Default to the left-hand parameters.
 			return leftParams;
 		}
 		#endregion
 
 		#region Standard implementation
-		// All read-only fields, no callable methods //
 
-		// Category
 		[Platform]
 		static public class Lighting {
 			[Value]
@@ -306,6 +279,13 @@ namespace CommandStandard {
 							new CommandParameterSpecification("level", typeof(Types.Level))
 						});
 					static public string Id = _GetCommandId(typeof(SetLevel));
+					static public object[] Combine(object[] leftParams, object[] rightParams) {
+						if(leftParams == null || leftParams.Length == 0) return rightParams;
+						if(rightParams == null || rightParams.Length == 0) return leftParams;
+						double leftLevel = (Level)leftParams[0];
+						double rightLevel = (Level)rightParams[0];
+						return new object[] { Math.Max(leftLevel, rightLevel) };
+					}
 				}
 			}
 
@@ -495,6 +475,8 @@ namespace CommandStandard {
 		}
 		#endregion
 	}
+
+	public delegate object[] CommandParameterCombiner(object[] left, object[] right);
 
 	[AttributeUsage(AttributeTargets.Class)]
 	internal class PlatformAttribute : Attribute { }

@@ -41,5 +41,26 @@ namespace Vixen.Sys {
 		public bool IsEmpty {
 			get { return CommandIdentifier == null; }
 		}
+
+		static public Command Combine(IEnumerable<Command> commands) {
+			int count = commands.Count();
+			if(count == 0) return Command.Empty;
+			Command firstCommand = commands.First();
+			if(count == 1) return firstCommand;
+
+			TimeSpan startTime = firstCommand.StartTime;
+			TimeSpan endTime = firstCommand.EndTime;
+			// First command wins.
+			CommandStandard.CommandIdentifier commandIdentifier = firstCommand.CommandIdentifier;
+			object[] parameters = firstCommand.ParameterValues;
+
+			foreach(Command command in commands.Skip(1)) {
+				startTime = startTime < command.StartTime ? startTime : command.StartTime;
+				endTime = endTime > command.EndTime ? endTime : command.EndTime;
+				parameters = CommandStandard.Standard.Combine(commandIdentifier, parameters, command.ParameterValues);
+			}
+
+			return new Command(startTime, endTime, commandIdentifier, parameters);
+		}
 	}
 }

@@ -11,7 +11,7 @@ namespace Vixen.Module.Transform {
 
 			// Build a dictionary of the command parameters affected by this transform based on types affected.
 			var commandParameters =
-				(from signature in Vixen.Sys.Standard.GetAvailableCommands()
+				(from signature in VixenStandard.GetAvailableCommands()
 				 from param in signature.Parameters.Select((spec, index) => new { Spec = spec, Index = index, CmdSig = signature })
 				 select param);
 			var affectedParameters =

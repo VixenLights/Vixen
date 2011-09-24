@@ -7,7 +7,7 @@ using Vixen.Sys;
 namespace Vixen.Module.CommandStandardExtension {
 	class CommandStandardExtensionModuleRepository : GenericModuleRepository<ICommandStandardExtensionModuleInstance> {
 		public override void Add(Guid id) {
-			Vixen.Sys.Standard.AddCustomCommand(Modules.ModuleManagement.GetCommandStandardExtension(id));
+			VixenStandard.AddCustomCommand(Modules.ModuleManagement.GetCommandStandardExtension(id));
 		}
 	}
 }

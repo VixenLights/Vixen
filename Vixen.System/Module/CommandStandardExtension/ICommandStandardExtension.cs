@@ -14,5 +14,6 @@ namespace Vixen.Module.CommandStandardExtension {
 		byte CommandCategory { get; }
 		byte CommandIndex { get; }
 		CommandParameterSpecification[] Parameters { get; }
+		CommandParameterCombiner ParameterCombiner { get; }
     }
 }

@@ -8,6 +8,8 @@ using CommandStandard;
 namespace Vixen.Module.CommandStandardExtension {
 	// Hate doing this since it adds no value, but it keeps with the pattern.
 	abstract public class CommandStandardExtensionModuleInstanceBase : ModuleInstanceBase, ICommandStandardExtensionModuleInstance, IEqualityComparer<ICommandStandardExtensionModuleInstance>, IEquatable<ICommandStandardExtensionModuleInstance>, IEqualityComparer<CommandStandardExtensionModuleInstanceBase>, IEquatable<CommandStandardExtensionModuleInstanceBase> {
+		private CommandParameterSpecification[] _noParameters = new CommandParameterSpecification[0];
+
 		abstract public string Name { get; }
 
 		abstract public byte CommandPlatform { get; }
@@ -16,7 +18,11 @@ namespace Vixen.Module.CommandStandardExtension {
 
 		abstract public byte CommandIndex { get; }
 
-		abstract public CommandParameterSpecification[] Parameters { get; }
+		virtual public CommandParameterSpecification[] Parameters {
+			get { return _noParameters; }
+		}
+
+		abstract public CommandParameterCombiner ParameterCombiner { get; }
 
 		public bool Equals(ICommandStandardExtensionModuleInstance x, ICommandStandardExtensionModuleInstance y) {
 			return base.Equals(x, y);

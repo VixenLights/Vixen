@@ -28,7 +28,6 @@ namespace Vixen.IO.Xml {
 				new XAttribute(ATTR_HARDWARE_ID, controller.OutputModuleId),
 				new XAttribute(ATTR_OUTPUT_COUNT, controller.OutputCount),
 				new XAttribute(ATTR_ID, controller.Id),
-				new XAttribute(ATTR_COMB_STRATEGY, controller.CombinationStrategy),
 				new XAttribute(ATTR_LINKED_TO, controller.LinkedTo),
 
 				new XElement(ELEMENT_TRANSFORM_DATA, _CreateTransformModuleDataContent(controller)),

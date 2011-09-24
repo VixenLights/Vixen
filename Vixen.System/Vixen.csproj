@@ -119,6 +119,7 @@
     <Compile Include="Module\MediaRenderer\MediaRendererModuleRepository.cs" />
     <Compile Include="Module\ModuleLocalDataSet.cs" />
     <Compile Include="Module\ModuleStaticDataSet.cs" />
+    <Compile Include="Sys\ExecutionStateValues.cs" />
     <Compile Include="Sys\FilePackage.cs" />
     <Compile Include="Sys\IPackageFileContent.cs" />
     <Compile Include="Sys\ITimed.cs" />
@@ -429,7 +430,7 @@
     <Compile Include="Sys\Patch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sys\VixenSystem.cs" />
-    <Compile Include="Sys\Standard.cs" />
+    <Compile Include="Sys\VixenStandard.cs" />
     <Compile Include="Sys\WarningLog.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -45,8 +45,6 @@
 			this.label8 = new System.Windows.Forms.Label();
 			this.buttonDeleteController = new System.Windows.Forms.Button();
 			this.comboBoxOutputModule = new System.Windows.Forms.ComboBox();
-			this.comboBoxCombinationStrategy = new System.Windows.Forms.ComboBox();
-			this.label24 = new System.Windows.Forms.Label();
 			this.numericUpDownOutputCount = new System.Windows.Forms.NumericUpDown();
 			this.buttonControllerSetup = new System.Windows.Forms.Button();
 			this.buttonLinkController = new System.Windows.Forms.Button();
@@ -217,7 +215,7 @@
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(512, 500);
+			this.tabPage1.Size = new System.Drawing.Size(535, 500);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "Sequence";
 			this.tabPage1.UseVisualStyleBackColor = true;
@@ -237,7 +235,7 @@
 			this.tabPage2.Location = new System.Drawing.Point(4, 22);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(512, 500);
+			this.tabPage2.Size = new System.Drawing.Size(535, 500);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "Controller";
 			this.tabPage2.UseVisualStyleBackColor = true;
@@ -250,8 +248,6 @@
 			this.groupBox2.Controls.Add(this.label8);
 			this.groupBox2.Controls.Add(this.buttonDeleteController);
 			this.groupBox2.Controls.Add(this.comboBoxOutputModule);
-			this.groupBox2.Controls.Add(this.comboBoxCombinationStrategy);
-			this.groupBox2.Controls.Add(this.label24);
 			this.groupBox2.Controls.Add(this.numericUpDownOutputCount);
 			this.groupBox2.Controls.Add(this.buttonControllerSetup);
 			this.groupBox2.Controls.Add(this.buttonLinkController);
@@ -311,27 +307,6 @@
 			this.comboBoxOutputModule.Name = "comboBoxOutputModule";
 			this.comboBoxOutputModule.Size = new System.Drawing.Size(211, 21);
 			this.comboBoxOutputModule.TabIndex = 3;
-			// 
-			// comboBoxCombinationStrategy
-			// 
-			this.comboBoxCombinationStrategy.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.comboBoxCombinationStrategy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxCombinationStrategy.FormattingEnabled = true;
-			this.comboBoxCombinationStrategy.Location = new System.Drawing.Point(126, 365);
-			this.comboBoxCombinationStrategy.Name = "comboBoxCombinationStrategy";
-			this.comboBoxCombinationStrategy.Size = new System.Drawing.Size(320, 21);
-			this.comboBoxCombinationStrategy.TabIndex = 14;
-			// 
-			// label24
-			// 
-			this.label24.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.label24.AutoSize = true;
-			this.label24.Location = new System.Drawing.Point(9, 368);
-			this.label24.Name = "label24";
-			this.label24.Size = new System.Drawing.Size(108, 13);
-			this.label24.TabIndex = 13;
-			this.label24.Text = "Combination strategy:";
 			// 
 			// numericUpDownOutputCount
 			// 
@@ -499,7 +474,7 @@
 			this.tabPage3.Location = new System.Drawing.Point(4, 22);
 			this.tabPage3.Name = "tabPage3";
 			this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage3.Size = new System.Drawing.Size(512, 500);
+			this.tabPage3.Size = new System.Drawing.Size(535, 500);
 			this.tabPage3.TabIndex = 8;
 			this.tabPage3.Text = "Controller Outputs";
 			this.tabPage3.UseVisualStyleBackColor = true;
@@ -594,7 +569,7 @@
 			this.tabPage5.Location = new System.Drawing.Point(4, 22);
 			this.tabPage5.Name = "tabPage5";
 			this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage5.Size = new System.Drawing.Size(512, 500);
+			this.tabPage5.Size = new System.Drawing.Size(535, 500);
 			this.tabPage5.TabIndex = 4;
 			this.tabPage5.Text = "File Template";
 			this.tabPage5.UseVisualStyleBackColor = true;
@@ -638,7 +613,7 @@
 			this.tabPage6.Location = new System.Drawing.Point(4, 22);
 			this.tabPage6.Name = "tabPage6";
 			this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage6.Size = new System.Drawing.Size(512, 500);
+			this.tabPage6.Size = new System.Drawing.Size(535, 500);
 			this.tabPage6.TabIndex = 5;
 			this.tabPage6.Text = "System";
 			this.tabPage6.UseVisualStyleBackColor = true;
@@ -694,7 +669,7 @@
 			this.tabPage7.Location = new System.Drawing.Point(4, 22);
 			this.tabPage7.Name = "tabPage7";
 			this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage7.Size = new System.Drawing.Size(512, 500);
+			this.tabPage7.Size = new System.Drawing.Size(535, 500);
 			this.tabPage7.TabIndex = 6;
 			this.tabPage7.Text = "System Channels";
 			this.tabPage7.UseVisualStyleBackColor = true;
@@ -859,7 +834,7 @@
 			this.tabPage8.Location = new System.Drawing.Point(4, 22);
 			this.tabPage8.Name = "tabPage8";
 			this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage8.Size = new System.Drawing.Size(512, 500);
+			this.tabPage8.Size = new System.Drawing.Size(535, 500);
 			this.tabPage8.TabIndex = 7;
 			this.tabPage8.Text = "Nodes";
 			this.tabPage8.UseVisualStyleBackColor = true;
@@ -1074,8 +1049,6 @@
 		private System.Windows.Forms.Panel panelEditorControlContainer;
 		private System.Windows.Forms.Button buttonControllerSetup;
 		private System.Windows.Forms.Label labelActiveEditor;
-		private System.Windows.Forms.ComboBox comboBoxCombinationStrategy;
-		private System.Windows.Forms.Label label24;
 		private System.Windows.Forms.TabPage tabPage8;
 		private System.Windows.Forms.TreeView treeViewNodes;
 		private System.Windows.Forms.Button buttonCreateNodeTemplate;

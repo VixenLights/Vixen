@@ -26,6 +26,7 @@ namespace Vixen.Sys {
 			add { Nodes.NodesChanged += value; }
 			remove { Nodes.NodesChanged -= value; }
 		}
+		static public event Action<ExecutionStateValues> ValuesChanged;
 
 		private enum ExecutionState { Starting, Started, Stopping, Stopped };
 		static private volatile ExecutionState _state = ExecutionState.Stopped;
@@ -189,15 +190,23 @@ namespace Vixen.Sys {
 		}
 
 		static private void _UpdateChannelStates() {
+			ExecutionStateValues stateBuffer = new ExecutionStateValues(_systemTime.Position);
 			IEnumerator<Command[]> enumerator;
+
 			foreach(Channel channel in Channels) {
 				lock(_channels) {
 					enumerator = _channels[channel];
 					// Will return true if state has changed.
 					if(enumerator.MoveNext()) {
-						channel.Patch.Write(enumerator.Current);
+						Command channelState = Command.Combine(enumerator.Current);
+						stateBuffer[channel] = channelState;
+						channel.Patch.Write(channelState);
 					}
 				}
+			}
+
+			if(ValuesChanged != null) {
+				ValuesChanged(stateBuffer);
 			}
 		}
 
