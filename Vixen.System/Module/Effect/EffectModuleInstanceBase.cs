@@ -11,17 +11,13 @@ namespace Vixen.Module.Effect {
 	abstract public class EffectModuleInstanceBase : ModuleInstanceBase, IEffectModuleInstance, IEqualityComparer<IEffectModuleInstance>, IEquatable<IEffectModuleInstance>, IEqualityComparer<EffectModuleInstanceBase>, IEquatable<EffectModuleInstanceBase> {
 		private ChannelNode[] _targetNodes;
 		private TimeSpan _timeSpan;
-		private object[] _parameterValues;
 
 		protected EffectModuleInstanceBase() {
 			TargetNodes = new ChannelNode[0];
 			TimeSpan = TimeSpan.Zero;
-			ParameterValues = new object[0];
 			IsDirty = true;
 		}
 
-		//*** This reflects the change in references, but not change in the content of
-		//    of the referenced objects.
 		virtual public bool IsDirty { get; protected set; }
 
 		virtual public ChannelNode[] TargetNodes {
@@ -44,15 +40,7 @@ namespace Vixen.Module.Effect {
 			}
 		}
 
-		virtual public object[] ParameterValues {
-			get { return _parameterValues; }
-			set {
-				if(value != _parameterValues) {
-					_parameterValues = value;
-					IsDirty = true;
-				}
-			}
-		}
+		abstract public object[] ParameterValues { get; set; }
 
 		public void PreRender() {
 			// System-side caching/dirty would use this hook.

@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Runtime.Serialization;
 
 // These exist for these reasons:
 // Parameters of like types can be differentiated.
 // Limit and/or transform values.
 
 namespace CommandStandard.Types {
+	[DataContract]
 	public struct Level {
+		[DataMember]
 		private double _value;
 
 		private Level(double value) {
@@ -41,7 +44,9 @@ namespace CommandStandard.Types {
 		}
 	}
 
+	[DataContract]
 	public struct Time {
+		[DataMember]
 		private int _value;
 
 		private Time(int value) {
@@ -61,7 +66,9 @@ namespace CommandStandard.Types {
 		}
 	}
 
+	[DataContract]
 	public struct Color {
+		[DataMember]
 		private int _value;
 
 		private Color(int value) {
@@ -81,7 +88,9 @@ namespace CommandStandard.Types {
 		}
 	}
 
+	[DataContract]
 	public struct Position {
+		[DataMember]
 		private double _value;
 
 		private Position(double value) {

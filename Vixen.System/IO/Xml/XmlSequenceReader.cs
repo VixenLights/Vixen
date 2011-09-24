@@ -12,16 +12,20 @@ using Vixen.Module.RuntimeBehavior;
 namespace Vixen.IO.Xml {
 	class XmlSequenceReader : XmlReaderBase<Sequence> {
 		private const string ELEMENT_SEQUENCE = "Sequence";
-		private const string ATTR_LENGTH = "length";
 		private const string ELEMENT_TIMING_SOURCE = "TimingSource";
 		private const string ELEMENT_MODULE_DATA = "ModuleData";
-		private const string ELEMENT_EFFECT_TABLE = "EffectTable";
-		private const string ELEMENT_EFFECT = "Effect";
-		private const string ELEMENT_TARGET_ID_TABLE = "TargetIdTable";
-		private const string ELEMENT_TARGET = "Target";
-		private const string ELEMENT_DATA = "Data";
+		private const string ELEMENT_EFFECT_NODES = "EffectNodes";
+		private const string ELEMENT_EFFECT_NODE = "EffectNode";
+		private const string ELEMENT_START_TIME = "StartTime";
+		private const string ELEMENT_TIME_SPAN = "TimeSpan";
+		private const string ELEMENT_TARGET_NODES = "TargetNodes";
+		private const string ELEMENT_TARGET_NODE = "TargetNode";
 		private const string ELEMENT_IMPLEMENTATION_CONTENT = "Implementation";
 		private const string ELEMENT_SELECTED_TIMING = "Selected";
+		private const string ATTR_EFFECT_TYPE_ID = "typeId";
+		private const string ATTR_EFFECT_INSTANCE_ID = "instanceId";
+		private const string ATTR_ID = "id";
+		private const string ATTR_LENGTH = "length";
 		private const string ATTR_SELECTED_TIMING_TYPE = "type";
 		private const string ATTR_SELECTED_TIMING_SOURCE = "source";
 
@@ -35,6 +39,31 @@ namespace Vixen.IO.Xml {
 			sequence.FilePath = filePath;
 
 			return sequence;
+		}
+
+		protected override void _PopulateObject(Sequence obj, XElement element) {
+			//Already referencing the doc element.
+			obj.Length = TimeSpan.FromTicks(long.Parse(element.Attribute(ATTR_LENGTH).Value));
+
+			// Timing
+			_ReadTimingSource(element, obj);
+
+			// Module data
+			_ReadModuleData(element, obj);
+
+			// Things that need to wait for other sequence data:
+
+			// Runtime behavior module data
+			_ReadBehaviorData(element, obj);
+
+			// Media module data
+			_ReadMedia(element, obj);
+
+			// Effect nodes, reliant upon module data.
+			_ReadEffectNodes(element, obj);
+
+			// Subclass implementation data
+			_ReadImplementationContent(element, obj);
 		}
 
 		private void _ReadTimingSource(XElement element, Sequence sequence) {
@@ -54,90 +83,39 @@ namespace Vixen.IO.Xml {
 			sequence.ModuleDataSet.Deserialize(moduleDataString);
 		}
 
-		private void _ReadEffectTable(XElement element, out Guid[] effectTable) {
-			effectTable = element
-				.Element(ELEMENT_EFFECT_TABLE)
-				.Elements(ELEMENT_EFFECT)
-				.Select(x => new Guid(x.Value))
-				.ToArray();
-		}
+		private void _ReadEffectNodes(XElement element, Sequence sequence) {
+			//Get the effect module instances from the module data.
+			var effectModules = sequence.ModuleDataSet.GetInstances<IEffectModuleInstance>().ToDictionary(x => x.InstanceId);
 
-		private void _ReadTargetIdTable(XElement element, out Guid[] targetIdTable) {
-			targetIdTable = element
-				.Element(ELEMENT_TARGET_ID_TABLE)
-				.Elements(ELEMENT_TARGET)
-				.Select(x => new Guid(x.Value))
-				.ToArray();
-		}
+			// Create a channel node lookup.
+			var channelNodes = Vixen.Sys.Execution.Nodes.ToDictionary(x => x.Id);
 
-		private void _ReadDataNodes(XElement element, Sequence sequence, Guid[] effectTable, Guid[] targetIdTable) {
-			byte[] bytes = new byte[sizeof(long)];
-			int effectIdIndex;
-			int targetIdIndex;
-			int targetIdCount;
-			Guid effectId;
-			List<ChannelNode> nodes = new List<ChannelNode>();
-			byte parameterCount;
-			List<object> parameters = new List<object>();
-			byte[] data;
-			long dataLength;
-			TimeSpan startTime, timeSpan;
+			sequence.Data.ClearEffectStream();
+	
+			foreach(XElement effectNodeElement in element.Element(ELEMENT_EFFECT_NODES).Elements(ELEMENT_EFFECT_NODE)) {
+				Guid typeId = Guid.Parse(effectNodeElement.Attribute(ATTR_EFFECT_TYPE_ID).Value);
+				Guid instanceId = Guid.Parse(effectNodeElement.Attribute(ATTR_EFFECT_INSTANCE_ID).Value);
+				TimeSpan startTime = TimeSpan.FromTicks(long.Parse(effectNodeElement.Element(ELEMENT_START_TIME).Value));
+				TimeSpan timeSpan = TimeSpan.FromTicks(long.Parse(effectNodeElement.Element(ELEMENT_TIME_SPAN).Value));
+				IEnumerable<Guid> targetNodeIds = effectNodeElement
+					.Element(ELEMENT_TARGET_NODES)
+					.Elements(ELEMENT_TARGET_NODE)
+					.Select(x => Guid.Parse(x.Attribute(ATTR_ID).Value));
 
-			// Data is stored as a base-64 stream from a binary stream.
-			string dataString = element.Element(ELEMENT_DATA).Value;
-			data = Convert.FromBase64String(dataString);
-			using(MemoryStream dataStream = new MemoryStream(data)) {
-				dataLength = dataStream.Length;
-				while(dataStream.Position < dataLength) {
-					nodes.Clear();
-					parameters.Clear();
-
-					// Index of the command spec id from the command table (word).
-					dataStream.Read(bytes, 0, sizeof(ushort));
-					effectIdIndex = BitConverter.ToUInt16(bytes, 0);
-					// Referenced channel count (word).
-					dataStream.Read(bytes, 0, sizeof(ushort));
-					targetIdCount = BitConverter.ToUInt16(bytes, 0);
-					// Parameter count (byte)
-					parameterCount = (byte)dataStream.ReadByte();
-
-					// Start time (long).
-					dataStream.Read(bytes, 0, sizeof(long));
-					startTime = TimeSpan.FromTicks(BitConverter.ToInt64(bytes, 0));
-
-					// Time span (long).
-					dataStream.Read(bytes, 0, sizeof(long));
-					timeSpan = TimeSpan.FromTicks(BitConverter.ToInt64(bytes, 0));
-
-					// Referenced nodes (index into target table, word).
-					var targets = Vixen.Sys.Execution.Nodes; // ChannelNodes
-					ChannelNode node;
-					while(targetIdCount-- > 0) {
-						dataStream.Read(bytes, 0, sizeof(ushort));
-						targetIdIndex = BitConverter.ToUInt16(bytes, 0);
-						// Channel may no longer exist.
-						node = targets.FirstOrDefault(x => x.Id == targetIdTable[targetIdIndex]);
-						if(node != null) {
-							nodes.Add(node);
-						}
-					}
-					// Parameters (various)
-					while(parameterCount-- > 0) {
-						parameters.Add(ParameterValue.ReadFromStream(dataStream));
-					}
-
-					// Get the effect inserted into the sequence.
-					if(effectIdIndex < effectTable.Length) {
-						effectId = effectTable[effectIdIndex];
-						if(Modules.IsValidId(effectId)) {
-							IEffectModuleInstance effect = Modules.ModuleManagement.GetEffect(effectId);
-							effect.TimeSpan = timeSpan;
-							effect.TargetNodes = nodes.ToArray();
-							effect.ParameterValues = parameters.ToArray();
-							sequence.InsertData(effect, startTime);
-						}
-					}
-				}
+				// Get the effect module instance.
+				IEffectModuleInstance effect = effectModules[instanceId];
+				// Set effect members.
+				// (Target nodes may or may not exist.)
+				effect.TimeSpan = timeSpan;
+				IEnumerable<Guid> validChannelIds = targetNodeIds.Intersect(channelNodes.Keys);
+				effect.TargetNodes = validChannelIds.Select(x => channelNodes[x]).ToArray();
+				// Wipe out the reference to the default data object so that the sequence
+				// can assign its data object.
+				effect.ModuleData = null;
+				// Wrap the effect in an effect node.
+				EffectNode effectNode = new EffectNode(effect, startTime);
+				// Add it to the sequence.
+				sequence.InsertData(effectNode);
 			}
 		}
 
@@ -157,40 +135,6 @@ namespace Vixen.IO.Xml {
 		}
 
 		virtual protected void _ReadContent(XElement element, Sequence sequence) { }
-
-		protected override void _PopulateObject(Sequence obj, XElement element) {
-			Guid[] effectTable;
-			Guid[] targetIdTable;
-
-			//Already referencing the doc element.
-			obj.Length = TimeSpan.FromTicks(long.Parse(element.Attribute("length").Value));
-
-			// Timing
-			_ReadTimingSource(element, obj);
-
-			// Module data
-			_ReadModuleData(element, obj);
-
-			// Command table
-			_ReadEffectTable(element, out effectTable);
-
-			// Target id table
-			_ReadTargetIdTable(element, out targetIdTable);
-
-			// Data nodes
-			_ReadDataNodes(element, obj, effectTable, targetIdTable);
-
-			// Things that need to wait for other sequence data:
-
-			// Runtime behavior module data
-			_ReadBehaviorData(element, obj);
-
-			// Media module data
-			_ReadMedia(element, obj);
-
-			// Subclass implementation data
-			_ReadImplementationContent(element, obj);
-		}
 
 		protected override IEnumerable<Func<XElement, XElement>> _ProvideMigrations(int versionAt, int targetVersion) {
 			return new Func<XElement, XElement>[] { };

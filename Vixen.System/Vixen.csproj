@@ -375,9 +375,6 @@
     <Compile Include="Sys\TypeOfModuleAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Sys\ParameterValue.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Sys\Paths.cs">
       <SubType>Code</SubType>
     </Compile>

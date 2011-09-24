@@ -88,7 +88,7 @@ namespace TestEditor {
 
 		private void button1_Click(object sender, EventArgs e) {
 			_Stop();
-			_Execute(0, Sequence.Length);
+			_Execute(TimeSpan.Zero, Sequence.Length);
 		}
 
 		private void buttonCompile_Click(object sender, EventArgs e) {
@@ -97,7 +97,7 @@ namespace TestEditor {
 			// to the script executor.
 			// If more special cases pop up, something can be added to the execution
 			// context and the base executor for communicating things beyond execution.
-			_Execute(0, -1);
+			_Execute(TimeSpan.FromMilliseconds(1), TimeSpan.Zero);
 		}
 
 		private void _CommitChanges() {
@@ -107,7 +107,7 @@ namespace TestEditor {
 			}
 		}
 
-		private void _Execute(long startTime, long endTime) {
+		private void _Execute(TimeSpan startTime, TimeSpan endTime) {
 			_CommitChanges();
 
 			Cursor = Cursors.WaitCursor;

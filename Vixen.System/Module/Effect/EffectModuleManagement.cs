@@ -10,39 +10,19 @@ namespace Vixen.Module.Effect {
 		public IEffectModuleInstance Get(string commandName) {
 			// Need the type-specific repository.
 			EffectModuleRepository repository = Modules.GetRepository<IEffectModuleInstance, EffectModuleRepository>();
-			return repository.Get(commandName);
+			IEffectModuleInstance instance = repository.Get(commandName);
+			// Effect parameters are stored in their data object.
+			// A sequence will create a data object for an added effect, but the effect
+			// may be fired live without going into a sequence.
+			// So we need to create an initial data instance, if there is one.
+			instance.ModuleData = ModuleLocalDataSet.CreateModuleDataInstance(instance);
+			return instance;
+		}
+
+		public override IEffectModuleInstance Get(Guid id) {
+			IEffectModuleInstance instance = base.Get(id);
+			instance.ModuleData = ModuleLocalDataSet.CreateModuleDataInstance(instance);
+			return instance;
 		}
 	}
-	//class EffectModuleManagement : IModuleManagement<IEffectModuleInstance> {
-	//    public IEffectModuleInstance Get(string commandName) {
-	//        // Need the type-specific repository.
-	//        EffectModuleRepository repository = Modules.GetModuleRepository<IEffectModuleInstance, EffectModuleRepository>();
-	//        return repository.Get(commandName);
-	//    }
-
-	//    public IEffectModuleInstance Get(Guid id) {
-	//        return Modules.ModuleRepository.GetEffect(id);
-	//    }
-
-	//    public IEffectModuleInstance[] GetAll() {
-	//        return Modules.ModuleRepository.GetAllEffect();
-	//    }
-
-	//    public IEffectModuleInstance Clone(IEffectModuleInstance instance) {
-	//        // These are singletons.
-	//        return null;
-	//    }
-
-	//    object IModuleManagement.Get(Guid id) {
-	//        return Get(id);
-	//    }
-
-	//    object[] IModuleManagement.GetAll() {
-	//        return GetAll();
-	//    }
-
-	//    public object Clone(object instance) {
-	//        return Clone(instance as IEffectModuleInstance);
-	//    }
-	//}
 }

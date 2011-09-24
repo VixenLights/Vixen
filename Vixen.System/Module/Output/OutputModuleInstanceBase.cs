@@ -48,13 +48,9 @@ namespace Vixen.Module.Output {
 				// Allowing multiple instances of a transform type.
 				// Create a new instance, but use the same data (clone).
 				ITransformModuleInstance newInstance = Modules.ModuleManagement.CloneTransform(transform);
-				if(newInstance.ModuleData != null) {
-					// Add the data to our transform dataset.
-					TransformModuleData.Add(newInstance.ModuleData);
-				} else {
-					// Create data for the instance.
-					TransformModuleData.GetModuleInstanceData(newInstance);
-				}
+				// If data is already assigned to the module, it will be added to the data set.
+				// If not, it will be created and added.
+				TransformModuleData.GetModuleInstanceData(newInstance);
 				outputTransforms.Add(newInstance);
 			}
 		}

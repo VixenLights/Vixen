@@ -33,8 +33,8 @@ namespace Vixen.Sys {
 			: this(TimeSpan.Zero, TimeSpan.Zero, new CommandIdentifier(platform, category, commandIndex), parameterValues) {
 		}
 
-		public TimeSpan StartTime { get; set; }
-		public TimeSpan EndTime { get; set; }
+		public TimeSpan StartTime { get; private set; }
+		public TimeSpan EndTime { get; private set; }
 
 		static public readonly Command Empty = new Command(TimeSpan.Zero, TimeSpan.Zero, null, null);
 

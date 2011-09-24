@@ -401,6 +401,7 @@
 			// 
 			// buttonAffectSelectedOverTime
 			// 
+			this.buttonAffectSelectedOverTime.Enabled = false;
 			this.buttonAffectSelectedOverTime.Location = new System.Drawing.Point(363, 230);
 			this.buttonAffectSelectedOverTime.Name = "buttonAffectSelectedOverTime";
 			this.buttonAffectSelectedOverTime.Size = new System.Drawing.Size(160, 23);

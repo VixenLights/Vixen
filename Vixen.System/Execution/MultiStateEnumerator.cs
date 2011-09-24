@@ -66,9 +66,7 @@ namespace Vixen.Execution {
 			// If we have data and its time is valid...
 			if(_enumerator.Current != null && _enumerator.Current.StartTime <= _position) {
 				// Add the new frame to the state.
-				_states.Add(_enumerator.Current);
-				// Mark as dirty.
-				dirty = true;
+				dirty = _states.Add(_enumerator.Current);
 			}
 
 			// If we are dirty, the state has changed.

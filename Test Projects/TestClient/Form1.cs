@@ -423,8 +423,8 @@ namespace TestClient
 
 		private void buttonFireEffect_Click(object sender, EventArgs e) {
 			if(comboBoxEffects.SelectedItem != null && treeViewSystemChannels.SelectedNode != null) {
-				//*** effect can no longer be a singleton
-				IEffectModuleInstance effect = comboBoxEffects.SelectedItem as IEffectModuleInstance;
+				IEffectModuleInstance theEffect = comboBoxEffects.SelectedItem as IEffectModuleInstance;
+				IEffectModuleInstance effect = ApplicationServices.Get<IEffectModuleInstance>(theEffect.Descriptor.TypeId);
 				ChannelNode node = treeViewSystemChannels.SelectedNode.Tag as ChannelNode;
 				TimeSpan timeSpan = TimeSpan.FromMilliseconds((double)numericUpDownEffectLength.Value);
 

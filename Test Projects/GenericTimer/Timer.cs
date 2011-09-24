@@ -37,11 +37,11 @@ namespace GenericTimer {
             }
         }
 
-		override public long Position {
-            get { return _stopwatch.ElapsedMilliseconds + _offset; }
+		override public TimeSpan Position {
+			get { return TimeSpan.FromMilliseconds(_stopwatch.ElapsedMilliseconds + _offset); }
 			set {
 				if(!_stopwatch.IsRunning) {
-					_offset = value;
+					_offset = (long)value.TotalMilliseconds;
 				}
 			}
         }

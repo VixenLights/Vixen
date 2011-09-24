@@ -12,28 +12,27 @@ namespace Vixen.IO.Xml {
 		private const string ELEMENT_SEQUENCE = "Sequence";
 		private const string ELEMENT_TIMING_SOURCE = "TimingSource";
 		private const string ELEMENT_MODULE_DATA = "ModuleData";
-		private const string ELEMENT_EFFECT_TABLE = "EffectTable";
-		private const string ELEMENT_EFFECT = "Effect";
-		private const string ELEMENT_TARGET_ID_TABLE = "TargetIdTable";
-		private const string ELEMENT_TARGET = "Target";
-		private const string ELEMENT_DATA = "Data";
+		private const string ELEMENT_EFFECT_NODES = "EffectNodes";
+		private const string ELEMENT_EFFECT_NODE = "EffectNode";
+		private const string ELEMENT_START_TIME = "StartTime";
+		private const string ELEMENT_TIME_SPAN = "TimeSpan";
+		private const string ELEMENT_TARGET_NODES = "TargetNodes";
+		private const string ELEMENT_TARGET_NODE = "TargetNode";
 		private const string ELEMENT_IMPLEMENTATION_CONTENT = "Implementation";
 		private const string ELEMENT_SELECTED_TIMING = "Selected";
+		private const string ATTR_EFFECT_TYPE_ID = "typeId";
+		private const string ATTR_EFFECT_INSTANCE_ID = "instanceId";
+		private const string ATTR_ID = "id";
 		private const string ATTR_LENGTH = "length";
 		private const string ATTR_SELECTED_TIMING_TYPE = "type";
 		private const string ATTR_SELECTED_TIMING_SOURCE = "source";
 
 		override protected XElement _CreateContent(Sequence sequence) {
-			Dictionary<Guid, int> effectTableIndex;
-			Dictionary<Guid, int> targetIdTableIndex;
-
 			XElement element = new XElement(ELEMENT_SEQUENCE,
 				new XAttribute(ATTR_LENGTH, sequence.Length.Ticks),
 				_WriteTimingSource(sequence),
 				_WriteModuleData(sequence),
-				_WriteEffectTable(sequence, out effectTableIndex),
-				_WriteTargetIdTable(sequence, out targetIdTableIndex),
-				_WriteDataNodes(sequence, effectTableIndex, targetIdTableIndex),
+				_WriteEffectNodes(sequence),
 				_WriteImplementationContent(sequence));
 
 			return element;
@@ -55,76 +54,18 @@ namespace Vixen.IO.Xml {
 			return new XElement(ELEMENT_MODULE_DATA, sequence.ModuleDataSet.ToXElement());
 		}
 
-		private XElement _WriteEffectTable(Sequence sequence, out Dictionary<Guid, int> effectTableIndex) {
-			// Effects are implemented by modules which are referenced by GUID ids.
-			// To avoid having every serialized effect include a big fat GUID, which
-			// would cause a lot of disk bloat, we're going to have a table of
-			// command GUIDs that the data will reference by an index.
-
-			List<Guid> effectTable;
-			IEffectModuleInstance[] effects = Modules.ModuleManagement.GetAllEffect();
-
-			// All command specs in the system.
-			effectTable = effects.Select(x => x.Descriptor.TypeId).ToList();
-			// Command spec type id : index within the table
-			effectTableIndex = effectTable.Select((id, index) => new { Id = id, Index = index }).ToDictionary(x => x.Id, x => x.Index);
-
-			return new XElement(ELEMENT_EFFECT_TABLE, effectTable.Select(x => new XElement(ELEMENT_EFFECT, x.ToString())));
-		}
-
-		private XElement _WriteTargetIdTable(Sequence sequence, out Dictionary<Guid, int> targetIdTableIndex) {
-			List<Guid> targetTable = Vixen.Sys.Execution.Nodes.Select(x => x.Id).ToList();
-			// Channel id : index within the table
-			targetIdTableIndex = targetTable.Select((id, index) => new { Id = id, Index = index }).ToDictionary(x => x.Id, x => x.Index);
-
-			return new XElement(ELEMENT_TARGET_ID_TABLE, targetTable.Select(x => new XElement(ELEMENT_TARGET, x)));
-		}
-
-		private XElement _WriteDataNodes(Sequence sequence, Dictionary<Guid, int> effectTableIndex, Dictionary<Guid, int> targetIdTableIndex) {
-			// Going to serialize data by channel.  Each channel will be represented.
-			// Intervals will be referenced by the time of each command serialized
-			// within a given channel.
-			// Store all in a binary stream converted to base-64.
-			string data = null;
-
-			using(MemoryStream stream = new System.IO.MemoryStream()) {
-				using(BinaryWriter dataWriter = new BinaryWriter(stream)) {
-					foreach(EffectNode commandNode in sequence.Data.GetCommands()) {
-						// Index of the command spec id from the command table (word).
-						dataWriter.Write((ushort)effectTableIndex[commandNode.Effect.Descriptor.TypeId]);
-						// Referenced target count (word).
-						dataWriter.Write((ushort)commandNode.Effect.TargetNodes.Length);
-						// Parameter count (byte)
-						if (commandNode.Effect.ParameterValues == null) {
-							VixenSystem.Logging.Error("Effect " + commandNode.Effect.Descriptor.TypeId + " serialized with null parameters. Please report this to the effect creator.");
-							dataWriter.Write((byte)0);
-						} else {
-							dataWriter.Write((byte)commandNode.Effect.ParameterValues.Length);
-						}
-
-						// Start time (long).
-						dataWriter.Write(commandNode.StartTime.Ticks);
-
-						// Time span (long).
-						dataWriter.Write(commandNode.TimeSpan.Ticks);
-
-						// Referenced targets (index into target table, word).
-						foreach(ChannelNode node in commandNode.Effect.TargetNodes) {
-							dataWriter.Write((ushort)targetIdTableIndex[node.Id]);
-						}
-
-						dataWriter.Flush();
-
-						// Parameters (various)
-						foreach(object parameterValue in commandNode.Effect.ParameterValues ?? new object[0] ) {
-							ParameterValue.WriteToStream(stream, parameterValue);
-						}
-					}
-					data = Convert.ToBase64String(stream.GetBuffer(), 0, (int)stream.Length);
-				}
-			}
-
-			return new XElement(ELEMENT_DATA, data);
+		private XElement _WriteEffectNodes(Sequence sequence) {
+			return new XElement(ELEMENT_EFFECT_NODES,
+				sequence.Data.GetEffects().Select(x =>
+					new XElement(ELEMENT_EFFECT_NODE,
+						new XAttribute(ATTR_EFFECT_TYPE_ID, x.Effect.Descriptor.TypeId),
+						new XAttribute(ATTR_EFFECT_INSTANCE_ID, x.Effect.InstanceId),
+						new XElement(ELEMENT_START_TIME, x.StartTime.Ticks),
+						new XElement(ELEMENT_TIME_SPAN, x.TimeSpan.Ticks),
+						new XElement(ELEMENT_TARGET_NODES,
+							x.Effect.TargetNodes.Select(y => 
+								new XElement(ELEMENT_TARGET_NODE,
+									new XAttribute(ATTR_ID, y.Id)))))));
 		}
 
 		private XElement _WriteImplementationContent(Sequence sequence) {

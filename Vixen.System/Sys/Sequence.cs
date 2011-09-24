@@ -81,7 +81,8 @@ namespace Vixen.Sys {
 		}
 
 		private bool _DataListener(EffectNode commandNode) {
-			Data.AddCommand(commandNode);
+			Data.AddEffect(commandNode);
+			ModuleDataSet.GetModuleInstanceData(commandNode.Effect);
 			// Do not cancel the event.
 			return false;
 		}
@@ -114,9 +115,9 @@ namespace Vixen.Sys {
 
 		public InsertDataListenerStack InsertDataListener { get; set; }
 
-		public void InsertData(EffectNode commandNode)
+		public void InsertData(EffectNode effectNode)
 		{
-			InsertDataListener.InsertData(commandNode);
+			InsertDataListener.InsertData(effectNode);
 		}
 
 		public EffectNode InsertData(IEffectModuleInstance effect, TimeSpan startTime)

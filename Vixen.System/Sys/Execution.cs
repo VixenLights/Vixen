@@ -320,17 +320,16 @@ namespace Vixen.Sys {
 
 								Monitor.Enter(targetChannel);
 
+								TimeSpan systemTime = _systemTime.Position + _syncDelta;
+								TimeSpan systemTimeDelta = commandNode.StartTime + systemTime;
+
 								// Offset the data's time frame by the command's time offset.
 								foreach(Command data in channelData[channelId]) {
-									Command targetChannelData = data ?? Command.Empty;
-									// The data from an effect is effect-local.
+									// The data time needs to be translated from effect-local to
+									// system-local.
 									// Adding the command's start time makes it context-local.
 									// Adding the system time makes it system-local.
-									TimeSpan systemTime = _systemTime.Position + _syncDelta;
-									// Can't assume the safety of the instance the provided by the effect,
-									// so create a local instance.
-									targetChannelData.StartTime += commandNode.StartTime + systemTime;
-									targetChannelData.EndTime += commandNode.StartTime + systemTime;
+									Command targetChannelData = new Command(data.StartTime + systemTimeDelta, data.EndTime + systemTimeDelta, data.CommandIdentifier, data.ParameterValues) ?? Command.Empty;
 									targetChannel.AddData(targetChannelData);
 								}
 

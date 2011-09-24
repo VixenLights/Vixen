@@ -42,8 +42,6 @@ namespace Vixen.Sys {
 
 		public IEffectModuleInstance Effect { get; private set; }
 
-		//public List<ChannelNode> TargetNodes { get; private set; }
-
 		public TimeSpan StartTime { get; set; }
 
 		public TimeSpan TimeSpan {

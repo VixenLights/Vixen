@@ -39,7 +39,7 @@ namespace TestRuntimeBehaviors {
 				// Clear it.
 				_sequence.Data.ClearEffectStream(sequenceChannelId);
 				// Copy our buffered data to it.
-				_sequence.Data.AddCommands(sequenceChannelId, _buffer);
+				_sequence.Data.AddEffects(sequenceChannelId, _buffer);
 			}
 		}
 
@@ -77,7 +77,7 @@ namespace TestRuntimeBehaviors {
 
 		public void Commit() {
 			_RemoveSequenceChannel();
-			_sequence.Data.AddCommands(_buffer);
+			_sequence.Data.AddEffects(_buffer);
 			_buffer.Clear();
 		}
 

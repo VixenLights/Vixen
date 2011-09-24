@@ -37,6 +37,10 @@ namespace TestScriptModule {
 			get { return typeof(SetLevel); }
 		}
 
+		public override Type ModuleDataClass {
+			get { return typeof(SetLevelData); }
+		}
+
 		override public string Author {
 			get { throw new NotImplementedException(); }
 		}

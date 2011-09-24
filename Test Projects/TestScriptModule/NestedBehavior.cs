@@ -42,11 +42,7 @@ namespace TestScriptModule {
 					// The data timing coming back from the effect is relative to that effect,
 					// so it needs to be offset to be relative to this effect.
 					Guid channelId = orderedChannels[i].Id;
-					Command[] data = setLevelData[channelId];
-					foreach(Command commandData in data) {
-						commandData.StartTime += startTime;
-						commandData.EndTime += startTime;
-					}
+					Command[] data = setLevelData[channelId].Select(x => new Command(x.StartTime + startTime, x.EndTime + startTime, x.CommandIdentifier, x.ParameterValues)).ToArray();
 					channelData[channelId] = setLevelData[channelId];
 				}
 			}

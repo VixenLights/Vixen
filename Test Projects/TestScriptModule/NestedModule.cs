@@ -44,6 +44,10 @@ namespace TestScriptModule {
 			get { return typeof(Nested); }
 		}
 
+		public override Type ModuleDataClass {
+			get { return typeof(NestedData); }
+		}
+
 		override public string Author {
 			get { throw new NotImplementedException(); }
 		}

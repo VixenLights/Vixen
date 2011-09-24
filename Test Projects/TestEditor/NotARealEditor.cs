@@ -63,14 +63,22 @@ namespace TestEditor {
 
 			ChannelNode node = _SelectedNode;
 			if(node != null && comboBoxEffects.SelectedItem != null) {
-				IEffectModuleInstance effect = comboBoxEffects.SelectedItem as IEffectModuleInstance;
+				IEffectModuleInstance theEffect = comboBoxEffects.SelectedItem as IEffectModuleInstance;
+				IEffectModuleInstance effect = ApplicationServices.Get<IEffectModuleInstance>(theEffect.Descriptor.TypeId);
+
 				object[] parameterValues = null;
 				using(EffectParameterContainer paramContainer = new EffectParameterContainer(effect.Descriptor.TypeId)) {
 					if(paramContainer.HasParameters && paramContainer.ShowDialog() == DialogResult.OK) {
 						parameterValues = paramContainer.Values;
 					}
 				}
-				Sequence.InsertData(new[] { node }, time, length, new Command((comboBoxEffects.SelectedItem as IEffectModuleInstance).Descriptor.TypeId, parameterValues));
+
+				effect.TimeSpan = TimeSpan.FromMilliseconds(length);
+				effect.ParameterValues = parameterValues;
+				effect.TargetNodes = new[] { node };
+
+				EffectNode effectNode = new EffectNode(effect, TimeSpan.FromMilliseconds(time));
+				Sequence.InsertData(effectNode);
 			}
 		}
 
@@ -107,10 +115,10 @@ namespace TestEditor {
 			_context = Execution.CreateContext(this.Sequence);
 			_context.SequenceStarted += _context_SequenceStarted;
 			_context.ProgramEnded += _context_ProgramEnded;
-			int startTime = int.Parse(textBoxPlayStartTime.Text);
-			int endTime = int.Parse(textBoxPlayEndTime.Text);
+			TimeSpan startTime = TimeSpan.FromMilliseconds(int.Parse(textBoxPlayStartTime.Text));
+			TimeSpan endTime = TimeSpan.FromMilliseconds(int.Parse(textBoxPlayEndTime.Text));
 			bool isPlaying;
-			if(endTime == 0) {
+			if(endTime == TimeSpan.Zero) {
 				isPlaying = _context.Play();
 			} else {
 				isPlaying = _context.Play(startTime, endTime);
@@ -164,12 +172,12 @@ namespace TestEditor {
 		}
 
 		private void numericUpDownSequenceLength_ValueChanged(object sender, EventArgs e) {
-			this.Sequence.Length = (int)numericUpDownSequenceLength.Value * 1000;
+			this.Sequence.Length = TimeSpan.FromMilliseconds((int)numericUpDownSequenceLength.Value * 1000);
 		}
 
 		private void timer_Tick(object sender, EventArgs e) {
 			if(_timingSource != null) {
-				long position = _timingSource.Position;
+				long position = (long)_timingSource.Position.TotalMilliseconds;
 				long minutes = position / 60000;
 				long seconds = position % 60000 / 1000;
 				long milliseconds = position % 1000;
@@ -200,8 +208,8 @@ namespace TestEditor {
 					// Name
 					labelSequenceName.Text = _sequence.Name;
 					// Length
-					if(_sequence.Length > 0) {
-						numericUpDownSequenceLength.Value = _sequence.Length / 1000;
+					if(_sequence.Length > TimeSpan.Zero) {
+						numericUpDownSequenceLength.Value = (decimal)_sequence.Length.TotalMilliseconds / 1000;
 					}
 
 					_RefreshTimingSources();

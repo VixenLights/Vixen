@@ -91,7 +91,7 @@ namespace Vixen.Execution {
 				}
 
 				// CommandNodes that have any intervals within the time frame.
-				var qualifiedData = this.Sequence.Data.GetCommandRange(StartTime, EndTime);
+				var qualifiedData = this.Sequence.Data.GetEffects(StartTime, EndTime);
 					// Done by GetCommandRange now.  Otherwise, trying to get an enumerator
 					// for the collection will not the be enumerator we intend.
 					//.OrderBy(x => x.StartTime);
@@ -145,23 +145,23 @@ namespace Vixen.Execution {
 			// when to stop.
 			bool transitionToSet = false;
 			bool transitionToReset = false;
-			List<EffectNode> qualifiedCommands = new List<EffectNode>();
+			List<EffectNode> qualifiedEffects = new List<EffectNode>();
 
 			do {
 				if(IsRunning) transitionToSet = true;
 				if(transitionToSet && !IsRunning) transitionToReset = true;
 
 				//*** may be faster to create a new one
-				qualifiedCommands.Clear();
+				qualifiedEffects.Clear();
 
 				// Get everything that currently qualifies.
 				while(_sequenceDataEnumerator.MoveNext()) {
-					qualifiedCommands.AddRange(_sequenceDataEnumerator.Current);
+					qualifiedEffects.AddRange(_sequenceDataEnumerator.Current);
 				}
 
 				// Execute it as a single state.
-				if(qualifiedCommands.Count > 0) {
-					Vixen.Sys.Execution.Write(qualifiedCommands);
+				if(qualifiedEffects.Count > 0) {
+					Vixen.Sys.Execution.Write(qualifiedEffects);
 				}
 
 				//completely arbitrary...
@@ -248,7 +248,6 @@ namespace Vixen.Execution {
 
 				_UpdateOutputs();
 
-				// Cannot do _updateTimer.Enabled = IsRunning because _updateTimer is null
 				if(IsRunning) {
 					_updateTimer.Enabled = true;
 				}
