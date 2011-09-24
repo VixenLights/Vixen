@@ -86,11 +86,11 @@
     </Compile>
     <Compile Include="ColorGradient\Gradient.cs" />
     <Compile Include="ColorGradient\GradientCollection.cs" />
-    <Compile Include="ColorGradient\GradientCollectionEditor.cs">
+    <Compile Include="ColorGradient\GradientCollectionSelector.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ColorGradient\GradientCollectionEditor.designer.cs">
-      <DependentUpon>GradientCollectionEditor.cs</DependentUpon>
+    <Compile Include="ColorGradient\GradientCollectionSelector.designer.cs">
+      <DependentUpon>GradientCollectionSelector.cs</DependentUpon>
     </Compile>
     <Compile Include="ColorGradient\GradientEdit.cs">
       <SubType>Component</SubType>
@@ -226,8 +226,8 @@
     <EmbeddedResource Include="ColorGradient\GradientEditPanel.resx">
       <DependentUpon>GradientEditPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ColorGradient\GradientCollectionEditor.resx">
-      <DependentUpon>GradientCollectionEditor.cs</DependentUpon>
+    <EmbeddedResource Include="ColorGradient\GradientCollectionSelector.resx">
+      <DependentUpon>GradientCollectionSelector.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ColorGradient\Original Controls\OriginalGradientCollectionEditor.resx">
       <DependentUpon>OriginalGradientCollectionEditor.cs</DependentUpon>

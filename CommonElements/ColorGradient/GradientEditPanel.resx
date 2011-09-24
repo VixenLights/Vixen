@@ -112,83 +112,20 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="cmbGammaCorrect.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="cmbGammaCorrect.Items" xml:space="preserve">
-    <value>Enabled</value>
-  </data>
-  <data name="cmbGammaCorrect.Items1" xml:space="preserve">
-    <value>Disabled</value>
-  </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="cmbGammaCorrect.Location" type="System.Drawing.Point, System.Drawing">
-    <value>96, 0</value>
-  </data>
-  <data name="cmbGammaCorrect.Size" type="System.Drawing.Size, System.Drawing">
-    <value>80, 21</value>
-  </data>
-  <data name="cmbGammaCorrect.TabIndex" type="System.Int32, mscorlib">
-    <value>7</value>
-  </data>
-  <data name="&gt;&gt;cmbGammaCorrect.Name" xml:space="preserve">
-    <value>cmbGammaCorrect</value>
-  </data>
-  <data name="&gt;&gt;cmbGammaCorrect.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;cmbGammaCorrect.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;cmbGammaCorrect.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="label1.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="label1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 0</value>
-  </data>
-  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>96, 20</value>
-  </data>
-  <data name="label1.TabIndex" type="System.Int32, mscorlib">
-    <value>6</value>
-  </data>
-  <data name="label1.Text" xml:space="preserve">
-    <value>Gamma Correction</value>
-  </data>
-  <data name="label1.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleRight</value>
-  </data>
-  <data name="&gt;&gt;label1.Name" xml:space="preserve">
-    <value>label1</value>
-  </data>
-  <data name="&gt;&gt;label1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label1.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="grpStops.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Left, Right</value>
   </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="lblColorSelect.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="lblColorSelect.Font" type="System.Drawing.Font, System.Drawing">
     <value>Microsoft Sans Serif, 6.25pt</value>
   </data>
@@ -196,7 +133,7 @@
     <value>NoControl</value>
   </data>
   <data name="lblColorSelect.Location" type="System.Drawing.Point, System.Drawing">
-    <value>72, 48</value>
+    <value>51, 21</value>
   </data>
   <data name="lblColorSelect.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 20</value>
@@ -208,7 +145,7 @@
     <value>lblColorSelect</value>
   </data>
   <data name="&gt;&gt;lblColorSelect.Type" xml:space="preserve">
-    <value>DrawingEx.ColorManagement.ColorLabel, DrawingEx, Version=1.0.3576.35042, Culture=neutral, PublicKeyToken=null</value>
+    <value>CommonElements.ColorPicker.ColorLabel, CommonElements, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;lblColorSelect.Parent" xml:space="preserve">
     <value>grpStops</value>
@@ -220,7 +157,7 @@
     <value>False</value>
   </data>
   <data name="vColorLoc.Location" type="System.Drawing.Point, System.Drawing">
-    <value>200, 48</value>
+    <value>179, 21</value>
   </data>
   <data name="vColorLoc.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 25</value>
@@ -235,67 +172,13 @@
     <value>vColorLoc</value>
   </data>
   <data name="&gt;&gt;vColorLoc.Type" xml:space="preserve">
-    <value>ControlsEx.ValueControls.ValueUpDown, ControlsEx, Version=1.0.3579.42446, Culture=neutral, PublicKeyToken=null</value>
+    <value>CommonElements.ControlsEx.ValueControls.ValueUpDown, CommonElements, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;vColorLoc.Parent" xml:space="preserve">
     <value>grpStops</value>
   </data>
   <data name="&gt;&gt;vColorLoc.ZOrder" xml:space="preserve">
     <value>1</value>
-  </data>
-  <data name="vAlphaLoc.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="vAlphaLoc.Location" type="System.Drawing.Point, System.Drawing">
-    <value>200, 16</value>
-  </data>
-  <data name="vAlphaLoc.Size" type="System.Drawing.Size, System.Drawing">
-    <value>64, 25</value>
-  </data>
-  <data name="vAlphaLoc.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
-  </data>
-  <data name="vAlphaLoc.Text" xml:space="preserve">
-    <value>valueUpDown1</value>
-  </data>
-  <data name="&gt;&gt;vAlphaLoc.Name" xml:space="preserve">
-    <value>vAlphaLoc</value>
-  </data>
-  <data name="&gt;&gt;vAlphaLoc.Type" xml:space="preserve">
-    <value>ControlsEx.ValueControls.ValueUpDown, ControlsEx, Version=1.0.3579.42446, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;vAlphaLoc.Parent" xml:space="preserve">
-    <value>grpStops</value>
-  </data>
-  <data name="&gt;&gt;vAlphaLoc.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="vOpacity.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="vOpacity.Location" type="System.Drawing.Point, System.Drawing">
-    <value>72, 16</value>
-  </data>
-  <data name="vOpacity.Size" type="System.Drawing.Size, System.Drawing">
-    <value>64, 25</value>
-  </data>
-  <data name="vOpacity.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
-  </data>
-  <data name="vOpacity.Text" xml:space="preserve">
-    <value>valueUpDown1</value>
-  </data>
-  <data name="&gt;&gt;vOpacity.Name" xml:space="preserve">
-    <value>vOpacity</value>
-  </data>
-  <data name="&gt;&gt;vOpacity.Type" xml:space="preserve">
-    <value>ControlsEx.ValueControls.ValueUpDown, ControlsEx, Version=1.0.3579.42446, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;vOpacity.Parent" xml:space="preserve">
-    <value>grpStops</value>
-  </data>
-  <data name="&gt;&gt;vOpacity.ZOrder" xml:space="preserve">
-    <value>3</value>
   </data>
   <data name="btnDeleteColor.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
@@ -304,7 +187,7 @@
     <value>NoControl</value>
   </data>
   <data name="btnDeleteColor.Location" type="System.Drawing.Point, System.Drawing">
-    <value>272, 48</value>
+    <value>263, 21</value>
   </data>
   <data name="btnDeleteColor.Size" type="System.Drawing.Size, System.Drawing">
     <value>72, 22</value>
@@ -319,49 +202,19 @@
     <value>btnDeleteColor</value>
   </data>
   <data name="&gt;&gt;btnDeleteColor.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;btnDeleteColor.Parent" xml:space="preserve">
     <value>grpStops</value>
   </data>
   <data name="&gt;&gt;btnDeleteColor.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="btnDeleteAlpha.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="btnDeleteAlpha.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="btnDeleteAlpha.Location" type="System.Drawing.Point, System.Drawing">
-    <value>272, 16</value>
-  </data>
-  <data name="btnDeleteAlpha.Size" type="System.Drawing.Size, System.Drawing">
-    <value>72, 22</value>
-  </data>
-  <data name="btnDeleteAlpha.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="btnDeleteAlpha.Text" xml:space="preserve">
-    <value>Delete</value>
-  </data>
-  <data name="&gt;&gt;btnDeleteAlpha.Name" xml:space="preserve">
-    <value>btnDeleteAlpha</value>
-  </data>
-  <data name="&gt;&gt;btnDeleteAlpha.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;btnDeleteAlpha.Parent" xml:space="preserve">
-    <value>grpStops</value>
-  </data>
-  <data name="&gt;&gt;btnDeleteAlpha.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>2</value>
   </data>
   <data name="label5.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
   <data name="label5.Location" type="System.Drawing.Point, System.Drawing">
-    <value>136, 48</value>
+    <value>115, 21</value>
   </data>
   <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 20</value>
@@ -379,52 +232,22 @@
     <value>label5</value>
   </data>
   <data name="&gt;&gt;label5.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;label5.Parent" xml:space="preserve">
     <value>grpStops</value>
   </data>
   <data name="&gt;&gt;label5.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="label3.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
-    <value>136, 16</value>
-  </data>
-  <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>64, 20</value>
-  </data>
-  <data name="label3.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="label3.Text" xml:space="preserve">
-    <value>Location:</value>
-  </data>
-  <data name="label3.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleRight</value>
-  </data>
-  <data name="&gt;&gt;label3.Name" xml:space="preserve">
-    <value>label3</value>
-  </data>
-  <data name="&gt;&gt;label3.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label3.Parent" xml:space="preserve">
-    <value>grpStops</value>
-  </data>
-  <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>3</value>
   </data>
   <data name="label4.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
   <data name="label4.Location" type="System.Drawing.Point, System.Drawing">
-    <value>8, 48</value>
+    <value>12, 21</value>
   </data>
   <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>64, 20</value>
+    <value>39, 20</value>
   </data>
   <data name="label4.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -439,64 +262,34 @@
     <value>label4</value>
   </data>
   <data name="&gt;&gt;label4.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;label4.Parent" xml:space="preserve">
     <value>grpStops</value>
   </data>
   <data name="&gt;&gt;label4.ZOrder" xml:space="preserve">
-    <value>8</value>
-  </data>
-  <data name="label2.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>8, 16</value>
-  </data>
-  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>64, 20</value>
-  </data>
-  <data name="label2.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>Opacity:</value>
-  </data>
-  <data name="label2.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleRight</value>
-  </data>
-  <data name="&gt;&gt;label2.Name" xml:space="preserve">
-    <value>label2</value>
-  </data>
-  <data name="&gt;&gt;label2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label2.Parent" xml:space="preserve">
-    <value>grpStops</value>
-  </data>
-  <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
-    <value>9</value>
+    <value>4</value>
   </data>
   <data name="grpStops.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
   <data name="grpStops.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 72</value>
+    <value>0, 81</value>
   </data>
   <data name="grpStops.Size" type="System.Drawing.Size, System.Drawing">
-    <value>355, 80</value>
+    <value>355, 54</value>
   </data>
   <data name="grpStops.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
   </data>
   <data name="grpStops.Text" xml:space="preserve">
-    <value>Stops</value>
+    <value>Selected Stop</value>
   </data>
   <data name="&gt;&gt;grpStops.Name" xml:space="preserve">
     <value>grpStops</value>
   </data>
   <data name="&gt;&gt;grpStops.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;grpStops.Parent" xml:space="preserve">
     <value>$this</value>
@@ -508,10 +301,10 @@
     <value>Top, Bottom, Left, Right</value>
   </data>
   <data name="edit.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 32</value>
+    <value>0, 3</value>
   </data>
   <data name="edit.Size" type="System.Drawing.Size, System.Drawing">
-    <value>354, 40</value>
+    <value>354, 72</value>
   </data>
   <data name="edit.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
@@ -523,7 +316,7 @@
     <value>edit</value>
   </data>
   <data name="&gt;&gt;edit.Type" xml:space="preserve">
-    <value>DrawingEx.ColorManagement.Gradients.GradientEdit, DrawingEx, Version=1.0.3581.1637, Culture=neutral, PublicKeyToken=null</value>
+    <value>CommonElements.ColorManagement.Gradients.GradientEdit, CommonElements, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;edit.Parent" xml:space="preserve">
     <value>$this</value>
@@ -531,19 +324,79 @@
   <data name="&gt;&gt;edit.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
-  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <data name="buttonLoadPreset.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="buttonLoadPreset.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="buttonLoadPreset.Location" type="System.Drawing.Point, System.Drawing">
+    <value>55, 150</value>
+  </data>
+  <data name="buttonLoadPreset.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 25</value>
+  </data>
+  <data name="buttonLoadPreset.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="buttonLoadPreset.Text" xml:space="preserve">
+    <value>Load Preset</value>
+  </data>
+  <data name="&gt;&gt;buttonLoadPreset.Name" xml:space="preserve">
+    <value>buttonLoadPreset</value>
+  </data>
+  <data name="&gt;&gt;buttonLoadPreset.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;buttonLoadPreset.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;buttonLoadPreset.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="buttonSaveNewPreset.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="buttonSaveNewPreset.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="buttonSaveNewPreset.Location" type="System.Drawing.Point, System.Drawing">
+    <value>202, 150</value>
+  </data>
+  <data name="buttonSaveNewPreset.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 25</value>
+  </data>
+  <data name="buttonSaveNewPreset.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="buttonSaveNewPreset.Text" xml:space="preserve">
+    <value>Save New Preset</value>
+  </data>
+  <data name="&gt;&gt;buttonSaveNewPreset.Name" xml:space="preserve">
+    <value>buttonSaveNewPreset</value>
+  </data>
+  <data name="&gt;&gt;buttonSaveNewPreset.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;buttonSaveNewPreset.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;buttonSaveNewPreset.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
     <value>6, 13</value>
   </data>
   <data name="$this.Size" type="System.Drawing.Size, System.Drawing">
-    <value>357, 154</value>
+    <value>357, 187</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>GradientEditPanel</value>
   </data>
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
-    <value>System.Windows.Forms.UserControl, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.UserControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

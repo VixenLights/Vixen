@@ -30,7 +30,7 @@ namespace CommonElements.ColorManagement.Gradients
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GradientCollectionEditor));
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OriginalGradientCollectionEditor));
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.edit = new GradientEditPanel();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();

@@ -30,33 +30,10 @@ namespace CommonElements.ColorManagement.Gradients
 			if (edit.Gradient == null)
 			{
 				grpStops.Enabled = false;
-				//cmbGammaCorrect.Enabled =
-				//    groupBox2.Enabled = false;
 			}
 			else
 			{
 				grpStops.Enabled = true;
-				//cmbGammaCorrect.Enabled =
-				//    groupBox2.Enabled = true;
-				//
-				cmbGammaCorrect.SelectedIndex = edit.Gradient.Gammacorrected ? 0 : 1;
-				//
-				AlphaPoint pt = edit.Selection as AlphaPoint;
-				if (pt != null)
-				{
-					vAlphaLoc.Enabled = true;
-					vOpacity.Enabled = btnDeleteAlpha.Enabled = !edit.FocusSelection;
-					//
-					vAlphaLoc.Value = (int)((edit.FocusSelection ? pt.Focus : pt.Position) * 100.0);
-					vOpacity.Value = edit.FocusSelection ? 0 : (int)(pt.Alpha * 100.0);
-				}
-				else
-				{
-					vAlphaLoc.Enabled = vOpacity.Enabled = btnDeleteAlpha.Enabled = false;
-					vAlphaLoc.Value = 0;
-					vOpacity.Value = 0;
-				}
-				//
 				ColorPoint cpt = edit.Selection as ColorPoint;
 				if (cpt != null)
 				{
@@ -75,52 +52,12 @@ namespace CommonElements.ColorManagement.Gradients
 				}
 			}
 		}
-		//gamma correction changed
-		private void cmbGammaCorrect_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (edit.Gradient == null)
-				return;
-			edit.Gradient.Gammacorrected = cmbGammaCorrect.SelectedIndex == 0;
-		}
 		//triggered if gradient or selection changed
 		private void edit_GradientChanged(object sender, EventArgs e)
 		{
 			UpdateUI();
 			if (GradientChanged != null)
 				GradientChanged(this, e);
-		}
-		//active alpha point alpha changed
-		private void vOpacity_ValueChanged(ValueControl sender, ValueChangedEventArgs e)
-		{
-			if (edit.Gradient == null)
-				return;
-			AlphaPoint pt = edit.Selection as AlphaPoint;
-			if (pt == null)
-				return;
-			pt.Alpha = (double)vOpacity.Value / 100.0;
-		}
-		//active alpha point location changed
-		private void vAlphaLoc_ValueChanged(ValueControl sender, ValueChangedEventArgs e)
-		{
-			if (edit.Gradient == null)
-				return;
-			AlphaPoint pt = edit.Selection as AlphaPoint;
-			if (pt == null)
-				return;
-			if (edit.FocusSelection)
-				pt.Focus=(double)vAlphaLoc.Value / 100.0;
-			else
-				pt.Position = (double)vAlphaLoc.Value / 100.0;
-		}
-		//delete active alpha point
-		private void btnDeleteAlpha_Click(object sender, EventArgs e)
-		{
-			if (edit.Gradient == null || edit.FocusSelection)
-				return;
-			int index = edit.SelectedAlphaIndex;
-			if (index == -1) return;
-			edit.Gradient.Alphas.RemoveAt(index);
-			UpdateUI();
 		}
 		//active color changed
 		private void lblColorSelect_Click(object sender, EventArgs e)
@@ -192,5 +129,17 @@ namespace CommonElements.ColorManagement.Gradients
 		/// </summary>
 		[Description("triggered if gradient changed")]
 		public event EventHandler GradientChanged;
+
+		private void buttonLoadPreset_Click(object sender, EventArgs e)
+		{
+			// TODO: once this has moved to an EffectEditor module, and is dependent on the RGB property, load
+			// and present a GradientCollectionSelector from it. (It should be populated from the RGB static data.)
+		}
+
+		private void buttonSaveNewPreset_Click(object sender, EventArgs e)
+		{
+			// TODO: once this has moved to an EffectEditor module, and is dependent on the RGB property, get a name
+			// from the user and save it to the RGB library.
+		}
 	}
 }

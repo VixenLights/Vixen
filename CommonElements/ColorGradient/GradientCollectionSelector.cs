@@ -11,15 +11,15 @@ namespace CommonElements.ColorManagement.Gradients
 	/// <summary>
 	/// gradient editor class
 	/// </summary>
-	public partial class GradientCollectionEditor : Form
+	public partial class GradientCollectionSelector : Form
 	{
 		/// <summary>
 		/// collection for mirroring the changes to the ui gradient list
 		/// </summary>
 		private class GradientUICollection : GradientCollection
 		{
-			private GradientCollectionEditor _owner;
-			public GradientUICollection(GradientCollectionEditor owner)
+			private GradientCollectionSelector _owner;
+			public GradientUICollection(GradientCollectionSelector owner)
 			{
 				if (owner == null)
 					throw new ArgumentNullException("owner");
@@ -102,94 +102,27 @@ namespace CommonElements.ColorManagement.Gradients
 		}
 		#region variables
 		private GradientUICollection _gradients;
+		private Gradient _selectedGradient;
 		#endregion
-		public GradientCollectionEditor()
+		public GradientCollectionSelector()
 		{
 			_gradients = new GradientUICollection(this);
 			InitializeComponent();
 		}
-		#region new gradient
-		//enable or disable button
-		private void tbNewPreset_TextChanged(object sender, EventArgs e)
-		{
-			btnNewPreset.Enabled = tbNewPreset.Text != null && tbNewPreset.Text != "";
-		}
-		//creates new gradient with the given title
-		private void btnNewPreset_Click(object sender, EventArgs e)
-		{
-			Gradient grd = edit.Gradient;
-			if (grd != null)
-				grd = (Gradient)grd.Clone();
-			else
-			{
-				grd = new Gradient();
-				grd.Alphas.Add(new AlphaPoint(0, 0));
-				grd.Alphas.Add(new AlphaPoint(255, 1));
-				grd.Colors.Add(new ColorPoint(Color.Black, 0));
-				grd.Colors.Add(new ColorPoint(Color.Black, 1));
-
-			}
-			grd.Title = tbNewPreset.Text;
-			//add to collection
-			_gradients.Add(grd);
-			//update ui
-			lstPresets.SelectedIndex = lstPresets.Items.Count - 1;
-		}
-
-		#endregion
 		//
 		private void lstPresets_SelectionChanged(object sender, EventArgs e)
 		{
 			GradientDisplayElement elem =
 				lstPresets.SelectedItem as GradientDisplayElement;
 			//
-			edit.Gradient = elem != null ? elem.Gradient : null;
-			tbNewPreset.Text = elem != null ? elem.Gradient.Title : null;
+			_selectedGradient = elem != null ? elem.Gradient : null;
+			labelName.Text = elem != null ? elem.Gradient.Title : null;
 			mnuDelete.Enabled = elem != null;
 		}
-		//refresh the selected preset
-		private void edit_GradientChanged(object sender, EventArgs e)
-		{
-			if (lstPresets.SelectedItem != null)
-				lstPresets.SelectedItem.RaiseRefresh();
-		}
-
 		private void mnuDelete_Click(object sender, EventArgs e)
 		{
 			if (lstPresets.SelectedItem != null)
 				_gradients.Remove(((GradientDisplayElement)lstPresets.SelectedItem).Gradient);
-		}
-		//save the current presets
-		private void btnSave_Click(object sender, EventArgs e)
-		{
-			try
-			{
-				if (sDialog.ShowDialog() == DialogResult.OK)
-					_gradients.Save(sDialog.FileName);
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show(ex.Message);
-			}
-		}
-
-		private void btnLoad_Click(object sender, EventArgs e)
-		{
-			try
-			{
-				if (_gradients.Count > 0 &&
-					MessageBox.Show(this, "Overwrite?", this.Text, MessageBoxButtons.YesNo) == DialogResult.No)
-					return;
-				if (oDialog.ShowDialog() == DialogResult.OK)
-				{
-					_gradients.Clear();
-					_gradients.Load(oDialog.FileName);
-				}
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show(ex.StackTrace);
-			}
 		}
 		#region properties
 		/// <summary>
@@ -200,6 +133,12 @@ namespace CommonElements.ColorManagement.Gradients
 		public IList<Gradient> Gradients
 		{
 			get { return _gradients; }
+			set
+			{
+				_gradients.Clear();
+				foreach (Gradient g in value)
+					_gradients.Add(g);
+			}
 		}
 		/// <summary>
 		/// gets the currently edited gradient object or null
@@ -208,10 +147,10 @@ namespace CommonElements.ColorManagement.Gradients
 		Browsable(false)]
 		public Gradient SelectedGradient
 		{
-			get { return edit.Gradient; }
+			get { return _selectedGradient; }
 			set
 			{
-				edit.Gradient = value;
+				_selectedGradient = value;
 				lstPresets.SelectedIndex =
 					_gradients.IndexOf(value);
 			}

@@ -283,11 +283,12 @@ namespace CommonElements.ColorManagement.Gradients
 					DrawFader(e.Graphics, pnt.Position,
 						pnt.GetColor(Color.Black),
 						false, pnt == _selection && !_focussel);
+				// MS: 25/09/11: disable drawing alpha points, we don't want to use them (yet).
 				// draw alpha points
-				foreach (AlphaPoint pnt in _blend.Alphas)
-					DrawFader(e.Graphics, pnt.Position,
-						pnt.GetColor(Color.Black),
-						true, pnt == _selection && !_focussel);
+				//foreach (AlphaPoint pnt in _blend.Alphas)
+				//    DrawFader(e.Graphics, pnt.Position,
+				//        pnt.GetColor(Color.Black),
+				//        true, pnt == _selection && !_focussel);
 				// draw selected focus
 				if (_selection != null)
 					DrawDiamond(e.Graphics, _selection.GetFocusPosition(),
@@ -319,9 +320,10 @@ namespace CommonElements.ColorManagement.Gradients
 					else if (_orientation == Orientation.Horizontal ?
 						e.Y < area.Y : e.X < area.X)
 					{
-						AlphaPoint pnt = new AlphaPoint(_blend.GetColorAt((float)pos).A, pos);
-						_selection = pnt;
-						_blend.Alphas.Add(pnt);
+						// MS: 25/09/11: disable drawing alpha points, we don't want to use them (yet).
+						//AlphaPoint pnt = new AlphaPoint(_blend.GetColorAt((float)pos).A, pos);
+						//_selection = pnt;
+						//_blend.Alphas.Add(pnt);
 					}
 				}
 			}
@@ -343,8 +345,11 @@ namespace CommonElements.ColorManagement.Gradients
 					//hit fader
 					this.Cursor = Cursors.SizeWE;
 				else if (_orientation == Orientation.Horizontal ?
-						(e.Y < area.Y || e.Y > area.Bottom) :
-						(e.X < area.X || e.X > area.Right))
+						// MS: 25/09/11: disable drawing alpha points, we don't want to use them (yet).
+						//(e.Y < area.Y || e.Y > area.Bottom) :
+						//(e.X < area.X || e.X > area.Right))
+						(e.Y > area.Bottom) :
+						(e.X > area.Right))
 					//create new point
 					this.Cursor = Cursors.Hand;
 				else
