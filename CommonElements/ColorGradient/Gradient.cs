@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Runtime.Serialization;
 using CommonElements.ColorManagement.ColorModels;
 using CommonElements.ControlsEx;
 
@@ -10,16 +11,21 @@ namespace CommonElements.ColorManagement.Gradients
 	/// <summary>
 	/// ColorBlend object
 	/// </summary>
+	[DataContract]
 	public class Gradient : ICloneable
 	{
 		/// <summary>
 		/// class for holding a gradient point
 		/// </summary>
+		[DataContract]
 		public abstract class Point : IComparable<double>
 		{
 			//variables
+			[DataMember]
 			private Gradient _owner;
+			[DataMember]
 			private double _position;
+			[DataMember]
 			private double _focus;
 			/// <summary>
 			/// ctor
@@ -156,6 +162,7 @@ namespace CommonElements.ColorManagement.Gradients
 		/// class for holding points and updating
 		/// controls connected to this colorblend
 		/// </summary>
+		[DataContract]
 		public class PointList<T> : CollectionBase<Gradient, T> where T : Point,IComparable<T>
 		{
 			public PointList(Gradient owner) : base(owner) { }
@@ -219,10 +226,14 @@ namespace CommonElements.ColorManagement.Gradients
 			}
 		}
 		#region variables
+		[DataMember]
 		private PointList<ColorPoint> _colors;
+		[DataMember]
 		private PointList<AlphaPoint> _alphas;
+		[DataMember]
 		private bool _gammacorrected = false;
 		private ColorBlend _blend = null;
+		[DataMember]
 		private String _title = null;
 		#endregion
 		public Gradient()
@@ -504,9 +515,11 @@ namespace CommonElements.ColorManagement.Gradients
 	/// <summary>
 	/// encapsulates an alpha value with focus point
 	/// </summary>
+	[DataContract]
 	public class AlphaPoint : Gradient.Point, IComparable<AlphaPoint>, ICloneable
 	{
 		//variables
+		[DataMember]
 		private double _alpha;
 		/// <summary>
 		/// ctor
@@ -596,9 +609,11 @@ namespace CommonElements.ColorManagement.Gradients
 	/// <summary>
 	/// encapsulates a color value with focus point
 	/// </summary>
+	[DataContract]
 	public class ColorPoint : Gradient.Point, IComparable<ColorPoint>, ICloneable
 	{
 		//variables
+		[DataMember]
 		private XYZ _color;
 		/// <summary>
 		/// ctor

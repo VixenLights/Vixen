@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using System.Collections;
 
 namespace CommonElements.ControlsEx
@@ -291,9 +292,11 @@ namespace CommonElements.ControlsEx
 	/// </summary>
 	/// <typeparam name="TOwner">type of owner</typeparam>
 	/// <typeparam name="TItem">type of item</typeparam>
+	[DataContract]
 	public class CollectionBase<TOwner, TItem> : CollectionBase<TItem>
 	{
 		#region variables
+		[DataMember]
 		private TOwner _owner;
 		#endregion
 		public CollectionBase(TOwner owner)
