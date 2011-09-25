@@ -51,6 +51,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="SetLevel.cs" />
+    <Compile Include="SetLevelData.cs" />
     <Compile Include="SetLevelDescriptor.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -58,10 +59,22 @@
       <HintPath>..\..\..\Output\CommandStandard.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="CommonElements">
+      <HintPath>..\..\..\Output\CommonElements.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="Vixen">
       <HintPath>..\..\..\Output\Vixen.dll</HintPath>
       <Private>False</Private>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Property\RGB\RGB.csproj">
+      <Project>{3D1BD0E2-B947-4235-A2A7-30AA4F13CA86}</Project>
+      <Name>RGB</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

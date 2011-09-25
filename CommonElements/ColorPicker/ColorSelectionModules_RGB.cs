@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using CommonElements.ColorManagement.ColorModels;
 
-namespace CommonElements.ColorPicker
+namespace CommonElements.ColorManagement.ColorPicker
 {
 	public abstract class ColorSelectionModuleRGB:ColorSelectionModule
 	{

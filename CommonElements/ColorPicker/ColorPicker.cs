@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using System.Runtime.Serialization;
 using CommonElements.ColorManagement.ColorModels;
 
-namespace CommonElements.ColorPicker
+namespace CommonElements.ColorManagement.ColorPicker
 {
 	/// <summary>
 	/// Zusammenfassung für Form1.
@@ -115,42 +115,28 @@ namespace CommonElements.ColorPicker
 			this.lblSecond_2 = new System.Windows.Forms.Label();
 			this.lblSecond_3 = new System.Windows.Forms.Label();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-			this.lblColorOut = new CommonElements.ColorPicker.ColorLabel();
-			this.colorSelectionFader1 = new ColorSelectionFader();
-			this.colorSelectionPlane1 = new ColorSelectionPlane();
+			this.lblColorOut = new CommonElements.ColorManagement.ColorPicker.ColorLabel();
+			this.colorSelectionFader1 = new CommonElements.ColorManagement.ColorPicker.ColorSelectionFader();
+			this.colorSelectionPlane1 = new CommonElements.ColorManagement.ColorPicker.ColorSelectionPlane();
 			this.SuspendLayout();
 			// 
 			// label1
 			// 
-			this.label1.AccessibleDescription = null;
-			this.label1.AccessibleName = null;
 			resources.ApplyResources(this.label1, "label1");
 			this.label1.BackColor = System.Drawing.Color.Silver;
-			this.label1.Font = null;
 			this.label1.Name = "label1";
-			this.toolTip.SetToolTip(this.label1, resources.GetString("label1.ToolTip"));
 			// 
 			// btnCancel
 			// 
-			this.btnCancel.AccessibleDescription = null;
-			this.btnCancel.AccessibleName = null;
 			resources.ApplyResources(this.btnCancel, "btnCancel");
-			this.btnCancel.BackgroundImage = null;
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Font = null;
 			this.btnCancel.Name = "btnCancel";
-			this.toolTip.SetToolTip(this.btnCancel, resources.GetString("btnCancel.ToolTip"));
 			// 
 			// btnOK
 			// 
-			this.btnOK.AccessibleDescription = null;
-			this.btnOK.AccessibleName = null;
 			resources.ApplyResources(this.btnOK, "btnOK");
-			this.btnOK.BackgroundImage = null;
 			this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.btnOK.Font = null;
 			this.btnOK.Name = "btnOK";
-			this.toolTip.SetToolTip(this.btnOK, resources.GetString("btnOK.ToolTip"));
 			// 
 			// contextMenu
 			// 
@@ -160,233 +146,148 @@ namespace CommonElements.ColorPicker
             this.separator1,
             this.ctxPrevColor,
             this.ctxCopy});
-			resources.ApplyResources(this.contextMenu, "contextMenu");
 			// 
 			// ctxHSV_RGB
 			// 
 			this.ctxHSV_RGB.Checked = true;
-			resources.ApplyResources(this.ctxHSV_RGB, "ctxHSV_RGB");
 			this.ctxHSV_RGB.Index = 0;
 			this.ctxHSV_RGB.RadioCheck = true;
+			resources.ApplyResources(this.ctxHSV_RGB, "ctxHSV_RGB");
 			this.ctxHSV_RGB.Click += new System.EventHandler(this.ctxOptions_Click);
 			// 
 			// ctxHSV_LAB
 			// 
-			resources.ApplyResources(this.ctxHSV_LAB, "ctxHSV_LAB");
 			this.ctxHSV_LAB.Index = 1;
 			this.ctxHSV_LAB.RadioCheck = true;
+			resources.ApplyResources(this.ctxHSV_LAB, "ctxHSV_LAB");
 			this.ctxHSV_LAB.Click += new System.EventHandler(this.ctxOptions_Click);
 			// 
 			// separator1
 			// 
-			resources.ApplyResources(this.separator1, "separator1");
 			this.separator1.Index = 2;
+			resources.ApplyResources(this.separator1, "separator1");
 			// 
 			// ctxPrevColor
 			// 
-			resources.ApplyResources(this.ctxPrevColor, "ctxPrevColor");
 			this.ctxPrevColor.Index = 3;
+			resources.ApplyResources(this.ctxPrevColor, "ctxPrevColor");
 			this.ctxPrevColor.Click += new System.EventHandler(this.ctxOptions_Click);
 			// 
 			// ctxCopy
 			// 
-			resources.ApplyResources(this.ctxCopy, "ctxCopy");
 			this.ctxCopy.Index = 4;
+			resources.ApplyResources(this.ctxCopy, "ctxCopy");
 			this.ctxCopy.Click += new System.EventHandler(this.ctxOptions_Click);
 			// 
 			// rdHSV_H
 			// 
-			this.rdHSV_H.AccessibleDescription = null;
-			this.rdHSV_H.AccessibleName = null;
-			resources.ApplyResources(this.rdHSV_H, "rdHSV_H");
-			this.rdHSV_H.BackgroundImage = null;
 			this.rdHSV_H.Checked = true;
-			this.rdHSV_H.Font = null;
+			resources.ApplyResources(this.rdHSV_H, "rdHSV_H");
 			this.rdHSV_H.Name = "rdHSV_H";
 			this.rdHSV_H.TabStop = true;
-			this.toolTip.SetToolTip(this.rdHSV_H, resources.GetString("rdHSV_H.ToolTip"));
 			this.rdHSV_H.CheckedChanged += new System.EventHandler(this.UpdaterdFaderedChanged);
 			// 
 			// rdHSV_S
 			// 
-			this.rdHSV_S.AccessibleDescription = null;
-			this.rdHSV_S.AccessibleName = null;
 			resources.ApplyResources(this.rdHSV_S, "rdHSV_S");
-			this.rdHSV_S.BackgroundImage = null;
-			this.rdHSV_S.Font = null;
 			this.rdHSV_S.Name = "rdHSV_S";
-			this.toolTip.SetToolTip(this.rdHSV_S, resources.GetString("rdHSV_S.ToolTip"));
 			this.rdHSV_S.CheckedChanged += new System.EventHandler(this.UpdaterdFaderedChanged);
 			// 
 			// rdHSV_V
 			// 
-			this.rdHSV_V.AccessibleDescription = null;
-			this.rdHSV_V.AccessibleName = null;
 			resources.ApplyResources(this.rdHSV_V, "rdHSV_V");
-			this.rdHSV_V.BackgroundImage = null;
-			this.rdHSV_V.Font = null;
 			this.rdHSV_V.Name = "rdHSV_V";
-			this.toolTip.SetToolTip(this.rdHSV_V, resources.GetString("rdHSV_V.ToolTip"));
 			this.rdHSV_V.CheckedChanged += new System.EventHandler(this.UpdaterdFaderedChanged);
 			// 
 			// rdSecond_1
 			// 
-			this.rdSecond_1.AccessibleDescription = null;
-			this.rdSecond_1.AccessibleName = null;
 			resources.ApplyResources(this.rdSecond_1, "rdSecond_1");
-			this.rdSecond_1.BackgroundImage = null;
-			this.rdSecond_1.Font = null;
 			this.rdSecond_1.Name = "rdSecond_1";
-			this.toolTip.SetToolTip(this.rdSecond_1, resources.GetString("rdSecond_1.ToolTip"));
 			this.rdSecond_1.CheckedChanged += new System.EventHandler(this.UpdaterdFaderedChanged);
 			// 
 			// rdSecond_2
 			// 
-			this.rdSecond_2.AccessibleDescription = null;
-			this.rdSecond_2.AccessibleName = null;
 			resources.ApplyResources(this.rdSecond_2, "rdSecond_2");
-			this.rdSecond_2.BackgroundImage = null;
-			this.rdSecond_2.Font = null;
 			this.rdSecond_2.Name = "rdSecond_2";
-			this.toolTip.SetToolTip(this.rdSecond_2, resources.GetString("rdSecond_2.ToolTip"));
 			this.rdSecond_2.CheckedChanged += new System.EventHandler(this.UpdaterdFaderedChanged);
 			// 
 			// rdSecond_3
 			// 
-			this.rdSecond_3.AccessibleDescription = null;
-			this.rdSecond_3.AccessibleName = null;
 			resources.ApplyResources(this.rdSecond_3, "rdSecond_3");
-			this.rdSecond_3.BackgroundImage = null;
-			this.rdSecond_3.Font = null;
 			this.rdSecond_3.Name = "rdSecond_3";
-			this.toolTip.SetToolTip(this.rdSecond_3, resources.GetString("rdSecond_3.ToolTip"));
 			this.rdSecond_3.CheckedChanged += new System.EventHandler(this.UpdaterdFaderedChanged);
 			// 
 			// tbHSV_H
 			// 
-			this.tbHSV_H.AccessibleDescription = null;
-			this.tbHSV_H.AccessibleName = null;
 			resources.ApplyResources(this.tbHSV_H, "tbHSV_H");
-			this.tbHSV_H.BackgroundImage = null;
-			this.tbHSV_H.Font = null;
 			this.tbHSV_H.Name = "tbHSV_H";
-			this.toolTip.SetToolTip(this.tbHSV_H, resources.GetString("tbHSV_H.ToolTip"));
-			this.tbHSV_H.Leave += new System.EventHandler(this.tbValue_Leave);
 			this.tbHSV_H.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tbValue_KeyUp);
+			this.tbHSV_H.Leave += new System.EventHandler(this.tbValue_Leave);
 			// 
 			// tbHSV_S
 			// 
-			this.tbHSV_S.AccessibleDescription = null;
-			this.tbHSV_S.AccessibleName = null;
 			resources.ApplyResources(this.tbHSV_S, "tbHSV_S");
-			this.tbHSV_S.BackgroundImage = null;
-			this.tbHSV_S.Font = null;
 			this.tbHSV_S.Name = "tbHSV_S";
-			this.toolTip.SetToolTip(this.tbHSV_S, resources.GetString("tbHSV_S.ToolTip"));
-			this.tbHSV_S.Leave += new System.EventHandler(this.tbValue_Leave);
 			this.tbHSV_S.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tbValue_KeyUp);
+			this.tbHSV_S.Leave += new System.EventHandler(this.tbValue_Leave);
 			// 
 			// tbHSV_V
 			// 
-			this.tbHSV_V.AccessibleDescription = null;
-			this.tbHSV_V.AccessibleName = null;
 			resources.ApplyResources(this.tbHSV_V, "tbHSV_V");
-			this.tbHSV_V.BackgroundImage = null;
-			this.tbHSV_V.Font = null;
 			this.tbHSV_V.Name = "tbHSV_V";
-			this.toolTip.SetToolTip(this.tbHSV_V, resources.GetString("tbHSV_V.ToolTip"));
-			this.tbHSV_V.Leave += new System.EventHandler(this.tbValue_Leave);
 			this.tbHSV_V.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tbValue_KeyUp);
+			this.tbHSV_V.Leave += new System.EventHandler(this.tbValue_Leave);
 			// 
 			// tbSecond_1
 			// 
-			this.tbSecond_1.AccessibleDescription = null;
-			this.tbSecond_1.AccessibleName = null;
 			resources.ApplyResources(this.tbSecond_1, "tbSecond_1");
-			this.tbSecond_1.BackgroundImage = null;
-			this.tbSecond_1.Font = null;
 			this.tbSecond_1.Name = "tbSecond_1";
-			this.toolTip.SetToolTip(this.tbSecond_1, resources.GetString("tbSecond_1.ToolTip"));
-			this.tbSecond_1.Leave += new System.EventHandler(this.tbValue_Leave);
 			this.tbSecond_1.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tbValue_KeyUp);
+			this.tbSecond_1.Leave += new System.EventHandler(this.tbValue_Leave);
 			// 
 			// tbSecond_2
 			// 
-			this.tbSecond_2.AccessibleDescription = null;
-			this.tbSecond_2.AccessibleName = null;
 			resources.ApplyResources(this.tbSecond_2, "tbSecond_2");
-			this.tbSecond_2.BackgroundImage = null;
-			this.tbSecond_2.Font = null;
 			this.tbSecond_2.Name = "tbSecond_2";
-			this.toolTip.SetToolTip(this.tbSecond_2, resources.GetString("tbSecond_2.ToolTip"));
-			this.tbSecond_2.Leave += new System.EventHandler(this.tbValue_Leave);
 			this.tbSecond_2.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tbValue_KeyUp);
+			this.tbSecond_2.Leave += new System.EventHandler(this.tbValue_Leave);
 			// 
 			// tbSecond_3
 			// 
-			this.tbSecond_3.AccessibleDescription = null;
-			this.tbSecond_3.AccessibleName = null;
 			resources.ApplyResources(this.tbSecond_3, "tbSecond_3");
-			this.tbSecond_3.BackgroundImage = null;
-			this.tbSecond_3.Font = null;
 			this.tbSecond_3.Name = "tbSecond_3";
-			this.toolTip.SetToolTip(this.tbSecond_3, resources.GetString("tbSecond_3.ToolTip"));
-			this.tbSecond_3.Leave += new System.EventHandler(this.tbValue_Leave);
 			this.tbSecond_3.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tbValue_KeyUp);
+			this.tbSecond_3.Leave += new System.EventHandler(this.tbValue_Leave);
 			// 
 			// lblHSV_H
 			// 
-			this.lblHSV_H.AccessibleDescription = null;
-			this.lblHSV_H.AccessibleName = null;
 			resources.ApplyResources(this.lblHSV_H, "lblHSV_H");
-			this.lblHSV_H.Font = null;
 			this.lblHSV_H.Name = "lblHSV_H";
-			this.toolTip.SetToolTip(this.lblHSV_H, resources.GetString("lblHSV_H.ToolTip"));
 			// 
 			// lblHSV_S
 			// 
-			this.lblHSV_S.AccessibleDescription = null;
-			this.lblHSV_S.AccessibleName = null;
 			resources.ApplyResources(this.lblHSV_S, "lblHSV_S");
-			this.lblHSV_S.Font = null;
 			this.lblHSV_S.Name = "lblHSV_S";
-			this.toolTip.SetToolTip(this.lblHSV_S, resources.GetString("lblHSV_S.ToolTip"));
 			// 
 			// lblHSV_V
 			// 
-			this.lblHSV_V.AccessibleDescription = null;
-			this.lblHSV_V.AccessibleName = null;
 			resources.ApplyResources(this.lblHSV_V, "lblHSV_V");
-			this.lblHSV_V.Font = null;
 			this.lblHSV_V.Name = "lblHSV_V";
-			this.toolTip.SetToolTip(this.lblHSV_V, resources.GetString("lblHSV_V.ToolTip"));
 			// 
 			// lblSecond_1
 			// 
-			this.lblSecond_1.AccessibleDescription = null;
-			this.lblSecond_1.AccessibleName = null;
 			resources.ApplyResources(this.lblSecond_1, "lblSecond_1");
-			this.lblSecond_1.Font = null;
 			this.lblSecond_1.Name = "lblSecond_1";
-			this.toolTip.SetToolTip(this.lblSecond_1, resources.GetString("lblSecond_1.ToolTip"));
 			// 
 			// lblSecond_2
 			// 
-			this.lblSecond_2.AccessibleDescription = null;
-			this.lblSecond_2.AccessibleName = null;
 			resources.ApplyResources(this.lblSecond_2, "lblSecond_2");
-			this.lblSecond_2.Font = null;
 			this.lblSecond_2.Name = "lblSecond_2";
-			this.toolTip.SetToolTip(this.lblSecond_2, resources.GetString("lblSecond_2.ToolTip"));
 			// 
 			// lblSecond_3
 			// 
-			this.lblSecond_3.AccessibleDescription = null;
-			this.lblSecond_3.AccessibleName = null;
 			resources.ApplyResources(this.lblSecond_3, "lblSecond_3");
-			this.lblSecond_3.Font = null;
 			this.lblSecond_3.Name = "lblSecond_3";
-			this.toolTip.SetToolTip(this.lblSecond_3, resources.GetString("lblSecond_3.ToolTip"));
 			// 
 			// toolTip
 			// 
@@ -397,10 +298,7 @@ namespace CommonElements.ColorPicker
 			// 
 			// lblColorOut
 			// 
-			this.lblColorOut.AccessibleDescription = null;
-			this.lblColorOut.AccessibleName = null;
 			resources.ApplyResources(this.lblColorOut, "lblColorOut");
-			this.lblColorOut.BackgroundImage = null;
 			this.lblColorOut.Color = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
 			this.lblColorOut.ContextMenu = this.contextMenu;
 			this.lblColorOut.Name = "lblColorOut";
@@ -410,22 +308,14 @@ namespace CommonElements.ColorPicker
 			// 
 			// colorSelectionFader1
 			// 
-			this.colorSelectionFader1.AccessibleDescription = null;
-			this.colorSelectionFader1.AccessibleName = null;
 			resources.ApplyResources(this.colorSelectionFader1, "colorSelectionFader1");
-			this.colorSelectionFader1.BackgroundImage = null;
-			this.colorSelectionFader1.Font = null;
 			this.colorSelectionFader1.Name = "colorSelectionFader1";
 			this.colorSelectionFader1.TabStop = false;
 			this.toolTip.SetToolTip(this.colorSelectionFader1, resources.GetString("colorSelectionFader1.ToolTip"));
 			// 
 			// colorSelectionPlane1
 			// 
-			this.colorSelectionPlane1.AccessibleDescription = null;
-			this.colorSelectionPlane1.AccessibleName = null;
 			resources.ApplyResources(this.colorSelectionPlane1, "colorSelectionPlane1");
-			this.colorSelectionPlane1.BackgroundImage = null;
-			this.colorSelectionPlane1.Font = null;
 			this.colorSelectionPlane1.Name = "colorSelectionPlane1";
 			this.colorSelectionPlane1.TabStop = false;
 			this.toolTip.SetToolTip(this.colorSelectionPlane1, resources.GetString("colorSelectionPlane1.ToolTip"));
@@ -433,10 +323,7 @@ namespace CommonElements.ColorPicker
 			// ColorPicker
 			// 
 			this.AcceptButton = this.btnOK;
-			this.AccessibleDescription = null;
-			this.AccessibleName = null;
 			resources.ApplyResources(this, "$this");
-			this.BackgroundImage = null;
 			this.CancelButton = this.btnCancel;
 			this.Controls.Add(this.lblColorOut);
 			this.Controls.Add(this.lblHSV_H);
@@ -462,14 +349,11 @@ namespace CommonElements.ColorPicker
 			this.Controls.Add(this.lblSecond_1);
 			this.Controls.Add(this.lblSecond_2);
 			this.Controls.Add(this.lblSecond_3);
-			this.Font = null;
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.Icon = null;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ColorPicker";
 			this.ShowInTaskbar = false;
-			this.toolTip.SetToolTip(this, resources.GetString("$this.ToolTip"));
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -531,6 +415,7 @@ namespace CommonElements.ColorPicker
 		private XYZ _color=XYZ.White;
 		private Mode _mode=Mode.HSV_RGB;
 		private Fader _fader=Fader.HSV_H;
+		private bool lockValueV = false;
 		#endregion
 		#region ui updating
 		public void UpdateUI()
@@ -541,9 +426,8 @@ namespace CommonElements.ColorPicker
 			UpdatectxOptions();
 			UpdatetbValue(null);
 			
-			_module.XYZ=_color;
-			lblColorOut.Color=
-				lblColorOut.OldColor=_color.ToRGB();
+			_module.XYZ=InternalColor;
+			lblColorOut.Color = lblColorOut.OldColor = InternalColor.ToRGB();
 		}
 		#region module
 		private void ChangeModule(ColorSelectionModule value)
@@ -559,7 +443,7 @@ namespace CommonElements.ColorPicker
 			if(_module!=null)
 			{
 				_module.ColorChanged+=new EventHandler(_module_ColorChanged);
-				_module.XYZ=_color;
+				_module.XYZ = InternalColor;
 				_module.ColorSelectionFader=colorSelectionFader1;
 				_module.ColorSelectionPlane=colorSelectionPlane1;
 			}
@@ -699,27 +583,27 @@ namespace CommonElements.ColorPicker
 			#region hsv  textboxes
 			if(sender==tbHSV_H)
 			{
-				HSV chsv=HSV.FromRGB(_color.ToRGB());
+				HSV chsv = HSV.FromRGB(InternalColor.ToRGB());
 				chsv.H=value/360.0;
-				_color=XYZ.FromRGB(chsv.ToRGB());
+				InternalColor = XYZ.FromRGB(chsv.ToRGB());
 			}
 			else if(sender==tbHSV_S)
 			{
-				HSV chsv=HSV.FromRGB(_color.ToRGB());
+				HSV chsv = HSV.FromRGB(InternalColor.ToRGB());
 				chsv.S=value/100.0;
-				_color=XYZ.FromRGB(chsv.ToRGB());
+				InternalColor = XYZ.FromRGB(chsv.ToRGB());
 			}
 			else if(sender==tbHSV_V)
 			{
-				HSV chsv=HSV.FromRGB(_color.ToRGB());
+				HSV chsv = HSV.FromRGB(InternalColor.ToRGB());
 				chsv.V=value/100.0;
-				_color=XYZ.FromRGB(chsv.ToRGB());
+				InternalColor = XYZ.FromRGB(chsv.ToRGB());
 			}
 			#endregion
 			#region secondary textboxes
 			else if(_mode==Mode.HSV_RGB)
 			{
-				RGB crgb=_color.ToRGB();
+				RGB crgb = InternalColor.ToRGB();
 				if(sender==tbSecond_1)
 				{
 					crgb.R=value/255.0;
@@ -732,11 +616,11 @@ namespace CommonElements.ColorPicker
 				{
 					crgb.B=value/255.0;
 				}
-				_color=XYZ.FromRGB(crgb);
+				InternalColor = XYZ.FromRGB(crgb);
 			}
 			else if(_mode==Mode.HSV_LAB)
 			{
-				LAB clab=LAB.FromXYZ(_color);
+				LAB clab = LAB.FromXYZ(InternalColor);
 				if(sender==tbSecond_1)
 				{
 					clab.L=value;
@@ -749,12 +633,12 @@ namespace CommonElements.ColorPicker
 				{
 					clab.b=value;
 				}
-				_color=clab.ToXYZ();
+				InternalColor = clab.ToXYZ();
 			}
 			#endregion
 			//update ui
-			_module.XYZ=_color;
-			lblColorOut.Color=_color.ToRGB();
+			_module.XYZ = InternalColor;
+			lblColorOut.Color = InternalColor.ToRGB();
 			UpdatetbValue((TextBox)sender);
 		}		
 		private void tbValue_Leave(object sender, System.EventArgs e)
@@ -764,7 +648,7 @@ namespace CommonElements.ColorPicker
 		private void UpdatetbValue(TextBox skipupdate)
 		{
 			#region hsv textboxes
-			HSV chsv=HSV.FromRGB(_color.ToRGB());
+			HSV chsv = HSV.FromRGB(InternalColor.ToRGB());
 			if(skipupdate!=tbHSV_H)
 				tbHSV_H.Text=(chsv.H*360.0).ToString("0");
 			if(skipupdate!=tbHSV_S)
@@ -775,7 +659,7 @@ namespace CommonElements.ColorPicker
 			#region secondary textboxes
 			if(_mode==Mode.HSV_RGB)
 			{
-				RGB crgb=_color.ToRGB();
+				RGB crgb = InternalColor.ToRGB();
 				if(skipupdate!=tbSecond_1)
 					tbSecond_1.Text=(crgb.R*255.0).ToString("0");
 				if(skipupdate!=tbSecond_2)
@@ -785,7 +669,7 @@ namespace CommonElements.ColorPicker
 			}
 			else//(_mode==Mode.HSV_LAB)
 			{
-				LAB clab=LAB.FromXYZ(_color);
+				LAB clab = LAB.FromXYZ(InternalColor);
 				if(skipupdate!=tbSecond_1)
 					tbSecond_1.Text=clab.L.ToString("0");
 				if(skipupdate!=tbSecond_2)
@@ -800,15 +684,15 @@ namespace CommonElements.ColorPicker
 		private void _module_ColorChanged(object sender, EventArgs e)
 		{
 			if(_module==null) return;
-			_color=_module.XYZ;
-			lblColorOut.Color=_color.ToRGB();
+			InternalColor = _module.XYZ;
+			lblColorOut.Color = InternalColor.ToRGB();
 			UpdatetbValue(null);
 		}
 
 		private void lblColorOut_ColorChanged(object sender, System.EventArgs e)
 		{
-			_color=XYZ.FromRGB(lblColorOut.Color);
-			_module.XYZ=_color;
+			InternalColor = XYZ.FromRGB(lblColorOut.Color);
+			_module.XYZ = InternalColor;
 			UpdatetbValue(null);
 		}
 		#endregion
@@ -820,16 +704,47 @@ namespace CommonElements.ColorPicker
 		[Description("gets or sets the color as device-independent CIE-XYZ color")]
 		public XYZ Color
 		{
-			get{return _color;}
+			get { return InternalColor; }
 			set
 			{
-				if(value==_color) return;
-				_color=_module.XYZ=value;
-				lblColorOut.Color=
-					lblColorOut.OldColor=value.ToRGB();
+				if (value == InternalColor) return;
+				InternalColor = value;
+				_module.XYZ = InternalColor;
+				lblColorOut.Color = lblColorOut.OldColor = value.ToRGB();
 				UpdatetbValue(null);
 			}
 		}
+		/// <summary>
+		/// An internal call for setting the color, so it can be filtered if needed (locked to ranges, etc.)
+		/// </summary>
+		private XYZ InternalColor
+		{
+			get { return _color; }
+			set
+			{
+				if (LockValue_V) {
+					HSV temp = HSV.FromRGB(value.ToRGB());
+					temp.V = 1.0;
+					value = XYZ.FromRGB(temp.ToRGB());
+				}
+				_color = value;
+			}
+		}
+
+		/// <summary>
+		/// if true, will lock the value for V to 100%.
+		/// </summary>
+		public bool LockValue_V
+		{
+			get { return lockValueV; }
+			set
+			{
+				lockValueV = value;
+				rdHSV_V.Enabled = !value;
+				tbHSV_V.Enabled = !value;
+			}
+		}
+
 		[Browsable(false)]
 		public Fader PrimaryFader
 		{

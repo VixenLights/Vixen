@@ -7,7 +7,7 @@ using Vixen.Module.Property;
 namespace VixenModules.Property.RGB
 {
 	public class RGBDescriptor : PropertyModuleDescriptorBase {
-		private Guid _id = new Guid("{55960E71-2151-454C-885E-00B9713A93EF}");
+		private static Guid _id = new Guid("{55960E71-2151-454C-885E-00B9713A93EF}");
 
 		override public string TypeName {
 			get { return "RGB"; }
@@ -18,11 +18,15 @@ namespace VixenModules.Property.RGB
 		}
 
 		override public Type ModuleClass {
-			get { return typeof(RGB); }
+			get { return typeof(RGBModule); }
 		}
 
 		override public Type ModuleDataClass {
 			get { return typeof(RGBData); }
+		}
+
+		public override Type ModuleStaticDataClass {
+			get { return typeof(RGBStaticData); }
 		}
 
 		override public string Author {
@@ -35,6 +39,12 @@ namespace VixenModules.Property.RGB
 
 		override public string Version {
 			get { return "0.1"; }
+		}
+
+		// TODO: how can I do this nicely? I need to be able to get the type ID in a static method, but can't make TypeId static.
+		// So I've had to do the same thing, but in a static property? booooo!
+		public static Guid ModuleID {
+			get { return _id; }
 		}
 	}
 }

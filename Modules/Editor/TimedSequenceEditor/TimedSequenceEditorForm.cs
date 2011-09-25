@@ -183,7 +183,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			LoadSystemNodesToRows();
 
 			// load the new data: get all the commands in the sequence, and make a new element for each of them.
-			foreach (EffectNode node in _sequence.Data.GetCommands()) {
+			foreach (EffectNode node in _sequence.Data.GetEffects()) {
 				AddNewElementForEffectNode(node);
 			}
 		}

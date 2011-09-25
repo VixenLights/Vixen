@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
+using System.Drawing;
 
 // These exist for these reasons:
 // Parameters of like types can be differentiated.
@@ -75,11 +76,24 @@ namespace CommandStandard.Types {
 			_value = value;
 		}
 
-		public static implicit operator int(Color value) {
+		private Color(System.Drawing.Color value) {
+			_value = value.ToArgb();
+		}
+
+		public static implicit operator int(Color value)
+		{
 			return value._value;
 		}
 
 		public static implicit operator Color(int value) {
+			return new Color(value);
+		}
+
+		public static implicit operator System.Drawing.Color(Color value) {
+			return System.Drawing.Color.FromArgb(value._value);
+		}
+
+		public static implicit operator Color(System.Drawing.Color value) {
 			return new Color(value);
 		}
 

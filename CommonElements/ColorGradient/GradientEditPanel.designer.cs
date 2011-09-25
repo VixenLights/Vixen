@@ -30,7 +30,7 @@
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GradientEditPanel));
 			this.grpStops = new System.Windows.Forms.GroupBox();
-			this.lblColorSelect = new CommonElements.ColorPicker.ColorLabel();
+			this.lblColorSelect = new CommonElements.ColorManagement.ColorPicker.ColorLabel();
 			this.vColorLoc = new CommonElements.ControlsEx.ValueControls.ValueUpDown();
 			this.btnDeleteColor = new System.Windows.Forms.Button();
 			this.label5 = new System.Windows.Forms.Label();
@@ -122,7 +122,7 @@
 		#endregion
 
 		private System.Windows.Forms.GroupBox grpStops;
-		private CommonElements.ColorPicker.ColorLabel lblColorSelect;
+		private CommonElements.ColorManagement.ColorPicker.ColorLabel lblColorSelect;
 		private ControlsEx.ValueControls.ValueUpDown vColorLoc;
 		private System.Windows.Forms.Button btnDeleteColor;
 		private System.Windows.Forms.Label label5;

@@ -7,7 +7,7 @@ using System.Text;
 using System.Windows.Forms;
 using CommonElements.ControlsEx.ValueControls;
 using CommonElements.ColorManagement.ColorModels;
-using CommonElements.ColorPicker;
+using CommonElements.ColorManagement.ColorPicker;
 
 namespace CommonElements.ColorManagement.Gradients
 {

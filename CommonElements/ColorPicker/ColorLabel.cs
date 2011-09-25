@@ -5,7 +5,7 @@ using System.Resources;
 using System.Windows.Forms;
 using CommonElements.ColorManagement.ColorModels;
 
-namespace CommonElements.ColorPicker
+namespace CommonElements.ColorManagement.ColorPicker
 {
 	/// <summary>
 	/// Zusammenfassung für ColorLabel.

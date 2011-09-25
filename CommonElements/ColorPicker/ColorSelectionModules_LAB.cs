@@ -4,7 +4,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using CommonElements.ColorManagement.ColorModels;
 
-namespace CommonElements.ColorPicker
+namespace CommonElements.ColorManagement.ColorPicker
 {
 	public abstract class ColorSelectionModuleLAB:ColorSelectionModule
 	{

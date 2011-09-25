@@ -41,7 +41,7 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
-			this.lblColorSelect = new CommonElements.ColorPicker.ColorLabel();
+			this.lblColorSelect = new CommonElements.ColorManagement.ColorPicker.ColorLabel();
 			this.edit = new GradientEdit();
 			this.grpStops.SuspendLayout();
 			this.SuspendLayout();
@@ -167,7 +167,7 @@
 		private System.Windows.Forms.ComboBox cmbGammaCorrect;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.GroupBox grpStops;
-		private CommonElements.ColorPicker.ColorLabel lblColorSelect;
+		private CommonElements.ColorManagement.ColorPicker.ColorLabel lblColorSelect;
 		private ControlsEx.ValueControls.ValueUpDown vColorLoc;
 		private ControlsEx.ValueControls.ValueUpDown vAlphaLoc;
 		private ControlsEx.ValueControls.ValueUpDown vOpacity;
