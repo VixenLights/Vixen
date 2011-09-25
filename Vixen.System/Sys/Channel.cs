@@ -14,7 +14,7 @@ namespace Vixen.Sys {
 	/// </summary>
 	public class Channel : IEnumerable<Command>, IEqualityComparer<Channel>, IEquatable<Channel> {
 		private Patch _patch;
-		private ConcurrentQueue<Command> _data = new ConcurrentQueue<Command>();
+		private IChannelDataStore _data = new ChannelSortedList();
 
 		public Channel(string name)
 			: this(Guid.NewGuid(), name, new Patch()) {
@@ -49,7 +49,7 @@ namespace Vixen.Sys {
 		public IEnumerator<Command> GetEnumerator() {
 			// We need an enumerator that is live and does not operate upon a snapshot
 			// of the data.
-			return new ConcurrentQueueLiveEnumerator<Command>(_data);
+			return _data.GetEnumerator();
 		}
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
@@ -58,16 +58,16 @@ namespace Vixen.Sys {
 
 		public void AddData(IEnumerable<Command> data) {
 			foreach(Command dataElement in data) {
-				_data.Enqueue(dataElement);
+				_data.Add(dataElement);
 			}
 		}
 
 		public void AddData(Command data) {
-			_data.Enqueue(data);
+			_data.Add(data);
 		}
 
 		public void Clear() {
-			_data = new ConcurrentQueue<Command>();
+			_data.Clear();
 		}
 
 		public bool Equals(Channel x, Channel y) {

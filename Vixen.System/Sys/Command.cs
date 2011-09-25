@@ -9,7 +9,7 @@ namespace Vixen.Sys {
 	/// An instance of a low-level command, with the parameter values and time frame needed
 	/// for execution by an Output module.
 	/// </summary>
-	public class Command : ITimed {
+	public class Command : ITimed, IComparable<Command> {
 		public readonly CommandIdentifier CommandIdentifier;
 		public readonly object[] ParameterValues;
 
@@ -61,6 +61,10 @@ namespace Vixen.Sys {
 			}
 
 			return new Command(startTime, endTime, commandIdentifier, parameters);
+		}
+
+		public int CompareTo(Command other) {
+			return this.StartTime.CompareTo(other.StartTime);
 		}
 	}
 }

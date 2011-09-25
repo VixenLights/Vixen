@@ -119,8 +119,10 @@
     <Compile Include="Module\MediaRenderer\MediaRendererModuleRepository.cs" />
     <Compile Include="Module\ModuleLocalDataSet.cs" />
     <Compile Include="Module\ModuleStaticDataSet.cs" />
+    <Compile Include="Sys\ChannelSortedList.cs" />
     <Compile Include="Sys\ExecutionStateValues.cs" />
     <Compile Include="Sys\FilePackage.cs" />
+    <Compile Include="Sys\IChannelDataStore.cs" />
     <Compile Include="Sys\IPackageFileContent.cs" />
     <Compile Include="Sys\ITimed.cs" />
     <Compile Include="Sys\LiveListEnumerator.cs" />

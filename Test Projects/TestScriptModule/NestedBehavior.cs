@@ -43,7 +43,7 @@ namespace TestScriptModule {
 					// so it needs to be offset to be relative to this effect.
 					Guid channelId = orderedChannels[i].Id;
 					Command[] data = setLevelData[channelId].Select(x => new Command(x.StartTime + startTime, x.EndTime + startTime, x.CommandIdentifier, x.ParameterValues)).ToArray();
-					channelData[channelId] = setLevelData[channelId];
+					channelData[channelId] = data;
 				}
 			}
 
