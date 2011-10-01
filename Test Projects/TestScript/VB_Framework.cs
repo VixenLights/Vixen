@@ -90,19 +90,20 @@ imports System.Dynamic
 imports Vixen.Sys
 imports Vixen.Common
 imports Vixen.Module.Sequence
+imports Vixen.Module.Effect
 imports Vixen.Script
-imports CommandStandard
+imports Vixen.Commands
 
 Namespace ");
             
-            #line 22 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
+            #line 23 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Namespace));
             
             #line default
             #line hidden
             this.Write(" \r\n\tPartial Public Class ");
             
-            #line 23 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
+            #line 24 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ClassName));
             
             #line default
@@ -121,7 +122,7 @@ Namespace ");
 			_effects = New Dictionary(Of String, Guid)
 ");
             
-            #line 35 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
+            #line 36 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
 
 	foreach(string effectName in Effects.Keys) {
 
@@ -130,21 +131,21 @@ Namespace ");
             #line hidden
             this.Write("\t\t\t_effects.Add(\"");
             
-            #line 38 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
+            #line 39 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(effectName));
             
             #line default
             #line hidden
             this.Write("\", New Guid(\"");
             
-            #line 38 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
+            #line 39 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Effects[effectName].TypeId));
             
             #line default
             #line hidden
             this.Write("\"))\r\n");
             
-            #line 39 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
+            #line 40 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
  } 
             
             #line default
@@ -163,7 +164,12 @@ Namespace ");
 
 		Protected Sub _InvokeEffect(effectName as String, channels as IEnumerable(Of UserScriptNode), startTime as Long, timeSpan as Long, effectName as String, ParamArray args() as object)
 			If _effects.TryGetValue(effectName, effectId) Then
-				Sequence.InsertData(channels.Select(Function(x) x.Node).ToArray() , startTime, timeSpan, New Command(effectId, args.ToArray()))
+				IEffectModuleInstance effect = ApplicationServices.Get(Of IEffectModuleInstance)(effectId);
+				effect.TimeSpan = TimeSpan.FromMilliseconds(timeSpan);
+				effect.TargetNodes = targetNodes.Select(Function(x) x.Node).ToArray();
+				effect.ParameterValues = args;
+				Sequence.InsertData(effect, TimeSpan.FromMilliseconds(startTime));
+				'Sequence.InsertData(channels.Select(Function(x) x.Node).ToArray() , startTime, timeSpan, New Command(effectId, args.ToArray()))
 			End If
 		End Sub
 
@@ -171,7 +177,7 @@ Namespace ");
 
 ");
             
-            #line 59 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
+            #line 65 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
 
 	foreach(string effectName in Effects.Keys) {
 		IEffectModuleDescriptor effect = Effects[effectName];
@@ -189,14 +195,14 @@ Namespace ");
             #line hidden
             this.Write("\t\t\' Original name: ");
             
-            #line 71 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
+            #line 77 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(effect.EffectName));
             
             #line default
             #line hidden
             this.Write("\r\n\t\tPublic Sub ");
             
-            #line 72 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
+            #line 78 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(effectName));
             
             #line default
@@ -204,63 +210,63 @@ Namespace ");
             this.Write("(targetNodes As IEnumerable(Of UserScriptNode), startTime As Long, timeSpan As Lo" +
                     "ng, ");
             
-            #line 72 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
+            #line 78 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(effectParameters));
             
             #line default
             #line hidden
             this.Write(")\r\n\t\t\t_InvokeEffect(\"");
             
-            #line 73 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
+            #line 79 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(effectName));
             
             #line default
             #line hidden
             this.Write("\", targetNodes, startTime, timeSpan, ");
             
-            #line 73 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
+            #line 79 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(parameterNames));
             
             #line default
             #line hidden
             this.Write(")\r\n\t\tEnd Sub\r\n\r\n\t\tPublic Sub ");
             
-            #line 76 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
+            #line 82 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(effectName));
             
             #line default
             #line hidden
             this.Write("(targetNodes As IEnumerable(Of UserScriptNode), timeSpan As Long, ");
             
-            #line 76 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
+            #line 82 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(effectParameters));
             
             #line default
             #line hidden
             this.Write(")\r\n\t\t\t_InvokeEffect(\"");
             
-            #line 77 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
+            #line 83 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(effectName));
             
             #line default
             #line hidden
             this.Write("\", targetNodes, 0, timeSpan, ");
             
-            #line 77 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
+            #line 83 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(parameterNames));
             
             #line default
             #line hidden
             this.Write(")\r\n\t\tEnd Sub\r\n\r\n");
             
-            #line 80 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
+            #line 86 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
  } 
             
             #line default
             #line hidden
             this.Write("\r\n\' == Nodes ==\r\n\r\n");
             
-            #line 84 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
+            #line 90 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
 
 	// This needs to match the node collection that the script created in its constructor.
 	ChannelNode[] nodes = Vixen.Sys.Execution.Nodes.ToArray();
@@ -271,28 +277,28 @@ Namespace ");
             #line hidden
             this.Write("\t\t\' Original name: ");
             
-            #line 89 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
+            #line 95 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(nodes[i].Name));
             
             #line default
             #line hidden
             this.Write("\r\n\t\tPublic ReadOnly Property ");
             
-            #line 90 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
+            #line 96 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(_Fix(nodes[i].Name, usedNames)));
             
             #line default
             #line hidden
             this.Write("() As Object\r\n\t\t\tGet\r\n\t\t\t\tReturn _nodes(");
             
-            #line 92 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
+            #line 98 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(i));
             
             #line default
             #line hidden
             this.Write(")\r\n\t\t\tEnd Get\r\n\t\tEnd Property\r\n");
             
-            #line 95 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
+            #line 101 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
  } 
             
             #line default

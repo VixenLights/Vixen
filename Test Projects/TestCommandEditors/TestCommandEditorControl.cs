@@ -7,8 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Vixen.Sys;
-using CommandStandard.Types;
 using Vixen.Module.EffectEditor;
+using Vixen.Commands.KnownDataTypes;
 
 namespace TestCommandEditors {
 	public partial class TestCommandEditorControl : UserControl, IEffectEditorControl {

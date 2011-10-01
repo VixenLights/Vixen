@@ -5,6 +5,7 @@ using System.Text;
 using Vixen.Sys;
 
 namespace Vixen.Module.Transform {
+	// Command id : parameters
 	public class CommandsAffected : Dictionary<string, CommandParameterReference> {
 		public CommandsAffected() {
 		}

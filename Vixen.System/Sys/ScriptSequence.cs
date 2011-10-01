@@ -36,7 +36,6 @@ namespace Vixen.Sys {
 
 			// Required assembly references.
 			ExternalAssemblies.Add(VixenSystem.AssemblyFileName);
-			ExternalAssemblies.Add(CommandStandard.Standard.AssemblyFileName);
 			FrameworkAssemblies.Add("System.dll");
 			FrameworkAssemblies.Add("System.Core.dll");
 

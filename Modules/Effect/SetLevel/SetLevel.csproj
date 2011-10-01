@@ -55,10 +55,6 @@
     <Compile Include="SetLevelDescriptor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="CommandStandard">
-      <HintPath>..\..\..\Output\CommandStandard.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="CommonElements">
       <HintPath>..\..\..\Output\CommonElements.dll</HintPath>
     </Reference>

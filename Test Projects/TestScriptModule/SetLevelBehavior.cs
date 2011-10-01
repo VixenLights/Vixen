@@ -5,19 +5,15 @@ using System.Text;
 using Vixen.Sys;
 using Vixen.Module.Effect;
 using Vixen.Module.Property;
-using CommandStandard;
-using CommandStandard.Types;
+using Vixen.Commands;
+using Vixen.Commands.KnownDataTypes;
 
 // Implementing the behavior as a static class to avoid a copy for every command using this effect.
 
 namespace TestScriptModule {
 	static internal class SetLevelBehavior {
-		static private CommandIdentifier _setLevelCommandId = Standard.Lighting.Monochrome.SetLevel.Id;
-
-		static public ChannelData Render(ChannelNode[] nodes, TimeSpan timeSpan, object[] parameterValues) {
+		static public ChannelData Render(ChannelNode[] nodes, TimeSpan timeSpan, Level level) {
 			ChannelData channelData = new ChannelData();
-
-			//Level level = (Level)parameterValues[0];
 
 			foreach(ChannelNode node in nodes) {
 				// We work both with and without the property.  We have a reference to the
@@ -29,7 +25,7 @@ namespace TestScriptModule {
 
 				//For use as a nested, where the consumer expects a straight set-level effect
 				//without regard for the RGB property.
-				_RenderWithoutRgb(channelData, node, timeSpan, parameterValues);
+				_RenderWithoutRgb(channelData, node, timeSpan, level);
 				//if(rgbProperty != null) {
 				//    _RenderWithRgb(rgbProperty, channelData, node, timeSpan, parameterValues);
 				//} else {
@@ -47,15 +43,15 @@ namespace TestScriptModule {
 			return node.Properties.Get(SetLevelModule._rgbProperty) as TestProperty.RGB;
 		}
 
-		static private void _RenderWithoutRgb(ChannelData channelData, ChannelNode node, TimeSpan timeSpan, object[] parameterValues) {
+		static private void _RenderWithoutRgb(ChannelData channelData, ChannelNode node, TimeSpan timeSpan, Level level) {
 			// Render all channels the same at the same time.
 			foreach(Channel channel in node.GetChannelEnumerator()) {
-				Command data = new Command(TimeSpan.Zero, timeSpan, _setLevelCommandId, parameterValues);
+				CommandNode data = new CommandNode(new Lighting.Monochrome.SetLevel(level), TimeSpan.Zero, timeSpan);
 				channelData[channel.Id] = new[] { data };
 			}
 		}
 
-		static private void _RenderWithRgb(IPropertyModuleInstance property, ChannelData channelData, ChannelNode node, TimeSpan timeSpan, object[] parameterValues) {
+		static private void _RenderWithRgb(IPropertyModuleInstance property, ChannelData channelData, ChannelNode node, TimeSpan timeSpan, Level level) {
 			TestProperty.RGB rgbProperty = property as TestProperty.RGB;
 			// Split the time over the three channels in RGB order.
 			Channel[] allChannels = node.GetChannelEnumerator().ToArray();
@@ -70,7 +66,7 @@ namespace TestScriptModule {
 			for(int i = 0; i < orderedChannels.Length; i++) {
 				TimeSpan startTime = TimeSpan.FromTicks(timeSpan.Ticks / 3 * i);
 				TimeSpan endTime = TimeSpan.FromTicks(timeSpan.Ticks / 3 * (i + 1));
-				Command data = new Command(startTime, endTime, _setLevelCommandId, parameterValues);
+				CommandNode data = new CommandNode(new Lighting.Monochrome.SetLevel(level), startTime, endTime - startTime);
 				channelData[orderedChannels[i].Id] = new[] { data };
 			}
 		}

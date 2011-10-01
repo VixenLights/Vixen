@@ -52,11 +52,6 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommandStandard, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Output\CommandStandard.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="CommonElements">
       <HintPath>..\..\..\Output\CommonElements.dll</HintPath>
       <Private>False</Private>

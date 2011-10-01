@@ -6,6 +6,7 @@ using System.IO;
 using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Output;
+using Vixen.Commands;
 
 namespace TestOutput {
 	public class Log : OutputModuleInstanceBase {
@@ -19,8 +20,8 @@ namespace TestOutput {
 			Command data;
 			for(int i = 0; i < outputStates.Length; i++) {
 				data = outputStates[i];
-				if(!data.IsEmpty) {
-					_file.WriteLine("[" + i + "] " + data.StartTime + " - " + data.EndTime + " " + data.CommandIdentifier + " ~ " + string.Join(" ", data.ParameterValues.Select(x => x.ToString()).ToArray()));
+				if(data != null) {
+					_file.WriteLine("[" + i + "] " + data.Identifier + " ~ " + string.Join(" ", Enumerable.Range(0, data.Signature.Count).Select(x => data.GetParameterValue(x).ToString()).ToArray()));
 				}
 			}
 		}

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Sys;
-using CommandStandard;
+//using CommandStandard;
+using Vixen.Commands;
 
 namespace Vixen.Module.EffectEditor {
 	abstract public class EffectEditorModuleInstanceBase : ModuleInstanceBase, IEffectEditorModuleInstance, IEqualityComparer<IEffectEditorModuleInstance>, IEquatable<IEffectEditorModuleInstance>, IEqualityComparer<EffectEditorModuleInstanceBase>, IEquatable<EffectEditorModuleInstanceBase> {
@@ -13,7 +14,7 @@ namespace Vixen.Module.EffectEditor {
 			get { return (Descriptor as IEffectEditorModuleDescriptor).EffectTypeId; }
 		}
 
-		public CommandParameterSpecification[] CommandSignature {
+		public CommandParameterSignature CommandSignature {
 			get { return (Descriptor as IEffectEditorModuleDescriptor).CommandSignature; }
 		}
 

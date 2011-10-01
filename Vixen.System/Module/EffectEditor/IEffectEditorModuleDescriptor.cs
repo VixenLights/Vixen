@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using CommandStandard;
+//using CommandStandard;
+using Vixen.Commands;
 
 namespace Vixen.Module.EffectEditor {
 	public interface IEffectEditorModuleDescriptor : IModuleDescriptor {
@@ -16,6 +17,6 @@ namespace Vixen.Module.EffectEditor {
 		/// Signature of the commands this control edits.
 		/// Null if the editor is specific to a command.
 		/// </summary>
-		CommandParameterSpecification[] CommandSignature { get; }
+		CommandParameterSignature CommandSignature { get; }
 	}
 }

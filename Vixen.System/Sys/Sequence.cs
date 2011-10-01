@@ -6,7 +6,6 @@ using System.IO;
 using System.Xml.Linq;
 using Vixen.Sys;
 using Vixen.IO;
-using CommandStandard;
 using Vixen.Execution;
 using Vixen.Module;
 using Vixen.Module.RuntimeBehavior;

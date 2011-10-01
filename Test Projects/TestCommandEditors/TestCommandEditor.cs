@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Sys;
-using CommandStandard;
-using CommandStandard.Types;
 using Vixen.Module;
 using Vixen.Module.EffectEditor;
 

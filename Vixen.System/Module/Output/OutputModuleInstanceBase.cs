@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Vixen.Sys;
 using Vixen.Module.Transform;
+using Vixen.Commands;
 
 namespace Vixen.Module.Output {
 	abstract public class OutputModuleInstanceBase : ModuleInstanceBase, IOutputModuleInstance, IEqualityComparer<IOutputModuleInstance>, IEquatable<IOutputModuleInstance>, IEqualityComparer<OutputModuleInstanceBase>, IEquatable<OutputModuleInstanceBase> {
@@ -77,15 +78,20 @@ namespace Vixen.Module.Output {
 		}
 
 		public void UpdateState(Command[] outputStates) {
-			// Make a copy of the state so that we're not modifying the actual state
-			// with the transforms.
-			outputStates = outputStates.Select(x => new Command(x.StartTime, x.EndTime, x.CommandIdentifier, x.ParameterValues.ToArray())).ToArray();
-
 			// Transform...
 			for(int i = 0; i < outputStates.Length; i++) {
-				List<ITransformModuleInstance> outputTransforms = _outputTransforms[i];
-				foreach(ITransformModuleInstance transform in outputTransforms) {
-					transform.Transform(outputStates[i]);
+				Command outputState = outputStates[i];
+				if(outputState != null) {
+					// Make a copy of the state so that we're not modifying the actual state
+					// with the transforms.
+					// Otherwise, we're going to end up transforming a previously tranformed value.
+					outputState = outputState.Clone();
+					outputStates[i] = outputState;
+
+					List<ITransformModuleInstance> outputTransforms = _outputTransforms[i];
+					foreach(ITransformModuleInstance transform in outputTransforms) {
+						transform.Transform(outputState);
+					}
 				}
 			}
 

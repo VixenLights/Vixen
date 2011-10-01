@@ -21,9 +21,6 @@ namespace TestTransform {
 		private const string ATTR_RANGE = "range";
 		private const string ATTR_LEVEL = "level";
 
-		//[DataPath]
-		//static private string _directory = Path.Combine(Paths.DataRootPath, "DimmingCurve");
-
 		// Using a list because I want the items ordered.
 		private List<Item> _items = new List<Item>();
 
@@ -64,8 +61,6 @@ namespace TestTransform {
 
 			if(File.Exists(fileName)) {
 				dimmingCurve = new DimmingCurve(Path.GetFileNameWithoutExtension(fileName), false);
-				//XElement root = Helper.LoadXml(fileName).Element("DimmingCurve");
-				//XElement root = Helper.LoadXml(fileName);
 				if(File.Exists(fileName)) {
 					using(FileStream fileStream = new FileStream(fileName, FileMode.Open)) {
 						using(StreamReader reader = new StreamReader(fileStream)) {
@@ -126,9 +121,6 @@ namespace TestTransform {
 				if(_items[i].Start >= rangeStart) break;
 			}
 			_items.Insert(i, new Item() { Start = rangeStart, Range = rangeWidth, Level = outputLevel });
-			//(from item in _items.Select( (selectItem,index) => new { TheItem = selectItem, Index = index })
-			// where item.TheItem.Start >= rangeStart
-			// select new { FinalIndex = item.Index, FinalItem = new Item() { Start = rangeStart, Range = rangeWidth, Level = outputLevel } })
 		}
 
 		public bool Find(double inputLevel, out double outputLevel) {

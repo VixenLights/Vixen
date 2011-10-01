@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Sys;
-using CommandStandard;
-using CommandStandard.Types;
+using Vixen.Commands;
+using Vixen.Commands.KnownDataTypes;
 using Vixen.Module.Effect;
 
 namespace VixenModules.Effect.SetLevel
@@ -13,7 +13,7 @@ namespace VixenModules.Effect.SetLevel
 	{
 		private Guid _typeId = new Guid("{603E3297-994C-4705-9F17-02A62ECC14B5}");
 		static internal Guid _rgbProperty = new Guid("{55960E71-2151-454c-885E-00B9713A93EF}");
-		private CommandParameterSpecification[] _parameters = { new CommandParameterSpecification("Level", typeof(Level)) };
+		private CommandParameterSignature _parameters = new CommandParameterSignature(new CommandParameterSpecification("Level", typeof(Level)));
 
 		public SetLevelModuleDescriptor()
 		{
@@ -27,7 +27,7 @@ namespace VixenModules.Effect.SetLevel
 			get { return "Set Level"; }
 		}
 
-		override public CommandParameterSpecification[] Parameters
+		override public CommandParameterSignature Parameters
 		{
 			get { return _parameters; }
 		}

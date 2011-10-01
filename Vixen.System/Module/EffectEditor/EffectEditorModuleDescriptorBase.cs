@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Vixen.Commands;
 
 namespace Vixen.Module.EffectEditor {
 	abstract public class EffectEditorModuleDescriptorBase : ModuleDescriptorBase, IEffectEditorModuleDescriptor, IEqualityComparer<IEffectEditorModuleDescriptor>, IEquatable<IEffectEditorModuleDescriptor>, IEqualityComparer<EffectEditorModuleDescriptorBase>, IEquatable<EffectEditorModuleDescriptorBase> {
@@ -19,7 +20,7 @@ namespace Vixen.Module.EffectEditor {
 
 		abstract public Guid EffectTypeId { get; }
 
-		abstract public CommandStandard.CommandParameterSpecification[] CommandSignature { get; }
+		abstract public CommandParameterSignature CommandSignature { get; }
 
 		public bool Equals(IEffectEditorModuleDescriptor x, IEffectEditorModuleDescriptor y) {
 			return base.Equals(x, y);

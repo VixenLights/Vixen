@@ -73,11 +73,6 @@
     <Compile Include="VB_SkeletonGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\CommandStandard\CommandStandard.csproj">
-      <Project>{ED76AB8D-4456-4CC4-B881-56A3DB4A229F}</Project>
-      <Name>CommandStandard</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\Vixen.System\Vixen.csproj">
       <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
       <Name>Vixen</Name>

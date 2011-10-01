@@ -6,8 +6,8 @@ using System.Runtime.InteropServices;
 using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Output;
-using CommandStandard;
-using CommandStandard.Types;
+using Vixen.Commands;
+using Vixen.Commands.KnownDataTypes;
 
 namespace VixenModules.Output._595 {
 	public class Module : OutputModuleInstanceBase {
@@ -19,15 +19,6 @@ namespace VixenModules.Output._595 {
 
 		private Data _moduleData;
 		private int _outputCount;
-		private byte _ourCategory;
-		private byte _ourPlatform;
-		private byte _ourCommand;
-
-		public Module() {
-			_ourPlatform = CommandStandard.Standard.Lighting.Value;
-			_ourCategory = CommandStandard.Standard.Lighting.Monochrome.Value;
-			_ourCommand = CommandStandard.Standard.Lighting.Monochrome.SetLevel.Value;
-		}
 
 		public override bool Setup() {
 			using(SetupDialog setupDialog = new SetupDialog(_moduleData)) {
@@ -53,11 +44,9 @@ namespace VixenModules.Output._595 {
 				outputStates = outputStates.Reverse().ToArray();
 				ushort controlPort = (ushort)(_moduleData.Port + 2);
 
-				foreach (Command commandData in outputStates) {
-					if(commandData.CommandIdentifier.Platform == _ourPlatform &&
-						commandData.CommandIdentifier.Category == _ourCategory &&
-						commandData.CommandIdentifier.CommandIndex == _ourCommand) {
-						Level level = (Level)commandData.ParameterValues[0];
+				foreach (Command command in outputStates) {
+					if(command is Lighting.Monochrome.SetLevel) {
+						Level level = (command as Lighting.Monochrome.SetLevel).Level;
 						Out(_moduleData.Port, level > 0 ? (short)1 : (short)0);
 						Out(controlPort, 2);
 						Out(controlPort, 3);

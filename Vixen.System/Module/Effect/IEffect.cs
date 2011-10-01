@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Sys;
-using CommandStandard;
+using Vixen.Commands;
 
 namespace Vixen.Module.Effect {
 	// Effect instances are no longer singletons that render for all, they now contain
@@ -33,6 +33,6 @@ namespace Vixen.Module.Effect {
 		ChannelData Render();
 		ChannelData Render(TimeSpan restrictingOffsetTime, TimeSpan restrictingTimeSpan);
 		string EffectName { get; }
-		CommandParameterSpecification[] Parameters { get; }
+		CommandParameterSignature Parameters { get; }
     }
 }

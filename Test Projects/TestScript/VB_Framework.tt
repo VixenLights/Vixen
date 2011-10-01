@@ -16,8 +16,9 @@ imports System.Dynamic
 imports Vixen.Sys
 imports Vixen.Common
 imports Vixen.Module.Sequence
+imports Vixen.Module.Effect
 imports Vixen.Script
-imports CommandStandard
+imports Vixen.Commands
 
 Namespace <#=Namespace#> 
 	Partial Public Class <#=ClassName #>
@@ -50,7 +51,12 @@ Namespace <#=Namespace#>
 
 		Protected Sub _InvokeEffect(effectName as String, channels as IEnumerable(Of UserScriptNode), startTime as Long, timeSpan as Long, effectName as String, ParamArray args() as object)
 			If _effects.TryGetValue(effectName, effectId) Then
-				Sequence.InsertData(channels.Select(Function(x) x.Node).ToArray() , startTime, timeSpan, New Command(effectId, args.ToArray()))
+				IEffectModuleInstance effect = ApplicationServices.Get(Of IEffectModuleInstance)(effectId);
+				effect.TimeSpan = TimeSpan.FromMilliseconds(timeSpan);
+				effect.TargetNodes = targetNodes.Select(Function(x) x.Node).ToArray();
+				effect.ParameterValues = args;
+				Sequence.InsertData(effect, TimeSpan.FromMilliseconds(startTime));
+				'Sequence.InsertData(channels.Select(Function(x) x.Node).ToArray() , startTime, timeSpan, New Command(effectId, args.ToArray()))
 			End If
 		End Sub
 

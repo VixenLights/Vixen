@@ -109,11 +109,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\CommandStandard\CommandStandard.csproj">
-      <Project>{ED76AB8D-4456-4CC4-B881-56A3DB4A229F}</Project>
-      <Name>CommandStandard</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\CommonElements\CommonElements.csproj">
       <Project>{4EA6B667-2A25-47E8-810B-7CF1C6A8DB9A}</Project>
       <Name>CommonElements</Name>

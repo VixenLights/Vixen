@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using Vixen.Sys;
 using Vixen.Hardware;
+using Vixen.Commands;
 
 namespace Vixen.Sys {
     public class Patch : IDisposable, IOutputStateSource, IEnumerable<ControllerReference> {
         private HashSet<ControllerReference> _controllerReferences = new HashSet<ControllerReference>();
-		private Command _state = Command.Empty;
+		private Command _state = null;
 
         public Patch() {
             Enabled = true;
@@ -85,7 +86,7 @@ namespace Vixen.Sys {
 				if(Enabled) {
 					return _state;
 				}
-				return Command.Empty;
+				return null;
 			}
 			set {
 				if(Enabled) {

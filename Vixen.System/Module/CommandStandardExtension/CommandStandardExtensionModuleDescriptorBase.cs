@@ -15,6 +15,12 @@ namespace Vixen.Module.CommandStandardExtension {
 
 		abstract public override string Version { get; }
 
+		abstract public string CommandName { get; }
+
+		abstract public byte CommandPlatform { get; }
+
+		abstract public byte CommandIndex { get; }
+
 		public bool Equals(ICommandStandardExtensionModuleDescriptor x, ICommandStandardExtensionModuleDescriptor y) {
 			return base.Equals(x, y);
 		}

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Sys;
-using CommandStandard;
+using Vixen.Commands;
 
 namespace Vixen.Module.Effect {
 	//This is where caching would take place, but the subclass can override/disable it
@@ -71,7 +71,7 @@ namespace Vixen.Module.Effect {
 			get { return (Descriptor as IEffectModuleDescriptor).EffectName; }
 		}
 
-		public CommandParameterSpecification[] Parameters {
+		public CommandParameterSignature Parameters {
 			get { return (Descriptor as IEffectModuleDescriptor).Parameters; }
 		}
 

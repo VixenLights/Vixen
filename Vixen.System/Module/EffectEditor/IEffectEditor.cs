@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using CommandStandard;
+using Vixen.Commands;
 
 namespace Vixen.Module.EffectEditor {
     public interface IEffectEditor {
@@ -18,6 +18,6 @@ namespace Vixen.Module.EffectEditor {
 		/// Signature of the commands this control edits.
 		/// Null if the editor is specific to a command.
 		/// </summary>
-		CommandParameterSpecification[] CommandSignature { get; }
+		CommandParameterSignature CommandSignature { get; }
     }
 }

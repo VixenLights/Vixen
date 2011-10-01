@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
-using CommandStandard.Types;
 using CommonElements.ColorManagement.ColorModels;
 using Vixen.Module;
+using Vixen.Commands.KnownDataTypes;
 
 namespace VixenModules.Effect.SetLevel
 {

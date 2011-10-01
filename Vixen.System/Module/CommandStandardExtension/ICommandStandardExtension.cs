@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using CommandStandard;
+using Vixen.Commands;
 
 namespace Vixen.Module.CommandStandardExtension {
 	/// <summary>
@@ -11,9 +11,7 @@ namespace Vixen.Module.CommandStandardExtension {
     public interface ICommandStandardExtension {
 		string Name { get; }
 		byte CommandPlatform { get; }
-		byte CommandCategory { get; }
 		byte CommandIndex { get; }
-		CommandParameterSpecification[] Parameters { get; }
-		CommandParameterCombiner ParameterCombiner { get; }
+		Command GetCommand();
     }
 }

@@ -6,6 +6,7 @@ using Vixen.Sys;
 using System.Diagnostics;
 using Vixen.Module;
 using Vixen.Module.Output;
+using Vixen.Commands;
 
 namespace TestOutput {
 	public class Renard : OutputModuleInstanceBase {

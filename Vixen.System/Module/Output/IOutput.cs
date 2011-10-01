@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Vixen.Sys;
 using Vixen.Module.Transform;
+using Vixen.Commands;
 
 namespace Vixen.Module.Output {
     public interface IOutput {

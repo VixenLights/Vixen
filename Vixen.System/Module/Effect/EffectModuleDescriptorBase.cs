@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Vixen.Commands;
 
 namespace Vixen.Module.Effect {
 	abstract public class EffectModuleDescriptorBase : ModuleDescriptorBase, IEffectModuleDescriptor, IEqualityComparer<IEffectModuleDescriptor>, IEquatable<IEffectModuleDescriptor>, IEqualityComparer<EffectModuleDescriptorBase>, IEquatable<EffectModuleDescriptorBase> {
 		protected EffectModuleDescriptorBase() {
-			Parameters = new CommandStandard.CommandParameterSpecification[0];
+			Parameters = new CommandParameterSignature();
 			PropertyDependencies = new Guid[0];
 		}
 
@@ -24,7 +25,7 @@ namespace Vixen.Module.Effect {
 
 		abstract public string EffectName { get; }
 
-		virtual public CommandStandard.CommandParameterSpecification[] Parameters { get; set; }
+		virtual public CommandParameterSignature Parameters { get; set; }
 
 		/// <summary>
 		/// Which of the effect module's dependencies are properties.

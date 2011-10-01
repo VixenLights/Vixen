@@ -80,11 +80,6 @@
     <Compile Include="SetLevelModule.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\CommandStandard\CommandStandard.csproj">
-      <Project>{ED76AB8D-4456-4CC4-B881-56A3DB4A229F}</Project>
-      <Name>CommandStandard</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\TestProperty\TestProperty.csproj">
       <Project>{0CFE8D9B-ED0C-48F8-ACA3-D538321C16FD}</Project>
       <Name>TestProperty</Name>

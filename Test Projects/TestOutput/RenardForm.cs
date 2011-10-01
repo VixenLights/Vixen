@@ -7,8 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Vixen.Sys;
-using CommandStandard;
-using CommandStandard.Types;
+using Vixen.Commands;
+using Vixen.Commands.KnownDataTypes;
 
 namespace TestOutput {
 	public partial class RenardForm : Form {
@@ -45,14 +45,13 @@ namespace TestOutput {
 			}
 		}
 
-		private List<byte> _levels = new List<byte>();
-		private List<Level> _rawlevels = new List<Level>();
-		private List<double> _doublelevels = new List<double>();
+		//private List<byte> _levels = new List<byte>();
+		//private List<Level> _rawlevels = new List<Level>();
+		//private List<double> _doublelevels = new List<double>();
 		new public void Show() {
-			//ms.Clear();
-			_levels.Clear();
-			_rawlevels.Clear();
-			_doublelevels.Clear();
+			//_levels.Clear();
+			//_rawlevels.Clear();
+			//_doublelevels.Clear();
 			// Reset state.
 			_count = 0;
 			Array.Clear(_values, 0, _values.Length);
@@ -80,28 +79,19 @@ namespace TestOutput {
 			Command command;
 			for(int i = 0; i < outputStates.Length; i++) {
 				command = outputStates[i];
-				// If there is no command to update state from, command will be non-null,
-				// but the members will be null because Command is a value type, a struct.
-				if(!command.IsEmpty) {
-					//*** need a better mechanism that accounts for multiple platforms and categories
-					if(command.CommandIdentifier.Platform == CommandStandard.Standard.Lighting.Value &&
-						command.CommandIdentifier.Category == CommandStandard.Standard.Lighting.Monochrome.Value &&
-						command.CommandIdentifier.CommandIndex == CommandStandard.Standard.Lighting.Monochrome.SetLevel.Value) {
-						if(command.ParameterValues.Length > 0) {
-							// Value will be 0-100% (0-100)
-							_rawlevels.Add((Level)command.ParameterValues[0]);
-							_doublelevels.Add((Level)command.ParameterValues[0] * byte.MaxValue / 100);
-							_values[i] = (byte)((Level)command.ParameterValues[0] * byte.MaxValue / 100);
-							//if(_values[i] != 0) ms.Add(DateTime.Now.Millisecond);
-							_levels.Add(_values[i]);
-						}
+				if(command != null) {
+					if(command is Lighting.Monochrome.SetLevel) {
+						Level level = (command as Lighting.Monochrome.SetLevel).Level;
+						// Value will be 0-100% (0-100)
+						//_rawlevels.Add(level);
+						//_doublelevels.Add(level * byte.MaxValue / 100);
+						_values[i] = (byte)(level * byte.MaxValue / 100);
+						//_levels.Add(_values[i]);
 					}
-				//} else if(command.IsValid) {
 				} else {
 					// Clear the output.
 					_values[i] = 0;
 				}
-				// Else leave state as-is.
 			}
 			if(InvokeRequired) {
 				IAsyncResult result = BeginInvoke(new MethodInvoker(Refresh));

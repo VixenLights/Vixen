@@ -7,8 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Vixen.Sys;
-using CommandStandard;
-using CommandStandard.Types;
+using Vixen.Commands;
+using Vixen.Commands.KnownDataTypes;
 
 namespace TestOutput {
     public partial class _595_Form : Form {
@@ -67,31 +67,20 @@ namespace TestOutput {
             Command command;
             for(int i=0; i<outputStates.Length; i++) {
                 command = outputStates[i];
-                // If there is no command to update state from, command will be non-null,
-                // but the members will be null because Command is a value type, a struct.
-				if(!command.IsEmpty) {
-					//*** need a better mechanism that accounts for multiple platforms and categories
-					if(command.CommandIdentifier.Platform == CommandStandard.Standard.Lighting.Value &&
-						command.CommandIdentifier.Category == CommandStandard.Standard.Lighting.Monochrome.Value &&
-						command.CommandIdentifier.CommandIndex == CommandStandard.Standard.Lighting.Monochrome.SetLevel.Value) {
-						if(command.ParameterValues.Length > 0) {
-							//_values[i] = (command.ParameterValues[0] as DoubleParameterValue).Value > 0;
-							_values[i] = (Level)command.ParameterValues[0] > 0;
-						}
+				if(command != null) {
+					if(command is Lighting.Monochrome.SetLevel) {
+						_values[i] = (command as Lighting.Monochrome.SetLevel).Level > 0;
 					}
-				//} else if(command.IsValid) {
 				} else {
 					// Clear output
 					_values[i] = false;
 				}
-				// Else leave the state as-is.
             }
             if(InvokeRequired) {
                 IAsyncResult result = BeginInvoke(new MethodInvoker(Refresh));
             } else {
                 Refresh();
             }
-            //IAsyncResult result = BeginInvoke(new MethodInvoker(Refresh));
         }
 
         // For-fun implementation

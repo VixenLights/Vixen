@@ -14,8 +14,9 @@ using System.Threading;
 using System.Dynamic;
 using Vixen.Sys;
 using Vixen.Module.Sequence;
+using Vixen.Module.Effect;
 using Vixen.Script;
-using CommandStandard;
+using Vixen.Commands;
 
 namespace <#=Namespace#> {
 	public partial class <#=ClassName #> : UserScriptHost {
@@ -42,7 +43,11 @@ namespace <#=Namespace#> {
 		protected void _InvokeEffect(string effectName, IEnumerable<UserScriptNode> targetNodes, long startTime, long timeSpan, params object[] args) {
 			Guid effectId;
 			if(_effects.TryGetValue(effectName, out effectId)) {
-				Sequence.InsertData(targetNodes.Select(x => x.Node).ToArray() , startTime, timeSpan, new Command(effectId, args.ToArray()));
+				IEffectModuleInstance effect = ApplicationServices.Get<IEffectModuleInstance>(effectId);
+				effect.TimeSpan = TimeSpan.FromMilliseconds(timeSpan);
+				effect.TargetNodes = targetNodes.Select(x => x.Node).ToArray();
+				effect.ParameterValues = args;
+				Sequence.InsertData(effect, TimeSpan.FromMilliseconds(startTime));
 			}
 		}
 		

@@ -3,28 +3,28 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Vixen.Commands;
 
 namespace Vixen.Sys {
-	class ChannelSortedList : SortedList<TimeSpan, Command>, IChannelDataStore {
-		public void Add(Command command) {
+	class ChannelSortedList : SortedList<TimeSpan, CommandNode>, IChannelDataStore {
+		public void Add(CommandNode command) {
 			Add(command.StartTime, command);
 		}
 
-		public new IEnumerator<Command> GetEnumerator() {
+		public new IEnumerator<CommandNode> GetEnumerator() {
 			return new ChannelSortedListEnumerator(this);
 		}
 
-		class ChannelSortedListEnumerator : IEnumerator<Command> {
+		class ChannelSortedListEnumerator : IEnumerator<CommandNode> {
 			private ChannelSortedList _list;
-			private Command _current;
-			private int _index;
+			private CommandNode _current;
 
 			public ChannelSortedListEnumerator(ChannelSortedList list) {
 				_list = list;
 				Reset();
 			}
 
-			public Command Current {
+			public CommandNode Current {
 				get { return _current; }
 			}
 
@@ -36,9 +36,9 @@ namespace Vixen.Sys {
 			}
 
 			public bool MoveNext() {
-				if(_index < _list.Count) {
-					_current = _list.Values[_index];
-					_index++;
+				if(_list.Count > 0) {
+					_current = _list.Values[0];
+					_list.RemoveAt(0);
 					return true;
 				}
 				_current = null;
@@ -46,7 +46,6 @@ namespace Vixen.Sys {
 			}
 
 			public void Reset() {
-				_index = 0;
 			}
 		}
 	}

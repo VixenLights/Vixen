@@ -5,7 +5,7 @@ using System.Text;
 using System.Runtime.Serialization;
 using Vixen.Sys;
 using Vixen.Module;
-using CommandStandard.Types;
+using Vixen.Commands.KnownDataTypes;
 
 namespace TestScriptModule {
 	[DataContract]

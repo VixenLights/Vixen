@@ -5,7 +5,7 @@ using System.Text;
 using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Effect;
-using CommandStandard.Types;
+using Vixen.Commands.KnownDataTypes;
 
 namespace TestScriptModule {
 	public class Nested : EffectModuleInstanceBase {
@@ -13,7 +13,7 @@ namespace TestScriptModule {
 		private NestedData _data;
 
 		protected override void _PreRender() {
-			_channelData = NestedBehavior.Render(TargetNodes, TimeSpan, ParameterValues);
+			_channelData = NestedBehavior.Render(TargetNodes, TimeSpan, _data.Level);
 		}
 
 		protected override ChannelData _Render() {

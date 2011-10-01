@@ -5,6 +5,7 @@ using System.Text;
 using System.Collections.Concurrent;
 using System.Xml.Linq;
 using Vixen.Sys;
+using Vixen.Commands;
 
 namespace Vixen.Sys {
 	// Need to implement IEquatable<T> so that IEnumerable<T>.Except() will not use
@@ -12,7 +13,7 @@ namespace Vixen.Sys {
 	/// <summary>
 	/// A logical channel of low-level CommandData that is intended to be executed by a controller.
 	/// </summary>
-	public class Channel : IEnumerable<Command>, IEqualityComparer<Channel>, IEquatable<Channel> {
+	public class Channel : IEnumerable<CommandNode>, IEqualityComparer<Channel>, IEquatable<Channel> {
 		private Patch _patch;
 		private IChannelDataStore _data = new ChannelSortedList();
 
@@ -45,8 +46,8 @@ namespace Vixen.Sys {
 			get { return !this.Patch.Enabled; }
 			set { this.Patch.Enabled = !value; }
 		}
-		
-		public IEnumerator<Command> GetEnumerator() {
+
+		public IEnumerator<CommandNode> GetEnumerator() {
 			// We need an enumerator that is live and does not operate upon a snapshot
 			// of the data.
 			return _data.GetEnumerator();
@@ -56,13 +57,13 @@ namespace Vixen.Sys {
 			return this.GetEnumerator();
 		}
 
-		public void AddData(IEnumerable<Command> data) {
-			foreach(Command dataElement in data) {
+		public void AddData(IEnumerable<CommandNode> data) {
+			foreach(CommandNode dataElement in data) {
 				_data.Add(dataElement);
 			}
 		}
 
-		public void AddData(Command data) {
+		public void AddData(CommandNode data) {
 			_data.Add(data);
 		}
 

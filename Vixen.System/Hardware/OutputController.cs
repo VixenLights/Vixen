@@ -12,6 +12,7 @@ using Vixen.Module;
 using Vixen.Module.Output;
 using Vixen.IO;
 using Vixen.IO.Xml;
+using Vixen.Commands;
 
 namespace Vixen.Hardware {
 	public class OutputController : IEnumerable<OutputController>, IVersioned {
@@ -537,7 +538,7 @@ namespace Vixen.Hardware {
 
 			public Output(OutputController owner) {
 				_owner = owner;
-				CurrentState = Command.Empty;
+				CurrentState = null;
 				Name = "Unnamed";
 			}
 

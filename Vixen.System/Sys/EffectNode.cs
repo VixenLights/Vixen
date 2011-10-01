@@ -9,7 +9,7 @@ namespace Vixen.Sys {
 	/// <summary>
 	/// Qualifies a Command with a start time and length.
 	/// </summary>
-	public class EffectNode : ITimed {
+	public class EffectNode : ITimed, IComparable<EffectNode> {
 		public EffectNode()
 			: this(null, TimeSpan.Zero) {
 			// Default instance is empty.
@@ -81,11 +81,17 @@ namespace Vixen.Sys {
 
 		static public readonly EffectNode Empty = new EffectNode();
 
-		#region IComparer<CommandNode>
+		#region IComparer<EffectNode>
 		public class Comparer : IComparer<EffectNode> {
 			public int Compare(EffectNode x, EffectNode y) {
 				return x.StartTime.CompareTo(y.StartTime);
 			}
+		}
+		#endregion
+
+		#region IComparable<EffectNode>
+		public int CompareTo(EffectNode other) {
+			return StartTime.CompareTo(other.StartTime);
 		}
 		#endregion
 	}

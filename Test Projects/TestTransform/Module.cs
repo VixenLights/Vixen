@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using Vixen.Module.Transform;
 using Vixen.Sys;
-using CommandStandard.Types;
+using Vixen.Commands;
+using Vixen.Commands.KnownDataTypes;
 
 namespace TestTransform {
 	public class Module : TransformModuleDescriptorBase {

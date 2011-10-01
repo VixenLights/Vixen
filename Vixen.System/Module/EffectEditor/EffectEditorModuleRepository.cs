@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Sys;
-using CommandStandard;
+//using CommandStandard;
+using Vixen.Commands;
 
 namespace Vixen.Module.EffectEditor {
 	class EffectEditorModuleRepository : IModuleRepository<IEffectEditorModuleInstance> {
@@ -20,7 +21,7 @@ namespace Vixen.Module.EffectEditor {
 			return instance;
 		}
 
-		public IEffectEditorModuleInstance Get(CommandParameterSpecification[] commandSignature) {
+		public IEffectEditorModuleInstance Get(CommandParameterSignature commandSignature) {
 			int key = _GetSignatureKey(commandSignature);
 			IEffectEditorModuleInstance instance;
 			_effectEditorSignatureIndex.TryGetValue(key, out instance);
@@ -71,7 +72,7 @@ namespace Vixen.Module.EffectEditor {
 		}
 
 
-		private int _GetSignatureKey(CommandParameterSpecification[] commandSignature) {
+		private int _GetSignatureKey(CommandParameterSignature commandSignature) {
 			if(commandSignature == null) return 0;
 			// Key will be a hash of the concatenation of the parameter type names.
 			return commandSignature.Aggregate("", (str, spec) => str + spec.Type.Name, str => str.GetHashCode());

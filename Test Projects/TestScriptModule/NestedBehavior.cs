@@ -5,13 +5,14 @@ using System.Text;
 using Vixen.Sys;
 using Vixen.Module.Effect;
 using Vixen.Module.Property;
-using CommandStandard.Types;
+using Vixen.Commands;
+using Vixen.Commands.KnownDataTypes;
 
 namespace TestScriptModule {
 	static internal class NestedBehavior {
-		static public ChannelData Render(ChannelNode[] nodes, TimeSpan timeSpan, object[] parameterValues) {
+		static public ChannelData Render(ChannelNode[] nodes, TimeSpan timeSpan, Level level) {
 			ChannelData channelData = new ChannelData();
-			Level startLevel = (Level)parameterValues[0];
+			Level startLevel = level;
 			SetLevel setLevelEffect = _GetSetLevelEffect();
 
 			foreach(ChannelNode node in nodes) {
@@ -34,15 +35,15 @@ namespace TestScriptModule {
 					// Call the SetLevel effect 
 					TimeSpan startTime = TimeSpan.FromTicks(timeSpan.Ticks / orderedChannels.Length * i);
 					TimeSpan channelTimeSpan = TimeSpan.FromTicks(timeSpan.Ticks / orderedChannels.Length);
-					Level level = (i + 1) * (startLevel / orderedChannels.Length);
+					Level setLevelParam = (i + 1) * (startLevel / orderedChannels.Length);
 					setLevelEffect.TargetNodes = new[] { node };
 					setLevelEffect.TimeSpan = channelTimeSpan;
-					setLevelEffect.ParameterValues = new object[] { level };
+					setLevelEffect.ParameterValues = new object[] { setLevelParam };
 					ChannelData setLevelData = setLevelEffect.Render();
 					// The data timing coming back from the effect is relative to that effect,
 					// so it needs to be offset to be relative to this effect.
 					Guid channelId = orderedChannels[i].Id;
-					Command[] data = setLevelData[channelId].Select(x => new Command(x.StartTime + startTime, x.EndTime + startTime, x.CommandIdentifier, x.ParameterValues)).ToArray();
+					CommandNode[] data = setLevelData[channelId].Select(x => new CommandNode(x.Command, x.StartTime + startTime, x.TimeSpan)).ToArray();
 					channelData[channelId] = data;
 				}
 			}

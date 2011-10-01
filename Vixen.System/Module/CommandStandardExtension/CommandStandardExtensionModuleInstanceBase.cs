@@ -3,26 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Sys;
-using CommandStandard;
+using Vixen.Commands;
 
 namespace Vixen.Module.CommandStandardExtension {
-	// Hate doing this since it adds no value, but it keeps with the pattern.
 	abstract public class CommandStandardExtensionModuleInstanceBase : ModuleInstanceBase, ICommandStandardExtensionModuleInstance, IEqualityComparer<ICommandStandardExtensionModuleInstance>, IEquatable<ICommandStandardExtensionModuleInstance>, IEqualityComparer<CommandStandardExtensionModuleInstanceBase>, IEquatable<CommandStandardExtensionModuleInstanceBase> {
-		private CommandParameterSpecification[] _noParameters = new CommandParameterSpecification[0];
+		private CommandParameterSignature _noParameters = new CommandParameterSignature();
 
-		abstract public string Name { get; }
-
-		abstract public byte CommandPlatform { get; }
-
-		abstract public byte CommandCategory { get; }
-
-		abstract public byte CommandIndex { get; }
-
-		virtual public CommandParameterSpecification[] Parameters {
-			get { return _noParameters; }
+		public string Name {
+			get { return (Descriptor as ICommandStandardExtensionModuleDescriptor).CommandName; }
 		}
 
-		abstract public CommandParameterCombiner ParameterCombiner { get; }
+		virtual public byte CommandPlatform {
+			get { return (Descriptor as ICommandStandardExtensionModuleDescriptor).CommandPlatform; }
+		}
+
+		virtual public byte CommandIndex {
+			get { return (Descriptor as ICommandStandardExtensionModuleDescriptor).CommandIndex; }
+		}
+
+		abstract public Command GetCommand();
+
+		virtual public CommandParameterSignature Parameters {
+			get { return _noParameters; }
+		}
 
 		public bool Equals(ICommandStandardExtensionModuleInstance x, ICommandStandardExtensionModuleInstance y) {
 			return base.Equals(x, y);

@@ -6,16 +6,15 @@ using System.Reflection;
 using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Effect;
+using Vixen.Commands;
+using Vixen.Commands.KnownDataTypes;
 using VixenModules.Property.RGB;
-using CommandStandard;
-using CommandStandard.Types;
 using CommonElements.ColorManagement.ColorModels;
 
 namespace VixenModules.Effect.SetLevel
 {
 	public class SetLevel : EffectModuleInstanceBase
 	{
-		static private CommandIdentifier _setLevelCommandId = Standard.Lighting.Monochrome.SetLevel.Id;
 		private SetLevelData _data;
 		private ChannelData _channelData = null;
 
@@ -93,7 +92,8 @@ namespace VixenModules.Effect.SetLevel
 			// we have iterated down to leaf nodes in RenderNode() above. May as well do
 			// it this way, though, in case something changes in future.
 			foreach (Channel channel in node.GetChannelEnumerator()) {
-				Command data = new Command(TimeSpan.Zero, TimeSpan, _setLevelCommandId, new object[] { Level } );
+				Command setLevelCommand = new Lighting.Monochrome.SetLevel(Level);
+				CommandNode data = new CommandNode(setLevelCommand, TimeSpan.Zero, TimeSpan);
 				_channelData[channel.Id] = new[] { data };
 			}
 		}
@@ -105,11 +105,10 @@ namespace VixenModules.Effect.SetLevel
 			ChannelData rgbData = rgbProperty.RenderColorToCommands(Color, Level);
 
 			// iterate through the rendered commands, adjust them to fit our times, and add them to our rendered data
-			foreach (KeyValuePair<Guid, Command[]> kvp in rgbData) {
-				foreach (Command c in kvp.Value) {
-					c.StartTime = TimeSpan.Zero;
-					c.EndTime = TimeSpan;
-					_channelData.AddCommandForChannel(kvp.Key, c);
+			foreach (KeyValuePair<Guid, CommandNode[]> kvp in rgbData) {
+				foreach (CommandNode cn in kvp.Value) {
+					CommandNode newCommandNode = new CommandNode(cn.Command, TimeSpan.Zero, TimeSpan);
+					_channelData.AddCommandForChannel(kvp.Key, newCommandNode);
 				}
 			}
 		}

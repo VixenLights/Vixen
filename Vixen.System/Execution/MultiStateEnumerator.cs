@@ -9,7 +9,7 @@ namespace Vixen.Execution {
 	// T - single instance in
 	// U - collection of T out
 	abstract class MultiStateEnumerator<T, U> : IEnumerator<U>
-		where T : class, ITimed, new()
+		where T : class, ITimed
 		where U : class, IEnumerable<T> {
 		private TimeSpan _startTime;
 		private TimeSpan _endTime;
@@ -17,7 +17,6 @@ namespace Vixen.Execution {
 		private ITiming _timingSource;
 		private IEnumerator<T> _enumerator;
 		private TimeSpan _position;
-		private T _emptyInstance = new T();
 		private U _currentState;
 		private HashSet<T> _states = new HashSet<T>();
 

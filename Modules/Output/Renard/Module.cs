@@ -7,13 +7,11 @@ using System.Windows.Forms;
 using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Output;
-using CommandStandard;
-using CommandStandard.Types;
+using Vixen.Commands;
+using Vixen.Commands.KnownDataTypes;
 
 namespace Renard {
 	public class Module : OutputModuleInstanceBase {
-		private byte _ourCategory;
-		private byte _ourPlatform;
 		private Data _moduleData;
 
 		private byte[] _p1Packet;
@@ -29,8 +27,6 @@ namespace Renard {
 		private const int DEFAULT_WRITE_TIMEOUT = 500;
 
 		public Module() {
-			_ourPlatform = CommandStandard.Standard.Lighting.Value;
-			_ourCategory = CommandStandard.Standard.Lighting.Monochrome.Value;
 			_SetupP1Packet();
 			_SetupP2Packet();
 		}
@@ -127,10 +123,9 @@ namespace Renard {
 			_p1Packet[0] = 0x7E;
 			_p1Packet[1] = 0x80;
 
-			foreach (Command commandData in outputStates) {
-				if(commandData.CommandIdentifier.Platform == _ourPlatform &&
-					commandData.CommandIdentifier.Category == _ourCategory) {
-					byte level = (byte)(Level)commandData.ParameterValues[0];
+			foreach (Command command in outputStates) {
+				if(command is Lighting.Monochrome.SetLevel) {
+					byte level = (byte)(command as Lighting.Monochrome.SetLevel).Level;
 					if(level == 0x7d) {
 						_p1Packet[dst_index++] = 124;
 					} else if(level == 0x7e) {
@@ -205,9 +200,9 @@ namespace Renard {
 				// The offset needs to be a value that, when added to any channel value,
 				// keeps it from being 0 (including wrap-around).
 				for(arrayIndex = startChannel; arrayIndex <= endChannel; arrayIndex++) {
-					Command commandData = outputStates[arrayIndex];
-					if(commandData.CommandIdentifier.Platform != _ourPlatform || commandData.CommandIdentifier.Category != _ourCategory) continue;
-					byte level = (byte)(Level)commandData.ParameterValues[0];
+					Command command = outputStates[arrayIndex];
+					if(!(command is Lighting.Monochrome.SetLevel)) continue;
+					byte level = (byte)(command as Lighting.Monochrome.SetLevel).Level;
 
 					bottomValue = level;
 					topValue = (byte)(0 - bottomValue);
@@ -222,7 +217,7 @@ namespace Renard {
 
 				// Copy values to the packet, adding the offset byte
 				for(arrayIndex = startChannel, arrayIndex2 = 3; arrayIndex <= endChannel; arrayIndex++, arrayIndex2++) {
-					byte level = (byte)(Level)outputStates[arrayIndex].ParameterValues[0];
+					byte level = (byte)(outputStates[arrayIndex] as Lighting.Monochrome.SetLevel).Level;
 					_p2Packet[arrayIndex2] = (byte)(level - offsetByte);
 				}
 

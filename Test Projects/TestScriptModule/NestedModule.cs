@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Sys;
-using CommandStandard;
-using CommandStandard.Types;
 using Vixen.Module.Effect;
+using Vixen.Commands;
+using Vixen.Commands.KnownDataTypes;
 
 namespace TestScriptModule {
 	public class NestedModule : EffectModuleDescriptorBase {
@@ -15,7 +15,7 @@ namespace TestScriptModule {
 		private Guid[] _dependencies;
 		private string _commandName = "Nested RGB set level";
 		// Only using a start-level parameter because I don't want to create an editor right now.
-		private CommandParameterSpecification[] _parameters = { new CommandParameterSpecification("Start level", typeof(Level)) };
+		private CommandParameterSignature _parameters = new CommandParameterSignature(new CommandParameterSpecification("Start level", typeof(Level)));
 
 		public NestedModule() {
 			_dependencies = new[] {
@@ -28,7 +28,7 @@ namespace TestScriptModule {
 			get { return _commandName; }
 		}
 
-		override public CommandParameterSpecification[] Parameters {
+		override public CommandParameterSignature Parameters {
 			get { return _parameters; }
 		}
 

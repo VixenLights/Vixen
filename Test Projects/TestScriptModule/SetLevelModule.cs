@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Sys;
-using CommandStandard;
-using CommandStandard.Types;
 using Vixen.Module.Effect;
+using Vixen.Commands;
+using Vixen.Commands.KnownDataTypes;
 
 namespace TestScriptModule {
 	public class SetLevelModule : EffectModuleDescriptorBase {
@@ -13,7 +13,7 @@ namespace TestScriptModule {
 		static internal Guid _rgbProperty = new Guid("{55960E71-2151-454c-885E-00B9713A93EF}");
 		private Guid[] _dependencies;
 		private string _commandName = "Set level";
-		private CommandParameterSpecification[] _parameters = { new CommandParameterSpecification("Level", typeof(Level)) };
+		private CommandParameterSignature _parameters = new CommandParameterSignature(new CommandParameterSpecification("Level", typeof(Level)));
 
 		public SetLevelModule() {
 			_dependencies = new[] {
@@ -25,7 +25,7 @@ namespace TestScriptModule {
 			get { return _commandName; }
 		}
 
-		override public CommandParameterSpecification[] Parameters {
+		override public CommandParameterSignature Parameters {
 			get { return _parameters; }
 		}
 

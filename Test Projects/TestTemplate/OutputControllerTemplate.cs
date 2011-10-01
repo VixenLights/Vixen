@@ -31,7 +31,6 @@ namespace TestTemplate {
 			List<ITransformModuleInstance> transforms = new List<ITransformModuleInstance>();
 			ITransformModuleInstance transform;
 			foreach(InstanceReference transformReference in _data.Transforms) {
-				//transform = VixenSystem.ModuleManagement.GetTransform(transformReference.TypeId) as ITransformModuleInstance;
 				transform = ApplicationServices.Get<ITransformModuleInstance>(transformReference.TypeId);
 				transform.InstanceId = transformReference.InstanceId;
 				// Get data for each instance from our transform module data set.
@@ -51,7 +50,7 @@ namespace TestTemplate {
 			_data.Transforms.AddRange(transforms.Select(x => new InstanceReference(x)));
 		}
 
-		override public IModuleDataModel ModuleData {
+		override public IModuleDataModel StaticModuleData {
 			get { return _data; }
 			set { _data = value as OutputControllerTemplateData; }
 		}
@@ -59,6 +58,7 @@ namespace TestTemplate {
 		override public void Setup() {
 			// The setup dialog needs the transform datum because it's going to be creating
 			// new instances and allowing the user to set them up.
+			if(_data == null) throw new Exception("No data object.");
 			using(OutputControllerTemplateSetup templateSetup = new OutputControllerTemplateSetup(_data.TransformData)) {
 				templateSetup.Transforms = _GetTransforms();
 				if(templateSetup.ShowDialog() == System.Windows.Forms.DialogResult.OK) {

@@ -2,8 +2,6 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vixen", "Vixen.System\Vixen.csproj", "{50B78623-FCF4-48AF-93FF-FA87C937028F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandStandard", "CommandStandard\CommandStandard.csproj", "{ED76AB8D-4456-4CC4-B881-56A3DB4A229F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonElements", "CommonElements\CommonElements.csproj", "{4EA6B667-2A25-47E8-810B-7CF1C6A8DB9A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
@@ -56,10 +54,6 @@ Global
 		{50B78623-FCF4-48AF-93FF-FA87C937028F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50B78623-FCF4-48AF-93FF-FA87C937028F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50B78623-FCF4-48AF-93FF-FA87C937028F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ED76AB8D-4456-4CC4-B881-56A3DB4A229F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ED76AB8D-4456-4CC4-B881-56A3DB4A229F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ED76AB8D-4456-4CC4-B881-56A3DB4A229F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ED76AB8D-4456-4CC4-B881-56A3DB4A229F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4EA6B667-2A25-47E8-810B-7CF1C6A8DB9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4EA6B667-2A25-47E8-810B-7CF1C6A8DB9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4EA6B667-2A25-47E8-810B-7CF1C6A8DB9A}.Release|Any CPU.ActiveCfg = Release|Any CPU

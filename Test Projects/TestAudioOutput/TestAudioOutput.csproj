@@ -117,11 +117,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\CommandStandard\CommandStandard.csproj">
-      <Project>{ED76AB8D-4456-4CC4-B881-56A3DB4A229F}</Project>
-      <Name>CommandStandard</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\Fmod64\fmod.csproj">
       <Project>{0FC608ED-BBAD-4F92-8CAD-61D94F13F435}</Project>
       <Name>fmod</Name>

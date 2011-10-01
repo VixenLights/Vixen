@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using Vixen.Sys;
 using Vixen.Module.App;
-using System.Threading;
-using System.IO;
+using Vixen.Commands;
 
 namespace TestAppModule {
 	public class ExecutionValueMonitorModule : AppModuleInstanceBase {
@@ -46,8 +46,8 @@ namespace TestAppModule {
 		}
 
 		private string _FormatCommand(Command command) {
-			if(!command.IsEmpty) {
-				return command.CommandIdentifier.ToString() + " " + string.Join(",", command.ParameterValues);
+			if(command != null) {
+				return command.Identifier.ToString() + " " + string.Join(",", Enumerable.Range(0, command.Signature.Count).Select(command.GetParameterValue));
 			}
 			return "(Empty)";
 		}

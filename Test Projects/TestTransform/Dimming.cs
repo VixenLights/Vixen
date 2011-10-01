@@ -6,7 +6,8 @@ using System.Text;
 using Vixen.Module;
 using Vixen.Module.Transform;
 using Vixen.Sys;
-using CommandStandard.Types;
+using Vixen.Commands;
+using Vixen.Commands.KnownDataTypes;
 
 namespace TestTransform {
 	public class Dimming : TransformModuleInstanceBase {
@@ -33,17 +34,17 @@ namespace TestTransform {
 		}
 
 		override public void Transform(Command command) {
-			CommandParameterReference paramRef;
-			if(_curve != null && !command.IsEmpty && CommandsAffected.TryGetValue(command.CommandIdentifier, out paramRef)) {
+			CommandParameterReference paramRef = _GetAffectedParameters(command);
+			if(_curve != null) {
 				foreach(int index in paramRef.ParameterIndexes) {
 					// Get the existing value.
-					Level level = (Level)command.ParameterValues[index];
+					Level level = (Level)command.GetParameterValue(index);
 					// Lookup the new value and replace.
 					double value;
 					if(_curve.Find(level, out value)) {
 						level = value;
 					}
-					command.ParameterValues[index] = level;
+					command.SetParameterValue(index, level);
 				}
 			}
 		}

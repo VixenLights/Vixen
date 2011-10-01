@@ -5,7 +5,7 @@ using System.Text;
 using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Effect;
-using CommandStandard.Types;
+using Vixen.Commands.KnownDataTypes;
 
 namespace TestScriptModule {
 	public class SetLevel : EffectModuleInstanceBase {
@@ -13,7 +13,7 @@ namespace TestScriptModule {
 		private SetLevelData _data;
 
 		protected override void _PreRender() {
-			_channelData = SetLevelBehavior.Render(TargetNodes, TimeSpan, ParameterValues);
+			_channelData = SetLevelBehavior.Render(TargetNodes, TimeSpan, _data.Level);
 		}
 
 		protected override ChannelData _Render() {

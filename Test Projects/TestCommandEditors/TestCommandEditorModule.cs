@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Sys;
-using CommandStandard;
-using CommandStandard.Types;
 using Vixen.Module.EffectEditor;
+using Vixen.Commands;
+using Vixen.Commands.KnownDataTypes;
 
 namespace TestCommandEditors {
 	public class TestCommandEditorModule : EffectEditorModuleDescriptorBase {
 		private Guid _typeId = new Guid("{BA73EAC1-66D8-488e-9889-4E979557D72D}");
 		private Guid _targetCommandId = new Guid("{88D2A581-CC6D-4e15-85E3-F235F14336BC}");
-		private CommandParameterSpecification[] _paramSpec = { new CommandParameterSpecification("Level", typeof(Level)) };
+		private CommandParameterSignature _paramSpec = new CommandParameterSignature(new CommandParameterSpecification("Level", typeof(Level)));
 		
 		override public Guid TypeId {
 			get { return _typeId; }
@@ -41,7 +41,7 @@ namespace TestCommandEditors {
 			get { return _targetCommandId; }
 		}
 
-		override public CommandParameterSpecification[] CommandSignature {
+		override public CommandParameterSignature CommandSignature {
 			get { return _paramSpec; }
 		}
 	}
