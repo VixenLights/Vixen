@@ -25,7 +25,7 @@ namespace Vixen.Execution {
 		private ExecutorEffectEnumerator _sequenceDataEnumerator;
 
 		public event EventHandler<SequenceStartedEventArgs> SequenceStarted;
-		public event EventHandler SequenceEnded;
+		public event EventHandler<SequenceEventArgs> SequenceEnded;
 		public event EventHandler<ExecutorMessageEventArgs> Message;
 		public event EventHandler<ExecutorMessageEventArgs> Error;
 
@@ -110,7 +110,7 @@ namespace Vixen.Execution {
 
 				// Start the crazy train.
 				IsRunning = true;
-				OnSequenceStarted(new SequenceStartedEventArgs(TimingSource));
+				OnSequenceStarted(new SequenceStartedEventArgs(Sequence, TimingSource));
 
 				// Start the media.
 				foreach(IMediaModuleInstance media in Sequence.Media) {
@@ -225,7 +225,7 @@ namespace Vixen.Execution {
 
 			IsRunning = false;
 
-			OnSequenceEnded(EventArgs.Empty);
+			OnSequenceEnded(new SequenceEventArgs(Sequence));
 
 			TimingSource.Stop();
 			foreach(IMediaModuleInstance media in Sequence.Media) {
@@ -266,19 +266,19 @@ namespace Vixen.Execution {
 
 		protected virtual void OnSequenceStarted(SequenceStartedEventArgs e) {
 			if(SequenceStarted != null) {
-				SequenceStarted(this.Sequence, e);
+				SequenceStarted(null, e);
 			}
 		}
 
-		protected virtual void OnSequenceEnded(EventArgs e) {
+		protected virtual void OnSequenceEnded(SequenceEventArgs e) {
 			if(SequenceEnded != null) {
-				SequenceEnded(this.Sequence, e);
+				SequenceEnded(null, e);
 			}
 		}
 
 		protected virtual void OnMessage(ExecutorMessageEventArgs e) {
 			if(Message != null) {
-				Message(this.Sequence, e);
+				Message(null, e);
 			}
 		}
 

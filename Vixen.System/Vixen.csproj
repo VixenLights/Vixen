@@ -136,6 +136,9 @@
     <Compile Include="Sys\IPackageFileContent.cs" />
     <Compile Include="Sys\ITimed.cs" />
     <Compile Include="Sys\LiveListEnumerator.cs" />
+    <Compile Include="Sys\ProgramContextEventArgs.cs" />
+    <Compile Include="Sys\ProgramEventArgs.cs" />
+    <Compile Include="Sys\SequenceEventArgs.cs" />
     <Compile Include="Sys\SequenceReaderAttribute.cs" />
     <Compile Include="Execution\ExecutorEffectEnumerator.cs" />
     <Compile Include="IO\IReader.cs" />

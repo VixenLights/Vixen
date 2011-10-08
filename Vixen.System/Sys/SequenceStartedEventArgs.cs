@@ -7,10 +7,12 @@ using Vixen.Module.Timing;
 
 namespace Vixen.Sys {
     public class SequenceStartedEventArgs : EventArgs {
-        public SequenceStartedEventArgs(ITiming timingSource) {
-            this.TimingSource = timingSource;
+        public SequenceStartedEventArgs(ISequence sequence, ITiming timingSource) {
+			Sequence = sequence;
+            TimingSource = timingSource;
         }
 
+		public ISequence Sequence { get; private set; }
 		public ITiming TimingSource { get; private set; }
     }
 }

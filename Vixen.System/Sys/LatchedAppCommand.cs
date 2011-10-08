@@ -43,14 +43,14 @@ namespace Vixen.Sys {
                 if(value != _isChecked) {
                     _isChecked = value;
                     (this.Item as ToolStripMenuItem).Checked = value;
-                    OnChecked(value);
+                    OnChecked(new LatchedEventArgs(value));
                 }
             }
         }
 
-        virtual protected void OnChecked(bool state) {
+		virtual protected void OnChecked(LatchedEventArgs e) {
             if(Checked != null) {
-                Checked(this, new LatchedEventArgs(state));
+                Checked(this, e);
             }
         }
 

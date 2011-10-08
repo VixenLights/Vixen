@@ -32,15 +32,15 @@ namespace Vixen.Script {
 			}
 		}
 
-		protected virtual void OnError(string value) {
+		protected virtual void OnError(ExecutorMessageEventArgs e) {
 			if(Error != null) {
-				Error(this, new ExecutorMessageEventArgs(value));
+				Error(this, e);
 			}
 		}
 
-		protected virtual void OnEnded() {
+		protected virtual void OnEnded(EventArgs e) {
 			if(Ended != null) {
-				Ended(this, EventArgs.Empty);
+				Ended(this, e);
 			}
 		}
 
@@ -65,11 +65,11 @@ namespace Vixen.Script {
 				Thread.ResetAbort();
 			} catch(Exception ex) {
 				// Any other exception needs to result in the end of the sequence.
-				OnError(ex.Message);
+				OnError(new ExecutorMessageEventArgs(Sequence,  ex.Message));
 			} finally {
 				// User Shutdown procedure.
 				Shutdown();
-				OnEnded();
+				OnEnded(EventArgs.Empty);
 			}
 		}
 

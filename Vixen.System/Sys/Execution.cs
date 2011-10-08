@@ -21,8 +21,8 @@ namespace Vixen.Sys {
 		static private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
 
 		// These are system-level events.
-		static public event EventHandler ExecutionContextCreated;
-		static public event EventHandler ExecutionContextReleased;
+		static public event EventHandler<ProgramContextEventArgs> ProgramContextCreated;
+		static public event EventHandler<ProgramContextEventArgs> ProgramContextReleased;
 		static public event EventHandler NodesChanged {
 			add { Nodes.NodesChanged += value; }
 			remove { Nodes.NodesChanged -= value; }
@@ -216,8 +216,8 @@ namespace Vixen.Sys {
 		static public ProgramContext CreateContext(Program program) {
 			ProgramContext context = new ProgramContext(program);
 			_contexts[context.Id] = context;
-			if(ExecutionContextCreated != null) {
-				ExecutionContextCreated(context, EventArgs.Empty);
+			if(ProgramContextCreated != null) {
+				ProgramContextCreated(null, new ProgramContextEventArgs(context));
 			}
 
 			return context;
@@ -239,8 +239,8 @@ namespace Vixen.Sys {
 				lock(_contexts) {
 					if(_contexts.ContainsKey(context.Id)) {
 						_contexts.Remove(context.Id);
-						if(ExecutionContextReleased != null) {
-							ExecutionContextReleased(context, EventArgs.Empty);
+						if(ProgramContextReleased != null) {
+							ProgramContextReleased(null, new ProgramContextEventArgs(context));
 						}
 						context.Dispose();
 					}

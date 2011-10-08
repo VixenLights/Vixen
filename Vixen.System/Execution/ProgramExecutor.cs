@@ -16,10 +16,10 @@ namespace Vixen.Execution {
 		static public readonly TimeSpan END_ENTIRE_SEQUENCE = TimeSpan.MaxValue;
         public enum RunState { Stopped, Playing, Stopping };
 
-        public event EventHandler ProgramStarted;
-        public event EventHandler ProgramEnded;
+        public event EventHandler<ProgramEventArgs> ProgramStarted;
+		public event EventHandler<ProgramEventArgs> ProgramEnded;
 		public event EventHandler<SequenceStartedEventArgs> SequenceStarted;
-        public event EventHandler SequenceEnded;
+		public event EventHandler<SequenceEventArgs> SequenceEnded;
 		public event EventHandler<ExecutorMessageEventArgs> Message;
 		public event EventHandler<ExecutorMessageEventArgs> Error;
 
@@ -90,7 +90,7 @@ namespace Vixen.Execution {
             }
         }
 
-        protected virtual void OnSequenceEnded(object sender, EventArgs e) {
+        protected virtual void OnSequenceEnded(object sender, SequenceEventArgs e) {
             if(SequenceEnded != null) {
                 SequenceEnded(sender, e);
             }
@@ -114,13 +114,13 @@ namespace Vixen.Execution {
 
 		protected virtual void OnProgramStarted() {
             if(ProgramStarted != null) {
-                ProgramStarted(this.Program, EventArgs.Empty);
+                ProgramStarted(null, new ProgramEventArgs(Program));
             }
         }
 
         protected virtual void OnProgramEnded() {
             if(ProgramEnded != null) {
-                ProgramEnded(this.Program, EventArgs.Empty);
+                ProgramEnded(null, new ProgramEventArgs(Program));
             }
         }
 

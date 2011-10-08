@@ -91,17 +91,17 @@ namespace Vixen.Execution {
 			remove { _programExecutor.SequenceStarted -= value; }
 		}
 
-		public event EventHandler SequenceEnded {
+		public event EventHandler<SequenceEventArgs> SequenceEnded {
 			add { _programExecutor.SequenceEnded += value;	}
 			remove { _programExecutor.SequenceEnded -= value; }
 		}
 
-		public event EventHandler ProgramStarted {
+		public event EventHandler<ProgramEventArgs> ProgramStarted {
 			add { _programExecutor.ProgramStarted += value; }
 			remove { _programExecutor.ProgramStarted -= value; }
 		}
 
-		public event EventHandler ProgramEnded {
+		public event EventHandler<ProgramEventArgs> ProgramEnded {
 			add { _programExecutor.ProgramEnded += value; }
 			remove { _programExecutor.ProgramEnded -= value; }
 		}

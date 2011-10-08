@@ -18,7 +18,7 @@ namespace Vixen.Execution {
 			ScriptHostGenerator hostGenerator = new ScriptHostGenerator();
 			_scriptHost = hostGenerator.GenerateScript(this.Sequence as ScriptSequence);
 			string[] errors = hostGenerator.Errors.ToArray();
-			OnMessage(new ExecutorMessageEventArgs(string.Join(Environment.NewLine, errors)));
+			OnMessage(new ExecutorMessageEventArgs(Sequence, string.Join(Environment.NewLine, errors)));
 			// An end time < start time means compile only.
 			if(endTime >= startTime) {
 				if(errors.Length == 0) {

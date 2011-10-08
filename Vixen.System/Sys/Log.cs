@@ -33,12 +33,12 @@ namespace Vixen.Sys {
 
 		public virtual void Write(string text) {
 			text = "[" + DateTime.Now + "]" + Environment.NewLine + text + Environment.NewLine + Environment.NewLine;
-			OnItemLogged(text);
+			OnItemLogged(new LogItemEventArgs(text));
 		}
 
-		protected virtual void OnItemLogged(string text) {
+		protected virtual void OnItemLogged(LogItemEventArgs e) {
 			if(ItemLogged != null) {
-				ItemLogged(this, new LogItemEventArgs(text));
+				ItemLogged(this, e);
 			}
 		}
 	}

@@ -114,7 +114,7 @@ namespace TestEditor {
 				listBoxRuntimeErrors.Items.Clear();
 
 				_context = Execution.CreateContext(this.Sequence);
-				_context.ProgramEnded += new EventHandler(_context_ProgramEnded);
+				_context.ProgramEnded += new EventHandler<ProgramEventArgs>(_context_ProgramEnded);
 				_context.Message += new EventHandler<ExecutorMessageEventArgs>(_context_Message);
 				_context.Error += new EventHandler<ExecutorMessageEventArgs>(_context_Error);
 				_context.Play(startTime, endTime);
@@ -148,7 +148,7 @@ namespace TestEditor {
 			}
 		}
 
-		void _context_ProgramEnded(object sender, EventArgs e) {
+		void _context_ProgramEnded(object sender, ProgramEventArgs e) {
 			_context.Error -= _context_Error;
 			_context.Message -= _context_Message;
 			_context.ProgramEnded -= _context_ProgramEnded;

@@ -34,7 +34,9 @@ namespace Vixen.Module.Script {
 
 		override public void Remove(Guid id) {
 			IScriptModuleDescriptor descriptor = Modules.GetDescriptorById<IScriptModuleDescriptor>(id);
-			_languageIndex.Remove(descriptor.Language);
+			if(descriptor != null) {
+				_languageIndex.Remove(descriptor.Language);
+			}
 		}
 
 		public IScriptSkeletonGenerator GetSkeletonGenerator(string language) {
