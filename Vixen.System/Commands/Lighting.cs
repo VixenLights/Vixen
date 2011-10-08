@@ -5,6 +5,7 @@ using System.Text;
 using Vixen.Sys;
 using Vixen.Module.CommandStandardExtension;
 using Vixen.Commands.KnownDataTypes;
+using System.Drawing;
 
 namespace Vixen.Commands {
 	public class Lighting {
@@ -99,7 +100,11 @@ namespace Vixen.Commands {
 
 				public override Command Combine(Command other) {
 					SetColor otherCommand = other as SetColor;
-					int color = Math.Max(Color, otherCommand.Color);
+					Color color = Color.FromArgb(
+						Math.Max(Color.R, otherCommand.Color.R),
+						Math.Max(Color.G, otherCommand.Color.G),
+						Math.Max(Color.B, otherCommand.Color.B)
+						);
 					return new SetColor(color);
 				}
 

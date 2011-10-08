@@ -44,7 +44,7 @@ namespace VixenModules.Property.RGB
 			set { _data = value as RGBData; }
 		}
 
-		public ChannelCommands RenderColorToCommands(CommonElements.ColorManagement.ColorModels.RGB color, Level level)
+		public ChannelCommands RenderColorToCommands(Color color, Level level)
 		{
 			ChannelCommands result = new ChannelCommands();
 
@@ -54,16 +54,16 @@ namespace VixenModules.Property.RGB
 			// if it's all getting dumped out each channel, just make 'smart' RGB commands for them
 			if (_data.RGBType == RGBModelType.eSingleRGBChannel)
 			{
-				Vixen.Commands.KnownDataTypes.Color fullColorParameter = finalColor.ToRGB().ToArgb();
+				Color fullColorParameter = finalColor.ToRGB().ToArgb();
 				result.AddCommandForChannel(Owner.Id, new Lighting.Polychrome.SetColor(fullColorParameter));
 			}
 			// otherwise, we're breaking it up by channel, so split the color up into discrete components
 			else
 			{
-				// TODO: do these need to be scaled by 0xFF? (levels are 0-100)
-				Level R = finalColor.ToRGB().R;
-				Level G = finalColor.ToRGB().G;
-				Level B = finalColor.ToRGB().B;
+				// These need to be scaled: levels are 0-100, components are 0.0 - 1.0
+				Level R = finalColor.ToRGB().R * 100.0;
+				Level G = finalColor.ToRGB().G * 100.0;
+				Level B = finalColor.ToRGB().B * 100.0;
 
 				// populate the red channel(s) with a setlevel of the red value
 				ChannelNode redNode = ChannelNode.GetChannelNode(_data.RedChannelNode);

@@ -69,43 +69,6 @@ namespace Vixen.Commands.KnownDataTypes {
 	//}
 	//#endregion
 
-	#region Color
-	[DataContract]
-	public struct Color {
-		[DataMember]
-		private int _value;
-
-		private Color(int value) {
-			_value = value;
-		}
-
-		private Color(System.Drawing.Color value) {
-			_value = value.ToArgb();
-		}
-
-		public static implicit operator int(Color value)
-		{
-			return value._value;
-		}
-
-		public static implicit operator Color(int value) {
-			return new Color(value);
-		}
-
-		public static implicit operator System.Drawing.Color(Color value) {
-			return System.Drawing.Color.FromArgb(value._value);
-		}
-
-		public static implicit operator Color(System.Drawing.Color value) {
-			return new Color(value);
-		}
-
-		public override string ToString() {
-			return _value.ToString();
-		}
-	}
-	#endregion
-
 	#region Position
 	[DataContract]
 	public struct Position {

@@ -8,7 +8,7 @@
     <ProjectGuid>{8910163E-A2A3-4F8B-B5D8-0E311166B8BA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SetLevel</RootNamespace>
+    <RootNamespace>VixenModules.Effect.SetLevel</RootNamespace>
     <AssemblyName>SetLevel</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
@@ -57,9 +57,11 @@
   <ItemGroup>
     <Reference Include="CommonElements">
       <HintPath>..\..\..\Output\CommonElements.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="Vixen">
       <HintPath>..\..\..\Output\Vixen.dll</HintPath>

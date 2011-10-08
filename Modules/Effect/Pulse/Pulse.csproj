@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{758A8F91-F351-4C1A-BCFD-741349B4B05C}</ProjectGuid>
+    <ProjectGuid>{A815A79E-305D-4167-A0BC-FFA590BB4644}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TestAppModule</RootNamespace>
-    <AssemblyName>TestAppModule</AssemblyName>
+    <RootNamespace>VixenModules.Effect.Pulse</RootNamespace>
+    <AssemblyName>Pulse</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Output\Modules\App\</OutputPath>
+    <OutputPath>..\..\..\Output\Modules\Effect\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -31,25 +31,45 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CommonElements">
+      <HintPath>..\..\..\Output\CommonElements.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Vixen">
+      <HintPath>..\..\..\Output\Vixen.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExecutionValueMonitorDescriptor.cs" />
-    <Compile Include="ExecutionValueMonitorModule.cs" />
+    <Compile Include="Pulse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PulseData.cs" />
+    <Compile Include="PulseDescriptor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Vixen.System\Vixen.csproj">
-      <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
-      <Name>Vixen</Name>
+    <ProjectReference Include="..\..\App\ColorGradients\ColorGradients.csproj">
+      <Project>{1B189B36-02AF-4A57-9E1B-6DC833212725}</Project>
+      <Name>ColorGradients</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\App\Curves\Curves.csproj">
+      <Project>{F0BA7127-61B4-453A-802B-ABCB5A0D3D54}</Project>
+      <Name>Curves</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Property\RGB\RGB.csproj">
+      <Project>{3D1BD0E2-B947-4235-A2A7-30AA4F13CA86}</Project>
+      <Name>RGB</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

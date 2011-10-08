@@ -10,6 +10,7 @@ using Vixen.Commands;
 using Vixen.Commands.KnownDataTypes;
 using VixenModules.Property.RGB;
 using CommonElements.ColorManagement.ColorModels;
+using System.Drawing;
 
 namespace VixenModules.Effect.SetLevel
 {
@@ -61,7 +62,7 @@ namespace VixenModules.Effect.SetLevel
 			set { _data.level = value; }
 		}
 
-		public RGB Color
+		public Color Color
 		{
 			get { return _data.color; }
 			set { _data.color = value; }
@@ -73,7 +74,7 @@ namespace VixenModules.Effect.SetLevel
 		{
 			// if this node is an RGB node, then it will know what to do with it (might render directly,
 			// might be broken down into sub-channels, etc.) So just pass it off to that instead.
-			if (node.Properties.Contains(SetLevelModuleDescriptor._rgbProperty)) {
+			if (node.Properties.Contains(SetLevelDescriptor._rgbProperty)) {
 				RenderRGB(node);
 			} else {
 				if (node.IsLeaf) {
@@ -101,7 +102,7 @@ namespace VixenModules.Effect.SetLevel
 		private void RenderRGB(ChannelNode node)
 		{
 			// get the RGB property for the channel, and get it to render the data for us
-			RGBModule rgbProperty = node.Properties.Get(SetLevelModuleDescriptor._rgbProperty) as RGBModule;
+			RGBModule rgbProperty = node.Properties.Get(SetLevelDescriptor._rgbProperty) as RGBModule;
 			ChannelCommands rgbData = rgbProperty.RenderColorToCommands(Color, Level);
 
 			// iterate through the rendered commands, adjust them to fit our times, and add them to our rendered data

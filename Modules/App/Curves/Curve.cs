@@ -10,7 +10,7 @@ using ZedGraph;
 namespace VixenModules.App.Curves
 {
 	[Serializable]
-	class Curve
+	public class Curve
 	{
 		public Curve(IPointList points)
 		{

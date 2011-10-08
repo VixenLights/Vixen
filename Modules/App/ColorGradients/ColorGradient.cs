@@ -458,6 +458,10 @@ namespace VixenModules.App.ColorGradients
 			SearchPos<float,float>(blend.Positions, (float)pos, out a, out b);
 			return Interpolate(blend.Colors, blend.Positions, a, b, pos);
 		}
+		public Color GetColorAt(double pos)
+		{
+			return GetColorAt((float)pos);
+		}
 		#region properties
 		/// <summary>
 		/// gets or sets
