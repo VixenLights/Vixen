@@ -7,7 +7,7 @@ using Vixen.Module.Sequence;
 
 namespace VixenModules.Sequence.Timed {
 	public class TimedSequenceModuleDescriptor : SequenceModuleDescriptorBase {
-		private Guid _typeId = new Guid("{4C258A3B-E725-4AE7-B50B-103F6AB8121E}");
+		private Guid _typeId = new Guid("{296bdba2-9bf3-4bff-a9f2-13efac5c8ecb}");
 
 		override public string FileExtension {
 			get { return ".tim"; }

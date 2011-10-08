@@ -37,9 +37,9 @@
 			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.addEffectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripEffects = new System.Windows.Forms.ToolStrip();
 			this.timelineControl = new CommonElements.Timeline.TimelineControl();
-			this.addEffectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripOperations.SuspendLayout();
 			this.menuStrip.SuspendLayout();
 			this.SuspendLayout();
@@ -121,6 +121,12 @@
 			this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
 			this.editToolStripMenuItem.Text = "Edit";
 			// 
+			// addEffectToolStripMenuItem
+			// 
+			this.addEffectToolStripMenuItem.Name = "addEffectToolStripMenuItem";
+			this.addEffectToolStripMenuItem.Size = new System.Drawing.Size(74, 20);
+			this.addEffectToolStripMenuItem.Text = "Add Effect";
+			// 
 			// toolStripEffects
 			// 
 			this.toolStripEffects.Location = new System.Drawing.Point(0, 49);
@@ -131,6 +137,9 @@
 			// 
 			// timelineControl
 			// 
+			this.timelineControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.timelineControl.AutoSize = true;
 			this.timelineControl.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.timelineControl.Location = new System.Drawing.Point(12, 77);
@@ -142,12 +151,6 @@
 			this.timelineControl.VerticalOffset = 0;
 			this.timelineControl.VisibleTimeEnd = System.TimeSpan.Parse("00:00:07.7300000");
 			this.timelineControl.VisibleTimeStart = System.TimeSpan.Parse("00:00:00");
-			// 
-			// addEffectToolStripMenuItem
-			// 
-			this.addEffectToolStripMenuItem.Name = "addEffectToolStripMenuItem";
-			this.addEffectToolStripMenuItem.Size = new System.Drawing.Size(74, 20);
-			this.addEffectToolStripMenuItem.Text = "Add Effect";
 			// 
 			// TimedSequenceEditorForm
 			// 

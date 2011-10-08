@@ -50,22 +50,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void LoadAvailableEffects()
 		{
-			foreach (IEffectModuleInstance effect in ApplicationServices.GetAll<IEffectModuleInstance>()) {
+			
+
+
+			//foreach (IEffectModuleInstance effect in ApplicationServices.GetAll<IEffectModuleInstance>()) {
+			foreach (IEffectModuleDescriptor effectDesriptor in ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>()) {
 				// Add an entry to the menu
-				ToolStripMenuItem menuItem = new ToolStripMenuItem(effect.EffectName);
-
-				//TODO: We got an exception when this was called. the modified line worked (using Descriptor)
-				//menuItem.Tag = effect.InstanceId;
-				menuItem.Tag = effect.Descriptor.TypeId;
+				ToolStripMenuItem menuItem = new ToolStripMenuItem(effectDesriptor.EffectName);
+				menuItem.Tag = effectDesriptor.TypeId;
 				menuItem.Click += (sender, e) => {
-
+					// TODO
 				};
 				addEffectToolStripMenuItem.DropDownItems.Add(menuItem);
 
 				// Add a button to the tool strip
-				ToolStripItem tsItem = new ToolStripButton(effect.EffectName);
-				//tsItem.Tag = effect.InstanceId;
-				tsItem.Tag = effect.Descriptor.TypeId;
+				ToolStripItem tsItem = new ToolStripButton(effectDesriptor.EffectName);
+				tsItem.Tag = effectDesriptor.TypeId;
 				tsItem.MouseDown += toolStripEffects_Item_MouseDown;
 				toolStripEffects.Items.Add(tsItem);
 			}
@@ -203,10 +203,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				// make a new element for each row that represents the channel this command is in.
 				foreach (TimelineRow row in targetRows) {
 					
-					//TimedSequenceElement element = new TimedSequenceElement();
-					//element.StartTime = node.StartTime;
-					//element.Duration = node.TimeSpan;
-					//element.CommandNode = node;
 					TimedSequenceElement element = new TimedSequenceElement(node);
 
 					element.ElementContentChanged += ElementContentChangedHandler;
@@ -254,7 +250,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			TimedSequenceElement element = sender as TimedSequenceElement;
 			// TODO: I'm not sure if we will need to do anything here; if we are updating effect details,
-			// will the EffectEditors configure the CommandNode object directly?
+			// will the EffectEditors configure the EffectNode object directly?
 			IsModified = true;
 		}
 
@@ -279,11 +275,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ChannelNode newNode = e.NewRow.Tag as ChannelNode;
 			TimedSequenceElement element = e.Element as TimedSequenceElement;
 
-			// TODO
-			//if (element.Effect.Effect.TargetNodes.Contains(oldNode))
-			//    element.Effect.Effect.TargetNodes.Remove(oldNode);
-
-			//element.Effect.Effect.TargetNodes.Add(newNode);
+			// TODO: there's *got* to be a better way of adding/removing a single item from an array...
+			List<ChannelNode> nodeList = new List<ChannelNode>(element.Effect.Effect.TargetNodes);
+			if (nodeList.Contains(oldNode))
+				nodeList.Remove(oldNode);
+			nodeList.Add(newNode);
+			element.Effect.Effect.TargetNodes = nodeList.ToArray();
 		}
 
 		#endregion
@@ -314,23 +311,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#endregion
 
+
+
 		private void toolStripButton1_Click(object sender, EventArgs e)
 		{
-			/*
-			Command command = new Command(new Guid("{603E3297-994C-4705-9F17-02A62ECC14B5}"), null);
-			CommandNode cn = _sequence.InsertData(new[] { timelineControl.First().Tag as ChannelNode },
-				TimeSpan.FromSeconds(0.0), TimeSpan.FromSeconds(2.0), command);
-
-			TimedSequenceElement newItem = new TimedSequenceElement();
-			newItem.StartTime = cn.StartTime;
-			newItem.Duration = cn.TimeSpan;
-			newItem.BackColor = Color.DodgerBlue;
-			newItem.CommandNode = cn;
-
-			timelineControl.First().AddElement(newItem);
-			 */
-
-			addEffect(new Guid("{603E3297-994C-4705-9F17-02A62ECC14B5}"), timelineControl.First(),
+			addEffect(new Guid("{32cff8e0-5b10-4466-a093-0d232c55aac0}"), timelineControl.First(),
 				TimeSpan.FromSeconds(0.0), TimeSpan.FromSeconds(2.0));
 		}
 
@@ -339,17 +324,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// </summary>
 		private void addEffect(Guid effectId, TimelineRow row, TimeSpan startTime, TimeSpan timeSpan)
 		{
-			/*
+			// get the target channel
 			ChannelNode targetNode = (ChannelNode)row.Tag;
-			Command command = new Command(effectId, null);
-			
-			CommandNode cmdNode = _sequence.InsertData(new[] { targetNode }, startTime, timeSpan, command);
 
-			TimedSequenceElement elem = new TimedSequenceElement(cmdNode);
-			elem.BackColor = Color.DodgerBlue;
+			// get a new instance of this effect, populate it, and make a node for it
+			IEffectModuleInstance effect = Vixen.Sys.ApplicationServices.Get<IEffectModuleInstance>(effectId);
+			effect.TargetNodes = new ChannelNode[] { targetNode };
+			effect.TimeSpan = timeSpan;
+			EffectNode effectNode = new EffectNode(effect, startTime);
 
+			// put it in the sequence and in the timeline display
+			_sequence.InsertData(effectNode);
+			TimedSequenceElement elem = new TimedSequenceElement(effectNode);
+			elem.BackColor = Color.DodgerBlue;		// TODO
 			row.AddElement(elem);
-			*/
 		}
 
 
@@ -376,14 +364,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				addEffect(effectGuid, e.Row, e.Time, timeSpan);
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
 				Debugger.Break();
 			}
 		}
 
 		#endregion
-
-
 	}
 }

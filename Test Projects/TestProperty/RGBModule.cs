@@ -9,7 +9,7 @@ namespace TestProperty {
 		private Guid _id = new Guid("{55960E71-2151-454c-885E-00B9713A93EF}");
 
 		override public string TypeName {
-			get { return "RGB"; }
+			get { return "RGB (test)"; }
 		}
 
 		override public Guid TypeId {

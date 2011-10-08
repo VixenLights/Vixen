@@ -7,7 +7,7 @@ using Vixen.Module.Property;
 namespace VixenModules.Property.RGB
 {
 	public class RGBDescriptor : PropertyModuleDescriptorBase {
-		private static Guid _id = new Guid("{55960E71-2151-454C-885E-00B9713A93EF}");
+		private static Guid _id = new Guid("{5c31be79-a6a7-4864-a660-4e0215ad4778}");
 
 		override public string TypeName {
 			get { return "RGB"; }

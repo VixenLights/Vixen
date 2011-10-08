@@ -14,16 +14,17 @@ namespace VixenModules.Effect.Pulse
 	public class PulseDescriptor : EffectModuleDescriptorBase
 	{
 		private Guid _typeId = new Guid("{cbd76d3b-c924-40ff-bad6-d1437b3dbdc0}");
-		static internal Guid _rgbProperty = new Guid("{55960E71-2151-454c-885E-00B9713A93EF}");
-		private CommandParameterSignature _parameters = new CommandParameterSignature(
-			new CommandParameterSpecification("Curve", typeof(Curve)),
-			new CommandParameterSpecification("ColorGradient", typeof(ColorGradient))
-			);
+
+		static internal Guid RGBProperty = new Guid("{5c31be79-a6a7-4864-a660-4e0215ad4778}");
+		static internal Guid CurvesModule = new Guid("{4e258de2-7a75-4f0f-aa43-c8182e7f3400}");
+		static internal Guid ColorGradientModule = new Guid("{64f4ab26-3ed4-49a3-a004-23656ed0424a}");
 
 		public PulseDescriptor()
 		{
 			PropertyDependencies = new[] {
-				_rgbProperty
+				RGBProperty,
+				CurvesModule,
+				ColorGradientModule,
 			};
 		}
 
@@ -34,7 +35,13 @@ namespace VixenModules.Effect.Pulse
 
 		override public CommandParameterSignature Parameters
 		{
-			get { return _parameters; }
+			get
+			{
+				return new CommandParameterSignature(
+					new CommandParameterSpecification("Curve", typeof(Curve)),
+					new CommandParameterSpecification("ColorGradient", typeof(ColorGradient))
+					);
+			}
 		}
 
 		override public Guid TypeId

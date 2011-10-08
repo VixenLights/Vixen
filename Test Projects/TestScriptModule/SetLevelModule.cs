@@ -12,7 +12,7 @@ namespace TestScriptModule {
 		private Guid _typeId = new Guid("{603E3297-994C-4705-9F17-02A62ECC14B5}");
 		static internal Guid _rgbProperty = new Guid("{55960E71-2151-454c-885E-00B9713A93EF}");
 		private Guid[] _dependencies;
-		private string _commandName = "Set level";
+		private string _commandName = "Set level (test)";
 		private CommandParameterSignature _parameters = new CommandParameterSignature(new CommandParameterSpecification("Level", typeof(Level)));
 
 		public SetLevelModule() {

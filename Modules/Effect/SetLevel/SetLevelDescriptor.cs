@@ -11,14 +11,14 @@ namespace VixenModules.Effect.SetLevel
 {
 	public class SetLevelDescriptor : EffectModuleDescriptorBase
 	{
-		private Guid _typeId = new Guid("{603E3297-994C-4705-9F17-02A62ECC14B5}");
-		static internal Guid _rgbProperty = new Guid("{55960E71-2151-454c-885E-00B9713A93EF}");
+		private Guid _typeId = new Guid("{32cff8e0-5b10-4466-a093-0d232c55aac0}");
+		static internal Guid RGBProperty = new Guid("{5c31be79-a6a7-4864-a660-4e0215ad4778}");
 		private CommandParameterSignature _parameters = new CommandParameterSignature(new CommandParameterSpecification("Level", typeof(Level)));
 
 		public SetLevelDescriptor()
 		{
 			PropertyDependencies = new[] {
-				_rgbProperty
+				RGBProperty
 			};
 		}
 

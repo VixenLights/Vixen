@@ -26,7 +26,7 @@ namespace TestSequences {
 		}
 
 		override public string TypeName {
-			get { return "Timed sequence"; }
+			get { return "Timed sequence (test)"; }
 		}
 
 		override public string Description {

@@ -21,7 +21,7 @@ namespace TestOutput {
 		}
 
 		override public string TypeName {
-			get { return "Renard"; }
+			get { return "Test Renard"; }
 		}
 
 		override public string Description {
