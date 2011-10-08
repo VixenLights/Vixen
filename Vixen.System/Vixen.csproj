@@ -119,6 +119,7 @@
     <Compile Include="IO\Xml\XmlContextReader.cs" />
     <Compile Include="IO\Xml\XmlContextWriter.cs" />
     <Compile Include="Module\Editor\IEditorUserInterface.cs" />
+    <Compile Include="Module\Effect\ChannelCommands.cs" />
     <Compile Include="Module\MediaRenderer\IMediaRenderer.cs" />
     <Compile Include="Module\MediaRenderer\IMediaRendererModuleDescriptor.cs" />
     <Compile Include="Module\MediaRenderer\IMediaRendererModuleInstance.cs" />

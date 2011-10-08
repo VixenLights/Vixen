@@ -42,10 +42,12 @@
 			this.buttonOpenSequence = new System.Windows.Forms.Button();
 			this.buttonNewSequence = new System.Windows.Forms.Button();
 			this.tabControlMain = new System.Windows.Forms.TabControl();
+			this.tabPageTest = new System.Windows.Forms.TabPage();
 			this.button1 = new System.Windows.Forms.Button();
 			this.tabPageDisplaySetup.SuspendLayout();
 			this.tabPageSequences.SuspendLayout();
 			this.tabControlMain.SuspendLayout();
+			this.tabPageTest.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -88,6 +90,7 @@
 			// 
 			// buttonSetupPatches
 			// 
+			this.buttonSetupPatches.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.buttonSetupPatches.Location = new System.Drawing.Point(106, 226);
 			this.buttonSetupPatches.Name = "buttonSetupPatches";
 			this.buttonSetupPatches.Size = new System.Drawing.Size(233, 34);
@@ -98,6 +101,7 @@
 			// 
 			// buttonSetupOutputControllers
 			// 
+			this.buttonSetupOutputControllers.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.buttonSetupOutputControllers.Location = new System.Drawing.Point(106, 140);
 			this.buttonSetupOutputControllers.Name = "buttonSetupOutputControllers";
 			this.buttonSetupOutputControllers.Size = new System.Drawing.Size(233, 34);
@@ -108,6 +112,7 @@
 			// 
 			// buttonSetupChannels
 			// 
+			this.buttonSetupChannels.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.buttonSetupChannels.Location = new System.Drawing.Point(106, 56);
 			this.buttonSetupChannels.Name = "buttonSetupChannels";
 			this.buttonSetupChannels.Size = new System.Drawing.Size(233, 34);
@@ -132,6 +137,7 @@
 			// 
 			// label2
 			// 
+			this.label2.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(104, 157);
 			this.label2.Name = "label2";
@@ -141,6 +147,7 @@
 			// 
 			// listBoxRecentSequences
 			// 
+			this.listBoxRecentSequences.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.listBoxRecentSequences.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.listBoxRecentSequences.FormattingEnabled = true;
 			this.listBoxRecentSequences.Items.AddRange(new object[] {
@@ -155,6 +162,7 @@
 			// 
 			// buttonOpenSequence
 			// 
+			this.buttonOpenSequence.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.buttonOpenSequence.Location = new System.Drawing.Point(107, 94);
 			this.buttonOpenSequence.Name = "buttonOpenSequence";
 			this.buttonOpenSequence.Size = new System.Drawing.Size(233, 34);
@@ -165,6 +173,7 @@
 			// 
 			// buttonNewSequence
 			// 
+			this.buttonNewSequence.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.buttonNewSequence.Location = new System.Drawing.Point(107, 39);
 			this.buttonNewSequence.Name = "buttonNewSequence";
 			this.buttonNewSequence.Size = new System.Drawing.Size(233, 34);
@@ -175,9 +184,13 @@
 			// 
 			// tabControlMain
 			// 
+			this.tabControlMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.tabControlMain.Controls.Add(this.tabPageSequences);
 			this.tabControlMain.Controls.Add(this.tabPageDisplaySetup);
 			this.tabControlMain.Controls.Add(this.tabPageAdministration);
+			this.tabControlMain.Controls.Add(this.tabPageTest);
 			this.tabControlMain.HotTrack = true;
 			this.tabControlMain.Location = new System.Drawing.Point(12, 93);
 			this.tabControlMain.Multiline = true;
@@ -186,22 +199,32 @@
 			this.tabControlMain.Size = new System.Drawing.Size(460, 413);
 			this.tabControlMain.TabIndex = 0;
 			// 
+			// tabPageTest
+			// 
+			this.tabPageTest.Controls.Add(this.button1);
+			this.tabPageTest.Location = new System.Drawing.Point(4, 22);
+			this.tabPageTest.Name = "tabPageTest";
+			this.tabPageTest.Size = new System.Drawing.Size(452, 387);
+			this.tabPageTest.TabIndex = 3;
+			this.tabPageTest.Text = "Test";
+			this.tabPageTest.UseVisualStyleBackColor = true;
+			// 
 			// button1
 			// 
-			this.button1.Location = new System.Drawing.Point(372, 22);
+			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.button1.Location = new System.Drawing.Point(92, 65);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(75, 23);
-			this.button1.TabIndex = 2;
+			this.button1.TabIndex = 6;
 			this.button1.Text = "picker";
 			this.button1.UseVisualStyleBackColor = true;
-			this.button1.Click += new System.EventHandler(this.button1_Click);
+			this.button1.Click += new System.EventHandler(this.button1_Click_1);
 			// 
 			// VixenApplication
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(484, 518);
-			this.Controls.Add(this.button1);
 			this.Controls.Add(this.tabControlMain);
 			this.Controls.Add(this.label1);
 			this.Name = "VixenApplication";
@@ -212,6 +235,7 @@
 			this.tabPageSequences.ResumeLayout(false);
 			this.tabPageSequences.PerformLayout();
 			this.tabControlMain.ResumeLayout(false);
+			this.tabPageTest.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -232,6 +256,7 @@
 		private System.Windows.Forms.Button buttonSetupPatches;
 		private System.Windows.Forms.Button buttonSetupOutputControllers;
 		private System.Windows.Forms.Button buttonSetupChannels;
+		private System.Windows.Forms.TabPage tabPageTest;
 		private System.Windows.Forms.Button button1;
 	}
 }

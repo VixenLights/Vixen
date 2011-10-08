@@ -44,9 +44,9 @@ namespace VixenModules.Property.RGB
 			set { _data = value as RGBData; }
 		}
 
-		public ChannelData RenderColorToCommands(CommonElements.ColorManagement.ColorModels.RGB color, Level level)
+		public ChannelCommands RenderColorToCommands(CommonElements.ColorManagement.ColorModels.RGB color, Level level)
 		{
-			ChannelData result = new ChannelData();
+			ChannelCommands result = new ChannelCommands();
 
 			HSV finalColor = HSV.FromRGB(color);
 			finalColor.V = level;
@@ -55,11 +55,12 @@ namespace VixenModules.Property.RGB
 			if (_data.RGBType == RGBModelType.eSingleRGBChannel)
 			{
 				Vixen.Commands.KnownDataTypes.Color fullColorParameter = finalColor.ToRGB().ToArgb();
-				PopulateChannelDataWithCommandsForChannelNode(result, Owner, new Lighting.Polychrome.SetColor(fullColorParameter));
+				result.AddCommandForChannel(Owner.Id, new Lighting.Polychrome.SetColor(fullColorParameter));
 			}
 			// otherwise, we're breaking it up by channel, so split the color up into discrete components
 			else
 			{
+				// TODO: do these need to be scaled by 0xFF? (levels are 0-100)
 				Level R = finalColor.ToRGB().R;
 				Level G = finalColor.ToRGB().G;
 				Level B = finalColor.ToRGB().B;
@@ -67,39 +68,26 @@ namespace VixenModules.Property.RGB
 				// populate the red channel(s) with a setlevel of the red value
 				ChannelNode redNode = ChannelNode.GetChannelNode(_data.RedChannelNode);
 				if (redNode != null) {
-					PopulateChannelDataWithCommandsForChannelNode(result, redNode, new Lighting.Monochrome.SetLevel(R));
+					result.AddCommandForChannel(redNode.Id, new Lighting.Monochrome.SetLevel(R));
 				}
 				
 				// populate the green channel(s) with a setlevel of the green value
 				ChannelNode greenNode = ChannelNode.GetChannelNode(_data.GreenChannelNode);
 				if (greenNode != null) {
-					PopulateChannelDataWithCommandsForChannelNode(result, greenNode, new Lighting.Monochrome.SetLevel(G));
+					result.AddCommandForChannel(greenNode.Id, new Lighting.Monochrome.SetLevel(G));
 				}
 				
 				// populate the blue channel(s) with a setlevel of the blue value
 				ChannelNode blueNode = ChannelNode.GetChannelNode(_data.BlueChannelNode);
 				if (blueNode != null) {
-					PopulateChannelDataWithCommandsForChannelNode(result, blueNode, new Lighting.Monochrome.SetLevel(B));
+					result.AddCommandForChannel(blueNode.Id, new Lighting.Monochrome.SetLevel(B));
 				}
 			}
 
 			return result;
 		}
 
-		private void PopulateChannelDataWithCommandsForChannelNode(ChannelData data, ChannelNode node, Command command)
-		{
-			foreach (Channel c in node) {
-				CommandNode newCommand = new CommandNode(
-					command,
-					TimeSpan.Zero,		// default to 0 for the start and duration, the receiving effect can clean it up how it wants
-					TimeSpan.Zero
-					);
-				data.AddCommandForChannel(c.Id, newCommand);
-			}
-
-		}
-
-		public static ChannelData RenderColorToCommandsForNode(ChannelNode node, CommonElements.ColorManagement.ColorModels.RGB color, Level level)
+		public static ChannelCommands RenderColorToCommandsForNode(ChannelNode node, CommonElements.ColorManagement.ColorModels.RGB color, Level level)
 		{
 			RGBModule instance = node.Properties.Get(RGBDescriptor.ModuleID) as RGBModule;
 			if (instance == null)

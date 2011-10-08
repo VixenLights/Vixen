@@ -1,7 +1,7 @@
 using System;
 using System.Drawing;
 
-namespace ControlsEx
+namespace CommonElements.ControlsEx
 {
 	/// <summary>
 	/// scalefactor is an encapsulation of real fractions

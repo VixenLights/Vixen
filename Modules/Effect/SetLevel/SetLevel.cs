@@ -102,13 +102,13 @@ namespace VixenModules.Effect.SetLevel
 		{
 			// get the RGB property for the channel, and get it to render the data for us
 			RGBModule rgbProperty = node.Properties.Get(SetLevelModuleDescriptor._rgbProperty) as RGBModule;
-			ChannelData rgbData = rgbProperty.RenderColorToCommands(Color, Level);
+			ChannelCommands rgbData = rgbProperty.RenderColorToCommands(Color, Level);
 
 			// iterate through the rendered commands, adjust them to fit our times, and add them to our rendered data
-			foreach (KeyValuePair<Guid, CommandNode[]> kvp in rgbData) {
-				foreach (CommandNode cn in kvp.Value) {
-					CommandNode newCommandNode = new CommandNode(cn.Command, TimeSpan.Zero, TimeSpan);
-					_channelData.AddCommandForChannel(kvp.Key, newCommandNode);
+			foreach (KeyValuePair<Guid, Command[]> kvp in rgbData) {
+				foreach (Command c in kvp.Value) {
+					CommandNode newCommandNode = new CommandNode(c, TimeSpan.Zero, TimeSpan);
+					_channelData.AddCommandNodeForChannel(kvp.Key, newCommandNode);
 				}
 			}
 		}

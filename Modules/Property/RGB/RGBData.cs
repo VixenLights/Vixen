@@ -28,6 +28,7 @@ namespace VixenModules.Property.RGB
 			result.RedChannelNode = RedChannelNode;
 			result.GreenChannelNode = GreenChannelNode;
 			result.BlueChannelNode = BlueChannelNode;
+			result.RGBType = RGBType;
 			return result;
 		}
 	}

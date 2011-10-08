@@ -16,7 +16,7 @@ namespace Vixen.Module.Effect {
 			: base(data) {
 		}
 
-		public void AddCommandsForChannel(Guid channel, CommandNode[] commands)
+		public void AddCommandNodesForChannel(Guid channel, CommandNode[] commands)
 		{
 			if (ContainsKey(channel)) {
 				this[channel] = this[channel].Concat(commands).ToArray();
@@ -25,9 +25,9 @@ namespace Vixen.Module.Effect {
 			}
 		}
 
-		public void AddCommandForChannel(Guid channel, CommandNode command)
+		public void AddCommandNodeForChannel(Guid channel, CommandNode command)
 		{
-			AddCommandsForChannel(channel, new CommandNode[] { command });
+			AddCommandNodesForChannel(channel, new CommandNode[] { command });
 		}
 
 		static public ChannelData Restrict(ChannelData channelData, TimeSpan startTime, TimeSpan endTime)

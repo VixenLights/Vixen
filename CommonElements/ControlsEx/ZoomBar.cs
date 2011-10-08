@@ -6,7 +6,7 @@ using System.Drawing;
 using CommonElements.ControlsEx.ValueControls;
 using System.ComponentModel;
 
-namespace ControlsEx
+namespace CommonElements.ControlsEx
 {
 	/// <summary>
 	/// scrollbar control for zoom levels in toolstrip or statusstrip

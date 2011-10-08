@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Collections;
 
-namespace ControlsEx
+namespace CommonElements.ControlsEx
 {
 	/// <summary>
 	/// wrapper list for lists, which elements super the type of another list.
