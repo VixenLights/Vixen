@@ -50,10 +50,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void LoadAvailableEffects()
 		{
-			
-
-
-			//foreach (IEffectModuleInstance effect in ApplicationServices.GetAll<IEffectModuleInstance>()) {
 			foreach (IEffectModuleDescriptor effectDesriptor in ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>()) {
 				// Add an entry to the menu
 				ToolStripMenuItem menuItem = new ToolStripMenuItem(effectDesriptor.EffectName);
@@ -198,24 +194,28 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// a single command, if there are multiple copies of the same channel node that it is in (ie.
 			// belonging to different groups, etc.) then add a new element for each row. We can just track the
 			// elements, and change the other "identical" elements if one of them changes.
-			if (_channelNodeToRows.ContainsKey(node.Effect.TargetNodes.First())) {
-				List<TimelineRow> targetRows = _channelNodeToRows[node.Effect.TargetNodes.First()];
-				// make a new element for each row that represents the channel this command is in.
-				foreach (TimelineRow row in targetRows) {
-					
-					TimedSequenceElement element = new TimedSequenceElement(node);
+			foreach (ChannelNode target in node.Effect.TargetNodes) {
+				if (_channelNodeToRows.ContainsKey(target)) {
+					List<TimelineRow> targetRows = _channelNodeToRows[target];
+					// make a new element for each row that represents the channel this command is in.
+					foreach (TimelineRow row in targetRows) {
 
-					element.ElementContentChanged += ElementContentChangedHandler;
-					element.ElementMoved += ElementMovedHandler;
-					if (_effectNodeToElements.ContainsKey(node))
-						_effectNodeToElements[node].Add(element);
-					else
-						_effectNodeToElements[node] = new List<TimelineElement> { element };
+						TimedSequenceElement element = new TimedSequenceElement(node);
+
+						element.ElementContentChanged += ElementContentChangedHandler;
+						element.ElementMoved += ElementMovedHandler;
+						if (_effectNodeToElements.ContainsKey(node))
+							_effectNodeToElements[node].Add(element);
+						else
+							_effectNodeToElements[node] = new List<TimelineElement> { element };
+
+						row.AddElement(element);
+					}
+				} else {
+					// we don't have a row for the channel this command is referencing; most likely, the row has
+					// been deleted, or we're opening someone else's sequence, etc. Big fat TODO: here for that, then.
+					// dunno what we want to do: prompt to add new channels for them? map them to others? etc.
 				}
-			} else {
-				// we don't have a row for the channel this command is referencing; most likely, the row has
-				// been deleted, or we're opening someone else's sequence, etc. Big fat TODO: here for that, then.
-				// dunno what we want to do: prompt to add new channels for them? map them to others? etc.
 			}
 		}
 
