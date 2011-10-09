@@ -8,7 +8,7 @@ using Vixen.Module.Editor;
 namespace TestEditor {
 	public class Module : EditorModuleDescriptorBase {
 		private Guid _typeId = new Guid("{B833C1AF-2397-419e-8B6B-DFE64511B57B}");
-		private string[] _extensions = new string[] { ".tim" };
+		private string[] _extensions = new string[] { ".timtest" };
 
 		override public string[] FileExtensions {
 			get { return _extensions; }

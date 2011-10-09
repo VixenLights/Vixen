@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Vixen.Sys;
 using Vixen.Module.Editor;
-
+using Vixen.Module.Sequence;
 
 namespace VixenApplication
 {
@@ -23,6 +23,8 @@ namespace VixenApplication
 			Vixen.Sys.VixenSystem.Start(this, false);
 
 			initializeEditorTypes();
+
+			openFileDialog.InitialDirectory = Vixen.Sys.Sequence.DefaultDirectory;
 		}
 
 		private void VixenApp_FormClosing(object sender, FormClosingEventArgs e)
@@ -120,7 +122,45 @@ namespace VixenApplication
 
 		private void buttonOpenSequence_Click(object sender, EventArgs e)
 		{
+			// configure the open file dialog with a filter for currently available sequence types
+			string filter = "";
+			string allTypes = "";
+			IEnumerable<ISequenceModuleDescriptor> sequenceDescriptors = ApplicationServices.GetModuleDescriptors<ISequenceModuleInstance>().Cast<ISequenceModuleDescriptor>();
+			foreach (ISequenceModuleDescriptor descriptor in sequenceDescriptors) {
+				filter += descriptor.TypeName + " (*" + descriptor.FileExtension + ")|*" + descriptor.FileExtension + "|";
+				allTypes += "*" + descriptor.FileExtension + ";";
+			}
+			filter += "All files (*.*)|*.*";
+			filter = "All Sequence Types (" + allTypes + ")|" + allTypes + "|" + filter;
 
+			openFileDialog.Filter = filter;
+
+			// if the user hit 'ok' on the dialog, try opening the selected file(s) in an approriate editor
+			if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+				Cursor = Cursors.WaitCursor;
+				foreach (string file in openFileDialog.FileNames) {
+					try {
+						Sequence sequence = Vixen.Sys.Sequence.Load(file);
+						IEditorUserInterface editor = ApplicationServices.GetEditor(file);
+
+								if (sequence == null) {
+							VixenSystem.Logging.Error("Can't load sequence in file " + file);
+							continue;
+						}
+
+						if (editor == null) {
+							VixenSystem.Logging.Error("Can't find an appropriate editor to open file " + file);
+							continue;
+						}
+
+						editor.Sequence = sequence;
+						_OpenEditor(editor);
+					} catch (Exception ex) {
+						VixenSystem.Logging.Error("Error trying to open file '" + file + "': ", ex);
+					}
+				}
+				Cursor = Cursors.Default;
+			}
 		}
 
 		private void buttonSetupChannels_Click(object sender, EventArgs e)

@@ -241,6 +241,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 					if (name.Trim() != "") {
 						// if the given extension isn't valid for this type, then keep the name intact and add an extension
+						// TODO: should we pick one type? Should an editor even be able to edit multiple file types? etc...
 						if (!((OwnerModule.Descriptor) as TimedSequenceEditorDescriptor).FileExtensions.Contains(extension)) {
 							name = name + extension;
 							extension = ((OwnerModule.Descriptor) as TimedSequenceEditorDescriptor).FileExtensions.First();

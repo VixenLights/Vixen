@@ -10,7 +10,7 @@ namespace TestSequences {
 		private Guid _typeId = new Guid("{4C258A3B-E725-4ae7-B50B-103F6AB8121E}");
 
 		override public string FileExtension {
-			get { return ".tim"; }
+			get { return ".timtest"; }
 		}
 
 		override public Guid TypeId {

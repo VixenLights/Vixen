@@ -27,9 +27,17 @@ namespace Vixen.Sys {
 		[DataPath]
 		static private readonly string _directory = System.IO.Path.Combine(Paths.DataRootPath, DIRECTORY_NAME);
 
+		/// <summary>
+		/// The directory that this sequence type will be saved in.
+		/// </summary>
 		protected virtual string Directory {
 			get { return _directory; }
 		}
+
+		/// <summary>
+		/// the generic default directory for all sequence types.
+		/// </summary>
+		static public string DefaultDirectory { get { return _directory; } }
 
 		/// <summary>
 		/// Loads an existing instance.

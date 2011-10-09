@@ -44,6 +44,7 @@
 			this.tabControlMain = new System.Windows.Forms.TabControl();
 			this.tabPageTest = new System.Windows.Forms.TabPage();
 			this.button1 = new System.Windows.Forms.Button();
+			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.tabPageDisplaySetup.SuspendLayout();
 			this.tabPageSequences.SuspendLayout();
 			this.tabControlMain.SuspendLayout();
@@ -220,6 +221,10 @@
 			this.button1.UseVisualStyleBackColor = true;
 			this.button1.Click += new System.EventHandler(this.button1_Click_1);
 			// 
+			// openFileDialog
+			// 
+			this.openFileDialog.Multiselect = true;
+			// 
 			// VixenApplication
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -258,6 +263,7 @@
 		private System.Windows.Forms.Button buttonSetupChannels;
 		private System.Windows.Forms.TabPage tabPageTest;
 		private System.Windows.Forms.Button button1;
+		private System.Windows.Forms.OpenFileDialog openFileDialog;
 	}
 }
 
