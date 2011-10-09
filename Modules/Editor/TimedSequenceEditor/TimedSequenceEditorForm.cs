@@ -16,6 +16,7 @@ using Vixen.Module.Property;
 using CommonElements.Timeline;
 using VixenModules.Sequence.Timed;
 using System.Diagnostics;
+using System.IO;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -219,17 +220,37 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void SaveSequence(string filePath = null)
+		/// <summary>
+		/// Saves the current sequence to a file. May prompt for a file name to save the sequence to if needed.
+		/// </summary>
+		/// <param name="filePath">The filename to save the sequence to. If null, the filename in the sequence will be used.
+		/// If that is also null, the user will be prompted for a filename.</param>
+		/// <param name="forcePrompt">If true, the user will always be prompted for a filename to save the sequence to.</param>
+		private void SaveSequence(string filePath = null, bool forcePrompt = false)
 		{
 			if (_sequence == null) {
-				throw new NullReferenceException("Trying to save a sequence that is null!");
+				VixenSystem.Logging.Error("Trying to save a sequence that is null!");
 			}
 
-			if (filePath == null) {
-				if (_sequence.FilePath.Trim() == "") {
-					// TODO: browse window to find a suitable name for a sequence?
-					string newPath = "./asdfasdf.tim";
-					_sequence.Save(newPath);
+			if (filePath == null | forcePrompt) {
+				if (_sequence.FilePath.Trim() == "" || forcePrompt) {
+					CommonElements.TextDialog prompt = new CommonElements.TextDialog("Please enter a sequence name:");
+					prompt.ShowDialog();
+					string extension = Path.GetExtension(prompt.Response);
+					string name = Path.GetFileNameWithoutExtension(prompt.Response);
+
+					if (name.Trim() != "") {
+						// if the given extension isn't valid for this type, then keep the name intact and add an extension
+						if (!((OwnerModule.Descriptor) as TimedSequenceEditorDescriptor).FileExtensions.Contains(extension)) {
+							name = name + extension;
+							extension = ((OwnerModule.Descriptor) as TimedSequenceEditorDescriptor).FileExtensions.First();
+						}
+
+						_sequence.Save(name + extension);
+					} else {
+						VixenSystem.Logging.Info("No name given for sequence on save, not saving.");
+						return;
+					}
 				} else {
 					_sequence.Save();
 				}
@@ -239,7 +260,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			IsModified = false;
 		}
-
 
 		#endregion
 
@@ -289,22 +309,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Tool Strip Menu Items
 
-		private void newToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			NewSequence();
-		}
-
-		private void openToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-
-		}
-
-		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+		private void toolStripMenuItem_Save_Click(object sender, EventArgs e)
 		{
 			SaveSequence();
 		}
 
-		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+		private void toolStripMenuItem_SaveAs_Click(object sender, EventArgs e)
+		{
+			SaveSequence(null, true);
+		}
+
+		private void toolStripMenuItem_Close_Click(object sender, EventArgs e)
 		{
 			Close();
 		}
@@ -369,5 +384,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		#endregion
+
 	}
 }
