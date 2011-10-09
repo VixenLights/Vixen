@@ -291,7 +291,7 @@ namespace CommonElements.Timeline
 
 		public void ClearRowElements()
 		{
-			foreach (TimelineElement element in m_elements)
+			foreach (TimelineElement element in m_elements.ToArray())
 				RemoveElement(element);
 
 			_RowChanged();

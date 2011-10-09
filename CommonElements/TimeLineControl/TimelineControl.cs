@@ -143,6 +143,12 @@ namespace CommonElements.Timeline
 			timelineRowList.AddRowLabel(label);
 		}
 
+		private void RemoveRowFromControls(TimelineRow row)
+		{
+			timelineGrid.Rows.Remove(row);
+			timelineRowList.RemoveRowLabel(row.RowLabel);
+		}
+
 		// adds a given row to the control, optionally as a child of the given parent
 		public void AddRow(TimelineRow row, TimelineRow parent = null)
 		{
@@ -205,7 +211,7 @@ namespace CommonElements.Timeline
 		/// </summary>
 		public void ClearAllElements()
 		{
-			foreach (TimelineRow row in timelineGrid.Rows) {
+			foreach (TimelineRow row in timelineGrid) {
 				row.ClearAllElements();
 			}
 		}
@@ -217,7 +223,9 @@ namespace CommonElements.Timeline
 		public void ClearAllRows()
 		{
 			ClearAllElements();
-			timelineGrid.Rows.Clear();
+			foreach (TimelineRow row in timelineGrid.ToArray()) {
+				RemoveRowFromControls(row);
+			}
 		}
 
 		public IEnumerator<TimelineRow> GetEnumerator()
