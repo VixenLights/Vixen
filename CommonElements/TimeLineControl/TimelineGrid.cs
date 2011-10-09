@@ -26,8 +26,6 @@ namespace CommonElements.Timeline
 		private TimeSpan m_cursorPosition;						// the current grid 'cursor' position (line drawn vertically)
 		private Size m_dragAutoscrollDistance;					// how far in either dimension the mouse has moved outside a bounding area,
 																// so we should scroll the viewable pane that direction
-
-
 		#endregion
 
 
@@ -572,9 +570,9 @@ namespace CommonElements.Timeline
 		}
 
 		/// <summary>
-		/// Returns the row located at the current point in screen coordinates
+		/// Returns the row located at the current point in client coordinates
 		/// </summary>
-		/// <param name="p">Screen coordinates - WRONG - It is client coordinates.</param>
+		/// <param name="p">Client coordinates.</param>
 		/// <returns>Row at given point, or null if none exists.</returns>
 		protected TimelineRow rowAt(Point p)
 		{
@@ -595,9 +593,9 @@ namespace CommonElements.Timeline
 		}
 
 		/// <summary>
-		/// Returns the element located at the current point in screen coordinates
+		/// Returns the element located at the current point in client coordinates
 		/// </summary>
-		/// <param name="p">Screen coordinates - WRONG - It is client coordinates.</param>
+		/// <param name="p">Client coordinates.</param>
 		/// <returns>Element at given point, or null if none exists.</returns>
 		protected TimelineElement elementAt(Point p)
 		{
@@ -1328,6 +1326,7 @@ namespace CommonElements.Timeline
 		}
 
 		#endregion
+
 
 		#region External Drag/Drop
 

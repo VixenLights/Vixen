@@ -52,12 +52,12 @@ namespace CommonElements.Timeline
 			set { RowLabel.Name = value; _RowChanged(); }
 		}
 
-		protected List<TimelineElement> Elements
+		protected IEnumerable<TimelineElement> Elements
 		{
 			get { return m_elements; }
 		}
 
-		public List<TimelineElement> SelectedElements
+		public IEnumerable<TimelineElement> SelectedElements
 		{
 			get { return m_selectedElements; }
 		}

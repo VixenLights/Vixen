@@ -335,9 +335,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			// put it in the sequence and in the timeline display
 			_sequence.InsertData(effectNode);
-			TimedSequenceElement elem = new TimedSequenceElement(effectNode);
-			elem.BackColor = Color.DodgerBlue;		// TODO
-			row.AddElement(elem);
+			AddNewElementForEffectNode(effectNode);
 		}
 
 
