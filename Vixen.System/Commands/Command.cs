@@ -31,7 +31,15 @@ namespace Vixen.Commands {
 			Command firstCommand = commands.First();
 			if(count == 1) return firstCommand;
 
-			return commands.Aggregate((command1, command2) => command1.Combine(command2));
+			return commands.Aggregate((command1, command2) => {
+					if(command1 != null) {
+						return command1.Combine(command2);
+					} else if(command2 != null) {
+						return command2.Combine(command1);
+					}
+					// Both are null
+					return null;
+				});
 		}
 	}
 }

@@ -19,10 +19,10 @@ namespace Vixen.Sys {
         /// Notifies the application that it needs to be refreshed.
         /// </summary>
         void Refresh();
-        event KeyEventHandler KeyDown;
-        event KeyEventHandler KeyUp;
-        event MouseEventHandler MouseDown;
-        event MouseEventHandler MouseMove;
-        event MouseEventHandler MouseUp;
+		//event KeyEventHandler KeyDown;
+		//event KeyEventHandler KeyUp;
+		//event MouseEventHandler MouseDown;
+		//event MouseEventHandler MouseMove;
+		//event MouseEventHandler MouseUp;
     }
 }
