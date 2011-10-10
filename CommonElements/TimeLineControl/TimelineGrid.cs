@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ namespace CommonElements.Timeline
 		private Point m_selectionRectangleStart;				// the location (on the grid canvas) where the selection box starts.
 		private Rectangle m_ignoreDragArea;						// the area in which move movements should be ignored, before we start dragging
 		private TimelineElement m_mouseDownElement = null;		// the element under the cursor on a mouse click
+		private TimelineRow m_mouseDownElementRow = null;		// the row that the clicked m_mouseDownElement belongs to (a single element may be in multiple rows)
 		private TimeSpan m_totalTime;							// the total amount of time this grid represents
 		private TimeSpan m_cursorPosition;						// the current grid 'cursor' position (line drawn vertically)
 		private Size m_dragAutoscrollDistance;					// how far in either dimension the mouse has moved outside a bounding area,
@@ -144,15 +146,11 @@ namespace CommonElements.Timeline
 			set { m_rows = value; }
 		}
 
-		public List<TimelineElement> SelectedElements
+		public IEnumerable<TimelineElement> SelectedElements
 		{
 			get
 			{
-				List<TimelineElement> result = new List<TimelineElement>();
-				foreach (TimelineRow row in Rows) {
-					result.AddRange(row.SelectedElements);
-				}
-				return result;
+				return Rows.SelectMany(x => x.SelectedElements).Distinct();
 			}
 		}
 
@@ -265,7 +263,6 @@ namespace CommonElements.Timeline
 
 			if (e.KeyChar == (char)27)  // ESC
             {
-				SelectedElements.Clear();
 				endDrag();  // do this regardless of if we're dragging or not.
 			}
 		}
@@ -303,6 +300,7 @@ namespace CommonElements.Timeline
 
 			Point gridLocation = translateLocation(e.Location);
 			m_mouseDownElement = elementAt(gridLocation);
+			m_mouseDownElementRow = rowAt(gridLocation);
 
 			if (e.Button == MouseButtons.Left) {
 				// we clicked on the background - clear anything that is selected, and begin a
@@ -442,7 +440,7 @@ namespace CommonElements.Timeline
 			if (m_dragState == DragState.Dragging) {
 
 				// if we don't have anything selected, there's no point dragging anything...
-				if (SelectedElements.Count == 0)
+				if (SelectedElements.Count() == 0)
 					return;
 
 				Point d = new Point(e.X - m_lastMouseLocation.X, e.Y - m_lastMouseLocation.Y);
@@ -558,7 +556,7 @@ namespace CommonElements.Timeline
 
 		public void ClearSelectedElements()
 		{
-			foreach (TimelineElement te in SelectedElements)
+			foreach (TimelineElement te in SelectedElements.ToArray())
 				te.Selected = false;
 		}
 
@@ -692,33 +690,75 @@ namespace CommonElements.Timeline
 			} // end foreach
 		}
 
-		public TimelineRow GetHighestRowForElements(IEnumerable<TimelineElement> elements, bool visibleOnly)
+		private struct RowElementCombo
 		{
-			for (int i = 0; i < Rows.Count; i++) {
-				foreach (TimelineElement element in elements) {
-					if (visibleOnly && !Rows[i].Visible)
-						continue;
+			public TimelineRow Row;
+			public TimelineElement Element;
+		}
 
+		public TimelineRow GetHighestRowForElements(IEnumerable<TimelineElement> elements, bool visibleOnly, TimelineRow skipDuplicatesUnlessInRow)
+		{
+			List<RowElementCombo> results = new List<RowElementCombo>();
+			Dictionary<TimelineElement, int> seenElements = new Dictionary<TimelineElement, int>();
+
+			for (int i = 0; i < Rows.Count; i++) {
+				if (visibleOnly && !Rows[i].Visible)
+					continue;
+
+				foreach (TimelineElement element in elements) {
 					if (Rows[i].ContainsElement(element)) {
-						return Rows[i];
+						if (skipDuplicatesUnlessInRow == null)
+							return Rows[i];
+
+						if (Rows[i] == skipDuplicatesUnlessInRow)
+							return Rows[i];
+
+						results.Add(new RowElementCombo { Row = Rows[i], Element = element });
+						if (seenElements.ContainsKey(element))
+							seenElements[element]++;
+						else
+							seenElements[element] = 0;
 					}
 				}
+			}
+
+			foreach (RowElementCombo result in results) {
+				if (seenElements[result.Element] <= 1 || result.Row == skipDuplicatesUnlessInRow)
+					return result.Row;
 			}
 
 			return null;
 		}
 
-		public TimelineRow GetLowestRowForElements(IEnumerable<TimelineElement> elements, bool visibleOnly)
+		public TimelineRow GetLowestRowForElements(IEnumerable<TimelineElement> elements, bool visibleOnly, TimelineRow skipDuplicatesUnlessInRow)
 		{
-			for (int i = Rows.Count - 1; i >= 0; i--) {
-				foreach (TimelineElement element in elements) {
-					if (visibleOnly && !Rows[i].Visible)
-						continue;
+			List<RowElementCombo> results = new List<RowElementCombo>();
+			Dictionary<TimelineElement, int> seenElements = new Dictionary<TimelineElement, int>();
 
+			for (int i = Rows.Count - 1; i >= 0; i--) {
+				if (visibleOnly && !Rows[i].Visible)
+					continue;
+
+				foreach (TimelineElement element in elements) {
 					if (Rows[i].ContainsElement(element)) {
-						return Rows[i];
+						if (skipDuplicatesUnlessInRow == null)
+							return Rows[i];
+
+						if (Rows[i] == skipDuplicatesUnlessInRow)
+							return Rows[i];
+
+						results.Add(new RowElementCombo { Row = Rows[i], Element = element });
+						if (seenElements.ContainsKey(element))
+							seenElements[element]++;
+						else
+							seenElements[element] = 0;
 					}
 				}
+			}
+
+			foreach (RowElementCombo result in results) {
+				if (seenElements[result.Element] <= 1 || result.Row == skipDuplicatesUnlessInRow)
+					return result.Row;
 			}
 
 			return null;
@@ -914,8 +954,8 @@ namespace CommonElements.Timeline
 			int visibleRowsToMove = visibleRows.IndexOf(destRow) - visibleRows.IndexOf(Rows[CurrentRowIndexUnderMouse]);
 
 			// find the highest and lowest visible rows with selected elements in them
-			int topElementVisibleRowIndex = visibleRows.IndexOf(GetHighestRowForElements(elements, true));
-			int bottomElementVisibleRowIndex = visibleRows.IndexOf(GetLowestRowForElements(elements, true));
+			int topElementVisibleRowIndex = visibleRows.IndexOf(GetHighestRowForElements(elements, true, m_mouseDownElementRow));
+			int bottomElementVisibleRowIndex = visibleRows.IndexOf(GetLowestRowForElements(elements, true, m_mouseDownElementRow));
 
 			if (visibleRowsToMove < 0 && -visibleRowsToMove > topElementVisibleRowIndex)
 				visibleRowsToMove = -topElementVisibleRowIndex;
@@ -931,6 +971,13 @@ namespace CommonElements.Timeline
 				elementsToMove.Add(e, false);
 			}
 
+			// take note of which elements should be moved with respect to the current mouseover row, and not just the first
+			// row instance for the element that comes along
+			HashSet<TimelineElement> ElementsToMoveInMouseRow = new HashSet<TimelineElement>(m_mouseDownElementRow.SelectedElements);
+
+			// record the row that the mouse down element moves to, to update the m_mouseDownElementRow variable later
+			TimelineRow newMouseDownRow = m_mouseDownElementRow;
+
 			for (int i = 0; i < visibleRows.Count; i++) {
 				List<TimelineElement> elementsMoved = new List<TimelineElement>();
 
@@ -943,6 +990,10 @@ namespace CommonElements.Timeline
 					if (moved)
 						continue;
 
+					// if the element should be ignored (ie. it's a duplicate of an item in the mouseDownElement row)
+					if (ElementsToMoveInMouseRow.Contains(element) && visibleRows[i] != m_mouseDownElementRow)
+						continue;
+
 					// if the current element is in the current visble row, move it to wherever it needs
 					// to go, and also flag that it has been moved
 					if (visibleRows[i].ContainsElement(element)) {
@@ -950,6 +1001,9 @@ namespace CommonElements.Timeline
 						visibleRows[i + visibleRowsToMove].AddElement(element);
 						elementsMoved.Add(element);
 						_ElementChangedRows(element, visibleRows[i], visibleRows[i + visibleRowsToMove]);
+
+						if (element == m_mouseDownElement)
+							newMouseDownRow = visibleRows[i + visibleRowsToMove];
 					}
 				}
 
@@ -958,6 +1012,7 @@ namespace CommonElements.Timeline
 			}
 
 			CurrentRowIndexUnderMouse = Rows.IndexOf(visibleRows[(visibleRows.IndexOf(Rows[CurrentRowIndexUnderMouse]) + visibleRowsToMove)]);
+			m_mouseDownElementRow = newMouseDownRow;
 
 			Invalidate();
 		}

@@ -25,7 +25,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#region Member Variables
 
 		private TimedSequence _sequence;
-		private Dictionary<EffectNode, List<TimelineElement>> _effectNodeToElements;
+		private Dictionary<EffectNode, TimelineElement> _effectNodeToElement;
 		private Dictionary<ChannelNode, List<TimelineRow>> _channelNodeToRows;
 
 		#endregion
@@ -36,7 +36,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			InitializeComponent();
 
-			_effectNodeToElements = new Dictionary<EffectNode, List<TimelineElement>>();
+			_effectNodeToElement = new Dictionary<EffectNode, TimelineElement>();
 			_channelNodeToRows = new Dictionary<ChannelNode, List<TimelineRow>>();
 
 			timelineControl.ElementChangedRows += ElementChangedRowsHandler;
@@ -153,6 +153,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// made the new row from the given node and add it to the control.
 			TimelineRow newRow = timelineControl.AddRow(node.Name, parentRow);
 			newRow.ElementRemoved += ElementRemovedFromRowHandler;
+			newRow.ElementAdded += ElementAddedToRowHandler;
 
 			// Tag it with the node it refers to, and take note of which row the given channel node will refer to.
 			newRow.Tag = node;
@@ -181,43 +182,65 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			// load the new data: get all the commands in the sequence, and make a new element for each of them.
 			foreach (EffectNode node in _sequence.Data.GetEffects()) {
-				AddNewElementForEffectNode(node);
+				AddElementForEffectNode(node);
 			}
+
+			IsModified = false;
 		}
 
 		/// <summary>
-		/// Populates the TimelineControl grid with a new TimedSequenceElement for the given CommandNode.
+		/// Populates the TimelineControl grid with a new TimedSequenceElement for the given EffectNode.
+		/// Will add a single TimedSequenceElement to in each row that each targeted channel of
+		/// the EffectNode references. It will also add callbacks to event handlers for the element.
 		/// </summary>
-		/// <param name="node">The EffectNode to make an element in the grid for.</param>
-		private void AddNewElementForEffectNode(EffectNode node)
+		/// <param name="node">The EffectNode to make element(s) in the grid for.</param>
+		private void AddElementForEffectNode(EffectNode node)
 		{
-			// for the command, make a new element for every separate row its in; even though there's only
-			// a single command, if there are multiple copies of the same channel node that it is in (ie.
-			// belonging to different groups, etc.) then add a new element for each row. We can just track the
-			// elements, and change the other "identical" elements if one of them changes.
+			TimedSequenceElement element = null;
+			// for the effect, make a single element and add it to every row that represents its target channels
 			foreach (ChannelNode target in node.Effect.TargetNodes) {
 				if (_channelNodeToRows.ContainsKey(target)) {
 					List<TimelineRow> targetRows = _channelNodeToRows[target];
 					// make a new element for each row that represents the channel this command is in.
 					foreach (TimelineRow row in targetRows) {
+						if (element == null) {
+							element = new TimedSequenceElement(node);
+							element.ElementContentChanged += ElementContentChangedHandler;
+							element.ElementMoved += ElementMovedHandler;
 
-						TimedSequenceElement element = new TimedSequenceElement(node);
-
-						element.ElementContentChanged += ElementContentChangedHandler;
-						element.ElementMoved += ElementMovedHandler;
-						if (_effectNodeToElements.ContainsKey(node))
-							_effectNodeToElements[node].Add(element);
-						else
-							_effectNodeToElements[node] = new List<TimelineElement> { element };
+							if (_effectNodeToElement.ContainsKey(node))
+								_effectNodeToElement[node] = element;
+							else
+								VixenSystem.Logging.Debug("TimedSequenceEditor: Making a new element, but the map already has one!");
+						}
 
 						row.AddElement(element);
 					}
 				} else {
-					// we don't have a row for the channel this command is referencing; most likely, the row has
+					// we don't have a row for the channel this effect is referencing; most likely, the row has
 					// been deleted, or we're opening someone else's sequence, etc. Big fat TODO: here for that, then.
 					// dunno what we want to do: prompt to add new channels for them? map them to others? etc.
 				}
 			}
+		}
+
+		/// <summary>
+		/// Removes the TimedSequenceElement in the TimelineControl that refer to the given effect node.
+		/// </summary>
+		/// <param name="node">The EffectNode to purge the element in the grid for.</param>
+		private void RemoveElementForEffectNode(EffectNode node)
+		{
+			TimelineElement element = _effectNodeToElement[node];
+			// iterate through all rows, trying to remove the element that the given effect is represented by
+			foreach (TimelineRow row in timelineControl) {
+				if (row.ContainsElement(element)) {
+					row.RemoveElement(element);
+				}
+			}
+
+			element.ElementContentChanged -= ElementContentChangedHandler;
+			element.ElementMoved -= ElementMovedHandler;
+			_effectNodeToElement.Remove(node);
 		}
 
 		/// <summary>
@@ -277,31 +300,56 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		protected void ElementMovedHandler(object sender, EventArgs e)
 		{
+			// update the effect this element represents
 			TimedSequenceElement element = sender as TimedSequenceElement;
-			element.Effect.StartTime = element.StartTime;
-			element.Effect.Effect.TimeSpan = element.Duration;
+			element.EffectNode.StartTime = element.StartTime;
+			element.EffectNode.Effect.TimeSpan = element.Duration;
 			IsModified = true;
 		}
 
 		protected void ElementRemovedFromRowHandler(object sender, ElementEventArgs e)
 		{
-			e.Element.ElementContentChanged -= ElementContentChangedHandler;
-			e.Element.ElementMoved -= ElementMovedHandler;
-			IsModified = true;
+			// not currently used
+		}
+
+		protected void ElementAddedToRowHandler(object sender, ElementEventArgs e)
+		{
+			// not currently used
 		}
 
 		protected void ElementChangedRowsHandler(object sender, ElementRowChangeEventArgs e)
 		{
-			ChannelNode oldNode = e.OldRow.Tag as ChannelNode;
-			ChannelNode newNode = e.NewRow.Tag as ChannelNode;
-			TimedSequenceElement element = e.Element as TimedSequenceElement;
+			ChannelNode oldChannel = e.OldRow.Tag as ChannelNode;
+			ChannelNode newChannel = e.NewRow.Tag as ChannelNode;
+			TimedSequenceElement movedElement = e.Element as TimedSequenceElement;
+			//List<TimelineElement> targetElements = _effectNodeToElement[movedElement.EffectNode];
 
+			// retarget the selected element from the old channel it was in to the new channel it was dragged to
 			// TODO: there's *got* to be a better way of adding/removing a single item from an array...
-			List<ChannelNode> nodeList = new List<ChannelNode>(element.Effect.Effect.TargetNodes);
-			if (nodeList.Contains(oldNode))
-				nodeList.Remove(oldNode);
-			nodeList.Add(newNode);
-			element.Effect.Effect.TargetNodes = nodeList.ToArray();
+			List<ChannelNode> nodeList = new List<ChannelNode>(movedElement.EffectNode.Effect.TargetNodes);
+			if (nodeList.Contains(oldChannel)) {
+				nodeList.Remove(oldChannel);
+			} else {
+				VixenSystem.Logging.Debug("TimedSequenceEditor: moving an element from " + e.OldRow.Name +
+					" to " + e.NewRow.Name + "and the effect element wasn't in the old row channel!");
+			}
+			nodeList.Add(newChannel);
+			movedElement.EffectNode.Effect.TargetNodes = nodeList.ToArray();
+
+			// now that the effect that this element has been updated to accurately reflect the change,
+			// move the actual element around. It's a single element in the grid, belonging to multiple rows:
+			// so find all rows that represent the old channel, remove the element from them, and also find
+			// all rows that represent the new channel and add it to them.
+			foreach (TimelineRow row in timelineControl) {
+				ChannelNode rowChannel = row.Tag as ChannelNode;
+
+				if (rowChannel == oldChannel && row != e.OldRow)
+					row.RemoveElement(movedElement);
+				if (rowChannel == newChannel && row != e.NewRow)
+					row.AddElement(movedElement);
+			}
+
+			IsModified = true;
 		}
 
 		#endregion
@@ -328,30 +376,28 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#endregion
 
 
-
-		private void toolStripButton1_Click(object sender, EventArgs e)
-		{
-			addEffect(new Guid("{32cff8e0-5b10-4466-a093-0d232c55aac0}"), timelineControl.First(),
-				TimeSpan.FromSeconds(0.0), TimeSpan.FromSeconds(2.0));
-		}
-
 		/// <summary>
 		/// Adds an effect to the sequence and timelineControl.
 		/// </summary>
-		private void addEffect(Guid effectId, TimelineRow row, TimeSpan startTime, TimeSpan timeSpan)
+		private void addNewEffect(Guid effectId, TimelineRow row, TimeSpan startTime, TimeSpan timeSpan)
 		{
-			// get the target channel
-			ChannelNode targetNode = (ChannelNode)row.Tag;
+			try {
+				// get the target channel
+				ChannelNode targetNode = (ChannelNode)row.Tag;
 
-			// get a new instance of this effect, populate it, and make a node for it
-			IEffectModuleInstance effect = Vixen.Sys.ApplicationServices.Get<IEffectModuleInstance>(effectId);
-			effect.TargetNodes = new ChannelNode[] { targetNode };
-			effect.TimeSpan = timeSpan;
-			EffectNode effectNode = new EffectNode(effect, startTime);
+				// get a new instance of this effect, populate it, and make a node for it
+				IEffectModuleInstance effect = Vixen.Sys.ApplicationServices.Get<IEffectModuleInstance>(effectId);
+				effect.TargetNodes = new ChannelNode[] { targetNode };
+				effect.TimeSpan = timeSpan;
+				EffectNode effectNode = new EffectNode(effect, startTime);
 
-			// put it in the sequence and in the timeline display
-			_sequence.InsertData(effectNode);
-			AddNewElementForEffectNode(effectNode);
+				// put it in the sequence and in the timeline display
+				_sequence.InsertData(effectNode);
+				AddElementForEffectNode(effectNode);
+				IsModified = true;
+			} catch (Exception ex) {
+				VixenSystem.Logging.Error("TimedSequenceEditor: error adding effect of type " + effectId + " to row " + row.Name + ": ", ex);
+			}
 		}
 
 
@@ -369,19 +415,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		void timelineControl_DataDropped(object sender, TimelineDropEventArgs e)
 		{
 			Guid effectGuid = (Guid)e.Data.GetData(DataFormats.Serializable);
-
-			//string msg = string.Format("About to add Row: {0}\nTime: {1}\nEffect GUID: {2}", e.Row, e.Time, effectGuid);
-			//MessageBox.Show(msg);
-
 			TimeSpan timeSpan = TimeSpan.FromSeconds(2.0);	// TODO: need a default value here. I suggest a per-effect default.
-			try
-			{
-				addEffect(effectGuid, e.Row, e.Time, timeSpan);
-			}
-			catch (Exception ex)
-			{
-				Debugger.Break();
-			}
+			addNewEffect(effectGuid, e.Row, e.Time, timeSpan);
 		}
 
 		#endregion

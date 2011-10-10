@@ -27,9 +27,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TimedSequenceEditorForm));
 			this.toolStripOperations = new System.Windows.Forms.ToolStrip();
-			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
 			this.menuStrip = new System.Windows.Forms.MenuStrip();
 			this.sequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_Save = new System.Windows.Forms.ToolStripMenuItem();
@@ -39,29 +37,16 @@
 			this.addEffectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripEffects = new System.Windows.Forms.ToolStrip();
 			this.timelineControl = new CommonElements.Timeline.TimelineControl();
-			this.toolStripOperations.SuspendLayout();
 			this.menuStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// toolStripOperations
 			// 
-			this.toolStripOperations.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripButton1});
 			this.toolStripOperations.Location = new System.Drawing.Point(0, 24);
 			this.toolStripOperations.Name = "toolStripOperations";
 			this.toolStripOperations.Size = new System.Drawing.Size(1088, 25);
 			this.toolStripOperations.TabIndex = 1;
 			this.toolStripOperations.Text = "Operations";
-			// 
-			// toolStripButton1
-			// 
-			this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-			this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButton1.Name = "toolStripButton1";
-			this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
-			this.toolStripButton1.Text = "toolStripButton1";
-			this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
 			// 
 			// menuStrip
 			// 
@@ -157,8 +142,6 @@
 			this.MainMenuStrip = this.menuStrip;
 			this.Name = "TimedSequenceEditorForm";
 			this.Text = "Timed Sequence Editor";
-			this.toolStripOperations.ResumeLayout(false);
-			this.toolStripOperations.PerformLayout();
 			this.menuStrip.ResumeLayout(false);
 			this.menuStrip.PerformLayout();
 			this.ResumeLayout(false);
@@ -170,7 +153,6 @@
 
 		private CommonElements.Timeline.TimelineControl timelineControl;
 		private System.Windows.Forms.ToolStrip toolStripOperations;
-		private System.Windows.Forms.ToolStripButton toolStripButton1;
 		private System.Windows.Forms.MenuStrip menuStrip;
 		private System.Windows.Forms.ToolStripMenuItem sequenceToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_Save;

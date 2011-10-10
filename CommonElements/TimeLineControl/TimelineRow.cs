@@ -297,14 +297,6 @@ namespace CommonElements.Timeline
 			_RowChanged();
 		}
 
-		public void ClearAllElements()
-		{
-			foreach (TimelineRow child in ChildRows) {
-				child.ClearAllElements();
-			}
-			ClearRowElements();
-		}
-
 		public void AddChildRow(TimelineRow row)
 		{
 			ChildRows.Add(row);

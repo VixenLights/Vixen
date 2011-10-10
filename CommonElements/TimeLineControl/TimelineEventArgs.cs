@@ -22,7 +22,7 @@ namespace CommonElements.Timeline
 
 	public class MultiElementEventArgs : EventArgs
 	{
-		public List<TimelineElement> Elements { get; set; }
+		public IEnumerable<TimelineElement> Elements { get; set; }
 	}
 
 

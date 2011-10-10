@@ -212,7 +212,7 @@ namespace CommonElements.Timeline
 		public void ClearAllElements()
 		{
 			foreach (TimelineRow row in timelineGrid) {
-				row.ClearAllElements();
+				row.ClearRowElements();
 			}
 		}
 
@@ -227,6 +227,8 @@ namespace CommonElements.Timeline
 				RemoveRowFromControls(row);
 			}
 		}
+
+
 
 		public IEnumerator<TimelineRow> GetEnumerator()
 		{

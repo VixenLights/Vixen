@@ -30,6 +30,9 @@ namespace CommonElements.Timeline
 				if (value < TimeSpan.Zero)
 					value = TimeSpan.Zero;
 
+				if (m_startTime == value)
+					return;
+
 				m_startTime = value;
 				_ElementMoved();
 			}
@@ -41,7 +44,14 @@ namespace CommonElements.Timeline
         public TimeSpan Duration
         {
             get { return m_duration; }
-			set { m_duration = value; _ElementMoved(); }
+			set
+			{
+				if (m_duration == value)
+					return;
+
+				m_duration = value;
+				_ElementMoved();
+			}
         }
 
 		/// <summary>
