@@ -105,6 +105,15 @@ namespace VixenApplication
 
 		private bool _CloseEditor(IEditorUserInterface editor)
 		{
+			if (editor.IsModified) {
+				DialogResult result = MessageBox.Show("Save changes to the sequence?", "Save Changes?", MessageBoxButtons.YesNoCancel);
+				if (result == System.Windows.Forms.DialogResult.Cancel)
+					return false;
+
+				if (result == System.Windows.Forms.DialogResult.Yes)
+					editor.Save();
+			}
+
 			if (_openEditors.Contains(editor))
 			{
 				_openEditors.Remove(editor);
