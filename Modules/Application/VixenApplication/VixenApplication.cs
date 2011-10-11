@@ -20,7 +20,7 @@ namespace VixenApplication
 		{
 			InitializeComponent();
 
-			Vixen.Sys.VixenSystem.Start(this, false);
+			Vixen.Sys.VixenSystem.Start(this, true);
 
 			initializeEditorTypes();
 

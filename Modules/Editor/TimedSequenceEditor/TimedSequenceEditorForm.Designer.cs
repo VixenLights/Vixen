@@ -27,7 +27,12 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TimedSequenceEditorForm));
 			this.toolStripOperations = new System.Windows.Forms.ToolStrip();
+			this.toolStripButton_Play = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton_Stop = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton_Pause = new System.Windows.Forms.ToolStripButton();
 			this.menuStrip = new System.Windows.Forms.MenuStrip();
 			this.sequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_Save = new System.Windows.Forms.ToolStripMenuItem();
@@ -37,16 +42,55 @@
 			this.addEffectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripEffects = new System.Windows.Forms.ToolStrip();
 			this.timelineControl = new CommonElements.Timeline.TimelineControl();
+			this.timerPlaying = new System.Windows.Forms.Timer(this.components);
+			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+			this.toolStripStatusLabel_currentTime = new System.Windows.Forms.ToolStripStatusLabel();
+			this.toolStripOperations.SuspendLayout();
 			this.menuStrip.SuspendLayout();
+			this.statusStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// toolStripOperations
 			// 
+			this.toolStripOperations.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripButton_Play,
+            this.toolStripButton_Stop,
+            this.toolStripButton_Pause});
 			this.toolStripOperations.Location = new System.Drawing.Point(0, 24);
 			this.toolStripOperations.Name = "toolStripOperations";
 			this.toolStripOperations.Size = new System.Drawing.Size(1088, 25);
 			this.toolStripOperations.TabIndex = 1;
 			this.toolStripOperations.Text = "Operations";
+			// 
+			// toolStripButton_Play
+			// 
+			this.toolStripButton_Play.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton_Play.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_Play.Image")));
+			this.toolStripButton_Play.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton_Play.Name = "toolStripButton_Play";
+			this.toolStripButton_Play.Size = new System.Drawing.Size(23, 22);
+			this.toolStripButton_Play.Text = "Play";
+			this.toolStripButton_Play.Click += new System.EventHandler(this.toolStripButton_Play_Click);
+			// 
+			// toolStripButton_Stop
+			// 
+			this.toolStripButton_Stop.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton_Stop.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_Stop.Image")));
+			this.toolStripButton_Stop.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton_Stop.Name = "toolStripButton_Stop";
+			this.toolStripButton_Stop.Size = new System.Drawing.Size(23, 22);
+			this.toolStripButton_Stop.Text = "Stop";
+			this.toolStripButton_Stop.Click += new System.EventHandler(this.toolStripButton_Stop_Click);
+			// 
+			// toolStripButton_Pause
+			// 
+			this.toolStripButton_Pause.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton_Pause.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_Pause.Image")));
+			this.toolStripButton_Pause.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton_Pause.Name = "toolStripButton_Pause";
+			this.toolStripButton_Pause.Size = new System.Drawing.Size(23, 22);
+			this.toolStripButton_Pause.Text = "Pause";
+			this.toolStripButton_Pause.Click += new System.EventHandler(this.toolStripButton_Pause_Click);
 			// 
 			// menuStrip
 			// 
@@ -73,21 +117,21 @@
 			// toolStripMenuItem_Save
 			// 
 			this.toolStripMenuItem_Save.Name = "toolStripMenuItem_Save";
-			this.toolStripMenuItem_Save.Size = new System.Drawing.Size(152, 22);
+			this.toolStripMenuItem_Save.Size = new System.Drawing.Size(123, 22);
 			this.toolStripMenuItem_Save.Text = "Save";
 			this.toolStripMenuItem_Save.Click += new System.EventHandler(this.toolStripMenuItem_Save_Click);
 			// 
 			// toolStripMenuItem_SaveAs
 			// 
 			this.toolStripMenuItem_SaveAs.Name = "toolStripMenuItem_SaveAs";
-			this.toolStripMenuItem_SaveAs.Size = new System.Drawing.Size(152, 22);
+			this.toolStripMenuItem_SaveAs.Size = new System.Drawing.Size(123, 22);
 			this.toolStripMenuItem_SaveAs.Text = "Save As...";
 			this.toolStripMenuItem_SaveAs.Click += new System.EventHandler(this.toolStripMenuItem_SaveAs_Click);
 			// 
 			// toolStripMenuItem_Close
 			// 
 			this.toolStripMenuItem_Close.Name = "toolStripMenuItem_Close";
-			this.toolStripMenuItem_Close.Size = new System.Drawing.Size(152, 22);
+			this.toolStripMenuItem_Close.Size = new System.Drawing.Size(123, 22);
 			this.toolStripMenuItem_Close.Text = "Close";
 			this.toolStripMenuItem_Close.Click += new System.EventHandler(this.toolStripMenuItem_Close_Click);
 			// 
@@ -120,7 +164,7 @@
 			this.timelineControl.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.timelineControl.Location = new System.Drawing.Point(12, 77);
 			this.timelineControl.Name = "timelineControl";
-			this.timelineControl.Size = new System.Drawing.Size(1064, 661);
+			this.timelineControl.Size = new System.Drawing.Size(1064, 638);
 			this.timelineControl.TabIndex = 0;
 			this.timelineControl.TimePerPixel = System.TimeSpan.Parse("00:00:00.0100000");
 			this.timelineControl.TotalTime = System.TimeSpan.Parse("00:02:00");
@@ -128,12 +172,38 @@
 			this.timelineControl.VisibleTimeEnd = System.TimeSpan.Parse("00:00:07.7300000");
 			this.timelineControl.VisibleTimeStart = System.TimeSpan.Parse("00:00:00");
 			// 
+			// timerPlaying
+			// 
+			this.timerPlaying.Interval = 50;
+			this.timerPlaying.Tick += new System.EventHandler(this.timerPlaying_Tick);
+			// 
+			// statusStrip1
+			// 
+			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel_currentTime});
+			this.statusStrip1.Location = new System.Drawing.Point(0, 726);
+			this.statusStrip1.Name = "statusStrip1";
+			this.statusStrip1.Size = new System.Drawing.Size(1088, 24);
+			this.statusStrip1.TabIndex = 4;
+			this.statusStrip1.Text = "statusStrip1";
+			// 
+			// toolStripStatusLabel_currentTime
+			// 
+			this.toolStripStatusLabel_currentTime.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top)
+						| System.Windows.Forms.ToolStripStatusLabelBorderSides.Right)
+						| System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
+			this.toolStripStatusLabel_currentTime.BorderStyle = System.Windows.Forms.Border3DStyle.Sunken;
+			this.toolStripStatusLabel_currentTime.Name = "toolStripStatusLabel_currentTime";
+			this.toolStripStatusLabel_currentTime.Size = new System.Drawing.Size(47, 19);
+			this.toolStripStatusLabel_currentTime.Text = "0:00.00";
+			// 
 			// TimedSequenceEditorForm
 			// 
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1088, 750);
+			this.Controls.Add(this.statusStrip1);
 			this.Controls.Add(this.toolStripEffects);
 			this.Controls.Add(this.toolStripOperations);
 			this.Controls.Add(this.menuStrip);
@@ -142,8 +212,13 @@
 			this.MainMenuStrip = this.menuStrip;
 			this.Name = "TimedSequenceEditorForm";
 			this.Text = "Timed Sequence Editor";
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.TimedSequenceEditorForm_FormClosed);
+			this.toolStripOperations.ResumeLayout(false);
+			this.toolStripOperations.PerformLayout();
 			this.menuStrip.ResumeLayout(false);
 			this.menuStrip.PerformLayout();
+			this.statusStrip1.ResumeLayout(false);
+			this.statusStrip1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -161,5 +236,11 @@
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_Close;
 		private System.Windows.Forms.ToolStripMenuItem addEffectToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_SaveAs;
+		private System.Windows.Forms.ToolStripButton toolStripButton_Play;
+		private System.Windows.Forms.ToolStripButton toolStripButton_Stop;
+		private System.Windows.Forms.ToolStripButton toolStripButton_Pause;
+		private System.Windows.Forms.Timer timerPlaying;
+		private System.Windows.Forms.StatusStrip statusStrip1;
+		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel_currentTime;
 	}
 }

@@ -13,6 +13,7 @@ using Vixen.Module.Sequence;
 using Vixen.Module.Effect;
 using Vixen.Module.EffectEditor;
 using Vixen.Module.Property;
+using Vixen.Module.Timing;
 using CommonElements.Timeline;
 using VixenModules.Sequence.Timed;
 using System.Diagnostics;
@@ -25,6 +26,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#region Member Variables
 
 		private TimedSequence _sequence;
+		private ProgramContext _context;
+		private ITiming _timingSource;
 		private Dictionary<EffectNode, TimelineElement> _effectNodeToElement;
 		private Dictionary<ChannelNode, List<TimelineRow>> _channelNodeToRows;
 
@@ -45,7 +48,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			// JRR drag/drop
 			timelineControl.DataDropped += timelineControl_DataDropped;
-			
 		}
 
 
@@ -69,8 +71,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 
-
-
+	
 		#region IEditorUserInterface implementation
 
 		// TODO: what is this supposed to be for?
@@ -83,11 +84,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public void NewSequence()
 		{
-			// load all the system channels/groups to the control as rows. This will
-			// also clear the grid entirely, and start fresh.
-			LoadSystemNodesToRows();
-
-			_sequence = new TimedSequence();
+			Vixen.Sys.ISequence newSequence = new TimedSequence();
+			newSequence.Length = TimeSpan.FromMinutes(1);
+			Sequence = newSequence;
 
 			// TODO: do other stuff here like setting default zooms, clearing snaps, etc.
 		}
@@ -110,7 +109,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public Vixen.Sys.ISequence Sequence
 		{
 			get { return _sequence; }
-			set { LoadSequence(value);  }
+			set
+			{
+				LoadSequence(value);
+			}
 		}
 
 		public IEditorModuleInstance OwnerModule { get; set; }
@@ -176,6 +178,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			else {
 				throw new NotImplementedException("Cannot use sequence type with a Timed Sequence Editor");
 			}
+
+			timelineControl.TotalTime = _sequence.Length;
+
+			// update our program context with this sequence
+			OpenSequenceContext(sequence);
 
 			// clear out all the old data
 			LoadSystemNodesToRows();
@@ -356,6 +363,80 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 
 
+
+
+		#region Sequence actions (play, pause, etc.)
+
+		private void OpenSequenceContext(Vixen.Sys.ISequence sequence)
+		{
+			if (_context != null) {
+				CloseSequenceContext();
+			}
+			_context = Execution.CreateContext(Sequence);
+			_context.SequenceStarted += context_SequenceStarted;
+			_context.SequenceEnded += context_SequenceEnded;
+		}
+
+		private void CloseSequenceContext()
+		{
+			_context.SequenceStarted -= context_SequenceStarted;
+			_context.SequenceEnded -= context_SequenceEnded;
+			Execution.ReleaseContext(_context);
+		}
+
+		public void PlaySequence()
+		{
+			if (_context == null) {
+				VixenSystem.Logging.Error("TimedSequenceEditor: attempt to Play with null context!");
+				return;
+			}
+
+			_context.Play();
+		}
+
+		public void PauseSequence()
+		{
+			if (_context == null) {
+				VixenSystem.Logging.Error("TimedSequenceEditor: attempt to Play with null context!");
+				return;
+			}
+
+			_context.Pause();
+		}
+
+		public void StopSequence()
+		{
+			if (_context == null) {
+				VixenSystem.Logging.Error("TimedSequenceEditor: attempt to Play with null context!");
+				return;
+			}
+
+			_context.Stop();
+		}
+
+		void context_SequenceStarted(object sender, SequenceStartedEventArgs e)
+		{
+			timerPlaying.Start();
+			_timingSource = e.TimingSource;
+		}
+
+		void context_SequenceEnded(object sender, SequenceEventArgs e)
+		{
+			timerPlaying.Stop();
+			_timingSource = null;
+		}
+
+		private void timerPlaying_Tick(object sender, EventArgs e)
+		{
+			if (_timingSource != null)
+				toolStripStatusLabel_currentTime.Text = _timingSource.Position.ToString("m\\:ss\\.fff");
+		}
+
+		#endregion
+
+
+
+
 		#region Tool Strip Menu Items
 
 		private void toolStripMenuItem_Save_Click(object sender, EventArgs e)
@@ -372,6 +453,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			Close();
 		}
+
+
+		private void toolStripButton_Play_Click(object sender, EventArgs e)
+		{
+			PlaySequence();
+		}
+
+		private void toolStripButton_Stop_Click(object sender, EventArgs e)
+		{
+			StopSequence();
+		}
+
+		private void toolStripButton_Pause_Click(object sender, EventArgs e)
+		{
+			PauseSequence();
+		}
+
 
 		#endregion
 
@@ -420,6 +518,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		#endregion
+
+
+		private void TimedSequenceEditorForm_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			Execution.ReleaseContext(_context);
+		}
 
 	}
 }
