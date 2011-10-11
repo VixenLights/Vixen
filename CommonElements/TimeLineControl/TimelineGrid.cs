@@ -690,75 +690,92 @@ namespace CommonElements.Timeline
 			} // end foreach
 		}
 
-		private struct RowElementCombo
+		/// <summary>
+		/// Given a collection of elements, this method will count the number of times each element 'exists' in the rows of the grid.
+		/// (This could be more than once for each element, since a single element can be added to multiple rows at the same time).
+		/// </summary>
+		/// <param name="elements">The collection of elements to count.</param>
+		/// <param name="visibleOnly">If only visible rows should be counted or not.</param>
+		/// <returns>A dictionary which maps each supplied element to an int, for the number of times it exists.</returns>
+		private Dictionary<TimelineElement, int> CountRowsForElements(IEnumerable<TimelineElement> elements, bool visibleOnly)
 		{
-			public TimelineRow Row;
-			public TimelineElement Element;
-		}
-
-		public TimelineRow GetHighestRowForElements(IEnumerable<TimelineElement> elements, bool visibleOnly, TimelineRow skipDuplicatesUnlessInRow)
-		{
-			List<RowElementCombo> results = new List<RowElementCombo>();
-			Dictionary<TimelineElement, int> seenElements = new Dictionary<TimelineElement, int>();
-
-			for (int i = 0; i < Rows.Count; i++) {
-				if (visibleOnly && !Rows[i].Visible)
+			Dictionary<TimelineElement, int> result = elements.ToDictionary(e => e, e => 0);
+			foreach (TimelineRow row in Rows) {
+				if (visibleOnly && !row.Visible)
 					continue;
 
-				foreach (TimelineElement element in elements) {
-					if (Rows[i].ContainsElement(element)) {
-						if (skipDuplicatesUnlessInRow == null)
-							return Rows[i];
-
-						if (Rows[i] == skipDuplicatesUnlessInRow)
-							return Rows[i];
-
-						results.Add(new RowElementCombo { Row = Rows[i], Element = element });
-						if (seenElements.ContainsKey(element))
-							seenElements[element]++;
-						else
-							seenElements[element] = 0;
-					}
+				foreach (TimelineElement element in row) {
+					if (result.ContainsKey(element))
+						result[element]++;
 				}
 			}
 
-			foreach (RowElementCombo result in results) {
-				if (seenElements[result.Element] <= 1 || result.Row == skipDuplicatesUnlessInRow)
-					return result.Row;
-			}
-
-			return null;
+			return result;
 		}
 
-		public TimelineRow GetLowestRowForElements(IEnumerable<TimelineElement> elements, bool visibleOnly, TimelineRow skipDuplicatesUnlessInRow)
+		/// <summary>
+		/// Given a collection of elements in the grid, finds which row vertically bounds the collection. It can optionally consider
+		/// duplicate instances of an individual element, and finds the lowest/highest of the elements which includes the smallest set
+		/// of those duplicates.
+		/// </summary>
+		/// <param name="elements">The collection of elements to find a bounding row for in the grid.</param>
+		/// <param name="findTopLimitRow">If the top bounding row should be calculated; if false, the bottom bounding row is calculated.</param>
+		/// <param name="visibleOnly">If only visible rows and their elements should be considered.</param>
+		/// <param name="elementInstanceCounts">Optional: a dictionary which maps each element to a count of 'instances' in the grid. If null, all element instances are considered.</param>
+		/// <param name="skipDuplicatesUnlessInRow">Optional: a row which limits the duplicate element consideration to a max/min of this row.</param>
+		/// <returns></returns>
+		private TimelineRow GetVerticalLimitRowForElements(
+			IEnumerable<TimelineElement> elements, 
+			bool findTopLimitRow,
+			bool visibleOnly,
+			Dictionary<TimelineElement, int> elementInstanceCounts,
+			TimelineRow skipDuplicatesUnlessInRow
+			)
 		{
-			List<RowElementCombo> results = new List<RowElementCombo>();
-			Dictionary<TimelineElement, int> seenElements = new Dictionary<TimelineElement, int>();
+			// check if we are considering duplicate instances or not: if not, both of the last parameters should be empty
+			if (skipDuplicatesUnlessInRow == null && elementInstanceCounts != null)
+				throw new Exception("GetVerticalLimitRowForElements: two last parameters need to be either both set, or both null!");
 
-			for (int i = Rows.Count - 1; i >= 0; i--) {
+			Dictionary<TimelineElement, int> elementsLeft = new Dictionary<TimelineElement,int>();
+			if (elementInstanceCounts != null) {
+				// copy the given instance counts of each element into a new dictionary; we'll decrement the
+				// counts as we go to find the 'last' possible item
+				elementsLeft = new Dictionary<TimelineElement, int>(elementInstanceCounts);
+			}
+
+			// initialize the counter: we either go forwards through the row list to find the highest row possible,
+			// or we go backwards to find the lowest, based on which one was requested through findTopLimitRow
+			int i = findTopLimitRow ? 0 : Rows.Count - 1;
+			while (findTopLimitRow ? (i < Rows.Count) : (i >= 0)) {
+
+				// skip this row if it's not visible
 				if (visibleOnly && !Rows[i].Visible)
 					continue;
 
+				// iterate through each element we're checking for a grid limit, and check if it's in this row
 				foreach (TimelineElement element in elements) {
 					if (Rows[i].ContainsElement(element)) {
+						// if we're not bothering to check for duplicates, then this is the first row that
+						// contains an element: good enough, return it!
 						if (skipDuplicatesUnlessInRow == null)
 							return Rows[i];
 
+						// if this row shouldn't be checked for duplicates, end here, as we've found a 'good enough' match
 						if (Rows[i] == skipDuplicatesUnlessInRow)
 							return Rows[i];
 
-						results.Add(new RowElementCombo { Row = Rows[i], Element = element });
-						if (seenElements.ContainsKey(element))
-							seenElements[element]++;
-						else
-							seenElements[element] = 0;
+						// decrement the 'element duplicate counter': if this was the last instance of this element seen,
+						// then it must stop here, so return it.
+						elementsLeft[element]--;
+						if (elementsLeft[element] <= 0)
+							return Rows[i];
 					}
 				}
-			}
 
-			foreach (RowElementCombo result in results) {
-				if (seenElements[result.Element] <= 1 || result.Row == skipDuplicatesUnlessInRow)
-					return result.Row;
+				if (findTopLimitRow)
+					i++;
+				else
+					i--;
 			}
 
 			return null;
@@ -953,9 +970,13 @@ namespace CommonElements.Timeline
 
 			int visibleRowsToMove = visibleRows.IndexOf(destRow) - visibleRows.IndexOf(Rows[CurrentRowIndexUnderMouse]);
 
-			// find the highest and lowest visible rows with selected elements in them
-			int topElementVisibleRowIndex = visibleRows.IndexOf(GetHighestRowForElements(elements, true, m_mouseDownElementRow));
-			int bottomElementVisibleRowIndex = visibleRows.IndexOf(GetLowestRowForElements(elements, true, m_mouseDownElementRow));
+			// The count of each element to the number of times it is visible in the grid. Used for calculations later.
+			Dictionary<TimelineElement, int> elementCounts = CountRowsForElements(elements, true);
+
+			// find the highest and lowest visible rows with selected elements in them, but ignore duplicates unless they
+			// are in the row that the mouse down element is in, or it's the last instance of the element
+			int topElementVisibleRowIndex = visibleRows.IndexOf(GetVerticalLimitRowForElements(elements, true, true, elementCounts, m_mouseDownElementRow));
+			int bottomElementVisibleRowIndex = visibleRows.IndexOf(GetVerticalLimitRowForElements(elements, false, true, elementCounts, m_mouseDownElementRow));
 
 			if (visibleRowsToMove < 0 && -visibleRowsToMove > topElementVisibleRowIndex)
 				visibleRowsToMove = -topElementVisibleRowIndex;
@@ -978,6 +999,21 @@ namespace CommonElements.Timeline
 			// record the row that the mouse down element moves to, to update the m_mouseDownElementRow variable later
 			TimelineRow newMouseDownRow = m_mouseDownElementRow;
 
+			// OK, crazy shit's about to get real.
+			// To move the elements vertically, we go through the visible rows, top down. As we find an element to be moved around
+			// (by visibleRowsToMove), we move it. All well and good. HOWEVER, we have to consider elements which have multiple instances
+			// in the grid. Hopefully, most of the instances would be moving to the same row, however that may not be the case: instance
+			// 1 in the grid might be dragging into row A, instance 2 might be dragging into row B. Which row do we move the single instance
+			// to?
+			// One rule we can follow is, "if it's in same row as the element being dragged (ie. the mouse row), preferentially use that one."
+			// That's easy enough. But what about elements that are not in the same row? (ie. we've clicked and dragged element 1, in row C.
+			// however, element 2 which exists in rows A and E at the same time are also selected and being dragged. Do we drag to where the
+			// instance in row A would go, or where the instance in row E would go?) That's the crux of the problem.
+			// This is probably overkill; it's probably not going to be used *that* much.
+			// for now, we will attempt to move the first element found. If it would barf (ie. moved 'off' the grid), then ignore it and try
+			// the next duplicate instance of that element later on. This will probably need to be revisited later.
+			// (maybe some way of trying to move the elements closest vertically, to the current mouse row? This would work best for when
+			// the user selects a block of elements and moves it. The spurious ones that are also selected at extremities would be ignored.)
 			for (int i = 0; i < visibleRows.Count; i++) {
 				List<TimelineElement> elementsMoved = new List<TimelineElement>();
 
@@ -997,11 +1033,24 @@ namespace CommonElements.Timeline
 					// if the current element is in the current visble row, move it to wherever it needs
 					// to go, and also flag that it has been moved
 					if (visibleRows[i].ContainsElement(element)) {
+
+						// note that we've seen another of this type of element
+						elementCounts[element]--;
+
+						// if the element would be moved outside the bounds of the grid, the ignore it. (check that there will
+						// be another instance later: there should be, otherwise the calculations were wrong before!)
+						if (i + visibleRowsToMove < 0 || i + visibleRowsToMove >= visibleRows.Count) {
+							if (elementCounts[element] <= 0)
+								throw new Exception("Trying to move element off-grid, but there's no more instances of this element to move instead!");
+							continue;
+						}
+
 						visibleRows[i].RemoveElement(element);
 						visibleRows[i + visibleRowsToMove].AddElement(element);
 						elementsMoved.Add(element);
 						_ElementChangedRows(element, visibleRows[i], visibleRows[i + visibleRowsToMove]);
 
+						// if this element was the mouse down element, update the mouse down element row that we're tracking
 						if (element == m_mouseDownElement)
 							newMouseDownRow = visibleRows[i + visibleRowsToMove];
 					}
