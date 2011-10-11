@@ -743,10 +743,12 @@ namespace CommonElements.Timeline
 				elementsLeft = new Dictionary<TimelineElement, int>(elementInstanceCounts);
 			}
 
-			// initialize the counter: we either go forwards through the row list to find the highest row possible,
-			// or we go backwards to find the lowest, based on which one was requested through findTopLimitRow
-			int i = findTopLimitRow ? 0 : Rows.Count - 1;
-			while (findTopLimitRow ? (i < Rows.Count) : (i >= 0)) {
+			// we either go forwards through the row list to find the highest row possible, or backwards to find the
+			// lowest, based on which one was requested through findTopLimitRow
+			for (int i = findTopLimitRow ? 0 : Rows.Count - 1;
+				findTopLimitRow ? (i < Rows.Count) : (i >= 0);
+				i += (findTopLimitRow ? 1 : -1))
+			{
 
 				// skip this row if it's not visible
 				if (visibleOnly && !Rows[i].Visible)
@@ -771,11 +773,6 @@ namespace CommonElements.Timeline
 							return Rows[i];
 					}
 				}
-
-				if (findTopLimitRow)
-					i++;
-				else
-					i--;
 			}
 
 			return null;
