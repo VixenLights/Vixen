@@ -215,7 +215,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							element.ElementContentChanged += ElementContentChangedHandler;
 							element.ElementMoved += ElementMovedHandler;
 
-							if (_effectNodeToElement.ContainsKey(node))
+							if (!_effectNodeToElement.ContainsKey(node))
 								_effectNodeToElement[node] = element;
 							else
 								VixenSystem.Logging.Debug("TimedSequenceEditor: Making a new element, but the map already has one!");
