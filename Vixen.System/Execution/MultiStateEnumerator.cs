@@ -60,12 +60,15 @@ namespace Vixen.Execution {
 			}
 
 			// Burn frames until buffered frame is not expired or there is no data.
-			while((_enumerator.Current == null || _enumerator.Current.EndTime <= _position) && _enumerator.MoveNext()) { }
+			while ((_enumerator.Current == null || _enumerator.Current.EndTime <= _position))
+				if (!_enumerator.MoveNext())
+					break;
 
 			// If we have data and its time is valid...
-			if(_enumerator.Current != null && _enumerator.Current.StartTime <= _position) {
-				// Add the new frame to the state.
+			while (_enumerator.Current != null && _enumerator.Current.StartTime <= _position && _enumerator.Current.EndTime > _position) {
+				// Add the new frame to the state, and automatically move on to the next.
 				dirty = _states.Add(_enumerator.Current);
+				_enumerator.MoveNext();
 			}
 
 			// If we are dirty, the state has changed.
