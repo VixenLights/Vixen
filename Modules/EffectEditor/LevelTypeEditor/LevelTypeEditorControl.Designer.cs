@@ -38,7 +38,6 @@
 			this.valueUpDown.Name = "valueUpDown";
 			this.valueUpDown.Size = new System.Drawing.Size(58, 25);
 			this.valueUpDown.TabIndex = 1;
-			this.valueUpDown.TrackerOrientation = System.Windows.Forms.Orientation.Vertical;
 			this.valueUpDown.Value = 100;
 			// 
 			// label1

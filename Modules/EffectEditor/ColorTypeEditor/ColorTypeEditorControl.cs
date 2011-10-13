@@ -36,7 +36,7 @@ namespace VixenModules.EffectEditor.ColorTypeEditor
 		private void buttonEditColor_Click(object sender, EventArgs e)
 		{
 			using (ColorPicker cp = new ColorPicker()) {
-				cp.LockValue_V = false;
+				cp.LockValue_V = true;
 				cp.Color = XYZ.FromRGB(ColorValue);
 				DialogResult result = cp.ShowDialog();
 				if (result == DialogResult.OK) {

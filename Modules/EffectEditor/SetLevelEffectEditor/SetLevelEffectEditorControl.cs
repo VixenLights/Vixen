@@ -21,7 +21,7 @@ namespace VixenModules.EffectEditor.SetLevelEffectEditor
 
 		public object[] EffectParameterValues
 		{
-			get { return new object[] { LevelValue }; }
+			get { return new object[] { LevelValue, ColorValue }; }
 			set
 			{
 				if (value.Length >= 1)

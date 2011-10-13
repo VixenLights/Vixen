@@ -63,7 +63,6 @@
 			// 
 			resources.ApplyResources(this.vColorLoc, "vColorLoc");
 			this.vColorLoc.Name = "vColorLoc";
-			this.vColorLoc.TrackerOrientation = System.Windows.Forms.Orientation.Vertical;
 			this.vColorLoc.ValueChanged += new CommonElements.ControlsEx.ValueControls.ValueChangedEH(this.vColorLoc_ValueChanged);
 			// 
 			// btnDeleteColor

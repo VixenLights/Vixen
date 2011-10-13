@@ -9,7 +9,6 @@ using Vixen.Module.Effect;
 using Vixen.Commands;
 using Vixen.Commands.KnownDataTypes;
 using VixenModules.Property.RGB;
-using CommonElements.ColorManagement.ColorModels;
 using System.Drawing;
 
 namespace VixenModules.Effect.SetLevel
@@ -51,7 +50,7 @@ namespace VixenModules.Effect.SetLevel
 					VixenSystem.Logging.Error("SetLevel parameters set with " + value.Length + " parameters!");
 				} else {
 					Level = (Level)value[0];
-					Color = (RGB)value[1];
+					Color = (Color)value[1];
 				}
 			}
 		}

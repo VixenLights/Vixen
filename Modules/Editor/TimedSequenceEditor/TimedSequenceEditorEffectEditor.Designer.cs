@@ -59,23 +59,29 @@
 			this.panelEditorControls.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.panelEditorControls.AutoSize = true;
+			this.panelEditorControls.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.panelEditorControls.Location = new System.Drawing.Point(12, 12);
 			this.panelEditorControls.Name = "panelEditorControls";
-			this.panelEditorControls.Size = new System.Drawing.Size(478, 384);
+			this.panelEditorControls.Size = new System.Drawing.Size(0, 0);
 			this.panelEditorControls.TabIndex = 2;
 			// 
 			// TimedSequenceEditorEffectEditor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoSize = true;
+			this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.ClientSize = new System.Drawing.Size(502, 437);
 			this.Controls.Add(this.panelEditorControls);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);
 			this.Name = "TimedSequenceEditorEffectEditor";
-			this.Text = "TimedSequenceEditorEffectEditor";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.Text = "Edit Effect";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.TimedSequenceEditorEffectEditor_FormClosed);
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
