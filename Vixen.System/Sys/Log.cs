@@ -14,7 +14,7 @@ namespace Vixen.Sys {
 		public string Name { get; private set; }
 
 		public virtual void Write(string qualifyingMessage, Exception ex) {
-			string text = qualifyingMessage + ":" + Environment.NewLine + ex.Message + Environment.NewLine;
+			string text = qualifyingMessage + ": " + ex.Message + Environment.NewLine;
 			while(ex.InnerException != null) {
 				text += ex.InnerException.Message + Environment.NewLine;
 				ex = ex.InnerException;
@@ -32,7 +32,7 @@ namespace Vixen.Sys {
 		}
 
 		public virtual void Write(string text) {
-			text = "[" + DateTime.Now + "]" + Environment.NewLine + text + Environment.NewLine + Environment.NewLine;
+			text = "[" + DateTime.Now + "]: " + text + Environment.NewLine;
 			OnItemLogged(new LogItemEventArgs(text));
 		}
 

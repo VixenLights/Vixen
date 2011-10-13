@@ -156,6 +156,12 @@ namespace Vixen.Execution {
 
 				// Get everything that currently qualifies.
 				while(_sequenceDataEnumerator.MoveNext()) {
+					lock (VixenSystem.Logging) {
+						EffectNode[] ea = _sequenceDataEnumerator.Current;
+						for (int i = 0; i < ea.Length; i++) {
+							VixenSystem.Logging.Debug(Vixen.Sys.Execution.CurrentExecutionTimeString + ": Sequence DataGenerationThread: MoveNext: effect[" + i + "] is " + ea[i].Effect.Descriptor.TypeName + ", S=" + ea[i].StartTime + ", D=" + ea[i].TimeSpan);
+						}
+					}
 					qualifiedEffects.AddRange(_sequenceDataEnumerator.Current);
 				}
 

@@ -179,6 +179,10 @@ namespace Vixen.Sys {
 			}
 		}
 
+		static public TimeSpan CurrentExecutionTime { get { return (_systemTime.IsRunning) ? _systemTime.Position : TimeSpan.Zero; } }
+
+		static public string CurrentExecutionTimeString { get { return CurrentExecutionTime.ToString("m\\:ss\\.fff"); } }
+
 		static private void _ChannelReaderThread() {
 			// Our mission:
 			// Read data from the channel enumerators and write to the channel patches.
@@ -203,6 +207,12 @@ namespace Vixen.Sys {
 						Command channelState = Command.Combine(enumerator.Current.Select(x => x.Command));
 						stateBuffer[channel] = channelState;
 						channel.Patch.Write(channelState);
+						lock (VixenSystem.Logging) {
+							if (channelState == null)
+								VixenSystem.Logging.Debug(Execution.CurrentExecutionTimeString + ": Execution UpdateChannelStates: channel=" + channel + ", command=null");
+							else
+								VixenSystem.Logging.Debug(Execution.CurrentExecutionTimeString + ": Execution UpdateChannelStates: channel=" + channel + ", command=" + channelState.Identifier + ", " + channelState.GetParameterValue(0));
+						}
 					}
 				}
 			}
@@ -314,6 +324,9 @@ namespace Vixen.Sys {
 						
 						// Render the effect for the whole span of the command's time.
 						ChannelData channelData = effectNode.RenderEffectData(TimeSpan.Zero, effectNode.TimeSpan);
+						//lock (VixenSystem.Logging) {
+						//    VixenSystem.Logging.Debug(Execution.CurrentExecutionTimeString + ": Execution EffectRenderer: rendered data for effect " + effectNode);
+						//}
 						
 						if(channelData != null) {
 							// Get it into the channels.
