@@ -59,7 +59,7 @@
       <DependentUpon>CurveEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="CurveLibraryDescriptor.cs" />
-    <Compile Include="CurveLibraryModule.cs" />
+    <Compile Include="CurveLibrary.cs" />
     <Compile Include="CurveLibraryStaticData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ZedGraph\ArrowObj.cs" />

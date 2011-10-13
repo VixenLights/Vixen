@@ -5,11 +5,11 @@ using System.Text;
 using Vixen.Module;
 using Vixen.Module.App;
 
-namespace VixenModules.App.ColorGradients
+namespace VixenModules.App.Curves
 {
-	class ColorGradientLibraryModule : AppModuleInstanceBase
+	public class CurveLibrary : AppModuleInstanceBase
 	{
-		private ColorGradientLibraryStaticData _data;
+		private CurveLibraryStaticData _data;
 
 		public override void Loading() { }
 
@@ -20,9 +20,8 @@ namespace VixenModules.App.ColorGradients
 		public override IModuleDataModel StaticModuleData
 		{
 			get { return _data; }
-			set { _data = value as ColorGradientLibraryStaticData; }
+			set { _data = value as CurveLibraryStaticData; }
 		}
 
 	}
-
 }

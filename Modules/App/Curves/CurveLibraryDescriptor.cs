@@ -23,7 +23,7 @@ namespace VixenModules.App.Curves
 
 		override public Type ModuleClass
 		{
-			get { return typeof(CurveLibraryModule); }
+			get { return typeof(CurveLibrary); }
 		}
 
 		public override Type ModuleStaticDataClass

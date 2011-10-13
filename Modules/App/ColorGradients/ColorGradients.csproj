@@ -59,7 +59,7 @@
       <DependentUpon>ColorGradientEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="ColorGradientLibraryDescriptor.cs" />
-    <Compile Include="ColorGradientLibraryModule.cs" />
+    <Compile Include="ColorGradientLibrary.cs" />
     <Compile Include="ColorGradientLibraryStaticData.cs" />
     <Compile Include="ColorGradient.cs" />
     <Compile Include="unneeded\GradientCollection.cs" />

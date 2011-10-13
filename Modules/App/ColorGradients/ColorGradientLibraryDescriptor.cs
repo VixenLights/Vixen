@@ -23,7 +23,7 @@ namespace VixenModules.App.ColorGradients
 
 		override public Type ModuleClass
 		{
-			get { return typeof(ColorGradientLibraryModule); }
+			get { return typeof(ColorGradientLibrary); }
 		}
 
 		public override Type ModuleStaticDataClass
