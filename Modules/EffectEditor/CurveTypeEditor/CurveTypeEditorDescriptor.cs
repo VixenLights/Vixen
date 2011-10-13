@@ -11,10 +11,9 @@ namespace VixenModules.EffectEditor.CurveTypeEditor
 {
 	class CurveTypeEditorDescriptor : EffectEditorModuleDescriptorBase
 	{
-		private Guid _typeId = new Guid("{b49b34f9-ca0c-44e9-8041-453dd30a1881}");
-		private CommandParameterSignature _paramSpec = new CommandParameterSignature(
-			new CommandParameterSpecification("Curve", typeof(Curve))
-			);
+		private static Guid _typeId = new Guid("{b49b34f9-ca0c-44e9-8041-453dd30a1881}");
+
+		private static Guid _CurvesId = new Guid("{4e258de2-7a75-4f0f-aa43-c8182e7f3400}");
 
 		public override string Author { get { return "Vixen Team"; } }
 
@@ -24,12 +23,22 @@ namespace VixenModules.EffectEditor.CurveTypeEditor
 
 		public override Type ModuleClass { get { return typeof(CurveTypeEditor); } }
 
-		public override CommandParameterSignature ParameterSignature { get { return _paramSpec; } }
-
 		public override Guid TypeId { get { return _typeId; } }
 
 		public override string TypeName { get { return "Curve Type Editor"; } }
 
 		public override string Version { get { return "0.1"; } }
+
+		public override Guid[] Dependencies { get { return new Guid[] { _CurvesId }; } }
+
+		public override CommandParameterSignature ParameterSignature
+		{
+			get
+			{
+				return new CommandParameterSignature(
+					new CommandParameterSpecification("Curve", typeof(Curve))
+					);
+			}
+		}
 	}
 }

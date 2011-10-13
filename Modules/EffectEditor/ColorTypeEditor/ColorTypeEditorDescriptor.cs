@@ -11,10 +11,7 @@ namespace VixenModules.EffectEditor.ColorTypeEditor
 {
 	class ColorTypeEditorDescriptor : EffectEditorModuleDescriptorBase
 	{
-		private Guid _typeId = new Guid("{a7a23dee-e08d-47bc-9dc6-cad285675c7d}");
-		private CommandParameterSignature _paramSpec = new CommandParameterSignature(
-			new CommandParameterSpecification("Color", typeof(Color))
-			);
+		private static Guid _typeId = new Guid("{a7a23dee-e08d-47bc-9dc6-cad285675c7d}");
 
 		public override string Author { get { return "Vixen Team"; } }
 
@@ -24,12 +21,20 @@ namespace VixenModules.EffectEditor.ColorTypeEditor
 
 		public override Type ModuleClass { get { return typeof(ColorTypeEditor); } }
 
-		public override CommandParameterSignature ParameterSignature { get { return _paramSpec; } }
-
 		public override Guid TypeId { get { return _typeId; } }
 
 		public override string TypeName { get { return "Color Type Editor"; } }
 
 		public override string Version { get { return "0.1"; } }
+
+		public override CommandParameterSignature ParameterSignature
+		{
+			get
+			{
+				return new CommandParameterSignature(
+					new CommandParameterSpecification("Color", typeof(Color))
+					);
+			}
+		}
 	}
 }

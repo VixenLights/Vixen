@@ -10,10 +10,7 @@ namespace VixenModules.EffectEditor.LevelTypeEditor
 {
 	class LevelTypeEditorDescriptor : EffectEditorModuleDescriptorBase
 	{
-		private Guid _typeId = new Guid("{c3ad317b-3715-418c-9a79-2e315d235648}");
-		private CommandParameterSignature _paramSpec = new CommandParameterSignature(
-			new CommandParameterSpecification("Level", typeof(Level))
-			);
+		private static Guid _typeId = new Guid("{c3ad317b-3715-418c-9a79-2e315d235648}");
 
 		public override string Author { get { return "Vixen Team"; } }
 
@@ -23,12 +20,20 @@ namespace VixenModules.EffectEditor.LevelTypeEditor
 
 		public override Type ModuleClass { get { return typeof(LevelTypeEditor); } }
 
-		public override CommandParameterSignature ParameterSignature { get { return _paramSpec; } }
-
 		public override Guid TypeId { get { return _typeId; } }
 
 		public override string TypeName { get { return "Level Type Editor"; } }
 
 		public override string Version { get { return "0.1"; } }
+
+		public override CommandParameterSignature ParameterSignature
+		{
+			get
+			{
+				return new CommandParameterSignature(
+					new CommandParameterSpecification("Level", typeof(Level))
+					);
+			}
+		}
 	}
 }

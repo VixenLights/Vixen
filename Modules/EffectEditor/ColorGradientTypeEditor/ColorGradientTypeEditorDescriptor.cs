@@ -11,10 +11,9 @@ namespace VixenModules.EffectEditor.ColorGradientTypeEditor
 {
 	class ColorGradientTypeEditorDescriptor : EffectEditorModuleDescriptorBase
 	{
-		private Guid _typeId = new Guid("{eb7397db-bfac-4187-add4-f75b5e8fe773}");
-		private CommandParameterSignature _paramSpec = new CommandParameterSignature(
-			new CommandParameterSpecification("ColorGradient", typeof(ColorGradient))
-			);
+		private static Guid _typeId = new Guid("{eb7397db-bfac-4187-add4-f75b5e8fe773}");
+
+		private static Guid _ColorGradientsId = new Guid("{64f4ab26-3ed4-49a3-a004-23656ed0424a}");
 
 		public override string Author { get { return "Vixen Team"; } }
 
@@ -24,12 +23,22 @@ namespace VixenModules.EffectEditor.ColorGradientTypeEditor
 
 		public override Type ModuleClass { get { return typeof(ColorGradientTypeEditor); } }
 
-		public override CommandParameterSignature ParameterSignature { get { return _paramSpec; } }
-
 		public override Guid TypeId { get { return _typeId; } }
 
 		public override string TypeName { get { return "ColorGradient Type Editor"; } }
 
 		public override string Version { get { return "0.1"; } }
+
+		public override Guid[] Dependencies { get { return new Guid[] { _ColorGradientsId }; } }
+
+		public override CommandParameterSignature ParameterSignature
+		{
+			get
+			{
+				return new CommandParameterSignature(
+					new CommandParameterSpecification("ColorGradient", typeof(ColorGradient))
+					);
+			}
+		}
 	}
 }
