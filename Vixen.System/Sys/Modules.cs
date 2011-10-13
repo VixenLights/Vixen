@@ -15,7 +15,8 @@ namespace Vixen.Sys {
 		// Module type id : module descriptor
 		static private Dictionary<Guid, IModuleDescriptor> _moduleDescriptors = new Dictionary<Guid, IModuleDescriptor>();
 		// ModuleImplementation : descriptors for modules of that type
-		static private Dictionary<ModuleImplementation, List<IModuleDescriptor>> _moduleImplementationDescriptors = new Dictionary<ModuleImplementation, List<IModuleDescriptor>>();
+		//static private Dictionary<ModuleImplementation, List<IModuleDescriptor>> _moduleImplementationDescriptors = new Dictionary<ModuleImplementation, List<IModuleDescriptor>>();
+		static private Dictionary<ModuleImplementation, HashSet<IModuleDescriptor>> _moduleImplementationDescriptors = new Dictionary<ModuleImplementation, HashSet<IModuleDescriptor>>();
 		// Module type id : module type's static data singleton
 		static private Dictionary<Guid, IModuleDataModel> _moduleStaticDataRepository = new Dictionary<Guid, IModuleDataModel>();
 
@@ -29,44 +30,83 @@ namespace Vixen.Sys {
 
 			_moduleImplementationDescriptors = Assembly.GetExecutingAssembly().GetAttributedTypes(typeof(TypeOfModuleAttribute)).ToDictionary(
 					x => Activator.CreateInstance(x) as ModuleImplementation,
-					x => new List<IModuleDescriptor>());
+					x => new HashSet<IModuleDescriptor>());
 
 			ModuleImplementation[] moduleImplementations = _moduleImplementationDescriptors.Keys.ToArray();
 			ModuleManagement = new ModuleManagement(moduleImplementations);
 			ModuleRepository = new ModuleRepository(moduleImplementations);
 		}
 
-		static public void LoadModules() {
+		static public void LoadAllModules() {
+			//*** This is loading module by type, but dependencies span types, so all module
+			//    types must be loaded simultaneously for dependencies to be resolved
+			IEnumerable<string> allModuleFiles = _moduleImplementationDescriptors.Keys.Select(_GetModuleTypeDirectory).SelectMany(x => System.IO.Directory.GetFiles(x, "*.dll"));
+			_LoadModulesFromFile(allModuleFiles);
+			//foreach(ModuleImplementation moduleImplementation in _moduleImplementationDescriptors.Keys) {
+			//    string moduleTypeDirectory = _GetModuleTypeDirectory(moduleImplementation);
+			//    _LoadModulesFromFile(System.IO.Directory.GetFiles(moduleTypeDirectory, "*.dll"));
+			//}
+
+			//IEnumerable<IModuleDescriptor> descriptors;
+			//// For each type of module discovered, get any descriptors.
+			//// Get the results into a static collection or this will be called every time
+			//// "descriptors" is enumerated.
+			//descriptors = _moduleImplementationDescriptors.Keys.SelectMany(_LoadModuleDescriptors).ToArray();
+			//// Remove any that have duplicate type ids.
+			//descriptors = _RemoveDuplicateTypes(descriptors);
+			//// Check the dependencies of all modules.
+			//descriptors = _ResolveAgainstDependencies(descriptors);
+			//// Reconcile the lists of descriptors earlier loaded against what will actually be loaded
+			//// and remove anything that won't be loaded.
+			//foreach(ModuleImplementation moduleImplementation in _moduleImplementationDescriptors.Keys) {
+			//    HashSet<IModuleDescriptor> moduleTypeDescriptors = _moduleImplementationDescriptors[moduleImplementation];
+			//    // It appears that Except will return the *distinct* set.  Since we're wanting
+			//    // to remove instances with duplicate identities, Except will not work for us.
+			//    foreach(IModuleDescriptor removedDescriptor in moduleTypeDescriptors.Where(x => !descriptors.Contains(x)).ToArray()) {
+			//        moduleTypeDescriptors.Remove(removedDescriptor);
+			//    }
+			//}
+			//// The remaining modules are okay to load.
+			//_LoadModules(descriptors);
+		}
+
+		//static public void LoadModule(string filePath) {
+		//    _LoadModulesFromFile(new[] { filePath });
+		//}
+
+		static public void LoadModule(string filePath, IEnumerable<Guid> typesToLoad = null) {
+			_LoadModulesFromFile(new[] { filePath }, typesToLoad);
+		}
+
+		static private void _LoadModulesFromFile(IEnumerable<string> filePaths, IEnumerable<Guid> typesToLoad = null) {
 			IEnumerable<IModuleDescriptor> descriptors;
+
 			// For each type of module discovered, get any descriptors.
 			// Get the results into a static collection or this will be called every time
 			// "descriptors" is enumerated.
-			descriptors = _moduleImplementationDescriptors.Keys.SelectMany(_LoadModuleDescriptors).ToArray();
+			descriptors = _LoadModuleDescriptors(filePaths.ToArray());
+			// Restrict to only the types specified, if any.
+			if(typesToLoad != null) {
+				descriptors = descriptors.Where(x => typesToLoad.Contains(x.TypeId));
+			}
 			// Remove any that have duplicate type ids.
 			descriptors = _RemoveDuplicateTypes(descriptors);
 			// Check the dependencies of all modules.
 			descriptors = _ResolveAgainstDependencies(descriptors);
-			// Reconcile the lists of descriptors by type against what will actually be loaded.
+			// Reconcile the lists of descriptors earlier loaded against what will actually be loaded
+			// and remove anything that won't be loaded.
 			foreach(ModuleImplementation moduleImplementation in _moduleImplementationDescriptors.Keys) {
-				List<IModuleDescriptor> moduleTypeDescriptors = _moduleImplementationDescriptors[moduleImplementation];
+				HashSet<IModuleDescriptor> moduleTypeDescriptors = _moduleImplementationDescriptors[moduleImplementation];
 				// It appears that Except will return the *distinct* set.  Since we're wanting
 				// to remove instances with duplicate identities, Except will not work for us.
 				foreach(IModuleDescriptor removedDescriptor in moduleTypeDescriptors.Where(x => !descriptors.Contains(x)).ToArray()) {
 					moduleTypeDescriptors.Remove(removedDescriptor);
 				}
 			}
+
 			// The remaining modules are okay to load.
 			_LoadModules(descriptors);
 		}
-
-		//static public void UnloadModule(Guid moduleTypeId, string moduleType) {
-		//    // Remove it from all lookups at this level.
-		//    _activators.Remove(moduleTypeId);
-		//    _moduleDescriptors.Remove(moduleTypeId);
-		//    _moduleImplementationDescriptors.Remove
-		//    // Get the module type implementation and remove the module from the repository.
-		//    VixenSystem.Internal.GetModuleType(moduleType).Repository.Remove(moduleTypeId);
-		//}
 
 		static private void _LoadModules(IEnumerable<IModuleDescriptor> descriptors) {
 			foreach(IModuleDescriptor descriptor in descriptors) {
@@ -79,8 +119,25 @@ namespace Vixen.Sys {
 			}
 		}
 
-		static private IEnumerable<IModuleDescriptor> _RemoveDuplicateTypes(IEnumerable<IModuleDescriptor> descriptors) {
-			IEnumerable<IGrouping<Guid, IModuleDescriptor>> duplicateTypes = descriptors.GroupBy(x => x.TypeId).Where(x => x.Count() > 1);
+		static public void UnloadModule(IModuleDescriptor descriptor) {
+			//*** what about the dependencies upon this module?
+			//-> And if there are lists that reference a dependency, they won't know that
+			//   it's been unloaded
+			_activators.Remove(descriptor.TypeId);
+			_moduleDescriptors.Remove(descriptor.TypeId);
+			// We don't know the ModuleImplementation that the descriptor belongs to.
+			foreach(HashSet<IModuleDescriptor> moduleImplementationDescriptors in _moduleImplementationDescriptors.Values) {
+				moduleImplementationDescriptors.Remove(descriptor);
+			}
+		}
+
+		static private IEnumerable<IModuleDescriptor> _RemoveDuplicateTypes(IEnumerable<IModuleDescriptor> loadingDescriptors) {
+			// Check the loading descriptors against themselves and the loaded descriptors.
+			// If there are duplicates, remove them from the loading descriptors, not the ones
+			// already loaded.
+			IEnumerable<IModuleDescriptor> allDescriptors = loadingDescriptors.Concat(_moduleDescriptors.Values);
+			//IEnumerable<IGrouping<Guid, IModuleDescriptor>> duplicateTypes = loadingDescriptors.GroupBy(x => x.TypeId).Where(x => x.Count() > 1);
+			IEnumerable<IGrouping<Guid, IModuleDescriptor>> duplicateTypes = allDescriptors.GroupBy(x => x.TypeId).Where(x => x.Count() > 1);
 			if(duplicateTypes.Count() > 0) {
 				StringBuilder sb = new StringBuilder();
 				sb.AppendLine("The following modules were not loaded because they have duplicate type ids:");
@@ -93,28 +150,31 @@ namespace Vixen.Sys {
 				VixenSystem.Logging.Error(sb.ToString());
 			}
 
-			return descriptors.Except(duplicateTypes.SelectMany(x => x));
+			return loadingDescriptors.Except(duplicateTypes.SelectMany(x => x));
 		}
 
-		static private IEnumerable<IModuleDescriptor> _ResolveAgainstDependencies(IEnumerable<IModuleDescriptor> descriptors) {
-			List<IModuleDescriptor> allDescriptors = descriptors.ToList();
+		static private IEnumerable<IModuleDescriptor> _ResolveAgainstDependencies(IEnumerable<IModuleDescriptor> loadingDescriptors) {
+			//List<IModuleDescriptor> allDescriptors = descriptors.ToList();
+			List<IModuleDescriptor> allDescriptors = loadingDescriptors.Concat(_moduleDescriptors.Values).ToList();
 
 			// Check the dependencies of all modules.
 			// Keep checking until there are no missing dependencies.
 			while(true) {
-				// Need a static collection to enumerate.
-				IModuleDescriptor[] remainingDescriptors = allDescriptors.ToArray();
+				// Need a static collection to enumerate, but only of the loading descriptors.
+				//IModuleDescriptor[] remainingDescriptors = allDescriptors.ToArray();
+				IModuleDescriptor[] remainingDescriptors = loadingDescriptors.ToArray();
 				// Remove any descriptors that have missing dependencies.
 				foreach(IModuleDescriptor descriptor in remainingDescriptors) {
 					// All dependencies must be present in the collection of descriptors
 					// for the module to be eligible for loading.
-					if(descriptor.Dependencies != null && descriptor.Dependencies.Intersect(allDescriptors.Select(x => x.TypeId)).Count() != descriptor.Dependencies.Length) {
+					if(descriptor.Dependencies != null && descriptor.Dependencies.Count() > 0 && descriptor.Dependencies.Intersect(allDescriptors.Select(x => x.TypeId)).Count() != descriptor.Dependencies.Length) {
 						allDescriptors.Remove(descriptor);
 						VixenSystem.Logging.Error("Could not load module \"" + descriptor.TypeName + "\" because it has dependencies that are missing.");
 					}
 				}
 				// If nothing was removed, we are done.
-				if(allDescriptors.Count == remainingDescriptors.Length) break;
+				//if(allDescriptors.Count == remainingDescriptors.Length) break;
+				if(loadingDescriptors.Count() == remainingDescriptors.Length) break;
 			};
 
 			return allDescriptors;
@@ -123,28 +183,66 @@ namespace Vixen.Sys {
 		static private string _GetModuleTypeDirectory(ModuleImplementation moduleImplementation) {
 			string moduleTypeName = (moduleImplementation.GetType().GetCustomAttributes(typeof(TypeOfModuleAttribute), false).First() as TypeOfModuleAttribute).Name;
 			string moduleTypeDirectory = Path.Combine(Directory, moduleTypeName);
+			moduleImplementation.Path = moduleTypeDirectory;
 			return moduleTypeDirectory;
 		}
 
-		static private IEnumerable<IModuleDescriptor> _LoadModuleDescriptors(ModuleImplementation moduleImplementation) {
-			string moduleTypeDirectory = _GetModuleTypeDirectory(moduleImplementation);
-			List<IModuleDescriptor> descriptors = new List<IModuleDescriptor>();
+		//static private IEnumerable<IModuleDescriptor> _LoadModuleDescriptors(ModuleImplementation moduleImplementation) {
+		//    string moduleTypeDirectory = _GetModuleTypeDirectory(moduleImplementation);
+		//    moduleImplementation.Path = moduleTypeDirectory;
+		//    IEnumerable<IModuleDescriptor> descriptors = System.IO.Directory.GetFiles(moduleTypeDirectory, "*.dll").SelectMany(_LoadModuleDescriptors);
+		//    return descriptors;
+		//    //string moduleTypeDirectory = _GetModuleTypeDirectory(moduleImplementation);
+		//    //List<IModuleDescriptor> descriptors = new List<IModuleDescriptor>();
 
-			// For all files in the module type's directory...
-			foreach(string filePath in System.IO.Directory.GetFiles(moduleTypeDirectory, "*.dll")) {
+		//    //// For all files in the module type's directory...
+		//    //foreach(string filePath in System.IO.Directory.GetFiles(moduleTypeDirectory, "*.dll")) {
+		//    //    try {
+		//    //        // Try to get descriptors.
+		//    //        descriptors.AddRange(_LoadModuleDescriptors(filePath));
+		//    //    } catch(BadImageFormatException) {
+		//    //        VixenSystem.Logging.Warning("File " + filePath + " was not loaded due to BadImageFormatException.");
+		//    //    }
+		//    //}
+
+		//    //// Add the module types to the module implementation's descriptor list.
+		//    //List<IModuleDescriptor> implementationDescriptors = _moduleImplementationDescriptors[moduleImplementation];
+		//    //implementationDescriptors.AddRange(descriptors);
+
+		//    //return descriptors;
+		//}
+
+		static private IEnumerable<IModuleDescriptor> _LoadModuleDescriptors(IEnumerable<string> filePaths) {
+			List<IModuleDescriptor> descriptors = new List<IModuleDescriptor>();
+			//Dictionary<IModuleDescriptor, ModuleImplementation> descriptors = new Dictionary<IModuleDescriptor, ModuleImplementation>();
+
+			foreach(string filePath in filePaths) {
 				try {
+					// Determine what kind of module it is so its descriptor can be added
+					// to that implementation's descriptor list.
+					ModuleImplementation moduleImplementation = _FindImplementation(filePath);
+					if(moduleImplementation == null) {
+						VixenSystem.Logging.Error("File " + filePath + " was not loaded because its module type could not be determined.");
+						continue;
+					}
 					// Try to get descriptors.
-					descriptors.AddRange(_LoadModuleDescriptors(filePath));
+					//foreach(IModuleDescriptor descriptor in _LoadModuleDescriptors(filePath)) {
+					//    descriptors[descriptor] = moduleImplementation;
+					//}
+					IEnumerable<IModuleDescriptor> descriptorsFound = _LoadModuleDescriptors(filePath);
+					descriptors.AddRange(descriptorsFound);
+					_moduleImplementationDescriptors[moduleImplementation].AddRange(descriptorsFound);
 				} catch(BadImageFormatException) {
-					VixenSystem.Logging.Warning("File " + filePath + " was not loaded due to BadImageFormatException.");
+					//VixenSystem.Logging.Warning("File " + filePath + " was not loaded due to BadImageFormatException.");
 				}
 			}
 
-			// Add the module types to the module implementation's descriptor list.
-			List<IModuleDescriptor> implementationDescriptors = _moduleImplementationDescriptors[moduleImplementation];
-			implementationDescriptors.AddRange(descriptors);
-
 			return descriptors;
+		}
+
+		static private ModuleImplementation _FindImplementation(string filePath) {
+			string directory = Path.GetDirectoryName(filePath);
+			return _moduleImplementationDescriptors.Keys.FirstOrDefault(x => x.Path.Equals(directory, StringComparison.OrdinalIgnoreCase));
 		}
 
 		static private IEnumerable<IModuleDescriptor> _LoadModuleDescriptors(string filePath) {
@@ -246,7 +344,7 @@ namespace Vixen.Sys {
 			where T : class, IModuleInstance {
 			ModuleImplementation moduleImplementation = GetImplementation<T>();
 			if(moduleImplementation != null) {
-				List<IModuleDescriptor> descriptors;
+				HashSet<IModuleDescriptor> descriptors;
 				if(_moduleImplementationDescriptors.TryGetValue(moduleImplementation, out descriptors)) {
 					return descriptors.ToArray();
 				}
@@ -355,7 +453,7 @@ namespace Vixen.Sys {
 			IModuleDataModel data = null;
 			if(!_moduleStaticDataRepository.TryGetValue(instance.Descriptor.TypeId, out data)) {
 				if(instance.Descriptor.ModuleStaticDataClass != null) {
-					data = VixenSystem.UserData.ModuleData.RetrieveTypeData(instance.Descriptor);
+					data = VixenSystem.ModuleStore.Data.RetrieveTypeData(instance.Descriptor);
 					_moduleStaticDataRepository[instance.Descriptor.TypeId] = data;
 				}
 			}

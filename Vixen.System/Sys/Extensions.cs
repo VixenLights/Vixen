@@ -94,5 +94,10 @@ namespace Vixen.Sys
 			yield return item;
 		}
 
+		static public void AddRange<T>(this HashSet<T> hashSet, IEnumerable<T> values) {
+			foreach(T value in values) {
+				hashSet.Add(value);
+			}
+		}
 	}
 }

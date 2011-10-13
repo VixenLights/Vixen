@@ -118,6 +118,8 @@
     <Compile Include="Execution\MultiStateEnumerator.cs" />
     <Compile Include="IO\Xml\XmlContextReader.cs" />
     <Compile Include="IO\Xml\XmlContextWriter.cs" />
+    <Compile Include="IO\Xml\XmlModuleStoreReader.cs" />
+    <Compile Include="IO\Xml\XmlModuleStoreWriter.cs" />
     <Compile Include="Module\Editor\IEditorUserInterface.cs" />
     <Compile Include="Module\Effect\ChannelCommands.cs" />
     <Compile Include="Module\MediaRenderer\IMediaRenderer.cs" />
@@ -137,6 +139,7 @@
     <Compile Include="Sys\IPackageFileContent.cs" />
     <Compile Include="Sys\ITimed.cs" />
     <Compile Include="Sys\LiveListEnumerator.cs" />
+    <Compile Include="Sys\ModuleStore.cs" />
     <Compile Include="Sys\ProgramContextEventArgs.cs" />
     <Compile Include="Sys\ProgramEventArgs.cs" />
     <Compile Include="Sys\SequenceEventArgs.cs" />
@@ -158,8 +161,8 @@
     <Compile Include="IO\Xml\XmlScriptSequenceWriter.cs" />
     <Compile Include="IO\Xml\XmlSequenceReader.cs" />
     <Compile Include="IO\Xml\XmlSequenceWriter.cs" />
-    <Compile Include="IO\Xml\XmlUserDataReader.cs" />
-    <Compile Include="IO\Xml\XmlUserDataWriter.cs" />
+    <Compile Include="IO\Xml\XmlSystemConfigReader.cs" />
+    <Compile Include="IO\Xml\XmlSystemConfigWriter.cs" />
     <Compile Include="Module\App\AppModuleInstanceBase.cs" />
     <Compile Include="Module\App\AppModuleDescriptorBase.cs" />
     <Compile Include="Module\CommandStandardExtension\CommandStandardExtensionModuleInstanceBase.cs" />
@@ -353,7 +356,7 @@
     <Compile Include="Sys\SystemClock.cs" />
     <Compile Include="Execution\NodeManager.cs" />
     <Compile Include="Sys\SystemContext.cs" />
-    <Compile Include="Sys\UserData.cs" />
+    <Compile Include="Sys\SystemConfig.cs" />
     <Compile Include="Sys\ApplicationServices.cs" />
     <Compile Include="Module\Trigger\AnalogInputTriggerCondition.cs">
       <SubType>Code</SubType>

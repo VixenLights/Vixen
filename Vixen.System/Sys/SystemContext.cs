@@ -12,7 +12,7 @@ namespace Vixen.Sys {
 		private const string TEMP_DIRECTORY_NAME = "VixenContext";
 
 		public SystemContext()
-			: base(VixenSystem.UserData.Identity) {
+			: base(VixenSystem.SystemConfig.Identity) {
 		}
 
 		public SystemContext(Guid sourceIdentity)
@@ -90,18 +90,18 @@ namespace Vixen.Sys {
 			// therefore should be the one used, not the one in the user's data branch.
 
 			// Flush the user data.
-			VixenSystem.UserData.Save();
+			VixenSystem.SystemConfig.Save();
 			// Load it into a new instance.
-			XmlUserDataReader userDataReader = new XmlUserDataReader();
-			UserData contextUserData = userDataReader.Read(VixenSystem.UserData.FilePath);
+			XmlSystemConfigReader userDataReader = new XmlSystemConfigReader();
+			SystemConfig contextUserData = userDataReader.Read(VixenSystem.SystemConfig.LoadedFilePath);
 			// Set the context flag.
 			contextUserData.IsContext = true;
 			// Save to a temp file.
 			string tempFilePath = Path.GetTempFileName();
-			XmlUserDataWriter userDataWriter = new XmlUserDataWriter();
+			XmlSystemConfigWriter userDataWriter = new XmlSystemConfigWriter();
 			userDataWriter.Write(tempFilePath, contextUserData);
 			// Add the file.
-			context.AddFile(new NewContextFile(tempFilePath, Path.GetFileName(VixenSystem.UserData.FilePath)));
+			context.AddFile(new NewContextFile(tempFilePath, Path.GetFileName(VixenSystem.SystemConfig.LoadedFilePath)));
 
 			// Add all binaries under the "Modules" directory.
 			foreach(string moduleFilePath in Directory.GetFiles(Modules.Directory, "*.*", SearchOption.AllDirectories)) {

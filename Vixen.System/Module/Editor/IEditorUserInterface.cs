@@ -24,7 +24,7 @@ namespace Vixen.Module.Editor {
 		void NewSequence();
 		void Save(string filePath = null);
 		void Refresh();
-		EditorValues EditorValues { get; }
+		//EditorValues EditorValues { get; }
 		bool IsModified { get; }
 		bool IsDisposed { get; }
 	}

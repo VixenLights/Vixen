@@ -15,7 +15,7 @@ using Vixen.IO.Xml;
 
 namespace Vixen.Sys {
     public class VixenSystem {
-		private const string USER_DATA_FILE = "UserData.xml";
+		//private const string USER_DATA_FILE = "UserData.xml";
 		private const string ELEMENT_DATA_DIRECTORY = "DataDirectory";
 		private const string ATTRIBUTE_IS_CONTEXT = "isContext";
 
@@ -47,11 +47,13 @@ namespace Vixen.Sys {
 					}
 
 					// Load all modules.
-					Modules.LoadModules();
+					Modules.LoadAllModules();
 
-					// Load user data.
-					IReader reader = new XmlUserDataReader();
-					UserData = (UserData)reader.Read(userDataFilePath);
+					// Load system data.
+					IReader reader = new XmlModuleStoreReader();
+					ModuleStore = (ModuleStore)reader.Read(ModuleStore.DefaultFilePath);
+					reader = new XmlSystemConfigReader();
+					SystemConfig = (SystemConfig)reader.Read(userDataFilePath);
 
 					// Add modules to repositories.
 					Modules.PopulateRepositories();
@@ -84,8 +86,11 @@ namespace Vixen.Sys {
 				ApplicationServices.ClientApplication = null;
 				Vixen.Sys.Execution.CloseExecution();
 				Modules.ClearRepositories();
-				if(UserData != null) {
-					UserData.Save();
+				if(ModuleStore != null) {
+					ModuleStore.Save();
+				}
+				if(SystemConfig != null) {
+					SystemConfig.Save();
 				}
 				_state = RunState.Stopped;
 			}
@@ -99,7 +104,8 @@ namespace Vixen.Sys {
 			get { return Assembly.GetExecutingAssembly().Location; }
 		}
 
-		static internal UserData UserData { get; private set; }
+		static internal ModuleStore ModuleStore { get; private set; }
+		static internal SystemConfig SystemConfig { get; private set; }
 
 		static public dynamic Logging {
 			get { return _logging; }
@@ -115,7 +121,7 @@ namespace Vixen.Sys {
 
 		static private string _GetUserDataFilePath() {
 			// Look for a user data file in the binary directory.
-			string filePath = Path.Combine(Paths.BinaryRootPath, USER_DATA_FILE);
+			string filePath = Path.Combine(Paths.BinaryRootPath, SystemConfig.FileName);
 			XElement element = Helper.LoadXml(filePath);
 			if(element != null) {
 				// Are we operating within a context?
@@ -127,13 +133,12 @@ namespace Vixen.Sys {
 			}
 
 			// Use the default path in the data branch.
-			return Path.Combine(Paths.DataRootPath, USER_DATA_FILE);
+			return SystemConfig.DefaultFilePath;
 		}
 
 		static private string _GetUserDataPath() {
 			// Look for a user data file in the binary directory.
-			string filePath = Path.Combine(Paths.BinaryRootPath, USER_DATA_FILE);
-			XElement element = Helper.LoadXml(filePath);
+			XElement element = Helper.LoadXml(SystemConfig.DefaultFilePath);
 			if(element != null) {
 				// Does it specify an alternate data path?
 				XElement dataDirectory = element.Element(ELEMENT_DATA_DIRECTORY);

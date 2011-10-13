@@ -10,12 +10,13 @@ namespace Vixen.Module {
 			// Get the name from the ModuleTypeAttribute of the superclass.
 			TypeOfModuleAttribute typeOfModule = (this.GetType().GetCustomAttributes(typeof(TypeOfModuleAttribute), true).FirstOrDefault() as TypeOfModuleAttribute);
 			if(typeOfModule == null) throw new InvalidOperationException("Type " + moduleInstanceType + " is not a valid module type.");
-			this.TypeOfModule = typeOfModule.Name;
+			TypeOfModule = typeOfModule.Name;
 			ModuleInstanceType = moduleInstanceType;
 		}
 
 		public string TypeOfModule { get; private set; } // i.e. "Output"
 		public Type ModuleInstanceType { get; private set; } // i.e. "IOutputModuleInstance"
+		public string Path { get; set; } // Path that holds modules of this type.
 
 		abstract public IModuleRepository Repository { get; protected set; }
 		abstract public IModuleManagement Management { get; protected set; }

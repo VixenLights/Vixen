@@ -57,10 +57,19 @@ namespace Vixen.Sys {
 			return Modules.GetImplementations().Select(x => x.TypeOfModule).ToArray();
 		}
 
-		//*** Bring back when the user is allowed to load a module during runtime
-		//static public void UnloadModule(Guid moduleTypeId, string moduleType) {
-		//    Modules.UnloadModule(moduleTypeId, moduleType);
-		//}
+		static public void UnloadModule(Guid moduleTypeId) {
+			IModuleDescriptor descriptor = Modules.GetDescriptorById(moduleTypeId);
+			if(descriptor != null) {
+				Modules.UnloadModule(descriptor);
+			}
+		}
+
+		static public void ReloadModule(Guid moduleTypeId) {
+			IModuleDescriptor descriptor = Modules.GetDescriptorById(moduleTypeId);
+			string moduleFilePath = descriptor.Assembly.Location;
+			Modules.UnloadModule(descriptor);
+			Modules.LoadModule(moduleFilePath, new[] { moduleTypeId });
+		}
 
 		/// <summary>
 		/// Gets an instance of a module.

@@ -26,11 +26,13 @@
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.label1 = new System.Windows.Forms.Label();
 			this.listBoxModules = new System.Windows.Forms.ListBox();
+			this.buttonReloadModule = new System.Windows.Forms.Button();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// panel1
 			// 
+			this.panel1.Controls.Add(this.buttonReloadModule);
 			this.panel1.Controls.Add(this.label1);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
 			this.panel1.Location = new System.Drawing.Point(0, 0);
@@ -55,6 +57,19 @@
 			this.listBoxModules.Name = "listBoxModules";
 			this.listBoxModules.Size = new System.Drawing.Size(213, 297);
 			this.listBoxModules.TabIndex = 1;
+			this.listBoxModules.SelectedIndexChanged += new System.EventHandler(this.listBoxModules_SelectedIndexChanged);
+			// 
+			// buttonReloadModule
+			// 
+			this.buttonReloadModule.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonReloadModule.Enabled = false;
+			this.buttonReloadModule.Location = new System.Drawing.Point(143, 7);
+			this.buttonReloadModule.Name = "buttonReloadModule";
+			this.buttonReloadModule.Size = new System.Drawing.Size(67, 20);
+			this.buttonReloadModule.TabIndex = 1;
+			this.buttonReloadModule.Text = "Reload";
+			this.buttonReloadModule.UseVisualStyleBackColor = true;
+			this.buttonReloadModule.Click += new System.EventHandler(this.buttonReloadModule_Click);
 			// 
 			// ModuleList
 			// 
@@ -75,5 +90,6 @@
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.ListBox listBoxModules;
+		private System.Windows.Forms.Button buttonReloadModule;
 	}
 }

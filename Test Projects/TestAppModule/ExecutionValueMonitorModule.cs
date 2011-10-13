@@ -9,17 +9,20 @@ using Vixen.Commands;
 
 namespace TestAppModule {
 	public class ExecutionValueMonitorModule : AppModuleInstanceBase {
-		private const bool RUN = false;
+		//private const bool RUN = false;
+		private IApplication _application;
 		private Queue<ExecutionStateValues> _queue = new Queue<ExecutionStateValues>();
 
 		public override void Loading() {
-			if(RUN) {
+			_AddApplicationMenu();
+			//if(RUN) {
 				Vixen.Sys.Execution.ValuesChanged += new Action<ExecutionStateValues>(Execution_ValuesChanged);
-			}
+			//}
 		}
 
 		public override void Unloading() {
-			if(RUN) {
+			_RemoveApplicationMenu();
+			//if(RUN) {
 				Vixen.Sys.Execution.ValuesChanged -= new Action<ExecutionStateValues>(Execution_ValuesChanged);
 
 				string desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
@@ -34,15 +37,19 @@ namespace TestAppModule {
 						writer.WriteLine();
 					}
 				}
-			}
+			//}
 		}
 
 		public override IApplication Application {
-			set {  }
+			set { _application = value; }
 		}
 
+		public bool Enabled { get; set; }
+
 		private void Execution_ValuesChanged(ExecutionStateValues obj) {
-			_queue.Enqueue(obj);
+			if(Enabled) {
+				_queue.Enqueue(obj);
+			}
 		}
 
 		private string _FormatCommand(Command command) {
@@ -50,6 +57,23 @@ namespace TestAppModule {
 				return command.Identifier.ToString() + " " + string.Join(",", Enumerable.Range(0, command.Signature.Count).Select(command.GetParameterValue));
 			}
 			return "(Empty)";
+		}
+
+		private void _AddApplicationMenu() {
+			if(_application != null) {
+				AppCommand monitorMenu = new AppCommand("ExecutionMonitor", "Execution monitor");
+				LatchedAppCommand enableMenuItem = new LatchedAppCommand("ExecutionMonitorEnabled", "Enabled");
+				enableMenuItem.IsChecked = Enabled;
+				enableMenuItem.Checked += (sender, args) => Enabled = args.CheckedState;
+				monitorMenu.Add(enableMenuItem);
+				_application.AppCommands.Add(monitorMenu);
+			}
+		}
+
+		private void _RemoveApplicationMenu() {
+			if(_application != null) {
+				_application.AppCommands.Remove("ExecutionMonitor");
+			}
 		}
 	}
 }

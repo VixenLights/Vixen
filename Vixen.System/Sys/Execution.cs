@@ -36,14 +36,14 @@ namespace Vixen.Sys {
 			// Create the node manager.
 			Nodes = new NodeManager();
 
-			if(VixenSystem.UserData != null) {
+			if(VixenSystem.SystemConfig != null) {
 				// Get channels.
-				foreach(Channel channel in VixenSystem.UserData.Channels) {
+				foreach(Channel channel in VixenSystem.SystemConfig.Channels) {
 					_AddChannel(channel);
 				}
 
 				// Get the branch nodes into the node manager.
-				foreach(ChannelNode branchNode in VixenSystem.UserData.Nodes) {
+				foreach(ChannelNode branchNode in VixenSystem.SystemConfig.Nodes) {
 					Nodes.AddNode(branchNode);
 				}
 			}
