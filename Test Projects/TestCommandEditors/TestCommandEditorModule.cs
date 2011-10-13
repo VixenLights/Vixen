@@ -41,7 +41,7 @@ namespace TestCommandEditors {
 			get { return _targetCommandId; }
 		}
 
-		override public CommandParameterSignature CommandSignature {
+		override public CommandParameterSignature ParameterSignature {
 			get { return _paramSpec; }
 		}
 	}

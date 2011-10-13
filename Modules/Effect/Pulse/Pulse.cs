@@ -60,8 +60,7 @@ namespace VixenModules.Effect.Pulse
 
 		public Curve LevelCurve
 		{
-			// TODO: why the hell do I have to cast this to a Curve type? it's a curve type by definition. goddamn compiler?!
-			get { return (Curve)_data.LevelCurve; }
+			get { return _data.LevelCurve; }
 			set { _data.LevelCurve = value; }
 		}
 

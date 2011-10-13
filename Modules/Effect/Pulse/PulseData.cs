@@ -20,6 +20,12 @@ namespace VixenModules.Effect.Pulse
 		[DataMember]
 		public ColorGradient ColorGradient { get; set; }
 
+		public PulseData()
+		{
+			LevelCurve = new Curve();
+			ColorGradient = new ColorGradient();
+		}
+
 		public override IModuleDataModel Clone()
 		{
 			PulseData result = new PulseData();

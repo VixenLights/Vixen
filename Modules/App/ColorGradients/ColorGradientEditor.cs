@@ -15,6 +15,7 @@ namespace VixenModules.App.ColorGradients
 		{
 			InitializeComponent();
 			gradientEditPanel.GradientChanged += GradientChangedHandler;
+			Gradient = gradient;
 		}
 
 		public bool Modified { get; internal set; }

@@ -5,6 +5,6 @@ using System.Text;
 
 namespace Vixen.Module.EffectEditor {
 	public interface IEffectEditorControl {
-		object[] EffectParameterValues { get; }
+		object[] EffectParameterValues { get; set; }
     }
 }

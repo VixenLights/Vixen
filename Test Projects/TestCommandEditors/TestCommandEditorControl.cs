@@ -18,6 +18,10 @@ namespace TestCommandEditors {
 
 		public object[] EffectParameterValues {
 			get { return new object[] { (Level)(double)numericUpDownLevel.Value }; }
+			set
+			{
+				// TODO
+			}
 		}
 	}
 }

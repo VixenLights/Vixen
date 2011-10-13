@@ -15,7 +15,7 @@ namespace Vixen.Module.EffectEditor {
 		}
 
 		public CommandParameterSignature CommandSignature {
-			get { return (Descriptor as IEffectEditorModuleDescriptor).CommandSignature; }
+			get { return (Descriptor as IEffectEditorModuleDescriptor).ParameterSignature; }
 		}
 
 		public bool Equals(IEffectEditorModuleInstance x, IEffectEditorModuleInstance y) {

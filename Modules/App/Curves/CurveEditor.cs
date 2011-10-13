@@ -34,6 +34,11 @@ namespace VixenModules.App.Curves
 			zedGraphControl.GraphPane.AxisChange();
 		}
 
+		public CurveEditor(Curve curve)
+			: this(curve.Points)
+		{
+		}
+
 		public PointPairList Points
 		{
 			get
@@ -51,6 +56,18 @@ namespace VixenModules.App.Curves
 				zedGraphControl.GraphPane.AddCurve("", ppl, Color.Gray);
 				zedGraphControl.Invalidate();
 				Modified = false;
+			}
+		}
+
+		public Curve Curve
+		{
+			get
+			{
+				return new Curve(Points);
+			}
+			set
+			{
+				Points = value.Points;
 			}
 		}
 

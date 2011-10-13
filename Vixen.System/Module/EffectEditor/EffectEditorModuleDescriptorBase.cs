@@ -20,7 +20,7 @@ namespace Vixen.Module.EffectEditor {
 
 		abstract public Guid EffectTypeId { get; }
 
-		abstract public CommandParameterSignature CommandSignature { get; }
+		abstract public CommandParameterSignature ParameterSignature { get; }
 
 		public bool Equals(IEffectEditorModuleDescriptor x, IEffectEditorModuleDescriptor y) {
 			return base.Equals(x, y);
