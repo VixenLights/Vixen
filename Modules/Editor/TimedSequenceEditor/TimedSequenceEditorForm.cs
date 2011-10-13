@@ -40,6 +40,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			InitializeComponent();
 
 			timelineControl.ElementChangedRows += ElementChangedRowsHandler;
+			timelineControl.ElementDoubleClicked += ElementDoubleClickedHandler;
 
 			LoadAvailableEffects();
 
@@ -90,7 +91,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public void RefreshSequence()
 		{
-			throw new NotImplementedException();
+			Sequence = Sequence;
 		}
 
 		public void Save(string filePath = null)
@@ -357,6 +358,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			IsModified = true;
+		}
+
+		protected void ElementDoubleClickedHandler(object sender, ElementEventArgs e)
+		{
+			TimedSequenceElement element = e.Element as TimedSequenceElement;
+
+			if (element.EffectNode == null) {
+				VixenSystem.Logging.Error("TimedSequenceEditor: Element double-clicked, and it doesn't have an associated effect!");
+				return;
+			}
+
+			using (TimedSequenceEditorEffectEditor editor = new TimedSequenceEditorEffectEditor(element.EffectNode)) {
+				DialogResult result = editor.ShowDialog();
+			}
 		}
 
 		#endregion

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Drawing;
 using Vixen.Sys;
 using Vixen.Commands;
 using Vixen.Commands.KnownDataTypes;
@@ -11,60 +12,36 @@ namespace VixenModules.Effect.SetLevel
 {
 	public class SetLevelDescriptor : EffectModuleDescriptorBase
 	{
-		private Guid _typeId = new Guid("{32cff8e0-5b10-4466-a093-0d232c55aac0}");
-		static internal Guid RGBProperty = new Guid("{5c31be79-a6a7-4864-a660-4e0215ad4778}");
-		private CommandParameterSignature _parameters = new CommandParameterSignature(new CommandParameterSpecification("Level", typeof(Level)));
+		private static Guid _typeId = new Guid("{32cff8e0-5b10-4466-a093-0d232c55aac0}");
+		internal static Guid _RGBPropertyId = new Guid("{5c31be79-a6a7-4864-a660-4e0215ad4778}");
 
-		public SetLevelDescriptor()
-		{
-			PropertyDependencies = new[] {
-				RGBProperty
-			};
-		}
+		public override string EffectName { get { return "Set Level"; } }
 
-		override public string EffectName
-		{
-			get { return "Set Level"; }
-		}
+		public override Guid TypeId { get { return _typeId; } }
 
-		override public CommandParameterSignature Parameters
-		{
-			get { return _parameters; }
-		}
+		public override Type ModuleClass { get { return typeof(SetLevel); } }
 
-		override public Guid TypeId
-		{
-			get { return _typeId; }
-		}
+		public override Type ModuleDataClass { get { return typeof(SetLevelData); } }
 
-		override public Type ModuleClass
-		{
-			get { return typeof(SetLevel); }
-		}
+		public override string Author { get { return "Vixen Team"; } }
 
-		public override Type ModuleDataClass
-		{
-			get { return typeof(SetLevelData); }
-		}
+		public override string TypeName { get { return EffectName; } }
 
-		override public string Author
-		{
-			get { return "Vixen Team"; }
-		}
+		public override string Description { get { return "Sets the target channels to a static output level and/or color."; } }
 
-		override public string TypeName
-		{
-			get { return EffectName; }
-		}
+		public override string Version { get { return "0.1"; } }
 
-		override public string Description
-		{
-			get { return "Sets the target channels to a static output level."; }
-		}
+		public override Guid[] Dependencies { get { return new Guid[] { _RGBPropertyId }; } }
 
-		override public string Version
+		public override CommandParameterSignature Parameters
 		{
-			get { return "0.1"; }
+			get
+			{
+				return new CommandParameterSignature(
+					new CommandParameterSpecification("Level", typeof(Level)),
+					new CommandParameterSpecification("Color", typeof(Color))
+					);
+			}
 		}
 	}
 }

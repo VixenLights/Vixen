@@ -22,9 +22,6 @@ namespace Vixen.Module.Effect {
 			EffectModuleDescriptorBase descriptor = Modules.GetDescriptorById<EffectModuleDescriptorBase>(id);
 			if(descriptor != null) {
 				_nameLookup[descriptor.EffectName] = id;
-
-				// Determine which, if any, of the effect's dependencies are properties.
-				descriptor.PropertyDependencies = descriptor.Dependencies.Where(x => Modules.GetDescriptorById<IPropertyModuleDescriptor>(x) != null).ToArray();
 			}
 		}
 

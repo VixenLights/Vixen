@@ -12,7 +12,6 @@ namespace VixenModules.EffectEditor.CurveTypeEditor
 	class CurveTypeEditorDescriptor : EffectEditorModuleDescriptorBase
 	{
 		private static Guid _typeId = new Guid("{b49b34f9-ca0c-44e9-8041-453dd30a1881}");
-
 		private static Guid _CurvesId = new Guid("{4e258de2-7a75-4f0f-aa43-c8182e7f3400}");
 
 		public override string Author { get { return "Vixen Team"; } }

@@ -89,7 +89,7 @@ namespace VixenModules.Effect.Pulse
 		{
 			// if this node is an RGB node, then it will know what to do with it (might render directly,
 			// might be broken down into sub-channels, etc.) So just pass it off to that instead.
-			if (node.Properties.Contains(PulseDescriptor.RGBProperty)) {
+			if (node.Properties.Contains(PulseDescriptor._RGBPropertyId)) {
 				RenderRGB(node);
 			} else {
 				if (node.IsLeaf) {
@@ -152,7 +152,7 @@ namespace VixenModules.Effect.Pulse
 			// 5 minutes of thought) to intelligently generate commands more efficently (ie. slower if we
 			// can get away with it), so for now, just blat it out at full speed. TODO here for that.
 			TimeSpan currentTime = TimeSpan.Zero;
-			RGBModule rgbProperty = node.Properties.Get(PulseDescriptor.RGBProperty) as RGBModule;
+			RGBModule rgbProperty = node.Properties.Get(PulseDescriptor._RGBPropertyId) as RGBModule;
 
 			while (currentTime < TimeSpan) {
 				double percentProgress = currentTime.TotalMilliseconds / TimeSpan.TotalMilliseconds;

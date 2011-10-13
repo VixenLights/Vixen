@@ -12,7 +12,6 @@ namespace VixenModules.EffectEditor.ColorGradientTypeEditor
 	class ColorGradientTypeEditorDescriptor : EffectEditorModuleDescriptorBase
 	{
 		private static Guid _typeId = new Guid("{eb7397db-bfac-4187-add4-f75b5e8fe773}");
-
 		private static Guid _ColorGradientsId = new Guid("{64f4ab26-3ed4-49a3-a004-23656ed0424a}");
 
 		public override string Author { get { return "Vixen Team"; } }

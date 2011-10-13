@@ -133,6 +133,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorGradientTypeEditor", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LevelTypeEditor", "Modules\EffectEditor\LevelTypeEditor\LevelTypeEditor.csproj", "{5FE12EE4-49CB-4008-9A30-96960704A9C5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetLevelEffectEditor", "Modules\EffectEditor\SetLevelEffectEditor\SetLevelEffectEditor.csproj", "{C2B33472-2952-464A-8A6F-060953621900}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PulseEffectEditor", "Modules\EffectEditor\PulseEffectEditor\PulseEffectEditor.csproj", "{D9E9F5E0-7B8B-4CFD-A32A-2B5099DCF7D0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -369,6 +373,18 @@ Global
 		{5FE12EE4-49CB-4008-9A30-96960704A9C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5FE12EE4-49CB-4008-9A30-96960704A9C5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5FE12EE4-49CB-4008-9A30-96960704A9C5}.Release|x86.ActiveCfg = Release|Any CPU
+		{C2B33472-2952-464A-8A6F-060953621900}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2B33472-2952-464A-8A6F-060953621900}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2B33472-2952-464A-8A6F-060953621900}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C2B33472-2952-464A-8A6F-060953621900}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2B33472-2952-464A-8A6F-060953621900}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2B33472-2952-464A-8A6F-060953621900}.Release|x86.ActiveCfg = Release|Any CPU
+		{D9E9F5E0-7B8B-4CFD-A32A-2B5099DCF7D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9E9F5E0-7B8B-4CFD-A32A-2B5099DCF7D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9E9F5E0-7B8B-4CFD-A32A-2B5099DCF7D0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D9E9F5E0-7B8B-4CFD-A32A-2B5099DCF7D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9E9F5E0-7B8B-4CFD-A32A-2B5099DCF7D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9E9F5E0-7B8B-4CFD-A32A-2B5099DCF7D0}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -413,5 +429,7 @@ Global
 		{3B7309D6-5D6A-4265-A0B9-B65E0DDFCB12} = {04563307-41A9-4BB8-B13F-B364BE966B85}
 		{48CF28EC-8DC9-44F8-A258-BD264DF187D9} = {04563307-41A9-4BB8-B13F-B364BE966B85}
 		{5FE12EE4-49CB-4008-9A30-96960704A9C5} = {04563307-41A9-4BB8-B13F-B364BE966B85}
+		{C2B33472-2952-464A-8A6F-060953621900} = {04563307-41A9-4BB8-B13F-B364BE966B85}
+		{D9E9F5E0-7B8B-4CFD-A32A-2B5099DCF7D0} = {04563307-41A9-4BB8-B13F-B364BE966B85}
 	EndGlobalSection
 EndGlobal

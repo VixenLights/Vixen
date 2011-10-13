@@ -43,11 +43,11 @@
 			this.toolStripEffects = new System.Windows.Forms.ToolStrip();
 			this.timelineControl = new CommonElements.Timeline.TimelineControl();
 			this.timerPlaying = new System.Windows.Forms.Timer(this.components);
-			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+			this.statusStrip = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabel_currentTime = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripOperations.SuspendLayout();
 			this.menuStrip.SuspendLayout();
-			this.statusStrip1.SuspendLayout();
+			this.statusStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// toolStripOperations
@@ -177,15 +177,15 @@
 			this.timerPlaying.Interval = 50;
 			this.timerPlaying.Tick += new System.EventHandler(this.timerPlaying_Tick);
 			// 
-			// statusStrip1
+			// statusStrip
 			// 
-			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel_currentTime});
-			this.statusStrip1.Location = new System.Drawing.Point(0, 726);
-			this.statusStrip1.Name = "statusStrip1";
-			this.statusStrip1.Size = new System.Drawing.Size(1088, 24);
-			this.statusStrip1.TabIndex = 4;
-			this.statusStrip1.Text = "statusStrip1";
+			this.statusStrip.Location = new System.Drawing.Point(0, 726);
+			this.statusStrip.Name = "statusStrip";
+			this.statusStrip.Size = new System.Drawing.Size(1088, 24);
+			this.statusStrip.TabIndex = 4;
+			this.statusStrip.Text = "statusStrip1";
 			// 
 			// toolStripStatusLabel_currentTime
 			// 
@@ -203,7 +203,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1088, 750);
-			this.Controls.Add(this.statusStrip1);
+			this.Controls.Add(this.statusStrip);
 			this.Controls.Add(this.toolStripEffects);
 			this.Controls.Add(this.toolStripOperations);
 			this.Controls.Add(this.menuStrip);
@@ -217,8 +217,8 @@
 			this.toolStripOperations.PerformLayout();
 			this.menuStrip.ResumeLayout(false);
 			this.menuStrip.PerformLayout();
-			this.statusStrip1.ResumeLayout(false);
-			this.statusStrip1.PerformLayout();
+			this.statusStrip.ResumeLayout(false);
+			this.statusStrip.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -240,7 +240,7 @@
 		private System.Windows.Forms.ToolStripButton toolStripButton_Stop;
 		private System.Windows.Forms.ToolStripButton toolStripButton_Pause;
 		private System.Windows.Forms.Timer timerPlaying;
-		private System.Windows.Forms.StatusStrip statusStrip1;
+		private System.Windows.Forms.StatusStrip statusStrip;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel_currentTime;
 	}
 }
