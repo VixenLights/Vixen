@@ -335,8 +335,7 @@ namespace Vixen.Sys {
 
 								Monitor.Enter(targetChannel);
 
-								TimeSpan systemTime = _systemTime.Position + _syncDelta;
-								TimeSpan systemTimeDelta = effectNode.StartTime + systemTime;
+								TimeSpan systemTimeDelta = _timeStarted + _syncDelta;
 
 								// Offset the data's time frame by the command's time offset.
 								foreach(CommandNode data in channelData[channelId]) {
