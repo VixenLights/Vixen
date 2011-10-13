@@ -39,9 +39,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			InitializeComponent();
 
-			_effectNodeToElement = new Dictionary<EffectNode, TimelineElement>();
-			_channelNodeToRows = new Dictionary<ChannelNode, List<TimelineRow>>();
-
 			timelineControl.ElementChangedRows += ElementChangedRowsHandler;
 
 			LoadAvailableEffects();
@@ -136,6 +133,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// </summary>
 		private void LoadSystemNodesToRows(bool clearCurrentRows = true)
 		{
+			_channelNodeToRows = new Dictionary<ChannelNode, List<TimelineRow>>();
+
 			if (clearCurrentRows)
 				timelineControl.ClearAllRows();
 
@@ -188,6 +187,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			LoadSystemNodesToRows();
 
 			// load the new data: get all the commands in the sequence, and make a new element for each of them.
+			_effectNodeToElement = new Dictionary<EffectNode, TimelineElement>();
 			foreach (EffectNode node in _sequence.Data.GetEffects()) {
 				AddElementForEffectNode(node);
 			}
@@ -494,7 +494,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				AddElementForEffectNode(effectNode);
 				IsModified = true;
 			} catch (Exception ex) {
-				VixenSystem.Logging.Error("TimedSequenceEditor: error adding effect of type " + effectId + " to row " + row.Name + ": ", ex);
+				VixenSystem.Logging.Error("TimedSequenceEditor: error adding effect of type " + effectId + " to row " + row.Name, ex);
 			}
 		}
 
