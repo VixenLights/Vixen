@@ -8,7 +8,7 @@ using Vixen.Module.Timing;
 namespace Vixen.Execution {
 	// T - single instance in
 	// U - collection of T out
-	abstract class MultiStateEnumerator<T, U> : IEnumerator<U>
+	abstract class MultiStateTimedEnumerator<T, U> : IEnumerator<U>
 		where T : class, ITimed
 		where U : class, IEnumerable<T> {
 		private TimeSpan _startTime;
@@ -22,7 +22,7 @@ namespace Vixen.Execution {
 
 		// enumerator.Current = 1-frame buffer
 
-		public MultiStateEnumerator(IEnumerable<T> source, ITiming timingSource, TimeSpan startTime, TimeSpan endTime) {
+		public MultiStateTimedEnumerator(IEnumerable<T> source, ITiming timingSource, TimeSpan startTime, TimeSpan endTime) {
 			_source = source;
 			_timingSource = timingSource;
 			_startTime = startTime;

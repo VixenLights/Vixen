@@ -115,7 +115,7 @@
     <Compile Include="Commands\ICustomCommandBehavior.cs" />
     <Compile Include="Commands\Lighting.cs" />
     <Compile Include="Commands\Types.cs" />
-    <Compile Include="Execution\MultiStateEnumerator.cs" />
+    <Compile Include="Execution\MultiStateTimedEnumerator.cs" />
     <Compile Include="IO\Xml\XmlContextReader.cs" />
     <Compile Include="IO\Xml\XmlContextWriter.cs" />
     <Compile Include="IO\Xml\XmlModuleStoreReader.cs" />
@@ -221,7 +221,7 @@
     <Compile Include="Execution\ITimingProvider.cs" />
     <Compile Include="Execution\MediaTimingProvider.cs" />
     <Compile Include="Execution\SystemChannelEnumerator.cs" />
-    <Compile Include="Execution\TimedChannelEnumerator.cs" />
+    <Compile Include="Execution\SingleTimedEnumerator.cs" />
     <Compile Include="Execution\TimingModuleTimingProvider.cs" />
     <Compile Include="Execution\TimingProviders.cs" />
     <Compile Include="Hardware\IOutputStateSource.cs" />

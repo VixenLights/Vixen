@@ -6,7 +6,7 @@ using Vixen.Sys;
 using Vixen.Module.Timing;
 
 namespace Vixen.Execution {
-	abstract class TimedChannelEnumerator<T> : IEnumerator<T>
+	abstract class SingleTimedEnumerator<T> : IEnumerator<T>
 		where T : class, ITimed, new() {
 		private TimeSpan _startTime;
 		private TimeSpan _endTime;
@@ -22,7 +22,7 @@ namespace Vixen.Execution {
 
 		// enumerator.Current = 1-frame buffer
 
-		public TimedChannelEnumerator(IEnumerable<T> source, ITiming timingSource, TimeSpan startTime, TimeSpan endTime,
+		public SingleTimedEnumerator(IEnumerable<T> source, ITiming timingSource, TimeSpan startTime, TimeSpan endTime,
 			SingleTimedEnumeratorProgressType progressResponseType, bool skipMissedItems)
 		{
 			_source = source;
