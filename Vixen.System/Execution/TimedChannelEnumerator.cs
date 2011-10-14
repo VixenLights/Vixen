@@ -17,14 +17,20 @@ namespace Vixen.Execution {
 		private TimeSpan _position;
 		private T _emptyInstance = new T();
 		private T _currentFrame;
+		private SingleTimedEnumeratorProgressType _responseType;
+		private bool _skipMissedItems;
 
 		// enumerator.Current = 1-frame buffer
 
-		public TimedChannelEnumerator(IEnumerable<T> source, ITiming timingSource, TimeSpan startTime, TimeSpan endTime) {
+		public TimedChannelEnumerator(IEnumerable<T> source, ITiming timingSource, TimeSpan startTime, TimeSpan endTime,
+			SingleTimedEnumeratorProgressType progressResponseType, bool skipMissedItems)
+		{
 			_source = source;
 			_timingSource = timingSource;
 			_startTime = startTime;
 			_endTime = endTime;
+			_responseType = progressResponseType;
+			_skipMissedItems = skipMissedItems;
 			Reset();
 		}
 
@@ -46,16 +52,27 @@ namespace Vixen.Execution {
 			_position = _timingSource.Position;
 			_newFrame = _currentFrame;
 
-			if(_position >= _currentFrame.EndTime) {
-				// Current frame has expired.
+			// check if we need to progress to the next item: always true if we're triggering on leading edge, and
+			// true if held for duration and the current frame has expired
+			if (_responseType == SingleTimedEnumeratorProgressType.LeadingEdge ||
+				_responseType == SingleTimedEnumeratorProgressType.HeldForDuration && _position >= _currentFrame.EndTime) {
 
-				// Assume a cleared state.
-				_newFrame = _emptyInstance;
-				// Burn frames until buffered frame is not expired or there is no data.
-				while((_enumerator.Current == null || _enumerator.Current.EndTime <= _position) && _enumerator.MoveNext()) { }
-				if(_enumerator.Current != null && _enumerator.Current.StartTime <= _position) {
-					// We have data and its time is valid.
+				// move to the next item in the data list while any of the following:
+				// 1) the current one is null
+				// 2) we're skipping missed items and the item is expired, or our current frame is expired
+				// 3) we're edge triggering, and we've already output the current frame; immediately go on to the next
+				while ((_enumerator.Current == null) ||
+					   ((_enumerator.Current == _currentFrame || _skipMissedItems) && _enumerator.Current.EndTime <= _position) ||
+					   (_responseType == SingleTimedEnumeratorProgressType.LeadingEdge && _enumerator.Current == _currentFrame)
+					  )
+					if (!_enumerator.MoveNext())
+						break;
+
+				// if the next element in the list is current, then populate ourselves with it. Otherwise, fall back to <nothing>.
+				if (_enumerator.Current != null && _enumerator.Current.StartTime <= _position) {
 					_newFrame = _enumerator.Current;
+				} else {
+					_newFrame = _emptyInstance;
 				}
 			}
 
@@ -86,4 +103,21 @@ namespace Vixen.Execution {
 		}
 	}
 
+	/// <summary>
+	/// the options for the way the single timed item enumerator will respond.
+	/// </summary>
+	enum SingleTimedEnumeratorProgressType
+	{
+		/// <summary>
+		/// The leading edge of a Timed item will satisfy the progress conditions. The next item
+		/// returned will be the next ordered Timed item, regardless of if the first one has ended.
+		/// </summary>
+		LeadingEdge,
+
+		/// <summary>
+		/// The Timed item will 'block' for its duration. This means any other timed items that
+		/// start during the first will be ignored, unless they are still active at the end of the first.
+		/// </summary>
+		HeldForDuration
+	}
 }

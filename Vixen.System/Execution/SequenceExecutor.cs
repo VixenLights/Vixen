@@ -145,29 +145,22 @@ namespace Vixen.Execution {
 			// when to stop.
 			bool transitionToSet = false;
 			bool transitionToReset = false;
-			List<EffectNode> qualifiedEffects = new List<EffectNode>();
 
 			do {
 				if(IsRunning) transitionToSet = true;
 				if(transitionToSet && !IsRunning) transitionToReset = true;
 
-				//*** may be faster to create a new one
-				qualifiedEffects.Clear();
-
 				// Get everything that currently qualifies.
 				while(_sequenceDataEnumerator.MoveNext()) {
 					lock (VixenSystem.Logging) {
-						EffectNode[] ea = _sequenceDataEnumerator.Current;
-						for (int i = 0; i < ea.Length; i++) {
-							VixenSystem.Logging.Debug(Vixen.Sys.Execution.CurrentExecutionTimeString + ": Sequence DataGenerationThread: MoveNext: effect[" + i + "] is " + ea[i].Effect.Descriptor.TypeName + ", S=" + ea[i].StartTime + ", D=" + ea[i].TimeSpan + ", target=" + ea[i].Effect.TargetNodes[0].Name);
-						}
+						EffectNode e = _sequenceDataEnumerator.Current;
+						if (e.IsEmpty)
+							VixenSystem.Logging.Debug(Vixen.Sys.Execution.CurrentExecutionTimeString + ": Sequence DataGenerationThread: MoveNext: effect is null");
+						else
+							VixenSystem.Logging.Debug(Vixen.Sys.Execution.CurrentExecutionTimeString + ": Sequence DataGenerationThread: MoveNext: effect is " + e.Effect.Descriptor.TypeName + ", S=" + e.StartTime + ", D=" + e.TimeSpan + ", target=" + e.Effect.TargetNodes[0].Name);
 					}
-					qualifiedEffects.AddRange(_sequenceDataEnumerator.Current);
-				}
-
-				// Execute it as a single state.
-				if(qualifiedEffects.Count > 0) {
-					Vixen.Sys.Execution.Write(qualifiedEffects);
+					if (!_sequenceDataEnumerator.Current.IsEmpty)
+						Vixen.Sys.Execution.Write(new EffectNode[] { _sequenceDataEnumerator.Current });
 				}
 
 				//completely arbitrary...
