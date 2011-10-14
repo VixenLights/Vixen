@@ -59,7 +59,8 @@ namespace Vixen.Module.Effect {
 		public ChannelData Render(TimeSpan restrictingOffsetTime, TimeSpan restrictingTimeSpan) {
 			// System-side caching/dirty would use this hook.
 			ChannelData channelData = Render();
-			channelData = ChannelData.Restrict(channelData, restrictingOffsetTime, restrictingTimeSpan);
+			// NB: the ChannelData.Restrict method takes a start and end time, not a start and duration
+			channelData = ChannelData.Restrict(channelData, restrictingOffsetTime, restrictingOffsetTime + restrictingTimeSpan);
 			return channelData;
 		}
 

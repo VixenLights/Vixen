@@ -66,15 +66,15 @@ namespace Vixen.Sys {
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="renderStartTime">Relative to the start of the CommandNode.</param>
-		/// <param name="renderTimeSpan">Length of time to render.</param>
+		/// <param name="desiredStartTime">Relative to the start of the EffectNode.</param>
+		/// <param name="desiredDuration">Duration of effect to render.</param>
 		/// <returns></returns>
-		public ChannelData RenderEffectData(TimeSpan renderStartTime, TimeSpan renderTimeSpan) {
+		public ChannelData RenderEffectData(TimeSpan desiredStartTime, TimeSpan desiredDuration) {
 			if(!IsEmpty) {
 				// We're providing the length of the desired effect and a relative start time for rendering.
-				TimeSpan startTime = (renderStartTime > StartTime && renderStartTime < TimeSpan) ? renderStartTime : StartTime;
-				TimeSpan timeSpan = (renderTimeSpan + StartTime < TimeSpan) ? renderTimeSpan : TimeSpan - StartTime;
-				return Effect.Render(startTime, timeSpan);
+				TimeSpan renderStartTime = (desiredStartTime < TimeSpan) ? desiredStartTime : TimeSpan.Zero;
+				TimeSpan renderTimeSpan = (renderStartTime + desiredDuration < TimeSpan) ? desiredDuration : TimeSpan - renderStartTime;
+				return Effect.Render(renderStartTime, renderTimeSpan);
 			}
 			return null;
 		}
