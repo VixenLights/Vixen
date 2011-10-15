@@ -98,6 +98,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="TimedSequenceEditorEffectEditor.resx">
+      <DependentUpon>TimedSequenceEditorEffectEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TimedSequenceEditorForm.resx">
       <DependentUpon>TimedSequenceEditorForm.cs</DependentUpon>
     </EmbeddedResource>

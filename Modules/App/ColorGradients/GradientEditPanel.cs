@@ -15,14 +15,20 @@ namespace VixenModules.App.ColorGradients
 	public partial class GradientEditPanel : UserControl
 	{
 		#region variables
+
 		private XYZ _xyz = XYZ.White;
 		private ColorPicker.Mode _mode = ColorPicker.Mode.HSV_RGB;
 		private ColorPicker.Fader _fader = ColorPicker.Fader.HSV_H;
+
 		#endregion
+
+
 		public GradientEditPanel()
 		{
 			InitializeComponent();
 		}
+
+
 		#region handlers
 		//updates all controls
 		private void UpdateUI()
@@ -52,6 +58,7 @@ namespace VixenModules.App.ColorGradients
 				}
 			}
 		}
+
 		//triggered if gradient or selection changed
 		private void edit_GradientChanged(object sender, EventArgs e)
 		{
@@ -59,6 +66,7 @@ namespace VixenModules.App.ColorGradients
 			if (GradientChanged != null)
 				GradientChanged(this, e);
 		}
+
 		//active color changed
 		private void lblColorSelect_Click(object sender, EventArgs e)
 		{
@@ -79,6 +87,7 @@ namespace VixenModules.App.ColorGradients
 				}
 			}
 		}
+
 		//active color dragged
 		private void lblColorSelect_ColorChanged(object sender, EventArgs e)
 		{
@@ -88,6 +97,7 @@ namespace VixenModules.App.ColorGradients
 			if (pt != null)
 				pt.Color = XYZ.FromRGB(new RGB(lblColorSelect.Color));
 		}
+
 		//active color point location
 		private void vColorLoc_ValueChanged(ValueControl sender, ValueChangedEventArgs e)
 		{
@@ -101,6 +111,7 @@ namespace VixenModules.App.ColorGradients
 			else
 				pt.Position = (double)vColorLoc.Value / 100.0;
 		}
+
 		//delete active color point
 		private void btnDeleteColor_Click(object sender, EventArgs e)
 		{
@@ -111,8 +122,12 @@ namespace VixenModules.App.ColorGradients
 			edit.Gradient.Colors.RemoveAt(index);
 			UpdateUI();
 		}
+
 		#endregion
+
+
 		#region properties
+
 		/// <summary>
 		/// gets or sets the gradient object
 		/// </summary>
@@ -123,7 +138,10 @@ namespace VixenModules.App.ColorGradients
 			get { return edit.Gradient; }
 			set { edit.Gradient = value; UpdateUI(); }
 		}
+
 		#endregion
+
+
 		/// <summary>
 		/// triggered if gradient changed
 		/// </summary>

@@ -14,24 +14,24 @@ namespace VixenModules.App.ColorGradients
 	[DataContract]
 	public class ColorGradient : ICloneable
 	{
+
 		/// <summary>
 		/// class for holding a gradient point
 		/// </summary>
 		[DataContract]
 		public abstract class Point : IComparable<double>
 		{
-			//variables
-			[DataMember]
-			private ColorGradient _owner;
 			[DataMember]
 			private double _position;
 			[DataMember]
 			private double _focus;
+
 			/// <summary>
 			/// ctor
 			/// </summary>
 			public Point(double position)
 				: this(position, 0.5) { }
+
 			/// <summary>
 			/// ctor
 			/// </summary>
@@ -43,19 +43,14 @@ namespace VixenModules.App.ColorGradients
 				_position = position;
 				_focus = focus;
 			}
+
 			/// <summary>
 			/// gets the color
 			/// </summary>
 			public abstract Color GetColor(Color basecolor);
+
 			#region properties
-			internal void SetOwner(ColorGradient owner)
-			{
-				this._owner = owner;
-			}
-			public ColorGradient Owner
-			{
-				get { return _owner; }
-			}
+
 			/// <summary>
 			/// gets or sets the position
 			/// </summary>
@@ -72,6 +67,7 @@ namespace VixenModules.App.ColorGradients
 					RaiseChange();
 				}
 			}
+
 			/// <summary>
 			/// gets or sets the focus
 			/// </summary>
@@ -88,46 +84,12 @@ namespace VixenModules.App.ColorGradients
 					RaiseChange();
 				}
 			}
-			//get focus position
-			public abstract double GetFocusPosition();
-			//set focus position
-			public abstract void SetFocusPosition(double value);
-			/// <summary>
-			/// gets the absolute focus point
-			/// </summary>
-			protected double GetFocusPosition<T>(PointList<T> coll, T value) where T : Point, IComparable<T>
-			{
-				if (coll == null || value == null)
-					throw new ArgumentNullException();
-				//
-				T[] sorted = coll.SortedArray();
-				int i = Array.IndexOf<T>(sorted, value);
-				if (i < 1)//first point or not found
-					return double.NaN;
-				return sorted[i - 1].Position + value.Focus *
-					(sorted[i].Position - sorted[i - 1].Position);
-			}
-			protected void SetFocusPosition<T>(PointList<T> coll, T value, double focuspos) where T : Point, IComparable<T>
-			{
-				if (coll == null || value == null)
-					throw new ArgumentNullException("coll or value");
-				if (!ColorGradient.isValid(focuspos))
-					throw new ArgumentException("focuspos");
-				//
-				T[] sorted = coll.SortedArray();
-				int i = Array.IndexOf<T>(sorted, value);
-				if (i > 0)
-				{
-					//calculate focus
-					double w=sorted[i].Position - sorted[i - 1].Position;
-					if (w <= 0)
-						value.Focus = .5;
-					else value.Focus = Math.Max(.0, Math.Min(1.0,
-						(focuspos - sorted[i - 1].Position) / w));
-				}
-			}
+
 			#endregion
+
+
 			#region api
+
 			public override bool Equals(object obj)
 			{
 				Point grd = obj as Point;
@@ -136,11 +98,13 @@ namespace VixenModules.App.ColorGradients
 				return grd._focus == this._focus &&
 					grd._position == this._position;
 			}
+
 			public override int GetHashCode()
 			{
 				return _focus.GetHashCode() << 16 ^
 					_position.GetHashCode();
 			}
+
 			/// <summary>
 			/// IComparable
 			/// </summary>
@@ -148,73 +112,92 @@ namespace VixenModules.App.ColorGradients
 			{
 				return _position.CompareTo(other);
 			}
+
 			#endregion
+
 			/// <summary>
 			/// raises change event
 			/// </summary>
 			protected void RaiseChange()
 			{
-				if (_owner != null)
-					_owner.RaiseChanged(new ModifiedEventArgs(Action.Modified, this));
+				if (Changed != null)
+					Changed(this, new ModifiedEventArgs(Action.Modified, this));
 			}
+			public event EventHandler<ModifiedEventArgs> Changed;
 		}
+
+
 		/// <summary>
 		/// class for holding points and updating
 		/// controls connected to this colorblend
 		/// </summary>
-		[DataContract]
-		public class PointList<T> : CollectionBase<ColorGradient, T> where T : Point,IComparable<T>
+		[CollectionDataContract]
+		public class PointList<T> : CollectionBase<T> where T : Point,IComparable<T>
 		{
-			public PointList(ColorGradient owner) : base(owner) { }
 			#region change events
+
+			public event EventHandler<ModifiedEventArgs> Changed;
+
+			public void PointChangedHandler(object sender, ModifiedEventArgs e)
+			{
+				if (Changed != null)
+					Changed(this, e);
+			}
+
 			//update owner property
 			protected override void OnInsert(int index, T value)
 			{
-				if (value.Owner != null)
-					throw new ArgumentException("can only be assigned to one owner");
-				value.SetOwner(this.Owner);
+				value.Changed += PointChangedHandler;
 			}
+
 			protected override void OnSet(int index, T oldValue, T newValue)
 			{
-				if (newValue.Owner != null && newValue.Owner != this.Owner)
-					throw new ArgumentException("can only be assigned to one owner");
-				newValue.SetOwner(this.Owner);
-				oldValue.SetOwner(null);
+				oldValue.Changed -= PointChangedHandler;
+				newValue.Changed += PointChangedHandler;
 			}
+
 			protected override void OnRemove(int index, T value)
 			{
-				((Point)value).SetOwner(null);
+				value.Changed -= PointChangedHandler;
 			}
+
 			protected override void OnClear()
 			{
 				foreach (Point grd in this)
-					grd.SetOwner(null);
+					grd.Changed -= PointChangedHandler;
 			}
+
 			//update edit controls
 			protected override void OnValidate(T value)
 			{
 				if (value == null)
 					throw new ArgumentNullException("value");
 			}
+
 			protected override void OnClearComplete()
 			{
-				this.Owner.RaiseChanged(new ModifiedEventArgs(Action.Cleared, null));
+				PointChangedHandler(this, new ModifiedEventArgs(Action.Cleared, null));
 			}
+
 			protected override void OnSetComplete(int index, T oldValue, T newValue)
 			{
-				this.Owner.RaiseChanged(new ModifiedEventArgs(Action.Removed, oldValue));
-				this.Owner.RaiseChanged(new ModifiedEventArgs(Action.Added, newValue));
+				PointChangedHandler(this, new ModifiedEventArgs(Action.Removed, oldValue));
+				PointChangedHandler(this, new ModifiedEventArgs(Action.Added, newValue));
 			}
+
 			protected override void OnRemoveComplete(int index, T value)
 			{
-				this.Owner.RaiseChanged(new ModifiedEventArgs(Action.Removed, value));
+				PointChangedHandler(this, new ModifiedEventArgs(Action.Removed, value));
 			}
+
 			protected override void OnInsertComplete(int index, T value)
 			{
-				this.Owner.RaiseChanged(new ModifiedEventArgs(Action.Added, value));
+				PointChangedHandler(this, new ModifiedEventArgs(Action.Added, value));
 			}
+
 			#endregion
-			/// <summary>
+
+			/// <summary> 
 			/// gets a sorted copy
 			/// </summary>
 			public T[] SortedArray()
@@ -225,22 +208,48 @@ namespace VixenModules.App.ColorGradients
 				return ret;
 			}
 		}
+
+
 		#region variables
+
 		[DataMember]
 		private PointList<ColorPoint> _colors;
 		[DataMember]
 		private PointList<AlphaPoint> _alphas;
 		[DataMember]
 		private bool _gammacorrected = false;
-		private ColorBlend _blend = null;
 		[DataMember]
 		private String _title = null;
+
+		// doesn't get serialized; it's instantiated as needed.
+		private ColorBlend _blend = null;
+
 		#endregion
+
 		public ColorGradient()
 		{
-			_colors = new PointList<ColorPoint>(this);
-			_alphas = new PointList<AlphaPoint>(this);
+			_colors = new PointList<ColorPoint>();
+			_alphas = new PointList<AlphaPoint>();
+			SetEventHandlers();
+
+			_alphas.Add(new AlphaPoint(255, 0));
+			_alphas.Add(new AlphaPoint(255, 1));
+			_colors.Add(new ColorPoint(Color.White, 0));
+			_colors.Add(new ColorPoint(Color.White, 1));
 		}
+
+		[OnDeserialized]
+		private void OnDeserialization(StreamingContext context)
+		{
+			SetEventHandlers();
+		}
+
+		private void SetEventHandlers()
+		{
+			_colors.Changed += ChangedPointHandler;
+			_alphas.Changed += ChangedPointHandler;
+		}
+
 		#region algorithms
 		/// <summary>
 		/// clamps the value to [0; 1]
@@ -254,6 +263,7 @@ namespace VixenModules.App.ColorGradients
 				return 1f;
 			return value;
 		}
+
 		/// <summary>
 		/// gets if double value is valid and between 0 and 1
 		/// </summary>
@@ -263,6 +273,7 @@ namespace VixenModules.App.ColorGradients
 					double.IsInfinity(value) ||
 					value < .0 || value > 1.0);
 		}
+
 		/// <summary>
 		/// creates color blend out of color point data
 		/// </summary>
@@ -310,6 +321,7 @@ namespace VixenModules.App.ColorGradients
 			ret.Positions = pos;
 			return ret;
 		}
+
 		/// <summary>
 		/// adds all colors of the given blend
 		/// </summary>
@@ -329,7 +341,10 @@ namespace VixenModules.App.ColorGradients
 					(double)blend.Positions[i]));
 			}
 		}
+
+
 		#region interpolation helpers
+
 		//compute balance out of focus point
 		private double FocusToBalance(double a, double b, double focus, double pos)
 		{
@@ -350,6 +365,7 @@ namespace VixenModules.App.ColorGradients
 			}
 			return ret;
 		}
+
 		//adds a new position to the list
 		private void AddPosition(ColorPoint[] colpoints, AlphaPoint[] alphapoints,
 			SortedList<float, Color> positions, double pos)
@@ -366,6 +382,7 @@ namespace VixenModules.App.ColorGradients
 				Interpolate(alphapoints, alpha_a, alpha_b, pos),
 				Interpolate(colpoints, color_a, color_b, pos)));
 		}
+
 		// interpolates alpha list
 		private byte Interpolate(AlphaPoint[] list, int a, int b, double pos)
 		{
@@ -377,6 +394,7 @@ namespace VixenModules.App.ColorGradients
 				(list[a].Alpha + FocusToBalance(list[a].Position, list[b].Position, list[b].Focus, pos)
 				* (list[b].Alpha - list[a].Alpha)) * 255.0, 0.0, 255.0);
 		}
+
 		// interpolate on color list.
 		private Color Interpolate(ColorPoint[] list, int a, int b, double pos)
 		{
@@ -391,6 +409,7 @@ namespace VixenModules.App.ColorGradients
 				col_a.G + bal * (col_b.G - col_a.G),
 				col_a.B + bal * (col_b.B - col_a.B)).ToArgb();
 		}
+
 		// interpolate on colorblend
 		private Color Interpolate(Color[] list, float[] positions, int a, int b, float pos)
 		{
@@ -406,6 +425,7 @@ namespace VixenModules.App.ColorGradients
 				(int)((float)list[a].G + bal * (float)(list[b].G - list[a].G)),
 				(int)((float)list[a].B + bal * (float)(list[b].B - list[a].B)));
 		}
+
 		//generic interval searching in O(log(n))
 		private void SearchPos<T,K>(T[] list, K pos, out int a, out int b) where T : IComparable<K>
 		{
@@ -424,18 +444,24 @@ namespace VixenModules.App.ColorGradients
 			}
 			//found interval
 		}
+
 		#endregion
+
 		#endregion
+
+
 		public static implicit operator ColorBlend(ColorGradient blend)
 		{
 			return blend.GetColorBlend();
 		}
+
 		public static implicit operator ColorGradient(ColorBlend blend)
 		{
 			ColorGradient ret = new ColorGradient();
 			ret.AddColors(blend);
 			return ret;
 		}
+
 		/// <summary>
 		/// creates a System.Drawing.Drawing2D.ColorBlend
 		/// out of this gradient
@@ -446,6 +472,7 @@ namespace VixenModules.App.ColorGradients
 				_blend = CreateColorBlend();
 			return _blend;
 		}
+
 		/// <summary>
 		/// gets the color at the specified position
 		/// </summary>
@@ -458,10 +485,12 @@ namespace VixenModules.App.ColorGradients
 			SearchPos<float,float>(blend.Positions, (float)pos, out a, out b);
 			return Interpolate(blend.Colors, blend.Positions, a, b, pos);
 		}
+
 		public Color GetColorAt(double pos)
 		{
 			return GetColorAt((float)pos);
 		}
+
 		#region properties
 		/// <summary>
 		/// gets or sets
@@ -471,11 +500,13 @@ namespace VixenModules.App.ColorGradients
 			get { return _gammacorrected; }
 			set { _gammacorrected = value; }
 		}
+
 		public String Title
 		{
 			get { return _title; }
 			set { _title = value; }
 		}
+
 		public PointList<AlphaPoint> Alphas
 		{
 			get { return _alphas; }
@@ -485,17 +516,25 @@ namespace VixenModules.App.ColorGradients
 		{
 			get { return _colors; }
 		}
+
 		#endregion
+
 		#region event handling
-		private void RaiseChanged(EventArgs args)
+
+		private void ChangedPointHandler(object sender, EventArgs e)
 		{
 			_blend = null;
 			if (Changed != null)
-				Changed(this, args);
+				Changed(this, e);
 		}
+
 		public event EventHandler Changed;
+
 		#endregion
+
+
 		#region ICloneable Member
+
 		/// <summary>
 		/// returns a copy of all gradient points and parameters
 		/// </summary>
@@ -514,8 +553,80 @@ namespace VixenModules.App.ColorGradients
 			//
 			return ret;
 		}
+
 		#endregion
+
+
+		/// <summary>
+		/// gets the absolute focus point of a point
+		/// </summary>
+		//protected double GetFocusPosition<T>(PointList<T> coll, T value) where T : Point, IComparable<T>
+		public double GetFocusPosition(Point value)
+		{
+			if (value == null)
+				throw new ArgumentException();
+			if (value is AlphaPoint)
+				return GetFocusPosition<AlphaPoint>(Alphas, value as AlphaPoint);
+			else if (value is ColorPoint)
+				return GetFocusPosition<ColorPoint>(Colors, value as ColorPoint);
+			else
+				throw new ArgumentException();
+
+			//int i = list.IndexOf(value);
+			//if (i < 1)//first point or not found
+			//    return double.NaN;
+
+			//return list[i - 1].Position + value.Focus * (list[i].Position - list[i - 1].Position);
+		}
+
+		private double GetFocusPosition<T>(PointList<T> coll, T value) where T : Point, IComparable<T>
+		{
+			if (coll == null || value == null)
+				throw new ArgumentNullException();
+			//
+			T[] sorted = coll.SortedArray();
+			int i = Array.IndexOf<T>(sorted, value);
+			if (i < 1)//first point or not found
+				return double.NaN;
+			return sorted[i - 1].Position + value.Focus *
+				(sorted[i].Position - sorted[i - 1].Position);
+		}
+
+
+
+		public void SetFocusPosition(Point value, double focuspos)
+		{
+			if (value == null || focuspos == double.NaN)
+				throw new ArgumentException();
+			if (value is AlphaPoint)
+				SetFocusPosition<AlphaPoint>(Alphas, value as AlphaPoint, focuspos);
+			else if (value is ColorPoint)
+				SetFocusPosition<ColorPoint>(Colors, value as ColorPoint, focuspos);
+			else
+				throw new ArgumentException();
+		}
+
+		private void SetFocusPosition<T>(PointList<T> coll, T value, double focuspos) where T : Point, IComparable<T>
+		{
+			if (coll == null || value == null)
+				throw new ArgumentNullException("coll or value");
+			if (!ColorGradient.isValid(focuspos))
+				throw new ArgumentException("focuspos");
+			//
+			T[] sorted = coll.SortedArray();
+			int i = Array.IndexOf<T>(sorted, value);
+			if (i > 0) {
+				//calculate focus
+				double w = sorted[i].Position - sorted[i - 1].Position;
+				if (w <= 0)
+					value.Focus = .5;
+				else value.Focus = Math.Max(.0, Math.Min(1.0,
+					(focuspos - sorted[i - 1].Position) / w));
+			}
+		}
 	}
+
+
 	/// <summary>
 	/// encapsulates an alpha value with focus point
 	/// </summary>
@@ -525,12 +636,14 @@ namespace VixenModules.App.ColorGradients
 		//variables
 		[DataMember]
 		private double _alpha;
+
 		/// <summary>
 		/// ctor
 		/// </summary>
 		public AlphaPoint(byte alpha, double point)
 			: this((double)alpha / 255.0, .5, point)
 		{ }
+
 		/// <summary>
 		/// ctor
 		/// </summary>
@@ -541,6 +654,7 @@ namespace VixenModules.App.ColorGradients
 				throw new ArgumentException("alpha");
 			_alpha = alpha;
 		}
+
 		/// <summary>
 		/// get color
 		/// </summary>
@@ -549,26 +663,29 @@ namespace VixenModules.App.ColorGradients
 			return Color.FromArgb((int)(_alpha * 255.0),
 				basecolor);
 		}
-		/// <summary>
-		/// gets the position of the focus point based
-		/// on the owning gradient and the focus value.
-		/// this operation requires O(n) runtime.
-		/// returns double.NaN if not valid
-		/// </summary>
-		public override double GetFocusPosition()
-		{
-			if (Owner == null)
-				return double.NaN;
-			return GetFocusPosition<AlphaPoint>(Owner.Alphas, this);
-		}
-		/// <summary>
-		/// sets the position of the focus point, if possible.
-		/// </summary>
-		public override void SetFocusPosition(double value)
-		{
-			if (Owner != null)
-				SetFocusPosition<AlphaPoint>(Owner.Alphas, this, value);
-		}
+
+		///// <summary>
+		///// gets the position of the focus point based
+		///// on the owning gradient and the focus value.
+		///// this operation requires O(n) runtime.
+		///// returns double.NaN if not valid
+		///// </summary>
+		//public override double GetFocusPosition()
+		//{
+		//    if (Owner == null)
+		//        return double.NaN;
+		//    return GetFocusPosition<AlphaPoint>(Owner.Alphas, this);
+		//}
+		//
+		///// <summary>
+		///// sets the position of the focus point, if possible.
+		///// </summary>
+		//public override void SetFocusPosition(double value)
+		//{
+		//    if (Owner != null)
+		//        SetFocusPosition<AlphaPoint>(Owner.Alphas, this, value);
+		//}
+
 		/// <summary>
 		/// gets or sets the alpha
 		/// </summary>
@@ -583,17 +700,21 @@ namespace VixenModules.App.ColorGradients
 				RaiseChange();
 			}
 		}
+
 		#region api
+
 		public override bool Equals(object obj)
 		{
 			return base.Equals(obj) &&
 				((AlphaPoint)obj)._alpha == this._alpha;
 		}
+
 		public override int GetHashCode()
 		{
 			return base.GetHashCode() ^
 				_alpha.GetHashCode();
 		}
+
 		/// <summary>
 		/// IComparable
 		/// </summary>
@@ -601,6 +722,7 @@ namespace VixenModules.App.ColorGradients
 		{
 			return Position.CompareTo(other.Position);
 		}
+
 		/// <summary>
 		/// ICloneable
 		/// </summary>
@@ -608,8 +730,12 @@ namespace VixenModules.App.ColorGradients
 		{
 			return new AlphaPoint(Alpha, Focus, Position);
 		}
+
 		#endregion
+
 	}
+
+
 	/// <summary>
 	/// encapsulates a color value with focus point
 	/// </summary>
@@ -619,12 +745,14 @@ namespace VixenModules.App.ColorGradients
 		//variables
 		[DataMember]
 		private XYZ _color;
+
 		/// <summary>
 		/// ctor
 		/// </summary>
 		public ColorPoint(Color color, double point)
 			: this(XYZ.FromRGB(new RGB(color)), .5, point)
 		{ }
+
 		/// <summary>
 		/// ctor
 		/// </summary>
@@ -633,6 +761,7 @@ namespace VixenModules.App.ColorGradients
 		{
 			_color = color;
 		}
+
 		/// <summary>
 		/// get color
 		/// </summary>
@@ -641,26 +770,29 @@ namespace VixenModules.App.ColorGradients
 			return System.Drawing.Color.FromArgb(basecolor.A,
 				_color.ToRGB().ToArgb());
 		}
-		/// <summary>
-		/// gets the position of the focus point based
-		/// on the owning gradient and the focus value.
-		/// this operation requires O(n) runtime.
-		/// returns double.NaN if not valid
-		/// </summary>
-		public override double GetFocusPosition()
-		{
-			if (Owner == null)
-				return double.NaN;
-			return GetFocusPosition<ColorPoint>(Owner.Colors, this);
-		}
-		/// <summary>
-		/// sets the position of the focus point, if possible.
-		/// </summary>
-		public override void SetFocusPosition(double value)
-		{
-			if (Owner != null)
-				SetFocusPosition<ColorPoint>(Owner.Colors, this, value);
-		}
+
+		///// <summary>
+		///// gets the position of the focus point based
+		///// on the owning gradient and the focus value.
+		///// this operation requires O(n) runtime.
+		///// returns double.NaN if not valid
+		///// </summary>
+		//public override double GetFocusPosition()
+		//{
+		//    if (Owner == null)
+		//        return double.NaN;
+		//    return GetFocusPosition<ColorPoint>(Owner.Colors, this);
+		//}
+		//
+		///// <summary>
+		///// sets the position of the focus point, if possible.
+		///// </summary>
+		//public override void SetFocusPosition(double value)
+		//{
+		//    if (Owner != null)
+		//        SetFocusPosition<ColorPoint>(Owner.Colors, this, value);
+		//}
+
 		/// <summary>
 		/// gets or sets the color
 		/// </summary>
@@ -675,17 +807,21 @@ namespace VixenModules.App.ColorGradients
 				RaiseChange();
 			}
 		}
+
 		#region api
+
 		public override bool Equals(object obj)
 		{
 			return base.Equals(obj) &&
 				((ColorPoint)obj)._color == this._color;
 		}
+
 		public override int GetHashCode()
 		{
 			return base.GetHashCode() ^
 				_color.GetHashCode();
 		}
+
 		/// <summary>
 		/// IComparable
 		/// </summary>
@@ -693,6 +829,7 @@ namespace VixenModules.App.ColorGradients
 		{
 			return Position.CompareTo(other.Position);
 		}
+
 		/// <summary>
 		/// ICloneable
 		/// </summary>
@@ -700,8 +837,12 @@ namespace VixenModules.App.ColorGradients
 		{
 			return new ColorPoint(Color, Focus, Position);
 		}
+
 		#endregion
+
 	}
+
+
 	/// <summary>
 	/// events for collection modification
 	/// </summary>
@@ -712,6 +853,8 @@ namespace VixenModules.App.ColorGradients
 		Cleared,
 		Modified
 	}
+
+
 	/// <summary>
 	/// event handling class for insert, delete and clear
 	/// </summary>

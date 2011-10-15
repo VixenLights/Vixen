@@ -16,7 +16,9 @@ namespace VixenModules.App.ColorGradients
 	DefaultEvent("SelectionChanged")]
 	public class GradientEdit : Control
 	{
+
 		#region variables
+
 		private const int BORDER = 6;
 		private ColorGradient _blend;
 		private Orientation _orientation = Orientation.Horizontal;
@@ -24,14 +26,20 @@ namespace VixenModules.App.ColorGradients
 		private ColorGradient.Point _selection = null, _tmp = null;
 		private bool _focussel = false;
 		private Point _offset;
+
 		#endregion
+
+
 		public GradientEdit()
 		{
 			SetStyle(ControlStyles.AllPaintingInWmPaint |
 				ControlStyles.OptimizedDoubleBuffer |
 				ControlStyles.UserPaint, true);
 		}
+
+
 		#region helper
+
 		/// <summary>
 		/// converts a ui point into corresponding fader position
 		/// </summary>
@@ -46,6 +54,7 @@ namespace VixenModules.App.ColorGradients
 				(double)(pt.Y - BORDER) /
 				(double)Math.Max(1.0, this.Height - BORDER * 2 - 1)));
 		}
+
 		/// <summary>
 		/// converts a position to ui rectangle
 		/// </summary>
@@ -60,6 +69,7 @@ namespace VixenModules.App.ColorGradients
 				0, (int)(pos * (double)(this.Height - BORDER * 2 - 1)),
 				this.Width - 1, BORDER * 2);
 		}
+
 		/// <summary>
 		/// gets the polygon of a fader in the selected rectangle
 		/// </summary>
@@ -82,6 +92,7 @@ namespace VixenModules.App.ColorGradients
 							new Point(fader.X,fader.Bottom-11),new Point(fader.X,fader.Bottom-1)
 						};
 		}
+
 		private Point[] GetDiamondPolygon(Rectangle fader, bool flip)
 		{
 			int m = fader.X + fader.Width / 2;
@@ -94,6 +105,7 @@ namespace VixenModules.App.ColorGradients
 					new Point(m-3,fader.Bottom-6),new Point(m,fader.Bottom-3),new Point(m+3,fader.Bottom-6),new Point(m,fader.Bottom-9)
 				};
 		}
+
 		/// <summary>
 		/// gets the color area of a fader
 		/// </summary>
@@ -103,6 +115,7 @@ namespace VixenModules.App.ColorGradients
 				return new RectangleF(fader.X + 1.5f, fader.Y + 1.5f, fader.Width - 3, 8);
 			return new RectangleF(fader.X + 1.5f, fader.Bottom - 9.5f, fader.Width - 3, 8);
 		}
+
 		/// <summary>
 		/// draws a fader
 		/// </summary>
@@ -131,6 +144,7 @@ namespace VixenModules.App.ColorGradients
 			//frame
 			gr.DrawPolygon(Pens.Black, pts);
 		}
+
 		/// <summary>
 		/// draws a diamond
 		/// </summary>
@@ -144,6 +158,7 @@ namespace VixenModules.App.ColorGradients
 				gr.DrawPolygon(Pens.Black, pts);
 			}
 		}
+
 		/// <summary>
 		/// gets if the fader or diamond at the given position would be hit by the given point
 		/// </summary>
@@ -160,6 +175,7 @@ namespace VixenModules.App.ColorGradients
 				return path.IsVisible(pt);
 			}
 		}
+
 		/// <summary>
 		/// gets the fader under the mouse and writes the mouseoffset
 		/// to offset. if no fader is under the mouse, offset is (0,0)
@@ -178,7 +194,7 @@ namespace VixenModules.App.ColorGradients
 						if (HitsSlider(gr, _selection.Position, _selection is AlphaPoint,
 							false, location, ref _offset)) return _selection;
 						//focus
-						if (HitsSlider(gr, _selection.GetFocusPosition(), _selection is AlphaPoint,
+						if (HitsSlider(gr, _blend.GetFocusPosition(_selection), _selection is AlphaPoint,
 							true, location, ref _offset)) { focus = true; return _selection; }
 					}
 					//check other color faders
@@ -194,6 +210,7 @@ namespace VixenModules.App.ColorGradients
 			offset = Point.Empty;
 			return null;
 		}
+
 		/// <summary>
 		/// move, drag out/in a fader
 		/// </summary>
@@ -206,7 +223,7 @@ namespace VixenModules.App.ColorGradients
 				if (_focussel)
 				{
 					//move focus point
-					_selection.SetFocusPosition(PointToPos(new Point(
+					_blend.SetFocusPosition(_selection, PointToPos(new Point(
 							e.X - _offset.X,
 							e.Y - _offset.Y)));
 				}
@@ -247,8 +264,12 @@ namespace VixenModules.App.ColorGradients
 				return false;
 			return true;
 		}
+
 		#endregion
+
+
 		#region controller
+
 		//draw gradient and faders
 		protected override void OnPaint(PaintEventArgs e)
 		{
@@ -291,10 +312,11 @@ namespace VixenModules.App.ColorGradients
 				//        true, pnt == _selection && !_focussel);
 				// draw selected focus
 				if (_selection != null)
-					DrawDiamond(e.Graphics, _selection.GetFocusPosition(),
+					DrawDiamond(e.Graphics, _blend.GetFocusPosition(_selection),
 						_selection is AlphaPoint, _focussel);
 			}
 		}
+
 		//select or add faders
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
@@ -329,6 +351,7 @@ namespace VixenModules.App.ColorGradients
 			}
 			base.OnMouseDown(e);
 		}
+
 		//modify fader and set cursor
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
@@ -359,12 +382,14 @@ namespace VixenModules.App.ColorGradients
 				base.OnMouseMove(e);
 			}
 		}
+
 		//set cursor
 		protected override void OnMouseLeave(EventArgs e)
 		{
 			this.Cursor = Cursors.Default;
 			base.OnMouseLeave(e);
 		}
+
 		//mofify fader and reset
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
@@ -372,6 +397,7 @@ namespace VixenModules.App.ColorGradients
 				base.OnMouseUp(e);
 			_tmp = null;
 		}
+
 		//general
 		private void onChanged(object sender, EventArgs e)
 		{
@@ -384,8 +410,12 @@ namespace VixenModules.App.ColorGradients
 			else
 				RaiseGradientChanged();
 		}
+
 		#endregion
+
+
 		#region properties
+
 		/// <summary>
 		/// gets or sets the used color blend
 		/// </summary>
@@ -414,6 +444,7 @@ namespace VixenModules.App.ColorGradients
 				Refresh();
 			}
 		}
+
 		/// <summary>
 		/// gets or sets the selected alpha or color point
 		/// </summary>
@@ -432,7 +463,7 @@ namespace VixenModules.App.ColorGradients
 				{
 					this.Invalidate(PosToRectangle(_selection.Position));
 					//update focus
-					double foc = _selection.GetFocusPosition();
+					double foc = _blend.GetFocusPosition(_selection);
 					if (!double.IsNaN(foc))
 						this.Invalidate(PosToRectangle(foc));
 				}
@@ -440,7 +471,7 @@ namespace VixenModules.App.ColorGradients
 				{
 					this.Invalidate(PosToRectangle(value.Position));
 					//update focus
-					double foc = value.GetFocusPosition();
+					double foc = _blend.GetFocusPosition(value);
 					if (!double.IsNaN(foc))
 						this.Invalidate(PosToRectangle(foc));
 				}
@@ -449,6 +480,7 @@ namespace VixenModules.App.ColorGradients
 				RaiseSelectionChanged();
 			}
 		}
+
 		/// <summary>
 		/// gets or sets if the focus point is selected
 		/// </summary>
@@ -466,7 +498,7 @@ namespace VixenModules.App.ColorGradients
 				{
 					this.Invalidate(PosToRectangle(_selection.Position));
 					//update focus
-					double foc = _selection.GetFocusPosition();
+					double foc = _blend.GetFocusPosition(_selection);
 					if (!double.IsNaN(foc))
 						this.Invalidate(PosToRectangle(foc));
 					//
@@ -475,6 +507,7 @@ namespace VixenModules.App.ColorGradients
 				RaiseSelectionChanged();
 			}
 		}
+
 		/// <summary>
 		/// sets the selected color index in range -1 (none selected)
 		/// to length-1
@@ -500,6 +533,7 @@ namespace VixenModules.App.ColorGradients
 					Selection = _blend.Colors[value];
 			}
 		}
+
 		/// <summary>
 		/// sets the selected alpha index in range -1 (none selected)
 		/// to length-1
@@ -525,26 +559,34 @@ namespace VixenModules.App.ColorGradients
 					Selection = _blend.Alphas[value];
 			}
 		}
+
 		#endregion
+
+
 		#region events
+
 		private void RaiseSelectionChanged()
 		{
 			if (SelectionChanged != null)
 				SelectionChanged(this, EventArgs.Empty);
 		}
+
 		private void RaiseGradientChanged()
 		{
 			if (GradientChanged != null)
 				GradientChanged(this, EventArgs.Empty);
 		}
+
 		/// <summary>
 		/// raised when the selected color stop is changed
 		/// </summary>
 		public event EventHandler SelectionChanged;
+
 		/// <summary>
 		/// raised when the gradient is changed
 		/// </summary>
 		public event EventHandler GradientChanged;
+
 		#endregion
 	}
 }
