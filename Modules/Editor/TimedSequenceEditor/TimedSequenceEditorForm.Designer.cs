@@ -166,11 +166,6 @@
 			this.timelineControl.Name = "timelineControl";
 			this.timelineControl.Size = new System.Drawing.Size(1064, 638);
 			this.timelineControl.TabIndex = 0;
-			this.timelineControl.TimePerPixel = System.TimeSpan.Parse("00:00:00.0100000");
-			this.timelineControl.TotalTime = System.TimeSpan.Parse("00:02:00");
-			this.timelineControl.VerticalOffset = 0;
-			this.timelineControl.VisibleTimeEnd = System.TimeSpan.Parse("00:00:07.7300000");
-			this.timelineControl.VisibleTimeStart = System.TimeSpan.Parse("00:00:00");
 			// 
 			// timerPlaying
 			// 

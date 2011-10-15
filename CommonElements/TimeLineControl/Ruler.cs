@@ -11,10 +11,12 @@ using System.Diagnostics;
 
 namespace CommonElements.Timeline
 {
-	public partial class TimelineHeader : TimelineControlBase
+	public partial class Ruler : TimelineControlBase
 	{
-		public TimelineHeader()
+		public Ruler(TimeInfo timeinfo)
+			:base(timeinfo)
 		{
+			BackColor = Color.Gray;
 			recalculate();
 		}
 
@@ -30,13 +32,21 @@ namespace CommonElements.Timeline
 		public TimeSpan MinorTick { get { return m_MinorTick; } }
 		public TimeSpan MajorTick { get { return m_MinorTick.Scale(m_minorTicksPerMajor); } }
 
-		
+		protected override Size DefaultSize
+		{
+			get { return new Size(400, 40); }
+		}
+
+
+		//Stopwatch betweencalls = new Stopwatch();
         protected override void OnPaint(PaintEventArgs e)
         {
+			//roughly 3-4 ms to draw
+			//Debug.WriteLine("{0} ms since last Ruler.OnPaint()", betweencalls.ElapsedMilliseconds);
+
+
 			try
 			{
-				e.Graphics.FillRectangle(new SolidBrush(Color.Gray), 0, 0, Size.Width, Size.Height);
-
 				// Translate the graphics to work the same way the timeline grid does
 				// (ie. Drawing coordinates take into account where we start at in time)
 				e.Graphics.TranslateTransform(-timeToPixels(VisibleTimeStart), 0);
@@ -47,8 +57,10 @@ namespace CommonElements.Timeline
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show("Exception in TimelineHeader.OnPaint():\n\n\t" + ex.Message + "\n\nBacktrace:\n\n\t" + ex.StackTrace);
+				MessageBox.Show("Exception in Timeline.Ruler.OnPaint():\n\n\t" + ex.Message + "\n\nBacktrace:\n\n\t" + ex.StackTrace);
 			}
+
+			//betweencalls.Restart();
         }
 
 		/*
@@ -122,10 +134,20 @@ namespace CommonElements.Timeline
 			base.OnResize(e);
 		}
 
-		public override TimeSpan TimePerPixel
+		protected override void  TimePerPixelChanged(object sender, EventArgs e)
 		{
-			get { return base.TimePerPixel; }
-			set { base.TimePerPixel = value;	recalculate(); }
+			recalculate();
+ 			 base.TimePerPixelChanged(sender, e);
+		}
+
+		//Stopwatch lastinvalidate = new Stopwatch();
+		protected override void VisibleTimeStartChanged(object sender, EventArgs e)
+		{
+			//Debug.WriteLine("{0} ms since last Invalidate().", lastinvalidate.ElapsedMilliseconds);
+
+			Invalidate(); 
+
+			//lastinvalidate.Restart();
 		}
 
 
@@ -376,11 +398,11 @@ namespace CommonElements.Timeline
 			//base.OnMouseClick(e);
 			TimeSpan t = pixelsToTime(e.X) + VisibleTimeStart;
 
-			if (Click != null)
-				Click(this, new TimeSpanEventArgs(t));
+			if (ClickedAtTime != null)
+				ClickedAtTime(this, new TimeSpanEventArgs(t));
 		}
 
-		public new event EventHandler<TimeSpanEventArgs> Click;
+		public event EventHandler<TimeSpanEventArgs> ClickedAtTime;
 
 		#endregion
 

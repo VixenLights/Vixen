@@ -127,11 +127,11 @@
 			this.timelineControl1.Name = "timelineControl1";
 			this.timelineControl1.Size = new System.Drawing.Size(907, 444);
 			this.timelineControl1.TabIndex = 8;
-			this.timelineControl1.TimePerPixel = System.TimeSpan.Parse("00:00:00.0100000");
+			//this.timelineControl1.TimePerPixel = System.TimeSpan.Parse("00:00:00.0100000");
 			this.timelineControl1.TotalTime = System.TimeSpan.Parse("00:02:00");
 			this.timelineControl1.VerticalOffset = 0;
-			this.timelineControl1.VisibleTimeEnd = System.TimeSpan.Parse("00:00:06.1600000");
-			this.timelineControl1.VisibleTimeStart = System.TimeSpan.Parse("00:00:00");
+			//this.timelineControl1.VisibleTimeEnd = System.TimeSpan.Parse("00:00:06.1600000");
+			//this.timelineControl1.VisibleTimeStart = System.TimeSpan.Parse("00:00:00");
 			// 
 			// buttonAlignLeft
 			// 

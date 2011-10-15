@@ -10,7 +10,7 @@ using System.Drawing;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-	class TimedSequenceElement : TimelineElement
+	class TimedSequenceElement : Element
 	{
 		public TimedSequenceElement(EffectNode effectNode)
 			: base()

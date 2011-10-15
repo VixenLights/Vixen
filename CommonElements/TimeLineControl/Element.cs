@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace CommonElements.Timeline
 {
-    public class TimelineElement : IComparable<TimelineElement>
+    public class Element : IComparable<Element>
     {
 		private TimeSpan m_startTime;
 		private TimeSpan m_duration;
@@ -12,7 +12,7 @@ namespace CommonElements.Timeline
 		private object m_tag = null;
 		private bool m_selected = false;
 
-        public TimelineElement()
+        public Element()
         {
         }
 
@@ -107,7 +107,7 @@ namespace CommonElements.Timeline
 
 		#region Methods
 
-		public int CompareTo(TimelineElement other)
+		public int CompareTo(Element other)
 		{
 			int rv = StartTime.CompareTo(other.StartTime);
 			if (rv != 0)

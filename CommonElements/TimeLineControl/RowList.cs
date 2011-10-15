@@ -10,14 +10,14 @@ using System.Windows.Forms;
 
 namespace CommonElements.Timeline
 {
-	public partial class TimelineRowList : UserControl
+	public partial class RowList : UserControl
 	{
 
-		public TimelineRowList()
+		public RowList()
 		{
 			VerticalOffset = 0;
 			DottedLineColor = Color.Black;
-			RowLabels = new List<TimelineRowLabel>();
+			RowLabels = new List<RowLabel>();
 			DoubleBuffered = true;
 			this.SetStyle(ControlStyles.ResizeRedraw, true);
 		}
@@ -44,7 +44,7 @@ namespace CommonElements.Timeline
 		// for some reason, even though the Control.Controls collection is supposed
 		// to be a list (and therefore ordered), it's not adding controls in the order
 		// we add them. So we're keeping our own list of controls.
-		private List<TimelineRowLabel> RowLabels { get; set; }
+		private List<RowLabel> RowLabels { get; set; }
 
 		#endregion
 
@@ -66,14 +66,14 @@ namespace CommonElements.Timeline
 
 		#region Methods
 
-		public void AddRowLabel(TimelineRowLabel trl)
+		public void AddRowLabel(RowLabel trl)
 		{
 			RowLabels.Add(trl);
 			Controls.Add(trl);
 			trl.VisibleChanged += LabelVisibleChangedHandler;
 		}
 
-		public void RemoveRowLabel(TimelineRowLabel trl)
+		public void RemoveRowLabel(RowLabel trl)
 		{
 			RowLabels.Remove(trl);
 			Controls.Remove(trl);
@@ -91,9 +91,9 @@ namespace CommonElements.Timeline
 				return;
 
 			int offset = -VerticalOffset;
-			foreach (TimelineRowLabel trl in RowLabels) {
+			foreach (RowLabel trl in RowLabels) {
 				if (trl.Visible) {
-					int x = trl.ParentRow.ParentDepth * TimelineRowLabel.ToggleTreeButtonWidth;
+					int x = trl.ParentRow.ParentDepth * RowLabel.ToggleTreeButtonWidth;
 					trl.Location = new Point(x, offset);
 					trl.Width = Width - x;
 					offset += trl.Height;
@@ -106,7 +106,7 @@ namespace CommonElements.Timeline
 			if (RowLabels == null)
 				return;
 
-			int inset = TimelineRowLabel.ToggleTreeButtonWidth;
+			int inset = RowLabel.ToggleTreeButtonWidth;
 			// TODO: here's to hoping they don't want to go more than 20 levels deep...
 			int[] dottedLineTops = new int[20];
 			Point[] dottedLineBottoms = new Point[20];
@@ -116,7 +116,7 @@ namespace CommonElements.Timeline
 			line.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
 
 			int top = -VerticalOffset;
-			foreach (TimelineRowLabel trl in RowLabels) {
+			foreach (RowLabel trl in RowLabels) {
 				if (trl.Visible) {
 					int depth = trl.ParentRow.ParentDepth;
 

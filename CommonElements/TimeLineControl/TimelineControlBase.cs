@@ -8,63 +8,68 @@ using System.Diagnostics;
 
 namespace CommonElements.Timeline
 {
-    public class TimelineControlBase : UserControl
-    {
-		protected TimeSpan m_timePerPixel;
-		protected TimeSpan m_visibleTimeStart;
+
+	/// <summary>
+	/// The base class for all time-related controls in the TimelineControl.
+	/// </summary>
+	public abstract class TimelineControlBase : UserControl
+	{
+		protected TimelineControlBase(TimeInfo timeinfo)
+		{
+			TimeInfo = timeinfo;
+			TimeInfo.TimePerPixelChanged += TimePerPixelChanged;
+			TimeInfo.VisibleTimeStartChanged += VisibleTimeStartChanged;
+			
+			DoubleBuffered = true;
+			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+			//SetStyle(ControlStyles.UserPaint, true);
+		}
+
+		protected TimeInfo TimeInfo { get; private set; }
 
 
-		//private Timer m_HWheelTimer = new Timer();
-		//private bool m_ignoreHWheel = true;
-
-        internal TimelineControlBase()
-        {
-            DoubleBuffered = true;
-
-			TimePerPixel = TimeSpan.FromTicks(100000);
-			VisibleTimeStart = TimeSpan.FromSeconds(0);
-
-			//m_HWheelTimer.Interval = 100;
-			//m_HWheelTimer.Tick += m_HWheelTimer_Tick;
-        }
-
-
-
-		#region Properties
-		// These can all be overridden in derived classes if needed.
-
+		/// <summary>
+		/// The beginning time of the visible region.
+		/// </summary>
 		public virtual TimeSpan VisibleTimeStart
 		{
-			get { return m_visibleTimeStart; }
-			set { m_visibleTimeStart = value; Invalidate(); }
+			get { return TimeInfo.VisibleTimeStart; }
+			set { TimeInfo.VisibleTimeStart = value; }
 		}
 
 		/// <summary>
-		/// Gets or sets the amount of time represented by one horizontal pixel.
+		/// The amount of time represented by one (horizontal pixel)
 		/// </summary>
 		public virtual TimeSpan TimePerPixel
 		{
-			get { return m_timePerPixel; }
-			set { m_timePerPixel = value; Invalidate(); }
+			get { return TimeInfo.TimePerPixel; }
+			set { TimeInfo.TimePerPixel = value; }	
 		}
+
 
 		/// <summary>
 		/// The amount of time currently visible.
 		/// </summary> 
-		public virtual TimeSpan VisibleTimeSpan
+		protected TimeSpan VisibleTimeSpan
 		{
 			get { return TimeSpan.FromTicks(ClientSize.Width * TimePerPixel.Ticks); }
 		}
 
-		public virtual TimeSpan VisibleTimeEnd
+
+		/// <summary>
+		/// The ending time of the visible region.
+		/// </summary>
+		protected TimeSpan VisibleTimeEnd
 		{
 			get { return VisibleTimeStart + VisibleTimeSpan; }
-			set { VisibleTimeStart = value - VisibleTimeSpan; }
 		}
 
-		#endregion
-
-
+		/// <summary>
+		/// Converts time to pixels, based on the current TimePerPixel resolution.
+		/// </summary>
+		/// <param name="t"></param>
+		/// <returns></returns>
 		protected Single timeToPixels(TimeSpan t)
 		{
 			if (TimePerPixel.Ticks == 0)
@@ -73,17 +78,31 @@ namespace CommonElements.Timeline
 			return (Single)t.Ticks / (Single)TimePerPixel.Ticks;
 		}
 
+		/// <summary>
+		/// Converts pixels to time, based on the current TimePerPixel resolution.
+		/// </summary>
+		/// <param name="px"></param>
+		/// <returns></returns>
 		protected TimeSpan pixelsToTime(int px)
-        {
-            return TimeSpan.FromTicks(px * this.TimePerPixel.Ticks);
-        }
+		{
+			return TimeSpan.FromTicks(px * TimePerPixel.Ticks);
+		}
 
+
+		// Overridable event handlers
+		protected virtual void VisibleTimeStartChanged(object sender, EventArgs e)
+		{
+		}
+
+		protected virtual void TimePerPixelChanged(object sender, EventArgs e)
+		{
+		}
 
 
 		#region Horizontal Scrolling Support
 
 		//http://www.philosophicalgeek.com/2007/07/27/mouse-tilt-wheel-horizontal-scrolling-in-c/
-        private const int WM_MOUSEHWHEEL = 0x020E;
+		private const int WM_MOUSEHWHEEL = 0x020E;
 
 		private static Int16 HIWORD(IntPtr ptr)
 		{
@@ -95,7 +114,7 @@ namespace CommonElements.Timeline
 		{
 			Int32 val32 = ptr.ToInt32();
 			return (Int16)(val32 & 0xFFFF);
-		} 
+		}
 
 		protected override void WndProc(ref Message m)
 		{
@@ -117,17 +136,7 @@ namespace CommonElements.Timeline
 			}
 		}
 
-
 		public event EventHandler<MouseEventArgs> MouseHWheel;
-
-		/*
-		void m_HWheelTimer_Tick(object sender, EventArgs e)
-		{
-			m_ignoreHWheel = true;
-			m_HWheelTimer.Stop();
-		}
-		*/
-		
 
 		private void mouseHWheelMsg(IntPtr wParam, IntPtr lParam)
 		{
@@ -136,41 +145,25 @@ namespace CommonElements.Timeline
 			Int32 x = LOWORD(lParam);
 			Int32 y = HIWORD(lParam);
 
-			//Debug.WriteLine("mouseHWheelMsg   x={0}   y={1}   keys=0x{2:X}   tilt={3}",
-			//	x, y, keys, tilt);
-
-			//TODO: We always get at least two. So Ignore the first one.
-			/*
-			if (m_ignoreHWheel)
-			{
-				m_ignoreHWheel = false;
-				return;
-			}
-			m_HWheelTimer.Stop();
-			m_HWheelTimer.Start();
-			*/
-
 			fireMouseHWheelEvent(MouseButtons.None, 0, x, y, tilt);
 		}
 
-		protected void fireMouseHWheelEvent(MouseButtons buttons, int clicks, int x, int y, int delta)
+		private void fireMouseHWheelEvent(MouseButtons buttons, int clicks, int x, int y, int delta)
 		{
 			MouseEventArgs args = new MouseEventArgs(buttons, clicks, x, y, delta);
-
 			OnMouseHWheel(args);
-			//let everybody else have a crack at it
+		}
+
+		protected virtual void OnMouseHWheel(MouseEventArgs args)
+		{
 			if (MouseHWheel != null)
 			{
 				MouseHWheel(this, args);
 			}
 		}
 
-		protected virtual void OnMouseHWheel(MouseEventArgs args)
-		{
-			
-		}
-
 		#endregion
 
 	}
+
 }

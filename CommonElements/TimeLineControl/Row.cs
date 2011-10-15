@@ -8,25 +8,25 @@ namespace CommonElements.Timeline
     /// <summary>
     /// Represents a row in a TimelineControl, which contains TimelineElements.
     /// </summary>
-	public class TimelineRow : IEnumerable<TimelineElement>
+	public class Row : IEnumerable<Element>
 	{
 		// the elements contained in this row. Must be kept sorted; however, we can't use a SortedList
 		// or similar, as the elements within the list may have their times updated by the grid, which
 		// puts their order out.
-		protected List<TimelineElement> m_elements = new List<TimelineElement>();
+		protected List<Element> m_elements = new List<Element>();
 
 		// a list of the selected elements. This should always be a subset of the element list above,
 		// and is kept just to save having to iterate through all elements when retrieving selected elements.
-		protected List<TimelineElement> m_selectedElements = new List<TimelineElement>();
+		protected List<Element> m_selectedElements = new List<Element>();
 
-		public TimelineRow(TimelineRowLabel trl)
+		public Row(RowLabel trl)
 		{
 			RowLabel = trl;
-			ChildRows = new List<TimelineRow>();
+			ChildRows = new List<Row>();
 		}
 
-		public TimelineRow()
-			: this(new TimelineRowLabel())
+		public Row()
+			: this(new RowLabel())
 		{
 		}
 
@@ -52,12 +52,12 @@ namespace CommonElements.Timeline
 			set { RowLabel.Name = value; _RowChanged(); }
 		}
 
-		protected IEnumerable<TimelineElement> Elements
+		protected IEnumerable<Element> Elements
 		{
 			get { return m_elements; }
 		}
 
-		public IEnumerable<TimelineElement> SelectedElements
+		public IEnumerable<Element> SelectedElements
 		{
 			get { return m_selectedElements; }
 		}
@@ -67,8 +67,8 @@ namespace CommonElements.Timeline
 			get { return (m_elements.Count == 0); }
 		}
 
-		private TimelineRowLabel m_rowLabel;
-		public TimelineRowLabel RowLabel
+		private RowLabel m_rowLabel;
+		public RowLabel RowLabel
 		{
 			get { return m_rowLabel; }
 			set
@@ -90,8 +90,8 @@ namespace CommonElements.Timeline
 			}
 		}
 
-		private TimelineRow m_parentRow;
-		public TimelineRow ParentRow
+		private Row m_parentRow;
+		public Row ParentRow
 		{
 			get { return m_parentRow; }
 			set { m_parentRow = value; }
@@ -108,7 +108,7 @@ namespace CommonElements.Timeline
 			}
 		}
 
-		public List<TimelineRow> ChildRows { get; set; }
+		public List<Row> ChildRows { get; set; }
 
 		private bool m_treeOpen;
 		public bool TreeOpen
@@ -121,7 +121,7 @@ namespace CommonElements.Timeline
 
 				// if we're opening a tree, show all our children, and vice versa.
 				// the Visible property will take care of the rest.
-				foreach (TimelineRow row in ChildRows)
+				foreach (Row row in ChildRows)
 					row.Visible = value;
 
 				m_treeOpen = value;
@@ -137,7 +137,7 @@ namespace CommonElements.Timeline
 				// if we're being told to show or not (ie. a tree is being closed
 				// or opened), then show or hide all our children. However, only
 				// show them if our tree is currently open as well.
-				foreach (TimelineRow row in ChildRows)
+				foreach (Row row in ChildRows)
 				    row.Visible = value && TreeOpen;
 
 				RowLabel.Visible = value;
@@ -155,7 +155,7 @@ namespace CommonElements.Timeline
 					return;
 
 				// select all the child elements if we're being selected, or vice versa
-				foreach (TimelineElement te in Elements) {
+				foreach (Element te in Elements) {
 					te.Selected = value;
 				}
 
@@ -176,8 +176,8 @@ namespace CommonElements.Timeline
 		public static event EventHandler RowChanged;
 		public static event EventHandler<ModifierKeysEventArgs> RowSelectedChanged;
 
-		private void _ElementAdded(TimelineElement te) { if (ElementAdded != null) ElementAdded(this, new ElementEventArgs(te)); }
-		private void _ElementRemoved(TimelineElement te) { if (ElementRemoved != null) ElementRemoved(this, new ElementEventArgs(te)); }
+		private void _ElementAdded(Element te) { if (ElementAdded != null) ElementAdded(this, new ElementEventArgs(te)); }
+		private void _ElementRemoved(Element te) { if (ElementRemoved != null) ElementRemoved(this, new ElementEventArgs(te)); }
 		private void _RowChanged() { if (RowChanged != null) RowChanged(this, EventArgs.Empty); }
 		private void _RowSelectedChanged(Keys k) { if (RowSelectedChanged != null) RowSelectedChanged(this, new ModifierKeysEventArgs(k)); }
 
@@ -199,10 +199,10 @@ namespace CommonElements.Timeline
 
 		protected void ElementSelectedHandler(object sender, EventArgs e)
 		{
-			if ((sender as TimelineElement).Selected)
-				m_selectedElements.Add(sender as TimelineElement);
+			if ((sender as Element).Selected)
+				m_selectedElements.Add(sender as Element);
 			else
-				m_selectedElements.Remove(sender as TimelineElement);
+				m_selectedElements.Remove(sender as Element);
 
 			_RowChanged();
 		}
@@ -233,7 +233,7 @@ namespace CommonElements.Timeline
 
 		#region Methods
 
-		public void AddElement(TimelineElement element)
+		public void AddElement(Element element)
 		{
 			m_elements.Add(element);
 			if (element.Selected)
@@ -246,7 +246,7 @@ namespace CommonElements.Timeline
 			_RowChanged();
 		}
 
-		public bool AddUniqueElement(TimelineElement element)
+		public bool AddUniqueElement(Element element)
 		{
 			if (m_elements.Contains(element))
 				return false;
@@ -255,7 +255,7 @@ namespace CommonElements.Timeline
 			return true;
 		}
 
-		public void RemoveElement(TimelineElement element)
+		public void RemoveElement(Element element)
 		{
 			m_elements.Remove(element);
 			if (element.Selected)
@@ -268,7 +268,7 @@ namespace CommonElements.Timeline
 			_RowChanged();
 		}
 
-		public bool ContainsElement(TimelineElement element)
+		public bool ContainsElement(Element element)
 		{
 			// TODO: improve this function. m_elements is now a sorted list,
 			// but it doesn't know that it is, so will iterate through everything.
@@ -276,12 +276,12 @@ namespace CommonElements.Timeline
 			return m_elements.Contains(element);
 		}
 
-		public int IndexOfElement(TimelineElement element)
+		public int IndexOfElement(Element element)
 		{
 			return m_elements.IndexOf(element);
 		}
 
-		public TimelineElement GetElementAtIndex(int index)
+		public Element GetElementAtIndex(int index)
 		{
 			if (index < 0 || index >= m_elements.Count)
 				return null;
@@ -291,26 +291,26 @@ namespace CommonElements.Timeline
 
 		public void ClearRowElements()
 		{
-			foreach (TimelineElement element in m_elements.ToArray())
+			foreach (Element element in m_elements.ToArray())
 				RemoveElement(element);
 
 			_RowChanged();
 		}
 
-		public void AddChildRow(TimelineRow row)
+		public void AddChildRow(Row row)
 		{
 			ChildRows.Add(row);
 			row.ParentRow = this;
 			row.Visible = TreeOpen;
 		}
 
-		public void RemoveChildRow(TimelineRow row)
+		public void RemoveChildRow(Row row)
 		{
 			ChildRows.Remove(row);
 			row.ParentRow = null;
 		}
 
-		public IEnumerator<TimelineElement> GetEnumerator()
+		public IEnumerator<Element> GetEnumerator()
 		{
 			return m_elements.GetEnumerator();
 		}

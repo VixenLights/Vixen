@@ -35,7 +35,7 @@ namespace Timeline
 
 			row1.TreeOpen = true;
 
-			row1.AddElement(new TimelineElement() {
+			row1.AddElement(new Element() {
 				BackColor = Color.Red,
 				StartTime = TimeSpan.FromSeconds(1.2),
 				Duration = TimeSpan.FromSeconds(3),
@@ -43,7 +43,7 @@ namespace Timeline
 			}
 			);
 
-			row2.AddElement(new TimelineElement() {
+			row2.AddElement(new Element() {
 				BackColor = Color.Green,
 				StartTime = TimeSpan.FromSeconds(0),
 				Duration = TimeSpan.FromSeconds(2),
@@ -54,7 +54,7 @@ namespace Timeline
 
 
 
-			row2.AddElement(new TimelineElement() {
+			row2.AddElement(new Element() {
 				BackColor = Color.Blue,
 				StartTime = TimeSpan.FromSeconds(4),
 				Duration = TimeSpan.FromSeconds(1),
@@ -62,7 +62,7 @@ namespace Timeline
 			}
 			);
 
-			row3.AddElement(new TimelineElement() {
+			row3.AddElement(new Element() {
 				BackColor = Color.Orange,
 				StartTime = TimeSpan.FromSeconds(4),
 				Duration = TimeSpan.FromSeconds(1),
@@ -70,7 +70,7 @@ namespace Timeline
 			}
 			);
 
-			row4.AddElement(new TimelineElement() {
+			row4.AddElement(new Element() {
 				BackColor = Color.Purple,
 				StartTime = TimeSpan.FromSeconds(4),
 				Duration = TimeSpan.FromSeconds(1),
@@ -81,7 +81,7 @@ namespace Timeline
 
 
 
-			row2.AddElement(new TimelineElement() {
+			row2.AddElement(new Element() {
 				BackColor = Color.Blue,
 				StartTime = TimeSpan.FromSeconds(2),
 				Duration = TimeSpan.FromSeconds(1),
@@ -89,7 +89,7 @@ namespace Timeline
 			}
 			);
 
-			row3.AddElement(new TimelineElement() {
+			row3.AddElement(new Element() {
 				BackColor = Color.Orange,
 				StartTime = TimeSpan.FromSeconds(2),
 				Duration = TimeSpan.FromSeconds(1),
@@ -97,7 +97,7 @@ namespace Timeline
 			}
 			);
 
-			row4.AddElement(new TimelineElement() {
+			row4.AddElement(new Element() {
 				BackColor = Color.Purple,
 				StartTime = TimeSpan.FromSeconds(2),
 				Duration = TimeSpan.FromSeconds(1),
@@ -108,7 +108,7 @@ namespace Timeline
 
 
 
-			row5.AddElement(new TimelineElement() {
+			row5.AddElement(new Element() {
 				BackColor = Color.FromArgb(255, 255, 0, 0),
 				StartTime = TimeSpan.FromSeconds(0),
 				Duration = TimeSpan.FromSeconds(2),
@@ -116,7 +116,7 @@ namespace Timeline
 			}
 			);
 
-			row5.AddElement(new TimelineElement() {
+			row5.AddElement(new Element() {
 				BackColor = Color.FromArgb(255, 0, 255, 0),
 				StartTime = TimeSpan.FromSeconds(1),
 				Duration = TimeSpan.FromSeconds(2),
@@ -124,7 +124,7 @@ namespace Timeline
 			}
 			);
 
-			row5.AddElement(new TimelineElement() {
+			row5.AddElement(new Element() {
 				BackColor = Color.FromArgb(255, 0, 0, 255),
 				StartTime = TimeSpan.FromSeconds(2),
 				Duration = TimeSpan.FromSeconds(2),
@@ -135,7 +135,7 @@ namespace Timeline
 
 
 
-			row5.AddElement(new TimelineElement() {
+			row5.AddElement(new Element() {
 				BackColor = Color.Black,
 				StartTime = TimeSpan.FromSeconds(4),
 				Duration = TimeSpan.FromSeconds(1),
@@ -143,7 +143,7 @@ namespace Timeline
 			}
 			);
 
-			row13.AddElement(new TimelineElement() {
+			row13.AddElement(new Element() {
 				BackColor = Color.CornflowerBlue,
 				StartTime = TimeSpan.FromSeconds(6),
 				Duration = TimeSpan.FromSeconds(3),
@@ -151,7 +151,7 @@ namespace Timeline
 			}
 			);
 
-			row14.AddElement(new TimelineElement() {
+			row14.AddElement(new Element() {
 				BackColor = Color.Firebrick,
 				StartTime = TimeSpan.FromSeconds(2),
 				Duration = TimeSpan.FromSeconds(7),
@@ -183,10 +183,10 @@ namespace Timeline
                 m_logIndex++, message, Environment.NewLine, textBoxLog.Text);
         }
 
-        private string _elementList(IEnumerable<TimelineElement> elements)
+        private string _elementList(IEnumerable<Element> elements)
         {
             StringBuilder s = new StringBuilder(); 
-            foreach (TimelineElement elem in elements)
+            foreach (Element elem in elements)
                 s.AppendFormat("{0}, ", elem.Tag.ToString());
             return s.ToString();
         }
@@ -210,7 +210,7 @@ namespace Timeline
 
 		//void SelectedElements_CollectionChanged(object sender, EventArgs e)
 		//{
-		//    _logMessage("Selected elements: " + _elementList((TimelineElementCollection)sender));
+		//    _logMessage("Selected elements: " + _elementList((ElementCollection)sender));
 		//}
 
 
@@ -244,12 +244,12 @@ namespace Timeline
 
 		private void buttonZoomIn_Click(object sender, EventArgs e)
 		{
-			timelineControl1.Zoom((2.0 / 3.0));
+			//timelineControl1.Zoom((2.0 / 3.0));
 		}
 
 		private void buttonZoomOut_Click(object sender, EventArgs e)
 		{
-			timelineControl1.Zoom((3.0 / 2.0));
+			//timelineControl1.Zoom((3.0 / 2.0));
 		}
 
 		private void buttonGenericDebug_Click(object sender, EventArgs e)
@@ -262,7 +262,7 @@ namespace Timeline
 
 		private void buttonGenericDebug2_Click(object sender, EventArgs e)
 		{
-			timelineControl1.VisibleTimeStart = TimeSpan.FromSeconds(5);
+			//timelineControl1.VisibleTimeStart = TimeSpan.FromSeconds(5);
 		}
 
 		private void buttonAlignLeft_Click(object sender, EventArgs e)

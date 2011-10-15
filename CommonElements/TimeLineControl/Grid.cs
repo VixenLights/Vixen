@@ -12,18 +12,21 @@ using System.Drawing.Imaging;
 
 namespace CommonElements.Timeline
 {
-	public class TimelineGrid : TimelineControlBase, IEnumerable<TimelineRow>
+	/// <summary>
+	/// Makes up the main part of the TimelineControl. A scrollable container which presents rows which contain elements.
+	/// </summary>
+	public class Grid : TimelineControlBase, IEnumerable<Row>
 	{
 		#region Members
 
-		private List<TimelineRow> m_rows;						// the rows in the grid
+		private List<Row> m_rows;						// the rows in the grid
 		private DragState m_dragState = DragState.Normal;		// the current dragging state
 		private Point m_lastMouseLocation;						// the location of the mouse at last draw; used to update the dragging.
 																// Relative to the control, not the grid canvas.
 		private Point m_selectionRectangleStart;				// the location (on the grid canvas) where the selection box starts.
 		private Rectangle m_ignoreDragArea;						// the area in which move movements should be ignored, before we start dragging
-		private TimelineElement m_mouseDownElement = null;		// the element under the cursor on a mouse click
-		private TimelineRow m_mouseDownElementRow = null;		// the row that the clicked m_mouseDownElement belongs to (a single element may be in multiple rows)
+		private Element m_mouseDownElement = null;		// the element under the cursor on a mouse click
+		private Row m_mouseDownElementRow = null;		// the row that the clicked m_mouseDownElement belongs to (a single element may be in multiple rows)
 		private TimeSpan m_totalTime;							// the total amount of time this grid represents
 		private TimeSpan m_cursorPosition;						// the current grid 'cursor' position (line drawn vertically)
 		private Size m_dragAutoscrollDistance;					// how far in either dimension the mouse has moved outside a bounding area,
@@ -33,7 +36,9 @@ namespace CommonElements.Timeline
 
 		#region Initialization
 
-		public TimelineGrid()
+		//public Grid()
+		public Grid(TimeInfo timeinfo)
+			:base(timeinfo)
 		{
 			this.AutoScroll = true;
 			this.SetStyle(ControlStyles.ResizeRedraw, true);
@@ -54,7 +59,9 @@ namespace CommonElements.Timeline
 			StaticSnapPoints = new SortedDictionary<TimeSpan, List<SnapDetails>>();
 			SnapPriorityForElements = 5;
 
-			m_rows = new List<TimelineRow>();
+			//VisibleTimeStart = TimeSpan.Zero;
+
+			m_rows = new List<Row>();
 			ScrollTimer = new Timer();
 			ScrollTimer.Interval = 20;
 			ScrollTimer.Enabled = false;
@@ -62,13 +69,13 @@ namespace CommonElements.Timeline
 
 			// thse changed events are static for the class. If we make them per element or row
 			//  later, we will need to attach/detach from each event manually.
-			TimelineRow.RowChanged += RowChangedHandler;
-			TimelineRow.RowSelectedChanged += RowSelectedChangedHandler;
+			Row.RowChanged += RowChangedHandler;
+			Row.RowSelectedChanged += RowSelectedChangedHandler;
 
 			// Drag-drop 9/20/2011
 			AllowDrop = true;
-			this.DragEnter += TimelineGrid_DragEnter;
-			this.DragDrop += TimelineGrid_DragDrop;
+			DragEnter += TimelineGrid_DragEnter;
+			DragDrop += TimelineGrid_DragDrop;
 		}
 
 
@@ -86,6 +93,8 @@ namespace CommonElements.Timeline
 			set { m_totalTime = value; Invalidate(); }
 		}
 
+
+		/*
 		/// <summary>
 		/// The time at the left of the control (the visible beginning).
 		/// </summary>
@@ -105,7 +114,22 @@ namespace CommonElements.Timeline
 				_VisibleTimeStartChanged();
 			}
 		}
+		*/
 
+		//replaced with this:
+		
+		
+
+		protected override void  VisibleTimeStartChanged(object sender, EventArgs e)
+		{
+			AutoScrollPosition = new Point((int)timeToPixels(VisibleTimeStart), -AutoScrollPosition.Y);
+		}
+
+
+
+
+
+		/*
 		// this needs to be overridden to maintain the visible time start accurately
 		// (as it isn't stored as a value, but inferred through the AutoScroll position).
 		public override TimeSpan TimePerPixel
@@ -118,7 +142,14 @@ namespace CommonElements.Timeline
 				VisibleTimeStart = start;
 				RecalculateAllStaticSnapPoints();
 			}
+		} 
+		*/
+
+		protected override void TimePerPixelChanged(object sender, EventArgs e)
+		{
+			RecalculateAllStaticSnapPoints();
 		}
+
 
 
 		public int VerticalOffset
@@ -140,13 +171,13 @@ namespace CommonElements.Timeline
 			}
 		}
 
-		public List<TimelineRow> Rows
+		public List<Row> Rows
 		{
 			get { return m_rows; }
 			set { m_rows = value; }
 		}
 
-		public IEnumerable<TimelineElement> SelectedElements
+		public IEnumerable<Element> SelectedElements
 		{
 			get
 			{
@@ -192,16 +223,16 @@ namespace CommonElements.Timeline
 		public event EventHandler<ElementEventArgs> ElementDoubleClicked;
 		public event EventHandler<MultiElementEventArgs> ElementsFinishedMoving;
 		public event EventHandler<TimeSpanEventArgs> CursorMoved;
-		public event EventHandler VisibleTimeStartChanged;
+		//public event EventHandler VisibleTimeStartChanged;
 		public event EventHandler VerticalOffsetChanged;
 		public event EventHandler<ElementRowChangeEventArgs> ElementChangedRows;
 
-		private void _ElementDoubleClicked(TimelineElement te) { if (ElementDoubleClicked != null) ElementDoubleClicked(this, new ElementEventArgs(te)); }
+		private void _ElementDoubleClicked(Element te) { if (ElementDoubleClicked != null) ElementDoubleClicked(this, new ElementEventArgs(te)); }
 		private void _ElementsFinishedMoving(MultiElementEventArgs args) { if (ElementsFinishedMoving != null) ElementsFinishedMoving(this, args); }
 		private void _CursorMoved(TimeSpan t) { if (CursorMoved != null) CursorMoved(this, new TimeSpanEventArgs(t)); }
-		private void _VisibleTimeStartChanged() { if (VisibleTimeStartChanged != null) VisibleTimeStartChanged(this, EventArgs.Empty); }
+		//private void _VisibleTimeStartChanged() { if (VisibleTimeStartChanged != null) VisibleTimeStartChanged(this, EventArgs.Empty); }
 		private void _VerticalOffsetChanged() { if (VerticalOffsetChanged != null) VerticalOffsetChanged(this, EventArgs.Empty); }
-		private void _ElementChangedRows(TimelineElement element, TimelineRow oldRow, TimelineRow newRow) { if (ElementChangedRows != null) ElementChangedRows(this, new ElementRowChangeEventArgs(element, oldRow, newRow)); }
+		private void _ElementChangedRows(Element element, Row oldRow, Row newRow) { if (ElementChangedRows != null) ElementChangedRows(this, new ElementRowChangeEventArgs(element, oldRow, newRow)); }
 
 		#endregion
 
@@ -217,7 +248,7 @@ namespace CommonElements.Timeline
 
 		protected void RowSelectedChangedHandler(object sender, ModifierKeysEventArgs e)
 		{
-			TimelineRow selectedRow = sender as TimelineRow;
+			Row selectedRow = sender as Row;
 
 			// if CTRL wasn't down, then we want to clear all the other rows
 			if (!e.ModifierKeys.HasFlag(Keys.Control)) {
@@ -270,7 +301,7 @@ namespace CommonElements.Timeline
 		protected override void OnScroll(ScrollEventArgs se)
 		{
 			if (se.ScrollOrientation == ScrollOrientation.HorizontalScroll) {
-				base.VisibleTimeStart = pixelsToTime(-AutoScrollPosition.X);
+				VisibleTimeStart = pixelsToTime(-AutoScrollPosition.X);
 			}
 
 			// This MUST be done last! Otherwise, event handlers get called with the OLD values.
@@ -382,6 +413,8 @@ namespace CommonElements.Timeline
 			//base.OnMouseWheel(e);
 		}
 
+		// TODO: Put this back in, somehow
+		/*
 		protected override void OnMouseHWheel(MouseEventArgs args)
 		{
 			//base.OnMouseHWheel(args);
@@ -397,6 +430,7 @@ namespace CommonElements.Timeline
 				scale = -0.10;
 			VisibleTimeStart += VisibleTimeSpan.Scale(scale);
 		}
+		*/
 
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
@@ -406,7 +440,7 @@ namespace CommonElements.Timeline
 
 			if (m_dragState == DragState.Normal) {
 				// if we're near the edge of an element, change the cursor to a 'resize'
-				TimelineElement element = elementAt(gridLocation);
+				Element element = elementAt(gridLocation);
 
 				if (element != null) {
 					int maxGrabWidth = Math.Min(12, (int)(timeToPixels(element.Duration) / 2));		// cap it to 12 pixels. Officially pulled out my arse.
@@ -532,7 +566,7 @@ namespace CommonElements.Timeline
 			base.OnMouseDoubleClick(e);
 
 			Point gridLocation = translateLocation(e.Location);
-			TimelineElement elem = elementAt(gridLocation);
+			Element elem = elementAt(gridLocation);
 
 			if (elem != null) {
 				_ElementDoubleClicked(elem);
@@ -544,7 +578,7 @@ namespace CommonElements.Timeline
 
 		#region Methods - Rows, Elements
 
-		public IEnumerator<TimelineRow> GetEnumerator()
+		public IEnumerator<Row> GetEnumerator()
 		{
 			return Rows.GetEnumerator();
 		}
@@ -556,13 +590,13 @@ namespace CommonElements.Timeline
 
 		public void ClearSelectedElements()
 		{
-			foreach (TimelineElement te in SelectedElements.ToArray())
+			foreach (Element te in SelectedElements.ToArray())
 				te.Selected = false;
 		}
 
 		public void ClearSelectedRows()
 		{
-			foreach (TimelineRow row in Rows) {
+			foreach (Row row in Rows) {
 				row.Selected = false;
 			}
 		}
@@ -572,11 +606,11 @@ namespace CommonElements.Timeline
 		/// </summary>
 		/// <param name="p">Client coordinates.</param>
 		/// <returns>Row at given point, or null if none exists.</returns>
-		protected TimelineRow rowAt(Point p)
+		protected Row rowAt(Point p)
 		{
-			TimelineRow containingRow = null;
+			Row containingRow = null;
 			int curheight = 0;
-			foreach (TimelineRow row in Rows) {
+			foreach (Row row in Rows) {
 				if (!row.Visible)
 					continue;
 
@@ -595,16 +629,16 @@ namespace CommonElements.Timeline
 		/// </summary>
 		/// <param name="p">Client coordinates.</param>
 		/// <returns>Element at given point, or null if none exists.</returns>
-		protected TimelineElement elementAt(Point p)
+		protected Element elementAt(Point p)
 		{
 			// First figure out which row we are in
-			TimelineRow containingRow = rowAt(p);
+			Row containingRow = rowAt(p);
 
 			if (containingRow == null)
 				return null;
 
 			// Now figure out which element we are on
-			foreach (TimelineElement elem in containingRow) {
+			foreach (Element elem in containingRow) {
 				Single elemX = timeToPixels(elem.StartTime);
 				Single elemW = timeToPixels(elem.Duration);
 				if (p.X >= elemX && p.X <= elemX + elemW)
@@ -614,20 +648,20 @@ namespace CommonElements.Timeline
 			return null;
 		}
 
-		protected TimelineRow RowContainingElement(TimelineElement element)
+		protected Row RowContainingElement(Element element)
 		{
-			foreach (TimelineRow row in Rows) {
+			foreach (Row row in Rows) {
 				if (row.ContainsElement(element))
 					return row;
 			}
 			return null;
 		}
 
-		public List<TimelineElement> ElementsAtTime(TimeSpan time)
+		public List<Element> ElementsAtTime(TimeSpan time)
 		{
-			List<TimelineElement> result = new List<TimelineElement>();
-			foreach (TimelineRow row in Rows) {
-				foreach (TimelineElement elem in row) {
+			List<Element> result = new List<Element>();
+			foreach (Row row in Rows) {
+				foreach (Element elem in row) {
 					if ((time >= elem.StartTime) && (time < (elem.StartTime + elem.Duration)))
 						result.Add(elem);
 				}
@@ -652,8 +686,8 @@ namespace CommonElements.Timeline
 		// are no worse than Windows Explorer (although it would be hard to be much worse.)
 		private void selectElementsWithin(Rectangle SelectedArea)
 		{
-			TimelineRow startRow = rowAt(SelectedArea.Location);
-			TimelineRow endRow = rowAt(SelectedArea.BottomRight());
+			Row startRow = rowAt(SelectedArea.Location);
+			Row endRow = rowAt(SelectedArea.BottomRight());
 
 			TimeSpan selStart = pixelsToTime(SelectedArea.Left);
 			TimeSpan selEnd = pixelsToTime(SelectedArea.Right);
@@ -666,7 +700,7 @@ namespace CommonElements.Timeline
 					endFound ||					// we already passed the end row
 					(!startFound && (row != startRow))	//we haven't found the first row, and this isn't it
 					) {
-					foreach (TimelineElement e in row)
+					foreach (Element e in row)
 						e.Selected = false;
 					continue;
 				}
@@ -697,14 +731,14 @@ namespace CommonElements.Timeline
 		/// <param name="elements">The collection of elements to count.</param>
 		/// <param name="visibleOnly">If only visible rows should be counted or not.</param>
 		/// <returns>A dictionary which maps each supplied element to an int, for the number of times it exists.</returns>
-		private Dictionary<TimelineElement, int> CountRowsForElements(IEnumerable<TimelineElement> elements, bool visibleOnly)
+		private Dictionary<Element, int> CountRowsForElements(IEnumerable<Element> elements, bool visibleOnly)
 		{
-			Dictionary<TimelineElement, int> result = elements.ToDictionary(e => e, e => 0);
-			foreach (TimelineRow row in Rows) {
+			Dictionary<Element, int> result = elements.ToDictionary(e => e, e => 0);
+			foreach (Row row in Rows) {
 				if (visibleOnly && !row.Visible)
 					continue;
 
-				foreach (TimelineElement element in row) {
+				foreach (Element element in row) {
 					if (result.ContainsKey(element))
 						result[element]++;
 				}
@@ -724,23 +758,23 @@ namespace CommonElements.Timeline
 		/// <param name="elementInstanceCounts">Optional: a dictionary which maps each element to a count of 'instances' in the grid. If null, all element instances are considered.</param>
 		/// <param name="skipDuplicatesUnlessInRow">Optional: a row which limits the duplicate element consideration to a max/min of this row.</param>
 		/// <returns></returns>
-		private TimelineRow GetVerticalLimitRowForElements(
-			IEnumerable<TimelineElement> elements, 
+		private Row GetVerticalLimitRowForElements(
+			IEnumerable<Element> elements, 
 			bool findTopLimitRow,
 			bool visibleOnly,
-			Dictionary<TimelineElement, int> elementInstanceCounts,
-			TimelineRow skipDuplicatesUnlessInRow
+			Dictionary<Element, int> elementInstanceCounts,
+			Row skipDuplicatesUnlessInRow
 			)
 		{
 			// check if we are considering duplicate instances or not: if not, both of the last parameters should be empty
 			if (skipDuplicatesUnlessInRow == null && elementInstanceCounts != null)
 				throw new Exception("GetVerticalLimitRowForElements: two last parameters need to be either both set, or both null!");
 
-			Dictionary<TimelineElement, int> elementsLeft = new Dictionary<TimelineElement,int>();
+			Dictionary<Element, int> elementsLeft = new Dictionary<Element,int>();
 			if (elementInstanceCounts != null) {
 				// copy the given instance counts of each element into a new dictionary; we'll decrement the
 				// counts as we go to find the 'last' possible item
-				elementsLeft = new Dictionary<TimelineElement, int>(elementInstanceCounts);
+				elementsLeft = new Dictionary<Element, int>(elementInstanceCounts);
 			}
 
 			// we either go forwards through the row list to find the highest row possible, or backwards to find the
@@ -755,7 +789,7 @@ namespace CommonElements.Timeline
 					continue;
 
 				// iterate through each element we're checking for a grid limit, and check if it's in this row
-				foreach (TimelineElement element in elements) {
+				foreach (Element element in elements) {
 					if (Rows[i].ContainsElement(element)) {
 						// if we're not bothering to check for duplicates, then this is the first row that
 						// contains an element: good enough, return it!
@@ -778,10 +812,10 @@ namespace CommonElements.Timeline
 			return null;
 		}
 
-		public TimeSpan GetEarliestTimeForElements(IEnumerable<TimelineElement> elements)
+		public TimeSpan GetEarliestTimeForElements(IEnumerable<Element> elements)
 		{
 			TimeSpan result = TimeSpan.MaxValue;
-			foreach (TimelineElement e in elements) {
+			foreach (Element e in elements) {
 				if (e.StartTime < result)
 					result = e.StartTime;
 			}
@@ -789,10 +823,10 @@ namespace CommonElements.Timeline
 			return result;
 		}
 
-		public TimeSpan GetLatestTimeForElements(IEnumerable<TimelineElement> elements)
+		public TimeSpan GetLatestTimeForElements(IEnumerable<Element> elements)
 		{
 			TimeSpan result = TimeSpan.MinValue;
-			foreach (TimelineElement e in elements) {
+			foreach (Element e in elements) {
 				if (e.EndTime > result)
 					result = e.EndTime;
 			}
@@ -806,8 +840,8 @@ namespace CommonElements.Timeline
 			TimeSpan earliest = GetEarliestTimeForElements(SelectedElements);
 
 			// Find the earliest time of each row
-			var rowsToStartTimes = new Dictionary<TimelineRow,TimeSpan>();
-			foreach (TimelineRow row in Rows) {
+			var rowsToStartTimes = new Dictionary<Row,TimeSpan>();
+			foreach (Row row in Rows) {
 				TimeSpan time = GetEarliestTimeForElements(row.SelectedElements);
 
 				if (time != TimeSpan.MaxValue) {
@@ -817,7 +851,7 @@ namespace CommonElements.Timeline
 
 			// Now adjust all elements in each row, such that the leftmost element (in this row)
 			// is at the same start time as the alltogether leftmost element.
-			foreach (KeyValuePair<TimelineRow, TimeSpan> kvp in rowsToStartTimes)
+			foreach (KeyValuePair<Row, TimeSpan> kvp in rowsToStartTimes)
 			{
 				// calculate how much to offset elements of this row
 				TimeSpan thisRowAdjust = kvp.Value - earliest;
@@ -825,13 +859,13 @@ namespace CommonElements.Timeline
 				if (thisRowAdjust == TimeSpan.Zero)
 					continue;
 
-				foreach (TimelineElement elem in kvp.Key.SelectedElements)
+				foreach (Element elem in kvp.Key.SelectedElements)
 					elem.StartTime -= thisRowAdjust;
 			}
 
 		}
 
-		public TimeSpan OffsetElementsByTime(IEnumerable<TimelineElement> elements, TimeSpan offset)
+		public TimeSpan OffsetElementsByTime(IEnumerable<Element> elements, TimeSpan offset)
 		{
 			// check to see if the offset that is applied to all elements will take it outside
 			// the total time at all. If so, use a smaller offset, or none at all.
@@ -856,25 +890,25 @@ namespace CommonElements.Timeline
 			// grab all the elements we need to check for snapping against things (ie. filter them based on row
 			// if we're only snapping to things in the current row.) Also, record the row this element is in
 			// as well, since we'll need it later on, and it saves recalculating multiple times
-			List<Tuple<TimelineElement, TimelineRow>> elementsToCheckSnapping = new List<Tuple<TimelineElement, TimelineRow>>();
+			List<Tuple<Element, Row>> elementsToCheckSnapping = new List<Tuple<Element, Row>>();
 			if (OnlySnapToCurrentRow) {
-				TimelineRow targetRow = Rows[CurrentRowIndexUnderMouse];
-				foreach (TimelineElement element in elements) {
+				Row targetRow = Rows[CurrentRowIndexUnderMouse];
+				foreach (Element element in elements) {
 					if (targetRow.ContainsElement(element))
-						elementsToCheckSnapping.Add(new Tuple<TimelineElement, TimelineRow>(element, targetRow));
+						elementsToCheckSnapping.Add(new Tuple<Element, Row>(element, targetRow));
 				}
 			} else {
-				foreach (TimelineElement element in elements) {
-					elementsToCheckSnapping.Add(new Tuple<TimelineElement, TimelineRow>(element, RowContainingElement(element)));
+				foreach (Element element in elements) {
+					elementsToCheckSnapping.Add(new Tuple<Element, Row>(element, RowContainingElement(element)));
 				}
 			}
 
 			// now go through all the elements we need against snap points, and check them
 			SnapDetails bestSnapPoint = null;
 			TimeSpan snappedOffset = offset;
-			foreach (Tuple<TimelineElement, TimelineRow> tuple in elementsToCheckSnapping) {
-				TimelineElement element = tuple.Item1;
-				TimelineRow thisElementsRow = tuple.Item2;
+			foreach (Tuple<Element, Row> tuple in elementsToCheckSnapping) {
+				Element element = tuple.Item1;
+				Row thisElementsRow = tuple.Item2;
 				foreach (KeyValuePair<TimeSpan, List<SnapDetails>> kvp in CurrentDragSnapPoints) {
 					foreach (SnapDetails details in kvp.Value) {
 						// skip this point if it's not any higher priority than our highest so far
@@ -920,7 +954,7 @@ namespace CommonElements.Timeline
 
 			// by now, we should know what the most applicable snap point is (or none at all), and we've
 			// also figured out along the way what the actual offset should be to snap the elements to. So have at it.
-			foreach (TimelineElement e in elements) {
+			foreach (Element e in elements) {
 				if (ResizingElement) {
 					if (ResizingFront) {
 						// don't do any resizing if it will make the element smaller than 6 pixels.
@@ -948,9 +982,9 @@ namespace CommonElements.Timeline
 			return snappedOffset;
 		}
 
-		public void MoveElementsVerticallyToLocation(IEnumerable<TimelineElement> elements, Point gridLocation)
+		public void MoveElementsVerticallyToLocation(IEnumerable<Element> elements, Point gridLocation)
 		{
-			TimelineRow destRow = rowAt(gridLocation);
+			Row destRow = rowAt(gridLocation);
 
 			if (destRow == null)
 				return;
@@ -958,7 +992,7 @@ namespace CommonElements.Timeline
 			if (Rows.IndexOf(destRow) == CurrentRowIndexUnderMouse)
 				return;
 
-			List<TimelineRow> visibleRows = new List<TimelineRow>();
+			List<Row> visibleRows = new List<Row>();
 
 			for (int i = 0; i < Rows.Count; i++) {
 				if (Rows[i].Visible)
@@ -968,7 +1002,7 @@ namespace CommonElements.Timeline
 			int visibleRowsToMove = visibleRows.IndexOf(destRow) - visibleRows.IndexOf(Rows[CurrentRowIndexUnderMouse]);
 
 			// The count of each element to the number of times it is visible in the grid. Used for calculations later.
-			Dictionary<TimelineElement, int> elementCounts = CountRowsForElements(elements, true);
+			Dictionary<Element, int> elementCounts = CountRowsForElements(elements, true);
 
 			// find the highest and lowest visible rows with selected elements in them, but ignore duplicates unless they
 			// are in the row that the mouse down element is in, or it's the last instance of the element
@@ -984,17 +1018,17 @@ namespace CommonElements.Timeline
 			if (visibleRowsToMove == 0)
 				return;
 
-			Dictionary<TimelineElement, bool> elementsToMove = new Dictionary<TimelineElement, bool>();
-			foreach (TimelineElement e in elements) {
+			Dictionary<Element, bool> elementsToMove = new Dictionary<Element, bool>();
+			foreach (Element e in elements) {
 				elementsToMove.Add(e, false);
 			}
 
 			// take note of which elements should be moved with respect to the current mouseover row, and not just the first
 			// row instance for the element that comes along
-			HashSet<TimelineElement> ElementsToMoveInMouseRow = new HashSet<TimelineElement>(m_mouseDownElementRow.SelectedElements);
+			HashSet<Element> ElementsToMoveInMouseRow = new HashSet<Element>(m_mouseDownElementRow.SelectedElements);
 
 			// record the row that the mouse down element moves to, to update the m_mouseDownElementRow variable later
-			TimelineRow newMouseDownRow = m_mouseDownElementRow;
+			Row newMouseDownRow = m_mouseDownElementRow;
 
 			// OK, crazy shit's about to get real.
 			// To move the elements vertically, we go through the visible rows, top down. As we find an element to be moved around
@@ -1012,11 +1046,11 @@ namespace CommonElements.Timeline
 			// (maybe some way of trying to move the elements closest vertically, to the current mouse row? This would work best for when
 			// the user selects a block of elements and moves it. The spurious ones that are also selected at extremities would be ignored.)
 			for (int i = 0; i < visibleRows.Count; i++) {
-				List<TimelineElement> elementsMoved = new List<TimelineElement>();
+				List<Element> elementsMoved = new List<Element>();
 
 				// go through each element that hasn't been moved yet, and move it if it's in this row.
-				foreach (KeyValuePair<TimelineElement, bool> kvp in elementsToMove) {
-					TimelineElement element = kvp.Key;
+				foreach (KeyValuePair<Element, bool> kvp in elementsToMove) {
+					Element element = kvp.Key;
 					bool moved = kvp.Value;
 
 					// if the element has already been moved, ignore it
@@ -1053,7 +1087,7 @@ namespace CommonElements.Timeline
 					}
 				}
 
-				foreach (TimelineElement e in elementsMoved)
+				foreach (Element e in elementsMoved)
 					elementsToMove[e] = true;
 			}
 
@@ -1139,7 +1173,7 @@ namespace CommonElements.Timeline
 			CurrentDragSnapPoints = new SortedDictionary<TimeSpan,List<SnapDetails>>(StaticSnapPoints);
 
 			// iterate through the rows, calculating snap points for every single element in each row that has any selected elements
-			foreach (TimelineRow row in Rows) {
+			foreach (Row row in Rows) {
 				// This would skip generating snap points for elements on any rows that have nothing selected.
 				// However, we still need to do that; as we might be dragging elements vertically into rows that
 				// (currently) have nothing selected. So we'll generate for everything, but that's going to be
@@ -1152,7 +1186,7 @@ namespace CommonElements.Timeline
 				if (!row.Visible)
 					continue;
 
-				foreach (TimelineElement element in row) {
+				foreach (Element element in row) {
 					// skip it if it's a selected element; we don't want to snap to them, as they'll be moving as well
 					if (element.Selected)
 						continue;
@@ -1210,7 +1244,7 @@ namespace CommonElements.Timeline
 			using (Pen p = new Pen(RowSeparatorColor))
 			using (SolidBrush b = new SolidBrush(SelectionColor))
 			{
-				foreach (TimelineRow row in Rows)
+				foreach (Row row in Rows)
 				{
 					if (!row.Visible)
 						continue;
@@ -1272,7 +1306,7 @@ namespace CommonElements.Timeline
 		{
 			// Draw each row
 			int top = 0;    // y-coord of top of current row
-			foreach (TimelineRow row in Rows) {
+			foreach (Row row in Rows) {
 				if (!row.Visible)
 					continue;
 
@@ -1281,7 +1315,7 @@ namespace CommonElements.Timeline
 				TimeSpan currentlyDrawnTo = TimeSpan.Zero;
 				TimeSpan desiredDrawTo = TimeSpan.Zero;
 				for (int i = 0; i < row.ElementCount; i++) {
-					TimelineElement currentElement = row.GetElementAtIndex(i);
+					Element currentElement = row.GetElementAtIndex(i);
 					desiredDrawTo = currentElement.StartTime;
 
 					// if this is the last element, draw everything
@@ -1435,7 +1469,7 @@ namespace CommonElements.Timeline
 		{
 			Point client = PointToClient(new Point(e.X, e.Y));
 
-			TimelineRow row = rowAt(client);
+			Row row = rowAt(client);
 			TimeSpan time = pixelsToTime(translateLocation(client).X);
 			IDataObject data = e.Data;
 
@@ -1460,7 +1494,7 @@ namespace CommonElements.Timeline
 		public TimeSpan SnapStart;	// the start time that should snap to this time; ie. before or equal to the snap time
 		public TimeSpan SnapEnd;	// the end time that should snap to this time; ie. after or equal to the snap time
 		public int SnapLevel;		// the "priority" of this snap point; bigger is higher priority
-		public TimelineRow SnapRow;	// the rows that this point should affect; null if all rows
+		public Row SnapRow;	// the rows that this point should affect; null if all rows
 	}
 
 	class BitmapDrawDetails

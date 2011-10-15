@@ -9,15 +9,15 @@ using System.Windows.Forms;
 
 namespace CommonElements.Timeline
 {
-	public class TimelineRowLabel : UserControl
+	public class RowLabel : UserControl
 	{
-		public TimelineRowLabel(TimelineRow parentRow)
+		public RowLabel(Row parentRow)
 			: this()
 		{
 			ParentRow = parentRow;
 		}
 
-		public TimelineRowLabel()
+		public RowLabel()
 		{
 			DoubleBuffered = true;
 			this.SetStyle(ControlStyles.ResizeRedraw, true);
@@ -27,8 +27,8 @@ namespace CommonElements.Timeline
 
 		#region Properties
 
-		private TimelineRow m_parentRow;
-		public TimelineRow ParentRow
+		private Row m_parentRow;
+		public Row ParentRow
 		{
 			get { return m_parentRow; }
 			set { m_parentRow = value; }

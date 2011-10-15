@@ -28,8 +28,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private TimedSequence _sequence;
 		private ProgramContext _context;
 		private ITiming _timingSource;
-		private Dictionary<EffectNode, TimelineElement> _effectNodeToElement;
-		private Dictionary<ChannelNode, List<TimelineRow>> _channelNodeToRows;
+		private Dictionary<EffectNode, Element> _effectNodeToElement;
+		private Dictionary<ChannelNode, List<Row>> _channelNodeToRows;
 
 		#endregion
 
@@ -38,6 +38,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public TimedSequenceEditorForm()
 		{
 			InitializeComponent();
+
+			_effectNodeToElement = new Dictionary<EffectNode, Element>();
+			_channelNodeToRows = new Dictionary<ChannelNode, List<Row>>();
 
 			timelineControl.ElementChangedRows += ElementChangedRowsHandler;
 			timelineControl.ElementDoubleClicked += ElementDoubleClickedHandler;
@@ -134,7 +137,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// </summary>
 		private void LoadSystemNodesToRows(bool clearCurrentRows = true)
 		{
-			_channelNodeToRows = new Dictionary<ChannelNode, List<TimelineRow>>();
+			_channelNodeToRows = new Dictionary<ChannelNode, List<Row>>();
 
 			if (clearCurrentRows)
 				timelineControl.ClearAllRows();
@@ -150,10 +153,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// </summary>
 		/// <param name="node">The node to generate a row for.</param>
 		/// <param name="parentRow">The parent node the row should belong to, if any.</param>
-		private void AddNodeAsRow(ChannelNode node, TimelineRow parentRow)
+		private void AddNodeAsRow(ChannelNode node, Row parentRow)
 		{
 			// made the new row from the given node and add it to the control.
-			TimelineRow newRow = timelineControl.AddRow(node.Name, parentRow);
+			Row newRow = timelineControl.AddRow(node.Name, parentRow);
 			newRow.ElementRemoved += ElementRemovedFromRowHandler;
 			newRow.ElementAdded += ElementAddedToRowHandler;
 
@@ -162,7 +165,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_channelNodeToRows.ContainsKey(node))
 				_channelNodeToRows[node].Add(newRow);
 			else
-				_channelNodeToRows[node] = new List<TimelineRow> { newRow };
+				_channelNodeToRows[node] = new List<Row> { newRow };
 
 			// iterate through all if its children, adding them as needed
 			foreach (ChannelNode child in node.Children) {
@@ -188,7 +191,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			LoadSystemNodesToRows();
 
 			// load the new data: get all the commands in the sequence, and make a new element for each of them.
-			_effectNodeToElement = new Dictionary<EffectNode, TimelineElement>();
+			_effectNodeToElement = new Dictionary<EffectNode, Element>();
 			foreach (EffectNode node in _sequence.Data.GetEffects()) {
 				AddElementForEffectNode(node);
 			}
@@ -208,9 +211,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// for the effect, make a single element and add it to every row that represents its target channels
 			foreach (ChannelNode target in node.Effect.TargetNodes) {
 				if (_channelNodeToRows.ContainsKey(target)) {
-					List<TimelineRow> targetRows = _channelNodeToRows[target];
+					List<Row> targetRows = _channelNodeToRows[target];
 					// make a new element for each row that represents the channel this command is in.
-					foreach (TimelineRow row in targetRows) {
+					foreach (Row row in targetRows) {
 						if (element == null) {
 							element = new TimedSequenceElement(node);
 							element.ElementContentChanged += ElementContentChangedHandler;
@@ -238,9 +241,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="node">The EffectNode to purge the element in the grid for.</param>
 		private void RemoveElementForEffectNode(EffectNode node)
 		{
-			TimelineElement element = _effectNodeToElement[node];
+			Element element = _effectNodeToElement[node];
 			// iterate through all rows, trying to remove the element that the given effect is represented by
-			foreach (TimelineRow row in timelineControl) {
+			foreach (Row row in timelineControl) {
 				if (row.ContainsElement(element)) {
 					row.RemoveElement(element);
 				}
@@ -348,7 +351,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// move the actual element around. It's a single element in the grid, belonging to multiple rows:
 			// so find all rows that represent the old channel, remove the element from them, and also find
 			// all rows that represent the new channel and add it to them.
-			foreach (TimelineRow row in timelineControl) {
+			foreach (Row row in timelineControl) {
 				ChannelNode rowChannel = row.Tag as ChannelNode;
 
 				if (rowChannel == oldChannel && row != e.OldRow)
@@ -492,7 +495,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <summary>
 		/// Adds an effect to the sequence and timelineControl.
 		/// </summary>
-		private void addNewEffect(Guid effectId, TimelineRow row, TimeSpan startTime, TimeSpan timeSpan)
+		private void addNewEffect(Guid effectId, Row row, TimeSpan startTime, TimeSpan timeSpan)
 		{
 			try {
 				// get the target channel
@@ -509,7 +512,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				AddElementForEffectNode(effectNode);
 				IsModified = true;
 			} catch (Exception ex) {
-				VixenSystem.Logging.Error("TimedSequenceEditor: error adding effect of type " + effectId + " to row " + row.Name, ex);
+				string msg = "TimedSequenceEditor: error adding effect of type " + effectId + " to row " + row.Name;
+				VixenSystem.Logging.Error(msg, ex);
+				MessageBox.Show(msg + ":\n" + ex.Message);
 			}
 		}
 

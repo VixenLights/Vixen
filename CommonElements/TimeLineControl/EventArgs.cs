@@ -11,18 +11,18 @@ namespace CommonElements.Timeline
 {
 	public class ElementEventArgs : EventArgs
 	{
-		public ElementEventArgs(TimelineElement te)
+		public ElementEventArgs(Element te)
 		{
 			Element = te;
 		}
 
-		public TimelineElement Element { get; private set; }
+		public Element Element { get; private set; }
 	}
 
 
 	public class MultiElementEventArgs : EventArgs
 	{
-		public IEnumerable<TimelineElement> Elements { get; set; }
+		public IEnumerable<Element> Elements { get; set; }
 	}
 
 
@@ -60,28 +60,28 @@ namespace CommonElements.Timeline
 
 	public class ElementRowChangeEventArgs : EventArgs
 	{
-		public ElementRowChangeEventArgs(TimelineElement element, TimelineRow oldRow, TimelineRow newRow)
+		public ElementRowChangeEventArgs(Element element, Row oldRow, Row newRow)
 		{
 			Element = element;
 			OldRow = oldRow;
 			NewRow = newRow;
 		}
 
-		public TimelineElement Element { get; private set; }
-		public TimelineRow OldRow { get; private set; }
-		public TimelineRow NewRow { get; private set; }
+		public Element Element { get; private set; }
+		public Row OldRow { get; private set; }
+		public Row NewRow { get; private set; }
 	}
 
 	public class TimelineDropEventArgs : EventArgs
 	{
-		public TimelineDropEventArgs(TimelineRow row, TimeSpan time, IDataObject data)
+		public TimelineDropEventArgs(Row row, TimeSpan time, IDataObject data)
 		{
 			Row = row;
 			Time = time;
 			Data = data;
 		}
 
-		public TimelineRow Row { get; private set; }
+		public Row Row { get; private set; }
 		public TimeSpan Time { get; private set; }
 		public IDataObject Data { get; private set; }
 	}

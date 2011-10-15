@@ -46,6 +46,7 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -167,7 +168,17 @@
     <Compile Include="TextDialog.Designer.cs">
       <DependentUpon>TextDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="TimelineControl\Element.cs" />
+    <Compile Include="TimelineControl\EventArgs.cs" />
     <Compile Include="TimelineControl\ExtensionMethods.cs" />
+    <Compile Include="TimelineControl\Row.cs" />
+    <Compile Include="TimelineControl\RowLabel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TimelineControl\RowList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TimelineControl\TimeInfo.cs" />
     <Compile Include="TimelineControl\TimelineControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -177,19 +188,10 @@
     <Compile Include="TimelineControl\TimelineControlBase.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="TimelineControl\TimelineElement.cs" />
-    <Compile Include="TimelineControl\TimelineEventArgs.cs" />
-    <Compile Include="TimelineControl\TimelineGrid.cs">
+    <Compile Include="TimelineControl\Grid.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="TimelineControl\TimelineHeader.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="TimelineControl\TimelineRow.cs" />
-    <Compile Include="TimelineControl\TimelineRowLabel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="TimelineControl\TimelineRowList.cs">
+    <Compile Include="TimelineControl\Ruler.cs">
       <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>
