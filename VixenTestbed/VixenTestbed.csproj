@@ -97,6 +97,18 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form1_Admin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1_Editor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1_Media.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1_Timing.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ModuleList.cs">
       <SubType>UserControl</SubType>
     </Compile>

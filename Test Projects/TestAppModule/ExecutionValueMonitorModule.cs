@@ -60,7 +60,7 @@ namespace TestAppModule {
 		}
 
 		private void _AddApplicationMenu() {
-			if(_application != null) {
+			if(_application != null && _application.AppCommands != null) {
 				AppCommand monitorMenu = new AppCommand("ExecutionMonitor", "Execution monitor");
 				LatchedAppCommand enableMenuItem = new LatchedAppCommand("ExecutionMonitorEnabled", "Enabled");
 				enableMenuItem.IsChecked = Enabled;
@@ -71,7 +71,7 @@ namespace TestAppModule {
 		}
 
 		private void _RemoveApplicationMenu() {
-			if(_application != null) {
+			if(_application != null && _application.AppCommands != null) {
 				_application.AppCommands.Remove("ExecutionMonitor");
 			}
 		}

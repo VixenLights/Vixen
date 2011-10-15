@@ -16,6 +16,8 @@ using Vixen.Module.Output;
 using Vixen.Module.Property;
 using Vixen.Module.Timing;
 
+using Vixen.Hardware;
+
 namespace VixenTestbed {
 	public partial class Form1 : Form, IApplication {
 		private Guid _id = new Guid("{5E315C9B-1759-466c-A4E5-462EE750C708}");
@@ -32,10 +34,7 @@ namespace VixenTestbed {
 			moduleListApp.SetModuleType<IAppModuleInstance>();
 			moduleListEditor.SetModuleType<IEditorModuleInstance>();
 			moduleListEffect.SetModuleType<IEffectModuleInstance>();
-			moduleListEffectEditor.SetModuleType<IEffectEditorModuleInstance>();
 			moduleListMedia.SetModuleType<IMediaModuleInstance>();
-			moduleListOutput.SetModuleType<IOutputModuleInstance>();
-			moduleListProperty.SetModuleType<IPropertyModuleInstance>();
 			moduleListTiming.SetModuleType<ITimingModuleInstance>();
 		}
 
@@ -60,24 +59,6 @@ namespace VixenTestbed {
 
 		private void _ItemLogged(object sender, LogEventArgs e) {
 			MessageBox.Show(e.Text, e.LogName);
-		}
-
-		private void buttonControllers_Click(object sender, EventArgs e) {
-			using(ControllersForm controllersForm = new ControllersForm()) {
-				controllersForm.ShowDialog();
-			}
-		}
-
-		private void buttonChannels_Click(object sender, EventArgs e) {
-			using(ChannelsForm channelsForm = new ChannelsForm()) {
-				channelsForm.ShowDialog();
-			}
-		}
-
-		private void buttonPatching_Click(object sender, EventArgs e) {
-			using(PatchingForm patchingForm = new PatchingForm()) {
-				patchingForm.ShowDialog();
-			}
 		}
 	}
 }

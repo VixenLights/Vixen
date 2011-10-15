@@ -23,7 +23,7 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+			this.components = new System.ComponentModel.Container();
 			this.tabControl = new System.Windows.Forms.TabControl();
 			this.tabPageAdministration = new System.Windows.Forms.TabPage();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -33,33 +33,45 @@
 			this.tabPageAppModule = new System.Windows.Forms.TabPage();
 			this.moduleListApp = new VixenTestbed.ModuleList();
 			this.tabPageEditorModule = new System.Windows.Forms.TabPage();
+			this.buttonShowEditor = new System.Windows.Forms.Button();
+			this.buttonLoadSequence = new System.Windows.Forms.Button();
+			this.label2 = new System.Windows.Forms.Label();
 			this.moduleListEditor = new VixenTestbed.ModuleList();
 			this.tabPageEffectModule = new System.Windows.Forms.TabPage();
+			this.label1 = new System.Windows.Forms.Label();
 			this.moduleListEffect = new VixenTestbed.ModuleList();
-			this.tabPageEffectEditorModule = new System.Windows.Forms.TabPage();
-			this.moduleListEffectEditor = new VixenTestbed.ModuleList();
 			this.tabPageMediaModule = new System.Windows.Forms.TabPage();
+			this.label3 = new System.Windows.Forms.Label();
+			this.groupBoxMediaExecution = new System.Windows.Forms.GroupBox();
+			this.buttonStopMedia = new System.Windows.Forms.Button();
+			this.buttonResumeMedia = new System.Windows.Forms.Button();
+			this.buttonPauseMedia = new System.Windows.Forms.Button();
+			this.buttonPlayMedia = new System.Windows.Forms.Button();
+			this.buttonLoadMediaFile = new System.Windows.Forms.Button();
+			this.buttonSetupMedia = new System.Windows.Forms.Button();
 			this.moduleListMedia = new VixenTestbed.ModuleList();
-			this.tabPageOutputModule = new System.Windows.Forms.TabPage();
-			this.moduleListOutput = new VixenTestbed.ModuleList();
-			this.tabPagePropertyModule = new System.Windows.Forms.TabPage();
-			this.moduleListProperty = new VixenTestbed.ModuleList();
 			this.tabPageTimingModule = new System.Windows.Forms.TabPage();
+			this.labelTimingCurrentPosition = new System.Windows.Forms.Label();
+			this.label4 = new System.Windows.Forms.Label();
+			this.groupBoxTimingExecution = new System.Windows.Forms.GroupBox();
+			this.buttonStopTiming = new System.Windows.Forms.Button();
+			this.buttonResumeTiming = new System.Windows.Forms.Button();
+			this.buttonPauseTiming = new System.Windows.Forms.Button();
+			this.buttonPlayTiming = new System.Windows.Forms.Button();
 			this.moduleListTiming = new VixenTestbed.ModuleList();
 			this.menuStrip = new System.Windows.Forms.MenuStrip();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
+			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+			this.timingTimer = new System.Windows.Forms.Timer(this.components);
 			this.tabControl.SuspendLayout();
 			this.tabPageAdministration.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tabPageAppModule.SuspendLayout();
 			this.tabPageEditorModule.SuspendLayout();
 			this.tabPageEffectModule.SuspendLayout();
-			this.tabPageEffectEditorModule.SuspendLayout();
 			this.tabPageMediaModule.SuspendLayout();
-			this.tabPageOutputModule.SuspendLayout();
-			this.tabPagePropertyModule.SuspendLayout();
+			this.groupBoxMediaExecution.SuspendLayout();
 			this.tabPageTimingModule.SuspendLayout();
+			this.groupBoxTimingExecution.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tabControl
@@ -68,10 +80,7 @@
 			this.tabControl.Controls.Add(this.tabPageAppModule);
 			this.tabControl.Controls.Add(this.tabPageEditorModule);
 			this.tabControl.Controls.Add(this.tabPageEffectModule);
-			this.tabControl.Controls.Add(this.tabPageEffectEditorModule);
 			this.tabControl.Controls.Add(this.tabPageMediaModule);
-			this.tabControl.Controls.Add(this.tabPageOutputModule);
-			this.tabControl.Controls.Add(this.tabPagePropertyModule);
 			this.tabControl.Controls.Add(this.tabPageTimingModule);
 			this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tabControl.Location = new System.Drawing.Point(0, 24);
@@ -162,8 +171,9 @@
 			// 
 			// tabPageEditorModule
 			// 
+			this.tabPageEditorModule.Controls.Add(this.buttonShowEditor);
+			this.tabPageEditorModule.Controls.Add(this.buttonLoadSequence);
 			this.tabPageEditorModule.Controls.Add(this.label2);
-			this.tabPageEditorModule.Controls.Add(this.label1);
 			this.tabPageEditorModule.Controls.Add(this.moduleListEditor);
 			this.tabPageEditorModule.Location = new System.Drawing.Point(4, 22);
 			this.tabPageEditorModule.Name = "tabPageEditorModule";
@@ -172,137 +182,27 @@
 			this.tabPageEditorModule.Text = "Editor Module";
 			this.tabPageEditorModule.UseVisualStyleBackColor = true;
 			// 
-			// moduleListEditor
+			// buttonShowEditor
 			// 
-			this.moduleListEditor.Dock = System.Windows.Forms.DockStyle.Left;
-			this.moduleListEditor.Location = new System.Drawing.Point(0, 0);
-			this.moduleListEditor.Name = "moduleListEditor";
-			this.moduleListEditor.Size = new System.Drawing.Size(213, 320);
-			this.moduleListEditor.TabIndex = 2;
+			this.buttonShowEditor.Enabled = false;
+			this.buttonShowEditor.Location = new System.Drawing.Point(256, 68);
+			this.buttonShowEditor.Name = "buttonShowEditor";
+			this.buttonShowEditor.Size = new System.Drawing.Size(127, 23);
+			this.buttonShowEditor.TabIndex = 6;
+			this.buttonShowEditor.Text = "Show Editor";
+			this.buttonShowEditor.UseVisualStyleBackColor = true;
+			this.buttonShowEditor.Click += new System.EventHandler(this.buttonShowEditor_Click);
 			// 
-			// tabPageEffectModule
+			// buttonLoadSequence
 			// 
-			this.tabPageEffectModule.Controls.Add(this.moduleListEffect);
-			this.tabPageEffectModule.Location = new System.Drawing.Point(4, 22);
-			this.tabPageEffectModule.Name = "tabPageEffectModule";
-			this.tabPageEffectModule.Size = new System.Drawing.Size(650, 320);
-			this.tabPageEffectModule.TabIndex = 3;
-			this.tabPageEffectModule.Text = "Effect Module";
-			this.tabPageEffectModule.UseVisualStyleBackColor = true;
-			// 
-			// moduleListEffect
-			// 
-			this.moduleListEffect.Dock = System.Windows.Forms.DockStyle.Left;
-			this.moduleListEffect.Location = new System.Drawing.Point(0, 0);
-			this.moduleListEffect.Name = "moduleListEffect";
-			this.moduleListEffect.Size = new System.Drawing.Size(213, 344);
-			this.moduleListEffect.TabIndex = 0;
-			// 
-			// tabPageEffectEditorModule
-			// 
-			this.tabPageEffectEditorModule.Controls.Add(this.moduleListEffectEditor);
-			this.tabPageEffectEditorModule.Location = new System.Drawing.Point(4, 22);
-			this.tabPageEffectEditorModule.Name = "tabPageEffectEditorModule";
-			this.tabPageEffectEditorModule.Size = new System.Drawing.Size(650, 320);
-			this.tabPageEffectEditorModule.TabIndex = 4;
-			this.tabPageEffectEditorModule.Text = "Effect Editor Module";
-			this.tabPageEffectEditorModule.UseVisualStyleBackColor = true;
-			// 
-			// moduleListEffectEditor
-			// 
-			this.moduleListEffectEditor.Dock = System.Windows.Forms.DockStyle.Left;
-			this.moduleListEffectEditor.Location = new System.Drawing.Point(0, 0);
-			this.moduleListEffectEditor.Name = "moduleListEffectEditor";
-			this.moduleListEffectEditor.Size = new System.Drawing.Size(213, 344);
-			this.moduleListEffectEditor.TabIndex = 0;
-			// 
-			// tabPageMediaModule
-			// 
-			this.tabPageMediaModule.Controls.Add(this.moduleListMedia);
-			this.tabPageMediaModule.Location = new System.Drawing.Point(4, 22);
-			this.tabPageMediaModule.Name = "tabPageMediaModule";
-			this.tabPageMediaModule.Size = new System.Drawing.Size(650, 320);
-			this.tabPageMediaModule.TabIndex = 5;
-			this.tabPageMediaModule.Text = "Media Module";
-			this.tabPageMediaModule.UseVisualStyleBackColor = true;
-			// 
-			// moduleListMedia
-			// 
-			this.moduleListMedia.Dock = System.Windows.Forms.DockStyle.Left;
-			this.moduleListMedia.Location = new System.Drawing.Point(0, 0);
-			this.moduleListMedia.Name = "moduleListMedia";
-			this.moduleListMedia.Size = new System.Drawing.Size(213, 344);
-			this.moduleListMedia.TabIndex = 0;
-			// 
-			// tabPageOutputModule
-			// 
-			this.tabPageOutputModule.Controls.Add(this.moduleListOutput);
-			this.tabPageOutputModule.Location = new System.Drawing.Point(4, 22);
-			this.tabPageOutputModule.Name = "tabPageOutputModule";
-			this.tabPageOutputModule.Size = new System.Drawing.Size(650, 320);
-			this.tabPageOutputModule.TabIndex = 6;
-			this.tabPageOutputModule.Text = "Output Module";
-			this.tabPageOutputModule.UseVisualStyleBackColor = true;
-			// 
-			// moduleListOutput
-			// 
-			this.moduleListOutput.Dock = System.Windows.Forms.DockStyle.Left;
-			this.moduleListOutput.Location = new System.Drawing.Point(0, 0);
-			this.moduleListOutput.Name = "moduleListOutput";
-			this.moduleListOutput.Size = new System.Drawing.Size(213, 344);
-			this.moduleListOutput.TabIndex = 0;
-			// 
-			// tabPagePropertyModule
-			// 
-			this.tabPagePropertyModule.Controls.Add(this.moduleListProperty);
-			this.tabPagePropertyModule.Location = new System.Drawing.Point(4, 22);
-			this.tabPagePropertyModule.Name = "tabPagePropertyModule";
-			this.tabPagePropertyModule.Size = new System.Drawing.Size(650, 320);
-			this.tabPagePropertyModule.TabIndex = 7;
-			this.tabPagePropertyModule.Text = "Property Module";
-			this.tabPagePropertyModule.UseVisualStyleBackColor = true;
-			// 
-			// moduleListProperty
-			// 
-			this.moduleListProperty.Dock = System.Windows.Forms.DockStyle.Left;
-			this.moduleListProperty.Location = new System.Drawing.Point(0, 0);
-			this.moduleListProperty.Name = "moduleListProperty";
-			this.moduleListProperty.Size = new System.Drawing.Size(213, 344);
-			this.moduleListProperty.TabIndex = 0;
-			// 
-			// tabPageTimingModule
-			// 
-			this.tabPageTimingModule.Controls.Add(this.moduleListTiming);
-			this.tabPageTimingModule.Location = new System.Drawing.Point(4, 22);
-			this.tabPageTimingModule.Name = "tabPageTimingModule";
-			this.tabPageTimingModule.Size = new System.Drawing.Size(650, 320);
-			this.tabPageTimingModule.TabIndex = 8;
-			this.tabPageTimingModule.Text = "Timing Module";
-			this.tabPageTimingModule.UseVisualStyleBackColor = true;
-			// 
-			// moduleListTiming
-			// 
-			this.moduleListTiming.Dock = System.Windows.Forms.DockStyle.Left;
-			this.moduleListTiming.Location = new System.Drawing.Point(0, 0);
-			this.moduleListTiming.Name = "moduleListTiming";
-			this.moduleListTiming.Size = new System.Drawing.Size(213, 344);
-			this.moduleListTiming.TabIndex = 0;
-			// 
-			// menuStrip
-			// 
-			this.menuStrip.Location = new System.Drawing.Point(0, 0);
-			this.menuStrip.Name = "menuStrip";
-			this.menuStrip.Size = new System.Drawing.Size(658, 24);
-			this.menuStrip.TabIndex = 1;
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(244, 40);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(223, 208);
-			this.label1.TabIndex = 3;
-			this.label1.Text = resources.GetString("label1.Text");
+			this.buttonLoadSequence.Enabled = false;
+			this.buttonLoadSequence.Location = new System.Drawing.Point(256, 29);
+			this.buttonLoadSequence.Name = "buttonLoadSequence";
+			this.buttonLoadSequence.Size = new System.Drawing.Size(127, 23);
+			this.buttonLoadSequence.TabIndex = 5;
+			this.buttonLoadSequence.Text = "Load a Sequence";
+			this.buttonLoadSequence.UseVisualStyleBackColor = true;
+			this.buttonLoadSequence.Click += new System.EventHandler(this.buttonLoadEditorSequence_Click);
 			// 
 			// label2
 			// 
@@ -313,6 +213,259 @@
 			this.label2.TabIndex = 4;
 			this.label2.Text = "Allow multiple instances of a type.\r\nFor each one, tie into the Activated event a" +
 				"nd highlight it.\r\nFor each one, show Sequence, Selection, IsModified.";
+			// 
+			// moduleListEditor
+			// 
+			this.moduleListEditor.Dock = System.Windows.Forms.DockStyle.Left;
+			this.moduleListEditor.Location = new System.Drawing.Point(0, 0);
+			this.moduleListEditor.Name = "moduleListEditor";
+			this.moduleListEditor.Size = new System.Drawing.Size(213, 320);
+			this.moduleListEditor.TabIndex = 2;
+			this.moduleListEditor.SelectedModuleChanged += new System.EventHandler(this.moduleListEditor_SelectedModuleChanged);
+			// 
+			// tabPageEffectModule
+			// 
+			this.tabPageEffectModule.Controls.Add(this.label1);
+			this.tabPageEffectModule.Controls.Add(this.moduleListEffect);
+			this.tabPageEffectModule.Location = new System.Drawing.Point(4, 22);
+			this.tabPageEffectModule.Name = "tabPageEffectModule";
+			this.tabPageEffectModule.Size = new System.Drawing.Size(650, 320);
+			this.tabPageEffectModule.TabIndex = 3;
+			this.tabPageEffectModule.Text = "Effect Module";
+			this.tabPageEffectModule.UseVisualStyleBackColor = true;
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(258, 39);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(155, 52);
+			this.label1.TabIndex = 1;
+			this.label1.Text = "Render to a list\r\nRender to a collection of nodes\r\nTime span\r\n(Parameters via edi" +
+				"tors)";
+			// 
+			// moduleListEffect
+			// 
+			this.moduleListEffect.Dock = System.Windows.Forms.DockStyle.Left;
+			this.moduleListEffect.Location = new System.Drawing.Point(0, 0);
+			this.moduleListEffect.Name = "moduleListEffect";
+			this.moduleListEffect.Size = new System.Drawing.Size(213, 320);
+			this.moduleListEffect.TabIndex = 0;
+			// 
+			// tabPageMediaModule
+			// 
+			this.tabPageMediaModule.Controls.Add(this.label3);
+			this.tabPageMediaModule.Controls.Add(this.groupBoxMediaExecution);
+			this.tabPageMediaModule.Controls.Add(this.buttonLoadMediaFile);
+			this.tabPageMediaModule.Controls.Add(this.buttonSetupMedia);
+			this.tabPageMediaModule.Controls.Add(this.moduleListMedia);
+			this.tabPageMediaModule.Location = new System.Drawing.Point(4, 22);
+			this.tabPageMediaModule.Name = "tabPageMediaModule";
+			this.tabPageMediaModule.Size = new System.Drawing.Size(650, 320);
+			this.tabPageMediaModule.TabIndex = 5;
+			this.tabPageMediaModule.Text = "Media Module";
+			this.tabPageMediaModule.UseVisualStyleBackColor = true;
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(286, 13);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(346, 13);
+			this.label3.TabIndex = 13;
+			this.label3.Text = "FMOD module needs reworking, shouldn\'t need setup data to work as-is";
+			// 
+			// groupBoxMediaExecution
+			// 
+			this.groupBoxMediaExecution.Controls.Add(this.buttonStopMedia);
+			this.groupBoxMediaExecution.Controls.Add(this.buttonResumeMedia);
+			this.groupBoxMediaExecution.Controls.Add(this.buttonPauseMedia);
+			this.groupBoxMediaExecution.Controls.Add(this.buttonPlayMedia);
+			this.groupBoxMediaExecution.Enabled = false;
+			this.groupBoxMediaExecution.Location = new System.Drawing.Point(256, 112);
+			this.groupBoxMediaExecution.Name = "groupBoxMediaExecution";
+			this.groupBoxMediaExecution.Size = new System.Drawing.Size(292, 45);
+			this.groupBoxMediaExecution.TabIndex = 12;
+			this.groupBoxMediaExecution.TabStop = false;
+			// 
+			// buttonStopMedia
+			// 
+			this.buttonStopMedia.Location = new System.Drawing.Point(220, 13);
+			this.buttonStopMedia.Name = "buttonStopMedia";
+			this.buttonStopMedia.Size = new System.Drawing.Size(55, 23);
+			this.buttonStopMedia.TabIndex = 11;
+			this.buttonStopMedia.Text = "Stop";
+			this.buttonStopMedia.UseVisualStyleBackColor = true;
+			this.buttonStopMedia.Click += new System.EventHandler(this.buttonStopMedia_Click);
+			// 
+			// buttonResumeMedia
+			// 
+			this.buttonResumeMedia.Location = new System.Drawing.Point(149, 13);
+			this.buttonResumeMedia.Name = "buttonResumeMedia";
+			this.buttonResumeMedia.Size = new System.Drawing.Size(55, 23);
+			this.buttonResumeMedia.TabIndex = 10;
+			this.buttonResumeMedia.Text = "Resume";
+			this.buttonResumeMedia.UseVisualStyleBackColor = true;
+			this.buttonResumeMedia.Click += new System.EventHandler(this.buttonResumeMedia_Click);
+			// 
+			// buttonPauseMedia
+			// 
+			this.buttonPauseMedia.Location = new System.Drawing.Point(88, 13);
+			this.buttonPauseMedia.Name = "buttonPauseMedia";
+			this.buttonPauseMedia.Size = new System.Drawing.Size(55, 23);
+			this.buttonPauseMedia.TabIndex = 9;
+			this.buttonPauseMedia.Text = "Pause";
+			this.buttonPauseMedia.UseVisualStyleBackColor = true;
+			this.buttonPauseMedia.Click += new System.EventHandler(this.buttonPauseMedia_Click);
+			// 
+			// buttonPlayMedia
+			// 
+			this.buttonPlayMedia.Location = new System.Drawing.Point(16, 13);
+			this.buttonPlayMedia.Name = "buttonPlayMedia";
+			this.buttonPlayMedia.Size = new System.Drawing.Size(55, 23);
+			this.buttonPlayMedia.TabIndex = 8;
+			this.buttonPlayMedia.Text = "Play";
+			this.buttonPlayMedia.UseVisualStyleBackColor = true;
+			this.buttonPlayMedia.Click += new System.EventHandler(this.buttonPlayMedia_Click);
+			// 
+			// buttonLoadMediaFile
+			// 
+			this.buttonLoadMediaFile.Location = new System.Drawing.Point(256, 83);
+			this.buttonLoadMediaFile.Name = "buttonLoadMediaFile";
+			this.buttonLoadMediaFile.Size = new System.Drawing.Size(127, 23);
+			this.buttonLoadMediaFile.TabIndex = 7;
+			this.buttonLoadMediaFile.Text = "Load Media File";
+			this.buttonLoadMediaFile.UseVisualStyleBackColor = true;
+			this.buttonLoadMediaFile.Click += new System.EventHandler(this.buttonLoadMediaFile_Click);
+			// 
+			// buttonSetupMedia
+			// 
+			this.buttonSetupMedia.Enabled = false;
+			this.buttonSetupMedia.Location = new System.Drawing.Point(256, 29);
+			this.buttonSetupMedia.Name = "buttonSetupMedia";
+			this.buttonSetupMedia.Size = new System.Drawing.Size(75, 23);
+			this.buttonSetupMedia.TabIndex = 6;
+			this.buttonSetupMedia.Text = "Setup";
+			this.buttonSetupMedia.UseVisualStyleBackColor = true;
+			this.buttonSetupMedia.Click += new System.EventHandler(this.buttonSetupMedia_Click);
+			// 
+			// moduleListMedia
+			// 
+			this.moduleListMedia.Dock = System.Windows.Forms.DockStyle.Left;
+			this.moduleListMedia.Location = new System.Drawing.Point(0, 0);
+			this.moduleListMedia.Name = "moduleListMedia";
+			this.moduleListMedia.Size = new System.Drawing.Size(213, 320);
+			this.moduleListMedia.TabIndex = 0;
+			this.moduleListMedia.SelectedModuleChanged += new System.EventHandler(this.moduleListMedia_SelectedModuleChanged);
+			// 
+			// tabPageTimingModule
+			// 
+			this.tabPageTimingModule.Controls.Add(this.labelTimingCurrentPosition);
+			this.tabPageTimingModule.Controls.Add(this.label4);
+			this.tabPageTimingModule.Controls.Add(this.groupBoxTimingExecution);
+			this.tabPageTimingModule.Controls.Add(this.moduleListTiming);
+			this.tabPageTimingModule.Location = new System.Drawing.Point(4, 22);
+			this.tabPageTimingModule.Name = "tabPageTimingModule";
+			this.tabPageTimingModule.Size = new System.Drawing.Size(650, 320);
+			this.tabPageTimingModule.TabIndex = 8;
+			this.tabPageTimingModule.Text = "Timing Module";
+			this.tabPageTimingModule.UseVisualStyleBackColor = true;
+			// 
+			// labelTimingCurrentPosition
+			// 
+			this.labelTimingCurrentPosition.AutoSize = true;
+			this.labelTimingCurrentPosition.Location = new System.Drawing.Point(349, 101);
+			this.labelTimingCurrentPosition.Name = "labelTimingCurrentPosition";
+			this.labelTimingCurrentPosition.Size = new System.Drawing.Size(70, 13);
+			this.labelTimingCurrentPosition.TabIndex = 16;
+			this.labelTimingCurrentPosition.Text = "00:00:00.000";
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(260, 101);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(83, 13);
+			this.label4.TabIndex = 15;
+			this.label4.Text = "Current position:";
+			// 
+			// groupBoxTimingExecution
+			// 
+			this.groupBoxTimingExecution.Controls.Add(this.buttonStopTiming);
+			this.groupBoxTimingExecution.Controls.Add(this.buttonResumeTiming);
+			this.groupBoxTimingExecution.Controls.Add(this.buttonPauseTiming);
+			this.groupBoxTimingExecution.Controls.Add(this.buttonPlayTiming);
+			this.groupBoxTimingExecution.Enabled = false;
+			this.groupBoxTimingExecution.Location = new System.Drawing.Point(256, 29);
+			this.groupBoxTimingExecution.Name = "groupBoxTimingExecution";
+			this.groupBoxTimingExecution.Size = new System.Drawing.Size(292, 45);
+			this.groupBoxTimingExecution.TabIndex = 14;
+			this.groupBoxTimingExecution.TabStop = false;
+			// 
+			// buttonStopTiming
+			// 
+			this.buttonStopTiming.Location = new System.Drawing.Point(220, 13);
+			this.buttonStopTiming.Name = "buttonStopTiming";
+			this.buttonStopTiming.Size = new System.Drawing.Size(55, 23);
+			this.buttonStopTiming.TabIndex = 11;
+			this.buttonStopTiming.Text = "Stop";
+			this.buttonStopTiming.UseVisualStyleBackColor = true;
+			this.buttonStopTiming.Click += new System.EventHandler(this.buttonStopTiming_Click);
+			// 
+			// buttonResumeTiming
+			// 
+			this.buttonResumeTiming.Location = new System.Drawing.Point(149, 13);
+			this.buttonResumeTiming.Name = "buttonResumeTiming";
+			this.buttonResumeTiming.Size = new System.Drawing.Size(55, 23);
+			this.buttonResumeTiming.TabIndex = 10;
+			this.buttonResumeTiming.Text = "Resume";
+			this.buttonResumeTiming.UseVisualStyleBackColor = true;
+			this.buttonResumeTiming.Click += new System.EventHandler(this.buttonResumeTiming_Click);
+			// 
+			// buttonPauseTiming
+			// 
+			this.buttonPauseTiming.Location = new System.Drawing.Point(88, 13);
+			this.buttonPauseTiming.Name = "buttonPauseTiming";
+			this.buttonPauseTiming.Size = new System.Drawing.Size(55, 23);
+			this.buttonPauseTiming.TabIndex = 9;
+			this.buttonPauseTiming.Text = "Pause";
+			this.buttonPauseTiming.UseVisualStyleBackColor = true;
+			this.buttonPauseTiming.Click += new System.EventHandler(this.buttonPauseTiming_Click);
+			// 
+			// buttonPlayTiming
+			// 
+			this.buttonPlayTiming.Location = new System.Drawing.Point(16, 13);
+			this.buttonPlayTiming.Name = "buttonPlayTiming";
+			this.buttonPlayTiming.Size = new System.Drawing.Size(55, 23);
+			this.buttonPlayTiming.TabIndex = 8;
+			this.buttonPlayTiming.Text = "Play";
+			this.buttonPlayTiming.UseVisualStyleBackColor = true;
+			this.buttonPlayTiming.Click += new System.EventHandler(this.buttonPlayTiming_Click);
+			// 
+			// moduleListTiming
+			// 
+			this.moduleListTiming.Dock = System.Windows.Forms.DockStyle.Left;
+			this.moduleListTiming.Location = new System.Drawing.Point(0, 0);
+			this.moduleListTiming.Name = "moduleListTiming";
+			this.moduleListTiming.Size = new System.Drawing.Size(213, 320);
+			this.moduleListTiming.TabIndex = 0;
+			this.moduleListTiming.SelectedModuleChanged += new System.EventHandler(this.moduleListTiming_SelectedModuleChanged);
+			// 
+			// menuStrip
+			// 
+			this.menuStrip.Location = new System.Drawing.Point(0, 0);
+			this.menuStrip.Name = "menuStrip";
+			this.menuStrip.Size = new System.Drawing.Size(658, 24);
+			this.menuStrip.TabIndex = 1;
+			// 
+			// openFileDialog
+			// 
+			this.openFileDialog.SupportMultiDottedExtensions = true;
+			// 
+			// timingTimer
+			// 
+			this.timingTimer.Interval = 200;
+			this.timingTimer.Tick += new System.EventHandler(this.timingTimer_Tick);
 			// 
 			// Form1
 			// 
@@ -334,11 +487,13 @@
 			this.tabPageEditorModule.ResumeLayout(false);
 			this.tabPageEditorModule.PerformLayout();
 			this.tabPageEffectModule.ResumeLayout(false);
-			this.tabPageEffectEditorModule.ResumeLayout(false);
+			this.tabPageEffectModule.PerformLayout();
 			this.tabPageMediaModule.ResumeLayout(false);
-			this.tabPageOutputModule.ResumeLayout(false);
-			this.tabPagePropertyModule.ResumeLayout(false);
+			this.tabPageMediaModule.PerformLayout();
+			this.groupBoxMediaExecution.ResumeLayout(false);
 			this.tabPageTimingModule.ResumeLayout(false);
+			this.tabPageTimingModule.PerformLayout();
+			this.groupBoxTimingExecution.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -355,22 +510,35 @@
 		private System.Windows.Forms.TabPage tabPageAppModule;
 		private System.Windows.Forms.TabPage tabPageEditorModule;
 		private System.Windows.Forms.TabPage tabPageEffectModule;
-		private System.Windows.Forms.TabPage tabPageEffectEditorModule;
 		private System.Windows.Forms.TabPage tabPageMediaModule;
-		private System.Windows.Forms.TabPage tabPageOutputModule;
-		private System.Windows.Forms.TabPage tabPagePropertyModule;
 		private System.Windows.Forms.TabPage tabPageTimingModule;
 		private ModuleList moduleListApp;
 		private ModuleList moduleListEditor;
 		private ModuleList moduleListEffect;
-		private ModuleList moduleListEffectEditor;
 		private ModuleList moduleListMedia;
-		private ModuleList moduleListOutput;
-		private ModuleList moduleListProperty;
 		private ModuleList moduleListTiming;
 		private System.Windows.Forms.MenuStrip menuStrip;
-		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Button buttonLoadSequence;
+		private System.Windows.Forms.OpenFileDialog openFileDialog;
+		private System.Windows.Forms.Button buttonShowEditor;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Button buttonStopMedia;
+		private System.Windows.Forms.Button buttonResumeMedia;
+		private System.Windows.Forms.Button buttonPauseMedia;
+		private System.Windows.Forms.Button buttonPlayMedia;
+		private System.Windows.Forms.Button buttonLoadMediaFile;
+		private System.Windows.Forms.Button buttonSetupMedia;
+		private System.Windows.Forms.GroupBox groupBoxMediaExecution;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.GroupBox groupBoxTimingExecution;
+		private System.Windows.Forms.Button buttonStopTiming;
+		private System.Windows.Forms.Button buttonResumeTiming;
+		private System.Windows.Forms.Button buttonPauseTiming;
+		private System.Windows.Forms.Button buttonPlayTiming;
+		private System.Windows.Forms.Label labelTimingCurrentPosition;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Timer timingTimer;
 	}
 }
 

@@ -35,7 +35,7 @@ namespace Vixen.Sys {
 		}
 
 		/// <summary>
-		/// the generic default directory for all sequence types.
+		/// The generic default directory for all sequence types.
 		/// </summary>
 		static public string DefaultDirectory { get { return _directory; } }
 

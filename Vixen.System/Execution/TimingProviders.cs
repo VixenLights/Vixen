@@ -57,7 +57,7 @@ namespace Vixen.Execution {
 						return;
 					}
 				}
-				throw new InvalidOperationException("Source does not exist.");
+				throw new InvalidOperationException("Timing source does not exist.");
 			}
 		}
 
