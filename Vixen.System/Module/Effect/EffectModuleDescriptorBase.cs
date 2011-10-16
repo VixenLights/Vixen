@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Drawing;
 using Vixen.Commands;
 
 namespace Vixen.Module.Effect {
@@ -28,9 +29,20 @@ namespace Vixen.Module.Effect {
 		virtual public CommandParameterSignature Parameters { get; set; }
 
 		/// <summary>
-		/// Which of the effect module's dependencies are properties.
+		/// Properties that the effect can utilize, but isn't dependent upon.
 		/// </summary>
 		virtual public Guid[] PropertyDependencies { get; set; }
+
+		virtual public Image GetRepresentativeImage(int desiredWidth, int desiredHeight) {
+			int maxDimension = Math.Max(desiredWidth, desiredHeight);
+			if(maxDimension <= 16) {
+				return ImageResource.Effect16;
+			} else if(maxDimension <= 48) {
+				return ImageResource.Effect48;
+			} else {
+				return ImageResource.Effect64;
+			}
+		}
 
 		public bool Equals(IEffectModuleDescriptor x, IEffectModuleDescriptor y) {
 			return base.Equals(x, y);

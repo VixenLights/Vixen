@@ -116,6 +116,11 @@
     <Compile Include="Commands\Lighting.cs" />
     <Compile Include="Commands\Types.cs" />
     <Compile Include="Execution\MultiStateTimedEnumerator.cs" />
+    <Compile Include="ImageResource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ImageResource.resx</DependentUpon>
+    </Compile>
     <Compile Include="IO\Xml\XmlContextReader.cs" />
     <Compile Include="IO\Xml\XmlContextWriter.cs" />
     <Compile Include="IO\Xml\XmlModuleStoreReader.cs" />
@@ -465,7 +470,21 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="ImageResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ImageResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Effect48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Effect16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Effect64.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

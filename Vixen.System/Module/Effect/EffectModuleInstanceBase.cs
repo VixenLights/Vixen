@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Drawing;
 using Vixen.Sys;
 using Vixen.Commands;
 
@@ -78,6 +79,11 @@ namespace Vixen.Module.Effect {
 
 		public Guid[] PropertyDependencies {
 			get { return (Descriptor as EffectModuleDescriptorBase).PropertyDependencies; }
+		}
+
+		public virtual void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle) {
+			g.Clear(Color.White);
+			g.DrawRectangle(Pens.Black, clipRectangle.X, clipRectangle.Y, clipRectangle.Width - 1, clipRectangle.Height - 1);
 		}
 
 		public override string ToString() {

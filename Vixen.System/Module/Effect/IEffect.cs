@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Drawing;
 using Vixen.Sys;
 using Vixen.Commands;
 
@@ -34,5 +35,6 @@ namespace Vixen.Module.Effect {
 		ChannelData Render(TimeSpan restrictingOffsetTime, TimeSpan restrictingTimeSpan);
 		string EffectName { get; }
 		CommandParameterSignature Parameters { get; }
-    }
+		void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle);
+	}
 }

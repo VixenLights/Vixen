@@ -37,6 +37,7 @@
 			this.buttonLoadSequence = new System.Windows.Forms.Button();
 			this.moduleListEditor = new VixenTestbed.ModuleList();
 			this.tabPageEffectModule = new System.Windows.Forms.TabPage();
+			this.pictureBoxEffectImage = new System.Windows.Forms.PictureBox();
 			this.numericUpDownEffectRenderTimeSpan = new System.Windows.Forms.NumericUpDown();
 			this.label5 = new System.Windows.Forms.Label();
 			this.buttonRenderEffect = new System.Windows.Forms.Button();
@@ -72,6 +73,7 @@
 			this.tabPageAppModule.SuspendLayout();
 			this.tabPageEditorModule.SuspendLayout();
 			this.tabPageEffectModule.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBoxEffectImage)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownEffectRenderTimeSpan)).BeginInit();
 			this.tabPageMediaModule.SuspendLayout();
 			this.groupBoxMediaExecution.SuspendLayout();
@@ -219,6 +221,7 @@
 			// 
 			// tabPageEffectModule
 			// 
+			this.tabPageEffectModule.Controls.Add(this.pictureBoxEffectImage);
 			this.tabPageEffectModule.Controls.Add(this.numericUpDownEffectRenderTimeSpan);
 			this.tabPageEffectModule.Controls.Add(this.label5);
 			this.tabPageEffectModule.Controls.Add(this.buttonRenderEffect);
@@ -231,6 +234,14 @@
 			this.tabPageEffectModule.TabIndex = 3;
 			this.tabPageEffectModule.Text = "Effect Module";
 			this.tabPageEffectModule.UseVisualStyleBackColor = true;
+			// 
+			// pictureBoxEffectImage
+			// 
+			this.pictureBoxEffectImage.Location = new System.Drawing.Point(442, 65);
+			this.pictureBoxEffectImage.Name = "pictureBoxEffectImage";
+			this.pictureBoxEffectImage.Size = new System.Drawing.Size(48, 48);
+			this.pictureBoxEffectImage.TabIndex = 7;
+			this.pictureBoxEffectImage.TabStop = false;
 			// 
 			// numericUpDownEffectRenderTimeSpan
 			// 
@@ -544,6 +555,7 @@
 			this.tabPageEditorModule.ResumeLayout(false);
 			this.tabPageEffectModule.ResumeLayout(false);
 			this.tabPageEffectModule.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBoxEffectImage)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownEffectRenderTimeSpan)).EndInit();
 			this.tabPageMediaModule.ResumeLayout(false);
 			this.tabPageMediaModule.PerformLayout();
@@ -600,6 +612,7 @@
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Label labelLoadedMedia;
 		private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+		private System.Windows.Forms.PictureBox pictureBoxEffectImage;
 	}
 }
 

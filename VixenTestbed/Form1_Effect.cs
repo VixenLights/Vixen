@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Drawing;
 using Vixen.Sys;
 using Vixen.Module.Effect;
 
@@ -18,6 +19,12 @@ namespace VixenTestbed {
 
 		private void moduleListEffect_SelectedModuleChanged(object sender, EventArgs e) {
 			buttonRenderEffect.Enabled = _ValidateEffectControls();
+			if(_SelectedEffectModule != null) {
+				using(Graphics g = pictureBoxEffectImage.CreateGraphics()) {
+					IEffectModuleDescriptor descriptor = _SelectedEffectModule.Descriptor as IEffectModuleDescriptor;
+					pictureBoxEffectImage.Image = descriptor.GetRepresentativeImage(pictureBoxEffectImage.Width, pictureBoxEffectImage.Height);
+				}
+			}
 		}
 
 		private void checkedListBoxEffectTargetNodes_ItemCheck(object sender, ItemCheckEventArgs e) {
