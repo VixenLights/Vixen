@@ -17,8 +17,12 @@ namespace VixenTestbed {
 		}
 
 		private void ChannelsForm_Load(object sender, EventArgs e) {
-			_LoadChannels();
-			_LoadNodes();
+			try {
+				_LoadChannels();
+				_LoadNodes();
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
+			}
 		}
 
 		private Channel _SelectedChannel {
@@ -71,26 +75,37 @@ namespace VixenTestbed {
 		}
 
 		private void buttonAddChannel_Click(object sender, EventArgs e) {
-			using(CommonElements.TextDialog textDialog = new CommonElements.TextDialog("New channel name")) {
-				if(textDialog.ShowDialog() == DialogResult.OK) {
-					Channel channel = Vixen.Sys.Execution.AddChannel(textDialog.Response);
-					Vixen.Sys.Execution.Nodes.AddChannelLeaf(channel);
+			try {
+				using(CommonElements.TextDialog textDialog = new CommonElements.TextDialog("New channel name")) {
+					if(textDialog.ShowDialog() == DialogResult.OK) {
+						Channel channel = Vixen.Sys.Execution.AddChannel(textDialog.Response);
+						Vixen.Sys.Execution.Nodes.AddChannelLeaf(channel);
+					}
 				}
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
 			}
 		}
 
 		private void buttonRemoveChannel_Click(object sender, EventArgs e) {
-			Channel channel = _SelectedChannel;
-			if(channel != null) {
-				Vixen.Sys.Execution.RemoveChannel(channel);
-				//Vixen.Sys.Execution.Nodes.RemoveChannelLeaf(node.Channel);
+			try {
+				Channel channel = _SelectedChannel;
+				if(channel != null) {
+					Vixen.Sys.Execution.RemoveChannel(channel);
+				}
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
 			}
 		}
 
 		private void buttonProperties_Click(object sender, EventArgs e) {
-			ChannelNode channelNode = _SelectedNode;
-			using(NodePropertiesDialog nodePropertiesDialog = new NodePropertiesDialog(channelNode)) {
-				nodePropertiesDialog.ShowDialog();
+			try {
+				ChannelNode channelNode = _SelectedNode;
+				using(NodePropertiesDialog nodePropertiesDialog = new NodePropertiesDialog(channelNode)) {
+					nodePropertiesDialog.ShowDialog();
+				}
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
 			}
 		}
 
@@ -99,29 +114,37 @@ namespace VixenTestbed {
 		}
 
 		private void treeViewNodes_DragDrop(object sender, DragEventArgs e) {
-			_dragCapture = false;
+			try {
+				_dragCapture = false;
 
-			ChannelNode draggingNode = e.Data.GetData(typeof(ChannelNode)) as ChannelNode;
-			TreeNode treeNode = treeViewNodes.GetNodeAt(treeViewNodes.PointToClient(new Point(e.X, e.Y)));
-			ChannelNode targetNode = treeNode.Tag as ChannelNode;
+				ChannelNode draggingNode = e.Data.GetData(typeof(ChannelNode)) as ChannelNode;
+				TreeNode treeNode = treeViewNodes.GetNodeAt(treeViewNodes.PointToClient(new Point(e.X, e.Y)));
+				ChannelNode targetNode = treeNode.Tag as ChannelNode;
 
-			if(e.Effect == DragDropEffects.Copy) {
-				Vixen.Sys.Execution.Nodes.CopyNode(draggingNode, targetNode);
-			} else if(e.AllowedEffect == DragDropEffects.Move) {
-				//Vixen.Sys.Execution.Nodes.MoveNode(draggingNode, targetNode);
+				if(e.Effect == DragDropEffects.Copy) {
+					Vixen.Sys.Execution.Nodes.CopyNode(draggingNode, targetNode);
+				} else if(e.AllowedEffect == DragDropEffects.Move) {
+					//Vixen.Sys.Execution.Nodes.MoveNode(draggingNode, targetNode);
+				}
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
 			}
 		}
 
 		private void treeViewNodes_DragOver(object sender, DragEventArgs e) {
-			// If the source is a leaf, copy it
-			// If the source is not a leaf, move it
-			ChannelNode draggingNode = e.Data.GetData(typeof(ChannelNode)) as ChannelNode;
-			TreeNode treeNode = treeViewNodes.GetNodeAt(treeViewNodes.PointToClient(new Point(e.X, e.Y)));
-			if(draggingNode != null && treeNode != null) {
-				// Copy a leaf, move a branch.
-				e.Effect = (draggingNode.IsLeaf || ((e.KeyState & 4) != 0)) ? DragDropEffects.Copy : DragDropEffects.Move;
-			} else {
-				e.Effect = DragDropEffects.None;
+			try {
+				// If the source is a leaf, copy it
+				// If the source is not a leaf, move it
+				ChannelNode draggingNode = e.Data.GetData(typeof(ChannelNode)) as ChannelNode;
+				TreeNode treeNode = treeViewNodes.GetNodeAt(treeViewNodes.PointToClient(new Point(e.X, e.Y)));
+				if(draggingNode != null && treeNode != null) {
+					// Copy a leaf, move a branch.
+					e.Effect = (draggingNode.IsLeaf || ((e.KeyState & 4) != 0)) ? DragDropEffects.Copy : DragDropEffects.Move;
+				} else {
+					e.Effect = DragDropEffects.None;
+				}
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
 			}
 		}
 

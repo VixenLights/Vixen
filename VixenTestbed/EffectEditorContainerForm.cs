@@ -36,9 +36,9 @@ namespace VixenTestbed {
 				tableLayoutPanel.RowCount = _controls.Length;
 				for(int i = 0; i < _controls.Length; i++) {
 					Control control = _controls[i] as Control;
-					control.Anchor = AnchorStyles.Left;
+					control.Anchor = AnchorStyles.Right;
 					Label label = new Label { Text = _effectModule.Parameters[i].Name };
-					label.Anchor = AnchorStyles.Right;
+					label.Anchor = AnchorStyles.Left;
 					tableLayoutPanel.Controls.Add(label, 0, i);
 					tableLayoutPanel.Controls.Add(control, 1, i);
 				}

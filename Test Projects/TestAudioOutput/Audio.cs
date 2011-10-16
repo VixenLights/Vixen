@@ -11,8 +11,8 @@ namespace TestAudioOutput {
     // Single-card implementation
     public class Audio : MediaModuleInstanceBase, ITiming {
         private FmodInstance _audioSystem;
-		private AudioData _audioData;
-		private AudioStaticData _audioStaticData;
+		//private AudioData _audioData;
+		//private AudioStaticData _audioStaticData;
 
         override public void Start() {
             if(_audioSystem != null && !_audioSystem.IsPlaying) {
@@ -22,7 +22,8 @@ namespace TestAudioOutput {
 
 		override public void Stop() {
             if(_audioSystem != null && _audioSystem.IsPlaying) {
-				_DisposeAudio();
+				//_DisposeAudio();
+				_audioSystem.Stop();
             }
         }
 
@@ -38,26 +39,26 @@ namespace TestAudioOutput {
 			}
 		}
 
-		override public IModuleDataModel ModuleData {
-			get { return _audioData; }
-			set { _audioData = value as AudioData; }
-        }
+		//override public IModuleDataModel ModuleData {
+		//    get { return _audioData; }
+		//    set { _audioData = value as AudioData; }
+		//}
 
-		public override IModuleDataModel StaticModuleData {
-			get { return _audioStaticData; }
-			set { 
-				_audioStaticData = value as AudioStaticData;
-				if(_audioStaticData.SomethingSpecial == 0) {
-					_audioStaticData.SomethingSpecial = 1;
-				}
-			}
-		}
+		//public override IModuleDataModel StaticModuleData {
+		//    get { return _audioStaticData; }
+		//    set { 
+		//        _audioStaticData = value as AudioStaticData;
+		//        if(_audioStaticData.SomethingSpecial == 0) {
+		//            _audioStaticData.SomethingSpecial = 1;
+		//        }
+		//    }
+		//}
 
 		override public void Setup() {
-			using(AudioSetup audioSetup = new AudioSetup(_audioData)) {
-                audioSetup.ShowDialog();
-            }
-        }
+			//using(AudioSetup audioSetup = new AudioSetup(_audioData)) {
+			//    audioSetup.ShowDialog();
+			//}
+		}
 
 		override public void Dispose() {
 			_DisposeAudio();
@@ -75,10 +76,11 @@ namespace TestAudioOutput {
 			get { return this as ITiming; }
 		}
 
-		override public string MediaFilePath {
-			get { return _audioData.FilePath; }
-			set { _audioData.FilePath = value; }
-		}
+		override public string MediaFilePath { get; set; }
+		//override public string MediaFilePath {
+		//    get { return _audioData.FilePath; }
+		//    set { _audioData.FilePath = value; }
+		//}
 
 		// If a media file is used as the timing source, it's also being
 		// executed as media for the sequence.

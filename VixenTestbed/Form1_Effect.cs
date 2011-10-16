@@ -31,22 +31,26 @@ namespace VixenTestbed {
 		}
 
 		private void buttonRenderEffect_Click(object sender, EventArgs e) {
-			using(EffectEditorContainerForm editorContainerForm = new EffectEditorContainerForm(_SelectedEffectModule)) {
-				if(editorContainerForm.ShowDialog() == DialogResult.OK) {
-					IEffectModuleInstance effect = ApplicationServices.Get<IEffectModuleInstance>(_SelectedEffectModule.Descriptor.TypeId);
-					TimeSpan timeSpan = TimeSpan.FromMilliseconds((double)numericUpDownEffectRenderTimeSpan.Value);
+			try {
+				using(EffectEditorContainerForm editorContainerForm = new EffectEditorContainerForm(_SelectedEffectModule)) {
+					if(editorContainerForm.ShowDialog() == DialogResult.OK) {
+						IEffectModuleInstance effect = ApplicationServices.Get<IEffectModuleInstance>(_SelectedEffectModule.Descriptor.TypeId);
+						TimeSpan timeSpan = TimeSpan.FromMilliseconds((double)numericUpDownEffectRenderTimeSpan.Value);
 
-					effect.TargetNodes = _SelectedEffectTargetNodes.ToArray();
-					effect.TimeSpan = timeSpan;
-					effect.ParameterValues = editorContainerForm.GetValues();
+						effect.TargetNodes = _SelectedEffectTargetNodes.ToArray();
+						effect.TimeSpan = timeSpan;
+						effect.ParameterValues = editorContainerForm.GetValues();
 
-					try {
-						EffectNode commandNode = new EffectNode(effect, TimeSpan.Zero);
-						Vixen.Sys.Execution.Write(new[] { commandNode });
-					} catch(Exception ex) {
-						MessageBox.Show(ex.Message);
+						try {
+							EffectNode commandNode = new EffectNode(effect, TimeSpan.Zero);
+							Vixen.Sys.Execution.Write(new[] { commandNode });
+						} catch(Exception ex) {
+							MessageBox.Show(ex.Message);
+						}
 					}
 				}
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
 			}
 		}
 	}

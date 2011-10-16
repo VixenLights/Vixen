@@ -62,6 +62,5 @@ namespace VixenTestbed {
 		private void _ItemLogged(object sender, LogEventArgs e) {
 			MessageBox.Show(e.Text, e.LogName);
 		}
-
 	}
 }

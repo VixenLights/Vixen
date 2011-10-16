@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 using Vixen.Module.Media;
 
 namespace VixenTestbed {
@@ -11,27 +12,58 @@ namespace VixenTestbed {
 		}
 
 		private void buttonSetupMedia_Click(object sender, EventArgs e) {
-			_SelectedMediaModule.Setup();
+			try {
+				_SelectedMediaModule.Setup();
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
+			}
 		}
 
 		private void buttonLoadMediaFile_Click(object sender, EventArgs e) {
-			_SelectedMediaModule.LoadMedia(TimeSpan.Zero);
+			try {
+				IMediaModuleDescriptor descriptor = _SelectedMediaModule.Descriptor as IMediaModuleDescriptor;
+				openFileDialog.Filter = descriptor.TypeName + " files |" + string.Join(";", descriptor.FileExtensions.Select(x => "*" + x).ToArray());
+				if(openFileDialog.ShowDialog() == DialogResult.OK) {
+					_SelectedMediaModule.MediaFilePath = openFileDialog.FileName;
+					_SelectedMediaModule.LoadMedia(TimeSpan.Zero);
+				}
+				string mediaFilePath = _SelectedMediaModule.MediaFilePath;
+				labelLoadedMedia.Text = string.IsNullOrWhiteSpace(mediaFilePath) ? "Nothing loaded" : System.IO.Path.GetFileName(mediaFilePath);
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
+			}
 		}
 
 		private void buttonPlayMedia_Click(object sender, EventArgs e) {
-			_SelectedMediaModule.Start();
+			try {
+				_SelectedMediaModule.Start();
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
+			}
 		}
 
 		private void buttonPauseMedia_Click(object sender, EventArgs e) {
-			_SelectedMediaModule.Pause();
+			try {
+				_SelectedMediaModule.Pause();
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
+			}
 		}
 
 		private void buttonResumeMedia_Click(object sender, EventArgs e) {
-			_SelectedMediaModule.Resume();
+			try {
+				_SelectedMediaModule.Resume();
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
+			}
 		}
 
 		private void buttonStopMedia_Click(object sender, EventArgs e) {
-			_SelectedMediaModule.Stop();
+			try {
+				_SelectedMediaModule.Stop();
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
+			}
 		}
 
 		private void moduleListMedia_SelectedModuleChanged(object sender, EventArgs e) {

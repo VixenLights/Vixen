@@ -15,7 +15,6 @@ using Vixen.IO.Xml;
 
 namespace Vixen.Sys {
     public class VixenSystem {
-		//private const string USER_DATA_FILE = "UserData.xml";
 		private const string ELEMENT_DATA_DIRECTORY = "DataDirectory";
 		private const string ATTRIBUTE_IS_CONTEXT = "isContext";
 
@@ -30,9 +29,6 @@ namespace Vixen.Sys {
 					_state = RunState.Starting;
 					ApplicationServices.ClientApplication = clientApplication;
 
-					// The user data file generally resides in the data branch, but it
-					// may not be in the case of an alternate context.
-					string userDataFilePath = _GetUserDataFilePath();
 					// A user data file in the binary branch will give any alternate
 					// data branch to use.
 					Paths.DataRootPath = _GetUserDataPath();
@@ -50,10 +46,13 @@ namespace Vixen.Sys {
 					Modules.LoadAllModules();
 
 					// Load system data.
+					// The system data generally resides in the data branch, but it
+					// may not be in the case of an alternate context.
+					string systemDataPath = _GetSystemDataPath();
 					IReader reader = new XmlModuleStoreReader();
-					ModuleStore = (ModuleStore)reader.Read(ModuleStore.DefaultFilePath);
+					ModuleStore = (ModuleStore)reader.Read(Path.Combine(systemDataPath, ModuleStore.FileName));
 					reader = new XmlSystemConfigReader();
-					SystemConfig = (SystemConfig)reader.Read(userDataFilePath);
+					SystemConfig = (SystemConfig)reader.Read(Path.Combine(systemDataPath, SystemConfig.FileName));
 
 					// Add modules to repositories.
 					Modules.PopulateRepositories();
@@ -121,7 +120,7 @@ namespace Vixen.Sys {
 			_logging.AddLog(new DebugLog());
 		}
 
-		static private string _GetUserDataFilePath() {
+		static private string _GetSystemDataPath() {
 			// Look for a user data file in the binary directory.
 			string filePath = Path.Combine(Paths.BinaryRootPath, SystemConfig.FileName);
 			XElement element = Helper.LoadXml(filePath);
@@ -130,12 +129,12 @@ namespace Vixen.Sys {
 				if(element.Attribute(ATTRIBUTE_IS_CONTEXT) != null) {
 					// We're going to use the context's user data file and not the
 					// one in the data branch.
-					return filePath;
+					return Path.GetDirectoryName(filePath);
 				}
 			}
 
 			// Use the default path in the data branch.
-			return SystemConfig.DefaultFilePath;
+			return SystemConfig.Directory;
 		}
 
 		static private string _GetUserDataPath() {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 using Vixen.Module.Timing;
 
 namespace VixenTestbed {
@@ -17,30 +18,46 @@ namespace VixenTestbed {
 		}
 
 		private void buttonPlayTiming_Click(object sender, EventArgs e) {
-			if(_timingModule == null) {
-				_timingModule = _SelectedTimingModule;
-				_timingModule.Start();
-				timingTimer.Enabled = true;
+			try {
+				if(_timingModule == null) {
+					_timingModule = _SelectedTimingModule;
+					_timingModule.Start();
+					timingTimer.Enabled = true;
+				}
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
 			}
 		}
 
 		private void buttonPauseTiming_Click(object sender, EventArgs e) {
-			if(_timingModule != null) {
-				_timingModule.Pause();
+			try {
+				if(_timingModule != null) {
+					_timingModule.Pause();
+				}
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
 			}
 		}
 
 		private void buttonResumeTiming_Click(object sender, EventArgs e) {
-			if(_timingModule != null) {
-				_timingModule.Resume();
+			try {
+				if(_timingModule != null) {
+					_timingModule.Resume();
+				}
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
 			}
 		}
 
 		private void buttonStopTiming_Click(object sender, EventArgs e) {
-			if(_timingModule != null) {
-				timingTimer.Enabled = false;
-				_timingModule.Stop();
-				_timingModule = null;
+			try {
+				if(_timingModule != null) {
+					timingTimer.Enabled = false;
+					_timingModule.Stop();
+					_timingModule = null;
+				}
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
 			}
 		}
 

@@ -200,15 +200,19 @@ namespace Vixen.Module {
                         // Create the serializer for the module type's data model type.
 						//serializer = new DataContractSerializer(descriptor.ModuleDataClass);
 						Type dataSetType = _GetDataSetType(descriptor);
-						serializer = new DataContractSerializer(dataSetType);
-                        dataModel = null;
-                        using(MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(moduleElement.FirstNode.ToString()))) {
-							dataModel = serializer.ReadObject(stream) as IModuleDataModel;
-                        }
-						
-						_SetPedigree(dataModel, moduleTypeId, moduleInstanceId);
+						// If the module previously had a data object but no longer does,
+						// dataSetType may be null.
+						if(dataSetType != null) {
+							serializer = new DataContractSerializer(dataSetType);
+							dataModel = null;
+							using(MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(moduleElement.FirstNode.ToString()))) {
+								dataModel = serializer.ReadObject(stream) as IModuleDataModel;
+							}
 
-						_Add(this, moduleTypeId, moduleInstanceId, dataModel);
+							_SetPedigree(dataModel, moduleTypeId, moduleInstanceId);
+
+							_Add(this, moduleTypeId, moduleInstanceId, dataModel);
+						}
                     }
                 }
             }

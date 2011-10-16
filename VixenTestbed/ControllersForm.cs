@@ -19,8 +19,12 @@ namespace VixenTestbed {
 		}
 
 		private void ControllersForm_Load(object sender, EventArgs e) {
-			_LoadOutputModules();
-			_LoadControllers();
+			try {
+				_LoadOutputModules();
+				_LoadControllers();
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
+			}
 		}
 
 		private void _LoadOutputModules() {
@@ -117,39 +121,55 @@ namespace VixenTestbed {
 		}
 
 		private void buttonControllerSetup_Click(object sender, EventArgs e) {
-			OutputController controller = _SelectedController;
-			if(controller != null && !controller.Setup()) {
-				MessageBox.Show("No setup for this controller.");
+			try {
+				OutputController controller = _SelectedController;
+				if(controller != null && !controller.Setup()) {
+					MessageBox.Show("No setup for this controller.");
+				}
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
 			}
 		}
 
 		private void buttonAddController_Click(object sender, EventArgs e) {
-			if(_Validate()) {
-				OutputController controller = new OutputController(_ControllerName, _OutputCount, _OutputModule);
-				controller.Save();
-				_AddControllerToView(controller);
-				_controllers.Add(controller);
-				_ResetLinkedToCombo();
+			try {
+				if(_Validate()) {
+					OutputController controller = new OutputController(_ControllerName, _OutputCount, _OutputModule);
+					controller.Save();
+					_AddControllerToView(controller);
+					_controllers.Add(controller);
+					_ResetLinkedToCombo();
+				}
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
 			}
 		}
 
 		private void buttonUpdateController_Click(object sender, EventArgs e) {
-			if(_Validate()) {
-				OutputController controller = _SelectedController;
-				if(controller != null) {
-					controller.OutputCount = _OutputCount;
-					controller.OutputModuleId = _OutputModule;
-					controller.Save(controller.FilePath);
-				} else {
-					MessageBox.Show("Controller must be selected.");
+			try {
+				if(_Validate()) {
+					OutputController controller = _SelectedController;
+					if(controller != null) {
+						controller.OutputCount = _OutputCount;
+						controller.OutputModuleId = _OutputModule;
+						controller.Save(controller.FilePath);
+					} else {
+						MessageBox.Show("Controller must be selected.");
+					}
 				}
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
 			}
 		}
 
 		private void buttonDeleteController_Click(object sender, EventArgs e) {
-			if(_SelectedController != null) {
-				_SelectedController.Delete();
-				_LoadControllers();
+			try {
+				if(_SelectedController != null) {
+					_SelectedController.Delete();
+					_LoadControllers();
+				}
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
 			}
 		}
 
@@ -164,15 +184,23 @@ namespace VixenTestbed {
 		}
 
 		private void buttonLinkController_Click(object sender, EventArgs e) {
-			if(_LinkedTo != null && _SelectedController != null) {
-				_SelectedController.LinkTo(_controllers.First(x => x.Id == _LinkedTo));
+			try {
+				if(_LinkedTo != null && _SelectedController != null) {
+					_SelectedController.LinkTo(_controllers.First(x => x.Id == _LinkedTo));
+				}
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
 			}
 		}
 
 		private void buttonRemoveControllerLink_Click(object sender, EventArgs e) {
-			if(_SelectedController != null) {
-				_SelectedController.LinkTo(null);
-				_UpdateLinkCombo();
+			try {
+				if(_SelectedController != null) {
+					_SelectedController.LinkTo(null);
+					_UpdateLinkCombo();
+				}
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
 			}
 		}
 	}

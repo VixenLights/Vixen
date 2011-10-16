@@ -20,18 +20,22 @@ namespace VixenTestbed {
 		}
 
 		private void NodePropertiesDialog_Load(object sender, EventArgs e) {
-			labelNode.Text = "Node: " + _node.Name;
+			try {
+				labelNode.Text = "Node: " + _node.Name;
 
-			// All property modules.
-			_availableProperties = ApplicationServices.GetAvailableModules<IPropertyModuleInstance>();
-			// Properties already on the node.
-			Dictionary<Guid, IPropertyModuleInstance> nodeProperties = _node.Properties.ToDictionary(x => x.Descriptor.TypeId);
-			// Remove properties already on the node from the list of available modules.
-			foreach(Guid typeId in nodeProperties.Keys) {
-				_availableProperties.Remove(typeId);
+				// All property modules.
+				_availableProperties = ApplicationServices.GetAvailableModules<IPropertyModuleInstance>();
+				// Properties already on the node.
+				Dictionary<Guid, IPropertyModuleInstance> nodeProperties = _node.Properties.ToDictionary(x => x.Descriptor.TypeId);
+				// Remove properties already on the node from the list of available modules.
+				foreach(Guid typeId in nodeProperties.Keys) {
+					_availableProperties.Remove(typeId);
+				}
+				_UpdateAvailableList();
+				_UpdateUsedList();
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
 			}
-			_UpdateAvailableList();
-			_UpdateUsedList();
 		}
 
 		private Guid _SelectedAvailable {
@@ -62,34 +66,46 @@ namespace VixenTestbed {
 		}
 
 		private void buttonSetup_Click(object sender, EventArgs e) {
-			PropertyModuleWrapper wrapper = _SelectedUsed;
-			wrapper.Instance.Setup();
+			try {
+				PropertyModuleWrapper wrapper = _SelectedUsed;
+				wrapper.Instance.Setup();
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
+			}
 		}
 
 		private void buttonRemove_Click(object sender, EventArgs e) {
-			if(MessageBox.Show("Removing this will remove any setup data created.  Continue?", "Vixen", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes) {
-				PropertyModuleWrapper wrapper = _SelectedUsed;
-				
-				// Remove from the used list.
-				_node.Properties.Remove(wrapper.TypeId);
-				_UpdateUsedList();
-				
-				// Add to the available list.
-				_availableProperties[wrapper.TypeId] = wrapper.TypeName;
-				_UpdateAvailableList();
+			try {
+				if(MessageBox.Show("Removing this will remove any setup data created.  Continue?", "Vixen", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes) {
+					PropertyModuleWrapper wrapper = _SelectedUsed;
+
+					// Remove from the used list.
+					_node.Properties.Remove(wrapper.TypeId);
+					_UpdateUsedList();
+
+					// Add to the available list.
+					_availableProperties[wrapper.TypeId] = wrapper.TypeName;
+					_UpdateAvailableList();
+				}
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
 			}
 		}
 
 		private void buttonAdd_Click(object sender, EventArgs e) {
-			Guid typeId = _SelectedAvailable;
+			try {
+				Guid typeId = _SelectedAvailable;
 
-			// Remove from the available list.
-			_availableProperties.Remove(typeId);
-			_UpdateAvailableList();
-	
-			// Add to the used list.
-			IPropertyModuleInstance instance = _node.Properties.Add(typeId);
-			_UpdateUsedList();
+				// Remove from the available list.
+				_availableProperties.Remove(typeId);
+				_UpdateAvailableList();
+
+				// Add to the used list.
+				IPropertyModuleInstance instance = _node.Properties.Add(typeId);
+				_UpdateUsedList();
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
+			}
 		}
 
 		private void listBoxAvailable_SelectedIndexChanged(object sender, EventArgs e) {

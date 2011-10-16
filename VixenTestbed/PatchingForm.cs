@@ -16,12 +16,16 @@ namespace VixenTestbed {
 		}
 
 		private void PatchingForm_Load(object sender, EventArgs e) {
-			_LoadChannels();
-			_LoadControllers();
-			_LoadPatching();
+			try {
+				_LoadChannels();
+				_LoadControllers();
+				_LoadPatching();
 
-			treeViewPatching.ExpandAll();
-			treeViewPatching.TopNode = treeViewPatching.Nodes[0];
+				treeViewPatching.ExpandAll();
+				treeViewPatching.TopNode = treeViewPatching.Nodes[0];
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
+			}
 		}
 
 		private void comboBoxChannel_SelectedIndexChanged(object sender, EventArgs e) {
@@ -47,28 +51,33 @@ namespace VixenTestbed {
 		}
 
 		private void buttonPatch_Click(object sender, EventArgs e) {
-			_SelectedChannel.Patch.Add(_SelectedController.Id, _SelectedOutput);
-			_AddChannelPatchNode(_SelectedChannel, new ControllerReference(_SelectedController.Id, _SelectedOutput));
+			try {
+				_SelectedChannel.Patch.Add(_SelectedController.Id, _SelectedOutput);
+				_AddChannelPatchNode(_SelectedChannel, new ControllerReference(_SelectedController.Id, _SelectedOutput));
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
+			}
 		}
 
 		private void buttonRemove_Click(object sender, EventArgs e) {
-			_SelectedPatchChannel.Patch.Remove(_SelectedPatch);
-			treeViewPatching.Nodes.Remove(treeViewPatching.SelectedNode);
+			try {
+				_SelectedPatchChannel.Patch.Remove(_SelectedPatch);
+				treeViewPatching.Nodes.Remove(treeViewPatching.SelectedNode);
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
+			}
 		}
 
 		private Channel _SelectedChannel {
 			get { return comboBoxChannel.SelectedItem as Channel; }
-			set { }
 		}
 
 		private OutputController _SelectedController {
 			get { return comboBoxController.SelectedItem as OutputController; }
-			set { }
 		}
 
 		private int _SelectedOutput {
 			get { return comboBoxOutput.SelectedIndex; }
-			set { }
 		}
 
 		private ControllerReference _SelectedPatch {

@@ -44,7 +44,7 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.moduleListEffect = new VixenTestbed.ModuleList();
 			this.tabPageMediaModule = new System.Windows.Forms.TabPage();
-			this.label3 = new System.Windows.Forms.Label();
+			this.labelLoadedMedia = new System.Windows.Forms.Label();
 			this.groupBoxMediaExecution = new System.Windows.Forms.GroupBox();
 			this.buttonStopMedia = new System.Windows.Forms.Button();
 			this.buttonResumeMedia = new System.Windows.Forms.Button();
@@ -65,6 +65,7 @@
 			this.menuStrip = new System.Windows.Forms.MenuStrip();
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.timingTimer = new System.Windows.Forms.Timer(this.components);
+			this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
 			this.tabControl.SuspendLayout();
 			this.tabPageAdministration.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
@@ -310,7 +311,7 @@
 			// 
 			// tabPageMediaModule
 			// 
-			this.tabPageMediaModule.Controls.Add(this.label3);
+			this.tabPageMediaModule.Controls.Add(this.labelLoadedMedia);
 			this.tabPageMediaModule.Controls.Add(this.groupBoxMediaExecution);
 			this.tabPageMediaModule.Controls.Add(this.buttonLoadMediaFile);
 			this.tabPageMediaModule.Controls.Add(this.buttonSetupMedia);
@@ -322,14 +323,14 @@
 			this.tabPageMediaModule.Text = "Media Module";
 			this.tabPageMediaModule.UseVisualStyleBackColor = true;
 			// 
-			// label3
+			// labelLoadedMedia
 			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(286, 13);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(346, 13);
-			this.label3.TabIndex = 13;
-			this.label3.Text = "FMOD module needs reworking, shouldn\'t need setup data to work as-is";
+			this.labelLoadedMedia.AutoSize = true;
+			this.labelLoadedMedia.Location = new System.Drawing.Point(392, 89);
+			this.labelLoadedMedia.Name = "labelLoadedMedia";
+			this.labelLoadedMedia.Size = new System.Drawing.Size(79, 13);
+			this.labelLoadedMedia.TabIndex = 14;
+			this.labelLoadedMedia.Text = "Nothing loaded";
 			// 
 			// groupBoxMediaExecution
 			// 
@@ -584,7 +585,6 @@
 		private System.Windows.Forms.Button buttonLoadMediaFile;
 		private System.Windows.Forms.Button buttonSetupMedia;
 		private System.Windows.Forms.GroupBox groupBoxMediaExecution;
-		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.GroupBox groupBoxTimingExecution;
 		private System.Windows.Forms.Button buttonStopTiming;
 		private System.Windows.Forms.Button buttonResumeTiming;
@@ -598,6 +598,8 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.NumericUpDown numericUpDownEffectRenderTimeSpan;
 		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Label labelLoadedMedia;
+		private System.Windows.Forms.SaveFileDialog saveFileDialog1;
 	}
 }
 

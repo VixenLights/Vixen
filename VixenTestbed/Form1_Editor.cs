@@ -21,34 +21,42 @@ namespace VixenTestbed {
 		}
 
 		private void buttonLoadEditorSequence_Click(object sender, EventArgs e) {
-			IEditorModuleDescriptor descriptor = _SelectedEditorModule.Descriptor as IEditorModuleDescriptor;
-			openFileDialog.Filter = descriptor.TypeName + " files|" + string.Join(";", descriptor.FileExtensions.Select(x => "*" + x));
-			openFileDialog.InitialDirectory = Vixen.Sys.Sequence.DefaultDirectory;
+			try {
+				IEditorModuleDescriptor descriptor = _SelectedEditorModule.Descriptor as IEditorModuleDescriptor;
+				openFileDialog.Filter = descriptor.TypeName + " files|" + string.Join(";", descriptor.FileExtensions.Select(x => "*" + x));
+				openFileDialog.InitialDirectory = Vixen.Sys.Sequence.DefaultDirectory;
 
-			if(openFileDialog.ShowDialog() == DialogResult.OK) {
-				IEditorUserInterface editor = ApplicationServices.GetEditor(openFileDialog.FileName);
-				if(editor != null) {
-					Sequence sequence = Sequence.Load(openFileDialog.FileName);
-					if(sequence != null) {
-						editor.Sequence = sequence;
-						editor.Start();
+				if(openFileDialog.ShowDialog() == DialogResult.OK) {
+					IEditorUserInterface editor = ApplicationServices.GetEditor(openFileDialog.FileName);
+					if(editor != null) {
+						Sequence sequence = Sequence.Load(openFileDialog.FileName);
+						if(sequence != null) {
+							editor.Sequence = sequence;
+							editor.Start();
+						} else {
+							MessageBox.Show("The sequence could not be loaded.");
+						}
 					} else {
-						MessageBox.Show("The sequence could not be loaded.");
+						MessageBox.Show("No editor supports the selected file.");
 					}
-				} else {
-					MessageBox.Show("No editor supports the selected file.");
 				}
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
 			}
 		}
 
 		private void buttonShowEditor_Click(object sender, EventArgs e) {
-			Guid id = _SelectedEditorModule.Descriptor.TypeId;
-			IEditorUserInterface editor = ApplicationServices.GetEditor(id);
-			if(editor != null) {
-				editor.NewSequence();
-				editor.Start();
-			} else {
-				MessageBox.Show("No editor supports the selected file.");
+			try {
+				Guid id = _SelectedEditorModule.Descriptor.TypeId;
+				IEditorUserInterface editor = ApplicationServices.GetEditor(id);
+				if(editor != null) {
+					editor.NewSequence();
+					editor.Start();
+				} else {
+					MessageBox.Show("No editor supports the selected file.");
+				}
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
 			}
 		}
 	}

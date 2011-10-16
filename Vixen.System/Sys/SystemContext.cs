@@ -86,22 +86,11 @@ namespace Vixen.Sys {
 		static public SystemContext PackageSystemContext(string targetFilePath) {
 			SystemContext context = new SystemContext();
 
-			// The user data needs a flag set to state that it's a context copy and
-			// therefore should be the one used, not the one in the user's data branch.
-
-			// Flush the user data.
-			VixenSystem.SystemConfig.Save();
-			// Load it into a new instance.
-			XmlSystemConfigReader userDataReader = new XmlSystemConfigReader();
-			SystemConfig contextUserData = userDataReader.Read(VixenSystem.SystemConfig.LoadedFilePath);
-			// Set the context flag.
-			contextUserData.IsContext = true;
-			// Save to a temp file.
-			string tempFilePath = Path.GetTempFileName();
-			XmlSystemConfigWriter userDataWriter = new XmlSystemConfigWriter();
-			userDataWriter.Write(tempFilePath, contextUserData);
-			// Add the file.
-			context.AddFile(new NewContextFile(tempFilePath, Path.GetFileName(VixenSystem.SystemConfig.LoadedFilePath)));
+			// Add the system data files.
+			string systemConfigFilePath = _PrepSystemConfig();
+			context.AddFile(new NewContextFile(systemConfigFilePath, Path.GetFileName(VixenSystem.SystemConfig.LoadedFilePath)));
+			string moduleStoreFilePath = _PrepModuleStore();
+			context.AddFile(new NewContextFile(moduleStoreFilePath, Path.GetFileName(VixenSystem.ModuleStore.LoadedFilePath)));
 
 			// Add all binaries under the "Modules" directory.
 			foreach(string moduleFilePath in Directory.GetFiles(Modules.Directory, "*.*", SearchOption.AllDirectories)) {
@@ -116,6 +105,30 @@ namespace Vixen.Sys {
 			SystemContext context = contextReader.Read(contextFilePath);
 
 			return context;
+		}
+
+		static private string _PrepSystemConfig() {
+			// The user data needs a flag set to state that it's a context copy and
+			// therefore should be the one used, not the one in the user's data branch.
+
+			// Flush the system data.
+			VixenSystem.SystemConfig.Save();
+			// Load the system config into a new instance.
+			XmlSystemConfigReader reader = new XmlSystemConfigReader();
+			SystemConfig contextUserData = reader.Read(VixenSystem.SystemConfig.LoadedFilePath);
+			// Set the context flag.
+			contextUserData.IsContext = true;
+			// Save to a temp file.
+			string tempFilePath = Path.GetTempFileName();
+			XmlSystemConfigWriter writer = new XmlSystemConfigWriter();
+			writer.Write(tempFilePath, contextUserData);
+
+			return tempFilePath;
+		}
+
+		static private string _PrepModuleStore() {
+			VixenSystem.ModuleStore.Save();
+			return VixenSystem.ModuleStore.LoadedFilePath;
 		}
 
 		#region NewContextFile

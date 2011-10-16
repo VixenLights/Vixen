@@ -11,8 +11,7 @@ namespace Vixen.Sys {
 	class ModuleStore : IVersioned {
 		private const int VERSION = 1;
 
-		[DataPath]
-		static public readonly string Directory = Path.Combine(Paths.DataRootPath, "SystemData");
+		static public readonly string Directory = SystemConfig.Directory;
 		public const string FileName = "ModuleStore.xml";
 		static public readonly string DefaultFilePath = Path.Combine(Directory, FileName);
 
