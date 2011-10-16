@@ -28,7 +28,7 @@ namespace VixenTestbed {
 		}
 
 		private void Form1_Load(object sender, EventArgs e) {
-			Logging.ItemLogged += _ItemLogged;
+			//Logging.ItemLogged += _ItemLogged;
 			Vixen.Sys.VixenSystem.Start(this);
 
 			moduleListApp.SetModuleType<IAppModuleInstance>();
@@ -36,10 +36,12 @@ namespace VixenTestbed {
 			moduleListEffect.SetModuleType<IEffectModuleInstance>();
 			moduleListMedia.SetModuleType<IMediaModuleInstance>();
 			moduleListTiming.SetModuleType<ITimingModuleInstance>();
+
+			checkedListBoxEffectTargetNodes.Items.AddRange(Vixen.Sys.Execution.Nodes.ToArray());
 		}
 
 		private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
-			Logging.ItemLogged -= _ItemLogged;
+			//Logging.ItemLogged -= _ItemLogged;
 			Vixen.Sys.VixenSystem.Stop();
 		}
 
@@ -60,5 +62,6 @@ namespace VixenTestbed {
 		private void _ItemLogged(object sender, LogEventArgs e) {
 			MessageBox.Show(e.Text, e.LogName);
 		}
+
 	}
 }

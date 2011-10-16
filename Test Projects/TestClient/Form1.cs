@@ -456,7 +456,7 @@ namespace TestClient
 		private IEffectEditorControl _GetEffectEditor(IEffectModuleInstance effect) {
 			IEffectEditorControl editorControl = null;
 			if(effect != null) {
-				editorControl = ApplicationServices.GetEffectEditorControl(effect.Descriptor.TypeId);
+				editorControl = ApplicationServices.GetEffectEditorControls(effect.Descriptor.TypeId).First();
 			}
 			return editorControl;
 		}

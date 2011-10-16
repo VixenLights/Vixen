@@ -18,7 +18,7 @@ namespace TestEditor {
 			// Need to go through ApplicationServices because external code can't get
 			// a typed reference to module implementation components (i.e. module
 			// manager).
-			_EffectEditorControl = ApplicationServices.GetEffectEditorControl(effectId);
+			_EffectEditorControl = ApplicationServices.GetEffectEditorControls(effectId).First();
 		}
 		//Needs updating
 		//public CommandParameterContainer(string commandName) {

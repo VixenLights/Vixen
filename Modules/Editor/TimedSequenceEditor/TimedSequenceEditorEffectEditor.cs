@@ -21,8 +21,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			InitializeComponent();
 
+			//*** GetEffectEditorControls now returns a collection of controls.
+			//    There needs to be some effort to break up the effect's parameters
+			//    among the controls.
 			_effectNode = effectNode;
-			_control = ApplicationServices.GetEffectEditorControl(_effectNode.Effect.Descriptor.TypeId);
+			_control = ApplicationServices.GetEffectEditorControls(_effectNode.Effect.Descriptor.TypeId).First();
 			_control.EffectParameterValues = _effectNode.Effect.ParameterValues;
 			panelEditorControls.Controls.Add(_control as Control);
 		}

@@ -69,7 +69,9 @@ namespace Vixen.Sys {
 
 					_state = RunState.Started;
 				} catch(ReflectionTypeLoadException ex) {
-					Logging.Debug("Loader exceptions:" + Environment.NewLine + ex.LoaderExceptions.Select(x => x.Message + Environment.NewLine) + Environment.NewLine + "The system has been stopped.");
+					foreach(Exception loaderException in ex.LoaderExceptions) {
+						Logging.Debug("Loader exception:" + Environment.NewLine + loaderException.Message + Environment.NewLine + Environment.NewLine + "The system has been stopped.", loaderException);
+					}
 					Stop();
 				} catch(Exception ex) {
 					// The client is expected to have subscribed to the logging event

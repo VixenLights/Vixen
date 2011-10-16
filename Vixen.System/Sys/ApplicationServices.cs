@@ -104,10 +104,10 @@ namespace Vixen.Sys {
 			return null;
 		}
 
-		static public IEffectEditorControl GetEffectEditorControl(Guid effectId) {
+		static public IEnumerable<IEffectEditorControl> GetEffectEditorControls(Guid effectId) {
 			// Need the module-specific manager.
 			EffectEditorModuleManagement manager = Modules.GetManager<IEffectEditorModuleInstance, EffectEditorModuleManagement>();
-			return manager.GetEffectEditor(effectId);
+			return manager.GetEffectEditors(effectId);
 		}
 
 		//Maybe have an overload that takes a file type filter.

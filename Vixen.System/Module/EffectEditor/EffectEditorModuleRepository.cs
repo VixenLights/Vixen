@@ -28,6 +28,13 @@ namespace Vixen.Module.EffectEditor {
 			return instance;
 		}
 
+		public IEffectEditorModuleInstance Get(CommandParameterSpecification parameterSpec) {
+			int key = _GetSignatureKey(parameterSpec.AsEnumerable());
+			IEffectEditorModuleInstance instance;
+			_effectEditorSignatureIndex.TryGetValue(key, out instance);
+			return instance;
+		}
+
 		public IEffectEditorModuleInstance Get(Guid id) {
 			return _effectEditors.FirstOrDefault(x => x.Descriptor.TypeId == id);
 		}
@@ -72,7 +79,7 @@ namespace Vixen.Module.EffectEditor {
 		}
 
 
-		private int _GetSignatureKey(CommandParameterSignature commandSignature) {
+		private int _GetSignatureKey(IEnumerable<CommandParameterSpecification> commandSignature) {
 			if(commandSignature == null) return 0;
 			// Key will be a hash of the concatenation of the parameter type names.
 			return commandSignature.Aggregate("", (str, spec) => str + spec.Type.Name, str => str.GetHashCode());

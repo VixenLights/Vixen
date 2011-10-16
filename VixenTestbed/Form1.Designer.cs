@@ -35,10 +35,13 @@
 			this.tabPageEditorModule = new System.Windows.Forms.TabPage();
 			this.buttonShowEditor = new System.Windows.Forms.Button();
 			this.buttonLoadSequence = new System.Windows.Forms.Button();
-			this.label2 = new System.Windows.Forms.Label();
 			this.moduleListEditor = new VixenTestbed.ModuleList();
 			this.tabPageEffectModule = new System.Windows.Forms.TabPage();
-			this.label1 = new System.Windows.Forms.Label();
+			this.numericUpDownEffectRenderTimeSpan = new System.Windows.Forms.NumericUpDown();
+			this.label5 = new System.Windows.Forms.Label();
+			this.buttonRenderEffect = new System.Windows.Forms.Button();
+			this.checkedListBoxEffectTargetNodes = new System.Windows.Forms.CheckedListBox();
+			this.label2 = new System.Windows.Forms.Label();
 			this.moduleListEffect = new VixenTestbed.ModuleList();
 			this.tabPageMediaModule = new System.Windows.Forms.TabPage();
 			this.label3 = new System.Windows.Forms.Label();
@@ -68,6 +71,7 @@
 			this.tabPageAppModule.SuspendLayout();
 			this.tabPageEditorModule.SuspendLayout();
 			this.tabPageEffectModule.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDownEffectRenderTimeSpan)).BeginInit();
 			this.tabPageMediaModule.SuspendLayout();
 			this.groupBoxMediaExecution.SuspendLayout();
 			this.tabPageTimingModule.SuspendLayout();
@@ -173,7 +177,6 @@
 			// 
 			this.tabPageEditorModule.Controls.Add(this.buttonShowEditor);
 			this.tabPageEditorModule.Controls.Add(this.buttonLoadSequence);
-			this.tabPageEditorModule.Controls.Add(this.label2);
 			this.tabPageEditorModule.Controls.Add(this.moduleListEditor);
 			this.tabPageEditorModule.Location = new System.Drawing.Point(4, 22);
 			this.tabPageEditorModule.Name = "tabPageEditorModule";
@@ -204,16 +207,6 @@
 			this.buttonLoadSequence.UseVisualStyleBackColor = true;
 			this.buttonLoadSequence.Click += new System.EventHandler(this.buttonLoadEditorSequence_Click);
 			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(244, 261);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(277, 39);
-			this.label2.TabIndex = 4;
-			this.label2.Text = "Allow multiple instances of a type.\r\nFor each one, tie into the Activated event a" +
-				"nd highlight it.\r\nFor each one, show Sequence, Selection, IsModified.";
-			// 
 			// moduleListEditor
 			// 
 			this.moduleListEditor.Dock = System.Windows.Forms.DockStyle.Left;
@@ -225,7 +218,11 @@
 			// 
 			// tabPageEffectModule
 			// 
-			this.tabPageEffectModule.Controls.Add(this.label1);
+			this.tabPageEffectModule.Controls.Add(this.numericUpDownEffectRenderTimeSpan);
+			this.tabPageEffectModule.Controls.Add(this.label5);
+			this.tabPageEffectModule.Controls.Add(this.buttonRenderEffect);
+			this.tabPageEffectModule.Controls.Add(this.checkedListBoxEffectTargetNodes);
+			this.tabPageEffectModule.Controls.Add(this.label2);
 			this.tabPageEffectModule.Controls.Add(this.moduleListEffect);
 			this.tabPageEffectModule.Location = new System.Drawing.Point(4, 22);
 			this.tabPageEffectModule.Name = "tabPageEffectModule";
@@ -234,15 +231,73 @@
 			this.tabPageEffectModule.Text = "Effect Module";
 			this.tabPageEffectModule.UseVisualStyleBackColor = true;
 			// 
-			// label1
+			// numericUpDownEffectRenderTimeSpan
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(258, 39);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(155, 52);
-			this.label1.TabIndex = 1;
-			this.label1.Text = "Render to a list\r\nRender to a collection of nodes\r\nTime span\r\n(Parameters via edi" +
-				"tors)";
+			this.numericUpDownEffectRenderTimeSpan.Increment = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+			this.numericUpDownEffectRenderTimeSpan.Location = new System.Drawing.Point(569, 32);
+			this.numericUpDownEffectRenderTimeSpan.Maximum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            0});
+			this.numericUpDownEffectRenderTimeSpan.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+			this.numericUpDownEffectRenderTimeSpan.Name = "numericUpDownEffectRenderTimeSpan";
+			this.numericUpDownEffectRenderTimeSpan.Size = new System.Drawing.Size(66, 20);
+			this.numericUpDownEffectRenderTimeSpan.TabIndex = 5;
+			this.numericUpDownEffectRenderTimeSpan.Value = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(439, 34);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(124, 13);
+			this.label5.TabIndex = 4;
+			this.label5.Text = "Time span (milliseconds):";
+			// 
+			// buttonRenderEffect
+			// 
+			this.buttonRenderEffect.Enabled = false;
+			this.buttonRenderEffect.Location = new System.Drawing.Point(505, 76);
+			this.buttonRenderEffect.Name = "buttonRenderEffect";
+			this.buttonRenderEffect.Size = new System.Drawing.Size(75, 23);
+			this.buttonRenderEffect.TabIndex = 6;
+			this.buttonRenderEffect.Text = "Render";
+			this.buttonRenderEffect.UseVisualStyleBackColor = true;
+			this.buttonRenderEffect.Click += new System.EventHandler(this.buttonRenderEffect_Click);
+			// 
+			// checkedListBoxEffectTargetNodes
+			// 
+			this.checkedListBoxEffectTargetNodes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)));
+			this.checkedListBoxEffectTargetNodes.CheckOnClick = true;
+			this.checkedListBoxEffectTargetNodes.FormattingEnabled = true;
+			this.checkedListBoxEffectTargetNodes.Location = new System.Drawing.Point(241, 31);
+			this.checkedListBoxEffectTargetNodes.Name = "checkedListBoxEffectTargetNodes";
+			this.checkedListBoxEffectTargetNodes.Size = new System.Drawing.Size(178, 289);
+			this.checkedListBoxEffectTargetNodes.TabIndex = 3;
+			this.checkedListBoxEffectTargetNodes.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.checkedListBoxEffectTargetNodes_ItemCheck);
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(238, 12);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(98, 13);
+			this.label2.TabIndex = 2;
+			this.label2.Text = "Nodes to render to:";
 			// 
 			// moduleListEffect
 			// 
@@ -251,6 +306,7 @@
 			this.moduleListEffect.Name = "moduleListEffect";
 			this.moduleListEffect.Size = new System.Drawing.Size(213, 320);
 			this.moduleListEffect.TabIndex = 0;
+			this.moduleListEffect.SelectedModuleChanged += new System.EventHandler(this.moduleListEffect_SelectedModuleChanged);
 			// 
 			// tabPageMediaModule
 			// 
@@ -485,9 +541,9 @@
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tabPageAppModule.ResumeLayout(false);
 			this.tabPageEditorModule.ResumeLayout(false);
-			this.tabPageEditorModule.PerformLayout();
 			this.tabPageEffectModule.ResumeLayout(false);
 			this.tabPageEffectModule.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDownEffectRenderTimeSpan)).EndInit();
 			this.tabPageMediaModule.ResumeLayout(false);
 			this.tabPageMediaModule.PerformLayout();
 			this.groupBoxMediaExecution.ResumeLayout(false);
@@ -518,11 +574,9 @@
 		private ModuleList moduleListMedia;
 		private ModuleList moduleListTiming;
 		private System.Windows.Forms.MenuStrip menuStrip;
-		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Button buttonLoadSequence;
 		private System.Windows.Forms.OpenFileDialog openFileDialog;
 		private System.Windows.Forms.Button buttonShowEditor;
-		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Button buttonStopMedia;
 		private System.Windows.Forms.Button buttonResumeMedia;
 		private System.Windows.Forms.Button buttonPauseMedia;
@@ -539,6 +593,11 @@
 		private System.Windows.Forms.Label labelTimingCurrentPosition;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Timer timingTimer;
+		private System.Windows.Forms.Button buttonRenderEffect;
+		private System.Windows.Forms.CheckedListBox checkedListBoxEffectTargetNodes;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.NumericUpDown numericUpDownEffectRenderTimeSpan;
+		private System.Windows.Forms.Label label5;
 	}
 }
 
