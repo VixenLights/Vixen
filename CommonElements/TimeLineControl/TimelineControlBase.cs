@@ -19,6 +19,7 @@ namespace CommonElements.Timeline
 			TimeInfo = timeinfo;
 			TimeInfo.TimePerPixelChanged += TimePerPixelChanged;
 			TimeInfo.VisibleTimeStartChanged += VisibleTimeStartChanged;
+			TimeInfo.TotalTimeChanged += TotalTimeChanged;
 			
 			DoubleBuffered = true;
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
@@ -35,7 +36,16 @@ namespace CommonElements.Timeline
 		public virtual TimeSpan VisibleTimeStart
 		{
 			get { return TimeInfo.VisibleTimeStart; }
-			set { TimeInfo.VisibleTimeStart = value; }
+			set
+			{
+				if (value < TimeSpan.Zero)
+					value = TimeSpan.Zero;
+
+				if (value > TotalTime - VisibleTimeSpan)
+					value = TotalTime - VisibleTimeSpan;
+
+				TimeInfo.VisibleTimeStart = value;
+			}
 		}
 
 		/// <summary>
@@ -44,14 +54,24 @@ namespace CommonElements.Timeline
 		public virtual TimeSpan TimePerPixel
 		{
 			get { return TimeInfo.TimePerPixel; }
-			set { TimeInfo.TimePerPixel = value; }	
+			set { TimeInfo.TimePerPixel = value; }
+		}
+
+
+		/// <summary>
+		/// The total time represented in the user controls
+		/// </summary>
+		public virtual TimeSpan TotalTime
+		{
+			get { return TimeInfo.TotalTime; }
+			set { TimeInfo.TotalTime = value; }
 		}
 
 
 		/// <summary>
 		/// The amount of time currently visible.
 		/// </summary> 
-		protected TimeSpan VisibleTimeSpan
+		public virtual TimeSpan VisibleTimeSpan
 		{
 			get { return TimeSpan.FromTicks(ClientSize.Width * TimePerPixel.Ticks); }
 		}
@@ -60,7 +80,7 @@ namespace CommonElements.Timeline
 		/// <summary>
 		/// The ending time of the visible region.
 		/// </summary>
-		protected TimeSpan VisibleTimeEnd
+		public TimeSpan VisibleTimeEnd
 		{
 			get { return VisibleTimeStart + VisibleTimeSpan; }
 		}
@@ -95,6 +115,10 @@ namespace CommonElements.Timeline
 		}
 
 		protected virtual void TimePerPixelChanged(object sender, EventArgs e)
+		{
+		}
+
+		protected virtual void TotalTimeChanged(object sender, EventArgs e)
 		{
 		}
 

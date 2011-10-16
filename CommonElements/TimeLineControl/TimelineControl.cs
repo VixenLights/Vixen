@@ -80,23 +80,6 @@ namespace CommonElements.Timeline
 
 		#region Properties
 
-		//TODO: This may move to TimeInfo as well.
-		public TimeSpan TotalTime
-		{
-			get
-			{
-				if (grid != null)
-					return grid.TotalTime;
-				else
-					return TimeSpan.Zero;
-			}
-			set
-			{
-				if (grid != null)
-					grid.TotalTime = value;
-			}
-		}
-
 		public int VerticalOffset
 		{
 			get
@@ -111,6 +94,12 @@ namespace CommonElements.Timeline
 				if (grid != null)
 					grid.VerticalOffset = value;
 			}
+		}
+
+		public TimeSpan CursorPosition
+		{
+			get { return grid.CursorPosition; }
+			set { grid.CursorPosition = value; }
 		}
 
 
@@ -351,21 +340,5 @@ namespace CommonElements.Timeline
 
 
 		#endregion
-
-		// really the only place I can think we need to override something like this.
-		public override TimeSpan VisibleTimeStart
-		{
-			get { return base.VisibleTimeStart; }
-			set
-			{
-				// Clip the value at zero and TotalTime.
-				if (value < TimeSpan.Zero)
-					value = TimeSpan.Zero;
-				if (value > TotalTime)
-					value = TotalTime;
-
-				base.VisibleTimeStart = value;
-			}
-		}
 	}
 }

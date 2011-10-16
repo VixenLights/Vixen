@@ -9,6 +9,7 @@ namespace CommonElements.Timeline
 	{
 		private TimeSpan m_timePerPixel;
 		private TimeSpan m_visibleTimeStart;
+		private TimeSpan m_totalTime;
 
 
 		public TimeSpan TimePerPixel
@@ -39,8 +40,22 @@ namespace CommonElements.Timeline
 			}
 		}
 
+		public TimeSpan TotalTime
+		{
+			get { return m_totalTime; }
+			set
+			{
+				if (m_totalTime == value)
+					return;
+
+				m_totalTime = value;
+				if (TotalTimeChanged != null)
+					TotalTimeChanged(this, EventArgs.Empty);
+			}
+		}
 
 		public event EventHandler TimePerPixelChanged;
 		public event EventHandler VisibleTimeStartChanged;
+		public event EventHandler TotalTimeChanged;
 	}
 }

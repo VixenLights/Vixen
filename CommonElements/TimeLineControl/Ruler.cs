@@ -137,7 +137,7 @@ namespace CommonElements.Timeline
 		protected override void  TimePerPixelChanged(object sender, EventArgs e)
 		{
 			recalculate();
- 			 base.TimePerPixelChanged(sender, e);
+			base.TimePerPixelChanged(sender, e);
 		}
 
 		//Stopwatch lastinvalidate = new Stopwatch();

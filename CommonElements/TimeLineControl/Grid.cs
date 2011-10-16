@@ -84,16 +84,6 @@ namespace CommonElements.Timeline
 
 		#region Properties
 
-		/// <summary>
-		/// The maximum amount of time represented by this Grid.
-		/// </summary>
-		public TimeSpan TotalTime
-		{
-			get { return m_totalTime; }
-			set { m_totalTime = value; Invalidate(); }
-		}
-
-
 		/*
 		/// <summary>
 		/// The time at the left of the control (the visible beginning).
@@ -150,6 +140,11 @@ namespace CommonElements.Timeline
 			RecalculateAllStaticSnapPoints();
 		}
 
+
+		protected override void TotalTimeChanged(object sender, EventArgs e)
+		{
+			Invalidate();
+		}
 
 
 		public int VerticalOffset
@@ -267,8 +262,8 @@ namespace CommonElements.Timeline
 					// don't do any dragging if we're hard left in the viewport and trying to drag left, or
 					// the same at the other end: otherwise the 'desired time' counter (of time left still
 					// to drag) continually gets incremented
-					if (!(m_dragAutoscrollDistance.Width < 0 && VisibleTimeStart == TimeSpan.Zero) &&
-						!(m_dragAutoscrollDistance.Width > 0 && VisibleTimeEnd == TotalTime)) {
+					if (!(m_dragAutoscrollDistance.Width < 0 && VisibleTimeStart <= TimeSpan.Zero) &&
+						!(m_dragAutoscrollDistance.Width > 0 && VisibleTimeEnd >= TotalTime)) {
 						TimeSpan desiredMoveTime = DragTimeLeftOver + offset;
 						TimeSpan realMoveTime = OffsetElementsByTime(SelectedElements, desiredMoveTime);
 						DragTimeLeftOver = desiredMoveTime - realMoveTime;
