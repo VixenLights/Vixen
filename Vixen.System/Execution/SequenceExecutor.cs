@@ -152,13 +152,13 @@ namespace Vixen.Execution {
 
 				// Get everything that currently qualifies.
 				while(_sequenceDataEnumerator.MoveNext()) {
-					lock (VixenSystem.Logging) {
-						EffectNode e = _sequenceDataEnumerator.Current;
-						if (e.IsEmpty)
-							VixenSystem.Logging.Debug(Vixen.Sys.Execution.CurrentExecutionTimeString + ": Sequence DataGenerationThread: MoveNext: effect is null");
-						else
-							VixenSystem.Logging.Debug(Vixen.Sys.Execution.CurrentExecutionTimeString + ": Sequence DataGenerationThread: MoveNext: effect is " + e.Effect.Descriptor.TypeName + ", S=" + e.StartTime + ", D=" + e.TimeSpan + ", target=" + e.Effect.TargetNodes[0].Name);
-					}
+					//lock (VixenSystem.Logging) {
+					//    EffectNode e = _sequenceDataEnumerator.Current;
+						//if (e.IsEmpty)
+						//    VixenSystem.Logging.Debug(Vixen.Sys.Execution.CurrentExecutionTimeString + ": Sequence DataGenerationThread: MoveNext: effect is null");
+						//else
+						//    VixenSystem.Logging.Debug(Vixen.Sys.Execution.CurrentExecutionTimeString + ": Sequence DataGenerationThread: MoveNext: effect is " + e.Effect.Descriptor.TypeName + ", S=" + e.StartTime + ", D=" + e.TimeSpan + ", target=" + e.Effect.TargetNodes[0].Name);
+					//}
 					if (!_sequenceDataEnumerator.Current.IsEmpty)
 						Vixen.Sys.Execution.Write(new EffectNode[] { _sequenceDataEnumerator.Current });
 				}

@@ -207,12 +207,12 @@ namespace Vixen.Sys {
 						Command channelState = Command.Combine(enumerator.Current.Select(x => x.Command));
 						stateBuffer[channel] = channelState;
 						channel.Patch.Write(channelState);
-						lock (VixenSystem.Logging) {
-							if (channelState == null)
-								VixenSystem.Logging.Debug(Execution.CurrentExecutionTimeString + ": Execution UpdateChannelStates: channel=" + channel + ", command=null");
-							else
-								VixenSystem.Logging.Debug(Execution.CurrentExecutionTimeString + ": Execution UpdateChannelStates: channel=" + channel + ", command=" + channelState.Identifier + ", " + channelState.GetParameterValue(0));
-						}
+						//lock (VixenSystem.Logging) {
+						//    if (channelState == null)
+						//        VixenSystem.Logging.Debug(Execution.CurrentExecutionTimeString + ": Execution UpdateChannelStates: channel=" + channel + ", command=null");
+						//    else
+						//        VixenSystem.Logging.Debug(Execution.CurrentExecutionTimeString + ": Execution UpdateChannelStates: channel=" + channel + ", command=" + channelState.Identifier + ", " + channelState.GetParameterValue(0));
+						//}
 					}
 				}
 			}
@@ -324,9 +324,9 @@ namespace Vixen.Sys {
 						
 						// Render the effect for the whole span of the command's time.
 						ChannelData channelData = effectNode.RenderEffectData(TimeSpan.Zero, effectNode.TimeSpan);
-						lock (VixenSystem.Logging) {
-						    VixenSystem.Logging.Debug(Execution.CurrentExecutionTimeString + ": EffectRenderer: rendering data for effect " + effectNode.Effect.Descriptor.TypeName + ", S=" + effectNode.StartTime + ", D=" + effectNode.TimeSpan + ", target=" + effectNode.Effect.TargetNodes[0].Name);
-						}
+						//lock (VixenSystem.Logging) {
+						//    VixenSystem.Logging.Debug(Execution.CurrentExecutionTimeString + ": EffectRenderer: rendering data for effect " + effectNode.Effect.Descriptor.TypeName + ", S=" + effectNode.StartTime + ", D=" + effectNode.TimeSpan + ", target=" + effectNode.Effect.TargetNodes[0].Name);
+						//}
 						
 						if(channelData != null) {
 							// Get it into the channels.
@@ -349,9 +349,9 @@ namespace Vixen.Sys {
 									// should always be relative to the start of the effect.
 									CommandNode targetChannelData = new CommandNode(data.Command, data.StartTime + systemTimeDelta, data.TimeSpan);
 									targetChannel.AddData(targetChannelData);
-									lock (VixenSystem.Logging) {
-										VixenSystem.Logging.Debug(Execution.CurrentExecutionTimeString + ": EffectRenderer: just added data for channel " + targetChannel.Name + " (" + effectNode.Effect.TargetNodes[0].Name + ")");
-									}
+									//lock (VixenSystem.Logging) {
+									//    VixenSystem.Logging.Debug(Execution.CurrentExecutionTimeString + ": EffectRenderer: just added data for channel " + targetChannel.Name + " (" + effectNode.Effect.TargetNodes[0].Name + ")");
+									//}
 								}
 
 								Monitor.Exit(targetChannel);
