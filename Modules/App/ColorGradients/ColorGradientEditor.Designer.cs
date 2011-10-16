@@ -74,7 +74,8 @@
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.gradientEditPanel);
 			this.Name = "ColorGradientEditor";
-			this.Text = "ColorGradientEditor";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.Text = "Color Gradient Editor";
 			this.ResumeLayout(false);
 
 		}

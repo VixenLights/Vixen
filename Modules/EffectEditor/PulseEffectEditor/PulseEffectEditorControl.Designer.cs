@@ -36,9 +36,9 @@
 			this.colorGradientTypeEditorControl.ColorGradientValue = null;
 			this.colorGradientTypeEditorControl.EffectParameterValues = new object[] {
         null};
-			this.colorGradientTypeEditorControl.Location = new System.Drawing.Point(79, 3);
+			this.colorGradientTypeEditorControl.Location = new System.Drawing.Point(3, 79);
 			this.colorGradientTypeEditorControl.Name = "colorGradientTypeEditorControl";
-			this.colorGradientTypeEditorControl.Size = new System.Drawing.Size(70, 70);
+			this.colorGradientTypeEditorControl.Size = new System.Drawing.Size(173, 70);
 			this.colorGradientTypeEditorControl.TabIndex = 0;
 			// 
 			// curveTypeEditorControl
@@ -48,7 +48,7 @@
         null};
 			this.curveTypeEditorControl.Location = new System.Drawing.Point(3, 3);
 			this.curveTypeEditorControl.Name = "curveTypeEditorControl";
-			this.curveTypeEditorControl.Size = new System.Drawing.Size(70, 70);
+			this.curveTypeEditorControl.Size = new System.Drawing.Size(173, 70);
 			this.curveTypeEditorControl.TabIndex = 1;
 			// 
 			// PulseEffectEditorControl
@@ -58,7 +58,7 @@
 			this.Controls.Add(this.curveTypeEditorControl);
 			this.Controls.Add(this.colorGradientTypeEditorControl);
 			this.Name = "PulseEffectEditorControl";
-			this.Size = new System.Drawing.Size(152, 76);
+			this.Size = new System.Drawing.Size(177, 152);
 			this.ResumeLayout(false);
 
 		}

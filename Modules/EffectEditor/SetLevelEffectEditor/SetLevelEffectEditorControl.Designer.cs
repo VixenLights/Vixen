@@ -43,9 +43,9 @@
 			this.colorTypeEditorControl.ColorValue = System.Drawing.Color.Empty;
 			this.colorTypeEditorControl.EffectParameterValues = new object[] {
         ((object)(System.Drawing.Color.Empty))};
-			this.colorTypeEditorControl.Location = new System.Drawing.Point(139, 3);
+			this.colorTypeEditorControl.Location = new System.Drawing.Point(87, 3);
 			this.colorTypeEditorControl.Name = "colorTypeEditorControl";
-			this.colorTypeEditorControl.Size = new System.Drawing.Size(70, 70);
+			this.colorTypeEditorControl.Size = new System.Drawing.Size(174, 70);
 			this.colorTypeEditorControl.TabIndex = 1;
 			// 
 			// SetLevelEffectEditorControl
@@ -55,7 +55,7 @@
 			this.Controls.Add(this.colorTypeEditorControl);
 			this.Controls.Add(this.levelTypeEditorControl);
 			this.Name = "SetLevelEffectEditorControl";
-			this.Size = new System.Drawing.Size(213, 77);
+			this.Size = new System.Drawing.Size(263, 77);
 			this.ResumeLayout(false);
 
 		}

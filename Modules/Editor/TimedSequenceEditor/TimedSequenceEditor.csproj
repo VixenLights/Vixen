@@ -60,6 +60,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ParameterEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ParameterEditor.Designer.cs">
+      <DependentUpon>ParameterEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="TimedSequenceEditorDataModel.cs" />
     <Compile Include="TimedSequenceEditor.cs" />
     <Compile Include="TimedSequenceEditorDescriptor.cs" />
@@ -98,6 +104,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ParameterEditor.resx">
+      <DependentUpon>ParameterEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TimedSequenceEditorEffectEditor.resx">
       <DependentUpon>TimedSequenceEditorEffectEditor.cs</DependentUpon>
     </EmbeddedResource>

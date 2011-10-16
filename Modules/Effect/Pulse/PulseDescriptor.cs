@@ -41,8 +41,8 @@ namespace VixenModules.Effect.Pulse
 			get
 			{
 				return new CommandParameterSignature(
-					new CommandParameterSpecification("Curve", typeof(Curve)),
-					new CommandParameterSpecification("ColorGradient", typeof(ColorGradient))
+					new CommandParameterSpecification("Intensity Curve", typeof(Curve)),
+					new CommandParameterSpecification("Color Gradient", typeof(ColorGradient))
 					);
 			}
 		}

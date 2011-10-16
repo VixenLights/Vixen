@@ -34,7 +34,7 @@
 			// 
 			this.buttonEditCurve.Location = new System.Drawing.Point(3, 3);
 			this.buttonEditCurve.Name = "buttonEditCurve";
-			this.buttonEditCurve.Size = new System.Drawing.Size(64, 64);
+			this.buttonEditCurve.Size = new System.Drawing.Size(164, 64);
 			this.buttonEditCurve.TabIndex = 0;
 			this.buttonEditCurve.Text = "Edit Curve";
 			this.buttonEditCurve.UseVisualStyleBackColor = true;
@@ -46,7 +46,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add(this.buttonEditCurve);
 			this.Name = "CurveTypeEditorControl";
-			this.Size = new System.Drawing.Size(70, 70);
+			this.Size = new System.Drawing.Size(170, 70);
 			this.ResumeLayout(false);
 
 		}

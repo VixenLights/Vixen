@@ -27,7 +27,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_effectNode = effectNode;
 			_control = ApplicationServices.GetEffectEditorControls(_effectNode.Effect.Descriptor.TypeId).First();
 			_control.EffectParameterValues = _effectNode.Effect.ParameterValues;
-			panelEditorControls.Controls.Add(_control as Control);
+
+			ParameterEditor pe = new ParameterEditor();
+			pe.editorPanel.Controls.Add(_control as Control);
+			//(_control as Control).Dock = DockStyle.Right;
+			pe.labelText = "TODO: label title here";
+
+			tableLayoutPanelParameterEditors.Controls.Add(pe);
+			//tableLayoutPanelParameterEditors.Controls.Add(_control as Control);
 		}
 
 		private void TimedSequenceEditorEffectEditor_FormClosed(object sender, FormClosedEventArgs e)

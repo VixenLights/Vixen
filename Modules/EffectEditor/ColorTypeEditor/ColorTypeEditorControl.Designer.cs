@@ -34,7 +34,7 @@
 			// 
 			this.buttonEditColor.Location = new System.Drawing.Point(3, 3);
 			this.buttonEditColor.Name = "buttonEditColor";
-			this.buttonEditColor.Size = new System.Drawing.Size(64, 64);
+			this.buttonEditColor.Size = new System.Drawing.Size(164, 64);
 			this.buttonEditColor.TabIndex = 1;
 			this.buttonEditColor.Text = "Edit Color";
 			this.buttonEditColor.UseVisualStyleBackColor = true;
@@ -46,7 +46,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add(this.buttonEditColor);
 			this.Name = "ColorTypeEditorControl";
-			this.Size = new System.Drawing.Size(70, 70);
+			this.Size = new System.Drawing.Size(170, 70);
 			this.ResumeLayout(false);
 
 		}

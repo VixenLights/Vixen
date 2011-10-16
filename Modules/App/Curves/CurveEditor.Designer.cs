@@ -109,7 +109,8 @@ namespace VixenModules.App.Curves
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.zedGraphControl);
 			this.Name = "CurveEditor";
-			this.Text = "CurveEditor";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.Text = "Curve Editor";
 			this.ResumeLayout(false);
 
 		}

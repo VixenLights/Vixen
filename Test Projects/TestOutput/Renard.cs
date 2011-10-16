@@ -14,12 +14,12 @@ namespace TestOutput {
         private RenardForm _form;
         private Stopwatch _sw;
         private int _updateCount;
-		private Command[] lastCommands;
+		//private Command[] lastCommands;
 
         public Renard() {
 			_form = new RenardForm();
             _sw = new Stopwatch();
-			lastCommands = new Command[0];
+			//lastCommands = new Command[0];
         }
 
 		override protected void _SetOutputCount(int outputCount) {
@@ -32,30 +32,30 @@ namespace TestOutput {
                 _sw.Start();
             }
 
-			for (int i = 0; i < outputStates.Length; i++) {
-				if (i < lastCommands.Length && lastCommands[i] != outputStates[i]) {
-					if (lastCommands[i] != null && outputStates[i] != null) {
-						if (lastCommands[i].Identifier == outputStates[i].Identifier)
-							continue;
+			//for (int i = 0; i < outputStates.Length; i++) {
+			//    if (i < lastCommands.Length && lastCommands[i] != outputStates[i]) {
+			//        if (lastCommands[i] != null && outputStates[i] != null) {
+			//            if (lastCommands[i].Identifier == outputStates[i].Identifier)
+			//                continue;
 
-						if (lastCommands[i].GetParameterValue(0) == outputStates[i].GetParameterValue(0))
-							continue;
-					}
+			//            if (lastCommands[i].GetParameterValue(0) == outputStates[i].GetParameterValue(0))
+			//                continue;
+			//        }
 
-					string id = "null";
-					if (outputStates[i] != null)
-						id = outputStates[i].Identifier;
+			//        string id = "null";
+			//        if (outputStates[i] != null)
+			//            id = outputStates[i].Identifier;
 
-					string pv = "null";
-					if (outputStates[i] != null)
-						pv = outputStates[i].GetParameterValue(0).ToString();
+			//        string pv = "null";
+			//        if (outputStates[i] != null)
+			//            pv = outputStates[i].GetParameterValue(0).ToString();
 
-					lock (VixenSystem.Logging) {
-						VixenSystem.Logging.Debug(Execution.CurrentExecutionTimeString + ": Renard Update: command for #" + i + " changed: " + id + ", " + pv);
-					}
-				}
-			}
-			lastCommands = outputStates;
+			//        lock (VixenSystem.Logging) {
+			//            VixenSystem.Logging.Debug(Execution.CurrentExecutionTimeString + ": Renard Update: command for #" + i + " changed: " + id + ", " + pv);
+			//        }
+			//    }
+			//}
+			//lastCommands = outputStates;
 
 			_form.UpdateState(1000 * ((double)_updateCount / _sw.ElapsedMilliseconds), outputStates);
         }

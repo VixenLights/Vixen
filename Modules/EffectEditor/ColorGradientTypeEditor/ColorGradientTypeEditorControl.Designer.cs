@@ -34,7 +34,7 @@
 			// 
 			this.buttonEditColorGradient.Location = new System.Drawing.Point(3, 3);
 			this.buttonEditColorGradient.Name = "buttonEditColorGradient";
-			this.buttonEditColorGradient.Size = new System.Drawing.Size(64, 64);
+			this.buttonEditColorGradient.Size = new System.Drawing.Size(164, 64);
 			this.buttonEditColorGradient.TabIndex = 2;
 			this.buttonEditColorGradient.Text = "Edit Gradient";
 			this.buttonEditColorGradient.UseVisualStyleBackColor = true;
@@ -46,7 +46,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add(this.buttonEditColorGradient);
 			this.Name = "ColorGradientTypeEditorControl";
-			this.Size = new System.Drawing.Size(70, 70);
+			this.Size = new System.Drawing.Size(170, 70);
 			this.ResumeLayout(false);
 
 		}
