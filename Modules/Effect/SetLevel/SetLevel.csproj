@@ -55,20 +55,22 @@
     <Compile Include="SetLevelDescriptor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="CommonElements">
-      <HintPath>..\..\..\Output\CommonElements.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="Vixen">
-      <HintPath>..\..\..\Output\Vixen.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\CommonElements\CommonElements.csproj">
+      <Project>{4EA6B667-2A25-47E8-810B-7CF1C6A8DB9A}</Project>
+      <Name>CommonElements</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
+      <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
+      <Name>Vixen</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Property\RGB\RGB.csproj">
       <Project>{3D1BD0E2-B947-4235-A2A7-30AA4F13CA86}</Project>
       <Name>RGB</Name>

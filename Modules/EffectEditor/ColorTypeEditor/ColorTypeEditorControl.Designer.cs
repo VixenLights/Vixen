@@ -27,32 +27,32 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.buttonEditColor = new System.Windows.Forms.Button();
+			this.panelColor = new System.Windows.Forms.Panel();
 			this.SuspendLayout();
 			// 
-			// buttonEditColor
+			// panelColor
 			// 
-			this.buttonEditColor.Location = new System.Drawing.Point(3, 3);
-			this.buttonEditColor.Name = "buttonEditColor";
-			this.buttonEditColor.Size = new System.Drawing.Size(164, 64);
-			this.buttonEditColor.TabIndex = 1;
-			this.buttonEditColor.Text = "Edit Color";
-			this.buttonEditColor.UseVisualStyleBackColor = true;
-			this.buttonEditColor.Click += new System.EventHandler(this.buttonEditColor_Click);
+			this.panelColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panelColor.Location = new System.Drawing.Point(32, 0);
+			this.panelColor.Margin = new System.Windows.Forms.Padding(0);
+			this.panelColor.Name = "panelColor";
+			this.panelColor.Size = new System.Drawing.Size(64, 64);
+			this.panelColor.TabIndex = 2;
+			this.panelColor.Click += new System.EventHandler(this.panelColor_Click);
 			// 
 			// ColorTypeEditorControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.buttonEditColor);
+			this.Controls.Add(this.panelColor);
 			this.Name = "ColorTypeEditorControl";
-			this.Size = new System.Drawing.Size(170, 70);
+			this.Size = new System.Drawing.Size(128, 64);
 			this.ResumeLayout(false);
 
 		}
 
 		#endregion
 
-		private System.Windows.Forms.Button buttonEditColor;
+		private System.Windows.Forms.Panel panelColor;
 	}
 }

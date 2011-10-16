@@ -28,10 +28,10 @@
 		private void InitializeComponent()
 		{
 			this.tableLayoutPanelAll = new System.Windows.Forms.TableLayoutPanel();
-			this.tableLayoutPanelParameterEditors = new System.Windows.Forms.TableLayoutPanel();
 			this.panelFormButtons = new System.Windows.Forms.Panel();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.buttonOK = new System.Windows.Forms.Button();
+			this.tableLayoutPanelEffectEditors = new System.Windows.Forms.TableLayoutPanel();
 			this.tableLayoutPanelAll.SuspendLayout();
 			this.panelFormButtons.SuspendLayout();
 			this.SuspendLayout();
@@ -41,51 +41,35 @@
 			this.tableLayoutPanelAll.AutoSize = true;
 			this.tableLayoutPanelAll.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.tableLayoutPanelAll.ColumnCount = 1;
-			this.tableLayoutPanelAll.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanelAll.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tableLayoutPanelAll.Controls.Add(this.panelFormButtons, 0, 1);
-			this.tableLayoutPanelAll.Controls.Add(this.tableLayoutPanelParameterEditors, 0, 0);
+			this.tableLayoutPanelAll.Controls.Add(this.tableLayoutPanelEffectEditors, 0, 0);
 			this.tableLayoutPanelAll.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanelAll.Location = new System.Drawing.Point(0, 0);
 			this.tableLayoutPanelAll.Name = "tableLayoutPanelAll";
 			this.tableLayoutPanelAll.RowCount = 2;
-			this.tableLayoutPanelAll.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanelAll.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanelAll.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-			this.tableLayoutPanelAll.Size = new System.Drawing.Size(308, 256);
+			this.tableLayoutPanelAll.Size = new System.Drawing.Size(173, 41);
 			this.tableLayoutPanelAll.TabIndex = 7;
-			// 
-			// tableLayoutPanelParameterEditors
-			// 
-			this.tableLayoutPanelParameterEditors.AutoSize = true;
-			this.tableLayoutPanelParameterEditors.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.tableLayoutPanelParameterEditors.ColumnCount = 1;
-			this.tableLayoutPanelParameterEditors.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanelParameterEditors.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanelParameterEditors.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanelParameterEditors.Location = new System.Drawing.Point(3, 3);
-			this.tableLayoutPanelParameterEditors.Name = "tableLayoutPanelParameterEditors";
-			this.tableLayoutPanelParameterEditors.RowCount = 1;
-			this.tableLayoutPanelParameterEditors.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanelParameterEditors.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanelParameterEditors.Size = new System.Drawing.Size(302, 210);
-			this.tableLayoutPanelParameterEditors.TabIndex = 0;
 			// 
 			// panelFormButtons
 			// 
+			this.panelFormButtons.Anchor = System.Windows.Forms.AnchorStyles.None;
 			this.panelFormButtons.AutoSize = true;
 			this.panelFormButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.panelFormButtons.Controls.Add(this.buttonCancel);
 			this.panelFormButtons.Controls.Add(this.buttonOK);
-			this.panelFormButtons.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panelFormButtons.Location = new System.Drawing.Point(3, 219);
+			this.panelFormButtons.Location = new System.Drawing.Point(4, 12);
 			this.panelFormButtons.Name = "panelFormButtons";
-			this.panelFormButtons.Size = new System.Drawing.Size(302, 34);
-			this.panelFormButtons.TabIndex = 2;
+			this.panelFormButtons.Size = new System.Drawing.Size(165, 27);
+			this.panelFormButtons.TabIndex = 3;
 			// 
 			// buttonCancel
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(143, 8);
+			this.buttonCancel.Location = new System.Drawing.Point(2, 2);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
 			this.buttonCancel.TabIndex = 7;
@@ -96,12 +80,27 @@
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOK.Location = new System.Drawing.Point(224, 8);
+			this.buttonOK.Location = new System.Drawing.Point(88, 2);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(75, 23);
 			this.buttonOK.TabIndex = 6;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
+			// 
+			// tableLayoutPanelEffectEditors
+			// 
+			this.tableLayoutPanelEffectEditors.AutoSize = true;
+			this.tableLayoutPanelEffectEditors.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.tableLayoutPanelEffectEditors.ColumnCount = 2;
+			this.tableLayoutPanelEffectEditors.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanelEffectEditors.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanelEffectEditors.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tableLayoutPanelEffectEditors.Location = new System.Drawing.Point(3, 3);
+			this.tableLayoutPanelEffectEditors.Name = "tableLayoutPanelEffectEditors";
+			this.tableLayoutPanelEffectEditors.RowCount = 1;
+			this.tableLayoutPanelEffectEditors.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanelEffectEditors.Size = new System.Drawing.Size(167, 1);
+			this.tableLayoutPanelEffectEditors.TabIndex = 4;
 			// 
 			// TimedSequenceEditorEffectEditor
 			// 
@@ -109,7 +108,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
 			this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.ClientSize = new System.Drawing.Size(308, 256);
+			this.ClientSize = new System.Drawing.Size(173, 41);
 			this.Controls.Add(this.tableLayoutPanelAll);
 			this.Name = "TimedSequenceEditorEffectEditor";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -129,7 +128,7 @@
 		private System.Windows.Forms.Panel panelFormButtons;
 		private System.Windows.Forms.Button buttonCancel;
 		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.TableLayoutPanel tableLayoutPanelParameterEditors;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanelEffectEditors;
 
 	}
 }

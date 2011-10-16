@@ -46,7 +46,7 @@
 			this.tableLayoutPanel.RowCount = 1;
 			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
 			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel.Size = new System.Drawing.Size(250, 13);
+			this.tableLayoutPanel.Size = new System.Drawing.Size(128, 13);
 			this.tableLayoutPanel.TabIndex = 2;
 			// 
 			// labelParameterType
@@ -55,9 +55,9 @@
 			this.labelParameterType.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.labelParameterType.Location = new System.Drawing.Point(3, 0);
 			this.labelParameterType.Name = "labelParameterType";
-			this.labelParameterType.Size = new System.Drawing.Size(119, 13);
+			this.labelParameterType.Size = new System.Drawing.Size(58, 13);
 			this.labelParameterType.TabIndex = 1;
-			this.labelParameterType.Text = "TODO Parameter Type:";
+			this.labelParameterType.Text = "Parameter:";
 			this.labelParameterType.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// ParameterEditor
@@ -68,7 +68,7 @@
 			this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.Controls.Add(this.tableLayoutPanel);
 			this.Name = "ParameterEditor";
-			this.Size = new System.Drawing.Size(250, 13);
+			this.Size = new System.Drawing.Size(128, 13);
 			this.tableLayoutPanel.ResumeLayout(false);
 			this.tableLayoutPanel.PerformLayout();
 			this.ResumeLayout(false);

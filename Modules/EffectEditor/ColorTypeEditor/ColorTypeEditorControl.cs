@@ -31,9 +31,14 @@ namespace VixenModules.EffectEditor.ColorTypeEditor
 			}
 		}
 
-		public Color ColorValue { get; set; }
+		private Color _color;
+		public Color ColorValue
+		{
+			get { return _color; }
+			set { _color = value; panelColor.BackColor = value; }
+		}
 
-		private void buttonEditColor_Click(object sender, EventArgs e)
+		private void panelColor_Click(object sender, EventArgs e)
 		{
 			using (ColorPicker cp = new ColorPicker()) {
 				cp.LockValue_V = true;
