@@ -58,13 +58,13 @@ namespace VixenModules.Effect.SetLevel
 		public Level Level
 		{
 			get { return _data.level; }
-			set { _data.level = value; }
+			set { _data.level = value; IsDirty = true; }
 		}
 
 		public Color Color
 		{
 			get { return _data.color; }
-			set { _data.color = value; }
+			set { _data.color = value; IsDirty = true; }
 		}
 
 		// renders the given node to the internal ChannelData dictionary. If the given node is

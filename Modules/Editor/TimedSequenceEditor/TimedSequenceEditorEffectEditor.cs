@@ -35,6 +35,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			_controls = new List<IEffectEditorControl>();
+			object[] values = _effectNode.Effect.ParameterValues;
 
 			// if there were multiple controls returned, or there was only a single control needed (ie. the efffect parameters had only
 			// a single item) then add controls inside a ParameterEditor wrapper using editors for that type, and label them appropriately.
@@ -47,7 +48,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					// as it's a single control for a single parameter, it *should* take the corresponding indexed parameter from the effect.
 					// so pull that individual parameter out, and give it to the control as a single item. This is a bit of an assumption
 					// and seems...... prone to breaking. TODO: review.
-					ec.EffectParameterValues = _effectNode.Effect.ParameterValues[i].AsEnumerable().ToArray();
+					ec.EffectParameterValues = values[i].AsEnumerable().ToArray();
 
 					Label l = new Label();
 					l.Width = 1;
@@ -81,9 +82,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (_usedSingleControl) {
 					_effectNode.Effect.ParameterValues = _controls.First().EffectParameterValues;
 				} else {
+					object[] values = new object[_controls.Count];
 					for (int i = 0; i < _controls.Count; i++) {
-						_effectNode.Effect.ParameterValues[i] = _controls[i].EffectParameterValues.First();
+						values[i] = _controls[i].EffectParameterValues.First();
 					}
+					_effectNode.Effect.ParameterValues = values;
 				}
 			}
 		}

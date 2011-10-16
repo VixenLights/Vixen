@@ -61,13 +61,13 @@ namespace VixenModules.Effect.Pulse
 		public Curve LevelCurve
 		{
 			get { return _data.LevelCurve; }
-			set { _data.LevelCurve = value; }
+			set { _data.LevelCurve = value; IsDirty = true; }
 		}
 
 		public ColorGradient ColorGradient
 		{
 			get { return _data.ColorGradient; }
-			set { _data.ColorGradient = value; }
+			set { _data.ColorGradient = value; IsDirty = true; }
 		}
 
 		// The minimum amount of time between successive generated commands. Currently, this 
@@ -118,7 +118,7 @@ namespace VixenModules.Effect.Pulse
 				double lastCommandLevel = 0.0;
 
 				while (currentTime < TimeSpan) {
-					double percentProgress = currentTime.TotalMilliseconds / TimeSpan.TotalMilliseconds;
+					double percentProgress = currentTime.TotalMilliseconds / TimeSpan.TotalMilliseconds * 100.0;
 					double newLevel = LevelCurve.GetValue(percentProgress);
 
 					// if the difference is big enough to change, then make a new command: for the period that just

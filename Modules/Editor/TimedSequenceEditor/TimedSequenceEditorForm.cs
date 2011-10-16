@@ -374,6 +374,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			using (TimedSequenceEditorEffectEditor editor = new TimedSequenceEditorEffectEditor(element.EffectNode)) {
 				DialogResult result = editor.ShowDialog();
+				if (result == System.Windows.Forms.DialogResult.OK)
+					IsModified = true;
 			}
 		}
 
