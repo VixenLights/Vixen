@@ -102,6 +102,11 @@ namespace CommonElements.Timeline
 			set { grid.CursorPosition = value; }
 		}
 
+		public override TimeSpan VisibleTimeSpan
+		{
+			get { return grid.VisibleTimeSpan; }
+		}
+
 
 		#endregion
 

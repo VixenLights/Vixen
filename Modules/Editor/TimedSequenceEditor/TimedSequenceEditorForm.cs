@@ -25,11 +25,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 	{
 		#region Member Variables
 
+		// the sequence.
 		private TimedSequence _sequence;
+
+		// the program context we will be playing this sequence in: used to interact with the execution engine.
 		private ProgramContext _context;
+
+		// the timing source this sequence will be executing against. Used to update times, etc.
 		private ITiming _timingSource;
+
+		// a mapping of effects in the sequence to the element that represent them in the grid.
 		private Dictionary<EffectNode, Element> _effectNodeToElement;
+
+		// a mapping of system channels to the (possibly multiple) rows that represent them in the grid.
 		private Dictionary<ChannelNode, List<Row>> _channelNodeToRows;
+
+		// the time that was originally marked with the cursor before playback started; this is so
+		// we can move the cursor to represent the current playing time, and still return to where it was.
+		private TimeSpan _originalCursorPositionBeforePlayback;
 
 		#endregion
 
@@ -44,6 +57,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			timelineControl.ElementChangedRows += ElementChangedRowsHandler;
 			timelineControl.ElementDoubleClicked += ElementDoubleClickedHandler;
+			timelineControl.CursorMoved += timelineControl_CursorMoved;
 
 			LoadAvailableEffects();
 
@@ -411,7 +425,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return;
 			}
 
-			_context.Play();
+			_originalCursorPositionBeforePlayback = timelineControl.CursorPosition;
+			_context.Play(timelineControl.CursorPosition, TimeSpan.MaxValue);
 		}
 
 		public void PauseSequence()
@@ -432,24 +447,38 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			_context.Stop();
+
+			timelineControl.CursorPosition = _originalCursorPositionBeforePlayback;
 		}
 
-		void context_SequenceStarted(object sender, SequenceStartedEventArgs e)
+		protected void context_SequenceStarted(object sender, SequenceStartedEventArgs e)
 		{
 			timerPlaying.Start();
 			_timingSource = e.TimingSource;
 		}
 
-		void context_SequenceEnded(object sender, SequenceEventArgs e)
+		protected void context_SequenceEnded(object sender, SequenceEventArgs e)
 		{
 			timerPlaying.Stop();
 			_timingSource = null;
 		}
 
-		private void timerPlaying_Tick(object sender, EventArgs e)
+		protected void timerPlaying_Tick(object sender, EventArgs e)
 		{
-			if (_timingSource != null)
-				toolStripStatusLabel_currentTime.Text = _timingSource.Position.ToString("m\\:ss\\.fff");
+			if (_timingSource != null) {
+				timelineControl.CursorPosition = _timingSource.Position;
+			}
+		}
+
+		protected void timelineControl_CursorMoved(object sender, EventArgs e)
+		{
+			toolStripStatusLabel_currentTime.Text = timelineControl.CursorPosition.ToString("m\\:ss\\.fff");
+
+			// check if the cursor position would be over 90% of the grid width: if so, scroll the grid so it would be at 50%
+			// TODO: this is probably going to look a bit messy and jerky. Would could improve it maybe, if needed?
+			if (timelineControl.CursorPosition > timelineControl.VisibleTimeStart + TimeSpan.FromMilliseconds(timelineControl.VisibleTimeSpan.TotalMilliseconds * 0.9)) {
+				timelineControl.VisibleTimeStart = TimeSpan.FromMilliseconds(timelineControl.CursorPosition.TotalMilliseconds - (timelineControl.VisibleTimeSpan.TotalMilliseconds * 0.5));
+			}
 		}
 
 		#endregion

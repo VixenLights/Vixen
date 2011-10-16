@@ -27,7 +27,6 @@ namespace CommonElements.Timeline
 		private Rectangle m_ignoreDragArea;						// the area in which move movements should be ignored, before we start dragging
 		private Element m_mouseDownElement = null;		// the element under the cursor on a mouse click
 		private Row m_mouseDownElementRow = null;		// the row that the clicked m_mouseDownElement belongs to (a single element may be in multiple rows)
-		private TimeSpan m_totalTime;							// the total amount of time this grid represents
 		private TimeSpan m_cursorPosition;						// the current grid 'cursor' position (line drawn vertically)
 		private Size m_dragAutoscrollDistance;					// how far in either dimension the mouse has moved outside a bounding area,
 																// so we should scroll the viewable pane that direction
