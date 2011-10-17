@@ -1,0 +1,426 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Xml.Linq;
+using System.IO;
+using System.Threading.Tasks;
+using Vixen.Module;
+using Vixen.Module.Output;
+using Vixen.Module.Transform;
+using Vixen.IO;
+using Vixen.IO.Xml;
+using Vixen.Commands;
+
+namespace Vixen.Sys {
+	public class OutputController : IEnumerable<OutputController>, Vixen.Execution.IExecutionControl {//, IVersioned {
+		private Guid _outputModuleId;
+		private IOutputModuleInstance _outputModule = null;
+		private List<Output> _outputs = new List<Output>();
+		private ModuleInstanceSpecification<int> _outputTransforms = new ModuleInstanceSpecification<int>();
+		private IModuleDataSet _outputTransformModuleData = new ModuleLocalDataSet();
+
+		public OutputController(string name, int outputCount, Guid outputModuleId)
+			: this(Guid.NewGuid(), Guid.NewGuid(), name, outputCount, outputModuleId) {
+		}
+
+		public OutputController(Guid id, Guid instanceId, string name, int outputCount, Guid outputModuleId) {
+			Id = id;
+			InstanceId = instanceId;
+			Name = name;
+			OutputModuleId = outputModuleId;
+			OutputCount = outputCount;
+		}
+
+		public void Start() {
+			if(OutputModule != null) {
+				OutputModule.Start();
+				_FixupOutputSources();
+			}
+		}
+
+		public void Pause() {
+			if(OutputModule != null) {
+				OutputModule.Pause();
+			}
+		}
+
+		public void Resume() {
+			if(OutputModule != null) {
+				OutputModule.Resume();
+			}
+		}
+
+		public void Stop() {
+			if(OutputModule != null) {
+				OutputModule.Stop();
+				_ReleaseOutputSources();
+			}
+		}
+
+		private void _FixupOutputSources() {
+			_ReleaseOutputSources();
+			// Get patches with ControllerReferences for this controller.
+			IEnumerable<Patch> patchReferences = VixenSystem.Channels.Select(x => x.Patch).Where(x => x.ControllerReferences.Any(y => y.ControllerId == Id));
+			// Get a collection of { Patch, OutputIndex } objects to iterate of references
+			// to this controller.
+			var references = patchReferences.SelectMany(x => x.ControllerReferences.Where(y => y.ControllerId == Id).Select(y => new { Patch = x, OutputIndex = y.OutputIndex }));
+			foreach(var reference in references) {
+				AddSource(reference.Patch, reference.OutputIndex);
+			}
+		}
+
+		private void _ReleaseOutputSources() {
+			foreach(Output output in _outputs) {
+				output.ClearSources();
+			}
+		}
+
+		// Must be a property for data binding.
+		public Guid OutputModuleId {
+			get { return _outputModuleId; }
+			set {
+				_outputModuleId = value;
+				_outputModule = null;
+			}
+		}
+
+		public IOutputModuleInstance OutputModule {
+			get {
+				if(_outputModule == null) {
+					_outputModule = Modules.ModuleManagement.GetOutput(_outputModuleId);
+
+					_SetOutputModuleOutputCount();
+					_SetOutputModuleTransformModuleData();
+					_SetOutputModuleTransforms();
+				}
+				return _outputModule;
+			}
+		}
+
+		private void _SetOutputModuleOutputCount() {
+			if(_outputModule != null && OutputCount != 0) {
+				_outputModule.OutputCount = OutputCount;
+			}
+		}
+
+		private void _SetOutputModuleTransformModuleData() {
+			if(_outputModule != null) {
+				_outputModule.TransformModuleData = OutputTransformModuleData;
+			}
+		}
+
+		private void _SetOutputModuleTransforms() {
+			if(_outputModule != null) {
+				// _outputTransforms is an index of transforms for a given output.
+				// Create transforms of the types in the tuple (Item1) and give them
+				// the specified instance id (Item2).
+				foreach(int outputIndex in _outputTransforms.Keys) {
+					IEnumerable<ITransformModuleInstance> outputTransforms =
+						_outputTransforms[outputIndex].Select(x => {
+							ITransformModuleInstance transformModule = Modules.ModuleManagement.GetTransform(x.Item1);
+							transformModule.InstanceId = x.Item2;
+							return transformModule;
+						});
+					_outputModule.SetTransforms(outputIndex, outputTransforms);
+				}
+			}
+		}
+
+		public ModuleInstanceSpecification<int> OutputTransforms {
+			get { return _outputTransforms; }
+			set {
+				_outputTransforms = value;
+				_SetOutputModuleTransforms();
+			}
+		}
+
+		public IModuleDataSet OutputTransformModuleData {
+			get { return _outputTransformModuleData; }
+			set {
+				_outputTransformModuleData = value;
+				_SetOutputModuleTransformModuleData();
+			}
+		}
+
+		public void Update() {
+			// Updates start at the root controllers and cascade from there.
+			// Non-root controllers are not directly updated; they are only updated
+			// from a previous-linked controller.
+			if(IsRootController && _ControllerChainOutputModule != null) {
+				// States need to be pulled in order, so we're getting them to update
+				// in parallel with no need to properly collate the results, then iterating
+				// the output in order.
+
+				// Get the outputs of all controllers in the chain to update their state.
+				Parallel.ForEach(this, x =>
+					Parallel.ForEach(_outputs, y => y.UpdateState())
+					);
+				// Latch out the new state.
+				// This must be done in order of the chain links so that data
+				// goes out the port in the correct order.
+				foreach(OutputController controller in this) {
+					controller._ControllerChainOutputModule.UpdateState(_outputs.Select(x => x.CurrentState).ToArray());
+				}
+			}
+		}
+
+		public OutputController Clone() {
+			// Doing a MemberwiseClone does NOT call the constructor.
+			OutputController controller = this.MemberwiseClone() as OutputController;
+
+			// Wipe out instance link references or the stale references will prevent links.
+			controller.Prior = null;
+			controller.Next = null;
+			controller._outputs = this._outputs.Select(x => new Output(this)).ToList();
+
+			if(_outputModule != null) {
+				controller._outputModule = Modules.ModuleManagement.GetOutput(_outputModule.Descriptor.TypeId);
+			}
+
+			controller.InstanceId = Guid.NewGuid();
+
+			return controller;
+		}
+
+		public Output[] Outputs {
+			get { return _outputs.ToArray(); }
+		}
+
+		public int OutputCount {
+			get { return _outputs.Count; }
+			set {
+				// Adjust the outputs list.
+				if(value < _outputs.Count) {
+					_outputs.RemoveRange(value, _outputs.Count - value);
+				} else {
+					while(_outputs.Count < value) {
+						// Create a new output.
+						Output output = new Output(this);
+						_outputs.Add(output);
+					}
+				}
+
+				_SetOutputModuleOutputCount();
+			}
+		}
+
+		/// <summary>
+		/// States if this output controller instance can be a child of the specified output controller.
+		/// </summary>
+		/// <param name="otherController"></param>
+		/// <returns></returns>
+		public bool CanLinkTo(OutputController otherController) {
+			// A controller can link to a parent controller if:
+			// Neither controller is running.
+			// The other controller doesn't already have a child link.
+			//*** Raise an exception if they try to execute with a bad linking scheme?
+
+			// If the other controller is null, they're trying to break the link so pass
+			// it through.
+			return
+				otherController == null ||
+				(!this.IsRunning &&
+				!otherController.IsRunning &&
+				otherController.Next == null);
+		}
+
+		/// <summary>
+		/// Links the output controller to another output controller.
+		/// </summary>
+		/// <param name="controller"></param>
+		/// <returns>True if controller could be successfully linked.</returns>
+		public bool LinkTo(OutputController controller) {
+			if(CanLinkTo(controller)) {
+				if(Prior != null) {
+					Prior.Next = null;
+				}
+				Prior = controller;
+				if(Prior != null) {
+					Prior.Next = this;
+				}
+				return true;
+			}
+			return false;
+		}
+
+		public Guid LinkedTo { get; set; }
+
+		public bool IsRootController {
+			get { return Prior == null && LinkedTo == Guid.Empty; }
+		}
+
+		private IOutputModuleInstance _ControllerChainOutputModule {
+			get {
+				// When output controllers are linked, only the root controller will be
+				// connected to the port, therefore only it will have the output module
+				// used during execution.
+				if(Prior != null) return Prior._ControllerChainOutputModule;
+				return _outputModule;
+			}
+		}
+
+		virtual protected void CommitState() {
+			if(Prior != null) {
+				LinkedTo = Prior.Id;
+			} else {
+				LinkedTo = Guid.Empty;
+			}
+		}
+
+		/// <summary>
+		/// Runs the controller setup and commits it upon success.
+		/// </summary>
+		/// <returns>True if the setup was successful and committed.  False if the user canceled.</returns>
+		public bool Setup() {
+			if(_outputModule != null) {
+				if(_outputModule.Setup()) {
+					Commit();
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public void Commit() {
+			// The data set that the data model was pulled from has a reference to the data
+			// model object and pulls it in upon Serialize.  So it's serialized when its
+			// container is saved.
+			// Commit derivative changes.
+			CommitState();
+		}
+
+		public bool AddSource(IOutputStateSource source, int outputIndex) {
+			if(outputIndex < OutputCount) {
+				return _outputs[outputIndex].AddSource(source);
+			}
+			return false;
+		}
+
+		public void RemoveSource(IOutputStateSource source, int outputIndex) {
+			if(outputIndex < OutputCount) {
+				_outputs[outputIndex].RemoveSource(source);
+			}
+		}
+
+		// Must be a property for data binding.
+		public Guid Id { get; set; }
+
+		public string Name { get; set; }
+
+		public Guid InstanceId { get; private set; }
+
+		public OutputController Prior { get; private set; }
+
+		public OutputController Next { get; private set; }
+
+		public bool IsRunning {
+			get { return (_outputModule != null) ? _outputModule.IsRunning : false; }
+		}
+
+		public int UpdateInterval {
+			//*** module will be null if it's missing after the controller's been created
+			get { return _outputModule.UpdateInterval; }
+		}
+
+		public override string ToString() {
+			return Name;
+		}
+
+		#region IEnumerable<OutputController>
+		public IEnumerator<OutputController> GetEnumerator() {
+			if(IsRootController) {
+				return new ChainEnumerator(this);
+			}
+			return null;
+		}
+
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
+			return GetEnumerator();
+		}
+		#endregion
+
+		#region class Output
+		public class Output {
+			private OutputController _owner;
+			private LinkedList<IOutputStateSource> _sources = new LinkedList<IOutputStateSource>();
+
+			public Output(OutputController owner) {
+				_owner = owner;
+				CurrentState = null;
+				Name = "Unnamed";
+			}
+
+			// Completely independent; nothing is current dependent upon this value.
+			public string Name { get; set; }
+
+			public bool AddSource(IOutputStateSource source) {
+				if(!_sources.Contains(source)) {
+					_sources.AddLast(source);
+					return true;
+				}
+				return false;
+			}
+
+			public void RemoveSource(IOutputStateSource source) {
+				_sources.Remove(source);
+			}
+
+			public void ClearSources() {
+				_sources.Clear();
+			}
+
+			public void UpdateState() {
+				// Aggregate a state.
+				if(_sources.Count > 0) {
+
+					if(_sources.Count == 1) {
+						CurrentState = _sources.First.Value.SourceState;
+					} else {
+						CurrentState = Command.Combine(_sources.Select(x => x.SourceState));
+					}
+				}
+			}
+
+			public Command CurrentState { get; private set; }
+		}
+		#endregion
+
+		#region class ChainEnumerator
+		class ChainEnumerator : IEnumerator<OutputController> {
+			private OutputController _root;
+			private OutputController _current;
+			private OutputController _next;
+
+			public ChainEnumerator(OutputController root) {
+				_root = root;
+				Reset();
+			}
+
+			public OutputController Current {
+				get { return _current; }
+			}
+
+			public void Dispose() { }
+
+			object System.Collections.IEnumerator.Current {
+				get { return _current; }
+			}
+
+			public bool MoveNext() {
+				if(_next != null) {
+					_current = _next;
+					_next = _current.Next;
+					return true;
+				}
+				return false;
+			}
+
+			public void Reset() {
+				_current = null;
+				_next = _root;
+			}
+		}
+		#endregion
+	}
+}

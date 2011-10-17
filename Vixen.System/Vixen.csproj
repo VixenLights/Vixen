@@ -115,6 +115,8 @@
     <Compile Include="Commands\ICustomCommandBehavior.cs" />
     <Compile Include="Commands\Lighting.cs" />
     <Compile Include="Commands\Types.cs" />
+    <Compile Include="Execution\ChannelManager.cs" />
+    <Compile Include="Execution\ControllerManager.cs" />
     <Compile Include="Execution\MultiStateTimedEnumerator.cs" />
     <Compile Include="ImageResource.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -144,6 +146,7 @@
     <Compile Include="Sys\IPackageFileContent.cs" />
     <Compile Include="Sys\ITimed.cs" />
     <Compile Include="Sys\LiveListEnumerator.cs" />
+    <Compile Include="Sys\ModuleInstanceSpecification.cs" />
     <Compile Include="Sys\ModuleStore.cs" />
     <Compile Include="Sys\ProgramContextEventArgs.cs" />
     <Compile Include="Sys\ProgramEventArgs.cs" />
@@ -158,8 +161,6 @@
     <Compile Include="IO\Xml\XmlAnySequenceReader.cs" />
     <Compile Include="IO\Xml\XmlChannelNodeTemplateReader.cs" />
     <Compile Include="IO\Xml\XmlChannelNodeTemplateWriter.cs" />
-    <Compile Include="IO\Xml\XmlControllerReader.cs" />
-    <Compile Include="IO\Xml\XmlControllerWriter.cs" />
     <Compile Include="IO\Xml\XmlProgramReader.cs" />
     <Compile Include="IO\Xml\XmlProgramWriter.cs" />
     <Compile Include="IO\Xml\XmlScriptSequenceReader.cs" />
@@ -229,7 +230,7 @@
     <Compile Include="Execution\SingleTimedEnumerator.cs" />
     <Compile Include="Execution\TimingModuleTimingProvider.cs" />
     <Compile Include="Execution\TimingProviders.cs" />
-    <Compile Include="Hardware\IOutputStateSource.cs" />
+    <Compile Include="Sys\IOutputStateSource.cs" />
     <Compile Include="Module\Input\IInput.cs" />
     <Compile Include="Module\Input\IInputInput.cs" />
     <Compile Include="Module\Input\IInputModuleDescriptor.cs" />
@@ -411,7 +412,7 @@
     <Compile Include="Execution\IExecutor.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Hardware\IHardwareModule.cs">
+    <Compile Include="Sys\IHardwareModule.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Module\IModuleDataModel.cs" />
@@ -427,7 +428,7 @@
     <Compile Include="Module\Trigger\ITriggerInput.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Hardware\OutputController.cs" />
+    <Compile Include="Sys\OutputController.cs" />
     <Compile Include="Sys\Execution.cs" />
     <Compile Include="Execution\ProgramContext.cs" />
     <Compile Include="Module\App\IApp.cs" />
@@ -485,6 +486,7 @@
   <ItemGroup>
     <None Include="Resources\Effect64.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

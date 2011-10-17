@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Vixen.Sys;
-using Vixen.Hardware;
 using Vixen.Module.Output;
 
 namespace VixenTestbed {
@@ -37,7 +36,7 @@ namespace VixenTestbed {
 			listViewControllers.Items.Clear();
 			_controllers.Clear();
 
-			_controllers.AddRange(OutputController.GetAll());
+			_controllers.AddRange(VixenSystem.Controllers);
 			foreach(OutputController controller in _controllers) {
 				_AddControllerToView(controller);
 			}
@@ -135,7 +134,7 @@ namespace VixenTestbed {
 			try {
 				if(_Validate()) {
 					OutputController controller = new OutputController(_ControllerName, _OutputCount, _OutputModule);
-					controller.Save();
+					VixenSystem.Controllers.AddController(controller);
 					_AddControllerToView(controller);
 					_controllers.Add(controller);
 					_ResetLinkedToCombo();
@@ -152,7 +151,6 @@ namespace VixenTestbed {
 					if(controller != null) {
 						controller.OutputCount = _OutputCount;
 						controller.OutputModuleId = _OutputModule;
-						controller.Save(controller.FilePath);
 					} else {
 						MessageBox.Show("Controller must be selected.");
 					}
@@ -165,7 +163,7 @@ namespace VixenTestbed {
 		private void buttonDeleteController_Click(object sender, EventArgs e) {
 			try {
 				if(_SelectedController != null) {
-					_SelectedController.Delete();
+					VixenSystem.Controllers.RemoveController(_SelectedController);
 					_LoadControllers();
 				}
 			} catch(Exception ex) {

@@ -17,6 +17,11 @@ namespace Vixen.Execution {
 			ChannelNode.Changed += new EventHandler(ChannelNode_Changed);
 		}
 
+		public NodeManager(IEnumerable<ChannelNode> nodes)
+			: this() {
+			AddNodes(nodes);
+		}
+
 		void ChannelNode_Changed(object sender, EventArgs e) {
 			OnNodesChanged();
 		}
@@ -36,7 +41,7 @@ namespace Vixen.Execution {
 			foreach(ChannelNode leafNode in leafNodes) {
 				// since we're effectively trying to remove the channel, we'll be removing
 				// ALL nodes with this channel, which means they will be removed from all parents.
-				foreach (ChannelNode parent in leafNode.Parents) {
+				foreach (ChannelNode parent in leafNode.Parents.ToArray()) {
 					leafNode.RemoveFromParent(parent);
 				}
 			}
@@ -68,6 +73,12 @@ namespace Vixen.Execution {
 			}
 		}
 
+		public void AddNodes(IEnumerable<ChannelNode> nodes) {
+			foreach(ChannelNode node in nodes) {
+				AddNode(node);
+			}
+		}
+
 		public ChannelNode AddNewNode(string name) {
 			name = _Uniquify(name);
 			ChannelNode newNode = new ChannelNode(name);
@@ -93,7 +104,7 @@ namespace Vixen.Execution {
 			// if an item is a group (or is becoming one), it can't have an output
 			// channel anymore. Remove it.
 			if (parent.Channel != null) {
-				Vixen.Sys.Execution.RemoveChannel(parent.Channel);
+				VixenSystem.Channels.RemoveChannel(parent.Channel);
 				parent.Channel = null;
 			}
 

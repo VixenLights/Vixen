@@ -269,7 +269,7 @@ Namespace ");
             #line 90 "C:\VixenDev\Test Projects\TestScript\VB_Framework.tt"
 
 	// This needs to match the node collection that the script created in its constructor.
-	ChannelNode[] nodes = Vixen.Sys.Execution.Nodes.ToArray();
+	ChannelNode[] nodes = VixenSystem.Nodes.ToArray();
 	List<string> usedNames = new List<string>();
 	for(int i=0; i < nodes.Length; i++) { 
             

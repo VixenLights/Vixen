@@ -6,7 +6,6 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using Vixen.Hardware;
 using Vixen.Sys;
 
 namespace TestClient {
@@ -20,7 +19,7 @@ namespace TestClient {
 
 			comboBoxChannel.DisplayMember = "Name";
 			comboBoxChannel.ValueMember = "Id";
-			comboBoxChannel.DataSource = Vixen.Sys.Execution.Channels.ToArray();
+			comboBoxChannel.DataSource = VixenSystem.Channels.ToArray();
         }
 
         private void comboBoxController_SelectedIndexChanged(object sender, EventArgs e) {

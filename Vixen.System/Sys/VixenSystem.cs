@@ -9,7 +9,6 @@ using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Sequence;
 using Vixen.Execution;
-using Vixen.Hardware;
 using Vixen.IO;
 using Vixen.IO.Xml;
 
@@ -42,10 +41,14 @@ namespace Vixen.Sys {
 						Helper.EnsureDirectory(Path.Combine(Modules.Directory, moduleImplementation.TypeOfModule));
 					}
 
-					// Load all modules.
+					Channels = new ChannelManager();
+					Nodes = new NodeManager();
+					Controllers = new ControllerManager();
+
+					// Load all module descriptors.
 					Modules.LoadAllModules();
 
-					// Load system data.
+					// Load system data in order of dependency.
 					// The system data generally resides in the data branch, but it
 					// may not be in the case of an alternate context.
 					string systemDataPath = _GetSystemDataPath();
@@ -54,14 +57,13 @@ namespace Vixen.Sys {
 					reader = new XmlSystemConfigReader();
 					SystemConfig = (SystemConfig)reader.Read(Path.Combine(systemDataPath, SystemConfig.FileName));
 
+					Channels.AddChannels(SystemConfig.Channels);
+					Nodes.AddNodes(SystemConfig.Nodes);
+					Controllers.AddControllers(SystemConfig.Controllers);
+
 					// Add modules to repositories.
 					Modules.PopulateRepositories();
 
-					// Load the controllers before opening execution.
-					// Creating the fixtures will create channels which will create patches
-					// which will create sources for outputs that need to exist first.
-					OutputController.ReloadAll();
-					
 					if(openExecution) {
 						Vixen.Sys.Execution.OpenExecution();
 					}
@@ -105,12 +107,16 @@ namespace Vixen.Sys {
 			get { return Assembly.GetExecutingAssembly().Location; }
 		}
 
-		static internal ModuleStore ModuleStore { get; private set; }
-		static internal SystemConfig SystemConfig { get; private set; }
-
 		static public dynamic Logging {
 			get { return _logging; }
 		}
+
+		static public ChannelManager Channels { get; private set; }
+		static public NodeManager Nodes { get; private set; }
+		static public ControllerManager Controllers { get; private set; }
+
+		static internal ModuleStore ModuleStore { get; private set; }
+		static internal SystemConfig SystemConfig { get; private set; }
 
 		static private void _InitializeLogging() {
 			_logging = new Logging();

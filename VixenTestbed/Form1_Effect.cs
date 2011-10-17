@@ -17,6 +17,15 @@ namespace VixenTestbed {
 			get { return checkedListBoxEffectTargetNodes.CheckedItems.Cast<ChannelNode>(); }
 		}
 
+		private void _RefreshEffectNodeList() {
+			checkedListBoxEffectTargetNodes.Items.Clear();
+			checkedListBoxEffectTargetNodes.Items.AddRange(VixenSystem.Nodes.ToArray());
+		}
+
+		private void buttonRefreshEffectNodes_Click(object sender, EventArgs e) {
+			_RefreshEffectNodeList();
+		}
+
 		private void moduleListEffect_SelectedModuleChanged(object sender, EventArgs e) {
 			buttonRenderEffect.Enabled = _ValidateEffectControls();
 			if(_SelectedEffectModule != null) {

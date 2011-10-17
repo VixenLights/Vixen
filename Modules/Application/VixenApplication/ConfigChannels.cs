@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Vixen.Sys;
-using Vixen.Hardware;
 using Vixen.Module.Property;
 using System.Reflection;
 
@@ -61,7 +60,7 @@ namespace VixenApplication
 			multiSelectTreeviewChannelsGroups.BeginUpdate();
 			multiSelectTreeviewChannelsGroups.Nodes.Clear();
 
-			foreach (ChannelNode channel in Vixen.Sys.Execution.Nodes.RootNodes) {
+			foreach(ChannelNode channel in VixenSystem.Nodes.RootNodes) {
 				AddNodeToTree(multiSelectTreeviewChannelsGroups.Nodes, channel);
 			}
 
@@ -350,9 +349,9 @@ namespace VixenApplication
 				List<ChannelNode> seen = new List<ChannelNode>();
 
 				if (radioButtonChannels.Checked) {
-					collection = Vixen.Sys.Execution.Nodes.GetLeafNodes();
+					collection = VixenSystem.Nodes.GetLeafNodes();
 				} else {
-					collection = Vixen.Sys.Execution.Nodes.GetNonLeafNodes();
+					collection = VixenSystem.Nodes.GetNonLeafNodes();
 				}
 
 				foreach (ChannelNode n in collection) {
@@ -366,7 +365,7 @@ namespace VixenApplication
 					}
 				}
 			} else {
-				foreach (OutputController oc in OutputController.GetAll()) {
+				foreach(OutputController oc in VixenSystem.Controllers) {
 					for (int i = 0; i < oc.OutputCount; i++) {
 						if (node.Channel != null && node.Channel.Patch.Contains(new ControllerReference(oc.Id, i))) {
 							continue;
@@ -390,9 +389,9 @@ namespace VixenApplication
 			using (CommonElements.TextDialog textDialog = new CommonElements.TextDialog("Channel Name?")) {
 				if (textDialog.ShowDialog() == DialogResult.OK) {
 					if (textDialog.Response == "")
-						Vixen.Sys.Execution.Nodes.AddNewNode("Unnamed Channel");
+						VixenSystem.Nodes.AddNewNode("Unnamed Channel");
 					else
-						Vixen.Sys.Execution.Nodes.AddNewNode(textDialog.Response);
+						VixenSystem.Nodes.AddNewNode(textDialog.Response);
 
 					PopulateNodeTree();
 				}
@@ -408,7 +407,7 @@ namespace VixenApplication
 					foreach (TreeNode tn in multiSelectTreeviewChannelsGroups.SelectedNodes) {
 						ChannelNode cn = tn.Tag as ChannelNode;
 						ChannelNode parent = (tn.Parent != null) ? tn.Parent.Tag as ChannelNode : null;
-						Vixen.Sys.Execution.Nodes.RemoveNode(cn, parent);
+						VixenSystem.Nodes.RemoveNode(cn, parent);
 						if (_displayedNode == cn) {
 							_displayedNode = null;
 						}
@@ -431,7 +430,7 @@ namespace VixenApplication
 						else
 							groupName = textDialog.Response;
 
-						ChannelNode newNode = Vixen.Sys.Execution.Nodes.AddNewNode(groupName);
+						ChannelNode newNode = VixenSystem.Nodes.AddNewNode(groupName);
 
 						foreach (TreeNode tn in multiSelectTreeviewChannelsGroups.SelectedNodes) {
 							newNode.AddChild(tn.Tag as ChannelNode);
@@ -451,7 +450,7 @@ namespace VixenApplication
 		private void buttonRenameItem_Click(object sender, EventArgs e)
 		{
 			if (textBoxName.Text.Trim() != "") {
-				Vixen.Sys.Execution.Nodes.RenameNode(_displayedNode, textBoxName.Text.Trim());
+				VixenSystem.Nodes.RenameNode(_displayedNode, textBoxName.Text.Trim());
 			}
 			PopulateNodeTree();
 		}
@@ -494,7 +493,7 @@ namespace VixenApplication
 					_displayedNode.AddChild((ChannelNode)(item.Tag));
 				} else if (item.Tag is ControllerReference) {
 					if (_displayedNode.Channel == null) {
-						_displayedNode.Channel = Vixen.Sys.Execution.AddChannel(_displayedNode.Name);
+						_displayedNode.Channel = VixenSystem.Channels.AddChannel(_displayedNode.Name);
 					}
 					_displayedNode.Channel.Patch.Add((ControllerReference)item.Tag);
 				} else {
@@ -599,7 +598,7 @@ namespace VixenApplication
 		private int GetNodeParentGroupCount(ChannelNode node)
 		{
 			int count = node.Parents.Count();
-			if (Vixen.Sys.Execution.Nodes.RootNodes.Contains(node))
+			if(VixenSystem.Nodes.RootNodes.Contains(node))
 				count--;
 			return count;
 		}

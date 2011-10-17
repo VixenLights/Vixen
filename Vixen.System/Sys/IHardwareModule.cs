@@ -5,7 +5,7 @@ using System.Text;
 using Vixen.Module;
 using Vixen.Execution;
 
-namespace Vixen.Hardware {
+namespace Vixen.Sys {
     public interface IHardwareModule : IModuleInstance, IExecutionControl {
 		bool IsRunning { get; }
         bool Setup();

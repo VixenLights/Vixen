@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Vixen.Sys;
-using Vixen.Hardware;
 using Vixen.Module;
 using Vixen.Module.Editor;
 using Vixen.Module.Sequence;
@@ -41,7 +40,7 @@ namespace TestEditor {
 			//Nodes
 			comboBoxChannels.DisplayMember = "Name";
 			comboBoxChannels.ValueMember = "Id";
-			comboBoxChannels.DataSource = Vixen.Sys.Execution.Nodes.ToArray();
+			comboBoxChannels.DataSource = VixenSystem.Nodes.ToArray();
 
 			EditorValues = new EditorValues();
 		}

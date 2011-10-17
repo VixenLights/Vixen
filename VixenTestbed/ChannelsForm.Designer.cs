@@ -129,7 +129,7 @@
 			this.buttonProperties.Location = new System.Drawing.Point(329, 24);
 			this.buttonProperties.Name = "buttonProperties";
 			this.buttonProperties.Size = new System.Drawing.Size(109, 23);
-			this.buttonProperties.TabIndex = 4;
+			this.buttonProperties.TabIndex = 1;
 			this.buttonProperties.Text = "Properties";
 			this.buttonProperties.UseVisualStyleBackColor = true;
 			this.buttonProperties.Click += new System.EventHandler(this.buttonProperties_Click);

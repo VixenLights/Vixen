@@ -16,8 +16,6 @@ using Vixen.Module.Output;
 using Vixen.Module.Property;
 using Vixen.Module.Timing;
 
-using Vixen.Hardware;
-
 namespace VixenTestbed {
 	public partial class Form1 : Form, IApplication {
 		private Guid _id = new Guid("{5E315C9B-1759-466c-A4E5-462EE750C708}");
@@ -37,7 +35,7 @@ namespace VixenTestbed {
 			moduleListMedia.SetModuleType<IMediaModuleInstance>();
 			moduleListTiming.SetModuleType<ITimingModuleInstance>();
 
-			checkedListBoxEffectTargetNodes.Items.AddRange(Vixen.Sys.Execution.Nodes.ToArray());
+			_RefreshEffectNodeList();
 		}
 
 		private void Form1_FormClosing(object sender, FormClosingEventArgs e) {

@@ -6,7 +6,6 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using Vixen.Hardware;
 using Vixen.Module;
 using Vixen.Module.Output;
 using Vixen.Sys;
@@ -28,7 +27,7 @@ namespace VixenApplication
 			listViewControllers.BeginUpdate();
 			listViewControllers.Items.Clear();
 
-			foreach (OutputController oc in OutputController.GetAll()) {
+			foreach(OutputController oc in VixenSystem.Controllers) {
 				ListViewItem item = new ListViewItem();
 				item.Text = oc.Name;
 				item.SubItems.Add(Vixen.Sys.ApplicationServices.GetModuleDescriptor(oc.OutputModuleId).TypeName);
@@ -75,8 +74,7 @@ namespace VixenApplication
 				IModuleDescriptor moduleDescriptor = ApplicationServices.GetModuleDescriptor((Guid)addForm.selectedItem);
 				string name = "New " + moduleDescriptor.TypeName + " Controller";
 				OutputController oc = new OutputController(name, 0, (Guid)addForm.selectedItem);
-				oc.Save();
-				Vixen.Hardware.OutputController.ReloadAll();
+				VixenSystem.Controllers.AddController(oc);
 				_PopulateControllerList();
 			}
 		}
@@ -87,9 +85,8 @@ namespace VixenApplication
 				if (MessageBox.Show("Are you sure you want to delete the selected item(s)?", "Delete Item(s)?", MessageBoxButtons.OKCancel) == DialogResult.OK) {
 					foreach (ListViewItem item in listViewControllers.SelectedItems) {
 						OutputController oc = item.Tag as OutputController;
-						oc.Delete();
+						VixenSystem.Controllers.RemoveController(oc);
 					}
-					Vixen.Hardware.OutputController.ReloadAll();
 					_PopulateControllerList();
 				}
 			}
@@ -97,24 +94,12 @@ namespace VixenApplication
 
 		private void buttonUpdate_Click(object sender, EventArgs e)
 		{
-			bool updated = false;
-
 			if (_displayedController == null)
 				return;
 
-			if (_displayedController.Name != textBoxName.Text) {
-				_displayedController.Name = textBoxName.Text;
-				updated = true;
-			}
+			_displayedController.Name = textBoxName.Text;
+			_displayedController.OutputCount = (int)numericUpDownOutputCount.Value;
 
-			if (_displayedController.OutputCount != numericUpDownOutputCount.Value) {
-				_displayedController.OutputCount = (int)numericUpDownOutputCount.Value;
-				updated = true;
-			}
-
-			if (updated) {
-				_displayedController.Save();
-			}
 			_PopulateControllerList();
 		}
 
@@ -143,7 +128,7 @@ namespace VixenApplication
 
 					// iterate through all nodes, trying to find any of the references we will need to add. If we
 					// find them, then remove them from the list as we don't need to add them anymore.
-					foreach (ChannelNode node in Vixen.Sys.Execution.Nodes) {
+					foreach(ChannelNode node in VixenSystem.Nodes) {
 						if (node.Channel != null) {
 							foreach (ControllerReference cr in node.Channel.Patch) {
 								if (refsToAdd.Contains(cr)) {
@@ -158,9 +143,9 @@ namespace VixenApplication
 
 					// add any controller references we have left.
 					foreach (ControllerReference cr in refsToAdd) {
-						ChannelNode newNode = Vixen.Sys.Execution.Nodes.AddNewNode(cr.ToString());
+						ChannelNode newNode = VixenSystem.Nodes.AddNewNode(cr.ToString());
 						if (newNode.Channel == null) {
-							newNode.Channel = Vixen.Sys.Execution.AddChannel(cr.ToString());
+							newNode.Channel = VixenSystem.Channels.AddChannel(cr.ToString());
 						}
 						newNode.Channel.Patch.Add(cr);
 						channelsAdded++;

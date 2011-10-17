@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Sys;
-using Vixen.Hardware;
 using Vixen.Commands;
 
 namespace Vixen.Sys {
@@ -47,12 +46,8 @@ namespace Vixen.Sys {
 		}
 
 		private void _Add(ControllerReference controllerReference) {
-			// _controllerReferences is a HashSet, not a list.
-			// Going to allow invalid references to remain.  The controller may be back later.
-			//if(Hardware.OutputController.IsValidReference(controllerReference) && _controllerReferences.Add(controllerReference)) {
-			if(_controllerReferences.Add(controllerReference)) {
-				OutputController.AddSource(this, controllerReference);
-			}
+			_controllerReferences.Add(controllerReference);
+			VixenSystem.Controllers.AddSource(this, controllerReference);
 		}
 
 		public void Remove(ControllerReference controllerReference) {
@@ -66,7 +61,7 @@ namespace Vixen.Sys {
 
 		private void _Remove(ControllerReference controllerReference) {
 			_controllerReferences.Remove(controllerReference);
-			OutputController.RemoveSource(this, controllerReference);
+			VixenSystem.Controllers.RemoveSource(this, controllerReference);
 		}
 
         public void Clear() {

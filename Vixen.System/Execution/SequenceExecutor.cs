@@ -7,7 +7,6 @@ using System.Reflection;
 // Using System.Timers.Timer because it exposes a SynchronizingObject member that lets
 // you specify the thread context for the Elapsed event.
 using System.Timers;
-using Vixen.Hardware;
 using System.Threading;
 using System.Threading.Tasks;
 using Vixen.Sys;
@@ -176,7 +175,7 @@ namespace Vixen.Execution {
 				foreach(IMediaModuleInstance media in Sequence.Media) {
 					media.Pause();
 				}
-				OutputController.PauseControllers();
+				VixenSystem.Controllers.PauseControllers();
 				OnPausing();
 				_updateTimer.Enabled = false;
 			}
@@ -190,7 +189,7 @@ namespace Vixen.Execution {
 				foreach(IMediaModuleInstance media in Sequence.Media) {
 					media.Resume();
 				}
-				OutputController.ResumeControllers();
+				VixenSystem.Controllers.ResumeControllers();
 				_updateTimer.Enabled = true;
 				OnResumed();
 			}

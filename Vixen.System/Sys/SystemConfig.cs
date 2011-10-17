@@ -14,8 +14,9 @@ namespace Vixen.Sys {
 		private string _alternateDataPath;
 		private IEnumerable<Channel> _channels;
 		private IEnumerable<ChannelNode> _nodes;
+		private IEnumerable<OutputController> _controllers;
 
-		private const int VERSION = 2;
+		private const int VERSION = 3;
 
 		[DataPath]
 		static public readonly string Directory = Path.Combine(Paths.DataRootPath, "SystemData");
@@ -49,6 +50,16 @@ namespace Vixen.Sys {
 				return _nodes;
 			}
 			set { _nodes = value; }
+		}
+
+		public IEnumerable<OutputController> Controllers {
+			get {
+				if(_controllers == null) {
+					_controllers = new OutputController[0];
+				}
+				return _controllers;
+			}
+			set { _controllers = value; }
 		}
 
 		public bool IsContext { get; set; }

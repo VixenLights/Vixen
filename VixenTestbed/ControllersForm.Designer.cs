@@ -66,10 +66,10 @@
 			this.groupBox2.Controls.Add(this.buttonAddController);
 			this.groupBox2.Controls.Add(this.textBoxControllerName);
 			this.groupBox2.Controls.Add(this.label10);
-			this.groupBox2.Location = new System.Drawing.Point(12, 32);
+			this.groupBox2.Location = new System.Drawing.Point(12, 12);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(470, 338);
-			this.groupBox2.TabIndex = 2;
+			this.groupBox2.Size = new System.Drawing.Size(470, 358);
+			this.groupBox2.TabIndex = 0;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Controller";
 			// 
@@ -77,29 +77,29 @@
 			// 
 			this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(38, 219);
+			this.label9.Location = new System.Drawing.Point(38, 239);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(79, 13);
-			this.label9.TabIndex = 17;
+			this.label9.TabIndex = 5;
 			this.label9.Text = "Output module:";
 			// 
 			// label8
 			// 
 			this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(45, 192);
+			this.label8.Location = new System.Drawing.Point(45, 212);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(72, 13);
-			this.label8.TabIndex = 16;
+			this.label8.TabIndex = 3;
 			this.label8.Text = "Output count:";
 			// 
 			// buttonDeleteController
 			// 
 			this.buttonDeleteController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonDeleteController.Location = new System.Drawing.Point(288, 300);
+			this.buttonDeleteController.Location = new System.Drawing.Point(288, 320);
 			this.buttonDeleteController.Name = "buttonDeleteController";
 			this.buttonDeleteController.Size = new System.Drawing.Size(75, 23);
-			this.buttonDeleteController.TabIndex = 15;
+			this.buttonDeleteController.TabIndex = 14;
 			this.buttonDeleteController.Text = "Delete";
 			this.buttonDeleteController.UseVisualStyleBackColor = true;
 			this.buttonDeleteController.Click += new System.EventHandler(this.buttonDeleteController_Click);
@@ -110,15 +110,15 @@
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.comboBoxOutputModule.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxOutputModule.FormattingEnabled = true;
-			this.comboBoxOutputModule.Location = new System.Drawing.Point(126, 216);
+			this.comboBoxOutputModule.Location = new System.Drawing.Point(126, 236);
 			this.comboBoxOutputModule.Name = "comboBoxOutputModule";
 			this.comboBoxOutputModule.Size = new System.Drawing.Size(216, 21);
-			this.comboBoxOutputModule.TabIndex = 3;
+			this.comboBoxOutputModule.TabIndex = 6;
 			// 
 			// numericUpDownOutputCount
 			// 
 			this.numericUpDownOutputCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.numericUpDownOutputCount.Location = new System.Drawing.Point(126, 190);
+			this.numericUpDownOutputCount.Location = new System.Drawing.Point(126, 210);
 			this.numericUpDownOutputCount.Maximum = new decimal(new int[] {
             65536,
             0,
@@ -131,7 +131,7 @@
             0});
 			this.numericUpDownOutputCount.Name = "numericUpDownOutputCount";
 			this.numericUpDownOutputCount.Size = new System.Drawing.Size(58, 20);
-			this.numericUpDownOutputCount.TabIndex = 2;
+			this.numericUpDownOutputCount.TabIndex = 4;
 			this.numericUpDownOutputCount.Value = new decimal(new int[] {
             1,
             0,
@@ -141,10 +141,10 @@
 			// buttonControllerSetup
 			// 
 			this.buttonControllerSetup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonControllerSetup.Location = new System.Drawing.Point(6, 300);
+			this.buttonControllerSetup.Location = new System.Drawing.Point(6, 320);
 			this.buttonControllerSetup.Name = "buttonControllerSetup";
 			this.buttonControllerSetup.Size = new System.Drawing.Size(75, 23);
-			this.buttonControllerSetup.TabIndex = 12;
+			this.buttonControllerSetup.TabIndex = 11;
 			this.buttonControllerSetup.Text = "Setup";
 			this.buttonControllerSetup.UseVisualStyleBackColor = true;
 			this.buttonControllerSetup.Click += new System.EventHandler(this.buttonControllerSetup_Click);
@@ -152,10 +152,10 @@
 			// buttonLinkController
 			// 
 			this.buttonLinkController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonLinkController.Location = new System.Drawing.Point(308, 268);
+			this.buttonLinkController.Location = new System.Drawing.Point(308, 288);
 			this.buttonLinkController.Name = "buttonLinkController";
 			this.buttonLinkController.Size = new System.Drawing.Size(75, 23);
-			this.buttonLinkController.TabIndex = 11;
+			this.buttonLinkController.TabIndex = 9;
 			this.buttonLinkController.Text = "Set";
 			this.buttonLinkController.UseVisualStyleBackColor = true;
 			this.buttonLinkController.Visible = false;
@@ -164,7 +164,7 @@
 			// buttonRemoveControllerLink
 			// 
 			this.buttonRemoveControllerLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonRemoveControllerLink.Location = new System.Drawing.Point(389, 268);
+			this.buttonRemoveControllerLink.Location = new System.Drawing.Point(389, 288);
 			this.buttonRemoveControllerLink.Name = "buttonRemoveControllerLink";
 			this.buttonRemoveControllerLink.Size = new System.Drawing.Size(75, 23);
 			this.buttonRemoveControllerLink.TabIndex = 10;
@@ -179,30 +179,30 @@
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.comboBoxLinkedTo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxLinkedTo.FormattingEnabled = true;
-			this.comboBoxLinkedTo.Location = new System.Drawing.Point(126, 270);
+			this.comboBoxLinkedTo.Location = new System.Drawing.Point(126, 290);
 			this.comboBoxLinkedTo.Name = "comboBoxLinkedTo";
 			this.comboBoxLinkedTo.Size = new System.Drawing.Size(174, 21);
-			this.comboBoxLinkedTo.TabIndex = 9;
+			this.comboBoxLinkedTo.TabIndex = 8;
 			this.comboBoxLinkedTo.Visible = false;
 			// 
 			// label11
 			// 
 			this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label11.AutoSize = true;
-			this.label11.Location = new System.Drawing.Point(63, 273);
+			this.label11.Location = new System.Drawing.Point(63, 293);
 			this.label11.Name = "label11";
 			this.label11.Size = new System.Drawing.Size(54, 13);
-			this.label11.TabIndex = 8;
+			this.label11.TabIndex = 7;
 			this.label11.Text = "Linked to:";
 			this.label11.Visible = false;
 			// 
 			// buttonUpdateController
 			// 
 			this.buttonUpdateController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonUpdateController.Location = new System.Drawing.Point(207, 300);
+			this.buttonUpdateController.Location = new System.Drawing.Point(207, 320);
 			this.buttonUpdateController.Name = "buttonUpdateController";
 			this.buttonUpdateController.Size = new System.Drawing.Size(75, 23);
-			this.buttonUpdateController.TabIndex = 6;
+			this.buttonUpdateController.TabIndex = 13;
 			this.buttonUpdateController.Text = "Update";
 			this.buttonUpdateController.UseVisualStyleBackColor = true;
 			this.buttonUpdateController.Click += new System.EventHandler(this.buttonUpdateController_Click);
@@ -220,8 +220,9 @@
 			this.listViewControllers.Location = new System.Drawing.Point(20, 19);
 			this.listViewControllers.MultiSelect = false;
 			this.listViewControllers.Name = "listViewControllers";
-			this.listViewControllers.Size = new System.Drawing.Size(432, 139);
-			this.listViewControllers.TabIndex = 5;
+			this.listViewControllers.Size = new System.Drawing.Size(432, 159);
+			this.listViewControllers.TabIndex = 0;
+			this.listViewControllers.TabStop = false;
 			this.listViewControllers.UseCompatibleStateImageBehavior = false;
 			this.listViewControllers.View = System.Windows.Forms.View.Details;
 			this.listViewControllers.SelectedIndexChanged += new System.EventHandler(this.listViewControllers_SelectedIndexChanged);
@@ -244,10 +245,10 @@
 			// buttonAddController
 			// 
 			this.buttonAddController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonAddController.Location = new System.Drawing.Point(126, 300);
+			this.buttonAddController.Location = new System.Drawing.Point(126, 320);
 			this.buttonAddController.Name = "buttonAddController";
 			this.buttonAddController.Size = new System.Drawing.Size(75, 23);
-			this.buttonAddController.TabIndex = 4;
+			this.buttonAddController.TabIndex = 12;
 			this.buttonAddController.Text = "Add";
 			this.buttonAddController.UseVisualStyleBackColor = true;
 			this.buttonAddController.Click += new System.EventHandler(this.buttonAddController_Click);
@@ -256,19 +257,19 @@
 			// 
 			this.textBoxControllerName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxControllerName.Location = new System.Drawing.Point(126, 164);
+			this.textBoxControllerName.Location = new System.Drawing.Point(126, 184);
 			this.textBoxControllerName.Name = "textBoxControllerName";
 			this.textBoxControllerName.Size = new System.Drawing.Size(326, 20);
-			this.textBoxControllerName.TabIndex = 3;
+			this.textBoxControllerName.TabIndex = 2;
 			// 
 			// label10
 			// 
 			this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(79, 167);
+			this.label10.Location = new System.Drawing.Point(79, 187);
 			this.label10.Name = "label10";
 			this.label10.Size = new System.Drawing.Size(38, 13);
-			this.label10.TabIndex = 2;
+			this.label10.TabIndex = 1;
 			this.label10.Text = "Name:";
 			// 
 			// buttonDone
@@ -278,7 +279,7 @@
 			this.buttonDone.Location = new System.Drawing.Point(407, 376);
 			this.buttonDone.Name = "buttonDone";
 			this.buttonDone.Size = new System.Drawing.Size(75, 23);
-			this.buttonDone.TabIndex = 3;
+			this.buttonDone.TabIndex = 1;
 			this.buttonDone.Text = "Done";
 			this.buttonDone.UseVisualStyleBackColor = true;
 			// 

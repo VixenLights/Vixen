@@ -27,6 +27,20 @@ namespace Vixen.IO.Xml {
 		private const string ATTR_CHANNEL_ID = "channelId";
 		private const string ATTR_IS_CONTEXT = "isContext";
 
+		private const string ELEMENT_CONTROLLERS = "Controllers";
+		private const string ELEMENT_CONTROLLER = "Controller";
+		private const string ELEMENT_OUTPUTS = "Outputs";
+		private const string ELEMENT_OUTPUT = "Output";
+		private const string ELEMENT_TRANSFORMS = "Transforms";
+		private const string ELEMENT_TRANSFORM = "Transform";
+		private const string ELEMENT_TRANSFORM_DATA = "TransformData";
+		private const string ATTR_COMB_STRATEGY = "strategy";
+		private const string ATTR_LINKED_TO = "linkedTo";
+		private const string ATTR_OUTPUT_COUNT = "outputCount";
+		private const string ATTR_HARDWARE_ID = "hardwareId";
+		private const string ATTR_TYPE_ID = "typeId";
+		private const string ATTR_INSTANCE_ID = "instanceId";
+
 		override protected SystemConfig _CreateObject(XElement element, string filePath) {
 			SystemConfig obj = new SystemConfig() { LoadedFilePath = filePath };
 
@@ -38,15 +52,18 @@ namespace Vixen.IO.Xml {
 			Guid identity = _ReadIdentity(element);
 			_channels = _ReadChannels(element);
 			ChannelNode[] nodes = _ReadNodes(element);
+			OutputController[] controllers = _ReadControllers(element);
 
 			obj.IsContext = isContext;
 			obj.Identity = identity;
 			obj.Channels = _channels;
 			obj.Nodes = nodes;
+			obj.Controllers = controllers;
 		}
 
 		protected override IEnumerable<Func<XElement, XElement>> _ProvideMigrations(int versionAt, int targetVersion) {
 			if(versionAt < 2 && targetVersion >= 2) yield return _Version_1_to_2;
+			if(versionAt < 3 && targetVersion >= 3) yield return _Version_2_to_3;
 		}
 
 		private bool _ReadContextFlag(XElement element) {
@@ -70,6 +87,12 @@ namespace Vixen.IO.Xml {
 			XElement parentNode = element.Element(ELEMENT_NODES);
 			ChannelNode[] rootNodes = parentNode.Elements().Select(_ReadChannelNode).ToArray();
 			return rootNodes;
+		}
+
+		private OutputController[] _ReadControllers(XElement element) {
+			XElement parentNode = element.Element(ELEMENT_CONTROLLERS);
+			OutputController[] controllers = parentNode.Elements().Select(_ReadController).ToArray();
+			return controllers;
 		}
 
 		private Channel _ReadOutputChannel(XElement element) {
@@ -131,12 +154,70 @@ namespace Vixen.IO.Xml {
 		private ControllerReference _ReadControllerReference(XElement element) {
 			return new ControllerReference(
 				new Guid(element.Attribute("controllerId").Value),
-				int.Parse(element.Attribute("outputIndex").Value)
-				);
+				int.Parse(element.Attribute("outputIndex").Value));
+		}
+
+		private OutputController _ReadController(XElement element) {
+			string name = element.Attribute(ATTR_NAME).Value;
+			Guid outputModuleId = new Guid(element.Attribute(ATTR_HARDWARE_ID).Value);
+			int outputCount = int.Parse(element.Attribute(ATTR_OUTPUT_COUNT).Value);
+			Guid id = Guid.Parse(element.Attribute(ATTR_ID).Value);
+			Guid instanceId = Guid.NewGuid();
+
+			OutputController controller = new OutputController(id, instanceId, name, outputCount, outputModuleId);
+
+			_PopulateController(controller, element);
+
+			return controller;
+		}
+
+		private void _PopulateController(OutputController controller, XElement element) {
+			controller.LinkedTo = Guid.Parse(element.Attribute(ATTR_LINKED_TO).Value);
+
+			controller.OutputTransformModuleData = _GetTransformModuleData(element.Element(ELEMENT_TRANSFORM_DATA));
+
+			int outputIndex = 0;
+			foreach(XElement outputElement in element.Element(ELEMENT_OUTPUTS).Elements(ELEMENT_OUTPUT)) {
+				// Data persisted in the controller instance may exceed the
+				// output count.
+				if(outputIndex >= controller.OutputCount) break;
+
+				// The outputs were created when the output count was set.
+				OutputController.Output output = controller.Outputs[outputIndex];
+
+				output.Name = outputElement.Attribute(ATTR_NAME).Value;
+
+				ModuleInstanceSpecification<int> transformSpecSet = new ModuleInstanceSpecification<int>();
+				IEnumerable<XElement> transformSpecElements = outputElement.Element(ELEMENT_TRANSFORMS).Elements(ELEMENT_TRANSFORM);
+				foreach(XElement transformSpecElement in transformSpecElements) {
+					Guid typeId = Guid.Parse(transformSpecElement.Attribute(ATTR_TYPE_ID).Value);
+					Guid instanceId = Guid.Parse(transformSpecElement.Attribute(ATTR_INSTANCE_ID).Value);
+					transformSpecSet.Add(outputIndex, typeId, instanceId);
+				}
+				controller.OutputTransforms = transformSpecSet;
+
+				outputIndex++;
+			}
+		}
+
+		private IModuleDataSet _GetTransformModuleData(XElement element) {
+			IModuleDataSet moduleDataSet = new ModuleLocalDataSet();
+
+			if(!element.IsEmpty) {
+				string moduleDataString = element.InnerXml();
+				moduleDataSet.Deserialize(moduleDataString);
+			}
+
+			return moduleDataSet;
 		}
 
 		private XElement _Version_1_to_2(XElement element) {
 			element.Add(new XElement(ELEMENT_IDENTITY, Guid.NewGuid().ToString()));
+			return element;
+		}
+
+		private XElement _Version_2_to_3(XElement element) {
+			element.Add(new XElement(ELEMENT_CONTROLLERS));
 			return element;
 		}
 	}

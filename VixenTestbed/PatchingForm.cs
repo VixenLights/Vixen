@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Vixen.Sys;
-using Vixen.Hardware;
 
 namespace VixenTestbed {
 	public partial class PatchingForm : Form {
@@ -106,13 +105,13 @@ namespace VixenTestbed {
 		private void _LoadChannels() {
 			comboBoxChannel.DisplayMember = "Name";
 			comboBoxChannel.ValueMember = "Id";
-			comboBoxChannel.DataSource = Vixen.Sys.Execution.Channels.ToArray();
+			comboBoxChannel.DataSource = VixenSystem.Channels.ToArray();
 		}
 
 		private void _LoadControllers() {
 			comboBoxController.DisplayMember = "Name";
 			comboBoxController.ValueMember = "Id";
-			comboBoxController.DataSource = OutputController.GetAll().ToArray();
+			comboBoxController.DataSource = VixenSystem.Controllers.ToArray();
 		}
 
 		private void _LoadPatching() {

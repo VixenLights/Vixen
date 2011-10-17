@@ -36,7 +36,7 @@ namespace VixenTestbed {
 		private void _LoadChannels() {
 			listBoxChannels.BeginUpdate();
 			listBoxChannels.Items.Clear();
-			foreach(Channel channel in Vixen.Sys.Execution.Channels) {
+			foreach(Channel channel in VixenSystem.Channels) {
 				_AddChannel(listBoxChannels.Items, channel);
 			}
 			listBoxChannels.EndUpdate();
@@ -46,7 +46,7 @@ namespace VixenTestbed {
 			treeViewNodes.BeginUpdate();
 			treeViewNodes.Nodes.Clear();
 			TreeNode rootNode = treeViewNodes.Nodes.Add("Root");
-			foreach(ChannelNode node in Vixen.Sys.Execution.Nodes.RootNodes) {
+			foreach(ChannelNode node in VixenSystem.Nodes.RootNodes) {
 				_AddNode(rootNode.Nodes, node);
 			}
 			treeViewNodes.ExpandAll();
@@ -78,8 +78,10 @@ namespace VixenTestbed {
 			try {
 				using(CommonElements.TextDialog textDialog = new CommonElements.TextDialog("New channel name")) {
 					if(textDialog.ShowDialog() == DialogResult.OK) {
-						Channel channel = Vixen.Sys.Execution.AddChannel(textDialog.Response);
-						Vixen.Sys.Execution.Nodes.AddChannelLeaf(channel);
+						Channel channel = VixenSystem.Channels.AddChannel(textDialog.Response);
+						VixenSystem.Nodes.AddChannelLeaf(channel);
+						_LoadChannels();
+						_LoadNodes();
 					}
 				}
 			} catch(Exception ex) {
@@ -91,7 +93,9 @@ namespace VixenTestbed {
 			try {
 				Channel channel = _SelectedChannel;
 				if(channel != null) {
-					Vixen.Sys.Execution.RemoveChannel(channel);
+					VixenSystem.Channels.RemoveChannel(channel);
+					_LoadChannels();
+					_LoadNodes();
 				}
 			} catch(Exception ex) {
 				MessageBox.Show(ex.Message);
@@ -122,7 +126,7 @@ namespace VixenTestbed {
 				ChannelNode targetNode = treeNode.Tag as ChannelNode;
 
 				if(e.Effect == DragDropEffects.Copy) {
-					Vixen.Sys.Execution.Nodes.CopyNode(draggingNode, targetNode);
+					VixenSystem.Nodes.CopyNode(draggingNode, targetNode);
 				} else if(e.AllowedEffect == DragDropEffects.Move) {
 					//Vixen.Sys.Execution.Nodes.MoveNode(draggingNode, targetNode);
 				}

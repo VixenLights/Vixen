@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml.Linq;
 using Vixen.Sys;
 
+//TODO: Distribute among individual classes
 namespace Vixen.IO.Xml {
 	class XmlSystemConfigWriter : XmlWriterBase<SystemConfig> {
 		private const string ELEMENT_ROOT = "SystemConfig";
@@ -23,13 +24,28 @@ namespace Vixen.IO.Xml {
 		private const string ATTR_CHANNEL_ID = "channelId";
 		private const string ATTR_IS_CONTEXT = "isContext";
 
+		private const string ELEMENT_CONTROLLERS = "Controllers";
+		private const string ELEMENT_CONTROLLER = "Controller";
+		private const string ELEMENT_OUTPUTS = "Outputs";
+		private const string ELEMENT_OUTPUT = "Output";
+		private const string ELEMENT_TRANSFORMS = "Transforms";
+		private const string ELEMENT_TRANSFORM = "Transform";
+		private const string ELEMENT_TRANSFORM_DATA = "TransformData";
+		private const string ATTR_COMB_STRATEGY = "strategy";
+		private const string ATTR_LINKED_TO = "linkedTo";
+		private const string ATTR_OUTPUT_COUNT = "outputCount";
+		private const string ATTR_HARDWARE_ID = "hardwareId";
+		private const string ATTR_TYPE_ID = "typeId";
+		private const string ATTR_INSTANCE_ID = "instanceId";
+
 		override protected XElement _CreateContent(SystemConfig obj) {
 			return new XElement(ELEMENT_ROOT,
 				_WriteContextFlag(obj),
 				_WriteIdentity(obj),
 				_WriteAlternateDataDirectory(obj),
 				_WriteChannels(obj),
-				_WriteBranchNodes(obj));
+				_WriteBranchNodes(obj),
+				_WriteControllers(obj));
 		}
 
 		private XAttribute _WriteContextFlag(SystemConfig obj) {
@@ -52,13 +68,18 @@ namespace Vixen.IO.Xml {
 		}
 
 		private XElement _WriteChannels(SystemConfig obj) {
-			IEnumerable<XElement> elements = Vixen.Sys.Execution.Channels.Select(_WriteOutputChannel);
+			IEnumerable<XElement> elements = obj.Channels.Select(_WriteOutputChannel);
 			return new XElement(ELEMENT_CHANNELS, elements);
 		}
 
 		private XElement _WriteBranchNodes(SystemConfig obj) {
-			IEnumerable<XElement> elements = Vixen.Sys.Execution.Nodes.RootNodes.Select(_WriteChannelNode);
+			IEnumerable<XElement> elements = obj.Nodes.Select(_WriteChannelNode);
 			return new XElement(ELEMENT_NODES, elements);
+		}
+
+		private XElement _WriteControllers(SystemConfig obj) {
+			IEnumerable<XElement> elements = obj.Controllers.Select(_WriteController);
+			return new XElement(ELEMENT_CONTROLLERS, elements);
 		}
 
 		private XElement _WriteOutputChannel(Channel outputChannel) {
@@ -88,6 +109,45 @@ namespace Vixen.IO.Xml {
 				new XAttribute(ATTR_ID, channelNode.Id),
 				new XElement(ELEMENT_PROPERTIES, channelNode.Properties.Select(x => new XElement(ELEMENT_PROPERTY, x.Descriptor.TypeId))),
 				new XElement(ELEMENT_PROPERTY_DATA, channelNode.Properties.PropertyData.ToXElement()), channelElements);
+		}
+
+		private XElement _WriteController(OutputController controller) {
+			controller.Commit();
+
+			XElement element = new XElement(ELEMENT_CONTROLLER,
+				new XAttribute(ATTR_NAME, controller.Name),
+				new XAttribute(ATTR_HARDWARE_ID, controller.OutputModuleId),
+				new XAttribute(ATTR_OUTPUT_COUNT, controller.OutputCount),
+				new XAttribute(ATTR_ID, controller.Id),
+				new XAttribute(ATTR_LINKED_TO, controller.LinkedTo),
+
+				new XElement(ELEMENT_TRANSFORM_DATA, _CreateTransformModuleDataContent(controller)),
+				new XElement(ELEMENT_OUTPUTS,
+					controller.Outputs.Select((x, index) =>
+						new XElement(ELEMENT_OUTPUT,
+							new XAttribute(ATTR_NAME, x.Name),
+							new XElement(ELEMENT_TRANSFORMS,
+								_CreateOutputTransformContent(controller, index))))));
+
+			return element;
+		}
+
+		private XElement _CreateTransformModuleDataContent(OutputController controller) {
+			if(controller.OutputModule != null) {
+				return controller.OutputModule.TransformModuleData.ToXElement();
+			}
+			return null;
+		}
+
+		private IEnumerable<XElement> _CreateOutputTransformContent(OutputController controller, int outputIndex) {
+			if(controller.OutputModule != null) {
+				return controller.OutputModule.GetTransforms(outputIndex).Select(x =>
+					new XElement(ELEMENT_TRANSFORM,
+						new XAttribute(ATTR_TYPE_ID, x.Descriptor.TypeId),
+						new XAttribute(ATTR_INSTANCE_ID, x.InstanceId)));
+
+			}
+			return null;
 		}
 
 		private XElement _WriteControllerReference(ControllerReference controllerReference) {

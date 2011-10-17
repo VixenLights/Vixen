@@ -37,6 +37,7 @@
 			this.buttonLoadSequence = new System.Windows.Forms.Button();
 			this.moduleListEditor = new VixenTestbed.ModuleList();
 			this.tabPageEffectModule = new System.Windows.Forms.TabPage();
+			this.buttonRefreshEffectNodes = new System.Windows.Forms.Button();
 			this.pictureBoxEffectImage = new System.Windows.Forms.PictureBox();
 			this.numericUpDownEffectRenderTimeSpan = new System.Windows.Forms.NumericUpDown();
 			this.label5 = new System.Windows.Forms.Label();
@@ -221,6 +222,7 @@
 			// 
 			// tabPageEffectModule
 			// 
+			this.tabPageEffectModule.Controls.Add(this.buttonRefreshEffectNodes);
 			this.tabPageEffectModule.Controls.Add(this.pictureBoxEffectImage);
 			this.tabPageEffectModule.Controls.Add(this.numericUpDownEffectRenderTimeSpan);
 			this.tabPageEffectModule.Controls.Add(this.label5);
@@ -234,6 +236,16 @@
 			this.tabPageEffectModule.TabIndex = 3;
 			this.tabPageEffectModule.Text = "Effect Module";
 			this.tabPageEffectModule.UseVisualStyleBackColor = true;
+			// 
+			// buttonRefreshEffectNodes
+			// 
+			this.buttonRefreshEffectNodes.Location = new System.Drawing.Point(354, 8);
+			this.buttonRefreshEffectNodes.Name = "buttonRefreshEffectNodes";
+			this.buttonRefreshEffectNodes.Size = new System.Drawing.Size(65, 20);
+			this.buttonRefreshEffectNodes.TabIndex = 3;
+			this.buttonRefreshEffectNodes.Text = "Refresh";
+			this.buttonRefreshEffectNodes.UseVisualStyleBackColor = true;
+			this.buttonRefreshEffectNodes.Click += new System.EventHandler(this.buttonRefreshEffectNodes_Click);
 			// 
 			// pictureBoxEffectImage
 			// 
@@ -299,7 +311,7 @@
 			this.checkedListBoxEffectTargetNodes.Location = new System.Drawing.Point(241, 31);
 			this.checkedListBoxEffectTargetNodes.Name = "checkedListBoxEffectTargetNodes";
 			this.checkedListBoxEffectTargetNodes.Size = new System.Drawing.Size(178, 289);
-			this.checkedListBoxEffectTargetNodes.TabIndex = 3;
+			this.checkedListBoxEffectTargetNodes.TabIndex = 2;
 			this.checkedListBoxEffectTargetNodes.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.checkedListBoxEffectTargetNodes_ItemCheck);
 			// 
 			// label2
@@ -307,9 +319,9 @@
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(238, 12);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(98, 13);
-			this.label2.TabIndex = 2;
-			this.label2.Text = "Nodes to render to:";
+			this.label2.Size = new System.Drawing.Size(104, 13);
+			this.label2.TabIndex = 1;
+			this.label2.Text = "Nodes to Render To";
 			// 
 			// moduleListEffect
 			// 
@@ -340,7 +352,7 @@
 			this.labelLoadedMedia.Location = new System.Drawing.Point(392, 89);
 			this.labelLoadedMedia.Name = "labelLoadedMedia";
 			this.labelLoadedMedia.Size = new System.Drawing.Size(79, 13);
-			this.labelLoadedMedia.TabIndex = 14;
+			this.labelLoadedMedia.TabIndex = 3;
 			this.labelLoadedMedia.Text = "Nothing loaded";
 			// 
 			// groupBoxMediaExecution
@@ -353,7 +365,7 @@
 			this.groupBoxMediaExecution.Location = new System.Drawing.Point(256, 112);
 			this.groupBoxMediaExecution.Name = "groupBoxMediaExecution";
 			this.groupBoxMediaExecution.Size = new System.Drawing.Size(292, 45);
-			this.groupBoxMediaExecution.TabIndex = 12;
+			this.groupBoxMediaExecution.TabIndex = 4;
 			this.groupBoxMediaExecution.TabStop = false;
 			// 
 			// buttonStopMedia
@@ -361,7 +373,7 @@
 			this.buttonStopMedia.Location = new System.Drawing.Point(220, 13);
 			this.buttonStopMedia.Name = "buttonStopMedia";
 			this.buttonStopMedia.Size = new System.Drawing.Size(55, 23);
-			this.buttonStopMedia.TabIndex = 11;
+			this.buttonStopMedia.TabIndex = 3;
 			this.buttonStopMedia.Text = "Stop";
 			this.buttonStopMedia.UseVisualStyleBackColor = true;
 			this.buttonStopMedia.Click += new System.EventHandler(this.buttonStopMedia_Click);
@@ -371,7 +383,7 @@
 			this.buttonResumeMedia.Location = new System.Drawing.Point(149, 13);
 			this.buttonResumeMedia.Name = "buttonResumeMedia";
 			this.buttonResumeMedia.Size = new System.Drawing.Size(55, 23);
-			this.buttonResumeMedia.TabIndex = 10;
+			this.buttonResumeMedia.TabIndex = 2;
 			this.buttonResumeMedia.Text = "Resume";
 			this.buttonResumeMedia.UseVisualStyleBackColor = true;
 			this.buttonResumeMedia.Click += new System.EventHandler(this.buttonResumeMedia_Click);
@@ -381,7 +393,7 @@
 			this.buttonPauseMedia.Location = new System.Drawing.Point(88, 13);
 			this.buttonPauseMedia.Name = "buttonPauseMedia";
 			this.buttonPauseMedia.Size = new System.Drawing.Size(55, 23);
-			this.buttonPauseMedia.TabIndex = 9;
+			this.buttonPauseMedia.TabIndex = 1;
 			this.buttonPauseMedia.Text = "Pause";
 			this.buttonPauseMedia.UseVisualStyleBackColor = true;
 			this.buttonPauseMedia.Click += new System.EventHandler(this.buttonPauseMedia_Click);
@@ -391,7 +403,7 @@
 			this.buttonPlayMedia.Location = new System.Drawing.Point(16, 13);
 			this.buttonPlayMedia.Name = "buttonPlayMedia";
 			this.buttonPlayMedia.Size = new System.Drawing.Size(55, 23);
-			this.buttonPlayMedia.TabIndex = 8;
+			this.buttonPlayMedia.TabIndex = 0;
 			this.buttonPlayMedia.Text = "Play";
 			this.buttonPlayMedia.UseVisualStyleBackColor = true;
 			this.buttonPlayMedia.Click += new System.EventHandler(this.buttonPlayMedia_Click);
@@ -401,7 +413,7 @@
 			this.buttonLoadMediaFile.Location = new System.Drawing.Point(256, 83);
 			this.buttonLoadMediaFile.Name = "buttonLoadMediaFile";
 			this.buttonLoadMediaFile.Size = new System.Drawing.Size(127, 23);
-			this.buttonLoadMediaFile.TabIndex = 7;
+			this.buttonLoadMediaFile.TabIndex = 2;
 			this.buttonLoadMediaFile.Text = "Load Media File";
 			this.buttonLoadMediaFile.UseVisualStyleBackColor = true;
 			this.buttonLoadMediaFile.Click += new System.EventHandler(this.buttonLoadMediaFile_Click);
@@ -412,7 +424,7 @@
 			this.buttonSetupMedia.Location = new System.Drawing.Point(256, 29);
 			this.buttonSetupMedia.Name = "buttonSetupMedia";
 			this.buttonSetupMedia.Size = new System.Drawing.Size(75, 23);
-			this.buttonSetupMedia.TabIndex = 6;
+			this.buttonSetupMedia.TabIndex = 1;
 			this.buttonSetupMedia.Text = "Setup";
 			this.buttonSetupMedia.UseVisualStyleBackColor = true;
 			this.buttonSetupMedia.Click += new System.EventHandler(this.buttonSetupMedia_Click);
@@ -445,7 +457,7 @@
 			this.labelTimingCurrentPosition.Location = new System.Drawing.Point(349, 101);
 			this.labelTimingCurrentPosition.Name = "labelTimingCurrentPosition";
 			this.labelTimingCurrentPosition.Size = new System.Drawing.Size(70, 13);
-			this.labelTimingCurrentPosition.TabIndex = 16;
+			this.labelTimingCurrentPosition.TabIndex = 3;
 			this.labelTimingCurrentPosition.Text = "00:00:00.000";
 			// 
 			// label4
@@ -454,7 +466,7 @@
 			this.label4.Location = new System.Drawing.Point(260, 101);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(83, 13);
-			this.label4.TabIndex = 15;
+			this.label4.TabIndex = 2;
 			this.label4.Text = "Current position:";
 			// 
 			// groupBoxTimingExecution
@@ -467,7 +479,7 @@
 			this.groupBoxTimingExecution.Location = new System.Drawing.Point(256, 29);
 			this.groupBoxTimingExecution.Name = "groupBoxTimingExecution";
 			this.groupBoxTimingExecution.Size = new System.Drawing.Size(292, 45);
-			this.groupBoxTimingExecution.TabIndex = 14;
+			this.groupBoxTimingExecution.TabIndex = 1;
 			this.groupBoxTimingExecution.TabStop = false;
 			// 
 			// buttonStopTiming
@@ -475,7 +487,7 @@
 			this.buttonStopTiming.Location = new System.Drawing.Point(220, 13);
 			this.buttonStopTiming.Name = "buttonStopTiming";
 			this.buttonStopTiming.Size = new System.Drawing.Size(55, 23);
-			this.buttonStopTiming.TabIndex = 11;
+			this.buttonStopTiming.TabIndex = 3;
 			this.buttonStopTiming.Text = "Stop";
 			this.buttonStopTiming.UseVisualStyleBackColor = true;
 			this.buttonStopTiming.Click += new System.EventHandler(this.buttonStopTiming_Click);
@@ -485,7 +497,7 @@
 			this.buttonResumeTiming.Location = new System.Drawing.Point(149, 13);
 			this.buttonResumeTiming.Name = "buttonResumeTiming";
 			this.buttonResumeTiming.Size = new System.Drawing.Size(55, 23);
-			this.buttonResumeTiming.TabIndex = 10;
+			this.buttonResumeTiming.TabIndex = 2;
 			this.buttonResumeTiming.Text = "Resume";
 			this.buttonResumeTiming.UseVisualStyleBackColor = true;
 			this.buttonResumeTiming.Click += new System.EventHandler(this.buttonResumeTiming_Click);
@@ -495,7 +507,7 @@
 			this.buttonPauseTiming.Location = new System.Drawing.Point(88, 13);
 			this.buttonPauseTiming.Name = "buttonPauseTiming";
 			this.buttonPauseTiming.Size = new System.Drawing.Size(55, 23);
-			this.buttonPauseTiming.TabIndex = 9;
+			this.buttonPauseTiming.TabIndex = 1;
 			this.buttonPauseTiming.Text = "Pause";
 			this.buttonPauseTiming.UseVisualStyleBackColor = true;
 			this.buttonPauseTiming.Click += new System.EventHandler(this.buttonPauseTiming_Click);
@@ -505,7 +517,7 @@
 			this.buttonPlayTiming.Location = new System.Drawing.Point(16, 13);
 			this.buttonPlayTiming.Name = "buttonPlayTiming";
 			this.buttonPlayTiming.Size = new System.Drawing.Size(55, 23);
-			this.buttonPlayTiming.TabIndex = 8;
+			this.buttonPlayTiming.TabIndex = 0;
 			this.buttonPlayTiming.Text = "Play";
 			this.buttonPlayTiming.UseVisualStyleBackColor = true;
 			this.buttonPlayTiming.Click += new System.EventHandler(this.buttonPlayTiming_Click);
@@ -613,6 +625,7 @@
 		private System.Windows.Forms.Label labelLoadedMedia;
 		private System.Windows.Forms.SaveFileDialog saveFileDialog1;
 		private System.Windows.Forms.PictureBox pictureBoxEffectImage;
+		private System.Windows.Forms.Button buttonRefreshEffectNodes;
 	}
 }
 

@@ -6,7 +6,6 @@ using System.IO;
 using Vixen.Sys;
 using Vixen.IO;
 using Vixen.IO.Xml;
-using Vixen.Hardware;
 using Vixen.Script;
 using Vixen.Module;
 using Vixen.Module.Editor;
@@ -121,7 +120,7 @@ namespace Vixen.Sys {
 		}
 
 		static public OutputController[] GetControllers() {
-			return OutputController.GetAll().ToArray();
+			return VixenSystem.Controllers.ToArray();
 		}
 
 		static public IEditorUserInterface GetEditor(Guid id) {

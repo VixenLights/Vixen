@@ -7,7 +7,6 @@ using Vixen.Module.ModuleTemplate;
 using Vixen.Module.Transform;
 using Vixen.Module.Output;
 using Vixen.Sys;
-using Vixen.Hardware;
 
 namespace TestTemplate {
 	public class OutputControllerTemplate : ModuleTemplateModuleInstanceBase {

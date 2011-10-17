@@ -10,7 +10,6 @@ using System.Xml;
 using System.IO;
 using Vixen.IO;
 using Vixen.Sys;
-using Vixen.Hardware;
 using Vixen.Module;
 using Vixen.Module.Sequence;
 using Vixen.Module.Editor;
@@ -91,7 +90,7 @@ namespace TestClient
 
 			// Nodes
 			_LoadNodes();
-			Vixen.Sys.Execution.Nodes.NodesChanged += (sender, e) => _LoadNodes();
+			VixenSystem.Nodes.NodesChanged += (sender, e) => _LoadNodes();
 
 			// Node templates
 			_LoadNodeTemplates();
@@ -108,7 +107,7 @@ namespace TestClient
 			listViewControllers.Items.Clear();
 			_controllers.Clear();
 
-			_controllers.AddRange(OutputController.GetAll());
+			_controllers.AddRange(VixenSystem.Controllers);
 			foreach(OutputController controller in _controllers) {
 				_AddControllerToView(controller);
 			}
@@ -131,14 +130,14 @@ namespace TestClient
 		}
 
 		private void _LoadNodes() {
-			IEnumerable<ChannelNode> nodes = Vixen.Sys.Execution.Nodes;
+			IEnumerable<ChannelNode> nodes = VixenSystem.Nodes;
 
 			treeViewSystemChannels.BeginUpdate();
 			treeViewNodes.BeginUpdate();
 			treeViewSystemChannels.Nodes.Clear();
 			treeViewNodes.Nodes.Clear();
 			TreeNode rootNode = treeViewNodes.Nodes.Add("Root");
-			foreach(ChannelNode node in Vixen.Sys.Execution.Nodes.RootNodes) {
+			foreach(ChannelNode node in VixenSystem.Nodes.RootNodes) {
 				_AddNode(treeViewSystemChannels.Nodes, node);
 				_AddNode(rootNode.Nodes, node);
 			}
@@ -298,7 +297,7 @@ namespace TestClient
             string controllerName = textBoxControllerName.Text.Trim();
             if(controllerName.Length != 0) {
 				OutputController controller = new OutputController(controllerName, (int)numericUpDownOutputCount.Value, (Guid)comboBoxOutputModule.SelectedValue);
-				controller.Save();
+				VixenSystem.Controllers.AddController(controller);
 				_AddControllerToView(controller);
 				_controllers.Add(controller);
 				comboBoxLinkedTo.DataSource = null;
@@ -339,7 +338,7 @@ namespace TestClient
 			if(controller != null) {
 				controller.OutputCount = (int)numericUpDownOutputCount.Value;
 				controller.OutputModuleId = (Guid)comboBoxOutputModule.SelectedValue;
-				controller.Save(controller.FilePath);
+				VixenSystem.Controllers.AddController(controller);
 			}
 		}
 
@@ -401,8 +400,8 @@ namespace TestClient
 		private void buttonAddSystemFixtureChannel_Click(object sender, EventArgs e) {
 			using(CommonElements.TextDialog textDialog = new CommonElements.TextDialog("New channel name")) {
 				if(textDialog.ShowDialog() == DialogResult.OK) {
-					Channel channel = Vixen.Sys.Execution.AddChannel(textDialog.Response);
-					Vixen.Sys.Execution.Nodes.AddChannelLeaf(channel);
+					Channel channel = VixenSystem.Channels.AddChannel(textDialog.Response);
+					VixenSystem.Nodes.AddChannelLeaf(channel);
 				}
 			}
 		}
@@ -410,13 +409,13 @@ namespace TestClient
 		private void buttonRemoveSystemFixtureChannel_Click(object sender, EventArgs e) {
 			ChannelNode node = treeViewSystemChannels.SelectedNode.Tag as ChannelNode;
 			if(node != null) {
-				Vixen.Sys.Execution.RemoveChannel(node.Channel);
-				Vixen.Sys.Execution.Nodes.RemoveChannelLeaf(node.Channel);
+				VixenSystem.Channels.RemoveChannel(node.Channel);
+				VixenSystem.Nodes.RemoveChannelLeaf(node.Channel);
 			}
 		}
 
 		private void buttonPatchSystemChannels_Click(object sender, EventArgs e) {
-			using(ManualPatchDialog patchDialog = new ManualPatchDialog(OutputController.GetAll().ToArray())) {
+			using(ManualPatchDialog patchDialog = new ManualPatchDialog(VixenSystem.Controllers.ToArray())) {
 				patchDialog.ShowDialog();
 			}
 		}
@@ -534,7 +533,7 @@ namespace TestClient
 			ChannelNode targetNode = treeNode.Tag as ChannelNode;
 
 			if(e.Effect == DragDropEffects.Copy) {
-				Vixen.Sys.Execution.Nodes.CopyNode(draggingNode, targetNode);
+				VixenSystem.Nodes.CopyNode(draggingNode, targetNode);
 			} else if(e.AllowedEffect == DragDropEffects.Move) {
 				//Vixen.Sys.Execution.Nodes.MoveNode(draggingNode, targetNode);
 			}
@@ -621,7 +620,7 @@ namespace TestClient
 
 		private void buttonDeleteController_Click(object sender, EventArgs e) {
 			if(_SelectedController != null) {
-				_SelectedController.Delete();
+				VixenSystem.Controllers.RemoveController(_SelectedController);
 				_LoadControllers();
 			}
 		}
@@ -660,11 +659,11 @@ namespace TestClient
 		}
 
 		private void buttonCommitControllerOutputChanges_Click(object sender, EventArgs e) {
-			OutputController controller = comboBoxControllerOutputsControllers.SelectedItem as OutputController;
-			if(controller != null) {
-				controller.Save();
-				MessageBox.Show("Committed.");
-			}
+			//OutputController controller = comboBoxControllerOutputsControllers.SelectedItem as OutputController;
+			//if(controller != null) {
+			//    controller.Save();
+			//    MessageBox.Show("Committed.");
+			//}
 		}
 
 		private void buttonNodeProperties_Click(object sender, EventArgs e) {

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Vixen.Hardware;
 using Vixen.Execution;
 using System.Diagnostics;
 using System.Threading;
@@ -13,107 +12,23 @@ using Vixen.Commands;
 namespace Vixen.Sys {
 	public class Execution {
 		static private Dictionary<Guid, ProgramContext> _contexts = new Dictionary<Guid, ProgramContext>();
-		static private SystemClock _systemTime = new SystemClock();
+		static internal SystemClock SystemTime = new SystemClock();
 		static private Thread _channelReadThread;
 		// Creating channels in here instead of VixenSystem so that the collection
 		// will be locally available for EffectRenderer instances.
-		static private Dictionary<Channel, SystemChannelEnumerator> _channels = new Dictionary<Channel, SystemChannelEnumerator>();
 		static private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
 
 		// These are system-level events.
 		static public event EventHandler<ProgramContextEventArgs> ProgramContextCreated;
 		static public event EventHandler<ProgramContextEventArgs> ProgramContextReleased;
 		static public event EventHandler NodesChanged {
-			add { Nodes.NodesChanged += value; }
-			remove { Nodes.NodesChanged -= value; }
+			add { VixenSystem.Nodes.NodesChanged += value; }
+			remove { VixenSystem.Nodes.NodesChanged -= value; }
 		}
 		static public event Action<ExecutionStateValues> ValuesChanged;
 
 		private enum ExecutionState { Starting, Started, Stopping, Stopped };
 		static private volatile ExecutionState _state = ExecutionState.Stopped;
-
-		static Execution() {
-			// Create the node manager.
-			Nodes = new NodeManager();
-
-			if(VixenSystem.SystemConfig != null) {
-				// Get channels.
-				foreach(Channel channel in VixenSystem.SystemConfig.Channels) {
-					_AddChannel(channel);
-				}
-
-				// Get the branch nodes into the node manager.
-				foreach(ChannelNode branchNode in VixenSystem.SystemConfig.Nodes) {
-					Nodes.AddNode(branchNode);
-				}
-			}
-		}
-
-		static public Channel AddChannel(string channelName) {
-			channelName = _Uniquify(channelName);
-			Channel channel = new Channel(channelName);
-			_AddChannel(channel);
-			return channel;
-		}
-
-		static private string _Uniquify(string name) {
-			if(_channels.Keys.Any(x => x.Name == name)) {
-				string originalName = name;
-				bool unique;
-				int counter = 2;
-				do {
-					name = originalName + "-" + counter++;
-					unique = !_channels.Keys.Any(x => x.Name == name);
-				} while(!unique);
-			}
-			return name;
-		}
-
-		static private void _AddChannel(Channel channel) {
-			// Create an enumerator.
-			_CreateChannelEnumerators(channel);
-		}
-
-		static public void RemoveChannel(Channel channel) {
-			SystemChannelEnumerator enumerator;
-			if(_channels.TryGetValue(channel, out enumerator)) {
-				lock(_channels) {
-					// Kill enumerator.
-					enumerator.Dispose();
-					// Remove from channel dictionary.
-					_channels.Remove(channel);
-				}
-			}
-		}
-
-		static private void _CreateChannelEnumerators(params Channel[] channels) {
-			_CreateChannelEnumerators(channels as IEnumerable<Channel>);
-		}
-
-		static private void _CreateChannelEnumerators(IEnumerable<Channel> channels) {
-			lock(_channels) {
-				foreach(Channel channel in channels) {
-					if(!_channels.ContainsKey(channel) || _channels[channel] == null) {
-						_channels[channel] = new SystemChannelEnumerator(channel, _systemTime);
-					}
-				}
-			}
-		}
-
-		static private void _ResetChannelEnumerators() {
-			lock(_channels) {
-				foreach(Channel channel in Channels) {
-					_channels[channel].Dispose();
-					_channels[channel] = null;
-				}
-			}
-		}
-
-		static public IEnumerable<Channel> Channels {
-			// The collection may be modified while they are iterating this collection,
-			// so return a copy.
-			get { return _channels.Keys.ToArray(); }
-		}
 
 		/// <summary>
 		/// Allows data to be executed.
@@ -123,10 +38,10 @@ namespace Vixen.Sys {
 				_State = ExecutionState.Starting;
 
 				// Open the channels.
-				_CreateChannelEnumerators(Channels);
+				VixenSystem.Channels.OpenChannels();
 
-				_systemTime.Start();
-				OutputController.StartAll();
+				SystemTime.Start();
+				VixenSystem.Controllers.OpenControllers();
 				_channelReadThread = new Thread(_ChannelReaderThread);
 				_channelReadThread.Start();
 				_State = ExecutionState.Started;
@@ -148,11 +63,11 @@ namespace Vixen.Sys {
 				while(_State != ExecutionState.Stopped) { Thread.Sleep(1); }
 				_channelReadThread = null;
 				// Close the channels.
-				_ResetChannelEnumerators();
+				VixenSystem.Channels.CloseChannels();
 				// Stop the controllers.
-				OutputController.StopAll();
+				VixenSystem.Controllers.CloseControllers();
 				// Stop internal timing.
-				_systemTime.Stop();
+				SystemTime.Stop();
 				return true;
 			}
 			return false;
@@ -179,7 +94,7 @@ namespace Vixen.Sys {
 			}
 		}
 
-		static public TimeSpan CurrentExecutionTime { get { return (_systemTime.IsRunning) ? _systemTime.Position : TimeSpan.Zero; } }
+		static public TimeSpan CurrentExecutionTime { get { return (SystemTime.IsRunning) ? SystemTime.Position : TimeSpan.Zero; } }
 
 		static public string CurrentExecutionTimeString { get { return CurrentExecutionTime.ToString("m\\:ss\\.fff"); } }
 
@@ -195,25 +110,12 @@ namespace Vixen.Sys {
 		}
 
 		static private void _UpdateChannelStates() {
-			ExecutionStateValues stateBuffer = new ExecutionStateValues(_systemTime.Position);
-			IEnumerator<CommandNode[]> enumerator;
+			ExecutionStateValues stateBuffer = new ExecutionStateValues(SystemTime.Position);
 
-			foreach(Channel channel in Channels) {
-				lock(_channels) {
-					enumerator = _channels[channel];
-					// Will return true if state has changed.
-					// State changes when data qualifies for execution.
-					if(enumerator.MoveNext()) {
-						Command channelState = Command.Combine(enumerator.Current.Select(x => x.Command));
-						stateBuffer[channel] = channelState;
-						channel.Patch.Write(channelState);
-						//lock (VixenSystem.Logging) {
-						//    if (channelState == null)
-						//        VixenSystem.Logging.Debug(Execution.CurrentExecutionTimeString + ": Execution UpdateChannelStates: channel=" + channel + ", command=null");
-						//    else
-						//        VixenSystem.Logging.Debug(Execution.CurrentExecutionTimeString + ": Execution UpdateChannelStates: channel=" + channel + ", command=" + channelState.Identifier + ", " + channelState.GetParameterValue(0));
-						//}
-					}
+			foreach(Channel channel in VixenSystem.Channels) {
+				Command channelState = VixenSystem.Channels.UpdateChannelState(channel);
+				if(channelState != null) {
+					stateBuffer[channel] = channelState;
 				}
 			}
 
@@ -297,8 +199,7 @@ namespace Vixen.Sys {
 			ThreadPool.QueueUserWorkItem((o) => renderer.Start());
 		}
 
-		static public NodeManager Nodes { get; private set; }
-
+		#region EffectRenderer
 		class EffectRenderer {
 			private TimeSpan _timeStarted;
 			private Stack<EffectNode> _effects;
@@ -306,13 +207,13 @@ namespace Vixen.Sys {
 			private TimeSpan _syncDelta = TimeSpan.Zero;
 
 			public EffectRenderer(EffectNode[] state) {
-				_timeStarted = Execution._systemTime.Position;
+				_timeStarted = Execution.SystemTime.Position;
 				_effects = new Stack<EffectNode>(state);
 			}
 
 			public void Start() {
 				// Keep going while there is data to render and the system is running.
-				while(_effects.Count > 0 && _systemTime.IsRunning) {
+				while(_effects.Count > 0 && SystemTime.IsRunning) {
 					EffectNode effectNode = _effects.Pop();
 
 					if(!effectNode.IsEmpty && effectNode.Effect.TargetNodes.Length > 0) {
@@ -324,9 +225,6 @@ namespace Vixen.Sys {
 						
 						// Render the effect for the whole span of the command's time.
 						ChannelData channelData = effectNode.RenderEffectData(TimeSpan.Zero, effectNode.TimeSpan);
-						//lock (VixenSystem.Logging) {
-						//    VixenSystem.Logging.Debug(Execution.CurrentExecutionTimeString + ": EffectRenderer: rendering data for effect " + effectNode.Effect.Descriptor.TypeName + ", S=" + effectNode.StartTime + ", D=" + effectNode.TimeSpan + ", target=" + effectNode.Effect.TargetNodes[0].Name);
-						//}
 						
 						if(channelData != null) {
 							// Get it into the channels.
@@ -349,9 +247,6 @@ namespace Vixen.Sys {
 									// should always be relative to the start of the effect.
 									CommandNode targetChannelData = new CommandNode(data.Command, data.StartTime + systemTimeDelta, data.TimeSpan);
 									targetChannel.AddData(targetChannelData);
-									//lock (VixenSystem.Logging) {
-									//    VixenSystem.Logging.Debug(Execution.CurrentExecutionTimeString + ": EffectRenderer: just added data for channel " + targetChannel.Name + " (" + effectNode.Effect.TargetNodes[0].Name + ")");
-									//}
 								}
 
 								Monitor.Exit(targetChannel);
@@ -361,5 +256,6 @@ namespace Vixen.Sys {
 				}
 			}
 		}
+		#endregion
 	}
 }

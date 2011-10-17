@@ -88,7 +88,7 @@ namespace Vixen.IO.Xml {
 			var effectModules = sequence.ModuleDataSet.GetInstances<IEffectModuleInstance>().ToDictionary(x => x.InstanceId);
 
 			// Create a channel node lookup.
-			var channelNodes = Vixen.Sys.Execution.Nodes.Distinct().ToDictionary(x => x.Id);
+			var channelNodes = VixenSystem.Nodes.Distinct().ToDictionary(x => x.Id);
 
 			sequence.Data.ClearEffectStream();
 	

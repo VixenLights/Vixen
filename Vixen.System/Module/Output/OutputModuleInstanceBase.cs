@@ -8,12 +8,12 @@ using Vixen.Commands;
 
 namespace Vixen.Module.Output {
 	abstract public class OutputModuleInstanceBase : ModuleInstanceBase, IOutputModuleInstance, IEqualityComparer<IOutputModuleInstance>, IEquatable<IOutputModuleInstance>, IEqualityComparer<OutputModuleInstanceBase>, IEquatable<OutputModuleInstanceBase> {
-		private List<ITransformModuleInstance> _baseTransforms = new List<ITransformModuleInstance>();
 		private List<List<ITransformModuleInstance>> _outputTransforms = new List<List<ITransformModuleInstance>>();
 		private int _outputCount;
 
 		protected OutputModuleInstanceBase() {
 			TransformModuleData = new ModuleLocalDataSet();
+			BaseTransforms = new ITransformModuleInstance[0];
 		}
 
 		public int OutputCount {
@@ -27,24 +27,26 @@ namespace Vixen.Module.Output {
 
 		abstract protected void _SetOutputCount(int outputCount);
 
-		public IModuleDataSet TransformModuleData { get; set; }
+		virtual public IModuleDataSet TransformModuleData { get; set; }
 
-		public IEnumerable<ITransformModuleInstance> BaseTransforms {
-			get { return _baseTransforms; }
-			set {
-				_baseTransforms = new List<ITransformModuleInstance>(value);
-				// Affect any outputs that are lacking these.
-				int index = 0;
-				foreach(List<ITransformModuleInstance> outputTransformList in _outputTransforms) {
-					IEnumerable<ITransformModuleInstance> missingTransforms = value.Except(outputTransformList);
-					_AddTransformsToOutput(missingTransforms, index);
-					index++;
-				}
-			}
+		/// <summary>
+		/// Transforms that are applied to any outputs created.
+		/// </summary>
+		virtual public IEnumerable<ITransformModuleInstance> BaseTransforms { get; set; }
+
+		virtual public void SetTransforms(int outputIndex, IEnumerable<ITransformModuleInstance> transforms) {
+			List<ITransformModuleInstance> transformList = _GetTransformList(outputIndex);
+			transformList.Clear();
+			transformList.AddRange(transformList);
 		}
 
+		virtual public IEnumerable<ITransformModuleInstance> GetTransforms(int outputIndex) {
+			return _GetTransforms(outputIndex);
+		}
+
+
 		private void _AddTransformsToOutput(IEnumerable<ITransformModuleInstance> transforms, int outputIndex) {
-			List<ITransformModuleInstance> outputTransforms = _GetOutputTransforms(outputIndex);
+			List<ITransformModuleInstance> outputTransforms = _GetTransformList(outputIndex);
 			foreach(ITransformModuleInstance transform in transforms) {
 				// Allowing multiple instances of a transform type.
 				// Create a new instance, but use the same data (clone).
@@ -63,8 +65,7 @@ namespace Vixen.Module.Output {
 					// Create a list of transforms for the output.
 					_outputTransforms.Add(new List<ITransformModuleInstance>());
 					// Give the new output the base set of transforms.
-					_AddTransformsToOutput(_baseTransforms, oldOutputCount);
-					//_outputTransforms.Add(new List<ITransformModuleInstance>(_baseTransforms));
+					_AddTransformsToOutput(BaseTransforms, oldOutputCount);
 					oldOutputCount++;
 				}
 			} else if(oldOutputCount > newOutputCount) {
@@ -73,11 +74,7 @@ namespace Vixen.Module.Output {
 			}
 		}
 
-		public IEnumerable<ITransformModuleInstance> GetOutputTransforms(int outputIndex) {
-			return _GetOutputTransforms(outputIndex);
-		}
-
-		public void UpdateState(Command[] outputStates) {
+		virtual public void UpdateState(Command[] outputStates) {
 			// Transform...
 			for(int i = 0; i < outputStates.Length; i++) {
 				Command outputState = outputStates[i];
@@ -132,26 +129,17 @@ namespace Vixen.Module.Output {
 			get { return (Descriptor as IOutputModuleDescriptor).UpdateInterval; }
 		}
 
-		virtual public void AddTransform(int outputIndex, Guid transformTypeId, Guid transformInstanceId = default(Guid)) {
-			// Create a new instance.
-			ITransformModuleInstance instance = Modules.ModuleManagement.GetTransform(transformTypeId);
-			
-			// If an instance id is provided (creating an instance for existing module data),
-			// assign it.
-			if(transformInstanceId != default(Guid)) {
-				instance.InstanceId = transformInstanceId;
-			}
-			
+		virtual public void AddTransform(int outputIndex, ITransformModuleInstance transformModule) {
 			// Create data for the instance.
-			TransformModuleData.GetModuleInstanceData(instance);
-			
+			TransformModuleData.GetModuleInstanceData(transformModule);
+
 			// Add the instance.
-			List<ITransformModuleInstance> outputTransforms = _GetOutputTransforms(outputIndex);
-			outputTransforms.Add(instance);
+			List<ITransformModuleInstance> outputTransforms = _GetTransformList(outputIndex);
+			outputTransforms.Add(transformModule);
 		}
 
 		virtual public void RemoveTransform(int outputIndex, Guid transformTypeId, Guid transformInstanceId) {
-			List<ITransformModuleInstance> outputTransforms = _GetOutputTransforms(outputIndex);
+			List<ITransformModuleInstance> outputTransforms = _GetTransformList(outputIndex);
 			ITransformModuleInstance instance = outputTransforms.FirstOrDefault(x => x.Descriptor.TypeId == transformTypeId && x.InstanceId == transformInstanceId);
 			if(instance != null) {
 				// Remove from the transform list.
@@ -161,8 +149,12 @@ namespace Vixen.Module.Output {
 			}
 		}
 
-		private List<ITransformModuleInstance> _GetOutputTransforms(int outputIndex) {
+		private List<ITransformModuleInstance> _GetTransformList(int outputIndex) {
 			return _outputTransforms[outputIndex];
+		}
+
+		private IEnumerable<ITransformModuleInstance> _GetTransforms(int outputIndex) {
+			return BaseTransforms.Concat(_outputTransforms[outputIndex]);
 		}
 
 		public bool Equals(IOutputModuleInstance x, IOutputModuleInstance y) {

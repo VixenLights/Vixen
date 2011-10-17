@@ -487,6 +487,7 @@
 			this.buttonCommitControllerOutputChanges.TabIndex = 8;
 			this.buttonCommitControllerOutputChanges.Text = "Commit Changes";
 			this.buttonCommitControllerOutputChanges.UseVisualStyleBackColor = true;
+			this.buttonCommitControllerOutputChanges.Visible = false;
 			this.buttonCommitControllerOutputChanges.Click += new System.EventHandler(this.buttonCommitControllerOutputChanges_Click);
 			// 
 			// buttonUpdateControllerOutputName
