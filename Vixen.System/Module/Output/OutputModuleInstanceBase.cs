@@ -8,11 +8,12 @@ using Vixen.Commands;
 
 namespace Vixen.Module.Output {
 	abstract public class OutputModuleInstanceBase : ModuleInstanceBase, IOutputModuleInstance, IEqualityComparer<IOutputModuleInstance>, IEquatable<IOutputModuleInstance>, IEqualityComparer<OutputModuleInstanceBase>, IEquatable<OutputModuleInstanceBase> {
+		private IModuleDataSet _moduleDataSet;
 		private List<List<ITransformModuleInstance>> _outputTransforms = new List<List<ITransformModuleInstance>>();
 		private int _outputCount;
 
 		protected OutputModuleInstanceBase() {
-			TransformModuleData = new ModuleLocalDataSet();
+			_moduleDataSet = new ModuleLocalDataSet();
 			BaseTransforms = new ITransformModuleInstance[0];
 		}
 
@@ -27,7 +28,13 @@ namespace Vixen.Module.Output {
 
 		abstract protected void _SetOutputCount(int outputCount);
 
-		virtual public IModuleDataSet TransformModuleData { get; set; }
+		virtual public IModuleDataSet ModuleDataSet {
+			get { return _moduleDataSet; }
+			set {
+				_moduleDataSet = value;
+				_moduleDataSet.GetModuleTypeData(this);
+			}
+		}
 
 		/// <summary>
 		/// Transforms that are applied to any outputs created.
@@ -53,7 +60,7 @@ namespace Vixen.Module.Output {
 				ITransformModuleInstance newInstance = Modules.ModuleManagement.CloneTransform(transform);
 				// If data is already assigned to the module, it will be added to the data set.
 				// If not, it will be created and added.
-				TransformModuleData.GetModuleInstanceData(newInstance);
+				ModuleDataSet.GetModuleInstanceData(newInstance);
 				outputTransforms.Add(newInstance);
 			}
 		}
@@ -131,7 +138,7 @@ namespace Vixen.Module.Output {
 
 		virtual public void AddTransform(int outputIndex, ITransformModuleInstance transformModule) {
 			// Create data for the instance.
-			TransformModuleData.GetModuleInstanceData(transformModule);
+			ModuleDataSet.GetModuleInstanceData(transformModule);
 
 			// Add the instance.
 			List<ITransformModuleInstance> outputTransforms = _GetTransformList(outputIndex);
@@ -145,7 +152,7 @@ namespace Vixen.Module.Output {
 				// Remove from the transform list.
 				outputTransforms.Remove(instance);
 				// Remove from the transform module data.
-				TransformModuleData.Remove(transformTypeId, transformInstanceId);
+				ModuleDataSet.Remove(transformTypeId, transformInstanceId);
 			}
 		}
 

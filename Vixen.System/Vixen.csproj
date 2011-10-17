@@ -348,7 +348,7 @@
     <Compile Include="Module\Trigger\AnalogTriggerInput.cs" />
     <Compile Include="Module\Trigger\DigitalTriggerInput.cs" />
     <Compile Include="Sys\LiveEnumerator.cs" />
-    <Compile Include="Sys\ModuleDataPath.cs" />
+    <Compile Include="Sys\ModuleDataPathAttribute.cs" />
     <Compile Include="Script\UserScriptHost.cs" />
     <Compile Include="Script\ScriptHostGenerator.cs" />
     <Compile Include="Execution\ScriptSequenceExecutor.cs" />

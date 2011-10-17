@@ -18,7 +18,7 @@ namespace Vixen.Sys {
 		private IOutputModuleInstance _outputModule = null;
 		private List<Output> _outputs = new List<Output>();
 		private ModuleInstanceSpecification<int> _outputTransforms = new ModuleInstanceSpecification<int>();
-		private IModuleDataSet _outputTransformModuleData = new ModuleLocalDataSet();
+		private IModuleDataSet _moduleDataSet = new ModuleLocalDataSet();
 
 		public OutputController(string name, int outputCount, Guid outputModuleId)
 			: this(Guid.NewGuid(), Guid.NewGuid(), name, outputCount, outputModuleId) {
@@ -91,7 +91,7 @@ namespace Vixen.Sys {
 					_outputModule = Modules.ModuleManagement.GetOutput(_outputModuleId);
 
 					_SetOutputModuleOutputCount();
-					_SetOutputModuleTransformModuleData();
+					_SetModuleData();
 					_SetOutputModuleTransforms();
 				}
 				return _outputModule;
@@ -104,9 +104,13 @@ namespace Vixen.Sys {
 			}
 		}
 
-		private void _SetOutputModuleTransformModuleData() {
+		private void _SetModuleData() {
+			// Normally, we'd be responsible for providing the module with its
+			// data object and the module wouldn't have to worry about it, but
+			// the output module is going to store transform module data in the
+			// same dataset, so we'll give it the dataset and let it handle both.
 			if(_outputModule != null) {
-				_outputModule.TransformModuleData = OutputTransformModuleData;
+				_outputModule.ModuleDataSet = ModuleDataSet;
 			}
 		}
 
@@ -135,11 +139,11 @@ namespace Vixen.Sys {
 			}
 		}
 
-		public IModuleDataSet OutputTransformModuleData {
-			get { return _outputTransformModuleData; }
+		public IModuleDataSet ModuleDataSet {
+			get { return _moduleDataSet; }
 			set {
-				_outputTransformModuleData = value;
-				_SetOutputModuleTransformModuleData();
+				_moduleDataSet = value;
+				_SetModuleData();
 			}
 		}
 

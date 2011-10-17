@@ -16,6 +16,6 @@ namespace Vixen.Module.Output {
 		void RemoveTransform(int outputIndex, Guid transformTypeId, Guid transformInstanceId);
 		void SetTransforms(int outputIndex, IEnumerable<ITransformModuleInstance> transforms);
 		IEnumerable<ITransformModuleInstance> GetTransforms(int outputIndex);
-		IModuleDataSet TransformModuleData { get; set; }
+		IModuleDataSet ModuleDataSet { get; set; }
     }
 }

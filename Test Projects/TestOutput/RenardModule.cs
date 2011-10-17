@@ -16,6 +16,10 @@ namespace TestOutput {
 			get { return typeof(Renard); }
 		}
 
+		public override Type ModuleDataClass {
+			get { return typeof(RenardData); }
+		}
+
 		override public string Author {
 			get { return ""; }
 		}

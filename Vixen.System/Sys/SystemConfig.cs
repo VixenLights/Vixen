@@ -16,7 +16,7 @@ namespace Vixen.Sys {
 		private IEnumerable<ChannelNode> _nodes;
 		private IEnumerable<OutputController> _controllers;
 
-		private const int VERSION = 3;
+		private const int VERSION = 4;
 
 		[DataPath]
 		static public readonly string Directory = Path.Combine(Paths.DataRootPath, "SystemData");

@@ -78,6 +78,16 @@ namespace TestOutput {
 			get { return _form != null && _form.Visible; }
 		}
 
+		public override IModuleDataModel ModuleData {
+			get {
+				return base.ModuleData;
+			}
+			set {
+				base.ModuleData = value;
+				(value as RenardData).RunCount++;
+			}
+		}
+
 		override public void Dispose() {
             _form.Dispose();
             _form = null;

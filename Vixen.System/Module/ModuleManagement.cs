@@ -33,7 +33,8 @@ namespace Vixen.Module {
 					moduleImplementation.Invoke(args);
 					result = moduleImplementation.Result;
 					return true;
-				} catch {
+				} catch(Exception ex) {
+					VixenSystem.Logging.Error(ex);
 					return false;
 				}
 			}

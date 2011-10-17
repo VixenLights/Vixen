@@ -30,7 +30,7 @@ namespace Vixen.IO.Xml {
 		private const string ELEMENT_OUTPUT = "Output";
 		private const string ELEMENT_TRANSFORMS = "Transforms";
 		private const string ELEMENT_TRANSFORM = "Transform";
-		private const string ELEMENT_TRANSFORM_DATA = "TransformData";
+		private const string ELEMENT_MODULE_DATA = "ModuleData";
 		private const string ATTR_COMB_STRATEGY = "strategy";
 		private const string ATTR_LINKED_TO = "linkedTo";
 		private const string ATTR_OUTPUT_COUNT = "outputCount";
@@ -121,7 +121,7 @@ namespace Vixen.IO.Xml {
 				new XAttribute(ATTR_ID, controller.Id),
 				new XAttribute(ATTR_LINKED_TO, controller.LinkedTo),
 
-				new XElement(ELEMENT_TRANSFORM_DATA, _CreateTransformModuleDataContent(controller)),
+				new XElement(ELEMENT_MODULE_DATA, _CreateModuleDataContent(controller)),
 				new XElement(ELEMENT_OUTPUTS,
 					controller.Outputs.Select((x, index) =>
 						new XElement(ELEMENT_OUTPUT,
@@ -132,9 +132,9 @@ namespace Vixen.IO.Xml {
 			return element;
 		}
 
-		private XElement _CreateTransformModuleDataContent(OutputController controller) {
+		private XElement _CreateModuleDataContent(OutputController controller) {
 			if(controller.OutputModule != null) {
-				return controller.OutputModule.TransformModuleData.ToXElement();
+				return controller.OutputModule.ModuleDataSet.ToXElement();
 			}
 			return null;
 		}

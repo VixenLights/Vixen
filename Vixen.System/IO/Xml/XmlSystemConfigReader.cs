@@ -34,6 +34,7 @@ namespace Vixen.IO.Xml {
 		private const string ELEMENT_TRANSFORMS = "Transforms";
 		private const string ELEMENT_TRANSFORM = "Transform";
 		private const string ELEMENT_TRANSFORM_DATA = "TransformData";
+		private const string ELEMENT_MODULE_DATA = "ModuleData";
 		private const string ATTR_COMB_STRATEGY = "strategy";
 		private const string ATTR_LINKED_TO = "linkedTo";
 		private const string ATTR_OUTPUT_COUNT = "outputCount";
@@ -64,6 +65,7 @@ namespace Vixen.IO.Xml {
 		protected override IEnumerable<Func<XElement, XElement>> _ProvideMigrations(int versionAt, int targetVersion) {
 			if(versionAt < 2 && targetVersion >= 2) yield return _Version_1_to_2;
 			if(versionAt < 3 && targetVersion >= 3) yield return _Version_2_to_3;
+			if(versionAt < 4 && targetVersion >= 4) yield return _Version_3_to_4;
 		}
 
 		private bool _ReadContextFlag(XElement element) {
@@ -174,7 +176,7 @@ namespace Vixen.IO.Xml {
 		private void _PopulateController(OutputController controller, XElement element) {
 			controller.LinkedTo = Guid.Parse(element.Attribute(ATTR_LINKED_TO).Value);
 
-			controller.OutputTransformModuleData = _GetTransformModuleData(element.Element(ELEMENT_TRANSFORM_DATA));
+			controller.ModuleDataSet = _GetModuleData(element);
 
 			int outputIndex = 0;
 			foreach(XElement outputElement in element.Element(ELEMENT_OUTPUTS).Elements(ELEMENT_OUTPUT)) {
@@ -200,8 +202,10 @@ namespace Vixen.IO.Xml {
 			}
 		}
 
-		private IModuleDataSet _GetTransformModuleData(XElement element) {
+		private IModuleDataSet _GetModuleData(XElement element) {
 			IModuleDataSet moduleDataSet = new ModuleLocalDataSet();
+
+			element = element.Element(ELEMENT_MODULE_DATA);
 
 			if(!element.IsEmpty) {
 				string moduleDataString = element.InnerXml();
@@ -218,6 +222,18 @@ namespace Vixen.IO.Xml {
 
 		private XElement _Version_2_to_3(XElement element) {
 			element.Add(new XElement(ELEMENT_CONTROLLERS));
+			return element;
+		}
+
+		private XElement _Version_3_to_4(XElement element) {
+			XElement controllersElement = element.Element(ELEMENT_CONTROLLERS);
+			foreach(XElement controllerElement in controllersElement.Elements(ELEMENT_CONTROLLER)) {
+				XElement transformDataElement = controllerElement.Element(ELEMENT_TRANSFORM_DATA);
+				string content = transformDataElement.InnerXml();
+				transformDataElement.Remove();
+				XElement moduleDataElement = new XElement(ELEMENT_MODULE_DATA, XElement.Parse(content));
+				controllerElement.Add(moduleDataElement);
+			}
 			return element;
 		}
 	}
