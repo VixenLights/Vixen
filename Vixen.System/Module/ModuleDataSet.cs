@@ -80,11 +80,13 @@ namespace Vixen.Module {
 
 			Tuple<Guid, Guid> key = new Tuple<Guid, Guid>(moduleTypeId, moduleInstanceId);
 			
-			// If there isn't any data, create it and add it to the dataset.
+			// If there isn't any data -- and the module type actually has a data class -- create it and add it to the dataset.
 			if(!_dataModels.TryGetValue(key, out dataModel)) {
 				Type dataModelClass = _GetDataSetType(descriptor);
-				dataModel = _CreateModuleDataInstance(dataModelClass, moduleTypeId, moduleInstanceId);
-				_Add(this, moduleTypeId, moduleInstanceId, dataModel);
+				if (dataModelClass != null) {
+					dataModel = _CreateModuleDataInstance(dataModelClass, moduleTypeId, moduleInstanceId);
+					_Add(this, moduleTypeId, moduleInstanceId, dataModel);
+				}
 			}
 
 			return dataModel;
