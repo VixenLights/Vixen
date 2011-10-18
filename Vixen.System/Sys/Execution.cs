@@ -212,47 +212,53 @@ namespace Vixen.Sys {
 			}
 
 			public void Start() {
-				// Keep going while there is data to render and the system is running.
-				while(_effects.Count > 0 && SystemTime.IsRunning) {
-					EffectNode effectNode = _effects.Pop();
+				try {
+					// Keep going while there is data to render and the system is running.
+					while (_effects.Count > 0 && SystemTime.IsRunning) {
+						EffectNode effectNode = _effects.Pop();
 
-					if(!effectNode.IsEmpty && effectNode.Effect.TargetNodes.Length > 0) {
-						// Get the channels that are to be affected by this effect.
-						// If they are targetting multiple nodes, the resulting channels
-						// will be treated as a single collection of channels.  There will be
-						// no differentiation between channels of different trees.
-						Dictionary<Guid,Channel> targetChannels = effectNode.Effect.TargetNodes.SelectMany(x => x).ToDictionary(x => x.Id);
-						
-						// Render the effect for the whole span of the command's time.
-						ChannelData channelData = effectNode.RenderEffectData(TimeSpan.Zero, effectNode.TimeSpan);
-						
-						if(channelData != null) {
-							// Get it into the channels.
-							foreach(Guid channelId in channelData.Keys) {
-								Channel targetChannel = targetChannels[channelId];
+						if (!effectNode.IsEmpty && effectNode.Effect.TargetNodes.Length > 0) {
+							// Get the channels that are to be affected by this effect.
+							// If they are targetting multiple nodes, the resulting channels
+							// will be treated as a single collection of channels.  There will be
+							// no differentiation between channels of different trees.
+							Dictionary<Guid, Channel> targetChannels = effectNode.Effect.TargetNodes.SelectMany(x => x).ToDictionary(x => x.Id);
 
-								Monitor.Enter(targetChannel);
+							// Render the effect for the whole span of the command's time.
+							ChannelData channelData = effectNode.RenderEffectData(TimeSpan.Zero, effectNode.TimeSpan);
 
-								TimeSpan systemTimeDelta = _timeStarted + _syncDelta;
+							if (channelData != null) {
+								// Get it into the channels.
+								foreach (Guid channelId in channelData.Keys) {
+									Channel targetChannel = targetChannels[channelId];
 
-								// Offset the data's time frame by the command's time offset.
-								foreach(CommandNode data in channelData[channelId]) {
-									// The data time needs to be translated from effect-local to
-									// system-local.
-									// Adding the command's start time makes it context-local.
-									// Adding the system time makes it system-local.
-									// Creating a new instance instead of changing the time members because
-									// changing them affects the data that the effect has created, affecting
-									// the relative timing of the data.  The data that the effect generates
-									// should always be relative to the start of the effect.
-									CommandNode targetChannelData = new CommandNode(data.Command, data.StartTime + systemTimeDelta, data.TimeSpan);
-									targetChannel.AddData(targetChannelData);
+									Monitor.Enter(targetChannel);
+
+									TimeSpan systemTimeDelta = _timeStarted + _syncDelta;
+
+									// Offset the data's time frame by the command's time offset.
+									foreach (CommandNode data in channelData[channelId]) {
+										// The data time needs to be translated from effect-local to
+										// system-local.
+										// Adding the command's start time makes it context-local.
+										// Adding the system time makes it system-local.
+										// Creating a new instance instead of changing the time members because
+										// changing them affects the data that the effect has created, affecting
+										// the relative timing of the data.  The data that the effect generates
+										// should always be relative to the start of the effect.
+										CommandNode targetChannelData = new CommandNode(data.Command, data.StartTime + systemTimeDelta, data.TimeSpan);
+										targetChannel.AddData(targetChannelData);
+									}
+
+									Monitor.Exit(targetChannel);
 								}
-
-								Monitor.Exit(targetChannel);
 							}
 						}
 					}
+				}
+				catch (Exception ex) {
+					VixenSystem.Logging.Error("EffectRender: Exception while trying to render an effect. (Has the effect" +
+						"generated data for a channel or node it doesn't target?)", ex);
 				}
 			}
 		}
