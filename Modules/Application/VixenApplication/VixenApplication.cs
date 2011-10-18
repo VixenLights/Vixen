@@ -184,12 +184,6 @@ namespace VixenApplication
 			form.ShowDialog();
 		}
 
-		private void buttonSetupPatches_Click(object sender, EventArgs e)
-		{
-			ConfigPatches form = new ConfigPatches();
-			form.ShowDialog();
-		}
-
 		private void button1_Click_1(object sender, EventArgs e)
 		{
 			CommonElements.ColorManagement.ColorPicker.ColorPicker picker = new CommonElements.ColorManagement.ColorPicker.ColorPicker();

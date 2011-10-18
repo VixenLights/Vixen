@@ -94,6 +94,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigControllersOutputs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigControllersOutputs.Designer.cs">
+      <DependentUpon>ConfigControllersOutputs.cs</DependentUpon>
+    </Compile>
     <Compile Include="VixenApplication.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -112,14 +118,11 @@
     <Compile Include="ConfigControllers.Designer.cs">
       <DependentUpon>ConfigControllers.cs</DependentUpon>
     </Compile>
-    <Compile Include="ConfigPatches.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ConfigPatches.Designer.cs">
-      <DependentUpon>ConfigPatches.cs</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="ConfigControllersOutputs.resx">
+      <DependentUpon>ConfigControllersOutputs.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="VixenApplication.resx">
       <DependentUpon>VixenApplication.cs</DependentUpon>
     </EmbeddedResource>
@@ -128,9 +131,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ConfigControllers.resx">
       <DependentUpon>ConfigControllers.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ConfigPatches.resx">
-      <DependentUpon>ConfigPatches.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

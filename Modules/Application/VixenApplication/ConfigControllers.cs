@@ -46,21 +46,30 @@ namespace VixenApplication
 			if (oc == null) {
 				textBoxName.Text = "";
 				textBoxName.Enabled = false;
+				numericUpDownOutputCount.Value = 0;
 				numericUpDownOutputCount.Enabled = false;
-				comboBoxCombiningEvents.Enabled = false;
+				buttonConfigureController.Enabled = false;
+				buttonConfigureOutputs.Enabled = false;
+				buttonGenerateChannels.Enabled = false;
+				buttonUpdate.Enabled = false;
+				buttonDeleteController.Enabled = false;
 			} else {
 				textBoxName.Text = oc.Name;
 				numericUpDownOutputCount.Value = oc.OutputCount;
-				// TODO: add combining value
 				textBoxName.Enabled = true;
 				numericUpDownOutputCount.Enabled = true;
-				comboBoxCombiningEvents.Enabled = true;
+				buttonConfigureController.Enabled = true;
+				buttonConfigureOutputs.Enabled = true;
+				buttonGenerateChannels.Enabled = true;
+				buttonUpdate.Enabled = true;
+				buttonDeleteController.Enabled = true;
 			}
 		}
 
 		private void ConfigControllers_Load(object sender, EventArgs e)
 		{
 			_PopulateControllerList();
+			_PopulateFormWithController(null);
 		}
 
 		private void buttonAddController_Click(object sender, EventArgs e)
@@ -81,8 +90,17 @@ namespace VixenApplication
 
 		private void buttonDeleteController_Click(object sender, EventArgs e)
 		{
+			string message, title;
+			if (listViewControllers.SelectedItems.Count > 1) {
+				message = "Are you sure you want to delete the selected controllers?";
+				title = "Delete Controllers?";
+			} else {
+				message = "Are you sure you want to delete the selected controller?";
+				title = "Delete Controller?";
+			}
+
 			if (listViewControllers.SelectedItems.Count > 0) {
-				if (MessageBox.Show("Are you sure you want to delete the selected item(s)?", "Delete Item(s)?", MessageBoxButtons.OKCancel) == DialogResult.OK) {
+				if (MessageBox.Show(message, title, MessageBoxButtons.OKCancel) == DialogResult.OK) {
 					foreach (ListViewItem item in listViewControllers.SelectedItems) {
 						OutputController oc = item.Tag as OutputController;
 						VixenSystem.Controllers.RemoveController(oc);
@@ -98,7 +116,14 @@ namespace VixenApplication
 				return;
 
 			_displayedController.Name = textBoxName.Text;
-			_displayedController.OutputCount = (int)numericUpDownOutputCount.Value;
+
+			// iterate through the outputs, and add new outputs with default names if needed
+			int oldCount = _displayedController.OutputCount;
+			int newCount = (int)numericUpDownOutputCount.Value;
+			_displayedController.OutputCount = newCount;
+			for (int i = oldCount; i < newCount; i++) {
+				_displayedController.Outputs[i].Name = _displayedController.Name + "-" + (i + 1);
+			}
 
 			_PopulateControllerList();
 		}
@@ -143,9 +168,11 @@ namespace VixenApplication
 
 					// add any controller references we have left.
 					foreach (ControllerReference cr in refsToAdd) {
-						ChannelNode newNode = VixenSystem.Nodes.AddNewNode(cr.ToString());
+						string name = VixenSystem.Controllers.Get(cr.ControllerId).Outputs[cr.OutputIndex].Name;
+
+						ChannelNode newNode = VixenSystem.Nodes.AddNewNode(name);
 						if (newNode.Channel == null) {
-							newNode.Channel = VixenSystem.Channels.AddChannel(cr.ToString());
+							newNode.Channel = VixenSystem.Channels.AddChannel(name);
 						}
 						newNode.Channel.Patch.Add(cr);
 						channelsAdded++;
@@ -166,7 +193,7 @@ namespace VixenApplication
 					}
 					MessageBox.Show(message, "Channels Addded");
 				} else {
-					MessageBox.Show("No channels added: all outputs for this controller are referenced in channels already!", "No Channels Addded");
+					MessageBox.Show("All outputs for this controller are referenced in channels already.", "No Channels Addded");
 				}
 			}
 		}
@@ -178,6 +205,12 @@ namespace VixenApplication
 			} else {
 				_PopulateFormWithController(listViewControllers.SelectedItems[0].Tag as OutputController);
 			}
+		}
+
+		private void buttonConfigureOutputs_Click(object sender, EventArgs e)
+		{
+			ConfigControllersOutputs outputsForm = new ConfigControllersOutputs(listViewControllers.SelectedItems[0].Tag as OutputController);
+			outputsForm.ShowDialog();
 		}
 
 	}

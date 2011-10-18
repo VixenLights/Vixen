@@ -33,7 +33,6 @@
 			this.contextMenuStripNewSequence = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tabPageAdministration = new System.Windows.Forms.TabPage();
 			this.tabPageDisplaySetup = new System.Windows.Forms.TabPage();
-			this.buttonSetupPatches = new System.Windows.Forms.Button();
 			this.buttonSetupOutputControllers = new System.Windows.Forms.Button();
 			this.buttonSetupChannels = new System.Windows.Forms.Button();
 			this.tabPageSequences = new System.Windows.Forms.TabPage();
@@ -78,7 +77,6 @@
 			// 
 			// tabPageDisplaySetup
 			// 
-			this.tabPageDisplaySetup.Controls.Add(this.buttonSetupPatches);
 			this.tabPageDisplaySetup.Controls.Add(this.buttonSetupOutputControllers);
 			this.tabPageDisplaySetup.Controls.Add(this.buttonSetupChannels);
 			this.tabPageDisplaySetup.Location = new System.Drawing.Point(4, 22);
@@ -88,17 +86,6 @@
 			this.tabPageDisplaySetup.TabIndex = 1;
 			this.tabPageDisplaySetup.Text = "Display Setup";
 			this.tabPageDisplaySetup.UseVisualStyleBackColor = true;
-			// 
-			// buttonSetupPatches
-			// 
-			this.buttonSetupPatches.Anchor = System.Windows.Forms.AnchorStyles.Top;
-			this.buttonSetupPatches.Location = new System.Drawing.Point(106, 226);
-			this.buttonSetupPatches.Name = "buttonSetupPatches";
-			this.buttonSetupPatches.Size = new System.Drawing.Size(233, 34);
-			this.buttonSetupPatches.TabIndex = 3;
-			this.buttonSetupPatches.Text = "Configure Patches";
-			this.buttonSetupPatches.UseVisualStyleBackColor = true;
-			this.buttonSetupPatches.Click += new System.EventHandler(this.buttonSetupPatches_Click);
 			// 
 			// buttonSetupOutputControllers
 			// 
@@ -258,7 +245,6 @@
 		private System.Windows.Forms.Button buttonOpenSequence;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.ListBox listBoxRecentSequences;
-		private System.Windows.Forms.Button buttonSetupPatches;
 		private System.Windows.Forms.Button buttonSetupOutputControllers;
 		private System.Windows.Forms.Button buttonSetupChannels;
 		private System.Windows.Forms.TabPage tabPageTest;
