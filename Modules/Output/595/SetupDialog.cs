@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Globalization;
 
 namespace VixenModules.Output._595 {
 	partial class SetupDialog : Form {
@@ -18,6 +19,7 @@ namespace VixenModules.Output._595 {
 		}
 
 		private void buttonOK_Click(object sender, EventArgs e) {
+           
 			if(_PortAddress == 0) {
 				MessageBox.Show("The port address is 0.", "595 Setup", MessageBoxButtons.OK, MessageBoxIcon.Stop);
 				DialogResult = DialogResult.None;
@@ -29,11 +31,11 @@ namespace VixenModules.Output._595 {
 		private ushort _PortAddress {
 			get {
 				ushort value;
-				if(ushort.TryParse(textBoxPortAddress.Text, out value)) {
+				if(ushort.TryParse(textBoxPortAddress.Text,NumberStyles.HexNumber,CultureInfo.InvariantCulture, out value)) {
 				}
-				return 0;
+				return value;
 			}
-			set { textBoxPortAddress.Text = value.ToString(); }
+            set { textBoxPortAddress.Text = value.ToString("X"); }
 		}
 	}
 }
