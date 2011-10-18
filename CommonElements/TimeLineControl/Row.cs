@@ -129,9 +129,10 @@ namespace CommonElements.Timeline
 			}
 		}
 
+		private bool m_visible = true;
 		public bool Visible
 		{
-			get { return RowLabel.Visible; }
+			get { return m_visible; }
 			set
 			{
 				// if we're being told to show or not (ie. a tree is being closed
@@ -141,6 +142,7 @@ namespace CommonElements.Timeline
 				    row.Visible = value && TreeOpen;
 
 				RowLabel.Visible = value;
+				m_visible = value;
 				_RowChanged();
 			}
 		}
@@ -173,11 +175,13 @@ namespace CommonElements.Timeline
 
 		public event EventHandler<ElementEventArgs> ElementAdded;
 		public event EventHandler<ElementEventArgs> ElementRemoved;
+		public static event EventHandler RowToggled;
 		public static event EventHandler RowChanged;
 		public static event EventHandler<ModifierKeysEventArgs> RowSelectedChanged;
 
 		private void _ElementAdded(Element te) { if (ElementAdded != null) ElementAdded(this, new ElementEventArgs(te)); }
 		private void _ElementRemoved(Element te) { if (ElementRemoved != null) ElementRemoved(this, new ElementEventArgs(te)); }
+		private void _RowToggled() { if (RowToggled != null) RowToggled(this, EventArgs.Empty); }
 		private void _RowChanged() { if (RowChanged != null) RowChanged(this, EventArgs.Empty); }
 		private void _RowSelectedChanged(Keys k) { if (RowSelectedChanged != null) RowSelectedChanged(this, new ModifierKeysEventArgs(k)); }
 
@@ -210,6 +214,7 @@ namespace CommonElements.Timeline
 		protected void TreeToggledHandler(object sender, EventArgs e)
 		{
 			TreeOpen = !TreeOpen;
+			_RowToggled();
 		}
 
 		protected void HeightChangedHandler(object sender, RowHeightChangedEventArgs e)

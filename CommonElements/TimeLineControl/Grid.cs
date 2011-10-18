@@ -70,6 +70,7 @@ namespace CommonElements.Timeline
 			//  later, we will need to attach/detach from each event manually.
 			Row.RowChanged += RowChangedHandler;
 			Row.RowSelectedChanged += RowSelectedChangedHandler;
+			Row.RowToggled += RowToggledHandler;
 
 			// Drag-drop 9/20/2011
 			AllowDrop = true;
@@ -165,7 +166,7 @@ namespace CommonElements.Timeline
 			}
 		}
 
-		public List<Row> Rows
+		protected List<Row> Rows
 		{
 			get { return m_rows; }
 			set { m_rows = value; }
@@ -300,6 +301,11 @@ namespace CommonElements.Timeline
 
 			// This MUST be done last! Otherwise, event handlers get called with the OLD values.
 			base.OnScroll(se);
+		}
+
+		private void RowToggledHandler(object sender, EventArgs e)
+		{
+			ResizeGridHeight();
 		}
 
 		#endregion
@@ -593,6 +599,19 @@ namespace CommonElements.Timeline
 			foreach (Row row in Rows) {
 				row.Selected = false;
 			}
+		}
+
+		public void AddRow(Row row)
+		{
+			Rows.Add(row);
+			ResizeGridHeight();
+		}
+
+		public bool RemoveRow(Row row)
+		{
+			bool rv = Rows.Remove(row);
+			ResizeGridHeight();
+			return rv;
 		}
 
 		/// <summary>
@@ -1136,6 +1155,24 @@ namespace CommonElements.Timeline
 			return StaticSnapPoints.Remove(snapTime);
 		}
 
+		private int CalculateAllRowsHeight(bool visibleRowsOnly = true)
+		{
+			int total = 0;
+
+			foreach (Row row in Rows) {
+				if (visibleRowsOnly && !row.Visible)
+					continue;
+
+				total += row.Height;
+			}
+			
+			return total;
+		}
+
+		private void ResizeGridHeight()
+		{
+			AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), CalculateAllRowsHeight());
+		}
 
 		#endregion
 
@@ -1230,11 +1267,11 @@ namespace CommonElements.Timeline
 
 		#region Drawing
 
-		private int _drawRows(Graphics g)
+		private void _drawRows(Graphics g)
 		{
-			// Draw row separators
 			int curY = 0;
 
+			// Draw row separators
 			using (Pen p = new Pen(RowSeparatorColor))
 			using (SolidBrush b = new SolidBrush(SelectionColor))
 			{
@@ -1254,8 +1291,6 @@ namespace CommonElements.Timeline
 					g.DrawLine(p, lineLeft, lineRight);
 				}
 			}
-
-			return curY;
 		}
 
 		private void _drawGridlines(Graphics g)
@@ -1441,8 +1476,7 @@ namespace CommonElements.Timeline
 				e.Graphics.TranslateTransform(this.AutoScrollPosition.X, this.AutoScrollPosition.Y);
 
 				_drawGridlines(e.Graphics);
-				int totalHeight = _drawRows(e.Graphics);
-				AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), totalHeight);
+				_drawRows(e.Graphics);
 				_drawSnapPoints(e.Graphics);
 				_drawElements(e.Graphics);
 				_drawSelection(e.Graphics);

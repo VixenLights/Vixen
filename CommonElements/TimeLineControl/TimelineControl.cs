@@ -36,7 +36,8 @@ namespace CommonElements.Timeline
 			splitContainer.FixedPanel = FixedPanel.Panel1;
 
 			grid.Scroll += GridScrolledHandler;
-			grid.VerticalOffsetChanged += GridScrollVerticalHandler;		
+			grid.VerticalOffsetChanged += GridScrollVerticalHandler;
+			Row.RowToggled += RowToggledHandler;
 		}
 
 		protected override void OnLayout(LayoutEventArgs e)
@@ -134,13 +135,13 @@ namespace CommonElements.Timeline
 
 		private void AddRowToControls(Row row, RowLabel label)
 		{
-			grid.Rows.Add(row);
+			grid.AddRow(row);
 			timelineRowList.AddRowLabel(label);
 		}
 
 		private void RemoveRowFromControls(Row row)
 		{
-			grid.Rows.Remove(row);
+			grid.RemoveRow(row);
 			timelineRowList.RemoveRowLabel(row.RowLabel);
 		}
 
@@ -315,6 +316,13 @@ namespace CommonElements.Timeline
 		private void RulerClickedHandler(object sender, TimeSpanEventArgs e)
 		{
 			Debug.WriteLine("Header clicked at {0}", e.Time);
+		}
+
+		private void RowToggledHandler(object sender, EventArgs e)
+		{
+			if (timelineRowList != null)
+				timelineRowList.VerticalOffset = grid.VerticalOffset;
+			Invalidate();
 		}
 
 		protected override void OnResize(EventArgs e)
