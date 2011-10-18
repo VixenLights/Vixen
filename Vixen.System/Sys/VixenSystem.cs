@@ -93,6 +93,9 @@ namespace Vixen.Sys {
 					ModuleStore.Save();
 				}
 				if(SystemConfig != null) {
+					// 'copy' the current output controllers from the executing state to the
+					// SystemConfig, so they're there for writing when we save
+					SystemConfig.Controllers = Controllers;
 					SystemConfig.Save();
 				}
 				_state = RunState.Stopped;
