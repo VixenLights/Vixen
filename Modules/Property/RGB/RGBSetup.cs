@@ -20,24 +20,43 @@ namespace VixenModules.Property.RGB
 			InitializeComponent();
 
 			List<RGBSetupChannelListing> comboBoxData = new List<RGBSetupChannelListing>();
-			comboBoxData.Add(new RGBSetupChannelListing(Guid.Empty, "None"));
+			RGBSetupChannelListing emptyItem = new RGBSetupChannelListing(Guid.Empty, "None");
+			comboBoxData.Add(emptyItem);
 			foreach (ChannelNode node in nodes)
 				comboBoxData.Add(new RGBSetupChannelListing(node.Id, node.Name));
 
+			comboBoxR.DataSource = comboBoxData.ToArray();
 			comboBoxR.DisplayMember = "Name";
 			comboBoxR.ValueMember = "ID";
-			comboBoxR.DataSource = comboBoxData;
-			if (data.RedChannelNode != Guid.Empty) comboBoxR.SelectedValue = data.RedChannelNode;
+			comboBoxR.SelectedItem = emptyItem;
+			foreach (RGBSetupChannelListing item in comboBoxData) {
+				if (item.ID == data.RedChannelNode) {
+					comboBoxR.SelectedItem = item;
+					break;
+				}
+			}
 
+			comboBoxG.DataSource = comboBoxData.ToArray();
 			comboBoxG.DisplayMember = "Name";
 			comboBoxG.ValueMember = "ID";
-			comboBoxG.DataSource = comboBoxData;
-			if (data.GreenChannelNode != Guid.Empty) comboBoxG.SelectedValue = data.GreenChannelNode;
+			comboBoxG.SelectedItem = emptyItem;
+			foreach (RGBSetupChannelListing item in comboBoxData) {
+				if (item.ID == data.GreenChannelNode) {
+					comboBoxG.SelectedItem = item;
+					break;
+				}
+			}
 
+			comboBoxB.DataSource = comboBoxData.ToArray();
 			comboBoxB.DisplayMember = "Name";
 			comboBoxB.ValueMember = "ID";
-			comboBoxB.DataSource = comboBoxData;
-			if (data.BlueChannelNode != Guid.Empty) comboBoxB.SelectedValue = data.BlueChannelNode;
+			comboBoxB.SelectedItem = emptyItem;
+			foreach (RGBSetupChannelListing item in comboBoxData) {
+				if (item.ID == data.BlueChannelNode) {
+					comboBoxB.SelectedItem = item;
+					break;
+				}
+			}
 
 			if (data.RGBType == RGBModelType.eIndividualRGBChannels)
 				radioButtonMultiChannel.Checked = true;
@@ -61,13 +80,13 @@ namespace VixenModules.Property.RGB
 
 	public class RGBSetupChannelListing
 	{
-		public Guid ID;
-		public string Name;
-
 		public RGBSetupChannelListing(Guid id, string name)
 		{
 			ID = id;
 			Name = name;
 		}
+
+		public Guid ID { get; set; }
+		public string Name { get; set; }
 	}
 }

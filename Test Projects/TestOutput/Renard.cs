@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Vixen.Sys;
 using System.Diagnostics;
+using System.Windows.Forms;
 using Vixen.Module;
 using Vixen.Module.Output;
 using Vixen.Commands;
@@ -15,12 +16,23 @@ namespace TestOutput {
         private Stopwatch _sw;
         private int _updateCount;
 		//private Command[] lastCommands;
+		private RenardData _data;
 
         public Renard() {
 			_form = new RenardForm();
             _sw = new Stopwatch();
 			//lastCommands = new Command[0];
         }
+
+		public override IModuleDataModel ModuleData
+		{
+			get { return _data; }
+			set
+			{
+				_data = value as RenardData;
+				_form.renderingStyle = _data.RenderStyle;
+			}
+		}
 
 		override protected void _SetOutputCount(int outputCount) {
             _form.OutputCount = outputCount;
@@ -71,21 +83,19 @@ namespace TestOutput {
         }
 
 		override public bool Setup() {
-            return false;
+			RenardSetup setup = new RenardSetup();
+			setup.RenderStyle = _form.renderingStyle;
+			DialogResult result = setup.ShowDialog();
+			if (result == DialogResult.OK) {
+				_data.RenderStyle = setup.RenderStyle;
+				_form.renderingStyle = setup.RenderStyle;
+				return true;
+			}
+			return false;
         }
 
 		override public bool IsRunning {
 			get { return _form != null && _form.Visible; }
-		}
-
-		public override IModuleDataModel ModuleData {
-			get {
-				return base.ModuleData;
-			}
-			set {
-				base.ModuleData = value;
-				(value as RenardData).RunCount++;
-			}
 		}
 
 		override public void Dispose() {

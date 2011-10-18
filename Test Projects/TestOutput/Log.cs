@@ -11,7 +11,7 @@ using Vixen.Commands;
 namespace TestOutput {
 	public class Log : OutputModuleInstanceBase {
 		private bool _running = false;
-		private string _filePath = @"C:\Users\Development\Desktop\Log.txt";
+		private string _filePath = @"C:\VixenLogger.txt";
 		private StreamWriter _file;
 
 		override protected void _SetOutputCount(int outputCount) { }

@@ -41,7 +41,7 @@ namespace Vixen.Sys {
 			OutputController controller = VixenSystem.Controllers.Get(ControllerId);
 			controllerName = (controller != null) ?
 					controller.Name :
-					"(Unknown: " + ControllerId + ")";
+					"(Unknown)";
 
 			int indexOffset = indexFromZero ? 0 : 1;
 			return controllerName + " [" + (OutputIndex + indexOffset) + "]";

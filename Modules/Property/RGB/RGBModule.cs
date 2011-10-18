@@ -49,13 +49,13 @@ namespace VixenModules.Property.RGB
 			ChannelCommands result = new ChannelCommands();
 
 			HSV finalColor = HSV.FromRGB(color);
-			finalColor.V = level;
+			finalColor.V = level / 100.0;
 
 			// if it's all getting dumped out each channel, just make 'smart' RGB commands for them
 			if (_data.RGBType == RGBModelType.eSingleRGBChannel)
 			{
 				Color fullColorParameter = finalColor.ToRGB().ToArgb();
-				result.AddCommandForChannel(Owner.Id, new Lighting.Polychrome.SetColor(fullColorParameter));
+				result.AddCommandForChannel(Owner.Channel.Id, new Lighting.Polychrome.SetColor(fullColorParameter));
 			}
 			// otherwise, we're breaking it up by channel, so split the color up into discrete components
 			else
@@ -68,19 +68,19 @@ namespace VixenModules.Property.RGB
 				// populate the red channel(s) with a setlevel of the red value
 				ChannelNode redNode = ChannelNode.GetChannelNode(_data.RedChannelNode);
 				if (redNode != null) {
-					result.AddCommandForChannel(redNode.Id, new Lighting.Monochrome.SetLevel(R));
+					result.AddCommandForChannel(redNode.Channel.Id, new Lighting.Monochrome.SetLevel(R));
 				}
 				
 				// populate the green channel(s) with a setlevel of the green value
 				ChannelNode greenNode = ChannelNode.GetChannelNode(_data.GreenChannelNode);
 				if (greenNode != null) {
-					result.AddCommandForChannel(greenNode.Id, new Lighting.Monochrome.SetLevel(G));
+					result.AddCommandForChannel(greenNode.Channel.Id, new Lighting.Monochrome.SetLevel(G));
 				}
 				
 				// populate the blue channel(s) with a setlevel of the blue value
 				ChannelNode blueNode = ChannelNode.GetChannelNode(_data.BlueChannelNode);
 				if (blueNode != null) {
-					result.AddCommandForChannel(blueNode.Id, new Lighting.Monochrome.SetLevel(B));
+					result.AddCommandForChannel(blueNode.Channel.Id, new Lighting.Monochrome.SetLevel(B));
 				}
 			}
 

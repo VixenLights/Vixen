@@ -121,6 +121,12 @@
     <Compile Include="RenardForm.Designer.cs">
       <DependentUpon>RenardForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="RenardSetup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RenardSetup.Designer.cs">
+      <DependentUpon>RenardSetup.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Vixen.System\Vixen.csproj">
@@ -132,6 +138,9 @@
   <ItemGroup>
     <EmbeddedResource Include="595 Form.resx">
       <DependentUpon>595 Form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RenardSetup.resx">
+      <DependentUpon>RenardSetup.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

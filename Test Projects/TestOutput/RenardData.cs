@@ -5,14 +5,24 @@ using System.Text;
 using System.Runtime.Serialization;
 using Vixen.Module;
 
-namespace TestOutput {
+namespace TestOutput
+{
 	[DataContract]
-	public class RenardData : ModuleDataModelBase {
+	class RenardData : ModuleDataModelBase
+	{
 		[DataMember]
-		public int RunCount;
+		public RenardRenderStyle RenderStyle { get; set; }
 
-		public override IModuleDataModel Clone() {
-			return MemberwiseClone() as IModuleDataModel;
+		public RenardData()
+		{
+			RenderStyle = RenardRenderStyle.Monochrome;
+		}
+
+		public override IModuleDataModel Clone()
+		{
+			RenardData result = new RenardData();
+			result.RenderStyle = RenderStyle;
+			return result;
 		}
 	}
 }

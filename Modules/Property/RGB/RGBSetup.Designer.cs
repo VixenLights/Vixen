@@ -47,11 +47,11 @@
 			this.radioButtonSingleChannel.AutoSize = true;
 			this.radioButtonSingleChannel.Location = new System.Drawing.Point(23, 45);
 			this.radioButtonSingleChannel.Name = "radioButtonSingleChannel";
-			this.radioButtonSingleChannel.Size = new System.Drawing.Size(271, 30);
+			this.radioButtonSingleChannel.Size = new System.Drawing.Size(261, 30);
 			this.radioButtonSingleChannel.TabIndex = 0;
 			this.radioButtonSingleChannel.TabStop = true;
-			this.radioButtonSingleChannel.Text = "The whole color should be displayed in this channel.\r\nThe controller will be sent" +
-				" full color commands.";
+			this.radioButtonSingleChannel.Text = "Each channel will display the full color: controllers\r\nwill receive full color co" +
+				"mmands for every channel.";
 			this.radioButtonSingleChannel.UseVisualStyleBackColor = true;
 			this.radioButtonSingleChannel.CheckedChanged += new System.EventHandler(this.radioButton_CheckedChanged);
 			// 
@@ -69,11 +69,11 @@
 			this.radioButtonMultiChannel.AutoSize = true;
 			this.radioButtonMultiChannel.Location = new System.Drawing.Point(23, 93);
 			this.radioButtonMultiChannel.Name = "radioButtonMultiChannel";
-			this.radioButtonMultiChannel.Size = new System.Drawing.Size(280, 30);
+			this.radioButtonMultiChannel.Size = new System.Drawing.Size(257, 30);
 			this.radioButtonMultiChannel.TabIndex = 2;
 			this.radioButtonMultiChannel.TabStop = true;
-			this.radioButtonMultiChannel.Text = "The color should be broken up into independent Red,\r\nGreen && Blue elements, and " +
-				"displayed in subchannels:";
+			this.radioButtonMultiChannel.Text = "The color should be broken up into Red, Green &&\r\nBlue components, and displayed " +
+				"in subchannels:";
 			this.radioButtonMultiChannel.UseVisualStyleBackColor = true;
 			// 
 			// groupBoxComponents
@@ -177,7 +177,8 @@
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.radioButtonSingleChannel);
 			this.Name = "RGBSetup";
-			this.Text = "RGBSetup";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.Text = "RGB Channel Setup";
 			this.groupBoxComponents.ResumeLayout(false);
 			this.groupBoxComponents.PerformLayout();
 			this.ResumeLayout(false);

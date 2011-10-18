@@ -155,9 +155,10 @@ namespace VixenModules.Effect.Pulse
 			RGBModule rgbProperty = node.Properties.Get(PulseDescriptor._RGBPropertyId) as RGBModule;
 
 			while (currentTime < TimeSpan) {
-				double percentProgress = currentTime.TotalMilliseconds / TimeSpan.TotalMilliseconds;
+				double fractionalProgress = currentTime.TotalMilliseconds / TimeSpan.TotalMilliseconds;
+				double percentProgress = fractionalProgress * 100.0;
 				Level currentLevel = LevelCurve.GetValue(percentProgress);
-				Color currentColor = ColorGradient.GetColorAt(percentProgress);
+				Color currentColor = ColorGradient.GetColorAt(fractionalProgress);
 
 				TimeSpan sliceDuration = (currentTime + MinimumRenderInterval < TimeSpan) ? MinimumRenderInterval : TimeSpan - currentTime;
 				ChannelCommands rgbData = rgbProperty.RenderColorToCommands(currentColor, currentLevel);

@@ -255,9 +255,6 @@ namespace VixenApplication
 			listViewNodeContents.BeginUpdate();
 			listViewNodeContents.Items.Clear();
 
-			// What the hell. I mean, seriously. C# sucks; surely there's a better way to do this?!@*(#@!
-			// (when someone else comes across this: PLEASE correct this WTF-worthy code.)
-			// ******************************************************************
 			ListViewGroup channelsGroup = null;
 			ListViewGroup groupsGroup = null;
 			ListViewGroup patchesGroup = null;
@@ -279,7 +276,6 @@ namespace VixenApplication
 						break;
 				}
 			}
-			// ******************************************************************
 
 			// iterate through each child of the given node, and add them to the contents box.
 			// separate them based on being a channel or group.
