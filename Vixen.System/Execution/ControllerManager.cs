@@ -177,7 +177,9 @@ namespace Vixen.Execution {
 
 				// Create / Start the thread that updates the hardware.
 				HardwareUpdateThread thread = new HardwareUpdateThread(controller);
-				_updateThreads[controller.Id] = thread;
+				lock (_updateThreads) {
+					_updateThreads[controller.Id] = thread;
+				}
 				thread.Start();
 			}
 		}
