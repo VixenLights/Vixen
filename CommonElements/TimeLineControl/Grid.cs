@@ -1496,9 +1496,10 @@ namespace CommonElements.Timeline
 		void TimelineGrid_DragDrop(object sender, DragEventArgs e)
 		{
 			Point client = PointToClient(new Point(e.X, e.Y));
+			Point gridPoint = translateLocation(client);
 
-			Row row = rowAt(client);
-			TimeSpan time = pixelsToTime(translateLocation(client).X);
+			Row row = rowAt(gridPoint);
+			TimeSpan time = pixelsToTime(gridPoint.X);
 			IDataObject data = e.Data;
 
 			if (DataDropped != null)
