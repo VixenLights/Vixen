@@ -28,7 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
+			System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
 			this.listViewControllers = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -59,10 +59,10 @@
             this.columnHeader2,
             this.columnHeader3});
 			this.listViewControllers.FullRowSelect = true;
-			listViewGroup1.Header = "ListViewGroup";
-			listViewGroup1.Name = "listViewGroup1";
+			listViewGroup3.Header = "ListViewGroup";
+			listViewGroup3.Name = "listViewGroup1";
 			this.listViewControllers.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1});
+            listViewGroup3});
 			this.listViewControllers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
 			this.listViewControllers.HideSelection = false;
 			this.listViewControllers.Location = new System.Drawing.Point(12, 12);
@@ -90,9 +90,9 @@
 			// 
 			// buttonAddController
 			// 
-			this.buttonAddController.Location = new System.Drawing.Point(62, 234);
+			this.buttonAddController.Location = new System.Drawing.Point(62, 236);
 			this.buttonAddController.Name = "buttonAddController";
-			this.buttonAddController.Size = new System.Drawing.Size(120, 30);
+			this.buttonAddController.Size = new System.Drawing.Size(120, 25);
 			this.buttonAddController.TabIndex = 17;
 			this.buttonAddController.Text = "Add New Controller";
 			this.buttonAddController.UseVisualStyleBackColor = true;
@@ -100,9 +100,9 @@
 			// 
 			// buttonDeleteController
 			// 
-			this.buttonDeleteController.Location = new System.Drawing.Point(237, 234);
+			this.buttonDeleteController.Location = new System.Drawing.Point(237, 236);
 			this.buttonDeleteController.Name = "buttonDeleteController";
-			this.buttonDeleteController.Size = new System.Drawing.Size(120, 30);
+			this.buttonDeleteController.Size = new System.Drawing.Size(120, 25);
 			this.buttonDeleteController.TabIndex = 19;
 			this.buttonDeleteController.Text = "Delete Selected";
 			this.buttonDeleteController.UseVisualStyleBackColor = true;
@@ -112,9 +112,9 @@
 			// 
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.Location = new System.Drawing.Point(317, 448);
+			this.buttonOk.Location = new System.Drawing.Point(317, 445);
 			this.buttonOk.Name = "buttonOk";
-			this.buttonOk.Size = new System.Drawing.Size(90, 30);
+			this.buttonOk.Size = new System.Drawing.Size(90, 25);
 			this.buttonOk.TabIndex = 21;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
@@ -199,9 +199,9 @@
 			// 
 			// buttonUpdate
 			// 
-			this.buttonUpdate.Location = new System.Drawing.Point(310, 21);
+			this.buttonUpdate.Location = new System.Drawing.Point(308, 21);
 			this.buttonUpdate.Name = "buttonUpdate";
-			this.buttonUpdate.Size = new System.Drawing.Size(64, 25);
+			this.buttonUpdate.Size = new System.Drawing.Size(73, 25);
 			this.buttonUpdate.TabIndex = 27;
 			this.buttonUpdate.Text = "Update";
 			this.buttonUpdate.UseVisualStyleBackColor = true;
@@ -247,7 +247,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(419, 490);
+			this.ClientSize = new System.Drawing.Size(419, 482);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.buttonOk);
 			this.Controls.Add(this.buttonDeleteController);

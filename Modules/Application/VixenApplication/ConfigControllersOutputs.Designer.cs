@@ -98,9 +98,9 @@
 			// 
 			// buttonUpdate
 			// 
-			this.buttonUpdate.Location = new System.Drawing.Point(235, 23);
+			this.buttonUpdate.Location = new System.Drawing.Point(230, 22);
 			this.buttonUpdate.Name = "buttonUpdate";
-			this.buttonUpdate.Size = new System.Drawing.Size(75, 23);
+			this.buttonUpdate.Size = new System.Drawing.Size(80, 25);
 			this.buttonUpdate.TabIndex = 12;
 			this.buttonUpdate.Text = "Update";
 			this.buttonUpdate.UseVisualStyleBackColor = true;
@@ -108,9 +108,9 @@
 			// 
 			// buttonConfigure
 			// 
-			this.buttonConfigure.Location = new System.Drawing.Point(235, 119);
+			this.buttonConfigure.Location = new System.Drawing.Point(230, 117);
 			this.buttonConfigure.Name = "buttonConfigure";
-			this.buttonConfigure.Size = new System.Drawing.Size(75, 23);
+			this.buttonConfigure.Size = new System.Drawing.Size(80, 25);
 			this.buttonConfigure.TabIndex = 11;
 			this.buttonConfigure.Text = "Configure";
 			this.buttonConfigure.UseVisualStyleBackColor = true;
@@ -118,9 +118,9 @@
 			// 
 			// buttonDelete
 			// 
-			this.buttonDelete.Location = new System.Drawing.Point(235, 90);
+			this.buttonDelete.Location = new System.Drawing.Point(230, 89);
 			this.buttonDelete.Name = "buttonDelete";
-			this.buttonDelete.Size = new System.Drawing.Size(75, 23);
+			this.buttonDelete.Size = new System.Drawing.Size(80, 25);
 			this.buttonDelete.TabIndex = 10;
 			this.buttonDelete.Text = "Delete";
 			this.buttonDelete.UseVisualStyleBackColor = true;
@@ -144,6 +144,7 @@
 			this.listViewTransforms.TabIndex = 8;
 			this.listViewTransforms.UseCompatibleStateImageBehavior = false;
 			this.listViewTransforms.View = System.Windows.Forms.View.List;
+			this.listViewTransforms.SelectedIndexChanged += new System.EventHandler(this.listViewTransforms_SelectedIndexChanged);
 			// 
 			// label1
 			// 
@@ -163,9 +164,9 @@
 			// 
 			// buttonAdd
 			// 
-			this.buttonAdd.Location = new System.Drawing.Point(235, 61);
+			this.buttonAdd.Location = new System.Drawing.Point(230, 61);
 			this.buttonAdd.Name = "buttonAdd";
-			this.buttonAdd.Size = new System.Drawing.Size(75, 23);
+			this.buttonAdd.Size = new System.Drawing.Size(80, 25);
 			this.buttonAdd.TabIndex = 5;
 			this.buttonAdd.Text = "Add";
 			this.buttonAdd.UseVisualStyleBackColor = true;
@@ -173,10 +174,11 @@
 			// 
 			// buttonOK
 			// 
+			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOK.Location = new System.Drawing.Point(270, 386);
+			this.buttonOK.Location = new System.Drawing.Point(265, 380);
 			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(75, 23);
+			this.buttonOK.Size = new System.Drawing.Size(80, 25);
 			this.buttonOK.TabIndex = 12;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
@@ -185,7 +187,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(357, 421);
+			this.ClientSize = new System.Drawing.Size(357, 415);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.groupBox);
 			this.Controls.Add(this.listViewOutputs);

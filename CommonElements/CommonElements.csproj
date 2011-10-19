@@ -230,6 +230,9 @@
       <DependentUpon>ZoomBar.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="ListSelectDialog.resx">
+      <DependentUpon>ListSelectDialog.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="ColorPicker\ColorPicker.cur" />

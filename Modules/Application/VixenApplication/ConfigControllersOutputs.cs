@@ -56,16 +56,21 @@ namespace VixenApplication
 
 		private void _populateOutputsList()
 		{
+			listViewOutputs.BeginUpdate();
 			listViewOutputs.Items.Clear();
 			for (int i = 0; i < _controller.OutputCount; i++) {
 				ListViewItem item = new ListViewItem();
 				_populateListViewItemWithDetails(item, i);
 				listViewOutputs.Items.Add(item);
 			}
+			listViewOutputs.EndUpdate();
 		}
 
-		private void _populateFormWithOutput(int outputIndex)
+		private void _populateFormWithOutput(int outputIndex, bool forceUpdate = false)
 		{
+			if (outputIndex == _selectedOutputIndex && !forceUpdate)
+				return;
+
 			_selectedOutputIndex = outputIndex;
 			listViewTransforms.Items.Clear();
 
@@ -85,7 +90,20 @@ namespace VixenApplication
 						listViewTransforms.Items.Add(item);
 					}
 				}
+
+				buttonDelete.Enabled = false;
+				buttonConfigure.Enabled = false;
 			}
+		}
+
+		private void _redrawOutputList()
+		{
+			int topIndex = listViewOutputs.Items.IndexOf(listViewOutputs.TopItem);
+			int selectedIndex = listViewOutputs.SelectedIndices[0];
+			_populateOutputsList();
+			listViewOutputs.TopItem = listViewOutputs.Items[topIndex];
+			listViewOutputs.Items[selectedIndex].Selected = true;
+			_populateFormWithOutput(_selectedOutputIndex, true);
 		}
 
 		private bool IsIndexValid(int index)
@@ -124,7 +142,7 @@ namespace VixenApplication
 				_controller.OutputTransforms = allTransforms;
 			}
 
-			_populateFormWithOutput(_selectedOutputIndex);
+			_redrawOutputList();
 			_populateListViewItemWithDetails(listViewOutputs.Items[_selectedOutputIndex], _selectedOutputIndex);
 		}
 
@@ -146,24 +164,35 @@ namespace VixenApplication
 				_controller.OutputTransforms = allTransforms;
 			}
 
-			_populateListViewItemWithDetails(listViewOutputs.Items[_selectedOutputIndex], _selectedOutputIndex);
-			listViewOutputs.RedrawItems(_selectedOutputIndex, _selectedOutputIndex, true);
-			_populateFormWithOutput(_selectedOutputIndex);
+			_redrawOutputList();
 		}
 
 		private void buttonConfigure_Click(object sender, EventArgs e)
 		{
+			if (listViewTransforms.SelectedItems.Count <= 0)
+				return;
+
 			Guid transformInstanceID = (Guid)listViewTransforms.SelectedItems[0].Tag;
 			ITransformModuleInstance instance = _controller.OutputModule.GetTransforms(_selectedOutputIndex).Single(x => x.InstanceId == transformInstanceID);
-			instance.Setup();
+			if (instance != null)
+				instance.Setup();
 		}
 
 		private void buttonUpdate_Click(object sender, EventArgs e)
 		{
 			_controller.Outputs[_selectedOutputIndex].Name = textBoxName.Text;
-			_populateListViewItemWithDetails(listViewOutputs.Items[_selectedOutputIndex], _selectedOutputIndex);
-			listViewOutputs.RedrawItems(_selectedOutputIndex, _selectedOutputIndex, true);
-			_populateFormWithOutput(_selectedOutputIndex);
+			_redrawOutputList();
+		}
+
+		private void listViewTransforms_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (listViewTransforms.SelectedItems.Count > 0) {
+				buttonDelete.Enabled = true;
+				buttonConfigure.Enabled = true;
+			} else {
+				buttonDelete.Enabled = false;
+				buttonConfigure.Enabled = false;
+			}
 		}
 	}
 }

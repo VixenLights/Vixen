@@ -44,7 +44,7 @@ namespace Vixen.Module.Output {
 		virtual public void SetTransforms(int outputIndex, IEnumerable<ITransformModuleInstance> transforms) {
 			List<ITransformModuleInstance> transformList = _GetTransformList(outputIndex);
 			transformList.Clear();
-			transformList.AddRange(transformList);
+			transformList.AddRange(transforms);
 		}
 
 		virtual public IEnumerable<ITransformModuleInstance> GetTransforms(int outputIndex) {
