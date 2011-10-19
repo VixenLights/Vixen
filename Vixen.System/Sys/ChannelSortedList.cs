@@ -7,19 +7,26 @@ using Vixen.Commands;
 
 namespace Vixen.Sys {
 	class ChannelSortedList : SortedList<TimeSpan, CommandNode>, IChannelDataStore {
+		private object _sync = new object();
+
 		public void Add(CommandNode command) {
-			Add(command.StartTime, command);
+			lock(_sync) {
+				Add(command.StartTime, command);
+			}
 		}
 
 		public new IEnumerator<CommandNode> GetEnumerator() {
-			return new ChannelSortedListEnumerator(this);
+			return new ChannelSortedListEnumerator(this, _sync);
 		}
 
+		#region ChannelSortedListEnumerator class
 		class ChannelSortedListEnumerator : IEnumerator<CommandNode> {
 			private ChannelSortedList _list;
 			private CommandNode _current;
+			private object _sync;
 
-			public ChannelSortedListEnumerator(ChannelSortedList list) {
+			public ChannelSortedListEnumerator(ChannelSortedList list, object sync) {
+				_sync = sync;
 				_list = list;
 				Reset();
 			}
@@ -37,8 +44,10 @@ namespace Vixen.Sys {
 
 			public bool MoveNext() {
 				if(_list.Count > 0) {
-					_current = _list.Values[0];
-					_list.RemoveAt(0);
+					lock(_sync) {
+						_current = _list.Values[0];
+						_list.RemoveAt(0);
+					}
 					return true;
 				}
 				_current = null;
@@ -48,5 +57,6 @@ namespace Vixen.Sys {
 			public void Reset() {
 			}
 		}
+		#endregion
 	}
 }
