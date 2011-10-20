@@ -440,7 +440,11 @@ namespace VixenApplication
 
 		private void buttonBulkRename_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show("Not implemented yet.");
+            if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0)
+            {
+                BulkChannelRename Formx = new BulkChannelRename();
+                Formx.ShowDialog();
+            }
 		}
 
 		private void buttonRenameItem_Click(object sender, EventArgs e)
