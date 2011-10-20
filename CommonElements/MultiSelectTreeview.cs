@@ -35,182 +35,63 @@ namespace CommonElements
 		/// </summary>
 		public event DragItemEventHandler DragCancel;
 
+		/// <summary>
+		/// Occurs when one or more tree nodes is dragged over another tree node.
+		/// It is designed to allow the ability to reject the drag target if it is
+		/// inappropriate.
+		/// </summary>
+		public event DragVerifyEventHandler DragOverVerify;
+
+		/// <summary>
+		/// Occurs when the drag/drop is completing, and all source/targets have been
+		/// verified. It provides feedback just before the movement of the nodes in
+		/// the treeview, and contains a parameter to allow the handler to stop the
+		/// dragging of nodes. If it stops the drag process, the handler must move all
+		/// the nodes itself.
+		/// </summary>
+		public event DragFinishingEventHandler DragFinishing;
+
 		#endregion
 
 
 		#region Private members
-		private int _dragImageIndex;
 		private DragDropEffects _dragMode = DragDropEffects.Move;
-		private Color _dragOverNodeForeColor = SystemColors.HighlightText;
-		private Color _dragOverNodeBackColor = SystemColors.Highlight;
-		private DragCursorType _dragCursorType;
-		private Cursor _dragCursor = null;
-		private TreeNode _previousNode;
-		private TreeNode _selectedNode;
-		private FormDrag _formDrag = new FormDrag();
+		private Color _dragDestinationNodeForeColor = SystemColors.HighlightText;
+		private Color _dragDestinationNodeBackColor = SystemColors.Highlight;
+		private Color _dragSourceNodeForeColor = SystemColors.ControlText;
+		private Color _dragSourceNodeBackColor = SystemColors.ControlLight;
+		private bool _usingCustomDragCursor;
+		private Cursor _customDragCursor = null;
+		private TreeNode _dragDestinationNode;
 		#endregion
 
 
-		#region Public properties
+		#region Drag & Drop properties
+
 		/// <summary>
-		/// The imagelist control from which DragImage icons are taken.
+		/// The custom cursor to use when dragging an item, if UsingCustomDragCursor is set to true.
 		/// </summary>
 		[
-		Description("The imagelist control from which DragImage icons are taken."),
+		Description("The custom cursor to use when dragging an item, if UsingCustomDragCursor is set to true."),
 		Category("Drag and drop")
 		]
-		public ImageList DragImageList
+		public Cursor CustomDragCursor
 		{
-			get
-			{
-				return _formDrag.imageList1;
-			}
-			set
-			{
-				if (value == _formDrag.imageList1) {
-					return;
-				}
-
-				_formDrag.imageList1 = value;
-
-				// Change the picture box to use this image
-				if (_formDrag.imageList1.Images.Count > 0 && _formDrag.imageList1.Images[_dragImageIndex] != null) {
-					_formDrag.pictureBox1.Image = _formDrag.imageList1.Images[_dragImageIndex];
-					_formDrag.Height = _formDrag.pictureBox1.Image.Height;
-				}
-
-				if (!base.IsHandleCreated) {
-					return;
-				}
-				SendMessage((IntPtr)4361, 0, ((value == null) ? IntPtr.Zero : value.Handle), 0);
-			}
-
+			get { return _customDragCursor; }
+			set { _customDragCursor = value; }
 		}
 
 		/// <summary>
-		/// The default image index for the DragImage icon.
+		/// If a custom cursor should be using while dragging.
 		/// </summary>
 		[
-		Description("The default image index for the DragImage icon."),
-		Category("Drag and drop"),
-		TypeConverter(typeof(ImageIndexConverter)),
-		Editor("System.Windows.Forms.Design.ImageIndexEditor", typeof(System.Drawing.Design.UITypeEditor))
-		]
-		public int DragImageIndex
-		{
-			get
-			{
-				if (_formDrag.imageList1 == null) {
-					return -1;
-				}
-
-				if (_dragImageIndex >= _formDrag.imageList1.Images.Count) {
-					return Math.Max(0, (_formDrag.imageList1.Images.Count - 1));
-				} else
-
-					return _dragImageIndex;
-			}
-			set
-			{
-				// Change the picture box to use this image
-				if (_formDrag.imageList1.Images.Count > 0 && _formDrag.imageList1.Images[value] != null) {
-					_formDrag.pictureBox1.Image = _formDrag.imageList1.Images[value];
-					_formDrag.Size = new Size(_formDrag.Width, _formDrag.pictureBox1.Image.Height);
-					_formDrag.labelText.Size = new Size(_formDrag.labelText.Width, _formDrag.pictureBox1.Image.Height);
-				}
-
-				_dragImageIndex = value;
-			}
-		}
-
-		/// <summary>
-		/// The custom cursor to use when dragging an item, if DragCursor is set to Custom.
-		/// </summary>
-		[
-		Description("The custom cursor to use when dragging an item, if DragCursor is set to Custom."),
+		Description("If a custom cursor should be using while dragging."),
 		Category("Drag and drop")
 		]
-		public Cursor DragCursor
+		public bool UsingCustomDragCursor
 		{
-			get
-			{
-				return _dragCursor;
-			}
-			set
-			{
-				if (value == _dragCursor) {
-					return;
-				}
-
-				_dragCursor = value;
-				if (!base.IsHandleCreated) {
-					return;
-				}
-			}
-		}
-
-		/// <summary>
-		/// The cursor type to use when dragging - None uses the default drag and drop cursor, DragIcon uses an icon and label, Custom uses a custom cursor.
-		/// </summary>
-		[
-		Description("The cursor type to use when dragging - None uses the default drag and drop cursor, DragIcon uses an icon and label, Custom uses a custom cursor."),
-		Category("Drag and drop")
-		]
-		public DragCursorType DragCursorType
-		{
-			get
-			{
-				return _dragCursorType;
-			}
-			set
-			{
-				_dragCursorType = value;
-			}
-		}
-
-		/// <summary>
-		/// Sets the font for the dragged node (shown as ghosted text/icon).
-		/// </summary>
-		[
-		Description("Sets the font for the dragged node (shown as ghosted text/icon)."),
-		Category("Drag and drop")
-		]
-		public Font DragNodeFont
-		{
-			get
-			{
-				return _formDrag.labelText.Font;
-			}
-			set
-			{
-				_formDrag.labelText.Font = value;
-
-				// Set the drag form height to the font height
-				_formDrag.Size = new Size(_formDrag.Width, (int)_formDrag.labelText.Font.GetHeight());
-				_formDrag.labelText.Size = new Size(_formDrag.labelText.Width, (int)_formDrag.labelText.Font.GetHeight());
-
-
-			}
-		}
-
-		/// <summary>
-		/// Sets the opacity for the dragged node (shown as ghosted text/icon).
-		/// </summary>
-		[
-			Description("Sets the opacity for the dragged node (shown as ghosted text/icon)."),
-			Category("Drag and drop"),
-			TypeConverter(typeof(System.Windows.Forms.OpacityConverter))
-		]
-		public double DragNodeOpacity
-		{
-			get
-			{
-				return _formDrag.Opacity;
-			}
-			set
-			{
-				_formDrag.Opacity = value;
-			}
+			get { return _usingCustomDragCursor; }
+			set { _usingCustomDragCursor = value; }
 		}
 
 		/// <summary>
@@ -220,16 +101,10 @@ namespace CommonElements
 			Description("The background colour of the node being dragged over."),
 			Category("Drag and drop")
 		]
-		public Color DragOverNodeBackColor
+		public Color DragDestinationNodeForeColor
 		{
-			get
-			{
-				return _dragOverNodeBackColor;
-			}
-			set
-			{
-				_dragOverNodeBackColor = value;
-			}
+			get { return _dragDestinationNodeForeColor; }
+			set { _dragDestinationNodeForeColor = value; }
 		}
 
 		/// <summary>
@@ -239,16 +114,36 @@ namespace CommonElements
 			Description("The foreground colour of the node being dragged over."),
 			Category("Drag and drop")
 		]
-		public Color DragOverNodeForeColor
+		public Color DragDestinationNodeBackColor
 		{
-			get
-			{
-				return _dragOverNodeForeColor;
-			}
-			set
-			{
-				_dragOverNodeForeColor = value;
-			}
+			get { return _dragDestinationNodeBackColor; }
+			set { _dragDestinationNodeBackColor = value; }
+		}
+
+		/// <summary>
+		/// The background colour of the node(s) being dragged.
+		/// </summary>
+		[
+			Description("The background colour of the node(s) being dragged."),
+			Category("Drag and drop")
+		]
+		public Color DragSourceNodeForeColor
+		{
+			get { return _dragSourceNodeForeColor; }
+			set { _dragSourceNodeForeColor = value; }
+		}
+
+		/// <summary>
+		/// The foreground colour of the node(s) being dragged.
+		/// </summary>
+		[
+			Description("The foreground colour of the node(s) being dragged."),
+			Category("Drag and drop")
+		]
+		public Color DragSourceNodeBackColor
+		{
+			get { return _dragSourceNodeBackColor; }
+			set { _dragSourceNodeBackColor = value; }
 		}
 
 		/// <summary>
@@ -260,15 +155,10 @@ namespace CommonElements
 		]
 		public DragDropEffects DragMode
 		{
-			get
-			{
-				return _dragMode;
-			}
-			set
-			{
-				_dragMode = value;
-			}
+			get { return _dragMode; }
+			set { _dragMode = value; }
 		}
+
 		#endregion
 
 
@@ -284,11 +174,11 @@ namespace CommonElements
 			set
 			{
 				ClearSelectedNodes();
-				if( value != null )
+				if (value != null)
 				{
-					foreach( TreeNode node in value )
+					foreach (TreeNode node in value)
 					{
-						ToggleNode( node, true );
+						ToggleNode(node, true);
 					}
 				}
 			}
@@ -302,9 +192,9 @@ namespace CommonElements
 			set
 			{
 				ClearSelectedNodes();
-				if( value != null )
+				if (value != null)
 				{
-					SelectNode( value );
+					SelectNode(value);
 				}
 			}
 		}
@@ -325,44 +215,31 @@ namespace CommonElements
 
 			base.SetStyle(ControlStyles.DoubleBuffer, true);
 			AllowDrop = true;
-
-			// Set the drag form to have ambient properties
-			_formDrag.labelText.Font = Font;
-			_formDrag.BackColor = BackColor;
-
-			// Custom cursor handling
-			if (_dragCursorType == DragCursorType.Custom && _dragCursor != null) {
-				DragCursor = _dragCursor;
-			}
-
-			_formDrag.Show();
-			_formDrag.Visible = false;
 		}
 
 
 		#region Overridden Events
 
-		protected override void OnGotFocus( EventArgs e )
+		protected override void OnGotFocus(EventArgs e)
 		{
 			// Make sure at least one node has a selection
 			// this way we can tab to the ctrl and use the 
 			// keyboard to select nodes
 			try
 			{
-				if( m_SelectedNode == null && TopNode != null )
-				{
-					ToggleNode( TopNode, true );
+				if (m_SelectedNode == null && TopNode != null) {
+					ToggleNode(TopNode, true);
 				}
 
-				base.OnGotFocus( e );
+				base.OnGotFocus(e);
 			}
-			catch( Exception ex )
+			catch (Exception ex)
 			{
-				HandleException( ex );
+				HandleException(ex);
 			}
 		}
 
-		protected override void OnMouseDown( MouseEventArgs e )
+		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			// If the user clicks on a node that was not
 			// previously selected, select it now.
@@ -371,34 +248,34 @@ namespace CommonElements
 			{
 				base.SelectedNode = null;
 
-				TreeNode node = GetNodeAt( e.Location );
-				if( node != null )
+				TreeNode node = GetNodeAt(e.Location);
+				if (node != null)
 				{
 					int leftBound = node.Bounds.X; // - 20; // Allow user to click on image
 					int rightBound = node.Bounds.Right + 10; // Give a little extra room
-					if( e.Location.X > leftBound && e.Location.X < rightBound )
+					if (e.Location.X > leftBound && e.Location.X < rightBound)
 					{
-						if( ModifierKeys == Keys.None && ( m_SelectedNodes.Contains( node ) ) )
+						if (ModifierKeys == Keys.None && (m_SelectedNodes.Contains(node)))
 						{
 							// Potential Drag Operation
 							// Let Mouse Up do select
 						}
 						else
 						{							
-							SelectNode( node );
+							SelectNode(node);
 						}
 					}
 				}
 
-				base.OnMouseDown( e );
+				base.OnMouseDown(e);
 			}
-			catch( Exception ex )
+			catch (Exception ex)
 			{
-				HandleException( ex );
+				HandleException(ex);
 			}
 		}
 
-		protected override void OnMouseUp( MouseEventArgs e )
+		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			// If the clicked on a node that WAS previously
 			// selected then, reselect it now. This will clear
@@ -407,30 +284,30 @@ namespace CommonElements
 			try
 			{
 				// Check to see if a node was clicked on 
-				TreeNode node = GetNodeAt( e.Location );
-				if( node != null )
+				TreeNode node = GetNodeAt(e.Location);
+				if (node != null)
 				{
-					if( ModifierKeys == Keys.None && m_SelectedNodes.Contains( node ) )
+					if (ModifierKeys == Keys.None && m_SelectedNodes.Contains(node))
 					{
 						int leftBound = node.Bounds.X; // -20; // Allow user to click on image
 						int rightBound = node.Bounds.Right + 10; // Give a little extra room
-						if( e.Location.X > leftBound && e.Location.X < rightBound )
+						if (e.Location.X > leftBound && e.Location.X < rightBound)
 						{
 
-							SelectNode( node );
+							SelectNode(node);
 						}
 					}
 				}
 
-				base.OnMouseUp( e );
+				base.OnMouseUp(e);
 			}
-			catch( Exception ex )
+			catch (Exception ex)
 			{
-				HandleException( ex );
+				HandleException(ex);
 			}
 		}
 
-		protected override void OnItemDrag( ItemDragEventArgs e )
+		protected override void OnItemDrag(ItemDragEventArgs e)
 		{
 			// If the user drags a node and the node being dragged is NOT
 			// selected, then clear the active selection, select the
@@ -440,54 +317,36 @@ namespace CommonElements
 			{
 				TreeNode node = e.Item as TreeNode;
 
-				if( node != null )
+				if (node != null)
 				{
-					if( !m_SelectedNodes.Contains( node ) )
+					if (!m_SelectedNodes.Contains(node))
 					{
-						SelectSingleNode( node );
-						ToggleNode( node, true );
+						SelectSingleNode(node);
+						ToggleNode(node, true);
 					}
 				}
 
-				base.OnItemDrag( e );
+				base.OnItemDrag(e);
 			}
-			catch( Exception ex )
+			catch (Exception ex)
 			{
-				HandleException( ex );
+				HandleException(ex);
 			}
-
-			_selectedNode = (TreeNode)e.Item;
 
 			// Call dragstart event
 			if (DragStart != null) {
-				DragItemEventArgs ea = new DragItemEventArgs();
-				ea.Node = _selectedNode;
-
+				DragSourceEventArgs ea = new DragSourceEventArgs();
+				ea.Nodes = SelectedNodes;
 				DragStart(this, ea);
 			}
-			// Change any previous node back 
-			if (_previousNode != null) {
-				_previousNode.BackColor = SystemColors.HighlightText;
-				_previousNode.ForeColor = SystemColors.ControlText;
-			}
 
-			// Move the form with the icon/label on it
-			// A better width measurement algo for the form is needed here
-
-			int width = _selectedNode.Text.Length * (int)_formDrag.labelText.Font.Size;
-			if (_selectedNode.Text.Length < 5)
-				width += 20;
-
-			_formDrag.Size = new Size(width, _formDrag.Height);
-
-			_formDrag.labelText.Size = new Size(width, _formDrag.labelText.Size.Height);
-			_formDrag.labelText.Text = _selectedNode.Text;
+			DrawSelectedNodesAsDragSource();
 
 			// Start drag drop
-			DoDragDrop(e.Item, _dragMode);
+			DoDragDrop(SelectedNodes, _dragMode);
 		}
 
-		protected override void OnBeforeSelect( TreeViewCancelEventArgs e )
+		protected override void OnBeforeSelect(TreeViewCancelEventArgs e)
 		{
 			// Never allow base.SelectedNode to be set!
 			try
@@ -495,68 +354,68 @@ namespace CommonElements
 				base.SelectedNode = null;
 				e.Cancel = true;
 
-				base.OnBeforeSelect( e );
+				base.OnBeforeSelect(e);
 			}
-			catch( Exception ex )
+			catch (Exception ex)
 			{
-				HandleException( ex );
+				HandleException(ex);
 			}
 		}
 
-		protected override void OnAfterSelect( TreeViewEventArgs e )
+		protected override void OnAfterSelect(TreeViewEventArgs e)
 		{
 			// Never allow base.SelectedNode to be set!
 			try
 			{
-				base.OnAfterSelect( e );
+				base.OnAfterSelect(e);
 				base.SelectedNode = null;
 			}
-			catch( Exception ex )
+			catch (Exception ex)
 			{
-				HandleException( ex );
+				HandleException(ex);
 			}
 		}
 
-		protected override void OnKeyDown( KeyEventArgs e )
+		protected override void OnKeyDown(KeyEventArgs e)
 		{
 			// Handle all possible key strokes for the control.
 			// including navigation, selection, etc.
 
-			base.OnKeyDown( e );
+			base.OnKeyDown(e);
 
-			if( e.KeyCode == Keys.ShiftKey ) return;
+			if (e.KeyCode == Keys.ShiftKey) return;
 
 			//BeginUpdate();
-			bool bShift = ( ModifierKeys == Keys.Shift );
+			bool bShift = (ModifierKeys == Keys.Shift);
 
 			try
 			{
 				// Nothing is selected in the tree, this isn't a good state
 				// select the top node
-				if( m_SelectedNode == null && TopNode != null )
+				if (m_SelectedNode == null && TopNode != null)
 				{
-					ToggleNode( TopNode, true );
+					ToggleNode(TopNode, true);
 				}
 
 				// Nothing is still selected in the tree, this isn't a good state, leave.
-				if( m_SelectedNode == null ) return;
+				if (m_SelectedNode == null) return;
 
-				if( e.KeyCode == Keys.Left )
+				if (e.KeyCode == Keys.Left)
 				{
-					if( m_SelectedNode.IsExpanded && m_SelectedNode.Nodes.Count > 0 )
+					if (m_SelectedNode.IsExpanded && m_SelectedNode.Nodes.Count > 0)
 					{
 						// Collapse an expanded node that has children
 						m_SelectedNode.Collapse();
 					}
-					else if( m_SelectedNode.Parent != null )
+					else if (m_SelectedNode.Parent != null)
 					{
 						// Node is already collapsed, try to select its parent.
-						SelectSingleNode( m_SelectedNode.Parent );
+						SelectSingleNode(m_SelectedNode.Parent);
 					}
 				}
-				else if( e.KeyCode == Keys.Right )
+				else if (e.KeyCode == Keys.Right)
 				{
-					if( !m_SelectedNode.IsExpanded )
+					if (!m_SelectedNode.IsExpanded)
 					{
 						// Expand a collpased node's children
 						m_SelectedNode.Expand();
@@ -564,141 +423,137 @@ namespace CommonElements
 					else
 					{
 						// Node was already expanded, select the first child
-						SelectSingleNode( m_SelectedNode.FirstNode );
+						SelectSingleNode(m_SelectedNode.FirstNode);
 					}
 				}
-				else if( e.KeyCode == Keys.Up )
+				else if (e.KeyCode == Keys.Up)
 				{
 					// Select the previous node
-					if( m_SelectedNode.PrevVisibleNode != null )
+					if (m_SelectedNode.PrevVisibleNode != null)
 					{
-						SelectNode( m_SelectedNode.PrevVisibleNode );
+						SelectNode(m_SelectedNode.PrevVisibleNode);
 					}
 				}
-				else if( e.KeyCode == Keys.Down )
+				else if (e.KeyCode == Keys.Down)
 				{
 					// Select the next node
-					if( m_SelectedNode.NextVisibleNode != null )
+					if (m_SelectedNode.NextVisibleNode != null)
 					{
-						SelectNode( m_SelectedNode.NextVisibleNode );
+						SelectNode(m_SelectedNode.NextVisibleNode);
 					}
 				}
-				else if( e.KeyCode == Keys.Home )
+				else if (e.KeyCode == Keys.Home)
 				{
-					if( bShift )
+					if (bShift)
 					{
-						if( m_SelectedNode.Parent == null )
+						if (m_SelectedNode.Parent == null)
 						{
 							// Select all of the root nodes up to this point 
-							if( Nodes.Count > 0 )
+							if (Nodes.Count > 0)
 							{
-								SelectNode( Nodes[0] );
+								SelectNode(Nodes[0]);
 							}
 						}
 						else
 						{
 							// Select all of the nodes up to this point under this nodes parent
-							SelectNode( m_SelectedNode.Parent.FirstNode );
+							SelectNode(m_SelectedNode.Parent.FirstNode);
 						}
 					}
 					else
 					{
 						// Select this first node in the tree
-						if( Nodes.Count > 0 )
+						if (Nodes.Count > 0)
 						{
-							SelectSingleNode( Nodes[0] );
+							SelectSingleNode(Nodes[0]);
 						}
 					}
 				}
-				else if( e.KeyCode == Keys.End )
+				else if (e.KeyCode == Keys.End)
 				{
-					if( bShift )
+					if (bShift)
 					{
-						if( m_SelectedNode.Parent == null )
+						if (m_SelectedNode.Parent == null)
 						{
 							// Select the last ROOT node in the tree
-							if( Nodes.Count > 0 )
+							if (Nodes.Count > 0)
 							{
-								SelectNode( Nodes[Nodes.Count - 1] );
+								SelectNode(Nodes[Nodes.Count - 1]);
 							}
 						}
 						else
 						{
 							// Select the last node in this branch
-							SelectNode( m_SelectedNode.Parent.LastNode );
+							SelectNode(m_SelectedNode.Parent.LastNode);
 						}
 					}
 					else
 					{
-						if( Nodes.Count > 0 )
+						if (Nodes.Count > 0)
 						{
 							// Select the last node visible node in the tree.
 							// Don't expand branches incase the tree is virtual
 							TreeNode ndLast = Nodes[0].LastNode;
-							while( ndLast.IsExpanded && ( ndLast.LastNode != null ) )
+							while (ndLast.IsExpanded && (ndLast.LastNode != null))
 							{
 								ndLast = ndLast.LastNode;
 							}
-							SelectSingleNode( ndLast );
+							SelectSingleNode(ndLast);
 						}
 					}
 				}
-				else if( e.KeyCode == Keys.PageUp )
+				else if (e.KeyCode == Keys.PageUp)
 				{
 					// Select the highest node in the display
 					int nCount = VisibleCount;
 					TreeNode ndCurrent = m_SelectedNode;
-					while( ( nCount ) > 0 && ( ndCurrent.PrevVisibleNode != null ) )
+					while ((nCount) > 0 && (ndCurrent.PrevVisibleNode != null))
 					{
 						ndCurrent = ndCurrent.PrevVisibleNode;
 						nCount--;
 					}
-					SelectSingleNode( ndCurrent );
+					SelectSingleNode(ndCurrent);
 				}
-				else if( e.KeyCode == Keys.PageDown )
+				else if (e.KeyCode == Keys.PageDown)
 				{
 					// Select the lowest node in the display
 					int nCount = VisibleCount;
 					TreeNode ndCurrent = m_SelectedNode;
-					while( ( nCount ) > 0 && ( ndCurrent.NextVisibleNode != null ) )
+					while ((nCount) > 0 && (ndCurrent.NextVisibleNode != null))
 					{
 						ndCurrent = ndCurrent.NextVisibleNode;
 						nCount--;
 					}
-					SelectSingleNode( ndCurrent );
+					SelectSingleNode(ndCurrent);
 				}
 				else
 				{
 					// Assume this is a search character a-z, A-Z, 0-9, etc.
 					// Select the first node after the current node that 
 					// starts with this character
-					string sSearch = ( (char) e.KeyValue ).ToString();
+					string sSearch = ((char) e.KeyValue).ToString();
 
 					TreeNode ndCurrent = m_SelectedNode;
-					while( ( ndCurrent.NextVisibleNode != null ) )
+					while ((ndCurrent.NextVisibleNode != null))
 					{
 						ndCurrent = ndCurrent.NextVisibleNode;
-						if( ndCurrent.Text.StartsWith( sSearch ) )
+						if (ndCurrent.Text.StartsWith(sSearch))
 						{
-							SelectSingleNode( ndCurrent );
+							SelectSingleNode(ndCurrent);
 							break;
 						}
 					}
 				}
 			}
-			catch( Exception ex )
+			catch (Exception ex)
 			{
-				HandleException( ex );
+				HandleException(ex);
 			}
 			finally
 			{
 				EndUpdate();
 			}
 		}
-
-
-
-
 
 		protected override void WndProc(ref Message m)
 		{
@@ -714,16 +569,9 @@ namespace CommonElements
 		protected override void OnGiveFeedback(GiveFeedbackEventArgs e)
 		{
 			if (e.Effect == _dragMode) {
-				e.UseDefaultCursors = false;
-
-				if (_dragCursorType == DragCursorType.Custom && _dragCursor != null) {
-					// Custom cursor
-					Cursor = _dragCursor;
-				} else if (_dragCursorType == DragCursorType.DragIcon) {
-					// This removes the default drag + drop cursor
-					Cursor = Cursors.Default;
-				} else {
-					e.UseDefaultCursors = true;
+				if (UsingCustomDragCursor && CustomDragCursor != null) {
+					e.UseDefaultCursors = false;
+					Cursor = CustomDragCursor;
 				}
 			} else {
 				e.UseDefaultCursors = true;
@@ -734,21 +582,52 @@ namespace CommonElements
 		protected override void OnDragOver(DragEventArgs e)
 		{
 			// Change any previous node back
-			if (_previousNode != null) {
-				_previousNode.BackColor = SystemColors.HighlightText;
-				_previousNode.ForeColor = SystemColors.ControlText;
+			if (_dragDestinationNode != null) {
+				DrawNodeAsNormal(_dragDestinationNode);
 			}
 
 			// Get the node from the mouse position, colour it
 			Point pt = ((TreeView)this).PointToClient(new Point(e.X, e.Y));
-			TreeNode treeNode = GetNodeAt(pt);
-			treeNode.BackColor = _dragOverNodeBackColor;
-			treeNode.ForeColor = _dragOverNodeForeColor;
 
-			// Move the icon form
-			if (_dragCursorType == DragCursorType.DragIcon) {
-				_formDrag.Location = new Point(e.X + 5, e.Y - 5);
-				_formDrag.Visible = true;
+			// figure out the destination node. If it's one that's in the list of items to move, then
+			// don't do anything; otherwise, highlight the destination node
+			_dragDestinationNode = GetNodeAt(pt);
+
+			// get the nodes that are being dragged from the drag data
+			List<TreeNode> dragNodes = null;
+			if (_dragDestinationNode != null && e.Data.GetDataPresent(typeof(List<TreeNode>))) {
+				dragNodes = (List<TreeNode>)e.Data.GetData(typeof(List<TreeNode>));
+			}
+
+			// if the target node is in the dragged nodes, it's not a valid point: don't select it
+			if (_dragDestinationNode != null && dragNodes.Contains(_dragDestinationNode)) {
+				_dragDestinationNode = null;
+			}
+
+			if (dragNodes != null && _dragDestinationNode != null) {
+				// if there's been a verification call setup, call it to check that the
+				// target node is OK. otherwise, assume it is.
+				if (DragOverVerify != null) {
+					DragVerifyEventArgs ea = new DragVerifyEventArgs();
+					ea.SourceNodes = dragNodes;
+					ea.TargetNode = _dragDestinationNode;
+					DragOverVerify(this, ea);
+
+					if (ea.ValidDragTarget) {
+						e.Effect = _dragMode;
+					} else {
+						e.Effect = DragDropEffects.None;
+						_dragDestinationNode = null;
+					}
+				} else {
+					e.Effect = _dragMode;
+				}
+
+				if (_dragDestinationNode != null) {
+					DrawNodeAsDragDestination(_dragDestinationNode);
+				}
+			} else {
+				e.Effect = DragDropEffects.None;
 			}
 
 			// Scrolling down/up
@@ -756,30 +635,16 @@ namespace CommonElements
 				SendMessage(Handle, 277, (IntPtr)1, 0);
 			else if (pt.Y < Top + 10)
 				SendMessage(Handle, 277, (IntPtr)0, 0);
-
-			// Remember the target node, so we can set it back
-			_previousNode = treeNode;
 		}
 
 		protected override void OnDragLeave(EventArgs e)
 		{
-			if (_selectedNode != null) {
-				SelectedNode = _selectedNode;
-			}
-
-			if (_previousNode != null) {
-				_previousNode.BackColor = _dragOverNodeBackColor;
-				_previousNode.ForeColor = _dragOverNodeForeColor;
-			}
-
-			_formDrag.Visible = false;
-			Cursor = Cursors.Default;
+			CleanupDragVisuals();
 
 			// Call cancel event
 			if (DragCancel != null) {
-				DragItemEventArgs ea = new DragItemEventArgs();
-				ea.Node = _selectedNode;
-
+				DragSourceEventArgs ea = new DragSourceEventArgs();
+				ea.Nodes = SelectedNodes;
 				DragCancel(this, ea);
 			}
 		}
@@ -787,127 +652,172 @@ namespace CommonElements
 		protected override void OnDragEnter(DragEventArgs e)
 		{
 			e.Effect = _dragMode;
-
-			// Reset the previous node var
-			_previousNode = null;
-			_selectedNode = null;
-			Debug.WriteLine(_formDrag.labelText.Size);
+			DrawSelectedNodesAsDragSource();
 		}
 
 		protected override void OnDragDrop(DragEventArgs e)
 		{
-			// Custom cursor handling
-			if (_dragCursorType == DragCursorType.DragIcon) {
-				Cursor = Cursors.Default;
-			}
+			// Check it's a list of nodes being dragged
+			
+			if (e.Data.GetDataPresent(typeof(List<TreeNode>))) {
+				List<TreeNode> dragNodes = (List<TreeNode>)e.Data.GetData(typeof(List<TreeNode>));
 
-			_formDrag.Visible = false;
+				// if there was no target, don't do anything
+				if (_dragDestinationNode == null) {
+					CleanupDragVisuals();
+					return;
+				}
 
-			// Check it's a treenode being dragged
-			if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false)) {
-				TreeNode dragNode = (TreeNode)e.Data.GetData("System.Windows.Forms.TreeNode");
-
-				// Get the target node from the mouse coords
-				Point pt = ((TreeView)this).PointToClient(new Point(e.X, e.Y));
-				TreeNode targetNode = GetNodeAt(pt);
-
-				// De-color it
-				targetNode.BackColor = SystemColors.HighlightText;
-				targetNode.ForeColor = SystemColors.ControlText;
-
-				// 1) Check we're not dragging onto ourself
-				// 2) Check we're not dragging onto one of our children 
-				// (this is the lazy way, will break if there are nodes with the same name,
-				// but it's quicker than checking all nodes below is)
-				// 3) Check we're not dragging onto our parent
-				if (targetNode != dragNode && !targetNode.FullPath.StartsWith(dragNode.FullPath) && dragNode.Parent != targetNode) {
-					// Copy the node, add as a child to the destination node
-					TreeNode newTreeNode = (TreeNode)dragNode.Clone();
-					targetNode.Nodes.Add(newTreeNode);
-					targetNode.Expand();
-
-					// Remove Original Node, set the dragged node as selected
-					dragNode.Remove();
-					SelectedNode = newTreeNode;
-
-					Cursor = Cursors.Default;
-
-					// Call drag complete event
-					if (DragComplete != null) {
-						DragCompleteEventArgs ea = new DragCompleteEventArgs();
-						ea.SourceNode = dragNode;
-						ea.TargetNode = targetNode;
-
-						DragComplete(this, ea);
+				// if we're dragging onto one of the selected nodes, then don't do anything
+				if (dragNodes.Contains(_dragDestinationNode)) {
+					CleanupDragVisuals();
+					return;
+				}
+				
+				// if we're dragging onto one of our children, then don't do anything
+				foreach (TreeNode node in dragNodes) {
+					if (_dragDestinationNode.FullPath.StartsWith(node.FullPath)) {
+						CleanupDragVisuals();
+						return;
 					}
 				}
+
+				// before we actually do the dragging of nodes, raise the 'finishing' event. If the
+				// handler wants us to stop, then don't complete the drag.
+				if (DragFinishing != null) {
+					DragFinishingEventArgs ea = new DragFinishingEventArgs();
+					ea.SourceNodes = dragNodes;
+					ea.TargetNode = _dragDestinationNode;
+					DragFinishing(this, ea);
+					if (!ea.FinishDrag) {
+						CleanupDragVisuals();
+						return;
+					}
+				}
+
+				foreach (TreeNode node in dragNodes) {
+					node.Remove();
+				}
+
+				_dragDestinationNode.Nodes.AddRange(dragNodes.ToArray());
+				_dragDestinationNode.Expand();
+
+				// Call drag complete event
+				if (DragComplete != null) {
+					DragSourceDestinationEventArgs ea = new DragSourceDestinationEventArgs();
+					ea.SourceNodes = dragNodes;
+					ea.TargetNode = _dragDestinationNode;
+					DragComplete(this, ea);
+				}
 			}
+
+			CleanupDragVisuals();
 		}
 
 		protected override void OnKeyUp(KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Escape) {
-				if (_selectedNode != null) {
-					SelectedNode = _selectedNode;
-				}
+				DrawSelectedNodesAsNormal();
 
-				if (_previousNode != null) {
-					_previousNode.BackColor = SystemColors.HighlightText;
-					_previousNode.ForeColor = SystemColors.ControlText;
+				if (_dragDestinationNode != null) {
+					DrawNodeAsNormal(_dragDestinationNode);
 				}
 
 				Cursor = Cursors.Default;
-				_formDrag.Visible = false;
 
 				// Call cancel event
 				if (DragCancel != null) {
-					DragItemEventArgs ea = new DragItemEventArgs();
-					ea.Node = _selectedNode;
+					DragSourceEventArgs ea = new DragSourceEventArgs();
+					ea.Nodes = SelectedNodes;
 
 					DragCancel(this, ea);
 				}
 			}
 		}
 
-
 		#endregion
 
 
 		#region Helper Methods
 
-		private void SelectNode( TreeNode node )
+		private void CleanupDragVisuals()
+		{
+			if (_dragDestinationNode != null)
+				DrawNodeAsNormal(_dragDestinationNode);
+			DrawSelectedNodesAsNormal();
+			_dragDestinationNode = null;
+			Cursor = Cursors.Default;
+		}
+
+		private void DrawNodeAsDragSource(TreeNode node)
+		{
+			node.ForeColor = DragSourceNodeForeColor;
+			node.BackColor = DragSourceNodeBackColor;
+		}
+
+		private void DrawNodeAsDragDestination(TreeNode node)
+		{
+			node.ForeColor = DragDestinationNodeForeColor;
+			node.BackColor = DragDestinationNodeBackColor;
+		}
+
+		private void DrawNodeAsNormal(TreeNode node)
+		{
+			if (SelectedNodes.Contains(node)) {
+				node.ForeColor = SystemColors.HighlightText;
+				node.BackColor = SystemColors.Highlight;
+			} else {
+				node.BackColor = SystemColors.HighlightText;
+				node.ForeColor = SystemColors.ControlText;
+			}
+		}
+
+		private void DrawSelectedNodesAsDragSource()
+		{
+			foreach (TreeNode node in SelectedNodes)
+				DrawNodeAsDragSource(node);
+		}
+
+		private void DrawSelectedNodesAsNormal()
+		{
+			foreach (TreeNode node in SelectedNodes)
+				DrawNodeAsNormal(node);
+		}
+
+
+		private void SelectNode(TreeNode node)
 		{
 			try
 			{
 				this.BeginUpdate();
 
-				if( m_SelectedNode == null || ModifierKeys == Keys.Control )
+				if (m_SelectedNode == null || ModifierKeys == Keys.Control)
 				{
 					// Ctrl+Click selects an unselected node, or unselects a selected node.
-					bool bIsSelected = m_SelectedNodes.Contains( node );
-					ToggleNode( node, !bIsSelected );
+					bool bIsSelected = m_SelectedNodes.Contains(node);
+					ToggleNode(node, !bIsSelected);
 				}
-				else if( ModifierKeys == Keys.Shift )
+				else if (ModifierKeys == Keys.Shift)
 				{
 					// Shift+Click selects nodes between the selected node and here.
 					TreeNode ndStart = m_SelectedNode;
 					TreeNode ndEnd = node;
 
-					if( ndStart.Parent == ndEnd.Parent )
+					if (ndStart.Parent == ndEnd.Parent)
 					{
 						// Selected node and clicked node have same parent, easy case.
-						if( ndStart.Index < ndEnd.Index )
+						if (ndStart.Index < ndEnd.Index)
 						{							
 							// If the selected node is beneath the clicked node walk down
 							// selecting each Visible node until we reach the end.
-							while( ndStart != ndEnd )
+							while (ndStart != ndEnd)
 							{
 								ndStart = ndStart.NextVisibleNode;
-								if( ndStart == null ) break;
-								ToggleNode( ndStart, true );
+								if (ndStart == null) break;
+								ToggleNode(ndStart, true);
 							}
 						}
-						else if( ndStart.Index == ndEnd.Index )
+						else if (ndStart.Index == ndEnd.Index)
 						{
 							// Clicked same node, do nothing
 						}
@@ -915,11 +825,11 @@ namespace CommonElements
 						{
 							// If the selected node is above the clicked node walk up
 							// selecting each Visible node until we reach the end.
-							while( ndStart != ndEnd )
+							while (ndStart != ndEnd)
 							{
 								ndStart = ndStart.PrevVisibleNode;
-								if( ndStart == null ) break;
-								ToggleNode( ndStart, true );
+								if (ndStart == null) break;
+								ToggleNode(ndStart, true);
 							}
 						}
 					}
@@ -931,57 +841,57 @@ namespace CommonElements
 
 						TreeNode ndStartP = ndStart;
 						TreeNode ndEndP = ndEnd;
-						int startDepth = Math.Min( ndStartP.Level, ndEndP.Level );
+						int startDepth = Math.Min(ndStartP.Level, ndEndP.Level);
 
 						// Bring lower node up to common depth
-						while( ndStartP.Level > startDepth )
+						while (ndStartP.Level > startDepth)
 						{
 							ndStartP = ndStartP.Parent;
 						}
 
 						// Bring lower node up to common depth
-						while( ndEndP.Level > startDepth )
+						while (ndEndP.Level > startDepth)
 						{
 							ndEndP = ndEndP.Parent;
 						}
 
 						// Walk up the tree until we find the common parent
-						while( ndStartP.Parent != ndEndP.Parent )
+						while (ndStartP.Parent != ndEndP.Parent)
 						{
 							ndStartP = ndStartP.Parent;
 							ndEndP = ndEndP.Parent;
 						}
 
 						// Select the node
-						if( ndStartP.Index < ndEndP.Index )
+						if (ndStartP.Index < ndEndP.Index)
 						{
 							// If the selected node is beneath the clicked node walk down
 							// selecting each Visible node until we reach the end.
-							while( ndStart != ndEnd )
+							while (ndStart != ndEnd)
 							{
 								ndStart = ndStart.NextVisibleNode;
-								if( ndStart == null ) break;
-								ToggleNode( ndStart, true );
+								if (ndStart == null) break;
+								ToggleNode(ndStart, true);
 							}
 						}
-						else if( ndStartP.Index == ndEndP.Index )
+						else if (ndStartP.Index == ndEndP.Index)
 						{
-							if( ndStart.Level < ndEnd.Level )
+							if (ndStart.Level < ndEnd.Level)
 							{
-								while( ndStart != ndEnd )
+								while (ndStart != ndEnd)
 								{
 									ndStart = ndStart.NextVisibleNode;
-									if( ndStart == null ) break;
-									ToggleNode( ndStart, true );
+									if (ndStart == null) break;
+									ToggleNode(ndStart, true);
 								}
 							}
 							else
 							{
-								while( ndStart != ndEnd )
+								while (ndStart != ndEnd)
 								{
 									ndStart = ndStart.PrevVisibleNode;
-									if( ndStart == null ) break;
-									ToggleNode( ndStart, true );
+									if (ndStart == null) break;
+									ToggleNode(ndStart, true);
 								}
 							}
 						}
@@ -989,11 +899,11 @@ namespace CommonElements
 						{
 							// If the selected node is above the clicked node walk up
 							// selecting each Visible node until we reach the end.
-							while( ndStart != ndEnd )
+							while (ndStart != ndEnd)
 							{
 								ndStart = ndStart.PrevVisibleNode;
-								if( ndStart == null ) break;
-								ToggleNode( ndStart, true );
+								if (ndStart == null) break;
+								ToggleNode(ndStart, true);
 							}
 						}
 					}
@@ -1001,10 +911,10 @@ namespace CommonElements
 				else
 				{
 					// Just clicked a node, select it
-					SelectSingleNode( node );
+					SelectSingleNode(node);
 				}
 
-				OnAfterSelect( new TreeViewEventArgs( m_SelectedNode ) );
+				OnAfterSelect(new TreeViewEventArgs(m_SelectedNode));
 			}
 			finally
 			{
@@ -1016,7 +926,7 @@ namespace CommonElements
 		{
 			try
 			{
-				foreach( TreeNode node in m_SelectedNodes )
+				foreach (TreeNode node in m_SelectedNodes)
 				{
 					node.BackColor = this.BackColor;
 					node.ForeColor = this.ForeColor;
@@ -1029,155 +939,95 @@ namespace CommonElements
 			}
 		}
 
-		private void SelectSingleNode( TreeNode node )
+		private void SelectSingleNode(TreeNode node)
 		{
-			if( node == null )
+			if (node == null)
 			{
 				return;
 			}
 
 			ClearSelectedNodes();
-			ToggleNode( node, true );
+			ToggleNode(node, true);
 			node.EnsureVisible();
 		}
 
-		private void ToggleNode( TreeNode node, bool bSelectNode )
+		private void ToggleNode(TreeNode node, bool bSelectNode)
 		{
-			if( bSelectNode )
+			if (bSelectNode)
 			{
 				m_SelectedNode = node;
-				if( !m_SelectedNodes.Contains( node ) )
+				if (!m_SelectedNodes.Contains(node))
 				{
-					m_SelectedNodes.Add( node );
+					m_SelectedNodes.Add(node);
 				}
 				node.BackColor = SystemColors.Highlight;
 				node.ForeColor = SystemColors.HighlightText;
 			}
 			else
 			{
-				m_SelectedNodes.Remove( node );
+				m_SelectedNodes.Remove(node);
 				node.BackColor = this.BackColor;
 				node.ForeColor = this.ForeColor;
 			}
 		}
 
-		private void HandleException( Exception ex )
+		private void HandleException(Exception ex)
 		{
 			// Perform some error handling here.
 			// We don't want to bubble errors to the CLR. 
-			MessageBox.Show( ex.Message );
+			MessageBox.Show(ex.Message);
 		}
 
 		#endregion
 
-
-		#region FormDrag form
-		internal class FormDrag : Form
-		{
-			#region Components
-			public System.Windows.Forms.Label labelText;
-			public System.Windows.Forms.PictureBox pictureBox1;
-			public System.Windows.Forms.ImageList imageList1;
-			private System.ComponentModel.Container components = null;
-			#endregion
-
-			#region Constructor, dispose
-			public FormDrag()
-			{
-				InitializeComponent();
-			}
-
-			/// <summary>
-			/// Clean up any resources being used.
-			/// </summary>
-			protected override void Dispose(bool disposing)
-			{
-				if (disposing) {
-					if (components != null) {
-						components.Dispose();
-					}
-				}
-				base.Dispose(disposing);
-			}
-			#endregion
-
-			#region Windows Form Designer generated code
-			/// <summary>
-			/// Required method for Designer support - do not modify
-			/// the contents of this method with the code editor.
-			/// </summary>
-			private void InitializeComponent()
-			{
-				components = new System.ComponentModel.Container();
-				labelText = new System.Windows.Forms.Label();
-				pictureBox1 = new System.Windows.Forms.PictureBox();
-				imageList1 = new System.Windows.Forms.ImageList(components);
-				SuspendLayout();
-				// 
-				// labelText
-				// 
-				labelText.BackColor = System.Drawing.Color.Transparent;
-				labelText.Location = new System.Drawing.Point(16, 2);
-				labelText.Name = "labelText";
-				labelText.Size = new System.Drawing.Size(100, 16);
-				labelText.TabIndex = 0;
-				// 
-				// pictureBox1
-				// 
-				pictureBox1.Location = new System.Drawing.Point(0, 0);
-				pictureBox1.Name = "pictureBox1";
-				pictureBox1.Size = new System.Drawing.Size(16, 16);
-				pictureBox1.TabIndex = 1;
-				pictureBox1.TabStop = false;
-				// 
-				// Form2
-				// 
-				AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-				BackColor = System.Drawing.SystemColors.Control;
-				ClientSize = new System.Drawing.Size(100, 16);
-				Controls.Add(pictureBox1);
-				Controls.Add(labelText);
-				Size = new Size(300, 500);
-				FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-				Opacity = 0.3;
-				ShowInTaskbar = false;
-				ResumeLayout(false);
-
-			}
-			#endregion
-		}
-		#endregion
 	}
-
-	#region DragCursorType enum
-	[Serializable]
-	public enum DragCursorType
-	{
-		None,
-		DragIcon,
-		Custom
-	}
-	#endregion
 
 	#region Event classes/delegates
-	public delegate void DragCompleteEventHandler(object sender, DragCompleteEventArgs e);
-	public delegate void DragItemEventHandler(object sender, DragItemEventArgs e);
+	public delegate void DragCompleteEventHandler(object sender, DragSourceDestinationEventArgs e);
+	public delegate void DragItemEventHandler(object sender, DragSourceEventArgs e);
+	public delegate void DragVerifyEventHandler(object sender, DragVerifyEventArgs e);
+	public delegate void DragFinishingEventHandler(object sender, DragFinishingEventArgs e);
 
-	public class DragCompleteEventArgs : EventArgs
+	public class DragFinishingEventArgs : DragSourceDestinationEventArgs
 	{
 		/// <summary>
-		/// The node that was being dragged
+		/// settable by the event handler: If true, the drag/drop functionality
+		/// should finish the drag process, moving the nodes in the tree view.
+		/// If false, it will stop and the handler must finish it when desired.
 		/// </summary>
-		public TreeNode SourceNode
+		public bool FinishDrag
 		{
-			get
-			{
-				return _sourceNode;
-			}
-			set
-			{
-				_sourceNode = value;
-			}
+			get { return _finishDrag; }
+			set { _finishDrag = value; }
+		}
+
+		private bool _finishDrag = true;
+	}
+
+	public class DragVerifyEventArgs : DragSourceDestinationEventArgs
+	{
+		/// <summary>
+		/// settable by the event handler: If true, the drag target
+		/// (source/destination combo) is valid, and can proceed
+		/// </summary>
+		public bool ValidDragTarget
+		{
+			get { return _validDragTarget; }
+			set { _validDragTarget = value; }
+		}
+
+		private bool _validDragTarget = true;
+	}
+
+	public class DragSourceDestinationEventArgs : EventArgs
+	{
+		/// <summary>
+		/// The nodes that were being dragged
+		/// </summary>
+		public List<TreeNode> SourceNodes
+		{
+			get { return _sourceNodes; }
+			set { _sourceNodes = value; }
 		}
 
 		/// <summary>
@@ -1185,38 +1035,26 @@ namespace CommonElements
 		/// </summary>
 		public TreeNode TargetNode
 		{
-			get
-			{
-				return _targetNode;
-			}
-			set
-			{
-				_targetNode = value;
-			}
+			get { return _targetNode; }
+			set { _targetNode = value; }
 		}
 
 		private TreeNode _targetNode;
-		private TreeNode _sourceNode;
+		private List<TreeNode> _sourceNodes;
 	}
 
-	public class DragItemEventArgs : EventArgs
+	public class DragSourceEventArgs : EventArgs
 	{
 		/// <summary>
-		/// The ndoe that was being dragged
+		/// The nodes that were/are being dragged
 		/// </summary>
-		public TreeNode Node
+		public List<TreeNode> Nodes
 		{
-			get
-			{
-				return _node;
-			}
-			set
-			{
-				_node = value;
-			}
+			get { return _nodes; }
+			set { _nodes = value; }
 		}
 
-		private TreeNode _node;
+		private List<TreeNode> _nodes;
 	}
 	#endregion
 
