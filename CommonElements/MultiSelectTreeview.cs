@@ -63,6 +63,10 @@ namespace CommonElements
 		private bool _usingCustomDragCursor;
 		private Cursor _customDragCursor = null;
 		private TreeNode _dragDestinationNode;
+		private DragBetweenNodes _dragBetweenState = DragBetweenNodes.DragOnTargetNode;
+		private Point _dragBetweenRowsDrawLineStart;
+		private Point _dragBetweenRowsDrawLineEnd;
+		private int _dragLastLineDrawnY;
 		#endregion
 
 
@@ -159,6 +163,11 @@ namespace CommonElements
 			set { _dragMode = value; }
 		}
 
+		public bool DraggingBetweenRows
+		{
+			get { return _dragBetweenState == DragBetweenNodes.DragAboveTargetNode || _dragBetweenState == DragBetweenNodes.DragBelowTargetNode; }
+		}
+
 		#endregion
 
 
@@ -214,6 +223,8 @@ namespace CommonElements
 			base.SelectedNode = null;
 
 			base.SetStyle(ControlStyles.DoubleBuffer, true);
+			//base.SetStyle(ControlStyles.UserPaint, true);
+			//base.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			AllowDrop = true;
 		}
 
@@ -557,13 +568,20 @@ namespace CommonElements
 
 		protected override void WndProc(ref Message m)
 		{
-			//System.Diagnostics.Debug.WriteLine(m);
 			// Stop erase background message
 			if (m.Msg == (int)0x0014) {
 				m.Msg = (int)0x0000; // Set to null
 			}
 
-			base.WndProc(ref m);
+			switch (m.Msg) {
+				case 0x0F: // WM_PAINT
+					CustomPaint(ref m);
+					break;
+
+				default:
+					base.WndProc(ref m);
+					break;
+			}
 		}
 
 		protected override void OnGiveFeedback(GiveFeedbackEventArgs e)
@@ -587,15 +605,77 @@ namespace CommonElements
 			}
 
 			// Get the node from the mouse position, colour it
-			Point pt = ((TreeView)this).PointToClient(new Point(e.X, e.Y));
+			Point pt = PointToClient(new Point(e.X, e.Y));
 
-			// figure out the destination node. If it's one that's in the list of items to move, then
-			// don't do anything; otherwise, highlight the destination node
+			// default to no destination node, it will be updated if we're over a node
 			_dragDestinationNode = GetNodeAt(pt);
+
+			// try and figure out if we would be dragging 'between' nodes. There's no easy way to do this,
+			// except by using the GetNodeAt call for a Treeview to see if a close point would actually be
+			// a different node. If so, we must be close to the edge.
+			TreeNode targetNode = _dragDestinationNode;
+			TreeNode higherNode = GetNodeAt(pt.X, pt.Y - 3);
+			TreeNode lowerNode = GetNodeAt(pt.X, pt.Y + 3);
+			int y = 0;
+
+			// if we're near the top of a node, record it, and calculate where to draw the line
+			if (targetNode != null && targetNode != higherNode) {
+				_dragBetweenState = DragBetweenNodes.DragAboveTargetNode;
+
+				// figure out what Y position to draw the line
+				for (y = pt.Y - 3;; y++) {
+					if (GetNodeAt(pt.X, y + 1) == targetNode) {
+						y += 2;
+						break;
+					}
+				}
+
+				// if the line would be in between two nodes on the same level, nudge it so they're equal
+				if (higherNode != null && targetNode.Level == higherNode.Level) {
+					y--;
+				}
+			}
+			// if we're near the bottom of a node
+			else if (targetNode != null && targetNode != lowerNode) {
+				_dragBetweenState = DragBetweenNodes.DragBelowTargetNode;
+
+				// figure out what Y position to draw the line
+				for (y = pt.Y + 3;; y--) {
+					if (GetNodeAt(pt.X, y - 1) == targetNode) {
+						y--;
+						break;
+					}
+				}
+
+				// if the line would be in between two nodes on the same level, nudge it so they're equal
+				if (lowerNode != null && targetNode.Level == lowerNode.Level) {
+					y++;
+				}
+			}
+			// we're in the middle part of a node: draw it normally
+			else {
+				_dragBetweenState = DragBetweenNodes.DragOnTargetNode;
+			}
+
+			if (DraggingBetweenRows) {
+				// have a guess that each level is about this many pixels in, and scale it by that
+				// (magic numbers!)
+				int x1 = 24 + targetNode.Level * 19;
+				int x2 = x1 + 100;
+
+				_dragBetweenRowsDrawLineStart = new Point(x1, y);
+				_dragBetweenRowsDrawLineEnd = new Point(x2, y);
+
+				if (_dragLastLineDrawnY != y) {
+					Invalidate();
+					_dragLastLineDrawnY = y;
+				}
+			}
+
 
 			// get the nodes that are being dragged from the drag data
 			List<TreeNode> dragNodes = null;
-			if (_dragDestinationNode != null && e.Data.GetDataPresent(typeof(List<TreeNode>))) {
+			if (e.Data.GetDataPresent(typeof(List<TreeNode>))) {
 				dragNodes = (List<TreeNode>)e.Data.GetData(typeof(List<TreeNode>));
 			}
 
@@ -623,7 +703,7 @@ namespace CommonElements
 					e.Effect = _dragMode;
 				}
 
-				if (_dragDestinationNode != null) {
+				if (_dragDestinationNode != null && !DraggingBetweenRows) {
 					DrawNodeAsDragDestination(_dragDestinationNode);
 				}
 			} else {
@@ -688,6 +768,7 @@ namespace CommonElements
 					DragFinishingEventArgs ea = new DragFinishingEventArgs();
 					ea.SourceNodes = dragNodes;
 					ea.TargetNode = _dragDestinationNode;
+					ea.DragStyle = _dragBetweenState;
 					DragFinishing(this, ea);
 					if (!ea.FinishDrag) {
 						CleanupDragVisuals();
@@ -699,8 +780,46 @@ namespace CommonElements
 					node.Remove();
 				}
 
-				_dragDestinationNode.Nodes.AddRange(dragNodes.ToArray());
-				_dragDestinationNode.Expand();
+				// this is pretty freakin' horrible. Needs to be refactored.
+				int i;
+				TreeNodeCollection target;
+				switch (_dragBetweenState) {
+					case DragBetweenNodes.DragAboveTargetNode:
+						if (_dragDestinationNode.Parent == null)
+							target = Nodes;
+						else
+							target = _dragDestinationNode.Parent.Nodes;
+
+						i = _dragDestinationNode.Index;
+						foreach (TreeNode node in dragNodes)
+							target.Insert(i++, node);
+						break;
+
+					case DragBetweenNodes.DragBelowTargetNode:
+						// if it's expanded, drop the items into the start of the node's nodes.
+						if (_dragDestinationNode.IsExpanded) {
+							i = 0;
+							foreach (TreeNode node in dragNodes) {
+								_dragDestinationNode.Nodes.Insert(i++, node);
+							}
+							_dragDestinationNode.Expand();
+						} else {
+							if (_dragDestinationNode.Parent == null)
+								target = Nodes;
+							else
+								target = _dragDestinationNode.Parent.Nodes;
+
+							i = _dragDestinationNode.Index + 1;
+							foreach (TreeNode node in dragNodes)
+								target.Insert(i++, node);
+						}
+						break;
+
+					case DragBetweenNodes.DragOnTargetNode:
+						_dragDestinationNode.Nodes.AddRange(dragNodes.ToArray());
+						_dragDestinationNode.Expand();
+						break;
+				}
 
 				// Call drag complete event
 				if (DragComplete != null) {
@@ -735,6 +854,20 @@ namespace CommonElements
 			}
 		}
 
+		protected void CustomPaint(ref Message m)
+		{
+			base.WndProc(ref m);
+			using (Graphics g = this.CreateGraphics()) {
+				if (DraggingBetweenRows) {
+					Color c = Color.FromArgb((int)(0.5 * byte.MaxValue), Color.Black);
+					using (Pen p = new Pen(c, 2)) {
+						p.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+						g.DrawLine(p, _dragBetweenRowsDrawLineStart, _dragBetweenRowsDrawLineEnd);
+					}
+				}
+			}
+		}
+
 		#endregion
 
 
@@ -745,8 +878,12 @@ namespace CommonElements
 			if (_dragDestinationNode != null)
 				DrawNodeAsNormal(_dragDestinationNode);
 			DrawSelectedNodesAsNormal();
-			_dragDestinationNode = null;
 			Cursor = Cursors.Default;
+
+			_dragDestinationNode = null;
+			_dragBetweenState = DragBetweenNodes.DragOnTargetNode;
+			_dragBetweenRowsDrawLineStart = new Point(0, 0);
+			_dragBetweenRowsDrawLineEnd = new Point(0, 0);
 		}
 
 		private void DrawNodeAsDragSource(TreeNode node)
@@ -982,6 +1119,13 @@ namespace CommonElements
 
 	}
 
+	public enum DragBetweenNodes
+	{
+		DragAboveTargetNode,
+		DragBelowTargetNode,
+		DragOnTargetNode
+	}
+
 	#region Event classes/delegates
 	public delegate void DragCompleteEventHandler(object sender, DragSourceDestinationEventArgs e);
 	public delegate void DragItemEventHandler(object sender, DragSourceEventArgs e);
@@ -1001,7 +1145,14 @@ namespace CommonElements
 			set { _finishDrag = value; }
 		}
 
+		public DragBetweenNodes DragStyle
+		{
+			get { return _dragBetweenNodes; }
+			set { _dragBetweenNodes = value; }
+		}
+		
 		private bool _finishDrag = true;
+		private DragBetweenNodes _dragBetweenNodes;
 	}
 
 	public class DragVerifyEventArgs : DragSourceDestinationEventArgs
