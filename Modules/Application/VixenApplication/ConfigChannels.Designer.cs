@@ -371,7 +371,7 @@
 			this.multiSelectTreeviewChannelsGroups.Size = new System.Drawing.Size(230, 599);
 			this.multiSelectTreeviewChannelsGroups.TabIndex = 12;
 			this.multiSelectTreeviewChannelsGroups.UsingCustomDragCursor = false;
-			this.multiSelectTreeviewChannelsGroups.MouseDown += new System.Windows.Forms.MouseEventHandler(this.multiSelectTreeviewChannelsGroups_MouseDown);
+			this.multiSelectTreeviewChannelsGroups.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.multiSelectTreeviewChannelsGroups_AfterSelect);
 			// 
 			// label1
 			// 

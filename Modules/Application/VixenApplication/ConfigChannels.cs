@@ -186,6 +186,9 @@ namespace VixenApplication
 		#region Form controls population & display
 		private void PopulateFormWithNode(ChannelNode node)
 		{
+			if (node == _displayedNode)
+				return;
+
 			_displayedNode = node;
 
 			buttonAddToGroup.Enabled = (node != null);
@@ -546,11 +549,10 @@ namespace VixenApplication
 
 		#region Events
 
-		private void multiSelectTreeviewChannelsGroups_MouseDown(object sender, MouseEventArgs e)
+		private void multiSelectTreeviewChannelsGroups_AfterSelect(object sender, TreeViewEventArgs e)
 		{
 			PopulateFormWithNode(multiSelectTreeviewChannelsGroups.SelectedNode.Tag as ChannelNode);
 		}
-
 		private void radioButtonChannels_CheckedChanged(object sender, EventArgs e)
 		{
 			PopulateAddList(_displayedNode);
@@ -713,39 +715,6 @@ namespace VixenApplication
 					permittedNodesForTarget = (e.TargetNode.Parent.Tag as ChannelNode).Children;
 				}
 			}
-
-			//switch (e.DragStyle) {
-			//    case DragBetweenNodes.DragAboveTargetNode:
-			//        if (e.TargetNode.Parent == null) {
-			//            invalidNodesForTarget = VixenSystem.Nodes.InvalidRootNodes;
-			//            permittedNodesForTarget = VixenSystem.Nodes.RootNodes;
-			//        } else {
-			//            invalidNodesForTarget = (e.TargetNode.Parent.Tag as ChannelNode).InvalidChildren();
-			//            permittedNodesForTarget = (e.TargetNode.Parent.Tag as ChannelNode).Children;
-			//        }
-			//        break;
-
-			//    case DragBetweenNodes.DragBelowTargetNode:
-			//        if (e.TargetNode.IsExpanded) {
-			//            invalidNodesForTarget = (e.TargetNode.Tag as ChannelNode).InvalidChildren();
-			//            permittedNodesForTarget = (e.TargetNode.Tag as ChannelNode).Children;
-			//        } else {
-			//            if (e.TargetNode.Parent == null) {
-			//                invalidNodesForTarget = VixenSystem.Nodes.InvalidRootNodes;
-			//                permittedNodesForTarget = VixenSystem.Nodes.RootNodes;
-			//            } else {
-			//                invalidNodesForTarget = (e.TargetNode.Parent.Tag as ChannelNode).InvalidChildren();
-			//                permittedNodesForTarget = (e.TargetNode.Parent.Tag as ChannelNode).Children;
-			//            }
-			//            break;
-			//        }
-			//        break;
-
-			//    case DragBetweenNodes.DragOnTargetNode:
-			//        invalidNodesForTarget = (e.TargetNode.Tag as ChannelNode).InvalidChildren();
-			//        permittedNodesForTarget = new HashSet<ChannelNode>();
-			//        break;
-			//}
 
 			IEnumerable<ChannelNode> invalidSourceNodes = invalidNodesForTarget.Intersect(nodes);
 			if (invalidSourceNodes.Count() > 0) {
