@@ -47,20 +47,21 @@ namespace Vixen.Execution {
 			}
 		}
 
-		public void CopyNode(ChannelNode node, ChannelNode target) {
+		public void CopyNode(ChannelNode node, ChannelNode target, int index = -1) {
 			target = target ?? _rootNode;
 			ChannelNode NewNode = node.Clone();
 			NewNode.Name = _Uniquify(NewNode.Name);
-			AddChildToParent(NewNode, target);
+			AddChildToParent(NewNode, target, index);
 		}
 
-		public void MoveNode(ChannelNode node, ChannelNode target, ChannelNode parent) {
-			// remove the node from its current parent first
-			RemoveNode(node, parent);
-
+		public void MoveNode(ChannelNode movingNode, ChannelNode newParent, ChannelNode oldParent, int index = -1) {
 			// add the node to the root node if a target wasn't given.	
-			target = target ?? _rootNode;
-			AddChildToParent(node, target);
+			newParent = newParent ?? _rootNode;
+			AddChildToParent(movingNode, newParent, index);
+
+			// remove the node from its old parent. This must be done last, otherwise it may have its children culled
+			// if it was the last instance available (ie. was temorarily floating free while moving around)
+			RemoveNode(movingNode, oldParent);
 		}
 
 		public void MirrorNode(ChannelNode node, ChannelNode target) {
@@ -100,7 +101,7 @@ namespace Vixen.Execution {
 			node.Name = _Uniquify(newName);
 		}
 
-		public void AddChildToParent(ChannelNode child, ChannelNode parent) {
+		public void AddChildToParent(ChannelNode child, ChannelNode parent, int index = -1) {
 			// if an item is a group (or is becoming one), it can't have an output
 			// channel anymore. Remove it.
 			if (parent.Channel != null) {
@@ -108,7 +109,11 @@ namespace Vixen.Execution {
 				parent.Channel = null;
 			}
 
-			parent.AddChild(child);
+			// if an index was specified, insert it in that position, otherwise just add it at the end
+			if (index < 0)
+				parent.AddChild(child);
+			else
+				parent.InsertChild(index, child);
 		}
 
 		private string _Uniquify(string name) {
@@ -122,6 +127,10 @@ namespace Vixen.Execution {
 				} while(!unique);
 			}
 			return name;
+		}
+
+		public IEnumerable<ChannelNode> InvalidRootNodes {
+			get { return _rootNode.InvalidChildren(); }
 		}
 
 		public IEnumerable<ChannelNode> RootNodes {

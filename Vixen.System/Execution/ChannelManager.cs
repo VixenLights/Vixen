@@ -43,8 +43,6 @@ namespace Vixen.Execution {
 					enumerator.Dispose();
 					// Remove from channel dictionary.
 					_channels.Remove(channel);
-					// Can't have any nodes reference this channel.
-					VixenSystem.Nodes.RemoveChannelLeaf(channel);
 				}
 			}
 		}

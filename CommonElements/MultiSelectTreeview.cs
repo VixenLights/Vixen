@@ -691,6 +691,7 @@ namespace CommonElements
 					DragVerifyEventArgs ea = new DragVerifyEventArgs();
 					ea.SourceNodes = dragNodes;
 					ea.TargetNode = _dragDestinationNode;
+					ea.DragStyle = _dragBetweenState;
 					DragOverVerify(this, ea);
 
 					if (ea.ValidDragTarget) {
@@ -756,6 +757,13 @@ namespace CommonElements
 				
 				// if we're dragging onto one of our children, then don't do anything
 				foreach (TreeNode node in dragNodes) {
+					// there seems to be a weird bug where we can get multiple nodes as drag data; sometimes
+					// 2 copies of the same node, except that one is part of the treeview, and one is not!
+					// (I suspect it is if the client treeview may completely repopulate itself while dragging).
+					// So, make sure the dragged nodes are part of this treeview first.
+					if (node.TreeView != this)
+						continue;
+
 					if (_dragDestinationNode.FullPath.StartsWith(node.FullPath)) {
 						CleanupDragVisuals();
 						return;
@@ -1167,6 +1175,13 @@ namespace CommonElements
 			set { _validDragTarget = value; }
 		}
 
+		public DragBetweenNodes DragStyle
+		{
+			get { return _dragBetweenNodes; }
+			set { _dragBetweenNodes = value; }
+		}
+
+		private DragBetweenNodes _dragBetweenNodes;
 		private bool _validDragTarget = true;
 	}
 

@@ -105,9 +105,14 @@ namespace Vixen.Sys {
 			get { return base.Children.Count() == 0; }
 		}
 
-		public List<ChannelNode> InvalidChildren() {
+		/// <summary>
+		/// Finds all nodes that would be considered invalid children for this node. This is effectively the
+		/// node itself, and any parent nodes it has. It also includes any immediate child nodes.
+		/// </summary>
+		/// <returns>An enumeration of invalid child nodes for this node.</returns>
+		public IEnumerable<ChannelNode> InvalidChildren() {
 
-			List<ChannelNode> result = new List<ChannelNode>();
+			HashSet<ChannelNode> result = new HashSet<ChannelNode>();
 
 			// the node itself is an invalid child for itself!
 			result.Add(this);
@@ -131,6 +136,11 @@ namespace Vixen.Sys {
 		#region Overrides
 		public override void AddChild(GroupNode<Channel> node) {
 			base.AddChild(node);
+			OnChanged(this);
+		}
+
+		public override void InsertChild(int index, GroupNode<Channel> node) {
+			base.InsertChild(index, node);
 			OnChanged(this);
 		}
 

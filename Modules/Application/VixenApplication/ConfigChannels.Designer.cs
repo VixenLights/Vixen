@@ -357,13 +357,21 @@
 			// 
 			// multiSelectTreeviewChannelsGroups
 			// 
+			this.multiSelectTreeviewChannelsGroups.AllowDrop = true;
+			this.multiSelectTreeviewChannelsGroups.CustomDragCursor = null;
+			this.multiSelectTreeviewChannelsGroups.DragDestinationNodeBackColor = System.Drawing.SystemColors.Highlight;
+			this.multiSelectTreeviewChannelsGroups.DragDestinationNodeForeColor = System.Drawing.SystemColors.HighlightText;
+			this.multiSelectTreeviewChannelsGroups.DragMode = System.Windows.Forms.DragDropEffects.Move;
+			this.multiSelectTreeviewChannelsGroups.DragSourceNodeBackColor = System.Drawing.SystemColors.ControlLight;
+			this.multiSelectTreeviewChannelsGroups.DragSourceNodeForeColor = System.Drawing.SystemColors.ControlText;
 			this.multiSelectTreeviewChannelsGroups.HideSelection = false;
 			this.multiSelectTreeviewChannelsGroups.Location = new System.Drawing.Point(12, 36);
 			this.multiSelectTreeviewChannelsGroups.Name = "multiSelectTreeviewChannelsGroups";
 			this.multiSelectTreeviewChannelsGroups.SelectedNodes = ((System.Collections.Generic.List<System.Windows.Forms.TreeNode>)(resources.GetObject("multiSelectTreeviewChannelsGroups.SelectedNodes")));
 			this.multiSelectTreeviewChannelsGroups.Size = new System.Drawing.Size(230, 599);
 			this.multiSelectTreeviewChannelsGroups.TabIndex = 12;
-			this.multiSelectTreeviewChannelsGroups.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.multiSelectTreeviewChannelsGroups_AfterSelect);
+			this.multiSelectTreeviewChannelsGroups.UsingCustomDragCursor = false;
+			this.multiSelectTreeviewChannelsGroups.MouseDown += new System.Windows.Forms.MouseEventHandler(this.multiSelectTreeviewChannelsGroups_MouseDown);
 			// 
 			// label1
 			// 

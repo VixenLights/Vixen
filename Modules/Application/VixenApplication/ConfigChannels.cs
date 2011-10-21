@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Vixen.Sys;
 using Vixen.Module.Property;
 using System.Reflection;
+using CommonElements;
 
 namespace VixenApplication
 {
@@ -31,12 +32,10 @@ namespace VixenApplication
 			_displayedNode = null;
 			_tooltip = new ToolTip();
 
-			// set the lists and trees to be double buffered, to prevent the slight flickering.
-			// (http://www.csharp-examples.net/set-doublebuffered/)
-			typeof(Control).InvokeMember("DoubleBuffered", BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic, null, listViewAddToNode, new object[] { true });
-			typeof(Control).InvokeMember("DoubleBuffered", BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic, null, listViewNodeContents, new object[] { true });
-			typeof(Control).InvokeMember("DoubleBuffered", BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic, null, listViewProperties, new object[] { true });
-			typeof(Control).InvokeMember("DoubleBuffered", BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic, null, multiSelectTreeviewChannelsGroups, new object[] { true });
+			multiSelectTreeviewChannelsGroups.DragFinishing += multiSelectTreeviewChannelsGroupsDragFinishingHandler;
+			multiSelectTreeviewChannelsGroups.DragOverVerify += multiSelectTreeviewChannelsGroupsDragVerifyHandler;
+
+			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 		}
 
 		private void ConfigChannels_Load(object sender, EventArgs e)
@@ -94,7 +93,7 @@ namespace VixenApplication
 					try {
 						multiSelectTreeviewChannelsGroups.TopNode = resultNode;
 					} catch (Exception) {
-						//TODO: log message here (check with KC on preferred logging methods)
+						VixenSystem.Logging.Warn("ConfigChannels: exception caught trying to set TopNode.");
 					}
 					break;
 				}
@@ -341,7 +340,7 @@ namespace VixenApplication
 			// either channels or groups. Don't show any that are invalid.
 			if (radioButtonChannels.Checked || radioButtonGroups.Checked) {
 				IEnumerable<ChannelNode> collection;
-				List<ChannelNode> invalid = node.InvalidChildren();
+				IEnumerable<ChannelNode> invalid = node.InvalidChildren();
 				List<ChannelNode> seen = new List<ChannelNode>();
 
 				if (radioButtonChannels.Checked) {
@@ -546,8 +545,10 @@ namespace VixenApplication
 
 
 		#region Events
-		private void multiSelectTreeviewChannelsGroups_AfterSelect(object sender, TreeViewEventArgs e) {
-			PopulateFormWithNode(e.Node.Tag as ChannelNode);
+
+		private void multiSelectTreeviewChannelsGroups_MouseDown(object sender, MouseEventArgs e)
+		{
+			PopulateFormWithNode(multiSelectTreeviewChannelsGroups.SelectedNode.Tag as ChannelNode);
 		}
 
 		private void radioButtonChannels_CheckedChanged(object sender, EventArgs e)
@@ -584,6 +585,179 @@ namespace VixenApplication
 		{
 			// TODO: enable/disable 'add to group' button
 		}
+
+		private void multiSelectTreeviewChannelsGroupsDragFinishingHandler(object sender, DragFinishingEventArgs e)
+		{
+			// we want to finish off the drag ourselves, and not have the treeview control move the nodes around.
+			// (In fact, in a lame attempt at 'data binding', we're going to completely redraw the tree after
+			// making all the required changes from this drag-drop.) So set the flag to indicate that.
+			e.FinishDrag = false;
+
+			// first determine the node that they will be moved to. This will depend on if we are dragging onto a node
+			// directly, or above/below one to reorder.
+			ChannelNode newParentNode = null;						// the channelNode that the selected items will move to
+			TreeNodeCollection targetTreeNodeCollection = null;		// the actual node collection the treenode will move to
+			TreeNode expandNode = null;								// if we need to expand a node once we've moved everything
+			int index = -1;
+
+			if (e.DragStyle == DragBetweenNodes.DragOnTargetNode) {
+				newParentNode = e.TargetNode.Tag as ChannelNode;
+				targetTreeNodeCollection = e.TargetNode.Nodes;
+				expandNode = e.TargetNode;
+			} else if (e.DragStyle == DragBetweenNodes.DragBelowTargetNode && e.TargetNode.IsExpanded) {
+				newParentNode = e.TargetNode.Tag as ChannelNode;
+				targetTreeNodeCollection = e.TargetNode.Nodes;
+				expandNode = e.TargetNode;
+				index = 0;
+			} else {
+				if (e.TargetNode.Parent == null) {
+					newParentNode = null;	// needs to go at the root level
+					targetTreeNodeCollection = e.TargetNode.TreeView.Nodes;
+				} else {
+					newParentNode = e.TargetNode.Parent.Tag as ChannelNode;
+					targetTreeNodeCollection = e.TargetNode.Parent.Nodes;
+				}
+
+				if (e.DragStyle == DragBetweenNodes.DragAboveTargetNode) {
+					index = e.TargetNode.Index;
+				} else {
+					index = e.TargetNode.Index + 1;
+				}
+			}
+
+			// Before moving, check to see if the new parent node would be 'losing' the Channel (ie. becoming a
+			// group instead of a leaf node with a channel/patches). Prompt the user first.
+			if (newParentNode != null && newParentNode.Channel != null && newParentNode.Channel.Patch.Count() > 0) {
+				string message = "Moving items into this Channel will convert it into a Group, which will remove any " +
+					"patches it may have to outputs. Are you sure you want to continue?";
+				string title = "Convert Channel to Group?";
+				DialogResult result = MessageBox.Show(message, title, MessageBoxButtons.YesNoCancel);
+				if (result != System.Windows.Forms.DialogResult.Yes) {
+					return;
+				}
+			}
+
+			// to actually move channel nodes, we need to iterate through all selected treenodes, and remove them from
+			// the parent in which they are selected (which we can determine from the treenode parent), and add them
+			// to the target node.
+			foreach (TreeNode treeNode in e.SourceNodes) {
+				ChannelNode movingNode = treeNode.Tag as ChannelNode;
+				ChannelNode oldParentNode = (treeNode.Parent != null) ? treeNode.Parent.Tag as ChannelNode : null;
+				VixenSystem.Nodes.MoveNode(movingNode, newParentNode, oldParentNode, index);
+
+				// also move the actual tree nodes to where they should go.
+				treeNode.Remove();
+				if (index < 0)
+					targetTreeNodeCollection.Add(treeNode);
+				else
+					targetTreeNodeCollection.Insert(index, treeNode);
+			}
+
+			if (expandNode != null)
+				expandNode.Expand();
+			
+			PopulateNodeTree();
+		}
+
+		private void multiSelectTreeviewChannelsGroupsDragVerifyHandler(object sender, DragVerifyEventArgs e)
+		{
+			// we need to go through all nodes that would be moved (source nodes), and check if there's any
+			// problem moving any of them to the target node (circular references, etc.), since it's possible
+			// for a channel to exist multiple times in the treeview as different treenodes.
+
+			List<ChannelNode> nodes = new List<ChannelNode>(e.SourceNodes.Select(x => x.Tag as ChannelNode));
+
+			// TODO: disabled this for now. We can't just blindly remove child nodes; the same node might be selected
+			// elsewhere in the tree, but through a different path (since it's possible for a node to be in multiple
+			// locations). So we would really need to iterate through in terms of the treenodes, to determine which
+			// child nodes are *really* under this node directly (in terms of selection). For now, I think it's worth
+			// just skipping it, and if they select an entire group (parent and children), let it come out flat. (it
+			// could be argued that that's intended behaviour.)
+			//
+			//// first off, remove any nodes which are children of other nodes in the list. They would move 'for free'.
+			//HashSet<ChannelNode> testedNodes = new HashSet<ChannelNode>();
+			//foreach (ChannelNode testingNode in nodes.ToArray()) {
+			//    foreach (ChannelNode targetNode in nodes) {
+			//        if (testedNodes.Contains(targetNode) || targetNode == testingNode)
+			//            continue;
+
+			//        if (targetNode.ContainsNode(testingNode)) {
+			//            nodes.Remove(testingNode);
+			//            break;
+			//        }
+			//    }
+			//    testedNodes.Add(testingNode);
+			//}
+
+			// now get a list of invalid children for this target node, and check all the remaining nodes against it.
+			// If any of them fail, the entire operation should fail, as it would be an invalid move.
+
+			// the target node will be the actual target node if it is directly on it, otherwise it would be the parent
+			// of the target node if it would be dragged above/below the taget element (as it would be put alongside it).
+			// also keep track of the 'permitted' nodes: this is used when dragging alongside another element: any children
+			// of the new parent node are considered OK, as we might just be shuffling them around. Normally, this would
+			// be A Bad Thing, since it would seem like we're adding a child to the group it's already in. (This is only
+			// the case when moving; if copying, it should be disabled. Keep that in mind when it's added later.)
+			IEnumerable<ChannelNode> invalidNodesForTarget = null;
+			IEnumerable<ChannelNode> permittedNodesForTarget = null;
+
+			if (e.DragStyle == DragBetweenNodes.DragOnTargetNode || e.DragStyle == DragBetweenNodes.DragBelowTargetNode && e.TargetNode.IsExpanded) {
+				invalidNodesForTarget = (e.TargetNode.Tag as ChannelNode).InvalidChildren();
+				permittedNodesForTarget = new HashSet<ChannelNode>();
+			} else {
+				if (e.TargetNode.Parent == null) {
+					invalidNodesForTarget = VixenSystem.Nodes.InvalidRootNodes;
+					permittedNodesForTarget = VixenSystem.Nodes.RootNodes;
+				} else {
+					invalidNodesForTarget = (e.TargetNode.Parent.Tag as ChannelNode).InvalidChildren();
+					permittedNodesForTarget = (e.TargetNode.Parent.Tag as ChannelNode).Children;
+				}
+			}
+
+			//switch (e.DragStyle) {
+			//    case DragBetweenNodes.DragAboveTargetNode:
+			//        if (e.TargetNode.Parent == null) {
+			//            invalidNodesForTarget = VixenSystem.Nodes.InvalidRootNodes;
+			//            permittedNodesForTarget = VixenSystem.Nodes.RootNodes;
+			//        } else {
+			//            invalidNodesForTarget = (e.TargetNode.Parent.Tag as ChannelNode).InvalidChildren();
+			//            permittedNodesForTarget = (e.TargetNode.Parent.Tag as ChannelNode).Children;
+			//        }
+			//        break;
+
+			//    case DragBetweenNodes.DragBelowTargetNode:
+			//        if (e.TargetNode.IsExpanded) {
+			//            invalidNodesForTarget = (e.TargetNode.Tag as ChannelNode).InvalidChildren();
+			//            permittedNodesForTarget = (e.TargetNode.Tag as ChannelNode).Children;
+			//        } else {
+			//            if (e.TargetNode.Parent == null) {
+			//                invalidNodesForTarget = VixenSystem.Nodes.InvalidRootNodes;
+			//                permittedNodesForTarget = VixenSystem.Nodes.RootNodes;
+			//            } else {
+			//                invalidNodesForTarget = (e.TargetNode.Parent.Tag as ChannelNode).InvalidChildren();
+			//                permittedNodesForTarget = (e.TargetNode.Parent.Tag as ChannelNode).Children;
+			//            }
+			//            break;
+			//        }
+			//        break;
+
+			//    case DragBetweenNodes.DragOnTargetNode:
+			//        invalidNodesForTarget = (e.TargetNode.Tag as ChannelNode).InvalidChildren();
+			//        permittedNodesForTarget = new HashSet<ChannelNode>();
+			//        break;
+			//}
+
+			IEnumerable<ChannelNode> invalidSourceNodes = invalidNodesForTarget.Intersect(nodes);
+			if (invalidSourceNodes.Count() > 0) {
+				if (invalidSourceNodes.Intersect(permittedNodesForTarget).Count() == invalidSourceNodes.Count())
+					e.ValidDragTarget = true;
+				else
+					e.ValidDragTarget = false;
+			} else {
+				e.ValidDragTarget = true;
+			}
+		}
+		
 		#endregion
 
 
@@ -618,6 +792,8 @@ namespace VixenApplication
 
 			return result;
 		}
+
+
 
 		#endregion
 

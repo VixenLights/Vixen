@@ -33,6 +33,7 @@ namespace Vixen.Sys {
 					Paths.DataRootPath = _GetUserDataPath();
 
 					_InitializeLogging();
+					Logging.Info("Vixen System starting up...");
 
 					ModuleImplementation[] moduleImplementations = Modules.GetImplementations();
 
@@ -69,7 +70,8 @@ namespace Vixen.Sys {
 					}
 
 					_state = RunState.Started;
-				} catch(ReflectionTypeLoadException ex) {
+					Logging.Info("Vixen System successfully started.");
+				} catch (ReflectionTypeLoadException ex) {
 					foreach(Exception loaderException in ex.LoaderExceptions) {
 						Logging.Debug("Loader exception:" + Environment.NewLine + loaderException.Message + Environment.NewLine + Environment.NewLine + "The system has been stopped.", loaderException);
 					}
@@ -86,6 +88,7 @@ namespace Vixen.Sys {
         static public void Stop() {
 			if(_state == RunState.Starting || _state == RunState.Started) {
 				_state = RunState.Stopping;
+				Logging.Info("Vixen System stopping...");
 				ApplicationServices.ClientApplication = null;
 				Vixen.Sys.Execution.CloseExecution();
 				Modules.ClearRepositories();
@@ -101,6 +104,7 @@ namespace Vixen.Sys {
 					SystemConfig.Save();
 				}
 				_state = RunState.Stopped;
+				Logging.Info("Vixen System successfully stopped.");
 			}
         }
 

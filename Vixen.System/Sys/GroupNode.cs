@@ -24,13 +24,21 @@ namespace Vixen.Sys {
 		public string Name { get; set; }
 
 		virtual public void AddChild(GroupNode<T> node) {
-			if(!_children.Contains(node)) {
+			if (!_children.Contains(node)) {
 				_children.Add(node);
 				node.AddParent(this);
 			}
 		}
 
-		private void AddParent(GroupNode<T> parent) {
+		virtual public void InsertChild(int index, GroupNode<T> node) {
+			if (!_children.Contains(node)) {
+				_children.Insert(index, node);
+				node.AddParent(this);
+			}
+		}
+
+		private void AddParent(GroupNode<T> parent)
+		{
 			if (!_parents.Contains(parent)) {
 				_parents.Add(parent);
 			}
@@ -71,6 +79,20 @@ namespace Vixen.Sys {
 
 		virtual public GroupNode<T> Get(int index) {
 			return _children[index];
+		}
+
+		/// <summary>
+		/// Recursively searches through all children for the given node.
+		/// </summary>
+		/// <param name="node">The node to search for.</param>
+		/// <returns>True if the node is contained anywhere below this node.</returns>
+		virtual public bool ContainsNode(GroupNode<T> node) {
+			foreach (GroupNode<T> child in Children) {
+				if (child.ContainsNode(node))
+					return true;
+			}
+
+			return Children.Contains(node);
 		}
 
 		virtual public GroupNode<T> Find(string childName) {
