@@ -66,6 +66,12 @@ namespace Vixen.Execution {
 			IEnumerator<CommandNode[]> enumerator;
 
 			lock(_channels) {
+				// we potentially might be trying to update a channel one last time just after it's been
+				// deleted (since the _UpdateChannelStates in Execution iterates over a copy of these
+				// channels). If so, just ignore it if we can't find this channel. This is probably the
+				// best performing solution that doesn't need locking around big chunks of code.
+				if (!_channels.ContainsKey(channel))
+					return null;
 				enumerator = _channels[channel];
 				// Will return true if state has changed.
 				// State changes when data qualifies for execution.
