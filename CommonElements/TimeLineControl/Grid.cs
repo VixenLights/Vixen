@@ -303,6 +303,12 @@ namespace CommonElements.Timeline
 			base.OnScroll(se);
 		}
 
+		protected override void OnResize(EventArgs e)
+		{
+			base.OnResize(e);
+			_VerticalOffsetChanged();
+		}
+
 		private void RowToggledHandler(object sender, EventArgs e)
 		{
 			ResizeGridHeight();

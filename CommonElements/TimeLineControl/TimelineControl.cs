@@ -297,6 +297,10 @@ namespace CommonElements.Timeline
 		{
 			if (timelineRowList != null)
 				timelineRowList.VerticalOffset = grid.VerticalOffset;
+
+			// I know it's bad to do this, but when we scroll we can get very nasty artifacts
+			// and it looks shit in general. So, force an immediate graphical refresh
+			Refresh();
 		}
 
 		private void GridScrollHorizontalHandler(object sender, EventArgs e)
@@ -325,13 +329,6 @@ namespace CommonElements.Timeline
 			Invalidate();
 		}
 
-		protected override void OnResize(EventArgs e)
-		{
-			base.OnResize(e);
-			//TODO: 
-			//timelineRowList.VerticalOffset = grid.VerticalOffset;
-		}
-
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
 			base.OnMouseWheel(e);
@@ -346,8 +343,8 @@ namespace CommonElements.Timeline
 				// wheel away from user --> positive delta --> VisibleTimeStart decreases
 				VisibleTimeStart += VisibleTimeSpan.Scale(-((double)e.Delta / 1200.0));
 			} else {
-				// moving the mouse wheel with no modifiers moves the display vertically, 30 pixels per mouse wheel tick
-				VerticalOffset += -(e.Delta / 4);
+				// moving the mouse wheel with no modifiers moves the display vertically, 40 pixels per mouse wheel tick
+				VerticalOffset += -(e.Delta / 3);
 			}
 		}
 

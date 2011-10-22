@@ -20,11 +20,12 @@ namespace CommonElements.Timeline
 			TimeInfo.TimePerPixelChanged += TimePerPixelChanged;
 			TimeInfo.VisibleTimeStartChanged += VisibleTimeStartChanged;
 			TimeInfo.TotalTimeChanged += TotalTimeChanged;
-			
-			DoubleBuffered = true;
+
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+			SetStyle(ControlStyles.DoubleBuffer, true);
+			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
-			//SetStyle(ControlStyles.UserPaint, true);
+			SetStyle(ControlStyles.ResizeRedraw, true);
 		}
 
 		protected TimeInfo TimeInfo { get; private set; }

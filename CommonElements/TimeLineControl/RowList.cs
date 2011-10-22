@@ -18,8 +18,11 @@ namespace CommonElements.Timeline
 			VerticalOffset = 0;
 			DottedLineColor = Color.Black;
 			RowLabels = new List<RowLabel>();
-			DoubleBuffered = true;
-			this.SetStyle(ControlStyles.ResizeRedraw, true);
+			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+			SetStyle(ControlStyles.DoubleBuffer, true);
+			SetStyle(ControlStyles.UserPaint, true);
+			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+			SetStyle(ControlStyles.ResizeRedraw, true);
 		}
 
 		#region Properties

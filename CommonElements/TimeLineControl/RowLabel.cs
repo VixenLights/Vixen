@@ -19,8 +19,11 @@ namespace CommonElements.Timeline
 
 		public RowLabel()
 		{
-			DoubleBuffered = true;
-			this.SetStyle(ControlStyles.ResizeRedraw, true);
+			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+			SetStyle(ControlStyles.DoubleBuffer, true);
+			SetStyle(ControlStyles.UserPaint, true);
+			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+			SetStyle(ControlStyles.ResizeRedraw, true);
 			ResizeBarWidth = 6;
 			Resizing = false;
 		}
