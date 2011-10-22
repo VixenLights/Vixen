@@ -122,8 +122,8 @@ namespace VixenTestbed {
 		private void buttonControllerSetup_Click(object sender, EventArgs e) {
 			try {
 				OutputController controller = _SelectedController;
-				if(controller != null && !controller.Setup()) {
-					MessageBox.Show("No setup for this controller.");
+				if(controller != null) {
+					controller.Setup();
 				}
 			} catch(Exception ex) {
 				MessageBox.Show(ex.Message);

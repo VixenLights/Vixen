@@ -83,7 +83,20 @@ namespace Vixen.Execution {
 				// Start the hardware.
 				// Running in parallel to prevent a bad actor from screwing up the other
 				// controllers' ability to start.
-				Parallel.ForEach(_controllers.Values, _StartController);
+				//Parallel.ForEach(_controllers.Values, _StartController);
+				// Scratch that.
+				// For now, doing them serially in the UI thread.  When there are multiple 
+				// modules, there seems to be a problem with what's invoked and when
+				// (including one controller being invoked from multiple threads while
+				//  other controllers not being invoked...sounded like a closure issue
+				//  initially, but I can't figure it out).
+				foreach(OutputController controller in _controllers.Values) {
+					try {
+						_StartController(controller);
+					} catch(Exception ex) {
+						VixenSystem.Logging.Error("Error starting controller " + controller.Name, ex);
+					}
+				}
 
 				_stateAll = ExecutionState.Started;
 			}

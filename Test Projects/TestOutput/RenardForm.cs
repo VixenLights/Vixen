@@ -98,19 +98,12 @@ namespace TestOutput {
 				Array.Clear(_values, 0, _values.Length);
 			if (_colorValues != null)
 				Array.Clear(_colorValues, 0, _colorValues.Length);
-			if (InvokeRequired) {
-				BeginInvoke(new MethodInvoker(base.Show));
-			} else {
-				base.Show();
-			}
+
+			BeginInvoke(new MethodInvoker(base.Show));
 		}
 
 		new public void Hide() {
-			if(InvokeRequired) {
-				BeginInvoke(new MethodInvoker(base.Hide));
-			} else {
-				base.Hide();
-			}
+			BeginInvoke(new MethodInvoker(base.Hide));
 		}
 
 		//List<int> ms = new List<int>();
@@ -146,11 +139,8 @@ namespace TestOutput {
 					}
 				}
 			}
-			if(InvokeRequired) {
-				IAsyncResult result = BeginInvoke(new MethodInvoker(Refresh));
-			} else {
-				Refresh();
-			}
+
+			BeginInvoke(new MethodInvoker(Refresh));
 		}
 
 		protected override void OnPaint(PaintEventArgs e) {
