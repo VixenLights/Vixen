@@ -16,6 +16,7 @@ namespace VixenApplication
 	public partial class ConfigChannels : Form
 	{
 		private ChannelNode _displayedNode;
+		private bool _displayedNodeInitialized;
 
 		// sets of data to keep track of which items in the treeview are open, selected, visible etc.
 		// so that when we reload the tree, we can keep it looking relatively consistent with what the
@@ -30,6 +31,7 @@ namespace VixenApplication
 		{
 			InitializeComponent();
 			_displayedNode = null;
+			_displayedNodeInitialized = false;
 			_tooltip = new ToolTip();
 
 			multiSelectTreeviewChannelsGroups.DragFinishing += multiSelectTreeviewChannelsGroupsDragFinishingHandler;
@@ -171,10 +173,21 @@ namespace VixenApplication
 
 		private void AddNodeToTree(TreeNodeCollection collection, ChannelNode channel)
 		{
-			TreeNode addedNode;
-			addedNode = collection.Add(channel.Id.ToString(), channel.Name);
-
+			TreeNode addedNode = new TreeNode();
+			addedNode.Name = channel.Id.ToString();
+			addedNode.Text = channel.Name;
 			addedNode.Tag = channel;
+
+			if (channel.Children.Count() <= 0) {
+				if (channel.Channel != null && channel.Channel.Patch.Count() > 0)
+					addedNode.ImageKey = addedNode.SelectedImageKey = "ChannelPatched";
+				else
+					addedNode.ImageKey = addedNode.SelectedImageKey = "ChannelUnPatched";
+			} else {
+				addedNode.ImageKey = addedNode.SelectedImageKey = "Group";
+			}
+
+			collection.Add(addedNode);
 
 			foreach (ChannelNode childNode in channel.Children) {
 				AddNodeToTree(addedNode.Nodes, childNode);
@@ -186,10 +199,11 @@ namespace VixenApplication
 		#region Form controls population & display
 		private void PopulateFormWithNode(ChannelNode node)
 		{
-			if (node == _displayedNode)
+			if (node == _displayedNode && _displayedNodeInitialized)
 				return;
 
 			_displayedNode = node;
+			_displayedNodeInitialized = true;
 
 			buttonAddToGroup.Enabled = (node != null);
 			buttonRemoveFromGroup.Enabled = (node != null);
@@ -405,7 +419,7 @@ namespace VixenApplication
 					foreach (TreeNode tn in multiSelectTreeviewChannelsGroups.SelectedNodes) {
 						ChannelNode cn = tn.Tag as ChannelNode;
 						ChannelNode parent = (tn.Parent != null) ? tn.Parent.Tag as ChannelNode : null;
-						VixenSystem.Nodes.RemoveNode(cn, parent);
+						VixenSystem.Nodes.RemoveNode(cn, parent, true);
 						if (_displayedNode == cn) {
 							_displayedNode = null;
 						}
@@ -471,7 +485,7 @@ namespace VixenApplication
 				if (MessageBox.Show(message, title, MessageBoxButtons.OKCancel) == DialogResult.OK) {
 					foreach (ListViewItem item in listViewNodeContents.SelectedItems) {
 						if (item.Tag is ChannelNode) {
-							(item.Tag as ChannelNode).RemoveFromParent(_displayedNode);
+							(item.Tag as ChannelNode).RemoveFromParent(_displayedNode, true);
 						} else if (item.Tag is ControllerReference) {
 							_displayedNode.Channel.Patch.Remove(item.Tag as ControllerReference);
 						} else {
@@ -648,11 +662,11 @@ namespace VixenApplication
 				VixenSystem.Nodes.MoveNode(movingNode, newParentNode, oldParentNode, index);
 
 				// also move the actual tree nodes to where they should go.
-				treeNode.Remove();
-				if (index < 0)
-					targetTreeNodeCollection.Add(treeNode);
-				else
-					targetTreeNodeCollection.Insert(index, treeNode);
+				//treeNode.Remove();
+				//if (index < 0)
+				//    targetTreeNodeCollection.Add(treeNode);
+				//else
+				//    targetTreeNodeCollection.Insert(index, treeNode);
 			}
 
 			if (expandNode != null)
@@ -668,28 +682,6 @@ namespace VixenApplication
 			// for a channel to exist multiple times in the treeview as different treenodes.
 
 			List<ChannelNode> nodes = new List<ChannelNode>(e.SourceNodes.Select(x => x.Tag as ChannelNode));
-
-			// TODO: disabled this for now. We can't just blindly remove child nodes; the same node might be selected
-			// elsewhere in the tree, but through a different path (since it's possible for a node to be in multiple
-			// locations). So we would really need to iterate through in terms of the treenodes, to determine which
-			// child nodes are *really* under this node directly (in terms of selection). For now, I think it's worth
-			// just skipping it, and if they select an entire group (parent and children), let it come out flat. (it
-			// could be argued that that's intended behaviour.)
-			//
-			//// first off, remove any nodes which are children of other nodes in the list. They would move 'for free'.
-			//HashSet<ChannelNode> testedNodes = new HashSet<ChannelNode>();
-			//foreach (ChannelNode testingNode in nodes.ToArray()) {
-			//    foreach (ChannelNode targetNode in nodes) {
-			//        if (testedNodes.Contains(targetNode) || targetNode == testingNode)
-			//            continue;
-
-			//        if (targetNode.ContainsNode(testingNode)) {
-			//            nodes.Remove(testingNode);
-			//            break;
-			//        }
-			//    }
-			//    testedNodes.Add(testingNode);
-			//}
 
 			// now get a list of invalid children for this target node, and check all the remaining nodes against it.
 			// If any of them fail, the entire operation should fail, as it would be an invalid move.

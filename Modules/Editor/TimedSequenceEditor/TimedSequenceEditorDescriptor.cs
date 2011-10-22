@@ -12,7 +12,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private Guid _typeId = new Guid("{d342eedd-ae39-4b30-b557-b9329e6d3a7c}");
 		private string[] _extensions = new string[] { ".tim" };
 		private Guid[] _dependencies = new Guid[] {
-			new Guid("{4C258A3B-E725-4AE7-B50B-103F6AB8121E}"),		// Timed Sequence module GUID
+			new Guid("{296bdba2-9bf3-4bff-a9f2-13efac5c8ecb}"),		// Timed Sequence module GUID
 		};
 
 		public override string TypeName

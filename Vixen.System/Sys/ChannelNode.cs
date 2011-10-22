@@ -144,8 +144,8 @@ namespace Vixen.Sys {
 			OnChanged(this);
 		}
 
-		public override bool RemoveFromParent(GroupNode<Channel> parent) {
-			bool result = base.RemoveFromParent(parent);
+		public override bool RemoveFromParent(GroupNode<Channel> parent, bool removeChildrenIfFloating) {
+			bool result = base.RemoveFromParent(parent, removeChildrenIfFloating);
 			OnChanged(this);
 			return result;
 		}

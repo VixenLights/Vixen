@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Channels", System.Windows.Forms.HorizontalAlignment.Left);
 			System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Groups", System.Windows.Forms.HorizontalAlignment.Left);
 			System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Patches", System.Windows.Forms.HorizontalAlignment.Left);
@@ -63,6 +64,7 @@
 			this.buttonDeleteItem = new System.Windows.Forms.Button();
 			this.multiSelectTreeviewChannelsGroups = new CommonElements.MultiSelectTreeview();
 			this.label1 = new System.Windows.Forms.Label();
+			this.treeIconsImageList = new System.Windows.Forms.ImageList(this.components);
 			this.groupBoxSelected.SuspendLayout();
 			this.groupBoxProperties.SuspendLayout();
 			this.SuspendLayout();
@@ -358,6 +360,7 @@
 			// multiSelectTreeviewChannelsGroups
 			// 
 			this.multiSelectTreeviewChannelsGroups.AllowDrop = true;
+			this.multiSelectTreeviewChannelsGroups.Cursor = System.Windows.Forms.Cursors.Default;
 			this.multiSelectTreeviewChannelsGroups.CustomDragCursor = null;
 			this.multiSelectTreeviewChannelsGroups.DragDestinationNodeBackColor = System.Drawing.SystemColors.Highlight;
 			this.multiSelectTreeviewChannelsGroups.DragDestinationNodeForeColor = System.Drawing.SystemColors.HighlightText;
@@ -365,8 +368,11 @@
 			this.multiSelectTreeviewChannelsGroups.DragSourceNodeBackColor = System.Drawing.SystemColors.ControlLight;
 			this.multiSelectTreeviewChannelsGroups.DragSourceNodeForeColor = System.Drawing.SystemColors.ControlText;
 			this.multiSelectTreeviewChannelsGroups.HideSelection = false;
+			this.multiSelectTreeviewChannelsGroups.ImageIndex = 0;
+			this.multiSelectTreeviewChannelsGroups.ImageList = this.treeIconsImageList;
 			this.multiSelectTreeviewChannelsGroups.Location = new System.Drawing.Point(12, 36);
 			this.multiSelectTreeviewChannelsGroups.Name = "multiSelectTreeviewChannelsGroups";
+			this.multiSelectTreeviewChannelsGroups.SelectedImageIndex = 0;
 			this.multiSelectTreeviewChannelsGroups.SelectedNodes = ((System.Collections.Generic.List<System.Windows.Forms.TreeNode>)(resources.GetObject("multiSelectTreeviewChannelsGroups.SelectedNodes")));
 			this.multiSelectTreeviewChannelsGroups.Size = new System.Drawing.Size(230, 599);
 			this.multiSelectTreeviewChannelsGroups.TabIndex = 12;
@@ -381,6 +387,14 @@
 			this.label1.Size = new System.Drawing.Size(100, 13);
 			this.label1.TabIndex = 23;
 			this.label1.Text = "Channels && Groups:";
+			// 
+			// treeIconsImageList
+			// 
+			this.treeIconsImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("treeIconsImageList.ImageStream")));
+			this.treeIconsImageList.TransparentColor = System.Drawing.Color.Transparent;
+			this.treeIconsImageList.Images.SetKeyName(0, "ChannelPatched");
+			this.treeIconsImageList.Images.SetKeyName(1, "ChannelUnpatched");
+			this.treeIconsImageList.Images.SetKeyName(2, "Group");
 			// 
 			// ConfigChannels
 			// 
@@ -438,5 +452,6 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label labelParents;
 		private System.Windows.Forms.RadioButton radioButtonPatches;
+		private System.Windows.Forms.ImageList treeIconsImageList;
 	}
 }

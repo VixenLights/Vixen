@@ -41,7 +41,7 @@ namespace Vixen.Sys {
 				// since we're effectively trying to remove the channel, we'll be removing
 				// ALL nodes with this channel, which means they will be removed from all parents.
 				foreach (ChannelNode parent in leafNode.Parents.ToArray()) {
-					leafNode.RemoveFromParent(parent);
+					leafNode.RemoveFromParent(parent, true);
 				}
 			}
 		}
@@ -54,13 +54,20 @@ namespace Vixen.Sys {
 		}
 
 		public void MoveNode(ChannelNode movingNode, ChannelNode newParent, ChannelNode oldParent, int index = -1) {
-			// add the node to the root node if a target wasn't given.	
+			// if null nodes, default to the root node.
 			newParent = newParent ?? _rootNode;
-			AddChildToParent(movingNode, newParent, index);
+			oldParent = oldParent ?? _rootNode;
 
-			// remove the node from its old parent. This must be done last, otherwise it may have its children culled
-			// if it was the last instance available (ie. was temorarily floating free while moving around)
-			RemoveNode(movingNode, oldParent);
+			// if we are going to be moving a node within its same group, but to a later position, we need to offset
+			// the destination index by 1: once we remove a node, everything shuffles up one, and we need to account for it
+			if (oldParent == newParent && index >= 0 && index > newParent.IndexOfChild(movingNode)) {
+				index--;
+			}
+
+			// remove the node from its old parent, not culling any floating children (since it's about to be added
+			// again somewhere else) and then move it to the new parent, in the desired position if set
+			RemoveNode(movingNode, oldParent, false);
+			AddChildToParent(movingNode, newParent, index);
 		}
 
 		public void MirrorNode(ChannelNode node, ChannelNode target) {
@@ -86,13 +93,13 @@ namespace Vixen.Sys {
 			return newNode;
 		}
 
-		public void RemoveNode(ChannelNode node, ChannelNode parent) {
+		public void RemoveNode(ChannelNode node, ChannelNode parent, bool removeChildrenIfFloating) {
 			// if the given parent is null, it's most likely a root node (ie. with
 			// a parent of our private _rootNode). Try to remove it from that instead.
 			if (parent == null) {
-				node.RemoveFromParent(_rootNode);
+				node.RemoveFromParent(_rootNode, removeChildrenIfFloating);
 			} else {
-				node.RemoveFromParent(parent);
+				node.RemoveFromParent(parent, removeChildrenIfFloating);
 			}
 		}
 
