@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using Vixen.Sys;
 using Vixen.Module.Timing;
 
-namespace Vixen.Execution {
+namespace Vixen.Sys {
 	public class NodeManager : IEnumerable<ChannelNode> {
 		private ChannelNode _rootNode;
 

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Vixen.Sys;
 using Vixen.Commands;
+using Vixen.Execution;
 
-namespace Vixen.Execution {
+namespace Vixen.Sys {
 	public class ChannelManager : IEnumerable<Channel> {
 		private Dictionary<Channel, SystemChannelEnumerator> _channels = new Dictionary<Channel, SystemChannelEnumerator>();
 

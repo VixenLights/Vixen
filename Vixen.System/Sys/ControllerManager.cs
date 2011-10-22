@@ -5,9 +5,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using Vixen.Sys;
 
-namespace Vixen.Execution {
+namespace Vixen.Sys {
 	public class ControllerManager : IEnumerable<OutputController> {
 		// Controller id : Controller
 		private Dictionary<Guid, OutputController> _controllers = new Dictionary<Guid, OutputController>();

@@ -115,8 +115,8 @@
     <Compile Include="Commands\ICustomCommandBehavior.cs" />
     <Compile Include="Commands\Lighting.cs" />
     <Compile Include="Commands\Types.cs" />
-    <Compile Include="Execution\ChannelManager.cs" />
-    <Compile Include="Execution\ControllerManager.cs" />
+    <Compile Include="Sys\ChannelManager.cs" />
+    <Compile Include="Sys\ControllerManager.cs" />
     <Compile Include="Execution\MultiStateTimedEnumerator.cs" />
     <Compile Include="ImageResource.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -360,7 +360,7 @@
     <Compile Include="Sys\Sequence.cs" />
     <Compile Include="Script\SourceFile.cs" />
     <Compile Include="Sys\SystemClock.cs" />
-    <Compile Include="Execution\NodeManager.cs" />
+    <Compile Include="Sys\NodeManager.cs" />
     <Compile Include="Sys\SystemContext.cs" />
     <Compile Include="Sys\SystemConfig.cs" />
     <Compile Include="Sys\ApplicationServices.cs" />
