@@ -65,11 +65,23 @@ namespace Renard {
 
 		public override void Start() {
 			base.Start();
-			_port.Open();
+            if (_port != null)
+            {
+                if (!_port.IsOpen)
+                {
+                    _port.Open();
+                }
+            }
 		}
 
 		public override void Stop() {
-			_port.Close();
+            if (_port !=null)
+            {
+                if (_port.IsOpen)
+                {
+                    _port.Close();
+                }
+            }
 			base.Stop();
 		}
 
@@ -81,7 +93,13 @@ namespace Renard {
 
 		protected override void _UpdateState(Command[] outputStates)
 		{
-			_updateAction(outputStates);
+            if (_port != null)
+            {
+                if (_port.IsOpen)
+                {
+                    _updateAction(outputStates);
+                }
+            }
 		}
 
 		private void _UpdateFromData() {
@@ -95,14 +113,22 @@ namespace Renard {
 				_port = null;
 			}
 
-			//*** port name is going to be null initially
-			_port = new SerialPort(_moduleData.PortName, _moduleData.BaudRate, _moduleData.Parity,
-				_moduleData.DataBits, _moduleData.StopBits);
-			_port.WriteTimeout = _moduleData.WriteTimeout;
-			_port.Handshake = Handshake.None;
-			_port.Encoding = Encoding.UTF8;
-			_port.RtsEnable = true;
-			_port.DtrEnable = true;
+            if (_moduleData.PortName == null)
+            {
+                // just exit here for now, probably have to trap other instances of this
+                // data being incomplete.
+            }
+            else
+            {
+                //*** port name is going to be null initially
+                _port = new SerialPort(_moduleData.PortName, _moduleData.BaudRate, _moduleData.Parity,
+                    _moduleData.DataBits, _moduleData.StopBits);
+                _port.WriteTimeout = _moduleData.WriteTimeout;
+                _port.Handshake = Handshake.None;
+                _port.Encoding = Encoding.UTF8;
+                _port.RtsEnable = true;
+                _port.DtrEnable = true;
+            }
 		}
 
 		private void _SetUpdateAction() {

@@ -16,9 +16,15 @@ namespace Renard {
 		public SetupDialog(Data data) {
 			InitializeComponent();
 			_data = data;
-			comboBoxProtocolVersion.SelectedIndex = _data.ProtocolVersion - 1;
-			_port = new SerialPort(_data.PortName, _data.BaudRate, _data.Parity,
-			 _data.DataBits, _data.StopBits);
+            if (data.ProtocolVersion > 0)
+            {
+                comboBoxProtocolVersion.SelectedIndex = _data.ProtocolVersion - 1;
+            }
+            if (_data.PortName != null)
+            {
+                _port = new SerialPort(_data.PortName, _data.BaudRate, _data.Parity,
+                 _data.DataBits, _data.StopBits);
+            }
 		}
 
 		private void buttonPortSetup_Click(object sender, EventArgs e) {
