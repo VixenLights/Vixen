@@ -38,6 +38,7 @@ namespace CommonElements.Timeline
 			grid.Scroll += GridScrolledHandler;
 			grid.VerticalOffsetChanged += GridScrollVerticalHandler;
 			Row.RowToggled += RowToggledHandler;
+			Row.RowHeightChanged += RowHeightChangedHandler;
 		}
 
 		protected override void OnLayout(LayoutEventArgs e)
@@ -327,6 +328,12 @@ namespace CommonElements.Timeline
 			if (timelineRowList != null)
 				timelineRowList.VerticalOffset = grid.VerticalOffset;
 			Invalidate();
+		}
+
+		private void RowHeightChangedHandler(object sender, EventArgs e)
+		{
+			// again, icky. But it prevents artifacts.
+			Refresh();
 		}
 
 		protected override void OnMouseWheel(MouseEventArgs e)

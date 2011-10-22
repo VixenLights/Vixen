@@ -177,12 +177,14 @@ namespace CommonElements.Timeline
 		public event EventHandler<ElementEventArgs> ElementRemoved;
 		public static event EventHandler RowToggled;
 		public static event EventHandler RowChanged;
+		public static event EventHandler RowHeightChanged;
 		public static event EventHandler<ModifierKeysEventArgs> RowSelectedChanged;
 
 		private void _ElementAdded(Element te) { if (ElementAdded != null) ElementAdded(this, new ElementEventArgs(te)); }
 		private void _ElementRemoved(Element te) { if (ElementRemoved != null) ElementRemoved(this, new ElementEventArgs(te)); }
 		private void _RowToggled() { if (RowToggled != null) RowToggled(this, EventArgs.Empty); }
 		private void _RowChanged() { if (RowChanged != null) RowChanged(this, EventArgs.Empty); }
+		private void _RowHeightChanged() { if (RowChanged != null) RowHeightChanged(this, EventArgs.Empty); }
 		private void _RowSelectedChanged(Keys k) { if (RowSelectedChanged != null) RowSelectedChanged(this, new ModifierKeysEventArgs(k)); }
 
 		#endregion
@@ -219,7 +221,9 @@ namespace CommonElements.Timeline
 
 		protected void HeightChangedHandler(object sender, RowHeightChangedEventArgs e)
 		{
-			Height = Height + e.HeightChange;
+			// cap the height to a minimum of 10 pixels.
+			Height = Math.Max(Height + e.HeightChange, 10);
+			_RowHeightChanged();
 		}
 
 		protected void LabelClickedHandler(object sender, ModifierKeysEventArgs e)
