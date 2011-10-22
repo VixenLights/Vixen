@@ -105,6 +105,8 @@ namespace Vixen.Sys {
 
 		public void RenameNode(ChannelNode node, string newName) {
 			node.Name = _Uniquify(newName);
+			if (node.Channel != null)
+				node.Channel.Name = node.Name;
 		}
 
 		public void AddChildToParent(ChannelNode child, ChannelNode parent, int index = -1) {
