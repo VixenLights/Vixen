@@ -13,7 +13,11 @@ namespace Vixen.Module.Media {
 
 		abstract public ITiming TimingSource { get; }
 
-		abstract public void Setup();
+		virtual public bool HasSetup {
+			get { return false; }
+		}
+
+		virtual public void Setup() { }
 
 		abstract public void Start();
 

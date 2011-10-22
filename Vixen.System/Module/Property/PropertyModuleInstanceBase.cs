@@ -8,7 +8,11 @@ namespace Vixen.Module.Property {
 	abstract public class PropertyModuleInstanceBase : ModuleInstanceBase, IPropertyModuleInstance, IEqualityComparer<IPropertyModuleInstance>, IEquatable<IPropertyModuleInstance>, IEqualityComparer<PropertyModuleInstanceBase>, IEquatable<PropertyModuleInstanceBase> {
 		virtual public ChannelNode Owner { get; set; }
 
-		abstract public void Setup();
+		virtual public bool HasSetup {
+			get { return false; }
+		}
+
+		virtual public void Setup() { }
 
 		/// <summary>
 		/// Set or reset the property's values to a property-specific default.

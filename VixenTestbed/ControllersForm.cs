@@ -177,6 +177,7 @@ namespace VixenTestbed {
 				_ControllerName = controller.Name;
 				_OutputCount = controller.OutputCount;
 				_OutputModule = controller.OutputModuleId;
+				buttonControllerSetup.Enabled = controller.HasSetup;
 				_UpdateLinkCombo();
 			}
 		}

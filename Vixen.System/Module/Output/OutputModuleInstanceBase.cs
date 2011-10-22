@@ -110,7 +110,13 @@ namespace Vixen.Module.Output {
 		/// </summary>
 		virtual public bool IsRunning { get; private set; }
 
-		abstract public bool Setup();
+		virtual public bool HasSetup {
+			get { return false; }
+		}
+
+		virtual public bool Setup() {
+			return false;
+		}
 
 		/// <summary>
 		/// If overriding this, please also override Stop and IsRunning.

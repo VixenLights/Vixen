@@ -68,9 +68,9 @@ namespace VixenTestbed {
 
 		private void moduleListMedia_SelectedModuleChanged(object sender, EventArgs e) {
 			buttonLoadMediaFile.Enabled =
-			buttonSetupMedia.Enabled =
 			groupBoxMediaExecution.Enabled =
 				_SelectedMediaModule != null;
+			buttonSetupMedia.Enabled = _SelectedMediaModule != null && _SelectedMediaModule.HasSetup;
 		}
 	}
 }

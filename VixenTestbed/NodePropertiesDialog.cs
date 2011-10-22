@@ -113,8 +113,8 @@ namespace VixenTestbed {
 		}
 
 		private void listBoxUsed_SelectedIndexChanged(object sender, EventArgs e) {
-			buttonRemove.Enabled = listBoxUsed.SelectedItem != null;
-			buttonSetup.Enabled = listBoxUsed.SelectedItem != null;
+			buttonRemove.Enabled = _SelectedUsed != null;
+			buttonSetup.Enabled = _SelectedUsed != null && _SelectedUsed.Instance.HasSetup;
 		}
 	}
 

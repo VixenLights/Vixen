@@ -24,9 +24,9 @@
 		/// </summary>
 		private void InitializeComponent() {
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.buttonReloadModule = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.listBoxModules = new System.Windows.Forms.ListBox();
-			this.buttonReloadModule = new System.Windows.Forms.Button();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -39,6 +39,19 @@
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(213, 30);
 			this.panel1.TabIndex = 0;
+			// 
+			// buttonReloadModule
+			// 
+			this.buttonReloadModule.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonReloadModule.Enabled = false;
+			this.buttonReloadModule.Location = new System.Drawing.Point(143, 7);
+			this.buttonReloadModule.Name = "buttonReloadModule";
+			this.buttonReloadModule.Size = new System.Drawing.Size(67, 20);
+			this.buttonReloadModule.TabIndex = 1;
+			this.buttonReloadModule.Text = "Reload";
+			this.buttonReloadModule.UseVisualStyleBackColor = true;
+			this.buttonReloadModule.Visible = false;
+			this.buttonReloadModule.Click += new System.EventHandler(this.buttonReloadModule_Click);
 			// 
 			// label1
 			// 
@@ -58,18 +71,6 @@
 			this.listBoxModules.Size = new System.Drawing.Size(213, 297);
 			this.listBoxModules.TabIndex = 1;
 			this.listBoxModules.SelectedIndexChanged += new System.EventHandler(this.listBoxModules_SelectedIndexChanged);
-			// 
-			// buttonReloadModule
-			// 
-			this.buttonReloadModule.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonReloadModule.Enabled = false;
-			this.buttonReloadModule.Location = new System.Drawing.Point(143, 7);
-			this.buttonReloadModule.Name = "buttonReloadModule";
-			this.buttonReloadModule.Size = new System.Drawing.Size(67, 20);
-			this.buttonReloadModule.TabIndex = 1;
-			this.buttonReloadModule.Text = "Reload";
-			this.buttonReloadModule.UseVisualStyleBackColor = true;
-			this.buttonReloadModule.Click += new System.EventHandler(this.buttonReloadModule_Click);
 			// 
 			// ModuleList
 			// 

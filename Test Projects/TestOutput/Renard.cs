@@ -82,6 +82,12 @@ namespace TestOutput {
             _sw.Stop();
         }
 
+		override public bool HasSetup {
+			get {
+				return true;
+			}
+		}
+
 		override public bool Setup() {
 			RenardSetup setup = new RenardSetup();
 			setup.RenderStyle = _form.renderingStyle;

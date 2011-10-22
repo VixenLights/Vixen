@@ -8,6 +8,7 @@ using Vixen.Execution;
 namespace Vixen.Sys {
     public interface IHardwareModule : IModuleInstance, IExecutionControl {
 		bool IsRunning { get; }
+		bool HasSetup { get; }
         bool Setup();
     }
 }

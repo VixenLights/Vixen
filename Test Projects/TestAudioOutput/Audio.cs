@@ -54,11 +54,11 @@ namespace TestAudioOutput {
 		//    }
 		//}
 
-		override public void Setup() {
-			//using(AudioSetup audioSetup = new AudioSetup(_audioData)) {
-			//    audioSetup.ShowDialog();
-			//}
-		}
+		//override public void Setup() {
+		//    //using(AudioSetup audioSetup = new AudioSetup(_audioData)) {
+		//    //    audioSetup.ShowDialog();
+		//    //}
+		//}
 
 		override public void Dispose() {
 			_DisposeAudio();

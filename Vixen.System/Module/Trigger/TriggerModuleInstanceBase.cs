@@ -76,7 +76,13 @@ namespace Vixen.Module.Trigger {
 
 		public bool IsPaused { get; private set; }
 
-		abstract public bool Setup();
+		virtual public bool HasSetup {
+			get { return false; }
+		}
+
+		virtual public bool Setup() {
+			return false;
+		}
 
 		override public void Dispose() {
 			Dispose(true);

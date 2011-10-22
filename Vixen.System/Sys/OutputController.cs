@@ -272,6 +272,10 @@ namespace Vixen.Sys {
 			}
 		}
 
+		public bool HasSetup {
+			get { return _outputModule.HasSetup; }
+		}
+
 		/// <summary>
 		/// Runs the controller setup and commits it upon success.
 		/// </summary>

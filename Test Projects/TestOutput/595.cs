@@ -42,9 +42,9 @@ namespace TestOutput {
             _sw.Stop();
         }
 
-		override public bool Setup() {
-            return false;
-        }
+		//override public bool Setup() {
+		//    return false;
+		//}
 
 		override public bool IsRunning {
 			get { return _form != null && _form.Visible; }

@@ -30,9 +30,9 @@ namespace TestOutput {
 			get { return _running; }
 		}
 
-		override public bool Setup() {
-			return false;
-		}
+		//override public bool Setup() {
+		//    return false;
+		//}
 
 		override public void Start() {
 			_file = new StreamWriter(_filePath);

@@ -17,6 +17,11 @@ namespace TestProperty {
 			_data.BlueChannelId = (channels.Length > 2) ? channels[2].Id : Guid.Empty;
 		}
 
+		public override bool HasSetup {
+			get {
+				return true;
+			}
+		}
 		override public void Setup() {
 			Channel[] channels = Owner.GetChannelEnumerator().ToArray();
 
