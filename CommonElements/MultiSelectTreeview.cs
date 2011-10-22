@@ -55,7 +55,7 @@ namespace CommonElements
 
 
 		#region Private members
-		private DragDropEffects _dragMode = DragDropEffects.Move;
+		private DragDropEffects _dragDefaultMode = DragDropEffects.Move;
 		private Color _dragDestinationNodeForeColor = SystemColors.HighlightText;
 		private Color _dragDestinationNodeBackColor = SystemColors.Highlight;
 		private Color _dragSourceNodeForeColor = SystemColors.ControlText;
@@ -157,10 +157,10 @@ namespace CommonElements
 			Description("The drag mode (move,copy etc.)"),
 			Category("Drag and drop")
 		]
-		public DragDropEffects DragMode
+		public DragDropEffects DragDefaultMode
 		{
-			get { return _dragMode; }
-			set { _dragMode = value; }
+			get { return _dragDefaultMode; }
+			set { _dragDefaultMode = value; }
 		}
 
 		public bool DraggingBetweenRows
@@ -210,8 +210,14 @@ namespace CommonElements
 
 		public void AddSelectedNode(TreeNode node)
 		{
-			m_SelectedNodes.Add(node);
+			AddNodeToSelectedList(node);
 			ToggleNode(node, true);
+		}
+
+		private void AddNodeToSelectedList(TreeNode node)
+		{
+			m_SelectedNodes.Add(node);
+			m_SelectedNodes.Sort(new TreeNodeSorter(this));
 		}
 
 		#endregion
@@ -254,7 +260,6 @@ namespace CommonElements
 		{
 			// If the user clicks on a node that was not
 			// previously selected, select it now.
-
 			try
 			{
 				base.SelectedNode = null;
@@ -272,7 +277,7 @@ namespace CommonElements
 							// Let Mouse Up do select
 						}
 						else
-						{							
+						{
 							SelectNode(node);
 						}
 					}
@@ -320,29 +325,7 @@ namespace CommonElements
 
 		protected override void OnItemDrag(ItemDragEventArgs e)
 		{
-			// If the user drags a node and the node being dragged is NOT
-			// selected, then clear the active selection, select the
-			// node being dragged and drag it. Otherwise if the node being
-			// dragged is selected, drag the entire selection.
-			try
-			{
-				TreeNode node = e.Item as TreeNode;
-
-				if (node != null)
-				{
-					if (!m_SelectedNodes.Contains(node))
-					{
-						SelectSingleNode(node);
-						ToggleNode(node, true);
-					}
-				}
-
-				base.OnItemDrag(e);
-			}
-			catch (Exception ex)
-			{
-				HandleException(ex);
-			}
+			base.OnItemDrag(e);
 
 			// Call dragstart event
 			if (DragStart != null) {
@@ -354,7 +337,7 @@ namespace CommonElements
 			DrawSelectedNodesAsDragSource();
 
 			// Start drag drop
-			DoDragDrop(SelectedNodes, _dragMode);
+			DoDragDrop(SelectedNodes, DragDropEffects.All);
 		}
 
 		protected override void OnBeforeSelect(TreeViewCancelEventArgs e)
@@ -586,7 +569,7 @@ namespace CommonElements
 
 		protected override void OnGiveFeedback(GiveFeedbackEventArgs e)
 		{
-			if (e.Effect == _dragMode) {
+			if (e.Effect == _dragDefaultMode) {
 				if (UsingCustomDragCursor && CustomDragCursor != null) {
 					e.UseDefaultCursors = false;
 					Cursor = CustomDragCursor;
@@ -658,9 +641,10 @@ namespace CommonElements
 			}
 
 			if (DraggingBetweenRows) {
-				// have a guess that each level is about this many pixels in, and scale it by that
-				// (magic numbers!)
-				int x1 = 24 + targetNode.Level * 19;
+				// have a guess that each level is about this many pixels in, and scale it by that.
+				// magic numbers! -- 24 px for initial tree crap, 20 px for icon, 19 px per level
+				// inset, and 100 px line length.
+				int x1 = 24 + 20 + targetNode.Level * 19;
 				int x2 = x1 + 100;
 
 				_dragBetweenRowsDrawLineStart = new Point(x1, y);
@@ -691,17 +675,19 @@ namespace CommonElements
 					DragVerifyEventArgs ea = new DragVerifyEventArgs();
 					ea.SourceNodes = dragNodes;
 					ea.TargetNode = _dragDestinationNode;
-					ea.DragStyle = _dragBetweenState;
+					ea.DragBetweenNodes = _dragBetweenState;
+					ea.KeyState = e.KeyState;
+					ea.DragMode = _dragDefaultMode;
 					DragOverVerify(this, ea);
 
 					if (ea.ValidDragTarget) {
-						e.Effect = _dragMode;
+						e.Effect = ea.DragMode;
 					} else {
 						e.Effect = DragDropEffects.None;
 						_dragDestinationNode = null;
 					}
 				} else {
-					e.Effect = _dragMode;
+					e.Effect = _dragDefaultMode;
 				}
 
 				if (_dragDestinationNode != null && !DraggingBetweenRows) {
@@ -732,7 +718,7 @@ namespace CommonElements
 
 		protected override void OnDragEnter(DragEventArgs e)
 		{
-			e.Effect = _dragMode;
+			e.Effect = _dragDefaultMode;
 			DrawSelectedNodesAsDragSource();
 		}
 
@@ -776,7 +762,8 @@ namespace CommonElements
 					DragFinishingEventArgs ea = new DragFinishingEventArgs();
 					ea.SourceNodes = dragNodes;
 					ea.TargetNode = _dragDestinationNode;
-					ea.DragStyle = _dragBetweenState;
+					ea.DragBetweenNodes = _dragBetweenState;
+					ea.DragMode = e.Effect;
 					DragFinishing(this, ea);
 					if (!ea.FinishDrag) {
 						CleanupDragVisuals();
@@ -784,8 +771,10 @@ namespace CommonElements
 					}
 				}
 
-				foreach (TreeNode node in dragNodes) {
-					node.Remove();
+				if (e.Effect == DragDropEffects.Move) {
+					foreach (TreeNode node in dragNodes) {
+						node.Remove();
+					}
 				}
 
 				// this is pretty freakin' horrible. Needs to be refactored.
@@ -1103,7 +1092,7 @@ namespace CommonElements
 				m_SelectedNode = node;
 				if (!m_SelectedNodes.Contains(node))
 				{
-					m_SelectedNodes.Add(node);
+					AddNodeToSelectedList(node);
 				}
 				node.BackColor = SystemColors.Highlight;
 				node.ForeColor = SystemColors.HighlightText;
@@ -1153,14 +1142,21 @@ namespace CommonElements
 			set { _finishDrag = value; }
 		}
 
-		public DragBetweenNodes DragStyle
+		public DragBetweenNodes DragBetweenNodes
 		{
 			get { return _dragBetweenNodes; }
 			set { _dragBetweenNodes = value; }
 		}
-		
+
+		public DragDropEffects DragMode
+		{
+			get { return _dragMode; }
+			set { _dragMode = value; }
+		}
+
 		private bool _finishDrag = true;
 		private DragBetweenNodes _dragBetweenNodes;
+		private DragDropEffects _dragMode;
 	}
 
 	public class DragVerifyEventArgs : DragSourceDestinationEventArgs
@@ -1175,14 +1171,28 @@ namespace CommonElements
 			set { _validDragTarget = value; }
 		}
 
-		public DragBetweenNodes DragStyle
+		public DragBetweenNodes DragBetweenNodes
 		{
 			get { return _dragBetweenNodes; }
 			set { _dragBetweenNodes = value; }
 		}
 
+		public int KeyState
+		{
+			get { return _keyState; }
+			set { _keyState = value; }
+		}
+
+		public DragDropEffects DragMode
+		{
+			get { return _dragMode; }
+			set { _dragMode = value; }
+		}
+
 		private DragBetweenNodes _dragBetweenNodes;
 		private bool _validDragTarget = true;
+		private int _keyState = 0;
+		private DragDropEffects _dragMode;
 	}
 
 	public class DragSourceDestinationEventArgs : EventArgs
@@ -1224,5 +1234,50 @@ namespace CommonElements
 	}
 	#endregion
 
+	public class TreeNodeSorter : IComparer<TreeNode>
+	{
+		private TreeView _treeView;
+
+		public TreeNodeSorter(TreeView treeView)
+		{
+			_treeView = treeView;
+		}
+
+		public int Compare(TreeNode x, TreeNode y)
+		{
+			if (x == null && y != null)
+				return -1;
+			if (x != null && y == null)
+				return 1;
+			if (x == y)
+				return 0;
+
+			TreeNode first = FindFirstInCollection(_treeView.Nodes, x, y);
+
+			if (first == x)
+				return -1;
+
+			if (first == y)
+				return 1;
+
+			return 0;
+		}
+
+		public TreeNode FindFirstInCollection(TreeNodeCollection coll, TreeNode x, TreeNode y)
+		{
+			if (coll == null)
+				return null;
+
+			foreach (TreeNode node in coll) {
+				if (node == x) return x;
+				if (node == y) return y;
+				TreeNode result = FindFirstInCollection(node.Nodes, x, y);
+				if (result != null)
+					return result;
+			}
+
+			return null;
+		}
+	}
 }
 

@@ -612,36 +612,31 @@ namespace VixenApplication
 			// first determine the node that they will be moved to. This will depend on if we are dragging onto a node
 			// directly, or above/below one to reorder.
 			ChannelNode newParentNode = null;						// the channelNode that the selected items will move to
-			TreeNodeCollection targetTreeNodeCollection = null;		// the actual node collection the treenode will move to
 			TreeNode expandNode = null;								// if we need to expand a node once we've moved everything
 			int index = -1;
 
-			if (e.DragStyle == DragBetweenNodes.DragOnTargetNode) {
+			if (e.DragBetweenNodes == DragBetweenNodes.DragOnTargetNode) {
 				newParentNode = e.TargetNode.Tag as ChannelNode;
-				targetTreeNodeCollection = e.TargetNode.Nodes;
 				expandNode = e.TargetNode;
-			} else if (e.DragStyle == DragBetweenNodes.DragBelowTargetNode && e.TargetNode.IsExpanded) {
+			} else if (e.DragBetweenNodes == DragBetweenNodes.DragBelowTargetNode && e.TargetNode.IsExpanded) {
 				newParentNode = e.TargetNode.Tag as ChannelNode;
-				targetTreeNodeCollection = e.TargetNode.Nodes;
 				expandNode = e.TargetNode;
 				index = 0;
 			} else {
 				if (e.TargetNode.Parent == null) {
 					newParentNode = null;	// needs to go at the root level
-					targetTreeNodeCollection = e.TargetNode.TreeView.Nodes;
 				} else {
 					newParentNode = e.TargetNode.Parent.Tag as ChannelNode;
-					targetTreeNodeCollection = e.TargetNode.Parent.Nodes;
 				}
 
-				if (e.DragStyle == DragBetweenNodes.DragAboveTargetNode) {
+				if (e.DragBetweenNodes == DragBetweenNodes.DragAboveTargetNode) {
 					index = e.TargetNode.Index;
 				} else {
 					index = e.TargetNode.Index + 1;
 				}
 			}
 
-			// Before moving, check to see if the new parent node would be 'losing' the Channel (ie. becoming a
+			// Check to see if the new parent node would be 'losing' the Channel (ie. becoming a
 			// group instead of a leaf node with a channel/patches). Prompt the user first.
 			if (newParentNode != null && newParentNode.Channel != null && newParentNode.Channel.Patch.Count() > 0) {
 				string message = "Moving items into this Channel will convert it into a Group, which will remove any " +
@@ -653,20 +648,28 @@ namespace VixenApplication
 				}
 			}
 
-			// to actually move channel nodes, we need to iterate through all selected treenodes, and remove them from
+			// If moving channel nodes, we need to iterate through all selected treenodes, and remove them from
 			// the parent in which they are selected (which we can determine from the treenode parent), and add them
-			// to the target node.
+			// to the target node. If copying, we need to just add them to the new parent node.
 			foreach (TreeNode treeNode in e.SourceNodes) {
-				ChannelNode movingNode = treeNode.Tag as ChannelNode;
+				ChannelNode sourceNode = treeNode.Tag as ChannelNode;
 				ChannelNode oldParentNode = (treeNode.Parent != null) ? treeNode.Parent.Tag as ChannelNode : null;
-				VixenSystem.Nodes.MoveNode(movingNode, newParentNode, oldParentNode, index);
-
-				// also move the actual tree nodes to where they should go.
-				//treeNode.Remove();
-				//if (index < 0)
-				//    targetTreeNodeCollection.Add(treeNode);
-				//else
-				//    targetTreeNodeCollection.Insert(index, treeNode);
+				if (e.DragMode == DragDropEffects.Move) {
+					if (index >= 0) {
+						VixenSystem.Nodes.MoveNode(sourceNode, newParentNode, oldParentNode, index);
+					} else {
+						VixenSystem.Nodes.MoveNode(sourceNode, newParentNode, oldParentNode);
+					}
+				} else if (e.DragMode == DragDropEffects.Copy) {
+					if (index >= 0) {
+						// increment the index after every move, so the items are inserted in the correct order (if not, they would be reversed)
+						VixenSystem.Nodes.AddChildToParent(sourceNode, newParentNode, index++);
+					} else {
+						VixenSystem.Nodes.AddChildToParent(sourceNode, newParentNode);
+					}
+				} else {
+					VixenSystem.Logging.Warn("ConfigChannels: Trying to deal with a drag that is an unknown type!");
+				}
 			}
 
 			if (expandNode != null)
@@ -691,11 +694,11 @@ namespace VixenApplication
 			// also keep track of the 'permitted' nodes: this is used when dragging alongside another element: any children
 			// of the new parent node are considered OK, as we might just be shuffling them around. Normally, this would
 			// be A Bad Thing, since it would seem like we're adding a child to the group it's already in. (This is only
-			// the case when moving; if copying, it should be disabled. Keep that in mind when it's added later.)
+			// the case when moving; if copying, it should be disabled. That's checked later.)
 			IEnumerable<ChannelNode> invalidNodesForTarget = null;
 			IEnumerable<ChannelNode> permittedNodesForTarget = null;
 
-			if (e.DragStyle == DragBetweenNodes.DragOnTargetNode || e.DragStyle == DragBetweenNodes.DragBelowTargetNode && e.TargetNode.IsExpanded) {
+			if (e.DragBetweenNodes == DragBetweenNodes.DragOnTargetNode || e.DragBetweenNodes == DragBetweenNodes.DragBelowTargetNode && e.TargetNode.IsExpanded) {
 				invalidNodesForTarget = (e.TargetNode.Tag as ChannelNode).InvalidChildren();
 				permittedNodesForTarget = new HashSet<ChannelNode>();
 			} else {
@@ -706,6 +709,13 @@ namespace VixenApplication
 					invalidNodesForTarget = (e.TargetNode.Parent.Tag as ChannelNode).InvalidChildren();
 					permittedNodesForTarget = (e.TargetNode.Parent.Tag as ChannelNode).Children;
 				}
+			}
+
+			if ((e.KeyState & 8) != 0) {		// the CTRL key
+				e.DragMode = DragDropEffects.Copy;
+				permittedNodesForTarget = new HashSet<ChannelNode>();
+			} else {
+				e.DragMode = DragDropEffects.Move;
 			}
 
 			IEnumerable<ChannelNode> invalidSourceNodes = invalidNodesForTarget.Intersect(nodes);
