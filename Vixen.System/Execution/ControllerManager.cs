@@ -190,6 +190,7 @@ namespace Vixen.Execution {
 
 				// Create / Start the thread that updates the hardware.
 				HardwareUpdateThread thread = new HardwareUpdateThread(controller);
+				thread.Error += _HardwareError;
 				lock (_updateThreads) {
 					_updateThreads[controller.Id] = thread;
 				}
@@ -199,34 +200,48 @@ namespace Vixen.Execution {
 
 		private void _StopController(OutputController controller) {
 			if(controller.IsRunning) {
-				// Stop the thread that updates the hardware.
-				HardwareUpdateThread thread;
-				if(_updateThreads.TryGetValue(controller.Id, out thread)) {
-					thread.Stop();
-					thread.WaitForFinish();
-				}
+				try {
+					// Stop the thread that updates the hardware.
+					HardwareUpdateThread thread;
+					if(_updateThreads.TryGetValue(controller.Id, out thread)) {
+						thread.Stop();
+						thread.WaitForFinish();
+						thread.Error -= _HardwareError;
+					}
 
-				controller.Stop();
+					controller.Stop();
+				} catch(Exception ex) {
+					VixenSystem.Logging.Error("Error trying to stop controller " + controller.Name, ex);
+				}
 			}
+		}
+
+		private void _HardwareError(object sender, EventArgs e) {
+			HardwareUpdateThread hardwareUpdateThread = sender as HardwareUpdateThread;
+			_StopController(hardwareUpdateThread.Controller);
+			VixenSystem.Logging.Error("Controller " + hardwareUpdateThread.Controller.Name + " experienced an error during execution and was shutdown.");
 		}
 
 
 		#region class HardwareUpdateThread
 		class HardwareUpdateThread {
 			private Thread _thread;
-			private OutputController _controller;
 			private ExecutionState _threadState = ExecutionState.Stopped;
 			private EventWaitHandle _finished;
 
 			private const int STOP_TIMEOUT = 4000;   // Four seconds should be plenty of time for a thread to stop.
 
+			public event EventHandler Error;
+
 			public HardwareUpdateThread(OutputController controller) {
-				_controller = controller;
+				Controller = controller;
 				_thread = new Thread(_ThreadFunc);
 				_finished = new EventWaitHandle(false, EventResetMode.ManualReset);
 			}
 
 			public ExecutionState State { get { return _threadState; } }
+
+			public OutputController Controller { get; private set; }
 
 			public void Start() {
 				if(_threadState == ExecutionState.Stopped) {
@@ -246,7 +261,7 @@ namespace Vixen.Execution {
 				if(!_finished.WaitOne(STOP_TIMEOUT)) {
 					// Timed out waiting for a stop.
 					//(This will prevent hangs in stopping, due to controller code failing to stop).
-					throw new TimeoutException("Controller " + _controller.Name + " failed to stop in the required amount of time.");
+					throw new TimeoutException("Controller " + Controller.Name + " failed to stop in the required amount of time.");
 				}
 			}
 
@@ -255,21 +270,37 @@ namespace Vixen.Execution {
 				Stopwatch currentTime = Stopwatch.StartNew();
 
 				// Thread main loop
-				while(_threadState != ExecutionState.Stopping) {
-					frameStart = currentTime.ElapsedMilliseconds;
-					frameEnd = frameStart + _controller.UpdateInterval;
+				try {
+					while(_threadState != ExecutionState.Stopping) {
+						frameStart = currentTime.ElapsedMilliseconds;
+						frameEnd = frameStart + Controller.UpdateInterval;
 
-					_controller.Update();
+						Controller.Update();
 
-					timeLeft = frameEnd - currentTime.ElapsedMilliseconds;
+						timeLeft = frameEnd - currentTime.ElapsedMilliseconds;
 
-					if(timeLeft > 1) {
-						Thread.Sleep((int)timeLeft);
+						if(timeLeft > 1) {
+							Thread.Sleep((int)timeLeft);
+						}
 					}
-				}
+					_threadState = ExecutionState.Stopped;
+					_finished.Set();
+				} catch(Exception ex) {
+					// Do this before calling OnError so that we can be in the stopped state.
+					// Otherwise, we'll have a deadlock as the event causes a shutdown which
+					// waits for the thread to end.
+					_threadState = ExecutionState.Stopped;
+					_finished.Set();
 
-				_threadState = ExecutionState.Stopped;
-				_finished.Set();
+					VixenSystem.Logging.Error("Controller " + Controller.Name + " error", ex);
+					OnError();
+				}
+			}
+
+			protected virtual void OnError() {
+				if(Error != null) {
+					Error(this, EventArgs.Empty);
+				}
 			}
 		}
 		#endregion

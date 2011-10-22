@@ -10,6 +10,7 @@ namespace Vixen.Sys {
 	// Cannot be static because of DynamicObject inheritance.
 	public class Logging : DynamicObject {
 		private Dictionary<string, Log> _logs = new Dictionary<string, Log>();
+		private object _locker = new object();
 
 		static public event EventHandler<LogEventArgs> ItemLogged;
 
@@ -35,7 +36,9 @@ namespace Vixen.Sys {
 		private void _ItemLogged(object sender, LogItemEventArgs e) {
 			Log log = sender as Log;
 			string logFileName = Path.Combine(_logDirectory, log.Name) + LOG_FILE_EXT;
-			File.AppendAllText(logFileName, e.Text);
+			lock(_locker) {
+				File.AppendAllText(logFileName, e.Text);
+			}
 
 			if(ItemLogged != null) {
 				ItemLogged(this, new LogEventArgs(log.Name, e.Text));
