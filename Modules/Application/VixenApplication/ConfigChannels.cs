@@ -16,7 +16,6 @@ namespace VixenApplication
 	public partial class ConfigChannels : Form
 	{
 		private ChannelNode _displayedNode;
-		private bool _displayedNodeInitialized;
 
 		// sets of data to keep track of which items in the treeview are open, selected, visible etc.
 		// so that when we reload the tree, we can keep it looking relatively consistent with what the
@@ -31,7 +30,6 @@ namespace VixenApplication
 		{
 			InitializeComponent();
 			_displayedNode = null;
-			_displayedNodeInitialized = false;
 			_tooltip = new ToolTip();
 
 			multiSelectTreeviewChannelsGroups.DragFinishing += multiSelectTreeviewChannelsGroupsDragFinishingHandler;
@@ -43,6 +41,8 @@ namespace VixenApplication
 		private void ConfigChannels_Load(object sender, EventArgs e)
 		{
 			PopulateNodeTree();
+			PopulateFormWithNode(null, true);
+			PopulateComboBoxControllers();
 		}
 
 
@@ -100,8 +100,6 @@ namespace VixenApplication
 					break;
 				}
 			}
-
-			PopulateFormWithNode(_displayedNode);
 		}
 
 		private string GenerateTreeNodeFullPath(TreeNode node, string separator)
@@ -179,10 +177,13 @@ namespace VixenApplication
 			addedNode.Tag = channel;
 
 			if (channel.Children.Count() <= 0) {
-				if (channel.Channel != null && channel.Channel.Patch.Count() > 0)
-					addedNode.ImageKey = addedNode.SelectedImageKey = "ChannelPatched";
-				else
-					addedNode.ImageKey = addedNode.SelectedImageKey = "ChannelUnPatched";
+				if (channel.Channel != null && channel.Channel.Patch.Count() > 0) {
+					if (channel.Channel.Masked)
+						addedNode.ImageKey = addedNode.SelectedImageKey = "RedBall";
+					else
+						addedNode.ImageKey = addedNode.SelectedImageKey = "GreenBall";
+				} else
+					addedNode.ImageKey = addedNode.SelectedImageKey = "WhiteBall";
 			} else {
 				addedNode.ImageKey = addedNode.SelectedImageKey = "Group";
 			}
@@ -197,211 +198,147 @@ namespace VixenApplication
 
 
 		#region Form controls population & display
-		private void PopulateFormWithNode(ChannelNode node)
+
+		private void PopulateFormWithNode(ChannelNode node, bool forceUpdate)
 		{
-			if (node == _displayedNode && _displayedNodeInitialized)
+			if (node == _displayedNode && !forceUpdate)
 				return;
 
 			_displayedNode = node;
-			_displayedNodeInitialized = true;
 
-			buttonAddToGroup.Enabled = (node != null);
-			buttonRemoveFromGroup.Enabled = (node != null);
-			buttonAddProperty.Enabled = (node != null);
-			buttonConfigureProperty.Enabled = (node != null);
-			buttonRemoveProperty.Enabled = (node != null);
-			buttonRenameItem.Enabled = (node != null);
+			PopulateGeneralNodeInfo(node);
+			PopulateCurrentPatchesArea(node);
+			PopulateAddPatchArea(node);
+			PopulatePropertiesArea(node);
 
+			groupBoxSelectedNode.Enabled = (node != null);
+		}
+
+		private void PopulateGeneralNodeInfo(ChannelNode node)
+		{
 			if (node == null) {
 				labelParents.Text = "";
 				_tooltip.SetToolTip(labelParents, null);
-				listViewNodeContents.Items.Clear();
-				listViewAddToNode.Items.Clear();
-				listViewProperties.Items.Clear();
-				return;
-			} 
-
-			// update the label with parent info about the node. Any good suggestions or improvements for this?
-			int parentCount = GetNodeParentGroupCount(node);
-			List<string> parents = GetNodeParentGroupNames(node);
-			string labelString = "", tooltipString = "";
-			labelString = "This item is in " + parentCount + " group" + ((parentCount != 1) ? "s" : "") + ((parentCount == 0) ? "." : ": ");
-			tooltipString = labelString + "\r\n\r\n";
-			foreach (string p in parents) {
-				labelString = labelString + p + ", ";
-				tooltipString = tooltipString + p + "\r\n";
-			}
-			labelParents.Text = labelString.TrimEnd(new char[] { ' ', ',' });
-			tooltipString = tooltipString.TrimEnd(new char[] { '\r', '\n' });
-			if (labelString.Length > 100) {
-				_tooltip.SetToolTip(labelParents, tooltipString);
+				textBoxName.Text = "";
 			} else {
-				_tooltip.SetToolTip(labelParents, null);
-			}
+				// update the label with parent info about the node. Any good suggestions or improvements for this?
+				int parentCount = GetNodeParentGroupCount(node);
+				List<string> parents = GetNodeParentGroupNames(node);
+				string labelString = "", tooltipString = "";
+				labelString = "This node is in " + parentCount + " group" + ((parentCount != 1) ? "s" : "") + ((parentCount == 0) ? "." : ": ");
+				tooltipString = labelString + "\r\n\r\n";
+				foreach (string p in parents) {
+					labelString = labelString + p + ", ";
+					tooltipString = tooltipString + p + "\r\n";
+				}
+				labelParents.Text = labelString.TrimEnd(new char[] { ' ', ',' });
+				tooltipString = tooltipString.TrimEnd(new char[] { '\r', '\n' });
+				if (labelString.Length > 100) {
+					_tooltip.SetToolTip(labelParents, tooltipString);
+				} else {
+					_tooltip.SetToolTip(labelParents, null);
+				}
 
-			textBoxName.Text = node.Name;
-			PopulateContentsList(node);
-			PopulateAddList(node);
-			PopulatePropertiesList(node);
+				textBoxName.Text = node.Name;
+			}
 		}
 
-		private void PopulatePropertiesList(ChannelNode node)
+		private void PopulatePropertiesArea(ChannelNode node)
 		{
-			if (node == null)
-				return;
-
 			listViewProperties.BeginUpdate();
 			listViewProperties.Items.Clear();
+			if (node != null) {
+				foreach (IPropertyModuleInstance property in node.Properties) {
+					ListViewItem item = new ListViewItem();
+					item.Text = property.Descriptor.TypeName;
+					item.Tag = property;
+					listViewProperties.Items.Add(item);
+				}
 
-			foreach (IPropertyModuleInstance property in node.Properties) {
-				ListViewItem item = new ListViewItem();
-				item.Text = property.Descriptor.TypeName;
-				item.Tag = property;
-				listViewProperties.Items.Add(item);
+				listViewProperties.SelectedItems.Clear();
 			}
-
 			listViewProperties.EndUpdate();
+
+			groupBoxProperties.Enabled = (node != null);
 		}
 
-		private void PopulateContentsList(ChannelNode node)
+		private void PopulateCurrentPatchesArea(ChannelNode node)
 		{
-			if (node == null)
-				return;
+			listViewPatches.BeginUpdate();
+			listViewPatches.Items.Clear();
 
-			listViewNodeContents.BeginUpdate();
-			listViewNodeContents.Items.Clear();
-
-			ListViewGroup channelsGroup = null;
-			ListViewGroup groupsGroup = null;
-			ListViewGroup patchesGroup = null;
-
-			// find each ListViewGroup for each of the different types of headers, so we can 
-			// add each item to the correct group later on.
-			foreach (ListViewGroup group in listViewNodeContents.Groups) {
-				switch (group.Header) {
-					case "Channels":
-						channelsGroup = group;
-						break;
-
-					case "Groups":
-						groupsGroup = group;
-						break;
-
-					case "Patches":
-						patchesGroup = group;
-						break;
-				}
-			}
-
-			// iterate through each child of the given node, and add them to the contents box.
-			// separate them based on being a channel or group.
-			foreach (ChannelNode child in node.Children) {
-				ListViewItem item = new ListViewItem();
-				if (child.IsLeaf) {
-					item.Group = channelsGroup;
-				} else {
-					item.Group = groupsGroup;
-				}
-				item.Text = child.Name;
-				item.Tag = child;
-				listViewNodeContents.Items.Add(item);
-			}
-
-			if (node.Channel != null) {
+			if (node != null && node.Channel != null) {
 				foreach (ControllerReference patch in node.Channel.Patch.ControllerReferences) {
 					ListViewItem item = new ListViewItem();
-					item.Group = patchesGroup;
 					item.Text = patch.ToString();
 					item.Tag = patch;
-					//item.ForeColor = SystemColors.InactiveCaption; // they are active for removing now, don't need this anymore?
-					listViewNodeContents.Items.Add(item);
+					listViewPatches.Items.Add(item);
 				}
+				buttonRemovePatch.Enabled = (listViewPatches.SelectedItems.Count > 0);
+
+				if (checkBoxDisableOutputs.Checked != node.Channel.Masked)
+					checkBoxDisableOutputs.Checked = node.Channel.Masked;
+			} else {
+				checkBoxDisableOutputs.Checked = false;
 			}
 
-			listViewNodeContents.EndUpdate();
+			listViewPatches.EndUpdate();
+
+			groupBoxPatches.Enabled = (node != null && node.Children.Count() == 0);
 		}
 
-		private void PopulateAddList(ChannelNode node)
+		private void PopulateAddPatchArea(ChannelNode node)
 		{
-			if (node == null)
-				return;
+			numericUpDownPatchOutputSelect.Enabled = (comboBoxPatchControllerSelect.SelectedIndex >= 0);
+			buttonAddPatch.Enabled = (comboBoxPatchControllerSelect.SelectedIndex >= 0);
 
-			// if it's a group, it can't have patches. If it isn't a group (leaf node), then
-			// it can only have patches if it already has some. If it doesn't have anything
-			// in it at the moment, it can have anything at all. Also change the selected item
-			// if it was on an invalid one.
-			if (node.IsLeaf) {
-				if (node.Channel != null && node.Channel.Patch.Count() > 0) {
-					radioButtonChannels.Enabled = false;
-					radioButtonGroups.Enabled = false;
-					radioButtonPatches.Enabled = true;
-					radioButtonPatches.Checked = true;
-				} else {
-					radioButtonChannels.Enabled = true;
-					radioButtonGroups.Enabled = true;
-					radioButtonPatches.Enabled = true;
-				}
+			if (comboBoxPatchControllerSelect.SelectedIndex >= 0) {
+				OutputController oc = VixenSystem.Controllers.Get((Guid)comboBoxPatchControllerSelect.SelectedValue);
+				numericUpDownPatchOutputSelect.Maximum = oc.OutputCount;
+				if (oc.OutputCount == 0)
+					numericUpDownPatchOutputSelect.Minimum = oc.OutputCount;
+				else
+					numericUpDownPatchOutputSelect.Minimum = 1;
 			} else {
-				radioButtonChannels.Enabled = true;
-				radioButtonGroups.Enabled = true;
-				radioButtonPatches.Enabled = false;
-				if (radioButtonPatches.Checked) {
-					radioButtonChannels.Checked = true;
-				}
+				numericUpDownPatchOutputSelect.Maximum = 0;
+				numericUpDownPatchOutputSelect.Minimum = 0;
+				numericUpDownPatchOutputSelect.Value = 0;
 			}
 
-			listViewAddToNode.BeginUpdate();
-			listViewAddToNode.Items.Clear();
-
-			// depending on which radio button is checked, populate the "add to item" box with
-			// either channels or groups. Don't show any that are invalid.
-			if (radioButtonChannels.Checked || radioButtonGroups.Checked) {
-				IEnumerable<ChannelNode> collection;
-				IEnumerable<ChannelNode> invalid = node.InvalidChildren();
-				List<ChannelNode> seen = new List<ChannelNode>();
-
-				if (radioButtonChannels.Checked) {
-					collection = VixenSystem.Nodes.GetLeafNodes();
-				} else {
-					collection = VixenSystem.Nodes.GetNonLeafNodes();
-				}
-
-				foreach (ChannelNode n in collection) {
-					if (!node.Children.Contains(n) && !invalid.Contains(n) && !seen.Contains(n)) {
-						ListViewItem item = new ListViewItem();
-						item.Text = n.Name;
-						item.Tag = n;
-						listViewAddToNode.Items.Add(item);
-
-						seen.Add(n);
-					}
-				}
-			} else {
-				foreach(OutputController oc in VixenSystem.Controllers) {
-					for (int i = 0; i < oc.OutputCount; i++) {
-						if (node.Channel != null && node.Channel.Patch.Contains(new ControllerReference(oc.Id, i))) {
-							continue;
-						}
-						ListViewItem item = new ListViewItem();
-						item.Text = oc.Name + " [" + (i + 1) + "]";
-						item.Tag = new ControllerReference(oc.Id, i);
-						listViewAddToNode.Items.Add(item);
-					}
-				}
-			}
-
-			listViewAddToNode.EndUpdate();
+			groupBoxAddPatch.Enabled = (node != null && node.Children.Count() == 0);
 		}
+
+
+		private void PopulateComboBoxControllers()
+		{
+			comboBoxPatchControllerSelect.BeginUpdate();
+			comboBoxPatchControllerSelect.Items.Clear();
+
+			List<ComboBoxControllerItem> controllerEntries = new List<ComboBoxControllerItem>();
+			foreach (OutputController oc in VixenSystem.Controllers) {
+				ComboBoxControllerItem item = new ComboBoxControllerItem { Name = oc.Name, Id = oc.Id };
+				controllerEntries.Add(item);
+			}
+
+			comboBoxPatchControllerSelect.DisplayMember = "Name";
+			comboBoxPatchControllerSelect.ValueMember = "Id";
+			comboBoxPatchControllerSelect.DataSource = controllerEntries;
+			comboBoxPatchControllerSelect.SelectedIndex = -1;
+
+			comboBoxPatchControllerSelect.EndUpdate();
+		}
+
 		#endregion
 
 
 		#region Form buttons
-		private void buttonAddChannel_Click(object sender, EventArgs e)
+
+		private void buttonAddNode_Click(object sender, EventArgs e)
 		{
-			using (CommonElements.TextDialog textDialog = new CommonElements.TextDialog("Channel Name?")) {
+			using (CommonElements.TextDialog textDialog = new CommonElements.TextDialog("Node Name?")) {
 				if (textDialog.ShowDialog() == DialogResult.OK) {
 					if (textDialog.Response == "")
-						VixenSystem.Nodes.AddNewNode("Unnamed Channel");
+						VixenSystem.Nodes.AddNewNode("New Node");
 					else
 						VixenSystem.Nodes.AddNewNode(textDialog.Response);
 
@@ -410,12 +347,19 @@ namespace VixenApplication
 			}
 		}
 
-		private void buttonDeleteItem_Click(object sender, EventArgs e)
+		private void buttonDeleteNode_Click(object sender, EventArgs e)
 		{
 			if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0)
 			{
-				if (MessageBox.Show("Are you sure you want to delete the selected item(s)?", "Delete Item(s)?", MessageBoxButtons.OKCancel) == DialogResult.OK)
-				{
+				string message, title;
+				if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 1) {
+					message = "Are you sure you want to delete the selected nodes?";
+					title = "Delete Nodes?";
+				} else {
+					message = "Are you sure you want to delete the selected node?";
+					title = "Delete Node?";
+				}
+				if (MessageBox.Show(message, title, MessageBoxButtons.OKCancel) == DialogResult.OK) {
 					foreach (TreeNode tn in multiSelectTreeviewChannelsGroups.SelectedNodes) {
 						ChannelNode cn = tn.Tag as ChannelNode;
 						ChannelNode parent = (tn.Parent != null) ? tn.Parent.Tag as ChannelNode : null;
@@ -471,53 +415,44 @@ namespace VixenApplication
 			PopulateNodeTree();
 		}
 
-		private void buttonRemoveFromGroup_Click(object sender, EventArgs e)
+		private void buttonRemovePatch_Click(object sender, EventArgs e)
 		{
-			if (listViewNodeContents.SelectedItems.Count > 0) {
+			if (listViewPatches.SelectedItems.Count > 0) {
 				string message, title;
-				if (listViewNodeContents.SelectedItems.Count == 1) {
-					message = "Are you sure you want to remove the selected item from the group?";
-					title = "Remove Item?";
+				if (listViewPatches.SelectedItems.Count == 1) {
+					message = "Are you sure you want to remove the selected patch?";
+					title = "Remove Patch?";
 				} else {
-					message = "Are you sure you want to remove the selected items from the group?";
-					title = "Remove Items?";
+					message = "Are you sure you want to remove the selected patches?";
+					title = "Remove Patches?";
 				}
 				if (MessageBox.Show(message, title, MessageBoxButtons.OKCancel) == DialogResult.OK) {
-					foreach (ListViewItem item in listViewNodeContents.SelectedItems) {
-						if (item.Tag is ChannelNode) {
-							(item.Tag as ChannelNode).RemoveFromParent(_displayedNode, true);
-						} else if (item.Tag is ControllerReference) {
+					foreach (ListViewItem item in listViewPatches.SelectedItems) {
+						if (item.Tag is ControllerReference) {
 							_displayedNode.Channel.Patch.Remove(item.Tag as ControllerReference);
 						} else {
-							throw new NotImplementedException("Can't figure out what to do to remove item!");
+							VixenSystem.Logging.Error("ConfigChannels: Trying to remove patch, but it's not a ControllerReference");
 						}
 					}
-
-					PopulateNodeTree();
 				}
 			}
 		}
 
-		private void buttonAddToGroup_Click(object sender, EventArgs e)
+		private void buttonAddPatch_Click(object sender, EventArgs e)
 		{
-			if (listViewAddToNode.SelectedItems.Count <= 0) {
+			if (comboBoxPatchControllerSelect.SelectedIndex < 0 || numericUpDownPatchOutputSelect.Value <= 0)
 				return;
-			}
 
-			foreach (ListViewItem item in listViewAddToNode.SelectedItems) {
-				if (item.Tag is ChannelNode) {
-					_displayedNode.AddChild((ChannelNode)(item.Tag));
-				} else if (item.Tag is ControllerReference) {
-					if (_displayedNode.Channel == null) {
-						_displayedNode.Channel = VixenSystem.Channels.AddChannel(_displayedNode.Name);
-					}
-					_displayedNode.Channel.Patch.Add((ControllerReference)item.Tag);
-				} else {
-					throw new NotImplementedException("Don't know how to add item to the node!");
-				}
-			}
+			OutputController controller = VixenSystem.Controllers.Get((Guid)comboBoxPatchControllerSelect.SelectedValue);
+			if (controller == null || controller.OutputCount < numericUpDownPatchOutputSelect.Value)
+				return;
 
-			PopulateNodeTree();
+			if (_displayedNode.Channel == null) {
+				_displayedNode.Channel = VixenSystem.Channels.AddChannel(_displayedNode.Name);
+			}
+			_displayedNode.Channel.Patch.Add(new ControllerReference((Guid)comboBoxPatchControllerSelect.SelectedValue, ((int)numericUpDownPatchOutputSelect.Value) - 1));
+
+			PopulateCurrentPatchesArea(_displayedNode);
 		}
 
 		private void buttonAddProperty_Click(object sender, EventArgs e)
@@ -529,7 +464,7 @@ namespace VixenApplication
 			CommonElements.ListSelectDialog addForm = new CommonElements.ListSelectDialog("Add Property", (properties));
 			if (addForm.ShowDialog() == DialogResult.OK) {
 				_displayedNode.Properties.Add((Guid)addForm.selectedItem);
-				PopulatePropertiesList(_displayedNode);
+				PopulatePropertiesArea(_displayedNode);
 			}
 		}
 
@@ -554,10 +489,11 @@ namespace VixenApplication
 						_displayedNode.Properties.Remove((item.Tag as IPropertyModuleInstance).Descriptor.TypeId);
 					}
 
-					PopulatePropertiesList(_displayedNode);
+					PopulatePropertiesArea(_displayedNode);
 				}
 			}
 		}
+
 		#endregion
 
 
@@ -565,21 +501,11 @@ namespace VixenApplication
 
 		private void multiSelectTreeviewChannelsGroups_AfterSelect(object sender, TreeViewEventArgs e)
 		{
-			PopulateFormWithNode(multiSelectTreeviewChannelsGroups.SelectedNode.Tag as ChannelNode);
-		}
-		private void radioButtonChannels_CheckedChanged(object sender, EventArgs e)
-		{
-			PopulateAddList(_displayedNode);
-		}
+			PopulateFormWithNode(multiSelectTreeviewChannelsGroups.SelectedNode.Tag as ChannelNode, false);
 
-		private void radioButtonGroups_CheckedChanged(object sender, EventArgs e)
-		{
-			PopulateAddList(_displayedNode);
-		}
-
-		private void radioButtonPatches_CheckedChanged(object sender, EventArgs e)
-		{
-			PopulateAddList(_displayedNode);
+			buttonDeleteNode.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0);
+			buttonCreateGroup.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0);
+			buttonBulkRename.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0);
 		}
 
 		private void listViewProperties_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -590,17 +516,34 @@ namespace VixenApplication
 		private void listViewProperties_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			buttonConfigureProperty.Enabled = (listViewProperties.SelectedItems.Count == 1);
+			buttonRemoveProperty.Enabled = (listViewProperties.SelectedItems.Count > 0);
 		}
 
-		private void listViewNodeContents_SelectedIndexChanged(object sender, EventArgs e)
+		private void comboBoxPatchControllerSelect_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			// TODO: enable/disable 'remove' button
+			PopulateAddPatchArea(_displayedNode);
 		}
 
-		private void listViewAddToNode_SelectedIndexChanged(object sender, EventArgs e)
+		private void listViewPatches_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			// TODO: enable/disable 'add to group' button
+			buttonRemovePatch.Enabled = (listViewPatches.SelectedItems.Count > 0);
 		}
+
+		private void checkBoxDisableOutputs_CheckedChanged(object sender, EventArgs e)
+		{
+			if (_displayedNode != null) {
+				if (_displayedNode.Channel.Masked != checkBoxDisableOutputs.Checked) {
+					_displayedNode.Channel.Masked = checkBoxDisableOutputs.Checked;
+					PopulateNodeTree();
+					PopulateFormWithNode(_displayedNode, true);
+				}
+			}
+		}
+
+		#endregion
+
+
+		#region Drag 'n' Drop Handlers
 
 		private void multiSelectTreeviewChannelsGroupsDragFinishingHandler(object sender, DragFinishingEventArgs e)
 		{
@@ -639,7 +582,7 @@ namespace VixenApplication
 			// Check to see if the new parent node would be 'losing' the Channel (ie. becoming a
 			// group instead of a leaf node with a channel/patches). Prompt the user first.
 			if (newParentNode != null && newParentNode.Channel != null && newParentNode.Channel.Patch.Count() > 0) {
-				string message = "Moving items into this Channel will convert it into a Group, which will remove any " +
+				string message = "Moving nodes into this Channel will convert it into a Group, which will remove any " +
 					"patches it may have to outputs. Are you sure you want to continue?";
 				string title = "Convert Channel to Group?";
 				DialogResult result = MessageBox.Show(message, title, MessageBoxButtons.YesNoCancel);
@@ -676,6 +619,7 @@ namespace VixenApplication
 				expandNode.Expand();
 			
 			PopulateNodeTree();
+			PopulateFormWithNode(multiSelectTreeviewChannelsGroups.SelectedNode.Tag as ChannelNode, true);
 		}
 
 		private void multiSelectTreeviewChannelsGroupsDragVerifyHandler(object sender, DragVerifyEventArgs e)
@@ -767,6 +711,12 @@ namespace VixenApplication
 
 
 		#endregion
+
+		public class ComboBoxControllerItem
+		{
+			public string Name { get; set; }
+			public Guid Id { get; set; }
+		}
 
 	}
 }
