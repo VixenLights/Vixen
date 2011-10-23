@@ -209,8 +209,10 @@ namespace VixenApplication
 
 		private void buttonConfigureOutputs_Click(object sender, EventArgs e)
 		{
-			ConfigControllersOutputs outputsForm = new ConfigControllersOutputs(listViewControllers.SelectedItems[0].Tag as OutputController);
-			outputsForm.ShowDialog();
+			if (listViewControllers.SelectedItems.Count > 0) {
+				ConfigControllersOutputs outputsForm = new ConfigControllersOutputs(listViewControllers.SelectedItems[0].Tag as OutputController);
+				outputsForm.ShowDialog();
+			}
 		}
 
 	}
