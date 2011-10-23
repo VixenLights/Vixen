@@ -29,10 +29,10 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem("test-channel");
-			System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem("test-group");
-			System.Windows.Forms.ListViewItem listViewItem11 = new System.Windows.Forms.ListViewItem("test-patch");
-			System.Windows.Forms.ListViewItem listViewItem12 = new System.Windows.Forms.ListViewItem("something else");
+			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("test-channel");
+			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("test-group");
+			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("test-patch");
+			System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("something else");
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigChannels));
 			this.buttonOk = new System.Windows.Forms.Button();
 			this.groupBoxSelectedNode = new System.Windows.Forms.GroupBox();
@@ -52,7 +52,6 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.textBoxName = new System.Windows.Forms.TextBox();
 			this.treeIconsImageList = new System.Windows.Forms.ImageList(this.components);
-			this.multiSelectTreeviewChannelsGroups = new CommonElements.MultiSelectTreeview();
 			this.groupBoxOperations = new System.Windows.Forms.GroupBox();
 			this.comboBoxPatchControllerSelect = new System.Windows.Forms.ComboBox();
 			this.numericUpDownPatchOutputSelect = new System.Windows.Forms.NumericUpDown();
@@ -66,6 +65,7 @@
 			this.buttonAddNode = new System.Windows.Forms.Button();
 			this.label4 = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
+			this.multiSelectTreeviewChannelsGroups = new CommonElements.MultiSelectTreeview();
 			this.groupBoxSelectedNode.SuspendLayout();
 			this.groupBoxPatches.SuspendLayout();
 			this.groupBoxProperties.SuspendLayout();
@@ -78,7 +78,7 @@
 			// 
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.Location = new System.Drawing.Point(509, 693);
+			this.buttonOk.Location = new System.Drawing.Point(509, 645);
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.Size = new System.Drawing.Size(90, 25);
 			this.buttonOk.TabIndex = 1;
@@ -95,9 +95,9 @@
 			this.groupBoxSelectedNode.Controls.Add(this.buttonRenameItem);
 			this.groupBoxSelectedNode.Controls.Add(this.label2);
 			this.groupBoxSelectedNode.Controls.Add(this.textBoxName);
-			this.groupBoxSelectedNode.Location = new System.Drawing.Point(318, 145);
+			this.groupBoxSelectedNode.Location = new System.Drawing.Point(318, 137);
 			this.groupBoxSelectedNode.Name = "groupBoxSelectedNode";
-			this.groupBoxSelectedNode.Size = new System.Drawing.Size(281, 536);
+			this.groupBoxSelectedNode.Size = new System.Drawing.Size(281, 499);
 			this.groupBoxSelectedNode.TabIndex = 11;
 			this.groupBoxSelectedNode.TabStop = false;
 			this.groupBoxSelectedNode.Text = "Selected Node";
@@ -107,7 +107,7 @@
 			this.groupBoxPatches.Controls.Add(this.checkBoxDisableOutputs);
 			this.groupBoxPatches.Controls.Add(this.buttonRemovePatch);
 			this.groupBoxPatches.Controls.Add(this.listViewPatches);
-			this.groupBoxPatches.Location = new System.Drawing.Point(6, 102);
+			this.groupBoxPatches.Location = new System.Drawing.Point(6, 81);
 			this.groupBoxPatches.Name = "groupBoxPatches";
 			this.groupBoxPatches.Size = new System.Drawing.Size(269, 166);
 			this.groupBoxPatches.TabIndex = 27;
@@ -142,10 +142,10 @@
 			this.listViewPatches.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewPatches.HideSelection = false;
 			this.listViewPatches.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem9,
-            listViewItem10,
-            listViewItem11,
-            listViewItem12});
+            listViewItem1,
+            listViewItem2,
+            listViewItem3,
+            listViewItem4});
 			this.listViewPatches.Location = new System.Drawing.Point(16, 50);
 			this.listViewPatches.Name = "listViewPatches";
 			this.listViewPatches.Size = new System.Drawing.Size(234, 74);
@@ -165,7 +165,7 @@
 			this.groupBoxProperties.Controls.Add(this.buttonRemoveProperty);
 			this.groupBoxProperties.Controls.Add(this.buttonAddProperty);
 			this.groupBoxProperties.Controls.Add(this.listViewProperties);
-			this.groupBoxProperties.Location = new System.Drawing.Point(6, 387);
+			this.groupBoxProperties.Location = new System.Drawing.Point(6, 346);
 			this.groupBoxProperties.Name = "groupBoxProperties";
 			this.groupBoxProperties.Size = new System.Drawing.Size(269, 144);
 			this.groupBoxProperties.TabIndex = 26;
@@ -223,7 +223,7 @@
 			// labelParents
 			// 
 			this.labelParents.AutoEllipsis = true;
-			this.labelParents.Location = new System.Drawing.Point(7, 63);
+			this.labelParents.Location = new System.Drawing.Point(7, 48);
 			this.labelParents.Name = "labelParents";
 			this.labelParents.Size = new System.Drawing.Size(268, 28);
 			this.labelParents.TabIndex = 24;
@@ -232,7 +232,7 @@
 			// 
 			// buttonRenameItem
 			// 
-			this.buttonRenameItem.Location = new System.Drawing.Point(201, 26);
+			this.buttonRenameItem.Location = new System.Drawing.Point(201, 18);
 			this.buttonRenameItem.Name = "buttonRenameItem";
 			this.buttonRenameItem.Size = new System.Drawing.Size(70, 25);
 			this.buttonRenameItem.TabIndex = 19;
@@ -243,7 +243,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(6, 32);
+			this.label2.Location = new System.Drawing.Point(6, 24);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(38, 13);
 			this.label2.TabIndex = 12;
@@ -251,9 +251,9 @@
 			// 
 			// textBoxName
 			// 
-			this.textBoxName.Location = new System.Drawing.Point(43, 29);
+			this.textBoxName.Location = new System.Drawing.Point(47, 21);
 			this.textBoxName.Name = "textBoxName";
-			this.textBoxName.Size = new System.Drawing.Size(152, 20);
+			this.textBoxName.Size = new System.Drawing.Size(148, 20);
 			this.textBoxName.TabIndex = 11;
 			// 
 			// treeIconsImageList
@@ -268,31 +268,6 @@
 			this.treeIconsImageList.Images.SetKeyName(5, "BlueBall");
 			this.treeIconsImageList.Images.SetKeyName(6, "WhiteBall");
 			// 
-			// multiSelectTreeviewChannelsGroups
-			// 
-			this.multiSelectTreeviewChannelsGroups.AllowDrop = true;
-			this.multiSelectTreeviewChannelsGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.multiSelectTreeviewChannelsGroups.Cursor = System.Windows.Forms.Cursors.Default;
-			this.multiSelectTreeviewChannelsGroups.CustomDragCursor = null;
-			this.multiSelectTreeviewChannelsGroups.DragDefaultMode = System.Windows.Forms.DragDropEffects.Move;
-			this.multiSelectTreeviewChannelsGroups.DragDestinationNodeBackColor = System.Drawing.SystemColors.Highlight;
-			this.multiSelectTreeviewChannelsGroups.DragDestinationNodeForeColor = System.Drawing.SystemColors.HighlightText;
-			this.multiSelectTreeviewChannelsGroups.DragSourceNodeBackColor = System.Drawing.SystemColors.ControlLight;
-			this.multiSelectTreeviewChannelsGroups.DragSourceNodeForeColor = System.Drawing.SystemColors.ControlText;
-			this.multiSelectTreeviewChannelsGroups.HideSelection = false;
-			this.multiSelectTreeviewChannelsGroups.ImageIndex = 0;
-			this.multiSelectTreeviewChannelsGroups.ImageList = this.treeIconsImageList;
-			this.multiSelectTreeviewChannelsGroups.Location = new System.Drawing.Point(12, 12);
-			this.multiSelectTreeviewChannelsGroups.Name = "multiSelectTreeviewChannelsGroups";
-			this.multiSelectTreeviewChannelsGroups.SelectedImageIndex = 0;
-			this.multiSelectTreeviewChannelsGroups.SelectedNodes = ((System.Collections.Generic.List<System.Windows.Forms.TreeNode>)(resources.GetObject("multiSelectTreeviewChannelsGroups.SelectedNodes")));
-			this.multiSelectTreeviewChannelsGroups.Size = new System.Drawing.Size(300, 669);
-			this.multiSelectTreeviewChannelsGroups.TabIndex = 12;
-			this.multiSelectTreeviewChannelsGroups.UsingCustomDragCursor = false;
-			this.multiSelectTreeviewChannelsGroups.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.multiSelectTreeviewChannelsGroups_AfterSelect);
-			// 
 			// groupBoxOperations
 			// 
 			this.groupBoxOperations.Controls.Add(this.buttonDeleteNode);
@@ -301,7 +276,7 @@
 			this.groupBoxOperations.Controls.Add(this.buttonAddNode);
 			this.groupBoxOperations.Location = new System.Drawing.Point(318, 12);
 			this.groupBoxOperations.Name = "groupBoxOperations";
-			this.groupBoxOperations.Size = new System.Drawing.Size(281, 127);
+			this.groupBoxOperations.Size = new System.Drawing.Size(281, 119);
 			this.groupBoxOperations.TabIndex = 23;
 			this.groupBoxOperations.TabStop = false;
 			this.groupBoxOperations.Text = "Operations";
@@ -359,7 +334,7 @@
 			this.groupBoxAddPatch.Controls.Add(this.label1);
 			this.groupBoxAddPatch.Controls.Add(this.numericUpDownPatchOutputSelect);
 			this.groupBoxAddPatch.Controls.Add(this.comboBoxPatchControllerSelect);
-			this.groupBoxAddPatch.Location = new System.Drawing.Point(6, 284);
+			this.groupBoxAddPatch.Location = new System.Drawing.Point(6, 253);
 			this.groupBoxAddPatch.Name = "groupBoxAddPatch";
 			this.groupBoxAddPatch.Size = new System.Drawing.Size(269, 87);
 			this.groupBoxAddPatch.TabIndex = 32;
@@ -368,7 +343,7 @@
 			// 
 			// buttonDeleteNode
 			// 
-			this.buttonDeleteNode.Location = new System.Drawing.Point(146, 24);
+			this.buttonDeleteNode.Location = new System.Drawing.Point(146, 21);
 			this.buttonDeleteNode.Name = "buttonDeleteNode";
 			this.buttonDeleteNode.Size = new System.Drawing.Size(120, 25);
 			this.buttonDeleteNode.TabIndex = 26;
@@ -377,7 +352,7 @@
 			// 
 			// buttonBulkRename
 			// 
-			this.buttonBulkRename.Location = new System.Drawing.Point(16, 86);
+			this.buttonBulkRename.Location = new System.Drawing.Point(16, 83);
 			this.buttonBulkRename.Name = "buttonBulkRename";
 			this.buttonBulkRename.Size = new System.Drawing.Size(250, 25);
 			this.buttonBulkRename.TabIndex = 25;
@@ -386,7 +361,7 @@
 			// 
 			// buttonCreateGroup
 			// 
-			this.buttonCreateGroup.Location = new System.Drawing.Point(16, 55);
+			this.buttonCreateGroup.Location = new System.Drawing.Point(16, 52);
 			this.buttonCreateGroup.Name = "buttonCreateGroup";
 			this.buttonCreateGroup.Size = new System.Drawing.Size(250, 25);
 			this.buttonCreateGroup.TabIndex = 24;
@@ -395,7 +370,7 @@
 			// 
 			// buttonAddNode
 			// 
-			this.buttonAddNode.Location = new System.Drawing.Point(16, 24);
+			this.buttonAddNode.Location = new System.Drawing.Point(16, 21);
 			this.buttonAddNode.Name = "buttonAddNode";
 			this.buttonAddNode.Size = new System.Drawing.Size(120, 25);
 			this.buttonAddNode.TabIndex = 23;
@@ -405,7 +380,7 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(12, 688);
+			this.label4.Location = new System.Drawing.Point(12, 643);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(244, 13);
 			this.label4.TabIndex = 24;
@@ -414,17 +389,42 @@
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(12, 705);
+			this.label5.Location = new System.Drawing.Point(12, 660);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(299, 13);
 			this.label5.TabIndex = 25;
 			this.label5.Text = "Hold down CTRL while dragging to copy nodes to destination.";
 			// 
+			// multiSelectTreeviewChannelsGroups
+			// 
+			this.multiSelectTreeviewChannelsGroups.AllowDrop = true;
+			this.multiSelectTreeviewChannelsGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.multiSelectTreeviewChannelsGroups.Cursor = System.Windows.Forms.Cursors.Default;
+			this.multiSelectTreeviewChannelsGroups.CustomDragCursor = null;
+			this.multiSelectTreeviewChannelsGroups.DragDefaultMode = System.Windows.Forms.DragDropEffects.Move;
+			this.multiSelectTreeviewChannelsGroups.DragDestinationNodeBackColor = System.Drawing.SystemColors.Highlight;
+			this.multiSelectTreeviewChannelsGroups.DragDestinationNodeForeColor = System.Drawing.SystemColors.HighlightText;
+			this.multiSelectTreeviewChannelsGroups.DragSourceNodeBackColor = System.Drawing.SystemColors.ControlLight;
+			this.multiSelectTreeviewChannelsGroups.DragSourceNodeForeColor = System.Drawing.SystemColors.ControlText;
+			this.multiSelectTreeviewChannelsGroups.HideSelection = false;
+			this.multiSelectTreeviewChannelsGroups.ImageIndex = 0;
+			this.multiSelectTreeviewChannelsGroups.ImageList = this.treeIconsImageList;
+			this.multiSelectTreeviewChannelsGroups.Location = new System.Drawing.Point(12, 12);
+			this.multiSelectTreeviewChannelsGroups.Name = "multiSelectTreeviewChannelsGroups";
+			this.multiSelectTreeviewChannelsGroups.SelectedImageIndex = 0;
+			this.multiSelectTreeviewChannelsGroups.SelectedNodes = ((System.Collections.Generic.List<System.Windows.Forms.TreeNode>)(resources.GetObject("multiSelectTreeviewChannelsGroups.SelectedNodes")));
+			this.multiSelectTreeviewChannelsGroups.Size = new System.Drawing.Size(300, 624);
+			this.multiSelectTreeviewChannelsGroups.TabIndex = 12;
+			this.multiSelectTreeviewChannelsGroups.UsingCustomDragCursor = false;
+			this.multiSelectTreeviewChannelsGroups.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.multiSelectTreeviewChannelsGroups_AfterSelect);
+			// 
 			// ConfigChannels
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(611, 730);
+			this.ClientSize = new System.Drawing.Size(611, 682);
 			this.Controls.Add(this.label5);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.groupBoxOperations);

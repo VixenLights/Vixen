@@ -37,6 +37,11 @@ namespace VixenApplication
 			}
 
 			listViewControllers.EndUpdate();
+
+			foreach (ListViewItem item in listViewControllers.Items) {
+				if (item.Tag == _displayedController)
+					item.Selected = true;
+			}
 		}
 
 		private void _PopulateFormWithController(OutputController oc)
@@ -45,24 +50,14 @@ namespace VixenApplication
 
 			if (oc == null) {
 				textBoxName.Text = "";
-				textBoxName.Enabled = false;
 				numericUpDownOutputCount.Value = 0;
-				numericUpDownOutputCount.Enabled = false;
-				buttonConfigureController.Enabled = false;
-				buttonConfigureOutputs.Enabled = false;
-				buttonGenerateChannels.Enabled = false;
-				buttonUpdate.Enabled = false;
 				buttonDeleteController.Enabled = false;
+				groupBoxSelectedController.Enabled = false;
 			} else {
 				textBoxName.Text = oc.Name;
 				numericUpDownOutputCount.Value = oc.OutputCount;
-				textBoxName.Enabled = true;
-				numericUpDownOutputCount.Enabled = true;
-				buttonConfigureController.Enabled = true;
-				buttonConfigureOutputs.Enabled = true;
-				buttonGenerateChannels.Enabled = true;
-				buttonUpdate.Enabled = true;
 				buttonDeleteController.Enabled = true;
+				groupBoxSelectedController.Enabled = true;
 			}
 		}
 
@@ -84,6 +79,10 @@ namespace VixenApplication
 				string name = "New " + moduleDescriptor.TypeName + " Controller";
 				OutputController oc = new OutputController(name, 0, (Guid)addForm.selectedItem);
 				VixenSystem.Controllers.AddController(oc);
+
+				// select the new controller, and then repopulate the list -- it will make sure the currently
+				// displayed controller is selected.
+				_PopulateFormWithController(oc);
 				_PopulateControllerList();
 			}
 		}
