@@ -36,6 +36,12 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigChannels));
 			this.buttonOk = new System.Windows.Forms.Button();
 			this.groupBoxSelectedNode = new System.Windows.Forms.GroupBox();
+			this.groupBoxAddPatch = new System.Windows.Forms.GroupBox();
+			this.buttonAddPatch = new System.Windows.Forms.Button();
+			this.label3 = new System.Windows.Forms.Label();
+			this.label1 = new System.Windows.Forms.Label();
+			this.numericUpDownPatchOutputSelect = new System.Windows.Forms.NumericUpDown();
+			this.comboBoxPatchControllerSelect = new System.Windows.Forms.ComboBox();
 			this.groupBoxPatches = new System.Windows.Forms.GroupBox();
 			this.checkBoxDisableOutputs = new System.Windows.Forms.CheckBox();
 			this.buttonRemovePatch = new System.Windows.Forms.Button();
@@ -53,12 +59,6 @@
 			this.textBoxName = new System.Windows.Forms.TextBox();
 			this.treeIconsImageList = new System.Windows.Forms.ImageList(this.components);
 			this.groupBoxOperations = new System.Windows.Forms.GroupBox();
-			this.comboBoxPatchControllerSelect = new System.Windows.Forms.ComboBox();
-			this.numericUpDownPatchOutputSelect = new System.Windows.Forms.NumericUpDown();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.buttonAddPatch = new System.Windows.Forms.Button();
-			this.groupBoxAddPatch = new System.Windows.Forms.GroupBox();
 			this.buttonDeleteNode = new System.Windows.Forms.Button();
 			this.buttonBulkRename = new System.Windows.Forms.Button();
 			this.buttonCreateGroup = new System.Windows.Forms.Button();
@@ -67,11 +67,11 @@
 			this.label5 = new System.Windows.Forms.Label();
 			this.multiSelectTreeviewChannelsGroups = new CommonElements.MultiSelectTreeview();
 			this.groupBoxSelectedNode.SuspendLayout();
+			this.groupBoxAddPatch.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPatchOutputSelect)).BeginInit();
 			this.groupBoxPatches.SuspendLayout();
 			this.groupBoxProperties.SuspendLayout();
 			this.groupBoxOperations.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPatchOutputSelect)).BeginInit();
-			this.groupBoxAddPatch.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// buttonOk
@@ -101,6 +101,66 @@
 			this.groupBoxSelectedNode.TabIndex = 11;
 			this.groupBoxSelectedNode.TabStop = false;
 			this.groupBoxSelectedNode.Text = "Selected Node";
+			// 
+			// groupBoxAddPatch
+			// 
+			this.groupBoxAddPatch.Controls.Add(this.buttonAddPatch);
+			this.groupBoxAddPatch.Controls.Add(this.label3);
+			this.groupBoxAddPatch.Controls.Add(this.label1);
+			this.groupBoxAddPatch.Controls.Add(this.numericUpDownPatchOutputSelect);
+			this.groupBoxAddPatch.Controls.Add(this.comboBoxPatchControllerSelect);
+			this.groupBoxAddPatch.Location = new System.Drawing.Point(6, 253);
+			this.groupBoxAddPatch.Name = "groupBoxAddPatch";
+			this.groupBoxAddPatch.Size = new System.Drawing.Size(269, 87);
+			this.groupBoxAddPatch.TabIndex = 32;
+			this.groupBoxAddPatch.TabStop = false;
+			this.groupBoxAddPatch.Text = "Add Patch";
+			// 
+			// buttonAddPatch
+			// 
+			this.buttonAddPatch.Location = new System.Drawing.Point(150, 49);
+			this.buttonAddPatch.Name = "buttonAddPatch";
+			this.buttonAddPatch.Size = new System.Drawing.Size(80, 25);
+			this.buttonAddPatch.TabIndex = 26;
+			this.buttonAddPatch.Text = "Add Patch";
+			this.buttonAddPatch.UseVisualStyleBackColor = true;
+			this.buttonAddPatch.Click += new System.EventHandler(this.buttonAddPatch_Click);
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(19, 55);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(42, 13);
+			this.label3.TabIndex = 25;
+			this.label3.Text = "Output:";
+			this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(8, 22);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(54, 13);
+			this.label1.TabIndex = 24;
+			this.label1.Text = "Controller:";
+			// 
+			// numericUpDownPatchOutputSelect
+			// 
+			this.numericUpDownPatchOutputSelect.Location = new System.Drawing.Point(66, 52);
+			this.numericUpDownPatchOutputSelect.Name = "numericUpDownPatchOutputSelect";
+			this.numericUpDownPatchOutputSelect.Size = new System.Drawing.Size(55, 20);
+			this.numericUpDownPatchOutputSelect.TabIndex = 23;
+			// 
+			// comboBoxPatchControllerSelect
+			// 
+			this.comboBoxPatchControllerSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxPatchControllerSelect.FormattingEnabled = true;
+			this.comboBoxPatchControllerSelect.Location = new System.Drawing.Point(66, 19);
+			this.comboBoxPatchControllerSelect.Name = "comboBoxPatchControllerSelect";
+			this.comboBoxPatchControllerSelect.Size = new System.Drawing.Size(184, 21);
+			this.comboBoxPatchControllerSelect.TabIndex = 22;
+			this.comboBoxPatchControllerSelect.SelectedIndexChanged += new System.EventHandler(this.comboBoxPatchControllerSelect_SelectedIndexChanged);
 			// 
 			// groupBoxPatches
 			// 
@@ -281,66 +341,6 @@
 			this.groupBoxOperations.TabStop = false;
 			this.groupBoxOperations.Text = "Operations";
 			// 
-			// comboBoxPatchControllerSelect
-			// 
-			this.comboBoxPatchControllerSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxPatchControllerSelect.FormattingEnabled = true;
-			this.comboBoxPatchControllerSelect.Location = new System.Drawing.Point(66, 19);
-			this.comboBoxPatchControllerSelect.Name = "comboBoxPatchControllerSelect";
-			this.comboBoxPatchControllerSelect.Size = new System.Drawing.Size(184, 21);
-			this.comboBoxPatchControllerSelect.TabIndex = 22;
-			this.comboBoxPatchControllerSelect.SelectedIndexChanged += new System.EventHandler(this.comboBoxPatchControllerSelect_SelectedIndexChanged);
-			// 
-			// numericUpDownPatchOutputSelect
-			// 
-			this.numericUpDownPatchOutputSelect.Location = new System.Drawing.Point(66, 52);
-			this.numericUpDownPatchOutputSelect.Name = "numericUpDownPatchOutputSelect";
-			this.numericUpDownPatchOutputSelect.Size = new System.Drawing.Size(55, 20);
-			this.numericUpDownPatchOutputSelect.TabIndex = 23;
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(8, 22);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(54, 13);
-			this.label1.TabIndex = 24;
-			this.label1.Text = "Controller:";
-			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(19, 55);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(42, 13);
-			this.label3.TabIndex = 25;
-			this.label3.Text = "Output:";
-			this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// buttonAddPatch
-			// 
-			this.buttonAddPatch.Location = new System.Drawing.Point(150, 49);
-			this.buttonAddPatch.Name = "buttonAddPatch";
-			this.buttonAddPatch.Size = new System.Drawing.Size(80, 25);
-			this.buttonAddPatch.TabIndex = 26;
-			this.buttonAddPatch.Text = "Add Patch";
-			this.buttonAddPatch.UseVisualStyleBackColor = true;
-			this.buttonAddPatch.Click += new System.EventHandler(this.buttonAddPatch_Click);
-			// 
-			// groupBoxAddPatch
-			// 
-			this.groupBoxAddPatch.Controls.Add(this.buttonAddPatch);
-			this.groupBoxAddPatch.Controls.Add(this.label3);
-			this.groupBoxAddPatch.Controls.Add(this.label1);
-			this.groupBoxAddPatch.Controls.Add(this.numericUpDownPatchOutputSelect);
-			this.groupBoxAddPatch.Controls.Add(this.comboBoxPatchControllerSelect);
-			this.groupBoxAddPatch.Location = new System.Drawing.Point(6, 253);
-			this.groupBoxAddPatch.Name = "groupBoxAddPatch";
-			this.groupBoxAddPatch.Size = new System.Drawing.Size(269, 87);
-			this.groupBoxAddPatch.TabIndex = 32;
-			this.groupBoxAddPatch.TabStop = false;
-			this.groupBoxAddPatch.Text = "Add Patch";
-			// 
 			// buttonDeleteNode
 			// 
 			this.buttonDeleteNode.Location = new System.Drawing.Point(146, 21);
@@ -349,6 +349,7 @@
 			this.buttonDeleteNode.TabIndex = 26;
 			this.buttonDeleteNode.Text = "Delete Node";
 			this.buttonDeleteNode.UseVisualStyleBackColor = true;
+			this.buttonDeleteNode.Click += new System.EventHandler(this.buttonDeleteNode_Click);
 			// 
 			// buttonBulkRename
 			// 
@@ -358,6 +359,7 @@
 			this.buttonBulkRename.TabIndex = 25;
 			this.buttonBulkRename.Text = "Bulk Rename Selected Nodes";
 			this.buttonBulkRename.UseVisualStyleBackColor = true;
+			this.buttonBulkRename.Click += new System.EventHandler(this.buttonBulkRename_Click);
 			// 
 			// buttonCreateGroup
 			// 
@@ -367,6 +369,7 @@
 			this.buttonCreateGroup.TabIndex = 24;
 			this.buttonCreateGroup.Text = "Create Group from Selected Nodes";
 			this.buttonCreateGroup.UseVisualStyleBackColor = true;
+			this.buttonCreateGroup.Click += new System.EventHandler(this.buttonCreateGroup_Click);
 			// 
 			// buttonAddNode
 			// 
@@ -376,6 +379,7 @@
 			this.buttonAddNode.TabIndex = 23;
 			this.buttonAddNode.Text = "Add Node";
 			this.buttonAddNode.UseVisualStyleBackColor = true;
+			this.buttonAddNode.Click += new System.EventHandler(this.buttonAddNode_Click);
 			// 
 			// label4
 			// 
@@ -431,19 +435,20 @@
 			this.Controls.Add(this.multiSelectTreeviewChannelsGroups);
 			this.Controls.Add(this.groupBoxSelectedNode);
 			this.Controls.Add(this.buttonOk);
+			this.DoubleBuffered = true;
 			this.Name = "ConfigChannels";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Channel & Group Configuration";
 			this.Load += new System.EventHandler(this.ConfigChannels_Load);
 			this.groupBoxSelectedNode.ResumeLayout(false);
 			this.groupBoxSelectedNode.PerformLayout();
+			this.groupBoxAddPatch.ResumeLayout(false);
+			this.groupBoxAddPatch.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPatchOutputSelect)).EndInit();
 			this.groupBoxPatches.ResumeLayout(false);
 			this.groupBoxPatches.PerformLayout();
 			this.groupBoxProperties.ResumeLayout(false);
 			this.groupBoxOperations.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPatchOutputSelect)).EndInit();
-			this.groupBoxAddPatch.ResumeLayout(false);
-			this.groupBoxAddPatch.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

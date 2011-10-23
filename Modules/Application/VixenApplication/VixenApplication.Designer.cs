@@ -219,6 +219,7 @@
 			this.ClientSize = new System.Drawing.Size(484, 518);
 			this.Controls.Add(this.tabControlMain);
 			this.Controls.Add(this.label1);
+			this.DoubleBuffered = true;
 			this.Name = "VixenApplication";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Vixen";

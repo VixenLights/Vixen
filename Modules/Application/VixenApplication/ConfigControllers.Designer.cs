@@ -253,6 +253,7 @@
 			this.Controls.Add(this.buttonDeleteController);
 			this.Controls.Add(this.buttonAddController);
 			this.Controls.Add(this.listViewControllers);
+			this.DoubleBuffered = true;
 			this.Name = "ConfigControllers";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Controllers Configuration";

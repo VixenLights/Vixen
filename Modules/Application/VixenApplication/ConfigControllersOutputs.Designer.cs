@@ -191,6 +191,7 @@
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.groupBox);
 			this.Controls.Add(this.listViewOutputs);
+			this.DoubleBuffered = true;
 			this.Name = "ConfigControllersOutputs";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Configure Controller Outputs";

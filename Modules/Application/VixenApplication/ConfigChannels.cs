@@ -34,8 +34,6 @@ namespace VixenApplication
 
 			multiSelectTreeviewChannelsGroups.DragFinishing += multiSelectTreeviewChannelsGroupsDragFinishingHandler;
 			multiSelectTreeviewChannelsGroups.DragOverVerify += multiSelectTreeviewChannelsGroupsDragVerifyHandler;
-
-			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 		}
 
 		private void ConfigChannels_Load(object sender, EventArgs e)
@@ -61,7 +59,7 @@ namespace VixenApplication
 			multiSelectTreeviewChannelsGroups.BeginUpdate();
 			multiSelectTreeviewChannelsGroups.Nodes.Clear();
 
-			foreach(ChannelNode channel in VixenSystem.Nodes.RootNodes) {
+			foreach(ChannelNode channel in VixenSystem.Nodes.GetRootNodes()) {
 				AddNodeToTree(multiSelectTreeviewChannelsGroups.Nodes, channel);
 			}
 
@@ -648,7 +646,7 @@ namespace VixenApplication
 			} else {
 				if (e.TargetNode.Parent == null) {
 					invalidNodesForTarget = VixenSystem.Nodes.InvalidRootNodes;
-					permittedNodesForTarget = VixenSystem.Nodes.RootNodes;
+					permittedNodesForTarget = VixenSystem.Nodes.GetRootNodes();
 				} else {
 					invalidNodesForTarget = (e.TargetNode.Parent.Tag as ChannelNode).InvalidChildren();
 					permittedNodesForTarget = (e.TargetNode.Parent.Tag as ChannelNode).Children;
@@ -687,7 +685,7 @@ namespace VixenApplication
 		private int GetNodeParentGroupCount(ChannelNode node)
 		{
 			int count = node.Parents.Count();
-			if(VixenSystem.Nodes.RootNodes.Contains(node))
+			if(VixenSystem.Nodes.GetRootNodes().Contains(node))
 				count--;
 			return count;
 		}
