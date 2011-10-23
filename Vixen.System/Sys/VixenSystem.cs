@@ -100,7 +100,7 @@ namespace Vixen.Sys {
 					// to the SystemConfig, so they're there for writing when we save
 					SystemConfig.Controllers = Controllers;
 					SystemConfig.Channels = Channels;
-					SystemConfig.Nodes = Nodes;
+					SystemConfig.Nodes = Nodes.GetRootNodes();
 					SystemConfig.Save();
 				}
 				_state = RunState.Stopped;

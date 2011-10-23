@@ -137,7 +137,7 @@ namespace TestClient
 			treeViewSystemChannels.Nodes.Clear();
 			treeViewNodes.Nodes.Clear();
 			TreeNode rootNode = treeViewNodes.Nodes.Add("Root");
-			foreach(ChannelNode node in VixenSystem.Nodes.RootNodes) {
+			foreach(ChannelNode node in VixenSystem.Nodes.GetRootNodes()) {
 				_AddNode(treeViewSystemChannels.Nodes, node);
 				_AddNode(rootNode.Nodes, node);
 			}

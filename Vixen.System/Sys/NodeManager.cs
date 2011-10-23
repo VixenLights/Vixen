@@ -141,10 +141,6 @@ namespace Vixen.Sys {
 			get { return _rootNode.InvalidChildren(); }
 		}
 
-		public IEnumerable<ChannelNode> RootNodes {
-			get { return _rootNode.Children; }
-		}
-
 		protected virtual void OnNodesChanged() {
 			if(NodesChanged != null) {
 				NodesChanged(this, EventArgs.Empty);
@@ -163,9 +159,18 @@ namespace Vixen.Sys {
 			return _rootNode.Children.SelectMany(x => x.GetNonLeafEnumerator());
 		}
 
-		public IEnumerator<ChannelNode> GetEnumerator() {
+		public IEnumerable<ChannelNode> GetRootNodes() {
+			return _rootNode.Children;
+		}
+
+		public IEnumerable<ChannelNode> GetAllNodes() {
+			return _rootNode.Children.SelectMany(x => x.GetNodeEnumerator());
+		}
+
+		public IEnumerator<ChannelNode> GetEnumerator()
+		{
 			// Don't want to return the root node.
-			return _rootNode.Children.SelectMany(x => x.GetNodeEnumerator()).GetEnumerator();
+			return GetAllNodes().GetEnumerator();
 		}
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {

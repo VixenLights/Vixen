@@ -46,7 +46,7 @@ namespace VixenTestbed {
 			treeViewNodes.BeginUpdate();
 			treeViewNodes.Nodes.Clear();
 			TreeNode rootNode = treeViewNodes.Nodes.Add("Root");
-			foreach(ChannelNode node in VixenSystem.Nodes.RootNodes) {
+			foreach(ChannelNode node in VixenSystem.Nodes.GetRootNodes()) {
 				_AddNode(rootNode.Nodes, node);
 			}
 			treeViewNodes.ExpandAll();

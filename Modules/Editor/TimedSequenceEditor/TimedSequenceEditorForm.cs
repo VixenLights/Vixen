@@ -156,7 +156,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (clearCurrentRows)
 				timelineControl.ClearAllRows();
 
-			foreach(ChannelNode node in VixenSystem.Nodes.RootNodes) {
+			foreach(ChannelNode node in VixenSystem.Nodes.GetRootNodes()) {
 				AddNodeAsRow(node, null);
 			}
 		}
