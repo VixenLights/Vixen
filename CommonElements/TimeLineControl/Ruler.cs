@@ -25,7 +25,6 @@ namespace CommonElements.Timeline
 		private Font m_font = null;
 		private Brush m_brush = null;
 
-		private int m_digits;
 		private TimeSpan m_MinorTick;
 		private int m_minorTicksPerMajor;
 
@@ -38,13 +37,8 @@ namespace CommonElements.Timeline
 		}
 
 
-		//Stopwatch betweencalls = new Stopwatch();
         protected override void OnPaint(PaintEventArgs e)
         {
-			//roughly 3-4 ms to draw
-			//Debug.WriteLine("{0} ms since last Ruler.OnPaint()", betweencalls.ElapsedMilliseconds);
-
-
 			try
 			{
 				// Translate the graphics to work the same way the timeline grid does
@@ -54,13 +48,15 @@ namespace CommonElements.Timeline
 				drawTicks(e.Graphics, MajorTick, 2, 0.5);
 				drawTicks(e.Graphics, MinorTick, 1, 0.25);
 				drawTimes(e.Graphics);
+
+				using (Pen p = new Pen(Color.Black, 2)) {
+					e.Graphics.DrawLine(p, 0, Height - 1, timeToPixels(TotalTime), Height - 1);
+				}
 			}
 			catch (Exception ex)
 			{
 				MessageBox.Show("Exception in Timeline.Ruler.OnPaint():\n\n\t" + ex.Message + "\n\nBacktrace:\n\n\t" + ex.StackTrace);
 			}
-
-			//betweencalls.Restart();
         }
 
 		/*
@@ -137,28 +133,21 @@ namespace CommonElements.Timeline
 		protected override void  TimePerPixelChanged(object sender, EventArgs e)
 		{
 			recalculate();
-			base.TimePerPixelChanged(sender, e);
+			Invalidate();
 		}
 
-		//Stopwatch lastinvalidate = new Stopwatch();
 		protected override void VisibleTimeStartChanged(object sender, EventArgs e)
 		{
-			//Debug.WriteLine("{0} ms since last Invalidate().", lastinvalidate.ElapsedMilliseconds);
-
-			Invalidate(); 
-
-			//lastinvalidate.Restart();
+			// not ideal, but looks a *shitload* better.
+			Refresh(); 
 		}
-
-
-
 
 
 		// Adapted from from Audacity, Ruler.cpp
 		private void recalculate()
 		{
 			// Calculate the correct font size based on height
-			int desiredPixelHeight = (this.Size.Height / 2) - 4;
+			int desiredPixelHeight = (this.Size.Height / 3);
 
 			if (m_font != null)
 				m_font.Dispose();
@@ -170,25 +159,36 @@ namespace CommonElements.Timeline
 			m_brush = new SolidBrush(Color.White);
 
 
-			// As a heuristic, we want at least 16 pixels between each minor tick
-			var t = pixelsToTime(16);
+			// As a heuristic, we want at least 10 pixels between each minor tick
+			var t = pixelsToTime(10);
 
-			if (t.TotalSeconds > 0.5)
+			if (t.TotalSeconds > 0.05)
 			{
-				if (t.TotalSeconds < 1)
+				if (t.TotalSeconds < 0.1)
+				{
+					m_MinorTick = TimeSpan.FromMilliseconds(100);
+					m_minorTicksPerMajor = 5;
+				} else if (t.TotalSeconds < 0.25)
+				{
+					m_MinorTick = TimeSpan.FromMilliseconds(250);
+					m_minorTicksPerMajor = 4;
+				} else if (t.TotalSeconds < 0.5)
+				{
+					m_MinorTick = TimeSpan.FromMilliseconds(500);
+					m_minorTicksPerMajor = 4;
+				} else if (t.TotalSeconds < 1)
 				{
 					m_MinorTick = TimeSpan.FromSeconds(1);
 					m_minorTicksPerMajor = 5;
-				}
-				else if (t.TotalSeconds < 5)
+				} else if (t.TotalSeconds < 5)
 				{
 					m_MinorTick = TimeSpan.FromSeconds(5);
-					m_minorTicksPerMajor = 3; //major = 15.0;
+					m_minorTicksPerMajor = 6; //major = 30.0;
 				}
 				else if (t.TotalSeconds < 10)
 				{
 					m_MinorTick = TimeSpan.FromSeconds(10);
-					m_minorTicksPerMajor = 3; //major = 30.0;
+					m_minorTicksPerMajor = 6; //major = 60.0;
 				}
 				else if (t.TotalSeconds < 15)
 				{
@@ -198,10 +198,8 @@ namespace CommonElements.Timeline
 				else if (t.TotalSeconds < 30)
 				{
 					m_MinorTick = TimeSpan.FromSeconds(30);
-					m_minorTicksPerMajor = 2; //major = 60.0;
+					m_minorTicksPerMajor = 4; //major = 120.0;
 				}
-
-
 				else if (t.TotalMinutes < 1)
 				{
 					m_MinorTick = TimeSpan.FromMinutes(1);
@@ -227,8 +225,6 @@ namespace CommonElements.Timeline
 					m_MinorTick = TimeSpan.FromMinutes(30);
 					m_minorTicksPerMajor = 2;	//major = 3600.0;
 				}
-				
-				
 				else if (t.TotalHours < 1)
 				{
 					m_MinorTick = TimeSpan.FromHours(1);
@@ -239,42 +235,44 @@ namespace CommonElements.Timeline
 					m_MinorTick = TimeSpan.FromHours(6);
 					m_minorTicksPerMajor = 4;	//major = 24 * 3600.0;
 				}
-
 				else if (t.TotalDays < 1)
 				{
 					m_MinorTick = TimeSpan.FromDays(1);
 					m_minorTicksPerMajor = 7;	//major = 7 * 24 * 3600.0;
 				}
-
 				else
 				{
 					m_MinorTick = TimeSpan.FromDays(7);
 					m_minorTicksPerMajor = 1;	//major = 24.0 * 7.0 * 3600.0;
 				}
-
 			}
 			else
 			{
 				// Fractional seconds
 				double d = 0.000001;
-				m_digits = 6;
-				for (; ; )
+				for (;;)
 				{
 					if (t.TotalSeconds < d)
 					{
-						m_MinorTick = TimeSpan.FromSeconds(d);
+						m_MinorTick = TimeSpan.FromTicks((long)(TimeSpan.TicksPerMillisecond * 1000 * d));
 						m_minorTicksPerMajor = 5; //major = d * 5.0;
 						break;
 					}
 					d *= 5.0;
 					if (t.TotalSeconds < d)
 					{
-						m_MinorTick = TimeSpan.FromSeconds(d);
-						m_minorTicksPerMajor = 2; //major = d * 2.0;
+						m_MinorTick = TimeSpan.FromTicks((long)(TimeSpan.TicksPerMillisecond * 1000 * d));
+						m_minorTicksPerMajor = 5; //major = d * 5.0;
 						break;
 					}
-					d *= 2.0;
-					m_digits--;
+					d *= 5.0;
+					if (t.TotalSeconds < d)
+					{
+						m_MinorTick = TimeSpan.FromTicks((long)(TimeSpan.TicksPerMillisecond * 1000 * d));
+						m_minorTicksPerMajor = 4; //major = d * 4.0;
+						break;
+					}
+					d *= 4.0;
 				}
 			}
 
@@ -285,75 +283,86 @@ namespace CommonElements.Timeline
 		{
 			// Adapted from from Audacity, Ruler.cpp
 
-			double d = t.TotalSeconds;
 			string timeFormat = string.Empty;
 
 			if (m_MinorTick >= TimeSpan.FromHours(1))
 			{
 				// Round time to nearest hour
 				t = TimeSpan.FromHours((int)t.TotalHours);
-				timeFormat = @"hh\:mm\:ss";
+				timeFormat = @"h\:mm";
 			}
 			else if (m_MinorTick >= TimeSpan.FromMinutes(1))
 			{
 				// Round time to nearest minute
 				t = TimeSpan.FromMinutes((int)t.TotalMinutes);
 
-				if (t > TimeSpan.FromHours(1))
-					timeFormat = @"hh\:mm\:ss";
+				if (t >= TimeSpan.FromHours(1))
+					timeFormat = @"h\:mm\:ss";
 				else
-					timeFormat = @"mm\:ss";
+					timeFormat = @"m\:ss";
 			}
 			else if (m_MinorTick >= TimeSpan.FromSeconds(1))
 			{
 				// Round time to nearest second
 				t = TimeSpan.FromSeconds((int)t.TotalSeconds);
 
-				if (t > TimeSpan.FromHours(1))
-					timeFormat = @"hh\:mm\:ss";
-				else if (t > TimeSpan.FromMinutes(1))
-					timeFormat = @"mm\:ss";
+				if (t >= TimeSpan.FromHours(1))
+					timeFormat = @"h\:mm\:ss";
 				else
-					timeFormat = @"\:ss";
+					timeFormat = @"m\:ss";
 			}
-			else	// m_MinorTickNew < 1 sec
+			else if (m_MinorTick >= TimeSpan.FromMilliseconds(100))
 			{
-				if (t > TimeSpan.FromHours(1))
-					timeFormat = @"hh\:mm\:ss\.";
-				else if (t > TimeSpan.FromMinutes(1))
-					timeFormat = @"mm\:ss\.";
+				if (t >= TimeSpan.FromHours(1))
+					timeFormat = @"h\:mm\:ss\.f";
+				else if (t >= TimeSpan.FromMinutes(1))
+					timeFormat = @"m\:ss\.f";
 				else
-					timeFormat = @"\:ss\.";
-
-				StringBuilder frac = new StringBuilder();
-				for (int i=0; i < m_digits; i++)
-					frac.Append('f');
-
-				timeFormat += frac.ToString();
+					timeFormat = @"s\.f";
+			}
+			else if (m_MinorTick >= TimeSpan.FromMilliseconds(10))
+			{
+				if (t >= TimeSpan.FromHours(1))
+					timeFormat = @"h\:mm\:ss\.ff";
+				else if (t >= TimeSpan.FromMinutes(1))
+					timeFormat = @"m\:ss\.ff";
+				else
+					timeFormat = @"s\.ff";
+			}
+			else if (m_MinorTick >= TimeSpan.FromMilliseconds(1))
+			{
+				if (t >= TimeSpan.FromHours(1))
+					timeFormat = @"h\:mm\:ss\.fff";
+				else if (t >= TimeSpan.FromMinutes(1))
+					timeFormat = @"m\:ss\.fff";
+				else
+					timeFormat = @"s\.fff";
+			}
+			else
+			{
+				if (t >= TimeSpan.FromHours(1))
+					timeFormat = @"h\:mm\:ss\.ffffff";
+				else if (t >= TimeSpan.FromMinutes(1))
+					timeFormat = @"m\:ss\.ffffff";
+				else
+					timeFormat = @"s\.ffffff";
 			}
 
-			//Debug.WriteLine("MinorTick: {0}    timeFormat: {1}", m_MinorTick, timeFormat);
 			return t.ToString(timeFormat);
 		}
 
 
 		private void drawTimes(Graphics graphics)
 		{
-			//Font f = new Font("Arial", 8);
-			//SolidBrush b = new SolidBrush(Color.White);
-			String timeFormat = @"mm\:ss\.fff";
 			SizeF stringSize;
 			int lastPixel = 0;
 
 			// calculate the width of a single time, and figure out how regularly we will be able
 			// to display times without overlapping. Then we can make sure we only use those intervals
 			// to draw strings.
-			// TODO: format strings differently based on the total time: at the moment, it's always
-			// in the format of mm:ss.xxx.
-			stringSize = graphics.MeasureString(TimeSpan.FromSeconds(0).ToString(timeFormat), m_font);
+			stringSize = graphics.MeasureString(labelString(VisibleTimeEnd), m_font);
 			int timeDisplayInterval = (int)((stringSize.Width + minPxBetweenTimeLabels) / timeToPixels(MajorTick)) + 1;
 			TimeSpan drawnInterval = TimeSpan.FromTicks(MajorTick.Ticks * timeDisplayInterval);
-
 
 			// get the time of the first tick that is: visible, on a major tick interval, and a multiple of the number of interval ticks
 			TimeSpan firstMajor = TimeSpan.FromTicks(VisibleTimeStart.Ticks - (VisibleTimeStart.Ticks % drawnInterval.Ticks) + drawnInterval.Ticks);
@@ -378,8 +387,6 @@ namespace CommonElements.Timeline
 
 
 		#region Mouse Events
-
-
 
 		protected override void OnMouseEnter(EventArgs e)
 		{

@@ -23,6 +23,8 @@ namespace CommonElements.Timeline
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.ResizeRedraw, true);
+			Row.RowToggled += RowLabelChangedHandler;
+			Row.RowHeightChanged += RowLabelChangedHandler;
 		}
 
 		#region Properties
@@ -37,8 +39,8 @@ namespace CommonElements.Timeline
 				if (value < 0)
 					value = 0;
 				m_verticalOffset = value;
-				PerformLayout();
-				Invalidate(true);
+				DoLayout();
+				Invalidate();
 			}
 		}
 
@@ -64,6 +66,24 @@ namespace CommonElements.Timeline
 			Invalidate();
 		}
 
+		protected void RowLabelChangedHandler(object sender, EventArgs e)
+		{
+			DoLayout();
+		}
+
+		protected override void OnLayout(LayoutEventArgs e)
+		{
+			// do nothing on an actual Layout; we'll do the layout
+			// manually when a row is toggled, (ie. only once)
+		}
+
+		protected override void OnVisibleChanged(EventArgs e)
+		{
+			base.OnVisibleChanged(e);
+			if (Visible)
+				DoLayout();
+		}
+
 		#endregion
 
 
@@ -74,6 +94,7 @@ namespace CommonElements.Timeline
 			RowLabels.Add(trl);
 			Controls.Add(trl);
 			trl.VisibleChanged += LabelVisibleChangedHandler;
+			DoLayout();
 		}
 
 		public void RemoveRowLabel(RowLabel trl)
@@ -81,6 +102,7 @@ namespace CommonElements.Timeline
 			RowLabels.Remove(trl);
 			Controls.Remove(trl);
 			trl.VisibleChanged -= LabelVisibleChangedHandler;
+			DoLayout();
 		}
 
 		#endregion
@@ -88,7 +110,7 @@ namespace CommonElements.Timeline
 
 		#region Drawing
 
-		protected override void OnLayout(LayoutEventArgs e)
+		private void DoLayout()
 		{
 			if (RowLabels == null)
 				return;
@@ -156,7 +178,6 @@ namespace CommonElements.Timeline
 					e.Graphics.DrawLine(line, p, new Point(p.X, dottedLineTops[i - 1]));
 				}
 			}
-
 		}
 
 		#endregion

@@ -117,8 +117,6 @@ namespace CommonElements.Timeline
 
 		// Zoom in or out (ie. change the visible time span): give a scale < 1.0
 		// and it zooms in, > 1.0 and it zooms out.
-		//TODO: Re-implement
-		/*
 		public void Zoom(double scale)
 		{
 			if (scale <= 0.0)
@@ -126,13 +124,13 @@ namespace CommonElements.Timeline
 
 			if (VisibleTimeSpan.Scale(scale) > TotalTime) {
 				TimePerPixel = TimeSpan.FromTicks(TotalTime.Ticks / grid.Width);
+				VisibleTimeStart = TimeSpan.Zero;
 			} else {
 				TimePerPixel = TimePerPixel.Scale(scale);
 				if (VisibleTimeEnd > TotalTime)
-					VisibleTimeEnd = TotalTime;
+					VisibleTimeStart = TotalTime - VisibleTimeSpan;
 			}
 		}
-		*/
 
 		private void AddRowToControls(Row row, RowLabel label)
 		{
@@ -341,9 +339,7 @@ namespace CommonElements.Timeline
 			base.OnMouseWheel(e);
 			if (Form.ModifierKeys.HasFlag(Keys.Control)) {
 				// holding the control key zooms the horizontal axis, by 10% per mouse wheel tick
-				// TODO: should we zoom the vertial rows as well?
-				// TODO: Re-implement
-				//Zoom(1.0 - ((double)e.Delta / 1200.0));
+				Zoom(1.0 - ((double)e.Delta / 1200.0));
 			} else if (Form.ModifierKeys.HasFlag(Keys.Shift)) {
 				// holding the skift key moves the horizontal axis, by 10% of the visible time span per mouse wheel tick
 				// wheel towards user   --> negative delta --> VisibleTimeStart increases

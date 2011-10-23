@@ -162,14 +162,19 @@
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.timelineControl.AutoSize = true;
 			this.timelineControl.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.timelineControl.CursorPosition = System.TimeSpan.Parse("00:00:00");
 			this.timelineControl.Location = new System.Drawing.Point(12, 77);
 			this.timelineControl.Name = "timelineControl";
 			this.timelineControl.Size = new System.Drawing.Size(1064, 638);
 			this.timelineControl.TabIndex = 0;
+			this.timelineControl.TimePerPixel = System.TimeSpan.Parse("00:00:00.0100000");
+			this.timelineControl.TotalTime = System.TimeSpan.Parse("00:02:00");
+			this.timelineControl.VerticalOffset = 0;
+			this.timelineControl.VisibleTimeStart = System.TimeSpan.Parse("00:00:00");
 			// 
 			// timerPlaying
 			// 
-			this.timerPlaying.Interval = 50;
+			this.timerPlaying.Interval = 25;
 			this.timerPlaying.Tick += new System.EventHandler(this.timerPlaying_Tick);
 			// 
 			// statusStrip

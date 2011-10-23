@@ -24,7 +24,7 @@ namespace CommonElements.Timeline
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.ResizeRedraw, true);
-			ResizeBarWidth = 6;
+			ResizeBarWidth = 4;
 			Resizing = false;
 		}
 
@@ -37,18 +37,18 @@ namespace CommonElements.Timeline
 			set { m_parentRow = value; }
 		}
 
-		static private int m_toggleTreeButtonWidth = 30;
+		static private int m_toggleTreeButtonWidth = 32;
 		static public int ToggleTreeButtonWidth
 		{
 			get { return m_toggleTreeButtonWidth; }
 			set { m_toggleTreeButtonWidth = value; }
 		}
 
-		private Rectangle ToggleArea { get; set; }
-		private Rectangle LabelArea { get; set; }
-		private int ResizeBarWidth { get; set; }
-		private bool Resizing { get; set; }
-		private Point LastMouseLocation { get; set; }
+		protected Rectangle IconArea { get; set; }
+		protected Rectangle LabelArea { get; set; }
+		protected int ResizeBarWidth { get; set; }
+		protected bool Resizing { get; set; }
+		protected Point LastMouseLocation { get; set; }
 
 		#endregion
 
@@ -83,10 +83,12 @@ namespace CommonElements.Timeline
 			if (MousePosContainsResizeBar(e))
 				return;
 
-			if (ToggleArea.Contains(e.Location)) {
+			
+			if ((ParentRow.ChildRows.Count > 0) && IconArea.Contains(e.Location)) {
 				// if it's within the toggle button, toggle the tree
 				_TreeToggled();
-			} else if (LabelArea.Contains(e.Location)) {
+				Invalidate();
+			} else if (LabelArea.Contains(e.Location) || ((ParentRow.ChildRows.Count == 0) && IconArea.Contains(e.Location))) {
 				_LabelClicked(Form.ModifierKeys);
 			}
 		}
@@ -140,25 +142,39 @@ namespace CommonElements.Timeline
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			SolidBrush backgroundBrush = new SolidBrush(Color.LightBlue);
-			SolidBrush closeBrush = new SolidBrush(Color.Blue);
-			SolidBrush text = new SolidBrush(Color.Black);
-			Pen border = new Pen(Color.DarkBlue, ResizeBarWidth);
-			Font f = new Font("Arial", 12);
+			SolidBrush backgroundBrush = new SolidBrush(SystemColors.ControlLight);
+			SolidBrush toggleBrush = new SolidBrush(SystemColors.ActiveCaption);
+			SolidBrush nodeIconBrush = new SolidBrush(SystemColors.ControlDark);
+			SolidBrush textBrush = new SolidBrush(Color.Black);
 
-			if (ParentRow.ChildRows.Count > 0) {
-				ToggleArea = new Rectangle(0, 0, ToggleTreeButtonWidth, Height);
-				LabelArea = new Rectangle(ToggleTreeButtonWidth, 0, Width - ToggleTreeButtonWidth, Height);
-			} else {
-				ToggleArea = new Rectangle(0, 0, 0, 0);
-				LabelArea = new Rectangle(0, 0, Width, Height);
-			}
+			Pen wholeBorderPen = new Pen(SystemColors.ControlDarkDark, 1);
+			wholeBorderPen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
+			Pen toggleBorderPen = new Pen(SystemColors.ControlDark, 1);
+			toggleBorderPen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
 
-			e.Graphics.FillRectangle(closeBrush, ToggleArea);
+			int fontHeight = 12;
+			fontHeight = Math.Min(fontHeight, (int)(Height * 0.4));
+			Font font = new Font("Arial", fontHeight);
+
+			IconArea = new Rectangle(0, 0, ToggleTreeButtonWidth, Height);
+			LabelArea = new Rectangle(ToggleTreeButtonWidth, 0, Width - ToggleTreeButtonWidth, Height);
+
+			Rectangle wholeBorderArea = new Rectangle(0, -1, Width - 1, Height);
+			Rectangle iconBorderArea = new Rectangle(0, -1, IconArea.Width, IconArea.Height);
+
+			e.Graphics.FillRectangle((ParentRow.ChildRows.Count == 0) ? nodeIconBrush : toggleBrush, IconArea);
 			e.Graphics.FillRectangle(backgroundBrush, LabelArea);
-			e.Graphics.DrawString(Name, f, text, LabelArea);
 
-			e.Graphics.DrawLine(border, ToggleArea.Width, Height, Width, Height);
+			e.Graphics.DrawRectangle(toggleBorderPen, iconBorderArea);
+			e.Graphics.DrawRectangle(wholeBorderPen, wholeBorderArea);
+
+			StringFormat sf = new StringFormat();
+			sf.Alignment = StringAlignment.Near;
+			sf.LineAlignment = StringAlignment.Center;
+			sf.Trimming = StringTrimming.EllipsisCharacter;
+			sf.FormatFlags = StringFormatFlags.NoWrap;
+			Rectangle stringPos = new Rectangle(LabelArea.X + 6, LabelArea.Y, LabelArea.Width - 6, LabelArea.Height);
+			e.Graphics.DrawString(Name, font, textBrush, stringPos, sf);
 		}
 
 		#endregion

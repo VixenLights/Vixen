@@ -19,14 +19,14 @@ namespace CommonElements.Timeline
 	{
 		#region Members
 
-		private List<Row> m_rows;						// the rows in the grid
+		private List<Row> m_rows;								// the rows in the grid
 		private DragState m_dragState = DragState.Normal;		// the current dragging state
 		private Point m_lastMouseLocation;						// the location of the mouse at last draw; used to update the dragging.
 																// Relative to the control, not the grid canvas.
 		private Point m_selectionRectangleStart;				// the location (on the grid canvas) where the selection box starts.
 		private Rectangle m_ignoreDragArea;						// the area in which move movements should be ignored, before we start dragging
-		private Element m_mouseDownElement = null;		// the element under the cursor on a mouse click
-		private Row m_mouseDownElementRow = null;		// the row that the clicked m_mouseDownElement belongs to (a single element may be in multiple rows)
+		private Element m_mouseDownElement = null;				// the element under the cursor on a mouse click
+		private Row m_mouseDownElementRow = null;				// the row that the clicked m_mouseDownElement belongs to (a single element may be in multiple rows)
 		private TimeSpan m_cursorPosition;						// the current grid 'cursor' position (line drawn vertically)
 		private Size m_dragAutoscrollDistance;					// how far in either dimension the mouse has moved outside a bounding area,
 																// so we should scroll the viewable pane that direction
@@ -58,8 +58,6 @@ namespace CommonElements.Timeline
 			StaticSnapPoints = new SortedDictionary<TimeSpan, List<SnapDetails>>();
 			SnapPriorityForElements = 5;
 
-			//VisibleTimeStart = TimeSpan.Zero;
-
 			m_rows = new List<Row>();
 			ScrollTimer = new Timer();
 			ScrollTimer.Interval = 20;
@@ -71,6 +69,7 @@ namespace CommonElements.Timeline
 			Row.RowChanged += RowChangedHandler;
 			Row.RowSelectedChanged += RowSelectedChangedHandler;
 			Row.RowToggled += RowToggledHandler;
+			Row.RowHeightChanged += RowHeightChangedHandler;
 
 			// Drag-drop 9/20/2011
 			AllowDrop = true;
@@ -84,60 +83,16 @@ namespace CommonElements.Timeline
 
 		#region Properties
 
-		/*
-		/// <summary>
-		/// The time at the left of the control (the visible beginning).
-		/// </summary>
-		public override TimeSpan VisibleTimeStart
-		{
-			get { return base.VisibleTimeStart; }
-			set
-			{
-				if (value < TimeSpan.Zero)
-					value = TimeSpan.Zero;
-
-				if (value > TotalTime - VisibleTimeSpan)
-					value = TotalTime - VisibleTimeSpan;
-
-				base.VisibleTimeStart = value;
-				AutoScrollPosition = new Point((int)timeToPixels(value), -AutoScrollPosition.Y);
-				_VisibleTimeStartChanged();
-			}
-		}
-		*/
-
-		//replaced with this:
-		
-		
-
 		protected override void  VisibleTimeStartChanged(object sender, EventArgs e)
 		{
 			AutoScrollPosition = new Point((int)timeToPixels(VisibleTimeStart), -AutoScrollPosition.Y);
+			Invalidate();
 		}
-
-
-
-
-
-		/*
-		// this needs to be overridden to maintain the visible time start accurately
-		// (as it isn't stored as a value, but inferred through the AutoScroll position).
-		public override TimeSpan TimePerPixel
-		{
-			get { return base.TimePerPixel; }
-			set
-			{
-				TimeSpan start = VisibleTimeStart;
-				base.TimePerPixel = value;
-				VisibleTimeStart = start;
-				RecalculateAllStaticSnapPoints();
-			}
-		} 
-		*/
 
 		protected override void TimePerPixelChanged(object sender, EventArgs e)
 		{
 			RecalculateAllStaticSnapPoints();
+			Invalidate();
 		}
 
 
@@ -314,6 +269,11 @@ namespace CommonElements.Timeline
 			ResizeGridHeight();
 		}
 
+		private void RowHeightChangedHandler(object sender, EventArgs e)
+		{
+			ResizeGridHeight();
+		}
+
 		#endregion
 
 
@@ -419,15 +379,9 @@ namespace CommonElements.Timeline
 			//base.OnMouseWheel(e);
 		}
 
-		// TODO: Put this back in, somehow
-		/*
 		protected override void OnMouseHWheel(MouseEventArgs args)
 		{
-			//base.OnMouseHWheel(args);
-
 			Debug.WriteLine("Grid OnMouseHWheel: delta={0}", args.Delta);
-
-			//AutoScrollPosition = new Point(-AutoScrollPosition.X + args.Delta/12, -AutoScrollPosition.Y);
 
 			double scale;
 			if (args.Delta > 0)
@@ -436,7 +390,6 @@ namespace CommonElements.Timeline
 				scale = -0.10;
 			VisibleTimeStart += VisibleTimeSpan.Scale(scale);
 		}
-		*/
 
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
@@ -1294,7 +1247,7 @@ namespace CommonElements.Timeline
 					
 					if (row.Selected)
 						g.FillRectangle(b, Util.RectangleFromPoints(selectedTopLeft, selectedBottomRight));
-					g.DrawLine(p, lineLeft, lineRight);
+					g.DrawLine(p, lineLeft.X, lineLeft.Y - 1, lineRight.X, lineRight.Y - 1);
 				}
 			}
 		}
@@ -1358,7 +1311,7 @@ namespace CommonElements.Timeline
 						desiredDrawTo = TotalTime;
 					}
 
-					Size size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height);
+					Size size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
 					Bitmap elementImage = currentElement.Draw(size);
 					bitmapsToDraw.Add(new BitmapDrawDetails() { bmp = elementImage, startTime = currentElement.StartTime, duration = currentElement.Duration });
 
