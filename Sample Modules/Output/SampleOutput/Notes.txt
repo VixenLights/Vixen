@@ -1,0 +1,172 @@
+﻿Thanks for checking out this sample output module.  Hopefully, this will give
+you a template by which you can create your own modules.
+
+This file is not meant to be a comprehensive guide or tutorial.  They are
+some notes created while creating this project that may help you do the
+same.
+
+I will assume that you have used C# and Visual Studio before, but I will
+try not to assume much more than that.
+
+Step 1: Create a Class Library project.
+Step 2: Reference Vixen.dll in the project.
+
+Neither of those steps should require explanation.
+
+You should make a decision at this point -- is your module going to have
+data that needs to be persisted?  If you can't make the decision, assume
+you will as you can always remove it later.  This guide will assume that
+you will.
+
+Step 3: Create some classes.
+
+Use whatever names you like for these classes I'm about to describe.  But
+if you're going to have more than one module in the assembly, you may want
+to keep the names centered around the module (for example, instead of
+calling a class "Descriptor", call it "RenardDescriptor").
+
+Class 1: The descriptor class.
+Class 2: The module class.
+Class 3: The data class (if you are going to have data).
+
+Make each of these classes public.
+
+Each module type has base classes you can use to implement the mundane
+members.  The descriptor is the easiest of the three, so I will start there.
+
+Step 4: Create the descriptor.
+
+Import the Vixen.Module.Output namespace and subclass OutputModuleDescriptorBase.
+Have Visual Studio implement the base class for you and you will see (not in this
+order):
+
+Author:      You. Duh.
+Description: Anything you like.
+TypeName:    The name of your module that users will see.
+Version:     Not currently used, but it may be in the future.
+TypeId:      A unique, *unique*, UNIQUE GUID that you generate.
+             Yes, make sure it's unique and you didn't copy it
+             from someone/somewhere else.  This is the value that
+             uniquely indentifies your module.
+ModuleClass: The type that implements your module.
+
+There are other virtual members you can override, but none of them are necessary.
+This includes ModuleDataClass.  The sample module overrides it because it's going
+to have data.
+
+Tada, the descriptor is done.
+
+Step 5: Create the data class.
+
+Any data that you want to have persisted for you goes into this data class.  You
+read previously written data from it and you write data to it.  The persistence
+is done for you and the instantiation of the data object is also handled for you.
+
+If you're going to have data, you need to reference System.Runtime.Serialization in
+your project and import the System.Runtime.Serialization namespace.  Also import the
+Vixen.Module namespace and subclass ModuleDataModelBase.  The Clone method that is
+required is as the name implies -- provide a clone of this data class instance.
+The MemberwiseClone may suffice if you have nothing but simple types, but if you
+have any lists or object references, you may have to get more in-depth.
+
+Decorate the class with the DataContract attribute.  Any members you want to have
+persisted as data get marked with the DataMember attribute.  Vixen uses data
+contract serialization, which is opt-in, so only members you mark with DataMember
+will be serialized.  If there are any non-integral types (such as classes you
+create), they too need to be marked with DataContract and any serialized members
+with DataMember.
+
+Step 6: Create the module class.
+
+Everything up until now has been to support this one class.  This is the class
+that does everything.  It IS your module.
+
+Import the Vixen.Module namespace, Vixen.Module.Output namespace, the Vixen.Commands namespace and 
+subclass OutputModuleInstanceBase.  Yes, there are only two members you must
+implement, but many more you may override.  We're going to override three such
+members:
+
+HasSetup:   To state that you do indeed have setup.
+Setup:      Called when the user wants to set you up.
+ModuleData: If you don't override this, your module's data will still be available
+            as an IModuleDataModel from the base ModuleData implementation, but 
+            you'll have to cast it to your data class type to use your data
+            members.  We're going to override it to cast it when it's assigned.
+
+Now for the two required members:
+
+_SetOutputCount: An output module is used to model a user's controller.  The user is
+                 going to decide how many outputs the controller will have.
+_UpdateState:    This method is called at regular intervals to update the current
+                 state of the controller with the provided data.  There is one
+                 Command instance provided for each output, in order.
+
+Compile, rinse and serve.  Drop the resulting binary into the Modules/Output directory
+and it should show up the next time you start up.
+
+BRIEF EXPLANATION OF COMMANDS
+
+Get into a comfortable chair because this is a HUGE departure from 2.x.
+
+In 2.x, data was always a byte value.  It didn't matter if you wanted to turn on
+a light or tie your shoes, it was represented by a byte value.  We've moved
+away from that in this version.  Now we assume to know nothing about the data
+and are instead relying on sequences and controllers to communicate intent by
+way of command objects.
+
+A command is basically a low-level object generated by an effect.  Output modules
+interpret these commands into something the hardware can understand.  Any command
+may be sent to any output module, so it's up to the output module to filter out
+any (if any) commands it does not want.  There are a couple ways to do this, but
+we'll get to that in a minute.
+
+Vixen.Commands.Command is the base class for other specific classes in the
+Vixen.Commands namespace.  The specific command classes are broken up in a three-
+level hierarchy -- platform, category, command.  For example:
+
+Vixen.Commands.Lighting.Monochrome.SetLevel
+ Platform: Lighting
+ Category: Monochrome
+ Command:  SetLevel
+
+You have to determine what kind of command you're looking at before you can
+decide what to do with it.  As mentioned a minute ago, there are two ways
+to do that depending on your needs.
+
+1. Check the type.
+
+if(command is Lighting.Monochrome.SetLevel) {
+  // Cast
+  // Use
+}
+
+This approach makes more sense if you have a small or limited set of commands
+you want to handle.
+
+2. Check the identifier.
+
+Each command carries with it a three-part identifier you can use to determine
+what it is.
+
+command.Identifier.Platform
+command.Identifier.Category
+command.Identifier.CommandIndex
+
+This approach makes more sense if you intend to handle entire categories, or
+more, of commands.  The Vixen.Commands namespace includes values for comparison.
+Examples:
+
+Lighting.Value (platform comparison)
+Lighting.Monochrome.Value (category comparison)
+Lighting.Monochrome.SetLevel.Value (command comparison)
+
+So:
+if(command.Identifier.Platform == Lighting.Value) {
+   //...
+}
+
+Each command has parameter values specific to that command.  For example, the
+Lighting.Monochrome.SetLevel command has a Level parameter that states the
+desired level of illumination (0-100%).
+
+And that's a basic overview of commands.

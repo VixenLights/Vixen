@@ -141,6 +141,7 @@
 			// buttonControllerSetup
 			// 
 			this.buttonControllerSetup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonControllerSetup.Enabled = false;
 			this.buttonControllerSetup.Location = new System.Drawing.Point(6, 320);
 			this.buttonControllerSetup.Name = "buttonControllerSetup";
 			this.buttonControllerSetup.Size = new System.Drawing.Size(75, 23);
