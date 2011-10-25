@@ -10,20 +10,18 @@ using Vixen.Commands;
 namespace SampleOutput {
 	public class SampleOutputModule : OutputModuleInstanceBase {
 		private SampleOutputData _data;
+		private DisplayForm _form;
+
+		public SampleOutputModule() {
+			_form = new DisplayForm();
+		}
 
 		protected override void _SetOutputCount(int outputCount) {
-			throw new NotImplementedException();
+			_form.OutputCount = outputCount;
 		}
 
 		protected override void _UpdateState(Command[] outputStates) {
-			for(int i = 0; i < outputStates.Length; i++) {
-				Command command = outputStates[i];
-				if(command is Lighting.Monochrome.SetLevel) {
-					Lighting.Monochrome.SetLevel setLevelCommand = command as Lighting.Monochrome.SetLevel;
-					//***
-					setLevelCommand.Level
-				}
-			}
+			_form.UpdateState(outputStates);
 		}
 
 		public override IModuleDataModel ModuleData {
@@ -43,6 +41,30 @@ namespace SampleOutput {
 			}
 
 			return result;
+		}
+
+		public override void Start() {
+			_data.RunCount++;
+			_form.Show();
+		}
+
+		public override void Stop() {
+			_data.LastStartDate = DateTime.Now;
+			_form.Hide();
+		}
+
+		public override bool IsRunning {
+			get { return _form != null && _form.Visible; }
+		}
+
+		public override void Dispose() {
+			_form.Dispose();
+			_form = null;
+			GC.SuppressFinalize(this);
+		}
+
+		~SampleOutputModule() {
+			_form = null;
 		}
 	}
 }

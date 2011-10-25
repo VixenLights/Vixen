@@ -14,8 +14,6 @@ namespace SampleOutput {
 		[DataMember]
 		public int RunCount { get; set; }
 
-		//***
-
 		public override IModuleDataModel Clone() {
 			return (SampleOutputData)this.MemberwiseClone();
 		}

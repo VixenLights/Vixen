@@ -43,6 +43,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DisplayForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DisplayForm.Designer.cs">
+      <DependentUpon>DisplayForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="SampleOutputData.cs" />
     <Compile Include="SampleOutputDescriptor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -64,6 +70,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="DisplayForm.resx">
+      <DependentUpon>DisplayForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SampleOutputSetupForm.resx">
       <DependentUpon>SampleOutputSetupForm.cs</DependentUpon>
     </EmbeddedResource>

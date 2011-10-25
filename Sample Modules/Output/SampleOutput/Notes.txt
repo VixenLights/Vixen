@@ -36,7 +36,9 @@ members.  The descriptor is the easiest of the three, so I will start there.
 
 Step 4: Create the descriptor.
 
-Import the Vixen.Module.Output namespace and subclass OutputModuleDescriptorBase.
+Import namespaces: Vixen.Module.Output
+Derive from: OutputModuleDescriptorBase
+
 Have Visual Studio implement the base class for you and you will see (not in this
 order):
 
@@ -47,7 +49,8 @@ Version:     Not currently used, but it may be in the future.
 TypeId:      A unique, *unique*, UNIQUE GUID that you generate.
              Yes, make sure it's unique and you didn't copy it
              from someone/somewhere else.  This is the value that
-             uniquely indentifies your module.
+             uniquely indentifies your module.  If this conflicts
+             with another module, neither module will be loaded.
 ModuleClass: The type that implements your module.
 
 There are other virtual members you can override, but none of them are necessary.
@@ -58,16 +61,18 @@ Tada, the descriptor is done.
 
 Step 5: Create the data class.
 
+Import namespaces: Vixen.Module, System.Runtime.Serialization
+Derive from: ModuleDataModelBase
+
 Any data that you want to have persisted for you goes into this data class.  You
 read previously written data from it and you write data to it.  The persistence
 is done for you and the instantiation of the data object is also handled for you.
 
-If you're going to have data, you need to reference System.Runtime.Serialization in
-your project and import the System.Runtime.Serialization namespace.  Also import the
-Vixen.Module namespace and subclass ModuleDataModelBase.  The Clone method that is
-required is as the name implies -- provide a clone of this data class instance.
-The MemberwiseClone may suffice if you have nothing but simple types, but if you
-have any lists or object references, you may have to get more in-depth.
+If you're going to have data, you need to reference System.Runtime.Serialization
+in your project.  The Clone method that is required is as the name implies --
+provide a clone of this data class instance.  The MemberwiseClone may suffice
+if you have nothing but value types, but if you have any lists or object
+references, you may have to get more in-depth.
 
 Decorate the class with the DataContract attribute.  Any members you want to have
 persisted as data get marked with the DataMember attribute.  Vixen uses data
@@ -78,13 +83,14 @@ with DataMember.
 
 Step 6: Create the module class.
 
+Import namespaces: Vixen.Module, Vixen.Module.Output, Vixen.Commands
+Derive from: OutputModuleInstanceBase
+
 Everything up until now has been to support this one class.  This is the class
 that does everything.  It IS your module.
 
-Import the Vixen.Module namespace, Vixen.Module.Output namespace, the Vixen.Commands namespace and 
-subclass OutputModuleInstanceBase.  Yes, there are only two members you must
-implement, but many more you may override.  We're going to override three such
-members:
+Yes, there are only two members you must implement, but many more you may
+override.  We're going to override several such members:
 
 HasSetup:   To state that you do indeed have setup.
 Setup:      Called when the user wants to set you up.
@@ -92,6 +98,15 @@ ModuleData: If you don't override this, your module's data will still be availab
             as an IModuleDataModel from the base ModuleData implementation, but 
             you'll have to cast it to your data class type to use your data
             members.  We're going to override it to cast it when it's assigned.
+Start:      Called when the controller (and therefore the module) is started.
+Stop:       Called when the controller is stopped.
+IsRunning:  Retrieved to determine if the controller is running or not.
+
+NOTE: If you're going to override Start, Stop, or IsRunning, please override them all.
+      Either that or call the base class implementation of each.  Otherwise, the state
+      of IsRunning may not be accurate, leading to some potentially disastrous problems.
+
+Again, none of these is required.
 
 Now for the two required members:
 
@@ -104,7 +119,7 @@ _UpdateState:    This method is called at regular intervals to update the curren
 Compile, rinse and serve.  Drop the resulting binary into the Modules/Output directory
 and it should show up the next time you start up.
 
-BRIEF EXPLANATION OF COMMANDS
+* BRIEF EXPLANATION OF COMMANDS *
 
 Get into a comfortable chair because this is a HUGE departure from 2.x.
 

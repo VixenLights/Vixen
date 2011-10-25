@@ -15,5 +15,21 @@ namespace SampleOutput {
 			InitializeComponent();
 			_data = data;
 		}
+
+		private void buttonClearRunCount_Click(object sender, EventArgs e) {
+			_data.RunCount = 0;
+			_UpdateLabels();
+		}
+
+		private void SampleOutputSetupForm_Load(object sender, EventArgs e) {
+			_UpdateLabels();
+		}
+
+		private void _UpdateLabels() {
+			labelRunCount.Text = _data.RunCount.ToString() + " times";
+			if(_data.LastStartDate != DateTime.MinValue) {
+				labelLastStarted.Text = _data.LastStartDate.ToString();
+			}
+		}
 	}
 }
