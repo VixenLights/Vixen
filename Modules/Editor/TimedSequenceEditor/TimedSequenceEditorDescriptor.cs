@@ -9,11 +9,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 {
 	class TimedSequenceEditorDescriptor : EditorModuleDescriptorBase
 	{
-		private Guid _typeId = new Guid("{d342eedd-ae39-4b30-b557-b9329e6d3a7c}");
-		private string[] _extensions = new string[] { ".tim" };
-		private Guid[] _dependencies = new Guid[] {
-			new Guid("{296bdba2-9bf3-4bff-a9f2-13efac5c8ecb}"),		// Timed Sequence module GUID
-		};
+		private static Guid _typeId = new Guid("{d342eedd-ae39-4b30-b557-b9329e6d3a7c}");
+		internal static Guid _timedSequenceId = new Guid("{296bdba2-9bf3-4bff-a9f2-13efac5c8ecb}");
+		private static string[] _extensions = new string[] { ".tim" };
 
 		public override string TypeName
 		{
@@ -62,7 +60,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public override Guid[] Dependencies
 		{
-			get { return _dependencies; }
+			get { return new Guid[] { _timedSequenceId }; }
 		}
 	}
 }

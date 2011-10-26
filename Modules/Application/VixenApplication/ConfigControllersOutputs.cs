@@ -136,7 +136,7 @@ namespace VixenApplication
 					outputTransforms = new HashSet<Tuple<Guid,Guid>>();
 				}
 
-				ITransformModuleInstance newInstance = ApplicationServices.Get<ITransformModuleInstance>((Guid)addForm.selectedItem);
+				ITransformModuleInstance newInstance = ApplicationServices.Get<ITransformModuleInstance>((Guid)addForm.SelectedItem);
 				outputTransforms.Add(new Tuple<Guid, Guid>(newInstance.Descriptor.TypeId, newInstance.InstanceId));
 				allTransforms[_selectedOutputIndex] = outputTransforms;
 				_controller.OutputTransforms = allTransforms;

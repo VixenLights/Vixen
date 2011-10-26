@@ -99,11 +99,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public void NewSequence()
 		{
-			Vixen.Sys.ISequence newSequence = new TimedSequence();
+			Vixen.Sys.ISequence newSequence = (Vixen.Sys.ISequence)ApplicationServices.Get<ISequenceModuleInstance>(TimedSequenceEditorDescriptor._timedSequenceId);
 			newSequence.Length = TimeSpan.FromMinutes(1);
 			Sequence = newSequence;
-
-			// TODO: do other stuff here like setting default zooms, clearing snaps, etc.
 		}
 
 		public void RefreshSequence()
@@ -126,6 +124,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			get { return _sequence; }
 			set
 			{
+				value.ModuleDataSet.GetModuleTypeData(value as ISequenceModuleInstance);
 				LoadSequence(value);
 			}
 		}
@@ -211,6 +210,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			foreach (EffectNode node in _sequence.Data.GetEffects()) {
 				AddElementForEffectNode(node);
 			}
+
+			PopulateGridWithMarks();
 
 			IsModified = false;
 		}
@@ -310,6 +311,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			IsModified = false;
+		}
+
+		private void PopulateGridWithMarks()
+		{
+			timelineControl.ClearAllSnapTimes();
+
+			foreach (MarkCollection mc in _sequence.MarkCollections) {
+				if (mc.Enabled) {
+					foreach (TimeSpan time in mc.Marks) {
+						timelineControl.AddSnapTime(time, mc.Level, mc.MarkColor);
+					}
+				}
+			}
 		}
 
 		#endregion
@@ -576,6 +590,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void TimedSequenceEditorForm_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			Execution.ReleaseContext(_context);
+		}
+
+		private void toolStripMenuItem_MarkManager_Click(object sender, EventArgs e)
+		{
+			MarkManager manager = new MarkManager(new List<MarkCollection>(_sequence.MarkCollections));
+			if (manager.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+				_sequence.MarkCollections = manager.MarkCollections;
+				PopulateGridWithMarks();
+				IsModified = true;
+			}
 		}
 
 	}

@@ -1078,17 +1078,18 @@ namespace CommonElements.Timeline
 			foreach (KeyValuePair<TimeSpan, List<SnapDetails>> kvp in StaticSnapPoints) {
 				newPoints[kvp.Key] = new List<SnapDetails>();
 				foreach (SnapDetails details in kvp.Value) {
-					newPoints[kvp.Key].Add(CalculateSnapDetailsForPoint(details.SnapTime, details.SnapLevel));
+					newPoints[kvp.Key].Add(CalculateSnapDetailsForPoint(details.SnapTime, details.SnapLevel, details.SnapColor));
 				}
 			}
 			StaticSnapPoints = newPoints;
 		}
 
-		private SnapDetails CalculateSnapDetailsForPoint(TimeSpan snapTime, int level)
+		private SnapDetails CalculateSnapDetailsForPoint(TimeSpan snapTime, int level, Color color)
 		{
 			SnapDetails result = new SnapDetails();
 			result.SnapLevel = level;
 			result.SnapTime = snapTime;
+			result.SnapColor = color;
 
 			// the start time and end times for specified points are 2 pixels
 			// per snap level away from the snap time.
@@ -1097,7 +1098,7 @@ namespace CommonElements.Timeline
 			return result;
 		}
 
-		public bool AddSnapPoint(TimeSpan snapTime, int level)
+		public bool AddSnapPoint(TimeSpan snapTime, int level, Color color)
 		{
 			// even though we can have multiple snap details snapping to a given timespan,
 			// this part is only for statc snap points, common to all rows. So for now,
@@ -1105,13 +1106,22 @@ namespace CommonElements.Timeline
 			if (StaticSnapPoints.ContainsKey(snapTime))
 				return false;
 
-			StaticSnapPoints.Add(snapTime, new List<SnapDetails> { CalculateSnapDetailsForPoint(snapTime, level) } );
+			StaticSnapPoints.Add(snapTime, new List<SnapDetails> { CalculateSnapDetailsForPoint(snapTime, level, color) } );
+			Invalidate();
 			return true;
 		}
 
 		public bool RemoveSnapPoint(TimeSpan snapTime)
 		{
-			return StaticSnapPoints.Remove(snapTime);
+			bool rv = StaticSnapPoints.Remove(snapTime);
+			Invalidate();
+			return rv;
+		}
+
+		public void ClearSnapPoints()
+		{
+			StaticSnapPoints.Clear();
+			Invalidate();
 		}
 
 		private int CalculateAllRowsHeight(bool visibleRowsOnly = true)
@@ -1183,7 +1193,7 @@ namespace CommonElements.Timeline
 
 					// if it's a non-selected element, generate snap points for it; for the start and end times. Also record the
 					// row its from in the generated point, so when snapping we can check against only elements from this row.
-					SnapDetails details = CalculateSnapDetailsForPoint(element.StartTime, SnapPriorityForElements);
+					SnapDetails details = CalculateSnapDetailsForPoint(element.StartTime, SnapPriorityForElements, Color.Empty);
 					details.SnapRow = row;
 
 					if (!CurrentDragSnapPoints.ContainsKey(details.SnapTime)) {
@@ -1191,7 +1201,7 @@ namespace CommonElements.Timeline
 					}
 					CurrentDragSnapPoints[details.SnapTime].Add(details);
 
-					details = CalculateSnapDetailsForPoint(element.EndTime, SnapPriorityForElements);
+					details = CalculateSnapDetailsForPoint(element.EndTime, SnapPriorityForElements, Color.Empty);
 					details.SnapRow = row;
 
 					if (!CurrentDragSnapPoints.ContainsKey(details.SnapTime)) {
@@ -1273,19 +1283,22 @@ namespace CommonElements.Timeline
 
 		private void _drawSnapPoints(Graphics g)
 		{
-			using (Pen p = new Pen(Color.Blue))
-			{
-				// iterate through all snap points, and if it's visible, draw it
+			Pen p;
 
-				foreach (KeyValuePair<TimeSpan, List<SnapDetails>> kvp in StaticSnapPoints)
+			// iterate through all snap points, and if it's visible, draw it
+			foreach (KeyValuePair<TimeSpan, List<SnapDetails>> kvp in StaticSnapPoints)
+			{
+				SnapDetails details = null;
+				foreach (SnapDetails d in kvp.Value) {
+					if (details == null || d.SnapLevel > details.SnapLevel)
+						details = d;
+				}
+				if (kvp.Key >= VisibleTimeStart && kvp.Key < VisibleTimeEnd)
 				{
-					SnapDetails details = kvp.Value[0];
-					if (kvp.Key >= VisibleTimeStart && kvp.Key < VisibleTimeEnd)
-					{
-						Single x = timeToPixels(kvp.Key);
-						p.DashPattern = new float[] { details.SnapLevel, details.SnapLevel };
-						g.DrawLine(p, x, 0, x, AutoScrollMinSize.Height);
-					}
+					p = new Pen(details.SnapColor);
+					Single x = timeToPixels(kvp.Key);
+					p.DashPattern = new float[] { details.SnapLevel, details.SnapLevel };
+					g.DrawLine(p, x, 0, x, AutoScrollMinSize.Height);
 				}
 			}
 		}
@@ -1482,7 +1495,8 @@ namespace CommonElements.Timeline
 		public TimeSpan SnapStart;	// the start time that should snap to this time; ie. before or equal to the snap time
 		public TimeSpan SnapEnd;	// the end time that should snap to this time; ie. after or equal to the snap time
 		public int SnapLevel;		// the "priority" of this snap point; bigger is higher priority
-		public Row SnapRow;	// the rows that this point should affect; null if all rows
+		public Row SnapRow;			// the rows that this point should affect; null if all rows
+		public Color SnapColor;		// the color to draw the snap point
 	}
 
 	class BitmapDrawDetails

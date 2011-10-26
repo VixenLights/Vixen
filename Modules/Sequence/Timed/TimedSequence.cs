@@ -7,6 +7,12 @@ using Vixen.Module.Sequence;
 using Vixen.Sys;
 
 namespace VixenModules.Sequence.Timed {
-	public class TimedSequence : SequenceModuleInstanceBase {
+	public class TimedSequence : SequenceModuleInstanceBase
+	{
+		public List<MarkCollection> MarkCollections
+		{
+			get { return (ModuleData as TimedSequenceData).MarkCollections; }
+			set { (ModuleData as TimedSequenceData).MarkCollections = value; }
+		}
 	}
 }

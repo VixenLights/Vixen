@@ -21,9 +21,15 @@ namespace CommonElements
 			InitializeComponent();
 		}
 
-		public Object selectedItem
+		public Object SelectedItem
 		{
-			get { return listBoxItems.SelectedValue; }
+			get
+			{
+				if (listBoxItems.SelectedIndex < 0)
+					return null;
+				else
+					return listBoxItems.SelectedValue;
+			}
 		}
 
 		private void ListSelectDialog_Load(object sender, EventArgs e)

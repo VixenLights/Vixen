@@ -22,7 +22,7 @@ namespace VixenModules.Sequence.Timed {
 		}
 
 		override public Type ModuleDataClass {
-			get { return null; }
+			get { return typeof(TimedSequenceData); }
 		}
 
 		override public string Author {

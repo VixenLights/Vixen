@@ -60,6 +60,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MarkManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MarkManager.Designer.cs">
+      <DependentUpon>MarkManager.cs</DependentUpon>
+    </Compile>
     <Compile Include="ParameterEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -112,6 +118,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="MarkManager.resx">
+      <DependentUpon>MarkManager.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ParameterEditor.resx">
       <DependentUpon>ParameterEditor.cs</DependentUpon>
     </EmbeddedResource>

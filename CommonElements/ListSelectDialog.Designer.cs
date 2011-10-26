@@ -37,9 +37,9 @@
 			// 
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.Location = new System.Drawing.Point(282, 161);
+			this.buttonOk.Location = new System.Drawing.Point(202, 133);
 			this.buttonOk.Name = "buttonOk";
-			this.buttonOk.Size = new System.Drawing.Size(90, 25);
+			this.buttonOk.Size = new System.Drawing.Size(80, 25);
 			this.buttonOk.TabIndex = 22;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
@@ -48,19 +48,22 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(186, 161);
+			this.buttonCancel.Location = new System.Drawing.Point(116, 133);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(90, 25);
+			this.buttonCancel.Size = new System.Drawing.Size(80, 25);
 			this.buttonCancel.TabIndex = 23;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			// 
 			// listBoxItems
 			// 
+			this.listBoxItems.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.listBoxItems.FormattingEnabled = true;
 			this.listBoxItems.Location = new System.Drawing.Point(12, 12);
 			this.listBoxItems.Name = "listBoxItems";
-			this.listBoxItems.Size = new System.Drawing.Size(360, 134);
+			this.listBoxItems.Size = new System.Drawing.Size(270, 108);
 			this.listBoxItems.TabIndex = 24;
 			this.listBoxItems.SelectedIndexChanged += new System.EventHandler(this.listBoxItems_SelectedIndexChanged);
 			this.listBoxItems.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listBoxItems_MouseDoubleClick);
@@ -69,7 +72,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(384, 198);
+			this.ClientSize = new System.Drawing.Size(294, 170);
 			this.Controls.Add(this.listBoxItems);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOk);

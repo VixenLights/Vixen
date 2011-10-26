@@ -461,7 +461,7 @@ namespace VixenApplication
 			}
 			CommonElements.ListSelectDialog addForm = new CommonElements.ListSelectDialog("Add Property", (properties));
 			if (addForm.ShowDialog() == DialogResult.OK) {
-				_displayedNode.Properties.Add((Guid)addForm.selectedItem);
+				_displayedNode.Properties.Add((Guid)addForm.SelectedItem);
 				PopulatePropertiesArea(_displayedNode);
 			}
 		}

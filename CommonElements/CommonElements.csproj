@@ -233,6 +233,9 @@
     <EmbeddedResource Include="ListSelectDialog.resx">
       <DependentUpon>ListSelectDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="TextDialog.resx">
+      <DependentUpon>TextDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TimelineControl\TimelineControl.resx">
       <DependentUpon>TimelineControl.cs</DependentUpon>
     </EmbeddedResource>

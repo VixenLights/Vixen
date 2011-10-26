@@ -41,10 +41,11 @@
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.addEffectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripEffects = new System.Windows.Forms.ToolStrip();
-			this.timelineControl = new CommonElements.Timeline.TimelineControl();
 			this.timerPlaying = new System.Windows.Forms.Timer(this.components);
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabel_currentTime = new System.Windows.Forms.ToolStripStatusLabel();
+			this.timelineControl = new CommonElements.Timeline.TimelineControl();
+			this.toolStripMenuItem_MarkManager = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripOperations.SuspendLayout();
 			this.menuStrip.SuspendLayout();
 			this.statusStrip.SuspendLayout();
@@ -58,7 +59,7 @@
             this.toolStripButton_Pause});
 			this.toolStripOperations.Location = new System.Drawing.Point(0, 24);
 			this.toolStripOperations.Name = "toolStripOperations";
-			this.toolStripOperations.Size = new System.Drawing.Size(1088, 25);
+			this.toolStripOperations.Size = new System.Drawing.Size(886, 25);
 			this.toolStripOperations.TabIndex = 1;
 			this.toolStripOperations.Text = "Operations";
 			// 
@@ -100,7 +101,7 @@
             this.addEffectToolStripMenuItem});
 			this.menuStrip.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip.Name = "menuStrip";
-			this.menuStrip.Size = new System.Drawing.Size(1088, 24);
+			this.menuStrip.Size = new System.Drawing.Size(886, 24);
 			this.menuStrip.TabIndex = 2;
 			this.menuStrip.Text = "Menu";
 			// 
@@ -117,26 +118,28 @@
 			// toolStripMenuItem_Save
 			// 
 			this.toolStripMenuItem_Save.Name = "toolStripMenuItem_Save";
-			this.toolStripMenuItem_Save.Size = new System.Drawing.Size(123, 22);
+			this.toolStripMenuItem_Save.Size = new System.Drawing.Size(152, 22);
 			this.toolStripMenuItem_Save.Text = "Save";
 			this.toolStripMenuItem_Save.Click += new System.EventHandler(this.toolStripMenuItem_Save_Click);
 			// 
 			// toolStripMenuItem_SaveAs
 			// 
 			this.toolStripMenuItem_SaveAs.Name = "toolStripMenuItem_SaveAs";
-			this.toolStripMenuItem_SaveAs.Size = new System.Drawing.Size(123, 22);
+			this.toolStripMenuItem_SaveAs.Size = new System.Drawing.Size(152, 22);
 			this.toolStripMenuItem_SaveAs.Text = "Save As...";
 			this.toolStripMenuItem_SaveAs.Click += new System.EventHandler(this.toolStripMenuItem_SaveAs_Click);
 			// 
 			// toolStripMenuItem_Close
 			// 
 			this.toolStripMenuItem_Close.Name = "toolStripMenuItem_Close";
-			this.toolStripMenuItem_Close.Size = new System.Drawing.Size(123, 22);
+			this.toolStripMenuItem_Close.Size = new System.Drawing.Size(152, 22);
 			this.toolStripMenuItem_Close.Text = "Close";
 			this.toolStripMenuItem_Close.Click += new System.EventHandler(this.toolStripMenuItem_Close_Click);
 			// 
 			// editToolStripMenuItem
 			// 
+			this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem_MarkManager});
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
 			this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
 			this.editToolStripMenuItem.Text = "Edit";
@@ -151,26 +154,9 @@
 			// 
 			this.toolStripEffects.Location = new System.Drawing.Point(0, 49);
 			this.toolStripEffects.Name = "toolStripEffects";
-			this.toolStripEffects.Size = new System.Drawing.Size(1088, 25);
+			this.toolStripEffects.Size = new System.Drawing.Size(886, 25);
 			this.toolStripEffects.TabIndex = 3;
 			this.toolStripEffects.Text = "Effects";
-			// 
-			// timelineControl
-			// 
-			this.timelineControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.timelineControl.AutoSize = true;
-			this.timelineControl.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.timelineControl.CursorPosition = System.TimeSpan.Parse("00:00:00");
-			this.timelineControl.Location = new System.Drawing.Point(12, 77);
-			this.timelineControl.Name = "timelineControl";
-			this.timelineControl.Size = new System.Drawing.Size(1064, 638);
-			this.timelineControl.TabIndex = 0;
-			this.timelineControl.TimePerPixel = System.TimeSpan.Parse("00:00:00.0100000");
-			this.timelineControl.TotalTime = System.TimeSpan.Parse("00:02:00");
-			this.timelineControl.VerticalOffset = 0;
-			this.timelineControl.VisibleTimeStart = System.TimeSpan.Parse("00:00:00");
 			// 
 			// timerPlaying
 			// 
@@ -181,28 +167,51 @@
 			// 
 			this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel_currentTime});
-			this.statusStrip.Location = new System.Drawing.Point(0, 726);
+			this.statusStrip.Location = new System.Drawing.Point(0, 616);
 			this.statusStrip.Name = "statusStrip";
-			this.statusStrip.Size = new System.Drawing.Size(1088, 24);
+			this.statusStrip.Size = new System.Drawing.Size(886, 26);
 			this.statusStrip.TabIndex = 4;
 			this.statusStrip.Text = "statusStrip1";
 			// 
 			// toolStripStatusLabel_currentTime
 			// 
-			this.toolStripStatusLabel_currentTime.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top)
-						| System.Windows.Forms.ToolStripStatusLabelBorderSides.Right)
-						| System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
-			this.toolStripStatusLabel_currentTime.BorderStyle = System.Windows.Forms.Border3DStyle.Sunken;
+			this.toolStripStatusLabel_currentTime.AutoSize = false;
+			this.toolStripStatusLabel_currentTime.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right;
+			this.toolStripStatusLabel_currentTime.BorderStyle = System.Windows.Forms.Border3DStyle.Bump;
 			this.toolStripStatusLabel_currentTime.Name = "toolStripStatusLabel_currentTime";
-			this.toolStripStatusLabel_currentTime.Size = new System.Drawing.Size(47, 19);
+			this.toolStripStatusLabel_currentTime.Size = new System.Drawing.Size(60, 21);
 			this.toolStripStatusLabel_currentTime.Text = "0:00.00";
+			// 
+			// timelineControl
+			// 
+			this.timelineControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.timelineControl.AutoSize = true;
+			this.timelineControl.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.timelineControl.CursorPosition = System.TimeSpan.Parse("00:00:00");
+			this.timelineControl.Location = new System.Drawing.Point(0, 77);
+			this.timelineControl.Name = "timelineControl";
+			this.timelineControl.Size = new System.Drawing.Size(887, 541);
+			this.timelineControl.TabIndex = 0;
+			this.timelineControl.TimePerPixel = System.TimeSpan.Parse("00:00:00.0100000");
+			this.timelineControl.TotalTime = System.TimeSpan.Parse("00:02:00");
+			this.timelineControl.VerticalOffset = 0;
+			this.timelineControl.VisibleTimeStart = System.TimeSpan.Parse("00:00:00");
+			// 
+			// toolStripMenuItem_MarkManager
+			// 
+			this.toolStripMenuItem_MarkManager.Name = "toolStripMenuItem_MarkManager";
+			this.toolStripMenuItem_MarkManager.Size = new System.Drawing.Size(160, 22);
+			this.toolStripMenuItem_MarkManager.Text = "Mark Manager...";
+			this.toolStripMenuItem_MarkManager.Click += new System.EventHandler(this.toolStripMenuItem_MarkManager_Click);
 			// 
 			// TimedSequenceEditorForm
 			// 
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1088, 750);
+			this.ClientSize = new System.Drawing.Size(886, 642);
 			this.Controls.Add(this.statusStrip);
 			this.Controls.Add(this.toolStripEffects);
 			this.Controls.Add(this.toolStripOperations);
@@ -243,5 +252,6 @@
 		private System.Windows.Forms.Timer timerPlaying;
 		private System.Windows.Forms.StatusStrip statusStrip;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel_currentTime;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_MarkManager;
 	}
 }

@@ -75,9 +75,9 @@ namespace VixenApplication
 			}
 			CommonElements.ListSelectDialog addForm = new CommonElements.ListSelectDialog("Add Controller", (outputModules));
 			if (addForm.ShowDialog() == DialogResult.OK) {
-				IModuleDescriptor moduleDescriptor = ApplicationServices.GetModuleDescriptor((Guid)addForm.selectedItem);
+				IModuleDescriptor moduleDescriptor = ApplicationServices.GetModuleDescriptor((Guid)addForm.SelectedItem);
 				string name = "New " + moduleDescriptor.TypeName + " Controller";
-				OutputController oc = new OutputController(name, 0, (Guid)addForm.selectedItem);
+				OutputController oc = new OutputController(name, 0, (Guid)addForm.SelectedItem);
 				VixenSystem.Controllers.AddController(oc);
 
 				// select the new controller, and then repopulate the list -- it will make sure the currently
