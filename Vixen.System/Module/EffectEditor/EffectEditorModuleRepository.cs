@@ -3,21 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Sys;
-//using CommandStandard;
 using Vixen.Commands;
 
 namespace Vixen.Module.EffectEditor {
 	class EffectEditorModuleRepository : IModuleRepository<IEffectEditorModuleInstance> {
-		// Command handler module type id : command editor
-		private Dictionary<Guid, IEffectEditorModuleInstance> _effectEditorCommandIndex = new Dictionary<Guid, IEffectEditorModuleInstance>();
-		// Command signature : command editor
+		// Effect type id : effect editor
+		private Dictionary<Guid, IEffectEditorModuleInstance> _effectEditorEffectIndex = new Dictionary<Guid, IEffectEditorModuleInstance>();
+		// Effect signature : effect editor
 		private Dictionary<int, IEffectEditorModuleInstance> _effectEditorSignatureIndex = new Dictionary<int, IEffectEditorModuleInstance>();
 		// Singleton collection.
 		private List<IEffectEditorModuleInstance> _effectEditors = new List<IEffectEditorModuleInstance>();
 
 		public IEffectEditorModuleInstance GetByEffectId(Guid moduleId) {
 			IEffectEditorModuleInstance instance;
-			_effectEditorCommandIndex.TryGetValue(moduleId, out instance);
+			_effectEditorEffectIndex.TryGetValue(moduleId, out instance);
 			return instance;
 		}
 
@@ -48,9 +47,9 @@ namespace Vixen.Module.EffectEditor {
 			IEffectEditorModuleInstance instance = Modules.GetById(id) as IEffectEditorModuleInstance;
 			// Add to the collection.
 			_effectEditors.Add(instance);
-			// Add to the command-specific index, if appropriate.
+			// Add to the effect-specific index, if appropriate.
 			if(instance.EffectTypeId != Guid.Empty) {
-				_effectEditorCommandIndex[instance.EffectTypeId] = instance;
+				_effectEditorEffectIndex[instance.EffectTypeId] = instance;
 			}
 			// Add to the signature index, if appropriate.
 			if(instance.CommandSignature != null) {
@@ -70,7 +69,7 @@ namespace Vixen.Module.EffectEditor {
 			IEffectEditorModuleInstance instance = _effectEditors.FirstOrDefault(x => x.Descriptor.TypeId == id);
 			if(instance != null) {
 				// Remove from the name index.
-				_effectEditorCommandIndex.Remove(instance.EffectTypeId);
+				_effectEditorEffectIndex.Remove(instance.EffectTypeId);
 				// Remove from the signature index.
 				_effectEditorSignatureIndex.Remove(_GetSignatureKey(instance.CommandSignature));
 				// Remove from the collection.
@@ -79,10 +78,10 @@ namespace Vixen.Module.EffectEditor {
 		}
 
 
-		private int _GetSignatureKey(IEnumerable<CommandParameterSpecification> commandSignature) {
-			if(commandSignature == null) return 0;
+		private int _GetSignatureKey(IEnumerable<CommandParameterSpecification> signature) {
+			if(signature == null) return 0;
 			// Key will be a hash of the concatenation of the parameter type names.
-			return commandSignature.Aggregate("", (str, spec) => str + spec.Type.Name, str => str.GetHashCode());
+			return signature.Aggregate("", (str, spec) => str + spec.Type.Name, str => str.GetHashCode());
 		}
 	}
 }

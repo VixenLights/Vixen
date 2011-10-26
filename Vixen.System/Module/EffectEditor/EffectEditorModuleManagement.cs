@@ -9,7 +9,6 @@ using Vixen.Commands;
 namespace Vixen.Module.EffectEditor {
 	class EffectEditorModuleManagement : GenericModuleManagement<IEffectEditorModuleInstance> {
 		public IEnumerable<IEffectEditorControl> GetEffectEditors(Guid effectId) {
-			// Get the command spec descriptor.
 			IEffectModuleDescriptor descriptor = Modules.GetDescriptorById<IEffectModuleDescriptor>(effectId);
 
 			// 1. Is there an editor for this specific effect by id?
