@@ -26,12 +26,14 @@ namespace Vixen.Module {
 		/// </summary>
 		/// <param name="module"></param>
 		public void GetModuleTypeData(IModuleInstance module) {
-			// If the module already has data, add it, don't overwrite it.
-			IModuleDataModel dataModel = _GetDataInstance(module);
-			if(dataModel == null) {
-				module.ModuleData = RetrieveTypeData(module.Descriptor);
-			} else {
-				_Add(this, module.Descriptor.TypeId, module.InstanceId, dataModel);
+			if(module != null) {
+				// If the module already has data, add it, don't overwrite it.
+				IModuleDataModel dataModel = _GetDataInstance(module);
+				if(dataModel == null) {
+					module.ModuleData = RetrieveTypeData(module.Descriptor);
+				} else {
+					_Add(this, module.Descriptor.TypeId, module.InstanceId, dataModel);
+				}
 			}
 		}
 

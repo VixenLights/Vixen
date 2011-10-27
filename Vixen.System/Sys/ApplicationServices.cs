@@ -123,22 +123,6 @@ namespace Vixen.Sys {
 			return VixenSystem.Controllers.ToArray();
 		}
 
-		static public IEditorUserInterface GetEditor(Guid id) {
-			EditorModuleManagement manager = Modules.GetManager<IEditorModuleInstance, EditorModuleManagement>();
-			if(manager != null) {
-				return manager.Get(id);
-			}
-			return null;
-		}
-
-		static public IEditorUserInterface GetEditor(string fileName) {
-			EditorModuleManagement manager = Modules.GetManager<IEditorModuleInstance, EditorModuleManagement>();
-			if(manager != null) {
-				return manager.Get(fileName);
-			}
-			return null;
-		}
-
 		static public string[] GetScriptLanguages() {
 			ScriptModuleManagement manager = Modules.GetManager<IScriptModuleInstance, ScriptModuleManagement>();
 			return manager.GetLanguages();
@@ -153,5 +137,41 @@ namespace Vixen.Sys {
 			SystemContext context = SystemContext.UnpackageSystemContext(contextFilePath);
 			return context.Explode(contextFilePath);
 		}
+
+		static public IEditorUserInterface CreateEditor(string sequenceFilePath) {
+			// Get the sequence.
+			Sequence sequence = null;
+			if(File.Exists(sequenceFilePath)) {
+				sequence = Sequence.Load(sequenceFilePath);
+			} else {
+				sequence = Sequence.Create(sequenceFilePath);
+			}
+
+			if(sequence == null) {
+				throw new Exception("Could not create the sequence.");
+			}
+
+			// Get any sequence module data.
+			sequence.ModuleDataSet.GetModuleTypeData(sequence as ISequenceModuleInstance);
+
+			// Get the editor.
+			IEditorUserInterface editor = null;
+			EditorModuleManagement manager = Modules.GetManager<IEditorModuleInstance, EditorModuleManagement>();
+			if(manager != null) {
+				editor = manager.Get(sequenceFilePath);
+			}
+
+			// Get any editor module data.
+			sequence.ModuleDataSet.GetModuleTypeData(editor.OwnerModule);
+
+			// Assign the sequence to the editor.
+			if(editor != null) {
+				editor.Sequence = sequence;
+			}
+
+			return editor;
+		}
+
+
 	}
 }

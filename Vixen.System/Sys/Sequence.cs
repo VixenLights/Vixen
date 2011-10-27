@@ -50,6 +50,16 @@ namespace Vixen.Sys {
 			return instance;
 		}
 
+		static public Sequence Create(string fileType) {
+			// Get the specific sequence module manager.
+			SequenceModuleManagement manager = Modules.GetManager<ISequenceModuleInstance, SequenceModuleManagement>();
+
+			// Get an instance of the appropriate sequence module.
+			Sequence sequence = manager.Get(fileType) as Sequence;
+
+			return sequence;
+		}
+
 		static public string[] GetAllFileNames() {
 			// We can't assume where all of the sequence file types will exist, so to provide
 			// this functionality we will have to do the following:

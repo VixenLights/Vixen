@@ -224,7 +224,7 @@ namespace TestEditor {
 					}
 
 					// Example of storing at the sequence level.
-					_sequence.ModuleDataSet.GetModuleTypeData(OwnerModule);
+					//_sequence.ModuleDataSet.GetModuleTypeData(OwnerModule);
 					// Example of storing at the application level.
 					//VixenSystem.ModuleData.GetModuleTypeData(this);
 					ModuleData.LastOpened = DateTime.Now;
@@ -236,9 +236,9 @@ namespace TestEditor {
 			get { return null; }
 		}
 
-		public void NewSequence() {
-			this.Sequence = ApplicationServices.CreateSequence(".tim");
-		}
+		//public void NewSequence() {
+		//    this.Sequence = ApplicationServices.CreateSequence(".tim");
+		//}
 
 		public void Save(string filePath = null) {
 			if(string.IsNullOrWhiteSpace(filePath)) {

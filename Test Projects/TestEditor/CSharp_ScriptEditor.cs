@@ -27,8 +27,25 @@ namespace TestEditor {
 			get { return _sequence as ISequence; }
 			set {
 				if((_sequence = value as ScriptSequence) != null) {
-					// Display any source files.
-					_sequence.SourceFiles.ForEach(_AddFile);
+					if(_sequence.SourceFiles.Count > 0) {
+						// Display any source files.
+						_sequence.SourceFiles.ForEach(_AddFile);
+					} else {
+						using(CommonElements.TextDialog textDialog = new CommonElements.TextDialog("Name for the new script sequence:")) {
+							if(textDialog.ShowDialog() == DialogResult.OK) {
+								if(!string.IsNullOrWhiteSpace(textDialog.Response)) {
+									_sequence.FilePath = textDialog.Response;
+									// Add the initial file.
+									SourceFile file = _sequence.CreateNewFile("NewFile");
+									_AddFile(file);
+								} else {
+									// They provided a bad name.
+									// Prompt until they provide a good one or cancel, blah blah blah.
+									MessageBox.Show("Name is required.");
+								}
+							}
+						}
+					}
 				}
 			}
 		}
@@ -37,25 +54,25 @@ namespace TestEditor {
 
 		public IModuleDescriptor Descriptor { get; set; }
 
-		public void NewSequence() {
-			this.Sequence = ApplicationServices.CreateSequence(".csp");
-			using(CommonElements.TextDialog textDialog = new CommonElements.TextDialog("Name for the new script sequence:")) {
-				if(textDialog.ShowDialog() == DialogResult.OK) {
-					if(!string.IsNullOrWhiteSpace(textDialog.Response)) {
-						_sequence.FilePath = textDialog.Response;
-						// Add the initial file.
-						SourceFile file = _sequence.CreateNewFile("NewFile");
-						_AddFile(file);
-					} else {
-						// They provided a bad name.
-						MessageBox.Show("Name is required.");
-					}
-				} else {
-					// They canceled.
-					this.Sequence = null;
-				}
-			}
-		}
+		//public void NewSequence() {
+		//    this.Sequence = ApplicationServices.CreateSequence(".csp");
+		//    using(CommonElements.TextDialog textDialog = new CommonElements.TextDialog("Name for the new script sequence:")) {
+		//        if(textDialog.ShowDialog() == DialogResult.OK) {
+		//            if(!string.IsNullOrWhiteSpace(textDialog.Response)) {
+		//                _sequence.FilePath = textDialog.Response;
+		//                // Add the initial file.
+		//                SourceFile file = _sequence.CreateNewFile("NewFile");
+		//                _AddFile(file);
+		//            } else {
+		//                // They provided a bad name.
+		//                MessageBox.Show("Name is required.");
+		//            }
+		//        } else {
+		//            // They canceled.
+		//            this.Sequence = null;
+		//        }
+		//    }
+		//}
 
 		private void _AddFile(SourceFile sourceFile) {
 			TabPage tabPage = new TabPage(sourceFile.Name);

@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Vixen.Sys;
 using Vixen.Module.Editor;
+using Vixen.Module.Sequence;
 
 namespace VixenTestbed {
 	partial class Form1 {
@@ -27,15 +28,9 @@ namespace VixenTestbed {
 				openFileDialog.InitialDirectory = Vixen.Sys.Sequence.DefaultDirectory;
 
 				if(openFileDialog.ShowDialog() == DialogResult.OK) {
-					IEditorUserInterface editor = ApplicationServices.GetEditor(openFileDialog.FileName);
+					IEditorUserInterface editor = ApplicationServices.CreateEditor(openFileDialog.FileName);
 					if(editor != null) {
-						Sequence sequence = Sequence.Load(openFileDialog.FileName);
-						if(sequence != null) {
-							editor.Sequence = sequence;
-							editor.Start();
-						} else {
-							MessageBox.Show("The sequence could not be loaded.");
-						}
+						editor.Start();
 					} else {
 						MessageBox.Show("No editor supports the selected file.");
 					}
@@ -46,11 +41,20 @@ namespace VixenTestbed {
 		}
 
 		private void buttonShowEditor_Click(object sender, EventArgs e) {
+			// Generally, the user will select a sequence type and receive the editor
+			// that edits it.  But in this case, they are testing an editor so we're
+			// changing the workflow a bit.
 			try {
+				// Get the editor's type id.
 				Guid id = _SelectedEditorModule.Descriptor.TypeId;
-				IEditorUserInterface editor = ApplicationServices.GetEditor(id);
+				// Get its descriptor.
+				IEditorModuleDescriptor descriptor = ApplicationServices.GetModuleDescriptor(id) as IEditorModuleDescriptor;
+				// Get the first file type it edits.
+				if(descriptor.FileExtensions.Length == 0) throw new Exception("Editor does not specify any file types.");
+				string fileType = descriptor.FileExtensions.First();
+				// Get the editor with a new sequence.
+				IEditorUserInterface editor = ApplicationServices.CreateEditor(fileType);
 				if(editor != null) {
-					editor.NewSequence();
 					editor.Start();
 				} else {
 					MessageBox.Show("No editor supports the selected file.");

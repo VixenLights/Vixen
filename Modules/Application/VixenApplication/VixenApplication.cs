@@ -68,17 +68,15 @@ namespace VixenApplication
 		private void initializeEditorTypes()
 		{
 			ToolStripMenuItem item;
-			foreach (KeyValuePair<Guid, string> typeId_FileTypeName in ApplicationServices.GetAvailableModules<IEditorModuleInstance>())
-			{
+			foreach(KeyValuePair<Guid, string> typeId_FileTypeName in ApplicationServices.GetAvailableModules<ISequenceModuleInstance>()) {
 				item = new ToolStripMenuItem(typeId_FileTypeName.Value);
-				item.Tag = typeId_FileTypeName.Key;
-				item.Click += (sender, e) =>
-				{
+				ISequenceModuleDescriptor descriptor = ApplicationServices.GetModuleDescriptor(typeId_FileTypeName.Key) as ISequenceModuleDescriptor;
+				item.Tag = descriptor.FileExtension;
+				item.Click += (sender, e) => {
 					ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
-					Guid editorModuleId = (Guid)menuItem.Tag;
-					IEditorUserInterface editor = ApplicationServices.GetEditor(editorModuleId);
+					string fileType = (string)menuItem.Tag;
+					IEditorUserInterface editor = ApplicationServices.CreateEditor(fileType);
 					if(editor != null) {
-						editor.NewSequence();
 						_OpenEditor(editor);
 					}
 				};
@@ -149,20 +147,13 @@ namespace VixenApplication
 				Cursor = Cursors.WaitCursor;
 				foreach (string file in openFileDialog.FileNames) {
 					try {
-						Sequence sequence = Vixen.Sys.Sequence.Load(file);
-						IEditorUserInterface editor = ApplicationServices.GetEditor(file);
-
-								if (sequence == null) {
-							VixenSystem.Logging.Error("Can't load sequence in file " + file);
-							continue;
-						}
+						IEditorUserInterface editor = ApplicationServices.CreateEditor(file);
 
 						if (editor == null) {
 							VixenSystem.Logging.Error("Can't find an appropriate editor to open file " + file);
 							continue;
 						}
 
-						editor.Sequence = sequence;
 						_OpenEditor(editor);
 					} catch (Exception ex) {
 						VixenSystem.Logging.Error("Error trying to open file '" + file + "': ", ex);

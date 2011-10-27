@@ -11,7 +11,7 @@ namespace Vixen.IO.Xml {
 	class XmlAnySequenceReader : XmlReaderBase<Sequence> {
 		public override Sequence Read(string filePath) {
 			// Get an instance of a sequence appropriate for the file path.
-			Sequence sequence = _CreateObject(filePath);
+			Sequence sequence = Sequence.Create(filePath);
 			if(sequence == null) throw new InvalidOperationException("No sequence type defined for file " + filePath);
 
 			// Get the reader for the sequence type.
@@ -26,15 +26,15 @@ namespace Vixen.IO.Xml {
 			return reader.Read(filePath) as Sequence;
 		}
 
-		private Sequence _CreateObject(string filePath) {
-			// Get the specific sequence module manager.
-			SequenceModuleManagement manager = Modules.GetManager<ISequenceModuleInstance, SequenceModuleManagement>();
+		//private Sequence _CreateObject(string filePath) {
+		//    // Get the specific sequence module manager.
+		//    SequenceModuleManagement manager = Modules.GetManager<ISequenceModuleInstance, SequenceModuleManagement>();
 			
-			// Get an instance of the appropriate sequence module.
-			Sequence sequence = manager.Get(filePath) as Sequence;
+		//    // Get an instance of the appropriate sequence module.
+		//    Sequence sequence = manager.Get(filePath) as Sequence;
 			
-			return sequence;
-		}
+		//    return sequence;
+		//}
 
 		protected override Sequence _CreateObject(XElement element, string filePath) {
 			throw new NotImplementedException();

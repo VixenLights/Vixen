@@ -18,10 +18,6 @@ namespace Vixen.Module.Editor {
 
 		ISequence Sequence { get; set; }
 		ISelection Selection { get; }
-		/// <summary>
-		/// Creates a new sequence within the editor.
-		/// </summary>
-		void NewSequence();
 		void Save(string filePath = null);
 		void Refresh();
 		//EditorValues EditorValues { get; }

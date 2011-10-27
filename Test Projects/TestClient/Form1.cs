@@ -58,19 +58,17 @@ namespace TestClient
 
 			// Editors
 			ToolStripMenuItem item;
-			foreach(KeyValuePair<Guid,string> typeId_FileTypeName in ApplicationServices.GetAvailableModules<IEditorModuleInstance>()) {
+			foreach(KeyValuePair<Guid, string> typeId_FileTypeName in ApplicationServices.GetAvailableModules<ISequenceModuleInstance>()) {
 				item = new ToolStripMenuItem(typeId_FileTypeName.Value);
-				item.Tag = typeId_FileTypeName.Key;
-				item.Click += (sender,e) => {
+				ISequenceModuleDescriptor descriptor = ApplicationServices.GetModuleDescriptor(typeId_FileTypeName.Key) as ISequenceModuleDescriptor;
+				item.Tag = descriptor.FileExtension;
+				item.Click += (sender, e) => {
 					ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
-					Guid editorModuleId = (Guid)menuItem.Tag;
-					IEditorUserInterface editor = ApplicationServices.GetEditor(editorModuleId);
+					string fileType = (string)menuItem.Tag;
+					IEditorUserInterface editor = ApplicationServices.CreateEditor(fileType);
 					if(editor != null) {
-						editor.NewSequence();
-						if(editor.Sequence != null) { // Null if canceled
-							SequenceName = editor.Sequence.Name;
-							_OpenEditor(editor);
-						}
+						SequenceName = editor.Sequence.Name;
+						_OpenEditor(editor);
 					}
 				};
 				fileToolStripMenuItem.DropDownItems.Add(item);
@@ -253,17 +251,10 @@ namespace TestClient
         private void buttonReadSequence_Click(object sender, EventArgs e) {
             Cursor = Cursors.WaitCursor;
             try {
-				// Go through the editor
-				Sequence sequence = Vixen.Sys.Sequence.Load(textBoxSequenceFileName.Text);
-				IEditorUserInterface editor = _GetEditor(textBoxSequenceFileName.Text);
+				IEditorUserInterface editor = ApplicationServices.CreateEditor(textBoxSequenceFileName.Text);
 				if(editor != null) {
-					if(sequence != null) {
-						editor.Sequence = sequence;
-						SequenceName = editor.Sequence.Name;
-						_OpenEditor(editor);
-					} else {
-						MessageBox.Show("Could not load sequence.");
-					}
+					SequenceName = editor.Sequence.Name;
+					_OpenEditor(editor);
 				} else {
 					MessageBox.Show("Could not load editor.");
 				}
@@ -325,13 +316,13 @@ namespace TestClient
 
         public AppCommand AppCommands { get; private set; }
 
-		private IEditorUserInterface _GetEditor(string sequenceFileName) {
-			return ApplicationServices.GetEditor(sequenceFileName);
-		}
+		//private IEditorUserInterface _GetEditor(string sequenceFileName) {
+		//    return ApplicationServices.GetEditor(sequenceFileName);
+		//}
 
-		private IEditorUserInterface _GetEditor(Guid editorModuleId) {
-			return ApplicationServices.GetEditor(editorModuleId);
-		}
+		//private IEditorUserInterface _GetEditor(Guid editorModuleId) {
+		//    return ApplicationServices.GetEditor(editorModuleId);
+		//}
 
 		private void buttonUpdateController_Click(object sender, EventArgs e) {
 			OutputController controller = _SelectedController;

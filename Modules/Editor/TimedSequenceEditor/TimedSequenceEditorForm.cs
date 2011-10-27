@@ -97,12 +97,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public bool IsModified { get; private set; }
 
-		public void NewSequence()
-		{
-			Vixen.Sys.ISequence newSequence = (Vixen.Sys.ISequence)ApplicationServices.Get<ISequenceModuleInstance>(TimedSequenceEditorDescriptor._timedSequenceId);
-			newSequence.Length = TimeSpan.FromMinutes(1);
-			Sequence = newSequence;
-		}
+		//public void NewSequence()
+		//{
+		//    Vixen.Sys.ISequence newSequence = new TimedSequence();
+		//    newSequence.Length = TimeSpan.FromMinutes(1);
+		//    Sequence = newSequence;
+
+		//    // TODO: do other stuff here like setting default zooms, clearing snaps, etc.
+		//}
 
 		public void RefreshSequence()
 		{
