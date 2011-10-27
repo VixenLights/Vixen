@@ -21,7 +21,7 @@ using System.IO;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-	public partial class TimedSequenceEditorForm : Form, IEditorUserInterface
+	public partial class TimedSequenceEditorForm : Form, IEditorUserInterface, IExecutionControl, ITiming
 	{
 		#region Member Variables
 
@@ -97,15 +97,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public bool IsModified { get; private set; }
 
-		//public void NewSequence()
-		//{
-		//    Vixen.Sys.ISequence newSequence = new TimedSequence();
-		//    newSequence.Length = TimeSpan.FromMinutes(1);
-		//    Sequence = newSequence;
-
-		//    // TODO: do other stuff here like setting default zooms, clearing snaps, etc.
-		//}
-
 		public void RefreshSequence()
 		{
 			Sequence = Sequence;
@@ -132,7 +123,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public IEditorModuleInstance OwnerModule { get; set; }
 
-		public void Start()
+		void IEditorUserInterface.Start()
 		{
 			Show();
 		}
@@ -446,8 +437,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return;
 			}
 
-			_originalCursorPositionBeforePlayback = timelineControl.CursorPosition;
-			_context.Play(timelineControl.CursorPosition, TimeSpan.MaxValue);
+			if (_context.IsPaused) {
+				_context.Play(_timingSource.Position, TimeSpan.MaxValue);
+			} else {
+				_originalCursorPositionBeforePlayback = timelineControl.CursorPosition;
+				_context.Play(timelineControl.CursorPosition, TimeSpan.MaxValue);
+			}
 		}
 
 		public void PauseSequence()
@@ -500,7 +495,40 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (timelineControl.CursorPosition > timelineControl.VisibleTimeStart + TimeSpan.FromMilliseconds(timelineControl.VisibleTimeSpan.TotalMilliseconds * 0.9)) {
 				timelineControl.VisibleTimeStart = TimeSpan.FromMilliseconds(timelineControl.CursorPosition.TotalMilliseconds - (timelineControl.VisibleTimeSpan.TotalMilliseconds * 0.5));
 			}
+
+			if (timelineControl.CursorPosition < timelineControl.VisibleTimeStart) {
+				timelineControl.VisibleTimeStart = TimeSpan.FromMilliseconds(timelineControl.CursorPosition.TotalMilliseconds - (timelineControl.VisibleTimeSpan.TotalMilliseconds * 0.2));
+			}
 		}
+
+
+		// implementation of IExecutionControl and ITiming interfaces, for the beat track tapping.
+		void IExecutionControl.Resume()
+		{
+			PlaySequence();
+		}
+
+		void IExecutionControl.Start()
+		{
+			PlaySequence();
+		}
+
+		void IExecutionControl.Pause()
+		{
+			PauseSequence();
+		}
+
+		void IExecutionControl.Stop()
+		{
+			StopSequence();
+		}
+
+		TimeSpan ITiming.Position
+		{
+			get { return _timingSource.Position; }
+			set { }
+		}
+
 
 		#endregion
 
@@ -599,7 +627,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripMenuItem_MarkManager_Click(object sender, EventArgs e)
 		{
-			MarkManager manager = new MarkManager(new List<MarkCollection>(_sequence.MarkCollections));
+			MarkManager manager = new MarkManager(new List<MarkCollection>(_sequence.MarkCollections), this, this);
 			if (manager.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 				_sequence.MarkCollections = manager.MarkCollections;
 				PopulateGridWithMarks();

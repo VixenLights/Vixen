@@ -7,12 +7,17 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using VixenModules.Sequence.Timed;
+using Vixen.Execution;
+using Vixen.Module.Timing;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
 	public partial class MarkManager : Form
 	{
 		private MarkCollection _displayedCollection = null;
+		private bool _updatingListContents = false;
+		private IExecutionControl _executionControl;
+		private ITiming _timingSource;
 
 		private string[] _timeFormats = {
 				@"m\:ss", @"m\:ss\.f", @"m\:ss\.ff", @"m\:ss\.fff", 
@@ -21,10 +26,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				};
 
 
-		public MarkManager(List<MarkCollection> markCollections)
+		public MarkManager(List<MarkCollection> markCollections, IExecutionControl executionControl, ITiming timingSource)
 		{
 			InitializeComponent();
 			MarkCollections = markCollections;
+			_executionControl = executionControl;
+			_timingSource = timingSource;
 		}
 
 		public List<MarkCollection> MarkCollections { get; set; }
@@ -42,6 +49,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void PopulateMarkCollectionsList()
 		{
+			_updatingListContents = true;
 			listViewMarkCollections.BeginUpdate();
 			listViewMarkCollections.Items.Clear();
 
@@ -60,6 +68,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			listViewMarkCollections.EndUpdate();
+			_updatingListContents = false;
 		}
 
 		private void UpdateMarkCollectionInList(MarkCollection collection)
@@ -123,6 +132,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void listViewMarkCollections_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			if (_updatingListContents)
+				return;
+
 			if (listViewMarkCollections.SelectedItems.Count > 0) {
 				PopulateFormWithMarkCollection(listViewMarkCollections.SelectedItems[0].Tag as MarkCollection);
 			} else {
@@ -206,7 +218,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void buttonTapNewMarks_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show("TODO");
+			using (MarkTapper tapper = new MarkTapper(_executionControl, _timingSource)) {
+				if (tapper.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+					foreach (TimeSpan time in tapper.Results) {
+						if (!_displayedCollection.Marks.Contains(time))
+							_displayedCollection.Marks.Add(time);
+					}
+					PopulateMarkListFromMarkCollection(_displayedCollection);
+					UpdateMarkCollectionInList(_displayedCollection);
+				}
+			}
 		}
 
 		private void buttonOffsetMarks_Click(object sender, EventArgs e)
@@ -320,6 +341,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					if (destination == _displayedCollection) {
 						PopulateMarkListFromMarkCollection(_displayedCollection);
 					}
+					UpdateMarkCollectionInList(destination);
 				} else {
 					MessageBox.Show("Error parsing number: please enter a whole number for the number of divisions.", "Error parsing number");
 				}
@@ -370,6 +392,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					_displayedCollection.Marks.Remove((TimeSpan)item.Tag);
 				}
 				PopulateMarkListFromMarkCollection(_displayedCollection);
+				UpdateMarkCollectionInList(_displayedCollection);
 				break;
 			}
 		}

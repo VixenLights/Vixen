@@ -66,6 +66,12 @@
     <Compile Include="MarkManager.Designer.cs">
       <DependentUpon>MarkManager.cs</DependentUpon>
     </Compile>
+    <Compile Include="MarkTapper.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MarkTapper.Designer.cs">
+      <DependentUpon>MarkTapper.cs</DependentUpon>
+    </Compile>
     <Compile Include="ParameterEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -119,6 +125,9 @@
   <ItemGroup>
     <EmbeddedResource Include="MarkManager.resx">
       <DependentUpon>MarkManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MarkTapper.resx">
+      <DependentUpon>MarkTapper.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ParameterEditor.resx">
       <DependentUpon>ParameterEditor.cs</DependentUpon>

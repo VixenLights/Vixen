@@ -185,9 +185,9 @@ namespace CommonElements.Timeline
 		}
 
 
-		public bool AddSnapTime(TimeSpan time, int level, Color color)
+		public void AddSnapTime(TimeSpan time, int level, Color color)
 		{
-			return grid.AddSnapPoint(time, level, color);
+			grid.AddSnapPoint(time, level, color);
 		}
 
 		public bool RemoveSnapTime(TimeSpan time)

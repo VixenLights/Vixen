@@ -1098,17 +1098,14 @@ namespace CommonElements.Timeline
 			return result;
 		}
 
-		public bool AddSnapPoint(TimeSpan snapTime, int level, Color color)
+		public void AddSnapPoint(TimeSpan snapTime, int level, Color color)
 		{
-			// even though we can have multiple snap details snapping to a given timespan,
-			// this part is only for statc snap points, common to all rows. So for now,
-			// we don't want to allow them.
-			if (StaticSnapPoints.ContainsKey(snapTime))
-				return false;
+			if (!StaticSnapPoints.ContainsKey(snapTime))
+				StaticSnapPoints.Add(snapTime, new List<SnapDetails> { CalculateSnapDetailsForPoint(snapTime, level, color) });
+			else
+				StaticSnapPoints[snapTime].Add(CalculateSnapDetailsForPoint(snapTime, level, color));
 
-			StaticSnapPoints.Add(snapTime, new List<SnapDetails> { CalculateSnapDetailsForPoint(snapTime, level, color) } );
 			Invalidate();
-			return true;
 		}
 
 		public bool RemoveSnapPoint(TimeSpan snapTime)

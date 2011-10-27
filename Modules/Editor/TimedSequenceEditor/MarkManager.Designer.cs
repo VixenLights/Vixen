@@ -105,6 +105,7 @@
             this.columnHeader2});
 			this.listViewMarkCollections.FullRowSelect = true;
 			this.listViewMarkCollections.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+			this.listViewMarkCollections.HideSelection = false;
 			this.listViewMarkCollections.Location = new System.Drawing.Point(6, 19);
 			this.listViewMarkCollections.MultiSelect = false;
 			this.listViewMarkCollections.Name = "listViewMarkCollections";
@@ -329,7 +330,7 @@
 			// 
 			// Times
 			// 
-			this.Times.Width = 110;
+			this.Times.Width = 90;
 			// 
 			// buttonAddOrUpdateMark
 			// 
