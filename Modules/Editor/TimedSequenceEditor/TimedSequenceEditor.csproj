@@ -72,7 +72,6 @@
     <Compile Include="ParameterEditor.Designer.cs">
       <DependentUpon>ParameterEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="TimedSequenceEditorDataModel.cs" />
     <Compile Include="TimedSequenceEditor.cs" />
     <Compile Include="TimedSequenceEditorDescriptor.cs" />
     <Compile Include="TimedSequenceEditorEffectEditor.cs">

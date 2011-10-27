@@ -126,7 +126,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			get { return _sequence; }
 			set
 			{
-				value.ModuleDataSet.GetModuleTypeData(value as ISequenceModuleInstance);
 				LoadSequence(value);
 			}
 		}
@@ -198,6 +197,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			else {
 				throw new NotImplementedException("Cannot use sequence type with a Timed Sequence Editor");
 			}
+
+			// default the sequence to 1 minute if it's not set
+			if (_sequence.Length == TimeSpan.Zero)
+				_sequence.Length = TimeSpan.FromMinutes(1);
 
 			timelineControl.TotalTime = _sequence.Length;
 

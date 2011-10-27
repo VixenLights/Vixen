@@ -28,11 +28,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			get { return typeof(TimedSequenceEditor); }
 		}
 
-		public override Type ModuleDataClass
-		{
-			get { return typeof(TimedSequenceEditorDataModel); }
-		}
-
 		public override string Author
 		{
 			get { return "Vixen Team"; }
