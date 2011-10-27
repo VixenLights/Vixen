@@ -161,11 +161,11 @@ namespace Vixen.Sys {
 				editor = manager.Get(sequenceFilePath);
 			}
 
-			// Get any editor module data.
-			sequence.ModuleDataSet.GetModuleTypeData(editor.OwnerModule);
-
-			// Assign the sequence to the editor.
 			if(editor != null) {
+				// Get any editor module data.
+				sequence.ModuleDataSet.GetModuleTypeData(editor.OwnerModule);
+
+				// Assign the sequence to the editor.
 				editor.Sequence = sequence;
 			}
 
