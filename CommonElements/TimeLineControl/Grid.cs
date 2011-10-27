@@ -1290,7 +1290,7 @@ namespace CommonElements.Timeline
 			{
 				SnapDetails details = null;
 				foreach (SnapDetails d in kvp.Value) {
-					if (details == null || d.SnapLevel > details.SnapLevel)
+					if (details == null || (d.SnapLevel > details.SnapLevel && d.SnapColor != Color.Empty))
 						details = d;
 				}
 				if (kvp.Key >= VisibleTimeStart && kvp.Key < VisibleTimeEnd)
@@ -1336,18 +1336,21 @@ namespace CommonElements.Timeline
 						}
 
 						// find how many bitmaps are going to be in this next segment, and also take note of the earliest time they finish
-						TimeSpan segmentDuration = TimeSpan.MaxValue;
+						TimeSpan processingSegmentDuration = TimeSpan.MaxValue;
+						TimeSpan drawingSegmentDuration;
 						TimeSpan earliestStart = TimeSpan.MaxValue;
 						int bitmapLayers = 0;
 						foreach (BitmapDrawDetails drawDetails in bitmapsToDraw) {
 							TimeSpan start = drawDetails.startTime;
 							TimeSpan duration = drawDetails.duration;
-							if (start == currentlyDrawnTo) {
+							TimeSpan currentlyDrawnMin = pixelsToTime((int)Math.Floor(timeToPixels(currentlyDrawnTo)));
+							TimeSpan currentlyDrawnMax = pixelsToTime((int)Math.Ceiling(timeToPixels(currentlyDrawnTo)));
+							if (start >= currentlyDrawnMin && start <= currentlyDrawnMax) {
 								bitmapLayers++;
-								if (duration < segmentDuration)
-									segmentDuration = duration;
-							} else if (start - currentlyDrawnTo < segmentDuration) {
-								segmentDuration = start - currentlyDrawnTo;
+								if (duration < processingSegmentDuration)
+									processingSegmentDuration = duration;
+							} else if (start - currentlyDrawnTo < processingSegmentDuration) {
+								processingSegmentDuration = start - currentlyDrawnTo;
 							}
 
 							// record the earliest start time for drawable blocks we've found; if we
@@ -1361,21 +1364,28 @@ namespace CommonElements.Timeline
 							Bitmap bmp = drawDetails.bmp;
 							TimeSpan start = drawDetails.startTime;
 							TimeSpan duration = drawDetails.duration;
+							bool overlapping = false;
 
 							// only draw elements that are at the point we are currently drawing from
-							if (start != currentlyDrawnTo)
+							TimeSpan currentlyDrawnMin = pixelsToTime((int)Math.Floor(timeToPixels(currentlyDrawnTo)));
+							TimeSpan currentlyDrawnMax = pixelsToTime((int)Math.Ceiling(timeToPixels(currentlyDrawnTo)));
+							if (start < currentlyDrawnMin || start > currentlyDrawnMax)
 								continue;
 
-							PointF location = new PointF(timeToPixels(start), top);
+							Point location = new Point((int)Math.Floor(timeToPixels(start)), top);
 
-							if (duration != segmentDuration) {
+							if (duration != processingSegmentDuration) {
 								// it must be longer; crop the bitmap into a smaller one
-								float croppedWidth = timeToPixels(segmentDuration);
-								Bitmap croppedBitmap = bmp.Clone(new RectangleF(0, 0, croppedWidth, bmp.Height), System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-								drawDetails.bmp = bmp.Clone(new RectangleF(croppedWidth, 0, bmp.Width - croppedWidth, bmp.Height), bmp.PixelFormat);
-								drawDetails.startTime = start + segmentDuration;
-								drawDetails.duration = duration - segmentDuration;
-								bmp = croppedBitmap;
+								int croppedWidth = (int)Math.Ceiling(timeToPixels(processingSegmentDuration));
+								drawingSegmentDuration = pixelsToTime(croppedWidth);
+								if (croppedWidth > 0 && bmp.Width - croppedWidth > 0) {
+									overlapping = true;
+									Bitmap croppedBitmap = bmp.Clone(new Rectangle(0, 0, croppedWidth, bmp.Height), System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+									drawDetails.bmp = bmp.Clone(new Rectangle(croppedWidth, 0, bmp.Width - croppedWidth, bmp.Height), bmp.PixelFormat);
+									drawDetails.startTime = start + drawingSegmentDuration;
+									drawDetails.duration = duration - drawingSegmentDuration;
+									bmp = croppedBitmap;
+								}
 							}
 
 							if (firstDraw) {
@@ -1400,13 +1410,13 @@ namespace CommonElements.Timeline
 								g.DrawImage(bmp, location);
 							}
 
-							if (duration == segmentDuration) {
+							if (!overlapping) {
 								bitmapsToDraw.Remove(drawDetails);
 							}
 						}
 
-						if (segmentDuration < TimeSpan.MaxValue)
-							currentlyDrawnTo += segmentDuration;
+						if (processingSegmentDuration < TimeSpan.MaxValue)
+							currentlyDrawnTo += processingSegmentDuration;
 						else
 							currentlyDrawnTo = earliestStart;
 					}
