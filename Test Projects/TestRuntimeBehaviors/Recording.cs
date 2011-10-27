@@ -50,8 +50,8 @@ namespace TestRuntimeBehaviors {
 			return _sequenceChannelId;
 		}
 
-		override public void Handle(EffectNode commandNode) {
-			_buffer.Add(commandNode);
+		override public void Handle(EffectNode effectNode) {
+			_buffer.Add(effectNode);
 		}
 
 		override public bool Enabled {

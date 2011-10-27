@@ -46,12 +46,12 @@ namespace Vixen.Execution {
 			}
 		}
 
-		private bool _DataListener(EffectNode commandNode) {
+		private bool _DataListener(EffectNode effectNode) {
 			// Data has been inserted into the sequence.
 			// Give every behavior a chance at the data.
 			foreach(IRuntimeBehavior behavior in _runtimeBehaviors) {
 				if(behavior.Enabled) {
-					behavior.Handle(commandNode);
+					behavior.Handle(effectNode);
 				}
 			}
 
@@ -60,7 +60,7 @@ namespace Vixen.Execution {
 			// to be executed against the sequence's time.  This has the side effect of
 			// allowing timed-live behavior without an explicit runtime behavior that has
 			// to manage timing on its own.
-			_sequence.Data.AddLive(commandNode);
+			_sequence.Data.AddLive(effectNode);
 
 			// We don't want any handlers beyond the executor to get live data.
 			return true;

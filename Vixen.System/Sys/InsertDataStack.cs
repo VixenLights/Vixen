@@ -5,15 +5,15 @@ using System.Text;
 
 namespace Vixen.Sys {
 	public class InsertDataListenerStack {
-		public delegate bool DataListener(EffectNode commandNode);
+		public delegate bool DataListener(EffectNode effectNode);
 
 		private LinkedList<DataListener> _listeners = new LinkedList<DataListener>();
 
-		public void InsertData(EffectNode commandNode) {
+		public void InsertData(EffectNode effectNode) {
 			bool cancel = false;
 			IEnumerator<DataListener> enumerator = _listeners.GetEnumerator();
 			while(!cancel && enumerator.MoveNext()) {
-				cancel = enumerator.Current(commandNode);
+				cancel = enumerator.Current(effectNode);
 			}
 		}
 

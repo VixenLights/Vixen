@@ -9,7 +9,7 @@ namespace Vixen.Module.RuntimeBehavior {
 	public interface IRuntimeBehavior {
 		void Startup(ISequence sequence, ITiming timingSource);
 		void Shutdown();
-		void Handle(EffectNode commandNode);
+		void Handle(EffectNode effectNode);
 		bool Enabled { get; set; }
 		Tuple<string, Action>[] BehaviorActions { get; }
 	}

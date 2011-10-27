@@ -97,9 +97,9 @@ namespace Vixen.Sys {
 			}
 		}
 
-		private bool _DataListener(EffectNode commandNode) {
-			Data.AddEffect(commandNode);
-			ModuleDataSet.GetModuleInstanceData(commandNode.Effect);
+		private bool _DataListener(EffectNode effectNode) {
+			Data.AddEffect(effectNode);
+			ModuleDataSet.GetModuleInstanceData(effectNode.Effect);
 			// Do not cancel the event.
 			return false;
 		}
