@@ -44,6 +44,7 @@
 			this.tabPageTest = new System.Windows.Forms.TabPage();
 			this.button1 = new System.Windows.Forms.Button();
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+			this.menuStripMain = new System.Windows.Forms.MenuStrip();
 			this.tabPageDisplaySetup.SuspendLayout();
 			this.tabPageSequences.SuspendLayout();
 			this.tabControlMain.SuspendLayout();
@@ -212,14 +213,24 @@
 			// 
 			this.openFileDialog.Multiselect = true;
 			// 
+			// menuStripMain
+			// 
+			this.menuStripMain.Location = new System.Drawing.Point(0, 0);
+			this.menuStripMain.Name = "menuStripMain";
+			this.menuStripMain.Size = new System.Drawing.Size(484, 24);
+			this.menuStripMain.TabIndex = 2;
+			this.menuStripMain.Text = "menuStrip1";
+			// 
 			// VixenApplication
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(484, 518);
+			this.Controls.Add(this.menuStripMain);
 			this.Controls.Add(this.tabControlMain);
 			this.Controls.Add(this.label1);
 			this.DoubleBuffered = true;
+			this.MainMenuStrip = this.menuStripMain;
 			this.Name = "VixenApplication";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Vixen";
@@ -251,6 +262,7 @@
 		private System.Windows.Forms.TabPage tabPageTest;
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.OpenFileDialog openFileDialog;
+		private System.Windows.Forms.MenuStrip menuStripMain;
 	}
 }
 

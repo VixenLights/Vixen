@@ -32,9 +32,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// add text describing the effect
 			Font f = new Font("Arial", 7);
 			Brush b = new SolidBrush(Color.Black);
-			g.DrawString(EffectNode.Effect.EffectName, f, b, new PointF(5, 5));
-			g.DrawString("Start: " + EffectNode.StartTime.ToString("g"), f, b, new PointF(5, 23));
-			g.DrawString("Length: " + EffectNode.TimeSpan.ToString("g"), f, b, new PointF(5, 35));
+			g.DrawString(EffectNode.Effect.EffectName, f, b, new PointF(5, 3));
+			g.DrawString("Start: " + EffectNode.StartTime.ToString("g"), f, b, new PointF(50, 3));
+			g.DrawString("Length: " + EffectNode.TimeSpan.ToString("g"), f, b, new PointF(50, 16));
 
 			return result;
 		}

@@ -20,6 +20,8 @@ namespace VixenApplication
 		{
 			InitializeComponent();
 
+			AppCommands = new AppCommand(this);
+
 			Vixen.Sys.VixenSystem.Start(this, true);
 
 			initializeEditorTypes();
