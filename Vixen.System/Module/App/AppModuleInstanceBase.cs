@@ -12,6 +12,11 @@ namespace Vixen.Module.App {
 
 		abstract public IApplication Application { set; }
 
+		public override IModuleDataModel ModuleData {
+			get { return StaticModuleData; }
+			set { }
+		}
+
 		public bool Equals(IAppModuleInstance x, IAppModuleInstance y) {
 			return base.Equals(x, y);
 		}

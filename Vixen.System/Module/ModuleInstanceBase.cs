@@ -7,8 +7,6 @@ namespace Vixen.Module {
 	public abstract class ModuleInstanceBase : IModuleInstance, IEqualityComparer<IModuleInstance>, IEquatable<IModuleInstance>, IEqualityComparer<ModuleInstanceBase>, IEquatable<ModuleInstanceBase> {
 		public Guid InstanceId { get; set; }
 
-		virtual public Type ModuleDataClass { get { return null; } }
-
 		virtual public IModuleDataModel ModuleData { get; set; }
 
 		virtual public IModuleDataModel StaticModuleData { get; set; }
