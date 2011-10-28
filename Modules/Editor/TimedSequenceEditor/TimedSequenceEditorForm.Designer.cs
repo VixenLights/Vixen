@@ -37,7 +37,6 @@
 			this.sequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_Save = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_SaveAs = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripMenuItem_Close = new System.Windows.Forms.ToolStripMenuItem();
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.addEffectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripEffects = new System.Windows.Forms.ToolStrip();
@@ -45,7 +44,12 @@
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabel_currentTime = new System.Windows.Forms.ToolStripStatusLabel();
 			this.timelineControl = new CommonElements.Timeline.TimelineControl();
+			this.toolStripMenuItem_Close = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_MarkManager = new System.Windows.Forms.ToolStripMenuItem();
+			this.associateAudioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.toolStripOperations.SuspendLayout();
 			this.menuStrip.SuspendLayout();
 			this.statusStrip.SuspendLayout();
@@ -98,6 +102,7 @@
 			this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.sequenceToolStripMenuItem,
             this.editToolStripMenuItem,
+            this.toolsToolStripMenuItem,
             this.addEffectToolStripMenuItem});
 			this.menuStrip.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip.Name = "menuStrip";
@@ -110,6 +115,7 @@
 			this.sequenceToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem_Save,
             this.toolStripMenuItem_SaveAs,
+            this.toolStripSeparator1,
             this.toolStripMenuItem_Close});
 			this.sequenceToolStripMenuItem.Name = "sequenceToolStripMenuItem";
 			this.sequenceToolStripMenuItem.Size = new System.Drawing.Size(70, 20);
@@ -129,17 +135,8 @@
 			this.toolStripMenuItem_SaveAs.Text = "Save As...";
 			this.toolStripMenuItem_SaveAs.Click += new System.EventHandler(this.toolStripMenuItem_SaveAs_Click);
 			// 
-			// toolStripMenuItem_Close
-			// 
-			this.toolStripMenuItem_Close.Name = "toolStripMenuItem_Close";
-			this.toolStripMenuItem_Close.Size = new System.Drawing.Size(152, 22);
-			this.toolStripMenuItem_Close.Text = "Close";
-			this.toolStripMenuItem_Close.Click += new System.EventHandler(this.toolStripMenuItem_Close_Click);
-			// 
 			// editToolStripMenuItem
 			// 
-			this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem_MarkManager});
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
 			this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
 			this.editToolStripMenuItem.Text = "Edit";
@@ -160,7 +157,7 @@
 			// 
 			// timerPlaying
 			// 
-			this.timerPlaying.Interval = 25;
+			this.timerPlaying.Interval = 40;
 			this.timerPlaying.Tick += new System.EventHandler(this.timerPlaying_Tick);
 			// 
 			// statusStrip
@@ -199,12 +196,43 @@
 			this.timelineControl.VerticalOffset = 0;
 			this.timelineControl.VisibleTimeStart = System.TimeSpan.Parse("00:00:00");
 			// 
+			// toolStripMenuItem_Close
+			// 
+			this.toolStripMenuItem_Close.Name = "toolStripMenuItem_Close";
+			this.toolStripMenuItem_Close.Size = new System.Drawing.Size(152, 22);
+			this.toolStripMenuItem_Close.Text = "Close";
+			this.toolStripMenuItem_Close.Click += new System.EventHandler(this.toolStripMenuItem_Close_Click);
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+			// 
+			// toolsToolStripMenuItem
+			// 
+			this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.associateAudioToolStripMenuItem,
+            this.toolStripMenuItem_MarkManager});
+			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
+			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+			this.toolsToolStripMenuItem.Text = "Tools";
+			// 
 			// toolStripMenuItem_MarkManager
 			// 
 			this.toolStripMenuItem_MarkManager.Name = "toolStripMenuItem_MarkManager";
-			this.toolStripMenuItem_MarkManager.Size = new System.Drawing.Size(160, 22);
+			this.toolStripMenuItem_MarkManager.Size = new System.Drawing.Size(168, 22);
 			this.toolStripMenuItem_MarkManager.Text = "Mark Manager...";
-			this.toolStripMenuItem_MarkManager.Click += new System.EventHandler(this.toolStripMenuItem_MarkManager_Click);
+			// 
+			// associateAudioToolStripMenuItem
+			// 
+			this.associateAudioToolStripMenuItem.Name = "associateAudioToolStripMenuItem";
+			this.associateAudioToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+			this.associateAudioToolStripMenuItem.Text = "Associate Audio...";
+			this.associateAudioToolStripMenuItem.Click += new System.EventHandler(this.associateAudioToolStripMenuItem_Click);
+			// 
+			// openFileDialog
+			// 
+			this.openFileDialog.Filter = "All files (*.*)|*.*";
 			// 
 			// TimedSequenceEditorForm
 			// 
@@ -243,7 +271,6 @@
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_Save;
 		private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
 		private System.Windows.Forms.ToolStrip toolStripEffects;
-		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_Close;
 		private System.Windows.Forms.ToolStripMenuItem addEffectToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_SaveAs;
 		private System.Windows.Forms.ToolStripButton toolStripButton_Play;
@@ -252,6 +279,11 @@
 		private System.Windows.Forms.Timer timerPlaying;
 		private System.Windows.Forms.StatusStrip statusStrip;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel_currentTime;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_Close;
+		private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem associateAudioToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_MarkManager;
+		private System.Windows.Forms.OpenFileDialog openFileDialog;
 	}
 }

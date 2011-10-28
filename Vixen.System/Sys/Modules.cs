@@ -252,7 +252,7 @@ namespace Vixen.Sys {
 				Assembly assembly = null;
 				try {
 					assembly = Assembly.LoadFrom(filePath);
-				} catch(NotSupportedException ex) {
+				} catch(NotSupportedException) {
 					VixenSystem.Logging.Error("Could not load module assembly " + filePath + ".  See http://vanderbiest.org/blog/2010/08/11/system-notsupportedexception-when-referencing-to-an-assembly/");
 					return new IModuleDescriptor[0];
 				} catch(Exception ex) {

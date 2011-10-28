@@ -116,6 +116,11 @@
       <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Media\Audio\Audio.csproj">
+      <Project>{4243BA4C-6371-4DD1-8A1D-675BED5322AF}</Project>
+      <Name>Audio</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Sequence\Timed\Timed.csproj">
       <Project>{45E1228A-F714-41D5-BB9B-A776F2B23143}</Project>
       <Name>Timed</Name>

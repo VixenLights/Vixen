@@ -14,6 +14,7 @@ using Vixen.Module.Effect;
 using Vixen.Module.EffectEditor;
 using Vixen.Module.Property;
 using Vixen.Module.Timing;
+using Vixen.Module.Media;
 using CommonElements.Timeline;
 using VixenModules.Sequence.Timed;
 using System.Diagnostics;
@@ -43,6 +44,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		// the time that was originally marked with the cursor before playback started; this is so
 		// we can move the cursor to represent the current playing time, and still return to where it was.
 		private TimeSpan _originalCursorPositionBeforePlayback;
+
+		// the default time for a sequence if one is loaded with 0 time
+		private static TimeSpan _defaultSequenceTime = TimeSpan.FromMinutes(1);
 
 		#endregion
 
@@ -191,9 +195,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			// default the sequence to 1 minute if it's not set
 			if (_sequence.Length == TimeSpan.Zero)
-				_sequence.Length = TimeSpan.FromMinutes(1);
+				_sequence.Length = _defaultSequenceTime;
 
-			timelineControl.TotalTime = _sequence.Length;
+			SetSequenceLength(_sequence.Length);
 
 			// update our program context with this sequence
 			OpenSequenceContext(sequence);
@@ -210,6 +214,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			PopulateGridWithMarks();
 
 			IsModified = false;
+		}
+
+		private void SetSequenceLength(TimeSpan length)
+		{
+			if (_sequence.Length != length) {
+				_sequence.Length = length;
+			}
+
+			if (timelineControl.TotalTime != length) {
+				timelineControl.TotalTime = length;
+			}
 		}
 
 		/// <summary>
@@ -635,5 +650,56 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+		private void associateAudioToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			// for now, only allow a single Audio type media to be assocated. If they want to add another, confirm and remove it.
+			HashSet<IMediaModuleInstance> modulesToRemove = new HashSet<IMediaModuleInstance>();
+			foreach (IMediaModuleInstance module in _sequence.Media) {
+				if (module is VixenModules.Media.Audio.AudioModule) {
+					modulesToRemove.Add(module);
+				}
+			}
+
+			if (modulesToRemove.Count > 0) {
+				DialogResult result = MessageBox.Show("Only one audio file can be associated with a sequence at a time. If you choose another, " +
+						"the first will be removed. Continue?", "Remove existing audio?", MessageBoxButtons.YesNoCancel);
+				if (result != System.Windows.Forms.DialogResult.Yes)
+					return;
+			}
+
+			// TODO: we need to be able to get the support file types, to filter the openFileDialog properly, but it's not
+			// immediately obvious how to get that; for now, just let it open any file type and complain if it's wrong
+
+			if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+				IMediaModuleInstance newInstance = _sequence.Media.Add(openFileDialog.FileName);
+				if (newInstance == null) {
+					MessageBox.Show("The selected file is not a supported type.");
+					return;
+				}
+
+				// we're going ahead and adding the new audio, so remove any of the old ones we found earlier
+				foreach (IMediaModuleInstance module in modulesToRemove) {
+					_sequence.Media.Remove(module);
+				}
+
+				TimeSpan length = TimeSpan.Zero;
+				if (newInstance is VixenModules.Media.Audio.AudioModule) {
+					 length = (newInstance as VixenModules.Media.Audio.AudioModule).MediaDuration;
+				}
+
+				if (length != TimeSpan.Zero) {
+					if (_sequence.Length == _defaultSequenceTime) {
+						SetSequenceLength(length);
+					} else {
+						if (MessageBox.Show("Do you want to resize the sequence to the size of the audio?",
+							"Resize sequence?", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes) {
+							SetSequenceLength(length);
+						}
+					}
+				}
+
+				IsModified = true;
+			}
+		}
 	}
 }

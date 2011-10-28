@@ -14,7 +14,6 @@ namespace SampleOutput {
 	public partial class DisplayForm : Form {
 		private byte[] _values = new byte[0];
 		private int _across = 1, _down = 1;
-		private int _count;
 		private int _boxWidth, _boxHeight;
 		private SolidBrush _brush;
 		private int _outputCount;

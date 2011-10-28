@@ -89,7 +89,7 @@ namespace Vixen.Execution {
 					behavior.Startup(this.Sequence, TimingSource);
 				}
 
-				// CommandNodes that have any intervals within the time frame.
+				// EffectNodes that have any intervals within the time frame.
 				var qualifiedData = this.Sequence.Data.GetEffects(StartTime, EndTime);
 					// Done by GetCommandRange now.  Otherwise, trying to get an enumerator
 					// for the collection will not the be enumerator we intend.

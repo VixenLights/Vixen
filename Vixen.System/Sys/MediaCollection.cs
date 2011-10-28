@@ -23,7 +23,8 @@ namespace Vixen.Sys {
 		/// </summary>
 		/// <param name="filePath"></param>
 		/// <exception cref="NotImplementedException">There is no media module to support the selected file.</exception>
-		public void Add(string filePath) {
+		public IMediaModuleInstance Add(string filePath)
+		{
 			MediaModuleManagement manager = Modules.GetManager<IMediaModuleInstance, MediaModuleManagement>();
 			IMediaModuleInstance instance = manager.Get(filePath);
 			if(instance != null) {
@@ -33,9 +34,9 @@ namespace Vixen.Sys {
 				instance.MediaFilePath = filePath;
 				// Add to the collection.
 				_modules.Add(instance);
-			} else {
-				throw new NotImplementedException("File of type " + Path.GetExtension(filePath) + " is not supported by your configuration.");
 			}
+
+			return instance;
 		}
 
 		public int IndexOf(IMediaModuleInstance item) {

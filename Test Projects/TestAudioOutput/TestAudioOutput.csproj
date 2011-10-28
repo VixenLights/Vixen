@@ -117,9 +117,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Fmod64\fmod.csproj">
-      <Project>{0FC608ED-BBAD-4F92-8CAD-61D94F13F435}</Project>
-      <Name>fmod</Name>
+    <ProjectReference Include="..\..\Common\FMOD\FMOD.csproj">
+      <Project>{3A2B3153-2B4B-4EC4-B85F-A824682CC054}</Project>
+      <Name>FMOD</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Vixen.System\Vixen.csproj">
       <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>

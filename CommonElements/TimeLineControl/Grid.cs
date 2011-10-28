@@ -98,6 +98,10 @@ namespace CommonElements.Timeline
 
 		protected override void TotalTimeChanged(object sender, EventArgs e)
 		{
+			AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), AutoScrollMinSize.Height);
+			if (VisibleTimeEnd > TotalTime) {
+				VisibleTimeStart = TotalTime - VisibleTimeSpan;
+			}
 			Invalidate();
 		}
 
