@@ -257,7 +257,7 @@ namespace Vixen.Sys {
 					}
 				}
 				catch (Exception ex) {
-					VixenSystem.Logging.Error("EffectRender: Exception while trying to render an effect. (Has the effect" +
+					VixenSystem.Logging.Error("EffectRender: Exception while trying to render an effect. (Has the effect " +
 						"generated data for a channel or node it doesn't target?)", ex);
 				}
 			}

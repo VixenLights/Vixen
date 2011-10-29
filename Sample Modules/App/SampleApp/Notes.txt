@@ -1,0 +1,82 @@
+﻿DISCLAIMER:
+This file is not meant to be a comprehensive guide or tutorial.  They are
+some notes created while creating this project that may help you do the
+same.
+
+--== Sample Application Module ==--
+
+Application modules are system-level modules that have no user interface,
+have the same lifetime as the system itself, and get access to the
+client application.
+
+I will assume that you have used C# and Visual Studio before, but I will
+try not to assume much more than that.
+
+Step 1: Create a Class Library project.
+Step 2: Reference Vixen.dll in the project.
+
+Neither of those steps should require explanation.
+
+A module may or may not have persisted data via a data object.
+This sample project will not.  Please see SampleOutput project for an
+example of a persisted data object implementation.
+
+Step 3: Create some classes.
+
+Use whatever names you like for these classes I'm about to describe.  But
+if you're going to have more than one module in the assembly, you may want
+to keep the names centered around the module (for example, instead of
+calling a class "Descriptor", call it "RenardDescriptor").
+
+Class 1: The descriptor class.
+Class 2: The module class.
+
+Make each of these classes public.
+
+Each module type has base classes you can use to implement the mundane
+members.  The descriptor is the easiest of the three, so I will start there.
+
+Step 4: Create the descriptor.
+
+Import namespaces: Vixen.Module.App
+Derive from: AppModuleDescriptorBase
+
+Have Visual Studio implement the base class for you and you will see (not in this
+order):
+
+Author:      You. Duh.
+Description: Anything you like.
+TypeName:    The name of your module that users will see.
+Version:     Not currently used, but it may be in the future.
+TypeId:      A unique, *unique*, UNIQUE GUID that you generate.
+             Yes, make sure it's unique and you didn't copy it
+             from someone/somewhere else.  This is the value that
+             uniquely indentifies your module.  If this conflicts
+             with another module, neither module will be loaded.
+ModuleClass: The type that implements your module (the other class).
+
+There are other virtual members you can override, but none of them are necessary.
+
+Tada, the descriptor is done.
+
+Step 5: Create the module class.
+
+Import namespaces: Vixen.Module, Vixen.Module.App, Vixen.Sys
+Derive from: AppModuleInstanceBase
+
+Everything up until now has been to support this one class.  This is the class
+that does everything.  It IS your module.
+
+The members necessary to implement:
+
+Loading:     Called when the application module is started.  Generally, system startup.
+Unloading:   Called when the application module is stopped.  Generally, system shutdown.
+Application: This is a reference to the client application.  With this reference, you
+             have limited ability to inject menus and view the state of the application.
+             (This is currently very limited, but should be expanded over time.)
+
+Yes, the current implementation of AppCommands sucks, is misnamed, is lacking, and is short of
+its intended design.  It is one of several things slated for an evolution refactoring.
+
+Press the magic build key, duck, and cover.  Drop the resulting binary into the 
+Modules/App directory and it should show up the next time you start up.

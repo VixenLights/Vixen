@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{D70A5623-28E6-4544-8109-25D7694BC5F7}</ProjectGuid>
+    <ProjectGuid>{522669E1-7866-4D0B-92C7-23F49CA44E6B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SampleOutput</RootNamespace>
-    <AssemblyName>SampleOutput</AssemblyName>
+    <RootNamespace>SampleApp</RootNamespace>
+    <AssemblyName>SampleApp</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -33,8 +33,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -43,25 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DisplayForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DisplayForm.Designer.cs">
-      <DependentUpon>DisplayForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="SampleOutputData.cs" />
-    <Compile Include="SampleOutputDescriptor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SampleOutputModule.cs" />
-    <Compile Include="SampleOutputSetupForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SampleOutputSetupForm.Designer.cs">
-      <DependentUpon>SampleOutputSetupForm.cs</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Notes.txt" />
+    <Compile Include="SampleAppDescriptor.cs" />
+    <Compile Include="SampleAppModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
@@ -71,12 +53,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DisplayForm.resx">
-      <DependentUpon>DisplayForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SampleOutputSetupForm.resx">
-      <DependentUpon>SampleOutputSetupForm.cs</DependentUpon>
-    </EmbeddedResource>
+    <Content Include="Notes.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

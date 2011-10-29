@@ -1,9 +1,13 @@
-﻿Thanks for checking out this sample output module.  Hopefully, this will give
-you a template by which you can create your own modules.
-
+﻿DISCLAIMER:
 This file is not meant to be a comprehensive guide or tutorial.  They are
 some notes created while creating this project that may help you do the
 same.
+
+--== Sample Output Module ==--
+
+Output modules are what a controller uses to communicate with hardware.
+A controller is assumed to be unidirectional (output only) and has a
+state that represents a single snapshot in time.
 
 I will assume that you have used C# and Visual Studio before, but I will
 try not to assume much more than that.
@@ -51,7 +55,7 @@ TypeId:      A unique, *unique*, UNIQUE GUID that you generate.
              from someone/somewhere else.  This is the value that
              uniquely indentifies your module.  If this conflicts
              with another module, neither module will be loaded.
-ModuleClass: The type that implements your module.
+ModuleClass: The type that implements your module (class 2 in this sample). 
 
 There are other virtual members you can override, but none of them are necessary.
 This includes ModuleDataClass.  The sample module overrides it because it's going
