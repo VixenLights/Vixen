@@ -18,8 +18,8 @@ namespace TestAudioOutput {
         }
 
 		override public Type ModuleDataClass {
-			//get { return typeof(AudioData); }
-            get { return null; }
+			get { return typeof(AudioData); }
+			//get { return null; }
         }
 
 		public override Type ModuleStaticDataClass {

@@ -79,8 +79,12 @@ namespace Vixen.IO.Xml {
 		}
 
 		private void _ReadModuleData(XElement element, Sequence sequence) {
+			// Doing it this way because Sequence has members that are dependent upon
+			// data in the dataset and need it to be populated right away.
 			string moduleDataString = element.Element(ELEMENT_MODULE_DATA).InnerXml();
-			sequence.ModuleDataSet.Deserialize(moduleDataString);
+			Module.ModuleLocalDataSet dataSet = new Module.ModuleLocalDataSet();
+			dataSet.Deserialize(moduleDataString);
+			sequence.ModuleDataSet = dataSet;
 		}
 
 		private void _ReadEffectNodes(XElement element, Sequence sequence) {

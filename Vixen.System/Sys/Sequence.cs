@@ -21,6 +21,8 @@ namespace Vixen.Sys {
 	[Executor(typeof(SequenceExecutor))]
 	[SequenceReader(typeof(XmlSequenceReader))]
 	abstract public class Sequence : Vixen.Sys.ISequence, IVersioned {
+		private IModuleDataSet _moduleDataSet;
+
 		private const string DIRECTORY_NAME = "Sequence";
 		private const int VERSION = 1;
 
@@ -80,21 +82,20 @@ namespace Vixen.Sys {
 		static public readonly TimeSpan Forever = TimeSpan.MaxValue;
 
 		protected Sequence() {
-			ModuleDataSet = new ModuleLocalDataSet();
-			
 			FilePath = "";
 
 			InsertDataListener = new InsertDataListenerStack();
 			InsertDataListener += _DataListener;
 			Data = new EffectStreams(this);
 			TimingProvider = new TimingProviders(this);
-			Media = new MediaCollection(ModuleDataSet);
+			//Media = new MediaCollection(ModuleDataSet);
 			RuntimeBehaviors = Modules.ModuleManagement.GetAllRuntimeBehavior();
-			// The runtime behavior module instances will need data in the sequence's
-			// data set.
-			foreach(IRuntimeBehaviorModuleInstance runtimeBehavior in RuntimeBehaviors) {
-				ModuleDataSet.GetModuleTypeData(runtimeBehavior);
-			}
+			ModuleDataSet = new ModuleLocalDataSet();
+			//// The runtime behavior module instances will need data in the sequence's
+			//// data set.
+			//foreach(IRuntimeBehaviorModuleInstance runtimeBehavior in RuntimeBehaviors) {
+			//    ModuleDataSet.GetModuleTypeData(runtimeBehavior);
+			//}
 		}
 
 		private bool _DataListener(EffectNode effectNode) {
@@ -124,7 +125,20 @@ namespace Vixen.Sys {
 			get { return Path.GetFileNameWithoutExtension(FilePath); }
 		}
 
-		public IModuleDataSet ModuleDataSet { get; private set; }
+		public IModuleDataSet ModuleDataSet {
+			get { return _moduleDataSet; }
+			set {
+				if(_moduleDataSet != value) {
+					_moduleDataSet = value;
+					Media = new MediaCollection(_moduleDataSet);
+					// The runtime behavior module instances will need data in the sequence's
+					// data set.
+					foreach(IRuntimeBehaviorModuleInstance runtimeBehavior in RuntimeBehaviors) {
+						_moduleDataSet.GetModuleTypeData(runtimeBehavior);
+					}
+				}
+			}
+		}
 
 		public TimeSpan Length { get; set; }
 

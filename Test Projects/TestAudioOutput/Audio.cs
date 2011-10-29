@@ -11,7 +11,7 @@ namespace TestAudioOutput {
     // Single-card implementation
     public class Audio : MediaModuleInstanceBase, ITiming {
         private FmodInstance _audioSystem;
-		//private AudioData _audioData;
+		private AudioData _audioData;
 		//private AudioStaticData _audioStaticData;
 
         override public void Start() {
@@ -39,10 +39,10 @@ namespace TestAudioOutput {
 			}
 		}
 
-		//override public IModuleDataModel ModuleData {
-		//    get { return _audioData; }
-		//    set { _audioData = value as AudioData; }
-		//}
+		override public IModuleDataModel ModuleData {
+			get { return _audioData; }
+			set { _audioData = value as AudioData; }
+		}
 
 		//public override IModuleDataModel StaticModuleData {
 		//    get { return _audioStaticData; }
@@ -76,11 +76,11 @@ namespace TestAudioOutput {
 			get { return this as ITiming; }
 		}
 
-		override public string MediaFilePath { get; set; }
-		//override public string MediaFilePath {
-		//    get { return _audioData.FilePath; }
-		//    set { _audioData.FilePath = value; }
-		//}
+		//override public string MediaFilePath { get; set; }
+		override public string MediaFilePath {
+			get { return _audioData.FilePath; }
+			set { _audioData.FilePath = value; }
+		}
 
 		// If a media file is used as the timing source, it's also being
 		// executed as media for the sequence.
