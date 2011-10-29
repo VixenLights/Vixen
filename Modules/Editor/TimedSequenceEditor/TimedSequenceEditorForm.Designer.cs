@@ -43,13 +43,13 @@
 			this.timerPlaying = new System.Windows.Forms.Timer(this.components);
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabel_currentTime = new System.Windows.Forms.ToolStripStatusLabel();
-			this.timelineControl = new CommonElements.Timeline.TimelineControl();
 			this.toolStripMenuItem_Close = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_MarkManager = new System.Windows.Forms.ToolStripMenuItem();
-			this.associateAudioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem_associateAudio = new System.Windows.Forms.ToolStripMenuItem();
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+			this.timelineControl = new CommonElements.Timeline.TimelineControl();
 			this.toolStripOperations.SuspendLayout();
 			this.menuStrip.SuspendLayout();
 			this.statusStrip.SuspendLayout();
@@ -124,14 +124,14 @@
 			// toolStripMenuItem_Save
 			// 
 			this.toolStripMenuItem_Save.Name = "toolStripMenuItem_Save";
-			this.toolStripMenuItem_Save.Size = new System.Drawing.Size(152, 22);
+			this.toolStripMenuItem_Save.Size = new System.Drawing.Size(123, 22);
 			this.toolStripMenuItem_Save.Text = "Save";
 			this.toolStripMenuItem_Save.Click += new System.EventHandler(this.toolStripMenuItem_Save_Click);
 			// 
 			// toolStripMenuItem_SaveAs
 			// 
 			this.toolStripMenuItem_SaveAs.Name = "toolStripMenuItem_SaveAs";
-			this.toolStripMenuItem_SaveAs.Size = new System.Drawing.Size(152, 22);
+			this.toolStripMenuItem_SaveAs.Size = new System.Drawing.Size(123, 22);
 			this.toolStripMenuItem_SaveAs.Text = "Save As...";
 			this.toolStripMenuItem_SaveAs.Click += new System.EventHandler(this.toolStripMenuItem_SaveAs_Click);
 			// 
@@ -179,6 +179,45 @@
 			this.toolStripStatusLabel_currentTime.Size = new System.Drawing.Size(60, 21);
 			this.toolStripStatusLabel_currentTime.Text = "0:00.00";
 			// 
+			// toolStripMenuItem_Close
+			// 
+			this.toolStripMenuItem_Close.Name = "toolStripMenuItem_Close";
+			this.toolStripMenuItem_Close.Size = new System.Drawing.Size(123, 22);
+			this.toolStripMenuItem_Close.Text = "Close";
+			this.toolStripMenuItem_Close.Click += new System.EventHandler(this.toolStripMenuItem_Close_Click);
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(120, 6);
+			// 
+			// toolsToolStripMenuItem
+			// 
+			this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem_associateAudio,
+            this.toolStripMenuItem_MarkManager});
+			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
+			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+			this.toolsToolStripMenuItem.Text = "Tools";
+			// 
+			// toolStripMenuItem_MarkManager
+			// 
+			this.toolStripMenuItem_MarkManager.Name = "toolStripMenuItem_MarkManager";
+			this.toolStripMenuItem_MarkManager.Size = new System.Drawing.Size(168, 22);
+			this.toolStripMenuItem_MarkManager.Text = "Mark Manager...";
+			this.toolStripMenuItem_MarkManager.Click += new System.EventHandler(this.toolStripMenuItem_MarkManager_Click);
+			// 
+			// toolStripMenuItem_associateAudio
+			// 
+			this.toolStripMenuItem_associateAudio.Name = "toolStripMenuItem_associateAudio";
+			this.toolStripMenuItem_associateAudio.Size = new System.Drawing.Size(168, 22);
+			this.toolStripMenuItem_associateAudio.Text = "Associate Audio...";
+			this.toolStripMenuItem_associateAudio.Click += new System.EventHandler(this.toolStripMenuItem_associateAudio_Click);
+			// 
+			// openFileDialog
+			// 
+			this.openFileDialog.Filter = "All files (*.*)|*.*";
+			// 
 			// timelineControl
 			// 
 			this.timelineControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -195,44 +234,6 @@
 			this.timelineControl.TotalTime = System.TimeSpan.Parse("00:02:00");
 			this.timelineControl.VerticalOffset = 0;
 			this.timelineControl.VisibleTimeStart = System.TimeSpan.Parse("00:00:00");
-			// 
-			// toolStripMenuItem_Close
-			// 
-			this.toolStripMenuItem_Close.Name = "toolStripMenuItem_Close";
-			this.toolStripMenuItem_Close.Size = new System.Drawing.Size(152, 22);
-			this.toolStripMenuItem_Close.Text = "Close";
-			this.toolStripMenuItem_Close.Click += new System.EventHandler(this.toolStripMenuItem_Close_Click);
-			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
-			// 
-			// toolsToolStripMenuItem
-			// 
-			this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.associateAudioToolStripMenuItem,
-            this.toolStripMenuItem_MarkManager});
-			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
-			this.toolsToolStripMenuItem.Text = "Tools";
-			// 
-			// toolStripMenuItem_MarkManager
-			// 
-			this.toolStripMenuItem_MarkManager.Name = "toolStripMenuItem_MarkManager";
-			this.toolStripMenuItem_MarkManager.Size = new System.Drawing.Size(168, 22);
-			this.toolStripMenuItem_MarkManager.Text = "Mark Manager...";
-			// 
-			// associateAudioToolStripMenuItem
-			// 
-			this.associateAudioToolStripMenuItem.Name = "associateAudioToolStripMenuItem";
-			this.associateAudioToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
-			this.associateAudioToolStripMenuItem.Text = "Associate Audio...";
-			this.associateAudioToolStripMenuItem.Click += new System.EventHandler(this.associateAudioToolStripMenuItem_Click);
-			// 
-			// openFileDialog
-			// 
-			this.openFileDialog.Filter = "All files (*.*)|*.*";
 			// 
 			// TimedSequenceEditorForm
 			// 
@@ -282,7 +283,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_Close;
 		private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem associateAudioToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_associateAudio;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_MarkManager;
 		private System.Windows.Forms.OpenFileDialog openFileDialog;
 	}

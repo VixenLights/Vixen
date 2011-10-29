@@ -650,7 +650,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void associateAudioToolStripMenuItem_Click(object sender, EventArgs e)
+		private void toolStripMenuItem_associateAudio_Click(object sender, EventArgs e)
 		{
 			// for now, only allow a single Audio type media to be assocated. If they want to add another, confirm and remove it.
 			HashSet<IMediaModuleInstance> modulesToRemove = new HashSet<IMediaModuleInstance>();
