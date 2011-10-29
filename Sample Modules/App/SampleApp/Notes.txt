@@ -34,7 +34,7 @@ Class 2: The module class.
 Make each of these classes public.
 
 Each module type has base classes you can use to implement the mundane
-members.  The descriptor is the easiest of the three, so I will start there.
+members.  The descriptor is the easiest, so I will start there.
 
 Step 4: Create the descriptor.
 

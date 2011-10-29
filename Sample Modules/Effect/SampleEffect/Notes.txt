@@ -1,0 +1,145 @@
+﻿DISCLAIMER:
+This file is not meant to be a comprehensive guide or tutorial.  They are
+some notes created while creating this project that may help you do the
+same.
+
+--== Sample Effect Module ==--
+
+Effect modules are responsible for generating user-usable effects in
+editors and for generating the low-level command data that will be
+executed by output modules.
+
+I will assume that you have used C# and Visual Studio before, but I will
+try not to assume much more than that.
+
+Step 1: Create a Class Library project.
+Step 2: Reference Vixen.dll in the project.
+
+Neither of those steps should require explanation.
+
+A module may or may not have persisted data via a data object.
+This sample project will because that's how effects' parameters
+are persisted.
+
+Step 3: Create some classes.
+
+Use whatever names you like for these classes I'm about to describe.  But
+if you're going to have more than one module in the assembly, you may want
+to keep the names centered around the module (for example, instead of
+calling a class "Descriptor", call it "RenardDescriptor").
+
+Class 1: The descriptor class.
+Class 2: The module class.
+Class 3: The data class.
+
+Make each of these classes public.
+
+Each module type has base classes you can use to implement the mundane
+members.  The descriptor is the easiest of the three, so I will start there.
+
+Step 4: Create the descriptor.
+
+Import namespaces: Vixen.Module.Effect, Vixen.Commands
+Derive from: EffectModuleDescriptorBase
+
+Have Visual Studio implement the base class for you and you will see (not in this
+order):
+
+Author:      You. Duh.
+Description: Anything you like.
+TypeName:    The name of your module that users will see.
+Version:     Not currently used, but it may be in the future.
+TypeId:      A unique, *unique*, UNIQUE GUID that you generate.
+             Yes, make sure it's unique and you didn't copy it
+             from someone/somewhere else.  This is the value that
+             uniquely indentifies your module.  If this conflicts
+             with another module, neither module will be loaded.
+ModuleClass: The type that implements your module (class 2 in this sample).
+EffectName:  The name the user will see in editors.
+
+Other members of note:
+
+Parameters:  Chances are that your effect is going to require some user input.
+             The Parameters member defines parameters that your effect requires
+             to define and customize its behavior.  But this is not required.
+             If you do, you'll need to define the parameters.  This sample effect
+             takes a Level parameter -- a value between 0 and 100.
+GetRepresentativeImage:
+             Editors can make use of an image that you declare to represent your
+             effect.  If you don't specify one, a default one will be provided.
+             You are given the size that the editor desires so that you have the
+             opportunity to provide the best-looking image you can for the use.
+ModuleDataClass:
+             The type that implements your data (class 3 in this sample).
+
+The descriptor is done.
+
+Step 5: Create the data class.
+
+Import namespaces: Vixen.Module, System.Runtime.Serialization
+Derive from: ModuleDataModelBase
+
+Any data that you want to have persisted for you goes into this data class.  You
+read previously written data from it and you write data to it.  The persistence
+is done for you and the instantiation of the data object is also handled for you.
+
+If you're going to have data, you need to reference System.Runtime.Serialization
+in your project.  The Clone method that is required is as the name implies --
+provide a clone of this data class instance.  The MemberwiseClone may suffice
+if you have nothing but value types, but if you have any lists or object
+references, you may have to get more in-depth.
+
+Decorate the class with the DataContract attribute.  Any members you want to have
+persisted as data get marked with the DataMember attribute.  Vixen uses data
+contract serialization, which is opt-in, so only members you mark with DataMember
+will be serialized.  If there are any non-integral types (such as classes you
+create), they too need to be marked with DataContract and any serialized members
+with DataMember.
+
+In the context of effect modules, an effect's parameters are assumed to be in its
+data object when the sequence is written to disk, so it's a good idea to use
+your data object as the place you store parameter values at runtime to make sure
+they're always up-to-date.
+
+Step 6: Create the module class.
+
+Import namespaces: Vixen.Module, Vixen.Module.Effect, Vixen.Commands
+Derive from: EffectModuleInstanceBase
+
+Everything up until now has been to support this one class.  This is the class
+that does everything.  It IS your module.
+
+The members necessary to implement:
+
+ParameterValues: This is where parameter values will be given to your module and
+                 read from it.  The values are assumed to be in the same order as
+                 the parameters you specify.  You are responsible for casting to/from
+                 the specific types.
+_PreRender:      Do not make assumptions about when this will be called.  That may
+                 change with future releases.  This is when you generate your data.
+_Render:         This will be called at some future time after _PreRender.  In most
+                 cases, you'll return what _PreRender generated.
+
+The reason for the two-step rendering process is two-fold:
+1. Background data generation
+   Effects may be rendered in the background to cut down on runtime processing.
+2. Caching
+   By default, the base class will only call _PreRender when it believes your
+   effect is dirty (by way of a changed target or time span).  If it's not
+   dirty, it will just call _Render.
+   If it's appropriate for your effect, and the parameters or time span haven't
+   changed, you can repeatedly return the same data for every call to _Render.
+
+Other members of note:
+
+IsDirty: By default, the base classes sets this flag when a target or time span
+         changes and calls _PreRender at the next rendering.
+GenerateVisualRepresentation:
+         An editor has the option to let your effect define what it's going to
+         look like.  It will provide you the rectangular area you occupy in its
+         presentation and a Graphics object to draw with.
+
+Weave the mysterious build fabric and drop the resulting binary into the 
+Modules/Effect directory.
+Of course, if your effect has parameters and there aren't editors defined
+for those parameters, your users are going to find it to be useless.
