@@ -379,7 +379,12 @@
 			this.Controls.Add(this.groupBoxSelectedMarkCollection);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.groupBoxMarkCollections);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "MarkManager";
+			this.ShowIcon = false;
+			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Mark Collections Manager";
 			this.Load += new System.EventHandler(this.MarkManager_Load);

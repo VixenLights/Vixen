@@ -123,9 +123,9 @@
 			// 
 			// panelTap
 			// 
-			this.panelTap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.panelTap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.panelTap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panelTap.Location = new System.Drawing.Point(107, 63);
 			this.panelTap.Name = "panelTap";
@@ -153,8 +153,13 @@
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.groupBoxControls);
 			this.DoubleBuffered = true;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.KeyPreview = true;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "MarkTapper";
+			this.ShowIcon = false;
+			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Mark Tapper";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MarkTapper_FormClosing);

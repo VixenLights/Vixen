@@ -40,8 +40,8 @@
 			// 
 			// textBoxResponse
 			// 
-			this.textBoxResponse.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.textBoxResponse.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBoxResponse.Location = new System.Drawing.Point(15, 38);
 			this.textBoxResponse.Name = "textBoxResponse";
 			this.textBoxResponse.Size = new System.Drawing.Size(372, 20);
@@ -83,6 +83,8 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "TextDialog";
+			this.ShowIcon = false;
+			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TextDialog_KeyDown);
 			this.ResumeLayout(false);

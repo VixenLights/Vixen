@@ -57,9 +57,9 @@
 			// 
 			// listBoxItems
 			// 
-			this.listBoxItems.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.listBoxItems.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.listBoxItems.FormattingEnabled = true;
 			this.listBoxItems.Location = new System.Drawing.Point(12, 12);
 			this.listBoxItems.Name = "listBoxItems";
@@ -76,7 +76,12 @@
 			this.Controls.Add(this.listBoxItems);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOk);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "ListSelectDialog";
+			this.ShowIcon = false;
+			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Select Item";
 			this.Load += new System.EventHandler(this.ListSelectDialog_Load);

@@ -110,7 +110,12 @@
 			this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.ClientSize = new System.Drawing.Size(173, 41);
 			this.Controls.Add(this.tableLayoutPanelAll);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "TimedSequenceEditorEffectEditor";
+			this.ShowIcon = false;
+			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Edit Effect";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.TimedSequenceEditorEffectEditor_FormClosed);
