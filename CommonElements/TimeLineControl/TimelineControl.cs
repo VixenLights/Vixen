@@ -11,35 +11,44 @@ using System.Diagnostics;
 
 namespace CommonElements.Timeline
 {
-	public partial class TimelineControl : TimelineControlBase, IEnumerable<Row>
-	{
-		// Controls
+    [System.ComponentModel.DesignerCategory("")]    // Prevent this from showing up in designer.
+	public class TimelineControl : TimelineControlBase, IEnumerable<Row>
+    {
+        private const int InitialSplitterDistance = 200;
+
+        #region Member Controls
+        private SplitContainer splitContainer;
+        
+        // Left side (Panel 1)
+        private RowList timelineRowList;
+
+        // Right side (Panel 2)
 		private Ruler ruler;
 		private Grid grid;
 
+        #endregion
 
-		public TimelineControl()
+        public TimelineControl()
 			:base(new TimeInfo())	// This is THE TimeInfo object for the whole control (and all sub-controls).
 		{
 			TimeInfo.TimePerPixel = TimeSpan.FromTicks(100000);
 			TimeInfo.VisibleTimeStart = TimeSpan.Zero;
 
-			InitializeComponent();
-			InitializePanel2();
-
+            InitializeControls();
+			
 			// Reasonable defaults
 			TotalTime = TimeSpan.FromMinutes(2);
 
-			// Splitter
-			splitContainer.Panel1MinSize = 100;
-			splitContainer.Panel2MinSize = 100;
-			splitContainer.FixedPanel = FixedPanel.Panel1;
-
-			grid.Scroll += GridScrolledHandler;
-			grid.VerticalOffsetChanged += GridScrollVerticalHandler;
+            // Event handlers for Row class static events
 			Row.RowToggled += RowToggledHandler;
 			Row.RowHeightChanged += RowHeightChangedHandler;
 		}
+
+        protected override void OnLoad(EventArgs e)
+        {
+            splitContainer.SplitterDistance = InitialSplitterDistance;
+            base.OnLoad(e);
+        }
 
 		protected override void OnLayout(LayoutEventArgs e)
 		{
@@ -49,10 +58,68 @@ namespace CommonElements.Timeline
 
 
 
-		private void InitializePanel2()
+        #region Initialization
+
+        private void InitializeControls()
+        {
+            this.SuspendLayout();
+
+            // (this) Timeline Control
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
+            this.Name = "TimelineControl";
+
+
+            // Split Container
+            splitContainer = new SplitContainer()
+            {
+                Dock = DockStyle.Fill,
+                Orientation = Orientation.Vertical,
+                Name = "splitContainer",
+                FixedPanel = FixedPanel.Panel1,
+                Panel1MinSize = 100,
+            };
+            this.Controls.Add(this.splitContainer);
+          
+            // Split container panels
+            splitContainer.BeginInit();
+            splitContainer.SuspendLayout();
+
+            InitializePanel1();
+            InitializePanel2();
+
+            splitContainer.ResumeLayout(false);
+            splitContainer.EndInit();
+
+            this.ResumeLayout(false);
+        }
+        
+        // Panel 1 - the left side of the splitContainer
+        private void InitializePanel1()
+        {
+            splitContainer.Panel1.SuspendLayout();
+            splitContainer.Panel1.BackColor = Color.FromArgb(200, 200, 200);
+
+            // Row List
+            timelineRowList = new RowList()
+            {
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
+                DottedLineColor = Color.Black,
+                Name = "timelineRowList",
+            };
+            splitContainer.Panel1.Controls.Add(timelineRowList);
+
+            splitContainer.Panel1.ResumeLayout(false);
+            splitContainer.Panel1.PerformLayout();
+        }
+
+
+
+        // Panel 2 - the right side of the splitContainer
+        private void InitializePanel2()
 		{
 			// Add all timeline-like controls to panel2
-			splitContainer.BeginInit();
 			splitContainer.Panel2.SuspendLayout();
 
 			// Grid
@@ -61,28 +128,30 @@ namespace CommonElements.Timeline
 				Dock = DockStyle.Fill,
 			};
 			splitContainer.Panel2.Controls.Add(grid);	// gets added first - to fill the remains
+            grid.Scroll += GridScrolledHandler;
+            grid.VerticalOffsetChanged += GridScrollVerticalHandler;
 
 			// Ruler
 			ruler = new Ruler(TimeInfo)
 			{
 				Dock = DockStyle.Top,
 				Height = 40,
-				
 			};
 			splitContainer.Panel2.Controls.Add(ruler);
 			ruler.ClickedAtTime += RulerClickedHandler;
 
-
 			splitContainer.Panel2.ResumeLayout(false);
 			splitContainer.Panel2.PerformLayout();
-			splitContainer.EndInit();
+			
 		}
 
+        #endregion
 
 
-		#region Properties
+        #region Properties
 
-		public int VerticalOffset
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public int VerticalOffset
 		{
 			get
 			{
@@ -98,12 +167,14 @@ namespace CommonElements.Timeline
 			}
 		}
 
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public TimeSpan CursorPosition
 		{
 			get { return grid.CursorPosition; }
 			set { grid.CursorPosition = value; }
 		}
 
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public override TimeSpan VisibleTimeSpan
 		{
 			get { return grid.VisibleTimeSpan; }

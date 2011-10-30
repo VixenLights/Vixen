@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Diagnostics;
+using System.ComponentModel;
 
 namespace CommonElements.Timeline
 {
@@ -34,6 +35,7 @@ namespace CommonElements.Timeline
 		/// <summary>
 		/// The beginning time of the visible region.
 		/// </summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public virtual TimeSpan VisibleTimeStart
 		{
 			get { return TimeInfo.VisibleTimeStart; }
@@ -52,6 +54,7 @@ namespace CommonElements.Timeline
 		/// <summary>
 		/// The amount of time represented by one (horizontal pixel)
 		/// </summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public virtual TimeSpan TimePerPixel
 		{
 			get { return TimeInfo.TimePerPixel; }
@@ -62,6 +65,7 @@ namespace CommonElements.Timeline
 		/// <summary>
 		/// The total time represented in the user controls
 		/// </summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public virtual TimeSpan TotalTime
 		{
 			get { return TimeInfo.TotalTime; }
@@ -71,7 +75,8 @@ namespace CommonElements.Timeline
 
 		/// <summary>
 		/// The amount of time currently visible.
-		/// </summary> 
+		/// </summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] 
 		public virtual TimeSpan VisibleTimeSpan
 		{
 			get { return TimeSpan.FromTicks(ClientSize.Width * TimePerPixel.Ticks); }
@@ -81,6 +86,7 @@ namespace CommonElements.Timeline
 		/// <summary>
 		/// The ending time of the visible region.
 		/// </summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public TimeSpan VisibleTimeEnd
 		{
 			get { return VisibleTimeStart + VisibleTimeSpan; }

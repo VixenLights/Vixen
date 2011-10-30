@@ -179,12 +179,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="TimelineControl\TimeInfo.cs" />
-    <Compile Include="TimelineControl\TimelineControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="TimelineControl\TimelineControl.designer.cs">
-      <DependentUpon>TimelineControl.cs</DependentUpon>
-    </Compile>
+    <Compile Include="TimelineControl\TimelineControl.cs" />
     <Compile Include="TimelineControl\TimelineControlBase.cs">
       <SubType>UserControl</SubType>
     </Compile>

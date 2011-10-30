@@ -141,10 +141,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#endregion
 
 
-
-
-
-
 		#region Saving / Loading Methods
 
 		/// <summary>
@@ -455,9 +451,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		#endregion
-
-
-
 
 
 		#region Sequence actions (play, pause, etc.)
