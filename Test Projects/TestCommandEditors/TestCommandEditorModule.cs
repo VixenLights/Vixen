@@ -11,7 +11,6 @@ namespace TestCommandEditors {
 	public class TestCommandEditorModule : EffectEditorModuleDescriptorBase {
 		private Guid _typeId = new Guid("{BA73EAC1-66D8-488e-9889-4E979557D72D}");
 		private Guid _targetCommandId = new Guid("{88D2A581-CC6D-4e15-85E3-F235F14336BC}");
-		private CommandParameterSignature _paramSpec = new CommandParameterSignature(new CommandParameterSpecification("Level", typeof(Level)));
 		
 		override public Guid TypeId {
 			get { return _typeId; }
@@ -41,8 +40,8 @@ namespace TestCommandEditors {
 			get { return _targetCommandId; }
 		}
 
-		override public CommandParameterSignature ParameterSignature {
-			get { return _paramSpec; }
+		override public Type[] ParameterSignature {
+			get { return new[] { typeof(Level) }; }
 		}
 	}
 }

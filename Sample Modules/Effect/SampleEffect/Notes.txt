@@ -9,6 +9,8 @@ Effect modules are responsible for generating user-usable effects in
 editors and for generating the low-level command data that will be
 executed by output modules.
 
+===============================================================================
+
 I will assume that you have used C# and Visual Studio before, but I will
 try not to assume much more than that.
 
@@ -55,6 +57,9 @@ TypeId:      A unique, *unique*, UNIQUE GUID that you generate.
              uniquely indentifies your module.  If this conflicts
              with another module, neither module will be loaded.
 ModuleClass: The type that implements your module (class 2 in this sample).
+
+Module-specific members:
+
 EffectName:  The name the user will see in editors.
 
 Other members of note:

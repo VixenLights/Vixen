@@ -265,26 +265,30 @@ namespace Vixen.Sys {
 				// Look for concrete module descriptors.
 				IEnumerable<Type> moduleDescriptorTypes = typeof(IModuleDescriptor).FindImplementationsWithin(assembly).Where(x => !x.IsAbstract);
 				foreach(Type moduleDescriptorType in moduleDescriptorTypes) {
-					// Get the module descriptor.
-					moduleDescriptor = Activator.CreateInstance(moduleDescriptorType) as IModuleDescriptor;
+					try {
+						// Get the module descriptor.
+						moduleDescriptor = Activator.CreateInstance(moduleDescriptorType) as IModuleDescriptor;
 
-					if(moduleDescriptor != null) {
-						if(moduleDescriptor.ModuleClass != null) {
-							// Make sure its module's type is an IModuleInstance
-							if(moduleDescriptor.ModuleClass.ImplementsInterface(typeof(IModuleInstance))) {
-								// Set the name of the file it was borne from.
-								moduleDescriptor.FileName = Path.GetFileName(filePath);
-								// Set the assembly it was borne from.
-								moduleDescriptor.Assembly = assembly;
-								descriptors.Add(moduleDescriptor);
+						if(moduleDescriptor != null) {
+							if(moduleDescriptor.ModuleClass != null) {
+								// Make sure its module's type is an IModuleInstance
+								if(moduleDescriptor.ModuleClass.ImplementsInterface(typeof(IModuleInstance))) {
+									// Set the name of the file it was borne from.
+									moduleDescriptor.FileName = Path.GetFileName(filePath);
+									// Set the assembly it was borne from.
+									moduleDescriptor.Assembly = assembly;
+									descriptors.Add(moduleDescriptor);
+								} else {
+									VixenSystem.Logging.Debug("Tried to load module " + moduleDescriptor.TypeName + " from " + Path.GetFileName(filePath) + ", but the ModuleClass does not implement IModuleInstance.");
+								}
 							} else {
-								VixenSystem.Logging.Debug("Tried to load module " + moduleDescriptor.TypeName + " from " + Path.GetFileName(filePath) + ", but the ModuleClass does not implement IModuleInstance.");
+								VixenSystem.Logging.Debug("Tried to load module " + moduleDescriptor.TypeName + " from " + Path.GetFileName(filePath) + ", but the ModuleClass is null.");
 							}
 						} else {
-							VixenSystem.Logging.Debug("Tried to load module " + moduleDescriptor.TypeName + " from " + Path.GetFileName(filePath) + ", but the ModuleClass is null.");
+							VixenSystem.Logging.Debug("Tried to load module " + moduleDescriptor.TypeName + " from " + Path.GetFileName(filePath) + ", but the descriptor does not implement IModuleDescriptor.");
 						}
-					} else {
-						VixenSystem.Logging.Debug("Tried to load module " + moduleDescriptor.TypeName + " from " + Path.GetFileName(filePath) + ", but the descriptor does not implement IModuleDescriptor.");
+					} catch(Exception ex) {
+						VixenSystem.Logging.Error("Error loading module descriptor " + moduleDescriptorType.Name + " from " + Path.GetFileName(filePath) + ".", ex);
 					}
 				}
 			}

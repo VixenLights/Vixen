@@ -10,7 +10,7 @@ namespace Vixen.Commands {
 		abstract public CommandIdentifier Identifier { get; }
 
 		// Required for transforms.
-		abstract public CommandParameterSignature Signature { get; }
+		abstract public ParameterSignature Signature { get; }
 		// Required for transforms.
 		abstract public object GetParameterValue(int index);
 		// Required for transforms.

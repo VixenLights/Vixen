@@ -34,7 +34,7 @@ namespace Vixen.Module.Effect {
 		ChannelData Render();
 		ChannelData Render(TimeSpan restrictingOffsetTime, TimeSpan restrictingTimeSpan);
 		string EffectName { get; }
-		CommandParameterSignature Parameters { get; }
+		ParameterSignature Parameters { get; }
 		void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle);
 	}
 }

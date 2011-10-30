@@ -9,6 +9,8 @@ Application modules are system-level modules that have no user interface,
 have the same lifetime as the system itself, and get access to the
 client application.
 
+===============================================================================
+
 I will assume that you have used C# and Visual Studio before, but I will
 try not to assume much more than that.
 

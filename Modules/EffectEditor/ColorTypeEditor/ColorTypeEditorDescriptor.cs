@@ -27,14 +27,9 @@ namespace VixenModules.EffectEditor.ColorTypeEditor
 
 		public override string Version { get { return "0.1"; } }
 
-		public override CommandParameterSignature ParameterSignature
+		public override Type[] ParameterSignature
 		{
-			get
-			{
-				return new CommandParameterSignature(
-					new CommandParameterSpecification("Color", typeof(Color))
-					);
-			}
+			get { return new[] { typeof(Color) }; }
 		}
 	}
 }

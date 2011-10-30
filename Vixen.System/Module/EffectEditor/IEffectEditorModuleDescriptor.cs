@@ -16,6 +16,6 @@ namespace Vixen.Module.EffectEditor {
 		/// Signature of the parameter types this control edits.
 		/// Null if the editor is specific to an effect.
 		/// </summary>
-		CommandParameterSignature ParameterSignature { get; }
+		Type[] ParameterSignature { get; }
 	}
 }

@@ -33,13 +33,13 @@ namespace Vixen.Module.EffectEditor {
 
 		private IEnumerable<IEffectEditorControl> _GetEditorBySignature(IEffectModuleDescriptor descriptor) {
 			EffectEditorModuleRepository repository = Modules.GetRepository<IEffectEditorModuleInstance, EffectEditorModuleRepository>();
-			IEffectEditorModuleInstance instance = repository.Get(descriptor.Parameters);
+			IEffectEditorModuleInstance instance = repository.Get(descriptor.Parameters.Select(x => x.Type));
 			return (instance != null) ? instance.CreateEditorControl().AsEnumerable() : null;
 		}
 
 		private IEnumerable<IEffectEditorControl> _GetEditorsByParameter(IEffectModuleDescriptor descriptor) {
 			EffectEditorModuleRepository repository = Modules.GetRepository<IEffectEditorModuleInstance, EffectEditorModuleRepository>();
-			IEnumerable<IEffectEditorModuleInstance> instances = descriptor.Parameters.Select(repository.Get);
+			IEnumerable<IEffectEditorModuleInstance> instances = descriptor.Parameters.Select(x => repository.Get(x.Type));
 			if(!instances.Any(x => x == null)) {
 				return instances.Select(x => x.CreateEditorControl());
 			}

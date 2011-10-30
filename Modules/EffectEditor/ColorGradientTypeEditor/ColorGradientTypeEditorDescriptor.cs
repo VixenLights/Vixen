@@ -30,14 +30,9 @@ namespace VixenModules.EffectEditor.ColorGradientTypeEditor
 
 		public override Guid[] Dependencies { get { return new Guid[] { _ColorGradientsId }; } }
 
-		public override CommandParameterSignature ParameterSignature
+		public override Type[] ParameterSignature
 		{
-			get
-			{
-				return new CommandParameterSignature(
-					new CommandParameterSpecification("ColorGradient", typeof(ColorGradient))
-					);
-			}
+			get { return new[] { typeof(ColorGradient) }; }
 		}
 	}
 }

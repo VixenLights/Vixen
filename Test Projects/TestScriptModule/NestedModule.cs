@@ -15,7 +15,7 @@ namespace TestScriptModule {
 		private Guid[] _dependencies;
 		private string _commandName = "Nested RGB set level";
 		// Only using a start-level parameter because I don't want to create an editor right now.
-		private CommandParameterSignature _parameters = new CommandParameterSignature(new CommandParameterSpecification("Target end level", typeof(Level)));
+		private ParameterSignature _parameters = new ParameterSignature(new ParameterSpecification("Target end level", typeof(Level)));
 
 		public NestedModule() {
 			_dependencies = new[] {
@@ -28,7 +28,7 @@ namespace TestScriptModule {
 			get { return _commandName; }
 		}
 
-		override public CommandParameterSignature Parameters {
+		override public ParameterSignature Parameters {
 			get { return _parameters; }
 		}
 

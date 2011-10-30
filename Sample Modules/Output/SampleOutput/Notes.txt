@@ -9,6 +9,8 @@ Output modules are what a controller uses to communicate with hardware.
 A controller is assumed to be unidirectional (output only) and has a
 state that represents a single snapshot in time.
 
+===============================================================================
+
 I will assume that you have used C# and Visual Studio before, but I will
 try not to assume much more than that.
 

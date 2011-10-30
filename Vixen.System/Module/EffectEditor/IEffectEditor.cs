@@ -9,15 +9,14 @@ namespace Vixen.Module.EffectEditor {
     public interface IEffectEditor {
 		IEffectEditorControl CreateEditorControl();
 		/// <summary>
-		/// Type id of the command spec module that implements the
-		/// command that this control edits.
-		/// Guid.Empty if the editor isn't specific to a command.
+		/// Type id of the effect that this control edits.
+		/// Guid.Empty if the editor isn't specific to an effect.
 		/// </summary>
 		Guid EffectTypeId { get; }
 		/// <summary>
-		/// Signature of the commands this control edits.
-		/// Null if the editor is specific to a command.
+		/// Signature of the effect parameters this control edits.
+		/// Null if the editor is specific to an effect.
 		/// </summary>
-		CommandParameterSignature CommandSignature { get; }
+		Type[] ParameterSignature { get; }
     }
 }

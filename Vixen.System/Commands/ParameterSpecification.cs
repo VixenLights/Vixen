@@ -4,17 +4,17 @@ using System.Text;
 using System.Xml;
 
 namespace Vixen.Commands {
-	public class CommandParameterSpecification {
+	public class ParameterSpecification {
 		private const char TYPE_NAME_DELIMITER = ' ';
 
 		private string _name;
 
-		public CommandParameterSpecification(string name, Type type) {
+		public ParameterSpecification(string name, Type type) {
 			Name = name;
 			this.Type = type;
 		}
 
-		internal CommandParameterSpecification(string parameterString) {
+		internal ParameterSpecification(string parameterString) {
 			string[] parts = parameterString.Split(TYPE_NAME_DELIMITER);
 			if(parts.Length != 2) {
 				throw new Exception(string.Format("Invalid parameter specification: \"{0}\"", parameterString));

@@ -13,7 +13,7 @@ namespace Vixen.Module.EffectEditor {
 			get { return (Descriptor as IEffectEditorModuleDescriptor).EffectTypeId; }
 		}
 
-		public CommandParameterSignature CommandSignature {
+		public Type[] ParameterSignature {
 			get { return (Descriptor as IEffectEditorModuleDescriptor).ParameterSignature; }
 		}
 

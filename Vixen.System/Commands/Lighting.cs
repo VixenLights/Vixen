@@ -15,8 +15,8 @@ namespace Vixen.Commands {
 			static public readonly byte Value = 0;
 
 			public class SetLevel : Command {
-				private CommandParameterSignature _signature = new CommandParameterSignature(
-					new CommandParameterSpecification("Level", typeof(Level)));
+				private ParameterSignature _signature = new ParameterSignature(
+					new ParameterSpecification("Level", typeof(Level)));
 
 				static public readonly byte Value = 0;
 				static private CommandIdentifier _identifier = new CommandIdentifier(Lighting.Value, Monochrome.Value, SetLevel.Value);
@@ -34,7 +34,7 @@ namespace Vixen.Commands {
 
 				override public CommandIdentifier Identifier { get { return CommandIdentifier; } }
 
-				public override CommandParameterSignature Signature {
+				public override ParameterSignature Signature {
 					get { return _signature; }
 				}
 
@@ -66,8 +66,8 @@ namespace Vixen.Commands {
 			static public readonly byte Value = 1;
 
 			public class SetColor : Command {
-				private CommandParameterSignature _signature = new CommandParameterSignature(
-					new CommandParameterSpecification("Color", typeof(Color)));
+				private ParameterSignature _signature = new ParameterSignature(
+					new ParameterSpecification("Color", typeof(Color)));
 
 				static public readonly byte Value = 0;
 				static private CommandIdentifier _identifier = new CommandIdentifier(Lighting.Value, Polychrome.Value, SetColor.Value);
@@ -82,7 +82,7 @@ namespace Vixen.Commands {
 
 				override public CommandIdentifier Identifier { get { return CommandIdentifier; } }
 
-				public override CommandParameterSignature Signature {
+				public override ParameterSignature Signature {
 					get { return _signature; }
 				}
 

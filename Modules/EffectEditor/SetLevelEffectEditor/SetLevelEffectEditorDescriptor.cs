@@ -29,7 +29,7 @@ namespace VixenModules.EffectEditor.SetLevelEffectEditor
 
 		public override string Version { get { return "0.1"; } }
 
-		public override CommandParameterSignature ParameterSignature { get { return null; } }
+		public override Type[] ParameterSignature { get { return null; } }
 
 		public override Guid[] Dependencies { get { return new Guid[] { _SetLevelEffectId, _LevelTypeEditorId, _ColorTypeEditorId }; } }
 	}

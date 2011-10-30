@@ -26,14 +26,10 @@ namespace VixenModules.EffectEditor.LevelTypeEditor
 
 		public override string Version { get { return "0.1"; } }
 
-		public override CommandParameterSignature ParameterSignature
+		public override Type[] ParameterSignature
 		{
 			get
-			{
-				return new CommandParameterSignature(
-					new CommandParameterSpecification("Level", typeof(Level))
-					);
-			}
+			{ return new[] { typeof(Level) }; }
 		}
 	}
 }

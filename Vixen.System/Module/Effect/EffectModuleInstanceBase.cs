@@ -73,7 +73,7 @@ namespace Vixen.Module.Effect {
 			get { return (Descriptor as IEffectModuleDescriptor).EffectName; }
 		}
 
-		public CommandParameterSignature Parameters {
+		public ParameterSignature Parameters {
 			get { return (Descriptor as IEffectModuleDescriptor).Parameters; }
 		}
 

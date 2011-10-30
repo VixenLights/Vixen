@@ -30,14 +30,9 @@ namespace VixenModules.EffectEditor.CurveTypeEditor
 
 		public override Guid[] Dependencies { get { return new Guid[] { _CurvesId }; } }
 
-		public override CommandParameterSignature ParameterSignature
+		public override Type[] ParameterSignature
 		{
-			get
-			{
-				return new CommandParameterSignature(
-					new CommandParameterSpecification("Curve", typeof(Curve))
-					);
-			}
+			get { return new[] { typeof(Curve) }; }
 		}
 	}
 }

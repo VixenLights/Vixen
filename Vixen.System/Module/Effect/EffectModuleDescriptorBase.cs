@@ -8,7 +8,7 @@ using Vixen.Commands;
 namespace Vixen.Module.Effect {
 	abstract public class EffectModuleDescriptorBase : ModuleDescriptorBase, IEffectModuleDescriptor, IEqualityComparer<IEffectModuleDescriptor>, IEquatable<IEffectModuleDescriptor>, IEqualityComparer<EffectModuleDescriptorBase>, IEquatable<EffectModuleDescriptorBase> {
 		protected EffectModuleDescriptorBase() {
-			Parameters = new CommandParameterSignature();
+			Parameters = new ParameterSignature();
 			PropertyDependencies = new Guid[0];
 		}
 
@@ -26,7 +26,7 @@ namespace Vixen.Module.Effect {
 
 		abstract public string EffectName { get; }
 
-		virtual public CommandParameterSignature Parameters { get; set; }
+		virtual public ParameterSignature Parameters { get; set; }
 
 		/// <summary>
 		/// Properties that the effect can utilize, but isn't dependent upon.

@@ -5,29 +5,29 @@ using System.Text;
 using System.Xml;
 
 namespace Vixen.Commands {
-    public class CommandParameterSignature : IEnumerable<CommandParameterSpecification> {
-        private CommandParameterSpecification[] _parameters = null;
+    public class ParameterSignature : IEnumerable<ParameterSpecification> {
+        private ParameterSpecification[] _parameters = null;
 
 		private const string PARAMETER_DELIMITER = ",";
 
-		public CommandParameterSignature(params CommandParameterSpecification[] parameters) {
+		public ParameterSignature(params ParameterSpecification[] parameters) {
 			_parameters = parameters;
 		}
 
-        public CommandParameterSignature(string commandParameters) {
+        public ParameterSignature(string commandParameters) {
             // commandParameters is in the form "type name,type name, ..."
-            List<CommandParameterSpecification> parameters = new List<CommandParameterSpecification>();
+            List<ParameterSpecification> parameters = new List<ParameterSpecification>();
 			string trimmedParameterString;
             foreach(string parameterString in commandParameters.Split(new[] { PARAMETER_DELIMITER }, StringSplitOptions.RemoveEmptyEntries)) {
 				trimmedParameterString = parameterString.Trim();
                 if(!string.IsNullOrEmpty(trimmedParameterString)) {
-					parameters.Add(new CommandParameterSpecification(trimmedParameterString));
+					parameters.Add(new ParameterSpecification(trimmedParameterString));
                 }
             }
             _parameters = parameters.ToArray();
         }
 
-        public CommandParameterSpecification this[int index] {
+        public ParameterSpecification this[int index] {
             get { return _parameters[index]; }
             set { _parameters[index] = value; }
         }
@@ -40,8 +40,8 @@ namespace Vixen.Commands {
 			return string.Join(PARAMETER_DELIMITER, (object[])_parameters);
         }
 
-		public IEnumerator<CommandParameterSpecification> GetEnumerator() {
-            foreach(CommandParameterSpecification parameter in _parameters) {
+		public IEnumerator<ParameterSpecification> GetEnumerator() {
+            foreach(ParameterSpecification parameter in _parameters) {
                 yield return parameter;
             }
         }

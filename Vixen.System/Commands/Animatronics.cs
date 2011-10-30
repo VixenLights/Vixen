@@ -14,8 +14,8 @@ namespace Vixen.Commands {
 			static public readonly byte Value = 0;
 
 			public class SetPosition : Command {
-				private CommandParameterSignature _signature = new CommandParameterSignature(
-					new CommandParameterSpecification("Position", typeof(Position)));
+				private ParameterSignature _signature = new ParameterSignature(
+					new ParameterSpecification("Position", typeof(Position)));
 				
 				static public readonly byte Value = 0;
 
@@ -31,7 +31,7 @@ namespace Vixen.Commands {
 
 				override public CommandIdentifier Identifier { get { return CommandIdentifier; } }
 
-				public override CommandParameterSignature Signature {
+				public override ParameterSignature Signature {
 					get { return _signature; }
 				}
 
@@ -64,9 +64,9 @@ namespace Vixen.Commands {
 			static public readonly byte Value = 1;
 
 			public class SetPosition : Command {
-				private CommandParameterSignature _signature = new CommandParameterSignature(
-					new CommandParameterSpecification("Position", typeof(Position)),
-					new CommandParameterSpecification("TimeSpan", typeof(TimeSpan)));
+				private ParameterSignature _signature = new ParameterSignature(
+					new ParameterSpecification("Position", typeof(Position)),
+					new ParameterSpecification("TimeSpan", typeof(TimeSpan)));
 
 				static public readonly byte Value = 0;
 
@@ -83,7 +83,7 @@ namespace Vixen.Commands {
 
 				override public CommandIdentifier Identifier { get { return CommandIdentifier; } }
 
-				public override CommandParameterSignature Signature {
+				public override ParameterSignature Signature {
 					get { return _signature; }
 				}
 

@@ -11,8 +11,8 @@ namespace SampleEffect {
 		private Guid _typeId = new Guid("{C4E3BF3D-4B38-407e-8122-0404D604C4E1}");
 
 		public SampleEffectDescriptor() {
-			Parameters = new CommandParameterSignature(new[] {
-				new CommandParameterSpecification("Flash level", typeof(Level))
+			Parameters = new ParameterSignature(new[] {
+				new ParameterSpecification("Flash level", typeof(Level))
 			});				
 		}
 
@@ -41,7 +41,7 @@ namespace SampleEffect {
 		}
 
 		public override string EffectName {
-			get { return "BlinkyFlashy"; }
+			get { return "Blinky Flashy"; }
 		}
 
 		public override Type ModuleDataClass {

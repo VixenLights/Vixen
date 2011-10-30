@@ -36,13 +36,13 @@ namespace VixenModules.Effect.Pulse
 
 		public override Guid[] Dependencies { get { return new Guid[] { _CurvesId, _ColorGradientId }; } }
 
-		public override CommandParameterSignature Parameters
+		public override ParameterSignature Parameters
 		{
 			get
 			{
-				return new CommandParameterSignature(
-					new CommandParameterSpecification("Intensity Curve", typeof(Curve)),
-					new CommandParameterSpecification("Color Gradient", typeof(ColorGradient))
+				return new ParameterSignature(
+					new ParameterSpecification("Intensity Curve", typeof(Curve)),
+					new ParameterSpecification("Color Gradient", typeof(ColorGradient))
 					);
 			}
 		}

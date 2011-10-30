@@ -33,13 +33,13 @@ namespace VixenModules.Effect.SetLevel
 
 		public override Guid[] Dependencies { get { return new Guid[] { _RGBPropertyId }; } }
 
-		public override CommandParameterSignature Parameters
+		public override ParameterSignature Parameters
 		{
 			get
 			{
-				return new CommandParameterSignature(
-					new CommandParameterSpecification("Level", typeof(Level)),
-					new CommandParameterSpecification("Color", typeof(Color))
+				return new ParameterSignature(
+					new ParameterSpecification("Level", typeof(Level)),
+					new ParameterSpecification("Color", typeof(Color))
 					);
 			}
 		}

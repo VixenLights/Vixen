@@ -7,7 +7,7 @@ using Vixen.Commands;
 
 namespace Vixen.Module.CommandStandardExtension {
 	abstract public class CommandStandardExtensionModuleInstanceBase : ModuleInstanceBase, ICommandStandardExtensionModuleInstance, IEqualityComparer<ICommandStandardExtensionModuleInstance>, IEquatable<ICommandStandardExtensionModuleInstance>, IEqualityComparer<CommandStandardExtensionModuleInstanceBase>, IEquatable<CommandStandardExtensionModuleInstanceBase> {
-		private CommandParameterSignature _noParameters = new CommandParameterSignature();
+		private ParameterSignature _noParameters = new ParameterSignature();
 
 		public string Name {
 			get { return (Descriptor as ICommandStandardExtensionModuleDescriptor).CommandName; }
@@ -23,7 +23,7 @@ namespace Vixen.Module.CommandStandardExtension {
 
 		abstract public Command GetCommand();
 
-		virtual public CommandParameterSignature Parameters {
+		virtual public ParameterSignature Parameters {
 			get { return _noParameters; }
 		}
 

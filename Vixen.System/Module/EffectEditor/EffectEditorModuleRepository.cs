@@ -20,15 +20,15 @@ namespace Vixen.Module.EffectEditor {
 			return instance;
 		}
 
-		public IEffectEditorModuleInstance Get(CommandParameterSignature commandSignature) {
-			int key = _GetSignatureKey(commandSignature);
+		public IEffectEditorModuleInstance Get(IEnumerable<Type> signature) {
+			int key = _GetSignatureKey(signature);
 			IEffectEditorModuleInstance instance;
 			_effectEditorSignatureIndex.TryGetValue(key, out instance);
 			return instance;
 		}
 
-		public IEffectEditorModuleInstance Get(CommandParameterSpecification parameterSpec) {
-			int key = _GetSignatureKey(parameterSpec.AsEnumerable());
+		public IEffectEditorModuleInstance Get(Type type) {
+			int key = _GetSignatureKey(type.AsEnumerable());
 			IEffectEditorModuleInstance instance;
 			_effectEditorSignatureIndex.TryGetValue(key, out instance);
 			return instance;
@@ -52,8 +52,8 @@ namespace Vixen.Module.EffectEditor {
 				_effectEditorEffectIndex[instance.EffectTypeId] = instance;
 			}
 			// Add to the signature index, if appropriate.
-			if(instance.CommandSignature != null) {
-				_effectEditorSignatureIndex[_GetSignatureKey(instance.CommandSignature)] = instance;
+			if(instance.ParameterSignature != null) {
+				_effectEditorSignatureIndex[_GetSignatureKey(instance.ParameterSignature)] = instance;
 			}
 		}
 
@@ -71,17 +71,17 @@ namespace Vixen.Module.EffectEditor {
 				// Remove from the name index.
 				_effectEditorEffectIndex.Remove(instance.EffectTypeId);
 				// Remove from the signature index.
-				_effectEditorSignatureIndex.Remove(_GetSignatureKey(instance.CommandSignature));
+				_effectEditorSignatureIndex.Remove(_GetSignatureKey(instance.ParameterSignature));
 				// Remove from the collection.
 				_effectEditors.Remove(instance);
 			}
 		}
 
 
-		private int _GetSignatureKey(IEnumerable<CommandParameterSpecification> signature) {
+		private int _GetSignatureKey(IEnumerable<Type> signature) {
 			if(signature == null) return 0;
 			// Key will be a hash of the concatenation of the parameter type names.
-			return signature.Aggregate("", (str, spec) => str + spec.Type.Name, str => str.GetHashCode());
+			return signature.Aggregate("", (str, type) => str + type.Name, str => str.GetHashCode());
 		}
 	}
 }

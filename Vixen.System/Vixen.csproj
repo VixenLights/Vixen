@@ -109,8 +109,8 @@
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\CommandIdentifier.cs" />
     <Compile Include="Commands\CommandNode.cs" />
-    <Compile Include="Commands\CommandParameterSignature.cs" />
-    <Compile Include="Commands\CommandParameterSpecification.cs" />
+    <Compile Include="Commands\ParameterSignature.cs" />
+    <Compile Include="Commands\ParameterSpecification.cs" />
     <Compile Include="Commands\CustomCommandBehavior.cs" />
     <Compile Include="Commands\ICustomCommandBehavior.cs" />
     <Compile Include="Commands\Lighting.cs" />
