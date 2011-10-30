@@ -1,0 +1,130 @@
+﻿DISCLAIMER:
+This file is not meant to be a comprehensive guide or tutorial.  They are
+some notes created while creating this project that may help you do the
+same.
+
+--== Sample Effect Editor Module ==--
+
+Effect editor modules are responsible for providing users with a way to edit
+effect parameter values.  Depending on the parameter types of the effect
+and the available editors, the user will be presented with one or more controls
+provided by these effect editors.
+
+===============================================================================
+
+I will assume that you have used C# and Visual Studio before, but I will
+try not to assume much more than that.
+
+Step 1: Create a Class Library project.
+Step 2: Reference Vixen.dll in the project.
+
+Neither of those steps should require explanation.
+
+A module may or may not have persisted data via a data object.
+This sample project will because that's how effects' parameters
+are persisted.
+
+Step 3: Create some classes.
+
+Use whatever names you like for these classes I'm about to describe.  But
+if you're going to have more than one module in the assembly, you may want
+to keep the names centered around the module (for example, instead of
+calling a class "Descriptor", call it "RenardDescriptor").
+
+Class 1: The descriptor class.
+Class 2: The module class.
+
+Make each of these classes public.
+
+Each module type has base classes you can use to implement the mundane
+members.  The descriptor is the easiest of the three, so I will start there.
+
+Step 4: Create the descriptor.
+
+Import namespaces: Vixen.Module.EffectEditor, Vixen.Commands
+Derive from: EffectEditorModuleDescriptorBase
+
+Have Visual Studio implement the base class for you and you will see (not in this
+order):
+
+Author:      You. Duh.
+Description: Anything you like.
+TypeName:    The name of your module that users will see.
+Version:     Not currently used, but it may be in the future.
+TypeId:      A unique, *unique*, UNIQUE GUID that you generate.
+             Yes, make sure it's unique and you didn't copy it
+             from someone/somewhere else.  This is the value that
+             uniquely indentifies your module.  If this conflicts
+             with another module, neither module will be loaded.
+ModuleClass: The type that implements your module (class 2 in this sample).
+
+Module-specific members:
+
+EffectTypeId: See below
+ParameterSignature: See below
+
+An effect editor will be called upon for one of three reasons, and how this
+editor is to be used will dictate which of the two members (or both) you will
+implement.
+
+1. The editor is intended to edit a specific effect.
+
+In this case, you would implement only EffectTypeId and provide the type id for
+the effect.  A use case would be an effect that is very complex or has very
+specific needs from its editor.  In that case, the editor is likely of no use
+for any other effect.
+
+2. The editor's signature matches all parameters (the signature) of an effect.
+
+In this case, you would implement ParameterSignture and provide the signature
+of the effect's parameters.  It may be that the signature matches multiple
+effects, in which case it will be called upon for each such effect.
+
+3. The editor's signature matches one parameter of an effect.
+
+It may be that your editor provides UI for a single type, such as a DateTime.
+In that case, you would have a parameter signature with a single parameter.
+If there is no specific editor for an effect and no editor can be found that
+matches its parameter signature, effect editors will be gathered on a
+per-parameter matching basis.
+
+Return null for whichever ones you're not going to implement (specific effect
+or parameter signature).  At least one must be provided, else the editor is
+useless.
+An effect editor is allowed to be for both a specific effect and a parameter
+signature.  Implement both members in that case.
+
+For this sample, we're going to edit the Blinky Flashy effect from the effect
+sample project.  We're also going to allow ourselves to edit anything that
+has a single Level parameter.
+
+The descriptor is done.
+
+Step 5: Create the module class.
+
+Import namespaces: Vixen.Module.EffectEditor
+Derive from: EffectEditorModuleInstanceBase
+
+Everything up until now has been to support this one class.  This is the class
+that does everything.  It IS your module.
+
+The members necessary to implement:
+
+CreateEditorControl: The purpose of this method is to return the Control that
+                     implements the editor.  This control will likely be
+                     wrapped in a form or other container for display to the
+                     user.  Assume that your control will be resized, so make
+                     the content able to adapt.
+
+The control you create (start with a simple UserControl) must implement the
+IEffectEditorControl interface.  It has only one member:
+
+EffectParameterValues: The value(s) to edit are read from the edit control as
+                       an object array.  When you are editing existing values,
+                       those values will be written to your control as an
+                       object array as well.  It is the control's responsibility
+                       to know the types and do any necessary casting.
+
+From the build process you will birth a new module, ready for use.  Place it in
+the Module/EffectEditor directory.
+With this module present, the sample effect will now be able to be edited.
