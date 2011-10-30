@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace CommonElements.Timeline
 {
+	[Serializable]
     public class Element : IComparable<Element>
     {
 		private TimeSpan m_startTime;

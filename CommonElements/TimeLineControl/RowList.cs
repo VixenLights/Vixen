@@ -110,7 +110,7 @@ namespace CommonElements.Timeline
 
 		#region Drawing
 
-		private void DoLayout()
+		public void DoLayout()
 		{
 			if (RowLabels == null)
 				return;

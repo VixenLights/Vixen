@@ -48,6 +48,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		// the default time for a sequence if one is loaded with 0 time
 		private static TimeSpan _defaultSequenceTime = TimeSpan.FromMinutes(1);
 
+		// our fake, dodgy clipboard. TODO: fix using the real one, it doesn't seem to work.
+		private TimelineElementsClipboardData _clipboard;
+
 		#endregion
 
 
@@ -77,7 +80,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				ToolStripMenuItem menuItem = new ToolStripMenuItem(effectDesriptor.EffectName);
 				menuItem.Tag = effectDesriptor.TypeId;
 				menuItem.Click += (sender, e) => {
-					// TODO
+					Row destination = timelineControl.SelectedRow;
+					if (destination != null) {
+						addNewEffect(effectDesriptor.TypeId, destination, timelineControl.CursorPosition, TimeSpan.FromSeconds(2));		// TODO: get a proper time
+					}
 				};
 				addEffectToolStripMenuItem.DropDownItems.Add(menuItem);
 
@@ -283,6 +289,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		/// <summary>
+		/// Removes the given TimedSequenceElement in the TimelineControl.
+		/// </summary>
+		/// <param name="element">The element to remove.</param>
+		private void RemoveElement(TimedSequenceElement element)
+		{
+			if (element != null)
+				RemoveElementForEffectNode(element.EffectNode);
+		}
+
+		/// <summary>
+		/// Removes the given TimedSequenceElements in the TimelineControl.
+		/// </summary>
+		/// <param name="element">The elements to remove.</param>
+		private void RemoveElements(IEnumerable<TimedSequenceElement> elements)
+		{
+			foreach (TimedSequenceElement element in elements.ToArray())
+				RemoveElement(element);
+		}
+
+		/// <summary>
 		/// Saves the current sequence to a file. May prompt for a file name to save the sequence to if needed.
 		/// </summary>
 		/// <param name="filePath">The filename to save the sequence to. If null, the filename in the sequence will be used.
@@ -412,6 +438,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				VixenSystem.Logging.Error("TimedSequenceEditor: Element double-clicked, and it doesn't have an associated effect!");
 				return;
 			}
+
+			EditElement(element);
+		}
+
+		private void EditElement(TimedSequenceElement element)
+		{
+			if (element == null)
+				return;
 
 			using (TimedSequenceEditorEffectEditor editor = new TimedSequenceEditorEffectEditor(element.EffectNode)) {
 				DialogResult result = editor.ShowDialog();
@@ -701,5 +735,188 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				IsModified = true;
 			}
 		}
+
+		private void TimedSequenceEditorForm_KeyDown(object sender, KeyEventArgs e)
+		{
+			// do anything special we want to here: keyboard shortcuts that are in
+			// the menu will be handled by them instead.
+			switch (e.KeyCode) {
+				default:
+					break;
+			}
+
+		}
+
+		private void ClipboardAddData(bool cutElements)
+		{
+			if (timelineControl.SelectedElements.Count() <= 0)
+				return;
+
+			TimelineElementsClipboardData result = new TimelineElementsClipboardData();
+
+			int relativeVisibleRow = 0;
+			int firstVisibleRow = 0;
+			int i = 0;
+			TimeSpan earliestTime = TimeSpan.MaxValue;
+			bool foundFirstRow = false;
+
+			foreach (Row row in timelineControl.VisibleRows) {
+				foreach (Element elem in row.SelectedElements.ToArray()) {
+					if (!foundFirstRow) {
+						firstVisibleRow = i;
+						result.FirstVisibleRow = firstVisibleRow;
+						foundFirstRow = true;
+					}
+
+					relativeVisibleRow = i - firstVisibleRow;
+					result.Elements.Add(elem, relativeVisibleRow);
+
+					if (elem.StartTime < earliestTime)
+						earliestTime = elem.StartTime;
+
+					if (cutElements) {
+						row.RemoveElement(elem);
+					}
+				}
+				i++;
+			}
+
+			result.EarliestStartTime = earliestTime;
+
+			_clipboard = result;
+
+			// screw the clipboard. Can't get this shit working.
+			//DataFormats.Format format = DataFormats.GetFormat(typeof(TimelineElementsClipboardData).FullName);
+			//IDataObject dataObject = new DataObject();
+			//dataObject.SetData(format.Name, false, result);
+			//Clipboard.SetDataObject(dataObject, false);
+			//Clipboard.SetData("TimedSequenceEditorElements", result);
+		}
+
+		private void ClipboardCut()
+		{
+			ClipboardAddData(true);
+			IsModified = true;
+		}
+
+		private void ClipboardCopy()
+		{
+			ClipboardAddData(false);
+		}
+
+		private void ClipboardPaste()
+		{
+
+			TimelineElementsClipboardData data = _clipboard;
+
+			// screw the clipboard. Can't get this shit working.
+			//IDataObject dataObject = Clipboard.GetDataObject();
+			//string format = typeof(TimelineElementsClipboardData).FullName;
+
+			//if (dataObject.GetDataPresent(format)) {
+			//    data = dataObject.GetData(format) as TimelineElementsClipboardData;
+			//}
+			////TimelineElementsClipboardData data = Clipboard.GetData("TimedSequenceEditorElements") as TimelineElementsClipboardData;
+
+			if (data == null)
+				return;
+
+			Row targetRow = timelineControl.SelectedRow ?? timelineControl.TopVisibleRow;
+			TimeSpan cursorTime = timelineControl.CursorPosition;
+
+			List<Row> visibleRows = new List<Row>(timelineControl.VisibleRows);
+			int topTargetRoxIndex = visibleRows.IndexOf(targetRow);
+
+			foreach (KeyValuePair<Element, int> kvp in data.Elements) {
+				TimedSequenceElement elem = kvp.Key as TimedSequenceElement;
+				int relativeRow = kvp.Value;
+
+				int targetRowIndex = topTargetRoxIndex + relativeRow;
+				TimeSpan targetTime = elem.StartTime - data.EarliestStartTime + cursorTime;
+
+				if (targetRowIndex >= visibleRows.Count)
+					continue;
+
+				addNewEffect(elem.EffectNode.Effect.Descriptor.TypeId, visibleRows[targetRowIndex], targetTime, elem.Duration);
+			}
+		}
+
+		private void toolStripMenuItem_Cut_Click(object sender, EventArgs e)
+		{
+			ClipboardCut();
+		}
+
+		private void toolStripMenuItem_Copy_Click(object sender, EventArgs e)
+		{
+			ClipboardCopy();
+		}
+
+		private void toolStripMenuItem_Paste_Click(object sender, EventArgs e)
+		{
+			ClipboardPaste();
+		}
+
+		private void toolStripMenuItem_EditEffect_Click(object sender, EventArgs e)
+		{
+			if (timelineControl.SelectedElements.Count() > 0) {
+				EditElement(timelineControl.SelectedElements.First() as TimedSequenceElement);
+			}
+		}
+
+		// this seems to break the keyboard shortcuts; the key shortcuts don't get enabled again
+		// until the menu is dropped down, which is annoying. These really should be enabled/disabled
+		// on select of elements, but that's too annoying for now...
+		//private void editToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		//{
+		//    toolStripMenuItem_EditEffect.Enabled = timelineControl.SelectedElements.Count() > 0;
+		//    toolStripMenuItem_Cut.Enabled = timelineControl.SelectedElements.Count() > 0;
+		//    toolStripMenuItem_Copy.Enabled = timelineControl.SelectedElements.Count() > 0;
+		//    toolStripMenuItem_Paste.Enabled = _clipboard != null;		//TODO: fix this when clipboard fixed
+		//}
+
+		private void toolStripMenuItem_zoomTimeIn_Click(object sender, EventArgs e)
+		{
+			timelineControl.Zoom(0.8);
+		}
+
+		private void toolStripMenuItem_zoomTimeOut_Click(object sender, EventArgs e)
+		{
+			timelineControl.Zoom(1.25);
+		}
+
+		private void toolStripMenuItem_zoomRowsIn_Click(object sender, EventArgs e)
+		{
+			timelineControl.ZoomRows(1.25);
+		}
+
+		private void toolStripMenuItem_zoomRowsOut_Click(object sender, EventArgs e)
+		{
+			timelineControl.ZoomRows(0.8);
+		}
+
+		private void toolStripMenuItem_deleteElements_Click(object sender, EventArgs e)
+		{
+			if (timelineControl.SelectedElements.Count() > 0)
+				IsModified = true;
+
+			RemoveElements(timelineControl.SelectedElements.Cast<TimedSequenceElement>());
+		}
+	}
+
+	[Serializable]
+	public class TimelineElementsClipboardData
+	{
+		public TimelineElementsClipboardData()
+		{
+			Elements = new Dictionary<Element, int>();
+		}
+
+		// a collection of elements and the number of rows they were below the top visible element when
+		// this data was generated and placed on the clipboard.
+		public Dictionary<Element, int> Elements;
+		
+		public int FirstVisibleRow;
+
+		public TimeSpan EarliestStartTime;
 	}
 }

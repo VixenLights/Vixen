@@ -109,6 +109,38 @@ namespace CommonElements.Timeline
 			get { return grid.VisibleTimeSpan; }
 		}
 
+		public IEnumerable<Element> SelectedElements
+		{
+			get { return grid.SelectedElements; }
+		}
+
+		public IEnumerable<Row> Rows
+		{
+			get { return grid.Rows; }
+		}
+
+		public IEnumerable<Row> SelectedRows
+		{
+			get { return grid.SelectedRows; }
+			set { grid.SelectedRows = value; }
+		}
+
+		public Row SelectedRow
+		{
+			get { return SelectedRows.FirstOrDefault(); }
+			set { SelectedRows = new Row[] { value }; }
+		}
+
+		public IEnumerable<Row> VisibleRows
+		{
+			get { return grid.VisibleRows; }
+			set { grid.VisibleRows = value; }
+		}
+
+		public Row TopVisibleRow
+		{
+			get { return grid.TopVisibleRow; }
+		}
 
 		#endregion
 
@@ -129,6 +161,16 @@ namespace CommonElements.Timeline
 				TimePerPixel = TimePerPixel.Scale(scale);
 				if (VisibleTimeEnd > TotalTime)
 					VisibleTimeStart = TotalTime - VisibleTimeSpan;
+			}
+		}
+
+		public void ZoomRows(double scale)
+		{
+			if (scale <= 0.0)
+				return;
+
+			foreach (Row r in Rows) {
+				r.Height = (int)(r.Height * scale);
 			}
 		}
 
@@ -287,16 +329,6 @@ namespace CommonElements.Timeline
 
 		#region Event Handlers
 
-        // TODO: we need support for key presses on the control. A few I can think of:
-        //       - delete key, to delete selected elements
-        //       - arrow keys, to move the viewport around (maybe ~20 pixels at a time or something?)
-        //       - maybe CTRL-arrow keys, to do large scrolling?
-
-        // TODO: oh, we need cut-copy-paste support, too. Should that be done in the control, or
-        // should the control just raise events for the keystrokes that the client can handle? I'm
-        // thinking the latter.
-
-
 		private void GridScrollVerticalHandler(object sender, EventArgs e)
 		{
 			if (timelineRowList != null)
@@ -336,7 +368,7 @@ namespace CommonElements.Timeline
 		private void RowHeightChangedHandler(object sender, EventArgs e)
 		{
 			// again, icky. But it prevents artifacts.
-			Refresh();
+			//Refresh();
 		}
 
 		protected override void OnMouseWheel(MouseEventArgs e)

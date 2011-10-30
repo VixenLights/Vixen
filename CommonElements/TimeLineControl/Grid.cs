@@ -125,18 +125,43 @@ namespace CommonElements.Timeline
 			}
 		}
 
-		protected List<Row> Rows
+		public List<Row> Rows
 		{
 			get { return m_rows; }
-			set { m_rows = value; }
+			protected set { m_rows = value; }
 		}
 
 		public IEnumerable<Element> SelectedElements
 		{
+			get { return Rows.SelectMany(x => x.SelectedElements).Distinct(); }
+		}
+
+		public IEnumerable<Row> SelectedRows
+		{
+			get { return Rows.Where(x => x.Selected); }
+			set
+			{
+				foreach (Row row in Rows)
+					row.Selected = value.Contains(row);
+			}
+		}
+
+		public IEnumerable<Row> VisibleRows
+		{
 			get
 			{
-				return Rows.SelectMany(x => x.SelectedElements).Distinct();
+				return Rows.Where(x => x.Visible);
 			}
+			set
+			{
+				foreach (Row row in Rows)
+					row.Selected = value.Contains(row);
+			}
+		}
+
+		public Row TopVisibleRow
+		{
+			get { return rowAt(new Point(0, VerticalOffset)); }
 		}
 
 		public TimeSpan CursorPosition
@@ -177,14 +202,12 @@ namespace CommonElements.Timeline
 		public event EventHandler<ElementEventArgs> ElementDoubleClicked;
 		public event EventHandler<MultiElementEventArgs> ElementsFinishedMoving;
 		public event EventHandler<TimeSpanEventArgs> CursorMoved;
-		//public event EventHandler VisibleTimeStartChanged;
 		public event EventHandler VerticalOffsetChanged;
 		public event EventHandler<ElementRowChangeEventArgs> ElementChangedRows;
 
 		private void _ElementDoubleClicked(Element te) { if (ElementDoubleClicked != null) ElementDoubleClicked(this, new ElementEventArgs(te)); }
 		private void _ElementsFinishedMoving(MultiElementEventArgs args) { if (ElementsFinishedMoving != null) ElementsFinishedMoving(this, args); }
 		private void _CursorMoved(TimeSpan t) { if (CursorMoved != null) CursorMoved(this, new TimeSpanEventArgs(t)); }
-		//private void _VisibleTimeStartChanged() { if (VisibleTimeStartChanged != null) VisibleTimeStartChanged(this, EventArgs.Empty); }
 		private void _VerticalOffsetChanged() { if (VerticalOffsetChanged != null) VerticalOffsetChanged(this, EventArgs.Empty); }
 		private void _ElementChangedRows(Element element, Row oldRow, Row newRow) { if (ElementChangedRows != null) ElementChangedRows(this, new ElementRowChangeEventArgs(element, oldRow, newRow)); }
 
@@ -206,8 +229,10 @@ namespace CommonElements.Timeline
 
 			// if CTRL wasn't down, then we want to clear all the other rows
 			if (!e.ModifierKeys.HasFlag(Keys.Control)) {
+				ClearSelectedElements();
 				ClearSelectedRows();
 				selectedRow.Selected = true;
+				selectedRow.SelectAllElements();
 			}
 		}
 
@@ -309,7 +334,7 @@ namespace CommonElements.Timeline
 				if (m_mouseDownElement == null) {
 					if (!CtrlPressed) {
 						ClearSelectedElements();
-						ClearSelectedRows();
+						ClearSelectedRows(m_mouseDownElementRow);
 						m_dragState = DragState.Selecting;
 						SelectedArea = new Rectangle(gridLocation.X, gridLocation.Y, 0, 0);
 						m_lastMouseLocation = e.Location;
@@ -358,6 +383,8 @@ namespace CommonElements.Timeline
 					// we didn't move (or very far): if so, move the cursor to the clicked position.
 					if (SelectedArea.Width < 2 && SelectedArea.Height < 2) {
 						CursorPosition = pixelsToTime(gridLocation.X);
+						if (m_mouseDownElementRow != null)
+							m_mouseDownElementRow.Selected = true;
 					}
 
 					SelectedArea = new Rectangle();
@@ -557,10 +584,11 @@ namespace CommonElements.Timeline
 				te.Selected = false;
 		}
 
-		public void ClearSelectedRows()
+		public void ClearSelectedRows(Row leaveRowSelected = null)
 		{
 			foreach (Row row in Rows) {
-				row.Selected = false;
+				if (leaveRowSelected != null && row != leaveRowSelected)
+					row.Selected = false;
 			}
 		}
 

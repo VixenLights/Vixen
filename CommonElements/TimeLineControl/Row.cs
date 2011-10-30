@@ -36,7 +36,13 @@ namespace CommonElements.Timeline
 		public int Height
 		{
 			get { return m_height; }
-			set { RowLabel.Height = m_height = value; _RowChanged(); }
+			set
+			{
+				// cap the height to a minimum of 10 pixels
+				RowLabel.Height = m_height = Math.Max(value, 10); ;
+				//_RowChanged();
+				_RowHeightChanged();
+			}
 		}
 
 		private object m_tag;
@@ -156,11 +162,6 @@ namespace CommonElements.Timeline
 				if (m_selected == value)
 					return;
 
-				// select all the child elements if we're being selected, or vice versa
-				foreach (Element te in Elements) {
-					te.Selected = value;
-				}
-
 				m_selected = value;
 				_RowChanged();
 			}
@@ -221,9 +222,7 @@ namespace CommonElements.Timeline
 
 		protected void HeightChangedHandler(object sender, RowHeightChangedEventArgs e)
 		{
-			// cap the height to a minimum of 10 pixels.
-			Height = Math.Max(Height + e.HeightChange, 10);
-			_RowHeightChanged();
+			Height += e.HeightChange;
 		}
 
 		protected void LabelClickedHandler(object sender, ModifierKeysEventArgs e)
@@ -317,6 +316,19 @@ namespace CommonElements.Timeline
 		{
 			ChildRows.Remove(row);
 			row.ParentRow = null;
+		}
+
+		public void SelectAllElements(bool deselect = false)
+		{
+			// select all the child elements if we're being selected, or vice versa
+			foreach (Element te in Elements) {
+				te.Selected = !deselect;
+			}
+		}
+
+		public void DeselectAllElements()
+		{
+			SelectAllElements(true);
 		}
 
 		public IEnumerator<Element> GetEnumerator()
