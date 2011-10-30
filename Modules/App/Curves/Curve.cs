@@ -24,7 +24,7 @@ namespace VixenModules.App.Curves
 
 		// default Curve constructor makes a ramp with x = y.
 		public Curve()
-			: this(new PointPairList(new double[] { 0.0, 100.0 }, new double[] { 0.0, 100.0 }))
+			: this(new PointPairList(new double[] { 2.0, 98.0 }, new double[] { 2.0, 98.0 }))
 		{
 		}
 

@@ -31,6 +31,9 @@ namespace VixenModules.App.Curves
 			zedGraphControl.GraphPane.YAxis.Title.IsVisible = false;
 			zedGraphControl.GraphPane.Legend.IsVisible = false;
 			zedGraphControl.GraphPane.Title.IsVisible = false;
+			zedGraphControl.GraphPane.Chart.Fill.Color = SystemColors.Control;
+			zedGraphControl.GraphPane.Fill = new Fill(SystemColors.Control);
+			zedGraphControl.GraphPane.Border = new Border(SystemColors.Control, 0);
 			zedGraphControl.GraphPane.AxisChange();
 		}
 
@@ -72,18 +75,6 @@ namespace VixenModules.App.Curves
 		}
 
 		public bool Modified { get; internal set; }
-
-
-
-		private void button1_Click(object sender, EventArgs e)
-		{
-			double[] y = new double[] { 0, 4, 22, 7, 44, 58, 31, 45, 5 };
-			double[] x = new double[] { 0, 10, 22, 30, 40, 50, 50, 60, 70 };
-			PointPairList ppl = new PointPairList(x, y);
-
-			Points = ppl;
-			zedGraphControl.Invalidate();
-		}
 
 		private bool zedGraphControl_PreMouseMoveEvent(ZedGraphControl sender, MouseEventArgs e)
 		{
