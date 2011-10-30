@@ -246,8 +246,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					foreach (Row row in targetRows) {
 						if (element == null) {
 							element = new TimedSequenceElement(node);
-							element.ElementContentChanged += ElementContentChangedHandler;
-							element.ElementMoved += ElementMovedHandler;
+							element.ContentChanged += ElementContentChangedHandler;
+							element.TimeChanged += ElementTimeChangedHandler;
 
 							if (!_effectNodeToElement.ContainsKey(node))
 								_effectNodeToElement[node] = element;
@@ -279,8 +279,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 
-			element.ElementContentChanged -= ElementContentChangedHandler;
-			element.ElementMoved -= ElementMovedHandler;
+			element.ContentChanged -= ElementContentChangedHandler;
+			element.TimeChanged -= ElementTimeChangedHandler;
 			_effectNodeToElement.Remove(node);
 		}
 
@@ -372,12 +372,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			IsModified = true;
 		}
 
-		protected void ElementMovedHandler(object sender, EventArgs e)
+		protected void ElementTimeChangedHandler(object sender, EventArgs e)
 		{
-			// update the effect this element represents
-			TimedSequenceElement element = sender as TimedSequenceElement;
-			element.EffectNode.StartTime = element.StartTime;
-			element.EffectNode.Effect.TimeSpan = element.Duration;
 			IsModified = true;
 		}
 

@@ -35,7 +35,7 @@ namespace CommonElements.Timeline
 					return;
 
 				m_startTime = value;
-				_ElementMoved();
+				OnTimeChanged();
 			}
         }
 
@@ -51,7 +51,7 @@ namespace CommonElements.Timeline
 					return;
 
 				m_duration = value;
-				_ElementMoved();
+				OnTimeChanged();
 			}
         }
 
@@ -69,13 +69,13 @@ namespace CommonElements.Timeline
         public Color BackColor
         {
             get { return m_backColor; }
-			set { m_backColor = value; _ElementContentChanged(); }
+			set { m_backColor = value; OnContentChanged(); }
         }
 
         public object Tag
         {
             get { return m_tag; }
-			set { m_tag = value; _ElementContentChanged(); }
+			set { m_tag = value; OnContentChanged(); }
         }
 
 		public bool Selected
@@ -87,7 +87,7 @@ namespace CommonElements.Timeline
 					return;
 				
 				m_selected = value;
-				_ElementSelectedChanged();
+				OnSelectedChanged();
 			}
 		}
 
@@ -95,13 +95,51 @@ namespace CommonElements.Timeline
 
 		#region Events
 
-		public event EventHandler ElementContentChanged;
-		public event EventHandler ElementSelectedChanged;
-		public event EventHandler ElementMoved;
+        /// <summary>
+        /// Occurs when some of this element's other content changes.
+        /// </summary>
+		public event EventHandler ContentChanged;
 
-		protected void _ElementContentChanged() { if (ElementContentChanged != null) ElementContentChanged(this, EventArgs.Empty); }
-		protected void _ElementSelectedChanged() { if (ElementSelectedChanged != null) ElementSelectedChanged(this, EventArgs.Empty); }
-		protected void _ElementMoved() { if (ElementMoved != null) ElementMoved(this, EventArgs.Empty); }
+        /// <summary>
+        /// Occurs when this element's Selected state changes.
+        /// </summary>
+		public event EventHandler SelectedChanged;
+
+        /// <summary>
+        /// Occurs when one of this element's time propeties changes.
+        /// </summary>
+		public event EventHandler TimeChanged;
+
+        #endregion
+
+        #region Virtual Methods
+
+        /// <summary>
+        /// Raises the ContentChanged event.
+        /// </summary>
+		protected virtual void OnContentChanged()
+        {
+            if (ContentChanged != null)
+                ContentChanged(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Raises the SelectedChanged event.
+        /// </summary>
+        protected virtual void OnSelectedChanged()
+        {
+            if (SelectedChanged != null)
+                SelectedChanged(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Raises the TimeChanged event.
+        /// </summary>
+        protected virtual void OnTimeChanged()
+        {
+            if (TimeChanged != null)
+                TimeChanged(this, EventArgs.Empty);
+        }
 
 		#endregion
 

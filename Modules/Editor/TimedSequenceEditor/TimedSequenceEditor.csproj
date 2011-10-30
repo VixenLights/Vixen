@@ -98,9 +98,8 @@
       <DependentUpon>TimedSequenceEditorResources.resx</DependentUpon>
     </Compile>
     <Compile Include="TimedSequenceElement.cs" />
-    <Compile Include="TimedSequenceRowLabel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="TimedSequenceRowLabel.cs" />
+    <Compile Include="Undo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

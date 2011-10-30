@@ -189,6 +189,7 @@
     <Compile Include="TimelineControl\Ruler.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Undo\Undo.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ColorPicker\ColorLabel.resx">

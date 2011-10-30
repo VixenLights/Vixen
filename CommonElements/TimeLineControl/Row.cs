@@ -246,9 +246,9 @@ namespace CommonElements.Timeline
 			m_elements.Add(element);
 			if (element.Selected)
 				m_selectedElements.Add(element);
-			element.ElementContentChanged += ElementContentChangedHandler;
-			element.ElementMoved += ElementMovedHandler;
-			element.ElementSelectedChanged += ElementSelectedHandler;
+			element.ContentChanged += ElementContentChangedHandler;
+			element.TimeChanged += ElementMovedHandler;
+			element.SelectedChanged += ElementSelectedHandler;
 			m_elements.Sort();
 			_ElementAdded(element);
 			_RowChanged();
@@ -268,9 +268,9 @@ namespace CommonElements.Timeline
 			m_elements.Remove(element);
 			if (element.Selected)
 				m_selectedElements.Remove(element);
-			element.ElementContentChanged -= ElementContentChangedHandler;
-			element.ElementMoved -= ElementMovedHandler;
-			element.ElementSelectedChanged -= ElementSelectedHandler;
+			element.ContentChanged -= ElementContentChangedHandler;
+			element.TimeChanged -= ElementMovedHandler;
+			element.SelectedChanged -= ElementSelectedHandler;
 			m_elements.Sort();
 			_ElementRemoved(element);
 			_RowChanged();
