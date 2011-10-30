@@ -45,13 +45,23 @@ namespace Renard {
 			_p2Zeroes = new byte[8];
 		}
 
+		public override bool HasSetup {
+			get { return true; }
+		}
 		public override bool Setup() {
-			using(SetupDialog setupDialog = new SetupDialog(_moduleData)) {
-				if(setupDialog.ShowDialog() == DialogResult.OK) {
-					_UpdateFromData();
+			using(CommonElements.SerialPortConfig serialPortConfig = new CommonElements.SerialPortConfig(_port)) {
+				if(serialPortConfig.ShowDialog() == DialogResult.OK) {
+					_port = serialPortConfig.SelectedPort;
+					return true;
 				}
 			}
-			return true;
+			return false;
+			//using(SetupDialog setupDialog = new SetupDialog(_moduleData)) {
+			//    if(setupDialog.ShowDialog() == DialogResult.OK) {
+			//        _UpdateFromData();
+			//    }
+			//}
+			//return true;
 		}
 
 		public override IModuleDataModel ModuleData {
@@ -87,8 +97,6 @@ namespace Renard {
 
 
 		protected override void _SetOutputCount(int outputCount) {
-			//***
-			//_outputCount = outputCount;
 		}
 
 		protected override void _UpdateState(Command[] outputStates)
@@ -150,46 +158,35 @@ namespace Renard {
 			_p1Packet[1] = 0x80;
 
 			foreach (Command command in outputStates) {
-				if(command is Lighting.Monochrome.SetLevel) {
-					byte level = (byte)(command as Lighting.Monochrome.SetLevel).Level;
+				if(command == null) {
+					// State reset
+					_p1Packet[dst_index] = 0;
+				}
+				// Casting is fasting than comparing strings.
+				Lighting.Monochrome.SetLevel setLevelCommand = command as Lighting.Monochrome.SetLevel;
+				if(command != null) {
+					// Good command
+					byte level = (byte)(0xFF * setLevelCommand.Level / 100);
 					if(level == 0x7d) {
-						_p1Packet[dst_index++] = 124;
+						_p1Packet[dst_index] = 124;
 					} else if(level == 0x7e) {
-						_p1Packet[dst_index++] = 124;
+						_p1Packet[dst_index] = 124;
 					} else if(level == 0x7f) {
-						_p1Packet[dst_index++] = 128;
+						_p1Packet[dst_index] = 128;
 					} else {
-						_p1Packet[dst_index++] = level;
+						_p1Packet[dst_index] = level;
 					}
 				}
+				// (Bad commmand - no effect)
+
+				dst_index++;
 
 				if(dst_index % PAD_DISTANCE == 0) {
 					_p1Packet[dst_index++] = 0x7D;
 				}
 			}
-			//for(int src_index = 0; src_index < src_size; src_index++) {
-			//    if(channelValues[src_index] == 0x7d) {
-			//        //this._p1Packet[dst_index++] = 0x7f;
-			//        //this._p1Packet[dst_index++] = 0x2f;
-			//        this._p1Packet[dst_index++] = 124;
-			//    } else if(channelValues[src_index] == 0x7e) {
-			//        //this._p1Packet[dst_index++] = 0x7f;
-			//        //this._p1Packet[dst_index++] = 0x30;
-			//        this._p1Packet[dst_index++] = 124;
-			//    } else if(channelValues[src_index] == 0x7f) {
-			//        //this._p1Packet[dst_index++] = 0x7f;
-			//        //this._p1Packet[dst_index++] = 0x31;
-			//        this._p1Packet[dst_index++] = 128;
-			//    } else {
-			//        this._p1Packet[dst_index++] = channelValues[src_index];
-			//    }
 
-			//    if(dst_index % PAD_DISTANCE == 0) {
-			//        _p1Packet[dst_index++] = 0x7D;
-			//    }
-			//}
-
-			if(IsRunning) {
+			if(IsRunning && dst_index > 2) {
 				while(_port.WriteBufferSize - _port.BytesToWrite <= dst_index) {
 					System.Threading.Thread.Sleep(10);
 				}
@@ -243,7 +240,9 @@ namespace Renard {
 
 				// Copy values to the packet, adding the offset byte
 				for(arrayIndex = startChannel, arrayIndex2 = 3; arrayIndex <= endChannel; arrayIndex++, arrayIndex2++) {
-					byte level = (byte)(outputStates[arrayIndex] as Lighting.Monochrome.SetLevel).Level;
+					Command command = outputStates[arrayIndex];
+					if(!(command is Lighting.Monochrome.SetLevel)) continue;
+					byte level = (byte)(command as Lighting.Monochrome.SetLevel).Level;
 					_p2Packet[arrayIndex2] = (byte)(level - offsetByte);
 				}
 
