@@ -30,9 +30,23 @@ namespace VixenModules.EffectEditor.ColorGradientTypeEditor
 			}
 		}
 
-		public ColorGradient ColorGradientValue { get; set; }
+		private ColorGradient _gradient;
+		public ColorGradient ColorGradientValue
+		{
+			get { return _gradient; }
+			set
+			{
+				_gradient = value;
+				UpdateGradientImage();
+			}
+		}
 
-		private void buttonEditColorGradient_Click(object sender, EventArgs e)
+		private void UpdateGradientImage()
+		{
+			panelGradient.BackgroundImage = ColorGradientValue.GenerateColorGradientImage(panelGradient.Size);
+		}
+
+		private void panelGradient_Click(object sender, EventArgs e)
 		{
 			using (ColorGradientEditor cge = new ColorGradientEditor(ColorGradientValue)) {
 				DialogResult result = cge.ShowDialog();

@@ -19,7 +19,7 @@ namespace VixenModules.App.ColorGradients
 
 		#region variables
 
-		private const int BORDER = 6;
+		private const int BORDER = 10;
 		private ColorGradient _blend;
 		private Orientation _orientation = Orientation.Horizontal;
 		//selection
@@ -80,16 +80,16 @@ namespace VixenModules.App.ColorGradients
 				return new Point[]
 						{
 							new Point(fader.X+1,fader.Y),new Point(fader.Right-1,fader.Y),
-							new Point(fader.Right,fader.Y+1),new Point(fader.Right,fader.Y+11),
-							new Point(fader.X+fader.Width/2,fader.Y+15),
-							new Point(fader.X,fader.Y+11),new Point(fader.X,fader.Y+1)
+							new Point(fader.Right,fader.Y+1),new Point(fader.Right,fader.Y+16),
+							new Point(fader.X+fader.Width/2,fader.Y+20),
+							new Point(fader.X,fader.Y+16),new Point(fader.X,fader.Y+1)
 						};
 			return new Point[]
 						{
 							new Point(fader.X+1,fader.Bottom),new Point(fader.Right-1,fader.Bottom),
-							new Point(fader.Right,fader.Bottom-1),new Point(fader.Right,fader.Bottom-11),
-							new Point(fader.X+fader.Width/2,fader.Bottom-15),
-							new Point(fader.X,fader.Bottom-11),new Point(fader.X,fader.Bottom-1)
+							new Point(fader.Right,fader.Bottom-1),new Point(fader.Right,fader.Bottom-16),
+							new Point(fader.X+fader.Width/2,fader.Bottom-20),
+							new Point(fader.X,fader.Bottom-16),new Point(fader.X,fader.Bottom-1)
 						};
 		}
 
@@ -99,10 +99,10 @@ namespace VixenModules.App.ColorGradients
 			//todo: vertical
 			if (flip)
 				return new Point[] {
-					new Point(m-3,fader.Y+6),new Point(m,fader.Y+3),new Point(m+3,fader.Y+6),new Point(m,fader.Y+9)
+					new Point(m-5,fader.Y+8),new Point(m,fader.Y+3),new Point(m+5,fader.Y+8),new Point(m,fader.Y+13)
 				};
 			return new Point[]{
-					new Point(m-3,fader.Bottom-6),new Point(m,fader.Bottom-3),new Point(m+3,fader.Bottom-6),new Point(m,fader.Bottom-9)
+					new Point(m-5,fader.Bottom-8),new Point(m,fader.Bottom-3),new Point(m+5,fader.Bottom-8),new Point(m,fader.Bottom-13)
 				};
 		}
 
@@ -112,8 +112,8 @@ namespace VixenModules.App.ColorGradients
 		private RectangleF GetFaderArea(Rectangle fader, bool flip)
 		{
 			if (flip)
-				return new RectangleF(fader.X + 1.5f, fader.Y + 1.5f, fader.Width - 3, 8);
-			return new RectangleF(fader.X + 1.5f, fader.Bottom - 9.5f, fader.Width - 3, 8);
+				return new RectangleF(fader.X + 1f, fader.Y + 1.5f, fader.Width - 2, 14);
+			return new RectangleF(fader.X + 1f, fader.Bottom - 14.5f, fader.Width - 2, 14);
 		}
 
 		/// <summary>
@@ -128,7 +128,7 @@ namespace VixenModules.App.ColorGradients
 			gr.FillPolygon(selected ? SystemBrushes.Highlight : SystemBrushes.Control, pts);
 			//draw background
 			ControlPaint.DrawButton(gr, Rectangle.Inflate(
-				Rectangle.Ceiling(field), 1, 1), ButtonState.Normal);
+				Rectangle.Ceiling(field), 1, 1), ButtonState.Flat);
 			if (col.A != 255)
 				using (HatchBrush brs = new HatchBrush(HatchStyle.SmallCheckerBoard,
 						Color.Gray, Color.White))
@@ -229,15 +229,17 @@ namespace VixenModules.App.ColorGradients
 				}
 				else if (!this.ClientRectangle.Contains(e.Location))
 				{
-					//remove point if dragged out
-					_tmp = _selection;
-					if (_selection is ColorPoint)
-						_blend.Colors.Remove(_selection as ColorPoint);
-					else
-						_blend.Alphas.Remove(_selection as AlphaPoint);
+					// don't remove the point if dragged outside the area anymore,
+					// it's bloody annoying and easy to do.
+					////remove point if dragged out
+					//_tmp = _selection;
+					//if (_selection is ColorPoint)
+					//    _blend.Colors.Remove(_selection as ColorPoint);
+					//else
+					//    _blend.Alphas.Remove(_selection as AlphaPoint);
 
-					_selection = null;
-					RaiseSelectionChanged();
+					//_selection = null;
+					//RaiseSelectionChanged();
 				}
 				else
 				{
@@ -350,6 +352,13 @@ namespace VixenModules.App.ColorGradients
 				}
 			}
 			base.OnMouseDown(e);
+		}
+
+		protected override void OnMouseDoubleClick(MouseEventArgs e)
+		{
+			if (Selection != null)
+				RaiseSelectionDoubleClicked();
+			base.OnMouseDoubleClick(e);
 		}
 
 		//modify fader and set cursor
@@ -577,6 +586,12 @@ namespace VixenModules.App.ColorGradients
 				GradientChanged(this, EventArgs.Empty);
 		}
 
+		private void RaiseSelectionDoubleClicked()
+		{
+			if (SelectionDoubleClicked != null)
+				SelectionDoubleClicked(this, EventArgs.Empty);
+		}
+
 		/// <summary>
 		/// raised when the selected color stop is changed
 		/// </summary>
@@ -586,6 +601,11 @@ namespace VixenModules.App.ColorGradients
 		/// raised when the gradient is changed
 		/// </summary>
 		public event EventHandler GradientChanged;
+
+		/// <summary>
+		/// raised when the selected color stop is double clicked
+		/// </summary>
+		public event EventHandler SelectionDoubleClicked;
 
 		#endregion
 	}

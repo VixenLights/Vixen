@@ -70,23 +70,21 @@ namespace CommonElements.ControlsEx.ValueControls
 				if(control==null)
 					throw new ArgumentNullException("control");
 				_tracker.Assign(control.Value, control.Maximum, control.Minimum);
-				Point pt=_tracker.GetTrackerPos();
-				if(_trackerorientation==Orientation.Horizontal)
-				{
+				if (_trackerorientation == Orientation.Horizontal) {
 					this.Width = Math.Max(32, control.Width + 24);
 					//set mouse
-					ShowByControl(control,control.PointToScreen(new Point(0,22)));
+					ShowByControl(control, control.PointToScreen(new Point(0, 22)));
+					Point pt = _tracker.GetTrackerPos();
 					Cursor.Position = _tracker.PointToScreen(pt);
-					Win32.PostMessage(_tracker.Handle, Win32.WM_LBUTTONDOWN, 0, (pt.Y<<16)|(pt.X-1));
-				}
-				else
-				{
-					this.Height=Math.Max(32, control.Width + 24);
+					Win32.PostMessage(_tracker.Handle, Win32.WM_LBUTTONDOWN, 0, (pt.Y << 16) | (pt.X - 1));
+				} else {
+					this.Height = Math.Max(32, control.Width + 24);
 					//set mouse
-					Point mouse=Control.MousePosition;
-					mouse=new Point(mouse.X-pt.X,mouse.Y-pt.Y);
-					ShowByControl(control,mouse);
-					Win32.PostMessage(_tracker.Handle, Win32.WM_LBUTTONDOWN, 0, (pt.Y<<16)|(pt.X-1));
+					Point mouse = Control.MousePosition;
+					Point pt = _tracker.GetTrackerPos();
+					mouse = new Point(mouse.X - pt.X, mouse.Y - pt.Y);
+					ShowByControl(control, mouse);
+					Win32.PostMessage(_tracker.Handle, Win32.WM_LBUTTONDOWN, 0, (pt.Y << 16) | (pt.X - 1));
 				}
 			}
 			#endregion
@@ -138,6 +136,7 @@ namespace CommonElements.ControlsEx.ValueControls
 			this._trackerpopup = new TrackerPopupForm();
 			this._trackerpopup.ValueChanged+=new ValueChangedEH(_tracker_ValueChanged);
 			this._trackerpopup.VisibleChanged += new EventHandler(_trackerpopup_VisibleChanged);
+			this._trackerpopup.TrackerOrientation = TrackerOrientation;
 			#endregion
 			#region textbox
 			this._textbox = new TextBox();
@@ -453,7 +452,7 @@ namespace CommonElements.ControlsEx.ValueControls
 		private void OnDropDownPressed()
 		{
 			_dropped = true;
-_trackerpopup.ShowUp(this);
+			_trackerpopup.ShowUp(this);
 		}
 		void _trackerpopup_VisibleChanged(object sender, EventArgs e)
 		{

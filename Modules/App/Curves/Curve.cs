@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Linq;
 using System.Text;
+using System.Drawing;
 using Vixen.Module;
 using Vixen.Module.App;
 using ZedGraph;
@@ -12,6 +13,8 @@ namespace VixenModules.App.Curves
 	[Serializable]
 	public class Curve
 	{
+		public static Color CurveGridColor = Color.RoyalBlue;
+	
 		public Curve(IPointList points)
 		{
 			Points = new PointPairList(points);
@@ -74,6 +77,34 @@ namespace VixenModules.App.Curves
 					return false;
 				}
 			}
+		}
+
+		public Bitmap GenerateCurveImage(Size size)
+		{
+			GraphPane pane = new GraphPane(new RectangleF(0, 0, size.Width, size.Height), "", "", "");
+			Bitmap result = new Bitmap(size.Width, size.Height);
+
+			pane.AddCurve("", Points, CurveGridColor);
+
+			pane.XAxis.Scale.Min = 0;
+			pane.XAxis.Scale.Max = 100;
+			pane.YAxis.Scale.Min = 0;
+			pane.YAxis.Scale.Max = 100;
+			pane.XAxis.IsVisible = false;
+			pane.YAxis.IsVisible = false;
+			pane.Legend.IsVisible = false;
+			pane.Title.IsVisible = false;
+	
+			pane.Chart.Fill.Color = SystemColors.Control;
+			pane.Fill = new Fill(SystemColors.Control);
+			pane.Border = new Border(SystemColors.Control, 0);
+
+			using (Graphics g = Graphics.FromImage(result)) {
+				pane.AxisChange(g);
+				result = pane.GetImage(true);
+			}
+
+			return result;
 		}
 	}
 }

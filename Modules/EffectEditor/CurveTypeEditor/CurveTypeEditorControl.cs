@@ -30,11 +30,26 @@ namespace VixenModules.EffectEditor.CurveTypeEditor
 			}
 		}
 
-		public Curve CurveValue { get; set; }
+		private Curve _curve;
+		public Curve CurveValue
+		{
+			get { return _curve; }
+			set
+			{
+				_curve = value;
+				UpdateCurveImage();
+			}
+		}
 
-		private void buttonEditCurve_Click(object sender, EventArgs e)
+		private void UpdateCurveImage()
+		{
+			panelCurve.BackgroundImage = _curve.GenerateCurveImage(panelCurve.Size);
+		}
+
+		private void panelCurve_Click(object sender, EventArgs e)
 		{
 			CurveValue.EditCurve();
+			UpdateCurveImage();
 		}
 	}
 }

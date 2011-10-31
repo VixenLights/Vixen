@@ -27,32 +27,34 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.buttonEditCurve = new System.Windows.Forms.Button();
+			this.panelCurve = new System.Windows.Forms.Panel();
 			this.SuspendLayout();
 			// 
-			// buttonEditCurve
+			// panelCurve
 			// 
-			this.buttonEditCurve.Location = new System.Drawing.Point(3, 3);
-			this.buttonEditCurve.Name = "buttonEditCurve";
-			this.buttonEditCurve.Size = new System.Drawing.Size(164, 64);
-			this.buttonEditCurve.TabIndex = 0;
-			this.buttonEditCurve.Text = "Edit Curve";
-			this.buttonEditCurve.UseVisualStyleBackColor = true;
-			this.buttonEditCurve.Click += new System.EventHandler(this.buttonEditCurve_Click);
+			this.panelCurve.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.panelCurve.Location = new System.Drawing.Point(0, 0);
+			this.panelCurve.Name = "panelCurve";
+			this.panelCurve.Size = new System.Drawing.Size(150, 80);
+			this.panelCurve.TabIndex = 0;
+			this.panelCurve.Click += new System.EventHandler(this.panelCurve_Click);
 			// 
 			// CurveTypeEditorControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.buttonEditCurve);
+			this.Controls.Add(this.panelCurve);
 			this.Name = "CurveTypeEditorControl";
-			this.Size = new System.Drawing.Size(170, 70);
+			this.Size = new System.Drawing.Size(150, 80);
 			this.ResumeLayout(false);
 
 		}
 
 		#endregion
 
-		private System.Windows.Forms.Button buttonEditCurve;
+		private System.Windows.Forms.Panel panelCurve;
+
 	}
 }

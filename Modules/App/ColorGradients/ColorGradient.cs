@@ -571,12 +571,6 @@ namespace VixenModules.App.ColorGradients
 				return GetFocusPosition<ColorPoint>(Colors, value as ColorPoint);
 			else
 				throw new ArgumentException();
-
-			//int i = list.IndexOf(value);
-			//if (i < 1)//first point or not found
-			//    return double.NaN;
-
-			//return list[i - 1].Position + value.Focus * (list[i].Position - list[i - 1].Position);
 		}
 
 		private double GetFocusPosition<T>(PointList<T> coll, T value) where T : Point, IComparable<T>
@@ -591,8 +585,6 @@ namespace VixenModules.App.ColorGradients
 			return sorted[i - 1].Position + value.Focus *
 				(sorted[i].Position - sorted[i - 1].Position);
 		}
-
-
 
 		public void SetFocusPosition(Point value, double focuspos)
 		{
@@ -623,6 +615,22 @@ namespace VixenModules.App.ColorGradients
 				else value.Focus = Math.Max(.0, Math.Min(1.0,
 					(focuspos - sorted[i - 1].Position) / w));
 			}
+		}
+
+		public Bitmap GenerateColorGradientImage(Size size)
+		{
+			Bitmap result = new Bitmap(size.Width, size.Height);
+			System.Drawing.Point point1 = new System.Drawing.Point(0, size.Height / 2);
+			System.Drawing.Point point2 = new System.Drawing.Point(size.Width, size.Height / 2);
+
+			using (LinearGradientBrush lnbrs = new LinearGradientBrush(point1, point2, Color.Transparent, Color.Transparent))
+			using (Graphics g = Graphics.FromImage(result))
+			{
+				lnbrs.InterpolationColors = GetColorBlend();
+				g.FillRectangle(lnbrs,0, 0, size.Width, size.Height);
+			}
+
+			return result;
 		}
 	}
 
@@ -663,28 +671,6 @@ namespace VixenModules.App.ColorGradients
 			return Color.FromArgb((int)(_alpha * 255.0),
 				basecolor);
 		}
-
-		///// <summary>
-		///// gets the position of the focus point based
-		///// on the owning gradient and the focus value.
-		///// this operation requires O(n) runtime.
-		///// returns double.NaN if not valid
-		///// </summary>
-		//public override double GetFocusPosition()
-		//{
-		//    if (Owner == null)
-		//        return double.NaN;
-		//    return GetFocusPosition<AlphaPoint>(Owner.Alphas, this);
-		//}
-		//
-		///// <summary>
-		///// sets the position of the focus point, if possible.
-		///// </summary>
-		//public override void SetFocusPosition(double value)
-		//{
-		//    if (Owner != null)
-		//        SetFocusPosition<AlphaPoint>(Owner.Alphas, this, value);
-		//}
 
 		/// <summary>
 		/// gets or sets the alpha
@@ -770,28 +756,6 @@ namespace VixenModules.App.ColorGradients
 			return System.Drawing.Color.FromArgb(basecolor.A,
 				_color.ToRGB().ToArgb());
 		}
-
-		///// <summary>
-		///// gets the position of the focus point based
-		///// on the owning gradient and the focus value.
-		///// this operation requires O(n) runtime.
-		///// returns double.NaN if not valid
-		///// </summary>
-		//public override double GetFocusPosition()
-		//{
-		//    if (Owner == null)
-		//        return double.NaN;
-		//    return GetFocusPosition<ColorPoint>(Owner.Colors, this);
-		//}
-		//
-		///// <summary>
-		///// sets the position of the focus point, if possible.
-		///// </summary>
-		//public override void SetFocusPosition(double value)
-		//{
-		//    if (Owner != null)
-		//        SetFocusPosition<ColorPoint>(Owner.Colors, this, value);
-		//}
 
 		/// <summary>
 		/// gets or sets the color

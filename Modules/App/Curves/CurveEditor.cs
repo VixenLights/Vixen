@@ -19,6 +19,18 @@ namespace VixenModules.App.Curves
 
 			Points = points;
 
+			//zedGraphControl.GraphPane.XAxis.MajorTic.IsOutside = false;
+			zedGraphControl.GraphPane.XAxis.MajorGrid.IsVisible = true;
+			zedGraphControl.GraphPane.XAxis.MajorGrid.Color = Color.Gray;
+			zedGraphControl.GraphPane.XAxis.MajorGrid.DashOff = 4;
+			zedGraphControl.GraphPane.XAxis.MajorGrid.DashOn = 2;
+
+			//zedGraphControl.GraphPane.YAxis.MajorTic.IsOutside = false;
+			zedGraphControl.GraphPane.YAxis.MajorGrid.IsVisible = true;
+			zedGraphControl.GraphPane.YAxis.MajorGrid.Color = Color.Gray;
+			zedGraphControl.GraphPane.YAxis.MajorGrid.DashOff = 4;
+			zedGraphControl.GraphPane.YAxis.MajorGrid.DashOn = 2;
+
 			zedGraphControl.EditModifierKeys = Keys.None;
 			zedGraphControl.IsShowContextMenu = false;
 			zedGraphControl.IsEnableSelection = false;
@@ -56,7 +68,7 @@ namespace VixenModules.App.Curves
 				zedGraphControl.GraphPane.CurveList.Clear();
 				PointPairList ppl = value.Clone();
 				ppl.Sort();
-				zedGraphControl.GraphPane.AddCurve("", ppl, Color.Gray);
+				zedGraphControl.GraphPane.AddCurve("", ppl, Curve.CurveGridColor);
 				zedGraphControl.Invalidate();
 				Modified = false;
 			}

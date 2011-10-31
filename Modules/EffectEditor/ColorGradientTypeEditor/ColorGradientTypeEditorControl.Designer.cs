@@ -27,32 +27,35 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.buttonEditColorGradient = new System.Windows.Forms.Button();
+			this.panelGradient = new System.Windows.Forms.Panel();
 			this.SuspendLayout();
 			// 
-			// buttonEditColorGradient
+			// panelGradient
 			// 
-			this.buttonEditColorGradient.Location = new System.Drawing.Point(3, 3);
-			this.buttonEditColorGradient.Name = "buttonEditColorGradient";
-			this.buttonEditColorGradient.Size = new System.Drawing.Size(164, 64);
-			this.buttonEditColorGradient.TabIndex = 2;
-			this.buttonEditColorGradient.Text = "Edit Gradient";
-			this.buttonEditColorGradient.UseVisualStyleBackColor = true;
-			this.buttonEditColorGradient.Click += new System.EventHandler(this.buttonEditColorGradient_Click);
+			this.panelGradient.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.panelGradient.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panelGradient.Location = new System.Drawing.Point(0, 0);
+			this.panelGradient.Name = "panelGradient";
+			this.panelGradient.Size = new System.Drawing.Size(150, 80);
+			this.panelGradient.TabIndex = 0;
+			this.panelGradient.Click += new System.EventHandler(this.panelGradient_Click);
 			// 
 			// ColorGradientTypeEditorControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.buttonEditColorGradient);
+			this.Controls.Add(this.panelGradient);
 			this.Name = "ColorGradientTypeEditorControl";
-			this.Size = new System.Drawing.Size(170, 70);
+			this.Size = new System.Drawing.Size(150, 80);
 			this.ResumeLayout(false);
 
 		}
 
 		#endregion
 
-		private System.Windows.Forms.Button buttonEditColorGradient;
+		private System.Windows.Forms.Panel panelGradient;
+
 	}
 }

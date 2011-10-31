@@ -27,27 +27,30 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.valueUpDown = new CommonElements.ControlsEx.ValueControls.ValueUpDown();
 			this.label2 = new System.Windows.Forms.Label();
+			this.valueUpDown = new CommonElements.ControlsEx.ValueControls.ValueUpDown();
 			this.SuspendLayout();
-			// 
-			// valueUpDown
-			// 
-			this.valueUpDown.Location = new System.Drawing.Point(3, 3);
-			this.valueUpDown.Name = "valueUpDown";
-			this.valueUpDown.Size = new System.Drawing.Size(58, 25);
-			this.valueUpDown.TabIndex = 1;
-			this.valueUpDown.TrackerOrientation = System.Windows.Forms.Orientation.Vertical;
-			this.valueUpDown.Value = 100;
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(63, 8);
+			this.label2.Location = new System.Drawing.Point(69, 18);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(15, 13);
 			this.label2.TabIndex = 3;
 			this.label2.Text = "%";
+			// 
+			// valueUpDown
+			// 
+			this.valueUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.valueUpDown.Location = new System.Drawing.Point(9, 13);
+			this.valueUpDown.Name = "valueUpDown";
+			this.valueUpDown.Size = new System.Drawing.Size(58, 25);
+			this.valueUpDown.TabIndex = 1;
+			this.valueUpDown.Value = 100;
+			this.valueUpDown.TrackerOrientation = System.Windows.Forms.Orientation.Horizontal;
 			// 
 			// LevelTypeEditorControl
 			// 
@@ -56,10 +59,9 @@
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.valueUpDown);
 			this.Name = "LevelTypeEditorControl";
-			this.Size = new System.Drawing.Size(83, 31);
+			this.Size = new System.Drawing.Size(90, 50);
 			this.ResumeLayout(false);
 			this.PerformLayout();
-
 		}
 
 		#endregion

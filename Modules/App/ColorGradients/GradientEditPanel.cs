@@ -26,6 +26,8 @@ namespace VixenModules.App.ColorGradients
 		public GradientEditPanel()
 		{
 			InitializeComponent();
+			edit.SelectionDoubleClicked += edit_SelectionDoubleClicked;
+			LockColorEditorHSV_Value = true;
 		}
 
 
@@ -67,19 +69,31 @@ namespace VixenModules.App.ColorGradients
 				GradientChanged(this, e);
 		}
 
+		//triggered if edit panel selection double clicked
+		private void edit_SelectionDoubleClicked(object sender, EventArgs e)
+		{
+			editSelectedColor();
+		}
+
+
 		//active color changed
 		private void lblColorSelect_Click(object sender, EventArgs e)
+		{
+			editSelectedColor();
+		}
+
+		// edits the selected color in the 'edit' control
+		private void editSelectedColor()
 		{
 			if (edit.Gradient == null || edit.FocusSelection)
 				return;
 			ColorPoint pt = edit.Selection as ColorPoint;
 			if (pt == null)
 				return;
-			using (ColorPicker frm = new ColorPicker(_mode, _fader))
-			{
+			using (ColorPicker frm = new ColorPicker(_mode, _fader)) {
+				frm.LockValue_V = LockColorEditorHSV_Value;
 				frm.Color = _xyz;
-				if (frm.ShowDialog(this.FindForm()) == DialogResult.OK)
-				{
+				if (frm.ShowDialog(this.FindForm()) == DialogResult.OK) {
 					pt.Color = _xyz = frm.Color;
 					lblColorSelect.Color = _xyz.ToRGB().ToArgb();
 					_mode = frm.SecondaryMode;
@@ -87,6 +101,7 @@ namespace VixenModules.App.ColorGradients
 				}
 			}
 		}
+
 
 		//active color dragged
 		private void lblColorSelect_ColorChanged(object sender, EventArgs e)
@@ -138,6 +153,8 @@ namespace VixenModules.App.ColorGradients
 			get { return edit.Gradient; }
 			set { edit.Gradient = value; UpdateUI(); }
 		}
+
+		public bool LockColorEditorHSV_Value { get; set; }
 
 		#endregion
 

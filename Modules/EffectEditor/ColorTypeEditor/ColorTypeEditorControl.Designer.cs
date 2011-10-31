@@ -32,11 +32,14 @@
 			// 
 			// panelColor
 			// 
+			this.panelColor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.panelColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.panelColor.Location = new System.Drawing.Point(32, 0);
+			this.panelColor.Location = new System.Drawing.Point(0, 0);
 			this.panelColor.Margin = new System.Windows.Forms.Padding(0);
 			this.panelColor.Name = "panelColor";
-			this.panelColor.Size = new System.Drawing.Size(64, 64);
+			this.panelColor.Size = new System.Drawing.Size(80, 40);
 			this.panelColor.TabIndex = 2;
 			this.panelColor.Click += new System.EventHandler(this.panelColor_Click);
 			// 
@@ -46,7 +49,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add(this.panelColor);
 			this.Name = "ColorTypeEditorControl";
-			this.Size = new System.Drawing.Size(128, 64);
+			this.Size = new System.Drawing.Size(80, 40);
 			this.ResumeLayout(false);
 
 		}
