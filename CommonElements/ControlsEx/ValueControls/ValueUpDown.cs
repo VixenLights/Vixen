@@ -148,6 +148,7 @@ namespace CommonElements.ControlsEx.ValueControls
 			this._textbox.MaxLength = 5;
 			this._textbox.KeyDown += new KeyEventHandler(_textbox_KeyDown);
 			this._textbox.KeyPress += new KeyPressEventHandler(_textbox_KeyPress);
+			this._textbox.LostFocus += new EventHandler(_textbox_LostFocus);
 			this.Controls.Add(this._textbox);
 			#endregion
 			#region timer
@@ -159,6 +160,7 @@ namespace CommonElements.ControlsEx.ValueControls
 				ControlStyles.FixedHeight |
 				ControlStyles.DoubleBuffer, true);
 		}
+
 		protected override void Dispose(bool disposing)
 		{
 			this._timer.Stop();
@@ -319,6 +321,7 @@ namespace CommonElements.ControlsEx.ValueControls
 			this.Refresh();
 		}
 		#endregion
+
 		#region textbox
 		// accept only digits and control keys
 		void _textbox_KeyPress(object sender, KeyPressEventArgs e)
@@ -335,7 +338,14 @@ namespace CommonElements.ControlsEx.ValueControls
 				this.OnTextBoxReturn();
 			}
 		}
+
+		void _textbox_LostFocus(object sender, EventArgs e)
+		{
+			this.OnTextBoxReturn();
+		}
+
 		#endregion
+
 		#region mouse actions
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
