@@ -832,7 +832,8 @@ namespace ZedGraph
 			using ( Graphics bitmapGraphics = Graphics.FromImage( bitmap ) )
 			{
 				bitmapGraphics.TranslateTransform( -_rect.Left, -_rect.Top );
-				this.Draw( bitmapGraphics );
+				MakeImage(bitmapGraphics, bitmap.Width, bitmap.Height, isAntiAlias);
+				//this.Draw( bitmapGraphics );
 			}
 
 			return bitmap;

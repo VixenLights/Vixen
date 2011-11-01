@@ -7,25 +7,22 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Vixen.Module.App;
+using Vixen.Sys;
 using ZedGraph;
 
 namespace VixenModules.App.Curves
 {
 	public partial class CurveEditor : Form
 	{
-		public CurveEditor(PointPairList points)
+		public CurveEditor()
 		{
 			InitializeComponent();
 
-			Points = points;
-
-			//zedGraphControl.GraphPane.XAxis.MajorTic.IsOutside = false;
 			zedGraphControl.GraphPane.XAxis.MajorGrid.IsVisible = true;
 			zedGraphControl.GraphPane.XAxis.MajorGrid.Color = Color.Gray;
 			zedGraphControl.GraphPane.XAxis.MajorGrid.DashOff = 4;
 			zedGraphControl.GraphPane.XAxis.MajorGrid.DashOn = 2;
 
-			//zedGraphControl.GraphPane.YAxis.MajorTic.IsOutside = false;
 			zedGraphControl.GraphPane.YAxis.MajorGrid.IsVisible = true;
 			zedGraphControl.GraphPane.YAxis.MajorGrid.Color = Color.Gray;
 			zedGraphControl.GraphPane.YAxis.MajorGrid.DashOff = 4;
@@ -43,50 +40,54 @@ namespace VixenModules.App.Curves
 			zedGraphControl.GraphPane.YAxis.Title.IsVisible = false;
 			zedGraphControl.GraphPane.Legend.IsVisible = false;
 			zedGraphControl.GraphPane.Title.IsVisible = false;
-			zedGraphControl.GraphPane.Chart.Fill.Color = SystemColors.Control;
+
 			zedGraphControl.GraphPane.Fill = new Fill(SystemColors.Control);
 			zedGraphControl.GraphPane.Border = new Border(SystemColors.Control, 0);
+
 			zedGraphControl.GraphPane.AxisChange();
 		}
 
 		public CurveEditor(Curve curve)
-			: this(curve.Points)
+			: this()
 		{
+			Curve = curve;
 		}
 
-		public PointPairList Points
-		{
-			get
-			{
-				if (zedGraphControl.GraphPane.CurveList.Count > 0)
-					return zedGraphControl.GraphPane.CurveList[0].Points as PointPairList;
-				else
-					return null;
-			}
-			set
-			{
-				zedGraphControl.GraphPane.CurveList.Clear();
-				PointPairList ppl = value.Clone();
-				ppl.Sort();
-				zedGraphControl.GraphPane.AddCurve("", ppl, Curve.CurveGridColor);
-				zedGraphControl.Invalidate();
-				Modified = false;
-			}
-		}
-
+		private Curve _curve;
 		public Curve Curve
 		{
-			get
-			{
-				return new Curve(Points);
-			}
+			get { return _curve; }
 			set
 			{
-				Points = value.Points;
+				_curve = new Curve(value);
+				PopulateFormWithCurve(_curve);
 			}
 		}
 
-		public bool Modified { get; internal set; }
+		private string _libraryCurveName;
+		public string LibraryCurveName
+		{
+			get { return _libraryCurveName; }
+			set
+			{
+				_libraryCurveName = value;
+				PopulateFormWithCurve(Curve);
+			}
+		}
+
+		private CurveLibrary _library;
+		private CurveLibrary Library
+		{
+			get
+			{
+				if (_library == null)
+					_library = ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary;
+
+				return _library;
+			}
+		}
+
+		public bool ReadonlyCurve { get; internal set; }
 
 		private bool zedGraphControl_PreMouseMoveEvent(ZedGraphControl sender, MouseEventArgs e)
 		{
@@ -117,6 +118,9 @@ namespace VixenModules.App.Curves
 
 		private bool zedGraphControl_MouseDownEvent(ZedGraphControl sender, MouseEventArgs e)
 		{
+			if (ReadonlyCurve)
+				return false;
+
 			CurveItem curve;
 			int dragPointIndex;
 
@@ -130,7 +134,6 @@ namespace VixenModules.App.Curves
 					pointList.Insert(0, newX, newY);
 					pointList.Sort();
 					zedGraphControl.Invalidate();
-					Modified = true;
 				}
 			}
 			// if the ALT key was pressed, and we're near a point, delete it -- but only if there would be at least two points left
@@ -140,7 +143,6 @@ namespace VixenModules.App.Curves
 					pointList.RemoveAt(dragPointIndex);
 					pointList.Sort();
 					zedGraphControl.Invalidate();
-					Modified = true;
 				}
 			}
 
@@ -150,6 +152,113 @@ namespace VixenModules.App.Curves
 		private bool zedGraphControl_MouseUpEvent(ZedGraphControl sender, MouseEventArgs e)
 		{
 			return false;
+		}
+
+		private void PopulateFormWithCurve(Curve curve)
+		{
+			// if we're editing a curve from the library, treat it special
+			if (curve.IsCurrentLibraryCurve) {
+				zedGraphControl.GraphPane.CurveList.Clear();
+				zedGraphControl.GraphPane.AddCurve("", curve.Points, Curve.ActiveCurveGridColor);
+				if (LibraryCurveName == null) {
+					labelCurve.Text = "This curve is a library curve.";
+					Text = "Curve Editor: Library Curve";
+				} else {
+					labelCurve.Text = "This curve is the library curve: " + LibraryCurveName;
+					Text = "Curve Editor: Library Curve " + LibraryCurveName;
+				}
+
+				zedGraphControl.IsEnableHEdit = true;
+				zedGraphControl.IsEnableVEdit = true;
+				ReadonlyCurve = false;
+				buttonSaveCurveToLibrary.Enabled = false;
+				buttonLoadCurveFromLibrary.Enabled = false;
+				buttonUnlinkCurve.Enabled = false;
+				buttonEditLibraryCurve.Enabled = false;
+				labelInstructions1.Visible = true;
+				labelInstructions2.Visible = true;
+
+				zedGraphControl.GraphPane.Chart.Fill = new Fill(Color.AliceBlue);
+
+			} else {
+				if (curve.IsLibraryReference) {
+					zedGraphControl.GraphPane.CurveList.Clear();
+					zedGraphControl.GraphPane.AddCurve("", curve.Points, Curve.InactiveCurveGridColor);
+					labelCurve.Text = "This curve is linked to the library curve: " + curve.LibraryReferenceCurveName;
+				} else {
+					zedGraphControl.GraphPane.CurveList.Clear();
+					zedGraphControl.GraphPane.AddCurve("", curve.Points, Curve.ActiveCurveGridColor);
+					labelCurve.Text = "This curve is not linked to any in the library.";
+				}
+
+				zedGraphControl.IsEnableHEdit = !curve.IsLibraryReference;
+				zedGraphControl.IsEnableVEdit = !curve.IsLibraryReference;
+				ReadonlyCurve = curve.IsLibraryReference;
+				buttonSaveCurveToLibrary.Enabled = !curve.IsLibraryReference;
+				buttonUnlinkCurve.Enabled = curve.IsLibraryReference;
+				buttonEditLibraryCurve.Enabled = curve.IsLibraryReference;
+				labelInstructions1.Visible = !curve.IsLibraryReference;
+				labelInstructions2.Visible = !curve.IsLibraryReference;
+
+				zedGraphControl.GraphPane.Chart.Fill = new Fill(SystemColors.Control);
+
+				Text = "Curve Editor";
+			}
+
+			zedGraphControl.Invalidate();
+		}
+
+		private void buttonLoadCurveFromLibrary_Click(object sender, EventArgs e)
+		{
+			CurveLibrarySelector selector = new CurveLibrarySelector();
+			if (selector.ShowDialog() == System.Windows.Forms.DialogResult.OK && selector.SelectedItem != null) {
+				// make a new curve that references the selected library curve, and set it to the current Curve
+				Curve newCurve = new Curve(selector.SelectedItem.Item2);
+				newCurve.LibraryReferenceCurveName = selector.SelectedItem.Item1;
+				newCurve.IsCurrentLibraryCurve = false;
+				Curve = newCurve;
+			}
+		}
+
+		private void buttonSaveCurveToLibrary_Click(object sender, EventArgs e)
+		{
+			CommonElements.TextDialog dialog = new CommonElements.TextDialog("Curve name?");
+
+			while (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+				if (dialog.Response == "") {
+					MessageBox.Show("Please enter a name.");
+					continue;
+				}
+
+				if (Library.Contains(dialog.Response)) {
+					DialogResult result = MessageBox.Show("There is already a curve with that name. Do you want to overwrite it?",
+						"Overwrite curve?", MessageBoxButtons.YesNoCancel);
+					if (result == System.Windows.Forms.DialogResult.Yes) {
+						Library.AddCurve(dialog.Response, new Curve(Curve));
+						break;
+					} else if (result == System.Windows.Forms.DialogResult.Cancel) {
+						break;
+					}
+				} else {
+					Library.AddCurve(dialog.Response, new Curve(Curve));
+					break;
+				}
+			}
+		}
+
+		private void buttonUnlinkCurve_Click(object sender, EventArgs e)
+		{
+			Curve.UnlinkFromLibraryCurve();
+			PopulateFormWithCurve(Curve);
+		}
+
+		private void buttonEditLibraryCurve_Click(object sender, EventArgs e)
+		{
+			string libraryName = Curve.LibraryReferenceCurveName;
+
+			Library.EditLibraryCurve(libraryName);
+	
+			PopulateFormWithCurve(Curve);
 		}
 	}
 }

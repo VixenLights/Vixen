@@ -4,25 +4,35 @@ using System.Windows.Forms;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using System.Runtime.Serialization;
 using Vixen.Module;
 using Vixen.Module.App;
+using Vixen.Sys;
 using ZedGraph;
 
 namespace VixenModules.App.Curves
 {
-	[Serializable]
+	[DataContract]
 	public class Curve
 	{
-		public static Color CurveGridColor = Color.RoyalBlue;
-	
+		public static Color ActiveCurveGridColor = Color.RoyalBlue;
+		public static Color InactiveCurveGridColor = Color.DarkGray;
+
 		public Curve(IPointList points)
 		{
 			Points = new PointPairList(points);
+			LibraryReferenceCurveName = "";
 		}
 
+		/// <summary>
+		/// Deep copy constructor.
+		/// </summary>
+		/// <param name="curve"></param>
 		public Curve(Curve curve)
-			: this(curve.Points)
 		{
+			Points = new PointPairList(curve.Points);
+			LibraryReferenceCurveName = curve.LibraryReferenceCurveName;
+			IsCurrentLibraryCurve = curve.IsCurrentLibraryCurve;
 		}
 
 		// default Curve constructor makes a ramp with x = y.
@@ -31,8 +41,77 @@ namespace VixenModules.App.Curves
 		{
 		}
 
-		public PointPairList Points { get; internal set; }
+		private PointPairList _points;
+		[DataMember]
+		public PointPairList Points
+		{
+			get
+			{
+				// If we have a reference to a curve in the library, try and use that to check if the points are still valid.
+				if (LibraryReferencedCurve != null) {
+					if (!LibraryReferencedCurve.IsCurrentLibraryCurve) {
+						UpdateLibraryCurveReference();
+					}
+				} else {
+					UpdateLibraryCurveReference();
+				}
 
+				return _points;
+			}
+			internal set
+			{
+					_points = value;
+			}
+		}
+
+		protected Curve LibraryReferencedCurve
+		{
+			get;
+			set;
+		}
+
+		private CurveLibrary _library;
+		private CurveLibrary Library
+		{
+			get
+			{
+				if (_library == null)
+					_library = ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary;
+
+				return _library;
+			}
+		}
+
+		[DataMember]
+		public string LibraryReferenceCurveName { get; set; }
+
+		public bool IsLibraryReference
+		{
+			get { return LibraryReferenceCurveName.Length > 0; }
+		}
+
+		/// <summary>
+		/// If the curve is a library curve, and is currently valid in the library. When the curve changes,
+		/// it should be removed from the library and be replaced with a new (updated) one.
+		/// This should only ever be set for curves that are in the library.
+		/// </summary>
+		[DataMember]
+		public bool IsCurrentLibraryCurve { get; set; }
+
+		public void UpdateLibraryCurveReference()
+		{
+			LibraryReferencedCurve = null;
+
+			// if we have a name, try and find it in the library. Otherwise, remove the reference.
+			if (IsLibraryReference) {
+				if (Library.Contains(LibraryReferenceCurveName)) {
+					LibraryReferencedCurve = Library.GetCurve(LibraryReferenceCurveName);
+					_points = new PointPairList(LibraryReferencedCurve.Points);
+				} else {
+					LibraryReferenceCurveName = "";
+				}
+			}
+		}
 
 		public double GetValue(double x)
 		{
@@ -62,21 +141,10 @@ namespace VixenModules.App.Curves
 			return GetIntValue((double)x);
 		}
 
-		/// <summary>
-		/// Opens up the curve editor for this particular curve, and lets the user modify it.
-		/// </summary>
-		/// <returns> true if the curve was modified, false if it was not.</returns>
-		public bool EditCurve()
+		public void UnlinkFromLibraryCurve()
 		{
-			using (CurveEditor editor = new CurveEditor(Points)) {
-				DialogResult result = editor.ShowDialog();
-				if (result == DialogResult.OK && editor.Modified) {
-					Points = editor.Points;
-					return true;
-				} else {
-					return false;
-				}
-			}
+			LibraryReferenceCurveName = "";
+			LibraryReferencedCurve = null;
 		}
 
 		public Bitmap GenerateCurveImage(Size size)
@@ -84,7 +152,7 @@ namespace VixenModules.App.Curves
 			GraphPane pane = new GraphPane(new RectangleF(0, 0, size.Width, size.Height), "", "", "");
 			Bitmap result = new Bitmap(size.Width, size.Height);
 
-			pane.AddCurve("", Points, CurveGridColor);
+			pane.AddCurve("", Points, ActiveCurveGridColor);
 
 			pane.XAxis.Scale.Min = 0;
 			pane.XAxis.Scale.Max = 100;
@@ -94,9 +162,8 @@ namespace VixenModules.App.Curves
 			pane.YAxis.IsVisible = false;
 			pane.Legend.IsVisible = false;
 			pane.Title.IsVisible = false;
-	
-			pane.Chart.Fill.Color = SystemColors.Control;
-			pane.Fill = new Fill(SystemColors.Control);
+
+			pane.Chart.Fill = new Fill(SystemColors.Control);
 			pane.Border = new Border(SystemColors.Control, 0);
 
 			using (Graphics g = Graphics.FromImage(result)) {

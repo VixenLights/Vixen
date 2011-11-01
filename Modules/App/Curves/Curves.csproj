@@ -60,6 +60,12 @@
     </Compile>
     <Compile Include="CurveLibraryDescriptor.cs" />
     <Compile Include="CurveLibrary.cs" />
+    <Compile Include="CurveLibrarySelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CurveLibrarySelector.Designer.cs">
+      <DependentUpon>CurveLibrarySelector.cs</DependentUpon>
+    </Compile>
     <Compile Include="CurveLibraryStaticData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ZedGraph\ArrowObj.cs" />
@@ -185,6 +191,9 @@
   <ItemGroup>
     <EmbeddedResource Include="CurveEditor.resx">
       <DependentUpon>CurveEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CurveLibrarySelector.resx">
+      <DependentUpon>CurveLibrarySelector.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ZedGraph\ZedGraphLocale.resx" />
   </ItemGroup>
