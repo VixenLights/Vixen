@@ -15,7 +15,6 @@ namespace Vixen.Sys {
 		// Module type id : module descriptor
 		static private Dictionary<Guid, IModuleDescriptor> _moduleDescriptors = new Dictionary<Guid, IModuleDescriptor>();
 		// ModuleImplementation : descriptors for modules of that type
-		//static private Dictionary<ModuleImplementation, List<IModuleDescriptor>> _moduleImplementationDescriptors = new Dictionary<ModuleImplementation, List<IModuleDescriptor>>();
 		static private Dictionary<ModuleImplementation, HashSet<IModuleDescriptor>> _moduleImplementationDescriptors = new Dictionary<ModuleImplementation, HashSet<IModuleDescriptor>>();
 		// Module type id : module type's static data singleton
 		static private Dictionary<Guid, IModuleDataModel> _moduleStaticDataRepository = new Dictionary<Guid, IModuleDataModel>();
@@ -38,41 +37,10 @@ namespace Vixen.Sys {
 		}
 
 		static public void LoadAllModules() {
-			//*** This is loading module by type, but dependencies span types, so all module
-			//    types must be loaded simultaneously for dependencies to be resolved
+			// All module types must be loaded simultaneously for dependencies to be resolved.
 			IEnumerable<string> allModuleFiles = _moduleImplementationDescriptors.Keys.Select(_GetModuleTypeDirectory).SelectMany(x => System.IO.Directory.GetFiles(x, "*.dll"));
 			_LoadModulesFromFile(allModuleFiles);
-			//foreach(ModuleImplementation moduleImplementation in _moduleImplementationDescriptors.Keys) {
-			//    string moduleTypeDirectory = _GetModuleTypeDirectory(moduleImplementation);
-			//    _LoadModulesFromFile(System.IO.Directory.GetFiles(moduleTypeDirectory, "*.dll"));
-			//}
-
-			//IEnumerable<IModuleDescriptor> descriptors;
-			//// For each type of module discovered, get any descriptors.
-			//// Get the results into a static collection or this will be called every time
-			//// "descriptors" is enumerated.
-			//descriptors = _moduleImplementationDescriptors.Keys.SelectMany(_LoadModuleDescriptors).ToArray();
-			//// Remove any that have duplicate type ids.
-			//descriptors = _RemoveDuplicateTypes(descriptors);
-			//// Check the dependencies of all modules.
-			//descriptors = _ResolveAgainstDependencies(descriptors);
-			//// Reconcile the lists of descriptors earlier loaded against what will actually be loaded
-			//// and remove anything that won't be loaded.
-			//foreach(ModuleImplementation moduleImplementation in _moduleImplementationDescriptors.Keys) {
-			//    HashSet<IModuleDescriptor> moduleTypeDescriptors = _moduleImplementationDescriptors[moduleImplementation];
-			//    // It appears that Except will return the *distinct* set.  Since we're wanting
-			//    // to remove instances with duplicate identities, Except will not work for us.
-			//    foreach(IModuleDescriptor removedDescriptor in moduleTypeDescriptors.Where(x => !descriptors.Contains(x)).ToArray()) {
-			//        moduleTypeDescriptors.Remove(removedDescriptor);
-			//    }
-			//}
-			//// The remaining modules are okay to load.
-			//_LoadModules(descriptors);
 		}
-
-		//static public void LoadModule(string filePath) {
-		//    _LoadModulesFromFile(new[] { filePath });
-		//}
 
 		static public void LoadModule(string filePath, IEnumerable<Guid> typesToLoad = null) {
 			_LoadModulesFromFile(new[] { filePath }, typesToLoad);

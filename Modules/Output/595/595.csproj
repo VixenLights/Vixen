@@ -75,9 +75,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="inpout32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="inpout32.dll" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SetupDialog.resx">

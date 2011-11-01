@@ -41,6 +41,14 @@ namespace Vixen.Sys {
 					foreach(ModuleImplementation moduleImplementation in moduleImplementations) {
 						Helper.EnsureDirectory(Path.Combine(Modules.Directory, moduleImplementation.TypeOfModule));
 					}
+					// There is going to be a "Common" directory for non-module DLLs.
+					// This will give them a place to be other than the module directories.
+					// If they're in a module directory, the system will try to load them and
+					// it will result in an unnecessary log notification for the user.
+					// All other binary directories (module directories) have something driving
+					// their presence, but this doesn't.  So it's going to be a blatantly
+					// ugly statement for now.
+					Helper.EnsureDirectory(Path.Combine(Modules.Directory, "Common"));
 
 					Channels = new ChannelManager();
 					Nodes = new NodeManager();
