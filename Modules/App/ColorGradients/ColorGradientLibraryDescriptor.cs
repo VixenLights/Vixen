@@ -45,5 +45,10 @@ namespace VixenModules.App.ColorGradients
 		{
 			get { return "0.1"; }
 		}
+
+		public static Guid ModuleID
+		{
+			get { return _id; }
+		}
 	}
 }

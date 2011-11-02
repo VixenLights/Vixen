@@ -35,8 +35,6 @@
 			this.btnDeleteColor = new System.Windows.Forms.Button();
 			this.label5 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
-			this.buttonLoadPreset = new System.Windows.Forms.Button();
-			this.buttonSaveNewPreset = new System.Windows.Forms.Button();
 			this.edit = new VixenModules.App.ColorGradients.GradientEdit();
 			this.grpStops.SuspendLayout();
 			this.SuspendLayout();
@@ -63,6 +61,7 @@
 			// 
 			resources.ApplyResources(this.vColorLoc, "vColorLoc");
 			this.vColorLoc.Name = "vColorLoc";
+			this.vColorLoc.TrackerOrientation = System.Windows.Forms.Orientation.Vertical;
 			this.vColorLoc.ValueChanged += new CommonElements.ControlsEx.ValueControls.ValueChangedEH(this.vColorLoc_ValueChanged);
 			// 
 			// btnDeleteColor
@@ -82,20 +81,6 @@
 			resources.ApplyResources(this.label4, "label4");
 			this.label4.Name = "label4";
 			// 
-			// buttonLoadPreset
-			// 
-			resources.ApplyResources(this.buttonLoadPreset, "buttonLoadPreset");
-			this.buttonLoadPreset.Name = "buttonLoadPreset";
-			this.buttonLoadPreset.UseVisualStyleBackColor = true;
-			this.buttonLoadPreset.Click += new System.EventHandler(this.buttonLoadPreset_Click);
-			// 
-			// buttonSaveNewPreset
-			// 
-			resources.ApplyResources(this.buttonSaveNewPreset, "buttonSaveNewPreset");
-			this.buttonSaveNewPreset.Name = "buttonSaveNewPreset";
-			this.buttonSaveNewPreset.UseVisualStyleBackColor = true;
-			this.buttonSaveNewPreset.Click += new System.EventHandler(this.buttonSaveNewPreset_Click);
-			// 
 			// edit
 			// 
 			resources.ApplyResources(this.edit, "edit");
@@ -107,8 +92,6 @@
 			// 
 			resources.ApplyResources(this, "$this");
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.buttonSaveNewPreset);
-			this.Controls.Add(this.buttonLoadPreset);
 			this.Controls.Add(this.grpStops);
 			this.Controls.Add(this.edit);
 			this.MinimumSize = new System.Drawing.Size(357, 120);
@@ -127,8 +110,6 @@
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Label label4;
 		private GradientEdit edit;
-		private System.Windows.Forms.Button buttonLoadPreset;
-		private System.Windows.Forms.Button buttonSaveNewPreset;
 
 	}
 }

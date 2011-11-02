@@ -322,7 +322,7 @@ namespace VixenModules.App.ColorGradients
 		//select or add faders
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			if (_blend != null && e.Button == MouseButtons.Left)
+			if (_blend != null && e.Button == MouseButtons.Left && !ReadOnly)
 			{
 				bool foc;
 				Selection = GetFaderUnderMouse(e.Location, ref _offset, out foc);
@@ -356,7 +356,7 @@ namespace VixenModules.App.ColorGradients
 
 		protected override void OnMouseDoubleClick(MouseEventArgs e)
 		{
-			if (Selection != null)
+			if (Selection != null && !ReadOnly)
 				RaiseSelectionDoubleClicked();
 			base.OnMouseDoubleClick(e);
 		}
@@ -366,8 +366,7 @@ namespace VixenModules.App.ColorGradients
 		{
 			if (e.Button == MouseButtons.Left)
 				UpdateSelection(e);
-			else
-			{
+			else if (!ReadOnly) {
 				//set cursor
 				Point pt = Point.Empty;
 				Rectangle area = Rectangle.Inflate(
@@ -388,8 +387,9 @@ namespace VixenModules.App.ColorGradients
 					//nothing
 					this.Cursor = Cursors.Default;
 				//
-				base.OnMouseMove(e);
 			}
+
+			base.OnMouseMove(e);
 		}
 
 		//set cursor
@@ -435,7 +435,7 @@ namespace VixenModules.App.ColorGradients
 			get { return _blend; }
 			set
 			{
-				if (value == _blend) return;
+				//if (value == _blend) return;
 				//prepare
 				if (_blend != null)
 				{
@@ -568,6 +568,8 @@ namespace VixenModules.App.ColorGradients
 					Selection = _blend.Alphas[value];
 			}
 		}
+
+		public bool ReadOnly { get; set; }
 
 		#endregion
 

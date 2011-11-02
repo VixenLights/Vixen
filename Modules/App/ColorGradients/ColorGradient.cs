@@ -5,6 +5,9 @@ using System.Drawing.Drawing2D;
 using System.Runtime.Serialization;
 using CommonElements.ColorManagement.ColorModels;
 using CommonElements.ControlsEx;
+using Vixen.Module;
+using Vixen.Sys;
+using Vixen.Module.App;
 
 namespace VixenModules.App.ColorGradients
 {
@@ -238,6 +241,15 @@ namespace VixenModules.App.ColorGradients
 			_colors.Add(new ColorPoint(Color.White, 1));
 		}
 
+		/// <summary>
+		/// Deep copy constructor.
+		/// </summary>
+		/// <param name="other"></param>
+		public ColorGradient(ColorGradient other)
+		{
+			CloneFrom(other);
+		}
+
 		[OnDeserialized]
 		private void OnDeserialization(StreamingContext context)
 		{
@@ -281,8 +293,8 @@ namespace VixenModules.App.ColorGradients
 		private ColorBlend CreateColorBlend()
 		{
 			//sort all points
-			ColorPoint[] colpoints = _colors.SortedArray();
-			AlphaPoint[] alphapoints = _alphas.SortedArray();
+			ColorPoint[] colpoints = Colors.SortedArray();
+			AlphaPoint[] alphapoints = Alphas.SortedArray();
 			//init out vars
 			SortedList<float, Color> positions = new SortedList<float, Color>();
 			//add color points
@@ -335,9 +347,9 @@ namespace VixenModules.App.ColorGradients
 			for (int i = 0; i < blend.Colors.Length; i++)
 			{
 				if (blend.Colors[i].A != 255)
-					_alphas.Add(new AlphaPoint((byte)blend.Colors[i].A,
+					Alphas.Add(new AlphaPoint((byte)blend.Colors[i].A,
 						(double)blend.Positions[i]));
-				_colors.Add(new ColorPoint(blend.Colors[i],
+				Colors.Add(new ColorPoint(blend.Colors[i],
 					(double)blend.Positions[i]));
 			}
 		}
@@ -468,6 +480,7 @@ namespace VixenModules.App.ColorGradients
 		/// </summary>
 		public ColorBlend GetColorBlend()
 		{
+			CheckLibraryReference();
 			if (_blend == null)
 				_blend = CreateColorBlend();
 			return _blend;
@@ -497,24 +510,40 @@ namespace VixenModules.App.ColorGradients
 		/// </summary>
 		public bool Gammacorrected
 		{
-			get { return _gammacorrected; }
+			get
+			{
+				CheckLibraryReference();
+				return _gammacorrected;
+			}
 			set { _gammacorrected = value; }
 		}
 
 		public String Title
 		{
-			get { return _title; }
+			get
+			{
+				CheckLibraryReference();
+				return _title;
+			}
 			set { _title = value; }
 		}
 
 		public PointList<AlphaPoint> Alphas
 		{
-			get { return _alphas; }
+			get
+			{
+				CheckLibraryReference();
+				return _alphas;
+			}
 		}
 
 		public PointList<ColorPoint> Colors
 		{
-			get { return _colors; }
+			get
+			{
+				CheckLibraryReference();
+				return _colors;
+			}
 		}
 
 		#endregion
@@ -541,17 +570,55 @@ namespace VixenModules.App.ColorGradients
 		public object Clone()
 		{
 			ColorGradient ret = new ColorGradient();
-			//
+			
 			if(_title!=null)
 				ret._title = (string)_title.Clone();
 			ret._gammacorrected = _gammacorrected;
-			//
+			
 			foreach (ColorPoint cp in _colors)
 				ret._colors.Add((ColorPoint)cp.Clone());
 			foreach (AlphaPoint ap in _alphas)
 				ret._alphas.Add((AlphaPoint)ap.Clone());
-			//
+			
+			// grab all the library-linking details as well
+			ret.LibraryReferenceName = LibraryReferenceName;
+			ret.IsCurrentLibraryGradient = IsCurrentLibraryGradient;
+
 			return ret;
+		}
+
+		/// <summary>
+		/// deep copy clone: clones this object from another given one.
+		/// </summary>
+		/// <param name="other"></param>
+		public void CloneFrom(ColorGradient other)
+		{
+			CloneDataFrom(other);
+
+			// grab all the library-linking details as well
+			LibraryReferenceName = other.LibraryReferenceName;
+			IsCurrentLibraryGradient = other.IsCurrentLibraryGradient;
+		}
+
+		/// <summary>
+		/// deep copy clone: clones the data only from another given gradient.
+		/// </summary>
+		/// <param name="other"></param>
+		public void CloneDataFrom(ColorGradient other)
+		{
+			_colors = new PointList<ColorPoint>();
+			foreach (ColorPoint cp in other.Colors) {
+				_colors.Add(new ColorPoint(cp));
+			}
+			_alphas = new PointList<AlphaPoint>();
+			foreach (AlphaPoint ap in other.Alphas) {
+				_alphas.Add(new AlphaPoint(ap));
+			}
+			_gammacorrected = other.Gammacorrected;
+			if (other.Title != null) _title = other.Title;
+			_blend = null;
+
+			SetEventHandlers();
 		}
 
 		#endregion
@@ -632,6 +699,84 @@ namespace VixenModules.App.ColorGradients
 
 			return result;
 		}
+
+
+		#region Library-linking gradients
+
+		private ColorGradient _libraryReferencedGradient;
+
+		private ColorGradientLibrary _library;
+		private ColorGradientLibrary Library
+		{
+			get
+			{
+				if (_library == null)
+					_library = ApplicationServices.Get<IAppModuleInstance>(ColorGradientLibraryDescriptor.ModuleID) as ColorGradientLibrary;
+
+				return _library;
+			}
+		}
+
+		[DataMember]
+		private string _libraryReferenceName;
+		public string LibraryReferenceName
+		{
+			get
+			{
+				if (_libraryReferenceName == null)
+					return "";
+				else
+					return _libraryReferenceName;
+			}
+			set
+			{
+				_libraryReferenceName = value;
+			}
+		}
+
+		public bool IsLibraryReference
+		{
+			get { return LibraryReferenceName.Length > 0; }
+		}
+
+		[DataMember]
+		public bool IsCurrentLibraryGradient { get; set; }
+
+		private void CheckLibraryReference()
+		{
+			// If we have a reference to a library item, try and use that to check if it's still valid.
+			if (_libraryReferencedGradient != null) {
+				if (!_libraryReferencedGradient.IsCurrentLibraryGradient) {
+					UpdateLibraryReference();
+				}
+			} else {
+				UpdateLibraryReference();
+			}
+
+		}
+
+		public void UpdateLibraryReference()
+		{
+			_libraryReferencedGradient = null;
+
+			// if we have a name, try and find it in the library. Otherwise, remove the reference.
+			if (IsLibraryReference) {
+				if (Library.Contains(LibraryReferenceName)) {
+					_libraryReferencedGradient = Library.GetColorGradient(LibraryReferenceName);
+					CloneDataFrom(_libraryReferencedGradient);
+				} else {
+					LibraryReferenceName = "";
+				}
+			}
+		}
+
+		public void UnlinkFromLibrary()
+		{
+			LibraryReferenceName = "";
+			_libraryReferencedGradient = null;
+		}
+
+		#endregion
 	}
 
 
@@ -661,6 +806,11 @@ namespace VixenModules.App.ColorGradients
 			if (!ColorGradient.isValid(alpha))
 				throw new ArgumentException("alpha");
 			_alpha = alpha;
+		}
+
+		public AlphaPoint(AlphaPoint other)
+			: this(other.Alpha, other.Focus, other.Position)
+		{
 		}
 
 		/// <summary>
@@ -746,6 +896,11 @@ namespace VixenModules.App.ColorGradients
 			: base(point, focus)
 		{
 			_color = color;
+		}
+
+		public ColorPoint(ColorPoint other)
+			: this(other.Color, other.Focus, other.Position)
+		{
 		}
 
 		/// <summary>

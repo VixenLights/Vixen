@@ -9,51 +9,35 @@ using System.Runtime.Serialization;
 namespace VixenModules.App.ColorGradients
 {
 	[DataContract]
-	class ColorGradientLibraryStaticData : ModuleDataModelBase, IEnumerable<KeyValuePair<string, ColorGradient>>
+	class ColorGradientLibraryStaticData : ModuleDataModelBase
 	{
-		[DataMember]
-		private Dictionary<string, ColorGradient> library;
-
 		public ColorGradientLibraryStaticData()
 		{
-			library = new Dictionary<string, ColorGradient>();
+			Library = new Dictionary<string, ColorGradient>();
+		}
+
+		[DataMember]
+		private Dictionary<string, ColorGradient> _library;
+		public Dictionary<string, ColorGradient> Library
+		{
+			get
+			{
+				if (_library == null)
+					_library = new Dictionary<string, ColorGradient>();
+
+				return _library;
+			}
+			set
+			{
+				_library = value;
+			}
 		}
 
 		public override IModuleDataModel Clone()
 		{
 			ColorGradientLibraryStaticData result = new ColorGradientLibraryStaticData();
-			result.library = new Dictionary<string, ColorGradient>(library);
+			result.Library = new Dictionary<string, ColorGradient>(Library);
 			return result;
-		}
-
-		public bool Contains(string name)
-		{
-			return library.ContainsKey(name);
-		}
-
-		public ColorGradient GetColorGradient(string name)
-		{
-			if (library.ContainsKey(name))
-				return library[name];
-			else
-				return null;
-		}
-
-		public bool SetCurve(string name, ColorGradient curve)
-		{
-			bool result = Contains(name);
-			library[name] = curve;
-			return result;
-		}
-
-		public IEnumerator<KeyValuePair<string, ColorGradient>> GetEnumerator()
-		{
-			return library.GetEnumerator();
-		}
-
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		{
-			return library.GetEnumerator();
 		}
 	}
 }

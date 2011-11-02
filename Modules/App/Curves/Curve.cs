@@ -21,7 +21,7 @@ namespace VixenModules.App.Curves
 		public Curve(IPointList points)
 		{
 			Points = new PointPairList(points);
-			LibraryReferenceCurveName = "";
+			LibraryReferenceName = "";
 		}
 
 		/// <summary>
@@ -31,7 +31,7 @@ namespace VixenModules.App.Curves
 		public Curve(Curve curve)
 		{
 			Points = new PointPairList(curve.Points);
-			LibraryReferenceCurveName = curve.LibraryReferenceCurveName;
+			LibraryReferenceName = curve.LibraryReferenceName;
 			IsCurrentLibraryCurve = curve.IsCurrentLibraryCurve;
 		}
 
@@ -82,12 +82,27 @@ namespace VixenModules.App.Curves
 			}
 		}
 
-		[DataMember]
-		public string LibraryReferenceCurveName { get; set; }
 
+		[DataMember]
+		private string _libraryReferenceName;
+		public string LibraryReferenceName
+		{
+			get
+			{
+				if (_libraryReferenceName == null)
+					return "";
+				else
+					return _libraryReferenceName;
+			}
+			set
+			{
+				_libraryReferenceName = value;
+			}
+		}
+		
 		public bool IsLibraryReference
 		{
-			get { return LibraryReferenceCurveName.Length > 0; }
+			get { return LibraryReferenceName.Length > 0; }
 		}
 
 		/// <summary>
@@ -104,11 +119,11 @@ namespace VixenModules.App.Curves
 
 			// if we have a name, try and find it in the library. Otherwise, remove the reference.
 			if (IsLibraryReference) {
-				if (Library.Contains(LibraryReferenceCurveName)) {
-					LibraryReferencedCurve = Library.GetCurve(LibraryReferenceCurveName);
+				if (Library.Contains(LibraryReferenceName)) {
+					LibraryReferencedCurve = Library.GetCurve(LibraryReferenceName);
 					_points = new PointPairList(LibraryReferencedCurve.Points);
 				} else {
-					LibraryReferenceCurveName = "";
+					LibraryReferenceName = "";
 				}
 			}
 		}
@@ -143,7 +158,7 @@ namespace VixenModules.App.Curves
 
 		public void UnlinkFromLibraryCurve()
 		{
-			LibraryReferenceCurveName = "";
+			LibraryReferenceName = "";
 			LibraryReferencedCurve = null;
 		}
 

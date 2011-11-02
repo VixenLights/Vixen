@@ -184,7 +184,7 @@ namespace VixenModules.App.Curves
 				if (curve.IsLibraryReference) {
 					zedGraphControl.GraphPane.CurveList.Clear();
 					zedGraphControl.GraphPane.AddCurve("", curve.Points, Curve.InactiveCurveGridColor);
-					labelCurve.Text = "This curve is linked to the library curve: " + curve.LibraryReferenceCurveName;
+					labelCurve.Text = "This curve is linked to the library curve: " + curve.LibraryReferenceName;
 				} else {
 					zedGraphControl.GraphPane.CurveList.Clear();
 					zedGraphControl.GraphPane.AddCurve("", curve.Points, Curve.ActiveCurveGridColor);
@@ -195,6 +195,7 @@ namespace VixenModules.App.Curves
 				zedGraphControl.IsEnableVEdit = !curve.IsLibraryReference;
 				ReadonlyCurve = curve.IsLibraryReference;
 				buttonSaveCurveToLibrary.Enabled = !curve.IsLibraryReference;
+				buttonLoadCurveFromLibrary.Enabled = true;
 				buttonUnlinkCurve.Enabled = curve.IsLibraryReference;
 				buttonEditLibraryCurve.Enabled = curve.IsLibraryReference;
 				labelInstructions1.Visible = !curve.IsLibraryReference;
@@ -214,7 +215,7 @@ namespace VixenModules.App.Curves
 			if (selector.ShowDialog() == System.Windows.Forms.DialogResult.OK && selector.SelectedItem != null) {
 				// make a new curve that references the selected library curve, and set it to the current Curve
 				Curve newCurve = new Curve(selector.SelectedItem.Item2);
-				newCurve.LibraryReferenceCurveName = selector.SelectedItem.Item1;
+				newCurve.LibraryReferenceName = selector.SelectedItem.Item1;
 				newCurve.IsCurrentLibraryCurve = false;
 				Curve = newCurve;
 			}
@@ -254,7 +255,7 @@ namespace VixenModules.App.Curves
 
 		private void buttonEditLibraryCurve_Click(object sender, EventArgs e)
 		{
-			string libraryName = Curve.LibraryReferenceCurveName;
+			string libraryName = Curve.LibraryReferenceName;
 
 			Library.EditLibraryCurve(libraryName);
 	

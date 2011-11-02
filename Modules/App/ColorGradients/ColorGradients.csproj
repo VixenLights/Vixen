@@ -31,10 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommonElements">
-      <HintPath>..\..\..\Output\CommonElements.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -45,11 +41,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Vixen, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Output\Vixen.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColorGradientEditor.cs">
@@ -62,6 +53,12 @@
     <Compile Include="ColorGradientLibrary.cs" />
     <Compile Include="ColorGradientLibraryStaticData.cs" />
     <Compile Include="ColorGradient.cs" />
+    <Compile Include="ColorGradientLibrarySelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ColorGradientLibrarySelector.Designer.cs">
+      <DependentUpon>ColorGradientLibrarySelector.cs</DependentUpon>
+    </Compile>
     <Compile Include="unneeded\GradientCollection.cs" />
     <Compile Include="unneeded\GradientCollectionSelector.cs">
       <SubType>Form</SubType>
@@ -84,12 +81,27 @@
     <EmbeddedResource Include="ColorGradientEditor.resx">
       <DependentUpon>ColorGradientEditor.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ColorGradientLibrarySelector.resx">
+      <DependentUpon>ColorGradientLibrarySelector.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="unneeded\GradientCollectionSelector.resx">
       <DependentUpon>GradientCollectionSelector.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GradientEditPanel.resx">
       <DependentUpon>GradientEditPanel.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\CommonElements\CommonElements.csproj">
+      <Project>{4EA6B667-2A25-47E8-810B-7CF1C6A8DB9A}</Project>
+      <Name>CommonElements</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
+      <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
+      <Name>Vixen</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

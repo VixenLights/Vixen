@@ -72,6 +72,9 @@ namespace VixenModules.App.ColorGradients
 		//triggered if edit panel selection double clicked
 		private void edit_SelectionDoubleClicked(object sender, EventArgs e)
 		{
+			if (ReadOnly)
+				return;
+
 			editSelectedColor();
 		}
 
@@ -79,6 +82,9 @@ namespace VixenModules.App.ColorGradients
 		//active color changed
 		private void lblColorSelect_Click(object sender, EventArgs e)
 		{
+			if (ReadOnly)
+				return;
+
 			editSelectedColor();
 		}
 
@@ -130,7 +136,7 @@ namespace VixenModules.App.ColorGradients
 		//delete active color point
 		private void btnDeleteColor_Click(object sender, EventArgs e)
 		{
-			if (edit.Gradient == null || edit.FocusSelection)
+			if (edit.Gradient == null || edit.FocusSelection || ReadOnly)
 				return;
 			int index = edit.SelectedColorIndex;
 			if (index == -1) return;
@@ -156,6 +162,19 @@ namespace VixenModules.App.ColorGradients
 
 		public bool LockColorEditorHSV_Value { get; set; }
 
+		private bool _readonly;
+		public bool ReadOnly
+		{
+			get { return _readonly; }
+			set
+			{
+				_readonly = value;
+				edit.ReadOnly = value;
+				btnDeleteColor.Enabled = !value;
+				vColorLoc.Enabled = !value;
+			}
+		}
+
 		#endregion
 
 
@@ -164,17 +183,5 @@ namespace VixenModules.App.ColorGradients
 		/// </summary>
 		[Description("triggered if gradient changed")]
 		public event EventHandler GradientChanged;
-
-		private void buttonLoadPreset_Click(object sender, EventArgs e)
-		{
-			// TODO: once this has moved to an EffectEditor module, and is dependent on the RGB property, load
-			// and present a GradientCollectionSelector from it. (It should be populated from the RGB static data.)
-		}
-
-		private void buttonSaveNewPreset_Click(object sender, EventArgs e)
-		{
-			// TODO: once this has moved to an EffectEditor module, and is dependent on the RGB property, get a name
-			// from the user and save it to the RGB library.
-		}
 	}
 }

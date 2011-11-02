@@ -51,7 +51,7 @@ namespace VixenModules.App.Curves
 				Library[name].IsCurrentLibraryCurve = false;
 			}
 			curve.IsCurrentLibraryCurve = true;
-			curve.LibraryReferenceCurveName = "";
+			curve.LibraryReferenceName = "";
 			Library[name] = curve;
 			return inLibrary;
 		}
