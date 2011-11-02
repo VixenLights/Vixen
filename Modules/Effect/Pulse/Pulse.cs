@@ -58,6 +58,25 @@ namespace VixenModules.Effect.Pulse
 			}
 		}
 
+		public override bool IsDirty
+		{
+			get
+			{
+				if (!LevelCurve.CheckLibraryReference())
+					return true;
+
+				if (!ColorGradient.CheckLibraryReference())
+					return true;
+
+				return base.IsDirty;
+			}
+			protected set
+			{
+				base.IsDirty = value;
+			}
+		}
+
+
 		public Curve LevelCurve
 		{
 			get { return _data.LevelCurve; }

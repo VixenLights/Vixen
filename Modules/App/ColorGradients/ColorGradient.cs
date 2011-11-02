@@ -742,20 +742,30 @@ namespace VixenModules.App.ColorGradients
 		[DataMember]
 		public bool IsCurrentLibraryGradient { get; set; }
 
-		private void CheckLibraryReference()
+		/// <summary>
+		/// Checks that the library reference is still valid and current.
+		/// </summary>
+		/// <returns>true if the library reference is valid and current (data content hasn't changed), false if it has.</returns>
+		public bool CheckLibraryReference()
 		{
 			// If we have a reference to a library item, try and use that to check if it's still valid.
 			if (_libraryReferencedGradient != null) {
 				if (!_libraryReferencedGradient.IsCurrentLibraryGradient) {
-					UpdateLibraryReference();
+					return !UpdateLibraryReference();
 				}
 			} else {
-				UpdateLibraryReference();
+				return !UpdateLibraryReference();
 			}
 
+			return true;
 		}
 
-		public void UpdateLibraryReference()
+		/// <summary>
+		/// Tries to update the library referenced object.
+		/// </summary>
+		/// <returns>true if successfully updated the library reference, and the data has changed. False if
+		/// not (no reference, library doesn't contain the item, etc.)</returns>
+		public bool UpdateLibraryReference()
 		{
 			_libraryReferencedGradient = null;
 
@@ -764,10 +774,13 @@ namespace VixenModules.App.ColorGradients
 				if (Library.Contains(LibraryReferenceName)) {
 					_libraryReferencedGradient = Library.GetColorGradient(LibraryReferenceName);
 					CloneDataFrom(_libraryReferencedGradient);
+					return true;
 				} else {
 					LibraryReferenceName = "";
 				}
 			}
+
+			return false;
 		}
 
 		public void UnlinkFromLibrary()

@@ -47,20 +47,12 @@ namespace VixenModules.App.Curves
 		{
 			get
 			{
-				// If we have a reference to a curve in the library, try and use that to check if the points are still valid.
-				if (LibraryReferencedCurve != null) {
-					if (!LibraryReferencedCurve.IsCurrentLibraryCurve) {
-						UpdateLibraryCurveReference();
-					}
-				} else {
-					UpdateLibraryCurveReference();
-				}
-
+				CheckLibraryReference();
 				return _points;
 			}
 			internal set
 			{
-					_points = value;
+				_points = value;
 			}
 		}
 
@@ -113,7 +105,30 @@ namespace VixenModules.App.Curves
 		[DataMember]
 		public bool IsCurrentLibraryCurve { get; set; }
 
-		public void UpdateLibraryCurveReference()
+		/// <summary>
+		/// Checks that the library reference is still valid and current.
+		/// </summary>
+		/// <returns>true if the library reference is valid and current (data content hasn't changed), false if it has.</returns>
+		public bool CheckLibraryReference()
+		{
+			// If we have a reference to a curve in the library, try and use that to check if the points are still valid.
+			if (LibraryReferencedCurve != null) {
+				if (!LibraryReferencedCurve.IsCurrentLibraryCurve) {
+					return !UpdateLibraryReference();
+				}
+			} else {
+				return !UpdateLibraryReference();
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// Tries to update the library referenced object.
+		/// </summary>
+		/// <returns>true if successfully updated the library reference, and the data has changed. False if
+		/// not (no reference, library doesn't contain the item, etc.)</returns>
+		public bool UpdateLibraryReference()
 		{
 			LibraryReferencedCurve = null;
 
@@ -122,10 +137,13 @@ namespace VixenModules.App.Curves
 				if (Library.Contains(LibraryReferenceName)) {
 					LibraryReferencedCurve = Library.GetCurve(LibraryReferenceName);
 					_points = new PointPairList(LibraryReferencedCurve.Points);
+					return true;
 				} else {
 					LibraryReferenceName = "";
 				}
 			}
+
+			return false;
 		}
 
 		public double GetValue(double x)
