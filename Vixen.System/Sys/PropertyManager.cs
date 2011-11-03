@@ -25,6 +25,7 @@ namespace Vixen.Sys {
 					instance.Owner = _owner;
 					_items[id] = instance;
 					PropertyData.GetModuleTypeData(instance);
+					instance.SetDefaultValues();
 				}
 			}
 
