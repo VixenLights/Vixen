@@ -168,13 +168,23 @@ namespace VixenApplication
 		private void buttonSetupChannels_Click(object sender, EventArgs e)
 		{
 			ConfigChannels form = new ConfigChannels();
-			form.ShowDialog();
+			DialogResult result = form.ShowDialog();
+			if (result == System.Windows.Forms.DialogResult.OK) {
+				VixenSystem.SaveSystemConfig();
+			} else {
+				VixenSystem.ReloadSystemConfig();
+			}
 		}
 
 		private void buttonSetupOutputControllers_Click(object sender, EventArgs e)
 		{
 			ConfigControllers form = new ConfigControllers();
-			form.ShowDialog();
+			DialogResult result = form.ShowDialog();
+			if (result == System.Windows.Forms.DialogResult.OK) {
+				VixenSystem.SaveSystemConfig();
+			} else {
+				VixenSystem.ReloadSystemConfig();
+			}
 		}
 
 		private void button1_Click_1(object sender, EventArgs e)

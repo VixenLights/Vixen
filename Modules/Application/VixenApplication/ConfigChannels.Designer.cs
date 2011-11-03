@@ -82,6 +82,7 @@
 			this.contextMenuStripDragging = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.moveHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.buttonCancel = new System.Windows.Forms.Button();
 			this.groupBoxSelectedNode.SuspendLayout();
 			this.groupBoxAddPatch.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPatchOutputSelect)).BeginInit();
@@ -563,11 +564,23 @@
 			this.copyHereToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
 			this.copyHereToolStripMenuItem.Text = "Copy here";
 			// 
+			// buttonCancel
+			// 
+			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.buttonCancel.Location = new System.Drawing.Point(413, 645);
+			this.buttonCancel.Name = "buttonCancel";
+			this.buttonCancel.Size = new System.Drawing.Size(90, 25);
+			this.buttonCancel.TabIndex = 26;
+			this.buttonCancel.Text = "Cancel";
+			this.buttonCancel.UseVisualStyleBackColor = true;
+			// 
 			// ConfigChannels
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(611, 682);
+			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.label5);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.groupBoxOperations);
@@ -645,5 +658,6 @@
 		private System.Windows.Forms.ToolStripMenuItem renameNodesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem moveHereToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem copyHereToolStripMenuItem;
+		private System.Windows.Forms.Button buttonCancel;
 	}
 }

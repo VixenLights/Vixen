@@ -39,8 +39,9 @@ namespace Vixen.Sys {
 			SystemChannelEnumerator enumerator;
 			if(_channels.TryGetValue(channel, out enumerator)) {
 				lock(_channels) {
-					// Kill enumerator.
-					enumerator.Dispose();
+					// Kill enumerator if it hasn't been already.
+					if (enumerator != null)
+						enumerator.Dispose();
 					// Remove from channel dictionary.
 					_channels.Remove(channel);
 				}

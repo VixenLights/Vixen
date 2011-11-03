@@ -48,6 +48,7 @@
 			this.textBoxName = new System.Windows.Forms.TextBox();
 			this.buttonGenerateChannels = new System.Windows.Forms.Button();
 			this.buttonConfigureController = new System.Windows.Forms.Button();
+			this.buttonCancel = new System.Windows.Forms.Button();
 			this.groupBoxSelectedController.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownOutputCount)).BeginInit();
 			this.SuspendLayout();
@@ -243,11 +244,23 @@
 			this.buttonConfigureController.UseVisualStyleBackColor = true;
 			this.buttonConfigureController.Click += new System.EventHandler(this.buttonConfigureController_Click);
 			// 
+			// buttonCancel
+			// 
+			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.buttonCancel.Location = new System.Drawing.Point(221, 445);
+			this.buttonCancel.Name = "buttonCancel";
+			this.buttonCancel.Size = new System.Drawing.Size(90, 25);
+			this.buttonCancel.TabIndex = 27;
+			this.buttonCancel.Text = "Cancel";
+			this.buttonCancel.UseVisualStyleBackColor = true;
+			// 
 			// ConfigControllers
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(419, 482);
+			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.groupBoxSelectedController);
 			this.Controls.Add(this.buttonOk);
 			this.Controls.Add(this.buttonDeleteController);
@@ -286,5 +299,6 @@
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Button buttonConfigureOutputs;
+		private System.Windows.Forms.Button buttonCancel;
 	}
 }

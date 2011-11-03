@@ -57,18 +57,7 @@ namespace Vixen.Sys {
 					// Load all module descriptors.
 					Modules.LoadAllModules();
 
-					// Load system data in order of dependency.
-					// The system data generally resides in the data branch, but it
-					// may not be in the case of an alternate context.
-					string systemDataPath = _GetSystemDataPath();
-					IReader reader = new XmlModuleStoreReader();
-					ModuleStore = (ModuleStore)reader.Read(Path.Combine(systemDataPath, ModuleStore.FileName));
-					reader = new XmlSystemConfigReader();
-					SystemConfig = (SystemConfig)reader.Read(Path.Combine(systemDataPath, SystemConfig.FileName));
-
-					Channels.AddChannels(SystemConfig.Channels);
-					Nodes.AddNodes(SystemConfig.Nodes);
-					Controllers.AddControllers(SystemConfig.Controllers);
+					LoadSystemConfig();
 
 					// Add modules to repositories.
 					Modules.PopulateRepositories();
@@ -103,18 +92,57 @@ namespace Vixen.Sys {
 				if(ModuleStore != null) {
 					ModuleStore.Save();
 				}
-				if(SystemConfig != null) {
-					// 'copy' the current details (nodes/channels/controllers) from the executing state
-					// to the SystemConfig, so they're there for writing when we save
-					SystemConfig.Controllers = Controllers;
-					SystemConfig.Channels = Channels;
-					SystemConfig.Nodes = Nodes.GetRootNodes();
-					SystemConfig.Save();
-				}
+				SaveSystemConfig();
 				_state = RunState.Stopped;
 				Logging.Info("Vixen System successfully stopped.");
 			}
         }
+
+		static public void SaveSystemConfig()
+		{
+			if (SystemConfig != null) {
+				// 'copy' the current details (nodes/channels/controllers) from the executing state
+				// to the SystemConfig, so they're there for writing when we save
+				SystemConfig.Controllers = Controllers;
+				SystemConfig.Channels = Channels;
+				SystemConfig.Nodes = Nodes.GetRootNodes();
+				SystemConfig.Save();
+			}
+		}
+
+		static public void LoadSystemConfig()
+		{
+			// Load system data in order of dependency.
+			// The system data generally resides in the data branch, but it
+			// may not be in the case of an alternate context.
+			string systemDataPath = _GetSystemDataPath();
+			IReader reader = new XmlModuleStoreReader();
+			ModuleStore = (ModuleStore)reader.Read(Path.Combine(systemDataPath, ModuleStore.FileName));
+			reader = new XmlSystemConfigReader();
+			SystemConfig = (SystemConfig)reader.Read(Path.Combine(systemDataPath, SystemConfig.FileName));
+
+			Channels.AddChannels(SystemConfig.Channels);
+			Nodes.AddNodes(SystemConfig.Nodes);
+			Controllers.AddControllers(SystemConfig.Controllers);
+		}
+
+		static public void ReloadSystemConfig()
+		{
+			bool wasRunning = Execution.CloseExecution();
+
+			foreach (Channel c in Channels.ToArray())
+				Channels.RemoveChannel(c);
+			foreach (ChannelNode cn in Nodes.ToArray())
+				Nodes.RemoveNode(cn, null, true);
+			foreach (OutputController oc in Controllers.ToArray())
+				Controllers.RemoveController(oc);
+
+			LoadSystemConfig();
+
+			if (wasRunning)
+				Execution.OpenExecution();
+		}
+
 
 		static public RunState State {
 			get { return _state; }
