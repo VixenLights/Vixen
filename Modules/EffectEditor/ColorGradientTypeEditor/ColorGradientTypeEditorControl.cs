@@ -18,6 +18,7 @@ namespace VixenModules.EffectEditor.ColorGradientTypeEditor
 		public ColorGradientTypeEditorControl()
 		{
 			InitializeComponent();
+			ColorGradientValue = new ColorGradient();
 		}
 
 		public object[] EffectParameterValues

@@ -18,6 +18,7 @@ namespace VixenModules.EffectEditor.CurveTypeEditor
 		public CurveTypeEditorControl()
 		{
 			InitializeComponent();
+			CurveValue = new Curve();
 		}
 
 		public object[] EffectParameterValues
