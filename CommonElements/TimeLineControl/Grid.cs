@@ -8,29 +8,36 @@ using System.Text;
 using System.Diagnostics;
 using System.ComponentModel;
 using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 
 
 namespace CommonElements.Timeline
 {
+
 	/// <summary>
 	/// Makes up the main part of the TimelineControl. A scrollable container which presents rows which contain elements.
 	/// </summary>
-	public class Grid : TimelineControlBase, IEnumerable<Row>
+	[System.ComponentModel.DesignerCategory("")]    // Prevent this from showing up in designer.
+	public partial class Grid : TimelineControlBase, IEnumerable<Row>
 	{
 		#region Members
 
 		private List<Row> m_rows;								// the rows in the grid
 		private DragState m_dragState = DragState.Normal;		// the current dragging state
-		private Point m_lastMouseLocation;						// the location of the mouse at last draw; used to update the dragging.
+
+		//private Point m_lastMouseLocation;						// the location of the mouse at last draw; used to update the dragging.
 																// Relative to the control, not the grid canvas.
+
 		private Point m_selectionRectangleStart;				// the location (on the grid canvas) where the selection box starts.
 		private Rectangle m_ignoreDragArea;						// the area in which move movements should be ignored, before we start dragging
 		private Element m_mouseDownElement = null;				// the element under the cursor on a mouse click
 		private Row m_mouseDownElementRow = null;				// the row that the clicked m_mouseDownElement belongs to (a single element may be in multiple rows)
 		private TimeSpan m_cursorPosition;						// the current grid 'cursor' position (line drawn vertically)
-		private Size m_dragAutoscrollDistance;					// how far in either dimension the mouse has moved outside a bounding area,
-																// so we should scroll the viewable pane that direction
+
 		#endregion
+
+        private ElementMoveInfo m_elemMoveInfo;
+        private readonly Rectangle m_origCursorClip;
 
 
 		#region Initialization
@@ -54,15 +61,18 @@ namespace CommonElements.Timeline
 			CursorPosition = TimeSpan.Zero;
 			OnlySnapToCurrentRow = true;
 			DragThreshold = 8;
-			m_dragAutoscrollDistance.Height = m_dragAutoscrollDistance.Width = 0;
 			StaticSnapPoints = new SortedDictionary<TimeSpan, List<SnapDetails>>();
 			SnapPriorityForElements = 5;
 
 			m_rows = new List<Row>();
-			ScrollTimer = new Timer();
-			ScrollTimer.Interval = 20;
-			ScrollTimer.Enabled = false;
-			ScrollTimer.Tick += ScrollTimerHandler;
+
+            InitAutoScrollTimer();
+            m_origCursorClip = Cursor.Clip;
+
+            //ScrollTimer = new Timer();
+            //ScrollTimer.Interval = 20;
+            //ScrollTimer.Enabled = false;
+            //ScrollTimer.Tick += ScrollTimerHandler;
 
 			// thse changed events are static for the class. If we make them per element or row
 			//  later, we will need to attach/detach from each event manually.
@@ -81,7 +91,7 @@ namespace CommonElements.Timeline
 		#endregion
 
 
-		#region Properties
+		
 
 		protected override void  VisibleTimeStartChanged(object sender, EventArgs e)
 		{
@@ -105,6 +115,8 @@ namespace CommonElements.Timeline
 			Invalidate();
 		}
 
+
+        #region Properties
 
 		public int VerticalOffset
 		{
@@ -174,7 +186,7 @@ namespace CommonElements.Timeline
 		public bool OnlySnapToCurrentRow { get; set; }
 		public int SnapPriorityForElements { get; set; }
 		public int DragThreshold { get; set; }
-		public Rectangle SelectedArea { get; set; }
+		public Rectangle SelectionArea { get; set; }
 	
 		// drawing colours, information, etc.
 		public Color RowSeparatorColor { get; set; }
@@ -186,13 +198,11 @@ namespace CommonElements.Timeline
 
 		// private properties
 		private bool CtrlPressed { get { return Form.ModifierKeys.HasFlag(Keys.Control); } }
-		private Timer ScrollTimer { get; set; }
 		private int CurrentRowIndexUnderMouse { get; set; }
 		private SortedDictionary<TimeSpan, List<SnapDetails>> StaticSnapPoints { get; set; }
 		private SortedDictionary<TimeSpan, List<SnapDetails>> CurrentDragSnapPoints { get; set; }
 		private TimeSpan DragTimeLeftOver { get; set; }
-		private bool ResizingElement { get; set; }
-		private bool ResizingFront { get; set; }
+
 
 		#endregion
 
@@ -219,7 +229,7 @@ namespace CommonElements.Timeline
 		protected void RowChangedHandler(object sender, EventArgs e)
 		{
 			// when dragging, the control will invalidate after it's done, in case multiple elements are changing.
-			if (m_dragState != DragState.Dragging)
+			if (m_dragState != DragState.Moving)
 				Invalidate();
 		}
 
@@ -236,36 +246,6 @@ namespace CommonElements.Timeline
 			}
 		}
 
-		protected void ScrollTimerHandler(object sender, EventArgs e)
-		{
-			// move by the number of pixels we are outside, scaled down by a constant
-			if (m_dragAutoscrollDistance.Width != 0) {
-				TimeSpan offset = pixelsToTime(m_dragAutoscrollDistance.Width / 8);
-
-				if (m_dragState == DragState.Dragging) {
-					// don't do any dragging if we're hard left in the viewport and trying to drag left, or
-					// the same at the other end: otherwise the 'desired time' counter (of time left still
-					// to drag) continually gets incremented
-					if (!(m_dragAutoscrollDistance.Width < 0 && VisibleTimeStart <= TimeSpan.Zero) &&
-						!(m_dragAutoscrollDistance.Width > 0 && VisibleTimeEnd >= TotalTime)) {
-						TimeSpan desiredMoveTime = DragTimeLeftOver + offset;
-						TimeSpan realMoveTime = OffsetElementsByTime(SelectedElements, desiredMoveTime);
-						DragTimeLeftOver = desiredMoveTime - realMoveTime;
-					}
-				}
-
-				if (m_dragState == DragState.Selecting) {
-					Point gridLocation = translateLocation(m_lastMouseLocation);
-					UpdateSelectionRectangle(gridLocation);
-				}
-
-				// move the view window. Note: this is done after the element movement to prevent some graphical artifacts.
-				VisibleTimeStart += offset;
-			}
-			if (m_dragAutoscrollDistance.Height != 0) {
-				VerticalOffset += m_dragAutoscrollDistance.Height / 8;
-			}
-		}
 
 		protected override void OnKeyPress(KeyPressEventArgs e)
 		{
@@ -273,19 +253,37 @@ namespace CommonElements.Timeline
 
 			if (e.KeyChar == (char)27)  // ESC
             {
-				endDrag();  // do this regardless of if we're dragging or not.
+                elementsCancelMove();
 			}
 		}
 
 		protected override void OnScroll(ScrollEventArgs se)
 		{
-			if (se.ScrollOrientation == ScrollOrientation.HorizontalScroll) {
-				VisibleTimeStart = pixelsToTime(-AutoScrollPosition.X);
+            // These functions are broken out so they can be called manually elsewhere.
+			if (se.ScrollOrientation == ScrollOrientation.HorizontalScroll)
+            {
+                HandleHorizontalScroll();
 			}
+            else if (se.ScrollOrientation == ScrollOrientation.VerticalScroll)
+            {
+                HandleVerticalScroll();
+            }
 
-			// This MUST be done last! Otherwise, event handlers get called with the OLD values.
-			base.OnScroll(se);
+            base.OnScroll(se);
 		}
+
+        private void HandleVerticalScroll()
+        {
+            _VerticalOffsetChanged();
+        }
+
+        ///<summary>Should be called whenever the scroll position of the grid changes, be it 
+        ///via OnScroll event, or manually.</summary>
+        private void HandleHorizontalScroll()
+        {
+            VisibleTimeStart = pixelsToTime(-AutoScrollPosition.X);
+        }
+
 
 		protected override void OnResize(EventArgs e)
 		{
@@ -306,269 +304,14 @@ namespace CommonElements.Timeline
 		#endregion
 
 
-		#region Event Handlers - mouse events
 
-		/// <summary>
-		/// Translates a location (Point) so that its coordinates represent the coordinates on the underlying timeline, taking into account scroll position.
-		/// </summary>
-		/// <param name="e"></param>
-		protected Point translateLocation(Point originalLocation)
-		{
-			// Translate this location based on the auto scroll position.
-			Point p = originalLocation;
-			p.Offset(-AutoScrollPosition.X, -AutoScrollPosition.Y);
-			return p;
-		}
-
-		protected override void OnMouseDown(MouseEventArgs e)
-		{
-			base.OnMouseDown(e);
-
-			Point gridLocation = translateLocation(e.Location);
-			m_mouseDownElement = elementAt(gridLocation);
-			m_mouseDownElementRow = rowAt(gridLocation);
-
-			if (e.Button == MouseButtons.Left) {
-				// we clicked on the background - clear anything that is selected, and begin a
-				// 'selection' drag.
-				if (m_mouseDownElement == null) {
-					if (!CtrlPressed) {
-						ClearSelectedElements();
-						ClearSelectedRows(m_mouseDownElementRow);
-						m_dragState = DragState.Selecting;
-						SelectedArea = new Rectangle(gridLocation.X, gridLocation.Y, 0, 0);
-						m_lastMouseLocation = e.Location;
-						m_selectionRectangleStart = gridLocation;
-						m_dragAutoscrollDistance.Height = m_dragAutoscrollDistance.Width = 0;
-					}
-				} else {
-					// our mouse is down on something
-					if (m_mouseDownElement.Selected) {
-						// unselect
-						if (CtrlPressed)
-							m_mouseDownElement.Selected = false;
-					} else {
-						// select
-						if (!CtrlPressed) {
-							ClearSelectedElements();
-							ClearSelectedRows();
-						}
-						m_mouseDownElement.Selected = true;
-					}
-
-					if (ResizingElement) {
-						m_lastMouseLocation = e.Location;
-						beginDrag(gridLocation);
-					} else {
-						dragWait(e.Location);
-					}
-				}
-				Invalidate();
-			}
-		}
-
-		protected override void OnMouseUp(MouseEventArgs e)
-		{
-			base.OnMouseUp(e);
-
-			Point gridLocation = translateLocation(e.Location);
-
-			if (e.Button == MouseButtons.Left) {
-				if (m_dragState == DragState.Dragging) {
-					MultiElementEventArgs evargs = new MultiElementEventArgs { Elements = SelectedElements };
-					_ElementsFinishedMoving(evargs);
-
-				} else if (m_dragState == DragState.Selecting) {
-					// we will only be Selecting if we clicked on the grid background, so on mouse up, check if
-					// we didn't move (or very far): if so, move the cursor to the clicked position.
-					if (SelectedArea.Width < 2 && SelectedArea.Height < 2) {
-						CursorPosition = pixelsToTime(gridLocation.X);
-						if (m_mouseDownElementRow != null)
-							m_mouseDownElementRow.Selected = true;
-					}
-
-					SelectedArea = new Rectangle();
-				} else {
-					// If we're not dragging on mouse up, it could be a click on one of multiple
-					// selected elements. (In which case we select only that one)
-					if (m_mouseDownElement != null && !CtrlPressed) {
-						ClearSelectedElements();
-						m_mouseDownElement.Selected = true;
-					}
-				}
-
-				endDrag();  // we always do this, even if we weren't dragging.
-
-				Invalidate();
-			}
-		}
-
-		protected override void OnMouseWheel(MouseEventArgs e)
-		{
-			// don't call the base mouse wheel event; it scrolls the grid left and right
-			// if there isn't any vertical movement available (ie. no vertical scrollbar)
-			//base.OnMouseWheel(e);
-		}
-
-		protected override void OnMouseHWheel(MouseEventArgs args)
-		{
-			Debug.WriteLine("Grid OnMouseHWheel: delta={0}", args.Delta);
-
-			double scale;
-			if (args.Delta > 0)
-				scale = 0.10;
-			else
-				scale = -0.10;
-			VisibleTimeStart += VisibleTimeSpan.Scale(scale);
-		}
-
-		protected override void OnMouseMove(MouseEventArgs e)
-		{
-			base.OnMouseMove(e);
-
-			Point gridLocation = translateLocation(e.Location);
-
-			if (m_dragState == DragState.Normal) {
-				// if we're near the edge of an element, change the cursor to a 'resize'
-				Element element = elementAt(gridLocation);
-
-				if (element != null) {
-					int maxGrabWidth = Math.Min(12, (int)(timeToPixels(element.Duration) / 2));		// cap it to 12 pixels. Officially pulled out my arse.
-					if (gridLocation.X >= timeToPixels(element.StartTime) && gridLocation.X < timeToPixels(element.StartTime) + maxGrabWidth) {
-						ResizingElement = true;
-						ResizingFront = true;
-					} else if (gridLocation.X <= timeToPixels(element.EndTime) && gridLocation.X > timeToPixels(element.EndTime) - maxGrabWidth) {
-						ResizingElement = true;
-						ResizingFront = false;
-					} else {
-						ResizingElement = false;
-					}
-				} else {
-					ResizingElement = false;
-				}
-
-				if (ResizingElement)
-					Cursor = Cursors.SizeWE;
-				else
-					Cursor = Cursors.Default;
-
-				return;
-			}
-
-			if (m_dragState == DragState.Waiting) {
-				if (!m_ignoreDragArea.Contains(e.Location)) {
-					//begin the dragging process
-					beginDrag(gridLocation);
-				}
-			}
-			if (m_dragState == DragState.Dragging) {
-
-				// if we don't have anything selected, there's no point dragging anything...
-				if (SelectedElements.Count() == 0)
-					return;
-
-				Point d = new Point(e.X - m_lastMouseLocation.X, e.Y - m_lastMouseLocation.Y);
-				m_lastMouseLocation = e.Location;
-
-				// only stuff around figuring out the best way to do dragging if we're really dragging; if we're
-				// resizing, then do a simple calculation
-				if (!ResizingElement) {
-					// calculate the points at which we should start dragging; ie. account for any selected elements.
-					// (we subtract VisibleTimeStart to make it relative to the control, instead of the grid canvas.)
-					TimeSpan earliestTime = GetEarliestTimeForElements(SelectedElements);
-					TimeSpan latestTime = GetLatestTimeForElements(SelectedElements);
-					int leftBoundary = (int)timeToPixels(earliestTime - VisibleTimeStart + DragTimeLeftOver);
-					int rightBoundary = (int)timeToPixels(latestTime - VisibleTimeStart + DragTimeLeftOver);
-
-					// if the mouse moved left, only add it to the scroll size if:
-					// 1) the elements are hard left (or more) in the viewport
-					// 2) the elements are hard right, and we are moving right. This provides deceleration.
-					//    Cap this value to 0.
-					if (d.X < 0) {
-						if (leftBoundary <= 0)
-							m_dragAutoscrollDistance.Width += d.X;
-						else if (rightBoundary >= ClientSize.Width && m_dragAutoscrollDistance.Width > 0)
-							m_dragAutoscrollDistance.Width = Math.Max(0, m_dragAutoscrollDistance.Width + d.X);
-					}
-
-					// if the mouse moved right, do the inverse of the above rules.
-					if (d.X > 0) {
-						if (rightBoundary >= ClientSize.Width)
-							m_dragAutoscrollDistance.Width += d.X;
-						else if (leftBoundary <= 0 && m_dragAutoscrollDistance.Width < 0)
-							m_dragAutoscrollDistance.Width = Math.Min(0, m_dragAutoscrollDistance.Width + d.X);
-					}
-
-					// if the left and right boundaries are within the viewport, then stop all
-					// horizontal scrolling. This can happen if the user scrolls, and mouse-wheels
-					// (to zoom out). the control is stuck scrolling, and can't be stopped.
-					if (leftBoundary > 0 && rightBoundary < ClientSize.Width)
-						m_dragAutoscrollDistance.Width = 0;
-				} else {
-					m_dragAutoscrollDistance.Width = (e.X < 0) ? e.X : ((e.X > ClientSize.Width) ? e.X - ClientSize.Width : 0);
-				}
-
-				m_dragAutoscrollDistance.Height = (e.Y < 0) ? e.Y : ((e.Y > ClientSize.Height) ? e.Y - ClientSize.Height : 0);
-
-				// if we're scrolling, start the timer if needed. If not, vice-versa.
-				if (m_dragAutoscrollDistance.Width != 0 || m_dragAutoscrollDistance.Height != 0) {
-					if (!ScrollTimer.Enabled)
-						ScrollTimer.Start();
-				} else {
-					if (ScrollTimer.Enabled)
-						ScrollTimer.Stop();
-				}
-                
-				// only move the elements here if we aren't going to be auto-dragging while scrolling in the timer events.
-				if (d.X != 0 && m_dragAutoscrollDistance.Width == 0) {
-					TimeSpan desiredMoveTime = DragTimeLeftOver + pixelsToTime(d.X);
-					TimeSpan realMoveTime = OffsetElementsByTime(SelectedElements, desiredMoveTime);
-					DragTimeLeftOver = desiredMoveTime - realMoveTime;
-				}
-
-				// if we've moved vertically, we may need to move elements between rows
-				if (d.Y != 0 && !ResizingElement) {
-					MoveElementsVerticallyToLocation(SelectedElements, gridLocation);
-				}
-			}
-			if (m_dragState == DragState.Selecting) {
-				Point d = new Point(e.X - m_lastMouseLocation.X, e.Y - m_lastMouseLocation.Y);
-				m_lastMouseLocation = e.Location;
-
-				m_dragAutoscrollDistance.Width = (e.X < 0) ? e.X : ((e.X > ClientSize.Width) ? e.X - ClientSize.Width : 0);
-				m_dragAutoscrollDistance.Height = (e.Y < 0) ? e.Y : ((e.Y > ClientSize.Height) ? e.Y - ClientSize.Height : 0);
-
-				// if we're scrolling, start the timer if needed. If not, vice-versa.
-				if (m_dragAutoscrollDistance.Width != 0 || m_dragAutoscrollDistance.Height != 0) {
-					if (!ScrollTimer.Enabled)
-						ScrollTimer.Start();
-				} else {
-					if (ScrollTimer.Enabled)
-						ScrollTimer.Stop();
-				}
-
-				UpdateSelectionRectangle(gridLocation);
-			}
-		}
-
-		protected override void OnMouseDoubleClick(MouseEventArgs e)
-		{
-			base.OnMouseDoubleClick(e);
-
-			Point gridLocation = translateLocation(e.Location);
-			Element elem = elementAt(gridLocation);
-
-			if (elem != null) {
-				_ElementDoubleClicked(elem);
-			}
-		}
-
-		#endregion
+        
 
 
-		#region Methods - Rows, Elements
 
-		public IEnumerator<Row> GetEnumerator()
+        #region Methods - Rows, Elements
+
+        public IEnumerator<Row> GetEnumerator()
 		{
 			return Rows.GetEnumerator();
 		}
@@ -582,26 +325,30 @@ namespace CommonElements.Timeline
 		{
 			foreach (Element te in SelectedElements.ToArray())
 				te.Selected = false;
+            Invalidate();
 		}
 
 		public void ClearSelectedRows(Row leaveRowSelected = null)
 		{
 			foreach (Row row in Rows) {
-				if (leaveRowSelected != null && row != leaveRowSelected)
+                if (row != leaveRowSelected)
 					row.Selected = false;
 			}
+            Invalidate();
 		}
 
 		public void AddRow(Row row)
 		{
 			Rows.Add(row);
 			ResizeGridHeight();
+            Invalidate();
 		}
 
 		public bool RemoveRow(Row row)
 		{
 			bool rv = Rows.Remove(row);
 			ResizeGridHeight();
+            Invalidate();
 			return rv;
 		}
 
@@ -869,6 +616,8 @@ namespace CommonElements.Timeline
 
 		}
 
+
+        /*
 		public TimeSpan OffsetElementsByTime(IEnumerable<Element> elements, TimeSpan offset)
 		{
 			// check to see if the offset that is applied to all elements will take it outside
@@ -984,7 +733,8 @@ namespace CommonElements.Timeline
 
 			// return the amount of time that the elements were *actually* moved, rather than the amount they were intended to
 			return snappedOffset;
-		}
+		} 
+        */
 
 		public void MoveElementsVerticallyToLocation(IEnumerable<Element> elements, Point gridLocation)
 		{
@@ -1171,94 +921,6 @@ namespace CommonElements.Timeline
 		{
 			AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), CalculateAllRowsHeight());
 		}
-
-		#endregion
-
-
-		#region Methods - UI
-
-		private void dragWait(Point location)
-		{
-			// begin the dragging process -- calculate a area outside which a drag starts
-			m_dragState = DragState.Waiting;
-			m_ignoreDragArea = new Rectangle(location.X - DragThreshold, location.Y - DragThreshold, DragThreshold*2, DragThreshold*2);
-			m_lastMouseLocation = location;
-		}
-
-		private void beginDrag(Point location)
-		{
-			m_dragState = DragState.Dragging;
-			if (ResizingElement)
-				Cursor = Cursors.SizeWE;
-			else
-				Cursor = Cursors.SizeAll;
-
-			m_dragAutoscrollDistance.Height = m_dragAutoscrollDistance.Width = 0;
-			DragTimeLeftOver = TimeSpan.Zero;
-			CurrentRowIndexUnderMouse = Rows.IndexOf(rowAt(location));
-
-			// build up a full set of snap points/details, from (a) the static snap points for the grid, and
-			// (b) calculated snap points for this move (ie. other elements in the row[s]).
-			CurrentDragSnapPoints = new SortedDictionary<TimeSpan,List<SnapDetails>>(StaticSnapPoints);
-
-			// iterate through the rows, calculating snap points for every single element in each row that has any selected elements
-			foreach (Row row in Rows) {
-				// This would skip generating snap points for elements on any rows that have nothing selected.
-				// However, we still need to do that; as we might be dragging elements vertically into rows that
-				// (currently) have nothing selected. So we'll generate for everything, but that's going to be
-				// quite overkill. So, the big TODO: here is to regenerate element snap points for only rows with
-				// selected elements, but also regenerate them whenever we move vertically.
-				//if (row.SelectedElements.Count == 0)
-				//    continue;
-
-				// skip any elements in rows that aren't visible.
-				if (!row.Visible)
-					continue;
-
-				foreach (Element element in row) {
-					// skip it if it's a selected element; we don't want to snap to them, as they'll be moving as well
-					if (element.Selected)
-						continue;
-
-					// if it's a non-selected element, generate snap points for it; for the start and end times. Also record the
-					// row its from in the generated point, so when snapping we can check against only elements from this row.
-					SnapDetails details = CalculateSnapDetailsForPoint(element.StartTime, SnapPriorityForElements, Color.Empty);
-					details.SnapRow = row;
-
-					if (!CurrentDragSnapPoints.ContainsKey(details.SnapTime)) {
-						CurrentDragSnapPoints[details.SnapTime] = new List<SnapDetails>();
-					}
-					CurrentDragSnapPoints[details.SnapTime].Add(details);
-
-					details = CalculateSnapDetailsForPoint(element.EndTime, SnapPriorityForElements, Color.Empty);
-					details.SnapRow = row;
-
-					if (!CurrentDragSnapPoints.ContainsKey(details.SnapTime)) {
-						CurrentDragSnapPoints[details.SnapTime] = new List<SnapDetails>();
-					}
-					CurrentDragSnapPoints[details.SnapTime].Add(details);
-				}
-			}
-		}
-
-		private void endDrag()
-		{
-			m_dragState = DragState.Normal;
-			this.Cursor = Cursors.Default;
-			if (ScrollTimer.Enabled)
-				ScrollTimer.Stop();
-		}
-
-		private void UpdateSelectionRectangle(Point gridLocation)
-		{
-			Point topLeft = new Point(Math.Min(m_selectionRectangleStart.X, gridLocation.X), Math.Min(m_selectionRectangleStart.Y, gridLocation.Y));
-			Point bottomRight = new Point(Math.Max(m_selectionRectangleStart.X, gridLocation.X), Math.Max(m_selectionRectangleStart.Y, gridLocation.Y));
-
-			SelectedArea = Util.RectangleFromPoints(topLeft, bottomRight);
-			selectElementsWithin(SelectedArea);
-			Invalidate();
-		}
-
 
 		#endregion
 
@@ -1459,16 +1121,16 @@ namespace CommonElements.Timeline
 
 		private void _drawSelection(Graphics g)
 		{
-			if (SelectedArea == null)
+			if (SelectionArea == null)
 				return;
 
 			using (SolidBrush b = new SolidBrush(SelectionColor))
 			{
-				g.FillRectangle(b, SelectedArea);
+				g.FillRectangle(b, SelectionArea);
 			}
 			using (Pen p = new Pen(SelectionBorder))
 			{
-				g.DrawRectangle(p, SelectedArea);
+				g.DrawRectangle(p, SelectionArea);
 			}
 		}
 
@@ -1548,26 +1210,78 @@ namespace CommonElements.Timeline
 	// Enumerations
 	enum DragState
 	{
-		/// <summary>
-		/// Not dragging, mouse is up.
-		/// </summary>
+		///<summary>Not dragging, mouse is up.</summary>
 		Normal = 0,
 
-		/// <summary>
-		/// Mouse down, but hasn't moved past threshold yet to be considered dragging
-		/// </summary>
+		///<summary>Mouse down, but hasn't moved past threshold yet to be considered dragging.</summary>
 		Waiting,
 
-		/// <summary>
-		/// Actively dragging objects
-		/// </summary>
-		Dragging,
+		///<summary>Actively dragging objects.</summary>
+		Moving,
 
-		/// <summary>
-		/// Like "Dragging", but dragging on the background, not an object
-		/// </summary>
+		///<summary>Like "Dragging", but dragging on the background, not an object.</summary>
 		Selecting,
 
+		///<summary>Dragging the mouse horizontally to resize an object in time.</summary>
+		HResizing,
 
 	}
+
+
+	///<summary>Describes where the mouse is at in an element's resize zone.</summary>
+	public enum ResizeZone
+	{
+		/// <summary>Mouse is not in an element's resize zone.</summary>
+		None,
+
+		///<summary>Mouse is in the element's front (left) resize zone.</summary>
+		Front,
+
+		///<summary>Moouse is in the element's back (right) resize zone.</summary>
+		Back
+	};
+
+
+
+
+
+    ///<summary>Maintains all necessary information during the user modification of selected Elements.</summary>
+    class ElementMoveInfo
+    {
+        public ElementMoveInfo(Point initGridLocation, IEnumerable<Element> modifyingElements, TimeSpan visibleTimeStart)
+        {
+            InitialGridLocation = initGridLocation;
+
+            OriginalElements = new Dictionary<Element, ElementTimeInfo>();
+            foreach (var elem in modifyingElements)
+            {
+                OriginalElements.Add(elem, new ElementTimeInfo(elem));
+            }
+
+            VisibleTimeStart = visibleTimeStart;
+        }
+
+
+        ///<summary>The point on the grid where the mouse first went down.</summary>
+        public Point InitialGridLocation { get; private set; }
+
+        ///<summary>All elements being modified and their original parameters.</summary>
+        public Dictionary<Element, ElementTimeInfo> OriginalElements { get; private set; }
+
+        public TimeSpan VisibleTimeStart { get; private set; }
+    }
+
+
+    struct ElementTimeInfo
+    {
+        public ElementTimeInfo(Element elem)
+            : this()
+        {
+            StartTime = elem.StartTime;
+            Duration = elem.Duration;
+        }
+        public TimeSpan StartTime { get; private set; }
+        public TimeSpan Duration { get; private set; }
+        public TimeSpan EndTime { get { return StartTime + Duration; } }
+    }
 }

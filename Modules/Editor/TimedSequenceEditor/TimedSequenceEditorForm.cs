@@ -51,6 +51,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		// our fake, dodgy clipboard. TODO: fix using the real one, it doesn't seem to work.
 		private TimelineElementsClipboardData _clipboard;
 
+		// Undo manager
+		private CommonElements.UndoManager _undoMgr = new CommonElements.UndoManager();
+
 		#endregion
 
 
@@ -374,6 +377,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		protected void ElementTimeChangedHandler(object sender, EventArgs e)
 		{
+			//_undoMgr.AddUndoAction(new ElementTimeChangedUndoAction(
+
 			IsModified = true;
 		}
 

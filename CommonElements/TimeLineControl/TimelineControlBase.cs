@@ -13,6 +13,7 @@ namespace CommonElements.Timeline
 	/// <summary>
 	/// The base class for all time-related controls in the TimelineControl.
 	/// </summary>
+	[System.ComponentModel.DesignerCategory("")]    // Prevent this from showing up in designer.
 	public abstract class TimelineControlBase : UserControl
 	{
 		protected TimelineControlBase(TimeInfo timeinfo)

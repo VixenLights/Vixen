@@ -10,7 +10,8 @@ using System.Windows.Forms;
 
 namespace CommonElements.Timeline
 {
-	public partial class RowList : UserControl
+	[System.ComponentModel.DesignerCategory("")]    // Prevent this from showing up in designer.
+	public class RowList : UserControl
 	{
 
 		public RowList()

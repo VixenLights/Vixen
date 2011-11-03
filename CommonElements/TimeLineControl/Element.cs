@@ -17,6 +17,46 @@ namespace CommonElements.Timeline
         {
         }
 
+		/// <summary>
+		/// Copy constructor. Creates a shallow copy of other.
+		/// </summary>
+		/// <param name="other">The element to copy.</param>
+		public Element(Element other)
+		{
+			m_startTime = other.m_startTime;
+			m_duration = other.m_duration;
+			m_backColor = other.m_backColor;
+			m_tag = other.m_tag;
+			m_selected = other.m_selected;
+		}
+
+
+        #region Begin/End update
+
+        private bool m_updating = false;
+        private TimeSpan m_origStartTime, m_origDuration;
+
+        ///<summary>Suspends raising events until EndUpdate is called.</summary>
+        public void BeginUpdate()
+        {
+            m_updating = true;
+            m_origStartTime = this.StartTime;
+            m_origDuration = this.Duration;
+        }
+
+        public void EndUpdate()
+        {
+            m_updating = false;
+
+            if ((StartTime != m_origStartTime) || (Duration != m_origDuration))
+            {
+                OnTimeChanged();
+            }
+        }
+
+        #endregion
+
+
 
         #region Properties
 
@@ -137,6 +177,9 @@ namespace CommonElements.Timeline
         /// </summary>
         protected virtual void OnTimeChanged()
         {
+            if (m_updating)
+                return;
+
             if (TimeChanged != null)
                 TimeChanged(this, EventArgs.Empty);
         }

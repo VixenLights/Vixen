@@ -6,21 +6,6 @@ using System.Collections;
 
 namespace CommonElements
 {
-    internal enum UndoState { None, Undone, Redone }
-
-    public abstract class UndoAction
-    {
-        private UndoState state = UndoState.None;
-        public virtual void Undo()
-        {
-            state = UndoState.Undone;
-        }
-
-        public virtual void Redo()
-        {
-            state = UndoState.Redone;
-        }
-    }
 
     public class ModifyItemUndoAction : UndoAction
     {
@@ -117,64 +102,5 @@ namespace CommonElements
 
 
 
-    public class UndoManager
-    {
-        private Stack<UndoAction> m_undoable = new Stack<UndoAction>();
-        private Stack<UndoAction> m_redoable = new Stack<UndoAction>();
-
-        public IEnumerable<UndoAction> UndoActions
-        {
-            get { return m_undoable; }
-        }
-        public IEnumerable<UndoAction> RedoActions
-        {
-            get { return m_redoable; }
-        }
-
-
-        public void AddUndoAction(UndoAction action)
-        {
-            m_undoable.Push(action);
-        }
-
-        public void Undo()
-        {
-            if (m_undoable.Count == 0)
-                return;
-
-            UndoAction item = m_undoable.Pop();
-            item.Undo();
-            m_redoable.Push(item);
-        }
-
-        public void Undo(int n)
-        {
-            if ((n < 1) || (n > m_undoable.Count))
-                throw new ArgumentOutOfRangeException("n");
-
-            for (int i = 0; i < n; i++)
-                Undo();
-        }
-
-
-        public void Redo()
-        {
-            if (m_redoable.Count == 0)
-                return;
-
-            UndoAction item = m_redoable.Pop();
-            item.Redo();
-            // don't put it back on the undo stack - we expect it to be re-added (through events, etc)
-        }
-
-        public void Redo(int n)
-        {
-            if ((n < 1) || (n > m_redoable.Count))
-                throw new ArgumentOutOfRangeException("n");
-
-            for (int i = 0; i < n; i++)
-                Redo();
-        }
-    }
 
 }

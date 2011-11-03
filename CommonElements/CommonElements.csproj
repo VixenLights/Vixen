@@ -171,25 +171,18 @@
     <Compile Include="TimelineControl\Element.cs" />
     <Compile Include="TimelineControl\EventArgs.cs" />
     <Compile Include="TimelineControl\ExtensionMethods.cs" />
+    <Compile Include="TimelineControl\Grid_Mouse.cs" />
     <Compile Include="TimelineControl\Row.cs" />
-    <Compile Include="TimelineControl\RowLabel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="TimelineControl\RowList.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="TimelineControl\RowLabel.cs" />
+    <Compile Include="TimelineControl\RowList.cs" />
     <Compile Include="TimelineControl\TimeInfo.cs" />
     <Compile Include="TimelineControl\TimelineControl.cs" />
-    <Compile Include="TimelineControl\TimelineControlBase.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="TimelineControl\Grid.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="TimelineControl\Ruler.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Undo\Undo.cs" />
+    <Compile Include="TimelineControl\TimelineControlBase.cs" />
+    <Compile Include="TimelineControl\Grid.cs" />
+    <Compile Include="TimelineControl\Ruler.cs" />
+    <Compile Include="Undo\UndoAction.cs" />
+    <Compile Include="Undo\UndoManager.cs" />
+    <Compile Include="Undo\GenericUndoActions.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ColorPicker\ColorLabel.resx">

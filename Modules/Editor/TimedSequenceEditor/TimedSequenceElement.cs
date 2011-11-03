@@ -22,6 +22,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			BackColor = Color.FromArgb(r.Next(256), r.Next(256), r.Next(256));
 		}
 
+		// copy ctor
+		public TimedSequenceElement(TimedSequenceElement other)
+			:base(other)
+		{
+			//TODO: This needs to be a deep-copy of the effect node.
+			EffectNode = other.EffectNode;
+		}
+
 
 		public EffectNode EffectNode { get; set; }
 

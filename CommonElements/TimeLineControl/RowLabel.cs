@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 namespace CommonElements.Timeline
 {
+	[System.ComponentModel.DesignerCategory("")]    // Prevent this from showing up in designer.
 	public class RowLabel : UserControl
 	{
 		public RowLabel(Row parentRow)

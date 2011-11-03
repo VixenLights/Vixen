@@ -11,7 +11,8 @@ using System.Diagnostics;
 
 namespace CommonElements.Timeline
 {
-	public partial class Ruler : TimelineControlBase
+	[System.ComponentModel.DesignerCategory("")]    // Prevent this from showing up in designer.
+	public class Ruler : TimelineControlBase
 	{
 		public Ruler(TimeInfo timeinfo)
 			:base(timeinfo)
