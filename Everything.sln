@@ -165,6 +165,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleEffect", "Sample Modu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleEffectEditor", "Sample Modules\EffectEditor\SampleEffectEditor\SampleEffectEditor.csproj", "{F01596FF-7979-4FEC-B177-9587EF1C445E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleProperty", "Sample Modules\Property\SampleProperty\SampleProperty.csproj", "{F836B214-4A02-443E-801A-7FACAEF657CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -325,6 +327,10 @@ Global
 		{F01596FF-7979-4FEC-B177-9587EF1C445E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F01596FF-7979-4FEC-B177-9587EF1C445E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F01596FF-7979-4FEC-B177-9587EF1C445E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F836B214-4A02-443E-801A-7FACAEF657CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F836B214-4A02-443E-801A-7FACAEF657CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F836B214-4A02-443E-801A-7FACAEF657CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F836B214-4A02-443E-801A-7FACAEF657CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -384,5 +390,6 @@ Global
 		{2528EC2F-0856-4446-8AAA-9CB82A591B7F} = {4960602C-D1FF-471E-A470-22318D2A278A}
 		{F01596FF-7979-4FEC-B177-9587EF1C445E} = {4E8C7DDB-803D-44D3-9ED5-B273D1FEC917}
 		{D70A5623-28E6-4544-8109-25D7694BC5F7} = {A1D7F2E0-787E-41B0-A27F-919618D4FBA3}
+		{F836B214-4A02-443E-801A-7FACAEF657CE} = {1B4C3932-1E73-4F9E-B6BA-992DAF0794E2}
 	EndGlobalSection
 EndGlobal

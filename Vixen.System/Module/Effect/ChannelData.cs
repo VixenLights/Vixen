@@ -16,18 +16,18 @@ namespace Vixen.Module.Effect {
 			: base(data) {
 		}
 
-		public void AddCommandNodesForChannel(Guid channel, CommandNode[] commands)
+		public void AddCommandNodesForChannel(Guid channel, IEnumerable<CommandNode> commands)
 		{
 			if (ContainsKey(channel)) {
 				this[channel] = this[channel].Concat(commands).ToArray();
 			} else {
-				this[channel] = commands;
+				this[channel] = commands.ToArray();
 			}
 		}
 
-		public void AddCommandNodeForChannel(Guid channel, CommandNode command)
+		public void AddCommandNodeForChannel(Guid channel, params CommandNode[] commands)
 		{
-			AddCommandNodesForChannel(channel, new CommandNode[] { command });
+			AddCommandNodesForChannel(channel, commands);
 		}
 
 		static public ChannelData Restrict(ChannelData channelData, TimeSpan startTime, TimeSpan endTime)
