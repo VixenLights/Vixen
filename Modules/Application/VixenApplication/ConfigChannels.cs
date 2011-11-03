@@ -379,11 +379,7 @@ namespace VixenApplication
 
 		private void buttonBulkRename_Click(object sender, EventArgs e)
 		{
-            if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0)
-            {
-                BulkChannelRename Formx = new BulkChannelRename();
-                Formx.ShowDialog();
-            }
+			BulkRenameSelectedChannels();
 		}
 
 		private void buttonRenameItem_Click(object sender, EventArgs e)
@@ -747,6 +743,26 @@ namespace VixenApplication
 			return false;
 		}
 
+		private void BulkRenameSelectedChannels()
+		{
+			if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0) {
+				List<string> oldNames = new List<string>(multiSelectTreeviewChannelsGroups.SelectedNodes.Select(x => x.Tag as ChannelNode).Select(x => x.Name).ToArray());
+				BulkRename renamer = new BulkRename(oldNames.ToArray());
+				if (renamer.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+					for (int i = 0; i < multiSelectTreeviewChannelsGroups.SelectedNodes.Count; i++) {
+						if (i >= renamer.NewNames.Length) {
+							VixenSystem.Logging.Warn("ConfigChannels: bulk renaming channels, and ran out of new names!");
+							break;
+						}
+						(multiSelectTreeviewChannelsGroups.SelectedNodes[i].Tag as ChannelNode).Name = renamer.NewNames[i];
+					}
+
+					PopulateNodeTree();
+					PopulateFormWithNode(_displayedNode, true);
+				}
+			}
+		}
+
 		#endregion
 
 
@@ -919,8 +935,7 @@ namespace VixenApplication
 						VixenSystem.Nodes.RenameNode(cn, dialog.Response);
 				}
 			} else if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 1) {
-				// TODO
-				MessageBox.Show("TODO: bulk rename.");
+				BulkRenameSelectedChannels();
 			}
 
 			PopulateNodeTree();

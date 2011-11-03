@@ -79,6 +79,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BulkRename.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BulkRename.Designer.cs">
+      <DependentUpon>BulkRename.cs</DependentUpon>
+    </Compile>
     <Compile Include="ColorPicker\ColorBgra.cs" />
     <Compile Include="ColorPicker\ColorLabel.cs">
       <SubType>Component</SubType>
@@ -185,6 +191,9 @@
     <Compile Include="Undo\GenericUndoActions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="BulkRename.resx">
+      <DependentUpon>BulkRename.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ColorPicker\ColorLabel.resx">
       <DependentUpon>ColorLabel.cs</DependentUpon>
     </EmbeddedResource>

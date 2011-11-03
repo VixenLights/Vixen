@@ -117,4 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="label3.Text" xml:space="preserve">
+    <value>This will rename the above items according to the rename pattern below. The pattern will substitute the # sign with numbers, starting from the specified number, and the % sign with letters, from the given range of letters.
+</value>
+  </data>
 </root>

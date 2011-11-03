@@ -94,12 +94,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChannelRename.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ChannelRename.Designer.cs">
-      <DependentUpon>ChannelRename.cs</DependentUpon>
-    </Compile>
     <Compile Include="ConfigControllersOutputs.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -126,9 +120,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="ChannelRename.resx">
-      <DependentUpon>ChannelRename.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="ConfigControllersOutputs.resx">
       <DependentUpon>ConfigControllersOutputs.cs</DependentUpon>
     </EmbeddedResource>
