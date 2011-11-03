@@ -48,7 +48,7 @@ namespace Vixen.Sys {
 					// All other binary directories (module directories) have something driving
 					// their presence, but this doesn't.  So it's going to be a blatantly
 					// ugly statement for now.
-					Helper.EnsureDirectory(Path.Combine(Modules.Directory, "Common"));
+					Helper.EnsureDirectory(Path.Combine(Paths.BinaryRootPath, "Common"));
 
 					Channels = new ChannelManager();
 					Nodes = new NodeManager();
