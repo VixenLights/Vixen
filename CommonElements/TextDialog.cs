@@ -14,7 +14,22 @@ namespace CommonElements {
 			labelPrompt.Text = prompt;
 		}
 
-		private void TextDialog_KeyDown(object sender, KeyEventArgs e) {
+		public TextDialog(string prompt, string title)
+			: this(prompt)
+		{
+			this.Text = title;
+		}
+
+		public TextDialog(string prompt, string title, string initialText, bool selectInitialText = false)
+			: this(prompt, title)
+		{
+			textBoxResponse.Text = initialText;
+			if (selectInitialText)
+				textBoxResponse.SelectAll();
+		}
+
+		private void TextDialog_KeyDown(object sender, KeyEventArgs e)
+		{
 			if(e.KeyCode == Keys.Escape) DialogResult = DialogResult.Cancel;
 			else if(e.KeyCode == Keys.Enter) DialogResult = DialogResult.OK;
 		}

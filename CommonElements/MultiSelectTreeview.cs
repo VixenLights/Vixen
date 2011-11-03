@@ -307,13 +307,12 @@ namespace CommonElements
 				TreeNode node = GetNodeAt(e.Location);
 				if (node != null)
 				{
-					if (ModifierKeys == Keys.None && m_SelectedNodes.Contains(node))
+					if (ModifierKeys == Keys.None && m_SelectedNodes.Contains(node) && e.Button != System.Windows.Forms.MouseButtons.Right)
 					{
 						int leftBound = node.Bounds.X; // -20; // Allow user to click on image
 						int rightBound = node.Bounds.Right + 10; // Give a little extra room
 						if (e.Location.X > leftBound && e.Location.X < rightBound)
 						{
-
 							SelectNode(node);
 						}
 					}

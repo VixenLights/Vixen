@@ -49,7 +49,7 @@ namespace Vixen.Sys {
 		public void CopyNode(ChannelNode node, ChannelNode target, int index = -1) {
 			target = target ?? _rootNode;
 			ChannelNode NewNode = node.Clone();
-			NewNode.Name = _Uniquify(NewNode.Name);
+			NewNode.Name = Uniquify(NewNode.Name);
 			AddChildToParent(NewNode, target, index);
 		}
 
@@ -70,10 +70,6 @@ namespace Vixen.Sys {
 			AddChildToParent(movingNode, newParent, index);
 		}
 
-		public void MirrorNode(ChannelNode node, ChannelNode target) {
-			AddChildToParent(node, target);
-		}
-
 		public void AddNode(ChannelNode node) {
 			if(!_rootNode.Children.Contains(node)) {
 				_rootNode.AddChild(node);
@@ -86,8 +82,8 @@ namespace Vixen.Sys {
 			}
 		}
 
-		public ChannelNode AddNewNode(string name) {
-			name = _Uniquify(name);
+		public ChannelNode AddNode(string name) {
+			name = Uniquify(name);
 			ChannelNode newNode = new ChannelNode(name);
 			AddNode(newNode);
 			return newNode;
@@ -104,12 +100,16 @@ namespace Vixen.Sys {
 		}
 
 		public void RenameNode(ChannelNode node, string newName) {
-			node.Name = _Uniquify(newName);
+			node.Name = Uniquify(newName);
 			if (node.Channel != null)
 				node.Channel.Name = node.Name;
 		}
 
 		public void AddChildToParent(ChannelNode child, ChannelNode parent, int index = -1) {
+			// if no parent was specified, add to the root node.
+			if (parent == null)
+				parent = _rootNode;
+
 			// if an item is a group (or is becoming one), it can't have an output
 			// channel anymore. Remove it.
 			if (parent.Channel != null) {
@@ -124,7 +124,7 @@ namespace Vixen.Sys {
 				parent.InsertChild(index, child);
 		}
 
-		private string _Uniquify(string name) {
+		public string Uniquify(string name) {
 			if(_rootNode.GetNodeEnumerator().Any(x => x.Name == name)) {
 				string originalName = name;
 				bool unique;

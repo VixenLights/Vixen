@@ -169,7 +169,7 @@ namespace VixenApplication
 					foreach (ControllerReference cr in refsToAdd) {
 						string name = VixenSystem.Controllers.Get(cr.ControllerId).Outputs[cr.OutputIndex].Name;
 
-						ChannelNode newNode = VixenSystem.Nodes.AddNewNode(name);
+						ChannelNode newNode = VixenSystem.Nodes.AddNode(name);
 						if (newNode.Channel == null) {
 							newNode.Channel = VixenSystem.Channels.AddChannel(name);
 						}

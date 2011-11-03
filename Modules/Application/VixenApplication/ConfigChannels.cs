@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Vixen.Sys;
+using System.Media;
 using Vixen.Module.Property;
 using System.Reflection;
 using CommonElements;
@@ -345,16 +346,7 @@ namespace VixenApplication
 
 		private void buttonAddNode_Click(object sender, EventArgs e)
 		{
-			using (CommonElements.TextDialog textDialog = new CommonElements.TextDialog("Node Name?")) {
-				if (textDialog.ShowDialog() == DialogResult.OK) {
-					if (textDialog.Response == "")
-						VixenSystem.Nodes.AddNewNode("New Node");
-					else
-						VixenSystem.Nodes.AddNewNode(textDialog.Response);
-
-					PopulateNodeTree();
-				}
-			}
+			AddNewNode();
 		}
 
 		private void buttonDeleteNode_Click(object sender, EventArgs e)
@@ -371,12 +363,7 @@ namespace VixenApplication
 				}
 				if (MessageBox.Show(message, title, MessageBoxButtons.OKCancel) == DialogResult.OK) {
 					foreach (TreeNode tn in multiSelectTreeviewChannelsGroups.SelectedNodes) {
-						ChannelNode cn = tn.Tag as ChannelNode;
-						ChannelNode parent = (tn.Parent != null) ? tn.Parent.Tag as ChannelNode : null;
-						VixenSystem.Nodes.RemoveNode(cn, parent, true);
-						if (_displayedNode == cn) {
-							_displayedNode = null;
-						}
+						DeleteNode(tn);
 					}
 				}
 			}
@@ -387,26 +374,7 @@ namespace VixenApplication
 
 		private void buttonCreateGroup_Click(object sender, EventArgs e)
 		{
-			if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0)
-			{
-				String groupName;
-				using (CommonElements.TextDialog textDialog = new CommonElements.TextDialog("Group Name?")) {
-					if (textDialog.ShowDialog() == DialogResult.OK) {
-						if (textDialog.Response == "")
-							groupName = "Unnamed Group";
-						else
-							groupName = textDialog.Response;
-
-						ChannelNode newNode = VixenSystem.Nodes.AddNewNode(groupName);
-
-						foreach (TreeNode tn in multiSelectTreeviewChannelsGroups.SelectedNodes) {
-							newNode.AddChild(tn.Tag as ChannelNode);
-						}
-
-						PopulateNodeTree();
-					}
-				}
-			}
+			CreateGroupFromSelectedNodes();
 		}
 
 		private void buttonBulkRename_Click(object sender, EventArgs e)
@@ -591,17 +559,11 @@ namespace VixenApplication
 				}
 			}
 
+
 			// Check to see if the new parent node would be 'losing' the Channel (ie. becoming a
 			// group instead of a leaf node with a channel/patches). Prompt the user first.
-			if (newParentNode != null && newParentNode.Channel != null && newParentNode.Channel.Patch.Count() > 0) {
-				string message = "Moving nodes into this Channel will convert it into a Group, which will remove any " +
-					"patches it may have to outputs. Are you sure you want to continue?";
-				string title = "Convert Channel to Group?";
-				DialogResult result = MessageBox.Show(message, title, MessageBoxButtons.YesNoCancel);
-				if (result != System.Windows.Forms.DialogResult.Yes) {
-					return;
-				}
-			}
+			if (CheckIfNodeWillLosePatches(newParentNode))
+				return;
 
 			// If moving channel nodes, we need to iterate through all selected treenodes, and remove them from
 			// the parent in which they are selected (which we can determine from the treenode parent), and add them
@@ -689,6 +651,7 @@ namespace VixenApplication
 
 
 		#region Helper functions
+
 		private void ConfigureSelectedProperty()
 		{
 			if (listViewProperties.SelectedItems.Count == 1) {
@@ -720,15 +683,256 @@ namespace VixenApplication
 			return result;
 		}
 
+		private void DeleteNode(TreeNode tn)
+		{
+			ChannelNode cn = tn.Tag as ChannelNode;
+			ChannelNode parent = (tn.Parent != null) ? tn.Parent.Tag as ChannelNode : null;
+			VixenSystem.Nodes.RemoveNode(cn, parent, true);
+			if (_displayedNode == cn) {
+				_displayedNode = null;
+			}
+		}
 
+		private ChannelNode AddNewNode()
+		{
+			return AddNewNode(null);
+		}
+
+		private ChannelNode AddNewNode(ChannelNode parent, int index = -1)
+		{
+			if (CheckIfNodeWillLosePatches(parent))
+				return null;
+
+			using (CommonElements.TextDialog textDialog = new CommonElements.TextDialog("Node Name?")) {
+				if (textDialog.ShowDialog() == DialogResult.OK) {
+					string newName;
+					if (textDialog.Response == "")
+						newName = "New Node";
+					else
+						newName = textDialog.Response;
+
+					ChannelNode newNode = new ChannelNode(newName);
+					VixenSystem.Nodes.AddChildToParent(newNode, parent, index);
+					PopulateNodeTree();
+					return newNode;
+				}
+			}
+
+			return null;
+		}
+
+		private void CreateGroupFromSelectedNodes()
+		{
+			ChannelNode newGroup = AddNewNode();
+
+			foreach (TreeNode tn in multiSelectTreeviewChannelsGroups.SelectedNodes) {
+				newGroup.AddChild(tn.Tag as ChannelNode);
+			}
+
+			PopulateNodeTree();
+		}
+
+		private bool CheckIfNodeWillLosePatches(ChannelNode node)
+		{
+			if (node != null && node.Channel != null && node.Channel.Patch.Count() > 0) {
+				string message = "Adding nodes to this Channel will convert it into a Group, which will remove any " +
+					"patches to outputs it may have. Are you sure you want to continue?";
+				string title = "Convert Channel to Group?";
+				DialogResult result = MessageBox.Show(message, title, MessageBoxButtons.YesNoCancel);
+				if (result != System.Windows.Forms.DialogResult.Yes) {
+					return true;
+				}
+			}
+
+			return false;
+		}
 
 		#endregion
 
-		public class ComboBoxControllerItem
+
+		#region Context Menus
+
+		private void contextMenuStripTreeView_Opening(object sender, CancelEventArgs e)
 		{
-			public string Name { get; set; }
-			public Guid Id { get; set; }
+			cutNodesToolStripMenuItem.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0);
+			copyNodesToolStripMenuItem.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0);
+			pasteNodesToolStripMenuItem.Enabled = (_clipboardNodes != null);
+			copyPropertiesToolStripMenuItem.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count == 1);
+			pastePropertiesToolStripMenuItem.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0) && (_clipboardProperties != null);
+			nodePropertiesToolStripMenuItem.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0);
+			addNewNodeToolStripMenuItem.Enabled = true;
+			createGroupWithNodesToolStripMenuItem.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0);
+			deleteNodesToolStripMenuItem.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0);
+			renameNodesToolStripMenuItem.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0);
 		}
 
+		// TODO: use the system clipboard properly; I couldn't get it working in the sequencer, so I'm not
+		// going to bother with it here. If someone feels like playing with it, go ahead. :-)
+		private List<ChannelNode> _clipboardNodes;
+		private List<IPropertyModuleInstance> _clipboardProperties;
+
+
+		private void cutNodesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			List<ChannelNode> cutNodes = new List<ChannelNode>();
+
+			foreach (TreeNode treenode in multiSelectTreeviewChannelsGroups.SelectedNodes) {
+				cutNodes.Add(treenode.Tag as ChannelNode);
+				DeleteNode(treenode);
+			}
+
+			_clipboardNodes = cutNodes;
+
+			PopulateNodeTree();
+		}
+
+		private void copyNodesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			List<ChannelNode> copiedNodes = new List<ChannelNode>();
+
+			foreach (TreeNode treenode in multiSelectTreeviewChannelsGroups.SelectedNodes) {
+				copiedNodes.Add(treenode.Tag as ChannelNode);
+			}
+
+			_clipboardNodes = copiedNodes;
+		}
+
+		private void pasteNodesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (_clipboardNodes == null)
+				return;
+
+			ChannelNode destinationNode = null;
+			TreeNode selectedTreeNode = multiSelectTreeviewChannelsGroups.SelectedNode;
+
+			if (selectedTreeNode != null)
+				destinationNode = selectedTreeNode.Tag as ChannelNode;
+
+			IEnumerable<ChannelNode> invalidNodesForTarget;
+			if (destinationNode == null)
+				invalidNodesForTarget = VixenSystem.Nodes.InvalidRootNodes;
+			else
+				invalidNodesForTarget = destinationNode.InvalidChildren();
+
+			IEnumerable<ChannelNode> invalidSourceNodes = invalidNodesForTarget.Intersect(_clipboardNodes);
+			if (invalidSourceNodes.Count() > 0) {
+				SystemSounds.Asterisk.Play();
+			} else {
+				// Check to see if the new parent node would be 'losing' the Channel (ie. becoming a
+				// group instead of a leaf node with a channel/patches). Prompt the user first.
+				if (CheckIfNodeWillLosePatches(destinationNode))
+					return;
+
+				foreach (ChannelNode cn in _clipboardNodes) {
+					VixenSystem.Nodes.AddChildToParent(cn, destinationNode);
+				}
+
+				if (selectedTreeNode != null)
+					selectedTreeNode.Expand();
+
+				PopulateNodeTree();
+				PopulateFormWithNode(destinationNode, true);
+			}
+		}
+
+		private void copyPropertiesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count != 1)
+				return;
+
+			ChannelNode sourceNode = multiSelectTreeviewChannelsGroups.SelectedNode.Tag as ChannelNode;
+			_clipboardProperties = new List<IPropertyModuleInstance>();
+			foreach (IPropertyModuleInstance property in sourceNode.Properties) {
+				_clipboardProperties.Add(property);
+			}
+		}
+
+		private void pastePropertiesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (_clipboardProperties == null)
+				return;
+
+			foreach (TreeNode tn in multiSelectTreeviewChannelsGroups.SelectedNodes) {
+				ChannelNode channel = tn.Tag as ChannelNode;
+
+				foreach (IPropertyModuleInstance sourceProperty in _clipboardProperties) {
+					IPropertyModuleInstance destinationProperty;
+
+					if (channel.Properties.Contains(sourceProperty.Descriptor.TypeId)) {
+						destinationProperty = channel.Properties.Get(sourceProperty.Descriptor.TypeId);
+					} else {
+						destinationProperty = channel.Properties.Add(sourceProperty.Descriptor.TypeId);
+					}
+
+					if (destinationProperty == null) {
+						VixenSystem.Logging.Error("ConfigChannels: pasting a property to a channel, but can't make or find the instance!");
+						continue;
+					}
+
+					// get the property to do its best to copy values from the property we're copying from.
+					destinationProperty.CloneValues(sourceProperty);
+				}
+			}
+
+			PopulateFormWithNode(_displayedNode, true);
+		}
+
+		private void addNewNodeToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			TreeNode selectedTreeNode = multiSelectTreeviewChannelsGroups.SelectedNode;
+			if (selectedTreeNode == null)
+				AddNewNode();
+			else
+				AddNewNode(selectedTreeNode.Tag as ChannelNode);
+
+			PopulateFormWithNode(_displayedNode, true);
+		}
+
+		private void deleteNodesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count == 0)
+				return;
+
+			foreach (TreeNode tn in multiSelectTreeviewChannelsGroups.SelectedNodes) {
+				DeleteNode(tn);
+			}
+
+			PopulateNodeTree();
+			PopulateFormWithNode(_displayedNode, true);
+		}
+
+		private void createGroupWithNodesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			CreateGroupFromSelectedNodes();
+			PopulateFormWithNode(_displayedNode, true);
+		}
+
+		private void renameNodesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count == 0)
+				return;
+			else if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count == 1) {
+				ChannelNode cn = multiSelectTreeviewChannelsGroups.SelectedNode.Tag as ChannelNode;
+				TextDialog dialog = new TextDialog("Node name?", "Rename node", (cn).Name, true);
+				if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+					if (dialog.Response != "" && dialog.Response != cn.Name)
+						VixenSystem.Nodes.RenameNode(cn, dialog.Response);
+				}
+			} else if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 1) {
+				// TODO
+				MessageBox.Show("TODO: bulk rename.");
+			}
+
+			PopulateNodeTree();
+			PopulateFormWithNode(_displayedNode, true);
+		}
+
+		#endregion
+	}
+
+	public class ComboBoxControllerItem
+	{
+		public string Name { get; set; }
+		public Guid Id { get; set; }
 	}
 }
