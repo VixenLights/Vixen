@@ -275,6 +275,7 @@
 			this.listViewProperties.UseCompatibleStateImageBehavior = false;
 			this.listViewProperties.View = System.Windows.Forms.View.Details;
 			this.listViewProperties.SelectedIndexChanged += new System.EventHandler(this.listViewProperties_SelectedIndexChanged);
+			this.listViewProperties.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listViewProperties_MouseDoubleClick);
 			// 
 			// columnHeader2
 			// 

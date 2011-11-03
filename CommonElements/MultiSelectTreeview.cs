@@ -51,6 +51,11 @@ namespace CommonElements
 		/// </summary>
 		public event DragFinishingEventHandler DragFinishing;
 
+		/// <summary>
+		/// occurs when the item(s) in the treeview are deselected, by clicking on an empty area.
+		/// </summary>
+		public event EventHandler Deselected;
+
 		#endregion
 
 
@@ -265,22 +270,21 @@ namespace CommonElements
 				base.SelectedNode = null;
 
 				TreeNode node = GetNodeAt(e.Location);
-				if (node != null)
-				{
+				if (node != null) {
 					int leftBound = node.Bounds.X; // - 20; // Allow user to click on image
 					int rightBound = node.Bounds.Right + 10; // Give a little extra room
-					if (e.Location.X > leftBound && e.Location.X < rightBound)
-					{
-						if (ModifierKeys == Keys.None && (m_SelectedNodes.Contains(node)))
-						{
+					if (e.Location.X > leftBound && e.Location.X < rightBound) {
+						if (ModifierKeys == Keys.None && (m_SelectedNodes.Contains(node))) {
 							// Potential Drag Operation
 							// Let Mouse Up do select
-						}
-						else
-						{
+						} else {
 							SelectNode(node);
 						}
 					}
+				} else {
+					ClearSelectedNodes();
+					if (Deselected != null)
+						Deselected(this, new EventArgs());
 				}
 
 				base.OnMouseDown(e);
@@ -590,72 +594,36 @@ namespace CommonElements
 			// Get the node from the mouse position, colour it
 			Point pt = PointToClient(new Point(e.X, e.Y));
 
-			// default to no destination node, it will be updated if we're over a node
 			_dragDestinationNode = GetNodeAt(pt);
 
-			// try and figure out if we would be dragging 'between' nodes. There's no easy way to do this,
-			// except by using the GetNodeAt call for a Treeview to see if a close point would actually be
-			// a different node. If so, we must be close to the edge.
-			TreeNode targetNode = _dragDestinationNode;
-			TreeNode higherNode = GetNodeAt(pt.X, pt.Y - 3);
-			TreeNode lowerNode = GetNodeAt(pt.X, pt.Y + 3);
-			int y = 0;
-
-			// if we're near the top of a node, record it, and calculate where to draw the line
-			if (targetNode != null && targetNode != higherNode) {
+			// try and figure out if we would be dragging 'between' nodes.
+			if (_dragDestinationNode.Bounds.Contains(pt) && pt.Y - _dragDestinationNode.Bounds.Top <= 3) {
 				_dragBetweenState = DragBetweenNodes.DragAboveTargetNode;
-
-				// figure out what Y position to draw the line
-				for (y = pt.Y - 3;; y++) {
-					if (GetNodeAt(pt.X, y + 1) == targetNode) {
-						y += 2;
-						break;
-					}
-				}
-
-				// if the line would be in between two nodes on the same level, nudge it so they're equal
-				if (higherNode != null && targetNode.Level == higherNode.Level) {
-					y--;
-				}
-			}
-			// if we're near the bottom of a node
-			else if (targetNode != null && targetNode != lowerNode) {
+			} else if (_dragDestinationNode.Bounds.Contains(pt) && _dragDestinationNode.Bounds.Bottom - pt.Y <= 3) {
 				_dragBetweenState = DragBetweenNodes.DragBelowTargetNode;
-
-				// figure out what Y position to draw the line
-				for (y = pt.Y + 3;; y--) {
-					if (GetNodeAt(pt.X, y - 1) == targetNode) {
-						y--;
-						break;
-					}
-				}
-
-				// if the line would be in between two nodes on the same level, nudge it so they're equal
-				if (lowerNode != null && targetNode.Level == lowerNode.Level) {
-					y++;
-				}
-			}
-			// we're in the middle part of a node: draw it normally
-			else {
+			} else {
 				_dragBetweenState = DragBetweenNodes.DragOnTargetNode;
 			}
 
+			// figure out where to draw the dotted line to show where it would be moving to.
 			if (DraggingBetweenRows) {
-				// have a guess that each level is about this many pixels in, and scale it by that.
-				// magic numbers! -- 24 px for initial tree crap, 20 px for icon, 19 px per level
-				// inset, and 100 px line length.
-				int x1 = 24 + 20 + targetNode.Level * 19;
-				int x2 = x1 + 100;
 
-				_dragBetweenRowsDrawLineStart = new Point(x1, y);
-				_dragBetweenRowsDrawLineEnd = new Point(x2, y);
+				if (_dragBetweenState == DragBetweenNodes.DragAboveTargetNode) {
+					_dragBetweenRowsDrawLineStart = new Point(_dragDestinationNode.Bounds.Left, _dragDestinationNode.Bounds.Top);
+					_dragBetweenRowsDrawLineEnd = new Point(_dragDestinationNode.Bounds.Right + 10, _dragDestinationNode.Bounds.Top);
+				} else if (_dragBetweenState == DragBetweenNodes.DragBelowTargetNode) {
+					_dragBetweenRowsDrawLineStart = new Point(_dragDestinationNode.Bounds.Left, _dragDestinationNode.Bounds.Bottom);
+					_dragBetweenRowsDrawLineEnd = new Point(_dragDestinationNode.Bounds.Right + 10, _dragDestinationNode.Bounds.Bottom);
+				} else {
+					_dragBetweenRowsDrawLineStart = new Point(-1, -1);
+					_dragBetweenRowsDrawLineEnd = new Point(-1, -1);
+				}
 
-				if (_dragLastLineDrawnY != y) {
+				if (_dragLastLineDrawnY != _dragBetweenRowsDrawLineStart.Y) {
 					Invalidate();
-					_dragLastLineDrawnY = y;
+					_dragLastLineDrawnY = _dragBetweenRowsDrawLineStart.Y;
 				}
 			}
-
 
 			// get the nodes that are being dragged from the drag data
 			List<TreeNode> dragNodes = null;
@@ -859,7 +827,8 @@ namespace CommonElements
 					Color c = Color.FromArgb((int)(0.5 * byte.MaxValue), Color.Black);
 					using (Pen p = new Pen(c, 2)) {
 						p.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
-						g.DrawLine(p, _dragBetweenRowsDrawLineStart, _dragBetweenRowsDrawLineEnd);
+						if (_dragBetweenRowsDrawLineStart.Y >= 0 && _dragBetweenRowsDrawLineEnd.Y >= 0)
+							g.DrawLine(p, _dragBetweenRowsDrawLineStart, _dragBetweenRowsDrawLineEnd);
 					}
 				}
 			}
@@ -1075,14 +1044,13 @@ namespace CommonElements
 
 		private void SelectSingleNode(TreeNode node)
 		{
-			if (node == null)
-			{
-				return;
-			}
-
 			ClearSelectedNodes();
-			ToggleNode(node, true);
-			node.EnsureVisible();
+
+			if (node != null)
+			{
+				ToggleNode(node, true);
+				node.EnsureVisible();
+			}
 		}
 
 		private void ToggleNode(TreeNode node, bool bSelectNode)

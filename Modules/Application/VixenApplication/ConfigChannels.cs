@@ -34,6 +34,7 @@ namespace VixenApplication
 
 			multiSelectTreeviewChannelsGroups.DragFinishing += multiSelectTreeviewChannelsGroupsDragFinishingHandler;
 			multiSelectTreeviewChannelsGroups.DragOverVerify += multiSelectTreeviewChannelsGroupsDragVerifyHandler;
+			multiSelectTreeviewChannelsGroups.Deselected += multiSelectTreeviewChannelsGroups_DeselectedHandler;
 		}
 
 		private void ConfigChannels_Load(object sender, EventArgs e)
@@ -210,6 +211,10 @@ namespace VixenApplication
 			PopulatePropertiesArea(node);
 
 			groupBoxSelectedNode.Enabled = (node != null);
+
+			buttonDeleteNode.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0) && (node != null);
+			buttonCreateGroup.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0) && (node != null);
+			buttonBulkRename.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0) && (node != null);
 		}
 
 		private void PopulateGeneralNodeInfo(ChannelNode node)
@@ -258,6 +263,13 @@ namespace VixenApplication
 			listViewProperties.EndUpdate();
 
 			groupBoxProperties.Enabled = (node != null);
+			PopulatePropertiesButtons();
+		}
+
+		private void PopulatePropertiesButtons()
+		{
+			buttonConfigureProperty.Enabled = (listViewProperties.SelectedItems.Count == 1);
+			buttonRemoveProperty.Enabled = (listViewProperties.SelectedItems.Count > 0);
 		}
 
 		private void PopulateCurrentPatchesArea(ChannelNode node)
@@ -370,6 +382,7 @@ namespace VixenApplication
 			}
 
 			PopulateNodeTree();
+			PopulateFormWithNode(null, true);
 		}
 
 		private void buttonCreateGroup_Click(object sender, EventArgs e)
@@ -407,10 +420,11 @@ namespace VixenApplication
 
 		private void buttonRenameItem_Click(object sender, EventArgs e)
 		{
-			if (textBoxName.Text.Trim() != "") {
-				VixenSystem.Nodes.RenameNode(_displayedNode, textBoxName.Text.Trim());
+			string newName = textBoxName.Text.Trim();
+			if (newName != "" && newName != _displayedNode.Name) {
+				VixenSystem.Nodes.RenameNode(_displayedNode, newName);
+				PopulateNodeTree();
 			}
-			PopulateNodeTree();
 		}
 
 		private void buttonRemovePatch_Click(object sender, EventArgs e)
@@ -500,10 +514,6 @@ namespace VixenApplication
 		private void multiSelectTreeviewChannelsGroups_AfterSelect(object sender, TreeViewEventArgs e)
 		{
 			PopulateFormWithNode(multiSelectTreeviewChannelsGroups.SelectedNode.Tag as ChannelNode, false);
-
-			buttonDeleteNode.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0);
-			buttonCreateGroup.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0);
-			buttonBulkRename.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0);
 		}
 
 		private void listViewProperties_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -513,8 +523,7 @@ namespace VixenApplication
 
 		private void listViewProperties_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			buttonConfigureProperty.Enabled = (listViewProperties.SelectedItems.Count == 1);
-			buttonRemoveProperty.Enabled = (listViewProperties.SelectedItems.Count > 0);
+			PopulatePropertiesButtons();
 		}
 
 		private void comboBoxPatchControllerSelect_SelectedIndexChanged(object sender, EventArgs e)
@@ -536,6 +545,11 @@ namespace VixenApplication
 					PopulateFormWithNode(_displayedNode, true);
 				}
 			}
+		}
+
+		private void multiSelectTreeviewChannelsGroups_DeselectedHandler(object sender, EventArgs e)
+		{
+			PopulateFormWithNode(null, false);
 		}
 
 		#endregion
