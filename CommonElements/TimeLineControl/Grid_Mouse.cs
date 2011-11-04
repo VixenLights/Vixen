@@ -96,10 +96,6 @@ namespace CommonElements.Timeline
             {
                 switch (m_dragState)
                 {
-                    case DragState.Waiting:
-                        endAllDrag();
-                        break;
-
                     case DragState.Moving:
                         MouseUp_DragMoving(gridLocation);
                         break;
@@ -113,6 +109,7 @@ namespace CommonElements.Timeline
                         break;
 
                     default:
+                        endAllDrag();
                         // If we're not dragging on mouse up, it could be a click on one of multiple
                         // selected elements. (In which case we select only that one)
                         if (m_mouseDownElement != null && !CtrlPressed)
@@ -329,13 +326,54 @@ namespace CommonElements.Timeline
 
         #endregion
 
+        #region [Mouse Drag] Selection Box
+
+        private void beginDragSelect(Point gridLocation)
+        {
+            m_dragState = DragState.Selecting;
+            ClearSelectedElements();
+            ClearSelectedRows(m_mouseDownElementRow);
+            SelectionArea = new Rectangle(gridLocation.X, gridLocation.Y, 0, 0);
+            m_selectionRectangleStart = gridLocation;
+        }
+
+
+        //private void MouseMove_DragSelecting(MouseEventArgs e)
+        private void MouseMove_DragSelect(Point gridLocation)
+        {
+            Point topLeft = new Point(Math.Min(m_selectionRectangleStart.X, gridLocation.X), Math.Min(m_selectionRectangleStart.Y, gridLocation.Y));
+            Point bottomRight = new Point(Math.Max(m_selectionRectangleStart.X, gridLocation.X), Math.Max(m_selectionRectangleStart.Y, gridLocation.Y));
+
+            SelectionArea = Util.RectangleFromPoints(topLeft, bottomRight);
+            selectElementsWithin(SelectionArea);
+            Invalidate();
+        }
+
+        private void MouseUp_DragSelect(Point gridLocation)
+        {
+            // we will only be Selecting if we clicked on the grid background, so on mouse up, check if
+            // we didn't move (or very far): if so, move the cursor to the clicked position.
+            if (SelectionArea.Width < 2 && SelectionArea.Height < 2)
+            {
+                CursorPosition = pixelsToTime(gridLocation.X);
+                if (m_mouseDownElementRow != null)
+                    m_mouseDownElementRow.Selected = true;
+            }
+
+            // done with the selection rectangle.
+            m_selectionRectangleStart = Point.Empty;
+            SelectionArea = Rectangle.Empty;
+
+            endAllDrag();
+        }
+
+        #endregion
+
 
         #region [Mouse Drag] Moving Elements
 
         private void waitForDragMove(Point gridLocation)
         {
-            Debug.WriteLine("waitForDragMove({0},{1})", gridLocation.X, gridLocation.Y);
-
             // begin the dragging process -- calculate a area outside which a drag (move) starts
             m_dragState = DragState.Waiting;
             m_ignoreDragArea = new Rectangle(gridLocation.X - DragThreshold, gridLocation.Y - DragThreshold, DragThreshold * 2, DragThreshold * 2);
@@ -343,8 +381,6 @@ namespace CommonElements.Timeline
 
         private void beginDragMove(Point gridLocation)
         {
-            Debug.WriteLine("beginDragMove({0},{1})", gridLocation.X, gridLocation.Y);
-
             m_dragState = DragState.Moving;
             m_ignoreDragArea = Rectangle.Empty;
             Cursor = Cursors.SizeAll;
@@ -491,33 +527,46 @@ namespace CommonElements.Timeline
         */
 
 
+        /// <summary>
+        /// Handles mouse move events while in the "Moving" state.
+        /// </summary>
+        /// <param name="gridLocation">Mouse location on the grid.</param>
         private void MouseMove_DragMoving(Point gridLocation)
         {
             // if we don't have anything selected, there's no point dragging anything...
             if (SelectedElements.Count() == 0)
-            {
-                Debugger.Break();
                 return;
-            }
 
             TimeSpan dt = pixelsToTime(gridLocation.X - m_elemMoveInfo.InitialGridLocation.X);
             int dy = gridLocation.Y - m_elemMoveInfo.InitialGridLocation.Y;
 
-            // if we didn't move (impossible?)
+            // If we didn't move, get outta here.
             if (dt == TimeSpan.Zero && dy == 0)
-            {
-                Debugger.Break();
                 return;
-            }
+
+
+            // Calculate what our actual dt value will be.
+            TimeSpan earliest = m_elemMoveInfo.OriginalElements.Values.Min(x => x.StartTime);
+            if ((earliest + dt) < TimeSpan.Zero)
+                dt = -earliest;
+
+            TimeSpan latest = m_elemMoveInfo.OriginalElements.Values.Max(x => x.EndTime);
+            if ((latest + dt) > TimeInfo.TotalTime)
+                dt = TimeInfo.TotalTime - latest;
+
+
 
             foreach (var elem in SelectedElements)
             {
                 // Get this elemenent's original times (before resize started)
                 ElementTimeInfo orig = m_elemMoveInfo.OriginalElements[elem];
-
                 elem.StartTime = orig.StartTime + dt;
-                if (elem.EndTime > TimeInfo.TotalTime)
-                    elem.StartTime = TimeInfo.TotalTime - elem.Duration;
+            }
+
+            // if we've moved vertically, we may need to move elements between rows
+            if (dy != 0)
+            {
+                //MoveElementsVerticallyToLocation(SelectedElements, gridLocation);
             }
 
             Invalidate();
@@ -532,48 +581,7 @@ namespace CommonElements.Timeline
         #endregion
 
 
-        #region [Mouse Drag] Selection Box
 
-        private void beginDragSelect(Point gridLocation)
-        {
-            m_dragState = DragState.Selecting;
-            ClearSelectedElements();
-            ClearSelectedRows(m_mouseDownElementRow);
-            SelectionArea = new Rectangle(gridLocation.X, gridLocation.Y, 0, 0);
-            m_selectionRectangleStart = gridLocation;
-        }
-
-
-        //private void MouseMove_DragSelecting(MouseEventArgs e)
-        private void MouseMove_DragSelect(Point gridLocation)
-        {
-            Point topLeft = new Point(Math.Min(m_selectionRectangleStart.X, gridLocation.X), Math.Min(m_selectionRectangleStart.Y, gridLocation.Y));
-            Point bottomRight = new Point(Math.Max(m_selectionRectangleStart.X, gridLocation.X), Math.Max(m_selectionRectangleStart.Y, gridLocation.Y));
-
-            SelectionArea = Util.RectangleFromPoints(topLeft, bottomRight);
-            selectElementsWithin(SelectionArea);
-            Invalidate();
-        }
-
-        private void MouseUp_DragSelect(Point gridLocation)
-        {
-            // we will only be Selecting if we clicked on the grid background, so on mouse up, check if
-            // we didn't move (or very far): if so, move the cursor to the clicked position.
-            if (SelectionArea.Width < 2 && SelectionArea.Height < 2)
-            {
-                CursorPosition = pixelsToTime(gridLocation.X);
-                if (m_mouseDownElementRow != null)
-                    m_mouseDownElementRow.Selected = true;
-            }
-
-            // done with the selection rectangle.
-            m_selectionRectangleStart = Point.Empty;
-            SelectionArea = Rectangle.Empty;
-
-            endAllDrag();
-        }
-
-        #endregion
 
 
         #region [Mouse Drag] Horizontal Resize
@@ -591,6 +599,45 @@ namespace CommonElements.Timeline
         {
             TimeSpan dt = pixelsToTime(gridLocation.X - m_elemMoveInfo.InitialGridLocation.X);
 
+            if (dt == TimeSpan.Zero)
+                return;
+
+            // Modifidy our dt, if necessary.
+
+
+
+            // Ensure minimum size
+            TimeSpan shortest = m_elemMoveInfo.OriginalElements.Values.Min(x => x.Duration);
+
+            // Check boundary conditions
+            switch (m_mouseResizeZone)
+            {
+                case ResizeZone.Front:
+                    // Clip earliest element StartTime at zero
+                    TimeSpan earliest = m_elemMoveInfo.OriginalElements.Values.Min(x => x.StartTime);
+                    if ((earliest + dt) < TimeSpan.Zero)
+                        dt = -earliest;
+
+                    // Ensure the shortest meets minimum width (in px)
+                    if (timeToPixels(shortest - dt) < MinElemWidthPx)
+                        dt = shortest - pixelsToTime(MinElemWidthPx);
+                    break;
+
+                case ResizeZone.Back:
+                    // Clip latest element EndTime at TotalTime
+                    TimeSpan latest = m_elemMoveInfo.OriginalElements.Values.Max(x => x.EndTime);
+                    if ((latest + dt) > TimeInfo.TotalTime)
+                        dt = TimeInfo.TotalTime - latest;
+
+                    // Ensure the shortest meets minimum width (in px)
+                    if (timeToPixels(shortest + dt) < MinElemWidthPx)
+                        dt = pixelsToTime(MinElemWidthPx) - shortest;
+                    break;
+            }
+
+
+
+            // Apply dt to all selected elements.
             foreach (var elem in SelectedElements)
             {
                 // Get this elemenent's original times (before resize started)
@@ -598,30 +645,14 @@ namespace CommonElements.Timeline
 
                 switch (m_mouseResizeZone)
                 {
-                    //TODO: Urgh, getting tired.
                     case ResizeZone.Front:
-                        // Bounds checking
-                        if (timeToPixels(orig.Duration - dt) < MinElemWidthPx)  // Ensure minimum size
-                            dt = orig.Duration - pixelsToTime(MinElemWidthPx);
-                        if ((orig.StartTime + dt) < TimeSpan.Zero)              // If would be StartTime < 0
-                            dt = -orig.StartTime;                               // Make StartTime = 0
-
                         elem.StartTime = orig.StartTime + dt;
-                        elem.Duration = orig.Duration - dt;
+                        elem.EndTime = orig.EndTime;
                         break;
 
                     case ResizeZone.Back:
-                        // Bounds checking
-                        if (timeToPixels(orig.Duration + dt) < MinElemWidthPx)  // Ensure minimum size
-                            dt = pixelsToTime(MinElemWidthPx) - orig.Duration;
-                        if ((orig.EndTime + dt) > TimeInfo.TotalTime)   // End time > Total Time
-                            dt = TimeInfo.TotalTime - orig.EndTime;
-
-                        elem.Duration = orig.Duration + dt;
+                        elem.EndTime = orig.EndTime + dt;
                         break;
-
-                    default:
-                        throw new Exception("Unknown ResizeZone.");
                 }
             }
 
@@ -659,10 +690,16 @@ namespace CommonElements.Timeline
 
         void m_autoScrollTimer_Tick(object sender, EventArgs e)
         {
-            AutoScrollPosition = new Point(
-                -AutoScrollPosition.X + (m_mouseOutside.X / AutoScrollPxScaleFactor),
-                -AutoScrollPosition.Y + (m_mouseOutside.Y / AutoScrollPxScaleFactor)
-                );
+            int x = -AutoScrollPosition.X + (m_mouseOutside.X / AutoScrollPxScaleFactor);
+            x = (x < 0) ? 0 : x;
+            x = (x > AutoScrollMinSize.Width) ? AutoScrollMinSize.Width : x;
+
+
+            int y = -AutoScrollPosition.Y + (m_mouseOutside.Y / AutoScrollPxScaleFactor);
+            y = (y < 0) ? 0 : y;
+            y = (y > AutoScrollMinSize.Height) ? AutoScrollMinSize.Height : y;
+
+            AutoScrollPosition = new Point(x, y);
 
             HandleHorizontalScroll();
             HandleVerticalScroll();

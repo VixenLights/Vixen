@@ -563,7 +563,7 @@ namespace CommonElements.Timeline
 			return null;
 		}
 
-		public TimeSpan GetEarliestTimeForElements(IEnumerable<Element> elements)
+		public TimeSpan EarliestStartTime(IEnumerable<Element> elements)
 		{
 			TimeSpan result = TimeSpan.MaxValue;
 			foreach (Element e in elements) {
@@ -574,7 +574,7 @@ namespace CommonElements.Timeline
 			return result;
 		}
 
-		public TimeSpan GetLatestTimeForElements(IEnumerable<Element> elements)
+		public TimeSpan LatestEndTime(IEnumerable<Element> elements)
 		{
 			TimeSpan result = TimeSpan.MinValue;
 			foreach (Element e in elements) {
@@ -588,12 +588,12 @@ namespace CommonElements.Timeline
 		public void AlignSelectedElementsLeft()
 		{
 			// find the earliest time of all elements
-			TimeSpan earliest = GetEarliestTimeForElements(SelectedElements);
+			TimeSpan earliest = EarliestStartTime(SelectedElements);
 
 			// Find the earliest time of each row
 			var rowsToStartTimes = new Dictionary<Row,TimeSpan>();
 			foreach (Row row in Rows) {
-				TimeSpan time = GetEarliestTimeForElements(row.SelectedElements);
+				TimeSpan time = EarliestStartTime(row.SelectedElements);
 
 				if (time != TimeSpan.MaxValue) {
 					rowsToStartTimes.Add(row, time);

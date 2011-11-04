@@ -368,7 +368,9 @@ namespace CommonElements.Timeline
 			// get the time of the first tick that is: visible, on a major tick interval, and a multiple of the number of interval ticks
 			TimeSpan firstMajor = TimeSpan.FromTicks(VisibleTimeStart.Ticks - (VisibleTimeStart.Ticks % drawnInterval.Ticks) + drawnInterval.Ticks);
 
-			for (TimeSpan curTime = firstMajor; curTime <= firstMajor + VisibleTimeSpan; curTime += drawnInterval)
+			for (TimeSpan curTime = firstMajor;             // start at the first major tick
+                (curTime <= firstMajor + VisibleTimeSpan);  // current time is in the visible region
+                curTime += drawnInterval)                   // increment by the drawnInterval
 			{
 				string timeStr = labelString(curTime);
 
