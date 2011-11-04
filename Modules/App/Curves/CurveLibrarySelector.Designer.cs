@@ -103,6 +103,7 @@
 			this.Controls.Add(this.listViewCurves);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);
+			this.DoubleBuffered = true;
 			this.Name = "CurveLibrarySelector";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Curve Library";

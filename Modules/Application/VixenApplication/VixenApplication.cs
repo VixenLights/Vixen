@@ -19,21 +19,21 @@ namespace VixenApplication
 		public VixenApplication()
 		{
 			InitializeComponent();
-
 			AppCommands = new AppCommand(this);
-
-			Vixen.Sys.VixenSystem.Start(this, true);
-
-			initializeEditorTypes();
-
-			openFileDialog.InitialDirectory = Vixen.Sys.Sequence.DefaultDirectory;
+			Execution.ExecutionStateChanged += executionStateChangedHandler;
+			VixenSystem.Start(this, true);
 		}
 
 		private void VixenApp_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			Vixen.Sys.VixenSystem.Stop();
+			VixenSystem.Stop();
 		}
 
+		private void VixenApplication_Load(object sender, EventArgs e)
+		{
+			initializeEditorTypes();
+			openFileDialog.InitialDirectory = Vixen.Sys.Sequence.DefaultDirectory;
+		}
 
 		#region IApplication implemetation
 
@@ -187,11 +187,59 @@ namespace VixenApplication
 			}
 		}
 
-		private void button1_Click_1(object sender, EventArgs e)
+		private void startToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			CommonElements.ColorManagement.ColorPicker.ColorPicker picker = new CommonElements.ColorManagement.ColorPicker.ColorPicker();
-			picker.LockValue_V = true;
-			picker.ShowDialog();
+			Execution.OpenExecution();
+		}
+
+		private void stopToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Execution.CloseExecution();
+		}
+
+		private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			this.Close();
+		}
+
+
+		private delegate void updateExecutionStateDelegate(Execution.ExecutionState state);
+		private void executionStateChangedHandler(Execution.ExecutionState state)
+		{
+			if (InvokeRequired)
+				BeginInvoke(new updateExecutionStateDelegate(updateExecutionState), new object[] { state });
+			else
+				updateExecutionState(state);
+		}
+
+		private void updateExecutionState(Execution.ExecutionState state)
+		{
+			switch (state) {
+				case Execution.ExecutionState.Started:
+					toolStripStatusLabelExecutionState.Text = "Execution: Started";
+					toolStripStatusLabelExecutionLight.BackColor = Color.ForestGreen;
+					break;
+
+				case Execution.ExecutionState.Starting:
+					toolStripStatusLabelExecutionState.Text = "Execution: Starting";
+					toolStripStatusLabelExecutionLight.BackColor = Color.DodgerBlue;
+					break;
+
+				case Execution.ExecutionState.Stopped:
+					toolStripStatusLabelExecutionState.Text = "Execution: Stopped";
+					toolStripStatusLabelExecutionLight.BackColor = Color.Firebrick;
+					break;
+
+				case Execution.ExecutionState.Stopping:
+					toolStripStatusLabelExecutionState.Text = "Execution: Stopping";
+					toolStripStatusLabelExecutionLight.BackColor = Color.Gold;
+					break;
+			}
 		}
 	}
 }

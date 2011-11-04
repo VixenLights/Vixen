@@ -27,8 +27,9 @@ namespace Vixen.Sys {
 		}
 		static public event Action<ExecutionStateValues> ValuesChanged;
 
-		private enum ExecutionState { Starting, Started, Stopping, Stopped };
+		public enum ExecutionState { Starting, Started, Stopping, Stopped };
 		static private volatile ExecutionState _state = ExecutionState.Stopped;
+		static public event Action<ExecutionState> ExecutionStateChanged;
 
 		/// <summary>
 		/// Allows data to be executed.
@@ -91,6 +92,8 @@ namespace Vixen.Sys {
 				} finally {
 					_lock.ExitWriteLock();
 				}
+				if (ExecutionStateChanged != null)
+					ExecutionStateChanged(value);
 			}
 		}
 

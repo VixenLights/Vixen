@@ -89,7 +89,7 @@ namespace Vixen.Sys {
 
 		private void _CreateChannelEnumerators(IEnumerable<Channel> channels) {
 			lock(_channels) {
-				foreach(Channel channel in channels) {
+				foreach(Channel channel in channels.ToArray()) {
 					if(!_channels.ContainsKey(channel) || _channels[channel] == null) {
 						_channels[channel] = new SystemChannelEnumerator(channel, Vixen.Sys.Execution.SystemTime);
 					}
