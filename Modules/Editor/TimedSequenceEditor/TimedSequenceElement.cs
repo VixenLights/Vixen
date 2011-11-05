@@ -23,7 +23,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Duration = effectNode.TimeSpan;
 			EffectNode = effectNode;
 			BorderColor = Color.Black;
-			BackColor = Color.White;
+			BackColor = Color.Transparent;
+			TextColor = Color.FromArgb(220, 220, 220);
 		}
 
 		// copy ctor
@@ -37,6 +38,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public EffectNode EffectNode { get; set; }
 
+		public Color TextColor { get; set; }
 
 		private Bitmap RenderedInset { get; set; }
 
@@ -51,7 +53,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// a big fat TODO: it's slow as shit, as soon as it gets bigger than a few pixels. We need to be able to:
 			// (a) turn it off and just render text,
 			// (b) do the visual rendering of effects in a separate thread so it can happen slowly and get updated later on.
-			if (EffectNode.Effect.IsDirty || (RenderedInset != null && RenderedInset.Width != inset.Width && RenderedInset.Height != inset.Height)) {
+			if (EffectNode.Effect.IsDirty || (RenderedInset != null && (RenderedInset.Width != inset.Width || RenderedInset.Height != inset.Height))) {
 
 				List<ChannelNode> renderNodes = RGBModule.GetVisuallyRenderableChildNodes(EffectNode.Effect.TargetNodes);
 				ChannelData effectData = EffectNode.RenderEffectData();
@@ -114,7 +116,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				// TODO: be able to turn this off somehow, maybe editor options or something?
 				// add text describing the effect
 				using (Font f = new Font("Arial", 7))
-				using (Brush b = new SolidBrush(Color.Gray)) {
+				using (Brush b = new SolidBrush(TextColor)) {
 					g.DrawString(EffectNode.Effect.EffectName, f, b, new PointF(5, 3));
 					g.DrawString("Start: " + EffectNode.StartTime.ToString("g"), f, b, new PointF(60, 3));
 					g.DrawString("Length: " + EffectNode.TimeSpan.ToString("g"), f, b, new PointF(60, 16));
