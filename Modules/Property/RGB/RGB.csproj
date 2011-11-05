@@ -52,7 +52,6 @@
     <Compile Include="RGBSetup.Designer.cs">
       <DependentUpon>RGBSetup.cs</DependentUpon>
     </Compile>
-    <Compile Include="RGBStaticData.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

@@ -10,6 +10,7 @@ namespace CommonElements.Timeline
 		private TimeSpan m_startTime;
 		private TimeSpan m_duration;
 		private Color m_backColor = Color.White;
+		private Color m_borderColor = Color.Black;
 		private object m_tag = null;
 		private bool m_selected = false;
 
@@ -111,6 +112,12 @@ namespace CommonElements.Timeline
             get { return m_backColor; }
 			set { m_backColor = value; OnContentChanged(); }
         }
+
+		public Color BorderColor
+		{
+            get { return m_borderColor; }
+			set { m_borderColor = value; OnContentChanged(); }
+		}
 
         public object Tag
         {
@@ -232,7 +239,7 @@ namespace CommonElements.Timeline
 				);
 			
 			// Draw it!
-			Pen border = new Pen(Color.Black);
+			Pen border = new Pen(BorderColor);
 			border.Width = b_wd;
 			//border.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
 			//graphics.DrawRectangle(border, rect);

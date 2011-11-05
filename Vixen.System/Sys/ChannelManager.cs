@@ -9,7 +9,17 @@ namespace Vixen.Sys {
 	public class ChannelManager : IEnumerable<Channel> {
 		private Dictionary<Channel, SystemChannelEnumerator> _channels;
 
+		// a mapping of channel  GUIDs to channel instances. Used for quick reverse mapping at runtime.
+		private Dictionary<Guid, Channel> _instances;
+
+		// a mapping of channels back to their containing channel nodes. Used in a few special cases, particularly for runtime, so we can
+		// quickly and easily find the node that a particular channel references (eg. if we're previewing the rendered data on a virtual display,
+		// or anything else where we need to actually 'reverse' the rendering process).
+		private Dictionary<Channel, ChannelNode> _channelToChannelNode;
+
 		public ChannelManager() {
+			_instances = new Dictionary<Guid,Channel>();
+			_channelToChannelNode = new Dictionary<Channel, ChannelNode>();
 			_channels = new Dictionary<Channel, SystemChannelEnumerator>();
 		}
 
@@ -28,6 +38,10 @@ namespace Vixen.Sys {
 		public void AddChannel(Channel channel) {
 			// Create an enumerator.
 			_CreateChannelEnumerators(channel);
+			if (_instances.ContainsKey(channel.Id))
+				VixenSystem.Logging.Error("ChannelManager: Adding a channel, but it's already in the instance map!");
+
+			_instances[channel.Id] = channel;
 		}
 
 		public void AddChannels(IEnumerable<Channel> channels) {
@@ -47,6 +61,7 @@ namespace Vixen.Sys {
 					_channels.Remove(channel);
 				}
 			}
+			_instances.Remove(channel.Id);
 		}
 
 		public void OpenChannels() {
@@ -56,6 +71,37 @@ namespace Vixen.Sys {
 		public void CloseChannels() {
 			_ResetChannelEnumerators();
 		}
+
+		public Channel GetChannel(Guid id) {
+			if (_instances.ContainsKey(id)) {
+				return _instances[id];
+			} else {
+				return null;
+			}
+		}
+
+		public bool SetChannelNodeForChannel(Channel channel, ChannelNode node)
+		{
+			if (channel == null)
+				return false;
+
+			bool rv = false;
+
+			if (_channelToChannelNode.ContainsKey(channel))
+				rv = true;
+
+			_channelToChannelNode[channel] = node;
+			return rv;
+		}
+
+		public ChannelNode GetChannelNodeForChannel(Channel channel)
+		{
+			if (_channelToChannelNode.ContainsKey(channel))
+				return _channelToChannelNode[channel];
+
+			return null;
+		}
+
 
 		/// <summary>
 		/// 

@@ -120,6 +120,11 @@
       <Name>Audio</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Property\RGB\RGB.csproj">
+      <Project>{3D1BD0E2-B947-4235-A2A7-30AA4F13CA86}</Project>
+      <Name>RGB</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Sequence\Timed\Timed.csproj">
       <Project>{45E1228A-F714-41D5-BB9B-A776F2B23143}</Project>
       <Name>Timed</Name>

@@ -25,10 +25,6 @@ namespace VixenModules.Property.RGB
 			get { return typeof(RGBData); }
 		}
 
-		public override Type ModuleStaticDataClass {
-			get { return typeof(RGBStaticData); }
-		}
-
 		override public string Author {
 			get { return "Vixen Team"; }
 		}
@@ -41,8 +37,6 @@ namespace VixenModules.Property.RGB
 			get { return "0.1"; }
 		}
 
-		// TODO: how can I do this nicely? I need to be able to get the type ID in a static method, but can't make TypeId static.
-		// So I've had to do the same thing, but in a static property? booooo!
 		public static Guid ModuleID {
 			get { return _id; }
 		}

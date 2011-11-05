@@ -67,19 +67,19 @@ namespace VixenModules.Property.RGB
 
 				// populate the red channel(s) with a setlevel of the red value
 				ChannelNode redNode = VixenSystem.Nodes.GetChannelNode(_data.RedChannelNode);
-				if (redNode != null) {
+				if (redNode != null && redNode.Channel != null) {
 					result.AddCommandForChannel(redNode.Channel.Id, new Lighting.Monochrome.SetLevel(R));
 				}
 				
 				// populate the green channel(s) with a setlevel of the green value
 				ChannelNode greenNode = VixenSystem.Nodes.GetChannelNode(_data.GreenChannelNode);
-				if (greenNode != null) {
+				if (greenNode != null && greenNode.Channel != null) {
 					result.AddCommandForChannel(greenNode.Channel.Id, new Lighting.Monochrome.SetLevel(G));
 				}
 				
 				// populate the blue channel(s) with a setlevel of the blue value
 				ChannelNode blueNode = VixenSystem.Nodes.GetChannelNode(_data.BlueChannelNode);
-				if (blueNode != null) {
+				if (blueNode != null && blueNode.Channel != null) {
 					result.AddCommandForChannel(blueNode.Channel.Id, new Lighting.Monochrome.SetLevel(B));
 				}
 			}
@@ -98,5 +98,116 @@ namespace VixenModules.Property.RGB
 
 			return instance.RenderColorToCommands(color, level);
 		}
+
+
+		#region Reverse-mapping of commands to a channelNode and color
+
+		public static Dictionary<ChannelNode, Color> MapChannelCommandsToColors(Dictionary<Channel, Command> channelsCommands)
+		{
+			Dictionary<ChannelNode, Color> result = new Dictionary<ChannelNode,Color>();
+
+			// go through all the channel/command mappings in the given data, and do our best to map them back to something sane.
+			foreach (KeyValuePair<Channel, Command> kvp in channelsCommands) {
+				Channel channel = kvp.Key;
+				Command command = kvp.Value;
+				bool success = false;			// if we've successfully found something for this channel/command.
+
+				ChannelNode node = VixenSystem.Channels.GetChannelNodeForChannel(channel);
+				if (node == null) {
+					VixenSystem.Logging.Warning("RGB Mapping: can't find the reverse ChannelNode mapping for channel: " + channel.Name);
+					continue;
+				}
+
+				// if the node for this channel has the RGB property, then it must be configured as a 'smart' RGB channel.
+				// Double check that it is, and if so, find any Polychrome commands and figure out colors for the result.
+				if (node.Properties.Contains(RGBDescriptor.ModuleID)) {
+					if (((node.Properties.Get(RGBDescriptor.ModuleID) as RGBModule).ModuleData as RGBData).RGBType != RGBModelType.eSingleRGBChannel) {
+						VixenSystem.Logging.Warning("RGB Mapping: got a channel that has an RGB property, but not with the SingleRGB type, that has a command.");
+					}
+
+					if (command is Vixen.Commands.Lighting.Polychrome.SetColor) {
+						if (result.ContainsKey(node)) {
+							VixenSystem.Logging.Warning("RGB Mapping: got an RGB channel with a Polychrome.Setcolor, but there's already a result for this channelNode.");
+						}
+						result[node] = (command as Vixen.Commands.Lighting.Polychrome.SetColor).Color;
+						success = true;
+					} else {
+						VixenSystem.Logging.Warning("RGB Mapping: got a channel that has an RGB property, but was given a command that wasn't Polychrome.Setcolor.");
+					}
+				}
+				// the node doesn't have an RGB property, so maybe it's a individual RGB channel for a parent node. Check all this node's parents,
+				// and see if any have RGB properties; if so, map this channel's color to the respective component on the parent.
+				else {
+					foreach (ChannelNode parent in node.Parents) {
+						if (parent.Properties.Contains(RGBDescriptor.ModuleID)) {
+							RGBData parentData = (parent.Properties.Get(RGBDescriptor.ModuleID) as RGBModule).ModuleData as RGBData;
+							if (parentData.RGBType != RGBModelType.eIndividualRGBChannels) {
+								VixenSystem.Logging.Warning("RGB Mapping: got a channel that has a parent with the RGB property that isn't IndividualChannels.");
+							}
+
+							if (command is Vixen.Commands.Lighting.Monochrome.SetLevel) {
+								bool setRed, setGreen, setBlue;
+								byte colorLevel = (byte)(((command as Vixen.Commands.Lighting.Monochrome.SetLevel).Level / 100.0) * Byte.MaxValue);
+
+								setRed = (parentData.RedChannelNode == node.Id);
+								setGreen = (parentData.GreenChannelNode == node.Id);
+								setBlue = (parentData.BlueChannelNode == node.Id);
+
+								if (setRed || setGreen || setBlue) {
+									Color color;
+									if (result.ContainsKey(parent))
+										color = result[parent];
+									else
+										color = Color.FromArgb(0, 0, 0);
+
+									if (setRed)   color = Color.FromArgb(colorLevel, color.G, color.B);
+									if (setGreen) color = Color.FromArgb(color.R, colorLevel, color.B);
+									if (setBlue)  color = Color.FromArgb(color.R, color.G, colorLevel);
+
+									result[parent] = color;
+									success = true;
+								}
+							} else {
+								VixenSystem.Logging.Warning("RGB Mapping: got a channel with a parent that has an RGB individual " +
+									"components property, but was given a command that wasn't Monochrome.Setcolor.");
+							}
+						}
+					}
+				}
+
+				// if we haven't found a color for either of the above cases, just assume it's a monochrome, and map it back to
+				// to a white color if it's a setlevel command (and if we don't already have a result for it!).
+				if (!success) {
+					if (command is Vixen.Commands.Lighting.Monochrome.SetLevel) {
+						if (result.ContainsKey(node))
+							continue;
+
+						byte colorLevel = (byte)(((command as Vixen.Commands.Lighting.Monochrome.SetLevel).Level / 100.0) * Byte.MaxValue);
+						result[node] = Color.FromArgb(colorLevel, colorLevel, colorLevel);
+					}
+				}
+			}
+
+			return result;
+		}
+
+		public static List<ChannelNode> GetVisuallyRenderableChildNodes(ChannelNode[] targetNodes)
+		{
+			List<ChannelNode> result = new List<ChannelNode>();
+
+			foreach (ChannelNode targetNode in targetNodes) {
+				if (targetNode.Properties.Contains(RGBDescriptor.ModuleID)) {
+					result.Add(targetNode);
+				} else if (targetNode.Children.Count() > 0) {
+					result.AddRange(GetVisuallyRenderableChildNodes(targetNode.Children.ToArray()));
+				} else {
+					result.Add(targetNode);
+				}
+			}
+
+			return result;
+		}
+
+		#endregion
 	}
 }

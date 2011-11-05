@@ -127,6 +127,9 @@ namespace VixenModules.Effect.Pulse
 			// we have iterated down to leaf nodes in RenderNode() above. May as well do
 			// it this way, though, in case something changes in future.
 			foreach (Channel channel in node.GetChannelEnumerator()) {
+				if (channel == null)
+					continue;
+
 				List<CommandNode> data = new List<CommandNode>();
 				double currentLevel = double.MaxValue;
 				TimeSpan currentTime = TimeSpan.Zero;

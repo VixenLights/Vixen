@@ -52,7 +52,17 @@ namespace Vixen.Sys {
 		}
 		#endregion
 
-		public Channel Channel { get; set; }
+		private Channel _channel;
+		public Channel Channel
+		{
+			get { return _channel; }
+			set
+			{
+				_channel = value;
+				if (value != null)
+					VixenSystem.Channels.SetChannelNodeForChannel(value, this);
+			}
+		}
 
 		public Guid Id { get; private set; }
 
