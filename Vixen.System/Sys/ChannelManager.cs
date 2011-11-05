@@ -7,9 +7,10 @@ using Vixen.Execution;
 
 namespace Vixen.Sys {
 	public class ChannelManager : IEnumerable<Channel> {
-		private Dictionary<Channel, SystemChannelEnumerator> _channels = new Dictionary<Channel, SystemChannelEnumerator>();
+		private Dictionary<Channel, SystemChannelEnumerator> _channels;
 
 		public ChannelManager() {
+			_channels = new Dictionary<Channel, SystemChannelEnumerator>();
 		}
 
 		public ChannelManager(IEnumerable<Channel> channels)

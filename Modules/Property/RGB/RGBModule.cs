@@ -66,19 +66,19 @@ namespace VixenModules.Property.RGB
 				Level B = finalColor.ToRGB().B * 100.0;
 
 				// populate the red channel(s) with a setlevel of the red value
-				ChannelNode redNode = ChannelNode.GetChannelNode(_data.RedChannelNode);
+				ChannelNode redNode = VixenSystem.Nodes.GetChannelNode(_data.RedChannelNode);
 				if (redNode != null) {
 					result.AddCommandForChannel(redNode.Channel.Id, new Lighting.Monochrome.SetLevel(R));
 				}
 				
 				// populate the green channel(s) with a setlevel of the green value
-				ChannelNode greenNode = ChannelNode.GetChannelNode(_data.GreenChannelNode);
+				ChannelNode greenNode = VixenSystem.Nodes.GetChannelNode(_data.GreenChannelNode);
 				if (greenNode != null) {
 					result.AddCommandForChannel(greenNode.Channel.Id, new Lighting.Monochrome.SetLevel(G));
 				}
 				
 				// populate the blue channel(s) with a setlevel of the blue value
-				ChannelNode blueNode = ChannelNode.GetChannelNode(_data.BlueChannelNode);
+				ChannelNode blueNode = VixenSystem.Nodes.GetChannelNode(_data.BlueChannelNode);
 				if (blueNode != null) {
 					result.AddCommandForChannel(blueNode.Channel.Id, new Lighting.Monochrome.SetLevel(B));
 				}

@@ -15,17 +15,16 @@ namespace Vixen.Sys {
 		// Making this static so there doesn't have to be potentially thousands of
 		// subscriptions from the node manager.
 		static public event EventHandler Changed;
-		static private Dictionary<Guid, ChannelNode> _instances = new Dictionary<Guid, ChannelNode>();
 
 		private const int VERSION = 1;
 
 		#region Constructors
 		public ChannelNode(Guid id, string name, Channel channel, IEnumerable<ChannelNode> content)
 			: base(name, content) {
-			if (_instances.ContainsKey(id)) {
+			if (VixenSystem.Nodes.ChannelNodeExists(id)) {
 				throw new InvalidOperationException("Trying to create a ChannelNode that already exists.");
 			} else {
-				_instances[id] = this;
+				VixenSystem.Nodes.SetChannelNode(id, this);
 			}
 			Id = id;
 			Channel = channel;
@@ -211,13 +210,6 @@ namespace Vixen.Sys {
 			}
 		}
 
-		static public ChannelNode GetChannelNode(Guid id) {
-			if (_instances.ContainsKey(id)) {
-				return _instances[id];
-			} else {
-				return null;
-			}
-		}
 		#endregion
 	}
 }

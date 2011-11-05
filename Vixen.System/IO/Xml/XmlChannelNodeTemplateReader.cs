@@ -29,7 +29,7 @@ namespace Vixen.IO.Xml {
 			// (we'll just assume that the XML data for this one is identical to the earlier XML node that was written
 			// out. To be a bit more proper, we should probably change the WriteXML() to not fully write out repeat
 			// ChannelNodes, and instead do some sort of soft reference to the first one (ie. GUID only). )
-			ChannelNode existingNode = ChannelNode.GetChannelNode(id);
+			ChannelNode existingNode = VixenSystem.Nodes.GetChannelNode(id);
 			if(existingNode != null) {
 				return existingNode;
 			}

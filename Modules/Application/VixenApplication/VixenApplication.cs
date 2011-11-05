@@ -15,9 +15,11 @@ namespace VixenApplication
 	public partial class VixenApplication : Form, IApplication
 	{
 		private Guid _guid = new Guid("7b903272-73d0-416c-94b1-6932758b1963");
+		private bool stopping;
 
 		public VixenApplication()
 		{
+			stopping = false;
 			InitializeComponent();
 			AppCommands = new AppCommand(this);
 			Execution.ExecutionStateChanged += executionStateChangedHandler;
@@ -26,6 +28,7 @@ namespace VixenApplication
 
 		private void VixenApp_FormClosing(object sender, FormClosingEventArgs e)
 		{
+			stopping = true;
 			VixenSystem.Stop();
 		}
 
@@ -207,19 +210,22 @@ namespace VixenApplication
 			this.Close();
 		}
 
-
-		private delegate void updateExecutionStateDelegate(Execution.ExecutionState state);
 		private void executionStateChangedHandler(Execution.ExecutionState state)
 		{
+			if (stopping)
+				return;
+
 			if (InvokeRequired)
-				BeginInvoke(new updateExecutionStateDelegate(updateExecutionState), new object[] { state });
+				Invoke(new MethodInvoker(updateExecutionState));
 			else
-				updateExecutionState(state);
+				updateExecutionState();
 		}
 
-		private void updateExecutionState(Execution.ExecutionState state)
+		// we can't get passed in a state to display, since it may be called out-of-order if we're invoking across threads, etc.
+		// so instead, just take this as a notification to update with the current state of the execution engine.
+		private void updateExecutionState()
 		{
-			switch (state) {
+			switch (Vixen.Sys.Execution.State) {
 				case Execution.ExecutionState.Started:
 					toolStripStatusLabelExecutionState.Text = "Execution: Started";
 					toolStripStatusLabelExecutionLight.BackColor = Color.ForestGreen;

@@ -88,7 +88,7 @@ namespace TestClient
 
 			// Nodes
 			_LoadNodes();
-			VixenSystem.Nodes.NodesChanged += (sender, e) => _LoadNodes();
+			NodeManager.NodesChanged += (sender, e) => _LoadNodes();
 
 			// Node templates
 			_LoadNodeTemplates();

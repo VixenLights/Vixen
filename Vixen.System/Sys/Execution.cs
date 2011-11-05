@@ -22,8 +22,8 @@ namespace Vixen.Sys {
 		static public event EventHandler<ProgramContextEventArgs> ProgramContextCreated;
 		static public event EventHandler<ProgramContextEventArgs> ProgramContextReleased;
 		static public event EventHandler NodesChanged {
-			add { VixenSystem.Nodes.NodesChanged += value; }
-			remove { VixenSystem.Nodes.NodesChanged -= value; }
+			add { NodeManager.NodesChanged += value; }
+			remove { NodeManager.NodesChanged -= value; }
 		}
 		static public event Action<ExecutionStateValues> ValuesChanged;
 
@@ -36,6 +36,7 @@ namespace Vixen.Sys {
 		/// </summary>
 		static public bool OpenExecution() {
 			if(_State == ExecutionState.Stopped) {
+				VixenSystem.Logging.Info("Vixen Execution Engine starting...");
 				_State = ExecutionState.Starting;
 
 				// Open the channels.
@@ -46,6 +47,7 @@ namespace Vixen.Sys {
 				_channelReadThread = new Thread(_ChannelReaderThread);
 				_channelReadThread.Start();
 				_State = ExecutionState.Started;
+				VixenSystem.Logging.Info("Vixen Execution Engine started.");
 				return true;
 			}
 			return false;
@@ -53,6 +55,7 @@ namespace Vixen.Sys {
 
 		static public bool CloseExecution() {
 			if(_State == ExecutionState.Started) {
+				VixenSystem.Logging.Info("Vixen Execution Engine stopping...");
 				// Release all contexts.
 				// Releasing a context removes it from the collection, so
 				// enumerate a copy of the collection.
@@ -69,6 +72,7 @@ namespace Vixen.Sys {
 				VixenSystem.Controllers.CloseControllers();
 				// Stop internal timing.
 				SystemTime.Stop();
+				VixenSystem.Logging.Info("Vixen Execution Engine stopped.");
 				return true;
 			}
 			return false;
@@ -96,6 +100,12 @@ namespace Vixen.Sys {
 					ExecutionStateChanged(value);
 			}
 		}
+
+		static public ExecutionState State
+		{
+			get { return _State; }
+		}
+
 
 		static public TimeSpan CurrentExecutionTime { get { return (SystemTime.IsRunning) ? SystemTime.Position : TimeSpan.Zero; } }
 

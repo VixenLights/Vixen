@@ -50,10 +50,6 @@ namespace Vixen.Sys {
 					// ugly statement for now.
 					Helper.EnsureDirectory(Path.Combine(Paths.BinaryRootPath, "Common"));
 
-					Channels = new ChannelManager();
-					Nodes = new NodeManager();
-					Controllers = new ControllerManager();
-
 					// Load all module descriptors.
 					Modules.LoadAllModules();
 
@@ -112,6 +108,10 @@ namespace Vixen.Sys {
 
 		static public void LoadSystemConfig()
 		{
+			Channels = new ChannelManager();
+			Nodes = new NodeManager();
+			Controllers = new ControllerManager();
+
 			// Load system data in order of dependency.
 			// The system data generally resides in the data branch, but it
 			// may not be in the case of an alternate context.
@@ -130,6 +130,9 @@ namespace Vixen.Sys {
 		{
 			bool wasRunning = Execution.CloseExecution();
 
+			// purge all existing channels, nodes, and controllers (to try and clean up a bit).
+			// might not actually matter, since we're going to make new Managers for them all
+			// in a tick, but better safe than sorry.
 			foreach (Channel c in Channels.ToArray())
 				Channels.RemoveChannel(c);
 			foreach (ChannelNode cn in Nodes.ToArray())
