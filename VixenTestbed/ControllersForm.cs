@@ -95,7 +95,11 @@ namespace VixenTestbed {
 
 		private void _UpdateLinkCombo() {
 			OutputController controller = _SelectedController;
-			_LinkedTo = (controller.Prior == null) ? Guid.Empty : controller.Prior.Id;
+			if(controller != null) {
+				_LinkedTo = (controller.Prior == null) ? Guid.Empty : controller.Prior.Id;
+			} else {
+				_LinkedTo = Guid.Empty;
+			}
 		}
 
 		private void _ResetLinkedToCombo() {
@@ -103,6 +107,25 @@ namespace VixenTestbed {
 			comboBoxLinkedTo.DisplayMember = "Name";
 			comboBoxLinkedTo.ValueMember = "Id";
 			comboBoxLinkedTo.DataSource = _controllers;
+		}
+
+		private void _DisplayControllerDetails(OutputController controller) {
+			if(controller != null) {
+				_ControllerName = controller.Name;
+				_OutputCount = controller.OutputCount;
+				_OutputModule = controller.OutputModuleId;
+				buttonControllerSetup.Enabled = controller.HasSetup;
+				buttonUpdateController.Enabled = true;
+				buttonDeleteController.Enabled = true;
+			} else {
+				_ControllerName = null;
+				_OutputCount = 1;
+				_OutputModule = Guid.Empty;
+				buttonControllerSetup.Enabled = false;
+				buttonUpdateController.Enabled = false;
+				buttonDeleteController.Enabled = false;
+			}
+			_UpdateLinkCombo();
 		}
 
 		private bool _Validate() {
@@ -165,6 +188,7 @@ namespace VixenTestbed {
 				if(_SelectedController != null) {
 					VixenSystem.Controllers.RemoveController(_SelectedController);
 					_LoadControllers();
+					_DisplayControllerDetails(null);
 				}
 			} catch(Exception ex) {
 				MessageBox.Show(ex.Message);
@@ -172,14 +196,7 @@ namespace VixenTestbed {
 		}
 
 		private void listViewControllers_SelectedIndexChanged(object sender, EventArgs e) {
-			OutputController controller = _SelectedController;
-			if(controller != null) {
-				_ControllerName = controller.Name;
-				_OutputCount = controller.OutputCount;
-				_OutputModule = controller.OutputModuleId;
-				buttonControllerSetup.Enabled = controller.HasSetup;
-				_UpdateLinkCombo();
-			}
+			_DisplayControllerDetails(_SelectedController);
 		}
 
 		private void buttonLinkController_Click(object sender, EventArgs e) {

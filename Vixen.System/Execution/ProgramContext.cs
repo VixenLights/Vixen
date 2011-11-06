@@ -70,6 +70,12 @@ namespace Vixen.Execution {
 			return 0;
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="startTime"></param>
+		/// <param name="endTime"></param>
+		/// <returns>True if execution entered the playing state.</returns>
 		private bool _Play(TimeSpan startTime, TimeSpan endTime) {
 			try {
 				if(!IsPlaying) {

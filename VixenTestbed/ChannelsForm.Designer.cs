@@ -52,6 +52,7 @@
 			// buttonRemoveChannel
 			// 
 			this.buttonRemoveChannel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonRemoveChannel.Enabled = false;
 			this.buttonRemoveChannel.Location = new System.Drawing.Point(329, 60);
 			this.buttonRemoveChannel.Name = "buttonRemoveChannel";
 			this.buttonRemoveChannel.Size = new System.Drawing.Size(109, 23);
@@ -74,9 +75,9 @@
 			// 
 			// tabControl
 			// 
-			this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.tabControl.Controls.Add(this.tabPageChannels);
 			this.tabControl.Controls.Add(this.tabPageNodes);
 			this.tabControl.Location = new System.Drawing.Point(12, 12);
@@ -101,9 +102,9 @@
 			// 
 			// listBoxChannels
 			// 
-			this.listBoxChannels.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.listBoxChannels.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.listBoxChannels.FormattingEnabled = true;
 			this.listBoxChannels.Location = new System.Drawing.Point(6, 6);
 			this.listBoxChannels.Name = "listBoxChannels";
@@ -136,9 +137,9 @@
 			// 
 			// treeViewNodes
 			// 
-			this.treeViewNodes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.treeViewNodes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.treeViewNodes.Location = new System.Drawing.Point(6, 6);
 			this.treeViewNodes.Name = "treeViewNodes";
 			this.treeViewNodes.Size = new System.Drawing.Size(291, 313);

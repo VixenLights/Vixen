@@ -147,12 +147,10 @@ namespace Vixen.Sys {
 				sequence = Sequence.Create(sequenceFilePath);
 			}
 
-			if(sequence == null) {
-				throw new Exception("Could not create the sequence.");
+			if(sequence != null) {
+				// Get any sequence module data.
+				sequence.ModuleDataSet.GetModuleTypeData(sequence as ISequenceModuleInstance);
 			}
-
-			// Get any sequence module data.
-			sequence.ModuleDataSet.GetModuleTypeData(sequence as ISequenceModuleInstance);
 
 			// Get the editor.
 			IEditorUserInterface editor = null;
@@ -161,7 +159,7 @@ namespace Vixen.Sys {
 				editor = manager.Get(sequenceFilePath);
 			}
 
-			if(editor != null) {
+			if(editor != null && sequence != null) {
 				// Get any editor module data.
 				sequence.ModuleDataSet.GetModuleTypeData(editor.OwnerModule);
 

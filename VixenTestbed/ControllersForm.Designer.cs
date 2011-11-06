@@ -49,8 +49,8 @@
 			// 
 			// groupBox2
 			// 
-			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox2.Controls.Add(this.label9);
 			this.groupBox2.Controls.Add(this.label8);
 			this.groupBox2.Controls.Add(this.buttonDeleteController);
@@ -96,6 +96,7 @@
 			// buttonDeleteController
 			// 
 			this.buttonDeleteController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonDeleteController.Enabled = false;
 			this.buttonDeleteController.Location = new System.Drawing.Point(288, 320);
 			this.buttonDeleteController.Name = "buttonDeleteController";
 			this.buttonDeleteController.Size = new System.Drawing.Size(75, 23);
@@ -106,8 +107,8 @@
 			// 
 			// comboBoxOutputModule
 			// 
-			this.comboBoxOutputModule.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.comboBoxOutputModule.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.comboBoxOutputModule.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxOutputModule.FormattingEnabled = true;
 			this.comboBoxOutputModule.Location = new System.Drawing.Point(126, 236);
@@ -176,8 +177,8 @@
 			// 
 			// comboBoxLinkedTo
 			// 
-			this.comboBoxLinkedTo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.comboBoxLinkedTo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.comboBoxLinkedTo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxLinkedTo.FormattingEnabled = true;
 			this.comboBoxLinkedTo.Location = new System.Drawing.Point(126, 290);
@@ -200,6 +201,7 @@
 			// buttonUpdateController
 			// 
 			this.buttonUpdateController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonUpdateController.Enabled = false;
 			this.buttonUpdateController.Location = new System.Drawing.Point(207, 320);
 			this.buttonUpdateController.Name = "buttonUpdateController";
 			this.buttonUpdateController.Size = new System.Drawing.Size(75, 23);
@@ -210,14 +212,15 @@
 			// 
 			// listViewControllers
 			// 
-			this.listViewControllers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.listViewControllers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.listViewControllers.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader4,
             this.columnHeader5,
             this.columnHeader6});
 			this.listViewControllers.FullRowSelect = true;
+			this.listViewControllers.HideSelection = false;
 			this.listViewControllers.Location = new System.Drawing.Point(20, 19);
 			this.listViewControllers.MultiSelect = false;
 			this.listViewControllers.Name = "listViewControllers";
@@ -256,8 +259,8 @@
 			// 
 			// textBoxControllerName
 			// 
-			this.textBoxControllerName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.textBoxControllerName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBoxControllerName.Location = new System.Drawing.Point(126, 184);
 			this.textBoxControllerName.Name = "textBoxControllerName";
 			this.textBoxControllerName.Size = new System.Drawing.Size(326, 20);

@@ -132,6 +132,8 @@ namespace VixenTestbed {
 		private void _AddChannelPatchNode(TreeNode channelNode, ControllerReference controllerReference) {
 			TreeNode patchNode = channelNode.Nodes.Add(controllerReference.ToString(true));
 			patchNode.Tag = controllerReference;
+			channelNode.Expand();
+			channelNode.TreeView.SelectedNode = patchNode;
 		}
 
 		private void _AddChannelPatchNode(Channel channel, ControllerReference controllerReference) {
