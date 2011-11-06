@@ -350,6 +350,7 @@
 			// 
 			// groupBoxOperations
 			// 
+			this.groupBoxOperations.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBoxOperations.Controls.Add(this.buttonDeleteNode);
 			this.groupBoxOperations.Controls.Add(this.buttonBulkRename);
 			this.groupBoxOperations.Controls.Add(this.buttonCreateGroup);
@@ -403,6 +404,7 @@
 			// 
 			// label4
 			// 
+			this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(12, 643);
 			this.label4.Name = "label4";
@@ -412,6 +414,7 @@
 			// 
 			// label5
 			// 
+			this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label5.AutoSize = true;
 			this.label5.Location = new System.Drawing.Point(12, 660);
 			this.label5.Name = "label5";

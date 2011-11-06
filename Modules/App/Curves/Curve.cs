@@ -146,7 +146,7 @@ namespace VixenModules.App.Curves
 			return false;
 		}
 
-		public double GetValue(double x)
+		public virtual double GetValue(double x)
 		{
 			if (x > 100.0) x = 100.0;
 			if (x < 0.0) x = 0.0;
