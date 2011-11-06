@@ -14,6 +14,7 @@ namespace Scheduler {
 		public SchedulerForm(SchedulerData data) {
 			InitializeComponent();
 			_data = data;
+			checkBoxEnableSchedule.Checked = data.IsEnabled;
 		}
 	}
 }

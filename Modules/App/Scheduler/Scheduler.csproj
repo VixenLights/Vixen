@@ -31,6 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Scheduler, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -46,6 +47,12 @@
     <Compile Include="EnumDescriptionAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecurrenceType.cs" />
+    <Compile Include="ScheduleDay.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ScheduleDay.Designer.cs">
+      <DependentUpon>ScheduleDay.cs</DependentUpon>
+    </Compile>
     <Compile Include="ScheduleItem.cs" />
     <Compile Include="SchedulerData.cs" />
     <Compile Include="SchedulerDescriptor.cs" />
@@ -66,6 +73,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ScheduleDay.resx">
+      <DependentUpon>ScheduleDay.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SchedulerForm.resx">
       <DependentUpon>SchedulerForm.cs</DependentUpon>
     </EmbeddedResource>
