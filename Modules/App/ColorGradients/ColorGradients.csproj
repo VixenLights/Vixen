@@ -59,13 +59,6 @@
     <Compile Include="ColorGradientLibrarySelector.Designer.cs">
       <DependentUpon>ColorGradientLibrarySelector.cs</DependentUpon>
     </Compile>
-    <Compile Include="unneeded\GradientCollection.cs" />
-    <Compile Include="unneeded\GradientCollectionSelector.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="unneeded\GradientCollectionSelector.designer.cs">
-      <DependentUpon>GradientCollectionSelector.cs</DependentUpon>
-    </Compile>
     <Compile Include="GradientEdit.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -83,9 +76,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ColorGradientLibrarySelector.resx">
       <DependentUpon>ColorGradientLibrarySelector.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="unneeded\GradientCollectionSelector.resx">
-      <DependentUpon>GradientCollectionSelector.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GradientEditPanel.resx">
       <DependentUpon>GradientEditPanel.cs</DependentUpon>
