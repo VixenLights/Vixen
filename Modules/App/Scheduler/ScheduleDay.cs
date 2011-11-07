@@ -24,9 +24,14 @@ namespace Scheduler {
 		//private Font _agendaViewTimeFont = new Font("Arial", 8);
 		private Pen _timeLinePen = new Pen(Color.FromKnownColor(KnownColor.ControlDark));
 
+		private Color _headerGradientStart = Color.FromArgb(89, 135, 214);
+		private Color _headerGradientEnd = Color.FromArgb(4, 57, 148);
+		private Color _hoverGradientStart = Color.FromArgb(119, 165, 214);
+		private Color _hoverGradientEnd = Color.FromArgb(24, 77, 148);
+
 		private bool _inLeftButtonBounds = false;
 		private bool _inRightButtonBounds = false;
-		private bool _resizing = false;
+		//private bool _resizing = false;
 		private Rectangle _buttonLeftBounds;
 		private Rectangle _buttonRightBounds;
 
@@ -40,6 +45,7 @@ namespace Scheduler {
 			SetStyle(ControlStyles.DoubleBuffer, true);
 		}
 
+		[DefaultValue(typeof(Color), "255, 255, 213")]
 		public override Color BackColor {
 			get { return base.BackColor; }
 			set {
@@ -50,84 +56,135 @@ namespace Scheduler {
 			}
 		}
 
+		[DefaultValue(20)]
 		public int HalfHourHeight {
 			get { return _halfHourHeight; }
 			set {
 				_halfHourHeight = value;
-				_UpdateHeight();
+				_UpdateScroll();
 				Invalidate();
 			}
 		}
 
+		[DefaultValue(30)]
 		public int HeaderHeight {
 			get { return _headerHeight; }
 			set {
 				_headerHeight = value;
-				_UpdateHeight();
-				Update();
+				_UpdateScroll();
+				Invalidate();
 			}
 		}
 
+		[DefaultValue(50)]
 		public int TimeGutter {
 			get { return _timeGutter; }
 			set {
 				_timeGutter = value;
-				Update();
+				Invalidate();
 			}
 		}
 
+		[DefaultValue(typeof(Color), "246, 219, 162")]
 		public Color HourColor {
 			get { return _hourPen.Color; }
 			set {
 				_hourPen.Dispose();
 				_hourPen = new Pen(value);
-				Update();
+				Invalidate();
 			}
 		}
 
+		[DefaultValue(typeof(Color), "255, 239, 199")]
 		public Color HalfHourColor {
 			get { return _halfHourPen.Color; }
 			set {
 				_halfHourPen.Dispose();
 				_halfHourPen = new Pen(value);
-				Update();
+				Invalidate();
 			}
 		}
 
+		[DefaultValue(typeof(Font), "Tahoma, 16pt")]
 		public Font TimeLargeFont {
 			get { return _timeLargeFont; }
 			set {
 				_timeLargeFont.Dispose();
 				_timeLargeFont = value;
-				Update();
+				Invalidate();
 			}
 		}
 
+		[DefaultValue(typeof(Font), "Tahoma, 8pt")]
 		public Font TimeSmallFont {
 			get { return _timeSmallFont; }
 			set {
 				_timeSmallFont.Dispose();
 				_timeSmallFont = value;
-				Update();
+				Invalidate();
 			}
 		}
 
+		[DefaultValue(typeof(Color), "ControlDark")]
 		public Color TimeLineColor {
 			get { return _timeLinePen.Color; }
 			set {
 				_timeLinePen.Dispose();
 				_timeLinePen = new Pen(value);
-				Update();
+				Invalidate();
 			}
 		}
 
+		[DefaultValue(typeof(Font), "Arial, 12pt, style=Bold")]
 		public Font HeaderFont {
 			get { return _dayViewHeaderFont; }
 			set {
 				_dayViewHeaderFont.Dispose();
 				_dayViewHeaderFont = value;
-				Update();
+				Invalidate();
 			}
+		}
+
+		[DefaultValue(typeof(Color), "89, 135, 214")]
+		public Color HeaderGradientStart {
+			get { return _headerGradientStart; }
+			set {
+				_headerGradientStart = value;
+				Invalidate();
+			}
+		}
+
+		[DefaultValue(typeof(Color), "4, 57, 148")]
+		public Color HeaderGradientEnd {
+			get { return _headerGradientEnd; }
+			set {
+				_headerGradientEnd = value;
+				Invalidate();
+			}
+		}
+
+		[DefaultValue(typeof(Color), "119, 165, 214")]
+		public Color HoverGradientStart {
+			get { return _hoverGradientStart; }
+			set {
+				_hoverGradientStart = value;
+				Invalidate();
+			}
+		}
+
+		[DefaultValue(typeof(Color), "24, 77, 148")]
+		public Color HoverGradientEnd {
+			get { return _hoverGradientEnd; }
+			set {
+				_hoverGradientEnd = value;
+				Invalidate();
+			}
+		}
+
+		protected override void OnResize(EventArgs e) {
+			Invalidate();
+			_UpdateScroll();
+			base.OnResize(e);
 		}
 
 		protected override void OnPaint(PaintEventArgs e) {
@@ -136,9 +193,13 @@ namespace Scheduler {
 				_DrawTimes(g);
 			}
 
+			if(g.ClipBounds.Right >= TimeGutter) {
+				_DrawLines(g);
+			}
+
 			if(g.ClipBounds.Top < HeaderHeight) {
 				// Header
-				using(LinearGradientBrush headerGradientBrush = new LinearGradientBrush(new Rectangle(0, 0, Width - TimeGutter, HeaderHeight), Color.FromArgb(89, 135, 214), Color.FromArgb(4, 57, 148), 90)) {
+				using(LinearGradientBrush headerGradientBrush = new LinearGradientBrush(new Rectangle(0, 0, Width - TimeGutter, HeaderHeight), HeaderGradientStart, HeaderGradientEnd, 90)) {
 					g.FillRectangle(headerGradientBrush, TimeGutter, 0, Width - TimeGutter, HeaderHeight);
 				}
 				_DrawHeaderButtons(g, _inLeftButtonBounds, _inRightButtonBounds);
@@ -204,8 +265,8 @@ namespace Scheduler {
                 new Point(x+12+buttonWidth+buttonSpace, y+9)
             };
 
-			using(LinearGradientBrush flatGradientBrush = new LinearGradientBrush(new Rectangle(x + 1, y + 1, buttonWidth - 1, HeaderHeight), Color.FromArgb(89, 135, 214), Color.FromArgb(4, 57, 148), 90),
-				                      hoverGradientBrush = new LinearGradientBrush(new Rectangle(x + 1, y + 1, buttonWidth - 1, buttonWidth - 1), Color.FromArgb(119, 165, 214), Color.FromArgb(24, 77, 148), 90)) {
+			using(LinearGradientBrush flatGradientBrush = new LinearGradientBrush(new Rectangle(x + 1, y + 1, buttonWidth - 1, HeaderHeight), HeaderGradientStart, HeaderGradientEnd, 90),
+				                      hoverGradientBrush = new LinearGradientBrush(new Rectangle(x + 1, y + 1, buttonWidth - 1, buttonWidth - 1), HoverGradientStart, HoverGradientEnd, 90)) {
 				g.FillRectangle(hoverLeft ? hoverGradientBrush : flatGradientBrush, x + 1, y + 1, buttonWidth - 1, buttonWidth - 1);
 				g.FillRectangle(hoverRight ? hoverGradientBrush : flatGradientBrush, x + 1 + buttonWidth + buttonSpace, y + 1, buttonWidth - 1, buttonWidth - 1);
 			}
@@ -235,39 +296,18 @@ namespace Scheduler {
 		}
 
 		protected virtual void _DrawTimes(Graphics g) {
-			g.FillRectangle(_backgroundBrush, TimeGutter, HeaderHeight, Width - TimeGutter, Height - HeaderHeight);
 			g.DrawLine(_timeLinePen, 0, HeaderHeight, TimeGutter - 5, HeaderHeight);
 
 			int y;
 
-			// Hour lines
-			//y = HeaderHeight + ((vScrollBar.Value % 2 == 0) ? HalfHourHeight * 2 : HalfHourHeight);
-			y = HeaderHeight;
-			while(y < Height) {
-				g.DrawLine(_hourPen, TimeGutter, y, Width, y);
-				g.DrawLine(_timeLinePen, 5, y, TimeGutter - 5, y);
-				y += HalfHourHeight * 2;
-			}
-
-			// Half-hour lines
-			//y = HeaderHeight + ((vScrollBar.Value % 2 == 0) ? HalfHourHeight : HalfHourHeight * 2);
-			y = HeaderHeight;
-			while(y < Height) {
-				g.DrawLine(_halfHourPen, TimeGutter, y, Width, y);
-				y += _halfHourHeight * 2;
-			}
-
 			// Times
-			//int hour = (vScrollBar.Value % 2 == 1) ? vScrollBar.Value / 2 + 1 : vScrollBar.Value / 2;
-			//int hour = (int)(g.ClipBounds.Top / HalfHourHeight / 2 + 1);
-			int hour = 0;
+			int hour = (vScrollBar.Value % 2 == 1) ? vScrollBar.Value / 2 + 1 : vScrollBar.Value / 2;
 			string hourString;
 			int midPoint = _timeGutter >> 1;
 			int lastMeridian = -1;
 			string meridianString;
 
-			//for(y = 3 + HeaderHeight + ((vScrollBar.Value % 2 == 0) ? 0 : HalfHourHeight); y < Height && hour < 24; y += HalfHourHeight * 2) {
-			for(y = 3 + HeaderHeight; y < Height && hour < 24; y += HalfHourHeight * 2) {
+			for(y = 3 + HeaderHeight + ((vScrollBar.Value % 2 == 0) ? 0 : HalfHourHeight); y < Height && hour < 24; y += HalfHourHeight * 2) {
 				if(hour == 0) {
 					hourString = "12";
 				} else if(hour > 12) {
@@ -290,11 +330,43 @@ namespace Scheduler {
 			}
 		}
 
+		protected virtual void _DrawLines(Graphics g) {
+			g.FillRectangle(_backgroundBrush, TimeGutter, HeaderHeight, Width - TimeGutter, Height - HeaderHeight);
 
-		private void _UpdateHeight() {
-			Height =
-				HeaderHeight +
-				HalfHourHeight * 24;
+			int y;
+
+			// Hour lines
+			y = HeaderHeight + ((vScrollBar.Value % 2 == 0) ? HalfHourHeight * 2 : HalfHourHeight);
+			while(y < Height) {
+				g.DrawLine(_hourPen, TimeGutter, y, Width, y);
+				g.DrawLine(_timeLinePen, 5, y, TimeGutter - 5, y);
+				y += HalfHourHeight * 2;
+			}
+
+			// Half-hour lines
+			y = HeaderHeight + ((vScrollBar.Value % 2 == 0) ? HalfHourHeight : HalfHourHeight * 2);
+			while(y < Height) {
+				g.DrawLine(_halfHourPen, TimeGutter, y, Width, y);
+				y += _halfHourHeight * 2;
+			}
+		}
+
+		private void _UpdateScroll() {
+			vScrollBar.Top = HeaderHeight;
+			vScrollBar.Left = Width - vScrollBar.Width;
+			vScrollBar.Height = Height - HeaderHeight;
+			vScrollBar.Visible = (Height - HeaderHeight) / HalfHourHeight <= vScrollBar.Maximum;
+			if(vScrollBar.Visible) {
+				vScrollBar.LargeChange = (Height - HeaderHeight) / HalfHourHeight;
+
+				if(vScrollBar.Value + vScrollBar.LargeChange > vScrollBar.Maximum) {
+					vScrollBar.Value = vScrollBar.Maximum - vScrollBar.LargeChange + 1;
+				}
+			}
+		}
+
+		private void vScrollBar_ValueChanged(object sender, EventArgs e) {
+			Invalidate(new Rectangle(0, HeaderHeight, Width, Height - HeaderHeight));
 		}
 	}
 }

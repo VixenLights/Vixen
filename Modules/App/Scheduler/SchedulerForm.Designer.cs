@@ -41,9 +41,6 @@
 			this.toolStripMenuItemAddEdit = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItemRemove = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-			this.label3 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label1 = new System.Windows.Forms.Label();
 			this.scheduleDay1 = new Scheduler.ScheduleDay();
 			this.toolStripView.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -185,54 +182,14 @@
 			this.toolStripMenuItemRemove.Size = new System.Drawing.Size(117, 22);
 			this.toolStripMenuItemRemove.Text = "Remove";
 			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Font = new System.Drawing.Font("Arial Black", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label3.Location = new System.Drawing.Point(322, 129);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(150, 50);
-			this.label3.TabIndex = 15;
-			this.label3.Text = "what?!";
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Font = new System.Drawing.Font("Arial", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label2.Location = new System.Drawing.Point(113, 184);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(156, 37);
-			this.label2.TabIndex = 14;
-			this.label2.Text = "expected";
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Font = new System.Drawing.Font("Arial", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label1.Location = new System.Drawing.Point(58, 152);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(56, 29);
-			this.label1.TabIndex = 13;
-			this.label1.Text = "You";
-			// 
 			// scheduleDay1
 			// 
 			this.scheduleDay1.AutoScroll = true;
-			this.scheduleDay1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(213)))));
 			this.scheduleDay1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.scheduleDay1.HalfHourColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(239)))), ((int)(((byte)(199)))));
-			this.scheduleDay1.HalfHourHeight = 20;
-			this.scheduleDay1.HeaderFont = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold);
-			this.scheduleDay1.HeaderHeight = 30;
-			this.scheduleDay1.HourColor = System.Drawing.Color.FromArgb(((int)(((byte)(246)))), ((int)(((byte)(219)))), ((int)(((byte)(162)))));
 			this.scheduleDay1.Location = new System.Drawing.Point(0, 25);
 			this.scheduleDay1.Name = "scheduleDay1";
 			this.scheduleDay1.Size = new System.Drawing.Size(530, 281);
 			this.scheduleDay1.TabIndex = 16;
-			this.scheduleDay1.TimeGutter = 50;
-			this.scheduleDay1.TimeLargeFont = new System.Drawing.Font("Tahoma", 16F);
-			this.scheduleDay1.TimeLineColor = System.Drawing.SystemColors.ControlDark;
-			this.scheduleDay1.TimeSmallFont = new System.Drawing.Font("Tahoma", 8F);
 			// 
 			// SchedulerForm
 			// 
@@ -240,9 +197,6 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(530, 351);
 			this.Controls.Add(this.scheduleDay1);
-			this.Controls.Add(this.label3);
-			this.Controls.Add(this.label2);
-			this.Controls.Add(this.label1);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.toolStripView);
 			this.Name = "SchedulerForm";
@@ -276,9 +230,6 @@
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemAddEdit;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemRemove;
 		private System.Windows.Forms.ToolTip toolTip;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label label1;
 		private ScheduleDay scheduleDay1;
 	}
 }
