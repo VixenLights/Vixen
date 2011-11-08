@@ -97,7 +97,7 @@
 			// 
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.Location = new System.Drawing.Point(509, 645);
+			this.buttonOk.Location = new System.Drawing.Point(413, 648);
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.Size = new System.Drawing.Size(90, 25);
 			this.buttonOk.TabIndex = 1;
@@ -571,7 +571,7 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(413, 645);
+			this.buttonCancel.Location = new System.Drawing.Point(509, 648);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(90, 25);
 			this.buttonCancel.TabIndex = 26;
@@ -583,9 +583,9 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(611, 682);
-			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.label5);
 			this.Controls.Add(this.label4);
+			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.groupBoxOperations);
 			this.Controls.Add(this.multiSelectTreeviewChannelsGroups);
 			this.Controls.Add(this.groupBoxSelectedNode);

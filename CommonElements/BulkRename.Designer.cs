@@ -204,7 +204,7 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(286, 425);
+			this.buttonCancel.Location = new System.Drawing.Point(382, 425);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(90, 25);
 			this.buttonCancel.TabIndex = 28;
@@ -215,7 +215,7 @@
 			// 
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.Location = new System.Drawing.Point(382, 425);
+			this.buttonOk.Location = new System.Drawing.Point(286, 425);
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.Size = new System.Drawing.Size(90, 25);
 			this.buttonOk.TabIndex = 27;

@@ -50,17 +50,17 @@
 			this.tableLayoutPanelAll.RowCount = 2;
 			this.tableLayoutPanelAll.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanelAll.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-			this.tableLayoutPanelAll.Size = new System.Drawing.Size(173, 41);
+			this.tableLayoutPanelAll.Size = new System.Drawing.Size(175, 52);
 			this.tableLayoutPanelAll.TabIndex = 7;
 			// 
 			// panelFormButtons
 			// 
-			this.panelFormButtons.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.panelFormButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.panelFormButtons.AutoSize = true;
 			this.panelFormButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.panelFormButtons.Controls.Add(this.buttonCancel);
 			this.panelFormButtons.Controls.Add(this.buttonOK);
-			this.panelFormButtons.Location = new System.Drawing.Point(4, 12);
+			this.panelFormButtons.Location = new System.Drawing.Point(7, 22);
 			this.panelFormButtons.Name = "panelFormButtons";
 			this.panelFormButtons.Size = new System.Drawing.Size(165, 27);
 			this.panelFormButtons.TabIndex = 3;
@@ -69,7 +69,7 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(2, 2);
+			this.buttonCancel.Location = new System.Drawing.Point(87, 2);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
 			this.buttonCancel.TabIndex = 7;
@@ -80,7 +80,7 @@
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOK.Location = new System.Drawing.Point(88, 2);
+			this.buttonOK.Location = new System.Drawing.Point(6, 2);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(75, 23);
 			this.buttonOK.TabIndex = 6;
@@ -99,7 +99,7 @@
 			this.tableLayoutPanelEffectEditors.Name = "tableLayoutPanelEffectEditors";
 			this.tableLayoutPanelEffectEditors.RowCount = 1;
 			this.tableLayoutPanelEffectEditors.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanelEffectEditors.Size = new System.Drawing.Size(167, 1);
+			this.tableLayoutPanelEffectEditors.Size = new System.Drawing.Size(169, 1);
 			this.tableLayoutPanelEffectEditors.TabIndex = 4;
 			// 
 			// TimedSequenceEditorEffectEditor
@@ -108,7 +108,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
 			this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.ClientSize = new System.Drawing.Size(173, 41);
+			this.ClientSize = new System.Drawing.Size(175, 52);
 			this.Controls.Add(this.tableLayoutPanelAll);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
