@@ -178,10 +178,35 @@ namespace VixenModules.Effect.Twinkle
 
 			ChannelData result = new ChannelData();
 
+			// render the flat 'minimum value' across the entire effect
+			Pulse.Pulse pulse = new Pulse.Pulse();
+			pulse.TargetNodes = new ChannelNode[] { node };
+			pulse.TimeSpan = TimeSpan;
+			pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { MinimumLevel, MinimumLevel }));
+
+			// figure out what color gradient to use for the pulse
+			switch (ColorHandling) {
+				case TwinkleColorHandling.GradientForEachPulse:
+					pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(0));
+					break;
+
+				case TwinkleColorHandling.GradientThroughWholeEffect:
+					pulse.ColorGradient = ColorGradient;
+					break;
+
+				case TwinkleColorHandling.StaticColor:
+					pulse.ColorGradient = new ColorGradient(StaticColor);
+					break;
+			}
+
+			ChannelData pulseData = pulse.Render();
+			result.AddChannelData(pulseData);
+
+			// render all the individual twinkles
 			foreach (IndividualTwinkleDetails twinkle in twinkles) {
 				{
 					// make a pulse for it
-					Pulse.Pulse pulse = new Pulse.Pulse();
+					pulse = new Pulse.Pulse();
 					pulse.TargetNodes = new ChannelNode[] { node };
 					pulse.TimeSpan = twinkle.Duration;
 					pulse.LevelCurve = twinkle.TwinkleCurve;
@@ -203,7 +228,7 @@ namespace VixenModules.Effect.Twinkle
 							break;
 					}
 
-					ChannelData pulseData = pulse.Render();
+					pulseData = pulse.Render();
 					pulseData.OffsetAllCommandsByTime(twinkle.StartTime);
 					result.AddChannelData(pulseData);
 				}
