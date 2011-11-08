@@ -18,6 +18,11 @@ namespace VixenModules.Effect.SetLevel
 		private SetLevelData _data;
 		private ChannelData _channelData = null;
 
+		public SetLevel()
+		{
+			_data = new SetLevelData();
+		}
+
 		protected override void _PreRender()
 		{
 			_channelData = new ChannelData();

@@ -30,6 +30,23 @@ namespace Vixen.Module.Effect {
 			AddCommandNodesForChannel(channel, commands);
 		}
 
+		public void AddChannelData(ChannelData other)
+		{
+			foreach (KeyValuePair<Guid, CommandNode[]> kvp in other) {
+				AddCommandNodesForChannel(kvp.Key, kvp.Value);
+			}
+		}
+
+		public void OffsetAllCommandsByTime(TimeSpan offset)
+		{
+			foreach (KeyValuePair<Guid, CommandNode[]> kvp in this.ToArray()) {
+				List<CommandNode> newCommands = new List<CommandNode>();
+				foreach (CommandNode cn in kvp.Value)
+					newCommands.Add(new CommandNode(cn.Command, cn.StartTime + offset, cn.TimeSpan));
+				this[kvp.Key] = newCommands.ToArray();
+			}
+		}
+
 		static public ChannelData Restrict(ChannelData channelData, TimeSpan startTime, TimeSpan endTime)
 		{
 			return new ChannelData(channelData.ToDictionary(

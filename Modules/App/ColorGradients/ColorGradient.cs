@@ -238,7 +238,6 @@ namespace VixenModules.App.ColorGradients
 			_alphas.Add(new AlphaPoint(255, 0));
 			_alphas.Add(new AlphaPoint(255, 1));
 			_colors.Add(new ColorPoint(Color.White, 0));
-			_colors.Add(new ColorPoint(Color.White, 1));
 		}
 
 		/// <summary>
@@ -248,6 +247,13 @@ namespace VixenModules.App.ColorGradients
 		public ColorGradient(ColorGradient other)
 		{
 			CloneFrom(other);
+		}
+
+		public ColorGradient(Color staticColor)
+			: this()
+		{
+			_colors.Clear();
+			_colors.Add(new ColorPoint(staticColor, 0));
 		}
 
 		[OnDeserialized]
@@ -620,6 +626,22 @@ namespace VixenModules.App.ColorGradients
 
 			SetEventHandlers();
 		}
+
+		public ColorGradient GetSubGradient(double start, double end)
+		{
+			ColorGradient result = new ColorGradient();
+			result.Colors.Clear();
+
+			result.Colors.Add(new ColorPoint(GetColorAt(start), start));
+			foreach (ColorPoint cp in Colors) {
+				if (cp.Position > start && cp.Position < end)
+					result.Colors.Add(new ColorPoint(cp));
+			}
+			result.Colors.Add(new ColorPoint(GetColorAt(end), end));
+
+			return result;
+		}
+	
 
 		#endregion
 

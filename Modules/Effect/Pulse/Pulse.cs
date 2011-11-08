@@ -21,6 +21,11 @@ namespace VixenModules.Effect.Pulse
 		private PulseData _data;
 		private ChannelData _channelData = null;
 
+		public Pulse()
+		{
+			_data = new PulseData();
+		}
+
 		protected override void _PreRender()
 		{
 			_channelData = new ChannelData();
@@ -93,7 +98,7 @@ namespace VixenModules.Effect.Pulse
 		// is essentially a fixed value, but if we need to later we can add the ability to change this.
 		// (note: this value is nothing more than a minimum interval. If the value doesn't change much,
 		// the intervals may be much higher.)
-		private TimeSpan MinimumRenderInterval { get { return TimeSpan.FromMilliseconds(5); } }
+		private TimeSpan MinimumRenderInterval { get { return TimeSpan.FromMilliseconds(10); } }
 
 		// the minimum level change between successive generated commands. As above, currently fixed,
 		// may change later.
@@ -106,16 +111,13 @@ namespace VixenModules.Effect.Pulse
 		// not a channel, will recursively descend until we render its channels.
 		private void RenderNode(ChannelNode node)
 		{
-			// if this node is an RGB node, then it will know what to do with it (might render directly,
-			// might be broken down into sub-channels, etc.) So just pass it off to that instead.
-			if (node.Properties.Contains(PulseDescriptor._RGBPropertyId)) {
-				RenderRGB(node);
-			} else {
-				if (node.IsLeaf) {
-					RenderMonochrome(node);
+			foreach (ChannelNode renderableNode in RGBModule.FindAllRenderableChildren(node)) {
+				// if this node is an RGB node, then it will know what to do with it (might render directly,
+				// might be broken down into sub-channels, etc.) So just pass it off to that instead.
+				if (renderableNode.Properties.Contains(PulseDescriptor._RGBPropertyId)) {
+					RenderRGB(node);
 				} else {
-					foreach (ChannelNode child in node.Children)
-						RenderNode(child);
+					RenderMonochrome(node);
 				}
 			}
 		}

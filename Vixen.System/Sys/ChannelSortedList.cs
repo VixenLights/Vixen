@@ -6,12 +6,16 @@ using System.Text;
 using Vixen.Commands;
 
 namespace Vixen.Sys {
-	class ChannelSortedList : SortedList<TimeSpan, CommandNode>, IChannelDataStore {
+	class ChannelSortedList : SortedList<TimeSpan, Queue<CommandNode>>, IChannelDataStore {
 		private object _sync = new object();
 
 		public void Add(CommandNode command) {
 			lock(_sync) {
-				Add(command.StartTime, command);
+				if (ContainsKey(command.StartTime)) {
+					this[command.StartTime].Enqueue(command);
+				} else {
+					this[command.StartTime] = new Queue<CommandNode>(command.AsEnumerable());
+				}
 			}
 		}
 
@@ -45,8 +49,9 @@ namespace Vixen.Sys {
 			public bool MoveNext() {
 				if(_list.Count > 0) {
 					lock(_sync) {
-						_current = _list.Values[0];
-						_list.RemoveAt(0);
+						_current = _list.Values[0].Dequeue();
+						if (_list.Values[0].Count <= 0)
+							_list.RemoveAt(0);
 					}
 					return true;
 				}

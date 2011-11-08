@@ -100,6 +100,43 @@ namespace VixenModules.Property.RGB
 		}
 
 
+		/// <summary>
+		/// Given a ChannelNode, this method will find all child nodes that are ultimately renderable as either a monochrome or polychrome
+		/// node. In effect, this means it will descend through all nodes, finding leaf nodes (no children) or nodes with the RGB property.
+		/// </summary>
+		/// <param name="node">The node to find all renderable children for.</param>
+		/// <returns>An enumerable of all renderable children.</returns>
+		public static IEnumerable<ChannelNode> FindAllRenderableChildren(ChannelNode node)
+		{
+			HashSet<ChannelNode> result = new HashSet<ChannelNode>();
+			if (node.Properties.Contains(RGBDescriptor.ModuleID)) {
+				result.Add(node);
+			} else {
+				if (node.IsLeaf) {
+					result.Add(node);
+				} else {
+					foreach (ChannelNode child in node.Children)
+						result.AddRange(FindAllRenderableChildren(node));
+				}
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Given ChannelNodes, this method will find all child nodes that are ultimately renderable as either a monochrome or polychrome
+		/// nodes. In effect, this means it will descend through all nodes, finding leaf nodes (no children) or nodes with the RGB property.
+		/// </summary>
+		public static IEnumerable<ChannelNode> FindAllRenderableChildren(IEnumerable<ChannelNode> nodes)
+		{
+			HashSet<ChannelNode> result = new HashSet<ChannelNode>();
+			foreach (ChannelNode node in nodes) {
+				result.AddRange(FindAllRenderableChildren(node));
+			}
+			return result;
+		}
+
+
 		#region Reverse-mapping of commands to a channelNode and color
 
 		public static Dictionary<ChannelNode, Color> MapChannelCommandsToColors(Dictionary<Channel, Command> channelsCommands)
