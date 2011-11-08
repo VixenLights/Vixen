@@ -33,9 +33,26 @@ namespace Vixen.Sys {
 			}
 		}
 
+		public IEnumerable<string> LogNames {
+			get { return _logs.Keys.ToArray(); }
+		}
+
+		public IEnumerable<string> RetrieveLogContents(string logName) {
+			Log log;
+			if(_logs.TryGetValue(logName, out log)) {
+				string logFilePath = _GetLogFileName(log);
+				if(File.Exists(logFilePath)) {
+					return File.ReadAllLines(logFilePath);
+				}
+				return new string[0];
+			}
+			// Log does not exist.
+			return null;
+		}
+
 		private void _ItemLogged(object sender, LogItemEventArgs e) {
 			Log log = sender as Log;
-			string logFileName = Path.Combine(_logDirectory, log.Name) + LOG_FILE_EXT;
+			string logFileName = _GetLogFileName(log);
 			lock(_locker) {
 				File.AppendAllText(logFileName, e.Text);
 			}
@@ -43,6 +60,10 @@ namespace Vixen.Sys {
 			if(ItemLogged != null) {
 				ItemLogged(this, new LogEventArgs(log.Name, e.Text));
 			}
+		}
+
+		private string _GetLogFileName(Log log) {
+			return Path.Combine(_logDirectory, log.Name) + LOG_FILE_EXT;
 		}
 
 		// i.e. Error("I had an error.")

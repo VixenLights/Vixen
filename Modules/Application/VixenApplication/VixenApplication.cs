@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Diagnostics;
+using System.IO;
 using Vixen.Sys;
 using Vixen.Module.Editor;
 using Vixen.Module.Sequence;
@@ -36,6 +38,11 @@ namespace VixenApplication
 		{
 			initializeEditorTypes();
 			openFileDialog.InitialDirectory = Vixen.Sys.Sequence.DefaultDirectory;
+
+			// Add menu items for the logs.
+			foreach(string logName in VixenSystem.Logs.LogNames) {
+				logsToolStripMenuItem.DropDownItems.Add(logName, null, (menuSender, menuArgs) => _ViewLog(((ToolStripMenuItem)menuSender).Text));
+			}
 		}
 
 		#region IApplication implemetation
@@ -247,5 +254,16 @@ namespace VixenApplication
 					break;
 			}
 		}
+
+		private void _ViewLog(string logName) {
+			string tempFilePath = Path.Combine(Path.GetTempPath(), logName);
+			IEnumerable<string> logContents = VixenSystem.Logs.RetrieveLogContents(logName);
+			File.WriteAllLines(tempFilePath, logContents);
+			using(Process process = new Process()) {
+				process.StartInfo = new ProcessStartInfo("notepad.exe", tempFilePath);
+				process.Start();
+			}
+		}
+
 	}
 }

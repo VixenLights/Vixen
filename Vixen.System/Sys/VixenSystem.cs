@@ -159,6 +159,10 @@ namespace Vixen.Sys {
 			get { return _logging; }
 		}
 
+		static public Logging Logs {
+			get { return _logging; }
+		}
+
 		static public ChannelManager Channels { get; private set; }
 		static public NodeManager Nodes { get; private set; }
 		static public ControllerManager Controllers { get; private set; }
