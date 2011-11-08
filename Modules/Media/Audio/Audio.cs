@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Vixen.Module;
 using Vixen.Module.Media;
 using Vixen.Module.Timing;
 using FMOD;
 
 namespace VixenModules.Media.Audio
 {
-	public class AudioModule : MediaModuleInstanceBase, ITiming
+	public class Audio : MediaModuleInstanceBase, ITiming
 	{
 		private FmodInstance _audioSystem;
+		private AudioData _data;
 
 		override public void Start()
 		{
@@ -59,7 +61,17 @@ namespace VixenModules.Media.Audio
 			get { return this as ITiming; }
 		}
 
-		override public string MediaFilePath { get; set; }
+		override public IModuleDataModel ModuleData
+		{
+			get { return _data; }
+			set { _data = value as AudioData; }
+		}
+
+		override public string MediaFilePath
+		{
+			get { return _data.FilePath; }
+			set { _data.FilePath = value; }
+		}
 
 		// If a media file is used as the timing source, it's also being
 		// executed as media for the sequence.
@@ -109,6 +121,9 @@ namespace VixenModules.Media.Audio
 				Stop();
 			}
 			_channel = _audioSystem.LoadSound(fileName, _channel);
+			if (_channel == null) {
+				Vixen.Sys.VixenSystem.Logging.Warning("Audio: can't load file '" + fileName + "' for playback. Does it exist?");
+			}
 			_startTime = TimeSpan.Zero;
 		}
 

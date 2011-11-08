@@ -41,8 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AudioData.cs" />
     <Compile Include="AudioDescriptor.cs" />
-    <Compile Include="AudioModule.cs" />
+    <Compile Include="Audio.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

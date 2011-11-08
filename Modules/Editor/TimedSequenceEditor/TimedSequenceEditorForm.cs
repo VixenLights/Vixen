@@ -683,7 +683,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// for now, only allow a single Audio type media to be assocated. If they want to add another, confirm and remove it.
 			HashSet<IMediaModuleInstance> modulesToRemove = new HashSet<IMediaModuleInstance>();
 			foreach (IMediaModuleInstance module in _sequence.Media) {
-				if (module is VixenModules.Media.Audio.AudioModule) {
+				if (module is VixenModules.Media.Audio.Audio) {
 					modulesToRemove.Add(module);
 				}
 			}
@@ -711,8 +711,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 
 				TimeSpan length = TimeSpan.Zero;
-				if (newInstance is VixenModules.Media.Audio.AudioModule) {
-					 length = (newInstance as VixenModules.Media.Audio.AudioModule).MediaDuration;
+				if (newInstance is VixenModules.Media.Audio.Audio) {
+					 length = (newInstance as VixenModules.Media.Audio.Audio).MediaDuration;
 				}
 
 				if (length != TimeSpan.Zero) {

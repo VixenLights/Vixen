@@ -17,18 +17,13 @@ namespace VixenModules.Media.Audio
 
 		override public Type ModuleClass
 		{
-            get { return typeof(AudioModule); }
+            get { return typeof(Audio); }
         }
 
 		override public Type ModuleDataClass
 		{
-            get { return null; }
+            get { return typeof(AudioData); }
         }
-
-		public override Type ModuleStaticDataClass
-		{
-			get { return null; }
-		}
 
 		override public string Author
 		{
