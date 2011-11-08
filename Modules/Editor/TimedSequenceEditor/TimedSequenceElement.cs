@@ -82,9 +82,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							Dictionary<Channel, Command> requestData = new Dictionary<Channel, Command>();
 
 							foreach (KeyValuePair<Channel, List<CommandNode>> kvp in renderedData) {
-								CommandNode cn = kvp.Value.FirstOrDefault(x => x.StartTime <= currentTime && x.EndTime > currentTime);
-								if (cn != null)
-									requestData.Add(kvp.Key, cn.Command);
+								IEnumerable<CommandNode> validNodes = kvp.Value.Where(x => x.StartTime <= currentTime && x.EndTime > currentTime);
+								if (validNodes.Count() > 0) {
+									requestData.Add(kvp.Key, Command.Combine(validNodes.Select(x => x.Command)));
+								}
 							}
 
 							Dictionary<ChannelNode, Color> displayData = RGBModule.MapChannelCommandsToColors(requestData);
