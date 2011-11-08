@@ -30,7 +30,6 @@
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripButtonDayView = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButtonWeekView = new System.Windows.Forms.ToolStripButton();
-			this.toolStripButtonMonthView = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButtonAgendaView = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.panel1 = new System.Windows.Forms.Panel();
@@ -41,7 +40,8 @@
 			this.toolStripMenuItemAddEdit = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItemRemove = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-			this.scheduleDay1 = new Scheduler.ScheduleDay();
+			this.scheduleDay = new Scheduler.ScheduleDay();
+			this.scheduleWeek = new Scheduler.ScheduleWeek();
 			this.toolStripView.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.contextMenuStrip.SuspendLayout();
@@ -54,7 +54,6 @@
             this.toolStripSeparator1,
             this.toolStripButtonDayView,
             this.toolStripButtonWeekView,
-            this.toolStripButtonMonthView,
             this.toolStripButtonAgendaView,
             this.toolStripSeparator2});
 			this.toolStripView.Location = new System.Drawing.Point(0, 0);
@@ -72,6 +71,7 @@
 			this.toolStripButtonToday.Size = new System.Drawing.Size(44, 22);
 			this.toolStripButtonToday.Text = "Today";
 			this.toolStripButtonToday.ToolTipText = "Go to today";
+			this.toolStripButtonToday.Click += new System.EventHandler(this.toolStripButtonToday_Click);
 			// 
 			// toolStripSeparator1
 			// 
@@ -80,12 +80,15 @@
 			// 
 			// toolStripButtonDayView
 			// 
+			this.toolStripButtonDayView.Checked = true;
 			this.toolStripButtonDayView.CheckOnClick = true;
+			this.toolStripButtonDayView.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.toolStripButtonDayView.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonDayView.Image")));
 			this.toolStripButtonDayView.ImageTransparentColor = System.Drawing.Color.White;
 			this.toolStripButtonDayView.Name = "toolStripButtonDayView";
 			this.toolStripButtonDayView.Size = new System.Drawing.Size(74, 22);
 			this.toolStripButtonDayView.Text = "Day view";
+			this.toolStripButtonDayView.Click += new System.EventHandler(this.toolStripButtonDayView_Click);
 			// 
 			// toolStripButtonWeekView
 			// 
@@ -95,15 +98,7 @@
 			this.toolStripButtonWeekView.Name = "toolStripButtonWeekView";
 			this.toolStripButtonWeekView.Size = new System.Drawing.Size(83, 22);
 			this.toolStripButtonWeekView.Text = "Week view";
-			// 
-			// toolStripButtonMonthView
-			// 
-			this.toolStripButtonMonthView.CheckOnClick = true;
-			this.toolStripButtonMonthView.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonMonthView.Image")));
-			this.toolStripButtonMonthView.ImageTransparentColor = System.Drawing.Color.White;
-			this.toolStripButtonMonthView.Name = "toolStripButtonMonthView";
-			this.toolStripButtonMonthView.Size = new System.Drawing.Size(90, 22);
-			this.toolStripButtonMonthView.Text = "Month view";
+			this.toolStripButtonWeekView.Click += new System.EventHandler(this.toolStripButtonWeekView_Click);
 			// 
 			// toolStripButtonAgendaView
 			// 
@@ -113,6 +108,7 @@
 			this.toolStripButtonAgendaView.Name = "toolStripButtonAgendaView";
 			this.toolStripButtonAgendaView.Size = new System.Drawing.Size(95, 22);
 			this.toolStripButtonAgendaView.Text = "Agenda view";
+			this.toolStripButtonAgendaView.Click += new System.EventHandler(this.toolStripButtonAgendaView_Click);
 			// 
 			// toolStripSeparator2
 			// 
@@ -182,26 +178,37 @@
 			this.toolStripMenuItemRemove.Size = new System.Drawing.Size(117, 22);
 			this.toolStripMenuItemRemove.Text = "Remove";
 			// 
-			// scheduleDay1
+			// scheduleDay
 			// 
-			this.scheduleDay1.AutoScroll = true;
-			this.scheduleDay1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.scheduleDay1.Location = new System.Drawing.Point(0, 25);
-			this.scheduleDay1.Name = "scheduleDay1";
-			this.scheduleDay1.Size = new System.Drawing.Size(530, 281);
-			this.scheduleDay1.TabIndex = 16;
+			this.scheduleDay.AutoScroll = true;
+			this.scheduleDay.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.scheduleDay.Location = new System.Drawing.Point(0, 25);
+			this.scheduleDay.Name = "scheduleDay";
+			this.scheduleDay.Size = new System.Drawing.Size(530, 281);
+			this.scheduleDay.TabIndex = 16;
+			// 
+			// scheduleWeek
+			// 
+			this.scheduleWeek.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.scheduleWeek.Location = new System.Drawing.Point(0, 25);
+			this.scheduleWeek.Name = "scheduleWeek";
+			this.scheduleWeek.Size = new System.Drawing.Size(530, 281);
+			this.scheduleWeek.TabIndex = 17;
+			this.scheduleWeek.Visible = false;
 			// 
 			// SchedulerForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(530, 351);
-			this.Controls.Add(this.scheduleDay1);
+			this.Controls.Add(this.scheduleWeek);
+			this.Controls.Add(this.scheduleDay);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.toolStripView);
 			this.Name = "SchedulerForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Show Scheduler";
+			this.Load += new System.EventHandler(this.SchedulerForm_Load);
 			this.toolStripView.ResumeLayout(false);
 			this.toolStripView.PerformLayout();
 			this.panel1.ResumeLayout(false);
@@ -219,7 +226,6 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripButton toolStripButtonDayView;
 		private System.Windows.Forms.ToolStripButton toolStripButtonWeekView;
-		private System.Windows.Forms.ToolStripButton toolStripButtonMonthView;
 		private System.Windows.Forms.ToolStripButton toolStripButtonAgendaView;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.Panel panel1;
@@ -230,6 +236,7 @@
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemAddEdit;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemRemove;
 		private System.Windows.Forms.ToolTip toolTip;
-		private ScheduleDay scheduleDay1;
+		private ScheduleDay scheduleDay;
+		private ScheduleWeek scheduleWeek;
 	}
 }

@@ -31,7 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Scheduler, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -64,6 +63,12 @@
     </Compile>
     <Compile Include="SchedulerModule.cs" />
     <Compile Include="ScheduleService.cs" />
+    <Compile Include="ScheduleWeek.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ScheduleWeek.Designer.cs">
+      <DependentUpon>ScheduleWeek.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
@@ -78,6 +83,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SchedulerForm.resx">
       <DependentUpon>SchedulerForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ScheduleWeek.resx">
+      <DependentUpon>ScheduleWeek.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

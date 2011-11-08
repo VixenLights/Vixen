@@ -9,10 +9,11 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace Scheduler {
-	public partial class ScheduleDay : UserControl {
+	public partial class ScheduleWeek : UserControl {
 		private int _halfHourHeight = 20;
 		private int _headerHeight = 30;
 		private int _timeGutter = 50;
+		private int _dayHeaderHeight = 17;
 
 		private SolidBrush _backgroundBrush = new SolidBrush(Color.FromArgb(255, 255, 213));
 		private Pen _hourPen = new Pen(Color.FromArgb(246, 219, 162));
@@ -20,8 +21,6 @@ namespace Scheduler {
 		private Font _timeLargeFont = new Font("Tahoma", 16);
 		private Font _timeSmallFont = new Font("Tahoma", 8);
 		private Font _dayViewHeaderFont = new Font("Arial", 12, FontStyle.Bold);
-		//private Font _agendaViewItemFont = new Font("Arial", 10, FontStyle.Bold);
-		//private Font _agendaViewTimeFont = new Font("Arial", 8);
 		private Pen _timeLinePen = new Pen(Color.FromKnownColor(KnownColor.ControlDark));
 
 		private Color _headerGradientStart = Color.FromArgb(89, 135, 214);
@@ -31,11 +30,10 @@ namespace Scheduler {
 
 		private bool _inLeftButtonBounds = false;
 		private bool _inRightButtonBounds = false;
-		//private bool _resizing = false;
 		private Rectangle _buttonLeftBounds;
 		private Rectangle _buttonRightBounds;
 
-		public ScheduleDay() {
+		public ScheduleWeek() {
 			InitializeComponent();
 
 			BackColor = Color.FromArgb(255, 255, 213);
@@ -181,6 +179,15 @@ namespace Scheduler {
 			}
 		}
 
+		[DefaultValue(17)]
+		public int DayHeaderHeight {
+			get { return _dayHeaderHeight; }
+			set {
+				_dayHeaderHeight = value;
+				Invalidate();
+			}
+		}
+
 		protected override void OnResize(EventArgs e) {
 			Invalidate();
 			_UpdateScroll();
@@ -189,6 +196,7 @@ namespace Scheduler {
 
 		protected override void OnPaint(PaintEventArgs e) {
 			Graphics g = e.Graphics;//***
+
 			if(g.ClipBounds.Left < TimeGutter) {
 				_DrawTimes(g);
 			}
@@ -197,20 +205,53 @@ namespace Scheduler {
 				_DrawLines(g);
 			}
 
-			if(g.ClipBounds.Top < HeaderHeight) {
-				// Header
-				using(LinearGradientBrush headerGradientBrush = new LinearGradientBrush(new Rectangle(0, 0, Width - TimeGutter, HeaderHeight), HeaderGradientStart, HeaderGradientEnd, 90)) {
-					g.FillRectangle(headerGradientBrush, TimeGutter, 0, Width - TimeGutter, HeaderHeight);
-				}
-				_DrawHeaderButtons(g, _inLeftButtonBounds, _inRightButtonBounds);
-
-				// Current day
-				g.DrawString(DateTime.Today.ToLongDateString(), HeaderFont, Brushes.White, TimeGutter + 10, 5);
+			float dayWidth = (float)(Width - _timeGutter) / 7;
+			
+			if(g.ClipBounds.Top < HeaderHeight + DayHeaderHeight) {
+				_DrawHeader(g, dayWidth);
 			}
 
-			// Draw the applicable timers
-			if(g.ClipBounds.Bottom > HeaderHeight) {
-				//_DrawTimerBlocks(m_applicableTimers, g);
+			// Vertical dividers
+			for(int i = 1; i < 7; i++) {
+				float x = dayWidth * i + TimeGutter;
+				g.DrawLine(Pens.Black, x, HeaderHeight, x, Height);
+			}
+
+			// Current week
+			DateTime startDate = DateTime.Today.AddDays(-((int)DateTime.Today.DayOfWeek));
+			DateTime endDate = startDate.AddDays(6);
+			g.DrawString(string.Format("{0}   -   {1}", startDate.ToString("m"), endDate.ToString("m")), HeaderFont, Brushes.White, TimeGutter + 10, 5);
+
+			// Draw the blocks for the applicable timers
+			//_DrawTimerBlocks(_applicableTimers, g);
+		}
+
+		private const int DAY_HEADER_PAD = 2;
+		private const int DAY_HEADER_SPACING = 5;
+		private void _DrawHeader(Graphics g, float dayWidth) {
+			using(LinearGradientBrush headerGradientBrush = new LinearGradientBrush(new Rectangle(0, 0, Width - TimeGutter, HeaderHeight), HeaderGradientStart, HeaderGradientEnd, 90)) {
+
+				// Day headers
+				SolidBrush dayBrush = new SolidBrush(_halfHourPen.Color);
+				int currentDateIndex = (int)DateTime.Today.DayOfWeek;
+				for(int i = 0; i < 7; i++) {
+					float x = dayWidth * i + _timeGutter;
+					string dayOfWeek = Enum.GetValues(typeof(DayOfWeek)).GetValue(i).ToString();
+					if(currentDateIndex == i) {
+						// Highlight current day's header
+						g.FillRectangle(headerGradientBrush, x + DAY_HEADER_PAD, HeaderHeight + DAY_HEADER_PAD, dayWidth - DAY_HEADER_SPACING, DayHeaderHeight);
+						g.DrawRectangle(Pens.Navy, x + DAY_HEADER_PAD, HeaderHeight + DAY_HEADER_PAD, dayWidth - DAY_HEADER_SPACING, DayHeaderHeight);
+					} else {
+						g.FillRectangle(dayBrush, x + DAY_HEADER_PAD, HeaderHeight + DAY_HEADER_PAD, dayWidth - DAY_HEADER_SPACING, DayHeaderHeight);
+						g.DrawRectangle(_hourPen, x + DAY_HEADER_PAD, HeaderHeight + DAY_HEADER_PAD, dayWidth - DAY_HEADER_SPACING, DayHeaderHeight);
+					}
+					g.DrawString(dayOfWeek, TimeSmallFont, Brushes.Black, x + (dayWidth - g.MeasureString(dayOfWeek, TimeSmallFont).Width) / 2, HeaderHeight + 4);
+				}
+
+				// Header
+				g.FillRectangle(headerGradientBrush, TimeGutter, 0, Width - TimeGutter, HeaderHeight);
+				_DrawHeaderButtons(g, _inLeftButtonBounds, _inRightButtonBounds);
+
 			}
 		}
 
@@ -245,7 +286,7 @@ namespace Scheduler {
 		protected virtual void _DrawHeaderButtons(Graphics g, bool hoverLeft, bool hoverRight) {
 			int buttonWidth = 18;
 			int buttonSpace = 8;
-			
+
 			// Anchored to the right
 			int x = Width - (buttonWidth + buttonSpace + buttonWidth + buttonSpace);
 			// Anchored to the top
@@ -267,14 +308,14 @@ namespace Scheduler {
             };
 
 			using(LinearGradientBrush flatGradientBrush = new LinearGradientBrush(new Rectangle(x + 1, y + 1, buttonWidth - 1, HeaderHeight), HeaderGradientStart, HeaderGradientEnd, 90),
-				                      hoverGradientBrush = new LinearGradientBrush(new Rectangle(x + 1, y + 1, buttonWidth - 1, buttonWidth - 1), HoverGradientStart, HoverGradientEnd, 90)) {
+									  hoverGradientBrush = new LinearGradientBrush(new Rectangle(x + 1, y + 1, buttonWidth - 1, buttonWidth - 1), HoverGradientStart, HoverGradientEnd, 90)) {
 				g.FillRectangle(hoverLeft ? hoverGradientBrush : flatGradientBrush, x + 1, y + 1, buttonWidth - 1, buttonWidth - 1);
 				g.FillRectangle(hoverRight ? hoverGradientBrush : flatGradientBrush, x + 1 + buttonWidth + buttonSpace, y + 1, buttonWidth - 1, buttonWidth - 1);
 			}
 
 			_DrawRoundRect(g, Pens.White, x, y, buttonWidth, buttonWidth, 3);
 			_DrawRoundRect(g, Pens.White, x + buttonWidth + buttonSpace, y, buttonWidth, buttonWidth, 3);
-			
+
 			g.FillPolygon(Brushes.White, leftButtonPoints);
 			g.FillPolygon(Brushes.White, rightButtonPoints);
 		}
@@ -320,7 +361,7 @@ namespace Scheduler {
 				}
 
 				g.DrawString(hourString, TimeLargeFont, Brushes.Black, midPoint - (int)(g.MeasureString(hourString, TimeLargeFont).Width) + 6, y);
-				
+
 				if(lastMeridian != hour / 12) {
 					lastMeridian = hour / 12;
 					meridianString = lastMeridian == 0 ? "am" : "pm";
@@ -357,7 +398,7 @@ namespace Scheduler {
 
 		//duplicate
 		private void _UpdateScroll() {
-			vScrollBar.Top = HeaderHeight;
+			vScrollBar.Top = HeaderHeight + DayHeaderHeight + DAY_HEADER_PAD;
 			vScrollBar.Left = Width - vScrollBar.Width;
 			vScrollBar.Height = Height - HeaderHeight;
 			vScrollBar.Visible = (Height - HeaderHeight) / HalfHourHeight <= vScrollBar.Maximum;
@@ -373,5 +414,6 @@ namespace Scheduler {
 		private void vScrollBar_ValueChanged(object sender, EventArgs e) {
 			Invalidate(new Rectangle(0, HeaderHeight, Width, Height - HeaderHeight));
 		}
+
 	}
 }
