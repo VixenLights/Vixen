@@ -429,6 +429,7 @@ namespace VixenApplication
 			_displayedNode.Channel.Patch.Add(new ControllerReference((Guid)comboBoxPatchControllerSelect.SelectedValue, ((int)numericUpDownPatchOutputSelect.Value) - 1));
 
 			PopulateCurrentPatchesArea(_displayedNode);
+			PopulateNodeTree();
 		}
 
 		private void buttonAddProperty_Click(object sender, EventArgs e)

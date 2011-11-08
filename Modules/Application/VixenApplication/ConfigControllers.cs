@@ -129,9 +129,7 @@ namespace VixenApplication
 
 		private void buttonConfigureController_Click(object sender, EventArgs e)
 		{
-			if (listViewControllers.SelectedItems.Count == 1) {
-				(listViewControllers.SelectedItems[0].Tag as OutputController).Setup();
-			}
+			ConfigureSelectedController();
 		}
 
 		private void buttonGenerateChannels_Click(object sender, EventArgs e)
@@ -214,5 +212,16 @@ namespace VixenApplication
 			}
 		}
 
+		private void listViewControllers_DoubleClick(object sender, EventArgs e)
+		{
+			ConfigureSelectedController();
+		}
+
+		private void ConfigureSelectedController()
+		{
+			if (listViewControllers.SelectedItems.Count == 1) {
+				(listViewControllers.SelectedItems[0].Tag as OutputController).Setup();
+			}
+		}
 	}
 }

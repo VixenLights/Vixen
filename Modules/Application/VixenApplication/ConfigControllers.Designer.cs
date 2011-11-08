@@ -74,6 +74,7 @@
 			this.listViewControllers.UseCompatibleStateImageBehavior = false;
 			this.listViewControllers.View = System.Windows.Forms.View.Details;
 			this.listViewControllers.SelectedIndexChanged += new System.EventHandler(this.listViewControllers_SelectedIndexChanged);
+			this.listViewControllers.DoubleClick += new System.EventHandler(this.listViewControllers_DoubleClick);
 			// 
 			// columnHeader1
 			// 
