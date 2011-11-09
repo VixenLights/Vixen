@@ -28,14 +28,8 @@
 		private void InitializeComponent()
 		{
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TimedSequenceEditorForm));
             this.toolStripOperations = new System.Windows.Forms.ToolStrip();
-            this.toolStripButton_Play = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton_Stop = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton_Pause = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.splitButton_Undo = new System.Windows.Forms.ToolStripSplitButton();
-            this.splitButton_Redo = new System.Windows.Forms.ToolStripSplitButton();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.sequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem_Save = new System.Windows.Forms.ToolStripMenuItem();
@@ -65,6 +59,11 @@
             this.toolStripStatusLabel_currentTime = new System.Windows.Forms.ToolStripStatusLabel();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.timelineControl = new CommonElements.Timeline.TimelineControl();
+            this.toolStripButton_Play = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton_Stop = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton_Pause = new System.Windows.Forms.ToolStripButton();
+            this.splitButton_Undo = new System.Windows.Forms.ToolStripSplitButton();
+            this.splitButton_Redo = new System.Windows.Forms.ToolStripSplitButton();
             this.toolStripOperations.SuspendLayout();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
@@ -85,60 +84,10 @@
             this.toolStripOperations.TabIndex = 1;
             this.toolStripOperations.Text = "Operations";
             // 
-            // toolStripButton_Play
-            // 
-            this.toolStripButton_Play.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton_Play.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_Play.Image")));
-            this.toolStripButton_Play.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton_Play.Name = "toolStripButton_Play";
-            this.toolStripButton_Play.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton_Play.Text = "Play";
-            this.toolStripButton_Play.Click += new System.EventHandler(this.toolStripButton_Play_Click);
-            // 
-            // toolStripButton_Stop
-            // 
-            this.toolStripButton_Stop.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton_Stop.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_Stop.Image")));
-            this.toolStripButton_Stop.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton_Stop.Name = "toolStripButton_Stop";
-            this.toolStripButton_Stop.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton_Stop.Text = "Stop";
-            this.toolStripButton_Stop.Click += new System.EventHandler(this.toolStripButton_Stop_Click);
-            // 
-            // toolStripButton_Pause
-            // 
-            this.toolStripButton_Pause.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton_Pause.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_Pause.Image")));
-            this.toolStripButton_Pause.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton_Pause.Name = "toolStripButton_Pause";
-            this.toolStripButton_Pause.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton_Pause.Text = "Pause";
-            this.toolStripButton_Pause.Click += new System.EventHandler(this.toolStripButton_Pause_Click);
-            // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
-            // 
-            // splitButton_Undo
-            // 
-            this.splitButton_Undo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.splitButton_Undo.Image = ((System.Drawing.Image)(resources.GetObject("splitButton_Undo.Image")));
-            this.splitButton_Undo.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.splitButton_Undo.Name = "splitButton_Undo";
-            this.splitButton_Undo.Size = new System.Drawing.Size(32, 22);
-            this.splitButton_Undo.Text = "Undo";
-            this.splitButton_Undo.ButtonClick += new System.EventHandler(this.splitButton_Undo_ButtonClick);
-            // 
-            // splitButton_Redo
-            // 
-            this.splitButton_Redo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.splitButton_Redo.Image = ((System.Drawing.Image)(resources.GetObject("splitButton_Redo.Image")));
-            this.splitButton_Redo.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.splitButton_Redo.Name = "splitButton_Redo";
-            this.splitButton_Redo.Size = new System.Drawing.Size(32, 22);
-            this.splitButton_Redo.Text = "Redo";
-            this.splitButton_Redo.ButtonClick += new System.EventHandler(this.splitButton_Redo_ButtonClick);
             // 
             // menuStrip
             // 
@@ -385,6 +334,56 @@
             this.timelineControl.SelectedRow = null;
             this.timelineControl.Size = new System.Drawing.Size(887, 541);
             this.timelineControl.TabIndex = 0;
+            // 
+            // toolStripButton_Play
+            // 
+            this.toolStripButton_Play.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton_Play.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.PlayHS;
+            this.toolStripButton_Play.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton_Play.Name = "toolStripButton_Play";
+            this.toolStripButton_Play.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton_Play.Text = "Play";
+            this.toolStripButton_Play.Click += new System.EventHandler(this.toolStripButton_Play_Click);
+            // 
+            // toolStripButton_Stop
+            // 
+            this.toolStripButton_Stop.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton_Stop.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.StopHS;
+            this.toolStripButton_Stop.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton_Stop.Name = "toolStripButton_Stop";
+            this.toolStripButton_Stop.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton_Stop.Text = "Stop";
+            this.toolStripButton_Stop.Click += new System.EventHandler(this.toolStripButton_Stop_Click);
+            // 
+            // toolStripButton_Pause
+            // 
+            this.toolStripButton_Pause.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton_Pause.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.PauseHS;
+            this.toolStripButton_Pause.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton_Pause.Name = "toolStripButton_Pause";
+            this.toolStripButton_Pause.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton_Pause.Text = "Pause";
+            this.toolStripButton_Pause.Click += new System.EventHandler(this.toolStripButton_Pause_Click);
+            // 
+            // splitButton_Undo
+            // 
+            this.splitButton_Undo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.splitButton_Undo.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.Edit_UndoHS;
+            this.splitButton_Undo.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.splitButton_Undo.Name = "splitButton_Undo";
+            this.splitButton_Undo.Size = new System.Drawing.Size(32, 22);
+            this.splitButton_Undo.Text = "Undo";
+            this.splitButton_Undo.ButtonClick += new System.EventHandler(this.splitButton_Undo_ButtonClick);
+            // 
+            // splitButton_Redo
+            // 
+            this.splitButton_Redo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.splitButton_Redo.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.Edit_RedoHS;
+            this.splitButton_Redo.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.splitButton_Redo.Name = "splitButton_Redo";
+            this.splitButton_Redo.Size = new System.Drawing.Size(32, 22);
+            this.splitButton_Redo.Text = "Redo";
+            this.splitButton_Redo.ButtonClick += new System.EventHandler(this.splitButton_Redo_ButtonClick);
             // 
             // TimedSequenceEditorForm
             // 
