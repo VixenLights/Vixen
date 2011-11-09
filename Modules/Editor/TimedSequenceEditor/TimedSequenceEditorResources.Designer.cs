@@ -60,6 +60,13 @@ namespace VixenModules.Editor.TimedSequenceEditor {
             }
         }
         
+        internal static System.Drawing.Bitmap base_speaker_32 {
+            get {
+                object obj = ResourceManager.GetObject("base_speaker_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap CopyHS {
             get {
                 object obj = ResourceManager.GetObject("CopyHS", resourceCulture);
@@ -116,6 +123,13 @@ namespace VixenModules.Editor.TimedSequenceEditor {
             }
         }
         
+        internal static System.Drawing.Bitmap pencil_32 {
+            get {
+                object obj = ResourceManager.GetObject("pencil_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap PlayHS {
             get {
                 object obj = ResourceManager.GetObject("PlayHS", resourceCulture);
@@ -140,6 +154,20 @@ namespace VixenModules.Editor.TimedSequenceEditor {
         internal static System.Drawing.Bitmap StopHS {
             get {
                 object obj = ResourceManager.GetObject("StopHS", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Zoom_In {
+            get {
+                object obj = ResourceManager.GetObject("Zoom_In", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Zoom_Out {
+            get {
+                object obj = ResourceManager.GetObject("Zoom_Out", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

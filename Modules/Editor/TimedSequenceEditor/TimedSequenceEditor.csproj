@@ -191,6 +191,18 @@
   <ItemGroup>
     <None Include="Resources\ZoomHS.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Zoom_In.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Zoom_Out.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\base_speaker_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\pencil_32.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
