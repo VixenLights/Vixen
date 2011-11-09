@@ -32,18 +32,13 @@
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.sequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem_Save = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem_SaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem_Close = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem_EditEffect = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripMenuItem_Cut = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem_Copy = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem_Paste = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripMenuItem_deleteElements = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem_zoomTimeIn = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem_zoomTimeOut = new System.Windows.Forms.ToolStripMenuItem();
@@ -64,6 +59,11 @@
             this.toolStripButton_Pause = new System.Windows.Forms.ToolStripButton();
             this.splitButton_Undo = new System.Windows.Forms.ToolStripSplitButton();
             this.splitButton_Redo = new System.Windows.Forms.ToolStripSplitButton();
+            this.toolStripMenuItem_Save = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem_Cut = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem_Copy = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem_Paste = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem_deleteElements = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripOperations.SuspendLayout();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
@@ -114,14 +114,6 @@
             this.sequenceToolStripMenuItem.Size = new System.Drawing.Size(70, 20);
             this.sequenceToolStripMenuItem.Text = "Sequence";
             // 
-            // toolStripMenuItem_Save
-            // 
-            this.toolStripMenuItem_Save.Name = "toolStripMenuItem_Save";
-            this.toolStripMenuItem_Save.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.toolStripMenuItem_Save.Size = new System.Drawing.Size(186, 22);
-            this.toolStripMenuItem_Save.Text = "Save";
-            this.toolStripMenuItem_Save.Click += new System.EventHandler(this.toolStripMenuItem_Save_Click);
-            // 
             // toolStripMenuItem_SaveAs
             // 
             this.toolStripMenuItem_SaveAs.Name = "toolStripMenuItem_SaveAs";
@@ -171,42 +163,10 @@
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(187, 6);
             // 
-            // toolStripMenuItem_Cut
-            // 
-            this.toolStripMenuItem_Cut.Name = "toolStripMenuItem_Cut";
-            this.toolStripMenuItem_Cut.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-            this.toolStripMenuItem_Cut.Size = new System.Drawing.Size(190, 22);
-            this.toolStripMenuItem_Cut.Text = "Cut";
-            this.toolStripMenuItem_Cut.Click += new System.EventHandler(this.toolStripMenuItem_Cut_Click);
-            // 
-            // toolStripMenuItem_Copy
-            // 
-            this.toolStripMenuItem_Copy.Name = "toolStripMenuItem_Copy";
-            this.toolStripMenuItem_Copy.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.toolStripMenuItem_Copy.Size = new System.Drawing.Size(190, 22);
-            this.toolStripMenuItem_Copy.Text = "Copy";
-            this.toolStripMenuItem_Copy.Click += new System.EventHandler(this.toolStripMenuItem_Copy_Click);
-            // 
-            // toolStripMenuItem_Paste
-            // 
-            this.toolStripMenuItem_Paste.Name = "toolStripMenuItem_Paste";
-            this.toolStripMenuItem_Paste.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-            this.toolStripMenuItem_Paste.Size = new System.Drawing.Size(190, 22);
-            this.toolStripMenuItem_Paste.Text = "Paste";
-            this.toolStripMenuItem_Paste.Click += new System.EventHandler(this.toolStripMenuItem_Paste_Click);
-            // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(187, 6);
-            // 
-            // toolStripMenuItem_deleteElements
-            // 
-            this.toolStripMenuItem_deleteElements.Name = "toolStripMenuItem_deleteElements";
-            this.toolStripMenuItem_deleteElements.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-            this.toolStripMenuItem_deleteElements.Size = new System.Drawing.Size(190, 22);
-            this.toolStripMenuItem_deleteElements.Text = "Delete Element(s)";
-            this.toolStripMenuItem_deleteElements.Click += new System.EventHandler(this.toolStripMenuItem_deleteElements_Click);
             // 
             // viewToolStripMenuItem
             // 
@@ -221,6 +181,7 @@
             // 
             // toolStripMenuItem_zoomTimeIn
             // 
+            this.toolStripMenuItem_zoomTimeIn.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.ZoomHS;
             this.toolStripMenuItem_zoomTimeIn.Name = "toolStripMenuItem_zoomTimeIn";
             this.toolStripMenuItem_zoomTimeIn.ShortcutKeyDisplayString = "Ctrl+ +";
             this.toolStripMenuItem_zoomTimeIn.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Add)));
@@ -384,6 +345,51 @@
             this.splitButton_Redo.Size = new System.Drawing.Size(32, 22);
             this.splitButton_Redo.Text = "Redo";
             this.splitButton_Redo.ButtonClick += new System.EventHandler(this.splitButton_Redo_ButtonClick);
+            // 
+            // toolStripMenuItem_Save
+            // 
+            this.toolStripMenuItem_Save.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.saveHS;
+            this.toolStripMenuItem_Save.Name = "toolStripMenuItem_Save";
+            this.toolStripMenuItem_Save.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.toolStripMenuItem_Save.Size = new System.Drawing.Size(186, 22);
+            this.toolStripMenuItem_Save.Text = "Save";
+            this.toolStripMenuItem_Save.Click += new System.EventHandler(this.toolStripMenuItem_Save_Click);
+            // 
+            // toolStripMenuItem_Cut
+            // 
+            this.toolStripMenuItem_Cut.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.CutHS;
+            this.toolStripMenuItem_Cut.Name = "toolStripMenuItem_Cut";
+            this.toolStripMenuItem_Cut.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
+            this.toolStripMenuItem_Cut.Size = new System.Drawing.Size(190, 22);
+            this.toolStripMenuItem_Cut.Text = "Cut";
+            this.toolStripMenuItem_Cut.Click += new System.EventHandler(this.toolStripMenuItem_Cut_Click);
+            // 
+            // toolStripMenuItem_Copy
+            // 
+            this.toolStripMenuItem_Copy.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.CopyHS;
+            this.toolStripMenuItem_Copy.Name = "toolStripMenuItem_Copy";
+            this.toolStripMenuItem_Copy.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
+            this.toolStripMenuItem_Copy.Size = new System.Drawing.Size(190, 22);
+            this.toolStripMenuItem_Copy.Text = "Copy";
+            this.toolStripMenuItem_Copy.Click += new System.EventHandler(this.toolStripMenuItem_Copy_Click);
+            // 
+            // toolStripMenuItem_Paste
+            // 
+            this.toolStripMenuItem_Paste.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.PasteHS;
+            this.toolStripMenuItem_Paste.Name = "toolStripMenuItem_Paste";
+            this.toolStripMenuItem_Paste.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
+            this.toolStripMenuItem_Paste.Size = new System.Drawing.Size(190, 22);
+            this.toolStripMenuItem_Paste.Text = "Paste";
+            this.toolStripMenuItem_Paste.Click += new System.EventHandler(this.toolStripMenuItem_Paste_Click);
+            // 
+            // toolStripMenuItem_deleteElements
+            // 
+            this.toolStripMenuItem_deleteElements.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.DeleteHS;
+            this.toolStripMenuItem_deleteElements.Name = "toolStripMenuItem_deleteElements";
+            this.toolStripMenuItem_deleteElements.ShortcutKeys = System.Windows.Forms.Keys.Delete;
+            this.toolStripMenuItem_deleteElements.Size = new System.Drawing.Size(190, 22);
+            this.toolStripMenuItem_deleteElements.Text = "Delete Element(s)";
+            this.toolStripMenuItem_deleteElements.Click += new System.EventHandler(this.toolStripMenuItem_deleteElements_Click);
             // 
             // TimedSequenceEditorForm
             // 
