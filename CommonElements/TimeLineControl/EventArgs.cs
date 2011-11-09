@@ -85,4 +85,21 @@ namespace CommonElements.Timeline
 		public TimeSpan Time { get; private set; }
 		public IDataObject Data { get; private set; }
 	}
+
+
+
+
+
+    public class ElementsChangedTimesEventArgs : EventArgs
+    {
+        public ElementsChangedTimesEventArgs(ElementMoveInfo info, ElementMoveType type)
+        {
+            PreviousTimes = info.OriginalElements;
+            Type = type;
+        }
+
+        public Dictionary<Element, ElementTimeInfo> PreviousTimes { get; private set; }
+        public IEnumerable<Element> Elements { get { return PreviousTimes.Keys; } }
+        public ElementMoveType Type { get; private set; }
+    }
 }

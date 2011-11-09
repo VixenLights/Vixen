@@ -1,20 +1,27 @@
 ﻿
 namespace CommonElements
 {
-	internal enum UndoState { None, Undone, Redone }
+    public enum UndoState { ReadyForUndo, ReadyForRedo }
 
 	public abstract class UndoAction
 	{
-		private UndoState state = UndoState.None;
+        private UndoState m_state = UndoState.ReadyForUndo;
+        protected UndoState State { get { return m_state; } }
+
 		public virtual void Undo()
 		{
-			state = UndoState.Undone;
+            m_state = UndoState.ReadyForRedo;
 		}
 
 		public virtual void Redo()
 		{
-			state = UndoState.Redone;
+            m_state = UndoState.ReadyForUndo;
 		}
-	}
+
+        public virtual string Description
+        {
+            get { return "[UndoAction]"; }
+        }
+    }
 
 }

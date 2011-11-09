@@ -352,6 +352,11 @@ namespace CommonElements.Timeline
 			return rv;
 		}
 
+        //TODO: Move me
+        
+
+
+
 		/// <summary>
 		/// Returns the row located at the current point in client coordinates
 		/// </summary>
@@ -1246,7 +1251,7 @@ namespace CommonElements.Timeline
 
 
     ///<summary>Maintains all necessary information during the user modification of selected Elements.</summary>
-    class ElementMoveInfo
+    public class ElementMoveInfo
     {
         public ElementMoveInfo(Point initGridLocation, IEnumerable<Element> modifyingElements, TimeSpan visibleTimeStart)
         {
@@ -1272,16 +1277,6 @@ namespace CommonElements.Timeline
     }
 
 
-    struct ElementTimeInfo
-    {
-        public ElementTimeInfo(Element elem)
-            : this()
-        {
-            StartTime = elem.StartTime;
-            Duration = elem.Duration;
-        }
-        public TimeSpan StartTime { get; private set; }
-        public TimeSpan Duration { get; private set; }
-        public TimeSpan EndTime { get { return StartTime + Duration; } }
-    }
+
+
 }

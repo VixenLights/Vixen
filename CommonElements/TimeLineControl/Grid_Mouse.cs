@@ -283,7 +283,8 @@ namespace CommonElements.Timeline
 
         #region [Mouse Drag] (Move/Resize common)
 
-        // h-resize, or drag moving
+        ///<summary>Called when any operation that moves element times (namely drag-move and hresize).
+        ///Saves the pre-move information and begins update on all selected elements.</summary>
         private void elementsBeginMove(Point gridLocation)
         {
             m_elemMoveInfo = new ElementMoveInfo(gridLocation, SelectedElements, VisibleTimeStart);
@@ -292,10 +293,8 @@ namespace CommonElements.Timeline
                 elem.BeginUpdate();
         }
 
-        private void elementsFinishedMoving()
+        private void elementsFinishedMoving(ElementMoveType type)
         {
-            m_elemMoveInfo = null;
-
             foreach (var elem in SelectedElements)
                 elem.EndUpdate();
 
@@ -303,6 +302,13 @@ namespace CommonElements.Timeline
 
             MultiElementEventArgs evargs = new MultiElementEventArgs { Elements = SelectedElements };
             _ElementsFinishedMoving(evargs);
+
+            if (ElementsMovedNew != null)
+            {
+                ElementsMovedNew(this, new ElementsChangedTimesEventArgs(m_elemMoveInfo, type));
+            }
+
+            m_elemMoveInfo = null;
         }
 
 
@@ -574,7 +580,7 @@ namespace CommonElements.Timeline
 
         private void MouseUp_DragMoving(Point gridLocation)
         {
-            elementsFinishedMoving();
+            elementsFinishedMoving(ElementMoveType.Move);
             endAllDrag();
         }
 
@@ -661,7 +667,7 @@ namespace CommonElements.Timeline
 
         private void MouseUp_HResizing(Point gridLocation)
         {
-            elementsFinishedMoving();
+            elementsFinishedMoving(ElementMoveType.Resize);
         }
 
 
@@ -693,7 +699,6 @@ namespace CommonElements.Timeline
             int x = -AutoScrollPosition.X + (m_mouseOutside.X / AutoScrollPxScaleFactor);
             x = (x < 0) ? 0 : x;
             x = (x > AutoScrollMinSize.Width) ? AutoScrollMinSize.Width : x;
-
 
             int y = -AutoScrollPosition.Y + (m_mouseOutside.Y / AutoScrollPxScaleFactor);
             y = (y < 0) ? 0 : y;
@@ -727,5 +732,13 @@ namespace CommonElements.Timeline
 
 
 
+
+
+
+        //events
+        public event EventHandler<ElementsChangedTimesEventArgs> ElementsMovedNew;
     }
+
+
+    public enum ElementMoveType { Move, Resize }
 }

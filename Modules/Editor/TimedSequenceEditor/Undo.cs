@@ -3,63 +3,66 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using CommonElements;
+using CommonElements.Timeline;
+
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-
-	public class ElementTimeChangedUndoAction : CommonElements.UndoAction
-	{
-		private TimedSequenceElement m_element;
-		private TimeSpan m_start, m_duration;
-
-		public ElementTimeChangedUndoAction(TimedSequenceElement element, TimeSpan oldStart, TimeSpan oldDuration)
-		{
-			m_element = element;
-			m_start = oldStart;
-			m_duration = oldDuration;
-		}
-
-		public override void Undo()
-		{
-			// swap values - save new vals for redo
-			TimeSpan temp;
-			
-			temp = m_element.StartTime;
-			m_element.StartTime = m_start;
-			m_start = temp;
-
-			temp = m_element.Duration;
-			m_element.Duration = m_duration;
-			m_duration = temp;
-
-			base.Undo();
-		}
-
-		public override void Redo()
-		{
-			// restore values from before undo
-			m_element.StartTime = m_start;
-			m_element.Duration = m_duration;
-
-			base.Redo();
-		}
-	}
-
-    public class ElementChangedUndoAction : CommonElements.UndoAction
+    public class ElementsTimeChangedUndoAction : CommonElements.UndoAction
     {
-        public ElementChangedUndoAction(TimedSequenceElement element)
+        private Dictionary<Element, ElementTimeInfo> m_changedElements;
+        private ElementMoveType m_moveType;
+
+        public ElementsTimeChangedUndoAction(Dictionary<Element, ElementTimeInfo> changedElements, ElementMoveType moveType)
+            :base()
         {
-            
+            m_changedElements = changedElements;
+            m_moveType = moveType;
         }
+
+
 
         public override void Undo()
         {
+            foreach (KeyValuePair<Element,ElementTimeInfo> e in m_changedElements)
+            {
+                // Key is reference to actual element. Value is class with its times before move.
+                // Swap the element's times with the saved times from before the move, so we can restore them later in redo.
+                Element.SwapTimes(e.Key, e.Value);
+            }
+
             base.Undo();
         }
 
         public override void Redo()
         {
+            foreach (KeyValuePair<Element, ElementTimeInfo> e in m_changedElements)
+            {
+                // Key is reference to actual element. Value is class with the times before undo.
+                // Swap the element's times with the saved times from before the undo, essentially re-doing the original action.
+                Element.SwapTimes(e.Key, e.Value);
+            }
+
             base.Redo();
         }
+
+        public override string Description
+        {
+            get
+            {
+                string typestr = string.Empty;
+                switch (m_moveType)
+                {
+                    case ElementMoveType.Move:      typestr = "Move"; break;
+                    case ElementMoveType.Resize:    typestr = "Resize"; break;
+                }
+                return String.Format("{0} {1} element{2}", typestr,
+                    m_changedElements.Count, (m_changedElements.Count == 1 ? "" : "s")); }
+
+        }
+
     }
-    
+
+  
+ 
 }

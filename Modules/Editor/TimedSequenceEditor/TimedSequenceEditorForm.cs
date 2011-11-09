@@ -52,13 +52,81 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private TimelineElementsClipboardData _clipboard;
 
 		// Undo manager
-		private CommonElements.UndoManager _undoMgr = new CommonElements.UndoManager();
+        private CommonElements.UndoManager _undoMgr;
 
 		#endregion
 
 
 
-		public TimedSequenceEditorForm()
+        #region Undo
+
+        private void InitUndo()
+        {
+            _undoMgr = new CommonElements.UndoManager();
+            _undoMgr.UndoItemsChanged += _undoMgr_UndoItemsChanged;
+            _undoMgr.RedoItemsChanged += _undoMgr_RedoItemsChanged;
+
+            splitButton_Undo.Enabled = false;
+            splitButton_Redo.Enabled = false;
+        }
+
+        private void splitButton_Undo_ButtonClick(object sender, EventArgs e)
+        {
+            _undoMgr.Undo();
+        }
+
+        private void splitButton_Redo_ButtonClick(object sender, EventArgs e)
+        {
+            _undoMgr.Redo();
+        }
+
+
+
+        void _undoMgr_UndoItemsChanged(object sender, EventArgs e)
+        {
+            if (_undoMgr.NumUndoable == 0)
+            {
+                splitButton_Undo.Enabled = false;
+                return;
+            }
+
+            splitButton_Undo.Enabled = true;
+            splitButton_Undo.DropDownItems.Clear();
+            foreach (var act in _undoMgr.UndoActions)
+            {
+                splitButton_Undo.DropDownItems.Add(act.Description);
+            }
+            
+        }
+
+        void _undoMgr_RedoItemsChanged(object sender, EventArgs e)
+        {
+            if (_undoMgr.NumRedoable == 0)
+            {
+                splitButton_Redo.Enabled = false;
+                return;
+            }
+
+            splitButton_Redo.Enabled = true;
+            splitButton_Redo.DropDownItems.Clear();
+            foreach (var act in _undoMgr.RedoActions)
+            {
+                splitButton_Redo.DropDownItems.Add(act.Description);
+            }
+        }
+
+
+        void timelineControl_ElementsMovedNew(object sender, ElementsChangedTimesEventArgs e)
+        {
+            var action = new ElementsTimeChangedUndoAction(e.PreviousTimes, e.Type);
+            _undoMgr.AddUndoAction(action);
+        }
+
+        #endregion
+
+
+
+        public TimedSequenceEditorForm()
 		{
 			InitializeComponent();
 
@@ -73,6 +141,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			// JRR drag/drop
 			timelineControl.DataDropped += timelineControl_DataDropped;
+
+            InitUndo();
+
+            timelineControl.ElementsMovedNew += timelineControl_ElementsMovedNew;
 		}
 
 
@@ -895,6 +967,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			RemoveElements(timelineControl.SelectedElements.Cast<TimedSequenceElement>());
 		}
+
+
+
+
 	}
 
 	[Serializable]
@@ -914,3 +990,4 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public TimeSpan EarliestStartTime;
 	}
 }
+

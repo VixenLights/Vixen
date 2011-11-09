@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace CommonElements.Timeline
 {
 	[Serializable]
-    public class Element : IComparable<Element>
+    public class Element : IComparable<Element>, ITimePeriod
     {
 		private TimeSpan m_startTime;
 		private TimeSpan m_duration;
@@ -248,5 +248,40 @@ namespace CommonElements.Timeline
 			return result;
 		}
 		#endregion
+
+
+        // I really don't know where else to put this damn thing.
+        public static void SwapTimes(ITimePeriod lhs, ITimePeriod rhs)
+        {
+            TimeSpan temp;
+
+            temp = lhs.StartTime;
+            lhs.StartTime = rhs.StartTime;
+            rhs.StartTime = temp;
+
+            temp = lhs.Duration;
+            lhs.Duration = rhs.Duration;
+            rhs.Duration = temp;
+        }
 	}
+
+
+
+    public class ElementTimeInfo : ITimePeriod
+    {
+        public ElementTimeInfo(Element elem)
+        {
+            StartTime = elem.StartTime;
+            Duration = elem.Duration;
+        }
+        public TimeSpan StartTime { get; set; }
+        public TimeSpan Duration { get; set; }
+        public TimeSpan EndTime { get { return StartTime + Duration; } }
+    }
+
+    public interface ITimePeriod
+    {
+        TimeSpan StartTime { get; set; }
+        TimeSpan Duration { get; set; }
+    }
 }

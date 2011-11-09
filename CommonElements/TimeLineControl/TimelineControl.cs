@@ -395,6 +395,15 @@ namespace CommonElements.Timeline
 		}
 
 
+
+        public event EventHandler<ElementsChangedTimesEventArgs> ElementsMovedNew
+        {
+            add { grid.ElementsMovedNew += value; }
+            remove { grid.ElementsMovedNew -= value; }
+        }
+
+
+
 		#endregion
 
 
