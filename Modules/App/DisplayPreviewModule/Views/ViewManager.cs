@@ -1,9 +1,9 @@
-namespace Vixen.Modules.DisplayPreviewModule.Views
+namespace VixenModules.App.DisplayPreview.Views
 {
     using System;
     using System.Windows.Threading;
-    using Vixen.Modules.DisplayPreviewModule.Model;
-    using Vixen.Modules.DisplayPreviewModule.ViewModels;
+    using VixenModules.App.DisplayPreview.Model;
+    using VixenModules.App.DisplayPreview.ViewModels;
     using Vixen.Sys;
 
     public static class ViewManager

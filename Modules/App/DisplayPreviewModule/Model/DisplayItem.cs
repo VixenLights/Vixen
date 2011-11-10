@@ -1,4 +1,4 @@
-namespace Vixen.Modules.DisplayPreviewModule.Model
+namespace VixenModules.App.DisplayPreview.Model
 {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -7,7 +7,7 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
     using System.Runtime.Serialization;
     using System.Windows;
     using System.Windows.Media;
-    using Vixen.Modules.DisplayPreviewModule.Behaviors;
+    using VixenModules.App.DisplayPreview.Behaviors;
     using Vixen.Sys;
 
     [DataContract]

@@ -1,4 +1,4 @@
-﻿namespace Vixen.Modules.DisplayPreviewModule.Views
+﻿namespace VixenModules.App.DisplayPreview.Views
 {
     public partial class VisualizerView
     {

@@ -1,4 +1,4 @@
-namespace Vixen.Modules.DisplayPreviewModule.WPF
+namespace VixenModules.App.DisplayPreview.WPF
 {
     using System;
     using System.Diagnostics;

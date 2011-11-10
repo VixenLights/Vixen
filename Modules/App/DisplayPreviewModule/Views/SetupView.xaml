@@ -1,10 +1,10 @@
-﻿<Window x:Class="Vixen.Modules.DisplayPreviewModule.Views.SetupView"
+﻿<Window x:Class="VixenModules.App.DisplayPreview.Views.SetupView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:WPF="clr-namespace:Vixen.Modules.DisplayPreviewModule.WPF"
-        xmlns:Model="clr-namespace:Vixen.Modules.DisplayPreviewModule.Model"
+        xmlns:WPF="clr-namespace:VixenModules.App.DisplayPreview.WPF"
+        xmlns:Model="clr-namespace:VixenModules.App.DisplayPreview.Model"
         mc:Ignorable="d"
         SizeToContent="WidthAndHeight"
         x:Name="Instance">

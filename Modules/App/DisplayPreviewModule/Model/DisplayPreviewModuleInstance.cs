@@ -1,10 +1,10 @@
-namespace Vixen.Modules.DisplayPreviewModule.Model
+namespace VixenModules.App.DisplayPreview.Model
 {
     using System;
     using System.Collections.Generic;
     using Vixen.Execution;
     using Vixen.Module.App;
-    using Vixen.Modules.DisplayPreviewModule.Views;
+    using VixenModules.App.DisplayPreview.Views;
     using Vixen.Sys;
 
     public class DisplayPreviewModuleInstance : AppModuleInstanceBase

@@ -1,4 +1,4 @@
-namespace Vixen.Modules.DisplayPreviewModule.ViewModels
+namespace VixenModules.App.DisplayPreview.ViewModels
 {
     using System;
     using System.ComponentModel;

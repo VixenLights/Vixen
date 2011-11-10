@@ -1,9 +1,9 @@
-namespace Vixen.Modules.DisplayPreviewModule.Model
+namespace VixenModules.App.DisplayPreview.Model
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows;
-    using Vixen.Modules.DisplayPreviewModule.Behaviors;
+    using VixenModules.App.DisplayPreview.Behaviors;
     using Vixen.Sys;
 
     public class ChannelSource

@@ -1,4 +1,4 @@
-namespace Vixen.Modules.DisplayPreviewModule.Model
+namespace VixenModules.App.DisplayPreview.Model
 {
     using System.Collections.ObjectModel;
     using System.Linq;

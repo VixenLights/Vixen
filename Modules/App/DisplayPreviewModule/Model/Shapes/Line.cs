@@ -1,4 +1,4 @@
-﻿namespace Vixen.Modules.DisplayPreviewModule.Model.Shapes
+﻿namespace VixenModules.App.DisplayPreview.Model.Shapes
 {
     internal class Line : IDisplayShape
     {

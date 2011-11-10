@@ -1,4 +1,4 @@
-namespace Vixen.Modules.DisplayPreviewModule
+namespace VixenModules.App.DisplayPreview
 {
     using System.Collections.Generic;
     using System.ComponentModel;

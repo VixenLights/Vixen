@@ -1,4 +1,4 @@
-namespace Vixen.Modules.DisplayPreviewModule.Behaviors
+namespace VixenModules.App.DisplayPreview.Behaviors
 {
     using System.Windows;
 

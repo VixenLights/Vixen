@@ -1,8 +1,8 @@
-namespace Vixen.Modules.DisplayPreviewModule.ViewModels
+namespace VixenModules.App.DisplayPreview.ViewModels
 {
     using System.Collections.ObjectModel;
     using System.Linq;
-    using Vixen.Modules.DisplayPreviewModule.Model;
+    using VixenModules.App.DisplayPreview.Model;
     using Vixen.Sys;
 
     public class DisplayItemEditorViewModel : ViewModelBase

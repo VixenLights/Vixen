@@ -1,4 +1,4 @@
-namespace Vixen.Modules.DisplayPreviewModule.ViewModels
+namespace VixenModules.App.DisplayPreview.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
@@ -7,9 +7,9 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
     using System.Windows.Input;
     using System.Windows.Media.Imaging;
     using Microsoft.Win32;
-    using Vixen.Modules.DisplayPreviewModule.Model;
-    using Vixen.Modules.DisplayPreviewModule.Views;
-    using Vixen.Modules.DisplayPreviewModule.WPF;
+    using VixenModules.App.DisplayPreview.Model;
+    using VixenModules.App.DisplayPreview.Views;
+    using VixenModules.App.DisplayPreview.WPF;
     using Vixen.Sys;
 
     public class SetupViewModel : ViewModelBase
