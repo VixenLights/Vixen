@@ -749,7 +749,7 @@ namespace CommonElements.Timeline
 				return;
 
 			if (Rows.IndexOf(destRow) == CurrentRowIndexUnderMouse)
-				return;
+			    return;
 
 			List<Row> visibleRows = new List<Row>();
 

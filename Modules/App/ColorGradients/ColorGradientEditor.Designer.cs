@@ -43,7 +43,7 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(256, 235);
+			this.buttonCancel.Location = new System.Drawing.Point(342, 234);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(80, 25);
 			this.buttonCancel.TabIndex = 5;
@@ -54,7 +54,7 @@
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOK.Location = new System.Drawing.Point(342, 235);
+			this.buttonOK.Location = new System.Drawing.Point(256, 234);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(80, 25);
 			this.buttonOK.TabIndex = 4;
@@ -70,6 +70,7 @@
 			this.gradientEditPanel.LockColorEditorHSV_Value = true;
 			this.gradientEditPanel.MinimumSize = new System.Drawing.Size(357, 120);
 			this.gradientEditPanel.Name = "gradientEditPanel";
+			this.gradientEditPanel.ReadOnly = false;
 			this.gradientEditPanel.Size = new System.Drawing.Size(410, 120);
 			this.gradientEditPanel.TabIndex = 0;
 			// 

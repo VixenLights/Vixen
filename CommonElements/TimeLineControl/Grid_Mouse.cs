@@ -341,7 +341,7 @@ namespace CommonElements.Timeline
             ClearSelectedRows(m_mouseDownElementRow);
             SelectionArea = new Rectangle(gridLocation.X, gridLocation.Y, 0, 0);
             m_selectionRectangleStart = gridLocation;
-        }
+		}
 
 
         //private void MouseMove_DragSelecting(MouseEventArgs e)
@@ -390,6 +390,7 @@ namespace CommonElements.Timeline
             m_dragState = DragState.Moving;
             m_ignoreDragArea = Rectangle.Empty;
             Cursor = Cursors.SizeAll;
+			CurrentRowIndexUnderMouse = Rows.IndexOf(rowAt(gridLocation));
 
             elementsBeginMove(gridLocation);
         }
