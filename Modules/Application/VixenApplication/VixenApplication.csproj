@@ -100,6 +100,12 @@
     <Compile Include="ConfigControllersOutputs.Designer.cs">
       <DependentUpon>ConfigControllersOutputs.cs</DependentUpon>
     </Compile>
+    <Compile Include="InstalledModules.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InstalledModules.Designer.cs">
+      <DependentUpon>InstalledModules.cs</DependentUpon>
+    </Compile>
     <Compile Include="VixenApplication.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -122,6 +128,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="ConfigControllersOutputs.resx">
       <DependentUpon>ConfigControllersOutputs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InstalledModules.resx">
+      <DependentUpon>InstalledModules.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="VixenApplication.resx">
       <DependentUpon>VixenApplication.cs</DependentUpon>

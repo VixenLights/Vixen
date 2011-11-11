@@ -49,6 +49,8 @@
 			this.buttonOpenSequence = new System.Windows.Forms.Button();
 			this.buttonNewSequence = new System.Windows.Forms.Button();
 			this.groupBoxSequences = new System.Windows.Forms.GroupBox();
+			this.listViewRecentSequences = new System.Windows.Forms.ListView();
+			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.groupBoxSystemConfig = new System.Windows.Forms.GroupBox();
 			this.buttonSetupOutputControllers = new System.Windows.Forms.Button();
@@ -56,8 +58,7 @@
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabelExecutionState = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabelExecutionLight = new System.Windows.Forms.ToolStripStatusLabel();
-			this.listViewRecentSequences = new System.Windows.Forms.ListView();
-			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.viewInstalledModulesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStripMain.SuspendLayout();
 			this.groupBoxSequences.SuspendLayout();
 			this.groupBoxSystemConfig.SuspendLayout();
@@ -88,6 +89,7 @@
 			// 
 			this.vixenToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.logsToolStripMenuItem,
+            this.viewInstalledModulesToolStripMenuItem,
             this.executionToolStripMenuItem,
             this.toolStripSeparator1,
             this.exitToolStripMenuItem});
@@ -98,7 +100,7 @@
 			// logsToolStripMenuItem
 			// 
 			this.logsToolStripMenuItem.Name = "logsToolStripMenuItem";
-			this.logsToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.logsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.logsToolStripMenuItem.Text = "Logs";
 			// 
 			// executionToolStripMenuItem
@@ -107,7 +109,7 @@
             this.startToolStripMenuItem,
             this.stopToolStripMenuItem});
 			this.executionToolStripMenuItem.Name = "executionToolStripMenuItem";
-			this.executionToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.executionToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.executionToolStripMenuItem.Text = "Execution Engine";
 			// 
 			// startToolStripMenuItem
@@ -127,12 +129,12 @@
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(169, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(192, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.exitToolStripMenuItem.Text = "Shutdown and Exit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
@@ -178,10 +180,36 @@
 			this.groupBoxSequences.TabStop = false;
 			this.groupBoxSequences.Text = "Sequences";
 			// 
+			// listViewRecentSequences
+			// 
+			this.listViewRecentSequences.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1});
+			this.listViewRecentSequences.FullRowSelect = true;
+			this.listViewRecentSequences.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+			this.listViewRecentSequences.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem1,
+            listViewItem2,
+            listViewItem3,
+            listViewItem4,
+            listViewItem5,
+            listViewItem6});
+			this.listViewRecentSequences.Location = new System.Drawing.Point(18, 116);
+			this.listViewRecentSequences.MultiSelect = false;
+			this.listViewRecentSequences.Name = "listViewRecentSequences";
+			this.listViewRecentSequences.Size = new System.Drawing.Size(180, 100);
+			this.listViewRecentSequences.TabIndex = 9;
+			this.listViewRecentSequences.UseCompatibleStateImageBehavior = false;
+			this.listViewRecentSequences.View = System.Windows.Forms.View.Details;
+			this.listViewRecentSequences.DoubleClick += new System.EventHandler(this.listViewRecentSequences_DoubleClick);
+			// 
+			// columnHeader1
+			// 
+			this.columnHeader1.Width = 150;
+			// 
 			// panel1
 			// 
-			this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
 			this.panel1.Location = new System.Drawing.Point(0, 27);
 			this.panel1.Name = "panel1";
@@ -245,31 +273,12 @@
 			this.toolStripStatusLabelExecutionLight.Name = "toolStripStatusLabelExecutionLight";
 			this.toolStripStatusLabelExecutionLight.Size = new System.Drawing.Size(22, 22);
 			// 
-			// listViewRecentSequences
+			// viewInstalledModulesToolStripMenuItem
 			// 
-			this.listViewRecentSequences.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1});
-			this.listViewRecentSequences.FullRowSelect = true;
-			this.listViewRecentSequences.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-			this.listViewRecentSequences.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2,
-            listViewItem3,
-            listViewItem4,
-            listViewItem5,
-            listViewItem6});
-			this.listViewRecentSequences.Location = new System.Drawing.Point(18, 116);
-			this.listViewRecentSequences.MultiSelect = false;
-			this.listViewRecentSequences.Name = "listViewRecentSequences";
-			this.listViewRecentSequences.Size = new System.Drawing.Size(180, 100);
-			this.listViewRecentSequences.TabIndex = 9;
-			this.listViewRecentSequences.UseCompatibleStateImageBehavior = false;
-			this.listViewRecentSequences.View = System.Windows.Forms.View.Details;
-			this.listViewRecentSequences.DoubleClick += new System.EventHandler(this.listViewRecentSequences_DoubleClick);
-			// 
-			// columnHeader1
-			// 
-			this.columnHeader1.Width = 150;
+			this.viewInstalledModulesToolStripMenuItem.Name = "viewInstalledModulesToolStripMenuItem";
+			this.viewInstalledModulesToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.viewInstalledModulesToolStripMenuItem.Text = "View Installed Modules";
+			this.viewInstalledModulesToolStripMenuItem.Click += new System.EventHandler(this.viewInstalledModulesToolStripMenuItem_Click);
 			// 
 			// VixenApplication
 			// 
@@ -326,6 +335,7 @@
 		private System.Windows.Forms.ToolStripMenuItem logsToolStripMenuItem;
 		private System.Windows.Forms.ListView listViewRecentSequences;
 		private System.Windows.Forms.ColumnHeader columnHeader1;
+		private System.Windows.Forms.ToolStripMenuItem viewInstalledModulesToolStripMenuItem;
 	}
 }
 

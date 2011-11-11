@@ -21,6 +21,10 @@ namespace Vixen.Sys {
 
         static public string BinaryRootPath { get; private set; }
 
+		static public string ModuleRootPath {
+			get { return Modules.Directory; }
+		}
+
         static public string DataRootPath {
             get {
                 if(_dataRootPath == null) {

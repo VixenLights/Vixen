@@ -17,6 +17,10 @@ namespace Vixen.Module.App {
 			set { }
 		}
 
+		public override IModuleInstance Clone() {
+			throw new NotSupportedException();
+		}
+
 		public bool Equals(IAppModuleInstance x, IAppModuleInstance y) {
 			return base.Equals(x, y);
 		}

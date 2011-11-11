@@ -376,6 +376,12 @@ namespace VixenApplication
 
 		#endregion
 
+		private void viewInstalledModulesToolStripMenuItem_Click(object sender, EventArgs e) {
+			using(InstalledModules installedModules = new InstalledModules()) {
+				installedModules.ShowDialog();
+			}
+		}
+
 	}
 
 	public class RecentSequences : List<string>
