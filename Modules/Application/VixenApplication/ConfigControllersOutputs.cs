@@ -117,6 +117,8 @@ namespace VixenApplication
 				_populateFormWithOutput(-1);
 			else
 				_populateFormWithOutput(listViewOutputs.SelectedIndices[0]);
+
+			buttonBulkRename.Enabled = (listViewOutputs.SelectedIndices.Count > 1);
 		}
 
 		private void buttonAdd_Click(object sender, EventArgs e)
@@ -192,6 +194,33 @@ namespace VixenApplication
 			} else {
 				buttonDelete.Enabled = false;
 				buttonConfigure.Enabled = false;
+			}
+		}
+
+		private void buttonBulkRename_Click(object sender, EventArgs e)
+		{
+			if (listViewOutputs.SelectedItems.Count <= 1)
+				return;
+
+			List<string> oldNames = new List<string>();
+			foreach (ListViewItem selectedItem in listViewOutputs.SelectedItems) {
+				oldNames.Add(selectedItem.SubItems[1].Text);
+			}
+
+			BulkRename renameForm = new BulkRename(oldNames.ToArray());
+
+			if (renameForm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+				for (int i = 0; i < listViewOutputs.SelectedItems.Count; i++) {
+					if (i >= renameForm.NewNames.Length) {
+						VixenSystem.Logging.Warn("ConfigControllersOutputs: bulk renaming outputs, and ran out of new names!");
+						break;
+					}
+					int outputIndex = int.Parse(listViewOutputs.SelectedItems[i].Text) - 1;
+					_controller.Outputs[outputIndex].Name = renameForm.NewNames[i];
+				}
+
+				_populateOutputsList();
+				_populateFormWithOutput(_selectedOutputIndex, true);
 			}
 		}
 	}

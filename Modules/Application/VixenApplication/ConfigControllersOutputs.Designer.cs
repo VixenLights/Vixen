@@ -41,6 +41,7 @@
 			this.textBoxName = new System.Windows.Forms.TextBox();
 			this.buttonAdd = new System.Windows.Forms.Button();
 			this.buttonOK = new System.Windows.Forms.Button();
+			this.buttonBulkRename = new System.Windows.Forms.Button();
 			this.groupBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -183,11 +184,23 @@
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			// 
+			// buttonBulkRename
+			// 
+			this.buttonBulkRename.Enabled = false;
+			this.buttonBulkRename.Location = new System.Drawing.Point(12, 380);
+			this.buttonBulkRename.Name = "buttonBulkRename";
+			this.buttonBulkRename.Size = new System.Drawing.Size(123, 25);
+			this.buttonBulkRename.TabIndex = 13;
+			this.buttonBulkRename.Text = "Bulk Rename Outputs";
+			this.buttonBulkRename.UseVisualStyleBackColor = true;
+			this.buttonBulkRename.Click += new System.EventHandler(this.buttonBulkRename_Click);
+			// 
 			// ConfigControllersOutputs
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(357, 415);
+			this.Controls.Add(this.buttonBulkRename);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.groupBox);
 			this.Controls.Add(this.listViewOutputs);
@@ -218,5 +231,6 @@
 		private System.Windows.Forms.Button buttonAdd;
 		private System.Windows.Forms.Button buttonOK;
 		private System.Windows.Forms.Button buttonUpdate;
+		private System.Windows.Forms.Button buttonBulkRename;
 	}
 }
