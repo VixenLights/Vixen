@@ -42,6 +42,18 @@ namespace Vixen.Sys {
 			Language = language;
 		}
 
+		protected ScriptSequence(string language, ScriptSequence original) {
+			Length = Forever;
+
+			SourceFiles = new List<SourceFile>(original.SourceFiles);
+			FrameworkAssemblies = new HashSet<string>(original.FrameworkAssemblies);
+			ExternalAssemblies = new HashSet<string>(original.ExternalAssemblies);
+
+			Language = language;
+
+			ClassName = original.ClassName;
+		}
+
 		public string SourceDirectory {
 			get { return _sourceDirectory; }
 		}

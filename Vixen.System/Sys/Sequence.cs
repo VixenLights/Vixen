@@ -83,19 +83,26 @@ namespace Vixen.Sys {
 
 		protected Sequence() {
 			FilePath = "";
-
 			InsertDataListener = new InsertDataListenerStack();
 			InsertDataListener += _DataListener;
 			Data = new EffectStreams(this);
 			TimingProvider = new TimingProviders(this);
-			//Media = new MediaCollection(ModuleDataSet);
 			RuntimeBehaviors = Modules.ModuleManagement.GetAllRuntimeBehavior();
 			ModuleDataSet = new ModuleLocalDataSet();
-			//// The runtime behavior module instances will need data in the sequence's
-			//// data set.
-			//foreach(IRuntimeBehaviorModuleInstance runtimeBehavior in RuntimeBehaviors) {
-			//    ModuleDataSet.GetModuleTypeData(runtimeBehavior);
-			//}
+			// Media set in ModuleDataSet setter.
+			// Runtime behaviors set in ModuleDataSet setter.
+		}
+
+		protected Sequence(Sequence original) {
+			FilePath = original.FilePath;
+			InsertDataListener = new InsertDataListenerStack();
+			InsertDataListener += _DataListener;
+			Data = new EffectStreams(this, original.Data);
+			TimingProvider = new TimingProviders(this, original.TimingProvider);
+			RuntimeBehaviors = Modules.ModuleManagement.GetAllRuntimeBehavior();
+			ModuleDataSet = original.ModuleDataSet.Clone();
+
+			Length = original.Length;
 		}
 
 		private bool _DataListener(EffectNode effectNode) {

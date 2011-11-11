@@ -21,5 +21,10 @@ namespace Vixen.Module {
 		/// System-supplied reference to the descriptor for this instance.
 		/// </summary>
 		IModuleDescriptor Descriptor { get; set; }
+		/// <summary>
+		/// Creates a deep copy of the module instance.
+		/// </summary>
+		/// <returns></returns>
+		IModuleInstance Clone();
 	}
 }

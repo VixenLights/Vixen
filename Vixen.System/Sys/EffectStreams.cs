@@ -25,6 +25,16 @@ namespace Vixen.Sys {
 			_effectStreams.Add(_mainStream);
 		}
 
+		public EffectStreams(ISequence owner, EffectStreams original)
+			: this(owner) {
+			_mainStream.AddData(original._mainStream);
+			foreach(EffectStream effectStream in original._effectStreams.Skip(1)) {
+				EffectStream newStream = new EffectStream(effectStream.Name);
+				newStream.AddData(effectStream);
+				_effectStreams.Add(newStream);
+			}
+		}
+
 		#region EffectNodes
 		public IEnumerable<EffectNode> GetEffects() {
 			return _mainStream;

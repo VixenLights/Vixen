@@ -22,7 +22,9 @@ namespace VixenModules.Sequence.Timed
 		public override IModuleDataModel Clone()
 		{
 			TimedSequenceData result = new TimedSequenceData();
-			result.MarkCollections.AddRange(MarkCollections);
+			// Cloning each MarkCollection so that the cloned data objects don't share references
+			// and step on each other.
+			result.MarkCollections = new List<MarkCollection>(MarkCollections.Select(x => new MarkCollection(x)));
 			return result;
 		}
 	}

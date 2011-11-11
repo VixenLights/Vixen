@@ -19,6 +19,15 @@ namespace VixenModules.Sequence.Timed
 			Enabled = true;
 		}
 
+		public MarkCollection(MarkCollection original) {
+			Marks = new List<TimeSpan>(original.Marks);
+			Id = Guid.NewGuid();
+			MarkColor = original.MarkColor;
+			Level = original.Level;
+			Enabled = original.Enabled;
+			Name = original.Name;
+		}
+
 		[DataMember]
 		public string Name { get; set; }
 

@@ -25,6 +25,10 @@ namespace Vixen.Execution {
 			Owner = owner;
 		}
 
+		public TimingProviders(ISequence owner, TimingProviders original)
+			: this(owner) {
+		}
+
 		public ISequence Owner { get; private set; }
 
 		public void GetSelectedSource(out string providerType, out string sourceName) {

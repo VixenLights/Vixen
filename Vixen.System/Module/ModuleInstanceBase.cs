@@ -15,6 +15,13 @@ namespace Vixen.Module {
 
 		virtual public void Dispose() { }
 
+		virtual public IModuleInstance Clone() {
+			IModuleInstance newInstance = (IModuleInstance)MemberwiseClone();
+			newInstance.InstanceId = Guid.NewGuid();
+			newInstance.ModuleData = ModuleData.Clone();
+			return newInstance;
+		}
+
 		public bool Equals(IModuleInstance x, IModuleInstance y) {
 			return x.InstanceId == y.InstanceId;
 		}

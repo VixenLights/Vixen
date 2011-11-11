@@ -6,6 +6,14 @@ using Vixen.Sys;
 
 namespace Vixen.Module.Sequence {
 	abstract public class SequenceModuleInstanceBase : Vixen.Sys.Sequence, ISequenceModuleInstance, IEqualityComparer<ISequenceModuleInstance>, IEquatable<ISequenceModuleInstance>, IEqualityComparer<SequenceModuleInstanceBase>, IEquatable<SequenceModuleInstanceBase> {
+		protected SequenceModuleInstanceBase(SequenceModuleInstanceBase original)
+			: base(original) {
+			InstanceId = Guid.NewGuid();
+			ModuleData = original.ModuleData.Clone();
+			StaticModuleData = original.StaticModuleData;
+			Descriptor = original.Descriptor;
+		}
+
 		public string FileExtension {
 			get { return (Descriptor as ISequenceModuleDescriptor).FileExtension; }
 		}
@@ -19,6 +27,8 @@ namespace Vixen.Module.Sequence {
 		virtual public IModuleDescriptor Descriptor { get; set; }
 
 		virtual public void Dispose() { }
+
+		abstract public IModuleInstance Clone();
 
 		public bool Equals(ISequenceModuleInstance x, ISequenceModuleInstance y) {
 			return x.InstanceId == y.InstanceId;
