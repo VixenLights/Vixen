@@ -925,6 +925,7 @@ namespace CommonElements.Timeline
 		private void ResizeGridHeight()
 		{
 			AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), CalculateAllRowsHeight());
+			Invalidate();
 		}
 
 		#endregion

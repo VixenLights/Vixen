@@ -99,7 +99,8 @@ namespace VixenModules.Effect.SetLevel
 			foreach (Channel channel in node.GetChannelEnumerator()) {
 				Command setLevelCommand = new Lighting.Monochrome.SetLevel(Level);
 				CommandNode data = new CommandNode(setLevelCommand, TimeSpan.Zero, TimeSpan);
-				_channelData[channel.Id] = new[] { data };
+				if (channel != null)
+					_channelData[channel.Id] = new[] { data };
 			}
 		}
 

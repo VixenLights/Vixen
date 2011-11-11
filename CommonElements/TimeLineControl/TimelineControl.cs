@@ -447,8 +447,6 @@ namespace CommonElements.Timeline
 
 		private void RowHeightChangedHandler(object sender, EventArgs e)
 		{
-			// again, icky. But it prevents artifacts.
-			//Refresh();
 		}
 
 		protected override void OnMouseWheel(MouseEventArgs e)
