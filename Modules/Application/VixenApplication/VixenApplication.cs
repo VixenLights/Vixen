@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.IO;
+using System.Xml.Serialization;
 using Vixen.Sys;
 using Vixen.Module.Editor;
 using Vixen.Module.Sequence;
@@ -43,6 +44,8 @@ namespace VixenApplication
 			foreach(string logName in VixenSystem.Logs.LogNames) {
 				logsToolStripMenuItem.DropDownItems.Add(logName, null, (menuSender, menuArgs) => _ViewLog(((ToolStripMenuItem)menuSender).Text));
 			}
+
+			PopulateRecentSequencesList();
 		}
 
 		#region IApplication implemetation
@@ -130,6 +133,9 @@ namespace VixenApplication
 				Form editorForm = editor as Form;
 				editor.Dispose();
 			}
+
+			AddSequenceToRecentList(editor.Sequence.FilePath);
+
 			return true;
 		}
 		#endregion
@@ -158,20 +164,24 @@ namespace VixenApplication
 			if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 				Cursor = Cursors.WaitCursor;
 				foreach (string file in openFileDialog.FileNames) {
-					try {
-						IEditorUserInterface editor = ApplicationServices.CreateEditor(file);
-
-						if (editor == null) {
-							VixenSystem.Logging.Error("Can't find an appropriate editor to open file " + file);
-							continue;
-						}
-
-						_OpenEditor(editor);
-					} catch (Exception ex) {
-						VixenSystem.Logging.Error("Error trying to open file '" + file + "': ", ex);
-					}
+					OpenSequenceFromFile(file);
 				}
 				Cursor = Cursors.Default;
+			}
+		}
+
+		private void OpenSequenceFromFile(string filename)
+		{
+			try {
+				IEditorUserInterface editor = ApplicationServices.CreateEditor(filename);
+
+				if (editor == null) {
+					VixenSystem.Logging.Error("Can't find an appropriate editor to open file " + filename);
+				}
+
+				_OpenEditor(editor);
+			} catch (Exception ex) {
+				VixenSystem.Logging.Error("Error trying to open file '" + filename + "': ", ex);
 			}
 		}
 
@@ -265,5 +275,110 @@ namespace VixenApplication
 			}
 		}
 
+		#region Recent Sequences list
+
+		private static string _recentSequencesFilename = "RecentSequences.xml";
+		private static int _maxRecentSequences = 7;
+
+		private string RecentSequencesFilepath
+		{
+			get { return Path.Combine(Vixen.Sys.Paths.DataRootPath, _recentSequencesFilename); }
+		}
+
+		private void listViewRecentSequences_DoubleClick(object sender, EventArgs e)
+		{
+			if (listViewRecentSequences.SelectedItems.Count <= 0)
+				return;
+
+			string file = listViewRecentSequences.SelectedItems[0].Tag as string;
+
+			if (File.Exists(file)) {
+				OpenSequenceFromFile(file);
+			} else {
+				MessageBox.Show("Can't find selected sequence.");
+			}
+		}
+
+		private void AddSequenceToRecentList(string filename)
+		{
+			RecentSequences rs = new RecentSequences();
+			foreach (ListViewItem item in listViewRecentSequences.Items) {
+				string seq = item.Tag as string;
+				if (seq != filename)
+					rs.Add(seq);
+			}
+
+			rs.Insert(0, filename);
+			if (rs.Count > _maxRecentSequences)
+				rs.RemoveRange(_maxRecentSequences, rs.Count - _maxRecentSequences);
+
+			SaveRecentSequences(rs);
+			PopulateRecentSequencesList();
+		}
+
+		private void PopulateRecentSequencesList()
+		{
+			RecentSequences rs = LoadRecentSequences();
+
+			listViewRecentSequences.BeginUpdate();
+			listViewRecentSequences.Items.Clear();
+
+			foreach (string sequence in rs) {
+				if (!File.Exists(sequence))
+					continue;
+
+				ListViewItem item = new ListViewItem(Path.GetFileName(sequence));
+				item.Tag = sequence;
+				listViewRecentSequences.Items.Add(item);
+			}
+
+			listViewRecentSequences.EndUpdate();
+		}
+
+		private RecentSequences LoadRecentSequences()
+		{
+			XmlSerializer serializer = null;
+			FileStream stream = null;
+			RecentSequences result = new RecentSequences();
+
+			if (!File.Exists(RecentSequencesFilepath))
+				return result;
+
+			try {
+				serializer = new XmlSerializer(typeof(RecentSequences));
+				stream = new FileStream(RecentSequencesFilepath, FileMode.Open);
+				result = (RecentSequences)serializer.Deserialize(stream);
+			} catch (Exception ex) {
+				VixenSystem.Logging.Error("VixenApplication: error loading recent sequences list", ex);
+			} finally {
+				if (stream != null)
+					stream.Close();
+			}
+
+			return result;
+		}
+
+		private void SaveRecentSequences(RecentSequences sequences)
+		{
+			StreamWriter writer = null;
+			XmlSerializer serializer;
+			try {
+				serializer = new XmlSerializer(typeof(RecentSequences));
+				writer = new StreamWriter(RecentSequencesFilepath, false);
+				serializer.Serialize(writer, sequences);
+			} catch (Exception ex) {
+				VixenSystem.Logging.Error("VixenApplication: error saving recent sequences list", ex);
+			} finally {
+				if (writer != null)
+					writer.Close();
+			}
+		}
+
+		#endregion
+
+	}
+
+	public class RecentSequences : List<string>
+	{
 	}
 }

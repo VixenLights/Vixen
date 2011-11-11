@@ -29,17 +29,23 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
+			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("asdfadsa");
+			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("rewqrewq");
+			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("vbcbxvxc");
+			System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("gfdsgfsd");
+			System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem("ytreyre");
+			System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem("xvcbxvcx");
 			this.contextMenuStripNewSequence = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.menuStripMain = new System.Windows.Forms.MenuStrip();
 			this.vixenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.logsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.executionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.label2 = new System.Windows.Forms.Label();
-			this.listBoxRecentSequences = new System.Windows.Forms.ListBox();
 			this.buttonOpenSequence = new System.Windows.Forms.Button();
 			this.buttonNewSequence = new System.Windows.Forms.Button();
 			this.groupBoxSequences = new System.Windows.Forms.GroupBox();
@@ -50,7 +56,8 @@
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabelExecutionState = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabelExecutionLight = new System.Windows.Forms.ToolStripStatusLabel();
-			this.logsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.listViewRecentSequences = new System.Windows.Forms.ListView();
+			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.menuStripMain.SuspendLayout();
 			this.groupBoxSequences.SuspendLayout();
 			this.groupBoxSystemConfig.SuspendLayout();
@@ -88,6 +95,12 @@
 			this.vixenToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
 			this.vixenToolStripMenuItem.Text = "System";
 			// 
+			// logsToolStripMenuItem
+			// 
+			this.logsToolStripMenuItem.Name = "logsToolStripMenuItem";
+			this.logsToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.logsToolStripMenuItem.Text = "Logs";
+			// 
 			// executionToolStripMenuItem
 			// 
 			this.executionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -100,14 +113,14 @@
 			// startToolStripMenuItem
 			// 
 			this.startToolStripMenuItem.Name = "startToolStripMenuItem";
-			this.startToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.startToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
 			this.startToolStripMenuItem.Text = "Start";
 			this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
 			// 
 			// stopToolStripMenuItem
 			// 
 			this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-			this.stopToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.stopToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
 			this.stopToolStripMenuItem.Text = "Stop";
 			this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
 			// 
@@ -132,20 +145,6 @@
 			this.label2.TabIndex = 8;
 			this.label2.Text = "Recent Sequences:";
 			// 
-			// listBoxRecentSequences
-			// 
-			this.listBoxRecentSequences.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.listBoxRecentSequences.FormattingEnabled = true;
-			this.listBoxRecentSequences.Items.AddRange(new object[] {
-            "dummy sequence 1",
-            "dummy sequence 2",
-            "dummy sequence 3",
-            ""});
-			this.listBoxRecentSequences.Location = new System.Drawing.Point(18, 116);
-			this.listBoxRecentSequences.Name = "listBoxRecentSequences";
-			this.listBoxRecentSequences.Size = new System.Drawing.Size(180, 93);
-			this.listBoxRecentSequences.TabIndex = 7;
-			// 
 			// buttonOpenSequence
 			// 
 			this.buttonOpenSequence.Location = new System.Drawing.Point(18, 59);
@@ -168,10 +167,10 @@
 			// 
 			// groupBoxSequences
 			// 
+			this.groupBoxSequences.Controls.Add(this.listViewRecentSequences);
 			this.groupBoxSequences.Controls.Add(this.buttonNewSequence);
 			this.groupBoxSequences.Controls.Add(this.buttonOpenSequence);
 			this.groupBoxSequences.Controls.Add(this.label2);
-			this.groupBoxSequences.Controls.Add(this.listBoxRecentSequences);
 			this.groupBoxSequences.Location = new System.Drawing.Point(12, 133);
 			this.groupBoxSequences.Name = "groupBoxSequences";
 			this.groupBoxSequences.Size = new System.Drawing.Size(218, 227);
@@ -181,8 +180,8 @@
 			// 
 			// panel1
 			// 
-			this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
 			this.panel1.Location = new System.Drawing.Point(0, 27);
 			this.panel1.Name = "panel1";
@@ -246,11 +245,31 @@
 			this.toolStripStatusLabelExecutionLight.Name = "toolStripStatusLabelExecutionLight";
 			this.toolStripStatusLabelExecutionLight.Size = new System.Drawing.Size(22, 22);
 			// 
-			// logsToolStripMenuItem
+			// listViewRecentSequences
 			// 
-			this.logsToolStripMenuItem.Name = "logsToolStripMenuItem";
-			this.logsToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
-			this.logsToolStripMenuItem.Text = "Logs";
+			this.listViewRecentSequences.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1});
+			this.listViewRecentSequences.FullRowSelect = true;
+			this.listViewRecentSequences.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+			this.listViewRecentSequences.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem1,
+            listViewItem2,
+            listViewItem3,
+            listViewItem4,
+            listViewItem5,
+            listViewItem6});
+			this.listViewRecentSequences.Location = new System.Drawing.Point(18, 116);
+			this.listViewRecentSequences.MultiSelect = false;
+			this.listViewRecentSequences.Name = "listViewRecentSequences";
+			this.listViewRecentSequences.Size = new System.Drawing.Size(180, 100);
+			this.listViewRecentSequences.TabIndex = 9;
+			this.listViewRecentSequences.UseCompatibleStateImageBehavior = false;
+			this.listViewRecentSequences.View = System.Windows.Forms.View.Details;
+			this.listViewRecentSequences.DoubleClick += new System.EventHandler(this.listViewRecentSequences_DoubleClick);
+			// 
+			// columnHeader1
+			// 
+			this.columnHeader1.Width = 150;
 			// 
 			// VixenApplication
 			// 
@@ -294,7 +313,6 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
 		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.ListBox listBoxRecentSequences;
 		private System.Windows.Forms.Button buttonOpenSequence;
 		private System.Windows.Forms.Button buttonNewSequence;
 		private System.Windows.Forms.GroupBox groupBoxSequences;
@@ -306,6 +324,8 @@
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelExecutionState;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelExecutionLight;
 		private System.Windows.Forms.ToolStripMenuItem logsToolStripMenuItem;
+		private System.Windows.Forms.ListView listViewRecentSequences;
+		private System.Windows.Forms.ColumnHeader columnHeader1;
 	}
 }
 
