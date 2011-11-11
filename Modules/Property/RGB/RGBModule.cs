@@ -116,7 +116,7 @@ namespace VixenModules.Property.RGB
 					result.Add(node);
 				} else {
 					foreach (ChannelNode child in node.Children)
-						result.AddRange(FindAllRenderableChildren(node));
+						result.AddRange(FindAllRenderableChildren(child));
 				}
 			}
 

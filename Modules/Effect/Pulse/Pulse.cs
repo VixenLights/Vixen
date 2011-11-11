@@ -115,9 +115,9 @@ namespace VixenModules.Effect.Pulse
 				// if this node is an RGB node, then it will know what to do with it (might render directly,
 				// might be broken down into sub-channels, etc.) So just pass it off to that instead.
 				if (renderableNode.Properties.Contains(PulseDescriptor._RGBPropertyId)) {
-					RenderRGB(node);
+					RenderRGB(renderableNode);
 				} else {
-					RenderMonochrome(node);
+					RenderMonochrome(renderableNode);
 				}
 			}
 		}
