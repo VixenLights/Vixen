@@ -242,43 +242,53 @@ namespace VixenModules.Effect.Twinkle
 		{
 			List<IndividualTwinkleDetails> result = new List<IndividualTwinkleDetails>();
 
-			// step through the effect in increments of a 20th of the average pulse time.
-			TimeSpan step = TimeSpan.FromMilliseconds(AveragePulseTime / 100.0);
-			double chance = AverageCoverage / 100.0 / 100.0;		// was a percentage.
-			for (TimeSpan current = TimeSpan.Zero; current < TimeSpan; current += step) {
-				// if the next random twinkle instance happens, make a pulse for it
-				if (_random.NextDouble() <= chance) {
+			// the mean interval between individual flickers (used for random generation later)
+			double meanMillisecondsBetweenTwinkles = AveragePulseTime / (AverageCoverage / 100.0) / 2.0;
+			double maxMillisecondsBetweenTwinkles = AveragePulseTime / (AverageCoverage / 100.0);
 
-					// generate a time length for it (all in ms)
-					int maxDurationVariation = (int)((PulseTimeVariation / 100.0) * AveragePulseTime);
-					int twinkleDurationMs = _random.Next(AveragePulseTime - maxDurationVariation, AveragePulseTime + maxDurationVariation + 1);
-					TimeSpan twinkleDuration = TimeSpan.FromMilliseconds(twinkleDurationMs);
+			// the maximum amount of time an individual flicker/twinkle can vary off the average by
+			int maxDurationVariation = (int)((PulseTimeVariation / 100.0) * AveragePulseTime);
 
-					// it might have to be capped to fit within the duration of the whole effect, so figure that out
-					if (current + twinkleDuration > TimeSpan) {
-						// it's past the end of the effect. If it can be reduced to fit in the acceptable range, do that, otherwise skip it
-						if ((TimeSpan - current).TotalMilliseconds >= AveragePulseTime - maxDurationVariation) {
-							twinkleDuration = (TimeSpan - current);
-						} else {
-							// if we can't fit anything else into this time gap, not much point continuing the iteration
-							break;
-						}
+			for (TimeSpan current = TimeSpan.Zero; current < TimeSpan; ) {
+
+				// calculate how long until the next flicker, and clamp it (since there's a small chance it's huge)
+				double nextTime = Math.Log(1.0 - _random.NextDouble()) * -meanMillisecondsBetweenTwinkles;
+				if (nextTime > maxMillisecondsBetweenTwinkles)
+				    nextTime = maxMillisecondsBetweenTwinkles;
+
+				// check if the timespan will be off the end, if so, bail
+				current += TimeSpan.FromMilliseconds(nextTime);
+				if (current >= TimeSpan)
+					break;
+
+				// generate a time length for it (all in ms)
+				int twinkleDurationMs = _random.Next(AveragePulseTime - maxDurationVariation, AveragePulseTime + maxDurationVariation + 1);
+				TimeSpan twinkleDuration = TimeSpan.FromMilliseconds(twinkleDurationMs);
+
+				// it might have to be capped to fit within the duration of the whole effect, so figure that out
+				if (current + twinkleDuration > TimeSpan) {
+					// it's past the end of the effect. If it can be reduced to fit in the acceptable range, do that, otherwise skip it
+					if ((TimeSpan - current).TotalMilliseconds >= AveragePulseTime - maxDurationVariation) {
+						twinkleDuration = (TimeSpan - current);
+					} else {
+						// if we can't fit anything else into this time gap, not much point continuing the iteration
+						break;
 					}
-
-					// generate the levels/curve for it
-					Level minLevel = MinimumLevel;
-					int maxLevelVariation = (int)((LevelVariation / 100.0) * (MaximumLevel - MinimumLevel));
-					int reduction = _random.Next(maxLevelVariation);
-					Level maxLevel = MaximumLevel - reduction;
-					Curve curve = new Curve(new PointPairList(new double[] { 0, 50, 100 }, new double[] { minLevel, maxLevel, minLevel }));
-
-					IndividualTwinkleDetails occurance = new IndividualTwinkleDetails();
-					occurance.StartTime = current;
-					occurance.Duration = twinkleDuration;
-					occurance.TwinkleCurve = curve;
-
-					result.Add(occurance);
 				}
+
+				// generate the levels/curve for it
+				Level minLevel = MinimumLevel;
+				int maxLevelVariation = (int)((LevelVariation / 100.0) * (MaximumLevel - MinimumLevel));
+				int reduction = _random.Next(maxLevelVariation);
+				Level maxLevel = MaximumLevel - reduction;
+				Curve curve = new Curve(new PointPairList(new double[] { 0, 50, 100 }, new double[] { minLevel, maxLevel, minLevel }));
+
+				IndividualTwinkleDetails occurance = new IndividualTwinkleDetails();
+				occurance.StartTime = current;
+				occurance.Duration = twinkleDuration;
+				occurance.TwinkleCurve = curve;
+
+				result.Add(occurance);
 			}
 
 			return result;
