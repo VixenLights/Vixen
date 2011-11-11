@@ -604,9 +604,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		protected void timelineControl_CursorMoved(object sender, EventArgs e)
 		{
 			toolStripStatusLabel_currentTime.Text = timelineControl.CursorPosition.ToString("m\\:ss\\.fff");
+			EnsureCursorIsVisible();
+		}
 
+		private void EnsureCursorIsVisible()
+		{
 			// check if the cursor position would be over 90% of the grid width: if so, scroll the grid so it would be at 50%
-			// TODO: this is probably going to look a bit messy and jerky. Would could improve it maybe, if needed?
+			// TODO: this is probably going to look a bit messy and jerky.
 			if (timelineControl.CursorPosition > timelineControl.VisibleTimeStart + TimeSpan.FromMilliseconds(timelineControl.VisibleTimeSpan.TotalMilliseconds * 0.9)) {
 				timelineControl.VisibleTimeStart = TimeSpan.FromMilliseconds(timelineControl.CursorPosition.TotalMilliseconds - (timelineControl.VisibleTimeSpan.TotalMilliseconds * 0.5));
 			}
@@ -614,6 +618,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (timelineControl.CursorPosition < timelineControl.VisibleTimeStart) {
 				timelineControl.VisibleTimeStart = TimeSpan.FromMilliseconds(timelineControl.CursorPosition.TotalMilliseconds - (timelineControl.VisibleTimeSpan.TotalMilliseconds * 0.2));
 			}
+
+			RestrictVisibleTimeToSequenceLength();
+		}
+
+		private void RestrictVisibleTimeToSequenceLength()
+		{
+			if (timelineControl.VisibleTimeStart < TimeSpan.FromSeconds(0))
+				timelineControl.VisibleTimeStart = TimeSpan.FromSeconds(0);
+
+			if (timelineControl.VisibleTimeEnd > _sequence.Length)
+				timelineControl.VisibleTimeStart = _sequence.Length - timelineControl.VisibleTimeSpan;
 		}
 
 
@@ -966,6 +981,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				IsModified = true;
 
 			RemoveElements(timelineControl.SelectedElements.Cast<TimedSequenceElement>());
+		}
+
+		private void toolStripButton_Start_Click(object sender, EventArgs e)
+		{
+			timelineControl.CursorPosition = TimeSpan.FromSeconds(0);
+		}
+
+		private void toolStripButton_End_Click(object sender, EventArgs e)
+		{
+			timelineControl.CursorPosition = _sequence.Length;
+		}
+
+		private void TimedSequenceEditorForm_Resize(object sender, EventArgs e)
+		{
+			RestrictVisibleTimeToSequenceLength();
 		}
 
 

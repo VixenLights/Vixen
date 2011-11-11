@@ -572,7 +572,7 @@ namespace CommonElements.Timeline
             // if we've moved vertically, we may need to move elements between rows
             if (dy != 0)
             {
-                //MoveElementsVerticallyToLocation(SelectedElements, gridLocation);
+                MoveElementsVerticallyToLocation(SelectedElements, gridLocation);
             }
 
             Invalidate();
