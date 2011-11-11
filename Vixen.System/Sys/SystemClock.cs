@@ -33,5 +33,14 @@ namespace Vixen.Sys {
 		public bool IsRunning {
 			get { return _time.IsRunning; }
 		}
+
+		public bool SupportsVariableSpeeds {
+			get { return false; }
+		}
+
+		public float Speed {
+			get { return 1; } // 1 = 100%
+			set { throw new NotSupportedException(); }
+		}
 	}
 }

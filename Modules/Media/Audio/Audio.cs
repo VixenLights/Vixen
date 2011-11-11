@@ -100,6 +100,15 @@ namespace VixenModules.Media.Audio
 				return _audioSystem.Duration;
 			}
 		}
+
+		public bool SupportsVariableSpeeds {
+			get { return false; }
+		}
+
+		public float Speed {
+			get { return 1; } // 1 = 100%
+			set { throw new NotSupportedException(); }
+		}
 	}
 
 

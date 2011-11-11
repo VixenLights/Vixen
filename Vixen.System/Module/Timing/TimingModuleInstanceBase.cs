@@ -16,6 +16,15 @@ namespace Vixen.Module.Timing {
 
 		abstract public void Resume();
 
+		virtual public bool SupportsVariableSpeeds {
+			get { return false; }
+		}
+
+		virtual public float Speed {
+			get { return 1; } // 1 = 100%
+			set { throw new NotSupportedException(); }
+		}
+
 		public bool Equals(ITimingModuleInstance x, ITimingModuleInstance y) {
 			return base.Equals(x, y);
 		}

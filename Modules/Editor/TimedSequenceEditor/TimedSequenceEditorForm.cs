@@ -659,6 +659,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			set { }
 		}
 
+		public bool SupportsVariableSpeeds {
+			get { return false; }
+		}
+
+		public float Speed {
+			get { return 1; } // 1 = 100%
+			set { throw new NotSupportedException(); }
+		}
 
 		#endregion
 
@@ -748,7 +756,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		#endregion
-
 
 		private void TimedSequenceEditorForm_FormClosed(object sender, FormClosedEventArgs e)
 		{
