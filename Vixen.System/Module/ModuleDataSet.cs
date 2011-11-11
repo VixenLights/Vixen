@@ -27,13 +27,31 @@ namespace Vixen.Module {
 		/// <param name="module"></param>
 		public void GetModuleTypeData(IModuleInstance module) {
 			if(module != null) {
-				// If the module already has data, add it, don't overwrite it.
-				IModuleDataModel dataModel = _GetDataInstance(module);
-				if(dataModel == null) {
-					module.ModuleData = RetrieveTypeData(module.Descriptor);
-				} else {
+				// 1. Module has a data object, we don't.
+				//    - Add the module's data object
+				// 2. Module has no data object, we do.
+				//    - Get our data object and assign it in the module
+				// 3. We and the module have a data object.
+				//    - Get our data object and assign it in the module
+				// 4. Neither has a data object.
+				//    - We create one within ourselves and assign it in the module.
+				if(!Contains(module.Descriptor.TypeId) && module.ModuleData != null) {
+					// We have no data, but the module does.  Add it.
+					IModuleDataModel dataModel = _GetDataInstance(module);
 					_Add(this, module.Descriptor.TypeId, module.InstanceId, dataModel);
+				} else {
+					// In every other case, we have or can create data.
+					module.ModuleData = RetrieveTypeData(module.Descriptor);
 				}
+				//* This behavior was put in for a reason now lost to history.
+				//* KEEP THIS CODE, in case the reason is discovered.
+				//// If the module already has data, add it, don't overwrite it.
+				//IModuleDataModel dataModel = _GetDataInstance(module);
+				//if(dataModel == null) {
+				//    module.ModuleData = RetrieveTypeData(module.Descriptor);
+				//} else {
+				//    _Add(this, module.Descriptor.TypeId, module.InstanceId, dataModel);
+				//}
 			}
 		}
 
@@ -54,13 +72,31 @@ namespace Vixen.Module {
 		/// <param name="module"></param>
 		public void GetModuleInstanceData(IModuleInstance module) {
 			if(module != null) {
-				// If the module already has data, add it, don't overwrite it.
-				IModuleDataModel dataModel = _GetDataInstance(module);
-				if(dataModel == null) {
-					module.ModuleData = RetrieveInstanceData(module);
-				} else {
+				// 1. Module has a data object, we don't.
+				//    - Add the module's data object
+				// 2. Module has no data object, we do.
+				//    - Get our data object and assign it in the module
+				// 3. We and the module have a data object.
+				//    - Get our data object and assign it in the module
+				// 4. Neither has a data object.
+				//    - We create one within ourselves and assign it in the module.
+				if(!Contains(module.Descriptor.TypeId, module.InstanceId) && module.ModuleData != null) {
+					// We have no data, but the module does.  Add it.
+					IModuleDataModel dataModel = _GetDataInstance(module);
 					_Add(this, module.Descriptor.TypeId, module.InstanceId, dataModel);
+				} else {
+					// In every other case, we have or can create data.
+					module.ModuleData = RetrieveInstanceData(module);
 				}
+				//* This behavior was put in for a reason now lost to history.
+				//* KEEP THIS CODE, in case the reason is discovered.
+				//// If the module already has data, add it, don't overwrite it.
+				//IModuleDataModel dataModel = _GetDataInstance(module);
+				//if(dataModel == null) {
+				//    module.ModuleData = RetrieveInstanceData(module);
+				//} else {
+				//    _Add(this, module.Descriptor.TypeId, module.InstanceId, dataModel);
+				//}
 			}
 		}
 
