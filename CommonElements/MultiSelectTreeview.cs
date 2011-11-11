@@ -595,33 +595,36 @@ namespace CommonElements
 
 			_dragDestinationNode = GetNodeAt(pt);
 
-			// try and figure out if we would be dragging 'between' nodes.
-			if (_dragDestinationNode.Bounds.Contains(pt) && pt.Y - _dragDestinationNode.Bounds.Top <= 3) {
-				_dragBetweenState = DragBetweenNodes.DragAboveTargetNode;
-			} else if (_dragDestinationNode.Bounds.Contains(pt) && _dragDestinationNode.Bounds.Bottom - pt.Y <= 3) {
-				_dragBetweenState = DragBetweenNodes.DragBelowTargetNode;
-			} else {
-				_dragBetweenState = DragBetweenNodes.DragOnTargetNode;
-			}
-
-			// figure out where to draw the dotted line to show where it would be moving to.
-			if (DraggingBetweenRows) {
-
-				if (_dragBetweenState == DragBetweenNodes.DragAboveTargetNode) {
-					_dragBetweenRowsDrawLineStart = new Point(_dragDestinationNode.Bounds.Left, _dragDestinationNode.Bounds.Top);
-					_dragBetweenRowsDrawLineEnd = new Point(_dragDestinationNode.Bounds.Right + 10, _dragDestinationNode.Bounds.Top);
-				} else if (_dragBetweenState == DragBetweenNodes.DragBelowTargetNode) {
-					_dragBetweenRowsDrawLineStart = new Point(_dragDestinationNode.Bounds.Left, _dragDestinationNode.Bounds.Bottom);
-					_dragBetweenRowsDrawLineEnd = new Point(_dragDestinationNode.Bounds.Right + 10, _dragDestinationNode.Bounds.Bottom);
+			if (_dragDestinationNode != null) {
+				// try and figure out if we would be dragging 'between' nodes.
+				if (_dragDestinationNode.Bounds.Contains(pt) && pt.Y - _dragDestinationNode.Bounds.Top <= 3) {
+					_dragBetweenState = DragBetweenNodes.DragAboveTargetNode;
+				} else if (_dragDestinationNode.Bounds.Contains(pt) && _dragDestinationNode.Bounds.Bottom - pt.Y <= 3) {
+					_dragBetweenState = DragBetweenNodes.DragBelowTargetNode;
 				} else {
-					_dragBetweenRowsDrawLineStart = new Point(-1, -1);
-					_dragBetweenRowsDrawLineEnd = new Point(-1, -1);
+					_dragBetweenState = DragBetweenNodes.DragOnTargetNode;
 				}
 
-				if (_dragLastLineDrawnY != _dragBetweenRowsDrawLineStart.Y) {
-					Invalidate();
-					_dragLastLineDrawnY = _dragBetweenRowsDrawLineStart.Y;
+				// figure out where to draw the dotted line to show where it would be moving to.
+				if (DraggingBetweenRows) {
+
+					if (_dragBetweenState == DragBetweenNodes.DragAboveTargetNode) {
+						_dragBetweenRowsDrawLineStart = new Point(_dragDestinationNode.Bounds.Left, _dragDestinationNode.Bounds.Top);
+						_dragBetweenRowsDrawLineEnd = new Point(_dragDestinationNode.Bounds.Right + 10, _dragDestinationNode.Bounds.Top);
+					} else if (_dragBetweenState == DragBetweenNodes.DragBelowTargetNode) {
+						_dragBetweenRowsDrawLineStart = new Point(_dragDestinationNode.Bounds.Left, _dragDestinationNode.Bounds.Bottom);
+						_dragBetweenRowsDrawLineEnd = new Point(_dragDestinationNode.Bounds.Right + 10, _dragDestinationNode.Bounds.Bottom);
+					} else {
+						_dragBetweenRowsDrawLineStart = new Point(-1, -1);
+						_dragBetweenRowsDrawLineEnd = new Point(-1, -1);
+					}
+
+					if (_dragLastLineDrawnY != _dragBetweenRowsDrawLineStart.Y) {
+						Invalidate();
+						_dragLastLineDrawnY = _dragBetweenRowsDrawLineStart.Y;
+					}
 				}
+			} else {
 			}
 
 			// get the nodes that are being dragged from the drag data
