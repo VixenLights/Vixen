@@ -158,7 +158,7 @@ namespace Vixen.Module.Output {
 				// Remove from the transform list.
 				outputTransforms.Remove(instance);
 				// Remove from the transform module data.
-				ModuleDataSet.Remove(transformTypeId, transformInstanceId);
+				ModuleDataSet.RemoveModuleInstanceData(transformTypeId, transformInstanceId);
 			}
 		}
 

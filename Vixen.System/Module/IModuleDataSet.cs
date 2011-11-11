@@ -10,8 +10,10 @@ namespace Vixen.Module {
 		void GetModuleInstanceData(IModuleInstance module);
 		IModuleDataModel RetrieveTypeData(IModuleDescriptor descriptor);
 		IModuleDataModel RetrieveInstanceData(IModuleInstance instance);
-		void Remove(Guid moduleTypeId);
-		void Remove(Guid moduleTypeId, Guid moduleInstanceId);
+		void AddModuleTypeData(IModuleInstance instance);
+		void AddModuleInstanceData(IModuleInstance instance);
+		void RemoveModuleTypeData(Guid moduleTypeId);
+		void RemoveModuleInstanceData(Guid moduleTypeId, Guid moduleInstanceId);
 		bool Contains(Guid moduleTypeId);
 		bool Contains(Guid moduleTypeId, Guid moduleInstanceId);
 		IEnumerable<Guid> GetModuleTypes();

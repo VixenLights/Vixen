@@ -38,7 +38,7 @@ namespace Vixen.Module {
 				if(!Contains(module.Descriptor.TypeId) && module.ModuleData != null) {
 					// We have no data, but the module does.  Add it.
 					IModuleDataModel dataModel = _GetDataInstance(module);
-					_Add(this, module.Descriptor.TypeId, module.InstanceId, dataModel);
+					_Add(this, module.Descriptor.TypeId, module.Descriptor.TypeId, dataModel);
 				} else {
 					// In every other case, we have or can create data.
 					module.ModuleData = RetrieveTypeData(module.Descriptor);
@@ -165,8 +165,8 @@ namespace Vixen.Module {
 		}
 
 		static private void _Remove(ModuleDataSet dataSet, Tuple<Guid,Guid> key) {
-			if(dataSet == null) throw new ArgumentException("Cannot be null.", "dataSet");
-			if(key == null) throw new ArgumentException("Cannot be null.", "module");
+			if(dataSet == null) throw new ArgumentNullException("dataSet");
+			if(key == null) throw new ArgumentNullException("key");
 
 			IModuleDataModel dataModel;
 			if(dataSet._dataModels.TryGetValue(key, out dataModel)) {
@@ -258,12 +258,32 @@ namespace Vixen.Module {
             }
         }
 
-		public void Remove(Guid moduleTypeId) {
-			Remove(moduleTypeId, moduleTypeId);
+		/// <summary>
+		/// Adds the module's data object as type data.  Does not overwrite any existing data.
+		/// </summary>
+		/// <param name="instance"></param>
+		public void AddModuleTypeData(IModuleInstance instance) {
+			if(instance.ModuleData != null) {
+				_Add(this, instance.Descriptor.TypeId, instance.Descriptor.TypeId, instance.ModuleData);
+			}
 		}
 
-		public void Remove(Guid moduleTypeId, Guid moduleInstanceId) {
-			_dataModels.Remove(new Tuple<Guid,Guid>(moduleTypeId, moduleInstanceId));
+		/// <summary>
+		/// Adds the module's data object as instance data.  Does not overwrite any existing data.
+		/// </summary>
+		/// <param name="instance"></param>
+		public void AddModuleInstanceData(IModuleInstance instance) {
+			if(instance.ModuleData != null) {
+				_Add(this, instance.Descriptor.TypeId, instance.InstanceId, instance.ModuleData);
+			}
+		}
+
+		public void RemoveModuleTypeData(Guid moduleTypeId) {
+			_Remove(this, new Tuple<Guid, Guid>(moduleTypeId, moduleTypeId));
+		}
+
+		public void RemoveModuleInstanceData(Guid moduleTypeId, Guid moduleInstanceId) {
+			_Remove(this, new Tuple<Guid, Guid>(moduleTypeId, moduleInstanceId));
 		}
 
 		public bool Contains(Guid moduleTypeId) {

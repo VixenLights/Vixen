@@ -37,7 +37,7 @@ namespace Vixen.Sys {
 			if(_items.TryGetValue(id, out instance)) {
 				instance.Owner = null;
 				_items.Remove(id);
-				PropertyData.Remove(id);
+				PropertyData.RemoveModuleTypeData(id);
 			}
 		}
 

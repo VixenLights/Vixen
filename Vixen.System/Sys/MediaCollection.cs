@@ -51,7 +51,7 @@ namespace Vixen.Sys {
 		public void RemoveAt(int index) {
 			if(index < _modules.Count) {
 				IMediaModuleInstance instance = _modules[index];
-				_moduleDataSet.Remove(instance.Descriptor.TypeId, instance.InstanceId);
+				_moduleDataSet.RemoveModuleInstanceData(instance.Descriptor.TypeId, instance.InstanceId);
 				_modules.RemoveAt(index);
 			}
 		}
@@ -67,7 +67,7 @@ namespace Vixen.Sys {
 				IMediaModuleInstance instance = _modules[index];
 
 				// Remove the data of the existing instance.
-				_moduleDataSet.Remove(instance.Descriptor.TypeId, instance.InstanceId);
+				_moduleDataSet.RemoveModuleInstanceData(instance.Descriptor.TypeId, instance.InstanceId);
 				// Add data for the new instance.
 				_moduleDataSet.GetModuleInstanceData(value);
 
@@ -102,7 +102,7 @@ namespace Vixen.Sys {
 
 		public bool Remove(IMediaModuleInstance item) {
 			if(_modules.Remove(item)) {
-				_moduleDataSet.Remove(item.Descriptor.TypeId, item.InstanceId);
+				_moduleDataSet.RemoveModuleInstanceData(item.Descriptor.TypeId, item.InstanceId);
 				return true;
 			}
 			return false;

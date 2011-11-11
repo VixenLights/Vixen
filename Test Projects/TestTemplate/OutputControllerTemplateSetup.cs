@@ -53,7 +53,7 @@ namespace TestTemplate {
 		private void buttonRemoveTransform_Click(object sender, EventArgs e) {
 			if(listBoxTransforms.SelectedItem != null) {
 				ITransformModuleInstance instance = _SelectedInstance;
-				_transformDatum.Remove(instance.Descriptor.TypeId, instance.InstanceId);
+				_transformDatum.RemoveModuleInstanceData(instance.Descriptor.TypeId, instance.InstanceId);
 				_templateTransforms.RemoveAt(listBoxTransforms.SelectedIndex);
 				_UpdateTransformList();
 			}

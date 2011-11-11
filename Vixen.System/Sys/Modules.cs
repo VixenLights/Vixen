@@ -277,6 +277,7 @@ namespace Vixen.Sys {
 				instance.InstanceId = Guid.NewGuid();
 				instance.Descriptor = GetDescriptorById(moduleTypeId);
 				instance.StaticModuleData = _GetModuleStaticData(instance);
+				instance.ModuleData = _GetModuleData(instance);
 
 				// See if there are any templates to apply to the instance.
 				ModuleTemplateModuleManagement manager = Modules.GetManager<IModuleTemplateModuleInstance, ModuleTemplateModuleManagement>();
@@ -425,6 +426,24 @@ namespace Vixen.Sys {
 		static public ModuleImplementation GetImplementation<T>()
 			where T : class, IModuleInstance {
 			return _moduleImplementationDescriptors.Keys.FirstOrDefault(x => x.ModuleInstanceType == typeof(T));
+		}
+
+		/// <summary>
+		/// Creates a default data object for the module without adding it to any dataset.
+		/// </summary>
+		/// <param name="instance"></param>
+		/// <returns></returns>
+		static private IModuleDataModel _GetModuleData(IModuleInstance instance) {
+			// Remember, the data is orphaned!
+			IModuleDataModel dataModel = null;
+
+			if(instance.Descriptor.ModuleDataClass != null) {
+				dataModel = Activator.CreateInstance(instance.Descriptor.ModuleDataClass) as IModuleDataModel;
+				dataModel.ModuleTypeId = instance.Descriptor.TypeId;
+				dataModel.ModuleInstanceId = instance.InstanceId;
+			}
+
+			return dataModel;
 		}
 
 		static private IModuleDataModel _GetModuleStaticData(IModuleInstance instance) {
