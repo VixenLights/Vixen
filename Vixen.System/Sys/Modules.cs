@@ -201,7 +201,12 @@ namespace Vixen.Sys {
 					descriptors.AddRange(descriptorsFound);
 					_moduleImplementationDescriptors[moduleImplementation].AddRange(descriptorsFound);
 				} catch(BadImageFormatException) {
-					//VixenSystem.Logging.Warning("File " + filePath + " was not loaded due to BadImageFormatException.");
+				} catch(ReflectionTypeLoadException ex) {
+					foreach(Exception loaderException in ex.LoaderExceptions) {
+						VixenSystem.Logging.Debug("Loader exception:" + Environment.NewLine + loaderException.Message + Environment.NewLine + Environment.NewLine + "The system has been stopped.", loaderException);
+					}
+				} catch(Exception ex) {
+					VixenSystem.Logging.Error("Error loading modules from " + filePath, ex);
 				}
 			}
 
