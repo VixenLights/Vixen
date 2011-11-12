@@ -42,6 +42,7 @@
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
 			this.scheduleDay = new Scheduler.ScheduleDay();
 			this.scheduleWeek = new Scheduler.ScheduleWeek();
+			this.scheduleAgenda = new Scheduler.ScheduleAgenda();
 			this.toolStripView.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.contextMenuStrip.SuspendLayout();
@@ -181,26 +182,33 @@
 			// scheduleDay
 			// 
 			this.scheduleDay.AutoScroll = true;
-			this.scheduleDay.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.scheduleDay.Location = new System.Drawing.Point(0, 25);
+			this.scheduleDay.Location = new System.Drawing.Point(-93, 46);
 			this.scheduleDay.Name = "scheduleDay";
 			this.scheduleDay.Size = new System.Drawing.Size(530, 281);
 			this.scheduleDay.TabIndex = 16;
 			// 
 			// scheduleWeek
 			// 
-			this.scheduleWeek.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.scheduleWeek.Location = new System.Drawing.Point(0, 25);
+			this.scheduleWeek.Location = new System.Drawing.Point(-64, 84);
 			this.scheduleWeek.Name = "scheduleWeek";
 			this.scheduleWeek.Size = new System.Drawing.Size(530, 281);
 			this.scheduleWeek.TabIndex = 17;
 			this.scheduleWeek.Visible = false;
+			// 
+			// scheduleAgenda
+			// 
+			this.scheduleAgenda.Location = new System.Drawing.Point(460, 46);
+			this.scheduleAgenda.Name = "scheduleAgenda";
+			this.scheduleAgenda.Size = new System.Drawing.Size(224, 205);
+			this.scheduleAgenda.TabIndex = 18;
+			this.scheduleAgenda.Visible = false;
 			// 
 			// SchedulerForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(530, 351);
+			this.Controls.Add(this.scheduleAgenda);
 			this.Controls.Add(this.scheduleWeek);
 			this.Controls.Add(this.scheduleDay);
 			this.Controls.Add(this.panel1);
@@ -238,5 +246,6 @@
 		private System.Windows.Forms.ToolTip toolTip;
 		private ScheduleDay scheduleDay;
 		private ScheduleWeek scheduleWeek;
+		private ScheduleAgenda scheduleAgenda;
 	}
 }

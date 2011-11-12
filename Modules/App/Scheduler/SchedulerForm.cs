@@ -19,6 +19,10 @@ namespace Scheduler {
 			InitializeComponent();
 			_data = data;
 			checkBoxEnableSchedule.Checked = data.IsEnabled;
+
+			scheduleDay.Dock = DockStyle.Fill;
+			scheduleWeek.Dock = DockStyle.Fill;
+			scheduleAgenda.Dock = DockStyle.Fill;
 		}
 
 		private void SchedulerForm_Load(object sender, EventArgs e) {
@@ -57,7 +61,7 @@ namespace Scheduler {
 					toolStripButtonWeekView.Checked = false;
 					break;
 				case DateView.Agenda:
-					//scheduleAgenda1.Visible = false;
+					scheduleAgenda.Visible = false;
 					toolStripButtonAgendaView.Checked = false;
 					break;
 			}
@@ -79,7 +83,7 @@ namespace Scheduler {
 					break;
 				case DateView.Agenda:
 					//CompileApplicableTimers(date, m_oneDayTimeSpan);
-					//scheduleAgenda1.Visible = true;
+					scheduleAgenda.Visible = true;
 					toolStripButtonAgendaView.Checked = true;
 					break;
 			}

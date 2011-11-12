@@ -33,6 +33,9 @@ namespace Scheduler {
 		private Rectangle _buttonLeftBounds;
 		private Rectangle _buttonRightBounds;
 
+		private const int DAY_HEADER_PAD = 2;
+		private const int DAY_HEADER_SPACING = 5;
+
 		public ScheduleWeek() {
 			InitializeComponent();
 
@@ -226,8 +229,6 @@ namespace Scheduler {
 			//_DrawTimerBlocks(_applicableTimers, g);
 		}
 
-		private const int DAY_HEADER_PAD = 2;
-		private const int DAY_HEADER_SPACING = 5;
 		private void _DrawHeader(Graphics g, float dayWidth) {
 			using(LinearGradientBrush headerGradientBrush = new LinearGradientBrush(new Rectangle(0, 0, Width - TimeGutter, HeaderHeight), HeaderGradientStart, HeaderGradientEnd, 90)) {
 
