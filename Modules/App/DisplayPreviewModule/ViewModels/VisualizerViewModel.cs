@@ -1,49 +1,36 @@
 namespace VixenModules.App.DisplayPreview.ViewModels
 {
-    using System;
-    using System.Collections.ObjectModel;
-    using System.Linq;
-    using Vixen.Commands;
-    using VixenModules.App.DisplayPreview.Model;
     using Vixen.Sys;
+    using VixenModules.App.DisplayPreview.Model;
     using VixenModules.Property.RGB;
 
     public class VisualizerViewModel : ViewModelBase
     {
-        private string _backgroundImage;
+        private DisplayPreviewModuleDataModel _dataModel;
 
         public VisualizerViewModel(DisplayPreviewModuleDataModel displayPreviewModuleDataModel)
         {
-            DisplayItems = displayPreviewModuleDataModel.DisplayItems;
-            BackgroundImage = displayPreviewModuleDataModel.BackgroundImage;
-            DisplayWidth = displayPreviewModuleDataModel.DisplayWidth;
-            DisplayHeight = displayPreviewModuleDataModel.DisplayHeight;
+            _dataModel = displayPreviewModuleDataModel;
         }
 
-        public string BackgroundImage
+        public DisplayPreviewModuleDataModel DataModel
         {
             get
             {
-                return _backgroundImage;
+                return _dataModel;
             }
 
             set
             {
-                _backgroundImage = value;
-                OnPropertyChanged("BackgroundImage");
+                _dataModel = value;
+                OnPropertyChanged("DataModel");
             }
         }
-
-        public ObservableCollection<DisplayItem> DisplayItems { get; set; }
-
-        public int DisplayHeight { get; set; }
-
-        public int DisplayWidth { get; set; }
 
         public void UpdateExecutionStateValues(ExecutionStateValues stateValues)
         {
             var colorsByChannel = RGBModule.MapChannelCommandsToColors(stateValues).ToMediaColor();
-            foreach (var displayItem in DisplayItems)
+            foreach (var displayItem in DataModel.DisplayItems)
             {
                 displayItem.UpdateChannelColors(colorsByChannel);
             }

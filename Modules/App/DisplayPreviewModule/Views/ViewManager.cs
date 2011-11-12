@@ -2,9 +2,9 @@ namespace VixenModules.App.DisplayPreview.Views
 {
     using System;
     using System.Windows.Threading;
+    using Vixen.Sys;
     using VixenModules.App.DisplayPreview.Model;
     using VixenModules.App.DisplayPreview.ViewModels;
-    using Vixen.Sys;
 
     public static class ViewManager
     {
@@ -12,7 +12,12 @@ namespace VixenModules.App.DisplayPreview.Views
 
         private static VisualizerViewModel _visualizerViewModel;
 
-        public static bool IsVisualizerRunning { get; private set; }
+        public static void DisplayPreferences(DisplayPreviewModuleDataModel dataModel)
+        {
+            var viewModel = new PreferencesViewModel(dataModel);
+            var view = new PreferencesView { DataContext = viewModel };
+            view.ShowDialog();
+        }
 
         public static void DisplaySetupView(DisplayPreviewModuleDataModel dataModel)
         {
@@ -31,11 +36,17 @@ namespace VixenModules.App.DisplayPreview.Views
 
         public static void StartVisualizer(DisplayPreviewModuleDataModel dataModel)
         {
-            _visualizerViewModel = new VisualizerViewModel(dataModel);
-            _view = new VisualizerView { DataContext = _visualizerViewModel };
-            _view.Closed += VisualizerViewClosed;
-            _view.Show();
-            IsVisualizerRunning = true;
+            if (_view != null)
+            {
+                _view.Focus();
+            }
+            else
+            {
+                _visualizerViewModel = new VisualizerViewModel(dataModel);
+                _view = new VisualizerView { DataContext = _visualizerViewModel };
+                _view.Closed += VisualizerViewClosed;
+                _view.Show();
+            }
         }
 
         public static void UpdatePreviewExecutionStateValues(ExecutionStateValues stateValues)
@@ -54,8 +65,6 @@ namespace VixenModules.App.DisplayPreview.Views
                 _view = null;
                 _visualizerViewModel = null;
             }
-
-            IsVisualizerRunning = false;
         }
     }
 }

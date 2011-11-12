@@ -26,7 +26,7 @@ namespace VixenModules.App.DisplayPreview
                                             new KeyValuePair<ChannelNode, Color>(
                                                 x.Key, Color.FromArgb(x.Value.A, x.Value.R, x.Value.G, x.Value.B))).ToDictionary(
                                                                                                                                  x =>
-                                                                                                                                 x.Key, 
+                                                                                                                                 x.Key,
                                                                                                                                  x =>
                                                                                                                                  x.
                                                                                                                                      Value);

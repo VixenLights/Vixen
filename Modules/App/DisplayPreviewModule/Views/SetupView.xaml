@@ -3,9 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:WPF="clr-namespace:VixenModules.App.DisplayPreview.WPF"
-        xmlns:Model="clr-namespace:VixenModules.App.DisplayPreview.Model"
+        xmlns:Model1="clr-namespace:VixenModules.App.DisplayPreview.Model"
+        xmlns:WPF1="clr-namespace:VixenModules.App.DisplayPreview.WPF"
         mc:Ignorable="d"
+        Title="Display Preview Setup"
         SizeToContent="WidthAndHeight"
         x:Name="Instance">
 	<Window.Resources>
@@ -19,16 +20,16 @@
 			</Style>
 
 			<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-			<WPF:BooleanToCollapsedConverter x:Key="BooleanToCollapsedConverter" />
+			<WPF1:BooleanToCollapsedConverter x:Key="BooleanToCollapsedConverter" />
 
-			<DataTemplate DataType="{x:Type Model:ChannelLocation}">
+			<DataTemplate DataType="{x:Type Model1:ChannelLocation}">
                 <Ellipse Fill="{Binding DisplayColor, Mode=OneWay}"
                          ToolTip="{Binding ChannelName}"
 				         Width="{Binding Width}"
 				         Height="{Binding Height}" />
 			</DataTemplate>
 
-			<DataTemplate DataType="{x:Type Model:DisplayItem}">
+			<DataTemplate DataType="{x:Type Model1:DisplayItem}">
 				<Border BorderBrush="Gray"
 				        Background="Transparent"
 				        BorderThickness="1"
@@ -103,7 +104,7 @@
 				          HorizontalContentAlignment="Stretch"
 				          VerticalContentAlignment="Stretch">
 					<ListView.ItemTemplate>
-						<DataTemplate DataType="{x:Type Model:DisplayItem}">
+						<DataTemplate DataType="{x:Type Model1:DisplayItem}">
 							<Grid>
 								<Grid Visibility="{Binding Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}">
 									<Border Margin="2"
@@ -219,7 +220,7 @@
 						              ItemsSource="{Binding DisplayItems}">
 							<ItemsControl.ItemsPanel>
 								<ItemsPanelTemplate>
-									<WPF:DragCanvas ClipToBounds="True"
+									<WPF1:DragCanvas ClipToBounds="True"
 									                HorizontalAlignment="Left"
 									                MaxWidth="{Binding DisplayWidth}"
 									                MaxHeight="{Binding DisplayHeight}"
@@ -232,7 +233,7 @@
 											            Opacity="{Binding Opacity}"
 											            Stretch="Fill" />
 										</Canvas.Background>
-									</WPF:DragCanvas>
+									</WPF1:DragCanvas>
 								</ItemsPanelTemplate>
 							</ItemsControl.ItemsPanel>
 							<ItemsControl.ItemContainerStyle>
@@ -241,7 +242,7 @@
 									        Value="{Binding Path=LeftOffset, Mode=TwoWay}" />
 									<Setter Property="Canvas.Top"
 									        Value="{Binding Path=TopOffset, Mode=TwoWay}" />
-									<Setter Property="WPF:DragCanvas.CanBeDragged"
+									<Setter Property="WPF1:DragCanvas.CanBeDragged"
 									        Value="{Binding Path=IsUnlocked, Mode=TwoWay}" />
 								</Style>
 							</ItemsControl.ItemContainerStyle>

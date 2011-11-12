@@ -14,14 +14,13 @@ namespace VixenModules.App.DisplayPreview.Behaviors
                                                                                                            "DropTarget", 
                                                                                                            typeof(IDropTarget), 
                                                                                                            typeof(DropTargetBehaviour), 
-                                                                                                           new PropertyMetadata(
-                                                                                                               null, OnPropertyChanged));
+                                                                                                           new PropertyMetadata(null, OnPropertyChanged));
 
         /// <summary>
         ///   Gets the drop target property value.
         /// </summary>
-        /// <param name = "d">The d.</param>
-        /// <returns></returns>
+        /// <param name = "d">The dependency object.</param>
+        /// <returns>The drop target object.</returns>
         public static IDropTarget GetDropTarget(DependencyObject d)
         {
             return (IDropTarget)d.GetValue(DropTargetProperty);
@@ -30,7 +29,7 @@ namespace VixenModules.App.DisplayPreview.Behaviors
         /// <summary>
         ///   Sets the drop target property value.
         /// </summary>
-        /// <param name = "d">The d.</param>
+        /// <param name = "d">The dependency object.</param>
         /// <param name = "value">The value.</param>
         public static void SetDropTarget(DependencyObject d, IDropTarget value)
         {
@@ -56,7 +55,7 @@ namespace VixenModules.App.DisplayPreview.Behaviors
         /// <summary>
         ///   Called when the DropTarget property changes.
         /// </summary>
-        /// <param name = "d">The d.</param>
+        /// <param name = "d">The dependency object.</param>
         /// <param name = "e">The <see cref = "System.Windows.DependencyPropertyChangedEventArgs" /> instance containing the event data.</param>
         private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

@@ -19,8 +19,7 @@
                                                                                                            "DragSource", 
                                                                                                            typeof(IDragSource), 
                                                                                                            typeof(DragSourceBehaviour), 
-                                                                                                           new PropertyMetadata(
-                                                                                                               null, OnPropertyChanged));
+                                                                                                           new PropertyMetadata(null, OnPropertyChanged));
 
         private static Point? _startPoint;
 
@@ -28,7 +27,7 @@
         ///   Gets the DragSource property.
         /// </summary>
         /// <param name = "dependencyObject">The dependency object.</param>
-        /// <returns></returns>
+        /// <returns>The drag source object.</returns>
         public static IDragSource GetDragSource(DependencyObject dependencyObject)
         {
             return (IDragSource)dependencyObject.GetValue(DragSourceProperty);

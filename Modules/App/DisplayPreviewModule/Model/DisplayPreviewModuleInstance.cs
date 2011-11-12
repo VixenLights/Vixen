@@ -4,8 +4,8 @@ namespace VixenModules.App.DisplayPreview.Model
     using System.Collections.Generic;
     using Vixen.Execution;
     using Vixen.Module.App;
-    using VixenModules.App.DisplayPreview.Views;
     using Vixen.Sys;
+    using VixenModules.App.DisplayPreview.Views;
 
     public class DisplayPreviewModuleInstance : AppModuleInstanceBase
     {
@@ -13,14 +13,14 @@ namespace VixenModules.App.DisplayPreview.Model
         private IApplication _application;
 
         public DisplayPreviewModuleInstance()
-        {
+        {            
             _programContexts = new List<ProgramContext>();
         }
 
         public override IApplication Application
         {
             set
-            {
+            {                
                 _application = value;
                 InjectAppCommands();
             }
@@ -63,14 +63,17 @@ namespace VixenModules.App.DisplayPreview.Model
             ViewManager.UpdatePreviewExecutionStateValues(stateValues);
         }
 
-        private static void ProgramContextProgramEnded(object sender, ProgramEventArgs e)
+        private void ProgramContextProgramEnded(object sender, ProgramEventArgs e)
         {
             Stop();
         }
 
-        private static void Stop()
+        private void Stop()
         {
-            EnsureVisualizerIsClosed();
+            if (!GetDisplayPreviewModuleDataModel().Preferences.KeepVisualizerWindowOpen)
+            {
+                EnsureVisualizerIsClosed();
+            }
         }
 
         private DisplayPreviewModuleDataModel GetDisplayPreviewModuleDataModel()
@@ -97,8 +100,8 @@ namespace VixenModules.App.DisplayPreview.Model
             command.Enabled = true;
             command.Visible = true;
             rootCommand.Add(command);
-            command = new AppCommand("Toggle preview window", "Toggle preview window");
-            command.Click += TogglePreviewWindowCommandClick;
+            command = new AppCommand("Preferences window", "Preferences");
+            command.Click += PreferencesCommandClick;
             command.Enabled = true;
             command.Visible = true;
             rootCommand.Add(command);
@@ -147,16 +150,9 @@ namespace VixenModules.App.DisplayPreview.Model
             ViewManager.StartVisualizer(GetDisplayPreviewModuleDataModel());
         }
 
-        private void TogglePreviewWindowCommandClick(object sender, EventArgs e)
+        private void PreferencesCommandClick(object sender, EventArgs e)
         {
-            if (ViewManager.IsVisualizerRunning)
-            {
-                ViewManager.EnsureVisualizerIsClosed();
-            }
-            else
-            {
-                ViewManager.StartVisualizer(GetDisplayPreviewModuleDataModel());
-            }
+            ViewManager.DisplayPreferences(GetDisplayPreviewModuleDataModel());
         }
     }
 }

@@ -11,6 +11,7 @@ namespace VixenModules.App.DisplayPreview.Model
     public class ChannelLocation : INotifyPropertyChanged
     {
         private Color _channelColor;
+        private Guid _channelId;
         private string _channelName;
         private int _height;
         private bool _isSelected;
@@ -20,20 +21,10 @@ namespace VixenModules.App.DisplayPreview.Model
 
         public ChannelLocation()
         {
-            Width = 10;
-            Height = 10;
             ChannelColor = Colors.Black;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        public ChannelNode Channel
-        {
-            get
-            {
-                return VixenSystem.Nodes.GetAllNodes().FirstOrDefault(x => x.Id == ChannelId);
-            }
-        }
 
         public Color ChannelColor
         {
@@ -50,15 +41,27 @@ namespace VixenModules.App.DisplayPreview.Model
         }
 
         [DataMember]
-        public Guid ChannelId { get; set; }
+        public Guid ChannelId
+        {
+            get
+            {
+                return _channelId;
+            }
+
+            set
+            {
+                _channelId = value;
+                PropertyChanged.NotifyPropertyChanged("ChannelId", this);
+            }
+        }
 
         public string ChannelName
         {
             get
             {
-                if (_channelName == null)
+                if (string.IsNullOrWhiteSpace(_channelName))
                 {
-                    var channel = VixenSystem.Nodes.GetAllNodes().FirstOrDefault(x => x.Id == ChannelId);
+                    var channel = Channel;
                     if (channel != null)
                     {
                         _channelName = channel.Name;
@@ -91,12 +94,17 @@ namespace VixenModules.App.DisplayPreview.Model
         {
             get
             {
+                if (_height <= 0)
+                {
+                    _height = Preferences.DefaultSettings.ChannelHeightDefault;
+                }
+
                 return _height;
             }
 
             set
             {
-                _height = value;
+                _height = value <= 0 ? 1 : value;
                 PropertyChanged.NotifyPropertyChanged("Height", this);
             }
         }
@@ -150,13 +158,26 @@ namespace VixenModules.App.DisplayPreview.Model
         {
             get
             {
+                if (_width <= 0)
+                {
+                    _width = Preferences.DefaultSettings.ChannelWidthDefault;
+                }
+
                 return _width;
             }
 
             set
             {
-                _width = value;
+                _width = value <= 0 ? 1 : value;
                 PropertyChanged.NotifyPropertyChanged("Width", this);
+            }
+        }
+
+        private ChannelNode Channel
+        {
+            get
+            {
+                return VixenSystem.Nodes.GetAllNodes().FirstOrDefault(x => x.Id == ChannelId);
             }
         }
 

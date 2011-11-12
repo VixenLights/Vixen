@@ -7,48 +7,54 @@ namespace VixenModules.App.DisplayPreview.Model
     using System.Runtime.Serialization;
     using System.Windows;
     using System.Windows.Media;
-    using VixenModules.App.DisplayPreview.Behaviors;
     using Vixen.Sys;
+    using VixenModules.App.DisplayPreview.Behaviors;
 
     [DataContract]
     public class DisplayItem : INotifyPropertyChanged
     {
+        private ObservableCollection<ChannelLocation> _channelLocations;
         private int _height;
         private bool _isUnlocked;
         private int _leftOffset;
         private string _name;
-        private ChannelLocation _selectedChannelLocation;
         private IDropTarget _target;
         private int _topOffset;
         private int _width;
 
-        public DisplayItem(
-            int width, int height, int leftOffset, int topOffset, ObservableCollection<ChannelLocation> mappedChannels, bool isUnlocked)
-        {
-            ChannelLocations = mappedChannels;
-            Height = height;
-            LeftOffset = leftOffset;
-            TopOffset = topOffset;
-            Width = width;
-            IsUnlocked = isUnlocked;
-        }
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         [DataMember]
-        public ObservableCollection<ChannelLocation> ChannelLocations { get; private set; }
+        public ObservableCollection<ChannelLocation> ChannelLocations
+        {
+            get
+            {
+                return _channelLocations ?? (_channelLocations = new ObservableCollection<ChannelLocation>());
+            }
+
+            private set
+            {
+                _channelLocations = value;
+                PropertyChanged.NotifyPropertyChanged("ChannelLocations", this);
+            }
+        }
 
         [DataMember]
         public int Height
         {
             get
             {
+                if (_height <= 0)
+                {
+                    _height = Preferences.DefaultSettings.DisplayItemHeightDefault;
+                }
+
                 return _height;
             }
 
             set
             {
-                _height = value;
+                _height = value <= 0 ? 1 : value;
                 PropertyChanged.NotifyPropertyChanged("Height", this);
             }
         }
@@ -88,6 +94,11 @@ namespace VixenModules.App.DisplayPreview.Model
         {
             get
             {
+                if (string.IsNullOrWhiteSpace(_name))
+                {
+                    _name = "New Display Item";
+                }
+
                 return _name;
             }
 
@@ -95,30 +106,6 @@ namespace VixenModules.App.DisplayPreview.Model
             {
                 _name = value;
                 PropertyChanged.NotifyPropertyChanged("Name", this);
-            }
-        }
-
-        public ChannelLocation SelectedChannelLocation
-        {
-            get
-            {
-                return _selectedChannelLocation;
-            }
-
-            set
-            {
-                if (_selectedChannelLocation != null)
-                {
-                    _selectedChannelLocation.IsSelected = false;
-                }
-
-                _selectedChannelLocation = value;
-                if (_selectedChannelLocation != null)
-                {
-                    _selectedChannelLocation.IsSelected = true;
-                }
-
-                PropertyChanged.NotifyPropertyChanged("SelectedChannelLocation", this);
             }
         }
 
@@ -150,25 +137,35 @@ namespace VixenModules.App.DisplayPreview.Model
         {
             get
             {
+                if (_width <= 0)
+                {
+                    _width = Preferences.DefaultSettings.DisplayItemWidthDefault;
+                }
+
                 return _width;
             }
 
             set
             {
-                _width = value;
+                _width = value <= 0 ? 1 : value;
                 PropertyChanged.NotifyPropertyChanged("Width", this);
             }
         }
 
         public DisplayItem Clone()
         {
-            return new DisplayItem(
-                Width, 
-                Height, 
-                LeftOffset, 
-                TopOffset, 
-                new ObservableCollection<ChannelLocation>(ChannelLocations.Select(channelLocation => channelLocation.Clone()).ToList()), 
-                IsUnlocked);
+            var item = new DisplayItem
+                       {
+                           Width = Width, 
+                           Height = Height, 
+                           LeftOffset = LeftOffset, 
+                           TopOffset = TopOffset, 
+                           ChannelLocations =
+                               new ObservableCollection<ChannelLocation>(
+                               ChannelLocations.Select(channelLocation => channelLocation.Clone()).ToList()), 
+                           IsUnlocked = IsUnlocked
+                       };
+            return item;
         }
 
         public void UpdateChannelColors(Dictionary<ChannelNode, Color> colorsByChannel)
@@ -185,26 +182,16 @@ namespace VixenModules.App.DisplayPreview.Model
             }
         }
 
-        private void Drop(ChannelNode channelNode, Point point)
+        private static DragDropEffects GetDropEffects(ChannelNode channelNode)
         {
-            var channel = channelNode.Parents.FirstOrDefault(x => x.IsRgbNode());
-            if (channel == null)
-            {
-                channel = channelNode;
-            }
-
-            var channelLocation = new ChannelLocation { LeftOffset = point.X, TopOffset = point.Y, ChannelId = channel.Id };
-            ChannelLocations.Add(channelLocation);
+            return channelNode.IsLeaf || channelNode.IsRgbNode() ? DragDropEffects.Move : DragDropEffects.None;
         }
 
-        private DragDropEffects GetDropEffects(ChannelNode channelNode)
+        private void Drop(ChannelNode channelNode, Point point)
         {
-            if (ChannelLocations.Any(x => x.ChannelId == channelNode.Id || channelNode.Children.Any(y => y.Id == x.ChannelId)))
-            {
-                return DragDropEffects.None;
-            }
-
-            return DragDropEffects.Move;
+            var channel = channelNode.Parents.FirstOrDefault(x => x.IsRgbNode()) ?? channelNode;
+            var channelLocation = new ChannelLocation { LeftOffset = point.X, TopOffset = point.Y, ChannelId = channel.Id };
+            ChannelLocations.Add(channelLocation);
         }
     }
 }

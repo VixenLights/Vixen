@@ -43,7 +43,7 @@ namespace VixenModules.App.DisplayPreview.WPF
         }
 
         /// <summary>
-        ///   Gets/sets whether the user should be able to drag elements in the DragCanvas out of
+        ///   Gets or sets a value indicating whether the user should be able to drag elements in the DragCanvas out of
         ///   the viewable area.  The default value is false.  This is a dependency property.
         /// </summary>
         public bool AllowDragOutOfView
@@ -60,7 +60,7 @@ namespace VixenModules.App.DisplayPreview.WPF
         }
 
         /// <summary>
-        ///   Gets/sets whether elements in the DragCanvas should be draggable by the user.
+        ///   Gets or sets a value indicating whether elements in the DragCanvas should be draggable by the user.
         ///   The default value is true.  This is a dependency property.
         /// </summary>
         public bool AllowDragging
@@ -77,7 +77,7 @@ namespace VixenModules.App.DisplayPreview.WPF
         }
 
         /// <summary>
-        ///   Returns the UIElement currently being dragged, or null.
+        ///   Gets or sets the UIElement currently being dragged, or null.
         /// </summary>
         /// <remarks>
         ///   Note to inheritors: This property exposes a protected 
@@ -155,14 +155,17 @@ namespace VixenModules.App.DisplayPreview.WPF
         }
 
         /// <summary>
-        ///   Walks up the visual tree starting with the specified DependencyObject, 
+        /// Walks up the visual tree starting with the specified DependencyObject, 
         ///   looking for a UIElement which is a child of the Canvas.  If a suitable 
         ///   element is not found, null is returned.  If the 'depObj' object is a 
         ///   UIElement in the Canvas's Children collection, it will be returned.
         /// </summary>
-        /// <param name = "depObj">
-        ///   A DependencyObject from which the search begins.
+        /// <param name="depObj">
+        /// A DependencyObject from which the search begins.
         /// </param>
+        /// <returns>
+        /// The find canvas child.
+        /// </returns>
         public UIElement FindCanvasChild(DependencyObject depObj)
         {
             while (depObj != null)
@@ -394,14 +397,17 @@ namespace VixenModules.App.DisplayPreview.WPF
         }
 
         /// <summary>
-        ///   Returns a Rect which describes the bounds of the element being dragged.
+        /// Returns a Rect which describes the bounds of the element being dragged.
         /// </summary>
-        /// <param name = "newHorizOffset">
-        ///   The new Horiz Offset.
+        /// <param name="newHorizOffset">
+        /// The new Horiz Offset.
         /// </param>
-        /// <param name = "newVertOffset">
-        ///   The new Vert Offset.
+        /// <param name="newVertOffset">
+        /// The new Vert Offset.
         /// </param>
+        /// <returns>
+        /// The calculate drag element rect.
+        /// </returns>
         private Rect CalculateDragElementRect(double newHorizOffset, double newVertOffset)
         {
             if (ElementBeingDragged == null)

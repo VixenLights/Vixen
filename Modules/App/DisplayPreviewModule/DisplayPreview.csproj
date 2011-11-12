@@ -49,6 +49,7 @@
     <Compile Include="Behaviors\IDropTarget.cs" />
     <Compile Include="Model\ChannelLocation.cs" />
     <Compile Include="Model\ChannelSource.cs" />
+    <Compile Include="Model\Preferences.cs" />
     <Compile Include="Model\Shapes\Circle.cs" />
     <Compile Include="Model\Shapes\IDisplayShape.cs" />
     <Compile Include="Model\Shapes\Grid.cs" />
@@ -58,9 +59,13 @@
     <Compile Include="Model\Shapes\Star.cs" />
     <Compile Include="Model\Shapes\Triangle.cs" />
     <Compile Include="ViewModels\DisplayItemEditorViewModel.cs" />
+    <Compile Include="ViewModels\PreferencesViewModel.cs" />
     <Compile Include="ViewModels\SetupViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\VisualizerViewModel.cs" />
+    <Compile Include="Views\PreferencesView.xaml.cs">
+      <DependentUpon>PreferencesView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ViewManager.cs" />
     <Compile Include="WPF\BooleanToCollapsedConverter.cs" />
     <Compile Include="Model\DisplayItem.cs" />
@@ -84,6 +89,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\DisplayItemEditorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PreferencesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

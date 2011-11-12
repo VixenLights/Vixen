@@ -10,7 +10,6 @@ namespace VixenModules.App.DisplayPreview.ViewModels
     using VixenModules.App.DisplayPreview.Model;
     using VixenModules.App.DisplayPreview.Views;
     using VixenModules.App.DisplayPreview.WPF;
-    using Vixen.Sys;
 
     public class SetupViewModel : ViewModelBase
     {
@@ -35,11 +34,12 @@ namespace VixenModules.App.DisplayPreview.ViewModels
         {
             get
             {
-                return _dataModel.Opactity;
+                return _dataModel.Opacity;
             }
+
             set
             {
-                _dataModel.Opactity = value;
+                _dataModel.Opacity = value;
                 OnPropertyChanged("Opacity");
             }
         }
@@ -93,6 +93,7 @@ namespace VixenModules.App.DisplayPreview.ViewModels
             {
                 return _dataModel.DisplayItems;
             }
+
             set
             {
                 _dataModel.DisplayItems = value;
@@ -141,11 +142,9 @@ namespace VixenModules.App.DisplayPreview.ViewModels
         /// </summary>
         private void AddElement()
         {
-            var displayElement = new DisplayItem(100, 100, 0, 0, new ObservableCollection<ChannelLocation>(), true) { Name = "My New Element" };
-            var viewModel = new DisplayItemEditorViewModel();
-            viewModel.DisplayItem = displayElement;
-            var editor = new DisplayItemEditorView();
-            editor.DataContext = viewModel;
+            var displayElement = new DisplayItem();
+            var viewModel = new DisplayItemEditorViewModel { DisplayItem = displayElement };
+            var editor = new DisplayItemEditorView { DataContext = viewModel };
             editor.ShowDialog();
             DisplayItems.Add(displayElement);
             CurrentDisplayElement = displayElement;
@@ -205,10 +204,8 @@ namespace VixenModules.App.DisplayPreview.ViewModels
                 return;
             }
 
-            var viewModel = new DisplayItemEditorViewModel();
-            viewModel.DisplayItem = displayElement;
-            var editor = new DisplayItemEditorView();
-            editor.DataContext = viewModel;
+            var viewModel = new DisplayItemEditorViewModel { DisplayItem = displayElement };
+            var editor = new DisplayItemEditorView { DataContext = viewModel };
             editor.ShowDialog();
         }
 
@@ -228,19 +225,18 @@ namespace VixenModules.App.DisplayPreview.ViewModels
 
         private void SetBackground()
         {
-            var openFileDialog = new OpenFileDialog();
-            openFileDialog.DefaultExt = ".bmp|.jpg|.png"; // Default file extension
-            openFileDialog.Filter = "Image Files (*.bmp, *.jpg, *.png)|*.bmp;*.jpg;*.png"; // Filter files by extension
+            var openFileDialog = new OpenFileDialog
+                                 {
+                                     DefaultExt = ".bmp|.jpg|.png", 
+                                     Filter = "Image Files (*.bmp, *.jpg, *.png)|*.bmp;*.jpg;*.png"
+                                 };
 
-            // Show open file dialog box
             var result = openFileDialog.ShowDialog();
-
-            // Process open file dialog box results
             if (result == true)
             {
                 // Open document
                 var imageFile = new FileInfo(openFileDialog.FileName);
-                var destFileName = Path.Combine(Paths.DataRootPath, "Background" + imageFile.Extension);
+                var destFileName = Path.Combine(DisplayPreviewModuleDescriptor.ModulePath, "Background" + imageFile.Extension);
                 File.Copy(imageFile.FullName, destFileName, true);
                 var image = new BitmapImage();
                 image.BeginInit();               
