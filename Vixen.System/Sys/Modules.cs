@@ -281,8 +281,16 @@ namespace Vixen.Sys {
 				instance = Activator.CreateInstance(instanceType) as IModuleInstance;
 				instance.InstanceId = Guid.NewGuid();
 				instance.Descriptor = GetDescriptorById(moduleTypeId);
-				instance.StaticModuleData = _GetModuleStaticData(instance);
-				instance.ModuleData = _GetModuleData(instance);
+				try {
+					instance.StaticModuleData = _GetModuleStaticData(instance);
+				} catch(Exception ex) {
+					VixenSystem.Logging.Debug("Error when assigning module static data.", ex);
+				}
+				try {
+					instance.ModuleData = _GetModuleData(instance);
+				} catch(Exception ex) {
+					VixenSystem.Logging.Debug("Error when assigning module data.", ex);
+				}
 
 				// See if there are any templates to apply to the instance.
 				ModuleTemplateModuleManagement manager = Modules.GetManager<IModuleTemplateModuleInstance, ModuleTemplateModuleManagement>();

@@ -24,15 +24,10 @@ namespace CommonElements {
 			comboBoxStopBits.Items.AddRange(Enum.GetValues(typeof(StopBits)).Cast<object>().ToArray());
 
 			if(serialPort == null) {
-				serialPort = new SerialPort("COM1", 38400, Parity.None, 8, StopBits.One);
+				serialPort = new SerialPort(SerialPort.GetPortNames().FirstOrDefault(), 38400, Parity.None, 8, StopBits.One);
 			}
 
 			SelectedPort = serialPort;
-
-			
-			
-			
-			
 		}
 
 		public SerialPort SelectedPort {

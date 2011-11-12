@@ -27,5 +27,15 @@ namespace Renard {
 		override public IModuleDataModel Clone() {
 			return this.MemberwiseClone() as IModuleDataModel;
 		}
+
+		public bool IsValid {
+			get {
+				return
+					PortName != null &&
+					BaudRate != 0 &&
+					DataBits != 0 &&
+					StopBits != 0;
+			}
+		}
 	}
 }

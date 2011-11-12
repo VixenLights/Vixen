@@ -48,66 +48,60 @@ namespace Renard {
 		public override bool HasSetup {
 			get { return true; }
 		}
+
 		public override bool Setup() {
 			using(CommonElements.SerialPortConfig serialPortConfig = new CommonElements.SerialPortConfig(_port)) {
 				if(serialPortConfig.ShowDialog() == DialogResult.OK) {
-					_port = serialPortConfig.SelectedPort;
+					SerialPort port = serialPortConfig.SelectedPort;
+					_moduleData.PortName = port.PortName;
+					_moduleData.BaudRate = port.BaudRate;
+					_moduleData.DataBits = port.DataBits;
+					_moduleData.Parity = port.Parity;
+					_moduleData.StopBits = port.StopBits;
+					_UpdateFromData();
 					return true;
 				}
 			}
 			return false;
-			//using(SetupDialog setupDialog = new SetupDialog(_moduleData)) {
-			//    if(setupDialog.ShowDialog() == DialogResult.OK) {
-			//        _UpdateFromData();
-			//    }
-			//}
-			//return true;
 		}
 
 		public override IModuleDataModel ModuleData {
 			get { return _moduleData; }
-			set { 
+			set {
 				_moduleData = value as Data;
 				if(_moduleData.WriteTimeout == 0) _moduleData.WriteTimeout = DEFAULT_WRITE_TIMEOUT;
+				if(_moduleData.ProtocolVersion == 0) _moduleData.ProtocolVersion = 1;
 				_UpdateFromData();
 			}
 		}
 
 		public override void Start() {
 			base.Start();
-            if (_port != null)
-            {
-                if (!_port.IsOpen)
-                {
-                    _port.Open();
-                }
-            }
+			if(_port != null) {
+				if(!_port.IsOpen) {
+					_port.Open();
+				}
+			}
 		}
 
 		public override void Stop() {
-            if (_port !=null)
-            {
-                if (_port.IsOpen)
-                {
-                    _port.Close();
-                }
-            }
+			if(_port != null) {
+				if(_port.IsOpen) {
+					_port.Close();
+				}
+			}
 			base.Stop();
 		}
 
 
-		protected override void _SetOutputCount(int outputCount) {
-		}
+		protected override void _SetOutputCount(int outputCount) { }
 
-		protected override void _UpdateState(Command[] outputStates)
-		{
-            if (_port != null)
-            {
-                if (_port.IsOpen)
-                {
-                    _updateAction(outputStates);
-                }
-            }
+		protected override void _UpdateState(Command[] outputStates) {
+			if(_port != null) {
+				if(_port.IsOpen) {
+					_updateAction(outputStates);
+				}
+			}
 		}
 
 		private void _UpdateFromData() {
@@ -121,30 +115,23 @@ namespace Renard {
 				_port = null;
 			}
 
-            if (_moduleData.PortName == null)
-            {
-                // just exit here for now, probably have to trap other instances of this
-                // data being incomplete.
-            }
-            else
-            {
-                //*** port name is going to be null initially
-                _port = new SerialPort(_moduleData.PortName, _moduleData.BaudRate, _moduleData.Parity,
-                    _moduleData.DataBits, _moduleData.StopBits);
-                _port.WriteTimeout = _moduleData.WriteTimeout;
-                _port.Handshake = Handshake.None;
-                _port.Encoding = Encoding.UTF8;
-                _port.RtsEnable = true;
-                _port.DtrEnable = true;
-            }
+			if(_moduleData.IsValid) {
+				_port = new SerialPort(_moduleData.PortName, _moduleData.BaudRate, _moduleData.Parity, _moduleData.DataBits, _moduleData.StopBits);
+				_port.WriteTimeout = _moduleData.WriteTimeout;
+				_port.Handshake = Handshake.None;
+				_port.Encoding = Encoding.UTF8;
+				_port.RtsEnable = true;
+				_port.DtrEnable = true;
+			} else {
+				_port = null;
+			}
 		}
 
 		private void _SetUpdateAction() {
 			_updateAction = (_moduleData.ProtocolVersion == 1) ? (Action<Command[]>)_Protocol1Event : _Protocol2Event;
 		}
 
-		private void _Protocol1Event(Command[] outputStates)
-		{
+		private void _Protocol1Event(Command[] outputStates) {
 			int src_size = outputStates.Length;
 			int dst_index = 2;
 			int dst_size = 2 + 2 * src_size + (2 + 2 * src_size) / PAD_DISTANCE;
@@ -153,11 +140,11 @@ namespace Renard {
 			if(_p1Packet.Length < dst_size) {
 				_p1Packet = new byte[dst_size];
 			}
-			
+
 			_p1Packet[0] = 0x7E;
 			_p1Packet[1] = 0x80;
 
-			foreach (Command command in outputStates) {
+			foreach(Command command in outputStates) {
 				if(command == null) {
 					// State reset
 					_p1Packet[dst_index] = 0;
@@ -194,8 +181,7 @@ namespace Renard {
 			}
 		}
 
-		private void _Protocol2Event(Command[] outputStates)
-		{
+		private void _Protocol2Event(Command[] outputStates) {
 			int startChannel, endChannel;
 			byte picIndex = 0x80;
 			int arrayIndex, arrayIndex2;

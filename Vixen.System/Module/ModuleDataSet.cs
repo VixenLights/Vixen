@@ -110,7 +110,7 @@ namespace Vixen.Module {
 		}
 
 		private IModuleDataModel _GetModuleData(IModuleDescriptor descriptor, Guid moduleTypeId) {
-			return _GetModuleData(descriptor, moduleTypeId, Guid.Empty);
+			return _GetModuleData(descriptor, moduleTypeId, moduleTypeId);
 		}
 
 		private IModuleDataModel _GetModuleData(IModuleDescriptor descriptor, Guid moduleTypeId, Guid moduleInstanceId) {
