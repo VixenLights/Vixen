@@ -9,8 +9,13 @@ using Vixen.Sys;
 namespace VixenModules.Sequence.Timed {
 	public class TimedSequence : SequenceModuleInstanceBase
 	{
+		public TimedSequence()
+		{
+		}
+
 		public TimedSequence(TimedSequence original)
-			: base(original) {
+			: base(original)
+		{
 		}
 
 		public List<MarkCollection> MarkCollections

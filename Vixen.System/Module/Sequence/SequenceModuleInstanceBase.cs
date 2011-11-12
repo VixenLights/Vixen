@@ -6,8 +6,15 @@ using Vixen.Sys;
 
 namespace Vixen.Module.Sequence {
 	abstract public class SequenceModuleInstanceBase : Vixen.Sys.Sequence, ISequenceModuleInstance, IEqualityComparer<ISequenceModuleInstance>, IEquatable<ISequenceModuleInstance>, IEqualityComparer<SequenceModuleInstanceBase>, IEquatable<SequenceModuleInstanceBase> {
+
+		protected SequenceModuleInstanceBase()
+			: base()
+		{
+		}
+
 		protected SequenceModuleInstanceBase(SequenceModuleInstanceBase original)
-			: base(original) {
+			: base(original)
+		{
 			InstanceId = Guid.NewGuid();
 			ModuleData = original.ModuleData.Clone();
 			StaticModuleData = original.StaticModuleData;

@@ -12,7 +12,7 @@ using Vixen.Commands.KnownDataTypes;
 
 namespace VixenModules.Transform.DimmingCurve
 {
-	class DimmingCurve :TransformModuleInstanceBase
+	class DimmingCurve : TransformModuleInstanceBase
 	{
 		DimmingCurveData _data;
 
