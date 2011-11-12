@@ -26,6 +26,7 @@ namespace Vixen.Sys {
 			remove { NodeManager.NodesChanged -= value; }
 		}
 		static public event Action<ExecutionStateValues> ValuesChanged;
+		static private Dictionary<Channel, Command> _lastChannelState = new Dictionary<Channel,Command>();
 
 		public enum ExecutionState { Starting, Started, Stopping, Stopped };
 		static private volatile ExecutionState _state = ExecutionState.Stopped;
@@ -123,16 +124,19 @@ namespace Vixen.Sys {
 		}
 
 		static private void _UpdateChannelStates() {
-			ExecutionStateValues stateBuffer = new ExecutionStateValues(SystemTime.Position);
+			// we aren't doing this work for anything else, so don't bother doing it unless there's
+			// an event to be raised from it.
+			if (ValuesChanged != null) {
+				ExecutionStateValues stateBuffer = new ExecutionStateValues(SystemTime.Position);
 
-			foreach(Channel channel in VixenSystem.Channels) {
-				Command channelState = VixenSystem.Channels.UpdateChannelState(channel);
-				if(channelState != null) {
-					stateBuffer[channel] = channelState;
+				foreach (Channel channel in VixenSystem.Channels) {
+					Command channelState = VixenSystem.Channels.UpdateChannelState(channel);
+					if (channelState != null || !_lastChannelState.ContainsKey(channel) || (_lastChannelState.ContainsKey(channel) && _lastChannelState[channel] != null)) {
+						stateBuffer[channel] = channelState;
+					}
+					_lastChannelState[channel] = channelState;
 				}
-			}
 
-			if(ValuesChanged != null) {
 				ValuesChanged(stateBuffer);
 			}
 		}
