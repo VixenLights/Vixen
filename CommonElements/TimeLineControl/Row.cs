@@ -185,7 +185,7 @@ namespace CommonElements.Timeline
 		private void _ElementRemoved(Element te) { if (ElementRemoved != null) ElementRemoved(this, new ElementEventArgs(te)); }
 		private void _RowToggled() { if (RowToggled != null) RowToggled(this, EventArgs.Empty); }
 		private void _RowChanged() { if (RowChanged != null) RowChanged(this, EventArgs.Empty); }
-		private void _RowHeightChanged() { if (RowChanged != null) RowHeightChanged(this, EventArgs.Empty); }
+		private void _RowHeightChanged() { if (RowHeightChanged != null) RowHeightChanged(this, EventArgs.Empty); }
 		private void _RowSelectedChanged(Keys k) { if (RowSelectedChanged != null) RowSelectedChanged(this, new ModifierKeysEventArgs(k)); }
 
 		#endregion

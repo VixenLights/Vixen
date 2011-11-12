@@ -34,21 +34,17 @@ namespace CommonElements.Timeline
 
         #region Begin/End update
 
-        private bool m_updating = false;
         private TimeSpan m_origStartTime, m_origDuration;
 
         ///<summary>Suspends raising events until EndUpdate is called.</summary>
         public void BeginUpdate()
         {
-            m_updating = true;
             m_origStartTime = this.StartTime;
             m_origDuration = this.Duration;
         }
 
         public void EndUpdate()
         {
-            m_updating = false;
-
             if ((StartTime != m_origStartTime) || (Duration != m_origDuration))
             {
                 OnTimeChanged();
@@ -184,9 +180,6 @@ namespace CommonElements.Timeline
         /// </summary>
         protected virtual void OnTimeChanged()
         {
-            if (m_updating)
-                return;
-
             if (TimeChanged != null)
                 TimeChanged(this, EventArgs.Empty);
         }
