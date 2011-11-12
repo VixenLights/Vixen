@@ -55,7 +55,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// (b) do the visual rendering of effects in a separate thread so it can happen slowly and get updated later on.
 			if (EffectNode.Effect.IsDirty || (RenderedInset != null && (RenderedInset.Width != inset.Width || RenderedInset.Height != inset.Height))) {
 
-				List<ChannelNode> renderNodes = RGBModule.GetVisuallyRenderableChildNodes(EffectNode.Effect.TargetNodes);
+				List<ChannelNode> renderNodes = RGBModule.FindAllRenderableChildren(EffectNode.Effect.TargetNodes);
 				ChannelData effectData = EffectNode.RenderEffectData();
 				Dictionary<Channel, List<CommandNode>> renderedData = new Dictionary<Channel, List<CommandNode>>();
 				foreach (KeyValuePair<Guid, CommandNode[]> kvp in effectData) {

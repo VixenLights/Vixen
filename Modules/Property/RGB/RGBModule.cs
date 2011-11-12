@@ -105,10 +105,10 @@ namespace VixenModules.Property.RGB
 		/// node. In effect, this means it will descend through all nodes, finding leaf nodes (no children) or nodes with the RGB property.
 		/// </summary>
 		/// <param name="node">The node to find all renderable children for.</param>
-		/// <returns>An enumerable of all renderable children.</returns>
-		public static IEnumerable<ChannelNode> FindAllRenderableChildren(ChannelNode node)
+		/// <returns>A list of all renderable children.</returns>
+		public static List<ChannelNode> FindAllRenderableChildren(ChannelNode node)
 		{
-			HashSet<ChannelNode> result = new HashSet<ChannelNode>();
+			List<ChannelNode> result = new List<ChannelNode>();
 			if (node.Properties.Contains(RGBDescriptor.ModuleID)) {
 				result.Add(node);
 			} else {
@@ -127,9 +127,9 @@ namespace VixenModules.Property.RGB
 		/// Given ChannelNodes, this method will find all child nodes that are ultimately renderable as either a monochrome or polychrome
 		/// nodes. In effect, this means it will descend through all nodes, finding leaf nodes (no children) or nodes with the RGB property.
 		/// </summary>
-		public static IEnumerable<ChannelNode> FindAllRenderableChildren(IEnumerable<ChannelNode> nodes)
+		public static List<ChannelNode> FindAllRenderableChildren(IEnumerable<ChannelNode> nodes)
 		{
-			HashSet<ChannelNode> result = new HashSet<ChannelNode>();
+			List<ChannelNode> result = new List<ChannelNode>();
 			foreach (ChannelNode node in nodes) {
 				result.AddRange(FindAllRenderableChildren(node));
 			}
@@ -222,23 +222,6 @@ namespace VixenModules.Property.RGB
 						byte colorLevel = (byte)(((command as Vixen.Commands.Lighting.Monochrome.SetLevel).Level / 100.0) * Byte.MaxValue);
 						result[node] = Color.FromArgb(colorLevel, colorLevel, colorLevel);
 					}
-				}
-			}
-
-			return result;
-		}
-
-		public static List<ChannelNode> GetVisuallyRenderableChildNodes(ChannelNode[] targetNodes)
-		{
-			List<ChannelNode> result = new List<ChannelNode>();
-
-			foreach (ChannelNode targetNode in targetNodes) {
-				if (targetNode.Properties.Contains(RGBDescriptor.ModuleID)) {
-					result.Add(targetNode);
-				} else if (targetNode.Children.Count() > 0) {
-					result.AddRange(GetVisuallyRenderableChildNodes(targetNode.Children.ToArray()));
-				} else {
-					result.Add(targetNode);
 				}
 			}
 
