@@ -32,14 +32,6 @@
             }
         }
 
-        public override Type ModuleDataClass
-        {
-            get
-            {
-                return typeof(DisplayPreviewModuleInstance);
-            }
-        }
-
         public override Type ModuleClass
         {
             get

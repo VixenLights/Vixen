@@ -15,6 +15,12 @@ namespace Vixen.Module.App {
 
 		abstract public override string Version { get; }
 
+		// App module types can't have instance data classes; they're singletons, so don't let anyone set one.
+		sealed public override Type ModuleDataClass
+		{
+			get { return null; }
+		}
+
 		public bool Equals(IAppModuleDescriptor x, IAppModuleDescriptor y) {
 			return base.Equals(x, y);
 		}
