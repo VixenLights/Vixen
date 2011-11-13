@@ -158,18 +158,9 @@ namespace VixenModules.Property.RGB
 				// if the node for this channel has the RGB property, then it must be configured as a 'smart' RGB channel.
 				// Double check that it is, and if so, find any Polychrome commands and figure out colors for the result.
 				if (node.Properties.Contains(RGBDescriptor.ModuleID)) {
-					if (((node.Properties.Get(RGBDescriptor.ModuleID) as RGBModule).ModuleData as RGBData).RGBType != RGBModelType.eSingleRGBChannel) {
-						VixenSystem.Logging.Warning("RGB Mapping: got a channel that has an RGB property, but not with the SingleRGB type, that has a command.");
-					}
-
 					if (command is Vixen.Commands.Lighting.Polychrome.SetColor) {
-						if (result.ContainsKey(node)) {
-							VixenSystem.Logging.Warning("RGB Mapping: got an RGB channel with a Polychrome.Setcolor, but there's already a result for this channelNode.");
-						}
 						result[node] = (command as Vixen.Commands.Lighting.Polychrome.SetColor).Color;
 						success = true;
-					} else {
-						VixenSystem.Logging.Warning("RGB Mapping: got a channel that has an RGB property, but was given a command that wasn't Polychrome.Setcolor.");
 					}
 				}
 				// the node doesn't have an RGB property, so maybe it's a individual RGB channel for a parent node. Check all this node's parents,
@@ -178,9 +169,6 @@ namespace VixenModules.Property.RGB
 					foreach (ChannelNode parent in node.Parents) {
 						if (parent.Properties.Contains(RGBDescriptor.ModuleID)) {
 							RGBData parentData = (parent.Properties.Get(RGBDescriptor.ModuleID) as RGBModule).ModuleData as RGBData;
-							if (parentData.RGBType != RGBModelType.eIndividualRGBChannels) {
-								VixenSystem.Logging.Warning("RGB Mapping: got a channel that has a parent with the RGB property that isn't IndividualChannels.");
-							}
 
 							if (command is Vixen.Commands.Lighting.Monochrome.SetLevel) {
 								bool setRed, setGreen, setBlue;
@@ -204,9 +192,6 @@ namespace VixenModules.Property.RGB
 									result[parent] = color;
 									success = true;
 								}
-							} else {
-								VixenSystem.Logging.Warning("RGB Mapping: got a channel with a parent that has an RGB individual " +
-									"components property, but was given a command that wasn't Monochrome.Setcolor.");
 							}
 						}
 					}
