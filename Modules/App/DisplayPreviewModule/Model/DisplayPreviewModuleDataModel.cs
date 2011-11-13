@@ -16,7 +16,7 @@ namespace VixenModules.App.DisplayPreview.Model
         private ObservableCollection<DisplayItem> _displayItems;
         private int _displayWidth;
         private double _opacity;
-        private Preferences _prefernces;
+        private Preferences _preferences;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -97,7 +97,7 @@ namespace VixenModules.App.DisplayPreview.Model
             {
                 if (_opacity <= 0)
                 {
-                    _opacity = _prefernces.OpacityDefault;
+					_opacity = Preferences.OpacityDefault;
                 }
 
                 return _opacity;
@@ -115,12 +115,12 @@ namespace VixenModules.App.DisplayPreview.Model
         {
             get
             {
-                return _prefernces ?? (_prefernces = Preferences.DefaultSettings);
+                return _preferences ?? (_preferences = Preferences.DefaultSettings);
             }
 
             set
             {
-                _prefernces = value;
+                _preferences = value;
                 PropertyChanged.NotifyPropertyChanged("Preferences", this);
             }
         }
