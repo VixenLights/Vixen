@@ -11,6 +11,7 @@ using Vixen.Module.Sequence;
 using Vixen.Execution;
 using Vixen.IO;
 using Vixen.IO.Xml;
+using Vixen.Instrumentation;
 
 namespace Vixen.Sys {
     public class VixenSystem {
@@ -34,6 +35,8 @@ namespace Vixen.Sys {
 
 					_InitializeLogging();
 					Logging.Info("Vixen System starting up...");
+
+					Instrumentation = new Vixen.Sys.Instrumentation.Instrumentation();
 
 					ModuleImplementation[] moduleImplementations = Modules.GetImplementations();
 
@@ -166,6 +169,7 @@ namespace Vixen.Sys {
 		static public ChannelManager Channels { get; private set; }
 		static public NodeManager Nodes { get; private set; }
 		static public ControllerManager Controllers { get; private set; }
+		static public IInstrumentation Instrumentation { get; private set; }
 
 		static internal ModuleStore ModuleStore { get; private set; }
 		static internal SystemConfig SystemConfig { get; private set; }

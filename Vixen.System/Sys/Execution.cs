@@ -8,6 +8,7 @@ using System.Threading;
 using Vixen.Sys;
 using Vixen.Module.Effect;
 using Vixen.Commands;
+using Vixen.Sys.Instrumentation;
 
 namespace Vixen.Sys {
 	public class Execution {
@@ -17,6 +18,12 @@ namespace Vixen.Sys {
 		// Creating channels in here instead of VixenSystem so that the collection
 		// will be locally available for EffectRenderer instances.
 		static private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+		static private volatile ExecutionState _state = ExecutionState.Stopped;
+		static private Dictionary<Channel, Command> _lastChannelState = new Dictionary<Channel, Command>();
+		static private TotalEffectsValue _totalEffectsValue;
+		static private EffectsPerSecondValue _effectsPerSecondValue;
+
+		public enum ExecutionState { Starting, Started, Stopping, Stopped };
 
 		// These are system-level events.
 		static public event EventHandler<ProgramContextEventArgs> ProgramContextCreated;
@@ -26,10 +33,6 @@ namespace Vixen.Sys {
 			remove { NodeManager.NodesChanged -= value; }
 		}
 		static public event Action<ExecutionStateValues> ValuesChanged;
-		static private Dictionary<Channel, Command> _lastChannelState = new Dictionary<Channel,Command>();
-
-		public enum ExecutionState { Starting, Started, Stopping, Stopped };
-		static private volatile ExecutionState _state = ExecutionState.Stopped;
 		static public event Action<ExecutionState> ExecutionStateChanged;
 
 		/// <summary>
@@ -79,6 +82,26 @@ namespace Vixen.Sys {
 			return false;
 		}
 
+		static private TotalEffectsValue _TotalEffects {
+			get {
+				if(_totalEffectsValue == null) {
+					_totalEffectsValue = new TotalEffectsValue();
+					VixenSystem.Instrumentation.AddValue(_totalEffectsValue);
+				}
+				return _totalEffectsValue;
+			}
+		}
+
+		static private EffectsPerSecondValue _EffectsPerSecond {
+			get {
+				if(_effectsPerSecondValue == null) {
+					_effectsPerSecondValue = new EffectsPerSecondValue();
+					VixenSystem.Instrumentation.AddValue(_effectsPerSecondValue);
+				}
+				return _effectsPerSecondValue;
+			}
+		}
+
 		// Something went kaflooey with the threaded use of the _state variable,
 		// so it's been wrapped in the safe and fluffy blankets of this property.
 		static private ExecutionState _State {
@@ -106,7 +129,6 @@ namespace Vixen.Sys {
 		{
 			get { return _State; }
 		}
-
 
 		static public TimeSpan CurrentExecutionTime { get { return (SystemTime.IsRunning) ? SystemTime.Position : TimeSpan.Zero; } }
 
@@ -140,7 +162,6 @@ namespace Vixen.Sys {
 				ValuesChanged(stateBuffer);
 			}
 		}
-
 
 		static public ProgramContext CreateContext(Program program) {
 			ProgramContext context = new ProgramContext(program);
@@ -211,6 +232,9 @@ namespace Vixen.Sys {
 		/// </summary>
 		/// <param name="state"></param>
 		static public void Write(IEnumerable<EffectNode> state) {
+			_TotalEffects.Add(state.Count());
+			_EffectsPerSecond.Increment();
+
 			// Give the renderer a separate collection instance.
 			EffectRenderer renderer = new EffectRenderer(state.ToArray());
 			ThreadPool.QueueUserWorkItem((o) => renderer.Start());

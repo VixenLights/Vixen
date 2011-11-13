@@ -60,12 +60,19 @@ namespace Vixen.Execution {
 			}
 
 			// Burn frames until buffered frame is not expired or there is no data.
-			while ((_enumerator.Current == null || _enumerator.Current.EndTime <= _position))
-				if (!_enumerator.MoveNext())
+			bool expired = false;
+			while((_enumerator.Current == null || (expired = _IsExpired(_enumerator.Current)))) {
+				if(expired) {
+					_ItemExpired(_enumerator.Current);
+					expired = false;
+				}
+				if(!_enumerator.MoveNext())
 					break;
+			}
 
 			// If we have data and its time is valid...
-			while (_enumerator.Current != null && _enumerator.Current.StartTime <= _position && _enumerator.Current.EndTime > _position) {
+			while (_enumerator.Current != null && _enumerator.Current.StartTime <= _position && !_IsExpired(_enumerator.Current)) {
+				_ItemQualified(_enumerator.Current);
 				// Add the new frame to the state, and automatically move on to the next.
 				dirty = _states.Add(_enumerator.Current);
 				_enumerator.MoveNext();
@@ -93,5 +100,8 @@ namespace Vixen.Execution {
 		private bool _IsExpired(T instance) {
 			return _position >= instance.EndTime;
 		}
+
+		virtual protected void _ItemQualified(T value) { }
+		virtual protected void _ItemExpired(T value) { }
 	}
 }
