@@ -78,6 +78,11 @@
       <Name>Pulse</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Effect\Spin\Spin.csproj">
+      <Project>{56296134-41F2-4B20-95FC-6EB3049CFFEB}</Project>
+      <Name>Spin</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Property\RGB\RGB.csproj">
       <Project>{3D1BD0E2-B947-4235-A2A7-30AA4F13CA86}</Project>
       <Name>RGB</Name>
@@ -98,6 +103,16 @@
       <Name>CurveTypeEditor</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\LevelTypeEditor\LevelTypeEditor.csproj">
+      <Project>{5FE12EE4-49CB-4008-9A30-96960704A9C5}</Project>
+      <Name>LevelTypeEditor</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SpinEffectEditorControl.resx">
+      <DependentUpon>SpinEffectEditorControl.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

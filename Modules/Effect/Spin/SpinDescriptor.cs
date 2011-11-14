@@ -8,6 +8,7 @@ using Vixen.Commands.KnownDataTypes;
 using Vixen.Module.Effect;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
+using System.Drawing;
 
 namespace VixenModules.Effect.Spin
 {
@@ -41,10 +42,20 @@ namespace VixenModules.Effect.Spin
 		{
 			get
 			{
-				// TODO
 				return new ParameterSignature(
-					new ParameterSpecification("Intensity Curve", typeof(Curve)),
-					new ParameterSpecification("Color Gradient", typeof(ColorGradient))
+					new ParameterSpecification("Spin Speed Format", typeof(SpinSpeedFormat)),
+					new ParameterSpecification("Pulse Length Format", typeof(SpinPulseLengthFormat)),
+					new ParameterSpecification("Color Handling", typeof(SpinColorHandling)),
+					new ParameterSpecification("Revolution Count", typeof(double)),
+					new ParameterSpecification("Revolution Speed (Hz)", typeof(double)),
+					new ParameterSpecification("Revolution Time (ms)", typeof(int)),
+					new ParameterSpecification("Pulse Time", typeof(int)),
+					new ParameterSpecification("Pulse Percentage (of revolution)", typeof(int)),
+					new ParameterSpecification("Default channel level", typeof(Level)),
+					new ParameterSpecification("Static Color", typeof(Color)),
+					new ParameterSpecification("Color Gradient", typeof(ColorGradient)),
+					new ParameterSpecification("Individual Pulse Curve", typeof(Curve)),
+					new ParameterSpecification("Spin Movement Curve", typeof(Curve))
 					);
 			}
 		}

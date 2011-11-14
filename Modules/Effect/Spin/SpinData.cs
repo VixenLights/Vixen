@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
+using System.Drawing;
 using CommonElements.ColorManagement.ColorModels;
 using Vixen.Module;
 using Vixen.Commands.KnownDataTypes;
@@ -14,33 +15,102 @@ namespace VixenModules.Effect.Spin
 	[DataContract]
 	public class SpinData : ModuleDataModelBase
 	{
-		//[DataMember]
-		//public Curve LevelCurve { get; set; }
+		[DataMember]
+		public SpinSpeedFormat SpeedFormat { get; set; }
 
-		//[DataMember]
-		//public ColorGradient ColorGradient { get; set; }
+		[DataMember]
+		public SpinPulseLengthFormat PulseLengthFormat { get; set; }
 
-		//public SpinData()
-		//{
-		//    LevelCurve = new Curve();
-		//    ColorGradient = new ColorGradient();
-		//}
+		[DataMember]
+		public SpinColorHandling ColorHandling { get; set; }
 
-		//public override IModuleDataModel Clone()
-		//{
-		//    SpinData result = new SpinData();
-		//    result.LevelCurve = LevelCurve;
-		//    result.ColorGradient = ColorGradient;
-		//    return result;
-		//}
+		[DataMember]
+		public double RevolutionCount { get; set; }
+
+		[DataMember]
+		public double RevolutionFrequency { get; set; }
+
+		[DataMember]
+		public int RevolutionTime { get; set; }
+
+		[DataMember]
+		public int PulseTime { get; set; }
+
+		[DataMember]
+		public int PulsePercentage { get; set; }
+
+		[DataMember]
+		public Level DefaultLevel { get; set; }
+
+		[DataMember]
+		public Color StaticColor { get; set; }
+
+		[DataMember]
+		public ColorGradient ColorGradient { get; set; }
+
+		[DataMember]
+		public Curve PulseCurve { get; set; }
+
+		[DataMember]
+		public Curve MovementCurve { get; set; }
+
 
 		public SpinData()
 		{
+			SpeedFormat = SpinSpeedFormat.RevolutionCount;
+			PulseLengthFormat = SpinPulseLengthFormat.EvenlyDistributedAcrossSegments;
+			ColorHandling = SpinColorHandling.StaticColor;
+			RevolutionCount = 3;
+			RevolutionFrequency = 2;
+			RevolutionTime = 500;
+			PulseTime = 100;
+			PulsePercentage = 10;
+			DefaultLevel = 0;
+			StaticColor = Color.White;
+			ColorGradient = new ColorGradient();
+			PulseCurve = new Curve();
+			MovementCurve = new Curve();
 		}
 
 		public override IModuleDataModel Clone()
 		{
-			throw new NotImplementedException();
+			SpinData result = new SpinData();
+			result.SpeedFormat = SpeedFormat;
+			result.PulseLengthFormat = PulseLengthFormat;
+			result.ColorHandling = ColorHandling;
+			result.RevolutionCount = RevolutionCount;
+			result.RevolutionFrequency = RevolutionFrequency;
+			result.RevolutionTime = RevolutionTime;
+			result.PulseTime = PulseTime;
+			result.PulsePercentage = PulsePercentage;
+			result.DefaultLevel = DefaultLevel;
+			result.StaticColor = StaticColor;
+			result.ColorGradient = new ColorGradient(ColorGradient);
+			result.PulseCurve = new Curve(PulseCurve);
+			result.MovementCurve = new Curve(MovementCurve);
+			return result;
 		}
+	}
+
+	public enum SpinSpeedFormat
+	{
+		RevolutionCount,
+		RevolutionFrequency,
+		FixedTime
+	}
+
+	public enum SpinPulseLengthFormat
+	{
+		FixedTime,
+		PercentageOfRevolution,
+		EvenlyDistributedAcrossSegments
+	}
+
+	public enum SpinColorHandling
+	{
+		StaticColor,
+		GradientThroughWholeEffect,
+		GradientForEachPulse,
+		ColorAcrossItems
 	}
 }
