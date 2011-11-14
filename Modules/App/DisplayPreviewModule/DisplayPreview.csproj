@@ -78,6 +78,7 @@
     <Compile Include="WPF\DragCanvas.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WPF\MoveThumb.cs" />
     <Compile Include="WPF\RelayCommand.cs" />
     <Compile Include="Views\SetupView.xaml.cs">
       <DependentUpon>SetupView.xaml</DependentUpon>
@@ -86,6 +87,7 @@
       <DependentUpon>VisualizerView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="WPF\ResizeThumb.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\DisplayItemEditorView.xaml">
@@ -103,6 +105,18 @@
     <Page Include="Views\VisualizerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Resources\DesignerItem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Resources\MoveThumb.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Resources\ResizeDecorator.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>

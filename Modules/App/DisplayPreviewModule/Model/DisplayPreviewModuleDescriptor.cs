@@ -60,7 +60,7 @@
         {
             get
             {
-                return "An output plugin that allows you to build a virtual mock of you display, and preview what the display will look like during sequence playback.";
+                return "A module that allows you to build a virtual mock of your display, and preview what the display will look like during sequence playback.";
             }
         }
 

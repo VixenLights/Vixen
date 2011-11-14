@@ -3,16 +3,34 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:Model1="clr-namespace:VixenModules.App.DisplayPreview.Model"
-        xmlns:ViewModels1="clr-namespace:VixenModules.App.DisplayPreview.ViewModels"
-        xmlns:WPF1="clr-namespace:VixenModules.App.DisplayPreview.WPF"
-        xmlns:Behaviors1="clr-namespace:VixenModules.App.DisplayPreview.Behaviors"
+        xmlns:Model="clr-namespace:VixenModules.App.DisplayPreview.Model"
+        xmlns:ViewModels="clr-namespace:VixenModules.App.DisplayPreview.ViewModels"
+        xmlns:Behaviors="clr-namespace:VixenModules.App.DisplayPreview.Behaviors"
         mc:Ignorable="d"
         Title="Display Item and Channel Editor"
         SizeToContent="WidthAndHeight">
 	<d:DesignProperties.DataContext>
-		<d:DesignInstanceExtension Type="{x:Type ViewModels1:DisplayItemEditorViewModel}" />
+		<d:DesignInstanceExtension Type="{x:Type ViewModels:DisplayItemEditorViewModel}" />
 	</d:DesignProperties.DataContext>
+	<Window.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="Resources/DesignerItem.xaml" />
+			</ResourceDictionary.MergedDictionaries>
+
+			<DataTemplate DataType="{x:Type Model:ChannelLocation}">
+				<Grid MouseLeftButtonUp="GridMouseLeftButtonUp"
+				      Background="#01FFFFFF">
+					<Ellipse Fill="{Binding DisplayColor, Mode=OneWay}"
+					         x:Name="channel"
+					         IsHitTestVisible="False"
+					         Width="{Binding Width}"
+					         Height="{Binding Height}"
+					         ToolTip="{Binding ChannelName}" />
+				</Grid>
+			</DataTemplate>
+		</ResourceDictionary>
+	</Window.Resources>
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto" />
@@ -28,7 +46,7 @@
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
 					</Grid.RowDefinitions>
 					<TreeView ItemsSource="{Binding ChannelSources}"
 					          x:Name="treeview"
@@ -54,9 +72,9 @@
 
 						<TreeView.ItemTemplate>
 							<HierarchicalDataTemplate ItemsSource="{Binding Children}"
-							                          DataType="{x:Type Model1:ChannelSource}">
+							                          DataType="{x:Type Model:ChannelSource}">
 								<TextBlock Text="{Binding ChannelNodeName}"
-								           Behaviors1:DragSourceBehaviour.DragSource="{Binding Source}"
+								           Behaviors:DragSourceBehaviour.DragSource="{Binding Source}"
 								           HorizontalAlignment="Stretch" />
 							</HierarchicalDataTemplate>
 						</TreeView.ItemTemplate>
@@ -80,7 +98,7 @@
 			<StackPanel Orientation="Horizontal">
 				<ContentControl Content="{Binding DisplayItem}">
 					<ContentControl.ContentTemplate>
-						<DataTemplate DataType="{x:Type Model1:DisplayItem}">
+						<DataTemplate DataType="{x:Type Model:DisplayItem}">
 							<GroupBox Header="Display Item Settings"
 							          Margin="2"
 							          Padding="2">
@@ -108,7 +126,7 @@
 				</ContentControl>
 				<ContentControl Content="{Binding SelectedChannelLocation}">
 					<ContentControl.ContentTemplate>
-						<DataTemplate DataType="{x:Type Model1:ChannelLocation}">
+						<DataTemplate DataType="{x:Type Model:ChannelLocation}">
 							<GroupBox Header="Channel Settings"
 							          Margin="2"
 							          Padding="2">
@@ -137,70 +155,47 @@
 				                AllowDrop="True"
 				                x:Name="theDisplayItem">
 					<ContentControl.ContentTemplate>
-						<DataTemplate DataType="{x:Type Model1:DisplayItem}">
+						<DataTemplate DataType="{x:Type Model:DisplayItem}">
 							<Border BorderBrush="Black"
 							        CornerRadius="5"
 							        Padding="2"
 							        BorderThickness="2">
-								<ItemsControl ItemsSource="{Binding ChannelLocations}"
-								              Behaviors1:DropTargetBehaviour.DropTarget="{Binding Target}"
-								              Width="{Binding Width}"
-								              Height="{Binding Height}"
-								              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-								              ScrollViewer.VerticalScrollBarVisibility="Hidden"
-								              Background="#33000000"
-								              AllowDrop="True">
-									<ItemsControl.ItemsPanel>
+								<ListView ItemsSource="{Binding ChannelLocations}"
+								          Behaviors:DropTargetBehaviour.DropTarget="{Binding Target}"
+								          Width="{Binding Width}"
+								          IsSynchronizedWithCurrentItem="True"
+								          Height="{Binding Height}"
+								          ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+								          ScrollViewer.VerticalScrollBarVisibility="Hidden"
+								          Background="#33000000"
+								          AllowDrop="True">
+									<ListView.ItemsPanel>
 										<ItemsPanelTemplate>
-											<WPF1:DragCanvas ClipToBounds="True"
-											                 HorizontalAlignment="Left"
-											                 MaxWidth="{Binding Width}"
-											                 MaxHeight="{Binding Height}"
-											                 MinWidth="{Binding Width}"
-											                 MinHeight="{Binding Height}"
-											                 Width="{Binding Width}"
-											                 Height="{Binding Height}">
-											</WPF1:DragCanvas>
+											<Canvas ClipToBounds="True"
+											        HorizontalAlignment="Left"
+											        MaxWidth="{Binding Width}"
+											        MaxHeight="{Binding Height}"
+											        MinWidth="{Binding Width}"
+											        MinHeight="{Binding Height}"
+											        Width="{Binding Width}"
+											        Height="{Binding Height}">
+											</Canvas>
 										</ItemsPanelTemplate>
-									</ItemsControl.ItemsPanel>
-									<ItemsControl.ItemTemplate>
-										<DataTemplate DataType="{x:Type Model1:ChannelLocation}">
-											<Ellipse Fill="{Binding DisplayColor, Mode=OneWay}"
-											         x:Name="channel"
-											         Width="{Binding Width}"
-											         Height="{Binding Height}"
-											         ToolTip="{Binding ChannelName}" />
-											<DataTemplate.Triggers>
-												<DataTrigger Binding="{Binding IsSelected}"
-												             Value="true">
-													<Setter TargetName="channel"
-													        Property="Stroke"
-													        Value="Red" />
-													<Setter TargetName="channel"
-													        Property="StrokeThickness"
-													        Value="2" />
-												</DataTrigger>
-												<DataTrigger Binding="{Binding IsSelected}"
-												             Value="false">
-													<Setter TargetName="channel"
-													        Property="Stroke"
-													        Value="LightGray" />
-													<Setter TargetName="channel"
-													        Property="StrokeThickness"
-													        Value=".5" />
-												</DataTrigger>
-											</DataTemplate.Triggers>
-										</DataTemplate>
-									</ItemsControl.ItemTemplate>
-									<ItemsControl.ItemContainerStyle>
-										<Style TargetType="ContentPresenter">
+									</ListView.ItemsPanel>
+									<ListView.ItemContainerStyle>
+										<Style TargetType="ListViewItem"
+										       BasedOn="{StaticResource DesignerItemStyle}">
 											<Setter Property="Canvas.Left"
 											        Value="{Binding Path=LeftOffset, Mode=TwoWay}" />
 											<Setter Property="Canvas.Top"
 											        Value="{Binding Path=TopOffset, Mode=TwoWay}" />
+											<Setter Property="Width"
+											        Value="{Binding Width, Mode=TwoWay}" />
+											<Setter Property="Height"
+											        Value="{Binding Height, Mode=TwoWay}" />
 										</Style>
-									</ItemsControl.ItemContainerStyle>
-								</ItemsControl>
+									</ListView.ItemContainerStyle>
+								</ListView>
 							</Border>
 						</DataTemplate>
 					</ContentControl.ContentTemplate>
@@ -221,6 +216,7 @@
 				</GroupBox.Header>
 
 				<ListView ItemsSource="{Binding ChannelLocations}"
+				          IsSynchronizedWithCurrentItem="True"
 				          SelectedItem="{Binding SelectedChannelLocation}">
 					<ListView.Resources>
 						<Style TargetType="{x:Type ListViewItem}">
@@ -229,7 +225,7 @@
 						</Style>
 					</ListView.Resources>
 					<ListView.ItemTemplate>
-						<DataTemplate DataType="{x:Type Model1:ChannelLocation}">
+						<DataTemplate DataType="{x:Type Model:ChannelLocation}">
 							<TextBlock Text="{Binding ChannelName}" />
 						</DataTemplate>
 					</ListView.ItemTemplate>

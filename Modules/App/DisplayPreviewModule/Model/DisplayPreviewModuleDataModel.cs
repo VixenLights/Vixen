@@ -97,7 +97,7 @@ namespace VixenModules.App.DisplayPreview.Model
             {
                 if (_opacity <= 0)
                 {
-					_opacity = Preferences.OpacityDefault;
+                    _opacity = Preferences.OpacityDefault;
                 }
 
                 return _opacity;
