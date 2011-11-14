@@ -75,9 +75,9 @@ namespace VixenModules.App.DisplayPreview.Model
         {
             get
             {
-                if (_displayHeight <= 0)
+                if (_displayWidth <= 0)
                 {
-                    _displayHeight = Preferences.DisplayWidthDefault;
+                    _displayWidth = Preferences.DisplayWidthDefault;
                 }
 
                 return _displayWidth;
