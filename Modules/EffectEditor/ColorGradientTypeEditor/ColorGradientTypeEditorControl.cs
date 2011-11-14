@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Vixen.Sys;
 using Vixen.Module.EffectEditor;
+using Vixen.Module.Effect;
 using Vixen.Commands.KnownDataTypes;
 using VixenModules.App.ColorGradients;
 
@@ -20,6 +21,8 @@ namespace VixenModules.EffectEditor.ColorGradientTypeEditor
 			InitializeComponent();
 			ColorGradientValue = new ColorGradient();
 		}
+
+		public IEffect TargetEffect { get; set; }
 
 		public object[] EffectParameterValues
 		{

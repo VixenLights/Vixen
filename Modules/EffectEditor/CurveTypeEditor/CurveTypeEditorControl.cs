@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Vixen.Sys;
 using Vixen.Module.EffectEditor;
+using Vixen.Module.Effect;
 using Vixen.Commands.KnownDataTypes;
 using VixenModules.App.Curves;
 
@@ -20,6 +21,8 @@ namespace VixenModules.EffectEditor.CurveTypeEditor
 			InitializeComponent();
 			CurveValue = new Curve();
 		}
+
+		public IEffect TargetEffect { get; set; }
 
 		public object[] EffectParameterValues
 		{

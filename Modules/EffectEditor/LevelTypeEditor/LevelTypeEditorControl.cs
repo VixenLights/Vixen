@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Vixen.Sys;
 using Vixen.Module.EffectEditor;
+using Vixen.Module.Effect;
 using Vixen.Commands.KnownDataTypes;
 
 namespace VixenModules.EffectEditor.LevelTypeEditor
@@ -17,7 +18,10 @@ namespace VixenModules.EffectEditor.LevelTypeEditor
 		public LevelTypeEditorControl()
 		{
 			InitializeComponent();
+			valueUpDown.TrackerOrientation = Orientation.Horizontal;
 		}
+
+		public IEffect TargetEffect { get; set; }
 
 		public object[] EffectParameterValues
 		{

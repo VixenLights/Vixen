@@ -124,6 +124,19 @@ EffectParameterValues: The value(s) to edit are read from the edit control as
                        those values will be written to your control as an
                        object array as well.  It is the control's responsibility
                        to know the types and do any necessary casting.
+TargetEffect:          Some effect editors might need to actually know details
+                       about the target effect it may be editing, if one exists;
+					   for example, this could be used to disable or enable
+					   particular options based on information in the effect that
+					   is being modified; for example, the editor might not allow
+					   any settings related to color to be changed if the effect
+					   will not be targeted at nodes that do not have color data.
+					   Or maybe the effect editor needs to know the duration of
+					   the effect, to prompt the user with appropriate options.
+					   Note that you can *not* rely on this being set: you may be
+					   configuring a effect that does not yet exist. As such, the
+					   editor will have to make reasonable assumptions for defaults.
+
 
 From the build process you will birth a new module, ready for use.  Place it in
 the Module/EffectEditor directory.

@@ -8,12 +8,20 @@ using System.Text;
 using System.Windows.Forms;
 using Vixen.Sys;
 using Vixen.Module.EffectEditor;
+using Vixen.Module.Effect;
 using Vixen.Commands.KnownDataTypes;
 
 namespace SampleEffectEditor {
 	public partial class SampleEffectEditorControl : UserControl, IEffectEditorControl {
 		public SampleEffectEditorControl() {
 			InitializeComponent();
+		}
+
+		IEffect _targetEffect;
+		public IEffect TargetEffect
+		{
+			get { return _targetEffect; }
+			set { _targetEffect = value; }
 		}
 
 		public object[] EffectParameterValues {

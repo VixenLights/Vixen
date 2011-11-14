@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Vixen.Sys;
 using Vixen.Module.EffectEditor;
+using Vixen.Module.Effect;
 using Vixen.Commands.KnownDataTypes;
 using VixenModules.Effect.Twinkle;
 using VixenModules.App.ColorGradients;
@@ -20,6 +21,13 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 		{
 			InitializeComponent();
 			ColorGradient = new ColorGradient();
+		}
+
+		IEffect _targetEffect;
+		public IEffect TargetEffect
+		{
+			get { return _targetEffect; }
+			set { _targetEffect = value; }
 		}
 
 		public object[] EffectParameterValues

@@ -50,6 +50,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					// and seems...... prone to breaking. TODO: review.
 					ec.EffectParameterValues = values[i].AsEnumerable().ToArray();
 
+					ec.TargetEffect = effectNode.Effect;
+
 					Label l = new Label();
 					l.Width = 1;
 					l.Height = 1;
@@ -69,6 +71,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_usedSingleControl = true;
 				IEffectEditorControl control = controls.First();
 				control.EffectParameterValues = _effectNode.Effect.ParameterValues;
+				control.TargetEffect = effectNode.Effect;
 				tableLayoutPanelEffectEditors.Controls.Add(control as Control);
 				tableLayoutPanelEffectEditors.SetColumnSpan((control as Control), 2);
 
