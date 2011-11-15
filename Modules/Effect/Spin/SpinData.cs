@@ -52,7 +52,7 @@ namespace VixenModules.Effect.Spin
 		public Curve PulseCurve { get; set; }
 
 		[DataMember]
-		public Curve MovementCurve { get; set; }
+		public bool ReverseSpin { get; set; }
 
 
 		public SpinData()
@@ -69,7 +69,7 @@ namespace VixenModules.Effect.Spin
 			StaticColor = Color.White;
 			ColorGradient = new ColorGradient();
 			PulseCurve = new Curve();
-			MovementCurve = new Curve();
+			ReverseSpin = false;
 		}
 
 		public override IModuleDataModel Clone()
@@ -87,7 +87,7 @@ namespace VixenModules.Effect.Spin
 			result.StaticColor = StaticColor;
 			result.ColorGradient = new ColorGradient(ColorGradient);
 			result.PulseCurve = new Curve(PulseCurve);
-			result.MovementCurve = new Curve(MovementCurve);
+			result.ReverseSpin = ReverseSpin;
 			return result;
 		}
 	}

@@ -27,9 +27,8 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			VixenModules.App.ColorGradients.ColorGradient colorGradient2 = new VixenModules.App.ColorGradients.ColorGradient();
-			VixenModules.App.Curves.Curve curve3 = new VixenModules.App.Curves.Curve();
-			VixenModules.App.Curves.Curve curve4 = new VixenModules.App.Curves.Curve();
+			VixenModules.App.ColorGradients.ColorGradient colorGradient1 = new VixenModules.App.ColorGradients.ColorGradient();
+			VixenModules.App.Curves.Curve curve1 = new VixenModules.App.Curves.Curve();
 			this.groupBoxColor = new System.Windows.Forms.GroupBox();
 			this.radioButtonGradientAcrossItems = new System.Windows.Forms.RadioButton();
 			this.colorTypeEditorControlStaticColor = new VixenModules.EffectEditor.ColorTypeEditor.ColorTypeEditorControl();
@@ -54,11 +53,8 @@
 			this.radioButtonPulsePercentage = new System.Windows.Forms.RadioButton();
 			this.radioButtonPulseFixedTime = new System.Windows.Forms.RadioButton();
 			this.levelTypeEditorControlDefaultLevel = new VixenModules.EffectEditor.LevelTypeEditor.LevelTypeEditorControl();
-			this.curveTypeEditorControlSpinMovement = new VixenModules.EffectEditor.CurveTypeEditor.CurveTypeEditorControl();
 			this.label2 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
+			this.checkBoxReverse = new System.Windows.Forms.CheckBox();
 			this.groupBoxColor.SuspendLayout();
 			this.groupBoxSpeed.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownRevolutionCount)).BeginInit();
@@ -140,13 +136,13 @@
 			// 
 			// colorGradientTypeEditorControlGradient
 			// 
-			colorGradient2.Gammacorrected = false;
-			colorGradient2.IsCurrentLibraryGradient = false;
-			colorGradient2.LibraryReferenceName = "";
-			colorGradient2.Title = null;
-			this.colorGradientTypeEditorControlGradient.ColorGradientValue = colorGradient2;
+			colorGradient1.Gammacorrected = false;
+			colorGradient1.IsCurrentLibraryGradient = false;
+			colorGradient1.LibraryReferenceName = "";
+			colorGradient1.Title = null;
+			this.colorGradientTypeEditorControlGradient.ColorGradientValue = colorGradient1;
 			this.colorGradientTypeEditorControlGradient.EffectParameterValues = new object[] {
-        ((object)(colorGradient2))};
+        ((object)(colorGradient1))};
 			this.colorGradientTypeEditorControlGradient.Location = new System.Drawing.Point(94, 152);
 			this.colorGradientTypeEditorControlGradient.Name = "colorGradientTypeEditorControlGradient";
 			this.colorGradientTypeEditorControlGradient.Size = new System.Drawing.Size(100, 40);
@@ -303,7 +299,7 @@
 			this.groupBoxPulse.Controls.Add(this.radioButtonPulseFixedTime);
 			this.groupBoxPulse.Location = new System.Drawing.Point(3, 121);
 			this.groupBoxPulse.Name = "groupBoxPulse";
-			this.groupBoxPulse.Size = new System.Drawing.Size(298, 218);
+			this.groupBoxPulse.Size = new System.Drawing.Size(298, 184);
 			this.groupBoxPulse.TabIndex = 4;
 			this.groupBoxPulse.TabStop = false;
 			this.groupBoxPulse.Text = "Pulse";
@@ -311,7 +307,7 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(19, 150);
+			this.label1.Location = new System.Drawing.Point(19, 127);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(89, 13);
 			this.label1.TabIndex = 15;
@@ -319,12 +315,12 @@
 			// 
 			// curveTypeEditorControlEachPulse
 			// 
-			curve3.IsCurrentLibraryCurve = false;
-			curve3.LibraryReferenceName = "";
-			this.curveTypeEditorControlEachPulse.CurveValue = curve3;
+			curve1.IsCurrentLibraryCurve = false;
+			curve1.LibraryReferenceName = "";
+			this.curveTypeEditorControlEachPulse.CurveValue = curve1;
 			this.curveTypeEditorControlEachPulse.EffectParameterValues = new object[] {
-        ((object)(curve3))};
-			this.curveTypeEditorControlEachPulse.Location = new System.Drawing.Point(118, 117);
+        ((object)(curve1))};
+			this.curveTypeEditorControlEachPulse.Location = new System.Drawing.Point(118, 94);
 			this.curveTypeEditorControlEachPulse.Name = "curveTypeEditorControlEachPulse";
 			this.curveTypeEditorControlEachPulse.Size = new System.Drawing.Size(150, 80);
 			this.curveTypeEditorControlEachPulse.TabIndex = 14;
@@ -337,7 +333,7 @@
             0,
             0,
             0});
-			this.numericUpDownPulsePercentage.Location = new System.Drawing.Point(197, 56);
+			this.numericUpDownPulsePercentage.Location = new System.Drawing.Point(197, 42);
 			this.numericUpDownPulsePercentage.Maximum = new decimal(new int[] {
             500,
             0,
@@ -360,7 +356,7 @@
             0,
             0,
             0});
-			this.numericUpDownPulseTime.Location = new System.Drawing.Point(197, 82);
+			this.numericUpDownPulseTime.Location = new System.Drawing.Point(197, 68);
 			this.numericUpDownPulseTime.Maximum = new decimal(new int[] {
             100000,
             0,
@@ -384,7 +380,7 @@
 			// radioButtonPulseEvenlyDistributed
 			// 
 			this.radioButtonPulseEvenlyDistributed.AutoSize = true;
-			this.radioButtonPulseEvenlyDistributed.Location = new System.Drawing.Point(16, 28);
+			this.radioButtonPulseEvenlyDistributed.Location = new System.Drawing.Point(16, 19);
 			this.radioButtonPulseEvenlyDistributed.Name = "radioButtonPulseEvenlyDistributed";
 			this.radioButtonPulseEvenlyDistributed.Size = new System.Drawing.Size(271, 17);
 			this.radioButtonPulseEvenlyDistributed.TabIndex = 11;
@@ -396,7 +392,7 @@
 			// radioButtonPulsePercentage
 			// 
 			this.radioButtonPulsePercentage.AutoSize = true;
-			this.radioButtonPulsePercentage.Location = new System.Drawing.Point(16, 56);
+			this.radioButtonPulsePercentage.Location = new System.Drawing.Point(16, 42);
 			this.radioButtonPulsePercentage.Name = "radioButtonPulsePercentage";
 			this.radioButtonPulsePercentage.Size = new System.Drawing.Size(171, 17);
 			this.radioButtonPulsePercentage.TabIndex = 10;
@@ -408,7 +404,7 @@
 			// radioButtonPulseFixedTime
 			// 
 			this.radioButtonPulseFixedTime.AutoSize = true;
-			this.radioButtonPulseFixedTime.Location = new System.Drawing.Point(16, 83);
+			this.radioButtonPulseFixedTime.Location = new System.Drawing.Point(16, 69);
 			this.radioButtonPulseFixedTime.Name = "radioButtonPulseFixedTime";
 			this.radioButtonPulseFixedTime.Size = new System.Drawing.Size(167, 17);
 			this.radioButtonPulseFixedTime.TabIndex = 9;
@@ -419,76 +415,43 @@
 			// 
 			// levelTypeEditorControlDefaultLevel
 			// 
-			this.levelTypeEditorControlDefaultLevel.Location = new System.Drawing.Point(443, 300);
+			this.levelTypeEditorControlDefaultLevel.Location = new System.Drawing.Point(477, 214);
 			this.levelTypeEditorControlDefaultLevel.Name = "levelTypeEditorControlDefaultLevel";
 			this.levelTypeEditorControlDefaultLevel.Size = new System.Drawing.Size(90, 39);
 			this.levelTypeEditorControlDefaultLevel.TabIndex = 7;
 			this.levelTypeEditorControlDefaultLevel.TargetEffect = null;
 			// 
-			// curveTypeEditorControlSpinMovement
-			// 
-			curve4.IsCurrentLibraryCurve = false;
-			curve4.LibraryReferenceName = "";
-			this.curveTypeEditorControlSpinMovement.CurveValue = curve4;
-			this.curveTypeEditorControlSpinMovement.EffectParameterValues = new object[] {
-        ((object)(curve4))};
-			this.curveTypeEditorControlSpinMovement.Location = new System.Drawing.Point(443, 214);
-			this.curveTypeEditorControlSpinMovement.Name = "curveTypeEditorControlSpinMovement";
-			this.curveTypeEditorControlSpinMovement.Size = new System.Drawing.Size(150, 80);
-			this.curveTypeEditorControlSpinMovement.TabIndex = 8;
-			this.curveTypeEditorControlSpinMovement.TargetEffect = null;
-			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(345, 307);
+			this.label2.Location = new System.Drawing.Point(328, 227);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(69, 13);
+			this.label2.Size = new System.Drawing.Size(143, 13);
 			this.label2.TabIndex = 9;
-			this.label2.Text = "Default level:";
+			this.label2.Text = "Default level for all channels:";
 			// 
-			// label3
+			// checkBoxReverse
 			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(320, 251);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(110, 26);
-			this.label3.TabIndex = 10;
-			this.label3.Text = "(path the spin takes\r\nthrough the channels)";
-			// 
-			// label4
-			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(330, 234);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(90, 13);
-			this.label4.TabIndex = 11;
-			this.label4.Text = "Movement curve:";
-			// 
-			// label5
-			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(330, 322);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(97, 13);
-			this.label5.TabIndex = 12;
-			this.label5.Text = "(while not spinning)";
+			this.checkBoxReverse.AutoSize = true;
+			this.checkBoxReverse.Location = new System.Drawing.Point(331, 257);
+			this.checkBoxReverse.Name = "checkBoxReverse";
+			this.checkBoxReverse.Size = new System.Drawing.Size(96, 17);
+			this.checkBoxReverse.TabIndex = 10;
+			this.checkBoxReverse.Text = "Spin in reverse";
+			this.checkBoxReverse.UseVisualStyleBackColor = true;
 			// 
 			// SpinEffectEditorControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.label5);
-			this.Controls.Add(this.label4);
-			this.Controls.Add(this.label3);
+			this.Controls.Add(this.checkBoxReverse);
 			this.Controls.Add(this.label2);
-			this.Controls.Add(this.curveTypeEditorControlSpinMovement);
 			this.Controls.Add(this.levelTypeEditorControlDefaultLevel);
 			this.Controls.Add(this.groupBoxColor);
 			this.Controls.Add(this.groupBoxSpeed);
 			this.Controls.Add(this.groupBoxPulse);
 			this.Name = "SpinEffectEditorControl";
-			this.Size = new System.Drawing.Size(606, 345);
+			this.Size = new System.Drawing.Size(606, 310);
 			this.groupBoxColor.ResumeLayout(false);
 			this.groupBoxColor.PerformLayout();
 			this.groupBoxSpeed.ResumeLayout(false);
@@ -531,10 +494,7 @@
 		private CurveTypeEditor.CurveTypeEditorControl curveTypeEditorControlEachPulse;
 		private System.Windows.Forms.RadioButton radioButtonGradientAcrossItems;
 		private LevelTypeEditor.LevelTypeEditorControl levelTypeEditorControlDefaultLevel;
-		private CurveTypeEditor.CurveTypeEditorControl curveTypeEditorControlSpinMovement;
 		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.CheckBox checkBoxReverse;
 	}
 }

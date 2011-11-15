@@ -48,7 +48,7 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 					StaticColor,
 					ColorGradient,
 					PulseCurve,
-					MovementCurve
+					ReverseSpin
 				};
 			}
 			set
@@ -68,7 +68,7 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 				StaticColor = (Color)value[9];
 				ColorGradient = (ColorGradient)value[10];
 				PulseCurve = (Curve)value[11];
-				MovementCurve = (Curve)value[12];
+				ReverseSpin = (bool)value[12];
 
 				// set these last: setting them results in some of the other values being auto-calculated on the form.
 				SpeedFormat = (SpinSpeedFormat)value[0];
@@ -269,10 +269,10 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 			set { curveTypeEditorControlEachPulse.CurveValue = value; }
 		}
 
-		public Curve MovementCurve
+		public bool ReverseSpin
 		{
-			get { return curveTypeEditorControlSpinMovement.CurveValue; }
-			set { curveTypeEditorControlSpinMovement.CurveValue = value; }
+			get { return checkBoxReverse.Checked; }
+			set { checkBoxReverse.Checked = value; }
 		}
 
 		private void radioButtonRevolutionItem_CheckedChanged(object sender, EventArgs e)

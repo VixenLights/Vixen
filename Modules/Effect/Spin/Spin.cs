@@ -61,7 +61,7 @@ namespace VixenModules.Effect.Spin
 					StaticColor,
 					ColorGradient,
 					PulseCurve,
-					MovementCurve
+					ReverseSpin
 				};
 			}
 			set
@@ -83,7 +83,7 @@ namespace VixenModules.Effect.Spin
 				StaticColor = (Color)value[9];
 				ColorGradient = (ColorGradient)value[10];
 				PulseCurve = (Curve)value[11];
-				MovementCurve = (Curve)value[12];
+				ReverseSpin = (bool)value[12];
 			}
 		}
 
@@ -93,9 +93,6 @@ namespace VixenModules.Effect.Spin
 			get
 			{
 				if (!PulseCurve.CheckLibraryReference())
-					return true;
-
-				if (!MovementCurve.CheckLibraryReference())
 					return true;
 
 				if (!ColorGradient.CheckLibraryReference())
@@ -182,10 +179,10 @@ namespace VixenModules.Effect.Spin
 			set { _data.PulseCurve = value; IsDirty = true; }
 		}
 
-		public Curve MovementCurve
+		public bool ReverseSpin
 		{
-			get { return _data.MovementCurve; }
-			set { _data.MovementCurve = value; IsDirty = true; }
+			get { return _data.ReverseSpin; }
+			set { _data.ReverseSpin = value; IsDirty = true; }
 		}
 
 		private void DoRendering()
@@ -234,7 +231,6 @@ namespace VixenModules.Effect.Spin
 
 
 			// calculate the pulse time and revolution time exactly (based on the parameters from the data)
-
 			double revTimeMs = 0;				// single revolution time (ms)
 
 			// figure out the relative length of a individual pulse
@@ -248,9 +244,13 @@ namespace VixenModules.Effect.Spin
 				pulseFractional = 1.0 / (double)targetNodeCount;
 			}
 
+			// magic number. (the inaccuracy of interpolating the curve into a position. eg. if we have 5 'positions', then
+			// the curve should really be from 0-80% for the last spin, to make sure the last pulse finishes accurately.)
+			double pulseInterpolationOffset = 1.0 / (double)targetNodeCount;
+
 			// figure out either the revolution count or time, based on what data we have
 			if (SpeedFormat == SpinSpeedFormat.RevolutionCount) {
-				revTimeMs = (TimeSpan.TotalMilliseconds - pulseConstant) / (RevolutionCount + pulseFractional);
+				revTimeMs = (TimeSpan.TotalMilliseconds - pulseConstant) / (RevolutionCount + pulseFractional - pulseInterpolationOffset);
 			} else if (SpeedFormat == SpinSpeedFormat.RevolutionFrequency) {
 				revTimeMs = (1.0 / RevolutionFrequency) * 1000.0;	// convert Hz to period ms
 			} else if (SpeedFormat == SpinSpeedFormat.FixedTime) {
@@ -262,12 +262,18 @@ namespace VixenModules.Effect.Spin
 			TimeSpan revTimeSpan = TimeSpan.FromMilliseconds(revTimeMs);
 			TimeSpan pulseTimeSpan = TimeSpan.FromMilliseconds(pulTimeMs);
 
+			// figure out which way we're moving through the channels
+			Curve movement;
+			if (ReverseSpin)
+				movement = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { 100, 0 }));
+			else
+				movement = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { 0, 100 }));
 			
 			// iterate up to and including the last pulse generated
-			for (TimeSpan current = TimeSpan.Zero; current <= TimeSpan - pulseTimeSpan; current += increment) {
+			for (TimeSpan current = TimeSpan.Zero; current <= TimeSpan; current += increment) {
 				double currentPercentageIntoSpin = ((double)(current.Ticks % revTimeSpan.Ticks) / (double)revTimeSpan.Ticks) * 100.0;
 
-				double targetChannelPosition = MovementCurve.GetValue(currentPercentageIntoSpin);
+				double targetChannelPosition = movement.GetValue(currentPercentageIntoSpin);
 				int currentNodeIndex = (int)((targetChannelPosition / 100.0) * targetNodeCount);
 
 				// on the off chance we hit the 100% mark *exactly*...
@@ -297,7 +303,9 @@ namespace VixenModules.Effect.Spin
 
 					case SpinColorHandling.GradientThroughWholeEffect:
 						double startPos = ((double)current.Ticks / (double)TimeSpan.Ticks);
-						double endPos = ((double)(current + TimeSpan.FromMilliseconds(PulseTime)).Ticks / (double)TimeSpan.Ticks);
+						double endPos = 1.0;
+						if (TimeSpan - current >= pulseTimeSpan)
+							endPos = ((double)(current + TimeSpan.FromMilliseconds(PulseTime)).Ticks / (double)TimeSpan.Ticks);
 						pulse.ColorGradient = ColorGradient.GetSubGradient(startPos, endPos);
 						break;
 
