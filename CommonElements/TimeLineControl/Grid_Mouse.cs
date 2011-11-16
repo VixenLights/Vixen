@@ -391,12 +391,12 @@ namespace CommonElements.Timeline
             m_ignoreDragArea = Rectangle.Empty;
             Cursor = Cursors.SizeAll;
 			CurrentRowIndexUnderMouse = Rows.IndexOf(rowAt(gridLocation));
-			calculateSnapPointsForMove();
+			calculateSnapPoints();
 
             elementsBeginMove(gridLocation);
         }
 
-        private void calculateSnapPointsForMove()
+        private void calculateSnapPoints()
         {
             // build up a full set of snap points/details, from (a) the static snap points for the grid, and
             // (b) calculated snap points for this move (ie. other elements in the row[s]).
@@ -591,8 +591,10 @@ namespace CommonElements.Timeline
         {
             m_dragState = DragState.HResizing;
             //Cursor.Clip = new Rectangle(0, Cursor.Position.Y, Screen.FromControl(this).Bounds.Width, 1);
-            elementsBeginMove(gridLocation);
-        }
+			CurrentRowIndexUnderMouse = Rows.IndexOf(rowAt(gridLocation));
+			calculateSnapPoints();
+			elementsBeginMove(gridLocation);
+		}
 
         private void MouseMove_HResizing(Point gridLocation, Point delta)
         {
