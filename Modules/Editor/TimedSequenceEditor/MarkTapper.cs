@@ -67,7 +67,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void _triggerResult()
 		{
-			Results.Add(_timingSource.Position);
+			// round the tapped time to the nearest millisecond
+			Results.Add(TimeSpan.FromMilliseconds(Math.Round(_timingSource.Position.TotalMilliseconds)));
 			panelTap.BackColor = Color.SkyBlue;
 			timerTap.Enabled = true;
 		}

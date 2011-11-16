@@ -391,21 +391,13 @@ namespace CommonElements.Timeline
             m_ignoreDragArea = Rectangle.Empty;
             Cursor = Cursors.SizeAll;
 			CurrentRowIndexUnderMouse = Rows.IndexOf(rowAt(gridLocation));
+			calculateSnapPointsForMove();
 
             elementsBeginMove(gridLocation);
         }
 
-        //TODO - What does this code do
-        /*
-        private void beginMove(Point location)
+        private void calculateSnapPointsForMove()
         {
-            m_dragState = DragState.Moving;
-            m_ignoreDragArea = Rectangle.Empty;
-            Cursor = Cursors.SizeAll;
-
-            DragTimeLeftOver = TimeSpan.Zero;
-            CurrentRowIndexUnderMouse = Rows.IndexOf(rowAt(location));
-
             // build up a full set of snap points/details, from (a) the static snap points for the grid, and
             // (b) calculated snap points for this move (ie. other elements in the row[s]).
             CurrentDragSnapPoints = new SortedDictionary<TimeSpan, List<SnapDetails>>(StaticSnapPoints);
@@ -453,7 +445,6 @@ namespace CommonElements.Timeline
                 }
             }
         }
-        */
 
 
         //TODO: This has not been revisited yet.
@@ -561,7 +552,8 @@ namespace CommonElements.Timeline
             if ((latest + dt) > TimeInfo.TotalTime)
                 dt = TimeInfo.TotalTime - latest;
 
-
+			// modify the dt time based on snap points (ie. marks, and borders of other elements)
+			dt = FindSnapTimeForElements(SelectedElements, dt, ResizeZone.None);
 
             foreach (var elem in SelectedElements)
             {
@@ -598,7 +590,7 @@ namespace CommonElements.Timeline
         private void beginHResize(Point gridLocation)
         {
             m_dragState = DragState.HResizing;
-            Cursor.Clip = new Rectangle(0, Cursor.Position.Y, Screen.FromControl(this).Bounds.Width, 1);
+            //Cursor.Clip = new Rectangle(0, Cursor.Position.Y, Screen.FromControl(this).Bounds.Width, 1);
             elementsBeginMove(gridLocation);
         }
 
@@ -611,7 +603,8 @@ namespace CommonElements.Timeline
 
             // Modifidy our dt, if necessary.
 
-
+			// modify the dt time based on snap points (ie. marks, and borders of other elements)
+			dt = FindSnapTimeForElements(SelectedElements, dt, m_mouseResizeZone);
 
             // Ensure minimum size
             TimeSpan shortest = m_elemMoveInfo.OriginalElements.Values.Min(x => x.Duration);
@@ -641,7 +634,6 @@ namespace CommonElements.Timeline
                         dt = pixelsToTime(MinElemWidthPx) - shortest;
                     break;
             }
-
 
 
             // Apply dt to all selected elements.
@@ -723,7 +715,7 @@ namespace CommonElements.Timeline
             m_dragState = DragState.Normal;
             this.Cursor = Cursors.Default;
 
-            Cursor.Clip = m_origCursorClip;
+            //Cursor.Clip = m_origCursorClip;
 
             if (m_autoScrollTimer.Enabled)
                 m_autoScrollTimer.Stop();

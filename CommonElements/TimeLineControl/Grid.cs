@@ -101,6 +101,7 @@ namespace CommonElements.Timeline
 
 		protected override void TimePerPixelChanged(object sender, EventArgs e)
 		{
+			ResizeGridHorizontally();
 			RecalculateAllStaticSnapPoints();
 			Invalidate();
 		}
@@ -108,10 +109,20 @@ namespace CommonElements.Timeline
 
 		protected override void TotalTimeChanged(object sender, EventArgs e)
 		{
+			ResizeGridHorizontally();
+		}
+
+		private void ResizeGridHorizontally()
+		{
+			// resize the scroll canvas to be the new size of the whole display time, and cap it to not go past the end
 			AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), AutoScrollMinSize.Height);
 			if (VisibleTimeEnd > TotalTime) {
 				VisibleTimeStart = TotalTime - VisibleTimeSpan;
 			}
+
+			//shuffle the grid position to line up with where the visible time start should be
+			AutoScrollPosition = new Point((int)timeToPixels(VisibleTimeStart), -AutoScrollPosition.Y);
+
 			Invalidate();
 		}
 
@@ -201,7 +212,6 @@ namespace CommonElements.Timeline
 		private int CurrentRowIndexUnderMouse { get; set; }
 		private SortedDictionary<TimeSpan, List<SnapDetails>> StaticSnapPoints { get; set; }
 		private SortedDictionary<TimeSpan, List<SnapDetails>> CurrentDragSnapPoints { get; set; }
-		private TimeSpan DragTimeLeftOver { get; set; }
 
 
 		#endregion
@@ -448,6 +458,9 @@ namespace CommonElements.Timeline
 			TimeSpan selStart = pixelsToTime(SelectedArea.Left);
 			TimeSpan selEnd = pixelsToTime(SelectedArea.Right);
 
+			// deselect all elements in the grid first, then only select the ones in the box.
+			ClearSelectedElements();
+
 			// Iterate all elements of only the rows within our selection.
 			bool startFound = false, endFound = false;
 			foreach (var row in Rows) {
@@ -456,11 +469,8 @@ namespace CommonElements.Timeline
 					endFound ||					// we already passed the end row
 					(!startFound && (row != startRow))	//we haven't found the first row, and this isn't it
 					) {
-					foreach (Element e in row)
-						e.Selected = false;
 					continue;
 				}
-
 
 				// If we already found the first row, or we haven't, but this is it
 				if (startFound || row == startRow) {
@@ -621,27 +631,18 @@ namespace CommonElements.Timeline
 
 		}
 
-
-        /*
-		public TimeSpan OffsetElementsByTime(IEnumerable<Element> elements, TimeSpan offset)
+		/// <summary>
+		/// Given a collection of elements, and a desired offset time (from the original pre-drag time), this method will
+		/// find the best matching offset time after considering all possible snap points that would be applicable to those
+		/// elements. If there's no snap points currently used, the return value should be the same as the given offset.
+		/// </summary>
+		/// <param name="elements">The elements to consider for snapping.</param>
+		/// <param name="offset">The desired offset time (from the element's original time position, pre-drag).</param>
+		/// <param name="resize">if the elements are being resized, and if so, from the front or back.</param>
+		/// <returns>The real offset time that should be used from the element's original time position.</returns>
+		public TimeSpan FindSnapTimeForElements(IEnumerable<Element> elements, TimeSpan offset, ResizeZone resize)
 		{
-			// check to see if the offset that is applied to all elements will take it outside
-			// the total time at all. If so, use a smaller offset, or none at all.
-			TimeSpan earliest = GetEarliestTimeForElements(elements);
-			TimeSpan latest = GetLatestTimeForElements(elements);
-
-			// if we're going backwards, check that the earliest time isn't already at zero, or
-			// that the move will try to take it past 0.
-			if (offset.Ticks < 0 && earliest < -offset && !ResizingElement) {
-				offset = -earliest;
-			}
-
-			// same for moving forwards.
-			if (offset.Ticks > 0 && TotalTime - latest < offset && !ResizingElement) {
-				offset = TotalTime - latest;
-			}
-
-			// if the offset was zero, or was set to it, we don't need to do anything else now.
+			// if the offset was zero, we don't need to do anything.
 			if (offset == TimeSpan.Zero)
 				return offset;
 
@@ -667,6 +668,12 @@ namespace CommonElements.Timeline
 			foreach (Tuple<Element, Row> tuple in elementsToCheckSnapping) {
 				Element element = tuple.Item1;
 				Row thisElementsRow = tuple.Item2;
+				ElementTimeInfo orig = m_elemMoveInfo.OriginalElements[element];
+
+				if (orig == null) {
+					throw new Exception("Timeline Control: trying to find snap point for element, but can't find original time location!");
+				}
+
 				foreach (KeyValuePair<TimeSpan, List<SnapDetails>> kvp in CurrentDragSnapPoints) {
 					foreach (SnapDetails details in kvp.Value) {
 						// skip this point if it's not any higher priority than our highest so far
@@ -678,31 +685,29 @@ namespace CommonElements.Timeline
 							continue;
 
 						// figure out if the element start time or end times are in the snap range; if not, skip it
-						bool startInRange = (element.StartTime + offset > details.SnapStart && element.StartTime + offset < details.SnapEnd);
-						bool endInRange = (element.EndTime + offset > details.SnapStart && element.EndTime + offset < details.SnapEnd);
+						bool startInRange = (orig.StartTime + offset > details.SnapStart && orig.StartTime + offset < details.SnapEnd);
+						bool endInRange = (orig.EndTime + offset > details.SnapStart && orig.EndTime + offset < details.SnapEnd);
 
 						// if we're resizing, ignore snapping on the end of the element that is not getting resized.
-						if (ResizingElement) {
-							if (ResizingFront)
-								endInRange = false;
-							else
-								startInRange = false;
-						}
+						if (resize == ResizeZone.Front)
+							endInRange = false;
+						else if (resize == ResizeZone.Back)
+							startInRange = false;
 
 						if (!startInRange && !endInRange)
 							continue;
 
 						// calculate the best side (start or end) to snap to the snap time
 						if (startInRange && endInRange) {
-							if (details.SnapTime - element.StartTime + offset < element.EndTime + offset - details.SnapTime)
-								snappedOffset = details.SnapTime - element.StartTime;
+							if (details.SnapTime - orig.StartTime + offset < orig.EndTime + offset - details.SnapTime)
+								snappedOffset = details.SnapTime - orig.StartTime;
 							else
-								snappedOffset = details.SnapTime - element.EndTime;
+								snappedOffset = details.SnapTime - orig.EndTime;
 						} else {
 							if (startInRange)
-								snappedOffset = details.SnapTime - element.StartTime;
+								snappedOffset = details.SnapTime - orig.StartTime;
 							else
-								snappedOffset = details.SnapTime - element.EndTime;
+								snappedOffset = details.SnapTime - orig.EndTime;
 						}
 
 						bestSnapPoint = details;
@@ -710,37 +715,9 @@ namespace CommonElements.Timeline
 				}
 			}
 
-			// by now, we should know what the most applicable snap point is (or none at all), and we've
-			// also figured out along the way what the actual offset should be to snap the elements to. So have at it.
-			foreach (Element e in elements) {
-				if (ResizingElement) {
-					if (ResizingFront) {
-						// don't do any resizing if it will make the element smaller than 6 pixels.
-						// (figure scientifically confirmed to be pulled out my arse.)
-						if (e.Duration - snappedOffset > pixelsToTime(6)) {
-							e.MoveStartTime(snappedOffset);
-						}
-					} else {
-						if (e.Duration + snappedOffset > pixelsToTime(6)) {
-							// resize it to fit within the total time if it would exceed it
-							if (e.StartTime + e.Duration + snappedOffset > TotalTime)
-								snappedOffset = TotalTime - e.StartTime - e.Duration;
-
-							e.Duration += snappedOffset;
-						}
-					}
-				} else {
-					e.StartTime += snappedOffset;
-				}
-			}
-
-			Invalidate();
-
-			// return the amount of time that the elements were *actually* moved, rather than the amount they were intended to
 			return snappedOffset;
 		} 
-        */
-
+	
 		public void MoveElementsVerticallyToLocation(IEnumerable<Element> elements, Point gridLocation)
 		{
 			Row destRow = rowAt(gridLocation);
