@@ -157,7 +157,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				menuItem.Click += (sender, e) => {
 					Row destination = timelineControl.SelectedRow;
 					if (destination != null) {
-						addNewEffect(effectDesriptor.TypeId, destination, timelineControl.CursorPosition, TimeSpan.FromSeconds(2));		// TODO: get a proper time
+						addNewEffect((Guid)menuItem.Tag, destination, timelineControl.CursorPosition, TimeSpan.FromSeconds(2));		// TODO: get a proper time
 					}
 				};
 				addEffectToolStripMenuItem.DropDownItems.Add(menuItem);
@@ -715,22 +715,34 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// </summary>
 		private void addNewEffect(Guid effectId, Row row, TimeSpan startTime, TimeSpan timeSpan)
 		{
+			// get a new instance of this effect, populate it, and make a node for it
+			IEffectModuleInstance effect = Vixen.Sys.ApplicationServices.Get<IEffectModuleInstance>(effectId);
+			addNewEffect(effect, row, startTime, timeSpan);
+		}
+
+		private void addNewEffect(IEffectModuleInstance effectInstance, Row row, TimeSpan startTime, TimeSpan timeSpan)
+		{
 			try {
+				// make sure we don't have a null effect given
+				if (effectInstance == null) {
+					VixenSystem.Logging.Error("TimedSequenceEditor: addNewEffect was given a null effect instance.");
+					return;
+				}
+
 				// get the target channel
 				ChannelNode targetNode = (ChannelNode)row.Tag;
 
-				// get a new instance of this effect, populate it, and make a node for it
-				IEffectModuleInstance effect = Vixen.Sys.ApplicationServices.Get<IEffectModuleInstance>(effectId);
-				effect.TargetNodes = new ChannelNode[] { targetNode };
-				effect.TimeSpan = timeSpan;
-				EffectNode effectNode = new EffectNode(effect, startTime);
+				// populate the given effect instance with the appropriate target node and times, and wrap it in an effectNode
+				effectInstance.TargetNodes = new ChannelNode[] { targetNode };
+				effectInstance.TimeSpan = timeSpan;
+				EffectNode effectNode = new EffectNode(effectInstance, startTime);
 
 				// put it in the sequence and in the timeline display
 				_sequence.InsertData(effectNode);
 				AddElementForEffectNode(effectNode);
 				IsModified = true;
 			} catch (Exception ex) {
-				string msg = "TimedSequenceEditor: error adding effect of type " + effectId + " to row " + row.Name;
+				string msg = "TimedSequenceEditor: error adding effect of type " + effectInstance.Descriptor.TypeId + " to row " + row.Name;
 				VixenSystem.Logging.Error(msg, ex);
 				MessageBox.Show(msg + ":\n" + ex.Message);
 			}
@@ -925,7 +937,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (targetRowIndex >= visibleRows.Count)
 					continue;
 
-				addNewEffect(elem.EffectNode.Effect.Descriptor.TypeId, visibleRows[targetRowIndex], targetTime, elem.Duration);
+				// clone the effect, and make a new effect node for it
+				IEffectModuleInstance newEffect = elem.EffectNode.Effect.Clone() as IEffectModuleInstance;
+				addNewEffect(newEffect, visibleRows[targetRowIndex], targetTime, elem.Duration);
 			}
 		}
 
