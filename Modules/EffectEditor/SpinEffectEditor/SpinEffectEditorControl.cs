@@ -374,5 +374,10 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 		{
 			RecalculateValues();
 		}
+
+		private void SpinEffectEditorControl_Load(object sender, EventArgs e)
+		{
+			RecalculateValues();
+		}
 	}
 }

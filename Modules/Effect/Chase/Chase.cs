@@ -194,11 +194,11 @@ namespace VixenModules.Effect.Chase
 			TimeSpan lastNodeStartTime = TimeSpan.Zero;
 			
 			// iterate up to and including the last pulse generated
-			for (TimeSpan current = TimeSpan.Zero; current <= chaseTime; current += increment) {
+			for (TimeSpan current = TimeSpan.Zero; current <= TimeSpan; current += increment) {
 				double currentPercentageIntoChase = ((double)current.Ticks / (double)chaseTime.Ticks) * 100.0;
 
-				double targetChannelPosition = ChaseMovement.GetValue(currentPercentageIntoChase);
-				int currentNodeIndex = (int)((targetChannelPosition / 100.0) * targetNodeCount);
+				double currentMovementPosition = ChaseMovement.GetValue(currentPercentageIntoChase);
+				int currentNodeIndex = (int)((currentMovementPosition / 100.0) * targetNodeCount);
 
 				// on the off chance we hit the 100% mark *exactly*...
 				if (currentNodeIndex == targetNodeCount)
@@ -215,43 +215,57 @@ namespace VixenModules.Effect.Chase
 
 				// if the last node targeted wasn't null, we need to make a pulse for it
 				if (lastTargetedNode != null) {
-					pulse = new Pulse.Pulse();
-					pulse.TargetNodes = new ChannelNode[] { lastTargetedNode };
-					pulse.TimeSpan = current - lastNodeStartTime + TimeSpan.FromMilliseconds(PulseOverlap);
-					pulse.LevelCurve = new Curve(PulseCurve);
-
-					// figure out what color gradient to use for the pulse
-					switch (ColorHandling) {
-						case ChaseColorHandling.GradientForEachPulse:
-							pulse.ColorGradient = ColorGradient;
-							break;
-
-						case ChaseColorHandling.GradientThroughWholeEffect:
-							double startPos = ((double)current.Ticks / (double)TimeSpan.Ticks);
-							double endPos = ((double)(current + pulse.TimeSpan).Ticks / (double)TimeSpan.Ticks);
-							pulse.ColorGradient = ColorGradient.GetSubGradient(startPos, endPos);
-							break;
-
-						case ChaseColorHandling.StaticColor:
-							pulse.ColorGradient = new ColorGradient(StaticColor);
-							break;
-
-						case ChaseColorHandling.ColorAcrossItems:
-							pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(targetChannelPosition / 100.0));
-							break;
-					}
-
-					pulseData = pulse.Render();
-					pulseData.OffsetAllCommandsByTime(current);
-					_channelData.AddChannelData(pulseData);
+					GeneratePulse(lastTargetedNode, lastNodeStartTime, current - lastNodeStartTime + TimeSpan.FromMilliseconds(PulseOverlap), currentMovementPosition);
 				}
 
 				lastTargetedNode = currentNode;
 				lastNodeStartTime = current;
+
+				// if we've hit the 100% mark of the chase curve, bail (the last one gets generated after)
+				if (currentPercentageIntoChase >= 100.0)
+					break;
+			}
+
+			// generate the last pulse
+			if (lastTargetedNode != null) {
+				GeneratePulse(lastTargetedNode, lastNodeStartTime, TimeSpan - lastNodeStartTime, 1.0);
 			}
 
 			_channelData = ChannelData.Restrict(_channelData, TimeSpan.Zero, TimeSpan);
 		}
 
+		private void GeneratePulse(ChannelNode target, TimeSpan startTime, TimeSpan duration, double currentMovementPosition)
+		{
+			ChannelData result;
+			Pulse.Pulse pulse = new Pulse.Pulse();
+			pulse.TargetNodes = new ChannelNode[] { target };
+			pulse.TimeSpan = duration;
+			pulse.LevelCurve = new Curve(PulseCurve);
+
+			// figure out what color gradient to use for the pulse
+			switch (ColorHandling) {
+				case ChaseColorHandling.GradientForEachPulse:
+					pulse.ColorGradient = ColorGradient;
+					break;
+
+				case ChaseColorHandling.GradientThroughWholeEffect:
+					double startPos = ((double)startTime.Ticks / (double)TimeSpan.Ticks);
+					double endPos = ((double)(startTime + duration).Ticks / (double)TimeSpan.Ticks);
+					pulse.ColorGradient = ColorGradient.GetSubGradient(startPos, endPos);
+					break;
+
+				case ChaseColorHandling.StaticColor:
+					pulse.ColorGradient = new ColorGradient(StaticColor);
+					break;
+
+				case ChaseColorHandling.ColorAcrossItems:
+					pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(currentMovementPosition / 100.0));
+					break;
+			}
+
+			result = pulse.Render();
+			result.OffsetAllCommandsByTime(startTime);
+			_channelData.AddChannelData(result);
+		}
 	}
 }

@@ -27,8 +27,8 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			VixenModules.App.ColorGradients.ColorGradient colorGradient1 = new VixenModules.App.ColorGradients.ColorGradient();
-			VixenModules.App.Curves.Curve curve1 = new VixenModules.App.Curves.Curve();
+			VixenModules.App.ColorGradients.ColorGradient colorGradient2 = new VixenModules.App.ColorGradients.ColorGradient();
+			VixenModules.App.Curves.Curve curve2 = new VixenModules.App.Curves.Curve();
 			this.groupBoxColor = new System.Windows.Forms.GroupBox();
 			this.radioButtonGradientAcrossItems = new System.Windows.Forms.RadioButton();
 			this.colorTypeEditorControlStaticColor = new VixenModules.EffectEditor.ColorTypeEditor.ColorTypeEditorControl();
@@ -136,13 +136,13 @@
 			// 
 			// colorGradientTypeEditorControlGradient
 			// 
-			colorGradient1.Gammacorrected = false;
-			colorGradient1.IsCurrentLibraryGradient = false;
-			colorGradient1.LibraryReferenceName = "";
-			colorGradient1.Title = null;
-			this.colorGradientTypeEditorControlGradient.ColorGradientValue = colorGradient1;
+			colorGradient2.Gammacorrected = false;
+			colorGradient2.IsCurrentLibraryGradient = false;
+			colorGradient2.LibraryReferenceName = "";
+			colorGradient2.Title = null;
+			this.colorGradientTypeEditorControlGradient.ColorGradientValue = colorGradient2;
 			this.colorGradientTypeEditorControlGradient.EffectParameterValues = new object[] {
-        ((object)(colorGradient1))};
+        ((object)(colorGradient2))};
 			this.colorGradientTypeEditorControlGradient.Location = new System.Drawing.Point(94, 152);
 			this.colorGradientTypeEditorControlGradient.Name = "colorGradientTypeEditorControlGradient";
 			this.colorGradientTypeEditorControlGradient.Size = new System.Drawing.Size(100, 40);
@@ -315,11 +315,11 @@
 			// 
 			// curveTypeEditorControlEachPulse
 			// 
-			curve1.IsCurrentLibraryCurve = false;
-			curve1.LibraryReferenceName = "";
-			this.curveTypeEditorControlEachPulse.CurveValue = curve1;
+			curve2.IsCurrentLibraryCurve = false;
+			curve2.LibraryReferenceName = "";
+			this.curveTypeEditorControlEachPulse.CurveValue = curve2;
 			this.curveTypeEditorControlEachPulse.EffectParameterValues = new object[] {
-        ((object)(curve1))};
+        ((object)(curve2))};
 			this.curveTypeEditorControlEachPulse.Location = new System.Drawing.Point(118, 94);
 			this.curveTypeEditorControlEachPulse.Name = "curveTypeEditorControlEachPulse";
 			this.curveTypeEditorControlEachPulse.Size = new System.Drawing.Size(150, 80);
@@ -452,6 +452,7 @@
 			this.Controls.Add(this.groupBoxPulse);
 			this.Name = "SpinEffectEditorControl";
 			this.Size = new System.Drawing.Size(606, 310);
+			this.Load += new System.EventHandler(this.SpinEffectEditorControl_Load);
 			this.groupBoxColor.ResumeLayout(false);
 			this.groupBoxColor.PerformLayout();
 			this.groupBoxSpeed.ResumeLayout(false);

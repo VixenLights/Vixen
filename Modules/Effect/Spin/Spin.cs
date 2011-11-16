@@ -270,7 +270,9 @@ namespace VixenModules.Effect.Spin
 				movement = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { 0, 100 }));
 			
 			// iterate up to and including the last pulse generated
-			for (TimeSpan current = TimeSpan.Zero; current <= TimeSpan; current += increment) {
+			// a bit iffy, but stops 'carry over' spins past the end (when there's overlapping spins). But we need to go past
+			// (total - pulse) as the last pulse can often be a bit inaccurate due to the rounding of the increment
+			for (TimeSpan current = TimeSpan.Zero; current <= TimeSpan - pulseTimeSpan + increment; current += increment) {
 				double currentPercentageIntoSpin = ((double)(current.Ticks % revTimeSpan.Ticks) / (double)revTimeSpan.Ticks) * 100.0;
 
 				double targetChannelPosition = movement.GetValue(currentPercentageIntoSpin);
