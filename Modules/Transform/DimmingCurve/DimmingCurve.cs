@@ -40,7 +40,7 @@ namespace VixenModules.Transform.DimmingCurve
 			CommandParameterReference paramRef = _GetAffectedParameters(command);
 			if (_data != null && _data.Curve != null) {
 				foreach (int index in paramRef.ParameterIndexes) {
-					command.SetParameterValue(index, _data.Curve.GetValue((Level)command.GetParameterValue(index)));
+					command.SetParameterValue(index, (Level)_data.Curve.GetValue((Level)command.GetParameterValue(index)));
 				}
 			}
 		}

@@ -171,6 +171,11 @@ namespace VixenApplication
 
 		private void buttonConfigure_Click(object sender, EventArgs e)
 		{
+			ConfigureSelectedTransform();
+		}
+
+		private void ConfigureSelectedTransform()
+		{
 			if (listViewTransforms.SelectedItems.Count <= 0)
 				return;
 
@@ -222,6 +227,11 @@ namespace VixenApplication
 				_populateOutputsList();
 				_populateFormWithOutput(_selectedOutputIndex, true);
 			}
+		}
+
+		private void listViewTransforms_DoubleClick(object sender, EventArgs e)
+		{
+			ConfigureSelectedTransform();
 		}
 	}
 }

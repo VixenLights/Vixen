@@ -138,6 +138,7 @@
 			// 
 			// listViewTransforms
 			// 
+			this.listViewTransforms.HideSelection = false;
 			this.listViewTransforms.Location = new System.Drawing.Point(74, 61);
 			this.listViewTransforms.MultiSelect = false;
 			this.listViewTransforms.Name = "listViewTransforms";
@@ -146,6 +147,7 @@
 			this.listViewTransforms.UseCompatibleStateImageBehavior = false;
 			this.listViewTransforms.View = System.Windows.Forms.View.List;
 			this.listViewTransforms.SelectedIndexChanged += new System.EventHandler(this.listViewTransforms_SelectedIndexChanged);
+			this.listViewTransforms.DoubleClick += new System.EventHandler(this.listViewTransforms_DoubleClick);
 			// 
 			// label1
 			// 
