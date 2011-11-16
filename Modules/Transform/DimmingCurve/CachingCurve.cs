@@ -27,9 +27,7 @@ namespace VixenModules.Transform.DimmingCurve
 		{
 		}
 
-		private static int CachedValuesCount = 1000;
-
-		private Dictionary<double, double> CachedValues { get; set; }
+		private Dictionary<int, double> CachedValues { get; set; }
 
 		public override double GetValue(double x)
 		{
@@ -37,19 +35,19 @@ namespace VixenModules.Transform.DimmingCurve
 				GenerateCachedValues();
 
 			// round to the nearest 0.1
-			double rounded = Math.Round(x, 1);
+			int rounded = (int)Math.Round(x * 10);
 
 			return CachedValues[rounded];
 		}
 
 		private void GenerateCachedValues()
 		{
-			double step = 100.0 / (double)CachedValuesCount;
+			double step = 0.1;
 
-			CachedValues = new Dictionary<double, double>();
+			CachedValues = new Dictionary<int, double>();
 
 			for (double i = 0; i <= 100.0; i += step) {
-				CachedValues[i] = base.GetValue(i);
+				CachedValues[(int)Math.Round(i * 10)] = base.GetValue(i);
 			}
 		}
 	}
