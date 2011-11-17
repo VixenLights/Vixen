@@ -296,6 +296,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (timelineControl.TotalTime != length) {
 				timelineControl.TotalTime = length;
 			}
+
+			toolStripStatusLabel_sequenceLength.Text = _sequence.Length.ToString("m\\:ss\\.fff");
 		}
 
 		/// <summary>
@@ -443,8 +445,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		protected void ElementTimeChangedHandler(object sender, EventArgs e)
 		{
-			//_undoMgr.AddUndoAction(new ElementTimeChangedUndoAction(
-
 			IsModified = true;
 		}
 
