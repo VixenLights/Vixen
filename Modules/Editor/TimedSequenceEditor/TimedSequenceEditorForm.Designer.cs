@@ -87,6 +87,7 @@
 			this.timelineControl = new CommonElements.Timeline.TimelineControl();
 			this.toolStripEffects = new CommonElements.ToolStripEx();
 			this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+			this.modifySequenceLengthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripOperations.SuspendLayout();
 			this.menuStrip.SuspendLayout();
 			this.statusStrip.SuspendLayout();
@@ -514,7 +515,8 @@
 			// 
 			this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem_associateAudio,
-            this.toolStripMenuItem_MarkManager});
+            this.toolStripMenuItem_MarkManager,
+            this.modifySequenceLengthToolStripMenuItem});
 			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
 			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
 			this.toolsToolStripMenuItem.Text = "Tools";
@@ -646,6 +648,13 @@
 			this.toolStripLabel1.Size = new System.Drawing.Size(102, 22);
 			this.toolStripLabel1.Text = "Available Effects:";
 			// 
+			// modifySequenceLengthToolStripMenuItem
+			// 
+			this.modifySequenceLengthToolStripMenuItem.Name = "modifySequenceLengthToolStripMenuItem";
+			this.modifySequenceLengthToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+			this.modifySequenceLengthToolStripMenuItem.Text = "Sequence Length...";
+			this.modifySequenceLengthToolStripMenuItem.Click += new System.EventHandler(this.modifySequenceLengthToolStripMenuItem_Click);
+			// 
 			// TimedSequenceEditorForm
 			// 
 			this.AllowDrop = true;
@@ -744,5 +753,6 @@
 		private System.Windows.Forms.ToolStripButton toolStripButton_ZoomTimeIn;
 		private System.Windows.Forms.ToolStripButton toolStripButton_ZoomTimeOut;
 		private System.Windows.Forms.ToolStripLabel toolStripLabel1;
+		private System.Windows.Forms.ToolStripMenuItem modifySequenceLengthToolStripMenuItem;
 	}
 }

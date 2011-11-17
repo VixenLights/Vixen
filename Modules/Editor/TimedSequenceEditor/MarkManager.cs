@@ -19,13 +19,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private IExecutionControl _executionControl;
 		private ITiming _timingSource;
 
-		private string[] _timeFormats = {
-				@"m\:ss", @"m\:ss\.f", @"m\:ss\.ff", @"m\:ss\.fff", 
-				@"\:ss", @"\:ss\.f", @"\:ss\.ff", @"\:ss\.fff", 
-				@"%s", @"s\.f", @"s\.ff", @"s\.fff", 
-				};
-
-
 		public MarkManager(List<MarkCollection> markCollections, IExecutionControl executionControl, ITiming timingSource)
 		{
 			InitializeComponent();
@@ -186,7 +179,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void buttonAddOrUpdateMark_Click(object sender, EventArgs e)
 		{
 			TimeSpan time;
-			bool success = TimeSpan.TryParseExact(textBoxTime.Text, _timeFormats, null, out time);
+			bool success = TimeSpan.TryParseExact(textBoxTime.Text, TimeFormats.Formats, null, out time);
 			if (success) {
 				if (buttonAddOrUpdateMark.Text == "Update") {
 					// updating an existing item, find it, remove it, and add the new one
@@ -236,7 +229,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (prompt.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 				TimeSpan time;
 
-				if (TimeSpan.TryParseExact(prompt.Response, _timeFormats, null, out time)) {
+				if (TimeSpan.TryParseExact(prompt.Response, TimeFormats.Formats, null, out time)) {
 					List<TimeSpan> newMarks = new List<TimeSpan>();
 					foreach (ListViewItem item in listViewMarks.Items) {
 						if (item.Selected) {

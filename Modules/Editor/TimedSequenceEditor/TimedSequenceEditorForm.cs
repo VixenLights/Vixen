@@ -1088,6 +1088,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			StopSequence();
 		}
 
+		private void modifySequenceLengthToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			string oldLength = _sequence.Length.ToString("m\\:ss\\.fff");
+			CommonElements.TextDialog prompt = new CommonElements.TextDialog("Enter new sequence length:", "Sequence Length", oldLength, true);
+
+			if (prompt.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+				TimeSpan time;
+				bool success = TimeSpan.TryParseExact(prompt.Response, TimeFormats.Formats, null, out time);
+				if (success) {
+					if (time != _sequence.Length)
+						SetSequenceLength(time);
+				} else {
+					MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'", "Error parsing time");
+				}
+			}
+		}
 	}
 
 	[Serializable]
@@ -1105,6 +1121,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public int FirstVisibleRow;
 
 		public TimeSpan EarliestStartTime;
+	}
+
+	public class TimeFormats
+	{
+		private static string[] _formats = new string[] {
+			@"m\:ss", @"m\:ss\.f", @"m\:ss\.ff", @"m\:ss\.fff", 
+			@"\:ss", @"\:ss\.f", @"\:ss\.ff", @"\:ss\.fff", 
+			@"%s", @"s\.f", @"s\.ff", @"s\.fff", 
+		};
+
+		public static string[] Formats
+		{
+			get { return _formats; }
+		}
 	}
 }
 
