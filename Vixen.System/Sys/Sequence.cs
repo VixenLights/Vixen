@@ -165,6 +165,11 @@ namespace Vixen.Sys {
 			return cn;
 		}
 
+		public bool RemoveData(EffectNode effectNode)
+		{
+			return Data.RemoveEffect(effectNode);
+		}
+
 		public bool IsUntimed
 		{
 			get { return Length == Forever; }

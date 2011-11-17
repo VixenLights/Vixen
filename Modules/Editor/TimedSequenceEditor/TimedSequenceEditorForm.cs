@@ -1001,7 +1001,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (timelineControl.SelectedElements.Count() > 0)
 				IsModified = true;
 
-			RemoveElements(timelineControl.SelectedElements.Cast<TimedSequenceElement>());
+			foreach (Element elem in timelineControl.SelectedElements.ToArray()) {
+				TimedSequenceElement tse = elem as TimedSequenceElement;
+				RemoveElement(tse);
+				_sequence.RemoveData(tse.EffectNode);
+			}
 		}
 
 		private void toolStripButton_Start_Click(object sender, EventArgs e)

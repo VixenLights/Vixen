@@ -73,6 +73,11 @@ namespace Vixen.Sys {
 			_mainStream.AddData(data);
 		}
 
+		public bool RemoveEffect(EffectNode data)
+		{
+			return _mainStream.RemoveData(data);
+		}
+
 		// Not currently used.
 		public void AddEffect(Guid streamId, EffectNode data) {
 			EffectStream effectStream = _effectStreams.Where(x => x.Id == streamId).FirstOrDefault();

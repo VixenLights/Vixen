@@ -39,6 +39,11 @@ namespace Vixen.Sys {
 			_data.Add(data);
 		}
 
+		public bool RemoveData(EffectNode data)
+		{
+			return _data.Remove(data);
+		}
+
 		public void AddData(IEnumerable<EffectNode> data) {
 			_data.AddRange(data);
 		}
