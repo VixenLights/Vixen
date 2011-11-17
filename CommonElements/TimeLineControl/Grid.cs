@@ -362,8 +362,46 @@ namespace CommonElements.Timeline
 			return rv;
 		}
 
+		/// <summary>
+		/// Moves the given elements by the given amount of time. This is similar to the mouse dragging events, except
+		/// it's a single 'atomic' operation that moves the elements and raises an event to indicate they have moved.
+		/// Note that it does not utilize snap points at all.
+		/// </summary>
+		public void MoveElementsByTime(IEnumerable<Element> elements, TimeSpan offset)
+		{
+			if (elements.Count() <= 0)
+				return;
+
+			m_elemMoveInfo = new ElementMoveInfo(new Point(), elements, VisibleTimeStart);
+
+			TimeSpan earliest = elements.Min(x => x.StartTime);
+			if ((earliest + offset) < TimeSpan.Zero)
+				offset = -earliest;
+
+			TimeSpan latest = elements.Max(x => x.EndTime);
+			if ((latest + offset) > TimeInfo.TotalTime)
+				offset = TimeInfo.TotalTime - latest;
+
+			foreach (Element elem in elements) {
+				elem.BeginUpdate();
+				elem.StartTime += offset;
+                elem.EndUpdate();
+			}
+
+			MultiElementEventArgs evargs = new MultiElementEventArgs { Elements = elements };
+            _ElementsFinishedMoving(evargs);
+
+            if (ElementsMovedNew != null)
+                ElementsMovedNew(this, new ElementsChangedTimesEventArgs(m_elemMoveInfo, ElementMoveType.Move));
+
+            m_elemMoveInfo = null;
+        }
+
+
         //TODO: Move me
         
+
+
 
 
 

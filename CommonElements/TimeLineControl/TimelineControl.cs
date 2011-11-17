@@ -167,6 +167,11 @@ namespace CommonElements.Timeline
 			}
 		}
 
+		public int VisibleHeight
+		{
+			get { return grid.ClientSize.Height; }
+		}
+
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public TimeSpan CursorPosition
 		{
@@ -341,6 +346,24 @@ namespace CommonElements.Timeline
 			}
 		}
 
+		/// <summary>
+		/// Selects all elements in the grid.
+		/// </summary>
+		public void SelectAllElements()
+		{
+			foreach (Row r in grid) {
+				r.SelectAllElements();
+			}
+		}
+
+		/// <summary>
+		/// Moves all selected elements by the given amount of time.
+		/// </summary>
+		/// <param name="offset"></param>
+		public void MoveSelectedElementsByTime(TimeSpan offset)
+		{
+			grid.MoveElementsByTime(SelectedElements, offset);
+		}
 
 
 		public IEnumerator<Row> GetEnumerator()

@@ -174,12 +174,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 	
 		#region IEditorUserInterface implementation
 
-		// TODO: what is this supposed to be for?
-		public EditorValues EditorValues
-		{
-			get { throw new NotImplementedException(); }
-		}
-
 		public bool IsModified { get; private set; }
 
 		public void RefreshSequence()
@@ -563,7 +557,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public void PauseSequence()
 		{
 			if (_context == null) {
-				VixenSystem.Logging.Error("TimedSequenceEditor: attempt to Play with null context!");
+				VixenSystem.Logging.Error("TimedSequenceEditor: attempt to Pause with null context!");
 				return;
 			}
 
@@ -573,7 +567,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public void StopSequence()
 		{
 			if (_context == null) {
-				VixenSystem.Logging.Error("TimedSequenceEditor: attempt to Play with null context!");
+				VixenSystem.Logging.Error("TimedSequenceEditor: attempt to Stop with null context!");
 				return;
 			}
 
@@ -841,11 +835,61 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// do anything special we want to here: keyboard shortcuts that are in
 			// the menu will be handled by them instead.
 			switch (e.KeyCode) {
+				case Keys.Home:
+					if (e.Control)
+						timelineControl.VisibleTimeStart = TimeSpan.Zero;
+					else
+						timelineControl.VerticalOffset = 0;
+					break;
+
+				case Keys.End:
+					if (e.Control)
+						timelineControl.VisibleTimeStart = timelineControl.TotalTime - timelineControl.VisibleTimeSpan;
+					else
+						timelineControl.VerticalOffset = int.MaxValue;	// a bit iffy, but we know that the grid caps it to what's visible
+					break;
+
+				case Keys.PageUp:
+					if (e.Control)
+						timelineControl.VisibleTimeStart = timelineControl.VisibleTimeStart - (TimeSpan.FromTicks(timelineControl.VisibleTimeSpan.Ticks / 2));
+					else
+						timelineControl.VerticalOffset = timelineControl.VerticalOffset - (timelineControl.VisibleHeight / 2);
+					break;
+
+				case Keys.PageDown:
+					if (e.Control)
+						timelineControl.VisibleTimeStart = timelineControl.VisibleTimeStart + (TimeSpan.FromTicks(timelineControl.VisibleTimeSpan.Ticks / 2));
+					else
+						timelineControl.VerticalOffset = timelineControl.VerticalOffset + (timelineControl.VisibleHeight / 2);
+					break;
+
+				case Keys.Space:
+					if (!_context.IsPlaying)
+						PlaySequence();
+					else {
+						if (_context.IsPaused)
+							PlaySequence();
+						else
+							StopSequence();
+					}
+					break;
+
+				case Keys.Left:
+					if (e.Control)
+						timelineControl.MoveSelectedElementsByTime(-TimeSpan.FromTicks(timelineControl.TimePerPixel.Ticks * 2));
+					break;
+
+				case Keys.Right:
+					if (e.Control)
+						timelineControl.MoveSelectedElementsByTime(TimeSpan.FromTicks(timelineControl.TimePerPixel.Ticks * 2));
+					break;
+
 				default:
 					break;
 			}
 
 		}
+
 
 		private void ClipboardAddData(bool cutElements)
 		{
@@ -1024,8 +1068,25 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			RestrictVisibleTimeToSequenceLength();
 		}
 
+		private void selectAllElementsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			timelineControl.SelectAllElements();
+		}
 
+		private void playToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			PlaySequence();
+		}
 
+		private void pauseToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			PauseSequence();
+		}
+
+		private void stopToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			StopSequence();
+		}
 
 	}
 
