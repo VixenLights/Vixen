@@ -26,22 +26,10 @@ namespace VixenModules.App.DisplayPreview.ViewModels
             EditElementCommand = new RelayCommand(x => EditDisplayElement(), x => CanEditDisplayElement());
             DeleteElementCommand = new RelayCommand(x => DeleteDisplayElement(), x => CanDeleteDisplayElement());
             SetBackgroundCommand = new RelayCommand(x => SetBackground());
+            ClearBackgroundCommand = new RelayCommand(x => ClearBackground(), x => CanClearBackground());
+            OpenPreferencesCommand = new RelayCommand(x => OpenPreferences());
             MoveUpCommand = new RelayCommand(x => MoveUp(), x => CanMoveUp());
             MoveDownCommand = new RelayCommand(x => MoveDown(), x => CanMoveDown());
-        }
-
-        public double Opacity
-        {
-            get
-            {
-                return _dataModel.Opacity;
-            }
-
-            set
-            {
-                _dataModel.Opacity = value;
-                OnPropertyChanged("Opacity");
-            }
         }
 
         public ICommand AddElementCommand { get; private set; }
@@ -50,7 +38,8 @@ namespace VixenModules.App.DisplayPreview.ViewModels
         {
             get
             {
-                if (_backgroundImage == null && _dataModel.BackgroundImage != null)
+                if (_backgroundImage == null
+                    && _dataModel.BackgroundImage != null)
                 {
                     var image = new BitmapImage();
                     image.BeginInit();
@@ -66,10 +55,12 @@ namespace VixenModules.App.DisplayPreview.ViewModels
             set
             {
                 _backgroundImage = value;
-                _dataModel.BackgroundImage = value.UriSource.AbsoluteUri;
+                _dataModel.BackgroundImage = value == null ? null : value.UriSource.AbsoluteUri;
                 OnPropertyChanged("BackgroundImage");
             }
         }
+
+        public ICommand ClearBackgroundCommand { get; private set; }
 
         public DisplayItem CurrentDisplayElement
         {
@@ -87,20 +78,6 @@ namespace VixenModules.App.DisplayPreview.ViewModels
 
         public ICommand DeleteElementCommand { get; private set; }
 
-        public ObservableCollection<DisplayItem> DisplayItems
-        {
-            get
-            {
-                return _dataModel.DisplayItems;
-            }
-
-            set
-            {
-                _dataModel.DisplayItems = value;
-                OnPropertyChanged("DisplayItems");
-            }
-        }
-
         public int DisplayHeight
         {
             get
@@ -112,6 +89,20 @@ namespace VixenModules.App.DisplayPreview.ViewModels
             {
                 _dataModel.DisplayHeight = value;
                 OnPropertyChanged("DisplayHeight");
+            }
+        }
+
+        public ObservableCollection<DisplayItem> DisplayItems
+        {
+            get
+            {
+                return _dataModel.DisplayItems;
+            }
+
+            set
+            {
+                _dataModel.DisplayItems = value;
+                OnPropertyChanged("DisplayItems");
             }
         }
 
@@ -132,9 +123,25 @@ namespace VixenModules.App.DisplayPreview.ViewModels
         public ICommand EditElementCommand { get; private set; }
 
         public ICommand MoveDownCommand { get; private set; }
-        
+
         public ICommand MoveUpCommand { get; private set; }
-        
+
+        public double Opacity
+        {
+            get
+            {
+                return _dataModel.Opacity;
+            }
+
+            set
+            {
+                _dataModel.Opacity = value;
+                OnPropertyChanged("Opacity");
+            }
+        }
+
+        public ICommand OpenPreferencesCommand { get; private set; }
+
         public ICommand SetBackgroundCommand { get; private set; }
 
         /// <summary>
@@ -148,6 +155,11 @@ namespace VixenModules.App.DisplayPreview.ViewModels
             editor.ShowDialog();
             DisplayItems.Add(displayElement);
             CurrentDisplayElement = displayElement;
+        }
+
+        private bool CanClearBackground()
+        {
+            return BackgroundImage != null;
         }
 
         private bool CanDeleteDisplayElement()
@@ -172,6 +184,11 @@ namespace VixenModules.App.DisplayPreview.ViewModels
             return currentDisplayElement != null && DisplayItems.IndexOf(currentDisplayElement) != 0;
         }
 
+        private void ClearBackground()
+        {
+            BackgroundImage = null;
+        }
+
         private void DeleteDisplayElement()
         {
             var displayElement = CurrentDisplayElement;
@@ -187,7 +204,7 @@ namespace VixenModules.App.DisplayPreview.ViewModels
                                               displayElement.Name), 
                                 "Confirm delete", 
                                 MessageBoxButton.YesNo, 
-                                MessageBoxImage.Question,
+                                MessageBoxImage.Question, 
                                 MessageBoxResult.No)
                 == MessageBoxResult.Yes)
             {
@@ -223,12 +240,16 @@ namespace VixenModules.App.DisplayPreview.ViewModels
             DisplayItems.Move(index, index - 1);
         }
 
+        private void OpenPreferences()
+        {
+            ViewManager.DisplayPreferences(_dataModel);
+        }
+
         private void SetBackground()
         {
             var openFileDialog = new OpenFileDialog
                                  {
-                                     DefaultExt = ".bmp|.jpg|.png", 
-                                     Filter = "Image Files (*.bmp, *.jpg, *.png)|*.bmp;*.jpg;*.png"
+                                    DefaultExt = ".bmp|.jpg|.png", Filter = "Image Files (*.bmp, *.jpg, *.png)|*.bmp;*.jpg;*.png" 
                                  };
 
             var result = openFileDialog.ShowDialog();
@@ -239,27 +260,28 @@ namespace VixenModules.App.DisplayPreview.ViewModels
                 var destFileName = Path.Combine(DisplayPreviewModuleDescriptor.ModulePath, "Background" + imageFile.Extension);
                 File.Copy(imageFile.FullName, destFileName, true);
                 var image = new BitmapImage();
-                image.BeginInit();               
+                image.BeginInit();
                 image.CacheOption = BitmapCacheOption.OnLoad;
                 image.UriSource = new Uri(destFileName, UriKind.Absolute);
                 image.EndInit();
 
                 var imageWidth = image.PixelWidth;
                 var imageHeight = image.PixelHeight;
-                if (imageHeight != DisplayHeight || imageWidth != DisplayWidth)
+                if (imageHeight != DisplayHeight
+                    || imageWidth != DisplayWidth)
                 {
                     var answer =
                         MessageBox.Show(
                                         string.Format(
-                                                      "Do you want to resie you display to match the image resolution of {0}w x {1}h?",
-                                                      imageWidth,
-                                                      imageHeight),
-                                        "Resize the display?",
-                                        MessageBoxButton.YesNo,
-                                        MessageBoxImage.Question,
+                                                      "Do you want to resie you display to match the image resolution of {0}w x {1}h?", 
+                                                      imageWidth, 
+                                                      imageHeight), 
+                                        "Resize the display?", 
+                                        MessageBoxButton.YesNo, 
+                                        MessageBoxImage.Question, 
                                         MessageBoxResult.No);
                     if (answer == MessageBoxResult.Yes)
-                    {                        
+                    {
                         DisplayWidth = imageWidth;
                         DisplayHeight = imageHeight;
                     }

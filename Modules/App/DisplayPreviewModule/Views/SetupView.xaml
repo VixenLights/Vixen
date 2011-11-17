@@ -5,13 +5,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:Model1="clr-namespace:VixenModules.App.DisplayPreview.Model"
         xmlns:WPF1="clr-namespace:VixenModules.App.DisplayPreview.WPF"
+        xmlns:ViewModels="clr-namespace:VixenModules.App.DisplayPreview.ViewModels"
         mc:Ignorable="d"
         Title="Display Preview Setup"
         SizeToContent="WidthAndHeight"
         x:Name="Instance">
 	<Window.Resources>
 		<ResourceDictionary>
-			<Style TargetType="ListBoxItem"
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="Resources/DesignerItem.xaml" />
+			</ResourceDictionary.MergedDictionaries>
+			<Style TargetType="ListViewItem"
 			       x:Key="MyStyle">
 				<Style.Resources>
 					<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
@@ -23,16 +27,15 @@
 			<WPF1:BooleanToCollapsedConverter x:Key="BooleanToCollapsedConverter" />
 
 			<DataTemplate DataType="{x:Type Model1:ChannelLocation}">
-                <Ellipse Fill="{Binding DisplayColor, Mode=OneWay}"
-                         ToolTip="{Binding ChannelName}"
+				<Ellipse Fill="{Binding DisplayColor, Mode=OneWay}"
+				         ToolTip="{Binding ChannelName}"
 				         Width="{Binding Width}"
 				         Height="{Binding Height}" />
 			</DataTemplate>
 
 			<DataTemplate DataType="{x:Type Model1:DisplayItem}">
-				<Border BorderBrush="Gray"
-				        Background="Transparent"
-				        BorderThickness="1"
+				<Border Background="Transparent"
+				        BorderThickness="0"
 				        Height="{Binding Height, Mode=TwoWay}"
 				        Width="{Binding Width, Mode=TwoWay}">
 					<ItemsControl ItemsSource="{Binding ChannelLocations}"
@@ -77,29 +80,53 @@
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 			<GroupBox Header="Commands">
-				<StackPanel>
-					<Button Margin="2"
-					        Command="{Binding SetBackgroundCommand}">
-						Set background
-					</Button>
-					<Button Margin="2"
-					        Command="{Binding AddElementCommand}">
-						Add Element
-					</Button>
-					<Button Margin="2"
-					        Command="{Binding EditElementCommand}">
-						Edit Element
-					</Button>
-					<Button Margin="2"
-					        Command="{Binding DeleteElementCommand}">
-						Delete Element
-					</Button>
-				</StackPanel>
+				<ContentControl Content="{Binding}">
+					<ContentControl.ContentTemplate>
+						<DataTemplate DataType="{x:Type ViewModels:SetupViewModel}">
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="*" />
+								</Grid.ColumnDefinitions>
+								<StackPanel>
+									<Button Margin="2"
+									        Command="{Binding AddElementCommand}">
+										Add Element
+									</Button>
+									<Button Margin="2"
+									        Command="{Binding EditElementCommand}">
+										Edit Element
+									</Button>
+									<Button Margin="2"
+									        Command="{Binding DeleteElementCommand}">
+										Delete Element
+									</Button>
+								</StackPanel>
+								<StackPanel Grid.Column="1">
+									<Button Margin="2"
+									        Command="{Binding SetBackgroundCommand}">
+										Set background
+									</Button>
+									<Button Margin="2"
+									        Command="{Binding ClearBackgroundCommand}">
+										Clear Background
+									</Button>
+									<Button Margin="2"
+									        Command="{Binding OpenPreferencesCommand}">
+										Preferences
+									</Button>
+								</StackPanel>
+							</Grid>
+						</DataTemplate>
+					</ContentControl.ContentTemplate>
+				</ContentControl>
 			</GroupBox>
 			<GroupBox Header="Display Elements"
+			          MinHeight="100"
 			          Grid.Row="1">
 				<ListView ItemsSource="{Binding DisplayItems}"
 				          SelectedItem="{Binding CurrentDisplayElement}"
+				          IsSynchronizedWithCurrentItem="True"
 				          ItemContainerStyle="{StaticResource MyStyle}"
 				          HorizontalContentAlignment="Stretch"
 				          VerticalContentAlignment="Stretch">
@@ -214,39 +241,46 @@
 					          HorizontalAlignment="Left"
 					          VerticalAlignment="Top"
 					          BorderThickness="2">
-						<ItemsControl Background="Black"
-						              Width="{Binding DisplayWidth}"
-						              Height="{Binding DisplayHeight}"
-						              ItemsSource="{Binding DisplayItems}">
-							<ItemsControl.ItemsPanel>
+						<ListView Background="Black"
+						          IsSynchronizedWithCurrentItem="True"
+						          SelectedItem="{Binding CurrentDisplayElement}"
+						          Width="{Binding DisplayWidth}"
+						          Height="{Binding DisplayHeight}"
+						          ItemsSource="{Binding DisplayItems}">
+							<ListView.ItemsPanel>
 								<ItemsPanelTemplate>
-									<WPF1:DragCanvas ClipToBounds="True"
-									                HorizontalAlignment="Left"
-									                MaxWidth="{Binding DisplayWidth}"
-									                MaxHeight="{Binding DisplayHeight}"
-									                MinWidth="{Binding DisplayWidth}"
-									                MinHeight="{Binding DisplayHeight}"
-									                Width="{Binding DisplayWidth}"
-									                Height="{Binding DisplayHeight}">
+									<Canvas ClipToBounds="True"
+									        HorizontalAlignment="Left"
+									        MaxWidth="{Binding DisplayWidth}"
+									        MaxHeight="{Binding DisplayHeight}"
+									        MinWidth="{Binding DisplayWidth}"
+									        MinHeight="{Binding DisplayHeight}"
+									        Width="{Binding DisplayWidth}"
+									        Height="{Binding DisplayHeight}">
 										<Canvas.Background>
 											<ImageBrush ImageSource="{Binding BackgroundImage}"
 											            Opacity="{Binding Opacity}"
 											            Stretch="Fill" />
 										</Canvas.Background>
-									</WPF1:DragCanvas>
+									</Canvas>
 								</ItemsPanelTemplate>
-							</ItemsControl.ItemsPanel>
-							<ItemsControl.ItemContainerStyle>
-								<Style TargetType="ContentPresenter">
+							</ListView.ItemsPanel>
+							<ListView.ItemContainerStyle>
+								<Style TargetType="ListViewItem"
+								       BasedOn="{StaticResource DesignerItemStyle}">
 									<Setter Property="Canvas.Left"
 									        Value="{Binding Path=LeftOffset, Mode=TwoWay}" />
 									<Setter Property="Canvas.Top"
 									        Value="{Binding Path=TopOffset, Mode=TwoWay}" />
+									<Setter Property="Width"
+									        Value="{Binding Width, Mode=TwoWay}" />
+									<Setter Property="Height"
+									        Value="{Binding Height, Mode=TwoWay}" />
 									<Setter Property="WPF1:DragCanvas.CanBeDragged"
 									        Value="{Binding Path=IsUnlocked, Mode=TwoWay}" />
 								</Style>
-							</ItemsControl.ItemContainerStyle>
-						</ItemsControl>
+							</ListView.ItemContainerStyle>
+						</ListView>
 
 					</GroupBox>
 				</ScrollViewer>

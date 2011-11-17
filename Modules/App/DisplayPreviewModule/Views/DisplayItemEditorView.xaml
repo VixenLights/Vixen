@@ -42,7 +42,7 @@
 				<RowDefinition Height="*" />
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
-			<GroupBox Header="Available Channels">
+			<GroupBox Header="Available Nodes">
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="*" />
@@ -85,7 +85,7 @@
 					<TextBlock Grid.Row="1"
 					           TextWrapping="WrapWithOverflow"
 					           Width="{Binding ElementName=treeview, Path=ActualWidth}">
-						Drag a group or channel to the Display Item Canvas
+						Drag a node to the Display Item Canvas
 					</TextBlock>
 				</Grid>
 			</GroupBox>
@@ -130,7 +130,7 @@
 				<ContentControl Content="{Binding SelectedChannelLocation}">
 					<ContentControl.ContentTemplate>
 						<DataTemplate DataType="{x:Type Model:ChannelLocation}">
-							<GroupBox Header="Channel Settings"
+							<GroupBox Header="Node Settings"
 							          Margin="2"
 							          Padding="2">
 								<StackPanel Orientation="Horizontal">
@@ -210,14 +210,7 @@
 				<RowDefinition Height="*" />
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
-			<GroupBox>
-				<GroupBox.Header>
-					<StackPanel>
-						<TextBlock>Channels in use</TextBlock>
-						<TextBlock>by the display item</TextBlock>
-					</StackPanel>
-				</GroupBox.Header>
-
+			<GroupBox Header="Nodes in use">
 				<ListView ItemsSource="{Binding ChannelLocations}"
 				          IsSynchronizedWithCurrentItem="True"
 				          SelectedItem="{Binding SelectedChannelLocation}">

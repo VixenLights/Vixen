@@ -17,6 +17,27 @@ namespace VixenModules.App.DisplayPreview.Model
         private int _displayWidth;
         private double _opacity;
         private Preferences _preferences;
+        private bool _isEnabled;
+
+        [OnDeserializing]
+        private void OnDeserializing(StreamingContext context)
+        {
+            _isEnabled = true;
+        }
+
+        [DataMember]
+        public bool IsEnabled
+        {
+            get
+            {
+                return _isEnabled;
+            }
+            set
+            {
+                _isEnabled = value;
+                PropertyChanged.NotifyPropertyChanged("IsEnabled", this);
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

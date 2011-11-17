@@ -15,7 +15,7 @@ namespace VixenModules.App.DisplayPreview.Model
     {
         private ObservableCollection<ChannelLocation> _channelLocations;
         private int _height;
-        private bool _isUnlocked;
+        private bool _isUnlocked = true;
         private int _leftOffset;
         private string _name;
         private IDropTarget _target;
