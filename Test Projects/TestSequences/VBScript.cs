@@ -11,5 +11,10 @@ namespace TestSequences {
 		public VBScript() 
 			: base("VB") {
 		}
+
+	    public override IModuleInstance Clone()
+	    {
+	        throw new NotImplementedException();
+	    }
 	}
 }

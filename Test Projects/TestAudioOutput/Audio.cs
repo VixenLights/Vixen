@@ -96,5 +96,25 @@ namespace TestAudioOutput {
 			get { return TimeSpan.FromMilliseconds(_audioSystem.Position); }
 			set { }
 		}
-	}
+
+        public bool SupportsVariableSpeeds
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public float Speed
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+    }
 }

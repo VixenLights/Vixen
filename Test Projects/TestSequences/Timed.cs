@@ -9,5 +9,9 @@ using Vixen.Sys;
 
 namespace TestSequences {
 	public class Timed : SequenceModuleInstanceBase {
+	    public override IModuleInstance Clone()
+	    {
+	        throw new NotImplementedException();
+	    }
 	}
 }

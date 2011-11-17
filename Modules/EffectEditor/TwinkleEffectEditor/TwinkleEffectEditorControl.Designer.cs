@@ -1,6 +1,8 @@
 ﻿namespace VixenModules.EffectEditor.TwinkleEffectEditor
 {
-	partial class TwinkleEffectEditorControl
+    using VixenModules.EffectEditor.LevelTypeEditor;
+
+    partial class TwinkleEffectEditorControl
 	{
 		/// <summary> 
 		/// Required designer variable.
@@ -372,8 +374,8 @@
 		#endregion
 
 		private System.Windows.Forms.GroupBox groupBoxLevels;
-		private LevelTypeEditor.LevelTypeEditorControl levelTypeEditorControlMaxValue;
-		private LevelTypeEditor.LevelTypeEditorControl levelTypeEditorControlMinValue;
+		private LevelTypeEditorControl levelTypeEditorControlMaxValue;
+		private LevelTypeEditorControl levelTypeEditorControlMinValue;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.GroupBox groupBoxDetails;

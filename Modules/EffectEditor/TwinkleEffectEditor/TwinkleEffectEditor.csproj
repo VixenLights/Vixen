@@ -31,10 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LevelTypeEditor">
-      <HintPath>..\Modules\EffectEditor\LevelTypeEditor\obj\Debug\LevelTypeEditor.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -86,6 +82,10 @@
       <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
       <Name>Vixen</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\LevelTypeEditor\LevelTypeEditor.csproj">
+      <Project>{5FE12EE4-49CB-4008-9A30-96960704A9C5}</Project>
+      <Name>LevelTypeEditor</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

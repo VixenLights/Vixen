@@ -11,5 +11,10 @@ namespace TestSequences {
 		public CSharpScript()
 			: base("C#") {
 		}
+
+	    public override IModuleInstance Clone()
+	    {
+	        throw new NotImplementedException();
+	    }
 	}
 }

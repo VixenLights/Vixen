@@ -11,7 +11,9 @@ using Vixen.Module.EffectEditor;
 using Vixen.Commands.KnownDataTypes;
 
 namespace TestCommandEditors {
-	public partial class TestCommandEditorControl : UserControl, IEffectEditorControl {
+    using Vixen.Module.Effect;
+
+    public partial class TestCommandEditorControl : UserControl, IEffectEditorControl {
 		public TestCommandEditorControl() {
 			InitializeComponent();
 		}
@@ -23,5 +25,17 @@ namespace TestCommandEditors {
 				// TODO
 			}
 		}
-	}
+
+        public IEffect TargetEffect
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+    }
 }

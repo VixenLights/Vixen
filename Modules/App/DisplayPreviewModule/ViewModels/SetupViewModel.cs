@@ -243,6 +243,28 @@ namespace VixenModules.App.DisplayPreview.ViewModels
                 image.CacheOption = BitmapCacheOption.OnLoad;
                 image.UriSource = new Uri(destFileName, UriKind.Absolute);
                 image.EndInit();
+
+                var imageWidth = image.PixelWidth;
+                var imageHeight = image.PixelHeight;
+                if (imageHeight != DisplayHeight || imageWidth != DisplayWidth)
+                {
+                    var answer =
+                        MessageBox.Show(
+                                        string.Format(
+                                                      "Do you want to resie you display to match the image resolution of {0}w x {1}h?",
+                                                      imageWidth,
+                                                      imageHeight),
+                                        "Resize the display?",
+                                        MessageBoxButton.YesNo,
+                                        MessageBoxImage.Question,
+                                        MessageBoxResult.No);
+                    if (answer == MessageBoxResult.Yes)
+                    {                        
+                        DisplayWidth = imageWidth;
+                        DisplayHeight = imageHeight;
+                    }
+                }
+
                 BackgroundImage = image;
                 Opacity = 1;
             }

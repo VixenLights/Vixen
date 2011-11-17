@@ -15,5 +15,10 @@ namespace TestSequences {
 			// Enable the live behavior in a bad hacky fashion.
 			RuntimeBehaviors.First(x => x.Descriptor.TypeName.Contains("Recording")).Enabled = true;
 		}
+
+	    public override IModuleInstance Clone()
+	    {
+	        throw new NotImplementedException();
+	    }
 	}
 }
