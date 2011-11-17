@@ -876,6 +876,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 					if (cutElements) {
 						row.RemoveElement(elem);
+						_sequence.RemoveData((elem as TimedSequenceElement).EffectNode);
 					}
 				}
 				i++;
