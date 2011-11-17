@@ -140,7 +140,10 @@ namespace TestOutput {
 				}
 			}
 
-			BeginInvoke(new MethodInvoker(Refresh));
+            if (!IsDisposed)
+            {
+                BeginInvoke(new MethodInvoker(Refresh));
+            }
 		}
 
 		protected override void OnPaint(PaintEventArgs e) {

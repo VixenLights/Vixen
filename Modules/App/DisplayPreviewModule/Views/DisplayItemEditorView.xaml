@@ -62,9 +62,9 @@
 										<Setter Property="FontWeight"
 										        Value="Bold" />
 										<Setter Property="Foreground"
-										        Value="DarkGreen" />
+										        Value="White" />
 										<Setter Property="Background"
-										        Value="LightBlue" />
+										        Value="Black" />
 									</Trigger>
 								</Style.Triggers>
 							</Style>
@@ -73,10 +73,13 @@
 						<TreeView.ItemTemplate>
 							<HierarchicalDataTemplate ItemsSource="{Binding Children}"
 							                          DataType="{x:Type Model:ChannelSource}">
-								<TextBlock Text="{Binding ChannelNodeName}"
+                                <Border Background="#01FFFFFF"
+                                        Behaviors:DragSourceBehaviour.DragSource="{Binding Source}">
+                                    <TextBlock Text="{Binding ChannelNodeName}"
 								           Behaviors:DragSourceBehaviour.DragSource="{Binding Source}"
 								           HorizontalAlignment="Stretch" />
-							</HierarchicalDataTemplate>
+                                </Border>
+                            </HierarchicalDataTemplate>
 						</TreeView.ItemTemplate>
 					</TreeView>
 					<TextBlock Grid.Row="1"

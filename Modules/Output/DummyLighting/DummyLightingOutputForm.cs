@@ -135,7 +135,10 @@ namespace VixenModules.Output.DummyLighting
 				}
 			}
 
-			BeginInvoke(new MethodInvoker(Refresh));
+		    if (!IsDisposed)
+		    {
+		        BeginInvoke(new MethodInvoker(Refresh));
+		    }
 		}
 
 		protected override void OnPaint(PaintEventArgs e)

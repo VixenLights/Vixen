@@ -10,9 +10,9 @@
 	<Style x:Key="DesignerItemStyle"
 	       TargetType="ListViewItem">
 		<Setter Property="MinHeight"
-		        Value="50" />
+		        Value="10" />
 		<Setter Property="MinWidth"
-		        Value="50" />
+		        Value="10" />
 		<Setter Property="RenderTransformOrigin"
 		        Value="0.5,0.5" />
 		<Setter Property="SnapsToDevicePixels"
@@ -20,13 +20,13 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="ContentControl">
-					<Grid DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}">
-						<s:MoveThumb Template="{StaticResource MoveThumbTemplate}"
-						             Cursor="SizeAll" />
+					<Grid DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}">						
 						<Control x:Name="ResizeDecorator"
 						         Template="{StaticResource ResizeDecoratorTemplate}"
-						         Visibility="Collapsed" />
+						         Visibility="Collapsed" />                        
 						<ContentPresenter Content="{TemplateBinding ContentControl.Content}" />
+                        <s:MoveThumb Template="{StaticResource MoveThumbTemplate}"
+						             Cursor="SizeAll" />
 					</Grid>
 					<ControlTemplate.Triggers>
 						<Trigger Property="Selector.IsSelected"

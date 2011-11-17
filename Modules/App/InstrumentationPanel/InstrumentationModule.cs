@@ -1,46 +1,81 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Vixen.Module.App;
-using Vixen.Sys;
-
-namespace VixenModules.App.InstrumentationPanel
+﻿namespace VixenModules.App.InstrumentationPanel
 {
-	public class InstrumentationModule : AppModuleInstanceBase {
-		private IApplication _application;
-		private InstrumentationForm _form;
+    using System;
+    using Vixen.Module.App;
+    using Vixen.Sys;
 
-		private const string ID_MENU = "Instrumentation_Main";
+    public class InstrumentationModule : AppModuleInstanceBase
+    {
+        private const string ID_MENU = "Instrumentation_Main";
+        private IApplication _application;
+        private InstrumentationForm _form;
 
-		public override void Loading() {
-			_form = new InstrumentationForm();
-			_AddMenu();
-		}
+        public override IApplication Application
+        {
+            set
+            {
+                _application = value;
+            }
+        }
 
-		public override void Unloading() {
-			_form.Dispose();
-			_form = null;
-			_RemoveMenu();
-		}
+        public override void Loading()
+        {
+            InitializeForm();
+            _AddMenu();
+        }
 
-		public override IApplication Application {
-			set { _application = value; }
-		}
+        public override void Unloading()
+        {
+            if (_form != null)
+            {
+                _form.Dispose();
+                _form = null;
+            }
 
-		private void _AddMenu() {
-			if(_application != null && _application.AppCommands != null) {
-				AppCommand mainMenu = new AppCommand(ID_MENU, "Instrumentation");
-				mainMenu.Click += (sender, e) => _form.Show();
+            _RemoveMenu();
+        }
 
-				_application.AppCommands.Add(mainMenu);
-			}
-		}
+        private void InitializeForm()
+        {
+            _form = new InstrumentationForm();
+            _form.Closed += _form_Closed;
+        }
 
-		private void _RemoveMenu() {
-			if(_application != null && _application.AppCommands != null) {
-				_application.AppCommands.Remove(ID_MENU);
-			}
-		}
-	}
+        private void OnMainMenuOnClick(object sender, EventArgs e)
+        {
+            if (_form == null)
+            {
+                InitializeForm();
+            }
+
+            _form.Show();
+        }
+
+        private void _AddMenu()
+        {
+            if (_application != null
+                && _application.AppCommands != null)
+            {
+                var mainMenu = new AppCommand(ID_MENU, "Instrumentation");
+                mainMenu.Click += OnMainMenuOnClick;
+
+                _application.AppCommands.Add(mainMenu);
+            }
+        }
+
+        private void _RemoveMenu()
+        {
+            if (_application != null
+                && _application.AppCommands != null)
+            {
+                _application.AppCommands.Remove(ID_MENU);
+            }
+        }
+
+        private void _form_Closed(object sender, EventArgs e)
+        {
+            _form.Dispose();
+            _form = null;
+        }
+    }
 }
