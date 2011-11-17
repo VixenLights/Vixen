@@ -8,7 +8,7 @@
     <ProjectGuid>{30B3A665-8CAB-4327-83D1-3815A265EA6B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>InstrumentationPanel</RootNamespace>
+    <RootNamespace>VixenModules.App.InstrumentationPanel</RootNamespace>
     <AssemblyName>InstrumentationPanel</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

@@ -1,4 +1,4 @@
-﻿namespace Scheduler {
+﻿namespace VixenModules.App.Scheduler {
 	partial class ScheduleAgenda {
 		/// <summary> 
 		/// Required designer variable.

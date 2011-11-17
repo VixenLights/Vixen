@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Globalization;
 
-namespace VixenModules.Output._595 {
+namespace VixenModules.Output.Olsen595 {
 	partial class SetupDialog : Form {
 		private Data _data;
 

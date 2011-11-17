@@ -5,7 +5,7 @@ using System.Text;
 using System.Runtime.Serialization;
 using Vixen.Module;
 
-namespace Scheduler {
+namespace VixenModules.App.Scheduler {
 	[DataContract]
 	public class SchedulerData : ModuleDataModelBase {
 		private int _interval = 10;

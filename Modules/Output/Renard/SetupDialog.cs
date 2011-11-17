@@ -8,7 +8,8 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO.Ports;
 
-namespace Renard {
+namespace VixenModules.Output.Renard
+{
 	public partial class SetupDialog : Form {
 		private Data _data;
 		private SerialPort _port;

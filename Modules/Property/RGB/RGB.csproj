@@ -8,7 +8,7 @@
     <ProjectGuid>{3D1BD0E2-B947-4235-A2A7-30AA4F13CA86}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RGB</RootNamespace>
+    <RootNamespace>VixenModules.Property.RGB</RootNamespace>
     <AssemblyName>RGB</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

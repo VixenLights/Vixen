@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Scheduler {
+namespace VixenModules.App.Scheduler {
 	public partial class ScheduleDay : UserControl {
 		private int _halfHourHeight = 20;
 		private int _headerHeight = 30;

@@ -8,7 +8,7 @@
     <ProjectGuid>{D5B54EEF-5D27-4E30-9073-847C9996C552}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Generic</RootNamespace>
+    <RootNamespace>VixenModules.Timing.Generic</RootNamespace>
     <AssemblyName>Generic</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>

@@ -27,9 +27,6 @@ namespace VixenModules.Timing.Generic {
 			}
 		}
 
-
-		
-
 		public override void Resume() {
 			if(!_stopwatch.IsRunning) {
 				_stopwatch.Start();

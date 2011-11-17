@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Scheduler {
+namespace VixenModules.App.Scheduler {
 	class ScheduleService {
 		private SchedulerData _data;
 

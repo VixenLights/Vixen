@@ -5,7 +5,8 @@ using System.Text;
 using Vixen.Module.App;
 using Vixen.Sys;
 
-namespace InstrumentationPanel {
+namespace VixenModules.App.InstrumentationPanel
+{
 	public class InstrumentationModule : AppModuleInstanceBase {
 		private IApplication _application;
 		private InstrumentationForm _form;

@@ -5,7 +5,8 @@ using System.Text;
 using Vixen.Module.App;
 using Vixen.Sys;
 
-namespace InstrumentationPanel {
+namespace VixenModules.App.InstrumentationPanel
+{
 	public class InstrumentationDescriptor : AppModuleDescriptorBase {
 		private Guid _typeId = new Guid("{CBC07BF2-7E1B-4a29-AEED-9EE235CB0DEE}");
 

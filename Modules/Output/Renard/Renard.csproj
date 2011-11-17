@@ -8,7 +8,7 @@
     <ProjectGuid>{2149D717-7256-477B-BEC5-F9E7E6E93885}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Renard</RootNamespace>
+    <RootNamespace>VixenModules.Output.Renard</RootNamespace>
     <AssemblyName>Renard</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>

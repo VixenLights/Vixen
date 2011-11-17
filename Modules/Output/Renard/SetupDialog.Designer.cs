@@ -1,4 +1,5 @@
-﻿namespace Renard {
+﻿namespace VixenModules.Output.Renard
+{
 	partial class SetupDialog {
 		/// <summary>
 		/// Required designer variable.

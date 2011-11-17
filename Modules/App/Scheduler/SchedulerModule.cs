@@ -7,7 +7,7 @@ using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.App;
 
-namespace Scheduler {
+namespace VixenModules.App.Scheduler {
 	public class SchedulerModule : AppModuleInstanceBase {
 		private IApplication _application;
 		private SchedulerData _data;

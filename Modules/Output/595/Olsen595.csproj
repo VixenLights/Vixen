@@ -8,8 +8,8 @@
     <ProjectGuid>{4ADC4F0D-2F3B-4F4D-A5FC-C6AEB6B222CE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>_595</RootNamespace>
-    <AssemblyName>595</AssemblyName>
+    <RootNamespace>VixenModules.Output.Olsen595</RootNamespace>
+    <AssemblyName>Olsen595</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>

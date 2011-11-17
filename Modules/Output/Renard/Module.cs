@@ -10,7 +10,8 @@ using Vixen.Module.Output;
 using Vixen.Commands;
 using Vixen.Commands.KnownDataTypes;
 
-namespace Renard {
+namespace VixenModules.Output.Renard
+{
 	public class Module : OutputModuleInstanceBase {
 		private Data _moduleData;
 

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Scheduler {
+namespace VixenModules.App.Scheduler {
 	public partial class ScheduleAgenda : UserControl {
 		private int _headerHeight = 30;
 		private int _agendaItemHeight = 50;

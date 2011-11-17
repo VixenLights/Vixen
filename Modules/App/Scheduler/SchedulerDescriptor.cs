@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Vixen.Module.App;
 
-namespace Scheduler {
+namespace VixenModules.App.Scheduler {
 	public class SchedulerDescriptor : AppModuleDescriptorBase {
 		private Guid _typeId = new Guid("{0F4E0F4A-3E9A-4601-8B2A-4D8ADA2674B7}");
 

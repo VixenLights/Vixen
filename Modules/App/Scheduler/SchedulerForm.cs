@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Scheduler {
+namespace VixenModules.App.Scheduler {
 	partial class SchedulerForm : Form {
 		private SchedulerData _data;
 		private DateView _currentView;

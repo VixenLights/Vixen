@@ -1,4 +1,5 @@
-﻿namespace InstrumentationPanel {
+﻿namespace VixenModules.App.InstrumentationPanel
+{
 	partial class InstrumentationForm {
 		/// <summary>
 		/// Required designer variable.

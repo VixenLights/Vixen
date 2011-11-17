@@ -9,7 +9,8 @@ using Vixen.Module.Output;
 using Vixen.Commands;
 using Vixen.Commands.KnownDataTypes;
 
-namespace VixenModules.Output._595 {
+namespace VixenModules.Output.Olsen595
+{
 	public class Module : OutputModuleInstanceBase {
 		[DllImport("inpout32", EntryPoint = "Inp32")]
 		private static extern short In(ushort port);

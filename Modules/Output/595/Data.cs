@@ -5,7 +5,8 @@ using System.Text;
 using System.Runtime.Serialization;
 using Vixen.Module;
 
-namespace VixenModules.Output._595 {
+namespace VixenModules.Output.Olsen595
+{
 	[DataContract]
 	public class Data : ModuleDataModelBase {
 		[DataMember]

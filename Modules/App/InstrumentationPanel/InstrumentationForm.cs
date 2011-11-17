@@ -9,7 +9,8 @@ using System.Windows.Forms;
 using Vixen.Sys;
 using Vixen.Instrumentation;
 
-namespace InstrumentationPanel {
+namespace VixenModules.App.InstrumentationPanel
+{
 	public partial class InstrumentationForm : Form {
 
 		public InstrumentationForm() {

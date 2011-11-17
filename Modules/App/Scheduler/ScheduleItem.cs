@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Scheduler {
+namespace VixenModules.App.Scheduler {
 	public class ScheduleItem {
 		public RecurrenceType RecurrenceType;
 		/// <summary>

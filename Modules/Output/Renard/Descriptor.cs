@@ -5,7 +5,8 @@ using System.Text;
 using Vixen.Module;
 using Vixen.Module.Output;
 
-namespace Renard {
+namespace VixenModules.Output.Renard
+{
 	public class Descriptor : OutputModuleDescriptorBase {
 		private Guid _typeId = new Guid("{F66130A6-FF8A-48a7-BF1E-FAC6CEC2FC2C}");
 

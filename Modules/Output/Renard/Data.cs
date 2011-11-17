@@ -6,7 +6,8 @@ using System.IO.Ports;
 using System.Runtime.Serialization;
 using Vixen.Module;
 
-namespace Renard {
+namespace VixenModules.Output.Renard
+{
 	[DataContract]
 	public class Data : ModuleDataModelBase {
 		[DataMember]

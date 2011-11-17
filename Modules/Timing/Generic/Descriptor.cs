@@ -34,7 +34,7 @@ namespace VixenModules.Timing.Generic {
 		}
 
 		public override string Version {
-			get { return "1"; }
+			get { return "1.0"; }
 		}
 	}
 }
