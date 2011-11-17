@@ -28,7 +28,7 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			this.toolStripOperations = new System.Windows.Forms.ToolStrip();
+			this.toolStripOperations = new CommonElements.ToolStripEx();
 			this.toolStripButton_Start = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton_Play = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton_Stop = new System.Windows.Forms.ToolStripButton();
@@ -37,7 +37,7 @@
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.splitButton_Undo = new System.Windows.Forms.ToolStripSplitButton();
 			this.splitButton_Redo = new System.Windows.Forms.ToolStripSplitButton();
-			this.menuStrip = new System.Windows.Forms.MenuStrip();
+			this.menuStrip = new CommonElements.MenuStripEx();
 			this.sequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_Save = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_SaveAs = new System.Windows.Forms.ToolStripMenuItem();
@@ -60,7 +60,7 @@
 			this.toolStripMenuItem_associateAudio = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_MarkManager = new System.Windows.Forms.ToolStripMenuItem();
 			this.addEffectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripEffects = new System.Windows.Forms.ToolStrip();
+			this.toolStripEffects = new CommonElements.ToolStripEx();
 			this.timerPlaying = new System.Windows.Forms.Timer(this.components);
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabel_currentTime = new System.Windows.Forms.ToolStripStatusLabel();
@@ -452,12 +452,12 @@
 		#endregion
 
 		private CommonElements.Timeline.TimelineControl timelineControl;
-		private System.Windows.Forms.ToolStrip toolStripOperations;
-		private System.Windows.Forms.MenuStrip menuStrip;
+		private CommonElements.ToolStripEx toolStripOperations;
+		private CommonElements.MenuStripEx menuStrip;
 		private System.Windows.Forms.ToolStripMenuItem sequenceToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_Save;
 		private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
-		private System.Windows.Forms.ToolStrip toolStripEffects;
+		private CommonElements.ToolStripEx toolStripEffects;
 		private System.Windows.Forms.ToolStripMenuItem addEffectToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_SaveAs;
 		private System.Windows.Forms.ToolStripButton toolStripButton_Play;
