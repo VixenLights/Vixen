@@ -2,11 +2,13 @@
 {
     using System.ComponentModel;
     using System.Runtime.Serialization;
+    using System.Windows.Media;
 
     [DataContract]
     internal class Line : IShape
     {
         private double _angle;
+        private Color _nodeColor;
         private double _strokeThickness;
 
         public Line()
@@ -36,6 +38,20 @@
             get
             {
                 return "Line";
+            }
+        }
+
+        public Color NodeColor
+        {
+            get
+            {
+                return _nodeColor;
+            }
+
+            set
+            {
+                _nodeColor = value;
+                PropertyChanged.NotifyPropertyChanged("NodeColor", this);
             }
         }
 

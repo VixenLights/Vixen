@@ -2,10 +2,12 @@ namespace VixenModules.App.DisplayPreview.Model.Shapes
 {
     using System.ComponentModel;
     using System.Runtime.Serialization;
+    using System.Windows.Media;
 
     [DataContract]
     internal class Arc : IShape
     {
+        private Color _nodeColor;
         private double _strokeThickness;
 
         public Arc()
@@ -20,6 +22,20 @@ namespace VixenModules.App.DisplayPreview.Model.Shapes
             get
             {
                 return "Arc";
+            }
+        }
+
+        public Color NodeColor
+        {
+            get
+            {
+                return _nodeColor;
+            }
+
+            set
+            {
+                _nodeColor = value;
+                PropertyChanged.NotifyPropertyChanged("NodeColor", this);
             }
         }
 

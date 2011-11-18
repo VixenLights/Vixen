@@ -9,15 +9,15 @@
         Title="Display Preview">
 	<Window.Resources>
 		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+			 	<ResourceDictionary Source="Resources/Shapes.xaml" />
+			</ResourceDictionary.MergedDictionaries>
 			<DataTemplate DataType="{x:Type Model:NodeLayout}">
-				<Ellipse Width="{Binding Width}"
-				         Height="{Binding Height}"
-				         Stroke="White"
-				         StrokeThickness=".5">
-					<Ellipse.Fill>
-						<SolidColorBrush Color="{Binding NodeColor}" />
-					</Ellipse.Fill>
-				</Ellipse>
+				<ContentControl Content="{Binding Shape}"
+				                Width="{Binding Width}"
+				                Height="{Binding Height}"
+				                ClipToBounds="True"
+				                ToolTip="{Binding NodeName}" />
 			</DataTemplate>
 			<DataTemplate DataType="{x:Type Model:DisplayItem}">
 				<Border Canvas.Top="{Binding TopOffset}"

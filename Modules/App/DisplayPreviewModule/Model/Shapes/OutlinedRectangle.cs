@@ -2,10 +2,13 @@
 {
     using System.ComponentModel;
     using System.Runtime.Serialization;
+    using System.Windows.Media;
 
     [DataContract]
     internal class OutlinedRectangle : IShape
     {
+        private Color _nodeColor;
+
         private double _strokeThickness;
 
         public OutlinedRectangle()
@@ -20,6 +23,20 @@
             get
             {
                 return "Outlined Rectangle";
+            }
+        }
+
+        public Color NodeColor
+        {
+            get
+            {
+                return _nodeColor;
+            }
+
+            set
+            {
+                _nodeColor = value;
+                PropertyChanged.NotifyPropertyChanged("NodeColor", this);
             }
         }
 

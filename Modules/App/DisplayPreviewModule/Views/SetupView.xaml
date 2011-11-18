@@ -14,6 +14,7 @@
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="Resources/DesignerItem.xaml" />
+				<ResourceDictionary Source="Resources/Shapes.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 			<Style TargetType="ListViewItem"
 			       x:Key="MyStyle">
@@ -27,10 +28,11 @@
 			<WPF1:BooleanToCollapsedConverter x:Key="BooleanToCollapsedConverter" />
 
 			<DataTemplate DataType="{x:Type Model1:NodeLayout}">
-				<Ellipse Fill="{Binding DisplayColor, Mode=OneWay}"
-				         ToolTip="{Binding NodeName}"
-				         Width="{Binding Width}"
-				         Height="{Binding Height}" />
+                <ContentControl Content="{Binding Shape}"
+				                Width="{Binding Width}"
+				                Height="{Binding Height}"
+				                ClipToBounds="True"
+				                ToolTip="{Binding NodeName}" />
 			</DataTemplate>
 
 			<DataTemplate DataType="{x:Type Model1:DisplayItem}">

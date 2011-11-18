@@ -1,6 +1,7 @@
 namespace VixenModules.App.DisplayPreview.Model.Shapes
 {
     using System.ComponentModel;
+    using System.Windows.Media;
 
     public interface IShape : INotifyPropertyChanged
     {
@@ -9,5 +10,7 @@ namespace VixenModules.App.DisplayPreview.Model.Shapes
         string Name { get; }
 
         IShape Clone();
+
+        Color NodeColor { get; set; }
     }
 }

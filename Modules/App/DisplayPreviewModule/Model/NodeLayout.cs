@@ -54,6 +54,7 @@ namespace VixenModules.App.DisplayPreview.Model
             set
             {
                 _nodeColor = value;
+                _shape.NodeColor = _nodeColor;
                 PropertyChanged.NotifyPropertyChanged("ChannelColor", this);
             }
         }
@@ -216,8 +217,8 @@ namespace VixenModules.App.DisplayPreview.Model
 
         private void Initialize()
         {
-            NodeColor = Colors.Black;
             Shape = new OutlinedCircle();
+            NodeColor = Colors.Black;            
         }
 
         [OnDeserializing]

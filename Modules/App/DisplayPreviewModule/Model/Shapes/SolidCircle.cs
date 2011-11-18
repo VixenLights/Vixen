@@ -2,10 +2,13 @@ namespace VixenModules.App.DisplayPreview.Model.Shapes
 {
     using System.ComponentModel;
     using System.Runtime.Serialization;
+    using System.Windows.Media;
 
     [DataContract]
     internal class SolidCircle : IShape
     {
+        private Color _nodeColor;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public string Name
@@ -13,6 +16,20 @@ namespace VixenModules.App.DisplayPreview.Model.Shapes
             get
             {
                 return "Solid Circle";
+            }
+        }
+
+        public Color NodeColor
+        {
+            get
+            {
+                return _nodeColor;
+            }
+
+            set
+            {
+                _nodeColor = value;
+                PropertyChanged.NotifyPropertyChanged("NodeColor", this);
             }
         }
 
