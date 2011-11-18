@@ -47,6 +47,8 @@ namespace VixenModules.App.DisplayPreview.WPF
                         return new OutlinedStar();
                     case ShapeType.SolidStar:
                         return new SolidStar();
+                    case ShapeType.Arc:
+                        return new Arc();
                     default:
                         throw new ArgumentOutOfRangeException();
                 }

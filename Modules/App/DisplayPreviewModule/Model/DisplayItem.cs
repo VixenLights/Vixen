@@ -13,7 +13,7 @@ namespace VixenModules.App.DisplayPreview.Model
     [DataContract]
     public class DisplayItem : INotifyPropertyChanged
     {
-        private ObservableCollection<ChannelLocation> _channelLocations;
+        private ObservableCollection<NodeLayout> _nodeLayouts;
         private int _height;
         private bool _isUnlocked = true;
         private int _leftOffset;
@@ -25,17 +25,17 @@ namespace VixenModules.App.DisplayPreview.Model
         public event PropertyChangedEventHandler PropertyChanged;
 
         [DataMember]
-        public ObservableCollection<ChannelLocation> ChannelLocations
+        public ObservableCollection<NodeLayout> NodeLayouts
         {
             get
             {
-                return _channelLocations ?? (_channelLocations = new ObservableCollection<ChannelLocation>());
+                return _nodeLayouts ?? (_nodeLayouts = new ObservableCollection<NodeLayout>());
             }
 
             private set
             {
-                _channelLocations = value;
-                PropertyChanged.NotifyPropertyChanged("ChannelLocations", this);
+                _nodeLayouts = value;
+                PropertyChanged.NotifyPropertyChanged("NodeLayouts", this);
             }
         }
 
@@ -160,10 +160,11 @@ namespace VixenModules.App.DisplayPreview.Model
                            Height = Height, 
                            LeftOffset = LeftOffset, 
                            TopOffset = TopOffset, 
-                           ChannelLocations =
-                               new ObservableCollection<ChannelLocation>(
-                               ChannelLocations.Select(channelLocation => channelLocation.Clone()).ToList()), 
-                           IsUnlocked = IsUnlocked
+                           NodeLayouts =
+                               new ObservableCollection<NodeLayout>(
+                               NodeLayouts.Select(channelLocation => channelLocation.Clone()).ToList()), 
+                           IsUnlocked = IsUnlocked,
+                           Name = Name
                        };
             return item;
         }
@@ -173,11 +174,11 @@ namespace VixenModules.App.DisplayPreview.Model
             foreach (var colorByChannel in colorsByChannel)
             {
                 var channelId = colorByChannel.Key.Id;
-                var channelLocation = ChannelLocations.FirstOrDefault(x => x.ChannelId == channelId);
+                var channelLocation = NodeLayouts.FirstOrDefault(x => x.NodeId == channelId);
                 if (channelLocation != null)
                 {
                     var color = colorByChannel.Value;
-                    channelLocation.ChannelColor = color == Colors.Black ? Colors.Transparent : color;
+                    channelLocation.NodeColor = color == Colors.Black ? Colors.Transparent : color;
                 }
             }
         }
@@ -190,8 +191,8 @@ namespace VixenModules.App.DisplayPreview.Model
         private void Drop(ChannelNode channelNode, Point point)
         {
             var channel = channelNode.Parents.FirstOrDefault(x => x.IsRgbNode()) ?? channelNode;
-            var channelLocation = new ChannelLocation { LeftOffset = point.X, TopOffset = point.Y, ChannelId = channel.Id };
-            ChannelLocations.Add(channelLocation);
+            var channelLocation = new NodeLayout { LeftOffset = point.X, TopOffset = point.Y, NodeId = channel.Id };
+            NodeLayouts.Add(channelLocation);
         }
     }
 }

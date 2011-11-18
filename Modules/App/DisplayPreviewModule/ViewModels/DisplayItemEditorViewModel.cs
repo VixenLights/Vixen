@@ -5,41 +5,42 @@ namespace VixenModules.App.DisplayPreview.ViewModels
     using System.Windows.Input;
     using Vixen.Sys;
     using VixenModules.App.DisplayPreview.Model;
+    using VixenModules.App.DisplayPreview.Views;
     using VixenModules.App.DisplayPreview.WPF;
 
     public class DisplayItemEditorViewModel : ViewModelBase
     {
-        private ObservableCollection<ChannelSource> _channelSources;
+        private ObservableCollection<NodeSource> _nodeSources;
         private DisplayItem _displayItem;
-
-        private ChannelLocation _selectedChannelLocation;
+        private NodeLayout _selectedNodeLayout;
 
         public DisplayItemEditorViewModel()
         {
-            var rootNodes = VixenSystem.Nodes.GetRootNodes().Select(x => new ChannelSource(x));
-            ChannelSources = new ObservableCollection<ChannelSource>(rootNodes);
-            RemoveChannelCommand = new RelayCommand(x => RemoveChannel(), x => CanRemoveChannel());
+            var rootNodes = VixenSystem.Nodes.GetRootNodes().Select(x => new NodeSource(x));
+            NodeSources = new ObservableCollection<NodeSource>(rootNodes);
+            RemoveNodeCommand = new RelayCommand(x => RemoveNode(), x => CanRemoveNode());
+            EditNodeCommand = new RelayCommand(x => EditNode(), x => CanEditNode());
         }
 
-        public ObservableCollection<ChannelLocation> ChannelLocations
+        public ObservableCollection<NodeLayout> NodeLayouts
         {
             get
             {
-                return _displayItem.ChannelLocations;
+                return _displayItem.NodeLayouts;
             }
         }
 
-        public ObservableCollection<ChannelSource> ChannelSources
+        public ObservableCollection<NodeSource> NodeSources
         {
             get
             {
-                return _channelSources;
+                return _nodeSources;
             }
 
             set
             {
-                _channelSources = value;
-                OnPropertyChanged("ChannelSources");
+                _nodeSources = value;
+                OnPropertyChanged("NodeSources");
             }
         }
 
@@ -57,30 +58,44 @@ namespace VixenModules.App.DisplayPreview.ViewModels
             }
         }
 
-        public ICommand RemoveChannelCommand { get; private set; }
+        public ICommand EditNodeCommand { get; private set; }
 
-        public ChannelLocation SelectedChannelLocation
+        public ICommand RemoveNodeCommand { get; private set; }
+
+        public NodeLayout SelectedNodeLayout
         {
             get
             {
-                return _selectedChannelLocation;
+                return _selectedNodeLayout;
             }
 
             set
             {
-                _selectedChannelLocation = value;
-                OnPropertyChanged("SelectedChannelLocation");
+                _selectedNodeLayout = value;
+                OnPropertyChanged("SelectedNodeLayout");
             }
         }
 
-        private bool CanRemoveChannel()
+        private bool CanEditNode()
         {
-            return SelectedChannelLocation != null;
+            return SelectedNodeLayout != null;
         }
 
-        private void RemoveChannel()
+        private bool CanRemoveNode()
         {
-            ChannelLocations.Remove(SelectedChannelLocation);
+            return SelectedNodeLayout != null;
+        }
+
+        private void EditNode()
+        {
+            var viewModel = new NodeEditorViewModel(SelectedNodeLayout);
+            var editor = new NodeEditorView { DataContext = viewModel };
+            editor.ShowDialog();
+        }
+
+        private void RemoveNode()
+        {
+            NodeLayouts.Remove(SelectedNodeLayout);
         }
     }
 }

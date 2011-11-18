@@ -8,7 +8,6 @@
         xmlns:Behaviors="clr-namespace:VixenModules.App.DisplayPreview.Behaviors"
         xmlns:Shapes="clr-namespace:VixenModules.App.DisplayPreview.Model.Shapes"
         xmlns:WPF="clr-namespace:VixenModules.App.DisplayPreview.WPF"
-        xmlns:System="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="Display Item and Channel Editor"
         SizeToContent="WidthAndHeight">
@@ -21,36 +20,102 @@
 				<ResourceDictionary Source="Resources/DesignerItem.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 
-            <ObjectDataProvider MethodName="GetValues"
-        ObjectType="{x:Type System:Enum}"
-        x:Key="ShapeTypeValues">
-            	<ObjectDataProvider.MethodParameters>
-            		<x:Type TypeName="Shapes:ShapeType" />
-            	</ObjectDataProvider.MethodParameters>
-            </ObjectDataProvider>
+			<WPF:HalfDoubleConverter x:Key="HalfDoubleConverter" />
 
-			<WPF:ShapeToShapeTypeConverter x:Key="ShapeToShapeTypeConverter" />
-
-			<DataTemplate DataType="{x:Type Model:ChannelLocation}">
+			<DataTemplate DataType="{x:Type Model:NodeLayout}">
 				<Grid MouseLeftButtonUp="GridMouseLeftButtonUp"
 				      Background="#01FFFFFF">
 					<ContentControl Content="{Binding Shape}"
 					                Width="{Binding Width}"
 					                Height="{Binding Height}"
-					                ToolTip="{Binding ChannelName}" />
-					<!--<Ellipse Fill="{Binding DisplayColor, Mode=OneWay}"
-					         x:Name="channel"
-					         IsHitTestVisible="False"
-					         Width="{Binding Width}"
-					         Height="{Binding Height}"
-					         ToolTip="{Binding ChannelName}" />-->
+					                ClipToBounds="True"
+					                ToolTip="{Binding NodeName}" />
 				</Grid>
 			</DataTemplate>
 
 			<DataTemplate DataType="{x:Type Shapes:OutlinedCircle}">
-				<Ellipse Stroke="Black"
-				         StrokeThickness="5"
+				<Ellipse Stroke="White"
+				         StrokeThickness="{Binding StrokeThickness}"
 				         Fill="Transparent" />
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type Shapes:SolidCircle}">
+				<Ellipse Fill="White" />
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type Shapes:SolidRectangle}">
+				<Rectangle Fill="White" />
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type Shapes:SolidTriangle}">
+				<Viewbox Stretch="Fill">
+					<Path Data="M20,0 L0,40 L40,40 Z"
+					      Fill="White" />
+				</Viewbox>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type Shapes:OutlinedTriangle}">
+				<Viewbox Stretch="Fill">
+					<Path Data="M60,0 L0,120 L120,120 Z"
+					      Margin="{Binding StrokeThickness}"
+					      Fill="Transparent"
+					      HorizontalAlignment="Center"
+					      Stroke="White"
+					      StrokeThickness="{Binding StrokeThickness}" />
+				</Viewbox>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type Shapes:OutlinedRectangle}">
+				<Rectangle Margin="{Binding StrokeThickness}"
+				           Fill="Transparent"
+				           HorizontalAlignment="Stretch"
+				           VerticalAlignment="Stretch"
+				           Stroke="White"
+				           StrokeThickness="{Binding StrokeThickness}" />
+
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type Shapes:SolidStar}">
+				<Viewbox Stretch="Fill">
+					<Path Data="F1 M 126.578613,11.297852 L 162.373535,83.825684 L 242.412598,95.456055 L 184.495605,151.911133 L 198.167480,231.626953 L 126.578613,193.990234 L 54.988770,231.626953 L 68.661621,151.911133 L 10.744629,95.456055 L 90.783691,83.825684 L 126.578613,11.297852 Z"
+					      Fill="White" />
+				</Viewbox>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type Shapes:OutlinedStar}">
+				<Viewbox Stretch="Fill">
+					<Path Data="F1 M 126.578613,11.297852 L 162.373535,83.825684 L 242.412598,95.456055 L 184.495605,151.911133 L 198.167480,231.626953 L 126.578613,193.990234 L 54.988770,231.626953 L 68.661621,151.911133 L 10.744629,95.456055 L 90.783691,83.825684 L 126.578613,11.297852 Z"
+					      Fill="Transparent"
+					      Stroke="white"
+					      StrokeThickness="{Binding StrokeThickness}" />
+				</Viewbox>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type Shapes:Arc}">
+				<Viewbox Stretch="Fill">
+					<Ellipse Width="100"
+					         Height="100"
+					         Stretch="Fill"
+					         StrokeThickness="{Binding StrokeThickness}"
+					         Stroke="White">
+						<Ellipse.Clip>
+							<RectangleGeometry Rect="0,0,100,50" />
+						</Ellipse.Clip>
+					</Ellipse>
+				</Viewbox>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type Shapes:Line}">
+				<Rectangle Fill="White"
+				           ClipToBounds="True"
+				           Height="{Binding StrokeThickness}"
+				           x:Name="theLine">
+					<Rectangle.RenderTransform>
+						<RotateTransform Angle="{Binding Angle}"
+						                 CenterX="{Binding ElementName=theLine, Path=ActualWidth, Converter={StaticResource HalfDoubleConverter}}"
+						                 CenterY="{Binding ElementName=theLine, Path=ActualHeight, Converter={StaticResource HalfDoubleConverter}}" />
+					</Rectangle.RenderTransform>
+				</Rectangle>
 			</DataTemplate>
 		</ResourceDictionary>
 	</Window.Resources>
@@ -71,7 +136,7 @@
 						<RowDefinition Height="*" />
 						<RowDefinition Height="Auto" />
 					</Grid.RowDefinitions>
-					<TreeView ItemsSource="{Binding ChannelSources}"
+					<TreeView ItemsSource="{Binding NodeSources}"
 					          x:Name="treeview"
 					          HorizontalContentAlignment="Stretch"
 					          VerticalContentAlignment="Stretch">
@@ -95,10 +160,10 @@
 
 						<TreeView.ItemTemplate>
 							<HierarchicalDataTemplate ItemsSource="{Binding Children}"
-							                          DataType="{x:Type Model:ChannelSource}">
+							                          DataType="{x:Type Model:NodeSource}">
 								<Border Background="#01FFFFFF"
 								        Behaviors:DragSourceBehaviour.DragSource="{Binding Source}">
-									<TextBlock Text="{Binding ChannelNodeName}"
+									<TextBlock Text="{Binding NodeName}"
 									           Behaviors:DragSourceBehaviour.DragSource="{Binding Source}"
 									           HorizontalAlignment="Stretch" />
 								</Border>
@@ -130,6 +195,7 @@
 							          Padding="2">
 								<StackPanel Orientation="Horizontal">
 									<GroupBox Header="Name"
+									          Width="125"
 									          Padding="2"
 									          HorizontalContentAlignment="Stretch">
 										<TextBox Text="{Binding Name, Mode=TwoWay}" />
@@ -150,9 +216,9 @@
 						</DataTemplate>
 					</ContentControl.ContentTemplate>
 				</ContentControl>
-				<ContentControl Content="{Binding SelectedChannelLocation}">
+				<ContentControl Content="{Binding SelectedNodeLayout}">
 					<ContentControl.ContentTemplate>
-						<DataTemplate DataType="{x:Type Model:ChannelLocation}">
+						<DataTemplate DataType="{x:Type Model:NodeLayout}">
 							<GroupBox Header="Node Settings"
 							          Margin="2"
 							          Padding="2">
@@ -168,13 +234,14 @@
 										<TextBox Text="{Binding Height, Mode=TwoWay}" />
 									</GroupBox>
 									<GroupBox Header="Shape">
-										<StackPanel Orientation="Horizontal">
-											<ComboBox SelectedItem="{Binding Shape, Mode=TwoWay, Converter={StaticResource ShapeToShapeTypeConverter}}"
-											          ItemsSource="{Binding Source={StaticResource ShapeTypeValues}}"
-											          Width="100" />
-											<Button Margin="2"
-											        Content="Edit" />
-										</StackPanel>
+										<ContentControl Content="{Binding Shape}">
+											<ContentControl.ContentTemplate>
+												<DataTemplate DataType="{x:Type Shapes:IShape}">
+													<TextBlock VerticalAlignment="Center"
+													           Text="{Binding Name}" />
+												</DataTemplate>
+											</ContentControl.ContentTemplate>
+										</ContentControl>
 									</GroupBox>
 								</StackPanel>
 							</GroupBox>
@@ -195,14 +262,14 @@
 							        CornerRadius="5"
 							        Padding="2"
 							        BorderThickness="2">
-								<ListView ItemsSource="{Binding ChannelLocations}"
+								<ListView ItemsSource="{Binding NodeLayouts}"
 								          Behaviors:DropTargetBehaviour.DropTarget="{Binding Target}"
 								          Width="{Binding Width}"
 								          IsSynchronizedWithCurrentItem="True"
 								          Height="{Binding Height}"
 								          ScrollViewer.HorizontalScrollBarVisibility="Hidden"
 								          ScrollViewer.VerticalScrollBarVisibility="Hidden"
-								          Background="#33000000"
+								          Background="Black"
 								          AllowDrop="True">
 									<ListView.ItemsPanel>
 										<ItemsPanelTemplate>
@@ -237,29 +304,43 @@
 				</ContentControl>
 			</GroupBox>
 		</Grid>
-		<Grid Grid.Column="2">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="*" />
-				<RowDefinition Height="Auto" />
-			</Grid.RowDefinitions>
-			<GroupBox Header="Nodes in use">
-				<ListView ItemsSource="{Binding ChannelLocations}"
-				          IsSynchronizedWithCurrentItem="True"
-				          SelectedItem="{Binding SelectedChannelLocation}">
-					<ListView.ItemTemplate>
-						<DataTemplate DataType="{x:Type Model:ChannelLocation}">
-							<TextBlock Text="{Binding ChannelName}" />
-						</DataTemplate>
-					</ListView.ItemTemplate>
-				</ListView>
+		<ContentControl Content="{Binding}"
+		                Grid.Column="2">
+			<ContentControl.ContentTemplate>
+				<DataTemplate DataType="{x:Type ViewModels:DisplayItemEditorViewModel}">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="*" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<GroupBox Header="Nodes in use">
+							<ListView ItemsSource="{Binding NodeLayouts}"
+							          IsSynchronizedWithCurrentItem="True"
+							          SelectedItem="{Binding SelectedNodeLayout}">
+								<ListView.ItemTemplate>
+									<DataTemplate DataType="{x:Type Model:NodeLayout}">
+										<TextBlock Text="{Binding NodeName}" />
+									</DataTemplate>
+								</ListView.ItemTemplate>
+							</ListView>
 
-			</GroupBox>
-			<Button Margin="2"
-			        Grid.Row="1"
-			        Command="{Binding RemoveChannelCommand}">
-				Remove Channel
-			</Button>
-		</Grid>
+						</GroupBox>
+						<Button Margin="2"
+						        Grid.Row="1"
+						        Command="{Binding EditNodeCommand}">
+							Edit Node
+						</Button>
+						<Button Margin="2"
+						        Grid.Row="2"
+						        Command="{Binding RemoveNodeCommand}">
+							Remove Node
+						</Button>
+					</Grid>
+				</DataTemplate>
+			</ContentControl.ContentTemplate>
+		</ContentControl>
+
 	</Grid>
 
 </Window>

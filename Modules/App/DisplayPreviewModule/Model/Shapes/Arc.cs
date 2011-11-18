@@ -1,14 +1,14 @@
-﻿namespace VixenModules.App.DisplayPreview.Model.Shapes
+namespace VixenModules.App.DisplayPreview.Model.Shapes
 {
     using System.ComponentModel;
     using System.Runtime.Serialization;
 
     [DataContract]
-    internal class OutlinedRectangle : IShape
+    internal class Arc : IShape
     {
         private double _strokeThickness;
 
-        public OutlinedRectangle()
+        public Arc()
         {
             Initialize();
         }
@@ -19,7 +19,7 @@
         {
             get
             {
-                return "Outlined Rectangle";
+                return "Arc";
             }
         }
 
@@ -27,11 +27,10 @@
         {
             get
             {
-                return ShapeType.OutlinedRectangle;
+                return ShapeType.Arc;
             }
         }
 
-        [DataMember]
         public double StrokeThickness
         {
             get
@@ -48,7 +47,7 @@
 
         public IShape Clone()
         {
-            return new OutlinedRectangle { StrokeThickness = StrokeThickness };
+            return new Arc();
         }
 
         private void Initialize()

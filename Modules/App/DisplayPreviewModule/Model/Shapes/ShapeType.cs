@@ -11,5 +11,6 @@ namespace VixenModules.App.DisplayPreview.Model.Shapes
         SolidRectangle,
         OutlinedStar,
         SolidStar,
+        Arc
     }
 }

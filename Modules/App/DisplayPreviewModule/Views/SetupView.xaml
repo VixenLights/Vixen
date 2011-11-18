@@ -26,9 +26,9 @@
 			<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 			<WPF1:BooleanToCollapsedConverter x:Key="BooleanToCollapsedConverter" />
 
-			<DataTemplate DataType="{x:Type Model1:ChannelLocation}">
+			<DataTemplate DataType="{x:Type Model1:NodeLayout}">
 				<Ellipse Fill="{Binding DisplayColor, Mode=OneWay}"
-				         ToolTip="{Binding ChannelName}"
+				         ToolTip="{Binding NodeName}"
 				         Width="{Binding Width}"
 				         Height="{Binding Height}" />
 			</DataTemplate>
@@ -38,7 +38,7 @@
 				        BorderThickness="0"
 				        Height="{Binding Height, Mode=TwoWay}"
 				        Width="{Binding Width, Mode=TwoWay}">
-					<ItemsControl ItemsSource="{Binding ChannelLocations}"
+					<ItemsControl ItemsSource="{Binding NodeLayouts}"
 					              HorizontalContentAlignment="Stretch"
 					              VerticalContentAlignment="Stretch">
 						<ItemsControl.ItemsPanel>

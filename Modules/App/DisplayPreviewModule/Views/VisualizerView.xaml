@@ -9,13 +9,13 @@
         Title="Display Preview">
 	<Window.Resources>
 		<ResourceDictionary>
-			<DataTemplate DataType="{x:Type Model:ChannelLocation}">
+			<DataTemplate DataType="{x:Type Model:NodeLayout}">
 				<Ellipse Width="{Binding Width}"
 				         Height="{Binding Height}"
 				         Stroke="White"
 				         StrokeThickness=".5">
 					<Ellipse.Fill>
-						<SolidColorBrush Color="{Binding ChannelColor}" />
+						<SolidColorBrush Color="{Binding NodeColor}" />
 					</Ellipse.Fill>
 				</Ellipse>
 			</DataTemplate>
@@ -27,7 +27,7 @@
 				        Background="Transparent"
 				        Height="{Binding Height}"
 				        Width="{Binding Width}">
-					<ItemsControl ItemsSource="{Binding ChannelLocations}">
+					<ItemsControl ItemsSource="{Binding NodeLayouts}">
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
 								<Canvas ClipToBounds="True"

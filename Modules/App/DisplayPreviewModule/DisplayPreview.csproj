@@ -47,9 +47,10 @@
     <Compile Include="Behaviors\DropTargetBehaviour.cs" />
     <Compile Include="Behaviors\IDragSource.cs" />
     <Compile Include="Behaviors\IDropTarget.cs" />
-    <Compile Include="Model\ChannelLocation.cs" />
-    <Compile Include="Model\ChannelSource.cs" />
+    <Compile Include="Model\NodeLayout.cs" />
+    <Compile Include="Model\NodeSource.cs" />
     <Compile Include="Model\Preferences.cs" />
+    <Compile Include="Model\Shapes\Arc.cs" />
     <Compile Include="Model\Shapes\OutlinedCircle.cs" />
     <Compile Include="Model\Shapes\IShape.cs" />
     <Compile Include="Model\Shapes\Line.cs" />
@@ -64,10 +65,14 @@
     <Compile Include="ViewModels\DisplayItemEditorViewModel.cs" />
     <Compile Include="ViewModels\PreferencesViewModel.cs" />
     <Compile Include="ViewModels\SetupViewModel.cs" />
+    <Compile Include="ViewModels\NodeEditorViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\VisualizerViewModel.cs" />
     <Compile Include="Views\PreferencesView.xaml.cs">
       <DependentUpon>PreferencesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NodeEditorView.xaml.cs">
+      <DependentUpon>NodeEditorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ViewManager.cs" />
     <Compile Include="WPF\BooleanToCollapsedConverter.cs" />
@@ -81,6 +86,7 @@
     <Compile Include="WPF\DragCanvas.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WPF\HalfDoubleConverter.cs" />
     <Compile Include="WPF\MoveThumb.cs" />
     <Compile Include="WPF\RelayCommand.cs" />
     <Compile Include="Views\SetupView.xaml.cs">
@@ -105,6 +111,10 @@
     <Page Include="Views\SetupView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NodeEditorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\VisualizerView.xaml">
       <SubType>Designer</SubType>
