@@ -1,12 +1,15 @@
 ﻿namespace VixenModules.App.DisplayPreview.Model.Shapes
 {
-    internal class Star : IDisplayShape
+    using System.Runtime.Serialization;
+
+    [DataContract]
+    internal class OutlinedStar : IShape
     {
         public ShapeType ShapeType
         {
             get
             {
-                return ShapeType.Star;
+                return ShapeType.OutlinedStar;
             }
         }
     }

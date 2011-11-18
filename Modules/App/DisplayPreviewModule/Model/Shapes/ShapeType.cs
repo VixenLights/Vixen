@@ -2,11 +2,14 @@ namespace VixenModules.App.DisplayPreview.Model.Shapes
 {
     public enum ShapeType
     {
-        Grid,
-        Circle,
+        OutlinedCircle,
+        SolidCircle,
         Line,
-        Traingle,
-        Rectangle,
-        Star
+        OutlinedTriangle,
+        SolidTriangle,
+        OutlinedRectangle,
+        SolidRectangle,
+        OutlinedStar,
+        SolidStar,
     }
 }

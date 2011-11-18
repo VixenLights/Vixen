@@ -50,14 +50,17 @@
     <Compile Include="Model\ChannelLocation.cs" />
     <Compile Include="Model\ChannelSource.cs" />
     <Compile Include="Model\Preferences.cs" />
-    <Compile Include="Model\Shapes\Circle.cs" />
-    <Compile Include="Model\Shapes\IDisplayShape.cs" />
-    <Compile Include="Model\Shapes\Grid.cs" />
+    <Compile Include="Model\Shapes\OutlinedCircle.cs" />
+    <Compile Include="Model\Shapes\IShape.cs" />
     <Compile Include="Model\Shapes\Line.cs" />
-    <Compile Include="Model\Shapes\Rectangle.cs" />
+    <Compile Include="Model\Shapes\OutlinedRectangle.cs" />
     <Compile Include="Model\Shapes\ShapeType.cs" />
-    <Compile Include="Model\Shapes\Star.cs" />
-    <Compile Include="Model\Shapes\Triangle.cs" />
+    <Compile Include="Model\Shapes\SolidCircle.cs" />
+    <Compile Include="Model\Shapes\SolidRectangle.cs" />
+    <Compile Include="Model\Shapes\SolidStar.cs" />
+    <Compile Include="Model\Shapes\OutlinedStar.cs" />
+    <Compile Include="Model\Shapes\SolidTriangle.cs" />
+    <Compile Include="Model\Shapes\OutlinedTriangle.cs" />
     <Compile Include="ViewModels\DisplayItemEditorViewModel.cs" />
     <Compile Include="ViewModels\PreferencesViewModel.cs" />
     <Compile Include="ViewModels\SetupViewModel.cs" />
@@ -88,6 +91,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="WPF\ResizeThumb.cs" />
+    <Compile Include="WPF\ShapeToShapeTypeConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\DisplayItemEditorView.xaml">

@@ -1,6 +1,6 @@
 namespace VixenModules.App.DisplayPreview.Model.Shapes
 {
-    public interface IDisplayShape
+    public interface IShape
     {
         ShapeType ShapeType { get; }
     }

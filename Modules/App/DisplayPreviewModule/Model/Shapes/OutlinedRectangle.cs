@@ -1,12 +1,15 @@
 ﻿namespace VixenModules.App.DisplayPreview.Model.Shapes
 {
-    internal class Circle : IDisplayShape
+    using System.Runtime.Serialization;
+
+    [DataContract]
+    internal class OutlinedRectangle : IShape
     {
         public ShapeType ShapeType
         {
             get
             {
-                return ShapeType.Circle;
+                return ShapeType.OutlinedRectangle;
             }
         }
     }

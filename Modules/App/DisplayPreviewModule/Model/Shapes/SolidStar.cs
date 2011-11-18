@@ -1,15 +1,15 @@
-﻿namespace VixenModules.App.DisplayPreview.Model.Shapes
+namespace VixenModules.App.DisplayPreview.Model.Shapes
 {
     using System.Runtime.Serialization;
 
     [DataContract]
-    internal class Line : IShape
+    internal class SolidStar : IShape
     {
         public ShapeType ShapeType
         {
             get
             {
-                return ShapeType.Line;
+                return ShapeType.SolidStar;
             }
         }
     }

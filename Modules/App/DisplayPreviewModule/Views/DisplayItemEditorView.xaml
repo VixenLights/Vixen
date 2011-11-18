@@ -6,6 +6,9 @@
         xmlns:Model="clr-namespace:VixenModules.App.DisplayPreview.Model"
         xmlns:ViewModels="clr-namespace:VixenModules.App.DisplayPreview.ViewModels"
         xmlns:Behaviors="clr-namespace:VixenModules.App.DisplayPreview.Behaviors"
+        xmlns:Shapes="clr-namespace:VixenModules.App.DisplayPreview.Model.Shapes"
+        xmlns:WPF="clr-namespace:VixenModules.App.DisplayPreview.WPF"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="Display Item and Channel Editor"
         SizeToContent="WidthAndHeight">
@@ -18,16 +21,36 @@
 				<ResourceDictionary Source="Resources/DesignerItem.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 
+            <ObjectDataProvider MethodName="GetValues"
+        ObjectType="{x:Type System:Enum}"
+        x:Key="ShapeTypeValues">
+            	<ObjectDataProvider.MethodParameters>
+            		<x:Type TypeName="Shapes:ShapeType" />
+            	</ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+
+			<WPF:ShapeToShapeTypeConverter x:Key="ShapeToShapeTypeConverter" />
+
 			<DataTemplate DataType="{x:Type Model:ChannelLocation}">
 				<Grid MouseLeftButtonUp="GridMouseLeftButtonUp"
 				      Background="#01FFFFFF">
-					<Ellipse Fill="{Binding DisplayColor, Mode=OneWay}"
+					<ContentControl Content="{Binding Shape}"
+					                Width="{Binding Width}"
+					                Height="{Binding Height}"
+					                ToolTip="{Binding ChannelName}" />
+					<!--<Ellipse Fill="{Binding DisplayColor, Mode=OneWay}"
 					         x:Name="channel"
 					         IsHitTestVisible="False"
 					         Width="{Binding Width}"
 					         Height="{Binding Height}"
-					         ToolTip="{Binding ChannelName}" />
+					         ToolTip="{Binding ChannelName}" />-->
 				</Grid>
+			</DataTemplate>
+
+			<DataTemplate DataType="{x:Type Shapes:OutlinedCircle}">
+				<Ellipse Stroke="Black"
+				         StrokeThickness="5"
+				         Fill="Transparent" />
 			</DataTemplate>
 		</ResourceDictionary>
 	</Window.Resources>
@@ -73,13 +96,13 @@
 						<TreeView.ItemTemplate>
 							<HierarchicalDataTemplate ItemsSource="{Binding Children}"
 							                          DataType="{x:Type Model:ChannelSource}">
-                                <Border Background="#01FFFFFF"
-                                        Behaviors:DragSourceBehaviour.DragSource="{Binding Source}">
-                                    <TextBlock Text="{Binding ChannelNodeName}"
-								           Behaviors:DragSourceBehaviour.DragSource="{Binding Source}"
-								           HorizontalAlignment="Stretch" />
-                                </Border>
-                            </HierarchicalDataTemplate>
+								<Border Background="#01FFFFFF"
+								        Behaviors:DragSourceBehaviour.DragSource="{Binding Source}">
+									<TextBlock Text="{Binding ChannelNodeName}"
+									           Behaviors:DragSourceBehaviour.DragSource="{Binding Source}"
+									           HorizontalAlignment="Stretch" />
+								</Border>
+							</HierarchicalDataTemplate>
 						</TreeView.ItemTemplate>
 					</TreeView>
 					<TextBlock Grid.Row="1"
@@ -143,6 +166,15 @@
 									          Padding="2"
 									          HorizontalContentAlignment="Stretch">
 										<TextBox Text="{Binding Height, Mode=TwoWay}" />
+									</GroupBox>
+									<GroupBox Header="Shape">
+										<StackPanel Orientation="Horizontal">
+											<ComboBox SelectedItem="{Binding Shape, Mode=TwoWay, Converter={StaticResource ShapeToShapeTypeConverter}}"
+											          ItemsSource="{Binding Source={StaticResource ShapeTypeValues}}"
+											          Width="100" />
+											<Button Margin="2"
+											        Content="Edit" />
+										</StackPanel>
 									</GroupBox>
 								</StackPanel>
 							</GroupBox>
@@ -214,12 +246,6 @@
 				<ListView ItemsSource="{Binding ChannelLocations}"
 				          IsSynchronizedWithCurrentItem="True"
 				          SelectedItem="{Binding SelectedChannelLocation}">
-					<ListView.Resources>
-						<Style TargetType="{x:Type ListViewItem}">
-							<Setter Property="IsSelected"
-							        Value="{Binding Path=IsSelected, Mode=TwoWay}" />
-						</Style>
-					</ListView.Resources>
 					<ListView.ItemTemplate>
 						<DataTemplate DataType="{x:Type Model:ChannelLocation}">
 							<TextBlock Text="{Binding ChannelName}" />

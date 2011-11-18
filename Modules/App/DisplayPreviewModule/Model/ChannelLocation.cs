@@ -5,23 +5,42 @@ namespace VixenModules.App.DisplayPreview.Model
     using System.Linq;
     using System.Runtime.Serialization;
     using System.Windows.Media;
+
     using Vixen.Sys;
 
+    using VixenModules.App.DisplayPreview.Model.Shapes;
+
     [DataContract]
+    [KnownType(typeof(OutlinedCircle))]
+    [KnownType(typeof(SolidCircle))]
+    [KnownType(typeof(Line))]
+    [KnownType(typeof(SolidRectangle))]
+    [KnownType(typeof(OutlinedRectangle))]
+    [KnownType(typeof(SolidStar))]
+    [KnownType(typeof(OutlinedStar))]
+    [KnownType(typeof(SolidTriangle))]
+    [KnownType(typeof(OutlinedTriangle))]
     public class ChannelLocation : INotifyPropertyChanged
     {
         private Color _channelColor;
+
         private Guid _channelId;
+
         private string _channelName;
+
         private int _height;
-        private bool _isSelected;
+
         private double _leftOffset;
+
+        private IShape _shape;
+
         private double _topOffset;
+
         private int _width;
 
         public ChannelLocation()
         {
-            ChannelColor = Colors.Black;
+            this.Initialize();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -30,13 +49,13 @@ namespace VixenModules.App.DisplayPreview.Model
         {
             get
             {
-                return _channelColor;
+                return this._channelColor;
             }
 
             set
             {
-                _channelColor = value;
-                PropertyChanged.NotifyPropertyChanged("ChannelColor", this);
+                this._channelColor = value;
+                this.PropertyChanged.NotifyPropertyChanged("ChannelColor", this);
             }
         }
 
@@ -45,13 +64,13 @@ namespace VixenModules.App.DisplayPreview.Model
         {
             get
             {
-                return _channelId;
+                return this._channelId;
             }
 
             set
             {
-                _channelId = value;
-                PropertyChanged.NotifyPropertyChanged("ChannelId", this);
+                this._channelId = value;
+                this.PropertyChanged.NotifyPropertyChanged("ChannelId", this);
             }
         }
 
@@ -59,16 +78,16 @@ namespace VixenModules.App.DisplayPreview.Model
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(_channelName))
+                if (string.IsNullOrWhiteSpace(this._channelName))
                 {
-                    var channel = Channel;
+                    var channel = this.Channel;
                     if (channel != null)
                     {
-                        _channelName = channel.Name;
+                        this._channelName = channel.Name;
                     }
                 }
 
-                return _channelName;
+                return this._channelName;
             }
         }
 
@@ -76,7 +95,7 @@ namespace VixenModules.App.DisplayPreview.Model
         {
             get
             {
-                if (Channel.IsRgbNode())
+                if (this.Channel.IsRgbNode())
                 {
                     var brush = new LinearGradientBrush();
                     brush.GradientStops.Add(new GradientStop(Colors.Red, 0));
@@ -94,32 +113,18 @@ namespace VixenModules.App.DisplayPreview.Model
         {
             get
             {
-                if (_height <= 0)
+                if (this._height <= 0)
                 {
-                    _height = Preferences.DefaultSettings.ChannelHeightDefault;
+                    this._height = Preferences.DefaultSettings.ChannelHeightDefault;
                 }
 
-                return _height;
+                return this._height;
             }
 
             set
             {
-                _height = value <= 0 ? 1 : value;
-                PropertyChanged.NotifyPropertyChanged("Height", this);
-            }
-        }
-
-        public bool IsSelected
-        {
-            get
-            {
-                return _isSelected;
-            }
-
-            set
-            {
-                _isSelected = value;
-                PropertyChanged.NotifyPropertyChanged("IsSelected", this);
+                this._height = value <= 0 ? 1 : value;
+                this.PropertyChanged.NotifyPropertyChanged("Height", this);
             }
         }
 
@@ -128,13 +133,28 @@ namespace VixenModules.App.DisplayPreview.Model
         {
             get
             {
-                return _leftOffset;
+                return this._leftOffset;
             }
 
             set
             {
-                _leftOffset = value;
-                PropertyChanged.NotifyPropertyChanged("LeftOffset", this);
+                this._leftOffset = value;
+                this.PropertyChanged.NotifyPropertyChanged("LeftOffset", this);
+            }
+        }
+
+        [DataMember]
+        public IShape Shape
+        {
+            get
+            {
+                return this._shape;
+            }
+
+            set
+            {
+                this._shape = value;
+                this.PropertyChanged.NotifyPropertyChanged("Shape", this);
             }
         }
 
@@ -143,13 +163,13 @@ namespace VixenModules.App.DisplayPreview.Model
         {
             get
             {
-                return _topOffset;
+                return this._topOffset;
             }
 
             set
             {
-                _topOffset = value;
-                PropertyChanged.NotifyPropertyChanged("TopOffset", this);
+                this._topOffset = value;
+                this.PropertyChanged.NotifyPropertyChanged("TopOffset", this);
             }
         }
 
@@ -158,18 +178,18 @@ namespace VixenModules.App.DisplayPreview.Model
         {
             get
             {
-                if (_width <= 0)
+                if (this._width <= 0)
                 {
-                    _width = Preferences.DefaultSettings.ChannelWidthDefault;
+                    this._width = Preferences.DefaultSettings.ChannelWidthDefault;
                 }
 
-                return _width;
+                return this._width;
             }
 
             set
             {
-                _width = value <= 0 ? 1 : value;
-                PropertyChanged.NotifyPropertyChanged("Width", this);
+                this._width = value <= 0 ? 1 : value;
+                this.PropertyChanged.NotifyPropertyChanged("Width", this);
             }
         }
 
@@ -177,13 +197,28 @@ namespace VixenModules.App.DisplayPreview.Model
         {
             get
             {
-                return VixenSystem.Nodes.GetAllNodes().FirstOrDefault(x => x.Id == ChannelId);
+                return VixenSystem.Nodes.GetAllNodes().FirstOrDefault(x => x.Id == this.ChannelId);
             }
         }
 
         public ChannelLocation Clone()
         {
-            return new ChannelLocation { TopOffset = TopOffset, LeftOffset = LeftOffset, ChannelId = ChannelId };
+            return new ChannelLocation
+                {
+                   TopOffset = this.TopOffset, LeftOffset = this.LeftOffset, ChannelId = this.ChannelId 
+                };
+        }
+
+        private void Initialize()
+        {
+            this.ChannelColor = Colors.Black;
+            this.Shape = new OutlinedCircle();
+        }
+
+        [OnDeserializing]
+        private void OnDeserializing(StreamingContext context)
+        {
+            this.Initialize();
         }
     }
 }

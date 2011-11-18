@@ -1,12 +1,15 @@
 ﻿namespace VixenModules.App.DisplayPreview.Model.Shapes
 {
-    internal class Triangle : IDisplayShape
+    using System.Runtime.Serialization;
+
+    [DataContract]
+    internal class OutlinedTriangle : IShape
     {
         public ShapeType ShapeType
         {
             get
             {
-                return ShapeType.Traingle;
+                return ShapeType.OutlinedTriangle;
             }
         }
     }
