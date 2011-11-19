@@ -10,6 +10,7 @@ using System.Windows.Forms;
 namespace VixenModules.App.Scheduler {
 	partial class SchedulerForm : Form {
 		private SchedulerData _data;
+		private ScheduleService _scheduleService;
 		private DateView _currentView;
 		private DateTime _currentDate;
 
@@ -17,12 +18,15 @@ namespace VixenModules.App.Scheduler {
 
 		public SchedulerForm(SchedulerData data) {
 			InitializeComponent();
+			
 			_data = data;
+			_scheduleService = new ScheduleService();
+			
 			checkBoxEnableSchedule.Checked = data.IsEnabled;
 
-			scheduleDay.Dock = DockStyle.Fill;
-			scheduleWeek.Dock = DockStyle.Fill;
-			scheduleAgenda.Dock = DockStyle.Fill;
+			//scheduleDay.Dock = DockStyle.Fill;
+			//scheduleWeek.Dock = DockStyle.Fill;
+			//scheduleAgenda.Dock = DockStyle.Fill;
 		}
 
 		private void SchedulerForm_Load(object sender, EventArgs e) {
@@ -53,15 +57,15 @@ namespace VixenModules.App.Scheduler {
 			// Reset button for the previous view
 			switch(_currentView) {
 				case DateView.Day:
-					scheduleDay.Visible = false;
+					//scheduleDay.Visible = false;
 					toolStripButtonDayView.Checked = false;
 					break;
 				case DateView.Week:
-					scheduleWeek.Visible = false;
+					//scheduleWeek.Visible = false;
 					toolStripButtonWeekView.Checked = false;
 					break;
 				case DateView.Agenda:
-					scheduleAgenda.Visible = false;
+					//scheduleAgenda.Visible = false;
 					toolStripButtonAgendaView.Checked = false;
 					break;
 			}
@@ -73,19 +77,32 @@ namespace VixenModules.App.Scheduler {
 			switch(_currentView) {
 				case DateView.Day:
 					//CompileApplicableTimers(date, m_oneDayTimeSpan);
-					scheduleDay.Visible = true;
+					//scheduleDay.Visible = true;
 					toolStripButtonDayView.Checked = true;
 					break;
 				case DateView.Week:
 					//CompileApplicableTimers(_currentDate.AddDays(-((int)_currentDate.DayOfWeek)), m_oneWeekTimeSpan);
-					scheduleWeek.Visible = true;
+					//scheduleWeek.Visible = true;
 					toolStripButtonWeekView.Checked = true;
 					break;
 				case DateView.Agenda:
 					//CompileApplicableTimers(date, m_oneDayTimeSpan);
-					scheduleAgenda.Visible = true;
+					//scheduleAgenda.Visible = true;
 					toolStripButtonAgendaView.Checked = true;
 					break;
+			}
+		}
+
+		private void scheduleDayView_TimeDoubleClick(object sender, ScheduleEventArgs e) {
+			ScheduleItem item = new ScheduleItem {
+				RunStartTime = e.TimeOffset,
+				RepeatsWithinBlock = false,
+				RepeatsOnInterval = false
+			};
+			using(ScheduleItemEditForm scheduleItemEditForm = new ScheduleItemEditForm(item)) {
+				if(scheduleItemEditForm.ShowDialog() == DialogResult.OK) {
+					scheduleDayView.Items.Add(item);
+				}
 			}
 		}
 	}

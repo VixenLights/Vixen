@@ -40,9 +40,7 @@
 			this.toolStripMenuItemAddEdit = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItemRemove = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-			this.scheduleDay = new Scheduler.ScheduleDay();
-			this.scheduleWeek = new Scheduler.ScheduleWeek();
-			this.scheduleAgenda = new Scheduler.ScheduleAgenda();
+			this.scheduleDayView = new VixenModules.App.Scheduler.ScheduleDayView();
 			this.toolStripView.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.contextMenuStrip.SuspendLayout();
@@ -179,38 +177,22 @@
 			this.toolStripMenuItemRemove.Size = new System.Drawing.Size(117, 22);
 			this.toolStripMenuItemRemove.Text = "Remove";
 			// 
-			// scheduleDay
+			// scheduleDayView
 			// 
-			this.scheduleDay.AutoScroll = true;
-			this.scheduleDay.Location = new System.Drawing.Point(-93, 46);
-			this.scheduleDay.Name = "scheduleDay";
-			this.scheduleDay.Size = new System.Drawing.Size(530, 281);
-			this.scheduleDay.TabIndex = 16;
-			// 
-			// scheduleWeek
-			// 
-			this.scheduleWeek.Location = new System.Drawing.Point(-64, 84);
-			this.scheduleWeek.Name = "scheduleWeek";
-			this.scheduleWeek.Size = new System.Drawing.Size(530, 281);
-			this.scheduleWeek.TabIndex = 17;
-			this.scheduleWeek.Visible = false;
-			// 
-			// scheduleAgenda
-			// 
-			this.scheduleAgenda.Location = new System.Drawing.Point(460, 46);
-			this.scheduleAgenda.Name = "scheduleAgenda";
-			this.scheduleAgenda.Size = new System.Drawing.Size(224, 205);
-			this.scheduleAgenda.TabIndex = 18;
-			this.scheduleAgenda.Visible = false;
+			this.scheduleDayView.AutoScroll = true;
+			this.scheduleDayView.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.scheduleDayView.Location = new System.Drawing.Point(0, 25);
+			this.scheduleDayView.Name = "scheduleDayView";
+			this.scheduleDayView.Size = new System.Drawing.Size(530, 281);
+			this.scheduleDayView.TabIndex = 11;
+			this.scheduleDayView.TimeDoubleClick += new System.EventHandler<VixenModules.App.Scheduler.ScheduleEventArgs>(this.scheduleDayView_TimeDoubleClick);
 			// 
 			// SchedulerForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(530, 351);
-			this.Controls.Add(this.scheduleAgenda);
-			this.Controls.Add(this.scheduleWeek);
-			this.Controls.Add(this.scheduleDay);
+			this.Controls.Add(this.scheduleDayView);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.toolStripView);
 			this.Name = "SchedulerForm";
@@ -244,8 +226,6 @@
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemAddEdit;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemRemove;
 		private System.Windows.Forms.ToolTip toolTip;
-		private ScheduleDay scheduleDay;
-		private ScheduleWeek scheduleWeek;
-		private ScheduleAgenda scheduleAgenda;
+		private ScheduleDayView scheduleDayView;
 	}
 }

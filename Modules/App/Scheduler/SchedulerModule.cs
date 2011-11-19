@@ -16,6 +16,10 @@ namespace VixenModules.App.Scheduler {
 
 		private const string ID_ROOT = "SchedulerRoot";
 
+		public SchedulerModule() {
+			_scheduleService = new ScheduleService();
+		}
+
 		public override void Loading() {
 			_AddApplicationMenu();
 			_SetEnableState(_data.IsEnabled);
@@ -46,8 +50,8 @@ namespace VixenModules.App.Scheduler {
 		}
 
 		void _scheduleCheckTimer_Elapsed(object sender, ElapsedEventArgs e) {
-			IEnumerable<ScheduleItem> validItems = _scheduleService.GetValidEvents(TimeSpan.FromSeconds(_data.CheckIntervalInSeconds));
-			foreach(ScheduleItem item in validItems) {
+			IEnumerable<IScheduleItem> validItems = _scheduleService.GetQualifiedItems(_data.Items);
+			foreach(IScheduleItem item in validItems) {
 				//***
 			}
 		}

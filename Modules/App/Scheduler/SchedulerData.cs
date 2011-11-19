@@ -7,6 +7,7 @@ using Vixen.Module;
 
 namespace VixenModules.App.Scheduler {
 	[DataContract]
+	[KnownType(typeof(ScheduleItem))]
 	public class SchedulerData : ModuleDataModelBase {
 		private int _interval = 10;
 
@@ -18,7 +19,7 @@ namespace VixenModules.App.Scheduler {
 		public bool IsEnabled;
 
 		[DataMember]
-		public List<ScheduleItem> Events;
+		public List<IScheduleItem> Items;
 
 		[DataMember]
 		public int CheckIntervalInSeconds {
@@ -36,7 +37,7 @@ namespace VixenModules.App.Scheduler {
 		}
 
 		private void Initialize() {
-			Events = new List<ScheduleItem>();
+			Items = new List<IScheduleItem>();
 		}
 
 		public override IModuleDataModel Clone() {

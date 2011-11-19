@@ -9,11 +9,10 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace VixenModules.App.Scheduler {
-	public partial class ScheduleAgenda : UserControl {
+	public partial class ScheduleAgendaView : UserControl, ISchedulerView {
 		private int _headerHeight = 30;
 		private int _agendaItemHeight = 50;
 
-		//*** dispose
 		private Font _dayViewHeaderFont = new Font("Arial", 12, FontStyle.Bold);
 		private Font _agendaViewItemFont = new Font("Arial", 10, FontStyle.Bold);
 		private Font _agendaViewTimeFont = new Font("Arial", 8);
@@ -28,7 +27,7 @@ namespace VixenModules.App.Scheduler {
 		private Rectangle _buttonLeftBounds;
 		private Rectangle _buttonRightBounds;
 
-		public ScheduleAgenda() {
+		public ScheduleAgendaView() {
 			InitializeComponent();
 
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
@@ -230,5 +229,14 @@ namespace VixenModules.App.Scheduler {
 		}
 
 
+
+		public IList<IScheduleItem> Items {
+			get {
+				throw new NotImplementedException();
+			}
+			set {
+				throw new NotImplementedException();
+			}
+		}
 	}
 }

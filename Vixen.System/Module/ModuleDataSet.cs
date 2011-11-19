@@ -246,12 +246,19 @@ namespace Vixen.Module {
 							serializer = new DataContractSerializer(dataSetType);
 							dataModel = null;
 							using(MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(moduleElement.FirstNode.ToString()))) {
-								dataModel = serializer.ReadObject(stream) as IModuleDataModel;
+								try {
+									dataModel = serializer.ReadObject(stream) as IModuleDataModel;
+								} catch(Exception ex) {
+									string instanceDataSpecifier = _IsInstanceData(moduleTypeId, moduleInstanceId) ? "(instance data)" : "(type data)";
+									VixenSystem.Logging.Error("The data for module \"" + descriptor.TypeName + "\" was not loaded due to errors.");
+									VixenSystem.Logging.Debug("Module \"" + descriptor.TypeName + "\" had data " + instanceDataSpecifier + " that was invalid.", ex);
+								}
 							}
 
-							_SetPedigree(dataModel, moduleTypeId, moduleInstanceId);
-
-							_Add(this, moduleTypeId, moduleInstanceId, dataModel);
+							if(dataModel != null) {
+								_SetPedigree(dataModel, moduleTypeId, moduleInstanceId);
+								_Add(this, moduleTypeId, moduleInstanceId, dataModel);
+							}
 						}
                     }
                 }
@@ -395,5 +402,9 @@ namespace Vixen.Module {
 
 		abstract protected Type _GetDataSetType(IModuleDescriptor descriptor);
 		abstract protected IModuleDataModel _GetDataInstance(IModuleInstance module);
+
+		private bool _IsInstanceData(Guid typeId, Guid instanceId) {
+			return typeId == instanceId;
+		}
 	}
 }
