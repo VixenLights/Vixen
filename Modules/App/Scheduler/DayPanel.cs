@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Data;
 using System.Linq;
 using System.Text;
@@ -14,6 +16,7 @@ namespace VixenModules.App.Scheduler {
 		private int _timeGutter = 50;
 		private int _topHalfHour;
 		private bool _showTime = true;
+		private bool _updating = false;
 
 		private SolidBrush _backgroundBrush = new SolidBrush(Color.FromArgb(255, 255, 213));
 		private Pen _hourPen = new Pen(Color.FromArgb(246, 219, 162));
@@ -23,19 +26,32 @@ namespace VixenModules.App.Scheduler {
 		private Pen _timeLinePen = new Pen(Color.FromKnownColor(KnownColor.ControlDark));
 
 		private BlockLayoutEngine _layoutEngine;
+		private ObservableList<IScheduleItem> _items;
+		private List<ItemBlock> _blocks;
 
 		public event EventHandler<ScheduleEventArgs> TimeDoubleClick;
 
 		public DayPanel() {
 			InitializeComponent();
 
+			_items = new ObservableList<IScheduleItem>();
+			_items.CollectionChanged += _items_CollectionChanged;
+			_blocks = new List<ItemBlock>();
 			_layoutEngine = new BlockLayoutEngine();
-
-			BackColor = Color.FromArgb(255, 255, 213);
 
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
+
+			BackColor = Color.FromArgb(255, 255, 213);
+			AutoScrollMinSize = new Size(Width, HalfHourHeight * 48);
+		}
+
+		private void DayPanel_Load(object sender, EventArgs e) {
+			// Controls do not have a model resize loop.  Forms do.
+			if(!this.DesignMode) {
+				ParentForm.ResizeEnd += (s, ea) => { _CalculateBlocks(); Refresh(); };
+			}
 		}
 
 		[DefaultValue(typeof(Color), "255, 255, 213")]
@@ -54,6 +70,7 @@ namespace VixenModules.App.Scheduler {
 			get { return _halfHourHeight; }
 			set {
 				_halfHourHeight = value;
+				AutoScrollMinSize = new Size(Width, value * 48);
 				Invalidate();
 			}
 		}
@@ -126,27 +143,41 @@ namespace VixenModules.App.Scheduler {
 			}
 		}
 
+		public IList<IScheduleItem> Items {
+			get { return _items; }
+			set {
+				BeginUpdate();
+				try {
+					_items.Clear();
+					_items.AddRange(value);
+				} finally {
+					EndUpdate();
+				}
+			}
+		}
+
+		public void BeginUpdate() {
+			_updating = true;
+		}
+
+		public void EndUpdate() {
+			_updating = false;
+			Refresh();
+		}
+
 		private int _VisibleHalfHours {
 			get { return Height / HalfHourHeight; }
 		}
 
-		public int TopHalfHour {
-			get { return _topHalfHour; }
-			set {
-				if(value < 0 || value > 48 - _VisibleHalfHours) throw new IndexOutOfRangeException();
-				_topHalfHour = value;
-				Invalidate();
-			}
+		protected override void OnPaint(PaintEventArgs e) {
+			e.Graphics.TranslateTransform(this.AutoScrollPosition.X, this.AutoScrollPosition.Y);
+			_DrawTimes(e.Graphics);
+			_DrawLines(e.Graphics);
+			_DrawItems(e.Graphics);
 		}
 
-		protected override void OnPaint(PaintEventArgs e) {
-			if(e.Graphics.VisibleClipBounds.Left < TimeGutter) {
-				_DrawTimes(e.Graphics);
-			}
-
-			if(e.Graphics.VisibleClipBounds.Right >= TimeGutter) {
-				_DrawLines(e.Graphics);
-			}
+		private int _TopHalfHour {
+			get { return _HalfHourFromY(-AutoScrollPosition.Y); }
 		}
 
 		private int _HalfHourFromY(int y) {
@@ -154,19 +185,31 @@ namespace VixenModules.App.Scheduler {
 		}
 
 		private int _GetHalfHourAt(int y) {
-			return TopHalfHour + _HalfHourFromY(y);
+			return _HalfHourFromY(y);
+		}
+
+		private int _Translate(int y) {
+			return y - AutoScrollPosition.Y;
+		}
+
+		private int _TimeToPixels(TimeSpan time) {
+			return (int)(time.TotalMinutes / 30 * HalfHourHeight);
 		}
 
 		private void _DrawTimes(Graphics g) {
+			RectangleF rect = new RectangleF(0, 0, TimeGutter, Height);
+			rect.Intersect(g.VisibleClipBounds);
+			g.FillRectangle(_backgroundBrush, rect);
+
 			// Times
 			int startHalfHour = _GetHalfHourAt((int)g.VisibleClipBounds.Y) / 2 * 2;
 			int hour = startHalfHour / 2;
-			int topHour = (TopHalfHour % 2 == 1) ? TopHalfHour / 2 + 1 : TopHalfHour / 2;
+			int topHour = (_TopHalfHour % 2 == 1) ? _TopHalfHour / 2 + 1 : _TopHalfHour / 2;
 			string hourString;
 			int midPoint = TimeGutter >> 1;
 			string meridianString;
 
-			for(int y = 3 + (startHalfHour - TopHalfHour) * HalfHourHeight; y < g.VisibleClipBounds.Bottom && hour < 24; y += HalfHourHeight * 2) {
+			for(int y = startHalfHour * HalfHourHeight; y < g.VisibleClipBounds.Bottom && hour < 24; y += HalfHourHeight * 2) {
 				if(hour == 0) {
 					hourString = "12";
 				} else if(hour > 12) {
@@ -175,7 +218,8 @@ namespace VixenModules.App.Scheduler {
 					hourString = hour.ToString();
 				}
 
-				g.DrawString(hourString, TimeLargeFont, Brushes.Black, midPoint - (int)(g.MeasureString(hourString, TimeLargeFont).Width) + 6, y);
+				g.DrawLine(_timeLinePen, 5, y, TimeGutter - 5, y);
+				g.DrawString(hourString, TimeLargeFont, Brushes.Black, midPoint - (int)(g.MeasureString(hourString, TimeLargeFont).Width) + 6, y + 3);
 
 				// AM/PM
 				if(hour == topHour) {
@@ -184,31 +228,31 @@ namespace VixenModules.App.Scheduler {
 					meridianString = "00";
 				}
 
-				g.DrawString(meridianString, TimeSmallFont, Brushes.Black, midPoint + 2, y);
+				g.DrawString(meridianString, TimeSmallFont, Brushes.Black, midPoint + 2, y + 3);
 				hour++;
 			}
 		}
 
-		protected virtual void _DrawLines(Graphics g) {
-			g.FillRectangle(_backgroundBrush, TimeGutter, 0, Width - TimeGutter, Height);
+		private void _DrawLines(Graphics g) {
+			RectangleF rect = new RectangleF(TimeGutter, 0, Width - TimeGutter, Height);
+			rect.Intersect(g.VisibleClipBounds);
+			g.FillRectangle(_backgroundBrush, rect);
 
-			int startHalfHour = _GetHalfHourAt((int)g.VisibleClipBounds.Y);// / 2 * 2;
+			int startHalfHour = _GetHalfHourAt((int)g.VisibleClipBounds.Y);
 			int hour = startHalfHour / 2;
 
 			// Hour lines
-			int y = (startHalfHour - TopHalfHour) * HalfHourHeight;
-			if(TopHalfHour % 2 == 1) y += HalfHourHeight;
+			int y = hour * HalfHourHeight * 2;
 	
 			for(; y < g.VisibleClipBounds.Bottom && hour <= 24; y += HalfHourHeight * 2) {
 				g.DrawLine(_hourPen, TimeGutter, y, Width, y);
-				g.DrawLine(_timeLinePen, 5, y, TimeGutter - 5, y);
 				hour++;
 			}
 
 			// Half-hour lines
 			hour = startHalfHour / 2;
-			y = (startHalfHour - TopHalfHour + 1) * HalfHourHeight;
-			if(TopHalfHour % 2 == 1) y += HalfHourHeight;
+			y = startHalfHour * HalfHourHeight;
+			if(startHalfHour % 2 == 0) y += HalfHourHeight;
 
 			for(; y < g.VisibleClipBounds.Bottom && hour < 24; y += HalfHourHeight * 2) {
 				g.DrawLine(_halfHourPen, TimeGutter, y, Width, y);
@@ -216,9 +260,65 @@ namespace VixenModules.App.Scheduler {
 			}
 		}
 
+		private void _DrawItems(Graphics g) {
+			foreach(ItemBlock block in _blocks) {
+				_DrawBlock(block, g);
+			}
+		}
+
+		private void _DrawBlock(ItemBlock block, Graphics g) {
+			_DrawRoundRect(g, Pens.Black, Brushes.White, block.Left, block.Top, block.Width - 1, block.Height - 1, 3);
+		}
+
+		private void _DrawRoundRect(Graphics g, Pen borderPen, Brush fillBrush, float X, float Y, float width, float height, float radius) {
+			g.SmoothingMode = SmoothingMode.AntiAlias;
+			using(GraphicsPath gp = new GraphicsPath()) {
+				gp.AddLine(X + radius, Y, X + width - (radius * 2), Y);
+				gp.AddArc(X + width - (radius * 2), Y, radius * 2, radius * 2, 270, 90);
+				gp.AddLine(X + width, Y + radius, X + width, Y + height - (radius * 2));
+				gp.AddArc(X + width - (radius * 2), Y + height - (radius * 2), radius * 2, radius * 2, 0, 90);
+				gp.AddLine(X + width - (radius * 2), Y + height, X + radius, Y + height);
+				gp.AddArc(X, Y + height - (radius * 2), radius * 2, radius * 2, 90, 90);
+				gp.AddLine(X, Y + height - (radius * 2), X, Y + radius);
+				gp.AddArc(X, Y, radius * 2, radius * 2, 180, 90);
+				gp.CloseFigure();
+
+				g.FillPath(fillBrush, gp);
+				g.DrawPath(borderPen, gp);
+			}
+		}
+
 		private void DayPanel_MouseDoubleClick(object sender, MouseEventArgs e) {
-			double halfHour = _GetHalfHourAt(e.Y);
+			double halfHour = _GetHalfHourAt(_Translate(e.Y));
 			OnTimeDoubleClick(new ScheduleEventArgs(0, TimeSpan.FromHours(halfHour / 2)));
+		}
+
+		private void _items_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+			if(!_updating) {
+				_CalculateBlocks();
+				Refresh();
+			}
+			//switch(e.Action) {
+			//    case NotifyCollectionChangedAction.Add:
+			//        break;
+			//    case NotifyCollectionChangedAction.Remove:
+			//        break;
+			//    case NotifyCollectionChangedAction.Replace:
+			//        break;
+			//    case NotifyCollectionChangedAction.Reset:
+			//        break;
+			//}
+		}
+
+		private void _CalculateBlocks() {
+			_blocks = new List<ItemBlock>();
+			foreach(IScheduleItem item in _items) {
+				int top = _TimeToPixels(item.RunStartTime);
+				int height = _TimeToPixels(item.RunEndTime - item.RunStartTime);
+				ItemBlock block = new ItemBlock(top, height);
+				_blocks.Add(block);
+			}
+			_layoutEngine.Layout(_blocks, new Rectangle(TimeGutter, 0, DisplayRectangle.Width - TimeGutter, DisplayRectangle.Height));
 		}
 
 		protected virtual void OnTimeDoubleClick(ScheduleEventArgs e) {
@@ -227,72 +327,5 @@ namespace VixenModules.App.Scheduler {
 			}
 		}
 
-		public override LayoutEngine LayoutEngine {
-			get { return _layoutEngine; }
-		}
-
-		class BlockLayoutEngine : LayoutEngine {
-			//public override void InitLayout(object child, BoundsSpecified specified) {
-			//    base.InitLayout(child, specified);
-			//}
-
-			public override bool Layout(object container, LayoutEventArgs layoutEventArgs) {
-				DayPanel parent = container as DayPanel;
-				if(parent == null) throw new InvalidOperationException("Layout panel must be of type DayPanel");
-
-				Rectangle rect = new Rectangle(parent.DisplayRectangle.X + parent.TimeGutter, parent.DisplayRectangle.Y, parent.DisplayRectangle.Width - parent.TimeGutter, parent.DisplayRectangle.Height);
-
-				List<Control> placedBlocks = new List<Control>();
-				List<Control> intersectingBlocks = new List<Control>();
-
-				int minX;
-				int x;
-				int width;
-				foreach(ScheduleItemVisual control in parent.Controls.OfType<ScheduleItemVisual>()) {
-					if(!control.Visible) continue;
-
-					// Initially set block to the full display width at the appropriate slot
-					control.Left = rect.Left;
-					control.Width = rect.Width;
-
-					control.Top = (int)control.Item.RunStartTime.TotalMinutes / 30 * parent.HalfHourHeight;
-					control.Height = (int)(control.Item.RunEndTime - control.Item.RunStartTime).TotalMinutes / 30 * parent.HalfHourHeight;
-					//(testing)
-					control.Height = Math.Max(control.Height, 10);
-
-					if(placedBlocks.Count > 0) {
-						minX = rect.Right;
-						intersectingBlocks.Clear();
-
-						// Iterate placed blocks, find all blocks that intersect
-						foreach(Control placedBlock in placedBlocks) {
-							if(placedBlock.ClientRectangle.IntersectsWith(rect)) {
-								intersectingBlocks.Add(placedBlock);
-								minX = Math.Min(placedBlock.Left, minX);
-							}
-						}
-						// If the min of all intersecting blocks = rect.X, recalc all intersected
-						// blocks and set the new block size, location appropriately.
-						if(minX == rect.X) {
-							x = rect.X;
-							width = rect.Width / (intersectingBlocks.Count + 1);
-							foreach(Control intersectingBlock in intersectingBlocks) {
-								intersectingBlock.Left = x;
-								intersectingBlock.Width = width;
-								x += width;
-							}
-							control.Left = x;
-							control.Width = width;
-						} else {
-							control.Width = minX - rect.X;
-						}
-					}
-
-					placedBlocks.Add(control);
-				}
-
-				return false;
-			}
-		}
 	}
 }

@@ -50,6 +50,11 @@ namespace VixenModules.App.Scheduler {
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, _list.Count - 1));
 		}
 
+		public void AddRange(IEnumerable<T> items) {
+			_list.AddRange(items);
+			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, items.ToList()));
+		}
+
 		public void Clear() {
 			_list.Clear();
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));

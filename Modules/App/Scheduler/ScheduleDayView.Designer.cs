@@ -31,29 +31,17 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			this.vScrollBar = new System.Windows.Forms.VScrollBar();
 			this.dayPanel = new VixenModules.App.Scheduler.DayPanel();
 			this.headerPanel = new VixenModules.App.Scheduler.HeaderPanel();
 			this.SuspendLayout();
-			// 
-			// vScrollBar
-			// 
-			this.vScrollBar.Dock = System.Windows.Forms.DockStyle.Right;
-			this.vScrollBar.Location = new System.Drawing.Point(311, 30);
-			this.vScrollBar.Maximum = 47;
-			this.vScrollBar.Name = "vScrollBar";
-			this.vScrollBar.Size = new System.Drawing.Size(17, 289);
-			this.vScrollBar.TabIndex = 2;
-			this.vScrollBar.ValueChanged += new System.EventHandler(this.vScrollBar_ValueChanged);
 			// 
 			// dayPanel
 			// 
 			this.dayPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.dayPanel.Location = new System.Drawing.Point(0, 30);
 			this.dayPanel.Name = "dayPanel";
-			this.dayPanel.Size = new System.Drawing.Size(311, 289);
+			this.dayPanel.Size = new System.Drawing.Size(328, 289);
 			this.dayPanel.TabIndex = 3;
-			this.dayPanel.TopHalfHour = 0;
 			// 
 			// headerPanel
 			// 
@@ -71,7 +59,6 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoScroll = true;
 			this.Controls.Add(this.dayPanel);
-			this.Controls.Add(this.vScrollBar);
 			this.Controls.Add(this.headerPanel);
 			this.Name = "ScheduleDayView";
 			this.Size = new System.Drawing.Size(328, 319);
@@ -82,7 +69,6 @@
 		#endregion
 
 		private HeaderPanel headerPanel;
-		private System.Windows.Forms.VScrollBar vScrollBar;
 		private DayPanel dayPanel;
 
 

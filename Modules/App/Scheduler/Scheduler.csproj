@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlockLayoutEngine.cs" />
     <Compile Include="DayPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -52,6 +53,7 @@
     <Compile Include="EnumDescriptionAttribute.cs" />
     <Compile Include="IScheduleItem.cs" />
     <Compile Include="ISchedulerView.cs" />
+    <Compile Include="ItemBlock.cs" />
     <Compile Include="ObservableList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecurrenceType.cs" />
@@ -74,12 +76,6 @@
     </Compile>
     <Compile Include="ScheduleItemEditForm.Designer.cs">
       <DependentUpon>ScheduleItemEditForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ScheduleItemVisual.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ScheduleItemVisual.Designer.cs">
-      <DependentUpon>ScheduleItemVisual.cs</DependentUpon>
     </Compile>
     <Compile Include="SchedulerData.cs" />
     <Compile Include="SchedulerDescriptor.cs" />
