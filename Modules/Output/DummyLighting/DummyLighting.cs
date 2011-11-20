@@ -85,12 +85,14 @@ namespace VixenModules.Output.DummyLighting
 
 		override public bool IsRunning
 		{
-			get { return _form != null && _form.Visible; }
+			get { return _form != null && (_form.Visible || _form.IsDisposed); }
 		}
 
 		override public void Dispose()
 		{
-			_form.Dispose();
+			if(!_form.IsDisposed) {
+				_form.Dispose();
+			}
 			_form = null;
 			GC.SuppressFinalize(this);
 		}

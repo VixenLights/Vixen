@@ -235,6 +235,7 @@ namespace Vixen.Sys {
 			public HardwareUpdateThread(OutputController controller) {
 				Controller = controller;
 				_thread = new Thread(_ThreadFunc);
+				_thread.IsBackground = true;
 				_finished = new EventWaitHandle(false, EventResetMode.ManualReset);
 			}
 
