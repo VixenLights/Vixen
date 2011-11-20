@@ -44,7 +44,7 @@ namespace Vixen.Module.Output {
 		virtual public void SetTransforms(int outputIndex, IEnumerable<ITransformModuleInstance> transforms) {
 			List<ITransformModuleInstance> transformList = _GetTransformList(outputIndex);
 			transformList.Clear();
-			transformList.AddRange(transforms);
+			_AddTransformsToOutput(transforms, outputIndex);
 		}
 
 		virtual public IEnumerable<ITransformModuleInstance> GetTransforms(int outputIndex) {
@@ -57,11 +57,12 @@ namespace Vixen.Module.Output {
 			foreach(ITransformModuleInstance transform in transforms) {
 				// Allowing multiple instances of a transform type.
 				// Create a new instance, but use the same data (clone).
-				ITransformModuleInstance newInstance = Modules.ModuleManagement.CloneTransform(transform);
+				//*Onus is on the caller to make sure they have a unique instance*
+				//ITransformModuleInstance newInstance = Modules.ModuleManagement.CloneTransform(transform);
 				// If data is already assigned to the module, it will be added to the data set.
 				// If not, it will be created and added.
-				ModuleDataSet.GetModuleInstanceData(newInstance);
-				outputTransforms.Add(newInstance);
+				ModuleDataSet.GetModuleInstanceData(transform);
+				outputTransforms.Add(transform);
 			}
 		}
 

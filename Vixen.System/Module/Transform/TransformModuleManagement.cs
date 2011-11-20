@@ -11,11 +11,14 @@ namespace Vixen.Module.Transform {
 			if(instance != null) {
 				newInstance = Get(instance.Descriptor.TypeId);
 				// Assuming to create the new data object as per-instance and not per-type.
-				//
-				// While a module generally has data, it may be that the instance being
-				// cloned has not yet been added to a module dataset, so we're checking for null.
 				if(instance.ModuleData != null) {
-					newInstance.ModuleData = instance.ModuleData.ModuleDataSet.CloneInstanceData(instance, newInstance);
+					if(instance.ModuleData.ModuleDataSet != null) {
+						newInstance.ModuleData = instance.ModuleData.ModuleDataSet.CloneInstanceData(instance, newInstance);
+					} else {
+						// No dataset, clone it as orphaned data (data will not be cloned
+						// in a dataset).
+						newInstance.ModuleData = instance.ModuleData.Clone();
+					}
 				}
 			}
 			return newInstance;

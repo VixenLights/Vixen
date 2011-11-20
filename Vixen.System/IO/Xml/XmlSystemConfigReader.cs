@@ -189,14 +189,12 @@ namespace Vixen.IO.Xml {
 
 				output.Name = outputElement.Attribute(ATTR_NAME).Value;
 
-				ModuleInstanceSpecification<int> transformSpecSet = new ModuleInstanceSpecification<int>();
 				IEnumerable<XElement> transformSpecElements = outputElement.Element(ELEMENT_TRANSFORMS).Elements(ELEMENT_TRANSFORM);
 				foreach(XElement transformSpecElement in transformSpecElements) {
 					Guid typeId = Guid.Parse(transformSpecElement.Attribute(ATTR_TYPE_ID).Value);
 					Guid instanceId = Guid.Parse(transformSpecElement.Attribute(ATTR_INSTANCE_ID).Value);
-					transformSpecSet.Add(outputIndex, typeId, instanceId);
+					controller.OutputTransforms.Add(outputIndex, typeId, instanceId);
 				}
-				controller.OutputTransforms = transformSpecSet;
 
 				outputIndex++;
 			}

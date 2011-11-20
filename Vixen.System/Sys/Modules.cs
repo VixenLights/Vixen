@@ -451,12 +451,9 @@ namespace Vixen.Sys {
 			IModuleDataModel dataModel = null;
 
 			if(instance.Descriptor.ModuleDataClass != null) {
-				dataModel = Activator.CreateInstance(instance.Descriptor.ModuleDataClass) as IModuleDataModel;
+				dataModel = ModuleLocalDataSet.CreateModuleDataInstance(instance);
 				if(dataModel == null) {
 					VixenSystem.Logging.Debug("Module \"" + instance.Descriptor.TypeName + "\" in " + instance.Descriptor.FileName + " has a reference to type " + instance.Descriptor.ModuleDataClass.Name + " for its module data class, but it's not an implementation of " + typeof(IModuleDataModel).Name + ".");
-				} else {
-					dataModel.ModuleTypeId = instance.Descriptor.TypeId;
-					dataModel.ModuleInstanceId = instance.InstanceId;
 				}
 			}
 

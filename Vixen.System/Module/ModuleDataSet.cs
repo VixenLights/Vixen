@@ -137,16 +137,15 @@ namespace Vixen.Module {
 			// need for data.
 			if(dataModelClass != null) {
 				dataModel = Activator.CreateInstance(dataModelClass) as IModuleDataModel;
-				dataModel.ModuleTypeId = moduleTypeId;
-				dataModel.ModuleInstanceId = moduleInstanceId;
+				_SetPedigree(null, dataModel, moduleTypeId, moduleInstanceId);
 			}
 
 			return dataModel;
 		}
 
-		private void _SetPedigree(IModuleDataModel dataModel, Guid owningModuleTypeId, Guid moduleInstanceId) {
+		static private void _SetPedigree(IModuleDataSet dataSet, IModuleDataModel dataModel, Guid owningModuleTypeId, Guid moduleInstanceId) {
 			// Where the data came from...
-			dataModel.ModuleDataSet = this;
+			dataModel.ModuleDataSet = dataSet;
 			dataModel.ModuleInstanceId = moduleInstanceId;
 			// Type of module it belongs to...
 			dataModel.ModuleTypeId = owningModuleTypeId;
@@ -161,6 +160,7 @@ namespace Vixen.Module {
 			if(!dataSet._dataModels.ContainsKey(key)) {
 				dataSet._dataModels[key] = moduleData;
 				moduleData.ModuleDataSet = dataSet;
+				_SetPedigree(dataSet, moduleData, moduleTypeId, moduleInstanceId);
 			}
 		}
 
@@ -256,7 +256,7 @@ namespace Vixen.Module {
 							}
 
 							if(dataModel != null) {
-								_SetPedigree(dataModel, moduleTypeId, moduleInstanceId);
+								_SetPedigree(this, dataModel, moduleTypeId, moduleInstanceId);
 								_Add(this, moduleTypeId, moduleInstanceId, dataModel);
 							}
 						}
@@ -348,8 +348,6 @@ namespace Vixen.Module {
 			IModuleDataModel newModel;
 			foreach(IModuleDataModel dataModel in source._dataModels.Values) {
 				newModel = dataModel.Clone();
-				newModel.ModuleTypeId = dataModel.ModuleTypeId;
-				newModel.ModuleInstanceId = dataModel.ModuleInstanceId;
 				_Add(destination, newModel.ModuleTypeId, newModel.ModuleInstanceId, newModel);
 			}
 		}
@@ -361,13 +359,9 @@ namespace Vixen.Module {
 		/// <param name="dataModel"></param>
 		/// <returns></returns>
 		public IModuleDataModel CloneTypeData(IModuleInstance sourceModule) {
-			if(_dataModels.ContainsKey(new Tuple<Guid, Guid>(sourceModule.Descriptor.TypeId, sourceModule.Descriptor.TypeId))) {
-				IModuleDataModel newInstance = sourceModule.ModuleData.Clone();
-				newInstance.ModuleTypeId = sourceModule.Descriptor.TypeId;
-				newInstance.ModuleInstanceId = sourceModule.Descriptor.TypeId;
-				return newInstance;
-			}
-			return null;
+			// This looks awkward, but for type data the type id is used for the type and instance id
+			// and the destination instance id will be the same as the source instance id because of that.
+			return _CloneData(sourceModule.ModuleData, sourceModule.Descriptor.TypeId, sourceModule.Descriptor.TypeId, sourceModule.Descriptor.TypeId, sourceModule.Descriptor.TypeId);
 		}
 
 		/// <summary>
@@ -377,10 +371,14 @@ namespace Vixen.Module {
 		/// <param name="dataModel"></param>
 		/// <returns></returns>
 		public IModuleDataModel CloneInstanceData(IModuleInstance sourceModule, IModuleInstance destinationModule) {
-			if(_dataModels.ContainsKey(new Tuple<Guid, Guid>(sourceModule.Descriptor.TypeId, sourceModule.InstanceId))) {
-				IModuleDataModel newInstance = sourceModule.ModuleData.Clone();
-				newInstance.ModuleTypeId = sourceModule.Descriptor.TypeId;
-				newInstance.ModuleInstanceId = destinationModule.InstanceId;
+			return _CloneData(sourceModule.ModuleData, sourceModule.Descriptor.TypeId, sourceModule.InstanceId, sourceModule.Descriptor.TypeId, destinationModule.InstanceId);
+		}
+
+		private IModuleDataModel _CloneData(IModuleDataModel dataModel, Guid sourceTypeId, Guid sourceInstanceId, Guid destTypeId, Guid destInstanceId) {
+			// Note: The clone created is orphaned, expecting to be added to a dataset.
+			if(_dataModels.ContainsKey(new Tuple<Guid, Guid>(sourceTypeId, sourceInstanceId))) {
+				IModuleDataModel newInstance = dataModel.Clone();
+				_SetPedigree(null, newInstance, destTypeId, destInstanceId);
 				return newInstance;
 			}
 			return null;
