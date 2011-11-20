@@ -73,10 +73,10 @@
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.label10 = new System.Windows.Forms.Label();
 			this.panel7 = new System.Windows.Forms.Panel();
-			this.buttonSelectSequence = new System.Windows.Forms.Button();
-			this.buttonSelectProgram = new System.Windows.Forms.Button();
-			this.buttonNewProgram = new System.Windows.Forms.Button();
+			this.buttonEditProgram = new System.Windows.Forms.Button();
 			this.labelWhat = new System.Windows.Forms.Label();
+			this.buttonNewProgram = new System.Windows.Forms.Button();
+			this.buttonSelectProgram = new System.Windows.Forms.Button();
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.panelRecurrence.SuspendLayout();
 			this.recurrenceControls.SuspendLayout();
@@ -200,7 +200,7 @@
 			this.noneTab.BackColor = System.Drawing.SystemColors.Control;
 			this.noneTab.Location = new System.Drawing.Point(0, 0);
 			this.noneTab.Name = "noneTab";
-			this.noneTab.Size = new System.Drawing.Size(288, 117);
+			this.noneTab.Size = new System.Drawing.Size(288, 94);
 			this.noneTab.TabIndex = 3;
 			this.noneTab.Text = "None";
 			// 
@@ -209,7 +209,7 @@
 			this.dayTab.BackColor = System.Drawing.SystemColors.Control;
 			this.dayTab.Location = new System.Drawing.Point(0, 0);
 			this.dayTab.Name = "dayTab";
-			this.dayTab.Size = new System.Drawing.Size(288, 117);
+			this.dayTab.Size = new System.Drawing.Size(288, 94);
 			this.dayTab.TabIndex = 2;
 			this.dayTab.Text = "Day";
 			// 
@@ -608,39 +608,40 @@
 			// 
 			// panel7
 			// 
+			this.panel7.Controls.Add(this.buttonEditProgram);
 			this.panel7.Controls.Add(this.labelWhat);
 			this.panel7.Controls.Add(this.buttonNewProgram);
 			this.panel7.Controls.Add(this.buttonSelectProgram);
-			this.panel7.Controls.Add(this.buttonSelectSequence);
-			this.panel7.Location = new System.Drawing.Point(49, 39);
+			this.panel7.Location = new System.Drawing.Point(0, 39);
 			this.panel7.Name = "panel7";
-			this.panel7.Size = new System.Drawing.Size(287, 75);
+			this.panel7.Size = new System.Drawing.Size(336, 75);
 			this.panel7.TabIndex = 1;
 			// 
-			// buttonSelectSequence
+			// buttonEditProgram
 			// 
-			this.buttonSelectSequence.Location = new System.Drawing.Point(3, 3);
-			this.buttonSelectSequence.Name = "buttonSelectSequence";
-			this.buttonSelectSequence.Size = new System.Drawing.Size(75, 23);
-			this.buttonSelectSequence.TabIndex = 0;
-			this.buttonSelectSequence.Text = "Sequence";
-			this.buttonSelectSequence.UseVisualStyleBackColor = true;
-			this.buttonSelectSequence.Click += new System.EventHandler(this.buttonSelectSequence_Click);
+			this.buttonEditProgram.Location = new System.Drawing.Point(10, 37);
+			this.buttonEditProgram.Name = "buttonEditProgram";
+			this.buttonEditProgram.Size = new System.Drawing.Size(38, 20);
+			this.buttonEditProgram.TabIndex = 4;
+			this.buttonEditProgram.Text = "Edit";
+			this.buttonEditProgram.UseVisualStyleBackColor = true;
+			this.buttonEditProgram.Visible = false;
+			this.buttonEditProgram.Click += new System.EventHandler(this.buttonEditProgram_Click);
 			// 
-			// buttonSelectProgram
+			// labelWhat
 			// 
-			this.buttonSelectProgram.Location = new System.Drawing.Point(84, 3);
-			this.buttonSelectProgram.Name = "buttonSelectProgram";
-			this.buttonSelectProgram.Size = new System.Drawing.Size(75, 23);
-			this.buttonSelectProgram.TabIndex = 1;
-			this.buttonSelectProgram.Text = "Program";
-			this.buttonSelectProgram.UseVisualStyleBackColor = true;
-			this.buttonSelectProgram.Click += new System.EventHandler(this.buttonSelectProgram_Click);
+			this.labelWhat.AutoSize = true;
+			this.labelWhat.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
+			this.labelWhat.ForeColor = System.Drawing.Color.Red;
+			this.labelWhat.Location = new System.Drawing.Point(54, 39);
+			this.labelWhat.Name = "labelWhat";
+			this.labelWhat.Size = new System.Drawing.Size(98, 16);
+			this.labelWhat.TabIndex = 3;
+			this.labelWhat.Text = "Not Selected";
 			// 
 			// buttonNewProgram
 			// 
-			this.buttonNewProgram.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonNewProgram.Location = new System.Drawing.Point(186, 3);
+			this.buttonNewProgram.Location = new System.Drawing.Point(164, 3);
 			this.buttonNewProgram.Name = "buttonNewProgram";
 			this.buttonNewProgram.Size = new System.Drawing.Size(96, 23);
 			this.buttonNewProgram.TabIndex = 2;
@@ -648,16 +649,15 @@
 			this.buttonNewProgram.UseVisualStyleBackColor = true;
 			this.buttonNewProgram.Click += new System.EventHandler(this.buttonNewProgram_Click);
 			// 
-			// labelWhat
+			// buttonSelectProgram
 			// 
-			this.labelWhat.AutoSize = true;
-			this.labelWhat.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
-			this.labelWhat.ForeColor = System.Drawing.Color.Red;
-			this.labelWhat.Location = new System.Drawing.Point(2, 43);
-			this.labelWhat.Name = "labelWhat";
-			this.labelWhat.Size = new System.Drawing.Size(98, 16);
-			this.labelWhat.TabIndex = 3;
-			this.labelWhat.Text = "Not Selected";
+			this.buttonSelectProgram.Location = new System.Drawing.Point(57, 3);
+			this.buttonSelectProgram.Name = "buttonSelectProgram";
+			this.buttonSelectProgram.Size = new System.Drawing.Size(101, 23);
+			this.buttonSelectProgram.TabIndex = 1;
+			this.buttonSelectProgram.Text = "Select Program";
+			this.buttonSelectProgram.UseVisualStyleBackColor = true;
+			this.buttonSelectProgram.Click += new System.EventHandler(this.buttonSelectProgram_Click);
 			// 
 			// ScheduleItemEditForm
 			// 
@@ -762,7 +762,7 @@
 		private System.Windows.Forms.Label labelWhat;
 		private System.Windows.Forms.Button buttonNewProgram;
 		private System.Windows.Forms.Button buttonSelectProgram;
-		private System.Windows.Forms.Button buttonSelectSequence;
 		private System.Windows.Forms.OpenFileDialog openFileDialog;
+		private System.Windows.Forms.Button buttonEditProgram;
 	}
 }

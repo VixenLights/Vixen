@@ -9,12 +9,10 @@ using Vixen.IO.Xml;
 using Vixen.Sys;
 
 namespace Vixen.Sys {
-	public class Program : IVersioned {
+	public class Program : IEnumerable<ISequence>, IVersioned {
 		private const string DIRECTORY_NAME = "Program";
 		private const int VERSION = 1;
 
-		// Has to be a TimedSequence because otherwise there will be no end
-		// time to watch for to move the program along.
 		private List<ISequence> _sequences = new List<ISequence>();
 
 		public const string Extension = ".pro";
@@ -23,24 +21,33 @@ namespace Vixen.Sys {
 			FilePath = Path.Combine(Program.Directory, Path.ChangeExtension(name, Program.Extension));
 		}
 
+		public Program(ISequence sequence)
+			: this(sequence.Name) {
+			Add(sequence);
+		}
+
+		public Program(Program original) {
+			FilePath = original.FilePath;
+			_sequences.AddRange(original.Sequences);
+		}
+
 		[DataPath]
-		static private string Directory {
+		static public string Directory {
 			get { return Path.Combine(Paths.DataRootPath, DIRECTORY_NAME); }
 		}
 
 		static public IEnumerable<Program> GetAll() {
 			foreach(string filePath in System.IO.Directory.GetFiles(Program.Directory, "*" + Extension)) {
-				yield return _LoadFromFile(filePath);
+				yield return Load(filePath);
 			}
 		}
 
-		static public Program Load(string name) {
-			if(!name.EndsWith(Program.Extension)) name += Program.Extension;
-			return _LoadFromFile(Path.Combine(Program.Directory, name));
-		}
+		static public Program Load(string filePath) {
+			if(string.IsNullOrWhiteSpace(filePath)) return null;
 
-		static private Program _LoadFromFile(string filePath) {
+			filePath = Path.ChangeExtension(filePath, Program.Extension);
 			IReader reader = new XmlProgramReader();
+			if(!Path.IsPathRooted(filePath)) filePath = Path.Combine(Directory, filePath);
 			Program program = (Program)reader.Read(filePath);
 			return program;
 		}
@@ -55,19 +62,40 @@ namespace Vixen.Sys {
 			_sequences.Add(sequence);
 		}
 
-		// Has to be a TimedSequence because otherwise there will be no end
-		// time to watch for to move the program along.
-		public IEnumerable<ISequence> Sequences {
+		public void Clear() {
+			_sequences.Clear();
+		}
+
+		public List<ISequence> Sequences {
 			get { return _sequences; }
+			set { _sequences = value; }
+		}
+
+		public void Save(string filePath) {
+			if(string.IsNullOrWhiteSpace(filePath)) throw new InvalidOperationException("A name is required.");
+			filePath = Path.Combine(Directory, Path.GetFileName(filePath));
+			filePath = Path.ChangeExtension(filePath, Program.Extension);
+
+			IWriter writer = new XmlProgramWriter();
+			writer.Write(filePath, this);
+
+			FilePath = filePath;
 		}
 
 		public void Save() {
-			IWriter writer = new XmlProgramWriter();
-			writer.Write(FilePath, this);
+			Save(FilePath);
 		}
 
 		public int Version {
 			get { return VERSION; }
+		}
+
+		public IEnumerator<ISequence> GetEnumerator() {
+			return _sequences.GetEnumerator();
+		}
+
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
+			return GetEnumerator();
 		}
 	}
 }

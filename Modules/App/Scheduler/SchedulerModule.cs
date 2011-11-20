@@ -68,10 +68,11 @@ namespace VixenModules.App.Scheduler {
 		}
 
 		private void _Execute(ScheduleItem item) {
-			Sequence sequence;
 			try {
-				sequence = Sequence.Load(item.SequenceFilePath);
-				ProgramContext context = Execution.CreateContext(sequence);
+				_SetEnableState(false);
+
+				Program program = Program.Load(item.FilePath);
+				ProgramContext context = Execution.CreateContext(program);
 				context.ProgramEnded += context_ProgramEnded;
 	
 				_contexts[context] = item;
@@ -79,8 +80,10 @@ namespace VixenModules.App.Scheduler {
 				item.LastExecutedAt = DateTime.Now;
 
 				context.Play();
+
+				_SetEnableState(true);
 			} catch(Exception ex) {
-				VixenSystem.Logging.Schedule("Could not execute sequence " + item.SequenceFilePath + "; " + ex.Message);
+				VixenSystem.Logging.Schedule("Could not execute sequence " + item.FilePath + "; " + ex.Message);
 			}
 		}
 

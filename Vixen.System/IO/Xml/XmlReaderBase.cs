@@ -16,6 +16,8 @@ namespace Vixen.IO.Xml {
 		}
 
 		virtual public T Read(string filePath) {
+			if(!File.Exists(filePath)) return null;
+
 			// Load the XML data.
 			XElement element = _LoadContent(filePath);
 

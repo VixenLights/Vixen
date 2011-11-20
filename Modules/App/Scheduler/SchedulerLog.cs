@@ -6,7 +6,7 @@ using System.Text;
 namespace VixenModules.App.Scheduler {
 	class SchedulerLog : Vixen.Sys.Log {
 		public SchedulerLog()
-			: base("Scheduler") {
+			: base("Schedule") {
 		}
 	}
 }

@@ -120,6 +120,7 @@ namespace VixenModules.App.Scheduler {
 		private void scheduleDayView_ItemDoubleClick(object sender, ScheduleItemArgs e) {
 			using(ScheduleItemEditForm scheduleItemEditForm = new ScheduleItemEditForm(e.Item as ScheduleItem)) {
 				if(scheduleItemEditForm.ShowDialog() == DialogResult.OK) {
+					// Force a redraw of the item.
 					_items.Replace(e.Item, e.Item);
 				}
 			}
@@ -127,6 +128,16 @@ namespace VixenModules.App.Scheduler {
 
 		private void checkBoxEnableSchedule_CheckedChanged(object sender, EventArgs e) {
 			_data.IsEnabled = true;
+		}
+
+		private void SchedulerForm_KeyDown(object sender, KeyEventArgs e) {
+			if(e.KeyCode == Keys.Delete && scheduleDayView.SelectedItem != null) {
+				if(MessageBox.Show("Delete scheduled run of \"" + System.IO.Path.GetFileName(scheduleDayView.SelectedItem.FilePath) + "\"?", "Vixen Scheduler", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
+					IScheduleItem item = scheduleDayView.SelectedItem;
+					_items.Remove(item);
+					_data.Items.Remove(item);
+				}
+			}
 		}
 	}
 }

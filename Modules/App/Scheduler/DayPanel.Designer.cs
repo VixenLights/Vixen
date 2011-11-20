@@ -39,6 +39,7 @@
 			this.Name = "DayPanel";
 			this.Load += new System.EventHandler(this.DayPanel_Load);
 			this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.DayPanel_MouseDoubleClick);
+			this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.DayPanel_MouseDown);
 			this.ResumeLayout(false);
 
 		}

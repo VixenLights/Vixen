@@ -197,11 +197,13 @@
 			this.Controls.Add(this.scheduleDayView);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.toolStripView);
+			this.KeyPreview = true;
 			this.Name = "SchedulerForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Show Scheduler";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SchedulerForm_FormClosing);
 			this.Load += new System.EventHandler(this.SchedulerForm_Load);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SchedulerForm_KeyDown);
 			this.toolStripView.ResumeLayout(false);
 			this.toolStripView.PerformLayout();
 			this.panel1.ResumeLayout(false);

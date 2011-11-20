@@ -63,7 +63,7 @@ namespace VixenModules.App.Scheduler {
 		public int RepeatIntervalMinutes { get; set; }
 
 		[DataMember]
-		public string SequenceFilePath { get; set; }
+		public string FilePath { get; set; }
 
 		public bool RepeatsOnInterval {
 			get { return RepeatIntervalMinutes != 0; }

@@ -55,6 +55,12 @@
     <Compile Include="ISchedulerView.cs" />
     <Compile Include="ItemBlock.cs" />
     <Compile Include="ObservableList.cs" />
+    <Compile Include="ProgramForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProgramForm.Designer.cs">
+      <DependentUpon>ProgramForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecurrenceType.cs" />
     <Compile Include="ScheduleAgendaView.cs">
@@ -117,6 +123,9 @@
   <ItemGroup>
     <EmbeddedResource Include="DayPanel.resx">
       <DependentUpon>DayPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProgramForm.resx">
+      <DependentUpon>ProgramForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ScheduleAgendaView.resx">
       <DependentUpon>ScheduleAgendaView.cs</DependentUpon>

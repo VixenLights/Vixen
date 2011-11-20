@@ -20,8 +20,8 @@ namespace Vixen.IO.Xml {
 		}
 
 		protected override void _PopulateObject(Program obj, XElement element) {
-			foreach(string sequenceFileName in element.Element(ELEMENT_SEQUENCES).Elements(ELEMENT_SEQUENCE)) {
-				ISequence sequence = Sequence.Load(sequenceFileName);
+			foreach(XElement sequenceElement in element.Element(ELEMENT_SEQUENCES).Elements(ELEMENT_SEQUENCE)) {
+				ISequence sequence = Sequence.Load(sequenceElement.Attribute(ATTR_FILE_NAME).Value);
 				obj.Add(sequence);
 			}
 		}

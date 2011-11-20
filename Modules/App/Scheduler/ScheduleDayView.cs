@@ -24,6 +24,15 @@ namespace VixenModules.App.Scheduler {
 			remove { dayPanel.ItemDoubleClick -= value; }
 		}
 
+		public event EventHandler<ScheduleItemArgs> ItemClick {
+			add { dayPanel.ItemClick += value; }
+			remove { dayPanel.ItemClick -= value; }
+		}
+
+		public IScheduleItem SelectedItem {
+			get { return dayPanel.SelectedItem; }
+		}
+
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public ObservableList<IScheduleItem> Items {

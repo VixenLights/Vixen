@@ -16,5 +16,6 @@ namespace VixenModules.App.Scheduler {
 		int RepeatIntervalMinutes { get; set; }
 		bool RepeatsOnInterval { get; set; }
 		bool RepeatsWithinBlock { get; set; }
+		string FilePath { get; set; }
 	}
 }

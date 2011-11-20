@@ -12,11 +12,11 @@ namespace VixenModules.App.Scheduler {
 	partial class ScheduleItemEditForm : Form {
 		private ScheduleItem _scheduleItem;
 		private bool _internal;
-		private Sequence _sequence;
+		private Program _program;
 
-		//private const string TIME_SPAN_FORMAT_STRING = @"hh\:mm";
 		private readonly TimeSpan END_TIME_DELTA = TimeSpan.FromHours(6);
 		private readonly TimeSpan END_TIME_INTERVAL = TimeSpan.FromMinutes(30);
+		private const string CAPTION = "Vixen Scheduler";
 
 		public ScheduleItemEditForm(ScheduleItem scheduleItem) {
 			InitializeComponent();
@@ -181,9 +181,9 @@ namespace VixenModules.App.Scheduler {
 				}
 
 				try {
-					_Sequence = Sequence.Load(value.SequenceFilePath);
-				} catch {
-					_Sequence = null;
+					_Program = Program.Load(value.FilePath);
+				} catch(Exception ex) {
+					MessageBox.Show(ex.Message, CAPTION, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 				}
 			}
 		}
@@ -193,7 +193,19 @@ namespace VixenModules.App.Scheduler {
 			try {
 				return Sequence.Load(filePath);
 			} catch(Exception ex) {
-				MessageBox.Show(ex.Message, "Vixen Scheduler", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				MessageBox.Show(ex.Message, CAPTION, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				return null;
+			} finally {
+				Cursor = Cursors.Default;
+			}
+		}
+
+		private Program _LoadProgram(string filePath) {
+			Cursor = Cursors.WaitCursor;
+			try {
+				return Program.Load(filePath);
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message, CAPTION, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 				return null;
 			} finally {
 				Cursor = Cursors.Default;
@@ -262,16 +274,19 @@ namespace VixenModules.App.Scheduler {
 			}
 		}
 		
-		private Sequence _Sequence {
-			get { return _sequence; }
+		private Program _Program {
+			get { return _program; }
 			set {
-				_sequence = value;
-				if(_sequence!= null) {
+				_program = value;
+
+				if(_program != null) {
 					labelWhat.ForeColor = Color.Black;
-					labelWhat.Text = _sequence.Name;
+					labelWhat.Text = _program.Name;
+					buttonEditProgram.Visible = true;
 				} else {
 					labelWhat.ForeColor = Color.Red;
 					labelWhat.Text = "Not Selected";
+					buttonEditProgram.Visible = false;
 				}
 			}
 		}
@@ -307,7 +322,6 @@ namespace VixenModules.App.Scheduler {
 					_RecurrenceType = RecurrenceType.None;
 					panelRecurrence.Enabled = false;
 				} else {
-					//dateTimePickerEndDate.Enabled = true;
 					_RecurrenceType = RecurrenceType.Daily;
 					panelRecurrence.Enabled = true;
 				}
@@ -350,7 +364,7 @@ namespace VixenModules.App.Scheduler {
 				_ScheduleItem.RepeatIntervalMinutes = _Interval.Value;
 			}
 			_ScheduleItem.RepeatsOnInterval = _RepeatsOnInterval;
-			_ScheduleItem.SequenceFilePath = (_Sequence != null) ? _Sequence.FilePath : null;
+			_ScheduleItem.FilePath = (_Program != null) ? _Program.FilePath : null;
 		}
 
 		private void comboBoxStartTime_Leave(object sender, EventArgs e) {
@@ -368,20 +382,29 @@ namespace VixenModules.App.Scheduler {
 			}
 		}
 
-		private void buttonSelectSequence_Click(object sender, EventArgs e) {
-			openFileDialog.InitialDirectory = Sequence.DefaultDirectory;
+		private void buttonSelectProgram_Click(object sender, EventArgs e) {
+			openFileDialog.InitialDirectory = Program.Directory;
 			if(openFileDialog.ShowDialog() == DialogResult.OK) {
-				Sequence sequence = _LoadSequence(openFileDialog.FileName);
-				_Sequence = sequence;
+				Program program = _LoadProgram(openFileDialog.FileName);
+				_Program = program;
 			}
 		}
 
-		private void buttonSelectProgram_Click(object sender, EventArgs e) {
-
+		private void buttonNewProgram_Click(object sender, EventArgs e) {
+			Program program = new Program("New Program");
+			using(ProgramForm programForm = new ProgramForm(program)) {
+				if(programForm.ShowDialog() == DialogResult.OK) {
+					_Program = program;
+				}
+			}
 		}
 
-		private void buttonNewProgram_Click(object sender, EventArgs e) {
-
+		private void buttonEditProgram_Click(object sender, EventArgs e) {
+			using(ProgramForm programForm = new ProgramForm(_Program)) {
+				if(programForm.ShowDialog() == DialogResult.OK) {
+					_Program = _Program;
+				}
+			}
 		}
 	}
 }

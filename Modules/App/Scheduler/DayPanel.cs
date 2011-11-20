@@ -27,9 +27,11 @@ namespace VixenModules.App.Scheduler {
 		private BlockLayoutEngine _layoutEngine;
 		private ObservableList<IScheduleItem> _items;
 		private List<ItemBlock> _blocks;
+		private ItemBlock _selectedBlock;
 
 		public event EventHandler<ScheduleEventArgs> TimeDoubleClick;
 		public event EventHandler<ScheduleItemArgs> ItemDoubleClick;
+		public event EventHandler<ScheduleItemArgs> ItemClick;
 
 		public DayPanel() {
 			InitializeComponent();
@@ -168,6 +170,10 @@ namespace VixenModules.App.Scheduler {
 			Refresh();
 		}
 
+		public IScheduleItem SelectedItem {
+			get { return (_SelectedBlock != null) ? _SelectedBlock.Item : null; }
+		}
+
 		private int _VisibleHalfHours {
 			get { return Height / HalfHourHeight; }
 		}
@@ -274,8 +280,11 @@ namespace VixenModules.App.Scheduler {
 		}
 
 		private void _DrawBlock(ItemBlock block, Graphics g) {
-			_DrawRoundRect(g, Pens.Black, Brushes.White, block.Left, block.Top, block.Width - 1, block.Height - 1, 3);
-			g.DrawString(block.SequenceName, Font, Brushes.Black, new RectangleF(block.Left + 3, block.Top + 2, block.Width - 1, block.Height - 1));
+			int penWidth = block.Selected ? 3 : 1;
+			using(Pen borderPen = new Pen(Color.Black, penWidth)) {
+				_DrawRoundRect(g, borderPen, Brushes.White, block.Left, block.Top, block.Width - 1, block.Height - 1, 3);
+			}
+			g.DrawString(block.ProgramName, Font, Brushes.Black, new RectangleF(block.Left + 3, block.Top + 2, block.Width - 1, block.Height - 1));
 		}
 
 		private void _DrawRoundRect(Graphics g, Pen borderPen, Brush fillBrush, float X, float Y, float width, float height, float radius) {
@@ -300,6 +309,39 @@ namespace VixenModules.App.Scheduler {
 			return _blocks.FirstOrDefault(b => b.Contains(x, y));
 		}
 
+		private ItemBlock _SelectedBlock {
+			get { return _selectedBlock; }
+			set {
+				if(value != _selectedBlock) {
+					if(_selectedBlock != null) {
+						_selectedBlock.Selected = false;
+						//_RedrawBlock(_selectedBlock);
+					}
+					_selectedBlock = value;
+					if(_selectedBlock != null) {
+						_selectedBlock.Selected = true;
+						//_RedrawBlock(_selectedBlock);
+					}
+					//Update();
+					// Would rather Update(), but no painting happens even though areas have
+					// been invalidated...?
+					Refresh();
+				}
+			}
+		}
+
+		//private void _RedrawBlock(ItemBlock block) {
+		//    int x = _TranslateX(block.Left);
+		//    int y = _TranslateY(block.Top);
+		//    Invalidate(new Rectangle(x, y, block.Width, block.Height));
+		//}
+
+		private void DayPanel_MouseDown(object sender, MouseEventArgs e) {
+			ItemBlock itemBlock = _GetItemAt(_TranslateX(e.X), _TranslateY(e.Y));
+			_SelectedBlock = itemBlock;
+			OnItemClick(new ScheduleItemArgs((itemBlock != null) ? itemBlock.Item : null));
+		}
+
 		private void DayPanel_MouseDoubleClick(object sender, MouseEventArgs e) {
 			ItemBlock itemBlock = _GetItemAt(_TranslateX(e.X), _TranslateY(e.Y));
 			if(itemBlock != null) {
@@ -311,20 +353,24 @@ namespace VixenModules.App.Scheduler {
 		}
 
 		private void _items_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+			switch(e.Action) {
+				case NotifyCollectionChangedAction.Add:
+					break;
+				case NotifyCollectionChangedAction.Remove:
+					if(_SelectedBlock != null && e.OldItems[0] == _SelectedBlock.Item) {
+						_SelectedBlock = null;
+					}
+					break;
+				case NotifyCollectionChangedAction.Replace:
+					break;
+				case NotifyCollectionChangedAction.Reset:
+					break;
+			}
+
 			if(!_updating) {
 				_CalculateBlocks();
 				Refresh();
 			}
-			//switch(e.Action) {
-			//    case NotifyCollectionChangedAction.Add:
-			//        break;
-			//    case NotifyCollectionChangedAction.Remove:
-			//        break;
-			//    case NotifyCollectionChangedAction.Replace:
-			//        break;
-			//    case NotifyCollectionChangedAction.Reset:
-			//        break;
-			//}
 		}
 
 		private void _CalculateBlocks() {
@@ -347,6 +393,12 @@ namespace VixenModules.App.Scheduler {
 		protected virtual void OnItemDoubleClick(ScheduleItemArgs e) {
 			if(ItemDoubleClick != null) {
 				ItemDoubleClick(this, e);
+			}
+		}
+
+		protected virtual void OnItemClick(ScheduleItemArgs e) {
+			if(ItemClick != null) {
+				ItemClick(this, e);
 			}
 		}
 	}

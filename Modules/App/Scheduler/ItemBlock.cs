@@ -13,12 +13,14 @@ namespace VixenModules.App.Scheduler {
 			Item = item;
 			Top = top;
 			Height = height;
-			SequenceName = System.IO.Path.GetFileName(item.SequenceFilePath);
+			ProgramName = System.IO.Path.GetFileName(item.FilePath);
 		}
 
 		public ScheduleItem Item { get; private set; }
 
-		public string SequenceName { get; private set; }
+		public string ProgramName { get; private set; }
+
+		public bool Selected { get; set; }
 
 		public int Top {
 			get { return _rectangle.Y; }

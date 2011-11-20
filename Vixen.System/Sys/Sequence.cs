@@ -47,7 +47,10 @@ namespace Vixen.Sys {
 		/// <param name="filePath"></param>
 		/// <returns></returns>
 		static public Sequence Load(string filePath) {
+			if(string.IsNullOrWhiteSpace(filePath)) return null;
+
 			IReader reader = new XmlAnySequenceReader();
+			if(!Path.IsPathRooted(filePath)) filePath = Path.Combine(DefaultDirectory, filePath);
 			Sequence instance = (Sequence)reader.Read(filePath);
 			return instance;
 		}
@@ -184,6 +187,10 @@ namespace Vixen.Sys {
 		public IRuntimeBehaviorModuleInstance[] RuntimeBehaviors { get; private set; }
 
 		public MediaCollection Media { get; set; }
+
+		public override string ToString() {
+			return Name;
+		}
 
 		virtual public int Version {
 			get { return VERSION; }

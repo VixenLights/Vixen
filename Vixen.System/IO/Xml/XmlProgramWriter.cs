@@ -17,7 +17,7 @@ namespace Vixen.IO.Xml {
 				new XElement(ELEMENT_SEQUENCES,
 					program.Sequences.Select(x =>
 						new XElement(ELEMENT_SEQUENCE,
-							new XAttribute(ATTR_FILE_NAME, x.Name)))));
+							new XAttribute(ATTR_FILE_NAME, System.IO.Path.GetFileName(x.FilePath))))));
 		}
 	}
 }
