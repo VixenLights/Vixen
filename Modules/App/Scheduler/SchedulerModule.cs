@@ -6,6 +6,7 @@ using System.Timers;
 using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.App;
+using Vixen.Execution;
 
 namespace VixenModules.App.Scheduler {
 	public class SchedulerModule : AppModuleInstanceBase {
@@ -13,16 +14,19 @@ namespace VixenModules.App.Scheduler {
 		private SchedulerData _data;
 		private Timer _scheduleCheckTimer;
 		private ScheduleService _scheduleService;
+		private Dictionary<ProgramContext, ScheduleItem> _contexts;
 
 		private const string ID_ROOT = "SchedulerRoot";
 
 		public SchedulerModule() {
 			_scheduleService = new ScheduleService();
+			_contexts = new Dictionary<ProgramContext, ScheduleItem>();
 		}
 
 		public override void Loading() {
 			_AddApplicationMenu();
 			_SetEnableState(_data.IsEnabled);
+			VixenSystem.Logs.AddLog(new SchedulerLog());
 		}
 
 		public override void Unloading() {
@@ -50,9 +54,44 @@ namespace VixenModules.App.Scheduler {
 		}
 
 		void _scheduleCheckTimer_Elapsed(object sender, ElapsedEventArgs e) {
-			IEnumerable<IScheduleItem> validItems = _scheduleService.GetQualifiedItems(_data.Items);
-			foreach(IScheduleItem item in validItems) {
-				//***
+			IEnumerable<ScheduleItem> validItems = _scheduleService.GetQualifiedItems(_data.Items).Cast<ScheduleItem>();
+
+			foreach(ScheduleItem item in validItems) {
+				if(_CanExecute(item)) {
+					_Execute(item);
+				}
+			}
+		}
+
+		private bool _CanExecute(ScheduleItem item) {
+			return !item.IsExecuting;
+		}
+
+		private void _Execute(ScheduleItem item) {
+			Sequence sequence;
+			try {
+				sequence = Sequence.Load(item.SequenceFilePath);
+				ProgramContext context = Execution.CreateContext(sequence);
+				context.ProgramEnded += context_ProgramEnded;
+	
+				_contexts[context] = item;
+				item.IsExecuting = true;
+				item.LastExecutedAt = DateTime.Now;
+
+				context.Play();
+			} catch(Exception ex) {
+				VixenSystem.Logging.Schedule("Could not execute sequence " + item.SequenceFilePath + "; " + ex.Message);
+			}
+		}
+
+		void context_ProgramEnded(object sender, ProgramEventArgs e) {
+			ProgramContext context = sender as ProgramContext;
+			context.ProgramEnded -= context_ProgramEnded;
+			Execution.ReleaseContext(context);
+			ScheduleItem item;
+			if(_contexts.TryGetValue(context, out item)) {
+				item.IsExecuting = false;
+				_contexts.Remove(context);
 			}
 		}
 
@@ -71,7 +110,7 @@ namespace VixenModules.App.Scheduler {
 					// able to call _SetEnableState without affecting the data (to stop
 					// the scheduler upon shutdown).
 					_data.IsEnabled = e.CheckedState;
-					_SetEnableState(e.CheckedState);
+					_SetEnableState(_data.IsEnabled);
 				};
 
 				AppCommand separator1 = new AppCommand("s1", "-");
@@ -80,7 +119,7 @@ namespace VixenModules.App.Scheduler {
 				showCommand.Click += (sender, e) => {
 					using(SchedulerForm schedulerForm = new SchedulerForm(_data)) {
 						if(schedulerForm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-							//*** update data
+							enabledCommand.IsChecked = _data.IsEnabled;
 						}
 					}
 				};

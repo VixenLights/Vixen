@@ -13,6 +13,7 @@ namespace VixenModules.App.Scheduler {
 		private ScheduleService _scheduleService;
 		private DateView _currentView;
 		private DateTime _currentDate;
+		private ObservableList<IScheduleItem> _items;
 
 		private enum DateView { Day, Week, Agenda };
 
@@ -21,8 +22,7 @@ namespace VixenModules.App.Scheduler {
 			
 			_data = data;
 			_scheduleService = new ScheduleService();
-			
-			checkBoxEnableSchedule.Checked = data.IsEnabled;
+			_items = new ObservableList<IScheduleItem>();
 
 			//scheduleDay.Dock = DockStyle.Fill;
 			//scheduleWeek.Dock = DockStyle.Fill;
@@ -30,7 +30,17 @@ namespace VixenModules.App.Scheduler {
 		}
 
 		private void SchedulerForm_Load(object sender, EventArgs e) {
+			checkBoxEnableSchedule.Checked = _data.IsEnabled;
+
+			scheduleDayView.Items = _items;
+			//others here
+
+			_items.AddRange(_data.Items);
+
 			_SetCurrentView(DateView.Day);
+		}
+
+		private void SchedulerForm_FormClosing(object sender, FormClosingEventArgs e) {
 		}
 
 		private void toolStripButtonToday_Click(object sender, EventArgs e) {
@@ -101,9 +111,22 @@ namespace VixenModules.App.Scheduler {
 			};
 			using(ScheduleItemEditForm scheduleItemEditForm = new ScheduleItemEditForm(item)) {
 				if(scheduleItemEditForm.ShowDialog() == DialogResult.OK) {
-					scheduleDayView.Items.Add(item);
+					_items.Add(item);
+					_data.Items.Add(item);
 				}
 			}
+		}
+
+		private void scheduleDayView_ItemDoubleClick(object sender, ScheduleItemArgs e) {
+			using(ScheduleItemEditForm scheduleItemEditForm = new ScheduleItemEditForm(e.Item as ScheduleItem)) {
+				if(scheduleItemEditForm.ShowDialog() == DialogResult.OK) {
+					_items.Replace(e.Item, e.Item);
+				}
+			}
+		}
+
+		private void checkBoxEnableSchedule_CheckedChanged(object sender, EventArgs e) {
+			_data.IsEnabled = true;
 		}
 	}
 }

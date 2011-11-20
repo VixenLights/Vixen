@@ -18,11 +18,6 @@ namespace VixenModules.App.Scheduler {
 				block.Left = container.Left;
 				block.Width = container.Width;
 
-				//control.Top = (int)control.Item.RunStartTime.TotalMinutes / 30 * parent.HalfHourHeight;
-				//control.Height = (int)(control.Item.RunEndTime - control.Item.RunStartTime).TotalMinutes / 30 * parent.HalfHourHeight;
-				////(testing)
-				//control.Height = Math.Max(control.Height, 10);
-
 				if(placedBlocks.Count > 0) {
 					minX = container.Right;
 					intersectingBlocks.Clear();
@@ -54,22 +49,14 @@ namespace VixenModules.App.Scheduler {
 				placedBlocks.Add(block);
 			}
 		}
-		//class BlockLayoutAdapter<T>
-		//    where T : class {
-		//    public BlockLayoutAdapter(T item) {
-		//        Item = item;
-		//        Rectangle = new Rectangle();
-		//    }
 
-		//    public T Item { get; private set; }
-		//    public Rectangle Rectangle;
-		//}
 		public interface IBlockLayoutAdapter {
 			int Top { get; set; }
 			int Left { get; set; }
 			int Width { get; set; }
 			int Height { get; set; }
 			bool IntersectsWith(IBlockLayoutAdapter block);
+			bool Contains(int x, int y);
 		}
 	}
 }

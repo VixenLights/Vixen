@@ -36,6 +36,10 @@ namespace VixenModules.App.Scheduler {
 			Initialize();
 		}
 
+		//[OnDeserialized]
+		//private void OnDeserialized(StreamingContext context) {
+		//}
+
 		private void Initialize() {
 			Items = new List<IScheduleItem>();
 		}

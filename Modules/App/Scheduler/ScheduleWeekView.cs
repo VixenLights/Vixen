@@ -9,7 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace VixenModules.App.Scheduler {
-	public partial class ScheduleWeekView : UserControl, ISchedulerView {
+	partial class ScheduleWeekView : UserControl, ISchedulerView {
 		private int _halfHourHeight = 20;
 		private int _headerHeight = 30;
 		private int _timeGutter = 50;
@@ -417,7 +417,7 @@ namespace VixenModules.App.Scheduler {
 		}
 
 
-		public IList<IScheduleItem> Items {
+		public ObservableList<IScheduleItem> Items {
 			get {
 				throw new NotImplementedException();
 			}

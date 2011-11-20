@@ -11,10 +11,24 @@ namespace Vixen.Execution {
 	public class ProgramContext : IDisposable {
 		private ProgramExecutor _programExecutor;
 
+		public event EventHandler<SequenceStartedEventArgs> SequenceStarted;
+		public event EventHandler<SequenceEventArgs> SequenceEnded;
+		public event EventHandler<ProgramEventArgs> ProgramStarted;
+		public event EventHandler<ProgramEventArgs> ProgramEnded;
+		public event EventHandler<ExecutorMessageEventArgs> Message;
+		public event EventHandler<ExecutorMessageEventArgs> Error;
+
 		public ProgramContext(Program program) {
 			this.Program = program;
 			_programExecutor = new ProgramExecutor(this.Program);
 			Id = Guid.NewGuid();
+
+			_programExecutor.SequenceStarted += _programExecutor_SequenceStarted;
+			_programExecutor.SequenceEnded += _programExecutor_SequenceEnded;
+			_programExecutor.ProgramStarted += _programExecutor_ProgramStarted;
+			_programExecutor.ProgramEnded += _programExecutor_ProgramEnded;
+			_programExecutor.Message += _programExecutor_Message;
+			_programExecutor.Error += _programExecutor_Error;
 		}
 
 		public Program Program { get; private set; }
@@ -91,48 +105,65 @@ namespace Vixen.Execution {
 			}
 		}
 
-		// Events are pass-through.
-		public event EventHandler<SequenceStartedEventArgs> SequenceStarted {
-			add { _programExecutor.SequenceStarted += value; }
-			remove { _programExecutor.SequenceStarted -= value; }
-		}
-
-		public event EventHandler<SequenceEventArgs> SequenceEnded {
-			add { _programExecutor.SequenceEnded += value;	}
-			remove { _programExecutor.SequenceEnded -= value; }
-		}
-
-		public event EventHandler<ProgramEventArgs> ProgramStarted {
-			add { _programExecutor.ProgramStarted += value; }
-			remove { _programExecutor.ProgramStarted -= value; }
-		}
-
-		public event EventHandler<ProgramEventArgs> ProgramEnded {
-			add { _programExecutor.ProgramEnded += value; }
-			remove { _programExecutor.ProgramEnded -= value; }
-		}
-
-		public event EventHandler<ExecutorMessageEventArgs> Message {
-			add { _programExecutor.Message += value; }
-			remove { _programExecutor.Message -= value; }
-		}
-
-		public event EventHandler<ExecutorMessageEventArgs> Error {
-			add { _programExecutor.Error += value; }
-			remove { _programExecutor.Error -= value; }
-		}
-
 		~ProgramContext() {
 			Dispose();
 		}
 
 		public void Dispose() {
 			Stop();
+
+			_programExecutor.SequenceStarted -= _programExecutor_SequenceStarted;
+			_programExecutor.SequenceEnded -= _programExecutor_SequenceEnded;
+			_programExecutor.ProgramStarted -= _programExecutor_ProgramStarted;
+			_programExecutor.ProgramEnded -= _programExecutor_ProgramEnded;
+			_programExecutor.Message -= _programExecutor_Message;
+			_programExecutor.Error -= _programExecutor_Error;
+
 			_programExecutor.Dispose();
+			_programExecutor = null;
+
 			// In case we're being disposed by something other than the
 			// act of being released.
 			Vixen.Sys.Execution.ReleaseContext(this);
 			GC.SuppressFinalize(this);
 		}
+
+		#region Events
+		void _programExecutor_Error(object sender, ExecutorMessageEventArgs e) {
+			if(Error != null) {
+				Error(this, e);
+			}
+		}
+
+		void _programExecutor_Message(object sender, ExecutorMessageEventArgs e) {
+			if(Message != null) {
+				Message(this, e);
+			}
+		}
+
+		void _programExecutor_ProgramEnded(object sender, ProgramEventArgs e) {
+			if(ProgramEnded != null) {
+				ProgramEnded(this, e);
+			}
+		}
+
+		void _programExecutor_ProgramStarted(object sender, ProgramEventArgs e) {
+			if(ProgramStarted != null) {
+				ProgramStarted(this, e);
+			}
+		}
+
+		void _programExecutor_SequenceEnded(object sender, SequenceEventArgs e) {
+			if(SequenceEnded != null) {
+				SequenceEnded(this, e);
+			}
+		}
+
+		void _programExecutor_SequenceStarted(object sender, SequenceStartedEventArgs e) {
+			if(SequenceStarted != null) {
+				SequenceStarted(this, e);
+			}
+		}
+		#endregion
 	}
 }

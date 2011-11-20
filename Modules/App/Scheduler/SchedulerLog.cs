@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 
 namespace VixenModules.App.Scheduler {
-	interface ISchedulerView {
-		ObservableList<IScheduleItem> Items { get; set; }
+	class SchedulerLog : Vixen.Sys.Log {
+		public SchedulerLog()
+			: base("Scheduler") {
+		}
 	}
 }

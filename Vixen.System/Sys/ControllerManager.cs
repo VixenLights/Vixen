@@ -292,6 +292,7 @@ namespace Vixen.Sys {
 					_finished.Set();
 
 					VixenSystem.Logging.Error("Controller " + Controller.Name + " error", ex);
+					VixenSystem.Logging.Debug("Controller error:" + Environment.NewLine + ex.StackTrace);
 					OnError();
 				}
 			}

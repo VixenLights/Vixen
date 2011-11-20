@@ -71,6 +71,7 @@
     </Compile>
     <Compile Include="ScheduleEventArgs.cs" />
     <Compile Include="ScheduleItem.cs" />
+    <Compile Include="ScheduleItemArgs.cs" />
     <Compile Include="ScheduleItemEditForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -91,6 +92,7 @@
     <Compile Include="HeaderPanel.Designer.cs">
       <DependentUpon>HeaderPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="SchedulerLog.cs" />
     <Compile Include="SchedulerModule.cs" />
     <Compile Include="ScheduleService.cs" />
     <Compile Include="ScheduleWeekView.cs">

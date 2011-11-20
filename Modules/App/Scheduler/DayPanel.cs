@@ -14,7 +14,6 @@ namespace VixenModules.App.Scheduler {
 	partial class DayPanel : UserControl {
 		private int _halfHourHeight = 20;
 		private int _timeGutter = 50;
-		private int _topHalfHour;
 		private bool _showTime = true;
 		private bool _updating = false;
 
@@ -30,6 +29,7 @@ namespace VixenModules.App.Scheduler {
 		private List<ItemBlock> _blocks;
 
 		public event EventHandler<ScheduleEventArgs> TimeDoubleClick;
+		public event EventHandler<ScheduleItemArgs> ItemDoubleClick;
 
 		public DayPanel() {
 			InitializeComponent();
@@ -143,13 +143,16 @@ namespace VixenModules.App.Scheduler {
 			}
 		}
 
-		public IList<IScheduleItem> Items {
+		public ObservableList<IScheduleItem> Items {
 			get { return _items; }
 			set {
 				BeginUpdate();
 				try {
-					_items.Clear();
-					_items.AddRange(value);
+					if(_items != null) {
+						_items.CollectionChanged -= _items_CollectionChanged;
+					}
+					_items = value;
+					_items.CollectionChanged += _items_CollectionChanged;
 				} finally {
 					EndUpdate();
 				}
@@ -188,8 +191,12 @@ namespace VixenModules.App.Scheduler {
 			return _HalfHourFromY(y);
 		}
 
-		private int _Translate(int y) {
-			return y - AutoScrollPosition.Y;
+		private int _TranslateX(int value) {
+			return value - AutoScrollPosition.X;
+		}
+
+		private int _TranslateY(int value) {
+			return value - AutoScrollPosition.Y;
 		}
 
 		private int _TimeToPixels(TimeSpan time) {
@@ -268,6 +275,7 @@ namespace VixenModules.App.Scheduler {
 
 		private void _DrawBlock(ItemBlock block, Graphics g) {
 			_DrawRoundRect(g, Pens.Black, Brushes.White, block.Left, block.Top, block.Width - 1, block.Height - 1, 3);
+			g.DrawString(block.SequenceName, Font, Brushes.Black, new RectangleF(block.Left + 3, block.Top + 2, block.Width - 1, block.Height - 1));
 		}
 
 		private void _DrawRoundRect(Graphics g, Pen borderPen, Brush fillBrush, float X, float Y, float width, float height, float radius) {
@@ -288,9 +296,18 @@ namespace VixenModules.App.Scheduler {
 			}
 		}
 
+		private ItemBlock _GetItemAt(int x, int y) {
+			return _blocks.FirstOrDefault(b => b.Contains(x, y));
+		}
+
 		private void DayPanel_MouseDoubleClick(object sender, MouseEventArgs e) {
-			double halfHour = _GetHalfHourAt(_Translate(e.Y));
-			OnTimeDoubleClick(new ScheduleEventArgs(0, TimeSpan.FromHours(halfHour / 2)));
+			ItemBlock itemBlock = _GetItemAt(_TranslateX(e.X), _TranslateY(e.Y));
+			if(itemBlock != null) {
+				OnItemDoubleClick(new ScheduleItemArgs(itemBlock.Item));
+			} else {
+				double halfHour = _GetHalfHourAt(_TranslateY(e.Y));
+				OnTimeDoubleClick(new ScheduleEventArgs(0, TimeSpan.FromHours(halfHour / 2)));
+			}
 		}
 
 		private void _items_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
@@ -312,10 +329,10 @@ namespace VixenModules.App.Scheduler {
 
 		private void _CalculateBlocks() {
 			_blocks = new List<ItemBlock>();
-			foreach(IScheduleItem item in _items) {
+			foreach(ScheduleItem item in _items) {
 				int top = _TimeToPixels(item.RunStartTime);
 				int height = _TimeToPixels(item.RunEndTime - item.RunStartTime);
-				ItemBlock block = new ItemBlock(top, height);
+				ItemBlock block = new ItemBlock(item, top, Math.Max(height, 10));
 				_blocks.Add(block);
 			}
 			_layoutEngine.Layout(_blocks, new Rectangle(TimeGutter, 0, DisplayRectangle.Width - TimeGutter, DisplayRectangle.Height));
@@ -327,5 +344,10 @@ namespace VixenModules.App.Scheduler {
 			}
 		}
 
+		protected virtual void OnItemDoubleClick(ScheduleItemArgs e) {
+			if(ItemDoubleClick != null) {
+				ItemDoubleClick(this, e);
+			}
+		}
 	}
 }

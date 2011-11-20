@@ -84,6 +84,13 @@ namespace VixenModules.App.Scheduler {
 			return false;
 		}
 
+		public void Replace(T item1, T item2) {
+			int index = IndexOf(item1);
+			if(index != -1) {
+				this[index] = item2;
+			}
+		}
+
 		public IEnumerator<T> GetEnumerator() {
 			return _list.GetEnumerator();
 		}

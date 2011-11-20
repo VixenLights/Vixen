@@ -123,6 +123,8 @@ namespace VixenModules.Output.Renard
 				_port.Encoding = Encoding.UTF8;
 				_port.RtsEnable = true;
 				_port.DtrEnable = true;
+
+				if(IsRunning) _port.Open();
 			} else {
 				_port = null;
 			}

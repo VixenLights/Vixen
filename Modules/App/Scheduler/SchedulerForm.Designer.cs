@@ -120,7 +120,7 @@
 			this.panel1.Controls.Add(this.buttonCancel);
 			this.panel1.Controls.Add(this.buttonOK);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.panel1.Location = new System.Drawing.Point(0, 306);
+			this.panel1.Location = new System.Drawing.Point(0, 405);
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(530, 45);
 			this.panel1.TabIndex = 10;
@@ -134,6 +134,7 @@
 			this.checkBoxEnableSchedule.TabIndex = 2;
 			this.checkBoxEnableSchedule.Text = "Enable the schedule";
 			this.checkBoxEnableSchedule.UseVisualStyleBackColor = true;
+			this.checkBoxEnableSchedule.CheckedChanged += new System.EventHandler(this.checkBoxEnableSchedule_CheckedChanged);
 			// 
 			// buttonCancel
 			// 
@@ -183,21 +184,23 @@
 			this.scheduleDayView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.scheduleDayView.Location = new System.Drawing.Point(0, 25);
 			this.scheduleDayView.Name = "scheduleDayView";
-			this.scheduleDayView.Size = new System.Drawing.Size(530, 281);
+			this.scheduleDayView.Size = new System.Drawing.Size(530, 380);
 			this.scheduleDayView.TabIndex = 11;
 			this.scheduleDayView.TimeDoubleClick += new System.EventHandler<VixenModules.App.Scheduler.ScheduleEventArgs>(this.scheduleDayView_TimeDoubleClick);
+			this.scheduleDayView.ItemDoubleClick += new System.EventHandler<VixenModules.App.Scheduler.ScheduleItemArgs>(this.scheduleDayView_ItemDoubleClick);
 			// 
 			// SchedulerForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(530, 351);
+			this.ClientSize = new System.Drawing.Size(530, 450);
 			this.Controls.Add(this.scheduleDayView);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.toolStripView);
 			this.Name = "SchedulerForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Show Scheduler";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SchedulerForm_FormClosing);
 			this.Load += new System.EventHandler(this.SchedulerForm_Load);
 			this.toolStripView.ResumeLayout(false);
 			this.toolStripView.PerformLayout();

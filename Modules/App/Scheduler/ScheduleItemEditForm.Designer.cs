@@ -33,25 +33,6 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.panelRecurrence = new System.Windows.Forms.Panel();
-			this.label5 = new System.Windows.Forms.Label();
-			this.panel2 = new System.Windows.Forms.Panel();
-			this.label7 = new System.Windows.Forms.Label();
-			this.label8 = new System.Windows.Forms.Label();
-			this.comboBoxStartTime = new System.Windows.Forms.ComboBox();
-			this.panel3 = new System.Windows.Forms.Panel();
-			this.panelRepeating = new System.Windows.Forms.Panel();
-			this.panelInterval = new System.Windows.Forms.Panel();
-			this.label9 = new System.Windows.Forms.Label();
-			this.textBoxInterval = new System.Windows.Forms.TextBox();
-			this.checkBoxInterval = new System.Windows.Forms.CheckBox();
-			this.comboBoxEndTime = new System.Windows.Forms.ComboBox();
-			this.checkBoxRepeat = new System.Windows.Forms.CheckBox();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.panel4 = new System.Windows.Forms.Panel();
-			this.panel5 = new System.Windows.Forms.Panel();
-			this.panel6 = new System.Windows.Forms.Panel();
-			this.checkBoxNoRecurrence = new System.Windows.Forms.CheckBox();
 			this.recurrenceControls = new CommonElements.TablessTabControl(this.components);
 			this.noneTab = new System.Windows.Forms.TabPage();
 			this.dayTab = new System.Windows.Forms.TabPage();
@@ -71,17 +52,44 @@
 			this.radioButtonLastDay = new System.Windows.Forms.RadioButton();
 			this.textBoxSpecificDate = new System.Windows.Forms.TextBox();
 			this.radioButtonSpecificDate = new System.Windows.Forms.RadioButton();
+			this.label5 = new System.Windows.Forms.Label();
+			this.panel2 = new System.Windows.Forms.Panel();
+			this.checkBoxNoRecurrence = new System.Windows.Forms.CheckBox();
+			this.label7 = new System.Windows.Forms.Label();
+			this.label8 = new System.Windows.Forms.Label();
+			this.comboBoxStartTime = new System.Windows.Forms.ComboBox();
+			this.panel3 = new System.Windows.Forms.Panel();
+			this.panelInterval = new System.Windows.Forms.Panel();
+			this.label9 = new System.Windows.Forms.Label();
+			this.textBoxInterval = new System.Windows.Forms.TextBox();
+			this.checkBoxInterval = new System.Windows.Forms.CheckBox();
+			this.comboBoxEndTime = new System.Windows.Forms.ComboBox();
+			this.checkBoxRepeat = new System.Windows.Forms.CheckBox();
+			this.buttonOK = new System.Windows.Forms.Button();
+			this.buttonCancel = new System.Windows.Forms.Button();
+			this.panel4 = new System.Windows.Forms.Panel();
+			this.panel5 = new System.Windows.Forms.Panel();
+			this.panel6 = new System.Windows.Forms.Panel();
+			this.panel1 = new System.Windows.Forms.Panel();
+			this.label10 = new System.Windows.Forms.Label();
+			this.panel7 = new System.Windows.Forms.Panel();
+			this.buttonSelectSequence = new System.Windows.Forms.Button();
+			this.buttonSelectProgram = new System.Windows.Forms.Button();
+			this.buttonNewProgram = new System.Windows.Forms.Button();
+			this.labelWhat = new System.Windows.Forms.Label();
+			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.panelRecurrence.SuspendLayout();
+			this.recurrenceControls.SuspendLayout();
+			this.weekTab.SuspendLayout();
+			this.monthTab.SuspendLayout();
 			this.panel2.SuspendLayout();
 			this.panel3.SuspendLayout();
-			this.panelRepeating.SuspendLayout();
 			this.panelInterval.SuspendLayout();
 			this.panel4.SuspendLayout();
 			this.panel5.SuspendLayout();
 			this.panel6.SuspendLayout();
-			this.recurrenceControls.SuspendLayout();
-			this.weekTab.SuspendLayout();
-			this.monthTab.SuspendLayout();
+			this.panel1.SuspendLayout();
+			this.panel7.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -168,205 +176,10 @@
 			this.panelRecurrence.Controls.Add(this.comboBoxDateUnitCount);
 			this.panelRecurrence.Controls.Add(this.label1);
 			this.panelRecurrence.Controls.Add(this.comboBoxDateUnit);
-			this.panelRecurrence.Location = new System.Drawing.Point(50, 175);
+			this.panelRecurrence.Location = new System.Drawing.Point(49, 282);
 			this.panelRecurrence.Name = "panelRecurrence";
-			this.panelRecurrence.Size = new System.Drawing.Size(288, 144);
-			this.panelRecurrence.TabIndex = 9;
-			// 
-			// label5
-			// 
-			this.label5.AutoSize = true;
-			this.label5.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label5.Location = new System.Drawing.Point(12, 8);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(268, 19);
-			this.label5.TabIndex = 10;
-			this.label5.Text = "Within what dates will this be run?";
-			// 
-			// panel2
-			// 
-			this.panel2.Controls.Add(this.checkBoxNoRecurrence);
-			this.panel2.Controls.Add(this.dateTimePickerEndDate);
-			this.panel2.Controls.Add(this.label2);
-			this.panel2.Controls.Add(this.label3);
-			this.panel2.Controls.Add(this.dateTimePickerStartDate);
-			this.panel2.Location = new System.Drawing.Point(50, 52);
-			this.panel2.Name = "panel2";
-			this.panel2.Size = new System.Drawing.Size(288, 78);
-			this.panel2.TabIndex = 11;
-			// 
-			// label7
-			// 
-			this.label7.AutoSize = true;
-			this.label7.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label7.Location = new System.Drawing.Point(12, 8);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(236, 19);
-			this.label7.TabIndex = 12;
-			this.label7.Text = "What time during those days?";
-			// 
-			// label8
-			// 
-			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(5, 15);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(41, 13);
-			this.label8.TabIndex = 13;
-			this.label8.Text = "Start at";
-			// 
-			// comboBoxStartTime
-			// 
-			this.comboBoxStartTime.FormattingEnabled = true;
-			this.comboBoxStartTime.Location = new System.Drawing.Point(92, 12);
-			this.comboBoxStartTime.Name = "comboBoxStartTime";
-			this.comboBoxStartTime.Size = new System.Drawing.Size(121, 21);
-			this.comboBoxStartTime.TabIndex = 14;
-			// 
-			// panel3
-			// 
-			this.panel3.Controls.Add(this.panelRepeating);
-			this.panel3.Controls.Add(this.comboBoxStartTime);
-			this.panel3.Controls.Add(this.label8);
-			this.panel3.Location = new System.Drawing.Point(50, 376);
-			this.panel3.Name = "panel3";
-			this.panel3.Size = new System.Drawing.Size(288, 121);
-			this.panel3.TabIndex = 15;
-			// 
-			// panelRepeating
-			// 
-			this.panelRepeating.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.panelRepeating.Controls.Add(this.panelInterval);
-			this.panelRepeating.Controls.Add(this.comboBoxEndTime);
-			this.panelRepeating.Controls.Add(this.checkBoxRepeat);
-			this.panelRepeating.Location = new System.Drawing.Point(0, 38);
-			this.panelRepeating.Name = "panelRepeating";
-			this.panelRepeating.Size = new System.Drawing.Size(288, 83);
-			this.panelRepeating.TabIndex = 15;
-			// 
-			// panelInterval
-			// 
-			this.panelInterval.Controls.Add(this.label9);
-			this.panelInterval.Controls.Add(this.textBoxInterval);
-			this.panelInterval.Controls.Add(this.checkBoxInterval);
-			this.panelInterval.Enabled = false;
-			this.panelInterval.Location = new System.Drawing.Point(0, 40);
-			this.panelInterval.Name = "panelInterval";
-			this.panelInterval.Size = new System.Drawing.Size(288, 43);
-			this.panelInterval.TabIndex = 16;
-			// 
-			// label9
-			// 
-			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(149, 15);
-			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(43, 13);
-			this.label9.TabIndex = 2;
-			this.label9.Text = "minutes";
-			// 
-			// textBoxInterval
-			// 
-			this.textBoxInterval.Location = new System.Drawing.Point(92, 12);
-			this.textBoxInterval.Name = "textBoxInterval";
-			this.textBoxInterval.Size = new System.Drawing.Size(51, 20);
-			this.textBoxInterval.TabIndex = 1;
-			// 
-			// checkBoxInterval
-			// 
-			this.checkBoxInterval.AutoSize = true;
-			this.checkBoxInterval.Location = new System.Drawing.Point(8, 14);
-			this.checkBoxInterval.Name = "checkBoxInterval";
-			this.checkBoxInterval.Size = new System.Drawing.Size(52, 17);
-			this.checkBoxInterval.TabIndex = 0;
-			this.checkBoxInterval.Text = "every";
-			this.checkBoxInterval.UseVisualStyleBackColor = true;
-			// 
-			// comboBoxEndTime
-			// 
-			this.comboBoxEndTime.FormattingEnabled = true;
-			this.comboBoxEndTime.Location = new System.Drawing.Point(92, 10);
-			this.comboBoxEndTime.Name = "comboBoxEndTime";
-			this.comboBoxEndTime.Size = new System.Drawing.Size(121, 21);
-			this.comboBoxEndTime.TabIndex = 15;
-			// 
-			// checkBoxRepeat
-			// 
-			this.checkBoxRepeat.AutoSize = true;
-			this.checkBoxRepeat.Location = new System.Drawing.Point(8, 12);
-			this.checkBoxRepeat.Name = "checkBoxRepeat";
-			this.checkBoxRepeat.Size = new System.Drawing.Size(78, 17);
-			this.checkBoxRepeat.TabIndex = 0;
-			this.checkBoxRepeat.Text = "repeat until";
-			this.checkBoxRepeat.UseVisualStyleBackColor = true;
-			this.checkBoxRepeat.CheckedChanged += new System.EventHandler(this.checkBoxRepeat_CheckedChanged);
-			// 
-			// buttonOK
-			// 
-			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOK.Location = new System.Drawing.Point(203, 510);
-			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(75, 23);
-			this.buttonOK.TabIndex = 16;
-			this.buttonOK.Text = "OK";
-			this.buttonOK.UseVisualStyleBackColor = true;
-			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
-			// 
-			// buttonCancel
-			// 
-			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(284, 510);
-			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-			this.buttonCancel.TabIndex = 17;
-			this.buttonCancel.Text = "Cancel";
-			this.buttonCancel.UseVisualStyleBackColor = true;
-			// 
-			// panel4
-			// 
-			this.panel4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.panel4.BackColor = System.Drawing.SystemColors.ControlLightLight;
-			this.panel4.Controls.Add(this.label5);
-			this.panel4.Location = new System.Drawing.Point(0, 13);
-			this.panel4.Name = "panel4";
-			this.panel4.Size = new System.Drawing.Size(373, 35);
-			this.panel4.TabIndex = 18;
-			// 
-			// panel5
-			// 
-			this.panel5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.panel5.BackColor = System.Drawing.SystemColors.ControlLightLight;
-			this.panel5.Controls.Add(this.label4);
-			this.panel5.Location = new System.Drawing.Point(0, 136);
-			this.panel5.Name = "panel5";
-			this.panel5.Size = new System.Drawing.Size(373, 35);
-			this.panel5.TabIndex = 19;
-			// 
-			// panel6
-			// 
-			this.panel6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.panel6.BackColor = System.Drawing.SystemColors.ControlLightLight;
-			this.panel6.Controls.Add(this.label7);
-			this.panel6.Location = new System.Drawing.Point(0, 338);
-			this.panel6.Name = "panel6";
-			this.panel6.Size = new System.Drawing.Size(373, 35);
-			this.panel6.TabIndex = 20;
-			// 
-			// checkBoxNoRecurrence
-			// 
-			this.checkBoxNoRecurrence.AutoSize = true;
-			this.checkBoxNoRecurrence.Location = new System.Drawing.Point(75, 54);
-			this.checkBoxNoRecurrence.Name = "checkBoxNoRecurrence";
-			this.checkBoxNoRecurrence.Size = new System.Drawing.Size(72, 17);
-			this.checkBoxNoRecurrence.TabIndex = 7;
-			this.checkBoxNoRecurrence.Text = "Just once";
-			this.checkBoxNoRecurrence.UseVisualStyleBackColor = true;
-			this.checkBoxNoRecurrence.CheckedChanged += new System.EventHandler(this.checkBoxNoRecurrence_CheckedChanged);
+			this.panelRecurrence.Size = new System.Drawing.Size(288, 121);
+			this.panelRecurrence.TabIndex = 5;
 			// 
 			// recurrenceControls
 			// 
@@ -379,7 +192,7 @@
 			this.recurrenceControls.Multiline = true;
 			this.recurrenceControls.Name = "recurrenceControls";
 			this.recurrenceControls.SelectedIndex = 0;
-			this.recurrenceControls.Size = new System.Drawing.Size(288, 117);
+			this.recurrenceControls.Size = new System.Drawing.Size(288, 94);
 			this.recurrenceControls.TabIndex = 3;
 			// 
 			// noneTab
@@ -414,14 +227,14 @@
 			this.weekTab.Location = new System.Drawing.Point(0, 0);
 			this.weekTab.Name = "weekTab";
 			this.weekTab.Padding = new System.Windows.Forms.Padding(3);
-			this.weekTab.Size = new System.Drawing.Size(288, 117);
+			this.weekTab.Size = new System.Drawing.Size(288, 94);
 			this.weekTab.TabIndex = 0;
 			this.weekTab.Text = "Week";
 			// 
 			// radioButtonSaturday
 			// 
 			this.radioButtonSaturday.AutoSize = true;
-			this.radioButtonSaturday.Location = new System.Drawing.Point(168, 74);
+			this.radioButtonSaturday.Location = new System.Drawing.Point(168, 54);
 			this.radioButtonSaturday.Name = "radioButtonSaturday";
 			this.radioButtonSaturday.Size = new System.Drawing.Size(67, 17);
 			this.radioButtonSaturday.TabIndex = 7;
@@ -431,7 +244,7 @@
 			// radioButtonFriday
 			// 
 			this.radioButtonFriday.AutoSize = true;
-			this.radioButtonFriday.Location = new System.Drawing.Point(168, 46);
+			this.radioButtonFriday.Location = new System.Drawing.Point(168, 32);
 			this.radioButtonFriday.Name = "radioButtonFriday";
 			this.radioButtonFriday.Size = new System.Drawing.Size(53, 17);
 			this.radioButtonFriday.TabIndex = 6;
@@ -441,7 +254,7 @@
 			// radioButtonThursday
 			// 
 			this.radioButtonThursday.AutoSize = true;
-			this.radioButtonThursday.Location = new System.Drawing.Point(168, 18);
+			this.radioButtonThursday.Location = new System.Drawing.Point(168, 10);
 			this.radioButtonThursday.Name = "radioButtonThursday";
 			this.radioButtonThursday.Size = new System.Drawing.Size(69, 17);
 			this.radioButtonThursday.TabIndex = 5;
@@ -451,7 +264,7 @@
 			// radioButtonWednesday
 			// 
 			this.radioButtonWednesday.AutoSize = true;
-			this.radioButtonWednesday.Location = new System.Drawing.Point(62, 95);
+			this.radioButtonWednesday.Location = new System.Drawing.Point(62, 69);
 			this.radioButtonWednesday.Name = "radioButtonWednesday";
 			this.radioButtonWednesday.Size = new System.Drawing.Size(82, 17);
 			this.radioButtonWednesday.TabIndex = 4;
@@ -461,7 +274,7 @@
 			// radioButtonTuesday
 			// 
 			this.radioButtonTuesday.AutoSize = true;
-			this.radioButtonTuesday.Location = new System.Drawing.Point(62, 67);
+			this.radioButtonTuesday.Location = new System.Drawing.Point(62, 47);
 			this.radioButtonTuesday.Name = "radioButtonTuesday";
 			this.radioButtonTuesday.Size = new System.Drawing.Size(66, 17);
 			this.radioButtonTuesday.TabIndex = 3;
@@ -471,7 +284,7 @@
 			// radioButtonMonday
 			// 
 			this.radioButtonMonday.AutoSize = true;
-			this.radioButtonMonday.Location = new System.Drawing.Point(62, 39);
+			this.radioButtonMonday.Location = new System.Drawing.Point(62, 25);
 			this.radioButtonMonday.Name = "radioButtonMonday";
 			this.radioButtonMonday.Size = new System.Drawing.Size(63, 17);
 			this.radioButtonMonday.TabIndex = 2;
@@ -482,7 +295,7 @@
 			// 
 			this.radioButtonSunday.AutoSize = true;
 			this.radioButtonSunday.Checked = true;
-			this.radioButtonSunday.Location = new System.Drawing.Point(62, 11);
+			this.radioButtonSunday.Location = new System.Drawing.Point(62, 3);
 			this.radioButtonSunday.Name = "radioButtonSunday";
 			this.radioButtonSunday.Size = new System.Drawing.Size(61, 17);
 			this.radioButtonSunday.TabIndex = 1;
@@ -493,7 +306,7 @@
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(6, 6);
+			this.label6.Location = new System.Drawing.Point(6, 3);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(19, 13);
 			this.label6.TabIndex = 0;
@@ -511,7 +324,7 @@
 			this.monthTab.Location = new System.Drawing.Point(0, 0);
 			this.monthTab.Name = "monthTab";
 			this.monthTab.Padding = new System.Windows.Forms.Padding(3);
-			this.monthTab.Size = new System.Drawing.Size(288, 117);
+			this.monthTab.Size = new System.Drawing.Size(288, 94);
 			this.monthTab.TabIndex = 1;
 			this.monthTab.Text = "Month";
 			// 
@@ -527,7 +340,7 @@
             "Thursday",
             "Friday",
             "Saturday"});
-			this.comboBoxDow.Location = new System.Drawing.Point(164, 83);
+			this.comboBoxDow.Location = new System.Drawing.Point(164, 46);
 			this.comboBoxDow.Name = "comboBoxDow";
 			this.comboBoxDow.Size = new System.Drawing.Size(111, 21);
 			this.comboBoxDow.TabIndex = 5;
@@ -542,7 +355,7 @@
             "third",
             "fourth",
             "fifth"});
-			this.comboBoxDayCount.Location = new System.Drawing.Point(81, 83);
+			this.comboBoxDayCount.Location = new System.Drawing.Point(81, 46);
 			this.comboBoxDayCount.Name = "comboBoxDayCount";
 			this.comboBoxDayCount.Size = new System.Drawing.Size(73, 21);
 			this.comboBoxDayCount.TabIndex = 4;
@@ -550,7 +363,7 @@
 			// radioButtonWeekDayCount
 			// 
 			this.radioButtonWeekDayCount.AutoSize = true;
-			this.radioButtonWeekDayCount.Location = new System.Drawing.Point(20, 83);
+			this.radioButtonWeekDayCount.Location = new System.Drawing.Point(20, 46);
 			this.radioButtonWeekDayCount.Name = "radioButtonWeekDayCount";
 			this.radioButtonWeekDayCount.Size = new System.Drawing.Size(55, 17);
 			this.radioButtonWeekDayCount.TabIndex = 3;
@@ -560,7 +373,7 @@
 			// radioButtonLastDay
 			// 
 			this.radioButtonLastDay.AutoSize = true;
-			this.radioButtonLastDay.Location = new System.Drawing.Point(20, 50);
+			this.radioButtonLastDay.Location = new System.Drawing.Point(20, 25);
 			this.radioButtonLastDay.Name = "radioButtonLastDay";
 			this.radioButtonLastDay.Size = new System.Drawing.Size(156, 17);
 			this.radioButtonLastDay.TabIndex = 2;
@@ -569,7 +382,7 @@
 			// 
 			// textBoxSpecificDate
 			// 
-			this.textBoxSpecificDate.Location = new System.Drawing.Point(209, 17);
+			this.textBoxSpecificDate.Location = new System.Drawing.Point(209, 4);
 			this.textBoxSpecificDate.Name = "textBoxSpecificDate";
 			this.textBoxSpecificDate.Size = new System.Drawing.Size(39, 20);
 			this.textBoxSpecificDate.TabIndex = 1;
@@ -578,7 +391,7 @@
 			// 
 			this.radioButtonSpecificDate.AutoSize = true;
 			this.radioButtonSpecificDate.Checked = true;
-			this.radioButtonSpecificDate.Location = new System.Drawing.Point(20, 17);
+			this.radioButtonSpecificDate.Location = new System.Drawing.Point(20, 4);
 			this.radioButtonSpecificDate.Name = "radioButtonSpecificDate";
 			this.radioButtonSpecificDate.Size = new System.Drawing.Size(174, 17);
 			this.radioButtonSpecificDate.TabIndex = 0;
@@ -586,12 +399,274 @@
 			this.radioButtonSpecificDate.Text = "on a specific date of the month:";
 			this.radioButtonSpecificDate.UseVisualStyleBackColor = true;
 			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label5.Location = new System.Drawing.Point(12, 8);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(268, 19);
+			this.label5.TabIndex = 10;
+			this.label5.Text = "Within what dates will this be run?";
+			// 
+			// panel2
+			// 
+			this.panel2.Controls.Add(this.checkBoxNoRecurrence);
+			this.panel2.Controls.Add(this.dateTimePickerEndDate);
+			this.panel2.Controls.Add(this.label2);
+			this.panel2.Controls.Add(this.label3);
+			this.panel2.Controls.Add(this.dateTimePickerStartDate);
+			this.panel2.Location = new System.Drawing.Point(49, 159);
+			this.panel2.Name = "panel2";
+			this.panel2.Size = new System.Drawing.Size(288, 78);
+			this.panel2.TabIndex = 3;
+			// 
+			// checkBoxNoRecurrence
+			// 
+			this.checkBoxNoRecurrence.AutoSize = true;
+			this.checkBoxNoRecurrence.Location = new System.Drawing.Point(75, 54);
+			this.checkBoxNoRecurrence.Name = "checkBoxNoRecurrence";
+			this.checkBoxNoRecurrence.Size = new System.Drawing.Size(72, 17);
+			this.checkBoxNoRecurrence.TabIndex = 7;
+			this.checkBoxNoRecurrence.Text = "Just once";
+			this.checkBoxNoRecurrence.UseVisualStyleBackColor = true;
+			this.checkBoxNoRecurrence.CheckedChanged += new System.EventHandler(this.checkBoxNoRecurrence_CheckedChanged);
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label7.Location = new System.Drawing.Point(12, 8);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(236, 19);
+			this.label7.TabIndex = 12;
+			this.label7.Text = "What time during those days?";
+			// 
+			// label8
+			// 
+			this.label8.AutoSize = true;
+			this.label8.Location = new System.Drawing.Point(5, 7);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(41, 13);
+			this.label8.TabIndex = 13;
+			this.label8.Text = "Start at";
+			// 
+			// comboBoxStartTime
+			// 
+			this.comboBoxStartTime.FormattingEnabled = true;
+			this.comboBoxStartTime.Location = new System.Drawing.Point(92, 4);
+			this.comboBoxStartTime.Name = "comboBoxStartTime";
+			this.comboBoxStartTime.Size = new System.Drawing.Size(121, 21);
+			this.comboBoxStartTime.TabIndex = 14;
+			this.comboBoxStartTime.Leave += new System.EventHandler(this.comboBoxStartTime_Leave);
+			// 
+			// panel3
+			// 
+			this.panel3.Controls.Add(this.panelInterval);
+			this.panel3.Controls.Add(this.comboBoxEndTime);
+			this.panel3.Controls.Add(this.comboBoxStartTime);
+			this.panel3.Controls.Add(this.checkBoxRepeat);
+			this.panel3.Controls.Add(this.label8);
+			this.panel3.Location = new System.Drawing.Point(49, 447);
+			this.panel3.Name = "panel3";
+			this.panel3.Size = new System.Drawing.Size(288, 81);
+			this.panel3.TabIndex = 7;
+			// 
+			// panelInterval
+			// 
+			this.panelInterval.Controls.Add(this.label9);
+			this.panelInterval.Controls.Add(this.textBoxInterval);
+			this.panelInterval.Controls.Add(this.checkBoxInterval);
+			this.panelInterval.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.panelInterval.Enabled = false;
+			this.panelInterval.Location = new System.Drawing.Point(0, 53);
+			this.panelInterval.Name = "panelInterval";
+			this.panelInterval.Size = new System.Drawing.Size(288, 28);
+			this.panelInterval.TabIndex = 16;
+			// 
+			// label9
+			// 
+			this.label9.AutoSize = true;
+			this.label9.Location = new System.Drawing.Point(149, 7);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(43, 13);
+			this.label9.TabIndex = 2;
+			this.label9.Text = "minutes";
+			// 
+			// textBoxInterval
+			// 
+			this.textBoxInterval.Location = new System.Drawing.Point(92, 4);
+			this.textBoxInterval.Name = "textBoxInterval";
+			this.textBoxInterval.Size = new System.Drawing.Size(51, 20);
+			this.textBoxInterval.TabIndex = 1;
+			// 
+			// checkBoxInterval
+			// 
+			this.checkBoxInterval.AutoSize = true;
+			this.checkBoxInterval.Location = new System.Drawing.Point(8, 6);
+			this.checkBoxInterval.Name = "checkBoxInterval";
+			this.checkBoxInterval.Size = new System.Drawing.Size(52, 17);
+			this.checkBoxInterval.TabIndex = 0;
+			this.checkBoxInterval.Text = "every";
+			this.checkBoxInterval.UseVisualStyleBackColor = true;
+			// 
+			// comboBoxEndTime
+			// 
+			this.comboBoxEndTime.FormattingEnabled = true;
+			this.comboBoxEndTime.Location = new System.Drawing.Point(92, 31);
+			this.comboBoxEndTime.Name = "comboBoxEndTime";
+			this.comboBoxEndTime.Size = new System.Drawing.Size(121, 21);
+			this.comboBoxEndTime.TabIndex = 15;
+			// 
+			// checkBoxRepeat
+			// 
+			this.checkBoxRepeat.AutoSize = true;
+			this.checkBoxRepeat.Location = new System.Drawing.Point(8, 33);
+			this.checkBoxRepeat.Name = "checkBoxRepeat";
+			this.checkBoxRepeat.Size = new System.Drawing.Size(78, 17);
+			this.checkBoxRepeat.TabIndex = 0;
+			this.checkBoxRepeat.Text = "repeat until";
+			this.checkBoxRepeat.UseVisualStyleBackColor = true;
+			this.checkBoxRepeat.CheckedChanged += new System.EventHandler(this.checkBoxRepeat_CheckedChanged);
+			// 
+			// buttonOK
+			// 
+			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.buttonOK.Location = new System.Drawing.Point(203, 537);
+			this.buttonOK.Name = "buttonOK";
+			this.buttonOK.Size = new System.Drawing.Size(75, 23);
+			this.buttonOK.TabIndex = 8;
+			this.buttonOK.Text = "OK";
+			this.buttonOK.UseVisualStyleBackColor = true;
+			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+			// 
+			// buttonCancel
+			// 
+			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.buttonCancel.Location = new System.Drawing.Point(284, 537);
+			this.buttonCancel.Name = "buttonCancel";
+			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
+			this.buttonCancel.TabIndex = 9;
+			this.buttonCancel.Text = "Cancel";
+			this.buttonCancel.UseVisualStyleBackColor = true;
+			// 
+			// panel4
+			// 
+			this.panel4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panel4.BackColor = System.Drawing.SystemColors.ControlLightLight;
+			this.panel4.Controls.Add(this.label5);
+			this.panel4.Location = new System.Drawing.Point(0, 120);
+			this.panel4.Name = "panel4";
+			this.panel4.Size = new System.Drawing.Size(373, 35);
+			this.panel4.TabIndex = 2;
+			// 
+			// panel5
+			// 
+			this.panel5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panel5.BackColor = System.Drawing.SystemColors.ControlLightLight;
+			this.panel5.Controls.Add(this.label4);
+			this.panel5.Location = new System.Drawing.Point(0, 243);
+			this.panel5.Name = "panel5";
+			this.panel5.Size = new System.Drawing.Size(373, 35);
+			this.panel5.TabIndex = 4;
+			// 
+			// panel6
+			// 
+			this.panel6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panel6.BackColor = System.Drawing.SystemColors.ControlLightLight;
+			this.panel6.Controls.Add(this.label7);
+			this.panel6.Location = new System.Drawing.Point(0, 409);
+			this.panel6.Name = "panel6";
+			this.panel6.Size = new System.Drawing.Size(373, 35);
+			this.panel6.TabIndex = 6;
+			// 
+			// panel1
+			// 
+			this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panel1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+			this.panel1.Controls.Add(this.label10);
+			this.panel1.Location = new System.Drawing.Point(0, 0);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(373, 35);
+			this.panel1.TabIndex = 0;
+			// 
+			// label10
+			// 
+			this.label10.AutoSize = true;
+			this.label10.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label10.Location = new System.Drawing.Point(12, 8);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(117, 19);
+			this.label10.TabIndex = 10;
+			this.label10.Text = "What will run?";
+			// 
+			// panel7
+			// 
+			this.panel7.Controls.Add(this.labelWhat);
+			this.panel7.Controls.Add(this.buttonNewProgram);
+			this.panel7.Controls.Add(this.buttonSelectProgram);
+			this.panel7.Controls.Add(this.buttonSelectSequence);
+			this.panel7.Location = new System.Drawing.Point(49, 39);
+			this.panel7.Name = "panel7";
+			this.panel7.Size = new System.Drawing.Size(287, 75);
+			this.panel7.TabIndex = 1;
+			// 
+			// buttonSelectSequence
+			// 
+			this.buttonSelectSequence.Location = new System.Drawing.Point(3, 3);
+			this.buttonSelectSequence.Name = "buttonSelectSequence";
+			this.buttonSelectSequence.Size = new System.Drawing.Size(75, 23);
+			this.buttonSelectSequence.TabIndex = 0;
+			this.buttonSelectSequence.Text = "Sequence";
+			this.buttonSelectSequence.UseVisualStyleBackColor = true;
+			this.buttonSelectSequence.Click += new System.EventHandler(this.buttonSelectSequence_Click);
+			// 
+			// buttonSelectProgram
+			// 
+			this.buttonSelectProgram.Location = new System.Drawing.Point(84, 3);
+			this.buttonSelectProgram.Name = "buttonSelectProgram";
+			this.buttonSelectProgram.Size = new System.Drawing.Size(75, 23);
+			this.buttonSelectProgram.TabIndex = 1;
+			this.buttonSelectProgram.Text = "Program";
+			this.buttonSelectProgram.UseVisualStyleBackColor = true;
+			this.buttonSelectProgram.Click += new System.EventHandler(this.buttonSelectProgram_Click);
+			// 
+			// buttonNewProgram
+			// 
+			this.buttonNewProgram.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonNewProgram.Location = new System.Drawing.Point(186, 3);
+			this.buttonNewProgram.Name = "buttonNewProgram";
+			this.buttonNewProgram.Size = new System.Drawing.Size(96, 23);
+			this.buttonNewProgram.TabIndex = 2;
+			this.buttonNewProgram.Text = "New Program";
+			this.buttonNewProgram.UseVisualStyleBackColor = true;
+			this.buttonNewProgram.Click += new System.EventHandler(this.buttonNewProgram_Click);
+			// 
+			// labelWhat
+			// 
+			this.labelWhat.AutoSize = true;
+			this.labelWhat.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
+			this.labelWhat.ForeColor = System.Drawing.Color.Red;
+			this.labelWhat.Location = new System.Drawing.Point(2, 43);
+			this.labelWhat.Name = "labelWhat";
+			this.labelWhat.Size = new System.Drawing.Size(98, 16);
+			this.labelWhat.TabIndex = 3;
+			this.labelWhat.Text = "Not Selected";
+			// 
 			// ScheduleItemEditForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(371, 545);
+			this.ClientSize = new System.Drawing.Size(371, 572);
+			this.Controls.Add(this.panel7);
+			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.panel6);
 			this.Controls.Add(this.panel5);
 			this.Controls.Add(this.panel4);
@@ -608,12 +683,15 @@
 			this.Text = "Scheduled Item";
 			this.panelRecurrence.ResumeLayout(false);
 			this.panelRecurrence.PerformLayout();
+			this.recurrenceControls.ResumeLayout(false);
+			this.weekTab.ResumeLayout(false);
+			this.weekTab.PerformLayout();
+			this.monthTab.ResumeLayout(false);
+			this.monthTab.PerformLayout();
 			this.panel2.ResumeLayout(false);
 			this.panel2.PerformLayout();
 			this.panel3.ResumeLayout(false);
 			this.panel3.PerformLayout();
-			this.panelRepeating.ResumeLayout(false);
-			this.panelRepeating.PerformLayout();
 			this.panelInterval.ResumeLayout(false);
 			this.panelInterval.PerformLayout();
 			this.panel4.ResumeLayout(false);
@@ -622,11 +700,10 @@
 			this.panel5.PerformLayout();
 			this.panel6.ResumeLayout(false);
 			this.panel6.PerformLayout();
-			this.recurrenceControls.ResumeLayout(false);
-			this.weekTab.ResumeLayout(false);
-			this.weekTab.PerformLayout();
-			this.monthTab.ResumeLayout(false);
-			this.monthTab.PerformLayout();
+			this.panel1.ResumeLayout(false);
+			this.panel1.PerformLayout();
+			this.panel7.ResumeLayout(false);
+			this.panel7.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -665,7 +742,6 @@
 		private System.Windows.Forms.Label label8;
 		private System.Windows.Forms.ComboBox comboBoxStartTime;
 		private System.Windows.Forms.Panel panel3;
-		private System.Windows.Forms.Panel panelRepeating;
 		private System.Windows.Forms.Panel panelInterval;
 		private System.Windows.Forms.Label label9;
 		private System.Windows.Forms.TextBox textBoxInterval;
@@ -680,5 +756,13 @@
 		private System.Windows.Forms.Panel panel6;
 		private System.Windows.Forms.CheckBox checkBoxNoRecurrence;
 		private System.Windows.Forms.TabPage noneTab;
+		private System.Windows.Forms.Panel panel1;
+		private System.Windows.Forms.Label label10;
+		private System.Windows.Forms.Panel panel7;
+		private System.Windows.Forms.Label labelWhat;
+		private System.Windows.Forms.Button buttonNewProgram;
+		private System.Windows.Forms.Button buttonSelectProgram;
+		private System.Windows.Forms.Button buttonSelectSequence;
+		private System.Windows.Forms.OpenFileDialog openFileDialog;
 	}
 }

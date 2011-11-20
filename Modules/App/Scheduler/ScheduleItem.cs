@@ -14,18 +14,7 @@ namespace VixenModules.App.Scheduler {
 		}
 
 		[DataMember]
-		public RecurrenceType RecurrenceType {
-			get { return _recurrenceType; }
-			set {
-				_recurrenceType = value;
-				if(value == RecurrenceType.None) {
-					EndDate = StartDate;
-					DateUnitCount = 0;
-					DayCount = 0;
-					DayDate = 0;
-				}
-			}
-		}
+		public RecurrenceType RecurrenceType { get; set; }
 		
 		/// <summary>
 		/// Ex: Every x days, every x months
@@ -76,16 +65,6 @@ namespace VixenModules.App.Scheduler {
 		[DataMember]
 		public string SequenceFilePath { get; set; }
 
-		//public bool QualifiesByTime(DateTime dateTime) {
-		//    if(RepeatsOnInterval) {
-		//        return _IntervalRepeatingQualifier(dateTime);
-		//    } else if(RepeatsWithinBlock) {
-		//        return _RepeatingQualifier(dateTime);
-		//    } else { // Else assume to be one-time.
-		//        return _OneTimeTimeQualifier(dateTime);
-		//    }
-		//}
-
 		public bool RepeatsOnInterval {
 			get { return RepeatIntervalMinutes != 0; }
 			set { if(!value) RepeatIntervalMinutes = 0; }
@@ -96,8 +75,15 @@ namespace VixenModules.App.Scheduler {
 			set { if(!value) RunEndTime = RunStartTime; }
 		}
 
-		public bool Executing;
+		public bool IsExecuting;
 
 		public DateTime LastExecutedAt;
+
+		//[OnDeserializing]
+		//public void Deserializing(StreamingContext context) {
+		//}
+		//[OnDeserialized]
+		//public void Deserialized(StreamingContext context) {
+		//}
 	}
 }
