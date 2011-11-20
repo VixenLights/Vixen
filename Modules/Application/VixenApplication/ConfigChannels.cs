@@ -410,6 +410,8 @@ namespace VixenApplication
 							VixenSystem.Logging.Error("ConfigChannels: Trying to remove patch, but it's not a ControllerReference");
 						}
 					}
+					PopulateCurrentPatchesArea(_displayedNode);
+					PopulateNodeTree();
 				}
 			}
 		}
