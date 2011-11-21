@@ -124,6 +124,12 @@ namespace Vixen.Sys {
 			reader = new XmlSystemConfigReader();
 			SystemConfig = (SystemConfig)reader.Read(Path.Combine(systemDataPath, SystemConfig.FileName));
 
+			if (SystemConfig == null)
+				SystemConfig = new SystemConfig();
+
+			if (ModuleStore == null)
+				ModuleStore = new ModuleStore();
+
 			Channels.AddChannels(SystemConfig.Channels);
 			Nodes.AddNodes(SystemConfig.Nodes);
 			Controllers.AddControllers(SystemConfig.Controllers);
