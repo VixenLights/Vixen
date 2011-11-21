@@ -77,7 +77,7 @@ namespace Vixen.Sys {
 		}
 
 		public void Save() {
-			string filePath = LoadedFilePath ?? Path.Combine(Paths.DataRootPath, FileName);
+			string filePath = LoadedFilePath ?? Path.Combine(Directory, FileName);
 			IWriter writer = new XmlSystemConfigWriter();
 			writer.Write(filePath, this);
 			LoadedFilePath = filePath;
