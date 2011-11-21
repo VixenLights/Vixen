@@ -144,7 +144,9 @@
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.buttonCancel);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Name = "BlinkyLinkySetup";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "BlinkyLinky Configuration";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
