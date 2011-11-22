@@ -11,7 +11,7 @@ namespace Vixen.Sys {
 	/// <summary>
 	/// A logical node that encapsulates a single OutputChannel or a branch/group of other ChannelNodes.
 	/// </summary>
-	public class ChannelNode : GroupNode<Channel>, IVersioned {
+	public class ChannelNode : GroupNode<Channel>, IEqualityComparer<ChannelNode>, IVersioned {
 		// Making this static so there doesn't have to be potentially thousands of
 		// subscriptions from the node manager.
 		static public event EventHandler Changed;
@@ -221,5 +221,13 @@ namespace Vixen.Sys {
 		}
 
 		#endregion
+
+		public bool Equals(ChannelNode x, ChannelNode y) {
+			return x.Id == y.Id;
+		}
+
+		public int GetHashCode(ChannelNode obj) {
+			return Id.GetHashCode();
+		}
 	}
 }

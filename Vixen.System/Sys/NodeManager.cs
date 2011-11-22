@@ -63,12 +63,12 @@ namespace Vixen.Sys {
 			}
 		}
 
-		public void CopyNode(ChannelNode node, ChannelNode target, int index = -1) {
-			target = target ?? RootNode;
-			ChannelNode NewNode = node.Clone();
-			NewNode.Name = Uniquify(NewNode.Name);
-			AddChildToParent(NewNode, target, index);
-		}
+		//public void CopyNode(ChannelNode node, ChannelNode target, int index = -1) {
+		//    target = target ?? RootNode;
+		//    ChannelNode NewNode = node.Clone();
+		//    NewNode.Name = Uniquify(NewNode.Name);
+		//    AddChildToParent(NewNode, target, index);
+		//}
 
 		public void MoveNode(ChannelNode movingNode, ChannelNode newParent, ChannelNode oldParent, int index = -1) {
 			// if null nodes, default to the root node.
@@ -98,7 +98,7 @@ namespace Vixen.Sys {
 		}
 
 		public ChannelNode AddNode(string name) {
-			name = Uniquify(name);
+			name = _Uniquify(name);
 			ChannelNode newNode = new ChannelNode(name);
 			AddNode(newNode);
 			return newNode;
@@ -115,7 +115,7 @@ namespace Vixen.Sys {
 		}
 
 		public void RenameNode(ChannelNode node, string newName) {
-			node.Name = Uniquify(newName);
+			node.Name = _Uniquify(newName);
 			if (node.Channel != null)
 				node.Channel.Name = node.Name;
 		}
@@ -139,7 +139,7 @@ namespace Vixen.Sys {
 				parent.InsertChild(index, child);
 		}
 
-		public string Uniquify(string name) {
+		private string _Uniquify(string name) {
 			if (RootNode.GetNodeEnumerator().Any(x => x.Name == name)) {
 				string originalName = name;
 				bool unique;

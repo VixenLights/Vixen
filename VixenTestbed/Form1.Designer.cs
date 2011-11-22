@@ -84,7 +84,7 @@
 			// 
 			// tabControl
 			// 
-			this.tabControl.Controls.Add(this.tabPageAdministration);
+			//this.tabControl.Controls.Add(this.tabPageAdministration);
 			this.tabControl.Controls.Add(this.tabPageAppModule);
 			this.tabControl.Controls.Add(this.tabPageEditorModule);
 			this.tabControl.Controls.Add(this.tabPageEffectModule);

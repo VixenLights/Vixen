@@ -19,7 +19,8 @@ namespace VixenTestbed {
 
 		private void _RefreshEffectNodeList() {
 			checkedListBoxEffectTargetNodes.Items.Clear();
-			checkedListBoxEffectTargetNodes.Items.AddRange(VixenSystem.Nodes.ToArray());
+			ChannelNode[] nodes = VixenSystem.Nodes.Distinct().ToArray();
+			checkedListBoxEffectTargetNodes.Items.AddRange(nodes);
 		}
 
 		private void buttonRefreshEffectNodes_Click(object sender, EventArgs e) {

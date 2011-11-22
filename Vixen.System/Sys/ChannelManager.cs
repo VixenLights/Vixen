@@ -59,6 +59,8 @@ namespace Vixen.Sys {
 						enumerator.Dispose();
 					// Remove from channel dictionary.
 					_channels.Remove(channel);
+					// Remove any nodes that reference the channel.
+					VixenSystem.Nodes.RemoveChannelLeaf(channel);
 				}
 			}
 			_instances.Remove(channel.Id);

@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using CommonElements;
 using Vixen.Sys;
 
 namespace VixenTestbed {
@@ -30,7 +31,33 @@ namespace VixenTestbed {
 		}
 
 		private ChannelNode _SelectedNode {
-			get { return treeViewNodes.SelectedNode.Tag as ChannelNode; }
+			get {
+				if(treeViewNodes.SelectedNodes.Count == 1) {
+					return treeViewNodes.SelectedNode.Tag as ChannelNode;
+				}
+				return null;
+			}
+		}
+
+		private IEnumerable<ChannelNode> _SelectedNodes {
+			get { return treeViewNodes.SelectedNodes.Select(x => x.Tag as ChannelNode); }
+		}
+
+		private ChannelNode _ParentOf(ChannelNode node) {
+			TreeNode treeNode = _Find(node, treeViewNodes.Nodes);
+			if(treeNode != null && treeNode.Parent != null) {
+				return treeNode.Parent.Tag as ChannelNode;
+			}
+			return null;
+		}
+
+		private TreeNode _Find(ChannelNode node, TreeNodeCollection treeNodes) {
+			foreach(TreeNode treeNode in treeNodes) {
+				if(treeNode.Tag == node) return treeNode;
+				TreeNode childNode = _Find(node, treeNode.Nodes);
+				if(childNode != null) return childNode;
+			}
+			return null;
 		}
 
 		private void _LoadChannels() {
@@ -93,9 +120,11 @@ namespace VixenTestbed {
 			try {
 				Channel channel = _SelectedChannel;
 				if(channel != null) {
-					VixenSystem.Channels.RemoveChannel(channel);
-					_LoadChannels();
-					_LoadNodes();
+					if(MessageBox.Show("This will also remove any nodes that reference the channel.  Continue?", "Vixen Testbed", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
+						VixenSystem.Channels.RemoveChannel(channel);
+						_LoadChannels();
+						_LoadNodes();
+					}
 				}
 			} catch(Exception ex) {
 				MessageBox.Show(ex.Message);
@@ -115,42 +144,48 @@ namespace VixenTestbed {
 
 		private void treeViewNodes_AfterSelect(object sender, TreeViewEventArgs e) {
 			buttonProperties.Enabled = _SelectedNode != null;
+			buttonCreateGroup.Enabled = _SelectedNodes.Count() > 1;
+			buttonRemoveNode.Enabled = _SelectedNodes.Count() > 0;
 		}
 
 		private void treeViewNodes_DragDrop(object sender, DragEventArgs e) {
-			try {
-				_dragCapture = false;
-
-				ChannelNode draggingNode = e.Data.GetData(typeof(ChannelNode)) as ChannelNode;
-				TreeNode treeNode = treeViewNodes.GetNodeAt(treeViewNodes.PointToClient(new Point(e.X, e.Y)));
-				ChannelNode targetNode = treeNode.Tag as ChannelNode;
-
-				if(e.Effect == DragDropEffects.Copy) {
-					VixenSystem.Nodes.CopyNode(draggingNode, targetNode);
-				} else if(e.AllowedEffect == DragDropEffects.Move) {
-					//Vixen.Sys.Execution.Nodes.MoveNode(draggingNode, targetNode);
-				}
-			} catch(Exception ex) {
-				MessageBox.Show(ex.Message);
-			}
 		}
+		//private void treeViewNodes_DragDrop(object sender, DragEventArgs e) {
+		//    try {
+		//        _dragCapture = false;
+
+		//        ChannelNode draggingNode = e.Data.GetData(typeof(ChannelNode)) as ChannelNode;
+		//        TreeNode treeNode = treeViewNodes.GetNodeAt(treeViewNodes.PointToClient(new Point(e.X, e.Y)));
+		//        ChannelNode targetNode = treeNode.Tag as ChannelNode;
+
+		//        if(e.Effect == DragDropEffects.Copy) {
+		//            VixenSystem.Nodes.AddChildToParent(draggingNode, targetNode);
+		//        } else if(e.AllowedEffect == DragDropEffects.Move) {
+		//            //Vixen.Sys.Execution.Nodes.MoveNode(draggingNode, targetNode);
+		//        }
+		//    } catch(Exception ex) {
+		//        MessageBox.Show(ex.Message);
+		//    }
+		//}
 
 		private void treeViewNodes_DragOver(object sender, DragEventArgs e) {
-			try {
-				// If the source is a leaf, copy it
-				// If the source is not a leaf, move it
-				ChannelNode draggingNode = e.Data.GetData(typeof(ChannelNode)) as ChannelNode;
-				TreeNode treeNode = treeViewNodes.GetNodeAt(treeViewNodes.PointToClient(new Point(e.X, e.Y)));
-				if(draggingNode != null && treeNode != null) {
-					// Copy a leaf, move a branch.
-					e.Effect = (draggingNode.IsLeaf || ((e.KeyState & 4) != 0)) ? DragDropEffects.Copy : DragDropEffects.Move;
-				} else {
-					e.Effect = DragDropEffects.None;
-				}
-			} catch(Exception ex) {
-				MessageBox.Show(ex.Message);
-			}
 		}
+		//private void treeViewNodes_DragOver(object sender, DragEventArgs e) {
+		//    try {
+		//        // If the source is a leaf, copy it
+		//        // If the source is not a leaf, move it
+		//        ChannelNode draggingNode = e.Data.GetData(typeof(ChannelNode)) as ChannelNode;
+		//        TreeNode treeNode = treeViewNodes.GetNodeAt(treeViewNodes.PointToClient(new Point(e.X, e.Y)));
+		//        if(draggingNode != null && treeNode != null) {
+		//            // Copy a leaf, move a branch.
+		//            e.Effect = (draggingNode.IsLeaf || ((e.KeyState & 4) != 0)) ? DragDropEffects.Copy : DragDropEffects.Move;
+		//        } else {
+		//            e.Effect = DragDropEffects.None;
+		//        }
+		//    } catch(Exception ex) {
+		//        MessageBox.Show(ex.Message);
+		//    }
+		//}
 
 		private void treeViewNodes_MouseDown(object sender, MouseEventArgs e) {
 			// Need to do this here so that a mouse down is required to start a drag.
@@ -191,6 +226,42 @@ namespace VixenTestbed {
 				// Cancel the drag
 				_dragCapture = false;
 			}
+		}
+
+		private void buttonCreateGroup_Click(object sender, EventArgs e) {
+			using(TextDialog textDialog = new TextDialog("Name for the new group", "Create Group")) {
+				if(textDialog.ShowDialog() == DialogResult.OK) {
+					ChannelNode groupNode = VixenSystem.Nodes.AddNode(textDialog.Response);
+					foreach(ChannelNode childNode in _SelectedNodes) {
+						VixenSystem.Nodes.AddChildToParent(childNode, groupNode);
+					}
+					_LoadNodes();
+				}
+			}
+		}
+
+		private void buttonRemoveNode_Click(object sender, EventArgs e) {
+			//string message;
+			//ChannelNode[] nodes = _SelectedNodes.Where(x => x.IsRemovable).ToArray();
+			//if(nodes.Length == 0) {
+			//    MessageBox.Show("There are no removable nodes selected", "Vixen Testbed", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			//    return;
+			//} else if(nodes.Length == 1) {
+			//    message = "Remove the node \"" + nodes[0].Name + "\"?";
+			//} else {
+			//    message = "There are " + nodes.Length + " removable nodes selected.  Remove them?";
+			//}
+
+			//if(MessageBox.Show(message, "Vixen Testbed", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
+			//    foreach(ChannelNode node in nodes) {
+			//        ChannelNode parentNode = _ParentOf(node);
+			//        VixenSystem.Nodes.RemoveNode(node, parentNode, true);
+			//    }
+			//}
+		}
+
+		private void listBoxChannels_SelectedIndexChanged(object sender, EventArgs e) {
+			buttonRemoveChannel.Enabled = _SelectedChannel != null;
 		}
 	}
 }

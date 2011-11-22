@@ -23,6 +23,7 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChannelsForm));
 			this.buttonAddChannel = new System.Windows.Forms.Button();
 			this.buttonRemoveChannel = new System.Windows.Forms.Button();
 			this.checkBoxEnabled = new System.Windows.Forms.CheckBox();
@@ -30,8 +31,10 @@
 			this.tabPageChannels = new System.Windows.Forms.TabPage();
 			this.listBoxChannels = new System.Windows.Forms.ListBox();
 			this.tabPageNodes = new System.Windows.Forms.TabPage();
+			this.buttonRemoveNode = new System.Windows.Forms.Button();
+			this.buttonCreateGroup = new System.Windows.Forms.Button();
+			this.treeViewNodes = new CommonElements.MultiSelectTreeview();
 			this.buttonProperties = new System.Windows.Forms.Button();
-			this.treeViewNodes = new System.Windows.Forms.TreeView();
 			this.buttonDone = new System.Windows.Forms.Button();
 			this.tabControl.SuspendLayout();
 			this.tabPageChannels.SuspendLayout();
@@ -110,11 +113,14 @@
 			this.listBoxChannels.Name = "listBoxChannels";
 			this.listBoxChannels.Size = new System.Drawing.Size(291, 277);
 			this.listBoxChannels.TabIndex = 0;
+			this.listBoxChannels.SelectedIndexChanged += new System.EventHandler(this.listBoxChannels_SelectedIndexChanged);
 			// 
 			// tabPageNodes
 			// 
-			this.tabPageNodes.Controls.Add(this.buttonProperties);
+			this.tabPageNodes.Controls.Add(this.buttonRemoveNode);
+			this.tabPageNodes.Controls.Add(this.buttonCreateGroup);
 			this.tabPageNodes.Controls.Add(this.treeViewNodes);
+			this.tabPageNodes.Controls.Add(this.buttonProperties);
 			this.tabPageNodes.Location = new System.Drawing.Point(4, 22);
 			this.tabPageNodes.Name = "tabPageNodes";
 			this.tabPageNodes.Padding = new System.Windows.Forms.Padding(3);
@@ -122,6 +128,50 @@
 			this.tabPageNodes.TabIndex = 1;
 			this.tabPageNodes.Text = "Group Nodes";
 			this.tabPageNodes.UseVisualStyleBackColor = true;
+			// 
+			// buttonRemoveNode
+			// 
+			this.buttonRemoveNode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonRemoveNode.Enabled = false;
+			this.buttonRemoveNode.Location = new System.Drawing.Point(329, 106);
+			this.buttonRemoveNode.Name = "buttonRemoveNode";
+			this.buttonRemoveNode.Size = new System.Drawing.Size(109, 23);
+			this.buttonRemoveNode.TabIndex = 3;
+			this.buttonRemoveNode.Text = "Remove";
+			this.buttonRemoveNode.UseVisualStyleBackColor = true;
+			this.buttonRemoveNode.Click += new System.EventHandler(this.buttonRemoveNode_Click);
+			// 
+			// buttonCreateGroup
+			// 
+			this.buttonCreateGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonCreateGroup.Enabled = false;
+			this.buttonCreateGroup.Location = new System.Drawing.Point(329, 77);
+			this.buttonCreateGroup.Name = "buttonCreateGroup";
+			this.buttonCreateGroup.Size = new System.Drawing.Size(109, 23);
+			this.buttonCreateGroup.TabIndex = 2;
+			this.buttonCreateGroup.Text = "Create Group";
+			this.buttonCreateGroup.UseVisualStyleBackColor = true;
+			this.buttonCreateGroup.Click += new System.EventHandler(this.buttonCreateGroup_Click);
+			// 
+			// treeViewNodes
+			// 
+			this.treeViewNodes.AllowDrop = true;
+			this.treeViewNodes.Cursor = System.Windows.Forms.Cursors.Default;
+			this.treeViewNodes.CustomDragCursor = null;
+			this.treeViewNodes.DragDefaultMode = System.Windows.Forms.DragDropEffects.Move;
+			this.treeViewNodes.DragDestinationNodeBackColor = System.Drawing.SystemColors.Highlight;
+			this.treeViewNodes.DragDestinationNodeForeColor = System.Drawing.SystemColors.HighlightText;
+			this.treeViewNodes.DragSourceNodeBackColor = System.Drawing.SystemColors.ControlLight;
+			this.treeViewNodes.DragSourceNodeForeColor = System.Drawing.SystemColors.ControlText;
+			this.treeViewNodes.Location = new System.Drawing.Point(6, 6);
+			this.treeViewNodes.Name = "treeViewNodes";
+			this.treeViewNodes.SelectedNodes = ((System.Collections.Generic.List<System.Windows.Forms.TreeNode>)(resources.GetObject("treeViewNodes.SelectedNodes")));
+			this.treeViewNodes.Size = new System.Drawing.Size(291, 277);
+			this.treeViewNodes.TabIndex = 0;
+			this.treeViewNodes.UsingCustomDragCursor = false;
+			this.treeViewNodes.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewNodes_AfterSelect);
+			this.treeViewNodes.DragDrop += new System.Windows.Forms.DragEventHandler(this.treeViewNodes_DragDrop);
+			this.treeViewNodes.DragOver += new System.Windows.Forms.DragEventHandler(this.treeViewNodes_DragOver);
 			// 
 			// buttonProperties
 			// 
@@ -134,22 +184,6 @@
 			this.buttonProperties.Text = "Properties";
 			this.buttonProperties.UseVisualStyleBackColor = true;
 			this.buttonProperties.Click += new System.EventHandler(this.buttonProperties_Click);
-			// 
-			// treeViewNodes
-			// 
-			this.treeViewNodes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.treeViewNodes.Location = new System.Drawing.Point(6, 6);
-			this.treeViewNodes.Name = "treeViewNodes";
-			this.treeViewNodes.Size = new System.Drawing.Size(291, 313);
-			this.treeViewNodes.TabIndex = 0;
-			this.treeViewNodes.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewNodes_AfterSelect);
-			this.treeViewNodes.DragDrop += new System.Windows.Forms.DragEventHandler(this.treeViewNodes_DragDrop);
-			this.treeViewNodes.DragOver += new System.Windows.Forms.DragEventHandler(this.treeViewNodes_DragOver);
-			this.treeViewNodes.QueryContinueDrag += new System.Windows.Forms.QueryContinueDragEventHandler(this.treeViewNodes_QueryContinueDrag);
-			this.treeViewNodes.MouseDown += new System.Windows.Forms.MouseEventHandler(this.treeViewNodes_MouseDown);
-			this.treeViewNodes.MouseMove += new System.Windows.Forms.MouseEventHandler(this.treeViewNodes_MouseMove);
 			// 
 			// buttonDone
 			// 
@@ -193,9 +227,11 @@
 		private System.Windows.Forms.TabControl tabControl;
 		private System.Windows.Forms.TabPage tabPageChannels;
 		private System.Windows.Forms.TabPage tabPageNodes;
-		private System.Windows.Forms.TreeView treeViewNodes;
 		private System.Windows.Forms.Button buttonProperties;
 		private System.Windows.Forms.ListBox listBoxChannels;
 		private System.Windows.Forms.Button buttonDone;
+		private CommonElements.MultiSelectTreeview treeViewNodes;
+		private System.Windows.Forms.Button buttonRemoveNode;
+		private System.Windows.Forms.Button buttonCreateGroup;
 	}
 }
