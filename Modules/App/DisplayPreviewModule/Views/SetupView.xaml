@@ -246,8 +246,6 @@
 						<ListView Background="Black"
 						          IsSynchronizedWithCurrentItem="True"
 						          SelectedItem="{Binding CurrentDisplayElement}"
-						          Width="{Binding DisplayWidth}"
-						          Height="{Binding DisplayHeight}"
 						          ItemsSource="{Binding DisplayItems}">
 							<ListView.ItemsPanel>
 								<ItemsPanelTemplate>
