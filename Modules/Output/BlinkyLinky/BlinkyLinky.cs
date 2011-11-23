@@ -16,8 +16,8 @@ namespace VixenModules.Output.BlinkyLinky
 {
 	class BlinkyLinky : OutputModuleInstanceBase
 	{
-		private int _outputCount;
-		private Dictionary<int, Level> _lastValues;
+		private Dictionary<int, byte> _lastValues;
+		private Dictionary<int, int> _nullCommands;
 		private BlinkyLinkyData _data;
 		private TcpClient _tcpClient;
 		private NetworkStream _networkStream;
@@ -33,20 +33,25 @@ namespace VixenModules.Output.BlinkyLinky
 	
 		public BlinkyLinky()
 		{
-			_outputCount = 0;
-			_lastValues = new Dictionary<int, Level>();
+			_lastValues = new Dictionary<int, byte>();
+			_nullCommands = new Dictionary<int, int>();
 			_data = new BlinkyLinkyData();
 			_timeoutStopwatch = new Stopwatch();
 		}
 
-		protected override void _SetOutputCount(int outputCount)
+		private void _setupDataBuffers()
 		{
-			_outputCount = outputCount;
-
-			for (int i = 0; i < outputCount; i++) {
+			for (int i = 0; i < this.OutputCount; i++) {
 				if (!_lastValues.ContainsKey(i))
 					_lastValues[i] = 0;
+				if (!_nullCommands.ContainsKey(i))
+					_nullCommands[i] = 0;
 			}
+		}
+
+		protected override void _SetOutputCount(int outputCount)
+		{
+			_setupDataBuffers();
 		}
 
 		public override IModuleDataModel ModuleData
@@ -102,7 +107,9 @@ namespace VixenModules.Output.BlinkyLinky
 			}
 
 			// reset the last values. That means that *any* values that come in will be 'new', and be sent out.
-			_lastValues = new Dictionary<int, Level>();
+			_lastValues = new Dictionary<int, byte>();
+			_nullCommands = new Dictionary<int, int>();
+			_setupDataBuffers();
 
 			_timeoutStopwatch.Reset();
 			_timeoutStopwatch.Start();
@@ -124,6 +131,13 @@ namespace VixenModules.Output.BlinkyLinky
 
 			_timeoutStopwatch.Reset();
 		}
+
+		public override void Start()
+		{
+			_setupDataBuffers();
+			base.Start();
+		}
+
 
 		protected override void _UpdateState(Command[] outputStates)
 		{
@@ -166,9 +180,18 @@ namespace VixenModules.Output.BlinkyLinky
 					if (setLevelCommand == null)
 						continue;
 					newValue = (byte)(setLevelCommand.Level / 100.0 * Byte.MaxValue);
+					_nullCommands[i] = 0;
+				} else {
+					// it was a null command. We should turn it off; however, to avoid some potentially nasty flickering,
+					// we will keep track of the null commands for this output, and ignore the first one. Any after that will
+					// actually be sent through.
+					if (_nullCommands[i] == 0) {
+						_nullCommands[i] = 1;
+						newValue = _lastValues[i];
+					}
 				}
 
-				if (!_lastValues.ContainsKey(i) || _lastValues[i] != newValue) {
+				if (_lastValues[i] != newValue) {
 					changed = true;
 					data[totalPacketLength++] = (byte)i;
 					data[totalPacketLength++] = newValue;
