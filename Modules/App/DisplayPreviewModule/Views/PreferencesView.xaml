@@ -14,42 +14,6 @@
 					<CheckBox IsChecked="{Binding KeepVisualizerWindowOpen, Mode=TwoWay}"
                               Margin="2"
 					          Content="Keep Preview Window Open" />
-					<GroupBox Header="Display Defaults"
-					          Padding="2">
-						<StackPanel>
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="Auto" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
-								<TextBlock Margin="2">Default Opacity</TextBlock>
-								<Slider Value="{Binding OpacityDefault, Mode=TwoWay}"
-								        Margin="2"
-								        Grid.Column="1"
-								        Minimum="0"
-								        Maximum="1" />
-							</Grid>
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="Auto" />
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="Auto" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
-								<TextBlock Text="Width"
-								           Margin="2" />
-								<TextBox Grid.Column="1"
-								         Margin="2"
-								         Text="{Binding DisplayWidthDefault}" />
-								<TextBlock Grid.Column="2"
-								           Margin="2"
-								           Text="Height" />
-								<TextBox Grid.Column="3"
-								         Margin="2"
-								         Text="{Binding DisplayHeightDefault}" />
-							</Grid>
-						</StackPanel>
-					</GroupBox>
 					<GroupBox Header="Display Item Defaults"
 					          Padding="2">
 
@@ -64,11 +28,13 @@
 							           Margin="2" />
 							<TextBox Grid.Column="1"
 							         Margin="2"
+                                     Width="40"
 							         Text="{Binding DisplayItemWidthDefault}" />
 							<TextBlock Grid.Column="2"
 							           Margin="2"
 							           Text="Height" />
 							<TextBox Grid.Column="3"
+                                     Width="40"
 							         Margin="2"
 							         Text="{Binding DisplayItemHeightDefault}" />
 						</Grid>
@@ -87,12 +53,14 @@
 							           Margin="2" />
 							<TextBox Grid.Column="1"
 							         Margin="2"
+                                     Width="40"
 							         Text="{Binding ChannelWidthDefault}" />
 							<TextBlock Grid.Column="2"
 							           Margin="2"
 							           Text="Height" />
 							<TextBox Grid.Column="3"
 							         Margin="2"
+                                     Width="40"
 							         Text="{Binding ChannelHeightDefault}" />
 
 						</Grid>
