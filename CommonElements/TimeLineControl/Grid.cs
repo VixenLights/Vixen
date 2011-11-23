@@ -187,6 +187,11 @@ namespace CommonElements.Timeline
 			get { return rowAt(new Point(0, VerticalOffset)); }
 		}
 
+		public Row BottomVisibleRow
+		{
+			get { return rowAt(new Point(0, VerticalOffset + ClientRectangle.Height)); }
+		}
+
 		public TimeSpan CursorPosition
 		{
 			get { return m_cursorPosition; }
@@ -1023,12 +1028,29 @@ namespace CommonElements.Timeline
 				if (!row.Visible)
 					continue;
 
+				if (top < VerticalOffset || top > VerticalOffset + ClientSize.Height) {
+					top += row.Height;  // next row starts just below this row
+					continue;
+				}
+
 				// a list of generated bitmaps, with starttime and endtime for where they are supposed to be drawn.
 				List<BitmapDrawDetails> bitmapsToDraw = new List<BitmapDrawDetails>();
 				TimeSpan currentlyDrawnTo = TimeSpan.Zero;
 				TimeSpan desiredDrawTo = TimeSpan.Zero;
+				bool lastItemDrawn = false;
+
 				for (int i = 0; i < row.ElementCount; i++) {
 					Element currentElement = row.GetElementAtIndex(i);
+					if (currentElement.EndTime < VisibleTimeStart)
+						continue;
+
+					if (currentElement.StartTime > VisibleTimeEnd) {
+						if (lastItemDrawn)
+							continue;
+						else
+							lastItemDrawn = true;
+					}
+
 					desiredDrawTo = currentElement.StartTime;
 
 					// if this is the last element, draw everything
@@ -1134,7 +1156,6 @@ namespace CommonElements.Timeline
 					}
 
 				}
-
 
 				top += row.Height;  // next row starts just below this row
 			}

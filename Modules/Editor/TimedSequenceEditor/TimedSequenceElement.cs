@@ -112,7 +112,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			using (Graphics g = Graphics.FromImage(result)) {
-				g.DrawImage(inset, 2, 2);
+				if (inset == null)
+					VixenSystem.Logging.Debug("TimedSequenceElement: null inset!");
+				else
+					g.DrawImage(inset, 2, 2);
 
 				// TODO: be able to turn this off somehow, maybe editor options or something?
 				// add text describing the effect
