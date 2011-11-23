@@ -5,6 +5,6 @@ using System.Text;
 
 namespace VixenModules.App.Scheduler {
 	interface ISchedulerView {
-		ObservableList<IScheduleItem> Items { get; set; }
+		IEnumerable<IScheduleItem> Items { get; set; }
 	}
 }

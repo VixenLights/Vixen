@@ -25,7 +25,7 @@ namespace VixenModules.App.Scheduler {
 		private Pen _timeLinePen = new Pen(Color.FromKnownColor(KnownColor.ControlDark));
 
 		private BlockLayoutEngine _layoutEngine;
-		private ObservableList<IScheduleItem> _items;
+		private List<IScheduleItem> _items;
 		private List<ItemBlock> _blocks;
 		private ItemBlock _selectedBlock;
 
@@ -36,14 +36,14 @@ namespace VixenModules.App.Scheduler {
 		public DayPanel() {
 			InitializeComponent();
 
-			_items = new ObservableList<IScheduleItem>();
-			_items.CollectionChanged += _items_CollectionChanged;
+			_items = new List<IScheduleItem>();
 			_blocks = new List<ItemBlock>();
 			_layoutEngine = new BlockLayoutEngine();
 
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
+			SetStyle(ControlStyles.ResizeRedraw, true);
 
 			BackColor = Color.FromArgb(255, 255, 213);
 			AutoScrollMinSize = new Size(Width, HalfHourHeight * 48);
@@ -52,7 +52,8 @@ namespace VixenModules.App.Scheduler {
 		private void DayPanel_Load(object sender, EventArgs e) {
 			// Controls do not have a model resize loop.  Forms do.
 			if(!this.DesignMode) {
-				ParentForm.ResizeEnd += (s, ea) => { _CalculateBlocks(); Refresh(); };
+				ParentForm.ResizeBegin += (s, ea) => BeginUpdate();
+				ParentForm.ResizeEnd += (s, ea) => EndUpdate();
 			}
 		}
 
@@ -145,19 +146,12 @@ namespace VixenModules.App.Scheduler {
 			}
 		}
 
-		public ObservableList<IScheduleItem> Items {
+		public IEnumerable<IScheduleItem> Items {
 			get { return _items; }
 			set {
-				BeginUpdate();
-				try {
-					if(_items != null) {
-						_items.CollectionChanged -= _items_CollectionChanged;
-					}
-					_items = value;
-					_items.CollectionChanged += _items_CollectionChanged;
-				} finally {
-					EndUpdate();
-				}
+				_items.Clear();
+				_items.AddRange(value);
+				_CalculateBlocks();
 			}
 		}
 
@@ -167,6 +161,7 @@ namespace VixenModules.App.Scheduler {
 
 		public void EndUpdate() {
 			_updating = false;
+			_CalculateBlocks(); 
 			Refresh();
 		}
 
@@ -179,10 +174,17 @@ namespace VixenModules.App.Scheduler {
 		}
 
 		protected override void OnPaint(PaintEventArgs e) {
+			//if(_updating) return;
 			e.Graphics.TranslateTransform(this.AutoScrollPosition.X, this.AutoScrollPosition.Y);
 			_DrawTimes(e.Graphics);
 			_DrawLines(e.Graphics);
 			_DrawItems(e.Graphics);
+		}
+
+		// Necessary to catch Maximize, Restore.
+		protected override void OnResize(EventArgs e) {
+			base.OnResize(e);
+			_CalculateBlocks();
 		}
 
 		private int _TopHalfHour {
@@ -352,30 +354,11 @@ namespace VixenModules.App.Scheduler {
 			}
 		}
 
-		private void _items_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
-			switch(e.Action) {
-				case NotifyCollectionChangedAction.Add:
-					break;
-				case NotifyCollectionChangedAction.Remove:
-					if(_SelectedBlock != null && e.OldItems[0] == _SelectedBlock.Item) {
-						_SelectedBlock = null;
-					}
-					break;
-				case NotifyCollectionChangedAction.Replace:
-					break;
-				case NotifyCollectionChangedAction.Reset:
-					break;
-			}
-
-			if(!_updating) {
-				_CalculateBlocks();
-				Refresh();
-			}
-		}
-
 		private void _CalculateBlocks() {
+			if(_updating) return;
+
 			_blocks = new List<ItemBlock>();
-			foreach(ScheduleItem item in _items) {
+			foreach(ScheduleItem item in Items) {
 				int top = _TimeToPixels(item.RunStartTime);
 				int height = _TimeToPixels(item.RunEndTime - item.RunStartTime);
 				ItemBlock block = new ItemBlock(item, top, Math.Max(height, 10));

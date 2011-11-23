@@ -37,6 +37,8 @@
 			// 
 			// dayPanel
 			// 
+			this.dayPanel.AutoScroll = true;
+			this.dayPanel.AutoScrollMinSize = new System.Drawing.Size(150, 960);
 			this.dayPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.dayPanel.Location = new System.Drawing.Point(0, 30);
 			this.dayPanel.Name = "dayPanel";

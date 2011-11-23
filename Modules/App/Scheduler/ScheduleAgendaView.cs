@@ -230,7 +230,7 @@ namespace VixenModules.App.Scheduler {
 
 
 
-		public ObservableList<IScheduleItem> Items {
+		public IEnumerable<IScheduleItem> Items {
 			get {
 				throw new NotImplementedException();
 			}

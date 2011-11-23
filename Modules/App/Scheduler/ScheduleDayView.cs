@@ -10,8 +10,15 @@ using System.Windows.Forms;
 
 namespace VixenModules.App.Scheduler {
 	partial class ScheduleDayView : UserControl, ISchedulerView {
+		private DateTime _currentDate;
+
 		public ScheduleDayView() {
 			InitializeComponent();
+		}
+
+		protected override void OnLoad(EventArgs e) {
+			base.OnLoad(e);
+			CurrentDate = DateTime.Today;
 		}
 
 		public event EventHandler<ScheduleEventArgs> TimeDoubleClick {
@@ -29,13 +36,32 @@ namespace VixenModules.App.Scheduler {
 			remove { dayPanel.ItemClick -= value; }
 		}
 
+		public event EventHandler LeftButtonClick {
+			add { headerPanel.LeftButtonClick += value; }
+			remove { headerPanel.LeftButtonClick -= value; }
+		}
+
+		public event EventHandler RightButtonClick {
+			add { headerPanel.RightButtonClick += value; }
+			remove { headerPanel.RightButtonClick -= value; }
+		}
+
 		public IScheduleItem SelectedItem {
 			get { return dayPanel.SelectedItem; }
 		}
 
+		public DateTime CurrentDate {
+			get { return _currentDate; }
+			set {
+				_currentDate = value;
+				headerPanel.Text = value.ToLongDateString();
+				Refresh();
+			}
+		}
+
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public ObservableList<IScheduleItem> Items {
+		public IEnumerable<IScheduleItem> Items {
 			get { return dayPanel.Items; }
 			set { dayPanel.Items = value; }
 		}

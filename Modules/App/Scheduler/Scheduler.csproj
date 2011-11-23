@@ -54,7 +54,6 @@
     <Compile Include="IScheduleItem.cs" />
     <Compile Include="ISchedulerView.cs" />
     <Compile Include="ItemBlock.cs" />
-    <Compile Include="ObservableList.cs" />
     <Compile Include="ProgramForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -107,6 +106,12 @@
     <Compile Include="ScheduleWeekView.Designer.cs">
       <DependentUpon>ScheduleWeekView.cs</DependentUpon>
     </Compile>
+    <Compile Include="ScheduleWeekView_old.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ScheduleWeekView_old.Designer.cs">
+      <DependentUpon>ScheduleWeekView_old.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\CommonElements\CommonElements.csproj">
@@ -123,6 +128,9 @@
   <ItemGroup>
     <EmbeddedResource Include="DayPanel.resx">
       <DependentUpon>DayPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HeaderPanel.resx">
+      <DependentUpon>HeaderPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ProgramForm.resx">
       <DependentUpon>ProgramForm.cs</DependentUpon>
@@ -141,6 +149,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ScheduleWeekView.resx">
       <DependentUpon>ScheduleWeekView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ScheduleWeekView_old.resx">
+      <DependentUpon>ScheduleWeekView_old.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

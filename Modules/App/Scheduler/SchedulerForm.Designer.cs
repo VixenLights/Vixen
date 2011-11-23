@@ -60,6 +60,7 @@
 			this.toolStripView.Size = new System.Drawing.Size(530, 25);
 			this.toolStripView.TabIndex = 3;
 			this.toolStripView.Text = "View";
+			this.toolStripView.Visible = false;
 			// 
 			// toolStripButtonToday
 			// 
@@ -182,12 +183,14 @@
 			// 
 			this.scheduleDayView.AutoScroll = true;
 			this.scheduleDayView.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.scheduleDayView.Location = new System.Drawing.Point(0, 25);
+			this.scheduleDayView.Location = new System.Drawing.Point(0, 0);
 			this.scheduleDayView.Name = "scheduleDayView";
-			this.scheduleDayView.Size = new System.Drawing.Size(530, 380);
+			this.scheduleDayView.Size = new System.Drawing.Size(530, 405);
 			this.scheduleDayView.TabIndex = 11;
 			this.scheduleDayView.TimeDoubleClick += new System.EventHandler<VixenModules.App.Scheduler.ScheduleEventArgs>(this.scheduleDayView_TimeDoubleClick);
 			this.scheduleDayView.ItemDoubleClick += new System.EventHandler<VixenModules.App.Scheduler.ScheduleItemArgs>(this.scheduleDayView_ItemDoubleClick);
+			this.scheduleDayView.LeftButtonClick += new System.EventHandler(this.scheduleDayView_LeftButtonClick);
+			this.scheduleDayView.RightButtonClick += new System.EventHandler(this.scheduleDayView_RightButtonClick);
 			// 
 			// SchedulerForm
 			// 

@@ -12,8 +12,6 @@ namespace VixenModules.App.Scheduler {
 		private SchedulerData _data;
 		private ScheduleService _scheduleService;
 		private DateView _currentView;
-		private DateTime _currentDate;
-		private ObservableList<IScheduleItem> _items;
 
 		private enum DateView { Day, Week, Agenda };
 
@@ -22,22 +20,11 @@ namespace VixenModules.App.Scheduler {
 			
 			_data = data;
 			_scheduleService = new ScheduleService();
-			_items = new ObservableList<IScheduleItem>();
-
-			//scheduleDay.Dock = DockStyle.Fill;
-			//scheduleWeek.Dock = DockStyle.Fill;
-			//scheduleAgenda.Dock = DockStyle.Fill;
 		}
 
 		private void SchedulerForm_Load(object sender, EventArgs e) {
 			checkBoxEnableSchedule.Checked = _data.IsEnabled;
-
-			scheduleDayView.Items = _items;
-			//others here
-
-			_items.AddRange(_data.Items);
-
-			_SetCurrentView(DateView.Day);
+			_SetCurrentView(DateView.Day, DateTime.Today);
 		}
 
 		private void SchedulerForm_FormClosing(object sender, FormClosingEventArgs e) {
@@ -60,7 +47,7 @@ namespace VixenModules.App.Scheduler {
 		}
 
 		private void _SetCurrentView(DateView view) {
-			_SetCurrentView(view, _currentDate);
+			_SetCurrentView(view, _CurrentDate);
 		}
 
 		private void _SetCurrentView(DateView view, DateTime date) {
@@ -80,7 +67,7 @@ namespace VixenModules.App.Scheduler {
 					break;
 			}
 
-			_currentDate = date;
+			_CurrentDate = date;
 			_currentView = view;
 
 			// Draw the new view
@@ -103,6 +90,30 @@ namespace VixenModules.App.Scheduler {
 			}
 		}
 
+		private DateTime _currentDate;
+		private DateTime _CurrentDate {
+			get { return _currentDate; }
+			set {
+				if(_currentDate != value) {
+					_currentDate = value;
+					_RefreshView();
+				}
+			}
+		}
+
+		private void _RefreshView() {
+			switch(_currentView) {
+				case DateView.Day:
+					scheduleDayView.Items = _scheduleService.GetItems(_data.Items, _currentDate, _currentDate + TimeSpan.FromDays(1));
+					scheduleDayView.CurrentDate = _currentDate;
+					break;
+				case DateView.Week:
+					break;
+				case DateView.Agenda:
+					break;
+			}
+		}
+
 		private void scheduleDayView_TimeDoubleClick(object sender, ScheduleEventArgs e) {
 			ScheduleItem item = new ScheduleItem {
 				RunStartTime = e.TimeOffset,
@@ -111,7 +122,6 @@ namespace VixenModules.App.Scheduler {
 			};
 			using(ScheduleItemEditForm scheduleItemEditForm = new ScheduleItemEditForm(item)) {
 				if(scheduleItemEditForm.ShowDialog() == DialogResult.OK) {
-					_items.Add(item);
 					_data.Items.Add(item);
 				}
 			}
@@ -121,7 +131,7 @@ namespace VixenModules.App.Scheduler {
 			using(ScheduleItemEditForm scheduleItemEditForm = new ScheduleItemEditForm(e.Item as ScheduleItem)) {
 				if(scheduleItemEditForm.ShowDialog() == DialogResult.OK) {
 					// Force a redraw of the item.
-					_items.Replace(e.Item, e.Item);
+					_RefreshView();
 				}
 			}
 		}
@@ -134,10 +144,18 @@ namespace VixenModules.App.Scheduler {
 			if(e.KeyCode == Keys.Delete && scheduleDayView.SelectedItem != null) {
 				if(MessageBox.Show("Delete scheduled run of \"" + System.IO.Path.GetFileName(scheduleDayView.SelectedItem.FilePath) + "\"?", "Vixen Scheduler", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
 					IScheduleItem item = scheduleDayView.SelectedItem;
-					_items.Remove(item);
 					_data.Items.Remove(item);
+					_RefreshView();
 				}
 			}
+		}
+
+		private void scheduleDayView_LeftButtonClick(object sender, EventArgs e) {
+			_CurrentDate += TimeSpan.FromDays(-1);
+		}
+
+		private void scheduleDayView_RightButtonClick(object sender, EventArgs e) {
+			_CurrentDate += TimeSpan.FromDays(1);
 		}
 	}
 }

@@ -138,13 +138,14 @@ namespace VixenModules.App.Scheduler {
 			List<ScheduleItem> validItems = new List<ScheduleItem>();
 
 			foreach(ScheduleItem scheduleItem in items) {
-				// If the item's start date has not yet arrived or
-				// the item's time is not within the time window, 
-				// it's automatically invalid.
-				if(startDateTime >= scheduleItem.StartDate &&
-					scheduleItem.RunStartTime >= startDateTime.TimeOfDay &&
-					scheduleItem.RunStartTime <= endDateTime.TimeOfDay) {
+				if(startDateTime >= scheduleItem.EndDate ||
+					endDateTime <= scheduleItem.StartDate) continue;
 					switch((RecurrenceType)scheduleItem.RecurrenceType) {
+						case RecurrenceType.None:
+							if(_IsSingleValid(scheduleItem, startDateTime, endDateTime)) {
+								validItems.Add(scheduleItem);
+							}
+							break;
 						case RecurrenceType.Daily:
 							if(_IsDailyValid(scheduleItem, startDateTime, endDateTime)) {
 								validItems.Add(scheduleItem);
@@ -166,7 +167,6 @@ namespace VixenModules.App.Scheduler {
 							}
 							break;
 					}
-				}
 			}
 
 			return validItems;
@@ -187,6 +187,10 @@ namespace VixenModules.App.Scheduler {
 			}
 
 			return count.ToString() + appendage;
+		}
+
+		private bool _IsSingleValid(IScheduleItem scheduleItem, DateTime windowStart, DateTime windowEnd) {
+			return _WindowIsValidForItem(scheduleItem, windowStart, windowEnd);
 		}
 
 		private bool _IsDailyValid(IScheduleItem scheduleItem, DateTime windowStart, DateTime windowEnd) {

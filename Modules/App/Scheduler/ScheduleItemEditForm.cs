@@ -31,10 +31,14 @@ namespace VixenModules.App.Scheduler {
 
 		private DateTime? _EndDate {
 			get {
-				if(dateTimePickerEndDate.Enabled) {
+				//if(dateTimePickerEndDate.Enabled) {
+				//    return dateTimePickerEndDate.Value;
+				//}
+				//return null;
+				if(_RecurrenceType != RecurrenceType.None) {
 					return dateTimePickerEndDate.Value;
 				}
-				return null;
+				return _StartDate + TimeSpan.FromDays(1);
 			}
 			set {
 				if(value == null) {
@@ -82,7 +86,6 @@ namespace VixenModules.App.Scheduler {
 				recurrenceControls.SelectedIndex = (int)value;
 				comboBoxDateUnit.SelectedIndex = (int)value - 1;
 				dateTimePickerEndDate.Enabled = true;
-				//_EndDate = _StartDate;
 				switch(value) {
 					case RecurrenceType.None:
 						_EndDate = null;
@@ -331,9 +334,9 @@ namespace VixenModules.App.Scheduler {
 
 		private void buttonOK_Click(object sender, EventArgs e) {
 			_ScheduleItem.StartDate = _StartDate;
-			if(_EndDate != null) {
+			//if(_EndDate != null) {
 				_ScheduleItem.EndDate = _EndDate.Value;
-			}
+			//}
 
 			_ScheduleItem.RecurrenceType = _RecurrenceType;
 			_ScheduleItem.DateUnitCount = _DateUnitCount;
