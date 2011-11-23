@@ -524,7 +524,7 @@ namespace TestClient
 			ChannelNode targetNode = treeNode.Tag as ChannelNode;
 
 			if(e.Effect == DragDropEffects.Copy) {
-				VixenSystem.Nodes.CopyNode(draggingNode, targetNode);
+				//VixenSystem.Nodes.CopyNode(draggingNode, targetNode);
 			} else if(e.AllowedEffect == DragDropEffects.Move) {
 				//Vixen.Sys.Execution.Nodes.MoveNode(draggingNode, targetNode);
 			}
