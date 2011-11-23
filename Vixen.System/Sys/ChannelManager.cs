@@ -168,12 +168,14 @@ namespace Vixen.Sys {
 			return name;
 		}
 
-		public IEnumerator<Channel> GetEnumerator() {
-			// Enumerate against a copy of the collection.
-			return _channels.Keys.ToList().GetEnumerator();
+		public IEnumerator<Channel> GetEnumerator()
+		{
+			Channel[] channels = _channels.Keys.ToArray();
+			return ((IEnumerable<Channel>)channels).GetEnumerator();
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		{
 			return GetEnumerator();
 		}
 	}
