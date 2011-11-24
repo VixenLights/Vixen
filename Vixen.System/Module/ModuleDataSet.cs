@@ -189,14 +189,18 @@ namespace Vixen.Module {
 				using(MemoryStream stream = new MemoryStream()) {
 					// Serializing each data object as the data object's type.
 					serializer = new DataContractSerializer(kvp.Value.GetType());
-					serializer.WriteObject(stream, kvp.Value);
-					string objectData = Encoding.ASCII.GetString(stream.ToArray()).Trim();
-					moduleDataSetElement.Add(
-						new XElement(ELEMENT_MODULE,
-							new XAttribute(ATTR_MODULE_TYPE, kvp.Key.Item1),
-							new XAttribute(ATTR_MODULE_INSTANCE, kvp.Key.Item2),
-							XElement.Parse(objectData))
-						);
+					try {
+						serializer.WriteObject(stream, kvp.Value);
+						string objectData = Encoding.ASCII.GetString(stream.ToArray()).Trim();
+						moduleDataSetElement.Add(
+							new XElement(ELEMENT_MODULE,
+							             new XAttribute(ATTR_MODULE_TYPE, kvp.Key.Item1),
+							             new XAttribute(ATTR_MODULE_INSTANCE, kvp.Key.Item2),
+							             XElement.Parse(objectData))
+							);
+					} catch(Exception ex) {
+						VixenSystem.Logging.Error("Error when serializing data model of type " + kvp.Value.GetType().Name, ex);
+					}
 				}
 			}
 
