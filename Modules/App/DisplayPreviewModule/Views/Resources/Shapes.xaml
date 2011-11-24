@@ -6,23 +6,23 @@
 	<Wpf:HalfDoubleConverter x:Key="HalfDoubleConverter" />
 
 	<DataTemplate DataType="{x:Type Shapes:OutlinedCircle}">
-		<Ellipse Stroke="White"
+		<Ellipse Stroke="{Binding Brush}"
 		         StrokeThickness="{Binding StrokeThickness}"
 		         Fill="Transparent" />
 	</DataTemplate>
 
 	<DataTemplate DataType="{x:Type Shapes:SolidCircle}">
-		<Ellipse Fill="White" />
+        <Ellipse Fill="{Binding Brush}" />
 	</DataTemplate>
 
 	<DataTemplate DataType="{x:Type Shapes:SolidRectangle}">
-		<Rectangle Fill="White" />
+        <Rectangle Fill="{Binding Brush}" />
 	</DataTemplate>
 
 	<DataTemplate DataType="{x:Type Shapes:SolidTriangle}">
 		<Viewbox Stretch="Fill">
 			<Path Data="M20,0 L0,40 L40,40 Z"
-			      Fill="White" />
+			      Fill="{Binding Brush}" />
 		</Viewbox>
 	</DataTemplate>
 
@@ -32,7 +32,7 @@
 			      Margin="{Binding StrokeThickness}"
 			      Fill="Transparent"
 			      HorizontalAlignment="Center"
-			      Stroke="White"
+			      Stroke="{Binding Brush}"
 			      StrokeThickness="{Binding StrokeThickness}" />
 		</Viewbox>
 	</DataTemplate>
@@ -42,7 +42,7 @@
 		           Fill="Transparent"
 		           HorizontalAlignment="Stretch"
 		           VerticalAlignment="Stretch"
-		           Stroke="White"
+		           Stroke="{Binding Brush}"
 		           StrokeThickness="{Binding StrokeThickness}" />
 
 	</DataTemplate>
@@ -50,7 +50,7 @@
 	<DataTemplate DataType="{x:Type Shapes:SolidStar}">
 		<Viewbox Stretch="Fill">
 			<Path Data="F1 M 126.578613,11.297852 L 162.373535,83.825684 L 242.412598,95.456055 L 184.495605,151.911133 L 198.167480,231.626953 L 126.578613,193.990234 L 54.988770,231.626953 L 68.661621,151.911133 L 10.744629,95.456055 L 90.783691,83.825684 L 126.578613,11.297852 Z"
-			      Fill="White" />
+			      Fill="{Binding Brush}" />
 		</Viewbox>
 	</DataTemplate>
 
@@ -58,7 +58,7 @@
 		<Viewbox Stretch="Fill">
 			<Path Data="F1 M 126.578613,11.297852 L 162.373535,83.825684 L 242.412598,95.456055 L 184.495605,151.911133 L 198.167480,231.626953 L 126.578613,193.990234 L 54.988770,231.626953 L 68.661621,151.911133 L 10.744629,95.456055 L 90.783691,83.825684 L 126.578613,11.297852 Z"
 			      Fill="Transparent"
-			      Stroke="white"
+			      Stroke="{Binding Brush}"
 			      StrokeThickness="{Binding StrokeThickness}" />
 		</Viewbox>
 	</DataTemplate>
@@ -69,7 +69,7 @@
 			         Height="100"
 			         Stretch="Fill"
 			         StrokeThickness="{Binding StrokeThickness}"
-			         Stroke="White">
+			         Stroke="{Binding Brush}">
 				<Ellipse.Clip>
 					<RectangleGeometry Rect="0,0,100,50" />
 				</Ellipse.Clip>
@@ -78,7 +78,7 @@
 	</DataTemplate>
 
 	<DataTemplate DataType="{x:Type Shapes:Line}">
-		<Rectangle Fill="White"
+        <Rectangle Fill="{Binding Brush}"
 		           ClipToBounds="True"
 		           Height="{Binding StrokeThickness}"
 		           x:Name="theLine">

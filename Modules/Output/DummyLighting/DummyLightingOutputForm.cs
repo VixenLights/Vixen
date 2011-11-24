@@ -102,7 +102,10 @@ namespace VixenModules.Output.DummyLighting
 
 		new public void Hide()
 		{
-			BeginInvoke(new MethodInvoker(base.Hide));
+		    if (!this.IsDisposed)
+		    {
+		        BeginInvoke(new MethodInvoker(base.Hide));
+		    }
 		}
 
 		private double _fps;

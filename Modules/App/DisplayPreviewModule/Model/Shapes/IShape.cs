@@ -5,12 +5,12 @@ namespace VixenModules.App.DisplayPreview.Model.Shapes
 
     public interface IShape : INotifyPropertyChanged
     {
-        ShapeType ShapeType { get; }
-
         string Name { get; }
 
-        IShape Clone();
+        Brush Brush { get; set; }
 
-        Color NodeColor { get; set; }
+        ShapeType ShapeType { get; }
+
+        IShape Clone();
     }
 }

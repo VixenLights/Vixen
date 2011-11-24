@@ -1,14 +1,10 @@
 ﻿namespace VixenModules.App.DisplayPreview.Model.Shapes
 {
-    using System.ComponentModel;
     using System.Runtime.Serialization;
-    using System.Windows.Media;
 
     [DataContract]
-    internal class OutlinedRectangle : IShape
+    internal class OutlinedRectangle : Shape
     {
-        private Color _nodeColor;
-
         private double _strokeThickness;
 
         public OutlinedRectangle()
@@ -16,9 +12,7 @@
             Initialize();
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public string Name
+        public override string Name
         {
             get
             {
@@ -26,21 +20,7 @@
             }
         }
 
-        public Color NodeColor
-        {
-            get
-            {
-                return _nodeColor;
-            }
-
-            set
-            {
-                _nodeColor = value;
-                PropertyChanged.NotifyPropertyChanged("NodeColor", this);
-            }
-        }
-
-        public ShapeType ShapeType
+        public override ShapeType ShapeType
         {
             get
             {
@@ -59,11 +39,11 @@
             set
             {
                 _strokeThickness = value;
-                PropertyChanged.NotifyPropertyChanged("StrokeThickness", this);
+                NotifyPropertyChanged("StrokeThickness");
             }
         }
 
-        public IShape Clone()
+        public override IShape Clone()
         {
             return new OutlinedRectangle { StrokeThickness = StrokeThickness };
         }

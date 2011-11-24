@@ -47,6 +47,7 @@
     <Compile Include="Behaviors\DropTargetBehaviour.cs" />
     <Compile Include="Behaviors\IDragSource.cs" />
     <Compile Include="Behaviors\IDropTarget.cs" />
+    <Compile Include="ColorManager.cs" />
     <Compile Include="Model\NodeLayout.cs" />
     <Compile Include="Model\NodeSource.cs" />
     <Compile Include="Model\Preferences.cs" />
@@ -55,6 +56,7 @@
     <Compile Include="Model\Shapes\IShape.cs" />
     <Compile Include="Model\Shapes\Line.cs" />
     <Compile Include="Model\Shapes\OutlinedRectangle.cs" />
+    <Compile Include="Model\Shapes\Shape.cs" />
     <Compile Include="Model\Shapes\ShapeType.cs" />
     <Compile Include="Model\Shapes\SolidCircle.cs" />
     <Compile Include="Model\Shapes\SolidRectangle.cs" />

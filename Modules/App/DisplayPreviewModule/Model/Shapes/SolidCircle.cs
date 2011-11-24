@@ -1,17 +1,11 @@
 namespace VixenModules.App.DisplayPreview.Model.Shapes
 {
-    using System.ComponentModel;
     using System.Runtime.Serialization;
-    using System.Windows.Media;
 
     [DataContract]
-    internal class SolidCircle : IShape
+    internal class SolidCircle : Shape
     {
-        private Color _nodeColor;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public string Name
+        public override string Name
         {
             get
             {
@@ -19,21 +13,7 @@ namespace VixenModules.App.DisplayPreview.Model.Shapes
             }
         }
 
-        public Color NodeColor
-        {
-            get
-            {
-                return _nodeColor;
-            }
-
-            set
-            {
-                _nodeColor = value;
-                PropertyChanged.NotifyPropertyChanged("NodeColor", this);
-            }
-        }
-
-        public ShapeType ShapeType
+        public override ShapeType ShapeType
         {
             get
             {
@@ -41,7 +21,7 @@ namespace VixenModules.App.DisplayPreview.Model.Shapes
             }
         }
 
-        public IShape Clone()
+        public override IShape Clone()
         {
             return new SolidCircle();
         }

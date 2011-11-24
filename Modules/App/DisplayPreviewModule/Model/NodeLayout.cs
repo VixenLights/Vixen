@@ -5,7 +5,9 @@ namespace VixenModules.App.DisplayPreview.Model
     using System.Linq;
     using System.Runtime.Serialization;
     using System.Windows.Media;
+
     using Vixen.Sys;
+
     using VixenModules.App.DisplayPreview.Model.Shapes;
 
     [DataContract]
@@ -21,15 +23,15 @@ namespace VixenModules.App.DisplayPreview.Model
     [KnownType(typeof(Arc))]
     public class NodeLayout : INotifyPropertyChanged
     {
-        private Color _nodeColor;
+        private int _height;
+
+        private double _leftOffset;
+
+        private Brush _nodeBrush;
 
         private Guid _nodeId;
 
         private string _nodeName;
-
-        private int _height;
-
-        private double _leftOffset;
 
         private IShape _shape;
 
@@ -39,92 +41,28 @@ namespace VixenModules.App.DisplayPreview.Model
 
         public NodeLayout()
         {
-            Initialize();
+            this.Initialize();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        public Color NodeColor
-        {
-            get
-            {
-                return _nodeColor;
-            }
-
-            set
-            {
-                _nodeColor = value;
-                _shape.NodeColor = _nodeColor;
-                PropertyChanged.NotifyPropertyChanged("ChannelColor", this);
-            }
-        }
-
-        [DataMember]
-        public Guid NodeId
-        {
-            get
-            {
-                return _nodeId;
-            }
-
-            set
-            {
-                _nodeId = value;
-                PropertyChanged.NotifyPropertyChanged("ChannelId", this);
-            }
-        }
-
-        public string NodeName
-        {
-            get
-            {
-                if (string.IsNullOrWhiteSpace(_nodeName))
-                {
-                    var channel = Node;
-                    if (channel != null)
-                    {
-                        _nodeName = channel.Name;
-                    }
-                }
-
-                return _nodeName;
-            }
-        }
-
-        public Brush DisplayColor
-        {
-            get
-            {
-                if (Node.IsRgbNode())
-                {
-                    var brush = new LinearGradientBrush();
-                    brush.GradientStops.Add(new GradientStop(Colors.Red, 0));
-                    brush.GradientStops.Add(new GradientStop(Colors.Green, .5));
-                    brush.GradientStops.Add(new GradientStop(Colors.Blue, 1));
-                    return brush;
-                }
-
-                return new SolidColorBrush(Colors.Aqua);
-            }
-        }
 
         [DataMember]
         public int Height
         {
             get
             {
-                if (_height <= 0)
+                if (this._height <= 0)
                 {
-                    _height = Preferences.DefaultSettings.ChannelHeightDefault;
+                    this._height = Preferences.DefaultSettings.ChannelHeightDefault;
                 }
 
-                return _height;
+                return this._height;
             }
 
             set
             {
-                _height = value <= 0 ? 1 : value;
-                PropertyChanged.NotifyPropertyChanged("Height", this);
+                this._height = value <= 0 ? 1 : value;
+                this.PropertyChanged.NotifyPropertyChanged("Height", this);
             }
         }
 
@@ -133,13 +71,45 @@ namespace VixenModules.App.DisplayPreview.Model
         {
             get
             {
-                return _leftOffset;
+                return this._leftOffset;
             }
 
             set
             {
-                _leftOffset = value;
-                PropertyChanged.NotifyPropertyChanged("LeftOffset", this);
+                this._leftOffset = value;
+                this.PropertyChanged.NotifyPropertyChanged("LeftOffset", this);
+            }
+        }
+
+        [DataMember]
+        public Guid NodeId
+        {
+            get
+            {
+                return this._nodeId;
+            }
+
+            set
+            {
+                this._nodeId = value;
+                this.PropertyChanged.NotifyPropertyChanged("ChannelId", this);
+            }
+        }
+
+        public string NodeName
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(this._nodeName))
+                {
+                    var channel = this.Node;
+                    if (channel != null)
+                    {
+                        this._nodeName = channel.Name;
+                    }
+                }
+
+                return this._nodeName;
             }
         }
 
@@ -148,13 +118,13 @@ namespace VixenModules.App.DisplayPreview.Model
         {
             get
             {
-                return _shape;
+                return this._shape;
             }
 
             set
             {
-                _shape = value;
-                PropertyChanged.NotifyPropertyChanged("Shape", this);
+                this._shape = value;
+                this.PropertyChanged.NotifyPropertyChanged("Shape", this);
             }
         }
 
@@ -163,13 +133,13 @@ namespace VixenModules.App.DisplayPreview.Model
         {
             get
             {
-                return _topOffset;
+                return this._topOffset;
             }
 
             set
             {
-                _topOffset = value;
-                PropertyChanged.NotifyPropertyChanged("TopOffset", this);
+                this._topOffset = value;
+                this.PropertyChanged.NotifyPropertyChanged("TopOffset", this);
             }
         }
 
@@ -178,18 +148,18 @@ namespace VixenModules.App.DisplayPreview.Model
         {
             get
             {
-                if (_width <= 0)
+                if (this._width <= 0)
                 {
-                    _width = Preferences.DefaultSettings.ChannelWidthDefault;
+                    this._width = Preferences.DefaultSettings.ChannelWidthDefault;
                 }
 
-                return _width;
+                return this._width;
             }
 
             set
             {
-                _width = value <= 0 ? 1 : value;
-                PropertyChanged.NotifyPropertyChanged("Width", this);
+                this._width = value <= 0 ? 1 : value;
+                this.PropertyChanged.NotifyPropertyChanged("Width", this);
             }
         }
 
@@ -197,34 +167,48 @@ namespace VixenModules.App.DisplayPreview.Model
         {
             get
             {
-                return VixenSystem.Nodes.GetAllNodes().FirstOrDefault(x => x.Id == NodeId);
+                return VixenSystem.Nodes.GetAllNodes().FirstOrDefault(x => x.Id == this.NodeId);
             }
         }
 
         public NodeLayout Clone()
         {
             return new NodeLayout
-                   {
-                       TopOffset = TopOffset, 
-                       LeftOffset = LeftOffset, 
-                       NodeId = NodeId,
-                       Height = Height,
-                       Width = Width,
-                       NodeColor = NodeColor,
-                       Shape = Shape.Clone(),
-                   };
+                {
+                    TopOffset = this.TopOffset, 
+                    LeftOffset = this.LeftOffset, 
+                    NodeId = this.NodeId, 
+                    Height = this.Height, 
+                    Width = this.Width, 
+                    _nodeBrush = this._nodeBrush, 
+                    Shape = this.Shape.Clone(), 
+                };
+        }
+
+        public void ResetColor(bool isRunning)
+        {
+            var brush = isRunning
+                            ? Colors.Transparent.AsBrush()
+                            : (this.Node.IsRgbNode() ? ColorManager.RgbBrush : Colors.White.AsBrush());
+            this.SetNodeBrush(brush);
+        }
+
+        public void SetNodeBrush(Brush brush)
+        {
+            this._nodeBrush = brush;
+            this._shape.Brush = brush;
         }
 
         private void Initialize()
         {
-            Shape = new OutlinedCircle();
-            NodeColor = Colors.Black;            
+            this.Shape = new OutlinedCircle();
+            this.SetNodeBrush(Colors.White.AsBrush());
         }
 
         [OnDeserializing]
         private void OnDeserializing(StreamingContext context)
         {
-            Initialize();
+            this.Initialize();
         }
     }
 }

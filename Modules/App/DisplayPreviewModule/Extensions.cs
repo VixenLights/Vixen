@@ -1,14 +1,38 @@
 namespace VixenModules.App.DisplayPreview
 {
+    using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Linq;
     using System.Windows.Media;
+
     using Vixen.Sys;
+
     using VixenModules.Property.RGB;
 
     public static class Extensions
     {
+        public static bool IsRgbNode(this ChannelNode channelNode)
+        {
+            return channelNode != null && channelNode.Properties != null
+                   && channelNode.Properties.Any(x => x is RGBModule);
+        }
+
+        public static bool IsRunning(this Execution.ExecutionState state)
+        {
+            switch (state)
+            {
+                case Execution.ExecutionState.Starting:
+                case Execution.ExecutionState.Started:
+                    return true;
+                case Execution.ExecutionState.Stopping:
+                case Execution.ExecutionState.Stopped:
+                    return false;
+                default:
+                    throw new ArgumentOutOfRangeException("state");
+            }
+        }
+
         public static void NotifyPropertyChanged(
             this PropertyChangedEventHandler propertyChangedEventHandler, string propertyName, object sender)
         {
@@ -18,7 +42,8 @@ namespace VixenModules.App.DisplayPreview
             }
         }
 
-        public static Dictionary<ChannelNode, Color> ToMediaColor(this Dictionary<ChannelNode, System.Drawing.Color> stateValues)
+        public static Dictionary<ChannelNode, Color> ToMediaColor(
+            this Dictionary<ChannelNode, System.Drawing.Color> stateValues)
         {
             if (stateValues == null)
             {
@@ -29,14 +54,9 @@ namespace VixenModules.App.DisplayPreview
                 stateValues.ToList().Select(
                     x =>
                     new KeyValuePair<ChannelNode, Color>(
-                        x.Key, Color.FromArgb(x.Value.A, x.Value.R, x.Value.G, x.Value.B))).ToDictionary(x => x.Key, x => x.Value);
+                        x.Key, Color.FromArgb(x.Value.A, x.Value.R, x.Value.G, x.Value.B))).ToDictionary(
+                            x => x.Key, x => x.Value);
             return newValues;
-        }
-
-        public static bool IsRgbNode(this ChannelNode channelNode)
-        {
-            return channelNode != null && channelNode.Properties != null
-                   && channelNode.Properties.Any(x => x is RGBModule);
         }
     }
 }
