@@ -136,7 +136,7 @@ namespace VixenModules.App.DisplayPreview.Model
         {
             get
             {
-                return _preferences ?? (_preferences = Preferences.DefaultSettings);
+                return _preferences ?? (_preferences = Preferences.CurrentPreferences);
             }
 
             set

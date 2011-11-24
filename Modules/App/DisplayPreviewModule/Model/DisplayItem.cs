@@ -40,7 +40,7 @@ namespace VixenModules.App.DisplayPreview.Model
             {
                 if (this._height <= 0)
                 {
-                    this._height = Preferences.DefaultSettings.DisplayItemHeightDefault;
+                    this._height = Preferences.CurrentPreferences.DisplayItemHeightDefault;
                 }
 
                 return this._height;
@@ -148,7 +148,7 @@ namespace VixenModules.App.DisplayPreview.Model
             {
                 if (this._width <= 0)
                 {
-                    this._width = Preferences.DefaultSettings.DisplayItemWidthDefault;
+                    this._width = Preferences.CurrentPreferences.DisplayItemWidthDefault;
                 }
 
                 return this._width;

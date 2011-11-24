@@ -49,6 +49,7 @@ namespace VixenModules.App.DisplayPreview.Model
             Execution.NodesChanged += ExecutionNodesChanged;
             Execution.ProgramContextCreated += this.ProgramContextCreated;
             Execution.ProgramContextReleased += this.ProgramContextReleased;
+            Preferences.CurrentPreferences = GetDisplayPreviewModuleDataModel().Preferences;
             this.ResetColors(false);
         }
 

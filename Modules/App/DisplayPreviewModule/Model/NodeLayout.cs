@@ -53,7 +53,7 @@ namespace VixenModules.App.DisplayPreview.Model
             {
                 if (this._height <= 0)
                 {
-                    this._height = Preferences.DefaultSettings.ChannelHeightDefault;
+                    this._height = Preferences.CurrentPreferences.ChannelHeightDefault;
                 }
 
                 return this._height;
@@ -150,7 +150,7 @@ namespace VixenModules.App.DisplayPreview.Model
             {
                 if (this._width <= 0)
                 {
-                    this._width = Preferences.DefaultSettings.ChannelWidthDefault;
+                    this._width = Preferences.CurrentPreferences.ChannelWidthDefault;
                 }
 
                 return this._width;
