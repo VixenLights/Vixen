@@ -40,6 +40,7 @@
 			this.menuStripMain = new System.Windows.Forms.MenuStrip();
 			this.vixenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.logsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.viewInstalledModulesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.executionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,15 +53,18 @@
 			this.listViewRecentSequences = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.label3 = new System.Windows.Forms.Label();
+			this.labelVersion = new System.Windows.Forms.Label();
+			this.label1 = new System.Windows.Forms.Label();
 			this.groupBoxSystemConfig = new System.Windows.Forms.GroupBox();
 			this.buttonSetupOutputControllers = new System.Windows.Forms.Button();
 			this.buttonSetupChannels = new System.Windows.Forms.Button();
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabelExecutionState = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabelExecutionLight = new System.Windows.Forms.ToolStripStatusLabel();
-			this.viewInstalledModulesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStripMain.SuspendLayout();
 			this.groupBoxSequences.SuspendLayout();
+			this.panel1.SuspendLayout();
 			this.groupBoxSystemConfig.SuspendLayout();
 			this.statusStrip.SuspendLayout();
 			this.SuspendLayout();
@@ -81,7 +85,7 @@
             this.vixenToolStripMenuItem});
 			this.menuStripMain.Location = new System.Drawing.Point(0, 0);
 			this.menuStripMain.Name = "menuStripMain";
-			this.menuStripMain.Size = new System.Drawing.Size(451, 24);
+			this.menuStripMain.Size = new System.Drawing.Size(461, 24);
 			this.menuStripMain.TabIndex = 2;
 			this.menuStripMain.Text = "menuStrip1";
 			// 
@@ -102,6 +106,13 @@
 			this.logsToolStripMenuItem.Name = "logsToolStripMenuItem";
 			this.logsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.logsToolStripMenuItem.Text = "Logs";
+			// 
+			// viewInstalledModulesToolStripMenuItem
+			// 
+			this.viewInstalledModulesToolStripMenuItem.Name = "viewInstalledModulesToolStripMenuItem";
+			this.viewInstalledModulesToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.viewInstalledModulesToolStripMenuItem.Text = "View Installed Modules";
+			this.viewInstalledModulesToolStripMenuItem.Click += new System.EventHandler(this.viewInstalledModulesToolStripMenuItem_Click);
 			// 
 			// executionToolStripMenuItem
 			// 
@@ -210,11 +221,47 @@
 			// 
 			this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+			this.panel1.BackColor = System.Drawing.Color.White;
+			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel1.Controls.Add(this.label3);
+			this.panel1.Controls.Add(this.labelVersion);
+			this.panel1.Controls.Add(this.label1);
 			this.panel1.Location = new System.Drawing.Point(0, 27);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(451, 100);
+			this.panel1.Size = new System.Drawing.Size(461, 100);
 			this.panel1.TabIndex = 11;
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.ForeColor = System.Drawing.Color.Gray;
+			this.label3.Location = new System.Drawing.Point(139, 78);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(173, 13);
+			this.label3.TabIndex = 2;
+			this.label3.Text = "(Help us come up with a new logo!)";
+			// 
+			// labelVersion
+			// 
+			this.labelVersion.AutoSize = true;
+			this.labelVersion.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelVersion.ForeColor = System.Drawing.Color.DarkGray;
+			this.labelVersion.Location = new System.Drawing.Point(326, 38);
+			this.labelVersion.Name = "labelVersion";
+			this.labelVersion.Size = new System.Drawing.Size(63, 22);
+			this.labelVersion.TabIndex = 1;
+			this.labelVersion.Text = "[0.0.0]";
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Font = new System.Drawing.Font("Arial", 36F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label1.ForeColor = System.Drawing.Color.Gray;
+			this.label1.Location = new System.Drawing.Point(12, 11);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(308, 55);
+			this.label1.TabIndex = 0;
+			this.label1.Text = "Vixen 3 Beta";
 			// 
 			// groupBoxSystemConfig
 			// 
@@ -253,9 +300,10 @@
 			this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabelExecutionState,
             this.toolStripStatusLabelExecutionLight});
-			this.statusStrip.Location = new System.Drawing.Point(0, 370);
+			this.statusStrip.Location = new System.Drawing.Point(0, 380);
 			this.statusStrip.Name = "statusStrip";
-			this.statusStrip.Size = new System.Drawing.Size(451, 27);
+			this.statusStrip.Size = new System.Drawing.Size(461, 27);
+			this.statusStrip.SizingGrip = false;
 			this.statusStrip.TabIndex = 13;
 			this.statusStrip.Text = "statusStrip";
 			// 
@@ -273,35 +321,32 @@
 			this.toolStripStatusLabelExecutionLight.Name = "toolStripStatusLabelExecutionLight";
 			this.toolStripStatusLabelExecutionLight.Size = new System.Drawing.Size(22, 22);
 			// 
-			// viewInstalledModulesToolStripMenuItem
-			// 
-			this.viewInstalledModulesToolStripMenuItem.Name = "viewInstalledModulesToolStripMenuItem";
-			this.viewInstalledModulesToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-			this.viewInstalledModulesToolStripMenuItem.Text = "View Installed Modules";
-			this.viewInstalledModulesToolStripMenuItem.Click += new System.EventHandler(this.viewInstalledModulesToolStripMenuItem_Click);
-			// 
 			// VixenApplication
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(451, 397);
+			this.ClientSize = new System.Drawing.Size(461, 407);
 			this.Controls.Add(this.statusStrip);
 			this.Controls.Add(this.groupBoxSystemConfig);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.groupBoxSequences);
 			this.Controls.Add(this.menuStripMain);
 			this.DoubleBuffered = true;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MainMenuStrip = this.menuStripMain;
+			this.MaximizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(467, 435);
 			this.Name = "VixenApplication";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "Vixen";
+			this.Text = "Vixen Administration";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.VixenApp_FormClosing);
 			this.Load += new System.EventHandler(this.VixenApplication_Load);
 			this.menuStripMain.ResumeLayout(false);
 			this.menuStripMain.PerformLayout();
 			this.groupBoxSequences.ResumeLayout(false);
 			this.groupBoxSequences.PerformLayout();
+			this.panel1.ResumeLayout(false);
+			this.panel1.PerformLayout();
 			this.groupBoxSystemConfig.ResumeLayout(false);
 			this.statusStrip.ResumeLayout(false);
 			this.statusStrip.PerformLayout();
@@ -336,6 +381,9 @@
 		private System.Windows.Forms.ListView listViewRecentSequences;
 		private System.Windows.Forms.ColumnHeader columnHeader1;
 		private System.Windows.Forms.ToolStripMenuItem viewInstalledModulesToolStripMenuItem;
+		private System.Windows.Forms.Label labelVersion;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label label3;
 	}
 }
 

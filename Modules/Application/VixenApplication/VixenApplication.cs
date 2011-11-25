@@ -24,9 +24,16 @@ namespace VixenApplication
 		{
 			stopping = false;
 			InitializeComponent();
+			labelVersion.Text = "[" + _GetVersionString(VixenSystem.AssemblyFileName) + "]";
 			AppCommands = new AppCommand(this);
 			Execution.ExecutionStateChanged += executionStateChangedHandler;
 			VixenSystem.Start(this, true);
+		}
+
+		private string _GetVersionString(string assemblyFileName) {
+			System.Reflection.Assembly assembly = System.Reflection.Assembly.LoadFile(assemblyFileName);
+			Version version = assembly.GetName().Version;
+			return version.Major + "." + version.Minor + "." + version.Build;
 		}
 
 		private void VixenApp_FormClosing(object sender, FormClosingEventArgs e)
