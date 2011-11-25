@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("DisplayPreviewModule")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("DisplayPreviewModule")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("DisplayPreviewModule")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2011")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("Vixen")]
+[assembly: AssemblyCopyright("Copyright � Erik Mathisen 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

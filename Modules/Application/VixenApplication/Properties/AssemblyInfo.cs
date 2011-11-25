@@ -1,16 +1,16 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Vixen")]
-[assembly: AssemblyDescription("Vixen")]
+[assembly: AssemblyTitle("VixenApplication")]
+[assembly: AssemblyDescription("VixenApplication")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Vixen")]
 [assembly: AssemblyProduct("Vixen")]
-[assembly: AssemblyCopyright("Copyright © Vixen 2011")]
+[assembly: AssemblyCopyright("Copyright � Vixen 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

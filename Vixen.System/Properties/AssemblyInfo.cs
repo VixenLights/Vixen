@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Vixen")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Vixen")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Vixen")]
-[assembly: AssemblyCopyright("Copyright © K.C. Oaks 2005-2011")]
+[assembly: AssemblyCopyright("Copyright � K.C. Oaks 2005-2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
