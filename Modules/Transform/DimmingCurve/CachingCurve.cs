@@ -7,9 +7,11 @@ using Vixen.Module;
 using Vixen.Module.Transform;
 using VixenModules.App.Curves;
 using Vixen.Commands.KnownDataTypes;
+using System.Runtime.Serialization;
 
 namespace VixenModules.Transform.DimmingCurve
 {
+	[DataContract]
 	class CachingCurve : Curve
 	{
 		public CachingCurve()
