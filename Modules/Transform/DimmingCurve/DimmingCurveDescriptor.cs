@@ -26,7 +26,7 @@ namespace VixenModules.Transform.DimmingCurve
 
 		public override string Description { get { return "Applies a custom curve transform to a monochromatic lighting output that will translate an input level to a different output level."; } }
 
-		public override string Version { get { return "0.1"; } }
+		public override string Version { get { return "1.0"; } }
 
 		public override Guid[] Dependencies { get { return new Guid[] { _CurvesId }; } }
 

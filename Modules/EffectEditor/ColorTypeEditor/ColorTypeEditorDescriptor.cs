@@ -25,7 +25,7 @@ namespace VixenModules.EffectEditor.ColorTypeEditor
 
 		public override string TypeName { get { return "Color Type Editor"; } }
 
-		public override string Version { get { return "0.1"; } }
+		public override string Version { get { return "1.0"; } }
 
 		public override Type[] ParameterSignature
 		{

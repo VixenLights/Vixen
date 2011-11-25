@@ -24,7 +24,7 @@ namespace VixenModules.EffectEditor.LevelTypeEditor
 
 		public override string TypeName { get { return "Level Type Editor"; } }
 
-		public override string Version { get { return "0.1"; } }
+		public override string Version { get { return "1.0"; } }
 
 		public override Type[] ParameterSignature
 		{

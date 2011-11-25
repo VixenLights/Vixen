@@ -26,7 +26,7 @@ namespace VixenModules.EffectEditor.ColorGradientTypeEditor
 
 		public override string TypeName { get { return "ColorGradient Type Editor"; } }
 
-		public override string Version { get { return "0.1"; } }
+		public override string Version { get { return "1.0"; } }
 
 		public override Guid[] Dependencies { get { return new Guid[] { _ColorGradientsId }; } }
 

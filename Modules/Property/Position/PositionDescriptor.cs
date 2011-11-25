@@ -18,7 +18,7 @@ namespace VixenModules.Property.Position {
 		}
 
 		public override string Author {
-			get { return "Vixen Development Team"; }
+			get { return "Vixen Team"; }
 		}
 
 		public override string Description {

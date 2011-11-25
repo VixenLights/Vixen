@@ -37,7 +37,7 @@ namespace VixenModules.Media.Audio
 
 		override public string Version
 		{
-			get { return "0.1"; }
+			get { return "1.0"; }
 		}
 
 		override public string TypeName

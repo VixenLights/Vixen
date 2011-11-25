@@ -29,7 +29,7 @@ namespace VixenModules.Effect.SetLevel
 
 		public override string Description { get { return "Sets the target channels to a static output level and/or color."; } }
 
-		public override string Version { get { return "0.1"; } }
+		public override string Version { get { return "1.0"; } }
 
 		public override Guid[] Dependencies { get { return new Guid[] { _RGBPropertyId }; } }
 

@@ -43,7 +43,7 @@ namespace VixenModules.App.ColorGradients
 
 		override public string Version
 		{
-			get { return "0.1"; }
+			get { return "1.0"; }
 		}
 
 		public static Guid ModuleID

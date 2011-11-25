@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Module.App;
-using Vixen.Sys;
 
 namespace VixenModules.App.InstrumentationPanel
 {
@@ -19,15 +18,15 @@ namespace VixenModules.App.InstrumentationPanel
 		}
 
 		public override string Author {
-			get { throw new NotImplementedException(); }
+			get { return "Vixen Team"; }
 		}
 
 		public override string Description {
-			get { throw new NotImplementedException(); }
+			get { return "Text display of a few stats."; }
 		}
 
 		public override string Version {
-			get { throw new NotImplementedException(); }
+			get { return "1.0"; }
 		}
 
 		public override Type ModuleClass {

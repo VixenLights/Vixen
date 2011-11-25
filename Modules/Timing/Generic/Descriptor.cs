@@ -10,7 +10,7 @@ namespace VixenModules.Timing.Generic {
 		private Guid _typeId = Guid.Empty;
 
 		public override string Author {
-			get { return "K.C. Oaks"; }
+			get { return "Vixen Team"; }
 		}
 
 		public override string Description {

@@ -23,7 +23,7 @@ namespace VixenModules.EffectEditor.ChaseEffectEditor
 
 		public override string TypeName { get { return "Chase Effect Editor"; } }
 
-		public override string Version { get { return "0.1"; } }
+		public override string Version { get { return "1.0"; } }
 
 		public override Type[] ParameterSignature { get { return null; } }
 

@@ -11,7 +11,7 @@ namespace VixenModules.Output.Olsen595
 		private Guid _typeId = new Guid("{9B8E5BC9-474F-4a6c-BE6C-455E506E54BF}");
 
 		public override string Author {
-			get { return "K.C. Oaks"; }
+			get { return "Vixen Team"; }
 		}
 
 		public override string Description {
@@ -35,7 +35,7 @@ namespace VixenModules.Output.Olsen595
 		}
 
 		public override string Version {
-			get { return "1"; }
+			get { return "1.0"; }
 		}
 	}
 }

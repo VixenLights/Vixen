@@ -32,7 +32,7 @@ namespace VixenModules.Effect.Pulse
 
 		public override string Description { get { return "Applies a pulse with a variable level and/or color to the target channels."; } }
 
-		public override string Version { get { return "0.1"; } }
+		public override string Version { get { return "1.0"; } }
 
 		public override Guid[] Dependencies { get { return new Guid[] { _CurvesId, _ColorGradientId }; } }
 

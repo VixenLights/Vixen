@@ -38,7 +38,7 @@ namespace VixenModules.Sequence.Timed {
 		}
 
 		override public string Version {
-			get { return "0.1"; }
+			get { return "1.0"; }
 		}
 	}
 }

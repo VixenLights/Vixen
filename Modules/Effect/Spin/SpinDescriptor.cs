@@ -34,7 +34,7 @@ namespace VixenModules.Effect.Spin
 
 		public override string Description { get { return "Generates pulses on consecutive channels in the given group to give the appearance of spinning."; } }
 
-		public override string Version { get { return "0.1"; } }
+		public override string Version { get { return "1.0"; } }
 
 		public override Guid[] Dependencies { get { return new Guid[] { _CurvesId, _ColorGradientId, _PulseId }; } }
 
