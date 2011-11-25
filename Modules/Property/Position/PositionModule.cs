@@ -13,15 +13,15 @@ namespace VixenModules.Property.Position {
 		static private Dictionary<Guid, PositionMap> _nodePositionMap = new Dictionary<Guid, PositionMap>();
 
 		public override void SetDefaultValues() {
-			// Only do this if we don't already have values.
-			if(_data.ChildrenPositions.Count == 0) {
-				float spanPerChild = 1f/Owner.Children.Count();
-				float start = 0;
+			float spanPerChild = 1f/Owner.Children.Count();
+			float start = 0;
 
-				foreach(ChannelNode node in Owner.Children) {
+			// Make sure each child has a value.
+			foreach(ChannelNode node in Owner.Children) {
+				if(!_data.ChildrenPositions.ContainsKey(node.Id)) {
 					_data.ChildrenPositions[node.Id] = new PositionValue(start, spanPerChild);
-					start += spanPerChild;
 				}
+				start += spanPerChild;
 			}
 		}
 

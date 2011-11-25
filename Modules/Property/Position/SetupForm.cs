@@ -58,11 +58,10 @@ namespace VixenModules.Property.Position {
 
 		private void buttonOK_Click(object sender, EventArgs e) {
 			PositionData data = _positionProperty.StaticModuleData as PositionData;
-			data.ChildrenPositions.Clear();
 			for(int i=0; i<_positions.Length; i++) {
 				ChannelNode child = _children[i];
 				PositionValue childPosition = _positions[i];
-				data.ChildrenPositions.Add(child.Id, childPosition);
+				data.ChildrenPositions[child.Id] = childPosition;
 			}
 		}
 	}
