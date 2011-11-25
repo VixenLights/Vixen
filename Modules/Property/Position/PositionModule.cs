@@ -10,7 +10,7 @@ namespace VixenModules.Property.Position {
 	public class PositionModule : PropertyModuleInstanceBase {
 		private PositionData _data;
 		// For a given node, the position of every node underneath it.
-		static private Dictionary<Guid, PositionMap> _nodePositionMap = new Dictionary<Guid, PositionMap>();
+		static private PositionMap _nodePositionMap = new PositionMap();
 
 		public override void SetDefaultValues() {
 			float spanPerChild = 1f/Owner.Children.Count();
@@ -49,33 +49,23 @@ namespace VixenModules.Property.Position {
 		public enum PositionBehavior { Spanning, Resetting };
 
 		public void BuildPositionMap(IEnumerable<ChannelNode> topLevelNodes) {
-			_GetPositionMap(topLevelNodes);
+			foreach(ChannelNode node in topLevelNodes) {
+				if(!_HaveMap(node)) {
+					_ParseNode(node);
+				}
+			}
 		}
 
-		public PositionValue GetPosition(Guid channelNodeId) {
+		public PositionValue GetPositionValues(Guid channelNodeId) {
 			PositionValue childPosition;
 			_data.ChildrenPositions.TryGetValue(channelNodeId, out childPosition);
 			return childPosition;
 		}
 
-		static private PositionMap _GetPositionMap(IEnumerable<ChannelNode> topLevelNodes) {
-			// If there are conflicts in the resulting absolute positioning, we're not going
-			// to care how that plays out.  Shame on them for not doing an accurate modeling. ;)
-			PositionMap positionMap = new PositionMap();
-			foreach(ChannelNode node in topLevelNodes) {
-				PositionMap nodeMap = _GetPositionMap(node);
-				positionMap.AddRange(nodeMap);
-			}
-			return positionMap;
-		}
-
-		static private PositionMap _GetPositionMap(ChannelNode topLevelNode) {
-			PositionMap map;
-			if(!_nodePositionMap.TryGetValue(topLevelNode.Id, out map)) {
-				_ParseNode(topLevelNode);
-				map = _nodePositionMap[topLevelNode.Id];
-			}
-			return map;
+		public PositionValue GetCalculatedPosition(Guid channelNodeId) {
+			PositionValue childPosition;
+			_nodePositionMap.TryGetValue(channelNodeId, out childPosition);
+			return childPosition;
 		}
 
 		static private bool _HaveMap(ChannelNode node) {
@@ -83,9 +73,9 @@ namespace VixenModules.Property.Position {
 		}
 
 		static private void _ParseNode(ChannelNode node) {
-			// This will be the dictionary of node : position for every node within this branch.
-			PositionValue positionValue = new PositionValue(0, 100);
-			_nodePositionMap[node.Id] = _ParseChildren(node, positionValue);
+			PositionValue positionValue = new PositionValue(0, 1);
+			PositionMap positions = _ParseChildren(node, positionValue);
+			_nodePositionMap.AddRange(positions);
 		}
 
 		static private PositionMap _ParseChildren(ChannelNode parentNode, PositionValue parentPosition) {
@@ -96,7 +86,7 @@ namespace VixenModules.Property.Position {
 			PositionModule positionProperty = parentNode.Properties.Get(PositionDescriptor._typeId) as PositionModule;
 
 			foreach(ChannelNode childNode in parentNode.Children) {
-				PositionValue childPosition = positionProperty.GetPosition(childNode.Id);
+				PositionValue childPosition = positionProperty.GetPositionValues(childNode.Id);
 				if(childPosition != null) {
 					// Parent has a modifying position for the child.
 					childPosition = _Multiply(parentPosition, childPosition);

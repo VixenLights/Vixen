@@ -58,6 +58,8 @@ namespace Vixen.Module.Output {
 				// Allowing multiple instances of a transform type.
 				// Create a new instance, but use the same data (clone).
 				//*Onus is on the caller to make sure they have a unique instance*
+				// Otherwise, if this does it, a new instance is created and the caller has a different reference
+				// than what the system has.
 				//ITransformModuleInstance newInstance = Modules.ModuleManagement.CloneTransform(transform);
 				// If data is already assigned to the module, it will be added to the data set.
 				// If not, it will be created and added.

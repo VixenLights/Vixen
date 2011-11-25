@@ -18,7 +18,7 @@ namespace VixenModules.Property.Position {
 
 			_positionProperty = positionProperty;
 			_children = _positionProperty.Owner.Children.ToArray();
-			_positions = _children.Select(x => _positionProperty.GetPosition(x.Id)).ToArray();
+			_positions = _children.Select(x => _positionProperty.GetPositionValues(x.Id)).ToArray();
 
 			listBoxNodeChildren.DisplayMember = "Name";
 			listBoxNodeChildren.ValueMember = "Id";
