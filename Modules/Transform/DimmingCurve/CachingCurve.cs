@@ -33,6 +33,9 @@ namespace VixenModules.Transform.DimmingCurve
 
 		public override double GetValue(double x)
 		{
+			if (!base.CheckLibraryReference())
+				GenerateCachedValues();
+
 			if (CachedValues == null)
 				GenerateCachedValues();
 

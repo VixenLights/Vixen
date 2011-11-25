@@ -146,7 +146,7 @@ namespace Vixen.Module.Output {
 		}
 
 		virtual public void AddTransform(int outputIndex, ITransformModuleInstance transformModule) {
-			// Create data for the instance.
+			// Add/Create the instance data in the dataset.
 			ModuleDataSet.GetModuleInstanceData(transformModule);
 
 			// Add the instance.

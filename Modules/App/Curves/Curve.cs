@@ -76,7 +76,7 @@ namespace VixenModules.App.Curves
 
 
 		[DataMember]
-		private string _libraryReferenceName;
+		protected string _libraryReferenceName;
 		public string LibraryReferenceName
 		{
 			get

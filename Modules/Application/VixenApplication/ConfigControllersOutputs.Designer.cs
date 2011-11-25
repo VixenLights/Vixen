@@ -27,10 +27,14 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.listViewOutputs = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.copyTransformsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.pasteTransformsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox = new System.Windows.Forms.GroupBox();
 			this.buttonUpdate = new System.Windows.Forms.Button();
 			this.buttonConfigure = new System.Windows.Forms.Button();
@@ -42,6 +46,8 @@
 			this.buttonAdd = new System.Windows.Forms.Button();
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonBulkRename = new System.Windows.Forms.Button();
+			this.deleteAllTransformsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.contextMenuStrip.SuspendLayout();
 			this.groupBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -51,6 +57,7 @@
             this.columnHeader1,
             this.columnHeader2,
             this.columnHeader3});
+			this.listViewOutputs.ContextMenuStrip = this.contextMenuStrip;
 			this.listViewOutputs.FullRowSelect = true;
 			this.listViewOutputs.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
 			this.listViewOutputs.HideSelection = false;
@@ -79,6 +86,30 @@
 			this.columnHeader3.Text = "Transform(s)";
 			this.columnHeader3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			this.columnHeader3.Width = 111;
+			// 
+			// contextMenuStrip
+			// 
+			this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyTransformsToolStripMenuItem,
+            this.pasteTransformsToolStripMenuItem,
+            this.deleteAllTransformsToolStripMenuItem});
+			this.contextMenuStrip.Name = "contextMenuStrip";
+			this.contextMenuStrip.Size = new System.Drawing.Size(188, 92);
+			this.contextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip_Opening);
+			// 
+			// copyTransformsToolStripMenuItem
+			// 
+			this.copyTransformsToolStripMenuItem.Name = "copyTransformsToolStripMenuItem";
+			this.copyTransformsToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+			this.copyTransformsToolStripMenuItem.Text = "Copy Transforms";
+			this.copyTransformsToolStripMenuItem.Click += new System.EventHandler(this.copyTransformsToolStripMenuItem_Click);
+			// 
+			// pasteTransformsToolStripMenuItem
+			// 
+			this.pasteTransformsToolStripMenuItem.Name = "pasteTransformsToolStripMenuItem";
+			this.pasteTransformsToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+			this.pasteTransformsToolStripMenuItem.Text = "Paste Transforms";
+			this.pasteTransformsToolStripMenuItem.Click += new System.EventHandler(this.pasteTransformsToolStripMenuItem_Click);
 			// 
 			// groupBox
 			// 
@@ -138,6 +169,7 @@
 			// 
 			// listViewTransforms
 			// 
+			this.listViewTransforms.ContextMenuStrip = this.contextMenuStrip;
 			this.listViewTransforms.HideSelection = false;
 			this.listViewTransforms.Location = new System.Drawing.Point(74, 61);
 			this.listViewTransforms.MultiSelect = false;
@@ -197,6 +229,13 @@
 			this.buttonBulkRename.UseVisualStyleBackColor = true;
 			this.buttonBulkRename.Click += new System.EventHandler(this.buttonBulkRename_Click);
 			// 
+			// deleteAllTransformsToolStripMenuItem
+			// 
+			this.deleteAllTransformsToolStripMenuItem.Name = "deleteAllTransformsToolStripMenuItem";
+			this.deleteAllTransformsToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+			this.deleteAllTransformsToolStripMenuItem.Text = "Delete All Transforms";
+			this.deleteAllTransformsToolStripMenuItem.Click += new System.EventHandler(this.deleteAllTransformsToolStripMenuItem_Click);
+			// 
 			// ConfigControllersOutputs
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -211,6 +250,7 @@
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Configure Controller Outputs";
 			this.Load += new System.EventHandler(this.ConfigControllersOutputs_Load);
+			this.contextMenuStrip.ResumeLayout(false);
 			this.groupBox.ResumeLayout(false);
 			this.groupBox.PerformLayout();
 			this.ResumeLayout(false);
@@ -234,5 +274,9 @@
 		private System.Windows.Forms.Button buttonOK;
 		private System.Windows.Forms.Button buttonUpdate;
 		private System.Windows.Forms.Button buttonBulkRename;
+		private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
+		private System.Windows.Forms.ToolStripMenuItem copyTransformsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem pasteTransformsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem deleteAllTransformsToolStripMenuItem;
 	}
 }

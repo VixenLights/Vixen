@@ -19,6 +19,7 @@ namespace VixenApplication
 	{
 		private OutputController _controller;
 		private int _selectedOutputIndex;
+		private List<ITransformModuleInstance> _clipboardTransforms;
 
 		public ConfigControllersOutputs(OutputController controller)
 		{
@@ -40,17 +41,16 @@ namespace VixenApplication
 			OutputController.Output output = _controller.Outputs[outputIndex];
 			item.Text = (outputIndex + 1).ToString();
 			item.SubItems.Add(output.Name);
+			item.Tag = outputIndex;
 			String ts = "";
-			if (_controller.OutputTransforms.ContainsKey(outputIndex)) {
-				HashSet<Tuple<Guid, Guid>> transforms = _controller.OutputTransforms[outputIndex];
-				foreach (Tuple<Guid, Guid> transform in transforms) {
-					// Tuple is: item1 - module type GUID, item2 - module instance GUID
-					if (ts == "")
-						ts = ApplicationServices.GetModuleDescriptor(transform.Item1).TypeName;
-					else
-						ts += ", " + ApplicationServices.GetModuleDescriptor(transform.Item1).TypeName;
-				}
+
+			foreach (ITransformModuleInstance transform in _controller.OutputModule.GetTransforms(outputIndex)) {
+				if (ts == "")
+					ts = transform.Descriptor.TypeName;
+				else
+					ts += ", " + transform.Descriptor.TypeName;
 			}
+
 			item.SubItems.Add(ts);
 		}
 
@@ -80,15 +80,12 @@ namespace VixenApplication
 			} else {
 				groupBox.Enabled = true;
 				textBoxName.Text = _controller.Outputs[outputIndex].Name;
-				if (_controller.OutputTransforms.ContainsKey(outputIndex)) {
-					HashSet<Tuple<Guid, Guid>> transforms = _controller.OutputTransforms[outputIndex];
-					foreach (Tuple<Guid, Guid> transform in transforms) {
-						// Tuple is: item1 - module type GUID, item2 - module instance GUID
-						ListViewItem item = new ListViewItem();
-						item.Text = ApplicationServices.GetModuleDescriptor(transform.Item1).TypeName;
-						item.Tag = transform.Item2;		// save the instance ID to be able to configure it later
-						listViewTransforms.Items.Add(item);
-					}
+
+				foreach (ITransformModuleInstance transform in _controller.OutputModule.GetTransforms(outputIndex)) {
+					ListViewItem item = new ListViewItem();
+					item.Text = transform.Descriptor.TypeName;
+					item.Tag = transform;
+					listViewTransforms.Items.Add(item);
 				}
 
 				buttonDelete.Enabled = false;
@@ -130,18 +127,11 @@ namespace VixenApplication
 			ListSelectDialog addForm = new ListSelectDialog("Add Transform", (newTransforms));
 			if (addForm.ShowDialog() == DialogResult.OK) {
 
-				ModuleInstanceSpecification<int> allTransforms = _controller.OutputTransforms;
-				HashSet<Tuple<Guid,Guid>> outputTransforms;
-				if (allTransforms.ContainsKey(_selectedOutputIndex)) {
-					outputTransforms = allTransforms[_selectedOutputIndex];
-				} else {
-					outputTransforms = new HashSet<Tuple<Guid,Guid>>();
-				}
-
 				ITransformModuleInstance newInstance = ApplicationServices.Get<ITransformModuleInstance>((Guid)addForm.SelectedItem);
-				outputTransforms.Add(new Tuple<Guid, Guid>(newInstance.Descriptor.TypeId, newInstance.InstanceId));
-				allTransforms[_selectedOutputIndex] = outputTransforms;
-				_controller.OutputTransforms = allTransforms;
+				if (newInstance == null)
+					VixenSystem.Logging.Error("ConfigControllersOutput: null instance trying to create transform!");
+				else
+					_controller.OutputModule.AddTransform(_selectedOutputIndex, newInstance);
 			}
 
 			_redrawOutputList();
@@ -151,19 +141,11 @@ namespace VixenApplication
 		private void buttonDelete_Click(object sender, EventArgs e)
 		{
 			foreach (ListViewItem lvi in listViewTransforms.SelectedItems) {
-				Guid instanceToRemoveId = (Guid)lvi.Tag;
-
-				ModuleInstanceSpecification<int> allTransforms = _controller.OutputTransforms;
-				if (!allTransforms.ContainsKey(_selectedOutputIndex)) {
-					VixenSystem.Logging.Error("ConfigControllersOutputs: can't remove selected transforms, as the " +
-						"controller doesn't have any transforms for output index " + _selectedOutputIndex);
+				ITransformModuleInstance transform = lvi.Tag as ITransformModuleInstance;
+				if (transform == null)
 					continue;
-				}
 
-				HashSet<Tuple<Guid, Guid>> outputTransforms = allTransforms[_selectedOutputIndex];
-				outputTransforms.Remove(outputTransforms.Single(x => x.Item2 == instanceToRemoveId));
-				allTransforms[_selectedOutputIndex] = outputTransforms;
-				_controller.OutputTransforms = allTransforms;
+				_controller.OutputModule.RemoveTransform(_selectedOutputIndex, transform.Descriptor.TypeId, transform.InstanceId);
 			}
 
 			_redrawOutputList();
@@ -179,10 +161,9 @@ namespace VixenApplication
 			if (listViewTransforms.SelectedItems.Count <= 0)
 				return;
 
-			Guid transformInstanceID = (Guid)listViewTransforms.SelectedItems[0].Tag;
-			ITransformModuleInstance instance = _controller.OutputModule.GetTransforms(_selectedOutputIndex).Single(x => x.InstanceId == transformInstanceID);
-			if (instance != null)
-				instance.Setup();
+			ITransformModuleInstance transform = listViewTransforms.SelectedItems[0].Tag as ITransformModuleInstance;
+			if (transform != null)
+				transform.Setup();
 		}
 
 		private void buttonUpdate_Click(object sender, EventArgs e)
@@ -232,6 +213,91 @@ namespace VixenApplication
 		private void listViewTransforms_DoubleClick(object sender, EventArgs e)
 		{
 			ConfigureSelectedTransform();
+		}
+
+		private void copyTransformsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (listViewOutputs.Focused) {
+				if (listViewOutputs.SelectedItems.Count != 1)
+					return;
+
+				int outputIndex = (int)listViewOutputs.SelectedItems[0].Tag;
+				_clipboardTransforms = new List<ITransformModuleInstance>(_controller.OutputModule.GetTransforms(outputIndex));
+			} else if (listViewTransforms.Focused) {
+				_clipboardTransforms = new List<ITransformModuleInstance>();
+				foreach (ListViewItem lvi in listViewTransforms.SelectedItems) {
+					ITransformModuleInstance instance = lvi.Tag as ITransformModuleInstance;
+					if (instance != null)
+						_clipboardTransforms.Add(instance);
+				}
+				if (_clipboardTransforms.Count <= 0)
+					_clipboardTransforms = null;
+			}
+		}
+
+		private void pasteTransformsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (listViewOutputs.Focused) {
+				foreach (ListViewItem lvi in listViewOutputs.SelectedItems) {
+					int outputIndex = (int)lvi.Tag;
+
+					foreach (ITransformModuleInstance sourceTransform in _clipboardTransforms) {
+						ITransformModuleInstance newInstance = sourceTransform.Clone() as ITransformModuleInstance;
+						_controller.OutputModule.AddTransform(outputIndex, newInstance);
+					}
+				}
+
+				_redrawOutputList();
+			} else if (listViewTransforms.Focused) {
+				foreach (ITransformModuleInstance sourceTransform in _clipboardTransforms) {
+					ITransformModuleInstance newInstance = sourceTransform.Clone() as ITransformModuleInstance;
+					_controller.OutputModule.AddTransform(_selectedOutputIndex, newInstance);
+				}
+				_populateFormWithOutput(_selectedOutputIndex, true);
+			}
+		}
+
+		private void contextMenuStrip_Opening(object sender, CancelEventArgs e)
+		{
+			if (listViewOutputs.Focused) {
+				copyTransformsToolStripMenuItem.Enabled = false;
+
+				foreach (ListViewItem lvi in listViewOutputs.SelectedItems) {
+					int outputIndex = (int)lvi.Tag;
+					IEnumerable<ITransformModuleInstance> transforms = _controller.OutputModule.GetTransforms(outputIndex);
+					if (transforms != null && transforms.Count() > 0) {
+						copyTransformsToolStripMenuItem.Enabled = true;
+						break;
+					}
+				}
+
+				pasteTransformsToolStripMenuItem.Enabled = _clipboardTransforms != null && listViewOutputs.SelectedItems.Count > 0;
+
+			} else if (listViewTransforms.Focused) {
+				copyTransformsToolStripMenuItem.Enabled = listViewTransforms.SelectedItems.Count > 0;
+				pasteTransformsToolStripMenuItem.Enabled = _clipboardTransforms != null;
+			} else {
+				copyTransformsToolStripMenuItem.Enabled = false;
+				pasteTransformsToolStripMenuItem.Enabled = false;
+			}
+		}
+
+		private void deleteAllTransformsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (listViewOutputs.Focused) {
+				foreach (ListViewItem lvi in listViewOutputs.SelectedItems) {
+					int outputIndex = (int)lvi.Tag;
+					foreach (ITransformModuleInstance instance in _controller.OutputModule.GetTransforms(outputIndex).ToArray()) {
+						_controller.OutputModule.RemoveTransform(outputIndex, instance.Descriptor.TypeId, instance.InstanceId);
+					}
+				}
+			} else if (listViewTransforms.Focused) {
+				foreach (ListViewItem lvi in listViewTransforms.SelectedItems) {
+					ITransformModuleInstance instance = lvi.Tag as ITransformModuleInstance;
+					if (instance != null)
+						_controller.OutputModule.RemoveTransform(_selectedOutputIndex, instance.Descriptor.TypeId, instance.InstanceId);
+				}
+			}
 		}
 	}
 }
