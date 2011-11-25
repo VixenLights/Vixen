@@ -19,6 +19,7 @@ namespace Vixen.IO.Xml {
 		private const string ELEMENT_PROPERTY = "Property";
 		private const string ELEMENT_PROPERTY_DATA = "PropertyData";
 		private const string ELEMENT_IDENTITY = "Identity";
+		private const string ELEMENT_DISABLED_CONTROLLERS = "DisabledControllers";
 		private const string ATTR_ID = "id";
 		private const string ATTR_NAME = "name";
 		private const string ATTR_CHANNEL_ID = "channelId";
@@ -45,7 +46,8 @@ namespace Vixen.IO.Xml {
 				_WriteAlternateDataDirectory(obj),
 				_WriteChannels(obj),
 				_WriteBranchNodes(obj),
-				_WriteControllers(obj));
+				_WriteControllers(obj),
+				_WriteDisabledControllers(obj));
 		}
 
 		private XAttribute _WriteContextFlag(SystemConfig obj) {
@@ -80,6 +82,11 @@ namespace Vixen.IO.Xml {
 		private XElement _WriteControllers(SystemConfig obj) {
 			IEnumerable<XElement> elements = obj.Controllers.Select(_WriteController);
 			return new XElement(ELEMENT_CONTROLLERS, elements);
+		}
+
+		private XElement _WriteDisabledControllers(SystemConfig obj) {
+			IEnumerable<XElement> elements = obj.DisabledControllers.Select(_WriteDisabledController);
+			return new XElement(ELEMENT_DISABLED_CONTROLLERS, elements);
 		}
 
 		private XElement _WriteOutputChannel(Channel outputChannel) {
@@ -129,6 +136,12 @@ namespace Vixen.IO.Xml {
 							new XElement(ELEMENT_TRANSFORMS,
 								_CreateOutputTransformContent(controller, index))))));
 
+			return element;
+		}
+
+		private XElement _WriteDisabledController(OutputController controller) {
+			XElement element = new XElement(ELEMENT_CONTROLLER,
+				new XAttribute(ATTR_ID, controller.Id));
 			return element;
 		}
 

@@ -22,6 +22,7 @@ namespace Vixen.IO.Xml {
 		private const string ELEMENT_PROPERTY = "Property";
 		private const string ELEMENT_PROPERTY_DATA = "PropertyData";
 		private const string ELEMENT_IDENTITY = "Identity";
+		private const string ELEMENT_DISABLED_CONTROLLERS = "DisabledControllers";
 		private const string ATTR_ID = "id";
 		private const string ATTR_NAME = "name";
 		private const string ATTR_CHANNEL_ID = "channelId";
@@ -54,18 +55,21 @@ namespace Vixen.IO.Xml {
 			_channels = _ReadChannels(element);
 			ChannelNode[] nodes = _ReadNodes(element);
 			OutputController[] controllers = _ReadControllers(element);
+			Guid[] disabledControllers = _ReadDisabledControllers(element);
 
 			obj.IsContext = isContext;
 			obj.Identity = identity;
 			obj.Channels = _channels;
 			obj.Nodes = nodes;
 			obj.Controllers = controllers;
+			obj.DisabledControllers = disabledControllers.Select(x => controllers.FirstOrDefault(y => y.Id == x)).Where(x => x != null);
 		}
 
 		protected override IEnumerable<Func<XElement, XElement>> _ProvideMigrations(int versionAt, int targetVersion) {
 			if(versionAt < 2 && targetVersion >= 2) yield return _Version_1_to_2;
 			if(versionAt < 3 && targetVersion >= 3) yield return _Version_2_to_3;
 			if(versionAt < 4 && targetVersion >= 4) yield return _Version_3_to_4;
+			if(versionAt < 5 && targetVersion >= 5) yield return _Version_4_to_5;
 		}
 
 		private bool _ReadContextFlag(XElement element) {
@@ -95,6 +99,12 @@ namespace Vixen.IO.Xml {
 			XElement parentNode = element.Element(ELEMENT_CONTROLLERS);
 			OutputController[] controllers = parentNode.Elements().Select(_ReadController).ToArray();
 			return controllers;
+		}
+
+		private Guid[] _ReadDisabledControllers(XElement element) {
+			XElement parentNode = element.Element(ELEMENT_DISABLED_CONTROLLERS);
+			Guid[] ids = parentNode.Elements().Select(_ReadDisabledController).ToArray();
+			return ids;
 		}
 
 		private Channel _ReadOutputChannel(XElement element) {
@@ -173,6 +183,10 @@ namespace Vixen.IO.Xml {
 			return controller;
 		}
 
+		private Guid _ReadDisabledController(XElement element) {
+			return Guid.Parse(element.Attribute(ATTR_ID).Value);
+		}
+
 		private void _PopulateController(OutputController controller, XElement element) {
 			controller.LinkedTo = Guid.Parse(element.Attribute(ATTR_LINKED_TO).Value);
 
@@ -232,6 +246,11 @@ namespace Vixen.IO.Xml {
 				XElement moduleDataElement = new XElement(ELEMENT_MODULE_DATA, XElement.Parse(content));
 				controllerElement.Add(moduleDataElement);
 			}
+			return element;
+		}
+
+		private XElement _Version_4_to_5(XElement element) {
+			element.Add(new XElement(ELEMENT_DISABLED_CONTROLLERS));
 			return element;
 		}
 	}

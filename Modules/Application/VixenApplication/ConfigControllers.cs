@@ -16,6 +16,7 @@ namespace VixenApplication
 	public partial class ConfigControllers : Form
 	{
 		private OutputController _displayedController;
+		private bool _internal;
 		public ConfigControllers()
 		{
 			InitializeComponent();
@@ -30,10 +31,14 @@ namespace VixenApplication
 			foreach(OutputController oc in VixenSystem.Controllers) {
 				ListViewItem item = new ListViewItem();
 				item.Text = oc.Name;
+				item.Checked = oc.IsRunning;
 				item.SubItems.Add(Vixen.Sys.ApplicationServices.GetModuleDescriptor(oc.OutputModuleId).TypeName);
 				item.SubItems.Add(oc.OutputCount.ToString());
 				item.Tag = oc;
+				// I'm sorry for this.  Someone know of a better way?
+				_internal = true;
 				listViewControllers.Items.Add(item);
+				_internal = false;
 			}
 
 			listViewControllers.EndUpdate();
@@ -79,6 +84,11 @@ namespace VixenApplication
 				string name = moduleDescriptor.TypeName;
 				OutputController oc = new OutputController(name, 0, (Guid)addForm.SelectedItem);
 				VixenSystem.Controllers.AddController(oc);
+				// In the case of a controller that has a form, the form will not be shown
+				// until this event handler completes.  To make sure it's in a visible state
+				// before evaluating if it's running or not, we're calling DoEvents.
+				// I hate DoEvents calls, so if you know of a better way...
+				Application.DoEvents();
 
 				// select the new controller, and then repopulate the list -- it will make sure the currently
 				// displayed controller is selected.
@@ -221,6 +231,18 @@ namespace VixenApplication
 		{
 			if (listViewControllers.SelectedItems.Count == 1) {
 				(listViewControllers.SelectedItems[0].Tag as OutputController).Setup();
+			}
+		}
+
+		private void listViewControllers_ItemChecked(object sender, ItemCheckedEventArgs e) {
+			// This is going to be fired every time something is added to the listview.
+			if(!_internal) {
+				OutputController controller = e.Item.Tag as OutputController;
+				if(e.Item.Checked) {
+					VixenSystem.Controllers.StartController(controller);
+				} else {
+					VixenSystem.Controllers.StopController(controller);
+				}
 			}
 		}
 	}

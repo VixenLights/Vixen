@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Xml.Linq;
-using System.IO;
 using System.Threading.Tasks;
 using Vixen.Module;
 using Vixen.Module.Output;
 using Vixen.Module.Transform;
-using Vixen.IO;
-using Vixen.IO.Xml;
 using Vixen.Commands;
 
 namespace Vixen.Sys {
-	public class OutputController : IEnumerable<OutputController>, Vixen.Execution.IExecutionControl {//, IVersioned {
+	public class OutputController : IEnumerable<OutputController>, Vixen.Execution.IExecutionControl {
 		private Guid _outputModuleId;
 		private IOutputModuleInstance _outputModule = null;
 		private List<Output> _outputs = new List<Output>();
@@ -33,26 +29,26 @@ namespace Vixen.Sys {
 		}
 
 		public void Start() {
-			if(OutputModule != null) {
+			if(!IsRunning && OutputModule != null) {
 				OutputModule.Start();
 				_FixupOutputSources();
 			}
 		}
 
 		public void Pause() {
-			if(OutputModule != null) {
+			if(IsRunning && OutputModule != null) {
 				OutputModule.Pause();
 			}
 		}
 
 		public void Resume() {
-			if(OutputModule != null) {
+			if(IsRunning && OutputModule != null) {
 				OutputModule.Resume();
 			}
 		}
 
 		public void Stop() {
-			if(OutputModule != null) {
+			if(IsRunning && OutputModule != null) {
 				OutputModule.Stop();
 				_ReleaseOutputSources();
 			}

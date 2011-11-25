@@ -28,7 +28,13 @@ namespace Vixen.Sys {
 		public void AddController(OutputController controller) {
 			lock(_controllers) {
 				_controllers[controller.Id] = controller;
-				_StartController(controller);
+
+				// Make sure the controller is running/not running like all the others.
+				if(_stateAll == ExecutionState.Started) {
+					_StartController(controller);
+				} else {
+					_StopController(controller);
+				}
 			}
 		}
 
@@ -75,7 +81,7 @@ namespace Vixen.Sys {
 			}
 		}
 		
-		public void OpenControllers() {
+		public void OpenControllers(IEnumerable<OutputController> controllers) {
 			if(_stateAll == ExecutionState.Stopped) {
 				_stateAll = ExecutionState.Starting;
 
@@ -89,7 +95,7 @@ namespace Vixen.Sys {
 				// (including one controller being invoked from multiple threads while
 				//  other controllers not being invoked...sounded like a closure issue
 				//  initially, but I can't figure it out).
-				foreach(OutputController controller in _controllers.Values) {
+				foreach(OutputController controller in controllers) {
 					try {
 						_StartController(controller);
 					} catch(Exception ex) {
@@ -112,6 +118,14 @@ namespace Vixen.Sys {
 
 				_stateAll = ExecutionState.Stopped;
 			}
+		}
+
+		public void StartController(OutputController controller) {
+			_StartController(controller);
+		}
+
+		public void StopController(OutputController controller) {
+			_StopController(controller);
 		}
 
 		public void AddSource(IOutputStateSource source, ControllerReference controllerReference) {
@@ -144,27 +158,6 @@ namespace Vixen.Sys {
 
 		private IEnumerable<OutputController> _GetRootControllers() {
 			return _controllers.Values.Where(x => x.IsRootController);
-		}
-
-		private void _AddController(OutputController controller) {
-			// Reference the controller.
-			_controllers[controller.Id] = controller;
-
-			//// Fix up any unresolved references.
-			//List<Tuple<IOutputStateSource, ControllerReference>> references;
-			//if(_unresolvedReferences.TryGetValue(controller.Id, out references)) {
-			//    foreach(Tuple<IOutputStateSource, ControllerReference> reference in references) {
-			//        AddSource(reference.Item1, reference.Item2);
-			//    }
-			//    _unresolvedReferences.Remove(controller.Id);
-			//}
-
-			// Make sure the controller is running/not running like all the others.
-			if(_stateAll == ExecutionState.Started) {
-				_StartController(controller);
-			} else {
-				_StopController(controller);
-			}
 		}
 
 		private OutputController _GetController(Guid controllerId) {

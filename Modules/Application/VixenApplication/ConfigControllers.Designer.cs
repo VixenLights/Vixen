@@ -55,6 +55,7 @@
 			// 
 			// listViewControllers
 			// 
+			this.listViewControllers.CheckBoxes = true;
 			this.listViewControllers.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2,
@@ -73,6 +74,7 @@
 			this.listViewControllers.TabIndex = 0;
 			this.listViewControllers.UseCompatibleStateImageBehavior = false;
 			this.listViewControllers.View = System.Windows.Forms.View.Details;
+			this.listViewControllers.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.listViewControllers_ItemChecked);
 			this.listViewControllers.SelectedIndexChanged += new System.EventHandler(this.listViewControllers_SelectedIndexChanged);
 			this.listViewControllers.DoubleClick += new System.EventHandler(this.listViewControllers_DoubleClick);
 			// 

@@ -86,6 +86,8 @@ namespace Vixen.Sys {
 				_state = RunState.Stopping;
 				Logging.Info("Vixen System stopping...");
 				ApplicationServices.ClientApplication = null;
+				// Need to get the disabled controllers before stopping them all.
+				SystemConfig.DisabledControllers = Controllers.Where(x => !x.IsRunning);
 				Vixen.Sys.Execution.CloseExecution();
 				Modules.ClearRepositories();
 				if(ModuleStore != null) {

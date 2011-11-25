@@ -15,8 +15,9 @@ namespace Vixen.Sys {
 		private IEnumerable<Channel> _channels;
 		private IEnumerable<ChannelNode> _nodes;
 		private IEnumerable<OutputController> _controllers;
+		private List<Guid> _disabledControllers;
 
-		private const int VERSION = 4;
+		private const int VERSION = 5;
 
 		[DataPath]
 		static public readonly string Directory = Path.Combine(Paths.DataRootPath, "SystemData");
@@ -25,6 +26,7 @@ namespace Vixen.Sys {
 
 		public SystemConfig() {
 			Identity = Guid.NewGuid();
+			_disabledControllers = new List<Guid>();
 		}
 
 		public string LoadedFilePath { get; set; }
@@ -60,6 +62,11 @@ namespace Vixen.Sys {
 				return _controllers;
 			}
 			set { _controllers = value; }
+		}
+
+		public IEnumerable<OutputController> DisabledControllers {
+			get { return _disabledControllers.Select(x => _controllers.FirstOrDefault(y => y.Id == x)).Where(x => x != null); }
+			set { _disabledControllers = new List<Guid>(value.Select(x => x.Id)); }
 		}
 
 		public bool IsContext { get; set; }

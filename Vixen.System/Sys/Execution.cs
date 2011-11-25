@@ -47,7 +47,12 @@ namespace Vixen.Sys {
 				VixenSystem.Channels.OpenChannels();
 
 				SystemTime.Start();
-				VixenSystem.Controllers.OpenControllers();
+
+				// Enabled/disabled list is going to be an opt-in list of disabled controllers
+				// so that new controllers don't need to be added to it in order to be enabled.
+				IEnumerable<OutputController> enabledControllers = VixenSystem.SystemConfig.Controllers.Except(VixenSystem.SystemConfig.DisabledControllers);
+				VixenSystem.Controllers.OpenControllers(enabledControllers);
+
 				_channelReadThread = new Thread(_ChannelReaderThread);
 				_channelReadThread.Start();
 				_State = ExecutionState.Started;
