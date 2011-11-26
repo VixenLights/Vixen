@@ -18,12 +18,17 @@
         {
             get
             {
+                if (_strokeThickness <= 0)
+                {
+                    _strokeThickness = 5;
+                }
+
                 return _angle;
             }
 
             set
             {
-                _angle = value;
+                this._angle = value > 360 || value < 0 ? 0 : value;
                 NotifyPropertyChanged("Angle");
             }
         }
@@ -49,6 +54,11 @@
         {
             get
             {
+                if (_strokeThickness <= 0)
+                {
+                    _strokeThickness = 5;
+                }
+
                 return _strokeThickness;
             }
 

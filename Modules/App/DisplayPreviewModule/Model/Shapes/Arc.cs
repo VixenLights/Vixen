@@ -32,6 +32,11 @@ namespace VixenModules.App.DisplayPreview.Model.Shapes
         {
             get
             {
+                if (_strokeThickness <= 0)
+                {
+                    _strokeThickness = 5;
+                }
+
                 return _strokeThickness;
             }
 

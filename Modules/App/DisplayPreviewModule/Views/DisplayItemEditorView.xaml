@@ -173,6 +173,7 @@
 							        Padding="2"
 							        BorderThickness="2">
 								<ListView ItemsSource="{Binding NodeLayouts}"
+                                          SelectionMode="Single"
 								          Behaviors:DropTargetBehaviour.DropTarget="{Binding Target}"
 								          Width="{Binding Width}"
 								          IsSynchronizedWithCurrentItem="True"
@@ -226,6 +227,7 @@
 						</Grid.RowDefinitions>
 						<GroupBox Header="Nodes in use">
 							<ListView ItemsSource="{Binding NodeLayouts}"
+                                      SelectionMode="Single"
 							          IsSynchronizedWithCurrentItem="True"
 							          SelectedItem="{Binding SelectedNodeLayout}">
 								<ListView.ItemTemplate>
