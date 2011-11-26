@@ -154,7 +154,7 @@ namespace VixenModules.Output.Renard
 				}
 				// Casting is fasting than comparing strings.
 				Lighting.Monochrome.SetLevel setLevelCommand = command as Lighting.Monochrome.SetLevel;
-				if(command != null) {
+				if(setLevelCommand != null) {
 					// Good command
 					byte level = (byte)(0xFF * setLevelCommand.Level / 100);
 					if(level == 0x7d) {

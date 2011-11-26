@@ -92,10 +92,9 @@ namespace VixenModules.Output.DmxUsbPro
         }
 
         protected override void _SetOutputCount(int outputCount)
-        {
-            this.OutputCount = outputCount;
+        {            
         }
-
+       
         protected override void _UpdateState(Command[] outputStates)
         {
             this._dmxUsbProSender.SendDmxPacket(outputStates);
