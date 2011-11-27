@@ -30,7 +30,7 @@ namespace VixenModules.Output.DmxUsbPro
 
         public void SendDmxPacket(Command[] outputStates)
         {
-            if (outputStates == null || this._statePacket == null)
+            if (outputStates == null || this._statePacket == null || _serialPort == null)
             {
                 return;
             }
@@ -72,7 +72,7 @@ namespace VixenModules.Output.DmxUsbPro
 
         public void Start()
         {
-            if (!this._serialPort.IsOpen)
+            if (_serialPort != null && !this._serialPort.IsOpen)
             {
                 this._serialPort.Open();
             }
@@ -80,7 +80,7 @@ namespace VixenModules.Output.DmxUsbPro
 
         public void Stop()
         {
-            if (this._serialPort.IsOpen)
+            if (_serialPort != null && this._serialPort.IsOpen)
             {
                 this._serialPort.Close();
             }

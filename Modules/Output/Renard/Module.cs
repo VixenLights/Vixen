@@ -54,13 +54,15 @@ namespace VixenModules.Output.Renard
 			using(CommonElements.SerialPortConfig serialPortConfig = new CommonElements.SerialPortConfig(_port)) {
 				if(serialPortConfig.ShowDialog() == DialogResult.OK) {
 					SerialPort port = serialPortConfig.SelectedPort;
-					_moduleData.PortName = port.PortName;
-					_moduleData.BaudRate = port.BaudRate;
-					_moduleData.DataBits = port.DataBits;
-					_moduleData.Parity = port.Parity;
-					_moduleData.StopBits = port.StopBits;
-					_UpdateFromData();
-					return true;
+					if(port != null) {
+						_moduleData.PortName = port.PortName;
+						_moduleData.BaudRate = port.BaudRate;
+						_moduleData.DataBits = port.DataBits;
+						_moduleData.Parity = port.Parity;
+						_moduleData.StopBits = port.StopBits;
+						_UpdateFromData();
+						return true;
+					}
 				}
 			}
 			return false;
@@ -78,18 +80,14 @@ namespace VixenModules.Output.Renard
 
 		public override void Start() {
 			base.Start();
-			if(_port != null) {
-				if(!_port.IsOpen) {
-					_port.Open();
-				}
+			if(_port != null && !_port.IsOpen) {
+				_port.Open();
 			}
 		}
 
 		public override void Stop() {
-			if(_port != null) {
-				if(_port.IsOpen) {
-					_port.Close();
-				}
+			if(_port != null && _port.IsOpen) {
+				_port.Close();
 			}
 			base.Stop();
 		}
@@ -98,10 +96,8 @@ namespace VixenModules.Output.Renard
 		protected override void _SetOutputCount(int outputCount) { }
 
 		protected override void _UpdateState(Command[] outputStates) {
-			if(_port != null) {
-				if(_port.IsOpen) {
-					_updateAction(outputStates);
-				}
+			if(_port != null && _port.IsOpen) {
+				_updateAction(outputStates);
 			}
 		}
 

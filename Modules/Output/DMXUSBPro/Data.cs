@@ -1,4 +1,6 @@
-﻿namespace VixenModules.Output.DmxUsbPro
+﻿using System.Linq;
+
+namespace VixenModules.Output.DmxUsbPro
 {
     using System.IO.Ports;
     using System.Runtime.Serialization;
@@ -8,11 +10,6 @@
     [DataContract]
     public class Data : ModuleDataModelBase
     {
-        public Data()
-        {
-            this.Initialize();
-        }
-
         [DataMember]
         public int BaudRate { get; set; }
 
@@ -39,21 +36,6 @@
                     StopBits = this.StopBits
                 };
             return result;
-        }
-
-        private void Initialize()
-        {
-            this.PortName = "COM1";
-            this.BaudRate = 57600;
-            this.Partity = Parity.None;
-            this.StopBits = StopBits.One;
-            this.DataBits = 8;
-        }
-
-        [OnDeserializing]
-        private void OnDeserializing()
-        {
-            this.Initialize();
         }
     }
 }

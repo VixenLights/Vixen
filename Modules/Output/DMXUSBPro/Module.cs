@@ -30,17 +30,19 @@ namespace VixenModules.Output.DmxUsbPro
                 if (portConfig.ShowDialog() == DialogResult.OK)
                 {
                     this._serialPort = portConfig.SelectedPort;
-                    this._serialPort.Handshake = Handshake.None;
-                    this._serialPort.Encoding = Encoding.UTF8;
+					if(_serialPort != null) {
+						this._serialPort.Handshake = Handshake.None;
+						this._serialPort.Encoding = Encoding.UTF8;
 
-                    // Write back to setup
-                    var data = GetModuleData();
-                    data.PortName = _serialPort.PortName;
-                    data.BaudRate = _serialPort.BaudRate;
-                    data.Partity = _serialPort.Parity;
-                    data.DataBits = _serialPort.DataBits;
-                    data.StopBits = _serialPort.StopBits;
-                    return true;
+						// Write back to setup
+						var data = GetModuleData();
+						data.PortName = _serialPort.PortName;
+						data.BaudRate = _serialPort.BaudRate;
+						data.Partity = _serialPort.Parity;
+						data.DataBits = _serialPort.DataBits;
+						data.StopBits = _serialPort.StopBits;
+						return true;
+					}
                 }
                 
                 return false;
@@ -115,10 +117,12 @@ namespace VixenModules.Output.DmxUsbPro
             }
 
             var data = this.GetModuleData();
-            this._serialPort = new SerialPort(data.PortName, data.BaudRate, data.Partity, data.DataBits, data.StopBits)
-                {
-                   Handshake = Handshake.None, Encoding = Encoding.UTF8 
-                };
+			if(data.PortName != null) {
+				this._serialPort = new SerialPort(data.PortName, data.BaudRate, data.Partity, data.DataBits, data.StopBits)
+				                   {
+				                   	Handshake = Handshake.None, Encoding = Encoding.UTF8
+				                   };
+			}
         }
     }
 }

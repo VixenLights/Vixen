@@ -23,22 +23,37 @@ namespace CommonElements {
 			comboBoxParity.Items.AddRange(Enum.GetValues(typeof(Parity)).Cast<object>().ToArray());
 			comboBoxStopBits.Items.AddRange(Enum.GetValues(typeof(StopBits)).Cast<object>().ToArray());
 
-			if(serialPort == null) {
-				serialPort = new SerialPort(SerialPort.GetPortNames().FirstOrDefault(), 38400, Parity.None, 8, StopBits.One);
+			if(serialPort == null && SerialPort.GetPortNames().Count() > 0) {
+				serialPort = new SerialPort(SerialPort.GetPortNames().FirstOrDefault(), 57600, Parity.None, 8, StopBits.One);
 			}
 
 			SelectedPort = serialPort;
 		}
 
 		public SerialPort SelectedPort {
-			get { return new SerialPort(_PortName, _BaudRate, _Parity, _DataBits, _StopBits); }
-			set {
-				_PortName = value.PortName;
-				_BaudRate = value.BaudRate;
-				_Parity = value.Parity;
-				_DataBits = value.DataBits;
-				_StopBits = value.StopBits;
+			get {
+				if(_HavePorts) {
+					return new SerialPort(_PortName, _BaudRate, _Parity, _DataBits, _StopBits);
+				}
+				return null;
 			}
+			set {
+				if(value != null) {
+					_HavePorts = true;
+					_PortName = value.PortName;
+					_BaudRate = value.BaudRate;
+					_Parity = value.Parity;
+					_DataBits = value.DataBits;
+					_StopBits = value.StopBits;
+				} else {
+					_HavePorts = false;
+				}
+			}
+		}
+
+		private bool _HavePorts {
+			get { return groupBox.Enabled; }
+			set { groupBox.Enabled = value; }
 		}
 
 		private string _PortName {
@@ -79,21 +94,23 @@ namespace CommonElements {
 		}
 
 		private bool _Validate() {
-			StringBuilder sb = new StringBuilder();
+			if(_HavePorts) {
+				StringBuilder sb = new StringBuilder();
 
-			if(string.IsNullOrWhiteSpace(_PortName)) {
-				sb.AppendLine("* Port name has not been selected.");
-			}
-			if(_BaudRate == -1) {
-				sb.AppendLine("* Baud rate has not been selected.");
-			}
-			if(_DataBits == -1) {
-				sb.AppendLine("* Invalid value for data bits.");
-			}
+				if(string.IsNullOrWhiteSpace(_PortName)) {
+					sb.AppendLine("* Port name has not been selected.");
+				}
+				if(_BaudRate == -1) {
+					sb.AppendLine("* Baud rate has not been selected.");
+				}
+				if(_DataBits == -1) {
+					sb.AppendLine("* Invalid value for data bits.");
+				}
 
-			if(sb.Length > 0) {
-				MessageBox.Show("The following items need to be resolved:" + Environment.NewLine + Environment.NewLine + sb, "Serial Port", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-				return false;
+				if(sb.Length > 0) {
+					MessageBox.Show("The following items need to be resolved:" + Environment.NewLine + Environment.NewLine + sb, "Serial Port", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+					return false;
+				}
 			}
 
 			return true;
