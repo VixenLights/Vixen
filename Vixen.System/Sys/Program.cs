@@ -90,6 +90,10 @@ namespace Vixen.Sys {
 			get { return VERSION; }
 		}
 
+		public TimeSpan Length {
+			get { return _sequences.Aggregate(TimeSpan.Zero, (value, sequence) => value + sequence.Length); }
+		}
+
 		public IEnumerator<ISequence> GetEnumerator() {
 			return _sequences.GetEnumerator();
 		}

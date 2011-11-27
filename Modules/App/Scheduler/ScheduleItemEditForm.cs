@@ -29,24 +29,15 @@ namespace VixenModules.App.Scheduler {
 			set { dateTimePickerStartDate.Value = value; }
 		}
 
-		private DateTime? _EndDate {
+		private DateTime _EndDate {
 			get {
-				//if(dateTimePickerEndDate.Enabled) {
-				//    return dateTimePickerEndDate.Value;
-				//}
-				//return null;
 				if(_RecurrenceType != RecurrenceType.None) {
 					return dateTimePickerEndDate.Value;
 				}
 				return _StartDate + TimeSpan.FromDays(1);
 			}
 			set {
-				if(value == null) {
-					dateTimePickerEndDate.Enabled = false;
-				} else {
-					dateTimePickerEndDate.Value = value.Value;
-					dateTimePickerEndDate.Enabled = true;
-				}
+				dateTimePickerEndDate.Value = value;
 			}
 		}
 
@@ -55,7 +46,6 @@ namespace VixenModules.App.Scheduler {
 			set { comboBoxStartTime.Text = _TimeSpanToString(value); }
 		}
 
-		//*** validation before assigning everything
 		private TimeSpan? _EndTime {
 			get {
 				if(checkBoxRepeat.Checked) {
@@ -88,7 +78,7 @@ namespace VixenModules.App.Scheduler {
 				dateTimePickerEndDate.Enabled = true;
 				switch(value) {
 					case RecurrenceType.None:
-						_EndDate = null;
+						dateTimePickerEndDate.Enabled = false;
 						checkBoxNoRecurrence.Checked = true;
 						break;
 					case RecurrenceType.Daily:
@@ -310,6 +300,23 @@ namespace VixenModules.App.Scheduler {
 			return (value != null) ? _TimeSpanToDateTime(value.Value).ToShortTimeString() : "";
 		}
 
+		private bool _Validate() {
+			List<string> messages = new List<string>();
+
+			if(_Program == null) messages.Add("No program selected.");
+			if(_EndDate <= _StartDate) messages.Add("End date must come after the start date.");
+			if(_EndTime <= _StartTime) messages.Add("End time must come after the start time.");
+			if(_DateUnitCount < 1) messages.Add("Day/week/month count must be at least 1.");
+			if(_Program != null && _Interval.HasValue && _Interval < _Program.Length.TotalMinutes) messages.Add("Repeat interval cannot be less than the program length (" + _Program.Length + ").");
+
+			if(messages.Count > 0) {
+				string message = string.Join(Environment.NewLine, messages.Select(x => "* " + x));
+				MessageBox.Show("The following needs to be resolved:" + Environment.NewLine + Environment.NewLine + message, CAPTION, MessageBoxButtons.OK, MessageBoxIcon.Stop);
+				return false;
+			}
+			return true;
+		}
+
 		private void checkBoxRepeat_CheckedChanged(object sender, EventArgs e) {
 			panelInterval.Enabled = checkBoxRepeat.Checked;
 		}
@@ -333,10 +340,13 @@ namespace VixenModules.App.Scheduler {
 		}
 
 		private void buttonOK_Click(object sender, EventArgs e) {
+			if(!_Validate()) {
+				DialogResult = DialogResult.None;
+				return;
+			}
+
 			_ScheduleItem.StartDate = _StartDate;
-			//if(_EndDate != null) {
-				_ScheduleItem.EndDate = _EndDate.Value;
-			//}
+			_ScheduleItem.EndDate = _EndDate;
 
 			_ScheduleItem.RecurrenceType = _RecurrenceType;
 			_ScheduleItem.DateUnitCount = _DateUnitCount;

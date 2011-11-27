@@ -123,6 +123,7 @@ namespace VixenModules.App.Scheduler {
 			using(ScheduleItemEditForm scheduleItemEditForm = new ScheduleItemEditForm(item)) {
 				if(scheduleItemEditForm.ShowDialog() == DialogResult.OK) {
 					_data.Items.Add(item);
+					_RefreshView();
 				}
 			}
 		}
