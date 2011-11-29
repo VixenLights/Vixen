@@ -45,8 +45,8 @@ namespace CommonElements.Timeline
 				if (value < TimeSpan.Zero)
 					value = TimeSpan.Zero;
 
-				if (value > TotalTime - VisibleTimeSpan)
-					value = TotalTime - VisibleTimeSpan;
+                if (value > TotalTime - VisibleTimeSpan)
+                    value = Util.Max(TotalTime - VisibleTimeSpan, TimeSpan.Zero);
 
 				TimeInfo.VisibleTimeStart = value;
 			}
@@ -90,7 +90,8 @@ namespace CommonElements.Timeline
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public TimeSpan VisibleTimeEnd
 		{
-			get { return VisibleTimeStart + VisibleTimeSpan; }
+			//get { return VisibleTimeStart + VisibleTimeSpan; }
+            get { return Util.Min(VisibleTimeStart + VisibleTimeSpan, TotalTime); }
 		}
 
 		/// <summary>

@@ -60,51 +60,6 @@ namespace CommonElements.Timeline
 			}
         }
 
-		/*
-		private void drawTicksNEW(Graphics graphics)
-		{
-			Single visStart = timeToPixels(VisibleTimeStart);
-			Single minTick = timeToPixels(m_MinorTick);
-			Single majTick = minTick * m_minorTicksPerMajor;
-
-			// calculate first minor and major tick locations
-			//(first multiple of interval greater than start)
-			var firstMin = visStart - (visStart % minTick) + minTick;
-			var firstMaj = visStart - (visStart % majTick) + majTick;
-
-			// Number of minor ticks remaining before a major tick
-			int minTickRem = (int)((firstMaj - firstMin) / minTick);
-
-			float tickHeight;
-
-			using (Pen p = new Pen(Color.Black))
-			{
-				p.Alignment = PenAlignment.Right;
-
-				for (var x = firstMin; x < (firstMin + Width); x += minTick)
-				{
-					if (minTickRem == 0)
-					{
-						// Major Tick
-						minTickRem = m_minorTicksPerMajor;
-						p.Width = 2;
-						tickHeight = Height * 0.5f;
-					}
-					else
-					{
-						// Minor Tick
-						p.Width = 1;
-						tickHeight = Height * 0.25f;
-					}
-					graphics.DrawLine(p, x, Height-tickHeight, x, Height);
-					
-					minTickRem--;
-				}
-			}
-
-		}
-		 */
-
 
 		private void drawTicks(Graphics graphics, TimeSpan interval, int width, double height)
         {
@@ -113,8 +68,9 @@ namespace CommonElements.Timeline
             // calculate first tick - (it is the first multiple of interval greater than start)
             // believe it or not, this math is correct :-)
 			Single start = timeToPixels(VisibleTimeStart) - (timeToPixels(VisibleTimeStart) % pxint) + pxint;
+            Single end = timeToPixels(VisibleTimeEnd);
 
-            for (Single x = start; x < start + Width; x += pxint)   
+            for (Single x = start; x <= end; x += pxint)   
             {
                 Pen p = new Pen(Color.Black);
                 p.Width = width;
@@ -369,7 +325,7 @@ namespace CommonElements.Timeline
 			TimeSpan firstMajor = TimeSpan.FromTicks(VisibleTimeStart.Ticks - (VisibleTimeStart.Ticks % drawnInterval.Ticks) + drawnInterval.Ticks);
 
 			for (TimeSpan curTime = firstMajor;             // start at the first major tick
-                (curTime <= firstMajor + VisibleTimeSpan);  // current time is in the visible region
+                (curTime <= VisibleTimeEnd);                // current time is in the visible region
                 curTime += drawnInterval)                   // increment by the drawnInterval
 			{
 				string timeStr = labelString(curTime);

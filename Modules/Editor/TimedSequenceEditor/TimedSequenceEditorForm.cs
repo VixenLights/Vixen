@@ -268,7 +268,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_sequence.Length == TimeSpan.Zero)
 				_sequence.Length = _defaultSequenceTime;
 
-			SetSequenceLength(_sequence.Length);
+			SequenceLength = _sequence.Length;
 
 			// update our program context with this sequence
 			OpenSequenceContext(sequence);
@@ -287,18 +287,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			IsModified = false;
 		}
 
-		private void SetSequenceLength(TimeSpan length)
-		{
-			if (_sequence.Length != length) {
-				_sequence.Length = length;
-			}
+        private TimeSpan SequenceLength
+        {
+            get { return _sequence.Length; }
+            set
+            {
+                if (_sequence.Length != value) {
+                    _sequence.Length = value;
+                }
 
-			if (timelineControl.TotalTime != length) {
-				timelineControl.TotalTime = length;
-			}
+                if (timelineControl.TotalTime != value) {
+                    timelineControl.TotalTime = value;
+                }
 
-			toolStripStatusLabel_sequenceLength.Text = _sequence.Length.ToString("m\\:ss\\.fff");
-		}
+                toolStripStatusLabel_sequenceLength.Text = _sequence.Length.ToString("m\\:ss\\.fff");
+            }
+        }
+
 
 		/// <summary>
 		/// Populates the TimelineControl grid with a new TimedSequenceElement for the given EffectNode.
@@ -612,18 +617,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (timelineControl.CursorPosition < timelineControl.VisibleTimeStart) {
 				timelineControl.VisibleTimeStart = TimeSpan.FromMilliseconds(timelineControl.CursorPosition.TotalMilliseconds - (timelineControl.VisibleTimeSpan.TotalMilliseconds * 0.2));
 			}
-
-			RestrictVisibleTimeToSequenceLength();
 		}
 
-		private void RestrictVisibleTimeToSequenceLength()
-		{
-			if (timelineControl.VisibleTimeStart < TimeSpan.FromSeconds(0))
-				timelineControl.VisibleTimeStart = TimeSpan.FromSeconds(0);
-
-			if (timelineControl.VisibleTimeEnd > _sequence.Length)
-				timelineControl.VisibleTimeStart = _sequence.Length - timelineControl.VisibleTimeSpan;
-		}
 
 
 		// implementation of IExecutionControl and ITiming interfaces, for the beat track tapping.
@@ -757,8 +752,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		void timelineControl_DataDropped(object sender, TimelineDropEventArgs e)
 		{
 			Guid effectGuid = (Guid)e.Data.GetData(DataFormats.Serializable);
-			TimeSpan timeSpan = TimeSpan.FromSeconds(2.0);	// TODO: need a default value here. I suggest a per-effect default.
-			addNewEffect(effectGuid, e.Row, e.Time, timeSpan);
+			TimeSpan duration = TimeSpan.FromSeconds(2.0);	// TODO: need a default value here. I suggest a per-effect default.
+            TimeSpan startTime = Util.Min(e.Time, (_sequence.Length - duration));   // Ensure the element is inside the grid.
+            addNewEffect(effectGuid, e.Row, startTime, duration);
 		}
 
 		#endregion
@@ -817,11 +813,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				if (length != TimeSpan.Zero) {
 					if (_sequence.Length == _defaultSequenceTime) {
-						SetSequenceLength(length);
+						SequenceLength =length;
 					} else {
 						if (MessageBox.Show("Do you want to resize the sequence to the size of the audio?",
 							"Resize sequence?", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes) {
-							SetSequenceLength(length);
+							SequenceLength = length;
 						}
 					}
 				}
@@ -1063,11 +1059,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			timelineControl.CursorPosition = _sequence.Length;
 		}
 
-		private void TimedSequenceEditorForm_Resize(object sender, EventArgs e)
-		{
-			RestrictVisibleTimeToSequenceLength();
-		}
-
 		private void selectAllElementsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			timelineControl.SelectAllElements();
@@ -1093,16 +1084,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			string oldLength = _sequence.Length.ToString("m\\:ss\\.fff");
 			CommonElements.TextDialog prompt = new CommonElements.TextDialog("Enter new sequence length:", "Sequence Length", oldLength, true);
 
-			if (prompt.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-				TimeSpan time;
-				bool success = TimeSpan.TryParseExact(prompt.Response, TimeFormats.Formats, null, out time);
-				if (success) {
-					if (time != _sequence.Length)
-						SetSequenceLength(time);
-				} else {
-					MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'", "Error parsing time");
-				}
-			}
+            do {
+                if (prompt.ShowDialog() != DialogResult.OK)
+                    break;
+                
+                TimeSpan time;
+                bool success = TimeSpan.TryParseExact(prompt.Response, TimeFormats.Formats, null, out time);
+                if (success) {
+                    SequenceLength = time;
+                    break;
+                }
+                else {
+                    MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'", "Error parsing time");
+                }
+            } while (true);
 		}
 	}
 

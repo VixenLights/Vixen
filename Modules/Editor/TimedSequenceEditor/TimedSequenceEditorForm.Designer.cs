@@ -672,7 +672,6 @@
 			this.Text = "Timed Sequence Editor";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.TimedSequenceEditorForm_FormClosed);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TimedSequenceEditorForm_KeyDown);
-			this.Resize += new System.EventHandler(this.TimedSequenceEditorForm_Resize);
 			this.toolStripOperations.ResumeLayout(false);
 			this.toolStripOperations.PerformLayout();
 			this.menuStrip.ResumeLayout(false);

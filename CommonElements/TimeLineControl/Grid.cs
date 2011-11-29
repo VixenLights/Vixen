@@ -116,9 +116,9 @@ namespace CommonElements.Timeline
 		{
 			// resize the scroll canvas to be the new size of the whole display time, and cap it to not go past the end
 			AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), AutoScrollMinSize.Height);
-			if (VisibleTimeEnd > TotalTime) {
-				VisibleTimeStart = TotalTime - VisibleTimeSpan;
-			}
+
+            if (VisibleTimeEnd > TotalTime)
+                VisibleTimeStart = TotalTime - VisibleTimeSpan;
 
 			//shuffle the grid position to line up with where the visible time start should be
 			AutoScrollPosition = new Point((int)timeToPixels(VisibleTimeStart), -AutoScrollPosition.Y);
@@ -302,6 +302,12 @@ namespace CommonElements.Timeline
 
 		protected override void OnResize(EventArgs e)
 		{
+            // If the *would be* Visible end time is past the total time, adjust the start
+            // such that the visible end remains at the total time.
+            // Note: we cannot use VisibleTimeEnd because it protects against this out-of-bounds condition (Min).
+            if (VisibleTimeStart + VisibleTimeSpan > TotalTime)
+                VisibleTimeStart = TotalTime - VisibleTimeSpan;
+
 			base.OnResize(e);
 			_VerticalOffsetChanged();
 		}
@@ -987,11 +993,12 @@ namespace CommonElements.Timeline
 			// calculate first tick - (it is the first multiple of interval greater than start)
 			// believe it or not, this math is correct :-)
 			Single start = timeToPixels(VisibleTimeStart) - (timeToPixels(VisibleTimeStart) % interval) + interval;
+            Single end = timeToPixels(VisibleTimeEnd);
 
 			using (Pen p = new Pen(MajorGridlineColor))
 			{
 				p.DashStyle = DashStyle.Dash;
-				for (Single x = start; x < start + Width; x += interval)
+				for (Single x = start; x <= end; x += interval)
 				{
 					g.DrawLine(p, x, (-AutoScrollPosition.Y), x, (-AutoScrollPosition.Y) + Height);
 				}
