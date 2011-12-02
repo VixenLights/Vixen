@@ -33,6 +33,7 @@
 	</Window.Resources>
 	<Grid>
 		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="250" />
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="*" />
 			<ColumnDefinition Width="Auto" />
@@ -93,7 +94,8 @@
 			        Click="CloseButtonClick"
 			        Grid.Row="1" />
 		</Grid>
-		<Grid Grid.Column="1">
+        <GridSplitter Grid.Column="1" ResizeBehavior="PreviousAndNext" Width="5" ResizeDirection="Columns" HorizontalAlignment="Right" />
+		<Grid Grid.Column="2">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="*" />
@@ -218,7 +220,7 @@
 			</GroupBox>
 		</Grid>
 		<ContentControl Content="{Binding}"
-		                Grid.Column="2">
+		                Grid.Column="3">
 			<ContentControl.ContentTemplate>
 				<DataTemplate DataType="{x:Type ViewModels:DisplayItemEditorViewModel}">
 					<Grid>
