@@ -8,6 +8,8 @@
         xmlns:ViewModels="clr-namespace:VixenModules.App.DisplayPreview.ViewModels"
         mc:Ignorable="d"
         Title="Display Preview Setup"
+        MaxHeight="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Height}"
+        MaxWidth="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Width}"
         SizeToContent="WidthAndHeight"
         x:Name="Instance">
 	<Window.Resources>
@@ -28,7 +30,7 @@
 			<WPF1:BooleanToCollapsedConverter x:Key="BooleanToCollapsedConverter" />
 
 			<DataTemplate DataType="{x:Type Model1:NodeLayout}">
-                <ContentControl Content="{Binding Shape}"
+				<ContentControl Content="{Binding Shape}"
 				                Width="{Binding Width}"
 				                Height="{Binding Height}"
 				                ClipToBounds="True"
@@ -128,7 +130,7 @@
 			          Grid.Row="1">
 				<ListView ItemsSource="{Binding DisplayItems}"
 				          SelectedItem="{Binding CurrentDisplayElement}"
-                          SelectionMode="Single"
+				          SelectionMode="Single"
 				          IsSynchronizedWithCurrentItem="True"
 				          ItemContainerStyle="{StaticResource MyStyle}"
 				          HorizontalContentAlignment="Stretch"
@@ -245,7 +247,7 @@
 					          VerticalAlignment="Top"
 					          BorderThickness="2">
 						<ListView Background="Black"
-                                  SelectionMode="Single"
+						          SelectionMode="Single"
 						          IsSynchronizedWithCurrentItem="True"
 						          SelectedItem="{Binding CurrentDisplayElement}"
 						          ItemsSource="{Binding DisplayItems}">

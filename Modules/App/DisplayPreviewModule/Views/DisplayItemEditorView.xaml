@@ -8,6 +8,8 @@
         xmlns:Behaviors="clr-namespace:VixenModules.App.DisplayPreview.Behaviors"
         xmlns:Shapes="clr-namespace:VixenModules.App.DisplayPreview.Model.Shapes"
         mc:Ignorable="d"
+        MaxHeight="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Height}"
+        MaxWidth="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Width}"
         Title="Display Item and Channel Editor"
         SizeToContent="WidthAndHeight">
 	<d:DesignProperties.DataContext>
@@ -173,7 +175,7 @@
 							        Padding="2"
 							        BorderThickness="2">
 								<ListView ItemsSource="{Binding NodeLayouts}"
-                                          SelectionMode="Single"
+								          SelectionMode="Single"
 								          Behaviors:DropTargetBehaviour.DropTarget="{Binding Target}"
 								          Width="{Binding Width}"
 								          IsSynchronizedWithCurrentItem="True"
@@ -227,7 +229,7 @@
 						</Grid.RowDefinitions>
 						<GroupBox Header="Nodes in use">
 							<ListView ItemsSource="{Binding NodeLayouts}"
-                                      SelectionMode="Single"
+							          SelectionMode="Single"
 							          IsSynchronizedWithCurrentItem="True"
 							          SelectedItem="{Binding SelectedNodeLayout}">
 								<ListView.ItemTemplate>
