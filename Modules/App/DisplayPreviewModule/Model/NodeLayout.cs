@@ -124,6 +124,10 @@ namespace VixenModules.App.DisplayPreview.Model
             set
             {
                 this._shape = value;
+                if (value != null)
+                {
+                    value.Brush = this.Node.IsRgbNode() ? ColorManager.RgbBrush : Colors.White.AsBrush();
+                }
                 this.PropertyChanged.NotifyPropertyChanged("Shape", this);
             }
         }
