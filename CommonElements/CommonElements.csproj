@@ -89,6 +89,11 @@
     <Compile Include="MenuStripEx.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="ToolStripEx.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -200,6 +205,15 @@
     <Compile Include="TimelineControl\Grid.cs" />
     <Compile Include="TimelineControl\Ruler.cs" />
     <Compile Include="Undo\UndoAction.cs" />
+    <Compile Include="Undo\UndoButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Undo\UndoDropDownControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Undo\UndoDropDownControl.designer.cs">
+      <DependentUpon>UndoDropDownControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Undo\UndoManager.cs" />
     <Compile Include="Undo\GenericUndoActions.cs" />
   </ItemGroup>
@@ -244,6 +258,10 @@
     <EmbeddedResource Include="ListSelectDialog.resx">
       <DependentUpon>ListSelectDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="SerialPortConfig.resx">
       <DependentUpon>SerialPortConfig.cs</DependentUpon>
     </EmbeddedResource>
@@ -258,6 +276,7 @@
     <Content Include="ColorPicker\ColorPicker.cur" />
     <Content Include="ControlsEx\std_zoomin.png" />
     <Content Include="ControlsEx\std_zoomout.png" />
+    <None Include="Resources\Edit_UndoHS.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
