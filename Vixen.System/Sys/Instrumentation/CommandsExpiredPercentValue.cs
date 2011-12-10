@@ -5,9 +5,9 @@ using System.Text;
 using Vixen.Instrumentation;
 
 namespace Vixen.Sys.Instrumentation {
-	class CommandsQualifiedValue : PercentValue {
-		public CommandsQualifiedValue()
-			: base("Commands - Qualified") {
+	class CommandsExpiredPercentValue : PercentValue {
+		public CommandsExpiredPercentValue()
+			: base("Commands - Expired (%)") {
 		}
 	}
 }

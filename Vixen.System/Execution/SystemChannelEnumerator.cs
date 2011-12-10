@@ -9,23 +9,32 @@ using Vixen.Sys.Instrumentation;
 
 namespace Vixen.Execution {
 	class SystemChannelEnumerator : MultiStateTimedEnumerator<CommandNode, CommandNode[]> {
-		private CommandsQualifiedValue _commandsQualifiedValue;
-		private CommandsExpiredValue _commandsExpiredValue;
+		private CommandsQualifiedPercentValue _commandsQualifiedPercentValue;
+		private CommandsExpiredPercentValue _commandsExpiredPercentValue;
+		private CommandsQualifiedCountValue _commandsQualifiedCountValue;
+		private CommandsExpiredCountValue _commandsExpiredCountValue;
 		
 		public SystemChannelEnumerator(IEnumerable<CommandNode> data, ITiming timingSource)
 			: base(data, timingSource, TimeSpan.Zero, TimeSpan.MaxValue) {
-			_commandsQualifiedValue = new CommandsQualifiedValue();
-			_commandsExpiredValue = new CommandsExpiredValue();
-			VixenSystem.Instrumentation.AddValue(_commandsQualifiedValue);
-			VixenSystem.Instrumentation.AddValue(_commandsExpiredValue);
+			_commandsQualifiedPercentValue = new CommandsQualifiedPercentValue();
+			_commandsExpiredPercentValue = new CommandsExpiredPercentValue();
+			_commandsQualifiedCountValue = new CommandsQualifiedCountValue();
+			_commandsExpiredCountValue = new CommandsExpiredCountValue();
+
+			VixenSystem.Instrumentation.AddValue(_commandsQualifiedPercentValue);
+			VixenSystem.Instrumentation.AddValue(_commandsExpiredPercentValue);
+			VixenSystem.Instrumentation.AddValue(_commandsQualifiedCountValue);
+			VixenSystem.Instrumentation.AddValue(_commandsExpiredCountValue);
 		}
 
 		protected override void _ItemQualified(CommandNode value) {
-			_commandsQualifiedValue.IncrementQualifying();
+			_commandsQualifiedPercentValue.IncrementQualifying();
+			_commandsQualifiedCountValue.Add(1);
 		}
 
 		protected override void _ItemExpired(CommandNode value) {
-			_commandsExpiredValue.IncrementUnqualifying();
+			_commandsExpiredPercentValue.IncrementUnqualifying();
+			_commandsExpiredCountValue.Add(1);
 		}
 	}
 }

@@ -151,8 +151,10 @@
     <Compile Include="Sys\FilePackage.cs" />
     <Compile Include="Sys\IChannelDataStore.cs" />
     <Compile Include="Sys\Instrumentation\ChannelCommandsPerSecondValue.cs" />
-    <Compile Include="Sys\Instrumentation\CommandsExpiredValue.cs" />
-    <Compile Include="Sys\Instrumentation\CommandsQualifiedValue.cs" />
+    <Compile Include="Sys\Instrumentation\CommandsExpiredCountValue.cs" />
+    <Compile Include="Sys\Instrumentation\CommandsExpiredPercentValue.cs" />
+    <Compile Include="Sys\Instrumentation\CommandsQualifiedCountValue.cs" />
+    <Compile Include="Sys\Instrumentation\CommandsQualifiedPercentValue.cs" />
     <Compile Include="Sys\Instrumentation\EffectsPerSecondValue.cs" />
     <Compile Include="Sys\Instrumentation\Instrumentation.cs" />
     <Compile Include="Sys\Instrumentation\TotalChannelCommands.cs" />
