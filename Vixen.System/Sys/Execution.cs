@@ -19,7 +19,6 @@ namespace Vixen.Sys {
 		// will be locally available for EffectRenderer instances.
 		static private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
 		static private volatile ExecutionState _state = ExecutionState.Stopped;
-		static private Dictionary<Channel, Command> _lastChannelState = new Dictionary<Channel, Command>();
 		static private TotalEffectsValue _totalEffectsValue;
 		static private EffectsPerSecondValue _effectsPerSecondValue;
 
@@ -157,11 +156,11 @@ namespace Vixen.Sys {
 				ExecutionStateValues stateBuffer = new ExecutionStateValues(SystemTime.Position);
 
 				foreach (Channel channel in VixenSystem.Channels) {
-					Command channelState = VixenSystem.Channels.UpdateChannelState(channel);
-					if (channelState != null || !_lastChannelState.ContainsKey(channel) || (_lastChannelState.ContainsKey(channel) && _lastChannelState[channel] != null)) {
+					bool updatedState;
+					Command channelState = VixenSystem.Channels.UpdateChannelState(channel, out updatedState);
+					if (updatedState) {
 						stateBuffer[channel] = channelState;
 					}
-					_lastChannelState[channel] = channelState;
 				}
 
 				ValuesChanged(stateBuffer);

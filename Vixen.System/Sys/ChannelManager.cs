@@ -110,8 +110,9 @@ namespace Vixen.Sys {
 		/// </summary>
 		/// <param name="channel"></param>
 		/// <returns>Channel's new state, null if no state change.</returns>
-		public Command UpdateChannelState(Channel channel) {
+		public Command UpdateChannelState(Channel channel, out bool updatedState) {
 			IEnumerator<CommandNode[]> enumerator;
+			updatedState = false;
 
 			lock(_channels) {
 				// we potentially might be trying to update a channel one last time just after it's been
@@ -126,6 +127,7 @@ namespace Vixen.Sys {
 				if(enumerator.MoveNext()) {
 					Command channelState = Command.Combine(enumerator.Current.Select(x => x.Command));
 					channel.Patch.Write(channelState);
+					updatedState = true;
 					return channelState;
 				}
 				return null;
