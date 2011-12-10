@@ -66,16 +66,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
             _undoMgr.UndoItemsChanged += _undoMgr_UndoItemsChanged;
             _undoMgr.RedoItemsChanged += _undoMgr_RedoItemsChanged;
 
-            splitButton_Undo.Enabled = false;
-            splitButton_Redo.Enabled = false;
+            undoButton.Enabled = false;
+            undoButton.ButtonType = CommonElements.UndoButtonType.UndoButton;
+
+            redoButton.Enabled = false;
+            redoButton.ButtonType = CommonElements.UndoButtonType.RedoButton;
         }
 
-        private void splitButton_Undo_ButtonClick(object sender, EventArgs e)
+        private void undoButton_ButtonClick(object sender, EventArgs e)
         {
             _undoMgr.Undo();
         }
 
-        private void splitButton_Redo_ButtonClick(object sender, EventArgs e)
+        private void redoButton_ButtonClick(object sender, EventArgs e)
         {
             _undoMgr.Redo();
         }
@@ -86,33 +89,28 @@ namespace VixenModules.Editor.TimedSequenceEditor
         {
             if (_undoMgr.NumUndoable == 0)
             {
-                splitButton_Undo.Enabled = false;
+                undoButton.Enabled = false;
                 return;
             }
 
-            splitButton_Undo.Enabled = true;
-            splitButton_Undo.DropDownItems.Clear();
+            undoButton.Enabled = true;
+            undoButton.UndoItems.Clear();
             foreach (var act in _undoMgr.UndoActions)
-            {
-                splitButton_Undo.DropDownItems.Add(act.Description);
-            }
-            
+                undoButton.UndoItems.Add(act.Description);
         }
 
         void _undoMgr_RedoItemsChanged(object sender, EventArgs e)
         {
             if (_undoMgr.NumRedoable == 0)
             {
-                splitButton_Redo.Enabled = false;
+                redoButton.Enabled = false;
                 return;
             }
 
-            splitButton_Redo.Enabled = true;
-            splitButton_Redo.DropDownItems.Clear();
+            redoButton.Enabled = true;
+            redoButton.UndoItems.Clear();
             foreach (var act in _undoMgr.RedoActions)
-            {
-                splitButton_Redo.DropDownItems.Add(act.Description);
-            }
+                redoButton.UndoItems.Add(act.Description);
         }
 
 

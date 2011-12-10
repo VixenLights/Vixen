@@ -12,57 +12,60 @@ namespace CommonElements
     {
         private ToolStripDropDown m_toolDrop = null;
         private ToolStripControlHost m_toolHost = null;
-        private Control m_dropControl = null;
+        private UndoDropDownControl m_dropControl = null;
+
+        private const int SetWidth = 140;
+        private const int SetHeight = 200;
 
         public UndoButton()
         {
+            // Initialize the custom control
+            m_dropControl = new UndoDropDownControl() {
+                MinimumSize = new Size(SetWidth, SetHeight)  // <- important
+            };
+
+            // ...hosted by a ToolStripControlHost
+            m_toolHost = new ToolStripControlHost(m_dropControl) {
+                Size = new Size(SetWidth, SetHeight),
+                Margin = new Padding(0)
+            };
+
+            // ... and shown in a ToolStripDropDown.
+            m_toolDrop = new ToolStripDropDown() {
+                Padding = new Padding(0)
+            };
+            m_toolDrop.Items.Add(m_toolHost);
+
             this.DisplayStyle = ToolStripItemDisplayStyle.Image;
-            //this.Image = UndoButtonTest.Properties.Resources.Edit_UndoHS;
-            this.Image = Resources.Edit_UndoHS;
+            this.ButtonType = UndoButtonType.UndoButton;    // Default.
 
             // There is no OnDropDownOpening to override, so I guess we have to do it this way.
             this.DropDownOpening += UndoButton_DropDownOpening;
-
-            //m_dropControl = InitListBox();
-            m_dropControl = InitCustomControl();
-
-            m_toolHost = new ToolStripControlHost(m_dropControl);
-            m_toolHost.Size = new Size(120, 120);
-            m_toolHost.Margin = new Padding(0);
-
-            m_toolDrop = new ToolStripDropDown();
-            m_toolDrop.Padding = new Padding(0);
-            m_toolDrop.Items.Add(m_toolHost);
-            m_toolDrop.MouseWheel += m_toolDrop_MouseWheel;
         }
 
-
-        void m_toolDrop_MouseWheel(object sender, MouseEventArgs e)
+        public UndoButtonType ButtonType
         {
-            Debug.WriteLine("Wheel");
+            get { return m_dropControl.ButtonType; }
+            set
+            {
+                m_dropControl.ButtonType = value;
+                switch (value) {
+                    case UndoButtonType.UndoButton:
+                        this.Image = Resources.Edit_UndoHS;
+                        break;
+
+                    case UndoButtonType.RedoButton:
+                        this.Image = Resources.Edit_RedoHS;
+                        break;
+                }
+            }
         }
 
-        private Control InitCustomControl()
+        public ListBox.ObjectCollection UndoItems
         {
-            UndoDropDownControl c = new UndoDropDownControl();
-            c.MinimumSize = new Size(200, 120);
-
-            for (int i = 0; i < 30; i++)
-                c.Items.Add("Item " + i.ToString());
-            c.Caption = "Undo X items";
-
-            return c;
+            get { return m_dropControl.Items; }
         }
 
-        private Control InitListBox()
-        {
-            ListBox lb = new ListBox();
-            lb.IntegralHeight = false;
-            lb.MinimumSize = new Size(120, 120);  // <- important
-            for (int i = 0; i < 10; i++)
-                lb.Items.Add("Item " + i.ToString());
-            return lb;
-        }
         
         private void UndoButton_DropDownOpening(object sender, EventArgs e)
         {
@@ -70,6 +73,11 @@ namespace CommonElements
             m_dropControl.Focus();
         }
 
+    }
 
+    public enum UndoButtonType
+    {
+        UndoButton,
+        RedoButton,
     }
 }

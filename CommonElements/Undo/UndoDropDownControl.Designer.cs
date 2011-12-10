@@ -33,23 +33,24 @@
             // 
             // listbox
             // 
-            this.listbox.Dock = System.Windows.Forms.DockStyle.Top;
+            this.listbox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listbox.FormattingEnabled = true;
-            this.listbox.Location = new System.Drawing.Point(0, 0);
+            this.listbox.Location = new System.Drawing.Point(1, 1);
             this.listbox.Name = "listbox";
             this.listbox.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
-            this.listbox.Size = new System.Drawing.Size(148, 134);
+            this.listbox.Size = new System.Drawing.Size(146, 195);
             this.listbox.TabIndex = 0;
             this.listbox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.listbox_MouseMove);
             // 
             // bottomtext
             // 
-            this.bottomtext.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.bottomtext.Location = new System.Drawing.Point(0, 135);
+            this.bottomtext.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.bottomtext.Location = new System.Drawing.Point(0, 183);
+            this.bottomtext.Margin = new System.Windows.Forms.Padding(3, 4, 3, 1);
             this.bottomtext.Name = "bottomtext";
             this.bottomtext.Size = new System.Drawing.Size(148, 13);
             this.bottomtext.TabIndex = 1;
-            this.bottomtext.Text = "label1";
+            this.bottomtext.Text = "bottomtext";
             this.bottomtext.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // UndoDropDownControl
@@ -60,7 +61,8 @@
             this.Controls.Add(this.bottomtext);
             this.Controls.Add(this.listbox);
             this.Name = "UndoDropDownControl";
-            this.Size = new System.Drawing.Size(148, 148);
+            this.Padding = new System.Windows.Forms.Padding(1, 1, 1, 4);
+            this.Size = new System.Drawing.Size(148, 200);
             this.ResumeLayout(false);
 
         }

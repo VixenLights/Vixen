@@ -271,11 +271,15 @@
     <EmbeddedResource Include="TimelineControl\TimelineControl.resx">
       <DependentUpon>TimelineControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Undo\UndoDropDownControl.resx">
+      <DependentUpon>UndoDropDownControl.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="ColorPicker\ColorPicker.cur" />
     <Content Include="ControlsEx\std_zoomin.png" />
     <Content Include="ControlsEx\std_zoomout.png" />
+    <None Include="Resources\Edit_RedoHS.png" />
     <None Include="Resources\Edit_UndoHS.png" />
   </ItemGroup>
   <ItemGroup />

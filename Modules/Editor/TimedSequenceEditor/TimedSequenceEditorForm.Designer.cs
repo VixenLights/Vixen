@@ -35,8 +35,8 @@
 			this.toolStripButton_Pause = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton_End = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-			this.splitButton_Undo = new System.Windows.Forms.ToolStripSplitButton();
-			this.splitButton_Redo = new System.Windows.Forms.ToolStripSplitButton();
+            this.undoButton = new CommonElements.UndoButton();
+            this.redoButton = new CommonElements.UndoButton();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripButton_Cut = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton_Copy = new System.Windows.Forms.ToolStripButton();
@@ -108,8 +108,8 @@
             this.toolStripButton_Pause,
             this.toolStripButton_End,
             this.toolStripSeparator4,
-            this.splitButton_Undo,
-            this.splitButton_Redo,
+            this.undoButton,
+            this.redoButton,
             this.toolStripSeparator5,
             this.toolStripButton_Cut,
             this.toolStripButton_Copy,
@@ -183,23 +183,17 @@
 			// 
 			// splitButton_Undo
 			// 
-			this.splitButton_Undo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.splitButton_Undo.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.Edit_UndoHS;
-			this.splitButton_Undo.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.splitButton_Undo.Name = "splitButton_Undo";
-			this.splitButton_Undo.Size = new System.Drawing.Size(32, 22);
-			this.splitButton_Undo.Text = "Undo";
-			this.splitButton_Undo.ButtonClick += new System.EventHandler(this.splitButton_Undo_ButtonClick);
+			this.undoButton.Name = "splitButton_Undo";
+			this.undoButton.Size = new System.Drawing.Size(32, 22);
+			this.undoButton.Text = "Undo";
+			this.undoButton.ButtonClick += new System.EventHandler(this.undoButton_ButtonClick);
 			// 
 			// splitButton_Redo
 			// 
-			this.splitButton_Redo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.splitButton_Redo.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.Edit_RedoHS;
-			this.splitButton_Redo.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.splitButton_Redo.Name = "splitButton_Redo";
-			this.splitButton_Redo.Size = new System.Drawing.Size(32, 22);
-			this.splitButton_Redo.Text = "Redo";
-			this.splitButton_Redo.ButtonClick += new System.EventHandler(this.splitButton_Redo_ButtonClick);
+			this.redoButton.Name = "splitButton_Redo";
+			this.redoButton.Size = new System.Drawing.Size(32, 22);
+			this.redoButton.Text = "Redo";
+			this.redoButton.ButtonClick += new System.EventHandler(this.redoButton_ButtonClick);
 			// 
 			// toolStripSeparator5
 			// 
@@ -724,8 +718,8 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_deleteElements;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-        private System.Windows.Forms.ToolStripSplitButton splitButton_Undo;
-        private System.Windows.Forms.ToolStripSplitButton splitButton_Redo;
+        private CommonElements.UndoButton undoButton;
+        private CommonElements.UndoButton redoButton;
 		private System.Windows.Forms.ToolStripButton toolStripButton_Start;
 		private System.Windows.Forms.ToolStripButton toolStripButton_End;
 		private System.Windows.Forms.ToolStripMenuItem selectAllElementsToolStripMenuItem;
