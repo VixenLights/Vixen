@@ -139,6 +139,23 @@ namespace VixenModules.Property.RGB
 
 		#region Reverse-mapping of commands to a channelNode and color
 
+		private enum ReverseColorMappingType
+		{
+			DirectPolychromeMapping,	// the given channel is a full-color polychrome channel; just dump out the color
+			IndividualRGB_Red,			// given channel is an individual R channel of another channel
+			IndividualRGB_Green,		// given channel is an individual G channel of another channel
+			IndividualRGB_Blue,			// given channel is an individual B channel of another channel
+			NoColorMapping				// there's no reverse mapping for the given channel, just map it to greyscale
+		}
+
+		private class ReverseColorMappingInfo
+		{
+			public ReverseColorMappingType type;
+			public ChannelNode targetNode;				// the target node to map results to
+		}
+
+		private static Dictionary<Channel, ReverseColorMappingInfo> _cachedChannelMappings = new Dictionary<Channel,ReverseColorMappingInfo>();
+
 		public static Dictionary<ChannelNode, Color> MapChannelCommandsToColors(Dictionary<Channel, Command> channelsCommands)
 		{
 			Dictionary<ChannelNode, Color> result = new Dictionary<ChannelNode,Color>();
@@ -148,6 +165,70 @@ namespace VixenModules.Property.RGB
 				Channel channel = kvp.Key;
 				Command command = kvp.Value;
 				bool success = false;			// if we've successfully found something for this channel/command.
+
+				ReverseColorMappingInfo info;
+				_cachedChannelMappings.TryGetValue(channel, out info);
+				if (info != null) {
+					
+					Color color;
+					byte colorLevel;
+
+					switch (info.type) {
+						case ReverseColorMappingType.DirectPolychromeMapping:
+							if (command is Vixen.Commands.Lighting.Polychrome.SetColor) {
+								result[info.targetNode] = (command as Vixen.Commands.Lighting.Polychrome.SetColor).Color;
+							}
+							continue;
+
+						case ReverseColorMappingType.IndividualRGB_Red:
+							colorLevel = 0;
+							if (command is Vixen.Commands.Lighting.Monochrome.SetLevel)
+								colorLevel = (byte)(((command as Vixen.Commands.Lighting.Monochrome.SetLevel).Level / 100.0) * Byte.MaxValue);
+
+							result.TryGetValue(info.targetNode, out color);
+							if (color == null)
+								color = Color.Black;
+							color = Color.FromArgb(colorLevel, color.G, color.B);
+
+							result[info.targetNode] = color;
+							continue;
+
+						case ReverseColorMappingType.IndividualRGB_Green:
+							colorLevel = 0;
+							if (command is Vixen.Commands.Lighting.Monochrome.SetLevel)
+								colorLevel = (byte)(((command as Vixen.Commands.Lighting.Monochrome.SetLevel).Level / 100.0) * Byte.MaxValue);
+
+							result.TryGetValue(info.targetNode, out color);
+							if (color == null)
+								color = Color.Black;
+							color = Color.FromArgb(color.R, colorLevel, color.B);
+
+							result[info.targetNode] = color;
+							continue;
+
+						case ReverseColorMappingType.IndividualRGB_Blue:
+							colorLevel = 0;
+							if (command is Vixen.Commands.Lighting.Monochrome.SetLevel)
+								colorLevel = (byte)(((command as Vixen.Commands.Lighting.Monochrome.SetLevel).Level / 100.0) * Byte.MaxValue);
+
+							result.TryGetValue(info.targetNode, out color);
+							if (color == null)
+								color = Color.Black;
+							color = Color.FromArgb(color.R, color.G, colorLevel);
+
+							result[info.targetNode] = color;
+							continue;
+
+						case ReverseColorMappingType.NoColorMapping:
+							if (command is Vixen.Commands.Lighting.Monochrome.SetLevel)
+								colorLevel = (byte)(((command as Vixen.Commands.Lighting.Monochrome.SetLevel).Level / 100.0) * Byte.MaxValue);
+							else
+								colorLevel = 0;
+
+							result[info.targetNode] = Color.FromArgb(colorLevel, colorLevel, colorLevel);
+							continue;
+					}
+				}
 
 				ChannelNode node = VixenSystem.Channels.GetChannelNodeForChannel(channel);
 				if (node == null) {
@@ -161,6 +242,11 @@ namespace VixenModules.Property.RGB
 					if (command is Vixen.Commands.Lighting.Polychrome.SetColor) {
 						result[node] = (command as Vixen.Commands.Lighting.Polychrome.SetColor).Color;
 						success = true;
+
+						ReverseColorMappingInfo newInfo = new ReverseColorMappingInfo();
+						newInfo.type = ReverseColorMappingType.DirectPolychromeMapping;
+						newInfo.targetNode = node;
+						_cachedChannelMappings[channel] = newInfo;
 					}
 				}
 				// the node doesn't have an RGB property, so maybe it's a individual RGB channel for a parent node. Check all this node's parents,
@@ -172,7 +258,13 @@ namespace VixenModules.Property.RGB
 
 							if (command is Vixen.Commands.Lighting.Monochrome.SetLevel) {
 								bool setRed, setGreen, setBlue;
-								byte colorLevel = (byte)(((command as Vixen.Commands.Lighting.Monochrome.SetLevel).Level / 100.0) * Byte.MaxValue);
+
+								byte colorLevel;
+
+								if (command != null)
+									colorLevel = (byte)(((command as Vixen.Commands.Lighting.Monochrome.SetLevel).Level / 100.0) * Byte.MaxValue);
+								else
+									colorLevel = 0;
 
 								setRed = (parentData.RedChannelNode == node.Id);
 								setGreen = (parentData.GreenChannelNode == node.Id);
@@ -191,6 +283,13 @@ namespace VixenModules.Property.RGB
 
 									result[parent] = color;
 									success = true;
+
+									ReverseColorMappingInfo newInfo = new ReverseColorMappingInfo();
+									if (setRed) newInfo.type = ReverseColorMappingType.IndividualRGB_Red;
+									if (setGreen) newInfo.type = ReverseColorMappingType.IndividualRGB_Green;
+									if (setBlue) newInfo.type = ReverseColorMappingType.IndividualRGB_Blue;
+									newInfo.targetNode = parent;
+									_cachedChannelMappings[channel] = newInfo;
 								}
 							}
 						}
@@ -206,6 +305,11 @@ namespace VixenModules.Property.RGB
 
 						byte colorLevel = (byte)(((command as Vixen.Commands.Lighting.Monochrome.SetLevel).Level / 100.0) * Byte.MaxValue);
 						result[node] = Color.FromArgb(colorLevel, colorLevel, colorLevel);
+
+						ReverseColorMappingInfo newInfo = new ReverseColorMappingInfo();
+						newInfo.type = ReverseColorMappingType.NoColorMapping;
+						newInfo.targetNode = node;
+						_cachedChannelMappings[channel] = newInfo;
 					}
 				}
 			}
