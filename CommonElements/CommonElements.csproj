@@ -205,9 +205,7 @@
     <Compile Include="TimelineControl\Grid.cs" />
     <Compile Include="TimelineControl\Ruler.cs" />
     <Compile Include="Undo\UndoAction.cs" />
-    <Compile Include="Undo\UndoButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Undo\UndoButton.cs" />
     <Compile Include="Undo\UndoDropDownControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

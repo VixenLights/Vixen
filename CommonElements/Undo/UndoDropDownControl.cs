@@ -19,6 +19,7 @@ namespace CommonElements
             this.ButtonType = UndoButtonType.UndoButton;
         }
 
+
         public UndoButtonType ButtonType { get; set; }
 
 
@@ -33,8 +34,10 @@ namespace CommonElements
 
             // TODO: This fucks up the scrolling :-(
             // Select all items from 0 to idx
+            listbox.BeginUpdate();
             for (int i = 0; i < listbox.Items.Count; i++)
                 listbox.SetSelected(i, (i <= idx));
+            listbox.EndUpdate();
 
             idx++;
             bottomtext.Text = String.Format("{0} {1} Action{2}",
@@ -51,11 +54,24 @@ namespace CommonElements
         }
 
 
+        private void listbox_Click(object sender, MouseEventArgs e)
+        {
+            int idx = listbox.IndexFromPoint(e.Location);
+            Debug.WriteLine("Click: " + idx.ToString());
+        }
 
 
+        public event EventHandler<UndoMultipleItemsEventArgs> ItemsClicked;
 
     }
 
-
+    public class UndoMultipleItemsEventArgs : EventArgs
+    {
+        public UndoMultipleItemsEventArgs(int numItems)
+        {
+            NumItems = numItems;
+        }
+        public int NumItems { get; private set; }
+    }
 
 }

@@ -8,6 +8,7 @@ using System.Diagnostics;
 
 namespace CommonElements
 {
+    [System.ComponentModel.DesignerCategory("")]    // Prevent this from showing up in designer.
     public class UndoButton : ToolStripSplitButton
     {
         private ToolStripDropDown m_toolDrop = null;
@@ -60,6 +61,7 @@ namespace CommonElements
                 }
             }
         }
+
 
         public ListBox.ObjectCollection UndoItems
         {
