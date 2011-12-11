@@ -12,6 +12,7 @@ using System.Xml.Serialization;
 using Vixen.Sys;
 using Vixen.Module.Editor;
 using Vixen.Module.Sequence;
+using Vixen.Sys.State.Execution;
 
 namespace VixenApplication
 {
@@ -234,7 +235,7 @@ namespace VixenApplication
 			this.Close();
 		}
 
-		private void executionStateChangedHandler(Execution.ExecutionState state)
+		private void executionStateChangedHandler(object sender, EventArgs e)
 		{
 			if (stopping)
 				return;
@@ -249,24 +250,22 @@ namespace VixenApplication
 		// so instead, just take this as a notification to update with the current state of the execution engine.
 		private void updateExecutionState()
 		{
-			switch (Vixen.Sys.Execution.State) {
-				case Execution.ExecutionState.Started:
-					toolStripStatusLabelExecutionState.Text = "Execution: Started";
+			toolStripStatusLabelExecutionState.Text = "Execution: " + Vixen.Sys.Execution.State;
+
+			switch(Vixen.Sys.Execution.State) {
+				case OpenState.StateName:
 					toolStripStatusLabelExecutionLight.BackColor = Color.ForestGreen;
 					break;
 
-				case Execution.ExecutionState.Starting:
-					toolStripStatusLabelExecutionState.Text = "Execution: Starting";
+				case OpeningState.StateName:
 					toolStripStatusLabelExecutionLight.BackColor = Color.DodgerBlue;
 					break;
 
-				case Execution.ExecutionState.Stopped:
-					toolStripStatusLabelExecutionState.Text = "Execution: Stopped";
+				case ClosedState.StateName:
 					toolStripStatusLabelExecutionLight.BackColor = Color.Firebrick;
 					break;
 
-				case Execution.ExecutionState.Stopping:
-					toolStripStatusLabelExecutionState.Text = "Execution: Stopping";
+				case ClosingState.StateName:
 					toolStripStatusLabelExecutionLight.BackColor = Color.Gold;
 					break;
 			}

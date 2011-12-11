@@ -376,6 +376,13 @@
     <Compile Include="Module\Trigger\TriggerInput.cs" />
     <Compile Include="Sys\Sequence.cs" />
     <Compile Include="Script\SourceFile.cs" />
+    <Compile Include="Sys\State\Execution\ClosedState.cs" />
+    <Compile Include="Sys\State\Execution\ExecutionStateEngine.cs" />
+    <Compile Include="Sys\State\Execution\OpenState.cs" />
+    <Compile Include="Sys\State\Execution\OutputTestState.cs" />
+    <Compile Include="Sys\State\Execution\OpeningState.cs" />
+    <Compile Include="Sys\State\Execution\State.cs" />
+    <Compile Include="Sys\State\Execution\ClosingState.cs" />
     <Compile Include="Sys\SystemClock.cs" />
     <Compile Include="Sys\NodeManager.cs" />
     <Compile Include="Sys\SystemContext.cs" />

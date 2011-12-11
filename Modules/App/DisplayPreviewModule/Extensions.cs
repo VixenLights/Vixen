@@ -18,21 +18,6 @@ namespace VixenModules.App.DisplayPreview
                    && channelNode.Properties.Any(x => x is RGBModule);
         }
 
-        public static bool IsRunning(this Execution.ExecutionState state)
-        {
-            switch (state)
-            {
-                case Execution.ExecutionState.Starting:
-                case Execution.ExecutionState.Started:
-                    return true;
-                case Execution.ExecutionState.Stopping:
-                case Execution.ExecutionState.Stopped:
-                    return false;
-                default:
-                    throw new ArgumentOutOfRangeException("state");
-            }
-        }
-
         public static void NotifyPropertyChanged(
             this PropertyChangedEventHandler propertyChangedEventHandler, string propertyName, object sender)
         {

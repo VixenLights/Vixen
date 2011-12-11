@@ -1,28 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Vixen.Execution;
-using System.Diagnostics;
 using System.Threading;
-using Vixen.Sys;
+using Vixen.Execution;
 using Vixen.Module.Effect;
 using Vixen.Commands;
 using Vixen.Sys.Instrumentation;
+using Vixen.Sys.State.Execution;
 
 namespace Vixen.Sys {
 	public class Execution {
 		static private Dictionary<Guid, ProgramContext> _contexts = new Dictionary<Guid, ProgramContext>();
 		static internal SystemClock SystemTime = new SystemClock();
 		static private Thread _channelReadThread;
-		// Creating channels in here instead of VixenSystem so that the collection
-		// will be locally available for EffectRenderer instances.
-		static private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
-		static private volatile ExecutionState _state = ExecutionState.Stopped;
+		static private ExecutionStateEngine _state;
 		static private TotalEffectsValue _totalEffectsValue;
 		static private EffectsPerSecondValue _effectsPerSecondValue;
-
-		public enum ExecutionState { Starting, Started, Stopping, Stopped };
 
 		// These are system-level events.
 		static public event EventHandler<ProgramContextEventArgs> ProgramContextCreated;
@@ -31,59 +24,34 @@ namespace Vixen.Sys {
 			add { NodeManager.NodesChanged += value; }
 			remove { NodeManager.NodesChanged -= value; }
 		}
+		
 		static public event Action<ExecutionStateValues> ValuesChanged;
-		static public event Action<ExecutionState> ExecutionStateChanged;
-
-		/// <summary>
-		/// Allows data to be executed.
-		/// </summary>
-		static public bool OpenExecution() {
-			if(_State == ExecutionState.Stopped) {
-				VixenSystem.Logging.Info("Vixen Execution Engine starting...");
-				_State = ExecutionState.Starting;
-
-				// Open the channels.
-				VixenSystem.Channels.OpenChannels();
-
-				SystemTime.Start();
-
-				// Enabled/disabled list is going to be an opt-in list of disabled controllers
-				// so that new controllers don't need to be added to it in order to be enabled.
-				IEnumerable<OutputController> enabledControllers = VixenSystem.SystemConfig.Controllers.Except(VixenSystem.SystemConfig.DisabledControllers);
-				VixenSystem.Controllers.OpenControllers(enabledControllers);
-
-				_channelReadThread = new Thread(_ChannelReaderThread);
-				_channelReadThread.Start();
-				_State = ExecutionState.Started;
-				VixenSystem.Logging.Info("Vixen Execution Engine started.");
-				return true;
-			}
-			return false;
+		static public event EventHandler ExecutionStateChanged {
+			add { _State.StateChanged += value; }
+			remove { _State.StateChanged -= value; }
 		}
 
-		static public bool CloseExecution() {
-			if(_State == ExecutionState.Started) {
-				VixenSystem.Logging.Info("Vixen Execution Engine stopping...");
-				// Release all contexts.
-				// Releasing a context removes it from the collection, so
-				// enumerate a copy of the collection.
-				foreach(ProgramContext context in _contexts.Values.ToArray()) {
-					ReleaseContext(context);
-				}
-				// Stop reading from channels.
-				_State = ExecutionState.Stopping;
-				while(_State != ExecutionState.Stopped) { Thread.Sleep(1); }
-				_channelReadThread = null;
-				// Close the channels.
-				VixenSystem.Channels.CloseChannels();
-				// Stop the controllers.
-				VixenSystem.Controllers.CloseControllers();
-				// Stop internal timing.
-				SystemTime.Stop();
-				VixenSystem.Logging.Info("Vixen Execution Engine stopped.");
-				return true;
+		static public void OpenExecution() {
+			_State.ToOpen();
+		}
+
+		static public void CloseExecution() {
+			_State.ToClose();
+		}
+
+		static internal void Startup() {
+			_channelReadThread = new Thread(_ChannelReaderThread);
+			_channelReadThread.IsBackground = true;
+			_channelReadThread.Start();
+		}
+
+		static internal void Shutdown() {
+			// Release all contexts.
+			// Releasing a context removes it from the collection, so
+			// enumerate a copy of the collection.
+			foreach(ProgramContext context in _contexts.Values.ToArray()) {
+				ReleaseContext(context);
 			}
-			return false;
 		}
 
 		static private TotalEffectsValue _TotalEffects {
@@ -106,66 +74,19 @@ namespace Vixen.Sys {
 			}
 		}
 
-		// Something went kaflooey with the threaded use of the _state variable,
-		// so it's been wrapped in the safe and fluffy blankets of this property.
-		static private ExecutionState _State {
-			get {
-				_lock.EnterReadLock();
-				try {
-					return _state;
-				} finally {
-					_lock.ExitReadLock();
-				}
-			}
-			set {
-				_lock.EnterWriteLock();
-				try {
-					_state = value;
-				} finally {
-					_lock.ExitWriteLock();
-				}
-				if (ExecutionStateChanged != null)
-					ExecutionStateChanged(value);
-			}
+		private static ExecutionStateEngine _State {
+			get { return _state ?? (_state = new ExecutionStateEngine()); }
 		}
 
-		static public ExecutionState State
-		{
-			get { return _State; }
+		public static string State {
+			get {
+				return _State.CurrentState.Name;
+			}
 		}
 
 		static public TimeSpan CurrentExecutionTime { get { return (SystemTime.IsRunning) ? SystemTime.Position : TimeSpan.Zero; } }
 
 		static public string CurrentExecutionTimeString { get { return CurrentExecutionTime.ToString("m\\:ss\\.fff"); } }
-
-		static private void _ChannelReaderThread() {
-			// Our mission:
-			// Read data from the channel enumerators and write to the channel patches.
-
-			while(_State != ExecutionState.Stopping) {
-				_UpdateChannelStates();
-				Thread.Sleep(1);
-			}
-			_State = ExecutionState.Stopped;
-		}
-
-		static private void _UpdateChannelStates() {
-			// we aren't doing this work for anything else, so don't bother doing it unless there's
-			// an event to be raised from it.
-			if (ValuesChanged != null) {
-				ExecutionStateValues stateBuffer = new ExecutionStateValues(SystemTime.Position);
-
-				foreach (Channel channel in VixenSystem.Channels) {
-					bool updatedState;
-					Command channelState = VixenSystem.Channels.UpdateChannelState(channel, out updatedState);
-					if (updatedState) {
-						stateBuffer[channel] = channelState;
-					}
-				}
-
-				ValuesChanged(stateBuffer);
-			}
-		}
 
 		static public ProgramContext CreateContext(Program program) {
 			ProgramContext context = new ProgramContext(program);
@@ -222,9 +143,7 @@ namespace Vixen.Sys {
 				// The context must be created and managed since the user is not doing it.
 				context = CreateContext(sequence, contextName);
 				// When the program ends, release the context.
-				context.ProgramEnded += (sender, e) => {
-					ReleaseContext(context);
-				};
+				context.ProgramEnded += (sender, e) => ReleaseContext(context);
 				context.Play();
 				// It is the sequence playing now.
 				return 0;
@@ -244,7 +163,35 @@ namespace Vixen.Sys {
 			ThreadPool.QueueUserWorkItem((o) => renderer.Start());
 		}
 
-		#region EffectRenderer
+		static private void _ChannelReaderThread() {
+			// Our mission:
+			// Read data from the channel enumerators and write to the channel patches.
+
+			while(_state.IsRunning) {
+				_UpdateChannelStates();
+				Thread.Sleep(1);
+			}
+		}
+
+		static private void _UpdateChannelStates() {
+			// we aren't doing this work for anything else, so don't bother doing it unless there's
+			// an event to be raised from it.
+			if(ValuesChanged != null) {
+				ExecutionStateValues stateBuffer = new ExecutionStateValues(SystemTime.Position);
+
+				foreach(Channel channel in VixenSystem.Channels) {
+					bool updatedState;
+					Command channelState = VixenSystem.Channels.UpdateChannelState(channel, out updatedState);
+					if(updatedState) {
+						stateBuffer[channel] = channelState;
+					}
+				}
+
+				ValuesChanged(stateBuffer);
+			}
+		}
+
+		#region EffectRenderer class
 		class EffectRenderer {
 			private TimeSpan _timeStarted;
 			private Stack<EffectNode> _effects;
