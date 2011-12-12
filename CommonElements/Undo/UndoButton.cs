@@ -24,6 +24,7 @@ namespace CommonElements
             m_dropControl = new UndoDropDownControl() {
                 MinimumSize = new Size(SetWidth, SetHeight)  // <- important
             };
+            m_dropControl.ItemChosen += m_dropControl_ItemChosen;
 
             // ...hosted by a ToolStripControlHost
             m_toolHost = new ToolStripControlHost(m_dropControl) {
@@ -37,12 +38,15 @@ namespace CommonElements
             };
             m_toolDrop.Items.Add(m_toolHost);
 
+ 
             this.DisplayStyle = ToolStripItemDisplayStyle.Image;
             this.ButtonType = UndoButtonType.UndoButton;    // Default.
 
             // There is no OnDropDownOpening to override, so I guess we have to do it this way.
             this.DropDownOpening += UndoButton_DropDownOpening;
         }
+
+
 
         public UndoButtonType ButtonType
         {
@@ -72,7 +76,19 @@ namespace CommonElements
         private void UndoButton_DropDownOpening(object sender, EventArgs e)
         {
             m_toolDrop.Show(this.Parent, new Point(this.Bounds.Left, this.Bounds.Bottom));
+            m_dropControl.Reset();
             m_dropControl.Focus();
+        }
+
+        void m_dropControl_ItemChosen(object sender, UndoMultipleItemsEventArgs e)
+        {
+            m_toolDrop.Hide();
+        }
+
+        public event EventHandler<UndoMultipleItemsEventArgs> ItemChosen
+        {
+            add { m_dropControl.ItemChosen += value; }
+            remove { m_dropControl.ItemChosen -= value; }
         }
 
     }

@@ -40,15 +40,14 @@
             this.listbox.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
             this.listbox.Size = new System.Drawing.Size(146, 195);
             this.listbox.TabIndex = 0;
-            this.listbox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.listbox_MouseMove);
             // 
             // bottomtext
             // 
-            this.bottomtext.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.bottomtext.Location = new System.Drawing.Point(0, 183);
+            this.bottomtext.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.bottomtext.Location = new System.Drawing.Point(1, 183);
             this.bottomtext.Margin = new System.Windows.Forms.Padding(3, 4, 3, 1);
             this.bottomtext.Name = "bottomtext";
-            this.bottomtext.Size = new System.Drawing.Size(148, 13);
+            this.bottomtext.Size = new System.Drawing.Size(146, 13);
             this.bottomtext.TabIndex = 1;
             this.bottomtext.Text = "bottomtext";
             this.bottomtext.TextAlign = System.Drawing.ContentAlignment.BottomCenter;

@@ -67,20 +67,32 @@ namespace VixenModules.Editor.TimedSequenceEditor
             _undoMgr.RedoItemsChanged += _undoMgr_RedoItemsChanged;
 
             undoButton.Enabled = false;
-            undoButton.ButtonType = CommonElements.UndoButtonType.UndoButton;
+            undoButton.ItemChosen += undoButton_ItemChosen;
 
             redoButton.Enabled = false;
-            redoButton.ButtonType = CommonElements.UndoButtonType.RedoButton;
+            redoButton.ItemChosen += redoButton_ItemChosen;
         }
+
+
 
         private void undoButton_ButtonClick(object sender, EventArgs e)
         {
             _undoMgr.Undo();
         }
 
+        private void undoButton_ItemChosen(object sender, CommonElements.UndoMultipleItemsEventArgs e)
+        {
+            _undoMgr.Undo(e.NumItems);
+        }
+
         private void redoButton_ButtonClick(object sender, EventArgs e)
         {
             _undoMgr.Redo();
+        }
+
+        private void redoButton_ItemChosen(object sender, CommonElements.UndoMultipleItemsEventArgs e)
+        {
+            _undoMgr.Redo(e.NumItems);
         }
 
 
