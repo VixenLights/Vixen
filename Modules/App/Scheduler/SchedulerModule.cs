@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Timers;
 using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.App;
 using Vixen.Execution;
+using Timer = System.Timers.Timer;
 
 namespace VixenModules.App.Scheduler {
 	public class SchedulerModule : AppModuleInstanceBase {
@@ -15,6 +16,7 @@ namespace VixenModules.App.Scheduler {
 		private Timer _scheduleCheckTimer;
 		private ScheduleService _scheduleService;
 		private Dictionary<ProgramContext, ScheduleItem> _contexts;
+		private SynchronizationContext _synchronizationContext;
 
 		private const string ID_ROOT = "SchedulerRoot";
 
@@ -26,6 +28,7 @@ namespace VixenModules.App.Scheduler {
 		public override void Loading() {
 			_AddApplicationMenu();
 			_SetEnableState(_data.IsEnabled);
+			_synchronizationContext = SynchronizationContext.Current;
 			VixenSystem.Logs.AddLog(new SchedulerLog());
 		}
 
@@ -58,7 +61,7 @@ namespace VixenModules.App.Scheduler {
 
 			foreach(ScheduleItem item in validItems) {
 				if(_CanExecute(item)) {
-					_Execute(item);
+					_synchronizationContext.Post((o) => _Execute(o as ScheduleItem), item);
 				}
 			}
 		}
