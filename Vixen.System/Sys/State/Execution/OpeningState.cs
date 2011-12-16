@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using Vixen.Execution;
+using Vixen.Sys.State.Execution.Behavior;
 
 namespace Vixen.Sys.State.Execution {
 	public class OpeningState : State {
@@ -13,19 +13,10 @@ namespace Vixen.Sys.State.Execution {
 			get { return StateName; }
 		}
 
-
 		public override void Enter() {
-			VixenSystem.Logging.Info("Vixen Execution Engine starting...");
+			VixenSystem.Logging.Info("Vixen execution engine entering the open state...");
 
-			// Open the channels.
-			VixenSystem.Channels.OpenChannels();
-
-			// Enabled/disabled list is going to be an opt-in list of disabled controllers
-			// so that new controllers don't need to be added to it in order to be enabled.
-			IEnumerable<OutputController> enabledControllers = VixenSystem.SystemConfig.Controllers.Except(VixenSystem.SystemConfig.DisabledControllers);
-			VixenSystem.Controllers.OpenControllers(enabledControllers);
-
-			Sys.Execution.Startup();
+			StandardOpeningBehavior<SystemChannelEnumerator>.Run();
 
 			Engine.SetState(Engine.OpenState);
 		}

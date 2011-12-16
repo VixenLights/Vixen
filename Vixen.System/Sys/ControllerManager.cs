@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
@@ -14,16 +13,6 @@ namespace Vixen.Sys {
 		private enum ExecutionState { Stopped, Starting, Started, Stopping };
 		private ExecutionState _stateAll = ExecutionState.Stopped;
 		private Dictionary<Guid, HardwareUpdateThread> _updateThreads = new Dictionary<Guid, HardwareUpdateThread>();
-		//// Controller id : List of (source, reference)
-		//private Dictionary<Guid, List<Tuple<IOutputStateSource, ControllerReference>>> _unresolvedReferences = new Dictionary<Guid, List<Tuple<IOutputStateSource, ControllerReference>>>();
-
-		public ControllerManager() {
-		}
-
-		public ControllerManager(IEnumerable<OutputController> controllers)
-			: this() {
-			AddControllers(controllers);
-		}
 
 		public void AddController(OutputController controller) {
 			lock(_controllers) {
@@ -128,16 +117,34 @@ namespace Vixen.Sys {
 			_StopController(controller);
 		}
 
+		public void AddSources(IOutputSourceCollection sources) {
+			if(sources == null) throw new ArgumentNullException("sources");
+
+			foreach(Guid controllerId in sources.Controllers) {
+				foreach(OutputSources outputSources in sources.GetControllerSources(controllerId)) {
+					foreach(IOutputStateSource source in outputSources) {
+						AddSource(source, new ControllerReference(controllerId, outputSources.OutputIndex));
+					}
+				}
+			}
+		}
+
+		public void RemoveSources(IOutputSourceCollection sources) {
+			if(sources == null) throw new ArgumentNullException("sources");
+
+			foreach(Guid controllerId in sources.Controllers) {
+				foreach(OutputSources outputSources in sources.GetControllerSources(controllerId)) {
+					foreach(IOutputStateSource source in outputSources) {
+						RemoveSource(source, new ControllerReference(controllerId, outputSources.OutputIndex));
+					}
+				}
+			}
+		}
+
 		public void AddSource(IOutputStateSource source, ControllerReference controllerReference) {
 			OutputController controller;
 			if(_controllers.TryGetValue(controllerReference.ControllerId, out controller)) {
 				controller.AddSource(source, controllerReference.OutputIndex);
-			//} else {
-			//    List<Tuple<IOutputStateSource, ControllerReference>> references;
-			//    if(!_unresolvedReferences.TryGetValue(controllerReference.ControllerId, out references)) {
-			//        _unresolvedReferences[controllerReference.ControllerId] = references = new List<Tuple<IOutputStateSource, ControllerReference>>();
-			//    }
-			//    references.Add(new Tuple<IOutputStateSource, ControllerReference>(source, controllerReference));
 			}
 		}
 
@@ -178,6 +185,7 @@ namespace Vixen.Sys {
 					VixenSystem.Logging.Error("Controller " + controller.Name + " is linked to controller " + parentController.Name + ", but it's an invalid link.");
 				}
 
+				// Start the controller.
 				controller.Start();
 
 				// Create / Start the thread that updates the hardware.
@@ -201,6 +209,7 @@ namespace Vixen.Sys {
 						thread.Error -= _HardwareError;
 					}
 
+					// Stop the controller.
 					controller.Stop();
 				} catch(Exception ex) {
 					VixenSystem.Logging.Error("Error trying to stop controller " + controller.Name, ex);

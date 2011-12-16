@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO.Ports;
 using System.Windows.Forms;
-using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Output;
 using Vixen.Commands;
-using Vixen.Commands.KnownDataTypes;
 
 namespace VixenModules.Output.Renard
 {
@@ -141,7 +137,7 @@ namespace VixenModules.Output.Renard
 			}
 
 			_p1Packet[0] = 0x7E;
-			_p1Packet[1] = 0x80;
+			_p1Packet[1] = (byte)(0x80 + ChainIndex);
 
 			foreach(Command command in outputStates) {
 				if(command == null) {

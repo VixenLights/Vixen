@@ -11,7 +11,7 @@
 
 		virtual public void OnOpen() { }
 		virtual public void OnClose() { }
-		virtual public void OnOutputTest() { }
+		virtual public void OnTest() { }
 
 		protected ExecutionStateEngine Engine { get; private set; }
 	}

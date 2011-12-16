@@ -1,4 +1,6 @@
-﻿namespace Vixen.Sys.State.Execution {
+﻿using Vixen.Sys.State.Execution.Behavior;
+
+namespace Vixen.Sys.State.Execution {
 	public class ClosedState : State {
 		public const string StateName = "Closed";
 
@@ -10,19 +12,17 @@
 			get { return StateName; }
 		}
 
-
 		public override void Enter() {
-			Vixen.Sys.Execution.SystemTime.Stop();
-			VixenSystem.Logging.Info("Vixen Execution Engine stopped.");
+			StandardClosedBehavior.Run();
+			VixenSystem.Logging.Info("Vixen execution engine entered the closed state.");
 		}
-
 
 		public override void OnOpen() {
 			Engine.SetState(Engine.OpeningState);
 		}
 
-		public override void OnOutputTest() {
-			Engine.SetState(Engine.OutputTestState);
+		public override void OnTest() {
+			Engine.SetState(Engine.TestOpeningState);
 		}
 	}
 }

@@ -7,9 +7,10 @@ namespace Vixen.Sys.State.Execution {
 		public ExecutionStateEngine() {
 			OpeningState = new OpeningState(this);
 			ClosingState = new ClosingState(this);
-			OutputTestState = new OutputTestState(this);
+			TestOpeningState = new TestOpeningState(this);
 			OpenState = new OpenState(this);
 			ClosedState = new ClosedState(this);
+			TestOpenState = new TestOpenState(this);
 
 			CurrentState = ClosedState;
 		}
@@ -30,8 +31,8 @@ namespace Vixen.Sys.State.Execution {
 		public bool IsRunning {
 			get {
 				return
-					CurrentState == OpeningState ||
-					CurrentState == OpenState;
+					CurrentState != ClosingState &&
+					CurrentState != ClosedState;
 			}
 		}
 
@@ -39,19 +40,20 @@ namespace Vixen.Sys.State.Execution {
 			CurrentState.OnOpen();
 		}
 
-		public void ToClose() {
+		public void ToClosed() {
 			CurrentState.OnClose();
 		}
 
-		public void ToOutputTest() {
-			CurrentState.OnOutputTest();
+		public void ToTest() {
+			CurrentState.OnTest();
 		}
 
 		public State OpeningState { get; private set; }
 		public State ClosingState { get; private set; }
-		public State OutputTestState { get; private set; }
+		public State TestOpeningState { get; private set; }
 		public State OpenState { get; private set; }
 		public State ClosedState { get; private set; }
+		public State TestOpenState { get; private set; }
 
 		protected virtual void OnStateChanged(EventArgs e) {
 			if(StateChanged != null) {

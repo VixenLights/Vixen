@@ -18,5 +18,7 @@ namespace Vixen.Module.Output {
 		void SetTransforms(int outputIndex, IEnumerable<ITransformModuleInstance> transforms);
 		IEnumerable<ITransformModuleInstance> GetTransforms(int outputIndex);
 		IModuleDataSet ModuleDataSet { get; set; }
+		int UpdateInterval { get; }
+    	int ChainIndex { get; set; }
     }
 }

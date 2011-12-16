@@ -36,7 +36,15 @@ namespace Vixen.Sys {
 		}
 
 		static public void CloseExecution() {
-			_State.ToClose();
+			_State.ToClosed();
+		}
+
+		static public void OpenTest() {
+			_State.ToTest();
+		}
+
+		static public void CloseTest() {
+			_State.ToClosed();
 		}
 
 		static internal void Startup() {
@@ -155,11 +163,13 @@ namespace Vixen.Sys {
 		/// </summary>
 		/// <param name="state"></param>
 		static public void Write(IEnumerable<EffectNode> state) {
-			_TotalEffects.Add(state.Count());
+			EffectNode[] effectNodes = state.ToArray();
+
+			_TotalEffects.Add(effectNodes.Length);
 			_EffectsPerSecond.Increment();
 
 			// Give the renderer a separate collection instance.
-			EffectRenderer renderer = new EffectRenderer(state.ToArray());
+			EffectRenderer renderer = new EffectRenderer(effectNodes);
 			ThreadPool.QueueUserWorkItem((o) => renderer.Start());
 		}
 
@@ -174,19 +184,17 @@ namespace Vixen.Sys {
 		}
 
 		static private void _UpdateChannelStates() {
-			// we aren't doing this work for anything else, so don't bother doing it unless there's
-			// an event to be raised from it.
-			if(ValuesChanged != null) {
-				ExecutionStateValues stateBuffer = new ExecutionStateValues(SystemTime.Position);
+			ExecutionStateValues stateBuffer = new ExecutionStateValues(SystemTime.Position);
 
-				foreach(Channel channel in VixenSystem.Channels) {
-					bool updatedState;
-					Command channelState = VixenSystem.Channels.UpdateChannelState(channel, out updatedState);
-					if(updatedState) {
-						stateBuffer[channel] = channelState;
-					}
+			foreach(Channel channel in VixenSystem.Channels) {
+				bool updatedState;
+				Command channelState = VixenSystem.Channels.UpdateChannelState(channel, out updatedState);
+				if(updatedState) {
+					stateBuffer[channel] = channelState;
 				}
+			}
 
+			if(ValuesChanged != null) {
 				ValuesChanged(stateBuffer);
 			}
 		}
@@ -224,25 +232,23 @@ namespace Vixen.Sys {
 								foreach (Guid channelId in channelData.Keys) {
 									Channel targetChannel = targetChannels[channelId];
 
-									Monitor.Enter(targetChannel);
+									lock(targetChannel) {
+										TimeSpan systemTimeDelta = _timeStarted + _syncDelta;
 
-									TimeSpan systemTimeDelta = _timeStarted + _syncDelta;
-
-									// Offset the data's time frame by the command's time offset.
-									foreach (CommandNode data in channelData[channelId]) {
-										// The data time needs to be translated from effect-local to
-										// system-local.
-										// Adding the command's start time makes it context-local.
-										// Adding the system time makes it system-local.
-										// Creating a new instance instead of changing the time members because
-										// changing them affects the data that the effect has created, affecting
-										// the relative timing of the data.  The data that the effect generates
-										// should always be relative to the start of the effect.
-										CommandNode targetChannelData = new CommandNode(data.Command, data.StartTime + systemTimeDelta, data.TimeSpan);
-										targetChannel.AddData(targetChannelData);
+										// Offset the data's time frame by the command's time offset.
+										foreach(CommandNode data in channelData[channelId]) {
+											// The data time needs to be translated from effect-local to
+											// system-local.
+											// Adding the command's start time makes it context-local.
+											// Adding the system time makes it system-local.
+											// Creating a new instance instead of changing the time members because
+											// changing them affects the data that the effect has created, affecting
+											// the relative timing of the data.  The data that the effect generates
+											// should always be relative to the start of the effect.
+											CommandNode targetChannelData = new CommandNode(data.Command, data.StartTime + systemTimeDelta, data.TimeSpan);
+											targetChannel.AddData(targetChannelData);
+										}
 									}
-
-									Monitor.Exit(targetChannel);
 								}
 							}
 						}

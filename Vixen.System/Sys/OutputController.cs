@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
 using System.Threading.Tasks;
 using Vixen.Module;
 using Vixen.Module.Output;
@@ -11,7 +10,7 @@ using Vixen.Commands;
 namespace Vixen.Sys {
 	public class OutputController : IEnumerable<OutputController>, Vixen.Execution.IExecutionControl {
 		private Guid _outputModuleId;
-		private IOutputModuleInstance _outputModule = null;
+		private IOutputModuleInstance _outputModule;
 		private List<Output> _outputs = new List<Output>();
 		private ModuleInstanceSpecification<int> _outputTransforms = new ModuleInstanceSpecification<int>();
 		private IModuleDataSet _moduleDataSet = new ModuleLocalDataSet();
@@ -31,7 +30,6 @@ namespace Vixen.Sys {
 		public void Start() {
 			if(!IsRunning && OutputModule != null) {
 				OutputModule.Start();
-				_FixupOutputSources();
 			}
 		}
 
@@ -50,25 +48,6 @@ namespace Vixen.Sys {
 		public void Stop() {
 			if(IsRunning && OutputModule != null) {
 				OutputModule.Stop();
-				_ReleaseOutputSources();
-			}
-		}
-
-		private void _FixupOutputSources() {
-			_ReleaseOutputSources();
-			// Get patches with ControllerReferences for this controller.
-			IEnumerable<Patch> patchReferences = VixenSystem.Channels.Select(x => x.Patch).Where(x => x.ControllerReferences.Any(y => y.ControllerId == Id));
-			// Get a collection of { Patch, OutputIndex } objects to iterate of references
-			// to this controller.
-			var references = patchReferences.SelectMany(x => x.ControllerReferences.Where(y => y.ControllerId == Id).Select(y => new { Patch = x, OutputIndex = y.OutputIndex }));
-			foreach(var reference in references) {
-				AddSource(reference.Patch, reference.OutputIndex);
-			}
-		}
-
-		private void _ReleaseOutputSources() {
-			foreach(Output output in _outputs) {
-				output.ClearSources();
 			}
 		}
 
@@ -146,7 +125,7 @@ namespace Vixen.Sys {
 		public void Update() {
 			// Updates start at the root controllers and cascade from there.
 			// Non-root controllers are not directly updated; they are only updated
-			// from a previous-linked controller.
+			// from a root controller.
 			if(IsRootController && _ControllerChainOutputModule != null) {
 				// States need to be pulled in order, so we're getting them to update
 				// in parallel with no need to properly collate the results, then iterating
@@ -154,13 +133,17 @@ namespace Vixen.Sys {
 
 				// Get the outputs of all controllers in the chain to update their state.
 				Parallel.ForEach(this, x =>
-					Parallel.ForEach(_outputs, y => y.UpdateState())
+					Parallel.ForEach(x._outputs, y => y.UpdateState())
 					);
 				// Latch out the new state.
 				// This must be done in order of the chain links so that data
 				// goes out the port in the correct order.
 				foreach(OutputController controller in this) {
-					controller._ControllerChainOutputModule.UpdateState(_outputs.Select(x => x.CurrentState).ToArray());
+					// A single port may be used to service multiple physical controllers,
+					// such as daisy-chained Renard controllers.  Tell the module where
+					// it is in that chain.
+					controller._ControllerChainOutputModule.ChainIndex = controller.ChainIndex;
+					controller._ControllerChainOutputModule.UpdateState(controller._outputs.Select(x => x.CurrentState).ToArray());
 				}
 			}
 		}
@@ -212,17 +195,13 @@ namespace Vixen.Sys {
 		/// <returns></returns>
 		public bool CanLinkTo(OutputController otherController) {
 			// A controller can link to a parent controller if:
-			// Neither controller is running.
 			// The other controller doesn't already have a child link.
-			//*** Raise an exception if they try to execute with a bad linking scheme?
 
 			// If the other controller is null, they're trying to break the link so pass
 			// it through.
 			return
 				otherController == null ||
-				(!this.IsRunning &&
-				!otherController.IsRunning &&
-				otherController.Next == null);
+				otherController.Next == null;
 		}
 
 		/// <summary>
@@ -235,19 +214,36 @@ namespace Vixen.Sys {
 				if(Prior != null) {
 					Prior.Next = null;
 				}
+				
 				Prior = controller;
+				
 				if(Prior != null) {
 					Prior.Next = this;
 				}
+
+				ChainIndex = _GetChainIndex();
 				return true;
 			}
 			return false;
 		}
 
 		public Guid LinkedTo { get; set; }
+		public int ChainIndex { get; private set; }
 
 		public bool IsRootController {
 			get { return Prior == null && LinkedTo == Guid.Empty; }
+		}
+
+		private int _GetChainIndex() {
+			int count = 0;
+			OutputController controller = this;
+
+			while(controller.Prior != null) {
+				count++;
+				controller = controller.Prior;
+			}
+
+			return count;
 		}
 
 		private IOutputModuleInstance _ControllerChainOutputModule {
@@ -319,12 +315,11 @@ namespace Vixen.Sys {
 		public OutputController Next { get; private set; }
 
 		public bool IsRunning {
-			get { return (_outputModule != null) ? _outputModule.IsRunning : false; }
+			get { return _outputModule != null && _outputModule.IsRunning; }
 		}
 
 		public int UpdateInterval {
-			//*** module will be null if it's missing after the controller's been created
-			get { return _outputModule.UpdateInterval; }
+			get { return OutputModule.UpdateInterval; }
 		}
 
 		public override string ToString() {

@@ -1,4 +1,6 @@
-﻿namespace Vixen.Sys.State.Execution {
+﻿using Vixen.Sys.State.Execution.Behavior;
+
+namespace Vixen.Sys.State.Execution {
 	public class ClosingState : State {
 		public const string StateName = "Closing";
 
@@ -11,14 +13,9 @@
 		}
 
 		public override void Enter() {
-			VixenSystem.Logging.Info("Vixen Execution Engine stopping...");
+			VixenSystem.Logging.Info("Vixen execution engine entering the closing state...");
 
-			Sys.Execution.Shutdown();
-
-			// Close the channels.
-			VixenSystem.Channels.CloseChannels();
-			// Stop the controllers.
-			VixenSystem.Controllers.CloseControllers();
+			StandardClosingBehavior.Run();
 
 			Engine.SetState(Engine.ClosedState);
 		}
