@@ -94,16 +94,19 @@ namespace VixenApplication
 			foreach(KeyValuePair<Guid, string> typeId_FileTypeName in ApplicationServices.GetAvailableModules<ISequenceModuleInstance>()) {
 				item = new ToolStripMenuItem(typeId_FileTypeName.Value);
 				ISequenceModuleDescriptor descriptor = ApplicationServices.GetModuleDescriptor(typeId_FileTypeName.Key) as ISequenceModuleDescriptor;
-				item.Tag = descriptor.FileExtension;
-				item.Click += (sender, e) => {
-					ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
-					string fileType = (string)menuItem.Tag;
-					IEditorUserInterface editor = ApplicationServices.CreateEditor(fileType);
-					if(editor != null) {
-						_OpenEditor(editor);
-					}
-				};
-				contextMenuStripNewSequence.Items.Add(item);
+
+				if (descriptor.CanCreateNew) {
+					item.Tag = descriptor.FileExtension;
+					item.Click += (sender, e) => {
+						ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
+						string fileType = (string)menuItem.Tag;
+						IEditorUserInterface editor = ApplicationServices.CreateEditor(fileType);
+						if (editor != null) {
+							_OpenEditor(editor);
+						}
+					};
+					contextMenuStripNewSequence.Items.Add(item);
+				}
 			}
 		}
 
