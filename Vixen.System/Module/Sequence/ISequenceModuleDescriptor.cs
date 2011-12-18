@@ -9,5 +9,7 @@ namespace Vixen.Module.Sequence {
 		/// Includes the leading period.
 		/// </summary>
 		string FileExtension { get; }
+
+		bool CanCreateNew { get; }
 	}
 }

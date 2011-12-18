@@ -19,6 +19,9 @@ namespace Vixen.Module.Sequence {
 
 		abstract public string FileExtension { get; }
 
+		// Default to true unless overridden in derived class
+		virtual public bool CanCreateNew { get { return true; }	}
+
 		public bool Equals(ISequenceModuleDescriptor x, ISequenceModuleDescriptor y) {
 			return base.Equals(x, y);
 		}
@@ -42,5 +45,6 @@ namespace Vixen.Module.Sequence {
 		public bool Equals(SequenceModuleDescriptorBase other) {
 			return Equals(other as ISequenceModuleDescriptor);
 		}
+
 	}
 }
