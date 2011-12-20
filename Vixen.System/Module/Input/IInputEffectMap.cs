@@ -7,5 +7,6 @@ namespace Vixen.Module.Input {
 		Guid EffectModuleId { get; set; }
 		object[] EffectParameterValues { get; set; }
 		int InputValueParameterIndex { get; set; }
+		Guid[] Nodes { get; set; }
 	}
 }

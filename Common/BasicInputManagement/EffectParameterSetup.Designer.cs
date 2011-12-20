@@ -1,4 +1,4 @@
-﻿namespace VixenModules.App.InputEffectRouter {
+﻿namespace BasicInputManagement {
 	partial class EffectParameterSetup {
 		/// <summary>
 		/// Required designer variable.

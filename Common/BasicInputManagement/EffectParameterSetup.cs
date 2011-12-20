@@ -5,7 +5,7 @@ using Vixen.Module.Effect;
 using Vixen.Module.EffectEditor;
 using Vixen.Sys;
 
-namespace VixenModules.App.InputEffectRouter {
+namespace BasicInputManagement {
 	public partial class EffectParameterSetup : Form {
 		private IEffectModuleDescriptor _descriptor;
 

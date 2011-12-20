@@ -9,7 +9,7 @@ using Vixen.Module.Effect;
 using Vixen.Module.Input;
 using Vixen.Sys;
 
-namespace VixenModules.App.InputEffectRouter {
+namespace BasicInputManagement {
 	public partial class SetupForm : Form {
 		private List<InputEffectMap> _maps;
 		private List<IInputModuleInstance> _inputModules;
@@ -86,7 +86,7 @@ namespace VixenModules.App.InputEffectRouter {
 				} else if(_InputNodeSelected) {
 					inputModule = treeViewInputs.SelectedNode.Parent.Tag as IInputModuleInstance;
 				}
-				return inputModule;;
+				return inputModule;
 			}
 		}
 
@@ -104,12 +104,7 @@ namespace VixenModules.App.InputEffectRouter {
 		}
 
 		private IEffectModuleInstance _SelectedEffect {
-			get {
-				if(_selectedEffect == null) {
-					_selectedEffect = ApplicationServices.Get<IEffectModuleInstance>(_SelectedEffectDescriptor.TypeId);
-				}
-				return _selectedEffect; 
-			}
+			get { return _selectedEffect ?? (_selectedEffect = ApplicationServices.Get<IEffectModuleInstance>(_SelectedEffectDescriptor.TypeId)); }
 			set {
 				_selectedEffect = value;
 				_AddEditEffect = _selectedEffect != null ? _selectedEffect.Descriptor.TypeId : Guid.Empty;

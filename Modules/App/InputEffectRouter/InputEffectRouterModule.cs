@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
+using BasicInputManagement;
 using Vixen.Module;
 using Vixen.Module.App;
-using Vixen.Module.Effect;
-using Vixen.Module.Input;
 using Vixen.Sys;
 
 namespace VixenModules.App.InputEffectRouter {
 	public class InputEffectRouterModule : AppModuleInstanceBase {
 		private IApplication _application;
 		private InputEffectRouterData _data;
+		private InputManager _inputManagement;
 
 		private const string ROOT_ID = "InputEffectRouter_Root";
 
@@ -21,33 +18,21 @@ namespace VixenModules.App.InputEffectRouter {
 
 				AppCommand rootMenuItem = new AppCommand(ROOT_ID, "Input Effect Router");
 				rootMenuItem.Click += (sender, e) => {
-					using(SetupForm setupForm = new SetupForm(_data.Map, _data.InputModules)) {
-						IInputModuleInstance[] inputModules = _data.InputModules.ToArray();
-
-						if(setupForm.ShowDialog() == DialogResult.OK) {
-							_data.Map = setupForm.Maps;
-							_data.InputModules = setupForm.InputModules;
-
-							// Turn off any removed modules.
-							var removedModules = inputModules.Except(_data.InputModules);
-							_StopModules(removedModules);
-
-							// Turn on any added modules.
-							var addedModules = _data.InputModules.Where(x => !x.IsRunning);
-							_StartModules(addedModules);
-						}
+					if(_inputManagement.ShowForm() == DialogResult.OK) {
+					    _data.Map = _inputManagement.InputEffects;
+					    _data.InputModules = _inputManagement.InputModules;
 					}
 				};
 				
 				toolsMenu.Add(rootMenuItem);
 
-				_StartModules(_data.InputModules);
+				_inputManagement.Start();
 			}
 		}
 
 		public override void Unloading() {
 			if(_AppSupportsCommands) {
-				_StopModules(_data.InputModules);
+				_inputManagement.Stop();
 
 				AppCommand toolsMenu = _GetToolsMenu();
 				toolsMenu.Remove(ROOT_ID);
@@ -60,7 +45,15 @@ namespace VixenModules.App.InputEffectRouter {
 
 		public override IModuleDataModel StaticModuleData {
 			get { return _data; }
-			set { _data = value as InputEffectRouterData; }
+			set { 
+				_data = value as InputEffectRouterData;
+				_inputManagement = new InputManager(_data.InputModules, _data.Map);
+				_inputManagement.InputsChanged += _inputManagement_InputsChanged;
+			}
+		}
+
+		private void _inputManagement_InputsChanged(object sender, InputsChangedEventArgs e) {
+			Execution.Write(e.EffectNodes);
 		}
 
 		private bool _AppSupportsCommands {
@@ -74,26 +67,6 @@ namespace VixenModules.App.InputEffectRouter {
 				_application.AppCommands.Add(toolsMenu);
 			}
 			return toolsMenu;
-		}
-
-		private void _StartModules(IEnumerable<IInputModuleInstance> inputModules) {
-			foreach(IInputModuleInstance inputModule in inputModules) {
-				inputModule.Start();
-				inputModule.InputValueChanged += inputModule_InputValueChanged;
-			}
-		}
-
-		private void _StopModules(IEnumerable<IInputModuleInstance> inputModules) {
-			foreach(IInputModuleInstance inputModule in inputModules) {
-				inputModule.InputValueChanged -= inputModule_InputValueChanged;
-				inputModule.Stop();
-			}
-		}
-
-		private void inputModule_InputValueChanged(object sender, InputValueChangedEventArgs e) {
-			IEnumerable<InputEffectMap> inputEffects = _data.Map.Where(x => x.IsMappedTo(e.InputModule, e.Input));
-			IEnumerable<EffectNode> effectNodes = inputEffects.Select(x => x.GenerateEffect(e.Input, TimeSpan.FromMilliseconds(50)));
-			Execution.Write(effectNodes);
 		}
 	}
 }
