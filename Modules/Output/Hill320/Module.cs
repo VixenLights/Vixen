@@ -10,12 +10,12 @@ namespace VixenModules.Output.Hill320
 {
     public class Module : OutputModuleInstanceBase
     {
-        //[DllImport("inpout32", EntryPoint = "Inp32")]
-        [DllImport("inpoutx64", EntryPoint = "Inp32")]
+        [DllImport("inpout32", EntryPoint = "Inp32")]
+        //[DllImport("inpoutx64", EntryPoint = "Inp32")]
         private static extern short In(ushort port);
 
-        //[DllImport("inpout32", EntryPoint = "Out32")]
-        [DllImport("inpoutx64", EntryPoint = "Out32")]
+        [DllImport("inpout32", EntryPoint = "Out32")]
+        //[DllImport("inpoutx64", EntryPoint = "Out32")]
         private static extern void Out(ushort port, short data);
 
         private Data _moduleData;
