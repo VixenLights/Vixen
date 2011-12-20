@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 
 namespace Vixen.Module.Input {
@@ -9,29 +7,28 @@ namespace Vixen.Module.Input {
 	/// Base class for trigger module implementations.
 	/// </summary>
 	abstract public class InputModuleInstanceBase : ModuleInstanceBase, IInputModuleInstance, IEquatable<InputModuleInstanceBase>, IEquatable<IInputModuleInstance>, IEqualityComparer<IInputModuleInstance>, IEqualityComparer<InputModuleInstanceBase> {
-		private Thread _stateUpdateThread;
+		//private Thread _stateUpdateThread;
 		private ManualResetEvent _pause = new ManualResetEvent(true);
 
 		public event EventHandler<InputValueChangedEventArgs> InputValueChanged;
 
-		abstract public IInputInput[] InputInputs { get; }
+		abstract public IInputInput[] Inputs { get; }
 
-		abstract public void UpdateState();
-
-		public bool Enabled { get; set; }
+		public abstract string DeviceName { get; }
 
 		public void Start() {
 			if(!IsRunning) {
 				// Call the subclass first in case its startup creates the triggers.
 				DoStartup();
 				// Subscribe to triggers.
-				foreach(IInputInput input in InputInputs) {
+				foreach(IInputInput input in Inputs) {
 					input.ValueChanged += _InputValueChanged;
 				}
 				// Start monitoring the hardware.
-				_stateUpdateThread = new Thread(_StateUpdate);
-				_stateUpdateThread.IsBackground = true;
-				_stateUpdateThread.Start();
+				//_stateUpdateThread = new Thread(_StateUpdate);
+				//_stateUpdateThread.IsBackground = true;
+				//_stateUpdateThread.Start();
+				IsRunning = true;
 			}
 		}
 
@@ -44,7 +41,7 @@ namespace Vixen.Module.Input {
 				Resume();
 				IsRunning = false;
 				// Unsubscribe to triggers.
-				foreach(IInputInput input in InputInputs) {
+				foreach(IInputInput input in Inputs) {
 					input.ValueChanged -= _InputValueChanged;
 				}
 				// Notify the subclass.
@@ -103,19 +100,19 @@ namespace Vixen.Module.Input {
 
 		private void _InputValueChanged(object sender, EventArgs e) {
 			if(InputValueChanged != null) {
-				InputValueChanged(this, new InputValueChangedEventArgs(sender as IInputInput));
+				InputValueChanged(this, new InputValueChangedEventArgs(this, sender as IInputInput));
 			}
 		}
 
-		private void _StateUpdate() {
-			IsRunning = true;
-			while(IsRunning) {
-				UpdateState();
-				Thread.Sleep(5);
-				_pause.WaitOne();
-			}
-			_stateUpdateThread = null;
-		}
+		//private void _StateUpdate() {
+		//    IsRunning = true;
+		//    while(IsRunning) {
+		//        UpdateState();
+		//        Thread.Sleep(5);
+		//        _pause.WaitOne();
+		//    }
+		//    _stateUpdateThread = null;
+		//}
 
 		public bool Equals(InputModuleInstanceBase other) {
 			return Equals(other as IInputModuleInstance);

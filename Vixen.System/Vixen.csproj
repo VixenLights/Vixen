@@ -123,6 +123,8 @@
     <Compile Include="Instrumentation\InstrumentationValue.cs" />
     <Compile Include="Instrumentation\PercentValue.cs" />
     <Compile Include="Instrumentation\RateValue.cs" />
+    <Compile Include="Module\Input\IInputEffectMap.cs" />
+    <Compile Include="Module\Input\InputEffectMap.cs" />
     <Compile Include="Sys\ChannelManager.cs" />
     <Compile Include="Sys\ControllerManager.cs" />
     <Compile Include="Execution\MultiStateTimedEnumerator.cs" />
