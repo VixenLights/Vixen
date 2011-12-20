@@ -29,7 +29,6 @@ namespace VixenModules.Input.DirectXJoystick {
 			_device.SetCooperativeLevel(IntPtr.Zero, CooperativeLevel.Nonexclusive | CooperativeLevel.Background);
 			_device.Properties.SetRange(Position.MinValue, Position.MaxValue);
 
-
 			Inputs = _GetInputs().ToArray();
 		}
 
@@ -123,7 +122,7 @@ namespace VixenModules.Input.DirectXJoystick {
 						_CreateRotationAxis(deviceObjectInstance) : 
 						_CreateAxis(deviceObjectInstance);
 				} else if(_IsPov(deviceObjectInstance)) {
-					input = new Pov(deviceObjectInstance.Name, deviceObjectInstance.Usage);
+					input = new Pov(deviceObjectInstance.Name, deviceObjectInstance.DesignatorIndex);
 				}
 
 				if(input != null) {

@@ -176,8 +176,10 @@ namespace VixenModules.App.InputEffectRouter {
 			}
 		}
 
-		private IEnumerable<InputEffectMap> _GetInputEffectMaps(IInputModuleInstance inputModule, IInputInput input) {
-			return (input != null) ? _maps.Where(x => x.IsMappedTo(inputModule, input)) : new InputEffectMap[0];
+		private IEnumerable<InputEffectMap> _GetInputEffectMaps(IInputModuleInstance inputModule, IInputInput input = null) {
+			return (input != null) ? 
+				_maps.Where(x => x.IsMappedTo(inputModule, input)) : 
+				_maps.Where(x => x.IsMappedTo(inputModule));
 		}
 
 		private void _RefreshInputEffectList() {
@@ -273,7 +275,7 @@ namespace VixenModules.App.InputEffectRouter {
 
 		private void buttonRemoveInputModule_Click(object sender, EventArgs e) {
 			if(MessageBox.Show("Remove " + _SelectedInputModule.DeviceName + "?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
-				InputEffectMap[] inputEffectMaps = _GetInputEffectMaps(_SelectedInputModule, _SelectedInput).ToArray();
+				InputEffectMap[] inputEffectMaps = _GetInputEffectMaps(_SelectedInputModule).ToArray();
 				_RemoveInputEffectMaps(inputEffectMaps);
 	
 				treeViewInputs.SelectedNode.Remove();
@@ -374,7 +376,7 @@ namespace VixenModules.App.InputEffectRouter {
 			string message;
 			if(listViewInputEffectMap.SelectedIndices.Count == 1) {
 				ListViewItem item = listViewInputEffectMap.SelectedItems[0];
-				message = "Remove mapping for " + item.SubItems[0] + ", " + item.SubItems[1] + "?";
+				message = "Remove mapping for " + item.SubItems[0].Text + ", " + item.SubItems[1].Text + "?";
 			} else {
 				message = "Remove " + listViewInputEffectMap.SelectedItems.Count + " mappings?";
 			}

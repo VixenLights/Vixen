@@ -34,8 +34,8 @@ namespace Vixen.Module.Input {
 		[DataMember]
 		public Guid[] Nodes { get; set; }
 
-		public bool IsMappedTo(IInputModuleInstance inputModule, IInputInput input) {
-			return inputModule.InstanceId == InputModuleId && input.Name == InputId;
+		public bool IsMappedTo(IInputModuleInstance inputModule, IInputInput input = null) {
+			return inputModule.InstanceId == InputModuleId && (input == null || input.Name == InputId);
 		}
 
 		public bool Equals(InputEffectMap other) {
