@@ -92,17 +92,7 @@ namespace VixenModules.App.InputEffectRouter {
 
 		private void inputModule_InputValueChanged(object sender, InputValueChangedEventArgs e) {
 			IEnumerable<InputEffectMap> inputEffects = _data.Map.Where(x => x.IsMappedTo(e.InputModule, e.Input));
-
-			List<EffectNode> effectNodes = new List<EffectNode>();
-			foreach(InputEffectMap inputEffect in inputEffects) {
-				IEffectModuleInstance effect = ApplicationServices.Get<IEffectModuleInstance>(inputEffect.EffectModuleId);
-				inputEffect.EffectParameterValues[inputEffect.InputValueParameterIndex] = e.Input.Value;
-				effect.ParameterValues = inputEffect.EffectParameterValues;
-				effect.TimeSpan = TimeSpan.FromMilliseconds(50);
-				effect.TargetNodes = inputEffect.Nodes.Select(x => VixenSystem.Nodes.FirstOrDefault(y => y.Id == x)).ToArray();
-				EffectNode effectNode = new EffectNode(effect, TimeSpan.Zero);
-				effectNodes.Add(effectNode);
-			}
+			IEnumerable<EffectNode> effectNodes = inputEffects.Select(x => x.GenerateEffect(e.Input, TimeSpan.FromMilliseconds(50)));
 			Execution.Write(effectNodes);
 		}
 	}

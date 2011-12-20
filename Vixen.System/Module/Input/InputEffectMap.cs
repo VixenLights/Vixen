@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Vixen.Commands.KnownDataTypes;
 using Vixen.Module.Effect;
+using Vixen.Sys;
 
 namespace Vixen.Module.Input {
 	[DataContract]
@@ -36,6 +37,17 @@ namespace Vixen.Module.Input {
 
 		public bool IsMappedTo(IInputModuleInstance inputModule, IInputInput input = null) {
 			return inputModule.InstanceId == InputModuleId && (input == null || input.Name == InputId);
+		}
+
+		public EffectNode GenerateEffect(IInputInput input, TimeSpan effectTimeSpan) {
+			IEffectModuleInstance effect = ApplicationServices.Get<IEffectModuleInstance>(EffectModuleId);
+			EffectParameterValues[InputValueParameterIndex] = input.Value;
+			effect.ParameterValues = EffectParameterValues;
+			effect.TimeSpan = effectTimeSpan;
+			effect.TargetNodes = Nodes.Select(x => VixenSystem.Nodes.FirstOrDefault(y => y.Id == x)).ToArray();
+			EffectNode effectNode = new EffectNode(effect, TimeSpan.Zero);
+			
+			return effectNode;
 		}
 
 		public bool Equals(InputEffectMap other) {
