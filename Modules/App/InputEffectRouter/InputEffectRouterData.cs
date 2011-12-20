@@ -13,15 +13,15 @@ namespace VixenModules.App.InputEffectRouter {
 
 		public override IModuleDataModel Clone() {
 			InputEffectRouterData newInstance = new InputEffectRouterData();
-			newInstance.Map.AddRange(Map);
+			newInstance.Map = Map;
 			newInstance.ModuleData = ModuleData.Clone() as ModuleLocalDataSet;
 			return newInstance;
 		}
 
 		[DataMember]
-		public List<InputEffectMap> Map {
+		public IEnumerable<InputEffectMap> Map {
 			get { return _map ?? (_map = new List<InputEffectMap>()); }
-			set { _map = value; }
+			set { _map = new List<InputEffectMap>(value); }
 		}
 
 		[DataMember]
@@ -33,15 +33,9 @@ namespace VixenModules.App.InputEffectRouter {
 		// Need to do it this way so that there is a single instance created from the data
 		// and so this member is kept up-to-date.
 		public IEnumerable<IInputModuleInstance> InputModules {
-			get {
-				if(_inputModules == null) {
-					_inputModules = ModuleData.GetInstances<IInputModuleInstance>().ToList();
-				}
-				return _inputModules;
-			}
+			get { return _inputModules ?? (_inputModules = ModuleData.GetInstances<IInputModuleInstance>().ToList()); }
 			set {
-				_inputModules.Clear();
-				_inputModules.AddRange(value);
+				_inputModules = new List<IInputModuleInstance>(value);
 				
 				ModuleData.Clear();
 				foreach(IInputModuleInstance inputModule in _inputModules) {

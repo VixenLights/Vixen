@@ -45,7 +45,11 @@ namespace Vixen.Module.Input {
 		public bool Equals(IInputEffectMap other) {
 			if(ReferenceEquals(null, other)) return false;
 			if(ReferenceEquals(this, other)) return true;
-			return other.InputModuleId.Equals(InputModuleId) && Equals(other.InputId, InputId) && other.EffectModuleId.Equals(EffectModuleId) && other.InputValueParameterIndex == InputValueParameterIndex;
+			return 
+				other.InputModuleId.Equals(InputModuleId) && 
+				Equals(other.InputId, InputId) && 
+				other.EffectModuleId.Equals(EffectModuleId) && 
+				other.InputValueParameterIndex == InputValueParameterIndex;
 		}
 
 		public override bool Equals(object obj) {

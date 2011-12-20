@@ -11,14 +11,14 @@ using Vixen.Sys;
 
 namespace VixenModules.App.InputEffectRouter {
 	public partial class SetupForm : Form {
-		private InputEffectRouterData _data;
 		private List<InputEffectMap> _maps;
+		private List<IInputModuleInstance> _inputModules;
 		private IEffectModuleInstance _selectedEffect;
 
-		public SetupForm(InputEffectRouterData data) {
+		public SetupForm(IEnumerable<InputEffectMap> maps, IEnumerable<IInputModuleInstance> inputModules) {
 			InitializeComponent();
-			_data = data;
-			_maps = new List<InputEffectMap>(data.Map);
+			_maps = new List<InputEffectMap>(maps);
+			_inputModules = new List<IInputModuleInstance>(inputModules);
 		}
 
 		private void SetupForm_Load(object sender, EventArgs e) {
@@ -42,16 +42,16 @@ namespace VixenModules.App.InputEffectRouter {
 			checkedListBoxNodes.ValueMember = "Id";
 			checkedListBoxNodes.DataSource = VixenSystem.Nodes.GetRootNodes().ToArray();
 
-			_InputModules = _data.InputModules;
+			_RefreshInputModuleList();
 		}
 
-		private TreeNode _CreateTreeNode(IInputModuleInstance inputModule) {
+		private TreeNode _CreateInputModuleNode(IInputModuleInstance inputModule) {
 			TreeNode treeNode = new TreeNode();
-			_UpdateTreeNode(treeNode, inputModule);
+			_UpdateInputModuleNode(treeNode, inputModule);
 			return treeNode;
 		}
 
-		private void _UpdateTreeNode(TreeNode treeNode, IInputModuleInstance inputModule) {
+		private void _UpdateInputModuleNode(TreeNode treeNode, IInputModuleInstance inputModule) {
 			treeNode.Text = string.IsNullOrWhiteSpace(inputModule.DeviceName) ? inputModule.Descriptor.TypeName : inputModule.DeviceName;
 			treeNode.Tag = inputModule;
 			treeNode.Nodes.Clear();
@@ -59,6 +59,15 @@ namespace VixenModules.App.InputEffectRouter {
 				TreeNode inputNode = treeNode.Nodes.Add(input.Name);
 				inputNode.Tag = input;
 			}
+		}
+
+		private ListViewItem _CreateInputEffectMapItem(InputEffectMap inputEffectMap) {
+			string effectName = _EffectName(inputEffectMap.EffectModuleId);
+			string parameterName = _EffectParameterName(inputEffectMap.EffectModuleId, inputEffectMap.InputValueParameterIndex);
+			ListViewItem item = new ListViewItem(new[] { effectName, parameterName });
+			item.Tag = inputEffectMap;
+
+			return item;
 		}
 
 		private bool _ModuleNodeSelected {
@@ -107,16 +116,12 @@ namespace VixenModules.App.InputEffectRouter {
 			}
 		}
 
-		private IEnumerable<IInputModuleInstance> _InputModules {
-			get {
-				return 
-					from TreeNode treeNode in treeViewInputs.Nodes 
-					select treeNode.Tag as IInputModuleInstance;
-			}
-			set {
-				treeViewInputs.Nodes.Clear();
-				treeViewInputs.Nodes.AddRange(value.Select(_CreateTreeNode).ToArray());
-			}
+		public IEnumerable<IInputModuleInstance> InputModules {
+			get { return _inputModules; }
+		}
+
+		public IEnumerable<InputEffectMap> Maps {
+			get { return _maps; }
 		}
 
 		private bool _CanBeDouble(Type type) {
@@ -182,9 +187,24 @@ namespace VixenModules.App.InputEffectRouter {
 				_maps.Where(x => x.IsMappedTo(inputModule));
 		}
 
+		private void _RefreshInputModuleList() {
+			_PopulateInputModuleList(_inputModules);
+		}
+
 		private void _RefreshInputEffectList() {
 			IEnumerable<InputEffectMap> inputEffectMaps = _GetInputEffectMaps(_SelectedInputModule, _SelectedInput);
 			_PopulateInputEffectList(inputEffectMaps);
+		}
+
+		private void _PopulateInputModuleList(IEnumerable<IInputModuleInstance> inputModules) {
+			treeViewInputs.Nodes.Clear();
+
+			if(inputModules != null) {
+				foreach(IInputModuleInstance inputModule in inputModules) {
+					TreeNode treeNode = _CreateInputModuleNode(inputModule);
+					treeViewInputs.Nodes.Add(treeNode);
+				}
+			}
 		}
 
 		private void _PopulateInputEffectList(IEnumerable<InputEffectMap> inputEffectMaps) {
@@ -192,10 +212,7 @@ namespace VixenModules.App.InputEffectRouter {
 
 			if(inputEffectMaps != null) {
 				foreach(InputEffectMap inputEffectMap in inputEffectMaps) {
-					string effectName = _EffectName(inputEffectMap.EffectModuleId);
-					string parameterName = _EffectParameterName(inputEffectMap.EffectModuleId, inputEffectMap.InputValueParameterIndex);
-					ListViewItem item = new ListViewItem(new[] { effectName, parameterName});
-					item.Tag = inputEffectMap;
+					ListViewItem item = _CreateInputEffectMapItem(inputEffectMap);
 					listViewInputEffectMap.Items.Add(item);
 				}
 			}
@@ -225,7 +242,6 @@ namespace VixenModules.App.InputEffectRouter {
 			string inputId = _SelectedInput.Name;
 			int inputValueParameterIndex = _AddEditParameterAffected;
 			Guid[] nodes = _AddEditNodes;
-			//object[] effectParameterValues = _SelectedEffect.ParameterValues;
 
 			List<string> failures = new List<string>();
 
@@ -246,12 +262,19 @@ namespace VixenModules.App.InputEffectRouter {
 		}
 
 		private void toolStripItemAddInputModule_Click(object sender, EventArgs e) {
-			ToolStripItem toolStripItem = sender as ToolStripItem;
-			IModuleDescriptor descriptor = toolStripItem.Tag as IModuleDescriptor;
-			IInputModuleInstance inputModule = ApplicationServices.Get<IInputModuleInstance>(descriptor.TypeId);
-			TreeNode treeNode = _CreateTreeNode(inputModule);
-			treeViewInputs.Nodes.Add(treeNode);
-			_SetupInputDevice(treeNode);
+			try {
+				ToolStripItem toolStripItem = sender as ToolStripItem;
+				IModuleDescriptor descriptor = toolStripItem.Tag as IModuleDescriptor;
+				IInputModuleInstance inputModule = ApplicationServices.Get<IInputModuleInstance>(descriptor.TypeId);
+
+				_inputModules.Add(inputModule);
+
+				_RefreshInputModuleList();
+
+				_SetupInputDevice(inputModule);
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message, "", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+			}
 		}
 
 		private void treeViewInputs_AfterSelect(object sender, TreeViewEventArgs e) {
@@ -277,30 +300,21 @@ namespace VixenModules.App.InputEffectRouter {
 			if(MessageBox.Show("Remove " + _SelectedInputModule.DeviceName + "?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
 				InputEffectMap[] inputEffectMaps = _GetInputEffectMaps(_SelectedInputModule).ToArray();
 				_RemoveInputEffectMaps(inputEffectMaps);
-	
-				treeViewInputs.SelectedNode.Remove();
-
 				_RefreshInputEffectList();
+
+				_inputModules.Remove(_SelectedInputModule);
+				_RefreshInputModuleList();
 			}
 		}
 
 		private void buttonSetup_Click(object sender, EventArgs e) {
-			_SetupInputDevice();
+			_SetupInputDevice(_SelectedInputModule);
 		}
 
-		private void _SetupInputDevice(TreeNode node = null) {
-			if(node != null) {
-				treeViewInputs.SelectedNode = node;
-			} else {
-				node = treeViewInputs.SelectedNode;
-			}
-
-			if(_SelectedInputModule.Setup()) {
-				int inputCount = node.Nodes.Count;
-				_UpdateTreeNode(node, _SelectedInputModule);
-				if(inputCount != node.Nodes.Count) {
-					node.Expand();
-				}
+		private void _SetupInputDevice(IInputModuleInstance inputModule) {
+			if(inputModule.Setup()) {
+				TreeNode node = treeViewInputs.Nodes.Cast<TreeNode>().First(x => x.Tag == inputModule);
+				_UpdateInputModuleNode(node, inputModule);
 			}
 		}
 
@@ -386,12 +400,6 @@ namespace VixenModules.App.InputEffectRouter {
 				_RemoveInputEffectMaps(inputEffectMaps);
 				_RefreshInputEffectList();
 			}
-		}
-
-		private void buttonClose_Click(object sender, EventArgs e) {
-			_data.Map.Clear();
-			_data.Map.AddRange(_maps);
-			_data.InputModules = _InputModules;
 		}
 	}
 }

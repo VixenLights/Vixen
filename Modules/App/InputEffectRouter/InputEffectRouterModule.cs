@@ -21,10 +21,13 @@ namespace VixenModules.App.InputEffectRouter {
 
 				AppCommand rootMenuItem = new AppCommand(ROOT_ID, "Input Effect Router");
 				rootMenuItem.Click += (sender, e) => {
-					using(SetupForm setupForm = new SetupForm(_data)) {
+					using(SetupForm setupForm = new SetupForm(_data.Map, _data.InputModules)) {
 						IInputModuleInstance[] inputModules = _data.InputModules.ToArray();
 
 						if(setupForm.ShowDialog() == DialogResult.OK) {
+							_data.Map = setupForm.Maps;
+							_data.InputModules = setupForm.InputModules;
+
 							// Turn off any removed modules.
 							var removedModules = inputModules.Except(_data.InputModules);
 							_StopModules(removedModules);
