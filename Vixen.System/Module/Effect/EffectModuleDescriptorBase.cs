@@ -26,7 +26,7 @@ namespace Vixen.Module.Effect {
 
 		abstract public string EffectName { get; }
 
-		virtual public ParameterSignature Parameters { get; set; }
+		virtual public ParameterSignature Parameters { get; private set; }
 
 		/// <summary>
 		/// Properties that the effect can utilize, but isn't dependent upon.

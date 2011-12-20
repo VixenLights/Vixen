@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Vixen.Sys.State.Execution.Behavior {
+﻿namespace Vixen.Sys.State.Execution.Behavior {
 	class StandardClosingBehavior {
 		static public void Run() {
 			Sys.Execution.Shutdown();

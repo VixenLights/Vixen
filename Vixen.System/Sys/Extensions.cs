@@ -99,5 +99,14 @@ namespace Vixen.Sys
 				hashSet.Add(value);
 			}
 		}
+
+		static public T DynamicCast<T>(this object value) {
+			dynamic val = value;
+			return (T)val;
+		}
+
+		static public bool ContainsString(this string source, string value, StringComparison comparison = StringComparison.Ordinal) {
+			return source.IndexOf(value, comparison) >= 0;
+		}
 	}
 }

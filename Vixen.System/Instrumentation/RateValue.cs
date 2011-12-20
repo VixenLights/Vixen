@@ -27,8 +27,8 @@ namespace Vixen.Instrumentation {
 			return rate;
 		}
 
-		public void Increment() {
-			_count++;
+		public void Increment(int value = 1) {
+			_count += value;
 		}
 	}
 }

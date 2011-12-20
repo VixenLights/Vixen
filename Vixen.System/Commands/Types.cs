@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;
 using System.Runtime.Serialization;
 
 // These exist for these reasons:
@@ -13,14 +9,17 @@ namespace Vixen.Commands.KnownDataTypes {
 	#region Level
 	[DataContract]
 	public struct Level {
+		static public readonly int MinValue = 0;
+		static public readonly int MaxValue = 100;
+
 		[DataMember]
 		private double _value;
 
 		private Level(double value) {
-			if(value < 0) {
-				value = 0;
-			} else if(value > 100) {
-				value = 100;
+			if(value < MinValue) {
+				value = MinValue;
+			} else if(value > MaxValue) {
+				value = MaxValue;
 			}
 			_value = value;
 		}
@@ -40,43 +39,24 @@ namespace Vixen.Commands.KnownDataTypes {
 		public static implicit operator Level(double value) {
 			return new Level(value);
 		}
-
-		public override string ToString() {
-			return _value.ToString();
-		}
 	}
 	#endregion
-
-	//#region Time
-	//public struct Time {
-	//    private int _value;
-
-	//    private Time(int value) {
-	//        _value = value;
-	//    }
-
-	//    public static implicit operator int(Time value) {
-	//        return value._value;
-	//    }
-
-	//    public static implicit operator Time(int value) {
-	//        return new Time(value);
-	//    }
-
-	//    public override string ToString() {
-	//        return _value.ToString();
-	//    }
-	//}
-	//#endregion
 
 	#region Position
 	[DataContract]
 	public struct Position {
+		static public readonly int MinValue = 0;
+		static public readonly int MaxValue = 100;
+
 		[DataMember]
 		private double _value;
 
 		private Position(double value) {
-			if(value < 0 || value > 100) throw new InvalidOperationException("Position value must be between 0 and 100 percent.");
+			if(value < MinValue) {
+				value = MinValue;
+			} else if(value > MaxValue) {
+				value = MaxValue;
+			}
 			_value = value;
 		}
 

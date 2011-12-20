@@ -166,7 +166,7 @@ namespace Vixen.Sys {
 			EffectNode[] effectNodes = state.ToArray();
 
 			_TotalEffects.Add(effectNodes.Length);
-			_EffectsPerSecond.Increment();
+			_EffectsPerSecond.Increment(effectNodes.Length);
 
 			// Give the renderer a separate collection instance.
 			EffectRenderer renderer = new EffectRenderer(effectNodes);

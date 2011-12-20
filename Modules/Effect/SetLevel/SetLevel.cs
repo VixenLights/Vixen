@@ -54,7 +54,7 @@ namespace VixenModules.Effect.SetLevel
 				if (value.Length != 2) {
 					VixenSystem.Logging.Error("SetLevel parameters set with " + value.Length + " parameters!");
 				} else {
-					Level = (Level)value[0];
+					Level = value[0].DynamicCast<Level>();
 					Color = (Color)value[1];
 				}
 			}
