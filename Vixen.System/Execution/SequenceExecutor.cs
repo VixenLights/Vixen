@@ -51,6 +51,7 @@ namespace Vixen.Execution {
 			// Give every behavior a chance at the data.
 			foreach(IRuntimeBehavior behavior in _runtimeBehaviors) {
 				if(behavior.Enabled) {
+					effectNode.StartTime = TimingSource.Position;
 					behavior.Handle(effectNode);
 				}
 			}
@@ -86,7 +87,7 @@ namespace Vixen.Execution {
 				// Initialize behaviors BEFORE data is pulled from the sequence,
 				// they may influence the data.
 				foreach(IRuntimeBehavior behavior in _runtimeBehaviors) {
-					behavior.Startup(this.Sequence, TimingSource);
+					behavior.Startup(this.Sequence);
 				}
 
 				// EffectNodes that have any intervals within the time frame.

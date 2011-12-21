@@ -7,7 +7,7 @@ using Vixen.Module.Timing;
 
 namespace Vixen.Module.RuntimeBehavior {
 	abstract public class RuntimeBehaviorModuleInstanceBase : ModuleInstanceBase, IRuntimeBehaviorModuleInstance, IEqualityComparer<IRuntimeBehaviorModuleInstance>, IEquatable<IRuntimeBehaviorModuleInstance>, IEqualityComparer<RuntimeBehaviorModuleInstanceBase>, IEquatable<RuntimeBehaviorModuleInstanceBase> {
-		abstract public void Startup(ISequence sequence, ITiming timingSource);
+		abstract public void Startup(ISequence sequence);
 
 		abstract public void Shutdown();
 

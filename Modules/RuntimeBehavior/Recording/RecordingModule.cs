@@ -1,24 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.RuntimeBehavior;
-using Vixen.Module.Timing;
 
-namespace TestRuntimeBehaviors {
-	public class Recording : RuntimeBehaviorModuleInstanceBase {
+namespace Recording {
+	public class RecordingModule : RuntimeBehaviorModuleInstanceBase {
 		private Tuple<string, Action>[] _actions;
 		private ISequence _sequence;
-		private ITiming _timingSource;
 		private List<EffectNode> _buffer = new List<EffectNode>();
 		private int _bufferItems;
 		private Guid _sequenceChannelId = Guid.Empty;
 		private RecordingData _moduleData;
 
-		public Recording() {
-			_actions = new Tuple<string, Action>[] {
+		public RecordingModule() {
+			_actions = new[] {
 				new Tuple<string,Action>("Clear buffer", Clear),
 				new Tuple<string,Action>("Commit", Commit)
 			};
@@ -26,8 +22,6 @@ namespace TestRuntimeBehaviors {
 
 		override public void Startup(ISequence sequence) {
 			_sequence = sequence;
-			_timingSource = timingSource;
-
 			_bufferItems = _buffer.Count;
 		}
 
@@ -77,7 +71,7 @@ namespace TestRuntimeBehaviors {
 
 		public void Commit() {
 			_RemoveSequenceChannel();
-			_sequence.Data.AddEffects(_buffer);
+			_sequence.InsertData(_buffer);
 			_buffer.Clear();
 		}
 
