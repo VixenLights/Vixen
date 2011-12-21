@@ -17,6 +17,16 @@ namespace Vixen.Sys {
 			}
 		}
 
+		public void InsertData(IEnumerable<EffectNode> effectNodes) {
+			bool cancel = false;
+			IEnumerator<DataListener> enumerator = _listeners.GetEnumerator();
+			while(!cancel && enumerator.MoveNext()) {
+				foreach(EffectNode effectNode in effectNodes) {
+					cancel = enumerator.Current(effectNode);
+				}
+			}
+		}
+
 		static public InsertDataListenerStack operator +(InsertDataListenerStack stack, DataListener listener) {
 			stack._listeners.AddFirst(listener);
 			return stack;

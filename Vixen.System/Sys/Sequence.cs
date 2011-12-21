@@ -161,6 +161,11 @@ namespace Vixen.Sys {
 			InsertDataListener.InsertData(effectNode);
 		}
 
+		public void InsertData(IEnumerable<EffectNode> effectNodes)
+		{
+			InsertDataListener.InsertData(effectNodes);
+		}
+
 		public EffectNode InsertData(IEffectModuleInstance effect, TimeSpan startTime)
 		{
 			EffectNode cn = new EffectNode(effect, startTime);

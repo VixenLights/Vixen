@@ -17,7 +17,8 @@ namespace Vixen.Sys {
 		TimeSpan Length { get; set; }
 		bool IsUntimed { get; set; }
 		string FilePath { get; set; }
-		void InsertData(EffectNode commandNode);
+		void InsertData(EffectNode effectNode);
+		void InsertData(IEnumerable<EffectNode> effectNodes);
 		EffectNode InsertData(IEffectModuleInstance effect, TimeSpan startTime);
 		InsertDataListenerStack InsertDataListener { get; set; }
 		TimingProviders TimingProvider { get; }

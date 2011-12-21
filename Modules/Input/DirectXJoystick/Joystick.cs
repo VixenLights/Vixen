@@ -14,38 +14,18 @@ namespace VixenModules.Input.DirectXJoystick {
 		private AutoResetEvent _waitHandle;
 
 		public Joystick(Guid deviceId) {
-			DirectInput directInput = new DirectInput();
-
-			// Try to get the device specified.
-			DeviceInstance deviceInstance = directInput.GetDevices(DeviceClass.GameController, DeviceEnumerationFlags.AttachedOnly).FirstOrDefault(x => x.InstanceGuid == deviceId);
-			
-			if(deviceInstance == null) {
-				throw new Exception("Specified joystick not found.");
-			}
-
-			_device = new SlimDX.DirectInput.Joystick(directInput, deviceInstance.InstanceGuid);
-			DeviceId = _device.Information.InstanceGuid;
-			// This needs System.Windows.Forms.Control.
-			_device.SetCooperativeLevel(IntPtr.Zero, CooperativeLevel.Nonexclusive | CooperativeLevel.Background);
-			_device.Properties.SetRange(Position.MinValue, Position.MaxValue);
-
-			Inputs = _GetInputs().ToArray();
+			DeviceId = deviceId;
+			DeviceName = _GetDeviceName(deviceId);
 		}
 
 		static public Joystick[] AllJoysticks() {
-			DirectInput directInput = new DirectInput();
-			IList<DeviceInstance> devices = directInput.GetDevices(DeviceClass.GameController, DeviceEnumerationFlags.AttachedOnly);
-			return devices.Select(x => new Joystick(x.InstanceGuid)).ToArray();
-		}
-
-		public string DeviceName {
-			get {
-				if(_device != null) {
-					return _device.Information.InstanceName;
-				}
-				return null;
+			using(DirectInput directInput = new DirectInput()) {
+				IList<DeviceInstance> devices = directInput.GetDevices(DeviceClass.GameController, DeviceEnumerationFlags.AttachedOnly);
+				return devices.Select(x => new Joystick(x.InstanceGuid)).ToArray();
 			}
 		}
+
+		public string DeviceName { get; private set; }
 
 		public IInputInput[] Inputs { get; private set; }
 
@@ -54,8 +34,9 @@ namespace VixenModules.Input.DirectXJoystick {
 		public Guid DeviceId { get; private set; }
 
 		public void Acquire() {
-			if(_device != null && !IsAcquired) {
+			if(!IsAcquired) {
 				_waitHandle = new AutoResetEvent(false);
+				_device = _CreateDevice();
 				// Must be done before acquisition.
 				_device.SetNotification(_waitHandle);
 				_device.Acquire();
@@ -82,8 +63,43 @@ namespace VixenModules.Input.DirectXJoystick {
 				}
 				_waitHandle.WaitOne();
 			}
+
+			_device.Dispose();
+			_device = null;
+
+			_waitHandle.Close();
 			_waitHandle.Dispose();
 			_waitHandle = null;
+		}
+
+		private string _GetDeviceName(Guid instanceGuid) {
+			using(DirectInput directInput = new DirectInput()) {
+				IList<DeviceInstance> devices = directInput.GetDevices(DeviceClass.GameController, DeviceEnumerationFlags.AttachedOnly);
+				DeviceInstance deviceInstance = devices.FirstOrDefault(x => x.InstanceGuid == instanceGuid);
+				return (deviceInstance != null) ? deviceInstance.InstanceName : null;
+			}
+		}
+
+		private SlimDX.DirectInput.Joystick _CreateDevice() {
+			SlimDX.DirectInput.Joystick device;
+
+			using(DirectInput directInput = new DirectInput()) {
+				// Try to get the device specified.
+				DeviceInstance deviceInstance = directInput.GetDevices(DeviceClass.GameController, DeviceEnumerationFlags.AttachedOnly).FirstOrDefault(x => x.InstanceGuid == DeviceId);
+
+				if(deviceInstance == null) {
+					throw new Exception("Specified joystick not found.");
+				}
+
+				device = new SlimDX.DirectInput.Joystick(directInput, deviceInstance.InstanceGuid);
+				// This needs System.Windows.Forms.Control.
+				device.SetCooperativeLevel(IntPtr.Zero, CooperativeLevel.Nonexclusive | CooperativeLevel.Background);
+				device.Properties.SetRange(Position.MinValue, Position.MaxValue);
+
+				Inputs = _GetInputs(device).ToArray();
+			}
+
+			return device;
 		}
 
 		private void _UpdateState() {
@@ -111,8 +127,8 @@ namespace VixenModules.Input.DirectXJoystick {
 			return _IsDeviceType(deviceObjectInstance, ObjectDeviceType.PointOfViewController);
 		}
 
-		private IEnumerable<IInputInput> _GetInputs() {
-			foreach(DeviceObjectInstance deviceObjectInstance in _device.GetObjects()) {
+		private IEnumerable<IInputInput> _GetInputs(SlimDX.DirectInput.Joystick device) {
+			foreach(DeviceObjectInstance deviceObjectInstance in device.GetObjects()) {
 				JoystickInput input = null;
 
 				if(_IsButton(deviceObjectInstance)) {
