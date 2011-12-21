@@ -85,11 +85,7 @@ namespace Vixen.Sys {
 				//  other controllers not being invoked...sounded like a closure issue
 				//  initially, but I can't figure it out).
 				foreach(OutputController controller in controllers) {
-					try {
-						_StartController(controller);
-					} catch(Exception ex) {
-						VixenSystem.Logging.Error("Error starting controller " + controller.Name, ex);
-					}
+					_StartController(controller);
 				}
 
 				_stateAll = ExecutionState.Started;
@@ -186,15 +182,19 @@ namespace Vixen.Sys {
 				}
 
 				// Start the controller.
-				controller.Start();
+				try {
+					controller.Start();
 
-				// Create / Start the thread that updates the hardware.
-				HardwareUpdateThread thread = new HardwareUpdateThread(controller);
-				thread.Error += _HardwareError;
-				lock (_updateThreads) {
-					_updateThreads[controller.Id] = thread;
+					// Create / Start the thread that updates the hardware.
+					HardwareUpdateThread thread = new HardwareUpdateThread(controller);
+					thread.Error += _HardwareError;
+					lock(_updateThreads) {
+						_updateThreads[controller.Id] = thread;
+					}
+					thread.Start();
+				} catch(Exception ex) {
+					VixenSystem.Logging.Error("Error starting controller " + controller.Name, ex);
 				}
-				thread.Start();
 			}
 		}
 

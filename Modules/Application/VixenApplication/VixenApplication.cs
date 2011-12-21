@@ -20,21 +20,22 @@ namespace VixenApplication
 	{
 		private Guid _guid = new Guid("7b903272-73d0-416c-94b1-6932758b1963");
 		private bool stopping;
+		private bool _openExecution = true;
+		private bool _disableControllers = false;
 
 		public VixenApplication()
 		{
+			string[] args = Environment.GetCommandLineArgs();
+			foreach(string arg in args) {
+				_ProcessArg(arg);
+			}
+
 			stopping = false;
 			InitializeComponent();
 			labelVersion.Text = "[" + _GetVersionString(VixenSystem.AssemblyFileName) + "]";
 			AppCommands = new AppCommand(this);
 			Execution.ExecutionStateChanged += executionStateChangedHandler;
-			VixenSystem.Start(this, true);
-		}
-
-		private string _GetVersionString(string assemblyFileName) {
-			System.Reflection.Assembly assembly = System.Reflection.Assembly.LoadFile(assemblyFileName);
-			Version version = assembly.GetName().Version;
-			return version.Major + "." + version.Minor + "." + version.Build;
+			VixenSystem.Start(this, _openExecution, _disableControllers);
 		}
 
 		private void VixenApp_FormClosing(object sender, FormClosingEventArgs e)
@@ -54,6 +55,23 @@ namespace VixenApplication
 			}
 
 			PopulateRecentSequencesList();
+		}
+
+		private string _GetVersionString(string assemblyFileName) {
+			System.Reflection.Assembly assembly = System.Reflection.Assembly.LoadFile(assemblyFileName);
+			Version version = assembly.GetName().Version;
+			return version.Major + "." + version.Minor + "." + version.Build;
+		}
+
+		private void _ProcessArg(string arg) {
+			switch(arg) {
+				case "no_controllers":
+					_disableControllers = true;
+					break;
+				case "no_execution":
+					_openExecution = false;
+					break;
+			}
 		}
 
 		#region IApplication implemetation
