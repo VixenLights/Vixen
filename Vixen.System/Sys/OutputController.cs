@@ -14,6 +14,7 @@ namespace Vixen.Sys {
 		private List<Output> _outputs = new List<Output>();
 		private ModuleInstanceSpecification<int> _outputTransforms = new ModuleInstanceSpecification<int>();
 		private IModuleDataSet _moduleDataSet = new ModuleLocalDataSet();
+		private Output[] _outputArray = new Output[0];
 
 		public OutputController(string name, int outputCount, Guid outputModuleId)
 			: this(Guid.NewGuid(), Guid.NewGuid(), name, outputCount, outputModuleId) {
@@ -167,7 +168,7 @@ namespace Vixen.Sys {
 		}
 
 		public Output[] Outputs {
-			get { return _outputs.ToArray(); }
+			get { return _outputArray; }
 		}
 
 		public int OutputCount {
@@ -183,6 +184,8 @@ namespace Vixen.Sys {
 						_outputs.Add(output);
 					}
 				}
+
+				_outputArray = _outputs.ToArray();
 
 				_SetOutputModuleOutputCount();
 			}
