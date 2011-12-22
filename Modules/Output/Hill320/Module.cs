@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using Vixen.Module;
 using Vixen.Module.Output;
 using Vixen.Commands;
+using Vixen.Commands.KnownDataTypes;
 
 namespace VixenModules.Output.Hill320
 {
@@ -28,10 +29,10 @@ namespace VixenModules.Output.Hill320
                 if (parallelPortConfig.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     _portAddress = parallelPortConfig.PortAddress;
-                    _moduleData.PortAddress = _portAddress;
-                    _moduleData.StatusPort = (ushort)(_portAddress + 1);
-                    _moduleData.ControlPort = (ushort)(_portAddress + 2);
-                    return true;
+                        _moduleData.PortAddress = _portAddress;
+                        _moduleData.StatusPort = (ushort)(_portAddress + 1);
+                        _moduleData.ControlPort = (ushort)(_portAddress + 2);
+                        return true;
                 }
             }
             return false;
@@ -52,6 +53,7 @@ namespace VixenModules.Output.Hill320
             int bitCount;
             byte value;
             byte bankBox, bank;
+
             int loopCount = outputStates.Length >> 3;
 
             for (int box = 0; box < loopCount; box++)
@@ -60,19 +62,19 @@ namespace VixenModules.Output.Hill320
                 for (bitCount = 0; bitCount < 8; bitCount++)
                 {
                     Lighting.Monochrome.SetLevel setLevelCommand = outputStates[valueIndex++] as Lighting.Monochrome.SetLevel;
+                    value >>= 1;
+                    if (setLevelCommand == null)
+                    {
+                        value |= (byte)0;
+                    }
+                    else
+                    {
+                        if (setLevelCommand.Level > 0)
+                            value |= (byte)0x80;
 
-                        value >>= 1;
-                        if (setLevelCommand == null)
-                        {
-                            value |= (byte)0;
-                        }
                         else
-                        {
-                            if (setLevelCommand.Level > 0)
-                                value |= (byte)0x80;
-                            else
-                                value |= (byte)0;
-                        }
+                            value |= (byte)0;
+                    }
                 }
                 bank = (byte)(8 << (box >> 3));
                 bankBox = (byte)(box % 8);
@@ -81,7 +83,8 @@ namespace VixenModules.Output.Hill320
                 //Outputs data byte	(D0-D7)	on pins	2-9 of parallel port.  This is the data
                 //we are trying to send	to box XX.
                 Out(_moduleData.PortAddress, value);
-                
+                Console.Out.WriteLine(value);
+
                 //Write #2:
                 //Outputs a 1 (high) on C0 and C1 (pins 1 and 14) since they are inverted
                 //without changing any states on the data pins.  This opens the 
@@ -98,8 +101,7 @@ namespace VixenModules.Output.Hill320
                 // Write #4
                 // Outputs the steering (addressing) data on the data pins
                 Out(_moduleData.ControlPort, (short)(bank | bankBox));
-                //Console.Out.WriteLine(String.Format("{0} {1}", value, (short)(bank | bankBox)));
-                
+
                 //Write	#5
                 //Outputs a 0 (low) on both	C0 and C1 since	they are inverted.  This locks
                 //the data into	the	correct decoder which sends a "low" single to the clock
@@ -113,7 +115,6 @@ namespace VixenModules.Output.Hill320
                 //flip flop and will remain transmitting this data to the relays until the next time
                 //this box needs to	be modified.
                 Out(_moduleData.ControlPort, 1);
-
             }
         }
     }
