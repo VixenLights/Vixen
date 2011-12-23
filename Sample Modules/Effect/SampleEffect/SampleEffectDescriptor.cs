@@ -9,12 +9,9 @@ using Vixen.Commands.KnownDataTypes;
 namespace SampleEffect {
 	public class SampleEffectDescriptor : EffectModuleDescriptorBase {
 		private Guid _typeId = new Guid("{C4E3BF3D-4B38-407e-8122-0404D604C4E1}");
-
-//		public SampleEffectDescriptor() {
-			//Parameters = new ParameterSignature(new[] {
-			//	new ParameterSpecification("Flash level", typeof(Level))
-//			});				
-//		}
+		private ParameterSignature _parameters = new ParameterSignature(new[] {
+				new ParameterSpecification("Flash level", typeof(Level))
+			});
 
 		public override string TypeName {
 			get { return "Sample effect"; }
@@ -46,6 +43,10 @@ namespace SampleEffect {
 
 		public override Type ModuleDataClass {
 			get { return typeof(SampleEffectData); }
+		}
+
+		public override ParameterSignature Parameters {
+			get { return _parameters; }
 		}
 	}
 }

@@ -52,10 +52,12 @@
     <ProjectReference Include="..\..\..\Common\BasicInputManagement\BasicInputManagement.csproj">
       <Project>{4B448396-DF5D-4864-A133-7A0AA69CA028}</Project>
       <Name>BasicInputManagement</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
       <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
       <Name>Vixen</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
