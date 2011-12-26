@@ -14,14 +14,16 @@ namespace CommonElements.Timeline
 	[System.ComponentModel.DesignerCategory("")]    // Prevent this from showing up in designer.
 	public class Ruler : TimelineControlBase
 	{
+		private const int minPxBetweenTimeLabels = 10;
+		private const int maxDxForClick = 2;
+
+
 		public Ruler(TimeInfo timeinfo)
 			:base(timeinfo)
 		{
 			BackColor = Color.Gray;
 			recalculate();
 		}
-
-		private const int minPxBetweenTimeLabels = 10;
 
 		private Font m_font = null;
 		private Brush m_brush = null;
@@ -344,28 +346,37 @@ namespace CommonElements.Timeline
 		}
 
 
+		#region Mouse
 
-		#region Mouse Events
+		private int m_mouseDownX;
+
+		protected override void OnMouseDown(MouseEventArgs e)
+		{
+			Debug.WriteLine("MouseDown: x={0}", e.X);
+			m_mouseDownX = e.X;
+			
+		}
+
+		protected override void OnMouseUp(MouseEventArgs e)
+		{
+			if (Math.Abs(e.X - m_mouseDownX) <= maxDxForClick)
+			{
+				TimeSpan t = pixelsToTime(e.X) + VisibleTimeStart;
+				if (ClickedAtTime != null)
+					ClickedAtTime(this, new TimeSpanEventArgs(t));
+			}
+		}
 
 		protected override void OnMouseEnter(EventArgs e)
 		{
-			base.OnMouseEnter(e);
 			Cursor = Cursors.Hand;
+			base.OnMouseEnter(e);
 		}
 
 		protected override void OnMouseLeave(EventArgs e)
 		{
-			base.OnMouseLeave(e);
 			Cursor = Cursors.Default;
-		}
-
-		protected override void OnMouseClick(MouseEventArgs e)
-		{
-			//base.OnMouseClick(e);
-			TimeSpan t = pixelsToTime(e.X) + VisibleTimeStart;
-
-			if (ClickedAtTime != null)
-				ClickedAtTime(this, new TimeSpanEventArgs(t));
+			base.OnMouseLeave(e);
 		}
 
 		public event EventHandler<TimeSpanEventArgs> ClickedAtTime;

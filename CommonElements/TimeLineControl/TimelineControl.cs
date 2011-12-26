@@ -167,6 +167,7 @@ namespace CommonElements.Timeline
 			}
 		}
 
+		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int VisibleHeight
 		{
 			get { return grid.ClientSize.Height; }
@@ -185,34 +186,40 @@ namespace CommonElements.Timeline
 			get { return grid.VisibleTimeSpan; }
 		}
 
+		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public IEnumerable<Element> SelectedElements
 		{
 			get { return grid.SelectedElements; }
 		}
 
+		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public IEnumerable<Row> Rows
 		{
 			get { return grid.Rows; }
 		}
 
+		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public IEnumerable<Row> SelectedRows
 		{
 			get { return grid.SelectedRows; }
 			set { grid.SelectedRows = value; }
 		}
 
+		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Row SelectedRow
 		{
 			get { return SelectedRows.FirstOrDefault(); }
 			set { SelectedRows = new Row[] { value }; }
 		}
 
+		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public IEnumerable<Row> VisibleRows
 		{
 			get { return grid.VisibleRows; }
 			set { grid.VisibleRows = value; }
 		}
 
+		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Row TopVisibleRow
 		{
 			get { return grid.TopVisibleRow; }
@@ -458,7 +465,7 @@ namespace CommonElements.Timeline
 
 		private void RulerClickedHandler(object sender, TimeSpanEventArgs e)
 		{
-			Debug.WriteLine("Header clicked at {0}", e.Time);
+			CursorPosition = e.Time;
 		}
 
 		private void RowToggledHandler(object sender, EventArgs e)

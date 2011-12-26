@@ -92,7 +92,7 @@ namespace CommonElements.Timeline
 
             Point gridLocation = translateLocation(e.Location);
 
-            if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            if (e.Button == MouseButtons.Left)
             {
                 switch (m_dragState)
                 {
@@ -358,22 +358,31 @@ namespace CommonElements.Timeline
         private void MouseUp_DragSelect(Point gridLocation)
         {
             // we will only be Selecting if we clicked on the grid background, so on mouse up, check if
-            // we didn't move (or very far): if so, move the cursor to the clicked position.
+            // we didn't move (or very far): if so, consider it just a background click.
             if (SelectionArea.Width < 2 && SelectionArea.Height < 2)
             {
-                CursorPosition = pixelsToTime(gridLocation.X);
-                if (m_mouseDownElementRow != null)
-                    m_mouseDownElementRow.Selected = true;
+				OnBackgroundClick(new TimelineEventArgs(rowAt(gridLocation), pixelsToTime(gridLocation.X)));
             }
 
-            // done with the selection rectangle.
-            m_selectionRectangleStart = Point.Empty;
-            SelectionArea = Rectangle.Empty;
+			// done with the selection rectangle.
+			m_selectionRectangleStart = Point.Empty;
+			SelectionArea = Rectangle.Empty;
 
-            endAllDrag();
+			endAllDrag();
         }
 
         #endregion
+
+		protected void OnBackgroundClick(TimelineEventArgs e)
+		{
+			if (e.Row != null)
+				e.Row.Selected = true;
+
+			//CursorPosition = e.Time;
+
+			if (BackgroundClicked != null)
+				BackgroundClicked(this, e);
+		}
 
 
         #region [Mouse Drag] Moving Elements
@@ -732,6 +741,8 @@ namespace CommonElements.Timeline
 
         //events
         public event EventHandler<ElementsChangedTimesEventArgs> ElementsMovedNew;
+
+		public event EventHandler<TimelineEventArgs> BackgroundClicked;
     }
 
 
