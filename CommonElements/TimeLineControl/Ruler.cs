@@ -26,13 +26,14 @@ namespace CommonElements.Timeline
 		}
 
 		private Font m_font = null;
-		private Brush m_brush = null;
+		private Brush m_textBrush = null;
 
 		private TimeSpan m_MinorTick;
 		private int m_minorTicksPerMajor;
 
-		public TimeSpan MinorTick { get { return m_MinorTick; } }
-		public TimeSpan MajorTick { get { return m_MinorTick.Scale(m_minorTicksPerMajor); } }
+		private TimeSpan MinorTick { get { return m_MinorTick; } }
+		private TimeSpan MajorTick { get { return m_MinorTick.Scale(m_minorTicksPerMajor); } }
+
 
 		protected override Size DefaultSize
 		{
@@ -40,7 +41,9 @@ namespace CommonElements.Timeline
 		}
 
 
-        protected override void OnPaint(PaintEventArgs e)
+		#region Drawing
+
+		protected override void OnPaint(PaintEventArgs e)
         {
 			try
 			{
@@ -55,13 +58,14 @@ namespace CommonElements.Timeline
 				using (Pen p = new Pen(Color.Black, 2)) {
 					e.Graphics.DrawLine(p, 0, Height - 1, timeToPixels(TotalTime), Height - 1);
 				}
+
+				drawPlaybackIndicators(e.Graphics);
 			}
 			catch (Exception ex)
 			{
 				MessageBox.Show("Exception in Timeline.Ruler.OnPaint():\n\n\t" + ex.Message + "\n\nBacktrace:\n\n\t" + ex.StackTrace);
 			}
         }
-
 
 		private void drawTicks(Graphics graphics, TimeSpan interval, int width, double height)
         {
@@ -81,6 +85,106 @@ namespace CommonElements.Timeline
 
             }
         }
+
+		private void drawTimes(Graphics graphics)
+		{
+			SizeF stringSize;
+			int lastPixel = 0;
+
+			// calculate the width of a single time, and figure out how regularly we will be able
+			// to display times without overlapping. Then we can make sure we only use those intervals
+			// to draw strings.
+			stringSize = graphics.MeasureString(labelString(VisibleTimeEnd), m_font);
+			int timeDisplayInterval = (int)((stringSize.Width + minPxBetweenTimeLabels) / timeToPixels(MajorTick)) + 1;
+			TimeSpan drawnInterval = TimeSpan.FromTicks(MajorTick.Ticks * timeDisplayInterval);
+
+			// get the time of the first tick that is: visible, on a major tick interval, and a multiple of the number of interval ticks
+			TimeSpan firstMajor = TimeSpan.FromTicks(VisibleTimeStart.Ticks - (VisibleTimeStart.Ticks % drawnInterval.Ticks) + drawnInterval.Ticks);
+
+			for (TimeSpan curTime = firstMajor;             // start at the first major tick
+				(curTime <= VisibleTimeEnd);                // current time is in the visible region
+				curTime += drawnInterval)                   // increment by the drawnInterval
+			{
+				string timeStr = labelString(curTime);
+
+				stringSize = graphics.MeasureString(timeStr, m_font);
+				Single posOffset = (stringSize.Width / 2);
+				Single curPixelCentre = timeToPixels(curTime);
+
+				// if drawing the string wouldn't overlap the last, then draw it
+				if (lastPixel + minPxBetweenTimeLabels + posOffset < curPixelCentre)
+				{
+					graphics.DrawString(timeStr, m_font, m_textBrush, curPixelCentre - posOffset, (Height / 4) - (stringSize.Height / 2));
+					lastPixel = (int)(curPixelCentre + posOffset);
+				}
+			}
+		}
+
+		private const int ArrowBase = 16;
+		private const int ArrowLength = 10;
+
+		private void drawPlaybackIndicators(Graphics g)
+		{
+			// Playback start/end arrows
+			if (PlaybackStartPosition.HasValue || PlaybackEndPosition.HasValue)
+			{
+				GraphicsState gstate = g.Save();
+				g.TranslateTransform(0, -ArrowBase / 2);
+
+				if (PlaybackStartPosition.HasValue)
+				{
+					// start arrow (faces left)  |<|
+					int x = (int)timeToPixels(PlaybackStartPosition.Value);
+					g.FillPolygon(Brushes.DarkGray, new Point[] {
+						new Point(x, Height-ArrowBase/2),				// left mid point
+						new Point(x+ArrowLength, Height-ArrowBase),	// right top point
+						new Point(x+ArrowLength, Height)					// right bottom point
+					});
+					g.DrawLine(Pens.DarkGray, x, Height - ArrowBase, x, Height);
+				}
+
+				if (PlaybackEndPosition.HasValue)
+				{
+					// end arrow (faces right)   |>|
+					int x = (int)timeToPixels(PlaybackEndPosition.Value);
+					g.FillPolygon(Brushes.DarkGray, new Point[] {
+						new Point(x, Height-ArrowBase/2),				// right mid point
+						new Point(x-ArrowLength, Height-ArrowBase),	// left top point
+						new Point(x-ArrowLength, Height)					// left bottom point
+					});
+					g.DrawLine(Pens.DarkGray, x, Height - ArrowBase, x, Height);
+				}
+
+				if (PlaybackStartPosition.HasValue && PlaybackEndPosition.HasValue)
+				{
+					// line between the two
+					using (Pen p = new Pen(Color.DarkGray))
+					{
+						p.Width = 4;
+						int x1 = (int)timeToPixels(PlaybackStartPosition.Value) + ArrowLength;
+						int x2 = (int)timeToPixels(PlaybackEndPosition.Value) - ArrowLength;
+						int y = Height - ArrowBase / 2;
+						g.DrawLine(p, x1, y, x2, y);
+					}
+				}
+
+				g.Restore(gstate);
+			}
+
+			// Current position arrow
+			if (PlaybackCurrentPosition.HasValue)
+			{
+				int x = (int)timeToPixels(PlaybackCurrentPosition.Value);
+				g.FillPolygon(Brushes.Green, new Point[] {
+					new Point(x, ArrowLength),		// bottom mid point
+					new Point(x-ArrowBase/2, 0),	// top left point
+					new Point(x+ArrowBase/2, 0),	// top right point
+				});
+
+			}
+		}
+
+		#endregion
 
 
 		protected override void OnResize(EventArgs e)
@@ -113,9 +217,9 @@ namespace CommonElements.Timeline
 			m_font = new Font("Arial", desiredPixelHeight, GraphicsUnit.Pixel);
 
 
-			if (m_brush != null)
-				m_brush.Dispose();
-			m_brush = new SolidBrush(Color.White);
+			if (m_textBrush != null)
+				m_textBrush.Dispose();
+			m_textBrush = new SolidBrush(Color.White);
 
 
 			// As a heuristic, we want at least 10 pixels between each minor tick
@@ -311,60 +415,88 @@ namespace CommonElements.Timeline
 		}
 
 
-		private void drawTimes(Graphics graphics)
-		{
-			SizeF stringSize;
-			int lastPixel = 0;
-
-			// calculate the width of a single time, and figure out how regularly we will be able
-			// to display times without overlapping. Then we can make sure we only use those intervals
-			// to draw strings.
-			stringSize = graphics.MeasureString(labelString(VisibleTimeEnd), m_font);
-			int timeDisplayInterval = (int)((stringSize.Width + minPxBetweenTimeLabels) / timeToPixels(MajorTick)) + 1;
-			TimeSpan drawnInterval = TimeSpan.FromTicks(MajorTick.Ticks * timeDisplayInterval);
-
-			// get the time of the first tick that is: visible, on a major tick interval, and a multiple of the number of interval ticks
-			TimeSpan firstMajor = TimeSpan.FromTicks(VisibleTimeStart.Ticks - (VisibleTimeStart.Ticks % drawnInterval.Ticks) + drawnInterval.Ticks);
-
-			for (TimeSpan curTime = firstMajor;             // start at the first major tick
-                (curTime <= VisibleTimeEnd);                // current time is in the visible region
-                curTime += drawnInterval)                   // increment by the drawnInterval
-			{
-				string timeStr = labelString(curTime);
-
-				stringSize = graphics.MeasureString(timeStr, m_font);
-				Single posOffset = (stringSize.Width / 2);
-				Single curPixelCentre = timeToPixels(curTime);
-
-				// if drawing the string wouldn't overlap the last, then draw it
-				if (lastPixel + minPxBetweenTimeLabels + posOffset < curPixelCentre)
-				{	
-					graphics.DrawString(timeStr, m_font, m_brush, curPixelCentre - posOffset, (Height / 4) - (stringSize.Height / 2));
-					lastPixel = (int)(curPixelCentre + posOffset);
-				}
-			}
-		}
+		
 
 
 		#region Mouse
+
+		private enum MouseState { Normal, DragWait, Dragging }
+		private MouseState m_mouseState = MouseState.Normal;
 
 		private int m_mouseDownX;
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			Debug.WriteLine("MouseDown: x={0}", e.X);
+			m_mouseState = MouseState.DragWait;
 			m_mouseDownX = e.X;
-			
+			PlaybackStartPosition = pixelsToTime(e.X);
+			PlaybackEndPosition = null;
+		}
+
+		protected override void OnMouseMove(MouseEventArgs e)
+		{
+			base.OnMouseMove(e);
+
+			switch (m_mouseState)
+			{
+				case MouseState.Normal:
+					return;
+
+				case MouseState.DragWait:
+					// Move enough to be considered a drag?
+					if (Math.Abs(e.X - m_mouseDownX) <= maxDxForClick)
+						return;
+					m_mouseState = MouseState.Dragging;
+					goto case MouseState.Dragging;
+
+				case MouseState.Dragging:
+					int start, end;
+					if (e.X > m_mouseDownX)
+					{
+						// Start @ mouse down, end @ mouse current
+						start = m_mouseDownX;
+						end = e.X;
+					}
+					else
+					{
+						// Start @ mouse current, end @ mouse down
+						start = e.X;
+						end = m_mouseDownX;
+					}
+
+					PlaybackStartPosition = pixelsToTime(start) + VisibleTimeStart;
+					PlaybackEndPosition = pixelsToTime(end) + VisibleTimeStart;
+					return;
+
+				default:
+					throw new Exception("Invalid MouseState. WTF?!");
+			}
 		}
 
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
-			if (Math.Abs(e.X - m_mouseDownX) <= maxDxForClick)
+			switch (m_mouseState)
 			{
-				TimeSpan t = pixelsToTime(e.X) + VisibleTimeStart;
-				if (ClickedAtTime != null)
-					ClickedAtTime(this, new TimeSpanEventArgs(t));
+				case MouseState.Normal:
+					throw new Exception("MouseUp in MouseState.Normal - WTF?");
+
+				case MouseState.DragWait:
+					// Didn't move enough to be considered dragging. Just a click.
+					if (ClickedAtTime != null)
+						ClickedAtTime(this, new TimeSpanEventArgs(PlaybackStartPosition.Value));
+					break;
+
+				case MouseState.Dragging:
+					// Finished a time range drag.
+					if (TimeRangeDragged != null)
+						TimeRangeDragged(this, new TimeRangeDraggedEventArgs(PlaybackStartPosition.Value, PlaybackEndPosition.Value));
+					break;
+
+				default:
+					throw new Exception("Invalid MouseState. WTF?!");
 			}
+
+			m_mouseState = MouseState.Normal;
 		}
 
 		protected override void OnMouseEnter(EventArgs e)
@@ -380,9 +512,50 @@ namespace CommonElements.Timeline
 		}
 
 		public event EventHandler<TimeSpanEventArgs> ClickedAtTime;
+		public event EventHandler<TimeRangeDraggedEventArgs> TimeRangeDragged;
 
 		#endregion
 
 
+
+
+		#region Public Properties
+
+		private TimeSpan? m_playbackStart = null;
+		public TimeSpan? PlaybackStartPosition
+		{
+			get { return m_playbackStart; }
+			set { m_playbackStart = value; Invalidate(); }
+		}
+
+		private TimeSpan? m_playbackEnd = null;
+		public TimeSpan? PlaybackEndPosition
+		{
+			get { return m_playbackEnd; }
+			set { m_playbackEnd = value; Invalidate(); }
+		}
+
+		private TimeSpan? m_playbackCur = null;
+		public TimeSpan? PlaybackCurrentPosition
+		{
+			get { return m_playbackCur; }
+			set { m_playbackCur = value; Invalidate(); }
+		}
+
+		#endregion
+
+	}
+
+
+	public class TimeRangeDraggedEventArgs : EventArgs
+	{
+		public TimeRangeDraggedEventArgs(TimeSpan start, TimeSpan end)
+		{
+			StartTime = start;
+			EndTime = end;
+		}
+		public TimeSpan StartTime { get; private set; }
+		public TimeSpan EndTime { get; private set; }
+		
 	}
 }
