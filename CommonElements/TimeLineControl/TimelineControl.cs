@@ -44,23 +44,9 @@ namespace CommonElements.Timeline
 			Row.RowHeightChanged += RowHeightChangedHandler;
 		}
 
-        protected override void OnLoad(EventArgs e)
-        {
-            splitContainer.SplitterDistance = InitialSplitterDistance;
-            base.OnLoad(e);
-        }
+		#region Initialization
 
-		protected override void OnLayout(LayoutEventArgs e)
-		{
-			timelineRowList.Top = grid.Top;
-			base.OnLayout(e);
-		}
-
-
-
-        #region Initialization
-
-        private void InitializeControls()
+		private void InitializeControls()
         {
             this.SuspendLayout();
 
@@ -138,7 +124,6 @@ namespace CommonElements.Timeline
 				Height = 40,
 			};
 			splitContainer.Panel2.Controls.Add(ruler);
-			ruler.ClickedAtTime += RulerClickedHandler;
 
 			splitContainer.Panel2.ResumeLayout(false);
 			splitContainer.Panel2.PerformLayout();
@@ -146,7 +131,6 @@ namespace CommonElements.Timeline
 		}
 
         #endregion
-
 
         #region Properties
 
@@ -226,7 +210,6 @@ namespace CommonElements.Timeline
 		}
 
 		#endregion
-
 
 		#region Methods
 
@@ -385,7 +368,6 @@ namespace CommonElements.Timeline
 
 		#endregion
 
-
 		#region Events exposed from sub-controls (Grid, Ruler, etc)
 
 		public event EventHandler<ElementEventArgs> ElementDoubleClicked
@@ -430,22 +412,29 @@ namespace CommonElements.Timeline
             remove { grid.ElementsMovedNew -= value; }
         }
 
-		public event EventHandler<RulerClickedEventArgs> ClickedAtTime
+		public event EventHandler<RulerClickedEventArgs> RulerClicked
 		{
 			add { ruler.ClickedAtTime += value; }
 			remove { ruler.ClickedAtTime -= value; }
 		}
 
-		public event EventHandler<TimeRangeDraggedEventArgs> DraggedTimeRange
+		public event EventHandler RulerBeginDragTimeRange
 		{
-			add { ruler.DraggedTimeRange += value; }
-			remove { ruler.DraggedTimeRange -= value; }
+			add { ruler.BeginDragTimeRange += value; }
+			remove { ruler.BeginDragTimeRange -= value; }
+		}
+
+		public event EventHandler<ModifierKeysEventArgs> RulerTimeRangeDragged
+		{
+			add { ruler.TimeRangeDragged += value; }
+			remove { ruler.TimeRangeDragged -= value; }
 		}
 
 
 
-		#endregion
 
+
+		#endregion
 
 		#region Event Handlers
 
@@ -471,11 +460,6 @@ namespace CommonElements.Timeline
 		    } else {
 				GridScrollVerticalHandler(sender, e);
 			}
-		}
-
-		private void RulerClickedHandler(object sender, RulerClickedEventArgs e)
-		{
-			//CursorPosition = e.Time;
 		}
 
 		private void RowToggledHandler(object sender, EventArgs e)
@@ -509,6 +493,19 @@ namespace CommonElements.Timeline
 
 		#endregion
 
+		#region Overridden methods (On__)
+
+		protected override void OnLoad(EventArgs e)
+		{
+			splitContainer.SplitterDistance = InitialSplitterDistance;
+			base.OnLoad(e);
+		}
+
+		protected override void OnLayout(LayoutEventArgs e)
+		{
+			timelineRowList.Top = grid.Top;
+			base.OnLayout(e);
+		}
 
 		protected override void OnPlaybackCurrentTimeChanged(object sender, EventArgs e)
 		{
@@ -524,5 +521,7 @@ namespace CommonElements.Timeline
 
 			base.OnPlaybackCurrentTimeChanged(sender, e);
 		}
+
+		#endregion
 	}
 }

@@ -54,6 +54,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		// Undo manager
         private CommonElements.UndoManager _undoMgr;
 
+		private TimeSpan? m_prevPlaybackStart = null;
+		private TimeSpan? m_prevPlaybackEnd = null;
+
 		#endregion
 
 
@@ -71,15 +74,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			timelineControl.PlaybackCurrentTimeChanged += timelineControl_PlaybackCurrentTimeChanged;
 
-			timelineControl.ClickedAtTime += timelineControl_ClickedAtTime;
-			timelineControl.DraggedTimeRange += timelineControl_DraggedTimeRange;
+			timelineControl.RulerClicked += timelineControl_RulerClicked;
+			timelineControl.RulerBeginDragTimeRange += timelineControl_RulerBeginDragTimeRange;
+			timelineControl.RulerTimeRangeDragged += timelineControl_TimeRangeDragged;
 
 			LoadAvailableEffects();
             InitUndo();
 			updateButtonStates();
 		}
-
-
 
 
 		private void LoadAvailableEffects()
@@ -465,28 +467,51 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 
-		void timelineControl_ClickedAtTime(object sender, RulerClickedEventArgs e)
+		void timelineControl_RulerClicked(object sender, RulerClickedEventArgs e)
 		{
 			if (_context == null) {
-				VixenSystem.Logging.Error("TimedSequenceEditor: attempt to Play with null context!");
+				VixenSystem.Logging.Error("TimedSequenceEditor: StartPointClicked to Play with null context!");
 				return;
 			}
 
-			if (e.ModifierKeys.HasFlag(Keys.Control))
+			bool autoPlay = e.ModifierKeys.HasFlag(Keys.Control);
+			
+			if (autoPlay)
+			{
+				// Save the times for later restoration
+				m_prevPlaybackStart = timelineControl.PlaybackStartTime;
+				m_prevPlaybackEnd = timelineControl.PlaybackEndTime;
+			}
+
+			// Set the timeline control
+			timelineControl.PlaybackStartTime = e.Time;
+			timelineControl.PlaybackEndTime = null;
+
+			if (autoPlay)
 			{
 				_context.Play(e.Time, TimeSpan.MaxValue);
 			}
+			else
+			{
+				timelineControl.CursorPosition = e.Time;
+			}
+
 		}
 
-		void timelineControl_DraggedTimeRange(object sender, TimeRangeDraggedEventArgs e)
+		void timelineControl_RulerBeginDragTimeRange(object sender, EventArgs e)
+		{
+			m_prevPlaybackStart = timelineControl.PlaybackStartTime;
+			m_prevPlaybackEnd = timelineControl.PlaybackEndTime;
+		}
+
+		void timelineControl_TimeRangeDragged(object sender, ModifierKeysEventArgs e)
 		{
 			if (_context == null) {
-				VixenSystem.Logging.Error("TimedSequenceEditor: attempt to Play with null context!");
+				VixenSystem.Logging.Error("TimedSequenceEditor: TimeRangeDragged with null context!");
 				return;
 			}
 
-			_originalCursorPositionBeforePlayback = timelineControl.CursorPosition;
-			_context.Play(e.StartTime, e.EndTime);
+			_context.Play(timelineControl.PlaybackStartTime.Value, timelineControl.PlaybackEndTime.Value);
 		}
 
 		#endregion
@@ -502,7 +527,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_context = Execution.CreateContext(Sequence);
 			_context.SequenceStarted += context_SequenceStarted;
 			_context.SequenceEnded += context_SequenceEnded;
-
 			_context.ProgramEnded += _context_ProgramEnded;
 
 			updateButtonStates();
@@ -513,6 +537,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			_context.SequenceStarted -= context_SequenceStarted;
 			_context.SequenceEnded -= context_SequenceEnded;
+			_context.ProgramEnded -= _context_ProgramEnded;
 			Execution.ReleaseContext(_context);
 			updateButtonStates();
 		}
@@ -576,11 +601,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		protected void _context_ProgramEnded(object sender, ProgramEventArgs e)
 		{
 			updateButtonStates();
+
+			timelineControl.PlaybackStartTime = m_prevPlaybackStart;
+			timelineControl.PlaybackEndTime = m_prevPlaybackEnd;
 			timelineControl.PlaybackCurrentTime = null;
 		}
 
-		private TimeSpan? m_prevPlaybackStart = null;
-		private TimeSpan? m_prevPlaybackEnd = null;
+
 		
 
 		protected void timerPlaying_Tick(object sender, EventArgs e)

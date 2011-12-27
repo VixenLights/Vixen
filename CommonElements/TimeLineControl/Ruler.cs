@@ -427,10 +427,10 @@ namespace CommonElements.Timeline
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
+			if (e.Button != MouseButtons.Left)
+				return;
 			m_mouseState = MouseState.DragWait;
 			m_mouseDownX = e.X;
-			PlaybackStartTime = pixelsToTime(e.X) + VisibleTimeStart;
-			PlaybackEndTime = null;
 		}
 
 		protected override void OnMouseMove(MouseEventArgs e)
@@ -447,6 +447,9 @@ namespace CommonElements.Timeline
 					if (Math.Abs(e.X - m_mouseDownX) <= maxDxForClick)
 						return;
 					m_mouseState = MouseState.Dragging;
+					OnBeginDragTimeRange();
+					PlaybackStartTime = pixelsToTime(e.X) + VisibleTimeStart;
+					PlaybackEndTime = null;
 					goto case MouseState.Dragging;
 
 				case MouseState.Dragging:
@@ -473,8 +476,12 @@ namespace CommonElements.Timeline
 			}
 		}
 
+
+
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
+			if (e.Button != MouseButtons.Left)
+				return;
 			switch (m_mouseState)
 			{
 				case MouseState.Normal:
@@ -482,14 +489,12 @@ namespace CommonElements.Timeline
 
 				case MouseState.DragWait:
 					// Didn't move enough to be considered dragging. Just a click.
-					if (ClickedAtTime != null)
-						ClickedAtTime(this, new RulerClickedEventArgs(PlaybackStartTime.Value, Form.ModifierKeys));
+					OnClickedAtTime(new RulerClickedEventArgs(pixelsToTime(e.X) + VisibleTimeStart, Form.ModifierKeys));
 					break;
 
 				case MouseState.Dragging:
 					// Finished a time range drag.
-					if (DraggedTimeRange != null)
-						DraggedTimeRange(this, new TimeRangeDraggedEventArgs(PlaybackStartTime.Value, PlaybackEndTime.Value));
+					OnTimeRangeDragged(new ModifierKeysEventArgs(Form.ModifierKeys));
 					break;
 
 				default:
@@ -511,8 +516,32 @@ namespace CommonElements.Timeline
 			base.OnMouseLeave(e);
 		}
 
+		
+		
+		
+		
 		public event EventHandler<RulerClickedEventArgs> ClickedAtTime;
-		public event EventHandler<TimeRangeDraggedEventArgs> DraggedTimeRange;
+		public event EventHandler<ModifierKeysEventArgs> TimeRangeDragged;
+		public event EventHandler BeginDragTimeRange;
+
+		protected virtual void OnClickedAtTime(RulerClickedEventArgs e)
+		{
+			if (ClickedAtTime != null)
+				ClickedAtTime(this, e);
+		}
+
+		protected virtual void OnTimeRangeDragged(ModifierKeysEventArgs e)
+		{
+			if (TimeRangeDragged != null)
+				TimeRangeDragged(this, e);
+		}
+
+		protected virtual void OnBeginDragTimeRange()
+		{
+			if (BeginDragTimeRange != null)
+				BeginDragTimeRange(this, EventArgs.Empty);
+		}
+		
 
 		#endregion
 
@@ -525,19 +554,15 @@ namespace CommonElements.Timeline
 
 	public class TimeRangeDraggedEventArgs : EventArgs
 	{
-		public TimeRangeDraggedEventArgs(TimeSpan start, TimeSpan end) //, TimeSpan? prevPlayStart, TimeSpan? prevPlayEnd)
+		public TimeRangeDraggedEventArgs(TimeSpan start, TimeSpan end, Keys modifiers)
 		{
 			StartTime = start;
 			EndTime = end;
-			//PreviousPlaybackStart = prevPlayStart;
-			//PreviousPlyabackEnd = prevPlayEnd;
+			ModifierKeys = modifiers;
 		}
 		public TimeSpan StartTime { get; private set; }
 		public TimeSpan EndTime { get; private set; }
-
-		//public TimeSpan? PreviousPlaybackStart { get; private set; }
-		//public TimeSpan? PreviousPlyabackEnd { get; private set; }
-		
+		public Keys ModifierKeys { get; private set; }
 	}
 
 	public class RulerClickedEventArgs : EventArgs
