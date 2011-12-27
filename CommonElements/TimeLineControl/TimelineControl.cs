@@ -386,7 +386,7 @@ namespace CommonElements.Timeline
 		#endregion
 
 
-		#region Events
+		#region Events exposed from sub-controls (Grid, Ruler, etc)
 
 		public event EventHandler<ElementEventArgs> ElementDoubleClicked
 		{
@@ -424,15 +424,48 @@ namespace CommonElements.Timeline
 			remove { grid.DataDropped -= value; }
 		}
 
-
-
         public event EventHandler<ElementsChangedTimesEventArgs> ElementsMovedNew
         {
             add { grid.ElementsMovedNew += value; }
             remove { grid.ElementsMovedNew -= value; }
         }
 
+		public event EventHandler<TimeSpanEventArgs> ClickedAtTime
+		{
+			add { ruler.ClickedAtTime += value; }
+			remove { ruler.ClickedAtTime -= value; }
+		}
 
+		public event EventHandler<TimeRangeDraggedEventArgs> DraggedTimeRange
+		{
+			add { ruler.DraggedTimeRange += value; }
+			remove { ruler.DraggedTimeRange -= value; }
+		}
+
+
+
+		#endregion
+
+		#region Properties exposed from sub-controls
+		//TODO: move all the others in here
+
+		public TimeSpan? PlaybackStartTime
+		{
+			get { return ruler.PlaybackStartTime; }
+			set { ruler.PlaybackStartTime = value; }
+		}
+
+		public TimeSpan? PlaybackEndTime
+		{
+			get { return ruler.PlaybackEndTime; }
+			set { ruler.PlaybackEndTime = value; }
+		}
+
+		public TimeSpan? PlaybackCurrentTime
+		{
+			get { return ruler.PlaybackCurrentTime; }
+			set { ruler.PlaybackCurrentTime = value; }
+		}
 
 		#endregion
 

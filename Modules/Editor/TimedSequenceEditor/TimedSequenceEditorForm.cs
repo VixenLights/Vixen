@@ -144,18 +144,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_channelNodeToRows = new Dictionary<ChannelNode, List<Row>>();
 
 			timelineControl.ElementChangedRows += ElementChangedRowsHandler;
+			timelineControl.ElementsMovedNew += timelineControl_ElementsMovedNew;
 			timelineControl.ElementDoubleClicked += ElementDoubleClickedHandler;
-			timelineControl.CursorMoved += timelineControl_CursorMoved;
-
-			LoadAvailableEffects();
-
-			// JRR drag/drop
 			timelineControl.DataDropped += timelineControl_DataDropped;
 
-            InitUndo();
+			timelineControl.CursorMoved += timelineControl_CursorMoved;
 
-            timelineControl.ElementsMovedNew += timelineControl_ElementsMovedNew;
+			timelineControl.ClickedAtTime += timelineControl_ClickedAtTime;
+			timelineControl.DraggedTimeRange += timelineControl_DraggedTimeRange;
+
+			LoadAvailableEffects();
+            InitUndo();
 		}
+
+
+
 
 
 		private void LoadAvailableEffects()
@@ -532,6 +535,34 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+
+
+		void timelineControl_ClickedAtTime(object sender, TimeSpanEventArgs e)
+		{
+			if (_context == null) {
+				VixenSystem.Logging.Error("TimedSequenceEditor: attempt to Play with null context!");
+				return;
+			}
+
+			// TODO: Do we care?
+			//if (_context.IsPaused)
+			_originalCursorPositionBeforePlayback = timelineControl.CursorPosition;
+			_context.Play(e.Time, TimeSpan.MaxValue);
+		}
+
+		void timelineControl_DraggedTimeRange(object sender, TimeRangeDraggedEventArgs e)
+		{
+			if (_context == null) {
+				VixenSystem.Logging.Error("TimedSequenceEditor: attempt to Play with null context!");
+				return;
+			}
+
+			// TODO: Do we care?
+			//if (_context.IsPaused)
+			_originalCursorPositionBeforePlayback = timelineControl.CursorPosition;
+			_context.Play(e.StartTime, e.EndTime);
+		}
+
 		#endregion
 
 
@@ -587,26 +618,46 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			_context.Stop();
-
-			timelineControl.CursorPosition = _originalCursorPositionBeforePlayback;
 		}
 
 		protected void context_SequenceStarted(object sender, SequenceStartedEventArgs e)
 		{
 			timerPlaying.Start();
 			_timingSource = e.TimingSource;
+
+			//TODO: Apparently we're not in the GUI thread.
+			// Update button states
+			//toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = false;
+			//toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = true;
+			//toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = true;
 		}
 
 		protected void context_SequenceEnded(object sender, SequenceEventArgs e)
 		{
 			timerPlaying.Stop();
 			_timingSource = null;
+
+			//TODO: Apparently we're not in the GUI thread.
+			// Update button states
+			//toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
+			//toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
+			//toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
+
+			// Restore playback / cursors
+			timelineControl.CursorPosition = _originalCursorPositionBeforePlayback;
+			timelineControl.PlaybackStartTime = m_prevPlaybackStart;
+			timelineControl.PlaybackEndTime = m_prevPlaybackEnd;
+			timelineControl.PlaybackCurrentTime = null;
 		}
+
+		private TimeSpan? m_prevPlaybackStart = null;
+		private TimeSpan? m_prevPlaybackEnd = null;
 
 		protected void timerPlaying_Tick(object sender, EventArgs e)
 		{
 			if (_timingSource != null) {
 				timelineControl.CursorPosition = _timingSource.Position;
+				timelineControl.PlaybackCurrentTime = _timingSource.Position;
 			}
 		}
 

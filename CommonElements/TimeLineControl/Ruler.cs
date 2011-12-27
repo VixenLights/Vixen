@@ -126,15 +126,15 @@ namespace CommonElements.Timeline
 		private void drawPlaybackIndicators(Graphics g)
 		{
 			// Playback start/end arrows
-			if (PlaybackStartPosition.HasValue || PlaybackEndPosition.HasValue)
+			if (PlaybackStartTime.HasValue || PlaybackEndTime.HasValue)
 			{
 				GraphicsState gstate = g.Save();
 				g.TranslateTransform(0, -ArrowBase / 2);
 
-				if (PlaybackStartPosition.HasValue)
+				if (PlaybackStartTime.HasValue)
 				{
 					// start arrow (faces left)  |<|
-					int x = (int)timeToPixels(PlaybackStartPosition.Value);
+					int x = (int)timeToPixels(PlaybackStartTime.Value);
 					g.FillPolygon(Brushes.DarkGray, new Point[] {
 						new Point(x, Height-ArrowBase/2),				// left mid point
 						new Point(x+ArrowLength, Height-ArrowBase),	// right top point
@@ -143,10 +143,10 @@ namespace CommonElements.Timeline
 					g.DrawLine(Pens.DarkGray, x, Height - ArrowBase, x, Height);
 				}
 
-				if (PlaybackEndPosition.HasValue)
+				if (PlaybackEndTime.HasValue)
 				{
 					// end arrow (faces right)   |>|
-					int x = (int)timeToPixels(PlaybackEndPosition.Value);
+					int x = (int)timeToPixels(PlaybackEndTime.Value);
 					g.FillPolygon(Brushes.DarkGray, new Point[] {
 						new Point(x, Height-ArrowBase/2),				// right mid point
 						new Point(x-ArrowLength, Height-ArrowBase),	// left top point
@@ -155,14 +155,14 @@ namespace CommonElements.Timeline
 					g.DrawLine(Pens.DarkGray, x, Height - ArrowBase, x, Height);
 				}
 
-				if (PlaybackStartPosition.HasValue && PlaybackEndPosition.HasValue)
+				if (PlaybackStartTime.HasValue && PlaybackEndTime.HasValue)
 				{
 					// line between the two
 					using (Pen p = new Pen(Color.DarkGray))
 					{
 						p.Width = 4;
-						int x1 = (int)timeToPixels(PlaybackStartPosition.Value) + ArrowLength;
-						int x2 = (int)timeToPixels(PlaybackEndPosition.Value) - ArrowLength;
+						int x1 = (int)timeToPixels(PlaybackStartTime.Value) + ArrowLength;
+						int x2 = (int)timeToPixels(PlaybackEndTime.Value) - ArrowLength;
 						int y = Height - ArrowBase / 2;
 						g.DrawLine(p, x1, y, x2, y);
 					}
@@ -172,9 +172,9 @@ namespace CommonElements.Timeline
 			}
 
 			// Current position arrow
-			if (PlaybackCurrentPosition.HasValue)
+			if (PlaybackCurrentTime.HasValue)
 			{
-				int x = (int)timeToPixels(PlaybackCurrentPosition.Value);
+				int x = (int)timeToPixels(PlaybackCurrentTime.Value);
 				g.FillPolygon(Brushes.Green, new Point[] {
 					new Point(x, ArrowLength),		// bottom mid point
 					new Point(x-ArrowBase/2, 0),	// top left point
@@ -429,8 +429,8 @@ namespace CommonElements.Timeline
 		{
 			m_mouseState = MouseState.DragWait;
 			m_mouseDownX = e.X;
-			PlaybackStartPosition = pixelsToTime(e.X);
-			PlaybackEndPosition = null;
+			PlaybackStartTime = pixelsToTime(e.X);
+			PlaybackEndTime = null;
 		}
 
 		protected override void OnMouseMove(MouseEventArgs e)
@@ -464,8 +464,8 @@ namespace CommonElements.Timeline
 						end = m_mouseDownX;
 					}
 
-					PlaybackStartPosition = pixelsToTime(start) + VisibleTimeStart;
-					PlaybackEndPosition = pixelsToTime(end) + VisibleTimeStart;
+					PlaybackStartTime = pixelsToTime(start) + VisibleTimeStart;
+					PlaybackEndTime = pixelsToTime(end) + VisibleTimeStart;
 					return;
 
 				default:
@@ -483,13 +483,13 @@ namespace CommonElements.Timeline
 				case MouseState.DragWait:
 					// Didn't move enough to be considered dragging. Just a click.
 					if (ClickedAtTime != null)
-						ClickedAtTime(this, new TimeSpanEventArgs(PlaybackStartPosition.Value));
+						ClickedAtTime(this, new TimeSpanEventArgs(PlaybackStartTime.Value));
 					break;
 
 				case MouseState.Dragging:
 					// Finished a time range drag.
-					if (TimeRangeDragged != null)
-						TimeRangeDragged(this, new TimeRangeDraggedEventArgs(PlaybackStartPosition.Value, PlaybackEndPosition.Value));
+					if (DraggedTimeRange != null)
+						DraggedTimeRange(this, new TimeRangeDraggedEventArgs(PlaybackStartTime.Value, PlaybackEndTime.Value));
 					break;
 
 				default:
@@ -512,7 +512,7 @@ namespace CommonElements.Timeline
 		}
 
 		public event EventHandler<TimeSpanEventArgs> ClickedAtTime;
-		public event EventHandler<TimeRangeDraggedEventArgs> TimeRangeDragged;
+		public event EventHandler<TimeRangeDraggedEventArgs> DraggedTimeRange;
 
 		#endregion
 
@@ -522,21 +522,21 @@ namespace CommonElements.Timeline
 		#region Public Properties
 
 		private TimeSpan? m_playbackStart = null;
-		public TimeSpan? PlaybackStartPosition
+		public TimeSpan? PlaybackStartTime
 		{
 			get { return m_playbackStart; }
 			set { m_playbackStart = value; Invalidate(); }
 		}
 
 		private TimeSpan? m_playbackEnd = null;
-		public TimeSpan? PlaybackEndPosition
+		public TimeSpan? PlaybackEndTime
 		{
 			get { return m_playbackEnd; }
 			set { m_playbackEnd = value; Invalidate(); }
 		}
 
 		private TimeSpan? m_playbackCur = null;
-		public TimeSpan? PlaybackCurrentPosition
+		public TimeSpan? PlaybackCurrentTime
 		{
 			get { return m_playbackCur; }
 			set { m_playbackCur = value; Invalidate(); }
