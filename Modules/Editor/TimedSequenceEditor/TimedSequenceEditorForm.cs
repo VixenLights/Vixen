@@ -313,7 +313,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="element">The elements to remove.</param>
 		private void RemoveElements(IEnumerable<TimedSequenceElement> elements)
 		{
-			foreach (TimedSequenceElement element in elements.ToArray())
+			foreach (TimedSequenceElement element in elements)
 				RemoveElement(element);
 		}
 

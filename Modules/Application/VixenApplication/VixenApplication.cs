@@ -282,6 +282,9 @@ namespace VixenApplication
 			} else {
 				toolStripStatusLabelExecutionLight.BackColor = Color.Gold;
 			}
+
+			startToolStripMenuItem.Enabled = !Execution.IsOpen;
+			stopToolStripMenuItem.Enabled = !Execution.IsClosed;
 		}
 
 		private void _ViewLog(string logName) {
