@@ -1107,12 +1107,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripButton_Start_Click(object sender, EventArgs e)
 		{
-			timelineControl.CursorPosition = TimeSpan.FromSeconds(0);
+			timelineControl.PlaybackStartTime = TimeSpan.Zero;
+			//timelineControl.CursorPosition = TimeSpan.FromSeconds(0);
 		}
 
 		private void toolStripButton_End_Click(object sender, EventArgs e)
 		{
-			timelineControl.CursorPosition = _sequence.Length;
+			timelineControl.PlaybackStartTime = _sequence.Length;
+			//timelineControl.CursorPosition = _sequence.Length;
 		}
 
 		private void selectAllElementsToolStripMenuItem_Click(object sender, EventArgs e)
