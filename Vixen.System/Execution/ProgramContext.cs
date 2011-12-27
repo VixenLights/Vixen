@@ -17,6 +17,8 @@ namespace Vixen.Execution {
 		public event EventHandler<ProgramEventArgs> ProgramEnded;
 		public event EventHandler<ExecutorMessageEventArgs> Message;
 		public event EventHandler<ExecutorMessageEventArgs> Error;
+		public event EventHandler ContextStarted;
+		public event EventHandler ContextEnded;
 
 		public ProgramContext(Program program) {
 			this.Program = program;
@@ -145,9 +147,11 @@ namespace Vixen.Execution {
 			if(ProgramEnded != null) {
 				ProgramEnded(this, e);
 			}
+			OnContextEnded(EventArgs.Empty);
 		}
 
 		void _programExecutor_ProgramStarted(object sender, ProgramEventArgs e) {
+			OnContextStarted(EventArgs.Empty);
 			if(ProgramStarted != null) {
 				ProgramStarted(this, e);
 			}
@@ -164,6 +168,19 @@ namespace Vixen.Execution {
 				SequenceStarted(this, e);
 			}
 		}
+
+		protected virtual void OnContextStarted(EventArgs e) {
+			if(ContextStarted != null) {
+				ContextStarted(this, e);
+			}
+		}
+
+		protected virtual void OnContextEnded(EventArgs e) {
+			if(ContextEnded != null) {
+				ContextEnded(this, e);
+			}
+		}
+
 		#endregion
 	}
 }
