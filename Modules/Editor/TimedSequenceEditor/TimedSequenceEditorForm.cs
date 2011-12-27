@@ -57,85 +57,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#endregion
 
 
-
-        #region Undo
-
-        private void InitUndo()
-        {
-            _undoMgr = new CommonElements.UndoManager();
-            _undoMgr.UndoItemsChanged += _undoMgr_UndoItemsChanged;
-            _undoMgr.RedoItemsChanged += _undoMgr_RedoItemsChanged;
-
-            undoButton.Enabled = false;
-            undoButton.ItemChosen += undoButton_ItemChosen;
-
-            redoButton.Enabled = false;
-            redoButton.ItemChosen += redoButton_ItemChosen;
-        }
-
-
-
-        private void undoButton_ButtonClick(object sender, EventArgs e)
-        {
-            _undoMgr.Undo();
-        }
-
-        private void undoButton_ItemChosen(object sender, CommonElements.UndoMultipleItemsEventArgs e)
-        {
-            _undoMgr.Undo(e.NumItems);
-        }
-
-        private void redoButton_ButtonClick(object sender, EventArgs e)
-        {
-            _undoMgr.Redo();
-        }
-
-        private void redoButton_ItemChosen(object sender, CommonElements.UndoMultipleItemsEventArgs e)
-        {
-            _undoMgr.Redo(e.NumItems);
-        }
-
-
-
-        void _undoMgr_UndoItemsChanged(object sender, EventArgs e)
-        {
-            if (_undoMgr.NumUndoable == 0)
-            {
-                undoButton.Enabled = false;
-                return;
-            }
-
-            undoButton.Enabled = true;
-            undoButton.UndoItems.Clear();
-            foreach (var act in _undoMgr.UndoActions)
-                undoButton.UndoItems.Add(act.Description);
-        }
-
-        void _undoMgr_RedoItemsChanged(object sender, EventArgs e)
-        {
-            if (_undoMgr.NumRedoable == 0)
-            {
-                redoButton.Enabled = false;
-                return;
-            }
-
-            redoButton.Enabled = true;
-            redoButton.UndoItems.Clear();
-            foreach (var act in _undoMgr.RedoActions)
-                redoButton.UndoItems.Add(act.Description);
-        }
-
-
-        void timelineControl_ElementsMovedNew(object sender, ElementsChangedTimesEventArgs e)
-        {
-            var action = new ElementsTimeChangedUndoAction(e.PreviousTimes, e.Type);
-            _undoMgr.AddUndoAction(action);
-        }
-
-        #endregion
-
-
-
         public TimedSequenceEditorForm()
 		{
 			InitializeComponent();
@@ -155,10 +76,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			LoadAvailableEffects();
             InitUndo();
+			updateButtonStates();
 		}
-
-
-
 
 
 		private void LoadAvailableEffects()
@@ -179,10 +98,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				ToolStripItem tsItem = new ToolStripButton(effectDesriptor.EffectName);
 				tsItem.Tag = effectDesriptor.TypeId;
 				tsItem.MouseDown += toolStripEffects_Item_MouseDown;
+				tsItem.MouseMove += toolStripEffects_Item_MouseMove;
+				tsItem.Click += toolStripEffects_Item_Click;
 				toolStripEffects.Items.Add(tsItem);
 			}
 		}
-
 
 	
 		#region IEditorUserInterface implementation
@@ -576,6 +496,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_context = Execution.CreateContext(Sequence);
 			_context.SequenceStarted += context_SequenceStarted;
 			_context.SequenceEnded += context_SequenceEnded;
+			updateButtonStates();
 		}
 
 		private void CloseSequenceContext()
@@ -583,6 +504,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_context.SequenceStarted -= context_SequenceStarted;
 			_context.SequenceEnded -= context_SequenceEnded;
 			Execution.ReleaseContext(_context);
+			updateButtonStates();
 		}
 
 		public void PlaySequence()
@@ -594,10 +516,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (_context.IsPaused) {
 				_context.Play(_timingSource.Position, TimeSpan.MaxValue);
+				updateButtonStates();	// context provides no notification to/from pause state.
 			} else {
 				_originalCursorPositionBeforePlayback = timelineControl.CursorPosition;
 				_context.Play(timelineControl.CursorPosition, TimeSpan.MaxValue);
 			}
+			
 		}
 
 		public void PauseSequence()
@@ -608,6 +532,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			_context.Pause();
+			updateButtonStates();	// context provides no notification to/from pause state.
 		}
 
 		public void StopSequence()
@@ -618,18 +543,46 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			_context.Stop();
+			// button states updated by event handler.
+		}
+
+		private void updateButtonStates()
+		{
+			if (_context == null)
+			{
+				toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = false;
+				toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
+				toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
+				return;
+			}
+
+			if (_context.IsPlaying)
+			{
+				if (_context.IsPaused)
+				{
+					toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
+					toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
+				}
+				else
+				{
+					toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = false;
+					toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = true;
+				}
+				toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = true;
+			}
+			else // Stopped
+			{
+				toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
+				toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
+				toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
+			}
 		}
 
 		protected void context_SequenceStarted(object sender, SequenceStartedEventArgs e)
 		{
 			timerPlaying.Start();
 			_timingSource = e.TimingSource;
-
-			//TODO: Apparently we're not in the GUI thread.
-			// Update button states
-			//toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = false;
-			//toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = true;
-			//toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = true;
+			updateButtonStates();
 		}
 
 		protected void context_SequenceEnded(object sender, SequenceEventArgs e)
@@ -637,11 +590,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			timerPlaying.Stop();
 			_timingSource = null;
 
-			//TODO: Apparently we're not in the GUI thread.
-			// Update button states
-			//toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
-			//toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
-			//toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
+			updateButtonStates();
 
 			// Restore playback / cursors
 			timelineControl.CursorPosition = _originalCursorPositionBeforePlayback;
@@ -652,6 +601,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private TimeSpan? m_prevPlaybackStart = null;
 		private TimeSpan? m_prevPlaybackEnd = null;
+		
 
 		protected void timerPlaying_Tick(object sender, EventArgs e)
 		{
@@ -802,12 +752,31 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Effect Drag/Drop
 
+		// http://sagistech.blogspot.com/2010/03/dodragdrop-prevent-doubleclick-event.html
+		private bool _beginDragDrop;
+
 		void toolStripEffects_Item_MouseDown(object sender, MouseEventArgs e)
 		{
-			ToolStripItem item = sender as ToolStripItem;
+			if ((e.Button == MouseButtons.Left) && (e.Clicks == 1))
+				_beginDragDrop = true;
+			else
+				_beginDragDrop = false;
+		}
 
-			DataObject data = new DataObject(DataFormats.Serializable, item.Tag);
-			item.GetCurrentParent().DoDragDrop(data, DragDropEffects.Copy);
+		void toolStripEffects_Item_MouseMove(object sender, MouseEventArgs e)
+		{
+			if ((e.Button == MouseButtons.Left) && _beginDragDrop)
+			{
+				_beginDragDrop = false;
+				ToolStripItem item = sender as ToolStripItem;
+				DataObject data = new DataObject(DataFormats.Serializable, item.Tag);
+				item.GetCurrentParent().DoDragDrop(data, DragDropEffects.Copy);
+			}
+		}
+
+		void toolStripEffects_Item_Click(object sender, EventArgs e)
+		{
+			MessageBox.Show("Currently, you must drag this item to the grid below to place an effect.");
 		}
 
 		void timelineControl_DataDropped(object sender, TimelineDropEventArgs e)
@@ -1160,6 +1129,82 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 }
             } while (true);
 		}
+
+		#region Undo
+
+		private void InitUndo()
+		{
+			_undoMgr = new CommonElements.UndoManager();
+			_undoMgr.UndoItemsChanged += _undoMgr_UndoItemsChanged;
+			_undoMgr.RedoItemsChanged += _undoMgr_RedoItemsChanged;
+
+			undoButton.Enabled = false;
+			undoButton.ItemChosen += undoButton_ItemChosen;
+
+			redoButton.Enabled = false;
+			redoButton.ItemChosen += redoButton_ItemChosen;
+		}
+
+
+
+		private void undoButton_ButtonClick(object sender, EventArgs e)
+		{
+			_undoMgr.Undo();
+		}
+
+		private void undoButton_ItemChosen(object sender, CommonElements.UndoMultipleItemsEventArgs e)
+		{
+			_undoMgr.Undo(e.NumItems);
+		}
+
+		private void redoButton_ButtonClick(object sender, EventArgs e)
+		{
+			_undoMgr.Redo();
+		}
+
+		private void redoButton_ItemChosen(object sender, CommonElements.UndoMultipleItemsEventArgs e)
+		{
+			_undoMgr.Redo(e.NumItems);
+		}
+
+
+
+		void _undoMgr_UndoItemsChanged(object sender, EventArgs e)
+		{
+			if (_undoMgr.NumUndoable == 0)
+			{
+				undoButton.Enabled = false;
+				return;
+			}
+
+			undoButton.Enabled = true;
+			undoButton.UndoItems.Clear();
+			foreach (var act in _undoMgr.UndoActions)
+				undoButton.UndoItems.Add(act.Description);
+		}
+
+		void _undoMgr_RedoItemsChanged(object sender, EventArgs e)
+		{
+			if (_undoMgr.NumRedoable == 0)
+			{
+				redoButton.Enabled = false;
+				return;
+			}
+
+			redoButton.Enabled = true;
+			redoButton.UndoItems.Clear();
+			foreach (var act in _undoMgr.RedoActions)
+				redoButton.UndoItems.Add(act.Description);
+		}
+
+
+		void timelineControl_ElementsMovedNew(object sender, ElementsChangedTimesEventArgs e)
+		{
+			var action = new ElementsTimeChangedUndoAction(e.PreviousTimes, e.Type);
+			_undoMgr.AddUndoAction(action);
+		}
+
+		#endregion
 	}
 
 	[Serializable]

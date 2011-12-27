@@ -429,7 +429,7 @@ namespace CommonElements.Timeline
 		{
 			m_mouseState = MouseState.DragWait;
 			m_mouseDownX = e.X;
-			PlaybackStartTime = pixelsToTime(e.X);
+			PlaybackStartTime = pixelsToTime(e.X) + VisibleTimeStart;
 			PlaybackEndTime = null;
 		}
 
