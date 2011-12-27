@@ -273,22 +273,14 @@ namespace VixenApplication
 		{
 			toolStripStatusLabelExecutionState.Text = "Execution: " + Vixen.Sys.Execution.State;
 
-			switch(Vixen.Sys.Execution.State) {
-				case OpenState.StateName:
-					toolStripStatusLabelExecutionLight.BackColor = Color.ForestGreen;
-					break;
-
-				case OpeningState.StateName:
-					toolStripStatusLabelExecutionLight.BackColor = Color.DodgerBlue;
-					break;
-
-				case ClosedState.StateName:
-					toolStripStatusLabelExecutionLight.BackColor = Color.Firebrick;
-					break;
-
-				case ClosingState.StateName:
-					toolStripStatusLabelExecutionLight.BackColor = Color.Gold;
-					break;
+			if(Execution.IsOpen) {
+				toolStripStatusLabelExecutionLight.BackColor = Color.ForestGreen;
+			} else if(Execution.IsClosed) {
+				toolStripStatusLabelExecutionLight.BackColor = Color.Firebrick;
+			} else if(Execution.IsInTest) {
+				toolStripStatusLabelExecutionLight.BackColor = Color.DodgerBlue;
+			} else {
+				toolStripStatusLabelExecutionLight.BackColor = Color.Gold;
 			}
 		}
 
@@ -406,6 +398,12 @@ namespace VixenApplication
 		private void viewInstalledModulesToolStripMenuItem_Click(object sender, EventArgs e) {
 			using(InstalledModules installedModules = new InstalledModules()) {
 				installedModules.ShowDialog();
+			}
+		}
+
+		private void channelGroupTestToolStripMenuItem_Click(object sender, EventArgs e) {
+			using(TestForm testForm = new TestForm()) {
+				testForm.ShowDialog();
 			}
 		}
 

@@ -100,11 +100,23 @@
     <Compile Include="ConfigControllersOutputs.Designer.cs">
       <DependentUpon>ConfigControllersOutputs.cs</DependentUpon>
     </Compile>
+    <Compile Include="EffectParametersForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EffectParametersForm.Designer.cs">
+      <DependentUpon>EffectParametersForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="InstalledModules.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="InstalledModules.Designer.cs">
       <DependentUpon>InstalledModules.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TestForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestForm.Designer.cs">
+      <DependentUpon>TestForm.cs</DependentUpon>
     </Compile>
     <Compile Include="VixenApplication.cs">
       <SubType>Form</SubType>
@@ -129,8 +141,14 @@
     <EmbeddedResource Include="ConfigControllersOutputs.resx">
       <DependentUpon>ConfigControllersOutputs.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="EffectParametersForm.resx">
+      <DependentUpon>EffectParametersForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="InstalledModules.resx">
       <DependentUpon>InstalledModules.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestForm.resx">
+      <DependentUpon>TestForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="VixenApplication.resx">
       <DependentUpon>VixenApplication.cs</DependentUpon>

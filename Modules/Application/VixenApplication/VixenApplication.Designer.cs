@@ -29,12 +29,12 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("asdfadsa");
-			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("rewqrewq");
-			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("vbcbxvxc");
-			System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("gfdsgfsd");
-			System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem("ytreyre");
-			System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem("xvcbxvcx");
+			System.Windows.Forms.ListViewItem listViewItem7 = new System.Windows.Forms.ListViewItem("asdfadsa");
+			System.Windows.Forms.ListViewItem listViewItem8 = new System.Windows.Forms.ListViewItem("rewqrewq");
+			System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem("vbcbxvxc");
+			System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem("gfdsgfsd");
+			System.Windows.Forms.ListViewItem listViewItem11 = new System.Windows.Forms.ListViewItem("ytreyre");
+			System.Windows.Forms.ListViewItem listViewItem12 = new System.Windows.Forms.ListViewItem("xvcbxvcx");
 			this.contextMenuStripNewSequence = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.menuStripMain = new System.Windows.Forms.MenuStrip();
@@ -44,6 +44,7 @@
 			this.executionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.channelGroupTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.label2 = new System.Windows.Forms.Label();
@@ -62,6 +63,7 @@
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabelExecutionState = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabelExecutionLight = new System.Windows.Forms.ToolStripStatusLabel();
+			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.menuStripMain.SuspendLayout();
 			this.groupBoxSequences.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -95,6 +97,7 @@
             this.logsToolStripMenuItem,
             this.viewInstalledModulesToolStripMenuItem,
             this.executionToolStripMenuItem,
+            this.channelGroupTestToolStripMenuItem,
             this.toolStripSeparator1,
             this.exitToolStripMenuItem});
 			this.vixenToolStripMenuItem.Name = "vixenToolStripMenuItem";
@@ -136,6 +139,13 @@
 			this.stopToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
 			this.stopToolStripMenuItem.Text = "Stop";
 			this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
+			// 
+			// channelGroupTestToolStripMenuItem
+			// 
+			this.channelGroupTestToolStripMenuItem.Name = "channelGroupTestToolStripMenuItem";
+			this.channelGroupTestToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.channelGroupTestToolStripMenuItem.Text = "Channel/Group Test";
+			this.channelGroupTestToolStripMenuItem.Click += new System.EventHandler(this.channelGroupTestToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
@@ -198,12 +208,12 @@
 			this.listViewRecentSequences.FullRowSelect = true;
 			this.listViewRecentSequences.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewRecentSequences.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2,
-            listViewItem3,
-            listViewItem4,
-            listViewItem5,
-            listViewItem6});
+            listViewItem7,
+            listViewItem8,
+            listViewItem9,
+            listViewItem10,
+            listViewItem11,
+            listViewItem12});
 			this.listViewRecentSequences.Location = new System.Drawing.Point(18, 116);
 			this.listViewRecentSequences.MultiSelect = false;
 			this.listViewRecentSequences.Name = "listViewRecentSequences";
@@ -298,8 +308,9 @@
 			// 
 			this.statusStrip.AutoSize = false;
 			this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabelExecutionState,
-            this.toolStripStatusLabelExecutionLight});
+            this.toolStripStatusLabelExecutionLight,
+            this.toolStripStatusLabel1,
+            this.toolStripStatusLabelExecutionState});
 			this.statusStrip.Location = new System.Drawing.Point(0, 380);
 			this.statusStrip.Name = "statusStrip";
 			this.statusStrip.Size = new System.Drawing.Size(461, 27);
@@ -309,9 +320,8 @@
 			// 
 			// toolStripStatusLabelExecutionState
 			// 
-			this.toolStripStatusLabelExecutionState.AutoSize = false;
 			this.toolStripStatusLabelExecutionState.Name = "toolStripStatusLabelExecutionState";
-			this.toolStripStatusLabelExecutionState.Size = new System.Drawing.Size(110, 22);
+			this.toolStripStatusLabelExecutionState.Size = new System.Drawing.Size(115, 22);
 			this.toolStripStatusLabelExecutionState.Text = "Execution: Unknown";
 			// 
 			// toolStripStatusLabelExecutionLight
@@ -320,6 +330,12 @@
 			this.toolStripStatusLabelExecutionLight.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
 			this.toolStripStatusLabelExecutionLight.Name = "toolStripStatusLabelExecutionLight";
 			this.toolStripStatusLabelExecutionLight.Size = new System.Drawing.Size(22, 22);
+			// 
+			// toolStripStatusLabel1
+			// 
+			this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+			this.toolStripStatusLabel1.Size = new System.Drawing.Size(13, 22);
+			this.toolStripStatusLabel1.Text = "  ";
 			// 
 			// VixenApplication
 			// 
@@ -384,6 +400,8 @@
 		private System.Windows.Forms.Label labelVersion;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.ToolStripMenuItem channelGroupTestToolStripMenuItem;
+		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
 	}
 }
 

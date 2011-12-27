@@ -99,7 +99,12 @@ namespace Vixen.Sys {
 				// Stop the hardware.
 				// Running in parallel to prevent a bad actor from screwing up the other
 				// controllers' ability to stop.
-				Parallel.ForEach(_controllers.Values, _StopController);
+				//Parallel.ForEach(_controllers.Values, _StopController);
+				// Not doing this in parallel anymore to keep all invocations on the UI
+				// thread.
+				foreach(OutputController controller in _controllers.Values) {
+					_StopController(controller);
+				}
 
 				_stateAll = ExecutionState.Stopped;
 			}

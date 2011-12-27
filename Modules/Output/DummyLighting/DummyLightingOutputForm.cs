@@ -88,24 +88,15 @@ namespace VixenModules.Output.DummyLighting
 
 		}
 
-		new public void Show()
-		{
-			// Reset state.
-			_count = 0;
-			if (_values != null)
-				Array.Clear(_values, 0, _values.Length);
-			if (_colorValues != null)
-				Array.Clear(_colorValues, 0, _colorValues.Length);
-
-			BeginInvoke(new MethodInvoker(base.Show));
-		}
-
-		new public void Hide()
-		{
-		    if (!this.IsDisposed)
-		    {
-		        BeginInvoke(new MethodInvoker(base.Hide));
-		    }
+		protected override void OnVisibleChanged(EventArgs e) {
+			if(Visible) {
+				// Reset state.
+				_count = 0;
+				if(_values != null)
+					Array.Clear(_values, 0, _values.Length);
+				if(_colorValues != null)
+					Array.Clear(_colorValues, 0, _colorValues.Length);
+			}
 		}
 
 		private double _fps;

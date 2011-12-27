@@ -92,6 +92,18 @@ namespace Vixen.Sys {
 			}
 		}
 
+		public static bool IsOpen {
+			get { return State == OpenState.StateName || State == OpeningState.StateName; }
+		}
+
+		public static bool IsClosed {
+			get { return State == ClosedState.StateName || State == ClosingState.StateName; }
+		}
+
+		public static bool IsInTest {
+			get { return State == TestOpeningState.StateName || State == TestOpenState.StateName; }
+		}
+
 		static public TimeSpan CurrentExecutionTime { get { return (SystemTime.IsRunning) ? SystemTime.Position : TimeSpan.Zero; } }
 
 		static public string CurrentExecutionTimeString { get { return CurrentExecutionTime.ToString("m\\:ss\\.fff"); } }

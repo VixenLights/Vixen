@@ -5,14 +5,10 @@ using System.Text;
 using System.Reflection;
 using System.IO;
 using System.Xml.Linq;
-using Vixen.Sys;
 using Vixen.Module;
-using Vixen.Module.Sequence;
-using Vixen.Execution;
 using Vixen.IO;
 using Vixen.IO.Xml;
 using Vixen.Instrumentation;
-using Vixen.Sys.State.Execution;
 
 namespace Vixen.Sys {
     public class VixenSystem {
@@ -139,7 +135,7 @@ namespace Vixen.Sys {
 
 		static public void ReloadSystemConfig()
 		{
-			bool wasRunning = Execution.State == OpenState.StateName; 
+			bool wasRunning = Execution.IsOpen;
 			Execution.CloseExecution();
 
 			// purge all existing channels, nodes, and controllers (to try and clean up a bit).
