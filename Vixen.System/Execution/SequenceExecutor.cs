@@ -251,7 +251,7 @@ namespace Vixen.Execution {
 
 		private void _UpdateOutputs() {
 			if(_IsEndOfSequence()) {
-				_syncContext.Send(x => Stop(), null);
+				_syncContext.Post(x => Stop(), null);
 			}
 		}
 
