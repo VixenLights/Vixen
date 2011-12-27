@@ -446,29 +446,6 @@ namespace CommonElements.Timeline
 
 		#endregion
 
-		#region Properties exposed from sub-controls
-		//TODO: move all the others in here
-
-		public TimeSpan? PlaybackStartTime
-		{
-			get { return ruler.PlaybackStartTime; }
-			set { ruler.PlaybackStartTime = value; }
-		}
-
-		public TimeSpan? PlaybackEndTime
-		{
-			get { return ruler.PlaybackEndTime; }
-			set { ruler.PlaybackEndTime = value; }
-		}
-
-		public TimeSpan? PlaybackCurrentTime
-		{
-			get { return ruler.PlaybackCurrentTime; }
-			set { ruler.PlaybackCurrentTime = value; }
-		}
-
-		#endregion
-
 
 		#region Event Handlers
 
@@ -498,7 +475,7 @@ namespace CommonElements.Timeline
 
 		private void RulerClickedHandler(object sender, RulerClickedEventArgs e)
 		{
-			CursorPosition = e.Time;
+			//CursorPosition = e.Time;
 		}
 
 		private void RowToggledHandler(object sender, EventArgs e)

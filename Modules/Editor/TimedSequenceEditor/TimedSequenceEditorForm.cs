@@ -455,6 +455,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+		private void savePlaybackPositions()
+		{
+				_originalCursorPositionBeforePlayback = timelineControl.CursorPosition;
+				m_prevPlaybackStart = timelineControl.PlaybackStartTime;
+				m_prevPlaybackEnd = timelineControl.PlaybackEndTime;
+		}
 
 
 		void timelineControl_ClickedAtTime(object sender, RulerClickedEventArgs e)
@@ -464,12 +470,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return;
 			}
 
-
 			if (e.ModifierKeys.HasFlag(Keys.Control))
 			{
-				// TODO: Do we care?
-				//if (_context.IsPaused)
-				_originalCursorPositionBeforePlayback = timelineControl.CursorPosition;
 				_context.Play(e.Time, TimeSpan.MaxValue);
 			}
 		}
@@ -481,8 +483,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return;
 			}
 
-			// TODO: Do we care?
-			//if (_context.IsPaused)
 			_originalCursorPositionBeforePlayback = timelineControl.CursorPosition;
 			_context.Play(e.StartTime, e.EndTime);
 		}
@@ -518,14 +518,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return;
 			}
 
+			TimeSpan start, end;
+
 			if (_context.IsPaused) {
-				_context.Play(_timingSource.Position, TimeSpan.MaxValue);
+				// continue execution from previous location.
+				start = _timingSource.Position;
+				end = TimeSpan.MaxValue;
 				updateButtonStates();	// context provides no notification to/from pause state.
 			} else {
-				_originalCursorPositionBeforePlayback = timelineControl.CursorPosition;
-				_context.Play(timelineControl.CursorPosition, TimeSpan.MaxValue);
+				start = timelineControl.PlaybackStartTime.GetValueOrDefault(TimeSpan.Zero);
+				end = timelineControl.PlaybackEndTime.GetValueOrDefault(TimeSpan.MaxValue);
 			}
-			
+			_context.Play(start, end);
 		}
 
 		public void PauseSequence()
@@ -597,9 +601,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			updateButtonStates();
 
 			// Restore playback / cursors
-			timelineControl.CursorPosition = _originalCursorPositionBeforePlayback;
-			timelineControl.PlaybackStartTime = m_prevPlaybackStart;
-			timelineControl.PlaybackEndTime = m_prevPlaybackEnd;
+			//timelineControl.CursorPosition = _originalCursorPositionBeforePlayback;
+			//timelineControl.PlaybackStartTime = m_prevPlaybackStart;
+			//timelineControl.PlaybackEndTime = m_prevPlaybackEnd;
 			timelineControl.PlaybackCurrentTime = null;
 		}
 
@@ -610,7 +614,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		protected void timerPlaying_Tick(object sender, EventArgs e)
 		{
 			if (_timingSource != null) {
-				timelineControl.CursorPosition = _timingSource.Position;
 				timelineControl.PlaybackCurrentTime = _timingSource.Position;
 			}
 		}

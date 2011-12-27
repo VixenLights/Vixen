@@ -96,21 +96,24 @@ namespace CommonElements.Timeline
 		protected override void  VisibleTimeStartChanged(object sender, EventArgs e)
 		{
 			AutoScrollPosition = new Point((int)timeToPixels(VisibleTimeStart), -AutoScrollPosition.Y);
-			Invalidate();
+			base.VisibleTimeStartChanged(sender, e);
 		}
 
 		protected override void TimePerPixelChanged(object sender, EventArgs e)
 		{
-			ResizeGridHorizontally();
 			RecalculateAllStaticSnapPoints();
-			Invalidate();
+			ResizeGridHorizontally();
+			base.TimePerPixelChanged(sender, e);
 		}
 
 
 		protected override void TotalTimeChanged(object sender, EventArgs e)
 		{
 			ResizeGridHorizontally();
+			base.TotalTimeChanged(sender, e);
 		}
+
+
 
 		private void ResizeGridHorizontally()
 		{
@@ -122,8 +125,6 @@ namespace CommonElements.Timeline
 
 			//shuffle the grid position to line up with where the visible time start should be
 			AutoScrollPosition = new Point((int)timeToPixels(VisibleTimeStart), -AutoScrollPosition.Y);
-
-			Invalidate();
 		}
 
 
@@ -1183,10 +1184,19 @@ namespace CommonElements.Timeline
 			}
 		}
 
-		private void _drawCursor(Graphics g)
+		private void _drawCursors(Graphics g)
 		{
+			float curPos;
+
 			using (Pen p = new Pen(CursorColor, CursorWidth)) {
-				g.DrawLine(p, timeToPixels(CursorPosition), 0, timeToPixels(CursorPosition), AutoScrollMinSize.Height);
+				curPos = timeToPixels(CursorPosition);
+				g.DrawLine(p, curPos, 0, curPos, AutoScrollMinSize.Height);
+			}
+
+			if (PlaybackCurrentTime.HasValue)
+			{
+				curPos = timeToPixels(PlaybackCurrentTime.Value);
+				g.DrawLine(Pens.Green, curPos, 0, curPos, AutoScrollMinSize.Height);
 			}
 		}
 
@@ -1202,7 +1212,7 @@ namespace CommonElements.Timeline
 				_drawSnapPoints(e.Graphics);
 				_drawElements(e.Graphics);
 				_drawSelection(e.Graphics);
-				_drawCursor(e.Graphics);
+				_drawCursors(e.Graphics);
 			}
 			catch (Exception ex)
 			{

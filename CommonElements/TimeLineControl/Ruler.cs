@@ -196,7 +196,7 @@ namespace CommonElements.Timeline
 		protected override void  TimePerPixelChanged(object sender, EventArgs e)
 		{
 			recalculate();
-			Invalidate();
+			base.TimePerPixelChanged(sender, e);
 		}
 
 		protected override void VisibleTimeStartChanged(object sender, EventArgs e)
@@ -519,43 +519,24 @@ namespace CommonElements.Timeline
 
 
 
-		#region Public Properties
-
-		private TimeSpan? m_playbackStart = null;
-		public TimeSpan? PlaybackStartTime
-		{
-			get { return m_playbackStart; }
-			set { m_playbackStart = value; Invalidate(); }
-		}
-
-		private TimeSpan? m_playbackEnd = null;
-		public TimeSpan? PlaybackEndTime
-		{
-			get { return m_playbackEnd; }
-			set { m_playbackEnd = value; Invalidate(); }
-		}
-
-		private TimeSpan? m_playbackCur = null;
-		public TimeSpan? PlaybackCurrentTime
-		{
-			get { return m_playbackCur; }
-			set { m_playbackCur = value; Invalidate(); }
-		}
-
-		#endregion
 
 	}
 
 
 	public class TimeRangeDraggedEventArgs : EventArgs
 	{
-		public TimeRangeDraggedEventArgs(TimeSpan start, TimeSpan end)
+		public TimeRangeDraggedEventArgs(TimeSpan start, TimeSpan end) //, TimeSpan? prevPlayStart, TimeSpan? prevPlayEnd)
 		{
 			StartTime = start;
 			EndTime = end;
+			//PreviousPlaybackStart = prevPlayStart;
+			//PreviousPlyabackEnd = prevPlayEnd;
 		}
 		public TimeSpan StartTime { get; private set; }
 		public TimeSpan EndTime { get; private set; }
+
+		//public TimeSpan? PreviousPlaybackStart { get; private set; }
+		//public TimeSpan? PreviousPlyabackEnd { get; private set; }
 		
 	}
 

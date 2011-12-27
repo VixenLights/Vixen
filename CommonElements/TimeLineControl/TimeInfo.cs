@@ -11,6 +11,10 @@ namespace CommonElements.Timeline
 		private TimeSpan m_visibleTimeStart;
 		private TimeSpan m_totalTime;
 
+		private TimeSpan? m_playbackStart = null;
+		private TimeSpan? m_playbackEnd = null;
+		private TimeSpan? m_playbackCur = null;
+
 
 		public TimeSpan TimePerPixel
 		{
@@ -54,8 +58,53 @@ namespace CommonElements.Timeline
 			}
 		}
 
+
+		public TimeSpan? PlaybackStartTime
+		{
+			get { return m_playbackStart; }
+			set
+			{
+				if (m_playbackStart == value)
+					return;
+				m_playbackStart = value;
+				if (PlaybackStartTimeChanged != null)
+					PlaybackStartTimeChanged(this, EventArgs.Empty);
+			}
+		}
+
+		public TimeSpan? PlaybackEndTime
+		{
+			get { return m_playbackEnd; }
+			set
+			{
+				if (m_playbackEnd == value)
+					return;
+				m_playbackEnd = value;
+				if (PlaybackEndTimeChanged != null)
+					PlaybackEndTimeChanged(this, EventArgs.Empty);
+			}
+		}
+
+		public TimeSpan? PlaybackCurrentTime
+		{
+			get { return m_playbackCur; }
+			set
+			{
+				if (m_playbackCur == value)
+					return;
+				m_playbackCur = value;
+				if (PlaybackCurrentTimeChanged != null)
+					PlaybackCurrentTimeChanged(this, EventArgs.Empty);
+			}
+		}
+
+
 		public event EventHandler TimePerPixelChanged;
 		public event EventHandler VisibleTimeStartChanged;
 		public event EventHandler TotalTimeChanged;
+
+		public event EventHandler PlaybackStartTimeChanged;
+		public event EventHandler PlaybackEndTimeChanged;
+		public event EventHandler PlaybackCurrentTimeChanged;
 	}
 }

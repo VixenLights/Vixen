@@ -22,6 +22,10 @@ namespace CommonElements.Timeline
 			TimeInfo.TimePerPixelChanged += TimePerPixelChanged;
 			TimeInfo.VisibleTimeStartChanged += VisibleTimeStartChanged;
 			TimeInfo.TotalTimeChanged += TotalTimeChanged;
+			TimeInfo.PlaybackStartTimeChanged += PlaybackStartTimeChanged;
+			TimeInfo.PlaybackEndTimeChanged += PlaybackEndTimeChanged;
+			TimeInfo.PlaybackCurrentTimeChanged += PlaybackCurrentTimeChanged;
+
 
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
@@ -29,6 +33,8 @@ namespace CommonElements.Timeline
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.ResizeRedraw, true);
 		}
+
+
 
 		protected TimeInfo TimeInfo { get; private set; }
 
@@ -71,6 +77,28 @@ namespace CommonElements.Timeline
 		{
 			get { return TimeInfo.TotalTime; }
 			set { TimeInfo.TotalTime = value; }
+		}
+
+
+		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public TimeSpan? PlaybackStartTime
+		{
+			get { return TimeInfo.PlaybackStartTime; }
+			set { TimeInfo.PlaybackStartTime = value; }
+		}
+
+		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public TimeSpan? PlaybackEndTime
+		{
+			get { return TimeInfo.PlaybackEndTime; }
+			set { TimeInfo.PlaybackEndTime = value; }
+		}
+
+		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public TimeSpan? PlaybackCurrentTime
+		{
+			get { return TimeInfo.PlaybackCurrentTime; }
+			set { TimeInfo.PlaybackCurrentTime = value; }
 		}
 
 
@@ -121,14 +149,32 @@ namespace CommonElements.Timeline
 		// Overridable event handlers
 		protected virtual void VisibleTimeStartChanged(object sender, EventArgs e)
 		{
+			Invalidate();
 		}
 
 		protected virtual void TimePerPixelChanged(object sender, EventArgs e)
 		{
+			Invalidate();
 		}
 
 		protected virtual void TotalTimeChanged(object sender, EventArgs e)
 		{
+			Invalidate();
+		}
+
+		protected virtual void PlaybackStartTimeChanged(object sender, EventArgs e)
+		{
+			Invalidate();
+		}
+
+		protected virtual void PlaybackEndTimeChanged(object sender, EventArgs e)
+		{
+			Invalidate();
+		}
+
+		protected virtual void PlaybackCurrentTimeChanged(object sender, EventArgs e)
+		{
+			Invalidate();
 		}
 
 
