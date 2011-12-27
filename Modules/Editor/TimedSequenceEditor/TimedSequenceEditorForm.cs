@@ -69,7 +69,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			timelineControl.ElementDoubleClicked += ElementDoubleClickedHandler;
 			timelineControl.DataDropped += timelineControl_DataDropped;
 
-			timelineControl.CursorMoved += timelineControl_CursorMoved;
+			timelineControl.PlaybackCurrentTimeChanged += timelineControl_PlaybackCurrentTimeChanged;
 
 			timelineControl.ClickedAtTime += timelineControl_ClickedAtTime;
 			timelineControl.DraggedTimeRange += timelineControl_DraggedTimeRange;
@@ -78,6 +78,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
             InitUndo();
 			updateButtonStates();
 		}
+
+
 
 
 		private void LoadAvailableEffects()
@@ -500,8 +502,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_context = Execution.CreateContext(Sequence);
 			_context.SequenceStarted += context_SequenceStarted;
 			_context.SequenceEnded += context_SequenceEnded;
+
+			_context.ProgramEnded += _context_ProgramEnded;
+
 			updateButtonStates();
 		}
+
 
 		private void CloseSequenceContext()
 		{
@@ -554,6 +560,44 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// button states updated by event handler.
 		}
 
+		protected void context_SequenceStarted(object sender, SequenceStartedEventArgs e)
+		{
+			timerPlaying.Start();
+			_timingSource = e.TimingSource;
+			updateButtonStates();
+		}
+
+		protected void context_SequenceEnded(object sender, SequenceEventArgs e)
+		{
+			timerPlaying.Stop();
+			_timingSource = null;
+		}
+
+		protected void _context_ProgramEnded(object sender, ProgramEventArgs e)
+		{
+			updateButtonStates();
+			timelineControl.PlaybackCurrentTime = null;
+		}
+
+		private TimeSpan? m_prevPlaybackStart = null;
+		private TimeSpan? m_prevPlaybackEnd = null;
+		
+
+		protected void timerPlaying_Tick(object sender, EventArgs e)
+		{
+			if (_timingSource != null) {
+				timelineControl.PlaybackCurrentTime = _timingSource.Position;
+			}
+		}
+
+		private void timelineControl_PlaybackCurrentTimeChanged(object sender, EventArgs e)
+		{
+			if (timelineControl.PlaybackCurrentTime.HasValue)
+				toolStripStatusLabel_currentTime.Text = timelineControl.PlaybackCurrentTime.Value.ToString("m\\:ss\\.fff");
+			else
+				toolStripStatusLabel_currentTime.Text = String.Empty;
+		}
+
 		private void updateButtonStates()
 		{
 			if (_context == null)
@@ -585,58 +629,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
 			}
 		}
-
-		protected void context_SequenceStarted(object sender, SequenceStartedEventArgs e)
-		{
-			timerPlaying.Start();
-			_timingSource = e.TimingSource;
-			updateButtonStates();
-		}
-
-		protected void context_SequenceEnded(object sender, SequenceEventArgs e)
-		{
-			timerPlaying.Stop();
-			_timingSource = null;
-
-			updateButtonStates();
-
-			// Restore playback / cursors
-			//timelineControl.CursorPosition = _originalCursorPositionBeforePlayback;
-			//timelineControl.PlaybackStartTime = m_prevPlaybackStart;
-			//timelineControl.PlaybackEndTime = m_prevPlaybackEnd;
-			timelineControl.PlaybackCurrentTime = null;
-		}
-
-		private TimeSpan? m_prevPlaybackStart = null;
-		private TimeSpan? m_prevPlaybackEnd = null;
-		
-
-		protected void timerPlaying_Tick(object sender, EventArgs e)
-		{
-			if (_timingSource != null) {
-				timelineControl.PlaybackCurrentTime = _timingSource.Position;
-			}
-		}
-
-		protected void timelineControl_CursorMoved(object sender, EventArgs e)
-		{
-			toolStripStatusLabel_currentTime.Text = timelineControl.CursorPosition.ToString("m\\:ss\\.fff");
-			EnsureCursorIsVisible();
-		}
-
-		private void EnsureCursorIsVisible()
-		{
-			// check if the cursor position would be over 90% of the grid width: if so, scroll the grid so it would be at 50%
-			// TODO: this is probably going to look a bit messy and jerky.
-			if (timelineControl.CursorPosition > timelineControl.VisibleTimeStart + TimeSpan.FromMilliseconds(timelineControl.VisibleTimeSpan.TotalMilliseconds * 0.9)) {
-				timelineControl.VisibleTimeStart = TimeSpan.FromMilliseconds(timelineControl.CursorPosition.TotalMilliseconds - (timelineControl.VisibleTimeSpan.TotalMilliseconds * 0.5));
-			}
-
-			if (timelineControl.CursorPosition < timelineControl.VisibleTimeStart) {
-				timelineControl.VisibleTimeStart = TimeSpan.FromMilliseconds(timelineControl.CursorPosition.TotalMilliseconds - (timelineControl.VisibleTimeSpan.TotalMilliseconds * 0.2));
-			}
-		}
-
 
 
 		// implementation of IExecutionControl and ITiming interfaces, for the beat track tapping.

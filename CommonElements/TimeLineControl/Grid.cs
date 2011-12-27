@@ -93,24 +93,24 @@ namespace CommonElements.Timeline
 
 		
 
-		protected override void  VisibleTimeStartChanged(object sender, EventArgs e)
+		protected override void  OnVisibleTimeStartChanged(object sender, EventArgs e)
 		{
 			AutoScrollPosition = new Point((int)timeToPixels(VisibleTimeStart), -AutoScrollPosition.Y);
-			base.VisibleTimeStartChanged(sender, e);
+			base.OnVisibleTimeStartChanged(sender, e);
 		}
 
-		protected override void TimePerPixelChanged(object sender, EventArgs e)
+		protected override void OnTimePerPixelChanged(object sender, EventArgs e)
 		{
 			RecalculateAllStaticSnapPoints();
 			ResizeGridHorizontally();
-			base.TimePerPixelChanged(sender, e);
+			base.OnTimePerPixelChanged(sender, e);
 		}
 
 
-		protected override void TotalTimeChanged(object sender, EventArgs e)
+		protected override void OnTotalTimeChanged(object sender, EventArgs e)
 		{
 			ResizeGridHorizontally();
-			base.TotalTimeChanged(sender, e);
+			base.OnTotalTimeChanged(sender, e);
 		}
 
 

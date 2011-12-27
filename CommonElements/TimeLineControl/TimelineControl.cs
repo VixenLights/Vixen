@@ -508,5 +508,21 @@ namespace CommonElements.Timeline
 
 
 		#endregion
+
+
+		protected override void OnPlaybackCurrentTimeChanged(object sender, EventArgs e)
+		{
+			// check if the playback cursor position would be over 90% of the grid width: if so, scroll the grid so it would be at 10%
+			if (PlaybackCurrentTime.HasValue)
+			{
+				if (PlaybackCurrentTime.Value > VisibleTimeStart + VisibleTimeSpan.Scale(0.9))
+					VisibleTimeStart = PlaybackCurrentTime.Value - VisibleTimeSpan.Scale(0.1);
+
+				if (PlaybackCurrentTime.Value < VisibleTimeStart)
+					VisibleTimeStart = PlaybackCurrentTime.Value - VisibleTimeSpan.Scale(0.1);
+			}
+
+			base.OnPlaybackCurrentTimeChanged(sender, e);
+		}
 	}
 }

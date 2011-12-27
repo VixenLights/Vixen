@@ -19,12 +19,12 @@ namespace CommonElements.Timeline
 		protected TimelineControlBase(TimeInfo timeinfo)
 		{
 			TimeInfo = timeinfo;
-			TimeInfo.TimePerPixelChanged += TimePerPixelChanged;
-			TimeInfo.VisibleTimeStartChanged += VisibleTimeStartChanged;
-			TimeInfo.TotalTimeChanged += TotalTimeChanged;
-			TimeInfo.PlaybackStartTimeChanged += PlaybackStartTimeChanged;
-			TimeInfo.PlaybackEndTimeChanged += PlaybackEndTimeChanged;
-			TimeInfo.PlaybackCurrentTimeChanged += PlaybackCurrentTimeChanged;
+			TimeInfo.TimePerPixelChanged += OnTimePerPixelChanged;
+			TimeInfo.VisibleTimeStartChanged += OnVisibleTimeStartChanged;
+			TimeInfo.TotalTimeChanged += OnTotalTimeChanged;
+			TimeInfo.PlaybackStartTimeChanged += OnPlaybackStartTimeChanged;
+			TimeInfo.PlaybackEndTimeChanged += OnPlaybackEndTimeChanged;
+			TimeInfo.PlaybackCurrentTimeChanged += OnPlaybackCurrentTimeChanged;
 
 
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
@@ -35,9 +35,9 @@ namespace CommonElements.Timeline
 		}
 
 
-
 		protected TimeInfo TimeInfo { get; private set; }
 
+		#region Public Properties 
 
 		/// <summary>
 		/// The beginning time of the visible region.
@@ -101,7 +101,6 @@ namespace CommonElements.Timeline
 			set { TimeInfo.PlaybackCurrentTime = value; }
 		}
 
-
 		/// <summary>
 		/// The amount of time currently visible.
 		/// </summary>
@@ -110,7 +109,6 @@ namespace CommonElements.Timeline
 		{
 			get { return TimeSpan.FromTicks(ClientSize.Width * TimePerPixel.Ticks); }
 		}
-
 
 		/// <summary>
 		/// The ending time of the visible region.
@@ -121,6 +119,10 @@ namespace CommonElements.Timeline
 			//get { return VisibleTimeStart + VisibleTimeSpan; }
             get { return Util.Min(VisibleTimeStart + VisibleTimeSpan, TotalTime); }
 		}
+
+		#endregion
+
+		#region Protected base utility functions
 
 		/// <summary>
 		/// Converts time to pixels, based on the current TimePerPixel resolution.
@@ -145,38 +147,60 @@ namespace CommonElements.Timeline
 			return TimeSpan.FromTicks(px * TimePerPixel.Ticks);
 		}
 
+		#endregion
 
-		// Overridable event handlers
-		protected virtual void VisibleTimeStartChanged(object sender, EventArgs e)
+		#region Overridable event handlers and their events
+		protected virtual void OnVisibleTimeStartChanged(object sender, EventArgs e)
 		{
+			if (VisibleTimeStartChanged != null)
+				VisibleTimeStartChanged(this, e);
 			Invalidate();
 		}
 
-		protected virtual void TimePerPixelChanged(object sender, EventArgs e)
+		protected virtual void OnTimePerPixelChanged(object sender, EventArgs e)
 		{
+			if (TimePerPixelChanged != null)
+				TimePerPixelChanged(this, e);
 			Invalidate();
 		}
 
-		protected virtual void TotalTimeChanged(object sender, EventArgs e)
+		protected virtual void OnTotalTimeChanged(object sender, EventArgs e)
 		{
+			if (TotalTimeChanged != null)
+				TotalTimeChanged(this, e);
 			Invalidate();
 		}
 
-		protected virtual void PlaybackStartTimeChanged(object sender, EventArgs e)
+		protected virtual void OnPlaybackStartTimeChanged(object sender, EventArgs e)
 		{
+			if (PlaybackStartTimeChanged != null)
+				PlaybackStartTimeChanged(this, e);
 			Invalidate();
 		}
 
-		protected virtual void PlaybackEndTimeChanged(object sender, EventArgs e)
+		protected virtual void OnPlaybackEndTimeChanged(object sender, EventArgs e)
 		{
+			if (PlaybackEndTimeChanged != null)
+				PlaybackEndTimeChanged(this, e);
 			Invalidate();
 		}
 
-		protected virtual void PlaybackCurrentTimeChanged(object sender, EventArgs e)
+		protected virtual void OnPlaybackCurrentTimeChanged(object sender, EventArgs e)
 		{
+			if (PlaybackCurrentTimeChanged != null)
+				PlaybackCurrentTimeChanged(this, e);
 			Invalidate();
 		}
 
+		public event EventHandler VisibleTimeStartChanged;
+		public event EventHandler TimePerPixelChanged;
+		public event EventHandler TotalTimeChanged;
+
+		public event EventHandler PlaybackStartTimeChanged;
+		public event EventHandler PlaybackEndTimeChanged;
+		public event EventHandler PlaybackCurrentTimeChanged;
+
+		#endregion
 
 		#region Horizontal Scrolling Support
 

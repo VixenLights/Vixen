@@ -193,13 +193,13 @@ namespace CommonElements.Timeline
 			base.OnResize(e);
 		}
 
-		protected override void  TimePerPixelChanged(object sender, EventArgs e)
+		protected override void  OnTimePerPixelChanged(object sender, EventArgs e)
 		{
 			recalculate();
-			base.TimePerPixelChanged(sender, e);
+			base.OnTimePerPixelChanged(sender, e);
 		}
 
-		protected override void VisibleTimeStartChanged(object sender, EventArgs e)
+		protected override void OnVisibleTimeStartChanged(object sender, EventArgs e)
 		{
 			// not ideal, but looks a *shitload* better.
 			Refresh(); 
