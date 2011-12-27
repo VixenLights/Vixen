@@ -511,7 +511,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return;
 			}
 
-			_context.Play(timelineControl.PlaybackStartTime.Value, timelineControl.PlaybackEndTime.Value);
+			bool autoPlay = e.ModifierKeys.HasFlag(Keys.Control);
+
+			if (autoPlay)
+			{
+				_context.Play(timelineControl.PlaybackStartTime.Value, timelineControl.PlaybackEndTime.Value);
+			}
+			else
+			{
+				// We actually want to keep this range.
+				m_prevPlaybackStart = timelineControl.PlaybackStartTime;
+				m_prevPlaybackEnd = timelineControl.PlaybackEndTime;
+			}
 		}
 
 		#endregion
