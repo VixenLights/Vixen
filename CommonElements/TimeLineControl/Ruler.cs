@@ -483,7 +483,7 @@ namespace CommonElements.Timeline
 				case MouseState.DragWait:
 					// Didn't move enough to be considered dragging. Just a click.
 					if (ClickedAtTime != null)
-						ClickedAtTime(this, new TimeSpanEventArgs(PlaybackStartTime.Value));
+						ClickedAtTime(this, new RulerClickedEventArgs(PlaybackStartTime.Value, Form.ModifierKeys));
 					break;
 
 				case MouseState.Dragging:
@@ -511,7 +511,7 @@ namespace CommonElements.Timeline
 			base.OnMouseLeave(e);
 		}
 
-		public event EventHandler<TimeSpanEventArgs> ClickedAtTime;
+		public event EventHandler<RulerClickedEventArgs> ClickedAtTime;
 		public event EventHandler<TimeRangeDraggedEventArgs> DraggedTimeRange;
 
 		#endregion
@@ -557,5 +557,16 @@ namespace CommonElements.Timeline
 		public TimeSpan StartTime { get; private set; }
 		public TimeSpan EndTime { get; private set; }
 		
+	}
+
+	public class RulerClickedEventArgs : EventArgs
+	{
+		public RulerClickedEventArgs(TimeSpan time, Keys modifiers)
+		{
+			Time = time;
+			ModifierKeys = modifiers;
+		}
+		public TimeSpan Time { get; private set; }
+		public Keys ModifierKeys { get; private set; }
 	}
 }

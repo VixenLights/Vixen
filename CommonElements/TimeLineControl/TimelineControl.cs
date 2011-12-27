@@ -430,7 +430,7 @@ namespace CommonElements.Timeline
             remove { grid.ElementsMovedNew -= value; }
         }
 
-		public event EventHandler<TimeSpanEventArgs> ClickedAtTime
+		public event EventHandler<RulerClickedEventArgs> ClickedAtTime
 		{
 			add { ruler.ClickedAtTime += value; }
 			remove { ruler.ClickedAtTime -= value; }
@@ -496,7 +496,7 @@ namespace CommonElements.Timeline
 			}
 		}
 
-		private void RulerClickedHandler(object sender, TimeSpanEventArgs e)
+		private void RulerClickedHandler(object sender, RulerClickedEventArgs e)
 		{
 			CursorPosition = e.Time;
 		}

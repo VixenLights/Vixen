@@ -457,17 +457,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 
 
-		void timelineControl_ClickedAtTime(object sender, TimeSpanEventArgs e)
+		void timelineControl_ClickedAtTime(object sender, RulerClickedEventArgs e)
 		{
 			if (_context == null) {
 				VixenSystem.Logging.Error("TimedSequenceEditor: attempt to Play with null context!");
 				return;
 			}
 
-			// TODO: Do we care?
-			//if (_context.IsPaused)
-			_originalCursorPositionBeforePlayback = timelineControl.CursorPosition;
-			_context.Play(e.Time, TimeSpan.MaxValue);
+
+			if (e.ModifierKeys.HasFlag(Keys.Control))
+			{
+				// TODO: Do we care?
+				//if (_context.IsPaused)
+				_originalCursorPositionBeforePlayback = timelineControl.CursorPosition;
+				_context.Play(e.Time, TimeSpan.MaxValue);
+			}
 		}
 
 		void timelineControl_DraggedTimeRange(object sender, TimeRangeDraggedEventArgs e)
