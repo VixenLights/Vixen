@@ -1,27 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Reflection;
 // Using System.Timers.Timer because it exposes a SynchronizingObject member that lets
 // you specify the thread context for the Elapsed event.
 using System.Timers;
 using System.Threading;
-using System.Threading.Tasks;
 using Vixen.Sys;
-using Vixen.Module.Output;
 using Vixen.Module.RuntimeBehavior;
 using Vixen.Module.Timing;
 using Vixen.Module.Media;
 
 namespace Vixen.Execution {
-	class SequenceExecutor : IExecutor, IDisposable {
+	class SequenceExecutor : IExecutor {
 		private System.Timers.Timer _updateTimer;
 		private ISequence _sequence;
 		private IRuntimeBehaviorModuleInstance[] _runtimeBehaviors;
-		private IComparer<EffectNode> _commandNodeComparer = new EffectNode.Comparer();
 		private ExecutorEffectEnumerator _sequenceDataEnumerator;
+		private SynchronizationContext _syncContext;
 
 		public event EventHandler<SequenceStartedEventArgs> SequenceStarted;
 		public event EventHandler<SequenceEventArgs> SequenceEnded;
@@ -32,6 +28,7 @@ namespace Vixen.Execution {
 		public SequenceExecutor() {
 			_updateTimer = new System.Timers.Timer(10);
 			_updateTimer.Elapsed += _UpdateTimerElapsed;
+			_syncContext = AsyncOperationManager.SynchronizationContext;
 		}
 
 		public ISequence Sequence {
@@ -210,7 +207,6 @@ namespace Vixen.Execution {
 				_updateTimer.Enabled = false;
 			}
 
-			// Notify the world.
 			OnStopping();
 
 			// Release the hook before the behaviors are shut down so that
@@ -255,7 +251,7 @@ namespace Vixen.Execution {
 
 		private void _UpdateOutputs() {
 			if(_IsEndOfSequence()) {
-				Stop();
+				_syncContext.Send(x => Stop(), null);
 			}
 		}
 

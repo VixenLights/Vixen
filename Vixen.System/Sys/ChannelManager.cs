@@ -41,7 +41,9 @@ namespace Vixen.Sys {
 			if (_instances.ContainsKey(channel.Id))
 				VixenSystem.Logging.Error("ChannelManager: Adding a channel, but it's already in the instance map!");
 
-			_instances[channel.Id] = channel;
+			lock(_instances) {
+				_instances[channel.Id] = channel;
+			}
 		}
 
 		public void AddChannels(IEnumerable<Channel> channels) {
@@ -61,7 +63,9 @@ namespace Vixen.Sys {
 					_channelEnumerators.Remove(channel);
 				}
 			}
-			_instances.Remove(channel.Id);
+			lock(_instances) {
+				_instances.Remove(channel.Id);
+			}
 			// Remove any nodes that reference the channel.
 			VixenSystem.Nodes.RemoveChannelLeaf(channel);
 		}
@@ -180,8 +184,10 @@ namespace Vixen.Sys {
 
 		public IEnumerator<Channel> GetEnumerator()
 		{
-			Channel[] channels = _instances.Values.ToArray();
-			return ((IEnumerable<Channel>)channels).GetEnumerator();
+			lock(_instances) {
+				Channel[] channels = _instances.Values.ToArray();
+				return ((IEnumerable<Channel>)channels).GetEnumerator();
+			}
 		}
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
