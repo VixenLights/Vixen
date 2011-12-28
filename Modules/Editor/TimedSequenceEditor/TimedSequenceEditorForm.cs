@@ -93,7 +93,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				menuItem.Click += (sender, e) => {
 					Row destination = timelineControl.SelectedRow;
 					if (destination != null) {
-						addNewEffect((Guid)menuItem.Tag, destination, timelineControl.CursorPosition, TimeSpan.FromSeconds(2));		// TODO: get a proper time
+						addNewEffectById((Guid)menuItem.Tag, destination, timelineControl.CursorPosition, TimeSpan.FromSeconds(2));		// TODO: get a proper time
 					}
 				};
 				addEffectToolStripMenuItem.DropDownItems.Add(menuItem);
@@ -216,7 +216,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// load the new data: get all the commands in the sequence, and make a new element for each of them.
 			_effectNodeToElement = new Dictionary<EffectNode, Element>();
 			foreach (EffectNode node in _sequence.Data.GetEffects()) {
-				AddElementForEffectNode(node);
+				addElementForEffectNode(node);
 			}
 
 			PopulateGridWithMarks();
@@ -248,7 +248,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// the EffectNode references. It will also add callbacks to event handlers for the element.
 		/// </summary>
 		/// <param name="node">The EffectNode to make element(s) in the grid for.</param>
-		private void AddElementForEffectNode(EffectNode node)
+		private void addElementForEffectNode(EffectNode node)
 		{
 			TimedSequenceElement element = null;
 			// for the effect, make a single element and add it to every row that represents its target channels
@@ -278,44 +278,31 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		/// <summary>
-		/// Removes the TimedSequenceElement in the TimelineControl that refer to the given effect node.
-		/// </summary>
-		/// <param name="node">The EffectNode to purge the element in the grid for.</param>
-		private void RemoveElementForEffectNode(EffectNode node)
-		{
-			Element element = _effectNodeToElement[node];
-			// iterate through all rows, trying to remove the element that the given effect is represented by
-			foreach (Row row in timelineControl) {
-				if (row.ContainsElement(element)) {
-					row.RemoveElement(element);
-				}
-			}
 
-			element.ContentChanged -= ElementContentChangedHandler;
-			element.TimeChanged -= ElementTimeChangedHandler;
-			_effectNodeToElement.Remove(node);
-		}
 
 		/// <summary>
-		/// Removes the given TimedSequenceElement in the TimelineControl.
+		/// Removes the given TimedSequenceElement from the TimelineControl, and its associted EffectNode from the sequence.
 		/// </summary>
 		/// <param name="element">The element to remove.</param>
-		private void RemoveElement(TimedSequenceElement element)
+		private void RemoveElementAndEffectNode(TimedSequenceElement element)
 		{
-			if (element != null)
-				RemoveElementForEffectNode(element.EffectNode);
+			// Iterate through all rows, trying to remove the element that the given effect is represented by
+			foreach (Row row in timelineControl)
+			{
+				row.RemoveElement(element);		// Don't care if it exists or not.
+			}
+
+			// Unregister event handlers
+			element.ContentChanged -= ElementContentChangedHandler;
+			element.TimeChanged -= ElementTimeChangedHandler;
+
+			// Remove the effect node from the map
+			_effectNodeToElement.Remove(element.EffectNode);
+
+			// Remove the effect node from sequence
+			_sequence.RemoveData(element.EffectNode);
 		}
 
-		/// <summary>
-		/// Removes the given TimedSequenceElements in the TimelineControl.
-		/// </summary>
-		/// <param name="element">The elements to remove.</param>
-		private void RemoveElements(IEnumerable<TimedSequenceElement> elements)
-		{
-			foreach (TimedSequenceElement element in elements)
-				RemoveElement(element);
-		}
 
 		/// <summary>
 		/// Saves the current sequence to a file. May prompt for a file name to save the sequence to if needed.
@@ -748,18 +735,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 
 		/// <summary>
-		/// Adds an effect to the sequence and timelineControl.
+		/// Adds a new effect to the sequence and timelineControl.
 		/// </summary>
-		private void addNewEffect(Guid effectId, Row row, TimeSpan startTime, TimeSpan timeSpan)
+		private void addNewEffectById(Guid effectId, Row row, TimeSpan startTime, TimeSpan timeSpan)
 		{
+			Debug.WriteLine("{0}   addNewEffectById({1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, effectId);
 			// get a new instance of this effect, populate it, and make a node for it
 			IEffectModuleInstance effect = Vixen.Sys.ApplicationServices.Get<IEffectModuleInstance>(effectId);
-			addNewEffect(effect, row, startTime, timeSpan);
+			AddEffectInstance(effect, row, startTime, timeSpan);
 		}
 
-		private void addNewEffect(IEffectModuleInstance effectInstance, Row row, TimeSpan startTime, TimeSpan timeSpan)
+		public void AddEffectInstance(IEffectModuleInstance effectInstance, Row row, TimeSpan startTime, TimeSpan timeSpan)
 		{
 			try {
+				Debug.WriteLine("{0}   AddEffectInstance(InstanceId={1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, effectInstance.InstanceId);
+
 				// make sure we don't have a null effect given
 				if (effectInstance == null) {
 					VixenSystem.Logging.Error("TimedSequenceEditor: addNewEffect was given a null effect instance.");
@@ -776,7 +766,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				// put it in the sequence and in the timeline display
 				_sequence.InsertData(effectNode);
-				AddElementForEffectNode(effectNode);
+				addElementForEffectNode(effectNode);
 				IsModified = true;
 			} catch (Exception ex) {
 				string msg = "TimedSequenceEditor: error adding effect of type " + effectInstance.Descriptor.TypeId + " to row " + row.Name;
@@ -821,7 +811,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Guid effectGuid = (Guid)e.Data.GetData(DataFormats.Serializable);
 			TimeSpan duration = TimeSpan.FromSeconds(2.0);	// TODO: need a default value here. I suggest a per-effect default.
             TimeSpan startTime = Util.Min(e.Time, (_sequence.Length - duration));   // Ensure the element is inside the grid.
-            addNewEffect(effectGuid, e.Row, startTime, duration);
+            addNewEffectById(effectGuid, e.Row, startTime, duration);
 		}
 
 		#endregion
@@ -959,37 +949,34 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (timelineControl.SelectedElements.Count() <= 0)
 				return;
 
-			TimelineElementsClipboardData result = new TimelineElementsClipboardData();
-
-			int relativeVisibleRow = 0;
-			int firstVisibleRow = 0;
-			int i = 0;
-			TimeSpan earliestTime = TimeSpan.MaxValue;
-			bool foundFirstRow = false;
-
+			TimelineElementsClipboardData result = new TimelineElementsClipboardData()
+			{
+				FirstVisibleRow = -1,
+				EarliestStartTime = TimeSpan.MaxValue,
+			};
+			
+			int rownum = 0;
 			foreach (Row row in timelineControl.VisibleRows) {
+				// Since removals may happen during enumeration, make a copy with ToArray().
 				foreach (Element elem in row.SelectedElements.ToArray()) {
-					if (!foundFirstRow) {
-						firstVisibleRow = i;
-						result.FirstVisibleRow = firstVisibleRow;
-						foundFirstRow = true;
-					}
+					if (result.FirstVisibleRow == -1)
+						result.FirstVisibleRow = rownum;
 
-					relativeVisibleRow = i - firstVisibleRow;
+					int relativeVisibleRow = rownum - result.FirstVisibleRow;
+					
+					// TODO: What about elements that have already been added?
 					result.Elements.Add(elem, relativeVisibleRow);
 
-					if (elem.StartTime < earliestTime)
-						earliestTime = elem.StartTime;
+					if (elem.StartTime < result.EarliestStartTime)
+						result.EarliestStartTime = elem.StartTime;
 
 					if (cutElements) {
 						row.RemoveElement(elem);
-						_sequence.RemoveData((elem as TimedSequenceElement).EffectNode);
+						_sequence.RemoveData(((TimedSequenceElement)elem).EffectNode);
 					}
 				}
-				i++;
+				rownum++;
 			}
-
-			result.EarliestStartTime = earliestTime;
 
 			_clipboard = result;
 
@@ -1047,7 +1034,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				// clone the effect, and make a new effect node for it
 				IEffectModuleInstance newEffect = elem.EffectNode.Effect.Clone() as IEffectModuleInstance;
-				addNewEffect(newEffect, visibleRows[targetRowIndex], targetTime, elem.Duration);
+				AddEffectInstance(newEffect, visibleRows[targetRowIndex], targetTime, elem.Duration);
 			}
 		}
 
@@ -1110,11 +1097,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				IsModified = true;
 
 			foreach (Element elem in timelineControl.SelectedElements.ToArray()) {
-				TimedSequenceElement tse = elem as TimedSequenceElement;
-				RemoveElement(tse);
-				_sequence.RemoveData(tse.EffectNode);
+				RemoveElementAndEffectNode((TimedSequenceElement)elem);
 			}
 		}
+
 
 		private void toolStripButton_Start_Click(object sender, EventArgs e)
 		{

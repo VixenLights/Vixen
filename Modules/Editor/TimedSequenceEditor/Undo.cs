@@ -5,6 +5,7 @@ using System.Text;
 
 using CommonElements;
 using CommonElements.Timeline;
+using Vixen.Module.Effect;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -57,12 +58,74 @@ namespace VixenModules.Editor.TimedSequenceEditor
                     case ElementMoveType.Resize:    typestr = "Resize"; break;
                 }
                 return String.Format("{0} {1} element{2}", typestr,
-                    m_changedElements.Count, (m_changedElements.Count == 1 ? "" : "s")); }
+                    m_changedElements.Count, (m_changedElements.Count == 1 ? "" : "s"));
+			}
 
         }
 
     }
 
-  
+
+
+	// Undo adding elements by removing them.
+	public class ElementsAddedUndoAction : CommonElements.UndoAction
+	{
+		private TimedSequenceEditorForm m_form;
+		private IEnumerable<Element> m_elements;
+
+		public ElementsAddedUndoAction(TimedSequenceEditorForm form, IEnumerable<Element> elements)
+		{
+			m_form = form;
+			m_elements = elements;
+		}
+
+		public override void Undo()
+        {
+
+        }
+
+        public override void Redo()
+        {
+
+        }
+
+		public override string Description
+		{
+			get { return "Remove X elements"; }
+		}
+	}
+
+
+
+
+	public class EffectsRemovedUndoAction : CommonElements.UndoAction
+	{
+		private TimedSequenceEditorForm m_form;
+		private IEnumerable<IEffectModuleInstance> m_effects;
+
+		public EffectsRemovedUndoAction(TimedSequenceEditorForm form, IEnumerable<IEffectModuleInstance> effects)
+		{
+			m_form = form;
+			m_effects = effects;
+		}
+
+		public override void Undo()
+        {
+			foreach (var e in m_effects)
+			{
+
+			}
+        }
+
+        public override void Redo()
+        {
+
+        }
+
+		public override string Description
+		{
+			get { return "Remove X elements"; }
+		}
+	}
  
 }
