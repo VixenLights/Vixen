@@ -36,7 +36,11 @@ namespace VixenApplication
 			AppCommands = new AppCommand(this);
 			Execution.ExecutionStateChanged += executionStateChangedHandler;
 			VixenSystem.Start(this, _openExecution, _disableControllers);
+
+			InitStats();
 		}
+
+
 
 		private void VixenApp_FormClosing(object sender, FormClosingEventArgs e)
 		{
@@ -409,6 +413,42 @@ namespace VixenApplication
 				testForm.ShowDialog();
 			}
 		}
+
+		#region Stats
+		private const int StatsUpdateInterval = 1000;	// ms
+		private Timer _statsTimer;
+		private Process _thisProc;
+		private TimeSpan _lastTotalCpuTime = TimeSpan.MinValue;
+
+		private void InitStats()
+		{
+			_thisProc = Process.GetCurrentProcess();
+
+			_statsTimer = new Timer();
+			_statsTimer.Interval = StatsUpdateInterval;
+			_statsTimer.Tick += statsTimer_Tick;
+			statsTimer_Tick(null, EventArgs.Empty);		// Fake the first update.
+			_statsTimer.Start();
+		}
+
+		private void statsTimer_Tick(object sender, EventArgs e)
+		{
+			long memUsage = _thisProc.PrivateMemorySize64 / 1024 / 1024;
+
+			TimeSpan thisCpuDt;
+			TimeSpan thisTotalCpuTime = _thisProc.TotalProcessorTime;	// Currently reported total cpu time
+			if (_lastTotalCpuTime == TimeSpan.MinValue)
+				thisCpuDt = TimeSpan.Zero;								// First update - just show zero
+			else
+				thisCpuDt = thisTotalCpuTime - _lastTotalCpuTime;		// CPU time over this interval
+			_lastTotalCpuTime = thisTotalCpuTime;						// Update the total cpu for next time
+			double cpuPcnt = (thisCpuDt.TotalMilliseconds / _statsTimer.Interval) * 100.0;
+
+			toolStripStatusLabel_memory.Text = String.Format("Mem: {0} MB   CPU: {1:0.0}%",
+				memUsage, cpuPcnt);
+		}
+
+		#endregion
 
 	}
 
