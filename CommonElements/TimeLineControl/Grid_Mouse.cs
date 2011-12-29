@@ -378,7 +378,8 @@ namespace CommonElements.Timeline
 			if (e.Row != null)
 				e.Row.Selected = true;
 
-			//CursorPosition = e.Time;
+			if (ClickingGridSetsCursor)
+				CursorPosition = e.Time;
 
 			if (BackgroundClicked != null)
 				BackgroundClicked(this, e);
@@ -589,9 +590,6 @@ namespace CommonElements.Timeline
         #endregion
 
 
-
-
-
         #region [Mouse Drag] Horizontal Resize
 
         private const int MinElemWidthPx = 10;
@@ -725,8 +723,6 @@ namespace CommonElements.Timeline
         {
             m_dragState = DragState.Normal;
             this.Cursor = Cursors.Default;
-
-            //Cursor.Clip = m_origCursorClip;
 
             if (m_autoScrollTimer.Enabled)
                 m_autoScrollTimer.Stop();

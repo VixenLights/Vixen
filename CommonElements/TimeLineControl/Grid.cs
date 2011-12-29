@@ -37,17 +37,14 @@ namespace CommonElements.Timeline
 		#endregion
 
         private ElementMoveInfo m_elemMoveInfo;
-        private readonly Rectangle m_origCursorClip;
 
 
 		#region Initialization
 
-		//public Grid()
 		public Grid(TimeInfo timeinfo)
 			:base(timeinfo)
 		{
 			this.AutoScroll = true;
-			this.SetStyle(ControlStyles.ResizeRedraw, true);
 
 			TotalTime = TimeSpan.FromMinutes(1);
 			RowSeparatorColor = Color.Black;
@@ -63,16 +60,11 @@ namespace CommonElements.Timeline
 			DragThreshold = 8;
 			StaticSnapPoints = new SortedDictionary<TimeSpan, List<SnapDetails>>();
 			SnapPriorityForElements = 5;
+			ClickingGridSetsCursor = true;
 
 			m_rows = new List<Row>();
 
             InitAutoScrollTimer();
-            m_origCursorClip = Cursor.Clip;
-
-            //ScrollTimer = new Timer();
-            //ScrollTimer.Interval = 20;
-            //ScrollTimer.Enabled = false;
-            //ScrollTimer.Tick += ScrollTimerHandler;
 
 			// thse changed events are static for the class. If we make them per element or row
 			//  later, we will need to attach/detach from each event manually.
@@ -81,7 +73,7 @@ namespace CommonElements.Timeline
 			Row.RowToggled += RowToggledHandler;
 			Row.RowHeightChanged += RowHeightChangedHandler;
 
-			// Drag-drop 9/20/2011
+			// Drag & Drop
 			AllowDrop = true;
 			DragEnter += TimelineGrid_DragEnter;
 			DragDrop += TimelineGrid_DragDrop;
@@ -204,6 +196,7 @@ namespace CommonElements.Timeline
 		public int SnapPriorityForElements { get; set; }
 		public int DragThreshold { get; set; }
 		public Rectangle SelectionArea { get; set; }
+		public bool ClickingGridSetsCursor { get; set; }
 	
 		// drawing colours, information, etc.
 		public Color RowSeparatorColor { get; set; }
@@ -324,11 +317,6 @@ namespace CommonElements.Timeline
 		}
 
 		#endregion
-
-
-
-        
-
 
 
         #region Methods - Rows, Elements
