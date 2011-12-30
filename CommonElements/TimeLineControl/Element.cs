@@ -240,22 +240,7 @@ namespace CommonElements.Timeline
 
 			return result;
 		}
-		#endregion
-
-
-        // I really don't know where else to put this damn thing.
-        public static void SwapTimes(ITimePeriod lhs, ITimePeriod rhs)
-        {
-            TimeSpan temp;
-
-            temp = lhs.StartTime;
-            lhs.StartTime = rhs.StartTime;
-            rhs.StartTime = temp;
-
-            temp = lhs.Duration;
-            lhs.Duration = rhs.Duration;
-            rhs.Duration = temp;
-        }
+		#endregion        
 	}
 
 
@@ -270,6 +255,19 @@ namespace CommonElements.Timeline
         public TimeSpan StartTime { get; set; }
         public TimeSpan Duration { get; set; }
         public TimeSpan EndTime { get { return StartTime + Duration; } }
+
+		public static void SwapTimes(ITimePeriod lhs, ITimePeriod rhs)
+		{
+			TimeSpan temp;
+
+			temp = lhs.StartTime;
+			lhs.StartTime = rhs.StartTime;
+			rhs.StartTime = temp;
+
+			temp = lhs.Duration;
+			lhs.Duration = rhs.Duration;
+			rhs.Duration = temp;
+		}
     }
 
     public interface ITimePeriod
