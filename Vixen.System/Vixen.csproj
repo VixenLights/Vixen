@@ -125,6 +125,14 @@
     <Compile Include="Instrumentation\RateValue.cs" />
     <Compile Include="Module\Input\IInputEffectMap.cs" />
     <Compile Include="Module\Input\InputEffectMap.cs" />
+    <Compile Include="Module\Intent\IIntent.cs" />
+    <Compile Include="Module\Intent\IIntentModuleDescriptor.cs" />
+    <Compile Include="Module\Intent\IIntentModuleInstance.cs" />
+    <Compile Include="Module\Intent\IntentModuleDescriptorBase.cs" />
+    <Compile Include="Module\Intent\IntentModuleImplementation.cs" />
+    <Compile Include="Module\Intent\IntentModuleInstanceBase.cs" />
+    <Compile Include="Module\Intent\IntentModuleManagement.cs" />
+    <Compile Include="Module\Intent\IntentModuleRepository.cs" />
     <Compile Include="Sys\ChannelManager.cs" />
     <Compile Include="Sys\ControllerManager.cs" />
     <Compile Include="Execution\MultiStateTimedEnumerator.cs" />
@@ -522,7 +530,9 @@
   <ItemGroup>
     <None Include="Resources\Effect64.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Intents\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

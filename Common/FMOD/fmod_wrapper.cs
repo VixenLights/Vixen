@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Timers;
 using System.Threading;
 using System.Windows.Forms;
@@ -114,7 +113,6 @@ namespace FMOD {
                 StringBuilder sb = new StringBuilder(256);
                 int i;
                 for(i = 0; i < driverCount; i++) {
-                    //system.getDriverName(i, sb, sb.Capacity);
                     GUID GUID = new GUID();
                     system.getDriverInfo(i, sb, sb.Capacity, ref GUID);
                     m_deviceList.Add(sb.ToString());
@@ -164,18 +162,6 @@ namespace FMOD {
             }
 
             Sound sound = null;
-/*
-  
-           FMOD.CREATESOUNDEXINFO createSoundExInfo = new FMOD.CREATESOUNDEXINFO();
-
-           createSoundExInfo.cbsize = Marshal.SizeOf(createSoundExInfo);
-
-           //44,100 max frequency, so buffer that many samples
-           createSoundExInfo.decodebuffersize = 44100;
-  
-           // Adding ref createSoundExInfo as an argument in createSound() was causing ERR_INVALID_SPEAKER in Vista x64
-  
- */
 
             ERRCHECK(m_system.createSound(fileName, (FMOD.MODE._2D | FMOD.MODE.HARDWARE | FMOD.MODE.CREATESTREAM | MODE.ACCURATETIME), ref sound));
             if(existingChannel == null) {
@@ -226,12 +212,6 @@ namespace FMOD {
         }
 
         private void PlaySound(SoundChannel soundChannel) {
-            //*** testing
-            //if(soundChannel == null) System.Windows.Forms.MessageBox.Show("Sound channel is null");
-            //if(soundChannel.Sound == null) System.Windows.Forms.MessageBox.Show("Sound is null");
-            //if(m_system == null) System.Windows.Forms.MessageBox.Show("System is null");
-            //if(soundChannel.Channel == null) System.Windows.Forms.MessageBox.Show("New sound");
-
             if(soundChannel.Sound == null) return;
 
             // Wait for any fade on this channel to finish
@@ -241,12 +221,9 @@ namespace FMOD {
             Channel channel = null;
             if(soundChannel.Channel == null) {
                 // Never run before
-//System.Windows.Forms.MessageBox.Show("About to play the sound");
                 ERRCHECK(m_system.playSound(FMOD.CHANNELINDEX.FREE, soundChannel.Sound, false, ref channel));
-//System.Windows.Forms.MessageBox.Show("Playing the sound");
                 soundChannel.Channel = channel;
             } else {
-//System.Windows.Forms.MessageBox.Show("Reusing a channel");
                 // Has been run before
                 // Is the channel paused?
                 if(soundChannel.Paused) {
@@ -254,9 +231,7 @@ namespace FMOD {
                     soundChannel.Paused = false;
                 } else {
                     // Not paused, channel was stopped
-//System.Windows.Forms.MessageBox.Show("About to play the sound");
                     ERRCHECK(m_system.playSound(FMOD.CHANNELINDEX.REUSE, soundChannel.Sound, false, ref channel));
-//System.Windows.Forms.MessageBox.Show("Playing the sound");
                     soundChannel.Channel = channel;
                 }
             }
