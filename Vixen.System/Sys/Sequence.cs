@@ -88,7 +88,7 @@ namespace Vixen.Sys {
 			FilePath = "";
 			InsertDataListener = new InsertDataListenerStack();
 			InsertDataListener += _DataListener;
-			Data = new EffectStreams(this);
+			Data = new EffectStreams();
 			TimingProvider = new TimingProviders(this);
 			RuntimeBehaviors = Modules.ModuleManagement.GetAllRuntimeBehavior();
 			ModuleDataSet = new ModuleLocalDataSet();
@@ -100,7 +100,7 @@ namespace Vixen.Sys {
 			FilePath = original.FilePath;
 			InsertDataListener = new InsertDataListenerStack();
 			InsertDataListener += _DataListener;
-			Data = new EffectStreams(this, original.Data);
+			Data = new EffectStreams(original.Data);
 			TimingProvider = new TimingProviders(this, original.TimingProvider);
 			RuntimeBehaviors = Modules.ModuleManagement.GetAllRuntimeBehavior();
 			ModuleDataSet = original.ModuleDataSet.Clone();

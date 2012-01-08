@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Vixen.Sys;
 
 namespace Vixen.Execution {
-    class ProgramExecutor : IDisposable, IEnumerator<IExecutor> {
+    class ProgramExecutor : IEnumerator<IExecutor> {
         private IEnumerator<IExecutor> _sequences;
         private IExecutor _executor;
 		private TimeSpan _startTime, _endTime;
@@ -24,7 +23,7 @@ namespace Vixen.Execution {
 
         public ProgramExecutor(Program program) {
             State = RunState.Stopped;
-            this.Program = program;
+            Program = program;
         }
 
 		private bool _PlayAllSequences {
@@ -32,7 +31,7 @@ namespace Vixen.Execution {
 		}
 
 		public void Play(TimeSpan startTime, TimeSpan endTime) {
-            if(this.Program == null) throw new Exception("No program has been specified");
+            if(Program == null) throw new Exception("No program has been specified");
             if(State == RunState.Stopped) {
                 _startTime = startTime;
                 _endTime = endTime;
@@ -43,11 +42,9 @@ namespace Vixen.Execution {
 
                 OnProgramStarted();
 
-				_NextSequence(() => {
-					// There are no sequences or there was a problem.
-					// The end of a sequence normally triggers the ProgramEnded event.
-					_ProgramEnded();
-				});
+				// There are no sequences or there was a problem.
+				// The end of a sequence normally triggers the ProgramEnded event.
+				_NextSequence(_ProgramEnded);
 			}
         }
 
@@ -217,12 +214,12 @@ namespace Vixen.Execution {
 		public void Reset() {
 			// According to MSDN, this is only provided for COM interop and does not need to
 			// be implemented.
-			if(this.Program != null) {
+			if(Program != null) {
 				if(_PlayAllSequences) {
-					_sequenceQueue = new Queue<ISequence>(this.Program.Sequences);
+					_sequenceQueue = new Queue<ISequence>(Program.Sequences);
 				} else {
 					_sequenceQueue = new Queue<ISequence>();
-					ISequence sequence = this.Program.Sequences.FirstOrDefault();
+					ISequence sequence = Program.Sequences.FirstOrDefault();
 					if(sequence != null) {
 						_sequenceQueue.Enqueue(sequence);
 					}

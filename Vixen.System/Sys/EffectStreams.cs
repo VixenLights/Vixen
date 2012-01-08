@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
-using System.Text;
-using Vixen.Sys;
 
 // Data is only pulled from this at execution start.
 // Data written during sequence execution is handled by runtime behaviors and is written
@@ -11,22 +9,20 @@ using Vixen.Sys;
 
 namespace Vixen.Sys {
 	public class EffectStreams {
-		private ISequence _owner;
 		// Data in these streams is pulled only at execution start.
 		// There will always be at least one effect stream.
 		private List<EffectStream> _effectStreams = new List<EffectStream>();
 		private EffectStream _mainStream;
-		private EffectNodeCollection _executingData = null;
+		private EffectNodeCollection _executingData;
 
-		public EffectStreams(ISequence owner) {
-			_owner = owner;
+		public EffectStreams() {
 			// The sequence will have at least one effect stream to hold effect data.
 			_mainStream = new EffectStream("Main");
 			_effectStreams.Add(_mainStream);
 		}
 
-		public EffectStreams(ISequence owner, EffectStreams original)
-			: this(owner) {
+		public EffectStreams(EffectStreams original)
+			: this() {
 			_mainStream.AddData(original._mainStream);
 			foreach(EffectStream effectStream in original._effectStreams.Skip(1)) {
 				EffectStream newStream = new EffectStream(effectStream.Name);
@@ -41,7 +37,7 @@ namespace Vixen.Sys {
 		}
 
 		public IEnumerable<EffectNode> GetEffects(Guid streamId) {
-			return _effectStreams.Where(x => x.Id == streamId).FirstOrDefault();
+			return _GetEffectStream(streamId);
 		}
 
 		/// <summary>
@@ -80,7 +76,7 @@ namespace Vixen.Sys {
 
 		// Not currently used.
 		public void AddEffect(Guid streamId, EffectNode data) {
-			EffectStream effectStream = _effectStreams.Where(x => x.Id == streamId).FirstOrDefault();
+			EffectStream effectStream = _GetEffectStream(streamId);
 			if(effectStream != null) {
 				effectStream.AddData(data);
 			}
@@ -93,7 +89,7 @@ namespace Vixen.Sys {
 
 		// Not currently used.
 		public void AddEffects(Guid streamId, IEnumerable<EffectNode> data) {
-			EffectStream effectStream = _effectStreams.Where(x => x.Id == streamId).FirstOrDefault();
+			EffectStream effectStream = _GetEffectStream(streamId);
 			if(effectStream != null) {
 				effectStream.AddData(data);
 			}
@@ -150,7 +146,7 @@ namespace Vixen.Sys {
 		#endregion
 
 		private EffectStream _GetEffectStream(Guid effectStreamId) {
-			return _effectStreams.Where(x => x.Id == effectStreamId).FirstOrDefault();
+			return _effectStreams.FirstOrDefault(x => x.Id == effectStreamId);
 		}
 
 		#region EffectNodeCollection
