@@ -26,7 +26,7 @@ namespace TestRuntimeBehaviors {
 
 		override public void Startup(ISequence sequence) {
 			_sequence = sequence;
-			_timingSource = timingSource;
+			// _timingSource = timingSource;
 
 			_bufferItems = _buffer.Count;
 		}
