@@ -34,6 +34,7 @@ namespace VixenModules.Output.Hill320
 
         private Data _moduleData;
         private ushort _portAddress;
+        private int _outputCount;
 
         public override bool Setup()
         {
@@ -57,7 +58,10 @@ namespace VixenModules.Output.Hill320
             set { _moduleData = value as Data; }
         }
 
-        protected override void _SetOutputCount(int outputCount) { }
+        protected override void _SetOutputCount(int outputCount)
+        {
+            _outputCount = outputCount;
+        }
 
         protected override void _UpdateState(Command[] outputStates)
         {
@@ -117,10 +121,10 @@ namespace VixenModules.Output.Hill320
                 // Write #4
                 // Outputs the steering (addressing) data on the data pins
                     LoadInpOutDLL.outputData(_moduleData.ControlPort, (short)(bank | bankBox));
-                    if (value > 0)
-                    {
-                        Console.Out.WriteLine((short)(bank | bankBox) + "," + value);
-                    }
+                    //if (value > 0)
+                    //{
+                    //    Console.Out.WriteLine((short)(bank | bankBox) + "," + value);
+                    //}
                 //Write	#5
                 //Outputs a 0 (low) on both	C0 and C1 since	they are inverted.  This locks
                 //the data into	the	correct decoder which sends a "low" single to the clock
