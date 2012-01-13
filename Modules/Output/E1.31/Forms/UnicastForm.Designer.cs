@@ -1,10 +1,9 @@
-namespace VixenModules.Controller.E131
+namespace VixenModules.Output.E131
 {
     using System.ComponentModel;
     using System.Drawing;
     using System.Windows.Forms;
-
-    using VixenModules.Controller.E131.Controls;
+    using VixenModules.Output.E131.Controls;
 
     public partial class UnicastForm
     {

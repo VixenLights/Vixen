@@ -35,9 +35,7 @@ namespace VixenModules.Output.E131
     using System.Net.NetworkInformation;
     using System.Text;
     using System.Windows.Forms;
-
-    using VixenModules.Controller.E131;
-    using VixenModules.Controller.E131.J1Sys;
+    using VixenModules.Output.E131.J1Sys;
 
     public partial class SetupForm : Form
     {
@@ -57,53 +55,25 @@ namespace VixenModules.Output.E131
         private const int UNIVERSE_COLUMN = 1;
 
         // plugin channel count as set by vixen
-        private readonly SortedList<string, int> badIDs = new SortedList<string, int>();
+        private readonly SortedList<string, int> _badIds = new SortedList<string, int>();
 
-        private readonly SortedList<string, int> multicasts = new SortedList<string, int>();
+        private readonly SortedList<string, int> _multicasts = new SortedList<string, int>();
 
-        private readonly SortedDictionary<string, string> nicIDs = new SortedDictionary<string, string>();
+        private readonly SortedDictionary<string, string> _nicIds = new SortedDictionary<string, string>();
 
-        private readonly SortedDictionary<string, string> nicNames = new SortedDictionary<string, string>();
+        private readonly SortedDictionary<string, string> _nicNames = new SortedDictionary<string, string>();
 
-        private readonly SortedList<string, int> unicasts = new SortedList<string, int>();
+        private readonly SortedList<string, int> _unicasts = new SortedList<string, int>();
+        private readonly Data _data;
+        private IEnumerable<NetworkInterface> _networkInterfaces;
 
-        /// <summary>
-        ///   Initializes a new instance of the <see cref = "SetupForm" /> class. 
-        ///   Build some nic tables and initialize the component
-        /// </summary>
-        public SetupForm()
+        public SetupForm(Data data, IEnumerable<NetworkInterface> networkInterfaces)
         {
-            // first build some sorted lists and dictionaries for the nics
-
-            // get all the nics
-            var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();            
-            foreach (var networkInterface in networkInterfaces)
-            {
-                if (networkInterface == null)
-                {
-                    continue;
-                }
-
-                // if not a tunnel
-                if (networkInterface.NetworkInterfaceType.CompareTo(NetworkInterfaceType.Tunnel) != 0)
-                {
-                    // and supports multicast
-                    if (networkInterface.SupportsMulticast)
-                    {
-                        // then add it to multicasts table by name
-                        this.multicasts.Add(networkInterface.Name, 0);
-
-                        // add it to available nicIDs table
-                        this.nicIDs.Add(networkInterface.Id, networkInterface.Name);
-
-                        // add ot to available nicNames table
-                        this.nicNames.Add(networkInterface.Name, networkInterface.Id);
-                    }
-                }
-            }
+            _data = data;
+            _networkInterfaces = networkInterfaces;
 
             // finally initialize the form
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         public int EventRepeatCount
@@ -112,7 +82,7 @@ namespace VixenModules.Output.E131
             {
                 int count;
 
-                if (!int.TryParse(this.eventRepeatCountTextBox.Text, out count))
+                if (!int.TryParse(eventRepeatCountTextBox.Text, out count))
                 {
                     count = 0;
                 }
@@ -122,7 +92,7 @@ namespace VixenModules.Output.E131
 
             set
             {
-                this.eventRepeatCountTextBox.Text = value.ToString();
+                eventRepeatCountTextBox.Text = value.ToString();
             }
         }
 
@@ -130,7 +100,7 @@ namespace VixenModules.Output.E131
         {
             set
             {
-                this.pluginChannelCount = value;
+                pluginChannelCount = value;
             }
         }
 
@@ -138,12 +108,12 @@ namespace VixenModules.Output.E131
         {
             get
             {
-                return this.statisticsCheckBox.Checked;
+                return statisticsCheckBox.Checked;
             }
 
             set
             {
-                this.statisticsCheckBox.Checked = value;
+                statisticsCheckBox.Checked = value;
             }
         }
 
@@ -151,7 +121,7 @@ namespace VixenModules.Output.E131
         {
             get
             {
-                return this.univDGVN.Rows.Count;
+                return univDGVN.Rows.Count;
             }
         }
 
@@ -159,17 +129,16 @@ namespace VixenModules.Output.E131
         {
             get
             {
-                return this.warningsCheckBox.Checked;
+                return warningsCheckBox.Checked;
             }
 
             set
             {
-                this.warningsCheckBox.Checked = value;
+                warningsCheckBox.Checked = value;
             }
         }
 
-        public bool UniverseAdd(
-            bool active, int universe, int start, int size, string unicast, string multicast, int ttl)
+        public bool UniverseAdd(bool active, int universe, int start, int size, string unicast, string multicast, int ttl)
         {
             string destination = null;
 
@@ -178,10 +147,10 @@ namespace VixenModules.Output.E131
             // and we 'reformat' to text for display
             if (unicast != null)
             {
-                if (!this.unicasts.ContainsKey(unicast))
+                if (!_unicasts.ContainsKey(unicast))
                 {
-                    this.unicasts.Add(unicast, 0);
-                    this.destinationColumn.Items.Add("Unicast " + unicast);
+                    _unicasts.Add(unicast, 0);
+                    destinationColumn.Items.Add("Unicast " + unicast);
                 }
 
                 destination = "Unicast " + unicast;
@@ -192,36 +161,36 @@ namespace VixenModules.Output.E131
             // and store in bad id's so we only warn once
             if (multicast != null)
             {
-                if (this.nicIDs.ContainsKey(multicast))
+                if (_nicIds.ContainsKey(multicast))
                 {
-                    destination = "Multicast " + this.nicIDs[multicast];
+                    destination = "Multicast " + _nicIds[multicast];
                 }
                 else
                 {
-                    if (!this.badIDs.ContainsKey(multicast))
+                    if (!_badIds.ContainsKey(multicast))
                     {
-                        this.badIDs.Add(multicast, 0);
+                        _badIds.Add(multicast, 0);
                         MessageBox.Show(
-                            "Warning - Interface IDs have changed. Please reselect all empty destinations.", 
-                            "Network Interface Mapping", 
-                            MessageBoxButtons.OK, 
-                            MessageBoxIcon.Warning);
+                                        "Warning - Interface IDs have changed. Please reselect all empty destinations.", 
+                                        "Network Interface Mapping", 
+                                        MessageBoxButtons.OK, 
+                                        MessageBoxIcon.Warning);
                     }
                 }
             }
 
             // all set, add the row - convert int's to strings ourselves
-            this.univDGVN.Rows.Add(
-                new object[]
-                    {
-                       active, universe.ToString(), start.ToString(), size.ToString(), destination, ttl.ToString() 
-                    });
+            univDGVN.Rows.Add(
+                              new object[]
+                              {
+                                 active, universe.ToString(), start.ToString(), size.ToString(), destination, ttl.ToString() 
+                              });
             return true;
         }
 
         public void UniverseClear()
         {
-            this.univDGVN.Rows.Clear();
+            univDGVN.Rows.Clear();
         }
 
         public bool UniverseGet(
@@ -234,8 +203,7 @@ namespace VixenModules.Output.E131
             ref string multicast, 
             ref int ttl)
         {
-            var row = this.univDGVN.Rows[index];
-
+            var row = univDGVN.Rows[index];
             if (row.IsNewRow)
             {
                 return false;
@@ -270,7 +238,7 @@ namespace VixenModules.Output.E131
                 }
                 else if (destination.StartsWith("Multicast "))
                 {
-                    multicast = this.nicNames[destination.Substring(10)];
+                    multicast = _nicNames[destination.Substring(10)];
                 }
             }
 
@@ -288,60 +256,64 @@ namespace VixenModules.Output.E131
 
         private void AddUnicastIp()
         {
-            var unicastForm = new UnicastForm();
-
-            if (this.univDGVN.CurrentCell != null)
+            using (var unicastForm = new UnicastForm())
             {
-                if (this.univDGVN.CurrentCell.IsInEditMode)
+                if (univDGVN.CurrentCell != null)
                 {
-                    this.univDGVN.EndEdit();
-                }
-            }
-
-            if (unicastForm.ShowDialog() == DialogResult.OK)
-            {
-                IPAddress ipAddress;
-                bool valid = IPAddress.TryParse(unicastForm.IpAddrText, out ipAddress);
-
-                if (valid)
-                {
-                    var ipBytes = ipAddress.GetAddressBytes();
-
-                    if (ipBytes[0] == 0 && ipBytes[1] == 0 && ipBytes[2] == 0 && ipBytes[3] == 0)
+                    if (univDGVN.CurrentCell.IsInEditMode)
                     {
-                        valid = false;
-                    }
-
-                    if (ipBytes[0] == 255 && ipBytes[1] == 255 && ipBytes[2] == 255 && ipBytes[3] == 255)
-                    {
-                        valid = false;
+                        univDGVN.EndEdit();
                     }
                 }
 
-                if (!valid)
+                if (unicastForm.ShowDialog()
+                    == DialogResult.OK)
                 {
-                    MessageBox.Show(
-                        "Error - Invalid IP Address", 
-                        "IP Address Validation", 
-                        MessageBoxButtons.OK, 
-                        MessageBoxIcon.Error);
-                }
-                else
-                {
-                    var ipAddressText = ipAddress.ToString();
+                    IPAddress ipAddress;
+                    var valid = IPAddress.TryParse(unicastForm.IpAddrText, out ipAddress);
 
-                    if (this.unicasts.ContainsKey(ipAddressText))
+                    if (valid)
+                    {
+                        var ipBytes = ipAddress.GetAddressBytes();
+
+                        if (ipBytes[0] == 0 && ipBytes[1] == 0 && ipBytes[2] == 0
+                            && ipBytes[3] == 0)
+                        {
+                            valid = false;
+                        }
+
+                        if (ipBytes[0] == 255 && ipBytes[1] == 255 && ipBytes[2] == 255
+                            && ipBytes[3] == 255)
+                        {
+                            valid = false;
+                        }
+                    }
+
+                    if (!valid)
                     {
                         MessageBox.Show(
-                            "Error - Duplicate IP Address", 
-                            "IP Address Validation", 
-                            MessageBoxButtons.OK, 
-                            MessageBoxIcon.Error);
+                                        "Error - Invalid IP Address", 
+                                        "IP Address Validation", 
+                                        MessageBoxButtons.OK, 
+                                        MessageBoxIcon.Error);
                     }
                     else
                     {
-                        this.unicasts.Add(ipAddressText, 0);
-                        this.SetDestinations();
+                        var ipAddressText = ipAddress.ToString();
+
+                        if (_unicasts.ContainsKey(ipAddressText))
+                        {
+                            MessageBox.Show(
+                                            "Error - Duplicate IP Address", 
+                                            "IP Address Validation", 
+                                            MessageBoxButtons.OK, 
+                                            MessageBoxIcon.Error);
+                        }
+                        else
+                        {
+                            _unicasts.Add(ipAddressText, 0);
+                            SetDestinations();
+                        }
                     }
                 }
             }
@@ -350,7 +322,7 @@ namespace VixenModules.Output.E131
         private void DestinationContextMenuStripOpening(object sender, CancelEventArgs e)
         {
             e.Cancel = true;
-            this.AddUnicastIp();
+            AddUnicastIp();
         }
 
         private void EventRepeatCountTextBoxValidating(object sender, CancelEventArgs e)
@@ -362,7 +334,8 @@ namespace VixenModules.Output.E131
                 count = 0;
             }
 
-            if (count < 0 || 99 < count)
+            if (count < 0
+                || 99 < count)
             {
                 e.Cancel = true;
             }
@@ -405,7 +378,7 @@ namespace VixenModules.Output.E131
             var universeDestinations = new SortedList<string, int>();
 
             // first buid a table of active universe/destination combos
-            foreach (DataGridViewRow row in this.univDGVN.Rows)
+            foreach (DataGridViewRow row in univDGVN.Rows)
             {
                 if (row.IsNewRow)
                 {
@@ -434,7 +407,7 @@ namespace VixenModules.Output.E131
             }
 
             // now scan for empty destinations, duplicate universe/destination combos, channels errors, etc.
-            foreach (DataGridViewRow row in this.univDGVN.Rows)
+            foreach (DataGridViewRow row in univDGVN.Rows)
             {
                 if (row.IsNewRow)
                 {
@@ -480,10 +453,10 @@ namespace VixenModules.Output.E131
                         }
 
                         // only test for range if more than 0 channels, otherwise wait for runtime
-                        if (this.pluginChannelCount > 0)
+                        if (pluginChannelCount > 0)
                         {
                             // now test for valid channel start
-                            if (((string)row.Cells[START_COLUMN].Value).TryParseInt32(1) > this.pluginChannelCount)
+                            if (((string)row.Cells[START_COLUMN].Value).TryParseInt32(1) > pluginChannelCount)
                             {
                                 if (!valid)
                                 {
@@ -498,7 +471,7 @@ namespace VixenModules.Output.E131
 
                             // now test for valid channel size
                             if (((string)row.Cells[START_COLUMN].Value).TryParseInt32(1)
-                                + ((string)row.Cells[SIZE_COLUMN].Value).TryParseInt32(1) - 1 > this.pluginChannelCount)
+                                + ((string)row.Cells[SIZE_COLUMN].Value).TryParseInt32(1) - 1 > pluginChannelCount)
                             {
                                 if (!valid)
                                 {
@@ -533,11 +506,12 @@ namespace VixenModules.Output.E131
             {
                 if (
                     J1MsgBox.ShowMsg(
-                        "Your configurations contains active entries that may cause run time errors.\r\n\r\nHit OK to continue and save your configuration. Hit Cancel to re-edit before saving.", 
-                        errorList.ToString(), 
-                        "Configuration Validation", 
-                        MessageBoxButtons.OKCancel, 
-                        MessageBoxIcon.Error) == DialogResult.OK)
+                                     "Your configurations contains active entries that may cause run time errors.\r\n\r\nHit OK to continue and save your configuration. Hit Cancel to re-edit before saving.", 
+                                     errorList.ToString(), 
+                                     "Configuration Validation", 
+                                     MessageBoxButtons.OKCancel, 
+                                     MessageBoxIcon.Error)
+                    == DialogResult.OK)
                 {
                     valid = true;
                 }
@@ -545,8 +519,8 @@ namespace VixenModules.Output.E131
 
             if (valid)
             {
-                this.DialogResult = DialogResult.OK;
-                this.Close();
+                DialogResult = DialogResult.OK;
+                Close();
             }
         }
 
@@ -561,9 +535,9 @@ namespace VixenModules.Output.E131
 
             if (contextMenuStrip != null)
             {
-                if (this.univDGVNCellEventArgs != null)
+                if (univDGVNCellEventArgs != null)
                 {
-                    var row = this.univDGVN.Rows[this.univDGVNCellEventArgs.RowIndex];
+                    var row = univDGVN.Rows[univDGVNCellEventArgs.RowIndex];
 
                     if (row.IsNewRow)
                     {
@@ -578,9 +552,10 @@ namespace VixenModules.Output.E131
                         contextMenuStrip.Items[4].Enabled = false;
 
                         // enable move row down if able
-                        if (row.Index < this.univDGVN.Rows.Count - 1)
+                        if (row.Index
+                            < univDGVN.Rows.Count - 1)
                         {
-                            if (!this.univDGVN.Rows[row.Index + 1].IsNewRow)
+                            if (!univDGVN.Rows[row.Index + 1].IsNewRow)
                             {
                                 contextMenuStrip.Items[4].Enabled = true;
                             }
@@ -592,16 +567,16 @@ namespace VixenModules.Output.E131
 
         private void SetDestinations()
         {
-            this.destinationColumn.Items.Clear();
+            destinationColumn.Items.Clear();
 
-            foreach (var destination in this.multicasts.Keys)
+            foreach (var destination in _multicasts.Keys)
             {
-                this.destinationColumn.Items.Add("Multicast " + destination);
+                destinationColumn.Items.Add("Multicast " + destination);
             }
 
-            foreach (var ipAddr in this.unicasts.Keys)
+            foreach (var ipAddr in _unicasts.Keys)
             {
-                this.destinationColumn.Items.Add("Unicast " + ipAddr);
+                destinationColumn.Items.Add("Unicast " + ipAddr);
             }
         }
 
@@ -610,14 +585,14 @@ namespace VixenModules.Output.E131
         // -------------------------------------------------------------
         private void UnivDgvnCellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            this.univDGVN.Rows[e.RowIndex].ErrorText = string.Empty;
+            univDGVN.Rows[e.RowIndex].ErrorText = string.Empty;
         }
 
         private void UnivDgvnCellEnter(object sender, DataGridViewCellEventArgs e)
         {
             if (e.ColumnIndex == DESTINATION_COLUMN)
             {
-                this.univDGVN.BeginEdit(false);
+                univDGVN.BeginEdit(false);
             }
         }
 
@@ -627,18 +602,21 @@ namespace VixenModules.Output.E131
         private void UnivDgvnCellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             // if it's the headers - sort 'em
-            if (e.RowIndex == -1)
+            if (e.RowIndex
+                == -1)
             {
-                if (0 < e.ColumnIndex && e.ColumnIndex < 5)
+                if (0 < e.ColumnIndex
+                    && e.ColumnIndex < 5)
                 {
                     var lsd = ListSortDirection.Ascending;
 
-                    if (e.Button == MouseButtons.Right)
+                    if (e.Button
+                        == MouseButtons.Right)
                     {
                         lsd = ListSortDirection.Descending;
                     }
 
-                    this.univDGVN.Sort(this.univDGVN.Columns[e.ColumnIndex], lsd);
+                    univDGVN.Sort(univDGVN.Columns[e.ColumnIndex], lsd);
                 }
             }
 
@@ -646,12 +624,13 @@ namespace VixenModules.Output.E131
             else
             {
                 // if it's the right button
-                if (e.Button == MouseButtons.Right)
+                if (e.Button
+                    == MouseButtons.Right)
                 {
                     // if it's the destination column - they want to add a unicast ip
                     if (e.ColumnIndex == DESTINATION_COLUMN)
                     {
-                        this.AddUnicastIp();
+                        AddUnicastIp();
                     }
                 }
             }
@@ -659,7 +638,7 @@ namespace VixenModules.Output.E131
 
         private void UnivDgvnCellMouseEnter(object sender, DataGridViewCellEventArgs e)
         {
-            this.univDGVNCellEventArgs = e;
+            univDGVNCellEventArgs = e;
         }
 
         private void UnivDgvnCellValidating(object sender, DataGridViewCellValidatingEventArgs e)
@@ -683,14 +662,15 @@ namespace VixenModules.Output.E131
                     {
                         e.Cancel = true;
                     }
-                    else if (cellValueInt < 1 || 64000 < cellValueInt)
+                    else if (cellValueInt < 1
+                             || 64000 < cellValueInt)
                     {
                         e.Cancel = true;
                     }
 
                     if (e.Cancel)
                     {
-                        this.univDGVN.Rows[e.RowIndex].ErrorText = "Universe must be between 1 and 64000 inclusive";
+                        univDGVN.Rows[e.RowIndex].ErrorText = "Universe must be between 1 and 64000 inclusive";
                     }
 
                     break;
@@ -700,14 +680,15 @@ namespace VixenModules.Output.E131
                     {
                         e.Cancel = true;
                     }
-                    else if (cellValueInt < 1 || 99999 < cellValueInt)
+                    else if (cellValueInt < 1
+                             || 99999 < cellValueInt)
                     {
                         e.Cancel = true;
                     }
 
                     if (e.Cancel)
                     {
-                        this.univDGVN.Rows[e.RowIndex].ErrorText = "Start must be between 1 and 99999 inclusive";
+                        univDGVN.Rows[e.RowIndex].ErrorText = "Start must be between 1 and 99999 inclusive";
                     }
 
                     break;
@@ -717,14 +698,15 @@ namespace VixenModules.Output.E131
                     {
                         e.Cancel = true;
                     }
-                    else if (cellValueInt < 1 || 512 < cellValueInt)
+                    else if (cellValueInt < 1
+                             || 512 < cellValueInt)
                     {
                         e.Cancel = true;
                     }
 
                     if (e.Cancel)
                     {
-                        this.univDGVN.Rows[e.RowIndex].ErrorText = "Size must be between 1 and 512 inclusive";
+                        univDGVN.Rows[e.RowIndex].ErrorText = "Size must be between 1 and 512 inclusive";
                     }
 
                     break;
@@ -734,14 +716,15 @@ namespace VixenModules.Output.E131
                     {
                         e.Cancel = true;
                     }
-                    else if (cellValueInt < 0 || 99 < cellValueInt)
+                    else if (cellValueInt < 0
+                             || 99 < cellValueInt)
                     {
                         e.Cancel = true;
                     }
 
                     if (e.Cancel)
                     {
-                        this.univDGVN.Rows[e.RowIndex].ErrorText = "TTL must be between 0 and 99 inclusive";
+                        univDGVN.Rows[e.RowIndex].ErrorText = "TTL must be between 0 and 99 inclusive";
                     }
 
                     break;
@@ -750,38 +733,38 @@ namespace VixenModules.Output.E131
             if (e.Cancel)
             {
                 MessageBox.Show(
-                    this.univDGVN.Rows[e.RowIndex].ErrorText, 
-                    "Cell Validation", 
-                    MessageBoxButtons.OK, 
-                    MessageBoxIcon.Exclamation);
+                                univDGVN.Rows[e.RowIndex].ErrorText, 
+                                "Cell Validation", 
+                                MessageBoxButtons.OK, 
+                                MessageBoxIcon.Exclamation);
             }
         }
 
         private void UnivDgvnDeleteRow(object sender, EventArgs e)
         {
-            if (this.univDGVNCellEventArgs != null)
+            if (univDGVNCellEventArgs != null)
             {
-                var row = this.univDGVN.Rows[this.univDGVNCellEventArgs.RowIndex];
+                var row = univDGVN.Rows[univDGVNCellEventArgs.RowIndex];
 
                 if (!row.IsNewRow)
                 {
-                    this.univDGVN.Rows.RemoveAt(row.Index);
+                    univDGVN.Rows.RemoveAt(row.Index);
                 }
             }
         }
 
         private void UnivDgvnEditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
-            var columnIndex = this.univDGVN.CurrentCell.ColumnIndex;
+            var columnIndex = univDGVN.CurrentCell.ColumnIndex;
 
             if (columnIndex == UNIVERSE_COLUMN || columnIndex == START_COLUMN || columnIndex == SIZE_COLUMN
                 || columnIndex == TTL_COLUMN)
             {
                 // first remove the event handler (if previously added)
-                e.Control.KeyPress -= this.NumTextBoxKeyPress;
+                e.Control.KeyPress -= NumTextBoxKeyPress;
 
                 // now add our event handler
-                e.Control.KeyPress += this.NumTextBoxKeyPress;
+                e.Control.KeyPress += NumTextBoxKeyPress;
             }
 
             if (columnIndex == DESTINATION_COLUMN)
@@ -790,52 +773,52 @@ namespace VixenModules.Output.E131
 
                 if (control != null)
                 {
-                    if (this.destinationToolTip == null)
+                    if (destinationToolTip == null)
                     {
-                        this.destinationToolTip = new ToolTip();
+                        destinationToolTip = new ToolTip();
                     }
 
-                    this.destinationToolTip.SetToolTip(e.Control, "RightClick to add a new Unicast IP Address");
+                    destinationToolTip.SetToolTip(e.Control, "RightClick to add a new Unicast IP Address");
 
-                    if (this.destinationContextMenuStrip == null)
+                    if (destinationContextMenuStrip == null)
                     {
-                        this.destinationContextMenuStrip = new ContextMenuStrip();
-                        this.destinationContextMenuStrip.Opening += this.DestinationContextMenuStripOpening;
+                        destinationContextMenuStrip = new ContextMenuStrip();
+                        destinationContextMenuStrip.Opening += DestinationContextMenuStripOpening;
                     }
 
-                    control.ContextMenuStrip = this.destinationContextMenuStrip;
+                    control.ContextMenuStrip = destinationContextMenuStrip;
                 }
             }
         }
 
         private void UnivDgvnInsertRow(object sender, EventArgs e)
         {
-            if (this.univDGVNCellEventArgs != null)
+            if (univDGVNCellEventArgs != null)
             {
-                var row = this.univDGVN.Rows[this.univDGVNCellEventArgs.RowIndex];
+                var row = univDGVN.Rows[univDGVNCellEventArgs.RowIndex];
 
                 if (!row.IsNewRow)
                 {
-                    this.univDGVN.Rows.Insert(row.Index, new object[] { false, "1", "1", "1", null, "1" });
+                    univDGVN.Rows.Insert(row.Index, new object[] { false, "1", "1", "1", null, "1" });
                 }
             }
         }
 
         private void UnivDgvnMoveRowDown(object sender, EventArgs e)
         {
-            if (this.univDGVNCellEventArgs != null)
+            if (univDGVNCellEventArgs != null)
             {
-                var row = this.univDGVN.Rows[this.univDGVNCellEventArgs.RowIndex];
+                var row = univDGVN.Rows[univDGVNCellEventArgs.RowIndex];
                 var rowIndex = row.Index;
 
                 if (!row.IsNewRow)
                 {
-                    if (rowIndex < this.univDGVN.Rows.Count - 1)
+                    if (rowIndex < univDGVN.Rows.Count - 1)
                     {
-                        if (!this.univDGVN.Rows[rowIndex + 1].IsNewRow)
+                        if (!univDGVN.Rows[rowIndex + 1].IsNewRow)
                         {
-                            this.univDGVN.Rows.RemoveAt(rowIndex);
-                            this.univDGVN.Rows.Insert(rowIndex + 1, row);
+                            univDGVN.Rows.RemoveAt(rowIndex);
+                            univDGVN.Rows.Insert(rowIndex + 1, row);
                         }
                     }
                 }
@@ -844,15 +827,15 @@ namespace VixenModules.Output.E131
 
         private void UnivDgvnMoveRowUp(object sender, EventArgs e)
         {
-            if (this.univDGVNCellEventArgs != null)
+            if (univDGVNCellEventArgs != null)
             {
-                var row = this.univDGVN.Rows[this.univDGVNCellEventArgs.RowIndex];
+                var row = univDGVN.Rows[univDGVNCellEventArgs.RowIndex];
                 var rowIndex = row.Index;
-
-                if (!row.IsNewRow && rowIndex > 0)
+                if (!row.IsNewRow
+                    && rowIndex > 0)
                 {
-                    this.univDGVN.Rows.RemoveAt(rowIndex);
-                    this.univDGVN.Rows.Insert(rowIndex - 1, row);
+                    univDGVN.Rows.RemoveAt(rowIndex);
+                    univDGVN.Rows.Insert(rowIndex - 1, row);
                 }
             }
         }

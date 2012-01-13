@@ -1,4 +1,4 @@
-﻿namespace VixenModules.Controller.E131
+﻿namespace VixenModules.Output.E131.Model
 {
     using System;
 

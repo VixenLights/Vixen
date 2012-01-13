@@ -1,4 +1,4 @@
-namespace VixenModules.App.DisplayPreview.ViewModels
+namespace VixenModules.Output.E131.ViewModels
 {
     using System;
     using System.ComponentModel;
@@ -16,6 +16,23 @@ namespace VixenModules.App.DisplayPreview.ViewModels
         ///   Raised when a property on this object has a new value.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public event EventHandler RequestClose;
+
+        protected void InvokeRequestClose()
+        {
+            if (!_dispatcher.CheckAccess())
+            {
+                _dispatcher.Invoke(new Action(InvokeRequestClose));
+                return;
+            }
+
+            var requestClose = RequestClose;
+            if (requestClose != null)
+            {
+                requestClose(this, EventArgs.Empty);
+            }
+        }
 
         /// <summary>
         ///   Raises this object's PropertyChanged event.

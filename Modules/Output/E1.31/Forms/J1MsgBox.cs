@@ -40,7 +40,7 @@
 //
 // =====================================================================
 
-namespace VixenModules.Controller.E131.J1Sys
+namespace VixenModules.Output.E131.J1Sys
 {
     using System;
     using System.Drawing;

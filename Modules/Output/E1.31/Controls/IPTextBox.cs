@@ -1,4 +1,4 @@
-﻿namespace VixenModules.Controller.E131.Controls
+﻿namespace VixenModules.Output.E131.Controls
 {
     using System.Windows.Forms;
 

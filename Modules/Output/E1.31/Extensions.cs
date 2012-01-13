@@ -1,4 +1,4 @@
-namespace VixenModules.Controller.E131
+namespace VixenModules.Output.E131
 {
     using System;
     using System.Text;
@@ -41,7 +41,7 @@ namespace VixenModules.Controller.E131
                 if (setLevelCommand != null)
                 {
                     // Good command
-                    var level = (byte)(0xFF * setLevelCommand.Level / 100);
+                    var level = Convert.ToByte(0xFF * setLevelCommand.Level / 100);
                     channelValues[index] = level;
                 }
             }

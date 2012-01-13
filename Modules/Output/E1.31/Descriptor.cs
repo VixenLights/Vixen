@@ -1,11 +1,9 @@
-﻿namespace VixenModules.Controller.E131
+﻿namespace VixenModules.Output.E131
 {
     using System;
     using Vixen.Module.Output;
 
-    using VixenModules.Output.E131;
-
-    public class E131ModuleDescriptor : OutputModuleDescriptorBase
+    public class Descriptor : OutputModuleDescriptorBase
     {
         public override string TypeName
         {
@@ -27,15 +25,15 @@
         {
             get
             {
-                return typeof(E131OutputPlugin);
+                return typeof(Module);
             }
         }
 
-        public override Type ModuleStaticDataClass
+        public override Type ModuleDataClass
         {
             get
             {
-                return typeof(E131ModuleDataModel);
+                return typeof(Data);
             }
         }
 
@@ -43,7 +41,7 @@
         {
             get
             {
-                return "Erik Mathisen and Joshua 1 Systems Inc.";
+                return "Vixen Dev Team and Joshua 1 Systems Inc.";
             }
         }
 
