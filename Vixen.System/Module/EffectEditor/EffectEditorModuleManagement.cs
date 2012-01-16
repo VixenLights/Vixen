@@ -17,7 +17,8 @@ namespace Vixen.Module.EffectEditor {
 			IEnumerable<IEffectEditorControl> editorControls =
 				_GetEditorByEffect(descriptor) ??
 				_GetEditorBySignature(descriptor) ??
-				_GetEditorsByParameter(descriptor);
+				_GetEditorsByParameter(descriptor) ??
+				Enumerable.Empty<IEffectEditorControl>();
 
 			// May be null if nothing qualifies.
 			return editorControls;
@@ -39,8 +40,10 @@ namespace Vixen.Module.EffectEditor {
 
 		private IEnumerable<IEffectEditorControl> _GetEditorsByParameter(IEffectModuleDescriptor descriptor) {
 			EffectEditorModuleRepository repository = Modules.GetRepository<IEffectEditorModuleInstance, EffectEditorModuleRepository>();
-			IEnumerable<IEffectEditorModuleInstance> instances = descriptor.Parameters.Select(x => repository.Get(x.Type));
-			if(!instances.Any(x => x == null)) {
+			IEffectEditorModuleInstance[] instances = descriptor.Parameters.Select(x => repository.Get(x.Type)).ToArray();
+			// Can't use Any() because if "instances" is empty, Any will return false.
+			// (There are none that are null!)
+			if(instances.Length > 0 && instances.All(x => x != null)) {
 				return instances.Select(x => x.CreateEditorControl());
 			}
 			return null;

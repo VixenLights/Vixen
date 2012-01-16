@@ -27,12 +27,11 @@ namespace VixenTestbed {
 		}
 
 		private void EffectEditorContainerForm_Load(object sender, EventArgs e) {
-			IEnumerable<IEffectEditorControl> controls = ApplicationServices.GetEffectEditorControls(_effectModule.Descriptor.TypeId);
-			if(controls == null) {
+			_controls = ApplicationServices.GetEffectEditorControls(_effectModule.Descriptor.TypeId).ToArray();
+			if(_controls.Length == 0) {
 				MessageBox.Show("Appropriate effect editors could not be found.");
 				DialogResult = DialogResult.Cancel;
 			} else {
-				_controls = controls.ToArray();
 				tableLayoutPanel.RowCount = _controls.Length;
 				for(int i = 0; i < _controls.Length; i++) {
 					Control control = _controls[i] as Control;
