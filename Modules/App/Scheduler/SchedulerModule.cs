@@ -17,6 +17,8 @@ namespace VixenModules.App.Scheduler {
 		private ScheduleService _scheduleService;
 		private Dictionary<ProgramContext, ScheduleItem> _contexts;
 		private SynchronizationContext _synchronizationContext;
+		private Dictionary<string, Program> _programs;
+
 
 		private const string ID_ROOT = "SchedulerRoot";
 
@@ -30,6 +32,7 @@ namespace VixenModules.App.Scheduler {
 			_SetEnableState(_data.IsEnabled);
 			_synchronizationContext = SynchronizationContext.Current;
 			VixenSystem.Logs.AddLog(new SchedulerLog());
+			_programs = new Dictionary<string, Program>();
 		}
 
 		public override void Unloading() {
@@ -72,9 +75,20 @@ namespace VixenModules.App.Scheduler {
 
 		private void _Execute(ScheduleItem item) {
 			try {
+				VixenSystem.Logging.Schedule("Executing scheduled item for program: " + item.FilePath);
 				_SetEnableState(false);
+				
+				Program program;
+				if (_programs.ContainsKey(item.FilePath)) {
+					program = _programs[item.FilePath];
+				} else {
+					VixenSystem.Logging.Schedule("Program has not been executed before. Prerendering...");
+					program = Program.Load(item.FilePath);
+					program.PrerenderAllSequences();
+					_programs[item.FilePath] = program;
+					VixenSystem.Logging.Schedule("Prerendering complete.");
+				}
 
-				Program program = Program.Load(item.FilePath);
 				ProgramContext context = Execution.CreateContext(program);
 				context.ProgramEnded += context_ProgramEnded;
 	

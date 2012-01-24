@@ -101,5 +101,14 @@ namespace Vixen.Sys {
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
 			return GetEnumerator();
 		}
+
+		public void PrerenderAllSequences()
+		{
+			foreach (ISequence sequence in Sequences) {
+				foreach (EffectNode node in sequence.Data.GetEffects()) {
+					node.Effect.PreRender();
+				}
+			}
+		}
 	}
 }
