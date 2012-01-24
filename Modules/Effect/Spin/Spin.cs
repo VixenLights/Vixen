@@ -188,7 +188,7 @@ namespace VixenModules.Effect.Spin
 		private void DoRendering()
 		{
 			//TODO: get a better increment time. doing it every X ms is..... shitty at best.
-			TimeSpan increment = TimeSpan.FromMilliseconds(10);
+			TimeSpan increment = TimeSpan.FromMilliseconds(5);
 
 			List<ChannelNode> renderNodes = RGBModule.FindAllRenderableChildren(TargetNodes);
 			int targetNodeCount = renderNodes.Count;
@@ -308,6 +308,8 @@ namespace VixenModules.Effect.Spin
 						double endPos = 1.0;
 						if (TimeSpan - current >= pulseTimeSpan)
 							endPos = ((double)(current + TimeSpan.FromMilliseconds(PulseTime)).Ticks / (double)TimeSpan.Ticks);
+						if (startPos < 0.0) startPos = 0.0;
+						if (endPos > 1.0) endPos = 1.0;
 						pulse.ColorGradient = ColorGradient.GetSubGradient(startPos, endPos);
 						break;
 

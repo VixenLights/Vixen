@@ -104,7 +104,7 @@ namespace VixenModules.Effect.Pulse
 		// may change later.
 		// This is only used for monochrome commands, as it will be hard to tell what to do with RGB
 		// commands (as the RGB property module may render them off to subchannels, etc.)
-		private double MinimumLevelChangeInterval { get { return 1.0; } }
+		private double MinimumLevelChangeInterval { get { return 2.0; } }
 
 
 		// renders the given node to the internal ChannelData dictionary. If the given node is
@@ -147,7 +147,10 @@ namespace VixenModules.Effect.Pulse
 
 					// if the difference is big enough to change, then make a new command: for the period that just
 					// finished! -- and start a new one. But only do that if it's not the initial mark point.
-					if (Math.Abs(currentLevel - newLevel) > MinimumLevelChangeInterval) {
+					// NB: bit of a dodgy hack; if the new level is less than 10, make it 10 times more 'sensitive' to changes,
+					// since it's a larger percentage down low
+					if ((Math.Abs(currentLevel - newLevel) > MinimumLevelChangeInterval) ||
+						(newLevel < 10.0 && Math.Abs(currentLevel - newLevel) > (MinimumLevelChangeInterval / 10.0))) {
 						if (currentTime > TimeSpan.Zero) {
 							data.Add(new CommandNode(new Lighting.Monochrome.SetLevel(lastCommandLevel), lastCommandTime, currentTime - lastCommandTime));
 						}
@@ -178,6 +181,9 @@ namespace VixenModules.Effect.Pulse
 			TimeSpan currentTime = TimeSpan.Zero;
 			RGBModule rgbProperty = node.Properties.Get(PulseDescriptor._RGBPropertyId) as RGBModule;
 
+			ChannelCommands oldData = new ChannelCommands();
+			Dictionary<Guid, CommandNode> commandNodesToUpdate = null;
+
 			while (currentTime < TimeSpan) {
 				double fractionalProgress = currentTime.TotalMilliseconds / TimeSpan.TotalMilliseconds;
 				double percentProgress = fractionalProgress * 100.0;
@@ -186,11 +192,56 @@ namespace VixenModules.Effect.Pulse
 
 				TimeSpan sliceDuration = (currentTime + MinimumRenderInterval < TimeSpan) ? MinimumRenderInterval : TimeSpan - currentTime;
 				ChannelCommands rgbData = rgbProperty.RenderColorToCommands(currentColor, currentLevel);
+				bool makeNewCommands = false;
+
+				// check the new broken-down commands against the old ones, to try and determine if we can get away with not making
+				// a new command (ie. all the old commands are setlevels, and have values close enough to their old values.)
 				foreach (KeyValuePair<Guid, Command[]> kvp in rgbData) {
-					foreach (Command c in kvp.Value) {
-						CommandNode newCommandNode = new CommandNode(c, currentTime, sliceDuration);
-						_channelData.AddCommandNodeForChannel(kvp.Key, newCommandNode);
+					Command[] oldCommands;
+					oldData.TryGetValue(kvp.Key, out oldCommands);
+					if (oldCommands == null) {
+						makeNewCommands = true;
+						break;
 					}
+
+					foreach (Command newCommand in kvp.Value) {
+						if (newCommand is Vixen.Commands.Lighting.Monochrome.SetLevel) {
+							foreach (Command oldCommand in oldCommands) {
+								if (oldCommand is Vixen.Commands.Lighting.Monochrome.SetLevel) {
+									double oldValue = (oldCommand as Vixen.Commands.Lighting.Monochrome.SetLevel).Level;
+									double newValue = (newCommand as Vixen.Commands.Lighting.Monochrome.SetLevel).Level;
+									if ((Math.Abs(oldValue - newValue) > MinimumLevelChangeInterval) ||
+										(newValue < 10.0 && Math.Abs(oldValue - newValue) > (MinimumLevelChangeInterval / 10.0))) {
+											makeNewCommands = true;
+											break;
+									}
+								}
+							}
+						} else {
+							makeNewCommands = true;
+							break;
+						}
+					}
+				}
+
+				// if the commands were sufficiently different, make new output commands. Otherwise, extend the old ones.
+				if (makeNewCommands) {
+					commandNodesToUpdate = new Dictionary<Guid,CommandNode>();
+					foreach (KeyValuePair<Guid, Command[]> kvp in rgbData) {
+						foreach (Command c in kvp.Value) {
+							CommandNode newCommandNode = new CommandNode(c, currentTime, sliceDuration);
+							_channelData.AddCommandNodeForChannel(kvp.Key, newCommandNode);
+							commandNodesToUpdate[kvp.Key] = newCommandNode;
+						}
+					}
+
+					oldData = new ChannelCommands(rgbData);
+				} else {
+					if (commandNodesToUpdate == null)
+						VixenSystem.Logging.Debug("Pulse rendering: commandNodesToUpdate is null");
+
+					foreach (KeyValuePair<Guid, Command[]> kvp in rgbData)
+						commandNodesToUpdate[kvp.Key].TimeSpan += sliceDuration;
 				}
 
 				currentTime += MinimumRenderInterval;
