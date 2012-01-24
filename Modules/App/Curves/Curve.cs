@@ -134,12 +134,14 @@ namespace VixenModules.App.Curves
 
 			// if we have a name, try and find it in the library. Otherwise, remove the reference.
 			if (IsLibraryReference) {
-				if (Library.Contains(LibraryReferenceName)) {
-					LibraryReferencedCurve = Library.GetCurve(LibraryReferenceName);
-					_points = new PointPairList(LibraryReferencedCurve.Points);
-					return true;
-				} else {
-					LibraryReferenceName = "";
+				if (Library != null) {
+					if (Library.Contains(LibraryReferenceName)) {
+						LibraryReferencedCurve = Library.GetCurve(LibraryReferenceName);
+						_points = new PointPairList(LibraryReferencedCurve.Points);
+						return true;
+					} else {
+						LibraryReferenceName = "";
+					}
 				}
 			}
 
