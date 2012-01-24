@@ -21,6 +21,18 @@ namespace VixenModules.App.ColorGradients
 		private void ColorGradientLibrarySelector_Load(object sender, EventArgs e)
 		{
 			PopulateListWithColorGradients();
+			ColorGradientLibraryStaticData data;
+			data = (ApplicationServices.Get<IAppModuleInstance>(ColorGradientLibraryDescriptor.ModuleID) as ColorGradientLibrary).StaticModuleData as ColorGradientLibraryStaticData;
+			if (Screen.GetWorkingArea(this).Contains(data.SelectorWindowBounds) && data.SelectorWindowBounds.Width >= MinimumSize.Width) {
+				Bounds = data.SelectorWindowBounds;
+			}
+		}
+
+		private void ColorGradientLibrarySelector_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			ColorGradientLibraryStaticData data;
+			data = (ApplicationServices.Get<IAppModuleInstance>(ColorGradientLibraryDescriptor.ModuleID) as ColorGradientLibrary).StaticModuleData as ColorGradientLibraryStaticData;
+			data.SelectorWindowBounds = Bounds;
 		}
 
 		private void PopulateListWithColorGradients()
