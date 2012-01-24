@@ -41,6 +41,15 @@ namespace Vixen.Module.Effect {
 			}
 		}
 
+		public override IModuleInstance Clone()
+		{
+			EffectModuleInstanceBase result = base.Clone() as EffectModuleInstanceBase;
+			result.TimeSpan = TimeSpan;
+			result.TargetNodes = TargetNodes;
+			result.ParameterValues = ParameterValues;
+			return result;
+		}
+
 		abstract public object[] ParameterValues { get; set; }
 
 		public void PreRender() {

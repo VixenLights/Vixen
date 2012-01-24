@@ -40,6 +40,11 @@ namespace Vixen.Sys {
 			}
 		}
 
+		public EffectNode(EffectNode other)
+			: this(other.Effect.Clone() as IEffectModuleInstance, other.StartTime)
+		{
+		}
+
 		public IEffectModuleInstance Effect { get; private set; }
 
 		public TimeSpan StartTime { get; set; }
