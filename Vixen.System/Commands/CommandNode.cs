@@ -19,9 +19,9 @@ namespace Vixen.Commands {
 
 		public Command Command { get; private set; }
 
-		public TimeSpan StartTime { get; private set; }
+		public TimeSpan StartTime { get; set; }
 
-		public TimeSpan TimeSpan { get; private set; }
+		public TimeSpan TimeSpan { get; set; }
 
 		public TimeSpan EndTime {
 			get { return StartTime + TimeSpan; }
