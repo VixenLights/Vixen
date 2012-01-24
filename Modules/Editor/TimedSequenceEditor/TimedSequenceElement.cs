@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using CommonElements.Timeline;
 using Vixen.Module.Editor;
@@ -42,10 +43,25 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private Bitmap RenderedInset { get; set; }
 
+		private AsyncRefreshRenderedInsetDelegate dlgt = new AsyncRefreshRenderedInsetDelegate(new AsyncRefreshRenderedInset().RefreshRenderedInset);
+
+		private Size currentSize;
+
 		public override System.Drawing.Bitmap Draw(System.Drawing.Size imageSize)
 		{
 			Bitmap result = base.Draw(imageSize);
-			Bitmap inset = new Bitmap(imageSize.Width - 4, imageSize.Height - 4);
+			Bitmap inset = RenderedInset;
+			int newWidth = imageSize.Width - 4;
+			int newHeight = imageSize.Height - 4;
+			currentSize = imageSize;
+			//if (inset == null) {
+			//    inset = new Bitmap(newWidth, newHeight);
+			//    dlgt.BeginInvoke(this, imageSize, new AsyncCallback(InsertNewRenderedInset), dlgt);
+			//} else if (EffectNode.Effect.IsDirty || (inset.Width != newWidth || inset.Height != newHeight)) {
+			//    dlgt.BeginInvoke(this, imageSize, new AsyncCallback(InsertNewRenderedInset), dlgt);
+			//}
+
+			//inset = new Bitmap(newWidth, newHeight);
 
 			// if the inset image may have changed, then re-render it.
 			// TODO: this may not be perfectly accurate, since it's possible for someone else to come along and render
@@ -53,31 +69,95 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// a big fat TODO: it's slow as shit, as soon as it gets bigger than a few pixels. We need to be able to:
 			// (a) turn it off and just render text,
 			// (b) do the visual rendering of effects in a separate thread so it can happen slowly and get updated later on.
-			if (EffectNode.Effect.IsDirty || (RenderedInset != null && (RenderedInset.Width != inset.Width || RenderedInset.Height != inset.Height))) {
 
-				List<ChannelNode> renderNodes = RGBModule.FindAllRenderableChildren(EffectNode.Effect.TargetNodes);
-				ChannelData effectData = EffectNode.RenderEffectData();
-				Dictionary<Channel, List<CommandNode>> renderedData = new Dictionary<Channel, List<CommandNode>>();
-				foreach (KeyValuePair<Guid, CommandNode[]> kvp in effectData) {
-					Channel channel = VixenSystem.Channels.GetChannel(kvp.Key);
-					if (channel == null)
-						continue;
+			using (Graphics g = Graphics.FromImage(result)) {
+				if (inset == null) {
+					//VixenSystem.Logging.Debug("TimedSequenceElement: null inset!");
+					using (Brush b = new SolidBrush(Color.Black)) {
+						g.FillRectangle(b, 2, 2, imageSize.Width - 4, imageSize.Height - 4);
+					}
+				} else
+					g.DrawImage(inset, 2, 2);
 
-					List<CommandNode> nodes = new List<CommandNode>(kvp.Value);
-					nodes.Sort();
-					renderedData.Add(channel, nodes);
+				// TODO: be able to turn this off somehow, maybe editor options or something?
+				// add text describing the effect
+				using (Font f = new Font("Arial", 7))
+				using (Brush b = new SolidBrush(TextColor)) {
+					g.DrawString(EffectNode.Effect.EffectName, f, b, new PointF(5, 3));
+					g.DrawString("Start: " + EffectNode.StartTime.ToString("g"), f, b, new PointF(60, 3));
+					g.DrawString("Length: " + EffectNode.TimeSpan.ToString("g"), f, b, new PointF(60, 16));
 				}
+			}
+			return result;
+		}
+		
 
+        protected override void OnTimeChanged()
+        {
+            if (this.EffectNode != null)
+            {
+                this.EffectNode.StartTime = this.StartTime;
+                this.EffectNode.Effect.TimeSpan = this.Duration;
+            }
 
-				if (renderNodes.Count > 0 && renderedData != null) {
+            base.OnTimeChanged();
+        }
 
-					using (Graphics g = Graphics.FromImage(inset)) {
+		private void InsertNewRenderedInset(IAsyncResult ar) {
+			AsyncRefreshRenderedInsetDelegate dlgt = (AsyncRefreshRenderedInsetDelegate)ar.AsyncState;
+			Bitmap inset = dlgt.EndInvoke(ar);
+			if (inset != null) {
+				lock (EffectNode) {
+					RenderedInset = inset;
+				}
+				OnContentChanged();
+			}
+		}
 
+		public void RenderInsetImage()
+		{
+			dlgt.BeginInvoke(this, currentSize, new AsyncCallback(InsertNewRenderedInset), dlgt);
+		}
+
+		delegate Bitmap AsyncRefreshRenderedInsetDelegate(TimedSequenceElement elem, Size imageSize);
+
+		class AsyncRefreshRenderedInset {
+
+			public Bitmap RefreshRenderedInset(TimedSequenceElement elem, Size imageSize)
+			{
+				Bitmap inset;
+				//EffectNode renderingEffectNode = new EffectNode(elem.EffectNode);
+
+				lock (elem.EffectNode) {
+
+					if (imageSize != elem.currentSize)
+						return null;
+					if (elem.currentSize.Width <= 4 || elem.currentSize.Height <= 4)
+						return null;
+
+					inset = new Bitmap(elem.currentSize.Width - 4, elem.currentSize.Height - 4);
+					List<ChannelNode> renderNodes = RGBModule.FindAllRenderableChildren(elem.EffectNode.Effect.TargetNodes);
+					ChannelData effectData = elem.EffectNode.RenderEffectData();
+					Dictionary<Channel, List<CommandNode>> renderedData = new Dictionary<Channel, List<CommandNode>>();
+					foreach (KeyValuePair<Guid, CommandNode[]> kvp in effectData.ToArray()) {
+						Channel channel = VixenSystem.Channels.GetChannel(kvp.Key);
+						if (channel == null)
+							continue;
+
+						List<CommandNode> nodes = new List<CommandNode>(kvp.Value);
+						nodes.Sort();
+						renderedData.Add(channel, nodes);
+					}
+
+					if (renderNodes.Count > 0 && renderedData != null) {
 						double nodeHeight = inset.Height / (double)renderNodes.Count;
-						TimeSpan pixelWidth = TimeSpan.FromTicks(EffectNode.TimeSpan.Ticks / inset.Width);
+						TimeSpan pixelWidth = TimeSpan.FromTicks(elem.EffectNode.TimeSpan.Ticks / inset.Width);
 
 						int i = 0;
-						for (TimeSpan currentTime = TimeSpan.Zero; currentTime < EffectNode.TimeSpan; currentTime += pixelWidth) {
+						for (TimeSpan currentTime = TimeSpan.Zero; currentTime < elem.EffectNode.TimeSpan; currentTime += pixelWidth) {
+
+							//if (imageSize != elem.currentSize)
+							//    return null;
 
 							Dictionary<Channel, Command> requestData = new Dictionary<Channel, Command>();
 
@@ -98,48 +178,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 								double drawTop = drawRow * nodeHeight;
 
 								Pen p = new Pen(kvp.Value);
-								g.DrawLine(p, i, (float)drawTop, i, (float)(drawTop + nodeHeight));
+
+								using (Graphics g = Graphics.FromImage(inset)) {
+									g.DrawLine(p, i, (float)drawTop, i, (float)(drawTop + nodeHeight));
+								}
 							}
 
 							i++;
+
 						}
 					}
 				}
-				// phew! cache what we just rendered, for future use if it's going to be the same size. (Hopefully.)
-				RenderedInset = inset;
-			} else {
-				inset = RenderedInset;
+				return inset;
 			}
-
-			using (Graphics g = Graphics.FromImage(result)) {
-				if (inset == null)
-					VixenSystem.Logging.Debug("TimedSequenceElement: null inset!");
-				else
-					g.DrawImage(inset, 2, 2);
-
-				// TODO: be able to turn this off somehow, maybe editor options or something?
-				// add text describing the effect
-				using (Font f = new Font("Arial", 7))
-				using (Brush b = new SolidBrush(TextColor)) {
-					g.DrawString(EffectNode.Effect.EffectName, f, b, new PointF(5, 3));
-					g.DrawString("Start: " + EffectNode.StartTime.ToString("g"), f, b, new PointF(60, 3));
-					g.DrawString("Length: " + EffectNode.TimeSpan.ToString("g"), f, b, new PointF(60, 16));
-				}
-			}
-
-			return result;
 		}
-
-
-        protected override void OnTimeChanged()
-        {
-            if (this.EffectNode != null)
-            {
-                this.EffectNode.StartTime = this.StartTime;
-                this.EffectNode.Effect.TimeSpan = this.Duration;
-            }
-
-            base.OnTimeChanged();
-        }
 	}
 }

@@ -18,13 +18,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private bool _updatingListContents = false;
 		private IExecutionControl _executionControl;
 		private ITiming _timingSource;
+		private TimedSequenceEditorForm _editorForm;
 
-		public MarkManager(List<MarkCollection> markCollections, IExecutionControl executionControl, ITiming timingSource)
+		public MarkManager(List<MarkCollection> markCollections, IExecutionControl executionControl, ITiming timingSource, TimedSequenceEditorForm editorForm)
 		{
 			InitializeComponent();
 			MarkCollections = markCollections;
 			_executionControl = executionControl;
 			_timingSource = timingSource;
+			_editorForm = editorForm;
 		}
 
 		public List<MarkCollection> MarkCollections { get; set; }
@@ -228,8 +230,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			CommonElements.TextDialog prompt = new CommonElements.TextDialog("Time to offset (in seconds):");
 			if (prompt.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 				TimeSpan time;
+				string timeString = prompt.Response;
+				bool negativeTime = false;
 
-				if (TimeSpan.TryParseExact(prompt.Response, TimeFormats.Formats, null, out time)) {
+				if (timeString.Length > 0 && timeString[0] == '-') {
+					negativeTime = true;
+					timeString = timeString.Substring(1, timeString.Length - 1);
+				}
+
+				if (TimeSpan.TryParseExact(timeString, TimeFormats.Formats, null, out time)) {
+					if (negativeTime)
+						time = time.Negate();
 					List<TimeSpan> newMarks = new List<TimeSpan>();
 					foreach (ListViewItem item in listViewMarks.Items) {
 						if (item.Selected) {
@@ -237,10 +248,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						} else {
 							newMarks.Add((TimeSpan)item.Tag);
 						}
-						newMarks.Sort();
-						_displayedCollection.Marks = newMarks;
-						PopulateMarkListFromMarkCollection(_displayedCollection);
 					}
+					newMarks.Sort();
+					_displayedCollection.Marks = newMarks;
+					PopulateMarkListFromMarkCollection(_displayedCollection);
 				} else {
 					MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'", "Error parsing time");
 				}
@@ -388,6 +399,27 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				UpdateMarkCollectionInList(_displayedCollection);
 				break;
 			}
+		}
+
+		private void buttonPasteEffectToMarks_Click(object sender, EventArgs e)
+		{
+			if (listViewMarks.SelectedItems.Count < 1) {
+				MessageBox.Show("Select at least one mark to paste effects to.", "Need more marks");
+				return;
+			}
+
+			if (_editorForm.ClipboardData == null || _editorForm.ClipboardData.Elements.Count <= 0) {
+				MessageBox.Show("Copy an effect to paste in the sequence editor.", "Need an effect");
+				return;
+			}
+
+			int count = 0;
+			foreach (ListViewItem item in listViewMarks.SelectedItems) {
+				_editorForm.CopyElementToTime(_editorForm.ClipboardData.Elements.Keys.First() as TimedSequenceElement, (TimeSpan)item.Tag);
+				count++;
+			}
+
+			MessageBox.Show(count + " effects pasted.");
 		}
 	}
 }

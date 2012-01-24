@@ -79,6 +79,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
             InitUndo();
 			updateButtonStates();
 
+			ScrollOnPlayback = true;
+
 #if DEBUG
 			ToolStripButton b = new ToolStripButton("[Debug Break]");
 			b.Click += b_Click;
@@ -522,7 +524,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		protected void timerPlaying_Tick(object sender, EventArgs e)
 		{
-			if (_timingSource != null) {
+			if (_timingSource != null && ScrollOnPlayback) {
 				timelineControl.PlaybackCurrentTime = _timingSource.Position;
 			}
 		}
@@ -958,6 +960,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+		public void CopyElementToTime(TimedSequenceElement element, TimeSpan targetTime)
+		{
+			if (element == null)
+				return;
+
+			Row targetRow = timelineControl.SelectedRow ?? timelineControl.TopVisibleRow;
+			IEffectModuleInstance newEffect = element.EffectNode.Effect.Clone() as IEffectModuleInstance;
+			addEffectInstance(newEffect, targetRow, targetTime, element.Duration);
+		}
+
 		#endregion
 
 
@@ -1136,9 +1148,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripMenuItem_MarkManager_Click(object sender, EventArgs e)
 		{
-			MarkManager manager = new MarkManager(new List<MarkCollection>(_sequence.MarkCollections), this, this);
-			if (manager.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-			{
+			MarkManager manager = new MarkManager(new List<MarkCollection>(_sequence.MarkCollections), this, this, this);
+			if (manager.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 				_sequence.MarkCollections = manager.MarkCollections;
 				populateGridWithMarks();
 				sequenceModified();
@@ -1165,6 +1176,33 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 }
             } while (true);
 		}
+
+
+		public TimelineElementsClipboardData ClipboardData
+		{
+			get { return _clipboard; }
+		}
+
+		private void renderEffectsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			foreach (EffectNode en in _sequence.Data.GetEffects()) {
+				if (en.Effect.IsDirty)
+					en.Effect.PreRender();
+			}
+		}
+
+		private void renderElementsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			foreach (Element element in timelineControl.SelectedElements) {
+				(element as TimedSequenceElement).RenderInsetImage();
+			}
+		}
+
+		private void toolStripMenuItem_scrollOnPlayback_Click(object sender, EventArgs e)
+		{
+			ScrollOnPlayback = toolStripMenuItem_scrollOnPlayback.Checked;
+		}
+
 
 		#endregion
 
@@ -1318,6 +1356,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region IExecutionControl and ITiming implementation - beat tapping
 
+
+		// implementation of IExecutionControl and ITiming interfaces, for the beat track tapping.
 		void IExecutionControl.Resume()
 		{
 			PlaySequence();
@@ -1340,7 +1380,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		TimeSpan ITiming.Position
 		{
-			get { return _timingSource.Position; }
+			get
+			{
+				if (_timingSource == null)
+					return TimeSpan.Zero;
+				return _timingSource.Position;
+			}
 			set { }
 		}
 
@@ -1355,6 +1400,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			set { throw new NotSupportedException(); }
 		}
 
+		private bool _scrollOnPlayback;
+		public bool ScrollOnPlayback
+		{
+			get { return _scrollOnPlayback; }
+			set
+			{
+				_scrollOnPlayback = value;
+				toolStripMenuItem_scrollOnPlayback.Checked = value;
+			}
+		}
 		#endregion
 
 	}
