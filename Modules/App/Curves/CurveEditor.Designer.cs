@@ -183,8 +183,10 @@ namespace VixenModules.App.Curves
 			// 
 			// CurveEditor
 			// 
+			this.AcceptButton = this.buttonOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(495, 549);
 			this.Controls.Add(this.groupBoxLibrary);
 			this.Controls.Add(this.labelInstructions1);
@@ -193,10 +195,15 @@ namespace VixenModules.App.Curves
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.zedGraphControl);
 			this.DoubleBuffered = true;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(440, 440);
 			this.Name = "CurveEditor";
+			this.ShowIcon = false;
+			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Curve Editor";
+			this.TopMost = true;
 			this.groupBoxLibrary.ResumeLayout(false);
 			this.groupBoxLibrary.PerformLayout();
 			this.ResumeLayout(false);
