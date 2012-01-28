@@ -19,7 +19,7 @@ namespace VixenModules.Effect.Pulse
 	public class Pulse : EffectModuleInstanceBase
 	{
 		private PulseData _data;
-		private ChannelData _channelData = null;
+		private EffectIntents _channelData = null;
 
 		public Pulse()
 		{
@@ -28,14 +28,14 @@ namespace VixenModules.Effect.Pulse
 
 		protected override void _PreRender()
 		{
-			_channelData = new ChannelData();
+			_channelData = new EffectIntents();
 
 			foreach (ChannelNode node in TargetNodes) {
 				RenderNode(node);
 			}
 		}
 
-		protected override ChannelData _Render()
+		protected override EffectIntents _Render()
 		{
 			return _channelData;
 		}
@@ -163,8 +163,9 @@ namespace VixenModules.Effect.Pulse
 					data.Add(new CommandNode(new Lighting.Monochrome.SetLevel(lastCommandLevel), lastCommandTime, TimeSpan - lastCommandTime));
 				}
 
+				//TODO
 				// now take that list of commands, and whack it in the rendered channel data.
-				_channelData.AddCommandNodesForChannel(channel.Id, data.ToArray());
+				//_channelData.AddCommandNodesForChannel(channel.Id, data.ToArray());
 			}
 		}
 
@@ -188,8 +189,9 @@ namespace VixenModules.Effect.Pulse
 				ChannelCommands rgbData = rgbProperty.RenderColorToCommands(currentColor, currentLevel);
 				foreach (KeyValuePair<Guid, Command[]> kvp in rgbData) {
 					foreach (Command c in kvp.Value) {
-						CommandNode newCommandNode = new CommandNode(c, currentTime, sliceDuration);
-						_channelData.AddCommandNodeForChannel(kvp.Key, newCommandNode);
+						//TODO
+						//CommandNode newCommandNode = new CommandNode(c, currentTime, sliceDuration);
+						//_channelData.AddCommandNodeForChannel(kvp.Key, newCommandNode);
 					}
 				}
 

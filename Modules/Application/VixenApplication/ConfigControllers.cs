@@ -162,7 +162,7 @@ namespace VixenApplication
 					// find them, then remove them from the list as we don't need to add them anymore.
 					foreach(ChannelNode node in VixenSystem.Nodes) {
 						if (node.Channel != null) {
-							foreach (ControllerReference cr in node.Channel.Patch) {
+							foreach (ControllerReference cr in VixenSystem.ChannelPatching.GetChannelPatch(node.Channel.Id)) {
 								if (refsToAdd.Contains(cr)) {
 									refsToAdd.Remove(cr);
 								}
@@ -181,7 +181,7 @@ namespace VixenApplication
 						if (newNode.Channel == null) {
 							newNode.Channel = VixenSystem.Channels.AddChannel(name);
 						}
-						newNode.Channel.Patch.Add(cr);
+						VixenSystem.ChannelPatching.AddPatch(newNode.Channel.Id, cr);
 						channelsAdded++;
 					}
 

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Vixen.Sys;
 using Vixen.Module.Effect;
 
 namespace Vixen.Sys {
@@ -56,11 +54,8 @@ namespace Vixen.Sys {
 			get { return Effect == null; }
 		}
 
-		public ChannelData RenderEffectData() {
-			if(!IsEmpty) {
-				return Effect.Render();
-			}
-			return null;
+		public EffectIntents RenderEffectData() {
+			return !IsEmpty ? Effect.Render() : null;
 		}
 
 		/// <summary>
@@ -69,7 +64,7 @@ namespace Vixen.Sys {
 		/// <param name="desiredStartTime">Relative to the start of the EffectNode.</param>
 		/// <param name="desiredDuration">Duration of effect to render.</param>
 		/// <returns></returns>
-		public ChannelData RenderEffectData(TimeSpan desiredStartTime, TimeSpan desiredDuration) {
+		public EffectIntents RenderEffectData(TimeSpan desiredStartTime, TimeSpan desiredDuration) {
 			if(!IsEmpty) {
 				// We're providing the length of the desired effect and a relative start time for rendering.
 				TimeSpan renderStartTime = (desiredStartTime < TimeSpan) ? desiredStartTime : TimeSpan.Zero;

@@ -20,7 +20,7 @@ namespace VixenModules.Effect.Spin
 	public class Spin : EffectModuleInstanceBase
 	{
 		private SpinData _data;
-		private ChannelData _channelData = null;
+		private EffectIntents _channelData = null;
 
 		public Spin()
 		{
@@ -29,11 +29,11 @@ namespace VixenModules.Effect.Spin
 
 		protected override void _PreRender()
 		{
-			_channelData = new ChannelData();
+			_channelData = new EffectIntents();
 			DoRendering();
 		}
 
-		protected override ChannelData _Render()
+		protected override EffectIntents _Render()
 		{
 			return _channelData;
 		}
@@ -195,7 +195,7 @@ namespace VixenModules.Effect.Spin
 			ChannelNode lastTargetedNode = null;
 
 			Pulse.Pulse pulse;
-			ChannelData pulseData;
+			EffectIntents pulseData;
 
 			// apply the 'background' values to all targets
 			int i = 0;
@@ -225,7 +225,8 @@ namespace VixenModules.Effect.Spin
 				}
 
 				pulseData = pulse.Render();
-				_channelData.AddChannelData(pulseData);
+				//TODO
+				//_channelData.AddChannelData(pulseData);
 				i++;
 			}
 
@@ -321,13 +322,14 @@ namespace VixenModules.Effect.Spin
 				}
 
 				pulseData = pulse.Render();
-				pulseData.OffsetAllCommandsByTime(current);
-				_channelData.AddChannelData(pulseData);
+				//TODO
+				//pulseData.OffsetAllCommandsByTime(current);
+				//_channelData.AddChannelData(pulseData);
 				
 				lastTargetedNode = currentNode;
 			}
 
-			_channelData = ChannelData.Restrict(_channelData, TimeSpan.Zero, TimeSpan);
+			_channelData = EffectIntents.Restrict(_channelData, TimeSpan.Zero, TimeSpan);
 		}
 	}
 }

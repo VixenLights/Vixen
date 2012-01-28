@@ -23,7 +23,7 @@ namespace VixenModules.Effect.Twinkle
 		private static Random _random = new Random();
 
 		private TwinkleData _data;
-		private ChannelData _channelData = null;
+		private EffectIntents _channelData = null;
 
 		public Twinkle()
 		{
@@ -32,7 +32,7 @@ namespace VixenModules.Effect.Twinkle
 
 		protected override void _PreRender()
 		{
-			_channelData = new ChannelData();
+			_channelData = new EffectIntents();
 
 			IEnumerable<ChannelNode> targetNodes = RGBModule.FindAllRenderableChildren(TargetNodes);
 
@@ -41,11 +41,11 @@ namespace VixenModules.Effect.Twinkle
 				twinkles = GenerateTwinkleData();
 
 			foreach (ChannelNode node in targetNodes) {
-				_channelData.AddChannelData(RenderChannel(node, twinkles));
+				_channelData.Add(node.Channel.Id, RenderChannel(node, twinkles));
 			}
 		}
 
-		protected override ChannelData _Render()
+		protected override EffectIntents _Render()
 		{
 			return _channelData;
 		}
@@ -168,7 +168,7 @@ namespace VixenModules.Effect.Twinkle
 			set { _data.ColorGradient = value; IsDirty = true; }
 		}
 
-		private ChannelData RenderChannel(ChannelNode node, List<IndividualTwinkleDetails> twinkles = null)
+		private EffectIntents RenderChannel(ChannelNode node, List<IndividualTwinkleDetails> twinkles = null)
 		{
 			if (node == null)
 				return null;
@@ -176,7 +176,7 @@ namespace VixenModules.Effect.Twinkle
 			if (twinkles == null)
 				twinkles = GenerateTwinkleData();
 
-			ChannelData result = new ChannelData();
+			EffectIntents result = new EffectIntents();
 
 			// render the flat 'minimum value' across the entire effect
 			Pulse.Pulse pulse = new Pulse.Pulse();
@@ -199,8 +199,8 @@ namespace VixenModules.Effect.Twinkle
 					break;
 			}
 
-			ChannelData pulseData = pulse.Render();
-			result.AddChannelData(pulseData);
+			EffectIntents pulseData = pulse.Render();
+			result.Add(pulseData);
 
 			// render all the individual twinkles
 			foreach (IndividualTwinkleDetails twinkle in twinkles) {
@@ -229,8 +229,9 @@ namespace VixenModules.Effect.Twinkle
 					}
 
 					pulseData = pulse.Render();
-					pulseData.OffsetAllCommandsByTime(twinkle.StartTime);
-					result.AddChannelData(pulseData);
+					//TODO
+					//pulseData.OffsetAllCommandsByTime(twinkle.StartTime);
+					//result.AddChannelData(pulseData);
 				}
 			}
 

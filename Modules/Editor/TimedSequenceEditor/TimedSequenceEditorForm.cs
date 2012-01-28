@@ -437,7 +437,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_context != null) {
 				CloseSequenceContext();
 			}
-			_context = Execution.CreateContext(Sequence);
+			_context = (ProgramContext)VixenSystem.Contexts.CreateContext(Sequence);
 			_context.SequenceStarted += context_SequenceStarted;
 			_context.SequenceEnded += context_SequenceEnded;
 			_context.ProgramEnded += _context_ProgramEnded;
@@ -451,7 +451,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_context.SequenceStarted -= context_SequenceStarted;
 			_context.SequenceEnded -= context_SequenceEnded;
 			_context.ProgramEnded -= _context_ProgramEnded;
-			Execution.ReleaseContext(_context);
+			VixenSystem.Contexts.ReleaseContext(_context);
 			updateButtonStates();
 		}
 
@@ -856,7 +856,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		protected override void OnFormClosed(FormClosedEventArgs e)
 		{
-			Execution.ReleaseContext(_context);
+			VixenSystem.Contexts.ReleaseContext(_context);
 		}
 
 		#endregion

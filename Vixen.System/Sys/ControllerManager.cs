@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Diagnostics;
+using Vixen.Commands;
 
 namespace Vixen.Sys {
 	public class ControllerManager : IEnumerable<OutputController> {
@@ -41,15 +41,18 @@ namespace Vixen.Sys {
 					// Stop the controller.
 					_StopController(controller);
 					// Remove it from any patching.
-					foreach(ChannelNode node in VixenSystem.Nodes) {
-						if(node.Channel != null) {
-							foreach(ControllerReference cr in node.Channel.Patch.ToArray()) {
-								if(cr.ControllerId == controller.Id) {
-									node.Channel.Patch.Remove(cr);
-								}
-							}
-						}
+					foreach(ChannelOutputPatch patch in VixenSystem.ChannelPatching) {
+						patch.Remove(controller.Id);
 					}
+					//foreach(ChannelNode node in VixenSystem.Nodes) {
+					//    if(node.Channel != null) {
+					//        foreach(ControllerReference cr in node.Channel.Patch.ToArray()) {
+					//            if(cr.ControllerId == controller.Id) {
+					//                node.Channel.Patch.Remove(cr);
+					//            }
+					//        }
+					//    }
+					//}
 				}
 			}
 		}
@@ -123,7 +126,7 @@ namespace Vixen.Sys {
 
 			foreach(Guid controllerId in sources.Controllers) {
 				foreach(OutputSources outputSources in sources.GetControllerSources(controllerId)) {
-					foreach(IOutputStateSource source in outputSources) {
+					foreach(IStateSource<Command> source in outputSources) {
 						AddSource(source, new ControllerReference(controllerId, outputSources.OutputIndex));
 					}
 				}
@@ -135,21 +138,21 @@ namespace Vixen.Sys {
 
 			foreach(Guid controllerId in sources.Controllers) {
 				foreach(OutputSources outputSources in sources.GetControllerSources(controllerId)) {
-					foreach(IOutputStateSource source in outputSources) {
+					foreach(IStateSource<Command> source in outputSources) {
 						RemoveSource(source, new ControllerReference(controllerId, outputSources.OutputIndex));
 					}
 				}
 			}
 		}
 
-		public void AddSource(IOutputStateSource source, ControllerReference controllerReference) {
+		public void AddSource(IStateSource<Command> source, ControllerReference controllerReference) {
 			OutputController controller;
 			if(_controllers.TryGetValue(controllerReference.ControllerId, out controller)) {
 				controller.AddSource(source, controllerReference.OutputIndex);
 			}
 		}
 
-		public void RemoveSource(IOutputStateSource source, ControllerReference controllerReference) {
+		public void RemoveSource(IStateSource<Command> source, ControllerReference controllerReference) {
 			OutputController controller;
 			if(_controllers.TryGetValue(controllerReference.ControllerId, out controller)) {
 				controller.RemoveSource(source, controllerReference.OutputIndex);
@@ -169,7 +172,7 @@ namespace Vixen.Sys {
 		}
 
 		private OutputController _GetController(Guid controllerId) {
-			OutputController controller = null;
+			OutputController controller;
 			if(_controllers.TryGetValue(controllerId, out controller)) {
 				return controller;
 			}
@@ -223,7 +226,7 @@ namespace Vixen.Sys {
 		}
 
 		private void _HardwareError(object sender, EventArgs e) {
-			HardwareUpdateThread hardwareUpdateThread = sender as HardwareUpdateThread;
+			HardwareUpdateThread hardwareUpdateThread = (HardwareUpdateThread)sender;
 			_StopController(hardwareUpdateThread.Controller);
 			VixenSystem.Logging.Error("Controller " + hardwareUpdateThread.Controller.Name + " experienced an error during execution and was shutdown.");
 		}
@@ -246,7 +249,7 @@ namespace Vixen.Sys {
 				_finished = new EventWaitHandle(false, EventResetMode.ManualReset);
 			}
 
-			public ExecutionState State { get { return _threadState; } }
+			//public ExecutionState State { get { return _threadState; } }
 
 			public OutputController Controller { get; private set; }
 
@@ -307,7 +310,7 @@ namespace Vixen.Sys {
 
 			protected virtual void OnError() {
 				if(Error != null) {
-					Error(this, EventArgs.Empty);
+					Error.Raise(this, EventArgs.Empty);
 				}
 			}
 		}

@@ -37,7 +37,7 @@ namespace Vixen.Sys {
 
 		public void AddChannel(Channel channel) {
 			// Create an enumerator.
-			_CreateChannelEnumerators(channel);
+			//_CreateChannelEnumerators(channel);
 			if (_instances.ContainsKey(channel.Id))
 				VixenSystem.Logging.Error("ChannelManager: Adding a channel, but it's already in the instance map!");
 
@@ -73,19 +73,18 @@ namespace Vixen.Sys {
 		internal void OpenChannels<T>()
 			where T : IEnumerator<CommandNode[]> {
 			_enumeratorChannelsOpenedWith = typeof(T);
-			_CreateChannelEnumerators(_instances.Values);
+			//_CreateChannelEnumerators(_instances.Values);
 		}
 
 		public void CloseChannels() {
-			_ResetChannelEnumerators();
+			//_ResetChannelEnumerators();
 		}
 
 		public Channel GetChannel(Guid id) {
 			if (_instances.ContainsKey(id)) {
 				return _instances[id];
-			} else {
-				return null;
 			}
+			return null;
 		}
 
 		public bool SetChannelNodeForChannel(Channel channel, ChannelNode node)
@@ -93,10 +92,7 @@ namespace Vixen.Sys {
 			if (channel == null)
 				return false;
 
-			bool rv = false;
-
-			if (_channelToChannelNode.ContainsKey(channel))
-				rv = true;
+			bool rv = _channelToChannelNode.ContainsKey(channel);
 
 			_channelToChannelNode[channel] = node;
 			return rv;
@@ -114,60 +110,68 @@ namespace Vixen.Sys {
 			return new ChannelPatch();
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="channel"></param>
-		/// <returns>Channel's new state, null if no state change.</returns>
-		public Command UpdateChannelState(Channel channel, out bool updatedState) {
-			IEnumerator<CommandNode[]> enumerator;
-			updatedState = false;
+		///// <summary>
+		///// 
+		///// </summary>
+		///// <param name="channel"></param>
+		///// <returns>Channel's new state, null if no state change.</returns>
+		//public Command UpdateChannelState(Channel channel, out bool updatedState) {
+		//    IEnumerator<CommandNode[]> enumerator;
+		//    updatedState = false;
 
-			lock(_channelEnumerators) {
-				// we potentially might be trying to update a channel one last time just after it's been
-				// deleted (since the _UpdateChannelStates in Execution iterates over a copy of these
-				// channels). If so, just ignore it if we can't find this channel. This is probably the
-				// best performing solution that doesn't need locking around big chunks of code.
-				if (!_channelEnumerators.ContainsKey(channel))
-					return null;
-				enumerator = _channelEnumerators[channel];
-				// Will return true if state has changed.
-				// State changes when data qualifies for execution.
-				if(enumerator.MoveNext()) {
-					Command channelState = Command.Combine(enumerator.Current.Select(x => x.Command));
-					channel.Patch.Write(channelState);
-					updatedState = true;
-					return channelState;
-				}
-				return null;
-			}
-		}
+		//    lock(_channelEnumerators) {
+		//        // we potentially might be trying to update a channel one last time just after it's been
+		//        // deleted (since the _UpdateChannelStates in Execution iterates over a copy of these
+		//        // channels). If so, just ignore it if we can't find this channel. This is probably the
+		//        // best performing solution that doesn't need locking around big chunks of code.
+		//        if (!_channelEnumerators.ContainsKey(channel))
+		//            return null;
+		//        enumerator = _channelEnumerators[channel];
+		//        // Will return true if state has changed.
+		//        // State changes when data qualifies for execution.
+		//        if(enumerator.MoveNext()) {
+		//            Command channelState = Command.Combine(enumerator.Current.Select(x => x.Command));
+		//            channel.Patch.Write(channelState);
+		//            updatedState = true;
+		//            return channelState;
+		//        }
+		//        return null;
+		//    }
+		//}
 
-		private void _CreateChannelEnumerators(params Channel[] channels) {
-			_CreateChannelEnumerators(channels as IEnumerable<Channel>);
-		}
-
-		private void _CreateChannelEnumerators(IEnumerable<Channel> channels) {
-			if(_enumeratorChannelsOpenedWith == null) return;
-
-			lock(_channelEnumerators) {
-				foreach(Channel channel in channels.ToArray()) {
-					if(!_channelEnumerators.ContainsKey(channel) || _channelEnumerators[channel] == null) {
-						IEnumerator<CommandNode[]> enumerator = Activator.CreateInstance(_enumeratorChannelsOpenedWith, channel, Vixen.Sys.Execution.SystemTime) as IEnumerator<CommandNode[]>;
-						_channelEnumerators[channel] = enumerator;
-					}
+		public void Update() {
+			lock(_instances) {
+				foreach(Channel channel in _instances.Values) {
+					channel.Update();
 				}
 			}
 		}
 
-		private void _ResetChannelEnumerators() {
-			lock(_channelEnumerators) {
-				foreach(Channel channel in _channelEnumerators.Keys.ToArray()) {
-					_channelEnumerators[channel].Dispose();
-					_channelEnumerators[channel] = null;
-				}
-			}
-		}
+		//private void _CreateChannelEnumerators(params Channel[] channels) {
+		//    _CreateChannelEnumerators(channels as IEnumerable<Channel>);
+		//}
+
+		//private void _CreateChannelEnumerators(IEnumerable<Channel> channels) {
+		//    if(_enumeratorChannelsOpenedWith == null) return;
+
+		//    lock(_channelEnumerators) {
+		//        foreach(Channel channel in channels.ToArray()) {
+		//            if(!_channelEnumerators.ContainsKey(channel) || _channelEnumerators[channel] == null) {
+		//                IEnumerator<CommandNode[]> enumerator = Activator.CreateInstance(_enumeratorChannelsOpenedWith, channel, Vixen.Sys.Execution.SystemTime) as IEnumerator<CommandNode[]>;
+		//                _channelEnumerators[channel] = enumerator;
+		//            }
+		//        }
+		//    }
+		//}
+
+		//private void _ResetChannelEnumerators() {
+		//    lock(_channelEnumerators) {
+		//        foreach(Channel channel in _channelEnumerators.Keys.ToArray()) {
+		//            _channelEnumerators[channel].Dispose();
+		//            _channelEnumerators[channel] = null;
+		//        }
+		//    }
+		//}
 
 		private string _Uniquify(string name) {
 			if(_instances.Values.Any(x => x.Name == name)) {

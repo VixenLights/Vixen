@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Collections.Concurrent;
-using System.Xml.Linq;
-using Vixen.Sys;
 using Vixen.Commands;
 
 namespace Vixen.Sys {
@@ -13,62 +8,94 @@ namespace Vixen.Sys {
 	/// <summary>
 	/// A logical channel of low-level CommandData that is intended to be executed by a controller.
 	/// </summary>
-	public class Channel : IEnumerable<CommandNode>, IEqualityComparer<Channel>, IEquatable<Channel> {
-		private Patch _patch;
-		private IChannelDataStore _data = new ChannelSortedList();
+	//public class Channel : IEnumerable<CommandNode>, IEqualityComparer<Channel>, IEquatable<Channel> {
+	public class Channel : IStateSource<Command>, IEqualityComparer<Channel>, IEquatable<Channel> {
+		//The relationship between channels and outputs should be maintained separate
+		//from the entities.  Like what would be done in a database.
+		//private Patch _patch;
+		//private IChannelDataStore _data = new ChannelSortedList();
+		private ChannelContextSource _dataSource;
+		private CommandStateAggregator _stateAggregator;
 
 		public Channel(string name)
-			: this(Guid.NewGuid(), name, new Patch()) {
+			: this(Guid.NewGuid(), name) {
 		}
 
-		public Channel(Guid id, string name, Patch patch) {
+		//public Channel(string name)
+		//    : this(Guid.NewGuid(), name, new Patch()) {
+		//}
+
+		public Channel(Guid id, string name) {
 			Id = id;
 			Name = name;
-			Patch = patch;
+			_dataSource = new ChannelContextSource(Id);
+			_stateAggregator = new CommandStateAggregator();
 		}
+
+		//public Channel(Guid id, string name, Patch patch) {
+		//    Id = id;
+		//    Name = name;
+		//    Patch = patch;
+		//    ChannelContextSource dataSource = new ChannelContextSource(Id);
+		//    _stateAggregator = new CommandStateAggregator(dataSource);
+		//}
 
 		public string Name { get; set; }
 
 		public Guid Id { get; protected set; }
 
-		public Patch Patch {
-			get { return _patch; }
-			set {
-				// Want any controller references to be properly removed.
-				if(_patch != null) {
-					_patch.Clear();
-				}
-				_patch = value;
-			}
+		//public Patch Patch {
+		//    get { return _patch; }
+		//    set {
+		//        // Want any controller references to be properly removed.
+		//        if(_patch != null) {
+		//            _patch.Clear();
+		//        }
+		//        _patch = value;
+		//    }
+		//}
+
+		public bool Masked { get; set; }
+		//public bool Masked {
+		//    get { return !Patch.Enabled; }
+		//    set { Patch.Enabled = !value; }
+		//}
+
+		//public IEnumerator<CommandNode> GetEnumerator() {
+		//    // We need an enumerator that is live and does not operate upon a snapshot
+		//    // of the data.
+		//    return _data.GetEnumerator();
+		//}
+
+		//System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
+		//    return this.GetEnumerator();
+		//}
+
+		//public void AddData(IEnumerable<CommandNode> data) {
+		//    foreach(CommandNode dataElement in data) {
+		//        _data.Add(dataElement);
+		//    }
+		//}
+
+		//public void AddData(CommandNode data) {
+		//    _data.Add(data);
+		//}
+
+		//public void Clear() {
+		//    _data.Clear();
+		//}
+
+		public void Update() {
+			// Aggregate our state from the contexts.
+			_stateAggregator.Aggregate(_dataSource);
 		}
 
-		public bool Masked {
-			get { return !this.Patch.Enabled; }
-			set { this.Patch.Enabled = !value; }
+		public Command Value {
+			get { return Masked ? null : _stateAggregator.Value; }
 		}
 
-		public IEnumerator<CommandNode> GetEnumerator() {
-			// We need an enumerator that is live and does not operate upon a snapshot
-			// of the data.
-			return _data.GetEnumerator();
-		}
-
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
-			return this.GetEnumerator();
-		}
-
-		public void AddData(IEnumerable<CommandNode> data) {
-			foreach(CommandNode dataElement in data) {
-				_data.Add(dataElement);
-			}
-		}
-
-		public void AddData(CommandNode data) {
-			_data.Add(data);
-		}
-
-		public void Clear() {
-			_data.Clear();
+		public override string ToString() {
+			return Name;
 		}
 
 		public bool Equals(Channel x, Channel y) {
@@ -84,15 +111,11 @@ namespace Vixen.Sys {
 		// Equals(object) is overridden (which it really isn't, but this is what is said and
 		// it doesn't work otherwise).
 		public bool Equals(Channel other) {
-			return this.Id == other.Id;
+			return Id == other.Id;
 		}
 
 		public override int GetHashCode() {
 			return Id.GetHashCode();
-		}
-
-		public override string ToString() {
-			return Name;
 		}
 	}
 }

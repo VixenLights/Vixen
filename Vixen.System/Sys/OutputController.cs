@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Vixen.Module;
 using Vixen.Module.Output;
+using Vixen.Module.PostFilter;
 using Vixen.Module.Transform;
 using Vixen.Commands;
 
@@ -16,6 +17,8 @@ namespace Vixen.Sys {
 		private IModuleDataSet _moduleDataSet = new ModuleLocalDataSet();
 		private Output[] _outputArray = new Output[0];
 
+		//private CommandStateSourceCollection<int> _outputStates;
+
 		public OutputController(string name, int outputCount, Guid outputModuleId)
 			: this(Guid.NewGuid(), Guid.NewGuid(), name, outputCount, outputModuleId) {
 		}
@@ -26,6 +29,8 @@ namespace Vixen.Sys {
 			Name = name;
 			OutputModuleId = outputModuleId;
 			OutputCount = outputCount;
+
+			//_outputStates = new CommandStateSourceCollection<int>();
 		}
 
 		public void Start() {
@@ -124,18 +129,24 @@ namespace Vixen.Sys {
 		}
 
 		public void Update() {
-			// Updates start at the root controllers and cascade from there.
-			// Non-root controllers are not directly updated; they are only updated
-			// from a root controller.
-			if(IsRootController && _ControllerChainOutputModule != null) {
-				// States need to be pulled in order, so we're getting them to update
-				// in parallel with no need to properly collate the results, then iterating
-				// the output in order.
+			// First, get what we pull from to update...
+			Execution.UpdateState();
+			// Then we update ourselves from that.
+			_UpdateState();
+		}
 
-				// Get the outputs of all controllers in the chain to update their state.
+		private void _UpdateState() {
+			if(IsRootController && _ControllerChainOutputModule != null) {
+				// All controllers in this chain update in parallel.
 				Parallel.ForEach(this, x =>
-					Parallel.ForEach(x._outputs, y => y.UpdateState())
-					);
+				    {
+				        // All outputs for a controller update in parallel.
+				        Parallel.ForEach(x._outputs, y => y.UpdateState());
+				        // Apply post-filters to the output states.
+						// (User may be allowed to skip this step in the future).
+						Parallel.ForEach(x._outputs, y => y.FilterState());
+				    });
+
 				// Latch out the new state.
 				// This must be done in order of the chain links so that data
 				// goes out the port in the correct order.
@@ -144,19 +155,44 @@ namespace Vixen.Sys {
 					// such as daisy-chained Renard controllers.  Tell the module where
 					// it is in that chain.
 					controller._ControllerChainOutputModule.ChainIndex = controller.ChainIndex;
-					controller._ControllerChainOutputModule.UpdateState(controller._outputs.Select(x => x.CurrentState).ToArray());
+					Command[] outputStates = controller._outputs.Select(x => x.CurrentState).ToArray();
+					controller._ControllerChainOutputModule.UpdateState(outputStates);
 				}
 			}
+
+			//// Updates start at the root controllers and cascade from there.
+			//// Non-root controllers are not directly updated; they are only updated
+			//// from a root controller.
+			//if(IsRootController && _ControllerChainOutputModule != null) {
+			//    // States need to be pulled in order, so we're getting them to update
+			//    // in parallel with no need to properly collate the results, then iterating
+			//    // the output in order.
+
+			//    // Get the outputs of all controllers in the chain to update their state.
+			//    Parallel.ForEach(this, x =>
+			//        Parallel.ForEach(x._outputs, y => y.UpdateState())
+			//        );
+			//    // Latch out the new state.
+			//    // This must be done in order of the chain links so that data
+			//    // goes out the port in the correct order.
+			//    foreach(OutputController controller in this) {
+			//        // A single port may be used to service multiple physical controllers,
+			//        // such as daisy-chained Renard controllers.  Tell the module where
+			//        // it is in that chain.
+			//        controller._ControllerChainOutputModule.ChainIndex = controller.ChainIndex;
+			//        controller._ControllerChainOutputModule.UpdateState(controller._outputs.Select(x => x.CurrentState).ToArray());
+			//    }
+			//}
 		}
 
 		public OutputController Clone() {
 			// Doing a MemberwiseClone does NOT call the constructor.
-			OutputController controller = this.MemberwiseClone() as OutputController;
+			OutputController controller = (OutputController)MemberwiseClone();
 
 			// Wipe out instance link references or the stale references will prevent links.
 			controller.Prior = null;
 			controller.Next = null;
-			controller._outputs = this._outputs.Select(x => new Output(this)).ToList();
+			controller._outputs = _outputs.Select(x => new Output()).ToList();
 
 			if(_outputModule != null) {
 				controller._outputModule = Modules.ModuleManagement.GetOutput(_outputModule.Descriptor.TypeId);
@@ -180,7 +216,7 @@ namespace Vixen.Sys {
 				} else {
 					while(_outputs.Count < value) {
 						// Create a new output.
-						Output output = new Output(this);
+						Output output = new Output();
 						_outputs.Add(output);
 					}
 				}
@@ -254,17 +290,12 @@ namespace Vixen.Sys {
 				// When output controllers are linked, only the root controller will be
 				// connected to the port, therefore only it will have the output module
 				// used during execution.
-				if(Prior != null) return Prior._ControllerChainOutputModule;
-				return _outputModule;
+				return (Prior != null) ? Prior._ControllerChainOutputModule : _outputModule;
 			}
 		}
 
 		virtual protected void CommitState() {
-			if(Prior != null) {
-				LinkedTo = Prior.Id;
-			} else {
-				LinkedTo = Guid.Empty;
-			}
+			LinkedTo = (Prior != null) ? Prior.Id : Guid.Empty;
 		}
 
 		public bool HasSetup {
@@ -293,14 +324,14 @@ namespace Vixen.Sys {
 			CommitState();
 		}
 
-		public bool AddSource(IOutputStateSource source, int outputIndex) {
+		public bool AddSource(IStateSource<Command> source, int outputIndex) {
 			if(outputIndex < OutputCount) {
 				return _outputs[outputIndex].AddSource(source);
 			}
 			return false;
 		}
 
-		public void RemoveSource(IOutputStateSource source, int outputIndex) {
+		public void RemoveSource(IStateSource<Command> source, int outputIndex) {
 			if(outputIndex < OutputCount) {
 				_outputs[outputIndex].RemoveSource(source);
 			}
@@ -334,7 +365,7 @@ namespace Vixen.Sys {
 			if(IsRootController) {
 				return new ChainEnumerator(this);
 			}
-			return null;
+			return Enumerable.Empty<OutputController>().GetEnumerator();
 		}
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
@@ -344,19 +375,27 @@ namespace Vixen.Sys {
 
 		#region class Output
 		public class Output {
-			private OutputController _owner;
-			private LinkedList<IOutputStateSource> _sources = new LinkedList<IOutputStateSource>();
+			//private OutputController _owner;
+			//private LinkedList<IOutputStateSource> _sources = new LinkedList<IOutputStateSource>();
+			private LinkedList<IStateSource<Command>> _sources = new LinkedList<IStateSource<Command>>();
+			private CommandStateAggregator _stateAggregator;
+			private List<IPostFilter> _postFilters;
 
-			public Output(OutputController owner) {
-				_owner = owner;
-				CurrentState = null;
+			public Output() {
 				Name = "Unnamed";
+				_stateAggregator = new CommandStateAggregator();
+				_postFilters = new List<IPostFilter>();
 			}
+			//public Output(OutputController owner) {
+			//    _owner = owner;
+			//    CurrentState = null;
+			//    Name = "Unnamed";
+			//}
 
 			// Completely independent; nothing is current dependent upon this value.
 			public string Name { get; set; }
 
-			public bool AddSource(IOutputStateSource source) {
+			public bool AddSource(IStateSource<Command> source) {
 				if(!_sources.Contains(source)) {
 					_sources.AddLast(source);
 					return true;
@@ -364,7 +403,7 @@ namespace Vixen.Sys {
 				return false;
 			}
 
-			public void RemoveSource(IOutputStateSource source) {
+			public void RemoveSource(IStateSource<Command> source) {
 				_sources.Remove(source);
 			}
 
@@ -372,19 +411,55 @@ namespace Vixen.Sys {
 				_sources.Clear();
 			}
 
+			public void AddPostFilter(IPostFilter filter) {
+				_postFilters.Add(filter);
+			}
+
+			public void AddPostFilters(IEnumerable<IPostFilter> filters) {
+				_postFilters.AddRange(filters);
+			}
+
+			public void InsertPostFilter(int index, IPostFilter filter) {
+				_postFilters.Insert(index, filter);
+			}
+
+			public void RemovePostFilter(IPostFilter filter) {
+				_postFilters.Remove(filter);
+			}
+
+			public void RemovePostFilterAt(int index) {
+				_postFilters.RemoveAt(index);
+			}
+
+			public void ClearPostFilters() {
+				_postFilters.Clear();
+			}
+
 			public void UpdateState() {
 				// Aggregate a state.
-				if(_sources.Count > 0) {
+				//if(_sources.Count > 0) {
 
-					if(_sources.Count == 1) {
-						CurrentState = _sources.First.Value.SourceState;
-					} else {
-						CurrentState = Command.Combine(_sources.Select(x => x.SourceState));
-					}
+				//    if(_sources.Count == 1) {
+				//        CurrentState = _sources.First.Value.SourceState;
+				//    } else {
+				//        CurrentState = Command.Combine(_sources.Select(x => x.SourceState));
+				//    }
+				//}
+				//Does the first output have the first channel from the context as a source?
+				//-> There are no sources.  It should have the live context as a source.
+				_stateAggregator.Aggregate(_sources);
+				CurrentState = _stateAggregator.Value;
+			}
+
+			public void FilterState() {
+				foreach(IPostFilter postFilter in _postFilters) {
+					CurrentState = postFilter.Affect(CurrentState);
+					if(CurrentState == null) break;
 				}
 			}
 
 			public Command CurrentState { get; private set; }
+
 		}
 		#endregion
 
@@ -424,5 +499,42 @@ namespace Vixen.Sys {
 			}
 		}
 		#endregion
+
+		//private class OutputStateSourceCollection : IStateSourceCollection<int, Command> {
+		//    private Dictionary<int, OutputCommandState> _outputCommandStates;
+
+		//    public OutputStateSourceCollection() {
+		//        _outputCommandStates = new Dictionary<int, OutputCommandState>();
+		//    }
+
+		//    //public OutputStateSourceCollection(int outputCount) {
+		//    //    OutputCount = outputCount;
+		//    //}
+
+		//    //public int OutputCount {
+		//    //    get { return _outputCommandStates.Count; }
+		//    //    set { 
+		//    //    }
+		//    //}
+
+		//    public void SetValue(int key, Command value) {
+		//        OutputCommandState outputCommandState;
+		//        if(!_outputCommandStates.TryGetValue(key, out outputCommandState)) {
+		//            outputCommandState = new OutputCommandState();
+		//            _outputCommandStates[key] = outputCommandState;
+		//        }
+		//        outputCommandState.Value = value;
+		//    }
+
+		//    public IStateSource<Command> GetValue(int key) {
+		//        OutputCommandState outputCommandState;
+		//        _outputCommandStates.TryGetValue(key, out outputCommandState);
+		//        return outputCommandState;
+		//    }
+
+		//    private class OutputCommandState : IStateSource<Command> {
+		//        public Command Value { get; set; }
+		//    }
+		//}
 	}
 }

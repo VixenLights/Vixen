@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 using Vixen.Sys;
 
@@ -13,6 +11,7 @@ namespace Vixen.IO.Xml {
 		private const string ELEMENT_CHANNELS = "Channels";
 		private const string ELEMENT_NODES = "Nodes";
 		private const string ELEMENT_CHANNEL = "Channel";
+		private const string ELEMENT_PATCHING = "Patching";
 		private const string ELEMENT_PATCH = "Patch";
 		private const string ELEMENT_NODE = "Node";
 		private const string ELEMENT_PROPERTIES = "Properties";
@@ -32,7 +31,6 @@ namespace Vixen.IO.Xml {
 		private const string ELEMENT_TRANSFORMS = "Transforms";
 		private const string ELEMENT_TRANSFORM = "Transform";
 		private const string ELEMENT_MODULE_DATA = "ModuleData";
-		private const string ATTR_COMB_STRATEGY = "strategy";
 		private const string ATTR_LINKED_TO = "linkedTo";
 		private const string ATTR_OUTPUT_COUNT = "outputCount";
 		private const string ATTR_HARDWARE_ID = "hardwareId";
@@ -47,6 +45,7 @@ namespace Vixen.IO.Xml {
 				_WriteChannels(obj),
 				_WriteBranchNodes(obj),
 				_WriteControllers(obj),
+				_WriteChannelPatching(obj),
 				_WriteDisabledControllers(obj));
 		}
 
@@ -70,7 +69,7 @@ namespace Vixen.IO.Xml {
 		}
 
 		private XElement _WriteChannels(SystemConfig obj) {
-			IEnumerable<XElement> elements = obj.Channels.Select(_WriteOutputChannel);
+			IEnumerable<XElement> elements = obj.Channels.Select(_WriteChannel);
 			return new XElement(ELEMENT_CHANNELS, elements);
 		}
 
@@ -84,17 +83,22 @@ namespace Vixen.IO.Xml {
 			return new XElement(ELEMENT_CONTROLLERS, elements);
 		}
 
+		private XElement _WriteChannelPatching(SystemConfig obj) {
+			IEnumerable<XElement> elements = obj.ChannelPatching.Select(_WriteChannelOutputPatch);
+			return new XElement(ELEMENT_PATCHING, elements);
+		}
+
 		private XElement _WriteDisabledControllers(SystemConfig obj) {
 			IEnumerable<XElement> elements = obj.DisabledControllers.Select(_WriteDisabledController);
 			return new XElement(ELEMENT_DISABLED_CONTROLLERS, elements);
 		}
 
-		private XElement _WriteOutputChannel(Channel outputChannel) {
+		private XElement _WriteChannel(Channel channel) {
 			XElement element = new XElement(ELEMENT_CHANNEL,
-				new XAttribute(ATTR_ID, outputChannel.Id),
-				new XAttribute(ATTR_NAME, outputChannel.Name),
-				new XElement(ELEMENT_PATCH,
-					outputChannel.Patch.ControllerReferences.Select(_WriteControllerReference)));
+				new XAttribute(ATTR_ID, channel.Id),
+				new XAttribute(ATTR_NAME, channel.Name));
+				//new XElement(ELEMENT_PATCH,
+				//    channel.Patch.ControllerReferences.Select(_WriteControllerReference)));
 			return element;
 		}
 
@@ -161,6 +165,13 @@ namespace Vixen.IO.Xml {
 
 			}
 			return null;
+		}
+
+		private XElement _WriteChannelOutputPatch(ChannelOutputPatch channelOutputPatch) {
+			IEnumerable<XElement> elements = channelOutputPatch.Select(_WriteControllerReference);
+			return new XElement(ELEMENT_PATCH, 
+				new XAttribute(ATTR_CHANNEL_ID, channelOutputPatch.ChannelId),
+				elements);
 		}
 
 		private XElement _WriteControllerReference(ControllerReference controllerReference) {

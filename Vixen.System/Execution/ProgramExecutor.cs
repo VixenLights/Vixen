@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Vixen.Module.Timing;
 using Vixen.Sys;
 
 namespace Vixen.Execution {
@@ -80,7 +81,27 @@ namespace Vixen.Execution {
         
         public bool IsPaused { get; private set; } // Can be paused and in the Playing state.
 
-        protected virtual void OnSequenceStarted(object sender, SequenceStartedEventArgs e) {
+    	public bool IsPlaying {
+    		get { return _executor != null && _executor.IsPlaying; }
+    	}
+
+    	public IDataSource GetCurrentSequenceData() {
+			if(_executor != null) {
+				IEnumerable<EffectNode> sequenceData = _executor.GetSequenceData();
+				return new SequenceDataSource(sequenceData);
+			}
+			return null;
+		}
+
+		public ITiming GetCurrentSequenceTiming() {
+			if(_executor != null) {
+				return _executor.GetSequenceTiming();
+			}
+			return null;
+		}
+
+    	#region Events
+		protected virtual void OnSequenceStarted(object sender, SequenceStartedEventArgs e) {
             if(SequenceStarted != null) {
                 SequenceStarted(sender, e);
             }
@@ -119,8 +140,9 @@ namespace Vixen.Execution {
                 ProgramEnded(null, new ProgramEventArgs(Program));
             }
         }
+		#endregion
 
-        private void _NextSequence(Action actionOnFail) {
+		private void _NextSequence(Action actionOnFail) {
             _executor = null;
 			try {
 				if(State != RunState.Stopping && _sequences.MoveNext()) {
@@ -248,6 +270,17 @@ namespace Vixen.Execution {
 		}
 
 		#endregion
-	}
 
+    	private class SequenceDataSource : IDataSource {
+			private IntervalTree<EffectNode> _data;
+
+			public SequenceDataSource(IEnumerable<EffectNode> sequenceData) {
+				_data = new IntervalTree<EffectNode>(sequenceData);
+			}
+
+			public IEnumerable<EffectNode> GetDataAt(TimeSpan time) {
+				return _data.Get(time);
+			}
+		}
+    }
 }

@@ -240,7 +240,8 @@ namespace Vixen.Sys {
 				foreach(Type moduleDescriptorType in moduleDescriptorTypes) {
 					try {
 						// Get the module descriptor.
-						moduleDescriptor = Activator.CreateInstance(moduleDescriptorType) as IModuleDescriptor;
+						object o = Activator.CreateInstance(moduleDescriptorType);
+						moduleDescriptor = o as IModuleDescriptor;
 
 						if(moduleDescriptor != null) {
 							if(moduleDescriptor.ModuleClass != null) {
@@ -258,7 +259,7 @@ namespace Vixen.Sys {
 								VixenSystem.Logging.Debug("Tried to load module " + moduleDescriptor.TypeName + " from " + Path.GetFileName(filePath) + ", but the ModuleClass is null.");
 							}
 						} else {
-							VixenSystem.Logging.Debug("Tried to load module " + moduleDescriptor.TypeName + " from " + Path.GetFileName(filePath) + ", but the descriptor does not implement IModuleDescriptor.");
+							VixenSystem.Logging.Debug("Tried to load module of type " + moduleDescriptorType.Name + " from " + Path.GetFileName(filePath) + ", but the descriptor does not implement IModuleDescriptor.");
 						}
 					} catch(Exception ex) {
 						VixenSystem.Logging.Error("Error loading module descriptor " + moduleDescriptorType.Name + " from " + Path.GetFileName(filePath) + ".", ex);

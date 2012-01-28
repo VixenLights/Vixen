@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using Vixen.IO;
+using Vixen.Module.PreFilter;
 using Vixen.Sys;
 using Vixen.Module.Property;
 
@@ -29,6 +30,7 @@ namespace Vixen.Sys {
 			Id = id;
 			Channel = channel;
 			Properties = new PropertyManager(this);
+			PreFilters = new List<IPreFilter>();
 		}
 
 		public ChannelNode(string name, Channel channel, IEnumerable<ChannelNode> content)
@@ -137,6 +139,8 @@ namespace Vixen.Sys {
 		}
 
 		public PropertyManager Properties { get; private set; }
+
+		public List<IPreFilter> PreFilters { get; private set; }
 
 		public int Version {
 			get { return VERSION; }

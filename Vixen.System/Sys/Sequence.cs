@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Xml.Linq;
+using Vixen.Module.Timing;
 using Vixen.Sys;
 using Vixen.IO;
 using Vixen.Execution;
@@ -192,6 +193,14 @@ namespace Vixen.Sys {
 		public IRuntimeBehaviorModuleInstance[] RuntimeBehaviors { get; private set; }
 
 		public MediaCollection Media { get; set; }
+
+		public IEnumerable<EffectNode> GetData() {
+			return Data.GetEffects();
+		}
+
+		public ITiming GetTiming() {
+			return TimingProvider.GetSelectedSource();
+		}
 
 		public override string ToString() {
 			return Name;

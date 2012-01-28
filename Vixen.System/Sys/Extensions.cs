@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Xml;
@@ -107,6 +108,19 @@ namespace Vixen.Sys
 
 		static public bool ContainsString(this string source, string value, StringComparison comparison = StringComparison.Ordinal) {
 			return source.IndexOf(value, comparison) >= 0;
+		}
+
+		public static void Raise(this MulticastDelegate thisEvent, object sender, EventArgs e) {
+			//AsyncCallback callback = new AsyncCallback(EndAsynchronousEvent);
+
+			foreach(Delegate d in thisEvent.GetInvocationList()) {
+				EventHandler uiMethod = d as EventHandler;
+				if(uiMethod != null) {
+					ISynchronizeInvoke target = d.Target as ISynchronizeInvoke;
+					if(target != null) target.BeginInvoke(uiMethod, new[] { sender, e });
+					else uiMethod.BeginInvoke(sender, e, null, uiMethod);
+				}
+			}
 		}
 	}
 }

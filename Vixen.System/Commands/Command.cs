@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Vixen.Commands {
 	public abstract class Command {
-		protected Command() { }
-
 		abstract public CommandIdentifier Identifier { get; }
 
 		// Required for transforms.
@@ -18,7 +14,7 @@ namespace Vixen.Commands {
 		abstract public Command Clone();
 
 		virtual public bool CanCombine(Command other) {
-			return this.Identifier.Equals(other.Identifier);
+			return Identifier.Equals(other.Identifier);
 		}
 
 		virtual public Command Combine(Command other) {
@@ -26,12 +22,13 @@ namespace Vixen.Commands {
 		}
 
 		static public Command Combine(IEnumerable<Command> commands) {
-			int count = commands.Count();
-			if(count == 0) return null;
-			Command firstCommand = commands.First();
-			if(count == 1) return firstCommand;
+			Command[] commandArray = commands.ToArray();
 
-			return commands.Aggregate((command1, command2) => {
+			if(commandArray.Length == 0) return null;
+			Command firstCommand = commandArray[0];
+			if(commandArray.Length == 1) return firstCommand;
+
+			return commandArray.Aggregate((command1, command2) => {
 				if (command1 == null)
 					return command2;
 
@@ -39,7 +36,7 @@ namespace Vixen.Commands {
 					return command1;
 
 				return command1.Combine(command2);
-				});
+			});
 		}
 	}
 }

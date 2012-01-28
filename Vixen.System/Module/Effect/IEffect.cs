@@ -31,8 +31,10 @@ namespace Vixen.Module.Effect {
 		// Having two methods instead of a single one with default values so that the
 		// effect doesn't have to check to see if there is a time frame restriction
 		// with every call.
-		ChannelData Render();
-		ChannelData Render(TimeSpan restrictingOffsetTime, TimeSpan restrictingTimeSpan);
+		EffectIntents Render();
+		EffectIntents Render(TimeSpan restrictingOffsetTime, TimeSpan restrictingTimeSpan);
+		//ChannelData Render();
+		//ChannelData Render(TimeSpan restrictingOffsetTime, TimeSpan restrictingTimeSpan);
 		string EffectName { get; }
 		ParameterSignature Parameters { get; }
 		void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle);

@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
-using System.Xml;
-using System.Xml.Linq;
-using Vixen.Module;
 using Vixen.IO;
 using Vixen.IO.Xml;
 
@@ -15,6 +11,7 @@ namespace Vixen.Sys {
 		private IEnumerable<Channel> _channels;
 		private IEnumerable<ChannelNode> _nodes;
 		private IEnumerable<OutputController> _controllers;
+		private IEnumerable<ChannelOutputPatch> _channelPatching;
 		private List<Guid> _disabledControllers;
 
 		private const int VERSION = 5;
@@ -62,6 +59,16 @@ namespace Vixen.Sys {
 				return _controllers;
 			}
 			set { _controllers = value; }
+		}
+
+		public IEnumerable<ChannelOutputPatch> ChannelPatching {
+			get {
+				if(_channelPatching == null) {
+					_channelPatching = new ChannelOutputPatch[0];
+				}
+				return _channelPatching;
+			}
+			set { _channelPatching = value; }
 		}
 
 		public IEnumerable<OutputController> DisabledControllers {

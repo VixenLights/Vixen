@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Vixen.Module.Timing;
 using Vixen.Sys;
 
 namespace Vixen.Execution
@@ -14,9 +15,13 @@ namespace Vixen.Execution
 		event EventHandler<ExecutorMessageEventArgs> Error;
 
 		ISequence Sequence { get; set; }
+		bool IsPlaying { get; }
 		void Play(TimeSpan startTime, TimeSpan endTime);
 		void Pause();
 		void Resume();
 		void Stop();
+
+		IEnumerable<EffectNode> GetSequenceData();
+		ITiming GetSequenceTiming();
 	}
 }

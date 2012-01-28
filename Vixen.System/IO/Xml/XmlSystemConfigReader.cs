@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Xml.Linq;
-using System.IO;
 using Vixen.Sys;
 using Vixen.Module;
 
@@ -16,6 +14,7 @@ namespace Vixen.IO.Xml {
 		private const string ELEMENT_CHANNELS = "Channels";
 		private const string ELEMENT_NODES = "Nodes";
 		private const string ELEMENT_CHANNEL = "Channel";
+		private const string ELEMENT_PATCHING = "Patching";
 		private const string ELEMENT_PATCH = "Patch";
 		private const string ELEMENT_NODE = "Node";
 		private const string ELEMENT_PROPERTIES = "Properties";
@@ -55,6 +54,7 @@ namespace Vixen.IO.Xml {
 			_channels = _ReadChannels(element);
 			ChannelNode[] nodes = _ReadNodes(element);
 			OutputController[] controllers = _ReadControllers(element);
+			ChannelOutputPatch[] channelPatching = _ReadChannelPatching(element);
 			Guid[] disabledControllers = _ReadDisabledControllers(element);
 
 			obj.IsContext = isContext;
@@ -62,6 +62,7 @@ namespace Vixen.IO.Xml {
 			obj.Channels = _channels;
 			obj.Nodes = nodes;
 			obj.Controllers = controllers;
+			obj.ChannelPatching = channelPatching;
 			obj.DisabledControllers = disabledControllers.Select(x => controllers.FirstOrDefault(y => y.Id == x)).Where(x => x != null);
 		}
 
@@ -84,7 +85,7 @@ namespace Vixen.IO.Xml {
 
 		private Channel[] _ReadChannels(XElement element) {
 			XElement parentNode = element.Element(ELEMENT_CHANNELS);
-			Channel[] channels = parentNode.Elements().Select(_ReadOutputChannel).ToArray();
+			Channel[] channels = parentNode.Elements().Select(_ReadChannel).ToArray();
 			return channels;
 		}
 
@@ -101,22 +102,34 @@ namespace Vixen.IO.Xml {
 			return controllers;
 		}
 
+		private ChannelOutputPatch[] _ReadChannelPatching(XElement element) {
+			XElement parentNode = element.Element(ELEMENT_PATCHING);
+			ChannelOutputPatch[] patches = parentNode.Elements().Select(_ReadChannelOutputPatch).ToArray();
+			return patches;
+		}
+
+		private ChannelOutputPatch _ReadChannelOutputPatch(XElement element) {
+			Guid channelId = new Guid(element.Attribute(ATTR_CHANNEL_ID).Value);
+			IEnumerable<ControllerReference> controllerReferences = element.Elements().Select(_ReadControllerReference);
+			return new ChannelOutputPatch(channelId, controllerReferences);
+		}
+
 		private Guid[] _ReadDisabledControllers(XElement element) {
 			XElement parentNode = element.Element(ELEMENT_DISABLED_CONTROLLERS);
 			Guid[] ids = parentNode.Elements().Select(_ReadDisabledController).ToArray();
 			return ids;
 		}
 
-		private Channel _ReadOutputChannel(XElement element) {
+		private Channel _ReadChannel(XElement element) {
 			Guid id = new Guid(element.Attribute(ATTR_ID).Value);
 			string name = element.Attribute(ATTR_NAME).Value;
-			Patch patch = new Patch(
-					element
-					.Element(ELEMENT_PATCH)
-					.Elements()
-					.Select(_ReadControllerReference)
-					);
-			return new Channel(id, name, patch);
+			//Patch patch = new Patch(
+			//        element
+			//        .Element(ELEMENT_PATCH)
+			//        .Elements()
+			//        .Select(_ReadControllerReference)
+			//        );
+			return new Channel(id, name);
 		}
 
 		private ChannelNode _ReadChannelNode(XElement element) {

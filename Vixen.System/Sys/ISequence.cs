@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Vixen.Module.Timing;
 using Vixen.Sys;
 using Vixen.Execution;
 using Vixen.Module;
@@ -26,5 +27,8 @@ namespace Vixen.Sys {
 		IRuntimeBehaviorModuleInstance[] RuntimeBehaviors { get; }
 		MediaCollection Media { get; }
 		IModuleDataSet ModuleDataSet { get; }
+		
+		IEnumerable<EffectNode> GetData();
+		ITiming GetTiming();
 	}
 }

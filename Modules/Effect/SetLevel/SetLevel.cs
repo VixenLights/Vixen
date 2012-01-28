@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using Vixen.Module.Intent;
 using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Effect;
@@ -16,7 +17,8 @@ namespace VixenModules.Effect.SetLevel
 	public class SetLevel : EffectModuleInstanceBase
 	{
 		private SetLevelData _data;
-		private ChannelData _channelData = null;
+		private EffectIntents _channelData = null;
+		private readonly Guid _levelIntentId = new Guid("{0DFDF022-B1C4-49b9-9D65-2568A372FE28}");
 
 		public SetLevel()
 		{
@@ -25,14 +27,14 @@ namespace VixenModules.Effect.SetLevel
 
 		protected override void _PreRender()
 		{
-			_channelData = new ChannelData();
+			_channelData = new EffectIntents();
 
 			foreach (ChannelNode node in TargetNodes) {
 				RenderNode(node);
 			}
 		}
 
-		protected override ChannelData _Render()
+		protected override EffectIntents _Render()
 		{
 			return _channelData;
 		}
@@ -97,8 +99,12 @@ namespace VixenModules.Effect.SetLevel
 			// we have iterated down to leaf nodes in RenderNode() above. May as well do
 			// it this way, though, in case something changes in future.
 			foreach (Channel channel in node.GetChannelEnumerator()) {
-				Command setLevelCommand = new Lighting.Monochrome.SetLevel(Level);
-				CommandNode data = new CommandNode(setLevelCommand, TimeSpan.Zero, TimeSpan);
+				//Command setLevelCommand = new Lighting.Monochrome.SetLevel(Level);
+				//CommandNode data = new CommandNode(setLevelCommand, TimeSpan.Zero, TimeSpan);
+
+				IIntentModuleInstance intent = ApplicationServices.Get<IIntentModuleInstance>(_levelIntentId);
+				intent.TimeSpan = TimeSpan;
+				IntentNode data = new IntentNode(intent, TimeSpan.Zero);
 				if (channel != null)
 					_channelData[channel.Id] = new[] { data };
 			}
@@ -113,8 +119,9 @@ namespace VixenModules.Effect.SetLevel
 			// iterate through the rendered commands, adjust them to fit our times, and add them to our rendered data
 			foreach (KeyValuePair<Guid, Command[]> kvp in rgbData) {
 				foreach (Command c in kvp.Value) {
-					CommandNode newCommandNode = new CommandNode(c, TimeSpan.Zero, TimeSpan);
-					_channelData.AddCommandNodeForChannel(kvp.Key, newCommandNode);
+					//TODO
+					//CommandNode newCommandNode = new CommandNode(c, TimeSpan.Zero, TimeSpan);
+					//_channelData.AddCommandNodeForChannel(kvp.Key, newCommandNode);
 				}
 			}
 		}

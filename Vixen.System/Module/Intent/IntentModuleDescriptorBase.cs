@@ -17,8 +17,6 @@ namespace Vixen.Module.Intent {
 
 		abstract public override string Version { get; }
 
-		abstract public string IntentName { get; }
-
 		public bool Equals(IIntentModuleDescriptor x, IIntentModuleDescriptor y) {
 			return base.Equals(x, y);
 		}

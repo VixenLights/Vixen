@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Reflection;
 using System.IO;
 using System.Xml.Linq;
@@ -33,7 +31,7 @@ namespace Vixen.Sys {
 					_InitializeLogging();
 					Logging.Info("Vixen System starting up...");
 
-					Instrumentation = new Vixen.Sys.Instrumentation.Instrumentation();
+					Instrumentation = new Instrumentation.Instrumentation();
 
 					ModuleImplementation[] moduleImplementations = Modules.GetImplementations();
 
@@ -62,7 +60,7 @@ namespace Vixen.Sys {
 						SystemConfig.DisabledControllers = Controllers;
 					}
 					if(openExecution) {
-						Vixen.Sys.Execution.OpenExecution();
+						Execution.OpenExecution();
 					}
 
 					_state = RunState.Started;
@@ -84,7 +82,7 @@ namespace Vixen.Sys {
 				ApplicationServices.ClientApplication = null;
 				// Need to get the disabled controllers before stopping them all.
 				SystemConfig.DisabledControllers = Controllers.Where(x => !x.IsRunning);
-				Vixen.Sys.Execution.CloseExecution();
+				Execution.CloseExecution();
 				Modules.ClearRepositories();
 				if(ModuleStore != null) {
 					ModuleStore.Save();
@@ -103,6 +101,7 @@ namespace Vixen.Sys {
 				SystemConfig.Controllers = Controllers;
 				SystemConfig.Channels = Channels;
 				SystemConfig.Nodes = Nodes.GetRootNodes();
+				SystemConfig.ChannelPatching = ChannelPatching;
 				SystemConfig.Save();
 			}
 		}
@@ -112,6 +111,8 @@ namespace Vixen.Sys {
 			Channels = new ChannelManager();
 			Nodes = new NodeManager();
 			Controllers = new ControllerManager();
+			Contexts = new ContextManager();
+			ChannelPatching = new ChannelOutputPatchManager();
 
 			// Load system data in order of dependency.
 			// The system data generally resides in the data branch, but it
@@ -122,15 +123,16 @@ namespace Vixen.Sys {
 			reader = new XmlSystemConfigReader();
 			SystemConfig = (SystemConfig)reader.Read(Path.Combine(systemDataPath, SystemConfig.FileName));
 
-			if (SystemConfig == null)
+			if(SystemConfig == null)
 				SystemConfig = new SystemConfig();
 
-			if (ModuleStore == null)
+			if(ModuleStore == null)
 				ModuleStore = new ModuleStore();
 
 			Channels.AddChannels(SystemConfig.Channels);
 			Nodes.AddNodes(SystemConfig.Nodes);
 			Controllers.AddControllers(SystemConfig.Controllers);
+			ChannelPatching.AddPatches(SystemConfig.ChannelPatching);
 		}
 
 		static public void ReloadSystemConfig()
@@ -174,9 +176,11 @@ namespace Vixen.Sys {
 		static public ChannelManager Channels { get; private set; }
 		static public NodeManager Nodes { get; private set; }
 		static public ControllerManager Controllers { get; private set; }
-		static public IInstrumentation Instrumentation { get; private set; }
+		static public ContextManager Contexts { get; private set; }
+    	static public IInstrumentation Instrumentation { get; private set; }
+    	public static ChannelOutputPatchManager ChannelPatching { get; private set; }
 
-		static internal ModuleStore ModuleStore { get; private set; }
+    	static internal ModuleStore ModuleStore { get; private set; }
 		static internal SystemConfig SystemConfig { get; private set; }
 
 		static private void _InitializeLogging() {

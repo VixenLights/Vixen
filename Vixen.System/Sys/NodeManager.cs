@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using Vixen.Module.Timing;
 
 namespace Vixen.Sys {
 	public class NodeManager : IEnumerable<ChannelNode> {
@@ -18,7 +15,7 @@ namespace Vixen.Sys {
 
 		public NodeManager() {
 			_instances = new Dictionary<Guid, ChannelNode>();
-			ChannelNode.Changed += new EventHandler(ChannelNode_Changed);
+			ChannelNode.Changed += ChannelNode_Changed;
 		}
 
 		public NodeManager(IEnumerable<ChannelNode> nodes)
@@ -158,21 +155,17 @@ namespace Vixen.Sys {
 
 		public bool SetChannelNode(Guid id, ChannelNode node)
 		{
-			bool rv = false;
-			if (_instances.ContainsKey(id))
-				rv = true;
+			bool rv = _instances.ContainsKey(id);
 
 			_instances[id] = node;
 			return rv;
 		}
 
-		public ChannelNode GetChannelNode(Guid id)
-		{
+		public ChannelNode GetChannelNode(Guid id) {
 			if (_instances.ContainsKey(id)) {
 				return _instances[id];
-			} else {
-				return null;
 			}
+			return null;
 		}
 
 		public bool ChannelNodeExists(Guid id)
