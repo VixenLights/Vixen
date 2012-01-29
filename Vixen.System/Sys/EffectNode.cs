@@ -7,7 +7,7 @@ namespace Vixen.Sys {
 	/// <summary>
 	/// Qualifies a Command with a start time and length.
 	/// </summary>
-	public class EffectNode : ITimed, IComparable<EffectNode> {
+	public class EffectNode : IDataNode, IComparable<EffectNode> {
 		public EffectNode()
 			: this(null, TimeSpan.Zero) {
 			// Default instance is empty.

@@ -94,7 +94,7 @@ namespace Vixen.IO.Xml {
 			// Create a channel node lookup.
 			var channelNodes = VixenSystem.Nodes.Distinct().ToDictionary(x => x.Id);
 
-			sequence.Data.ClearEffectStream();
+			sequence.Data.ClearStream();
 	
 			foreach(XElement effectNodeElement in element.Element(ELEMENT_EFFECT_NODES).Elements(ELEMENT_EFFECT_NODE)) {
 				Guid typeId = Guid.Parse(effectNodeElement.Attribute(ATTR_EFFECT_TYPE_ID).Value);

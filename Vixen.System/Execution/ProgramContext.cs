@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using Vixen.Module.PreFilter;
 using Vixen.Module.Timing;
 using Vixen.Sys;
 
@@ -185,9 +187,27 @@ namespace Vixen.Execution {
 		void _programExecutor_SequenceStarted(object sender, SequenceStartedEventArgs e) {
 			_dataSource = _programExecutor.GetCurrentSequenceData();
 			_timingSource = _programExecutor.GetCurrentSequenceTiming();
+			
+			//***
+			_AddPreFilterToSequence();
+			//***
+
+			_BuildPreFilterLookup(VixenSystem.Nodes, _programExecutor.GetCurrentSequenceFilters());
 			if(SequenceStarted != null) {
 				SequenceStarted(this, e);
 			}
+		}
+
+		private void _AddPreFilterToSequence() {
+			if(_programExecutor.Current.Sequence.GetPreFilters().Any()) return;
+
+			IPreFilterModuleInstance preFilter = Modules.ModuleManagement.GetPreFilter(new Guid("{E0E26570-6A01-4368-B996-E34576FF4910}"));
+			//Fade out over 5 seconds.
+			preFilter.TimeSpan = TimeSpan.FromSeconds(5);
+			//Every channel.
+			preFilter.TargetNodes = VixenSystem.Nodes.ToArray();
+			//Starting right away.
+			_programExecutor.Current.Sequence.AddPreFilter(preFilter, TimeSpan.Zero);
 		}
 
 		private IDataSource _dataSource;

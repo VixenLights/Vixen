@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
 using System.Xml.Linq;
+using Vixen.Module.PreFilter;
 using Vixen.Module.Timing;
-using Vixen.Sys;
 using Vixen.IO;
 using Vixen.Execution;
 using Vixen.Module;
 using Vixen.Module.RuntimeBehavior;
-using Vixen.Module.Media;
 using Vixen.Module.Effect;
 using Vixen.Module.Sequence;
 using Vixen.IO.Xml;
@@ -23,12 +21,13 @@ namespace Vixen.Sys {
 	[SequenceReader(typeof(XmlSequenceReader))]
 	abstract public class Sequence : Vixen.Sys.ISequence, IVersioned {
 		private IModuleDataSet _moduleDataSet;
+		private Guid _preFilterStreamId;
 
 		private const string DIRECTORY_NAME = "Sequence";
 		private const int VERSION = 1;
 
 		[DataPath]
-		static private readonly string _directory = System.IO.Path.Combine(Paths.DataRootPath, DIRECTORY_NAME);
+		static private readonly string _directory = Path.Combine(Paths.DataRootPath, DIRECTORY_NAME);
 
 		/// <summary>
 		/// The directory that this sequence type will be saved in.
@@ -89,7 +88,8 @@ namespace Vixen.Sys {
 			FilePath = "";
 			InsertDataListener = new InsertDataListenerStack();
 			InsertDataListener += _DataListener;
-			Data = new EffectStreams();
+			Data = new DataStreams();
+			_preFilterStreamId = Data.CreateStream("PreFilter");
 			TimingProvider = new TimingProviders(this);
 			RuntimeBehaviors = Modules.ModuleManagement.GetAllRuntimeBehavior();
 			ModuleDataSet = new ModuleLocalDataSet();
@@ -101,7 +101,8 @@ namespace Vixen.Sys {
 			FilePath = original.FilePath;
 			InsertDataListener = new InsertDataListenerStack();
 			InsertDataListener += _DataListener;
-			Data = new EffectStreams(original.Data);
+			Data = new DataStreams(original.Data);
+			_preFilterStreamId = original._preFilterStreamId;
 			TimingProvider = new TimingProviders(this, original.TimingProvider);
 			RuntimeBehaviors = Modules.ModuleManagement.GetAllRuntimeBehavior();
 			ModuleDataSet = original.ModuleDataSet.Clone();
@@ -110,7 +111,7 @@ namespace Vixen.Sys {
 		}
 
 		private bool _DataListener(EffectNode effectNode) {
-			Data.AddEffect(effectNode);
+			Data.AddData(effectNode);
 			ModuleDataSet.GetModuleInstanceData(effectNode.Effect);
 			// Do not cancel the event.
 			return false;
@@ -176,7 +177,17 @@ namespace Vixen.Sys {
 
 		public bool RemoveData(EffectNode effectNode)
 		{
-			return Data.RemoveEffect(effectNode);
+			return Data.RemoveData(effectNode);
+		}
+
+		public PreFilterNode AddPreFilter(IPreFilterModuleInstance preFilter, TimeSpan startTime) {
+			PreFilterNode preFilterNode = new PreFilterNode(preFilter, startTime);
+			Data.AddData(_preFilterStreamId, preFilterNode);
+			return preFilterNode;
+		}
+
+		public bool RemovePreFilter(PreFilterNode preFilterNode) {
+			return Data.RemoveData(preFilterNode);
 		}
 
 		public bool IsUntimed
@@ -187,7 +198,7 @@ namespace Vixen.Sys {
 
 		public TimingProviders TimingProvider { get; protected set; }
 
-		public EffectStreams Data { get; private set; }
+		public DataStreams Data { get; private set; }
 
 		// Every sequence will get a collection of all available runtime behaviors.
 		public IRuntimeBehaviorModuleInstance[] RuntimeBehaviors { get; private set; }
@@ -195,7 +206,11 @@ namespace Vixen.Sys {
 		public MediaCollection Media { get; set; }
 
 		public IEnumerable<EffectNode> GetData() {
-			return Data.GetEffects();
+			return Data.GetMainStreamData().Cast<EffectNode>();
+		}
+
+		public IEnumerable<PreFilterNode> GetPreFilters() {
+			return Data.GetStreamData(_preFilterStreamId).Cast<PreFilterNode>();
 		}
 
 		public ITiming GetTiming() {

@@ -3,11 +3,7 @@ using System.Collections.Generic;
 using Vixen.Module.Intent;
 
 namespace Vixen.Sys {
-	public class IntentNode : ITimed, IComparable<IntentNode> {
-		//public IntentNode()
-		//    : this(null, TimeSpan.Zero) {
-		//}
-
+	public class IntentNode : IDataNode, IComparable<IntentNode> {
 		public IntentNode(IIntentModuleInstance intent, TimeSpan startTime) {
 			Intent = intent;
 			StartTime = startTime;
@@ -25,12 +21,6 @@ namespace Vixen.Sys {
 			get { return (Intent != null) ? StartTime + TimeSpan : StartTime; }
 		}
 		
-		public bool IsEmpty {
-			get { return Intent == null; }
-		}
-
-		//static public readonly IntentNode Empty = new IntentNode();
-
 		#region IComparer<IntentNode>
 		public class Comparer : IComparer<IntentNode> {
 			public int Compare(IntentNode x, IntentNode y) {

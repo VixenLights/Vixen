@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Vixen.Sys;
 using Vixen.Module.Timing;
 
 namespace Vixen.Execution {
 	abstract class SingleTimedEnumerator<T> : IEnumerator<T>
-		where T : class, ITimed, new() {
+		where T : class, IDataNode, new() {
 		private TimeSpan _startTime;
-		private TimeSpan _endTime;
+		//private TimeSpan _endTime;
 		private IEnumerable<T> _source;
 		private ITiming _timingSource;
 		private T _newFrame;
@@ -22,13 +20,15 @@ namespace Vixen.Execution {
 
 		// enumerator.Current = 1-frame buffer
 
-		public SingleTimedEnumerator(IEnumerable<T> source, ITiming timingSource, TimeSpan startTime, TimeSpan endTime,
+		//protected SingleTimedEnumerator(IEnumerable<T> source, ITiming timingSource, TimeSpan startTime, TimeSpan endTime,
+		//    SingleTimedEnumeratorProgressType progressResponseType, bool skipMissedItems)
+		protected SingleTimedEnumerator(IEnumerable<T> source, ITiming timingSource, TimeSpan startTime,
 			SingleTimedEnumeratorProgressType progressResponseType, bool skipMissedItems)
 		{
 			_source = source;
 			_timingSource = timingSource;
 			_startTime = startTime;
-			_endTime = endTime;
+			//_endTime = endTime;
 			_responseType = progressResponseType;
 			_skipMissedItems = skipMissedItems;
 			Reset();

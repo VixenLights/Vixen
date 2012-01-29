@@ -29,7 +29,7 @@ namespace Vixen.Sys {
 		}
 
 		internal Context CreateContext(string name, IDataSource dataSource, ITiming timingSource, IEnumerable<ChannelNode> logicalNodes) {
-			Context context = new Context(name, dataSource, timingSource, logicalNodes);
+			Context context = new Context(name, dataSource, timingSource);
 			_AddContext(context);
 			
 			return context;
@@ -51,10 +51,12 @@ namespace Vixen.Sys {
 		public void Update() {
 			lock(_instances) {
 				Parallel.ForEach(_instances.Values, context => {
+					// Get a snapshot time value for this update.
+					TimeSpan contextTime = context.GetTimeSnapshot();
 					// Broken up so that filtering can be skipped at some future point.
-					IEnumerable<Guid> affectedChannels = context.UpdateChannelStates();
-					context.FilterChannelStates(affectedChannels);
-					//Could possibly return affectedChannel so only affected outputs
+					IEnumerable<Guid> affectedChannels = context.UpdateChannelStates(contextTime);
+					context.FilterChannelStates(affectedChannels, contextTime);
+					//Could possibly return affectedChannels so only affected outputs
 					//are updated.  The controller would have to maintain state so those
 					//outputs could be updated and the whole state sent out.
 				});

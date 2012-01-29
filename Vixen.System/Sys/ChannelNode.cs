@@ -10,7 +10,7 @@ using Vixen.Module.Property;
 
 namespace Vixen.Sys {
 	/// <summary>
-	/// A logical node that encapsulates a single OutputChannel or a branch/group of other ChannelNodes.
+	/// A logical node that encapsulates a single Channel or a branch/group of other ChannelNodes.
 	/// </summary>
 	public class ChannelNode : GroupNode<Channel>, IEqualityComparer<ChannelNode>, IVersioned {
 		// Making this static so there doesn't have to be potentially thousands of
@@ -30,7 +30,6 @@ namespace Vixen.Sys {
 			Id = id;
 			Channel = channel;
 			Properties = new PropertyManager(this);
-			PreFilters = new List<IPreFilter>();
 		}
 
 		public ChannelNode(string name, Channel channel, IEnumerable<ChannelNode> content)
@@ -139,8 +138,6 @@ namespace Vixen.Sys {
 		}
 
 		public PropertyManager Properties { get; private set; }
-
-		public List<IPreFilter> PreFilters { get; private set; }
 
 		public int Version {
 			get { return VERSION; }

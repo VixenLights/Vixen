@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 
 namespace Vixen.Sys {
-	interface ITimed {
+	public interface IDataNode {
 		TimeSpan StartTime { get; }
 		TimeSpan EndTime { get; }
-		//bool IsEmpty { get; }
 	}
 }

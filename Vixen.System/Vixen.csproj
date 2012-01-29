@@ -127,7 +127,10 @@
     <Compile Include="Instrumentation\InstrumentationValue.cs" />
     <Compile Include="Instrumentation\PercentValue.cs" />
     <Compile Include="Instrumentation\RateValue.cs" />
+    <Compile Include="Sys\DataStream.cs" />
     <Compile Include="Sys\DefaultValueArrayMember.cs" />
+    <Compile Include="Sys\IDataNode.cs" />
+    <Compile Include="Sys\PreFilterNode.cs" />
     <Compile Include="Sys\ValueAttribute.cs" />
     <Compile Include="Sys\EffectIntents.cs" />
     <Compile Include="Module\Input\IInputEffectMap.cs" />
@@ -210,7 +213,6 @@
     <Compile Include="Sys\IStateSource.cs" />
     <Compile Include="Sys\IStateSourceCollection.cs" />
     <Compile Include="Sys\IStateSourceCollectionAdapter.cs" />
-    <Compile Include="Sys\ITimed.cs" />
     <Compile Include="Sys\LiveListEnumerator.cs" />
     <Compile Include="Sys\ModuleInstanceSpecification.cs" />
     <Compile Include="Sys\ModuleStore.cs" />
@@ -346,7 +348,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Sys\EffectNode.cs" />
-    <Compile Include="Sys\EffectStreams.cs" />
+    <Compile Include="Sys\DataStreams.cs" />
     <Compile Include="Sys\DebugLog.cs" />
     <Compile Include="Sys\DelegateFactory.cs" />
     <Compile Include="Sys\ErrorLog.cs" />
@@ -388,7 +390,6 @@
     <Compile Include="Module\Trigger\TriggerModuleManagement.cs" />
     <Compile Include="Module\Trigger\TriggerModuleRepository.cs" />
     <Compile Include="Sys\InfoLog.cs" />
-    <Compile Include="Sys\EffectStream.cs" />
     <Compile Include="Sys\InsertDataStack.cs" />
     <Compile Include="Sys\Log.cs" />
     <Compile Include="Sys\LogEventArgs.cs" />

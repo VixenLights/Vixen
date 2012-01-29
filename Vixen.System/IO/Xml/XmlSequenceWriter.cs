@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Xml.Linq;
-using System.IO;
 using Vixen.Sys;
-using Vixen.Module.Effect;
 
 namespace Vixen.IO.Xml {
 	class XmlSequenceWriter : XmlWriterBase<Sequence> {
@@ -56,7 +51,7 @@ namespace Vixen.IO.Xml {
 
 		private XElement _WriteEffectNodes(Sequence sequence) {
 			return new XElement(ELEMENT_EFFECT_NODES,
-				sequence.Data.GetEffects().Select(x =>
+				sequence.Data.GetMainStreamData().Cast<EffectNode>().Select(x =>
 					new XElement(ELEMENT_EFFECT_NODE,
 						new XAttribute(ATTR_EFFECT_TYPE_ID, x.Effect.Descriptor.TypeId),
 						new XAttribute(ATTR_EFFECT_INSTANCE_ID, x.Effect.InstanceId),

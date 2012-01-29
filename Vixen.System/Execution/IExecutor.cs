@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Vixen.Module.PreFilter;
 using Vixen.Module.Timing;
 using Vixen.Sys;
 
@@ -23,5 +24,6 @@ namespace Vixen.Execution
 
 		IEnumerable<EffectNode> GetSequenceData();
 		ITiming GetSequenceTiming();
+		IEnumerable<PreFilterNode> GetSequenceFilters();
 	}
 }

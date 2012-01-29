@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Vixen.Commands;
-using Vixen.Module.PreFilter;
 using Vixen.Module.Timing;
 using Vixen.Sys;
 
@@ -11,22 +10,19 @@ namespace Vixen.Execution {
 		private CommandStateSourceCollection<Guid> _channelStates;
 		private ContextCurrentEffects _currentEffects;
 		private ChannelStateListStateAggregator _stateListStateAggregator;
-		private Dictionary<Guid, IPreFilter[]> _preFilters;
+		private Dictionary<Guid, PreFilterNode[]> _preFilterCache;
 		private bool _disposed;
 
 		public event EventHandler ContextStarted;
 		public event EventHandler ContextEnded;
 
-		internal Context(string name, IDataSource dataSource, ITiming timingSource, IEnumerable<ChannelNode> logicalNodes)
+		internal Context(string name, IDataSource dataSource, ITiming timingSource)
 			: this(name) {
 			if(string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Name is required");
 			if(dataSource == null) throw new ArgumentNullException("timingSource");
-			if(logicalNodes == null) throw new ArgumentNullException("logicalNodes");
 
 			_DataSource = dataSource;
 			_TimingSource = timingSource;
-
-			_BuildPreFilterLookup(logicalNodes);
 		}
 
 		protected Context(string name) {
@@ -36,7 +32,7 @@ namespace Vixen.Execution {
 			_channelStates = new CommandStateSourceCollection<Guid>();
 			_currentEffects = new ContextCurrentEffects();
 			_stateListStateAggregator = new ChannelStateListStateAggregator();
-			_preFilters = new Dictionary<Guid, IPreFilter[]>();
+			_preFilterCache = new Dictionary<Guid, PreFilterNode[]>();
 		}
 
 		virtual protected IDataSource _DataSource { get; private set; }
@@ -87,19 +83,20 @@ namespace Vixen.Execution {
 
 		virtual public bool IsPlaying { get; private set; }
 
+		public TimeSpan GetTimeSnapshot() {
+			return (_TimingSource != null) ? _TimingSource.Position : TimeSpan.Zero;
+		}
+
 		/// <summary>
 		/// If the context is playing, the context will aggregate new states based on the current time.
 		/// </summary>
 		/// <returns>The ids of the channels affected by the update.</returns>
-		public IEnumerable<Guid> UpdateChannelStates() {
+		public IEnumerable<Guid> UpdateChannelStates(TimeSpan currentTime) {
 			Guid[] affectedChannels = null;
 
 			// Allowing this to update even when it's paused will have the same effect,
 			// but may as well save the cycles.
 			if(IsPlaying && !IsPaused) {
-				// Get a snapshot time value for this update.
-				TimeSpan currentTime = _TimingSource.Position;
-
 				affectedChannels = _currentEffects.UpdateCurrentEffects(_DataSource, currentTime);
 
 				// Clear the local states of the affected channels.
@@ -161,13 +158,13 @@ namespace Vixen.Execution {
 			_AggregateChannelStates(_stateListStateAggregator.ChannelsWithState);
 		}
 
-		public void FilterChannelStates(IEnumerable<Guid> channelIds) {
+		public void FilterChannelStates(IEnumerable<Guid> channelIds, TimeSpan currentTime) {
 			if(channelIds == null) return;
 
 			foreach(Guid channelId in channelIds) {
 				IStateSource<Command> commandStateSource = _stateListStateAggregator.GetValue(channelId);
 				if(commandStateSource != null && commandStateSource.Value != null) {
-					Command commandState = _ApplyPreFilters(channelId, commandStateSource.Value);
+					Command commandState = _ApplyPreFilters(channelId, commandStateSource.Value, currentTime);
 					_channelStates.SetValue(channelId, commandState);
 				}
 			}
@@ -220,35 +217,40 @@ namespace Vixen.Execution {
 			Dispose(false);
 		}
 
-		private void _BuildPreFilterLookup(IEnumerable<ChannelNode> logicalNodes) {
-			_preFilters.Clear();
-			Stack<IEnumerable<IPreFilter>> preFilters = new Stack<IEnumerable<IPreFilter>>();
+		protected void _BuildPreFilterLookup(IEnumerable<ChannelNode> logicalNodes, IEnumerable<PreFilterNode> preFilters) {
+			_preFilterCache.Clear();
+			Stack<IEnumerable<PreFilterNode>> preFilterStack = new Stack<IEnumerable<PreFilterNode>>();
 			foreach(ChannelNode node in logicalNodes) {
-				_SearchLogicalBranchForFilters(node, preFilters);
+				_SearchLogicalBranchForFilters(node, preFilters, preFilterStack);
 			}
 		}
 
-		private void _SearchLogicalBranchForFilters(ChannelNode node, Stack<IEnumerable<IPreFilter>> preFiltersFound) {
+		private void _SearchLogicalBranchForFilters(ChannelNode node, IEnumerable<PreFilterNode> preFilters, Stack<IEnumerable<PreFilterNode>> preFiltersFound) {
 			// Must push a single value for each level we enter.
-			if(node.PreFilters != null && node.PreFilters.Count > 0) {
-				preFiltersFound.Push(node.PreFilters);
+			PreFilterNode[] preFilterNodes = _GetPreFiltersForNode(node, preFilters);
+			if(preFilterNodes.Length > 0) {
+				preFiltersFound.Push(preFilterNodes);
 			} else {
 				preFiltersFound.Push(null);
 			}
 
 			if(node.IsLeaf) {
-				IPreFilter[] channelFilters = preFiltersFound.Where(x => x != null).Reverse().SelectMany(x => x).ToArray();
+				PreFilterNode[] channelFilters = preFiltersFound.Where(x => x != null).Reverse().SelectMany(x => x).ToArray();
 				if(channelFilters.Length > 0) {
-					_preFilters[node.Channel.Id] = channelFilters;
+					_preFilterCache[node.Channel.Id] = channelFilters;
 				}
 			} else {
 				foreach(ChannelNode childNode in node.Children) {
-					_SearchLogicalBranchForFilters(childNode, preFiltersFound);
+					_SearchLogicalBranchForFilters(childNode, preFilters, preFiltersFound);
 				}
 			}
 
 			// Pop a single value for every level we exit.
 			preFiltersFound.Pop();
+		}
+
+		private PreFilterNode[] _GetPreFiltersForNode(ChannelNode node, IEnumerable<PreFilterNode> preFilters) {
+			return preFilters.Where(x => x.PreFilter.TargetNodes.Contains(node)).ToArray();
 		}
 
 		private TimeSpan _GetEffectRelativeTime(TimeSpan currentTime, EffectNode effectNode) {
@@ -267,17 +269,24 @@ namespace Vixen.Execution {
 			return intentNode.Intent.GetCurrentState(intentRelativeTime);
 		}
 
-		private Command _ApplyPreFilters(Guid channelId, Command value) {
+		private Command _ApplyPreFilters(Guid channelId, Command value, TimeSpan currentTime) {
 			if(value != null) {
-				IPreFilter[] preFilters;
-				if(_preFilters.TryGetValue(channelId, out preFilters)) {
-					foreach(IPreFilter preFilter in preFilters) {
-						value = preFilter.Affect(value);
-						if(value == null) break;
+				PreFilterNode[] preFilters;
+				if(_preFilterCache.TryGetValue(channelId, out preFilters)) {
+					foreach(PreFilterNode preFilterNode in preFilters) {
+						if(_PreFilterQualifies(preFilterNode, currentTime)) {
+							TimeSpan filterRelativeTime = currentTime - preFilterNode.StartTime;
+							value = preFilterNode.PreFilter.Affect(value, filterRelativeTime);
+							if(value == null) break;
+						}
 					}
 				}
 			}
 			return value;
+		}
+
+		private bool _PreFilterQualifies(PreFilterNode preFilterNode, TimeSpan currentTime) {
+			return currentTime >= preFilterNode.StartTime && currentTime < preFilterNode.EndTime;
 		}
 	}
 }

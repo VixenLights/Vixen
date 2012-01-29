@@ -100,6 +100,13 @@ namespace Vixen.Execution {
 			return null;
 		}
 
+		public IEnumerable<PreFilterNode> GetCurrentSequenceFilters() {
+			if(_executor != null) {
+				return _executor.GetSequenceFilters();
+			}
+			return Enumerable.Empty<PreFilterNode>();
+		}
+
     	#region Events
 		protected virtual void OnSequenceStarted(object sender, SequenceStartedEventArgs e) {
             if(SequenceStarted != null) {

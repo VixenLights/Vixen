@@ -188,7 +188,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			// load the new data: get all the commands in the sequence, and make a new element for each of them.
 			_effectNodeToElement = new Dictionary<EffectNode, Element>();
-			foreach (EffectNode node in _sequence.Data.GetEffects()) {
+			foreach (EffectNode node in _sequence.Data.GetMainStreamData()) {
 				addElementForEffectNode(node);
 			}
 

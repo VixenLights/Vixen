@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Vixen.Sys;
 using Vixen.Module.Timing;
+using Vixen.Sys;
 
 namespace Vixen.Execution {
 	// T - single instance in
 	// U - collection of T out
 	abstract class MultiStateTimedEnumerator<T, U> : IEnumerator<U>
-		where T : class, ITimed
+		where T : class, IDataNode
 		where U : class, IEnumerable<T> {
 		private TimeSpan _startTime;
-		private TimeSpan _endTime;
+		//private TimeSpan _endTime;
 		private IEnumerable<T> _source;
 		private ITiming _timingSource;
 		private IEnumerator<T> _enumerator;
@@ -22,11 +21,12 @@ namespace Vixen.Execution {
 
 		// enumerator.Current = 1-frame buffer
 
-		public MultiStateTimedEnumerator(IEnumerable<T> source, ITiming timingSource, TimeSpan startTime, TimeSpan endTime) {
+		//public MultiStateTimedEnumerator(IEnumerable<T> source, ITiming timingSource, TimeSpan startTime, TimeSpan endTime) {
+		protected MultiStateTimedEnumerator(IEnumerable<T> source, ITiming timingSource, TimeSpan startTime) {
 			_source = source;
 			_timingSource = timingSource;
 			_startTime = startTime;
-			_endTime = endTime;
+			//_endTime = endTime;
 			Reset();
 		}
 

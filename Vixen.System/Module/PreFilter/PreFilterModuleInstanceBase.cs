@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using Vixen.Commands;
+using Vixen.Sys;
 
 namespace Vixen.Module.PreFilter {
 	abstract public class PreFilterModuleInstanceBase : ModuleInstanceBase, IPreFilterModuleInstance, IEqualityComparer<IPreFilterModuleInstance>, IEquatable<IPreFilterModuleInstance>, IEqualityComparer<PreFilterModuleInstanceBase>, IEquatable<PreFilterModuleInstanceBase> {
-		abstract public Command Affect(Command command);
+		abstract public Command Affect(Command command, TimeSpan filterRelativeTime);
+
+		virtual public TimeSpan TimeSpan { get; set; }
+
+		virtual public ChannelNode[] TargetNodes { get; set; }
 
 		public bool Equals(IPreFilterModuleInstance x, IPreFilterModuleInstance y) {
 			return base.Equals(x, y);

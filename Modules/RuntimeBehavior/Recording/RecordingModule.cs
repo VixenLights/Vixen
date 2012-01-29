@@ -31,15 +31,15 @@ namespace Recording {
 				// Get a channel into the sequence's input channels.
 				Guid sequenceChannelId = _GetSequenceChannelId();
 				// Clear it.
-				_sequence.Data.ClearEffectStream(sequenceChannelId);
+				_sequence.Data.ClearStream(sequenceChannelId);
 				// Copy our buffered data to it.
-				_sequence.Data.AddEffects(sequenceChannelId, _buffer);
+				_sequence.Data.AddData(sequenceChannelId, _buffer);
 			}
 		}
 
 		private Guid _GetSequenceChannelId() {
 			if(_sequenceChannelId == Guid.Empty) {
-				_sequenceChannelId = _sequence.Data.CreateEffectStream("Recording");
+				_sequenceChannelId = _sequence.Data.CreateStream("Recording");
 			}
 			return _sequenceChannelId;
 		}
@@ -77,7 +77,7 @@ namespace Recording {
 
 		private void _RemoveSequenceChannel() {
 			if(_sequenceChannelId != Guid.Empty) {
-				_sequence.Data.RemoveEffectStream(_sequenceChannelId);
+				_sequence.Data.RemoveStream(_sequenceChannelId);
 				_sequenceChannelId = Guid.Empty;
 			}
 		}

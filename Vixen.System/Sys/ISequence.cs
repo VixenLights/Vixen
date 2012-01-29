@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Vixen.Module.PreFilter;
 using Vixen.Module.Timing;
-using Vixen.Sys;
 using Vixen.Execution;
 using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Module.RuntimeBehavior;
-using Vixen.Module.Media;
 
 namespace Vixen.Sys {
     public interface ISequence {
@@ -21,14 +18,18 @@ namespace Vixen.Sys {
 		void InsertData(EffectNode effectNode);
 		void InsertData(IEnumerable<EffectNode> effectNodes);
 		EffectNode InsertData(IEffectModuleInstance effect, TimeSpan startTime);
+		bool RemoveData(EffectNode effectNode);
+		PreFilterNode AddPreFilter(IPreFilterModuleInstance preFilter, TimeSpan startTime);
+		bool RemovePreFilter(PreFilterNode preFilterNode);
 		InsertDataListenerStack InsertDataListener { get; set; }
 		TimingProviders TimingProvider { get; }
-		EffectStreams Data { get; }
+		DataStreams Data { get; }
 		IRuntimeBehaviorModuleInstance[] RuntimeBehaviors { get; }
 		MediaCollection Media { get; }
 		IModuleDataSet ModuleDataSet { get; }
 		
 		IEnumerable<EffectNode> GetData();
+		IEnumerable<PreFilterNode> GetPreFilters();
 		ITiming GetTiming();
 	}
 }

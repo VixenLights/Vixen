@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Vixen.Sys;
 using Vixen.Module.Timing;
 using Vixen.Commands;
@@ -15,7 +13,7 @@ namespace Vixen.Execution {
 		private CommandsExpiredCountValue _commandsExpiredCountValue;
 		
 		public SystemChannelEnumerator(IEnumerable<CommandNode> data, ITiming timingSource)
-			: base(data, timingSource, TimeSpan.Zero, TimeSpan.MaxValue) {
+			: base(data, timingSource, TimeSpan.Zero) {
 			_commandsQualifiedPercentValue = new CommandsQualifiedPercentValue();
 			_commandsExpiredPercentValue = new CommandsExpiredPercentValue();
 			_commandsQualifiedCountValue = new CommandsQualifiedCountValue();
