@@ -23,9 +23,5 @@ namespace Vixen.Sys {
 			_commandStates.TryGetValue(key, out commandState);
 			return commandState;
 		}
-
-		//private class CommandState : IStateSource<Command> {
-		//    public Command Value { get; set; }
-		//}
 	}
 }

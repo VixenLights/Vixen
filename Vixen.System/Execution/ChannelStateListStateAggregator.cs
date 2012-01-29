@@ -18,6 +18,12 @@ namespace Vixen.Execution {
 			stateList.Clear();
 		}
 
+		public void ClearState() {
+			foreach(Guid channelId in ChannelsWithState) {
+				ClearState(channelId);
+			}
+		}
+
 		public void AddState(Guid channelId, Command state) {
 			List<CommandStateSource> stateList = _GetChannelStateList(channelId);
 			CommandStateSource commandStateSource = new CommandStateSource(state);
@@ -28,6 +34,10 @@ namespace Vixen.Execution {
 			List<CommandStateSource> stateList = _GetChannelStateList(channelId);
 			CommandStateAggregator aggregator = _GetChannelAggregator(channelId);
 			aggregator.Aggregate(stateList);
+		}
+
+		public IEnumerable<Guid> ChannelsWithState {
+			get { return _channelStates.Keys; }
 		}
 
 		public IStateSource<Command> GetValue(Guid key) {

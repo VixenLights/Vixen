@@ -9,7 +9,7 @@ using Vixen.Sys;
 namespace Vixen.Execution {
 	public class Context : IStateSourceCollection<Guid, Command>, IDisposable {
 		private CommandStateSourceCollection<Guid> _channelStates;
-		private List<EffectNode> _currentEffects;
+		private ContextCurrentEffects _currentEffects;
 		private ChannelStateListStateAggregator _stateListStateAggregator;
 		private Dictionary<Guid, IPreFilter[]> _preFilters;
 		private bool _disposed;
@@ -34,7 +34,7 @@ namespace Vixen.Execution {
 			Name = name;
 
 			_channelStates = new CommandStateSourceCollection<Guid>();
-			_currentEffects = new List<EffectNode>();
+			_currentEffects = new ContextCurrentEffects();
 			_stateListStateAggregator = new ChannelStateListStateAggregator();
 			_preFilters = new Dictionary<Guid, IPreFilter[]>();
 		}
@@ -77,6 +77,7 @@ namespace Vixen.Execution {
 		public void Stop() {
 			if(IsPlaying) {
 				_OnStop();
+				_ResetChannelStates();
 				IsPaused = false;
 				IsPlaying = false;
 			}
@@ -99,11 +100,7 @@ namespace Vixen.Execution {
 				// Get a snapshot time value for this update.
 				TimeSpan currentTime = _TimingSource.Position;
 
-				_UpdateCurrentEffects(currentTime);
-				// Get the distinct list of channels affected by the effects in the list 
-				// (current and expired effects affect state).
-				affectedChannels = _GetChannelsAffected(_currentEffects);
-				_RemoveExpiredEffects(currentTime);
+				affectedChannels = _currentEffects.UpdateCurrentEffects(_DataSource, currentTime);
 
 				// Clear the local states of the affected channels.
 				_ClearAffectedChannelStates(affectedChannels);
@@ -159,24 +156,9 @@ namespace Vixen.Execution {
 			}
 		}
 
-		private Guid[] _GetChannelsAffected(IEnumerable<EffectNode> effects) {
-			return effects.SelectMany(x => x.Effect.TargetNodes.Select(y => y.Channel.Id)).Distinct().ToArray();
-		}
-
-		private void _RemoveExpiredEffects(TimeSpan currentTime) {
-			// Remove expired effects.
-			foreach(EffectNode effectNode in _currentEffects.ToArray()) {
-				if(_IsExpired(currentTime, effectNode)) {
-					_currentEffects.Remove(effectNode);
-				}
-			}
-		}
-
-		private void _UpdateCurrentEffects(TimeSpan currentTime) {
-			// Get now-qualified effects from the data source.
-			IEnumerable<EffectNode> nowCurrentEffects = _DataSource.GetDataAt(currentTime);
-			// Add them to the current effect list.
-			_currentEffects.AddRange(nowCurrentEffects);
+		private void _ResetChannelStates() {
+			_stateListStateAggregator.ClearState();
+			_AggregateChannelStates(_stateListStateAggregator.ChannelsWithState);
 		}
 
 		public void FilterChannelStates(IEnumerable<Guid> channelIds) {
@@ -218,7 +200,6 @@ namespace Vixen.Execution {
 
 		public IStateSource<Command> GetValue(Guid key) {
 			return _channelStates.GetValue(key);
-			//return _stateListStateAggregator.GetValue(key);
 		}
 
 		public void Dispose() {
@@ -268,10 +249,6 @@ namespace Vixen.Execution {
 
 			// Pop a single value for every level we exit.
 			preFiltersFound.Pop();
-		}
-
-		private bool _IsExpired(TimeSpan currentTime, EffectNode effectNode) {
-			return currentTime > effectNode.EndTime;
 		}
 
 		private TimeSpan _GetEffectRelativeTime(TimeSpan currentTime, EffectNode effectNode) {

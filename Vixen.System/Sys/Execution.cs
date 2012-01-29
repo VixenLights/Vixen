@@ -8,7 +8,6 @@ using Vixen.Sys.State.Execution;
 namespace Vixen.Sys {
 	public class Execution {
 		static internal SystemClock SystemTime = new SystemClock();
-		//static private Thread _channelReadThread;
 		static private ExecutionStateEngine _state;
 		static private TotalEffectsValue _totalEffectsValue;
 		static private EffectsPerSecondValue _effectsPerSecondValue;
@@ -49,9 +48,6 @@ namespace Vixen.Sys {
 		static internal void Startup() {
 			//*** user-configurable
 			_updateAdjudicator = new ControllerUpdateAdjudicator(10);
-
-			//_channelReadThread = new Thread(_ChannelReaderThread) { IsBackground = true };
-			//_channelReadThread.Start();
 
 			//*** if the logical node tree changes structure or attributes, such as
 			//    the pre-filters, the system context will need to be rebuilt
@@ -111,60 +107,6 @@ namespace Vixen.Sys {
 
 		static public string CurrentExecutionTimeString { get { return CurrentExecutionTime.ToString("m\\:ss\\.fff"); } }
 
-		//static public ProgramContext CreateContext(Program program) {
-		//    ProgramContext context = new ProgramContext(program);
-		//    _contexts[context.Id] = context;
-		//    if(ProgramContextCreated != null) {
-		//        ProgramContextCreated(null, new ProgramContextEventArgs(context));
-		//    }
-
-		//    return context;
-		//}
-
-		//static public ProgramContext CreateContext(ISequence sequence, string contextName = null) {
-		//    Program program = new Program(contextName ?? sequence.Name);
-		//    program.Add(sequence);
-		//    return CreateContext(program);
-		//}
-
-		//---------
-
-		//static public Context CreateContext(Program program) {
-		//    ProgramContext context = new ProgramContext(program);
-		//    _contexts[context.Id] = context;
-		//    OnProgramContextCreated(new ProgramContextEventArgs(context));
-
-		//    return context;
-		//}
-
-		//static public Context CreateContext(ISequence sequence, string contextName = null) {
-		//    Program program = new Program(contextName ?? sequence.Name) { sequence };
-		//    return CreateContext(program);
-		//}
-
-		//static internal Context CreateContext(string name, IDataSource dataSource, ITiming timingSource, ChannelNode logicalTree) {
-		//    Context context = new Context(name, dataSource, timingSource, logicalTree);
-		//    return context;
-		//}
-
-		//static public void ReleaseContext(ProgramContext context) {
-		//    // Double-check locking.
-		//    // Do we have the context?
-		//    // Great.  Lock.
-		//    // Do we still have the context?
-		//    // Okay, now we can release it.
-		//    if(_contexts.ContainsKey(context.Id)) {
-		//        lock(_contexts) {
-		//            if(_contexts.ContainsKey(context.Id)) {
-		//                context.Stop();
-		//                _contexts.Remove(context.Id);
-		//                OnProgramContextReleased(new ProgramContextEventArgs(context));
-		//                context.Dispose();
-		//            }
-		//        }
-		//    }
-		//}
-
 		/// <summary>
 		/// 
 		/// </summary>
@@ -209,18 +151,10 @@ namespace Vixen.Sys {
 			_TotalEffects.Add(effectNodes.Length);
 			_EffectsPerSecond.Increment(effectNodes.Length);
 
-			// Give the renderer a separate collection instance.
-			//EffectRenderer renderer = new EffectRenderer(effectNodes);
-			//ThreadPool.QueueUserWorkItem(o => renderer.Start());
 			_liveDataSource.AddData(effectNodes);
 		}
 
 		static public void UpdateState() {
-			//lock(_contexts) {
-			//    foreach(ProgramContext context in _contexts.Values) {
-			//        context.Update();
-			//    }
-			//}
 			bool allowUpdate = _updateAdjudicator.PetitionForUpdate();
 			if(allowUpdate) {
 				VixenSystem.Contexts.Update();
@@ -228,113 +162,12 @@ namespace Vixen.Sys {
 			}
 		}
 
-		//static private void _ChannelReaderThread() {
-		//    // Our mission:
-		//    // Read data from the channel enumerators and write to the channel patches.
-
-		//    while(_state.IsRunning) {
-		//        _UpdateChannelStates();
-		//        Thread.Sleep(1);
-		//    }
-		//}
-
-		//static private void _UpdateChannelStates() {
-		//    ExecutionStateValues stateBuffer = new ExecutionStateValues(SystemTime.Position);
-
-		//    foreach(Channel channel in VixenSystem.Channels) {
-		//        bool updatedState;
-		//        Command channelState = VixenSystem.Channels.UpdateChannelState(channel, out updatedState);
-		//        if(updatedState) {
-		//            stateBuffer[channel] = channelState;
-		//        }
-		//    }
-
-		//    if(ValuesChanged != null) {
-		//        ValuesChanged(stateBuffer);
-		//    }
-		//}
-
-
-		//private static void OnProgramContextCreated(ProgramContextEventArgs programContextEventArgs) {
-		//    if(ProgramContextCreated != null) {
-		//        ProgramContextCreated(null, programContextEventArgs);
-		//    }
-		//}
-
-		//private static void OnProgramContextReleased(ProgramContextEventArgs programContextEventArgs) {
-		//    if(ProgramContextReleased != null) {
-		//        ProgramContextReleased(null, programContextEventArgs);
-		//    }
-		//}
-
-		//#region EffectRenderer class
-		//class EffectRenderer {
-		//    private TimeSpan _timeStarted;
-		//    private Stack<EffectNode> _effects;
-		//    //*** to be user data, the offset to add to make live data more live
-		//    private TimeSpan _syncDelta = TimeSpan.Zero;
-
-		//    public EffectRenderer(IEnumerable<EffectNode> state) {
-		//        _timeStarted = SystemTime.Position;
-		//        _effects = new Stack<EffectNode>(state);
-		//    }
-
-		//    public void Start() {
-		//        try {
-		//            // Keep going while there is data to render and the system is running.
-		//            while (_effects.Count > 0 && SystemTime.IsRunning) {
-		//                EffectNode effectNode = _effects.Pop();
-
-		//                if (!effectNode.IsEmpty && effectNode.Effect.TargetNodes.Length > 0) {
-		//                    // Get the channels that are to be affected by this effect.
-		//                    // If they are targetting multiple nodes, the resulting channels
-		//                    // will be treated as a single collection of channels.  There will be
-		//                    // no differentiation between channels of different trees.
-		//                    Dictionary<Guid, Channel> targetChannels = effectNode.Effect.TargetNodes.SelectMany(x => x).ToDictionary(x => x.Id);
-
-		//                    // Render the effect for the whole span of the command's time.
-		//                    ChannelData channelData = effectNode.RenderEffectData(TimeSpan.Zero, effectNode.TimeSpan);
-
-		//                    if (channelData != null) {
-		//                        // Get it into the channels.
-		//                        foreach (Guid channelId in channelData.Keys) {
-		//                            Channel targetChannel = targetChannels[channelId];
-
-		//                            lock(targetChannel) {
-		//                                TimeSpan systemTimeDelta = _timeStarted + _syncDelta;
-
-		//                                // Offset the data's time frame by the command's time offset.
-		//                                foreach(CommandNode data in channelData[channelId]) {
-		//                                    // The data time needs to be translated from effect-local to
-		//                                    // system-local.
-		//                                    // Adding the command's start time makes it context-local.
-		//                                    // Adding the system time makes it system-local.
-		//                                    // Creating a new instance instead of changing the time members because
-		//                                    // changing them affects the data that the effect has created, affecting
-		//                                    // the relative timing of the data.  The data that the effect generates
-		//                                    // should always be relative to the start of the effect.
-		//                                    CommandNode targetChannelData = new CommandNode(data.Command, data.StartTime + systemTimeDelta, data.TimeSpan);
-		//                                    targetChannel.AddData(targetChannelData);
-		//                                }
-		//                            }
-		//                        }
-		//                    }
-		//                }
-		//            }
-		//        }
-		//        catch (Exception ex) {
-		//            VixenSystem.Logging.Error("EffectRender: Exception while trying to render an effect. (Has the effect " +
-		//                "generated data for a channel or node it doesn't target?)", ex);
-		//        }
-		//    }
-		//}
-		//#endregion
-
+		#region LiveDataSource Class
 		private class LiveDataSource : IDataSource {
-			private IntervalTree<EffectNode> _data;
+			private EffectNodeQueue _data;
 
 			public LiveDataSource() {
-				_data = new IntervalTree<EffectNode>();
+				_data = new EffectNodeQueue();
 			}
 
 			public void AddData(EffectNode effectNode) {
@@ -342,34 +175,17 @@ namespace Vixen.Sys {
 			}
 
 			public void AddData(IEnumerable<EffectNode> effectNodes) {
-				// Live data has a context that has system-relative timing, so data written here
-				// needs to be made system-relative to be context-relative, which is a requirement
-				// for calling Execution.Write.
 				foreach(EffectNode effectNode in effectNodes) {
-					//*** live data won't work without this, sequence data won't work with it
-					//-> Live data is consumed; okay to overwrite the start time.  But sequence data
-					//   is persistent.  It needs to be left intact.
-					//-> So why is the timing different?
-					//-> System time versus context time?
-					//-> AHA!  This is making the effect node system-absolute (bad, touching that time)
-					//   but then the context is comparing the new system-absolute effect time against
-					//   a context-absolute timing source when determine the "in-effect" effects.
-					//   -> In the case of live data, the system time IS the context time, so it works.
-					//-> The timing must remain *context-absolute*.  It's the context that determines
-					//   its qualification against context timing.  That means whatever writes the
-					//   live data to here needs to offset the live data by the system time to make
-					//   it also context-relative.
 					effectNode.StartTime += SystemTime.Position;
 					_data.Add(effectNode);
 				}
 			}
 
 			public IEnumerable<EffectNode> GetDataAt(TimeSpan time) {
-				// Live data is to be consumed.
 				EffectNode[] data = _data.Get(time).ToArray();
-				_data.Remove(data);
 				return data;
 			}
 		}
+		#endregion
 	}
 }

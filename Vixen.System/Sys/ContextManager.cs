@@ -36,21 +36,8 @@ namespace Vixen.Sys {
 		}
 
 		public void ReleaseContext(Context context) {
-			// Double-check locking.
-			// Do we have the context?
-			// Great.  Lock.
-			// Do we still have the context?
-			// Okay, now we can release it.
 			if(_instances.ContainsKey(context.Id)) {
 				_ReleaseContext(context);
-				//lock(_instances) {
-				//    if(_instances.ContainsKey(context.Id)) {
-				//        context.Stop();
-				//        _instances.Remove(context.Id);
-				//        OnContextReleased(new ContextEventArgs(context));
-				//        context.Dispose();
-				//    }
-				//}
 			}
 		}
 

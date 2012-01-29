@@ -117,6 +117,7 @@
     <Compile Include="Commands\Types.cs" />
     <Compile Include="Execution\ChannelStateListStateAggregator.cs" />
     <Compile Include="Execution\Context.cs" />
+    <Compile Include="Execution\ContextCurrentEffects.cs" />
     <Compile Include="Execution\ControllerUpdateAdjudicator.cs" />
     <Compile Include="Execution\NonExpiringChannelEnumerator.cs" />
     <Compile Include="Instrumentation\AverageValue.cs" />
@@ -203,7 +204,7 @@
     <Compile Include="Sys\Instrumentation\TotalCommandsPulledValue.cs" />
     <Compile Include="Sys\Instrumentation\TotalEffectsValue.cs" />
     <Compile Include="Sys\IntentNode.cs" />
-    <Compile Include="Sys\IntervalTree.cs" />
+    <Compile Include="Sys\EffectNodeQueue.cs" />
     <Compile Include="Sys\IPackageFileContent.cs" />
     <Compile Include="Sys\IOutputSourceCollection.cs" />
     <Compile Include="Sys\IStateSource.cs" />

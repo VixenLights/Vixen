@@ -272,10 +272,10 @@ namespace Vixen.Execution {
 		#endregion
 
     	private class SequenceDataSource : IDataSource {
-			private IntervalTree<EffectNode> _data;
+			private EffectNodeQueue _data;
 
 			public SequenceDataSource(IEnumerable<EffectNode> sequenceData) {
-				_data = new IntervalTree<EffectNode>(sequenceData);
+				_data = new EffectNodeQueue(sequenceData.OrderBy(x => x.StartTime));
 			}
 
 			public IEnumerable<EffectNode> GetDataAt(TimeSpan time) {

@@ -16,7 +16,6 @@ namespace Vixen.Execution {
 		private System.Timers.Timer _updateTimer;
 		private ISequence _sequence;
 		private IRuntimeBehaviorModuleInstance[] _runtimeBehaviors;
-		//private ExecutorEffectEnumerator _sequenceDataEnumerator;
 		private SynchronizationContext _syncContext;
 
 		public event EventHandler<SequenceStartedEventArgs> SequenceStarted;
@@ -91,23 +90,10 @@ namespace Vixen.Execution {
 					behavior.Startup(Sequence);
 				}
 
-				//// EffectNodes that have any intervals within the time frame.
-				//var qualifiedData = Sequence.Data.GetEffects(StartTime, EndTime);
-				//    // Done by GetCommandRange now.  Otherwise, trying to get an enumerator
-				//    // for the collection will not the be enumerator we intend.
-				//    //.OrderBy(x => x.StartTime);
-				//// Get the qualified sequence data into an enumerator.
-				//_sequenceDataEnumerator = new ExecutorEffectEnumerator(qualifiedData, _TimingSource, StartTime, EndTime);
-
 				// Load the media.
 				foreach(IMediaModuleInstance media in Sequence.Media) {
 					media.LoadMedia(StartTime);
 				}
-
-				// Data generation is dependent upon the timing source, so wait to start it
-				// until all potention sources of timing (timing modules and media right
-				// now) are loaded.
-				//_StartDataGeneration();
 
 				// Start the crazy train.
 				IsRunning = true;
@@ -141,44 +127,6 @@ namespace Vixen.Execution {
 		public ITiming GetSequenceTiming() {
 			return _TimingSource;
 		}
-
-		//private void _StartDataGeneration() {
-		//    // Start the data generation.
-		//    Thread thread = new Thread(_DataGenerationThread);
-		//    thread.Name = "DataGeneration-" + Sequence.Name;
-		//    thread.IsBackground = true;
-		//    thread.Start();
-		//}
-
-		//private void _DataGenerationThread() {
-		//    // We are going to use IsRunning to tell us when to stop running, but we want
-		//    // to get a head start so we're going to start running before IsRunning is
-		//    // set.  Therefore, we have to watch for the set->reset transition to know
-		//    // when to stop.
-		//    bool transitionToSet = false;
-		//    bool transitionToReset = false;
-
-		//    do {
-		//        if(IsRunning) transitionToSet = true;
-		//        if(transitionToSet && !IsRunning) transitionToReset = true;
-
-		//        // Get everything that currently qualifies.
-		//        while(_sequenceDataEnumerator.MoveNext()) {
-		//            //lock (VixenSystem.Logging) {
-		//            //    EffectNode e = _sequenceDataEnumerator.Current;
-		//                //if (e.IsEmpty)
-		//                //    VixenSystem.Logging.Debug(Vixen.Sys.Execution.CurrentExecutionTimeString + ": Sequence DataGenerationThread: MoveNext: effect is null");
-		//                //else
-		//                //    VixenSystem.Logging.Debug(Vixen.Sys.Execution.CurrentExecutionTimeString + ": Sequence DataGenerationThread: MoveNext: effect is " + e.Effect.Descriptor.TypeName + ", S=" + e.StartTime + ", D=" + e.TimeSpan + ", target=" + e.Effect.TargetNodes[0].Name);
-		//            //}
-		//            if (!_sequenceDataEnumerator.Current.IsEmpty)
-		//                Vixen.Sys.Execution.Write(new EffectNode[] { _sequenceDataEnumerator.Current });
-		//        }
-
-		//        //completely arbitrary...
-		//        Thread.Sleep(5);
-		//    } while(!transitionToReset);
-		//}
 
 		virtual protected void OnPlaying(TimeSpan startTime, TimeSpan endTime) { }
 
