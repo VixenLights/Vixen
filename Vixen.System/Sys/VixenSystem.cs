@@ -7,6 +7,7 @@ using Vixen.Module;
 using Vixen.IO;
 using Vixen.IO.Xml;
 using Vixen.Instrumentation;
+using Vixen.Module.PostFilter;
 
 namespace Vixen.Sys {
     public class VixenSystem {
@@ -63,6 +64,12 @@ namespace Vixen.Sys {
 						Execution.OpenExecution();
 					}
 
+					//***
+					foreach(OutputController outputController in VixenSystem.Controllers) {
+						//_AddPostFilterToController(outputController);
+					}
+					//***
+
 					_state = RunState.Started;
 					Logging.Info("Vixen System successfully started.");
 				} catch(Exception ex) {
@@ -74,6 +81,11 @@ namespace Vixen.Sys {
 				}
 			}
         }
+
+		private static void _AddPostFilterToController(OutputController outputController) {
+			IPostFilterModuleInstance postFilter = Modules.ModuleManagement.GetPostFilter(new Guid("{DAC271B0-0743-45ef-B4E0-D5957AF7F019}"));
+			outputController.AddPostFilter(0, postFilter);
+		}
 
         static public void Stop() {
 			if(_state == RunState.Starting || _state == RunState.Started) {

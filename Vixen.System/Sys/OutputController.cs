@@ -337,6 +337,42 @@ namespace Vixen.Sys {
 			}
 		}
 
+		public void AddPostFilter(int outputIndex, IPostFilterModuleInstance filter) {
+			if(outputIndex < OutputCount) {
+				_outputs[outputIndex].AddPostFilter(filter);
+			}
+		}
+
+		public void AddPostFilters(int outputIndex, IEnumerable<IPostFilterModuleInstance> filters) {
+			if(outputIndex < OutputCount) {
+				_outputs[outputIndex].AddPostFilters(filters);
+			}
+		}
+
+		public void InsertPostFilter(int outputIndex, int index, IPostFilterModuleInstance filter) {
+			if(outputIndex < OutputCount) {
+				_outputs[outputIndex].InsertPostFilter(index, filter);
+			}
+		}
+
+		public void RemovePostFilter(int outputIndex, IPostFilterModuleInstance filter) {
+			if(outputIndex < OutputCount) {
+				_outputs[outputIndex].RemovePostFilter(filter);
+			}
+		}
+
+		public void RemovePostFilterAt(int outputIndex, int index) {
+			if(outputIndex < OutputCount) {
+				_outputs[outputIndex].RemovePostFilterAt(index);
+			}
+		}
+
+		public void ClearPostFilters(int outputIndex) {
+			if(outputIndex < OutputCount) {
+				_outputs[outputIndex].ClearPostFilters();
+			}
+		}
+
 		// Must be a property for data binding.
 		public Guid Id { get; set; }
 
@@ -379,12 +415,12 @@ namespace Vixen.Sys {
 			//private LinkedList<IOutputStateSource> _sources = new LinkedList<IOutputStateSource>();
 			private LinkedList<IStateSource<Command>> _sources = new LinkedList<IStateSource<Command>>();
 			private CommandStateAggregator _stateAggregator;
-			private List<IPostFilter> _postFilters;
+			private List<IPostFilterModuleInstance> _postFilters;
 
 			public Output() {
 				Name = "Unnamed";
 				_stateAggregator = new CommandStateAggregator();
-				_postFilters = new List<IPostFilter>();
+				_postFilters = new List<IPostFilterModuleInstance>();
 			}
 			//public Output(OutputController owner) {
 			//    _owner = owner;
@@ -411,19 +447,19 @@ namespace Vixen.Sys {
 				_sources.Clear();
 			}
 
-			public void AddPostFilter(IPostFilter filter) {
+			public void AddPostFilter(IPostFilterModuleInstance filter) {
 				_postFilters.Add(filter);
 			}
 
-			public void AddPostFilters(IEnumerable<IPostFilter> filters) {
+			public void AddPostFilters(IEnumerable<IPostFilterModuleInstance> filters) {
 				_postFilters.AddRange(filters);
 			}
 
-			public void InsertPostFilter(int index, IPostFilter filter) {
+			public void InsertPostFilter(int index, IPostFilterModuleInstance filter) {
 				_postFilters.Insert(index, filter);
 			}
 
-			public void RemovePostFilter(IPostFilter filter) {
+			public void RemovePostFilter(IPostFilterModuleInstance filter) {
 				_postFilters.Remove(filter);
 			}
 
@@ -452,7 +488,7 @@ namespace Vixen.Sys {
 			}
 
 			public void FilterState() {
-				foreach(IPostFilter postFilter in _postFilters) {
+				foreach(IPostFilterModuleInstance postFilter in _postFilters) {
 					CurrentState = postFilter.Affect(CurrentState);
 					if(CurrentState == null) break;
 				}

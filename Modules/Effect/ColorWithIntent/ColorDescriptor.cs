@@ -1,22 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Text;
 using Vixen.Commands;
-using Vixen.Commands.KnownDataTypes;
 using Vixen.Module.Effect;
+using VixenModules.App.ColorGradients;
+using VixenModules.App.Curves;
 
-namespace RampWithIntent {
-	public class RampDescriptor : EffectModuleDescriptorBase {
-		private Guid _typeId = new Guid("{CCB599F3-41B2-4f84-9EDA-9EF84E3F80A3}");
+namespace ColorWithIntent {
+	public class ColorDescriptor : EffectModuleDescriptorBase {
+		static internal Guid _colorIntentId = new Guid("{C66DEB83-1252-4d28-8C50-535ECCE183EC}");
+		private Guid _typeId = new Guid("{2C8B4C3A-14E9-42f6-BC26-44571F672224}");
 		private ParameterSignature _signature;
-		static internal Guid _levelIntentId = new Guid("{0DFDF022-B1C4-49b9-9D65-2568A372FE28}");
 
-		public RampDescriptor() {
+		public ColorDescriptor() {
 			_signature = new ParameterSignature(
-				new ParameterSpecification("Start level", typeof(Level)),
-				new ParameterSpecification("End level", typeof(Level)));
+				new ParameterSpecification("Curve", typeof(Curve)),
+				new ParameterSpecification("Color", typeof(ColorGradient)));
 		}
 
 		public override string TypeName {
-			get { return "Ramp (intent)"; }
+			get { return "Color (with intent)"; }
 		}
 
 		public override Guid TypeId {
@@ -24,11 +29,11 @@ namespace RampWithIntent {
 		}
 
 		public override Type ModuleClass {
-			get { return typeof(RampModule); }
+			get { return typeof(ColorModule); }
 		}
 
 		public override Type ModuleDataClass {
-			get { return typeof(RampData); }
+			get { return typeof(ColorData); }
 		}
 
 		public override string Author {
@@ -52,7 +57,7 @@ namespace RampWithIntent {
 		}
 
 		public override Guid[] Dependencies {
-			get { return new[] { _levelIntentId }; }
+			get { return new[] { _colorIntentId }; }
 		}
 	}
 }

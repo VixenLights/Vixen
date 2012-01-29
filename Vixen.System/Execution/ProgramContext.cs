@@ -189,7 +189,7 @@ namespace Vixen.Execution {
 			_timingSource = _programExecutor.GetCurrentSequenceTiming();
 			
 			//***
-			_AddPreFilterToSequence();
+			//_AddPreFilterToSequence();
 			//***
 
 			_BuildPreFilterLookup(VixenSystem.Nodes, _programExecutor.GetCurrentSequenceFilters());

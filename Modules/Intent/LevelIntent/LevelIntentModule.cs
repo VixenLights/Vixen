@@ -18,22 +18,6 @@ namespace LevelIntent {
 			return null;
 		}
 
-		public override TimeSpan TimeSpan { get; set; }
-
-		//public override object[] Values {
-		//    get {
-		//        return new object[] {
-		//            StartLevel,
-		//            EndLevel
-		//        };
-		//    }
-		//    set {
-		//        if(value.Length != 2) throw new InvalidOperationException("Incorrect number of parameters.");
-		//        StartLevel = value[0].DynamicCast<Level>();
-		//        EndLevel = value[1].DynamicCast<Level>();
-		//    }
-		//}
-
 		public override IModuleDataModel ModuleData {
 			get { return _data; }
 			set { _data = (LevelIntentData)value; }

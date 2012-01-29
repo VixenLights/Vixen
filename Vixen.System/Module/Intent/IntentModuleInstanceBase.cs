@@ -18,7 +18,7 @@ namespace Vixen.Module.Intent {
 
 		abstract public Command GetCurrentState(TimeSpan timeOffset);
 
-		abstract public TimeSpan TimeSpan { get; set; }
+		virtual public TimeSpan TimeSpan { get; set; }
 
 		//virtual public object[] Values { 
 		//    get { return _valueProperties.Select(x => x.GetValue(this, null)).ToArray(); }

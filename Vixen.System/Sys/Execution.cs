@@ -46,9 +46,6 @@ namespace Vixen.Sys {
 		}
 
 		static internal void Startup() {
-			//*** user-configurable
-			_updateAdjudicator = new ControllerUpdateAdjudicator(10);
-
 			//*** if the logical node tree changes structure or attributes, such as
 			//    the pre-filters, the system context will need to be rebuilt
 			//-> or if the physical list of channels changes
@@ -59,6 +56,16 @@ namespace Vixen.Sys {
 		}
 
 		static internal void Shutdown() {
+		}
+
+		private static ControllerUpdateAdjudicator _UpdateAdjudicator {
+			get {
+				if(_updateAdjudicator == null) {
+					//*** user-configurable threshold value
+					_updateAdjudicator = new ControllerUpdateAdjudicator(10);
+				}
+				return _updateAdjudicator;
+			}
 		}
 
 		static private TotalEffectsValue _TotalEffects {
@@ -155,7 +162,7 @@ namespace Vixen.Sys {
 		}
 
 		static public void UpdateState() {
-			bool allowUpdate = _updateAdjudicator.PetitionForUpdate();
+			bool allowUpdate = _UpdateAdjudicator.PetitionForUpdate();
 			if(allowUpdate) {
 				VixenSystem.Contexts.Update();
 				VixenSystem.Channels.Update();

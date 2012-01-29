@@ -10,7 +10,6 @@ namespace RampWithIntent {
 	public class RampModule : EffectModuleInstanceBase {
 		private RampData _data;
 		private EffectIntents _intents;
-		private Guid _levelIntentId = new Guid("{0DFDF022-B1C4-49b9-9D65-2568A372FE28}");
 
 		protected override void _PreRender() {
 			_intents = new EffectIntents();
@@ -25,7 +24,7 @@ namespace RampWithIntent {
 			//EndLevel = ParameterValues[1].DynamicCast<Level>();
 
 			foreach(Channel channel in channels) {
-				IIntentModuleInstance intent = ApplicationServices.Get<IIntentModuleInstance>(_levelIntentId);
+				IIntentModuleInstance intent = ApplicationServices.Get<IIntentModuleInstance>(RampDescriptor._levelIntentId);
 				intent.TimeSpan = TimeSpan;
 				intent.Values = new object[] { StartLevel, EndLevel };
 				_intents.AddIntentForChannel(channel.Id, new IntentNode(intent, TimeSpan.Zero));
