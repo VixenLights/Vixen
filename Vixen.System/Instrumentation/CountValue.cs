@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Vixen.Instrumentation {
+﻿namespace Vixen.Instrumentation {
 	abstract public class CountValue : InstrumentationValue {
 		private double _value;
 
-		public CountValue(string name)
+		protected CountValue(string name)
 			: base(name) {
 		}
 

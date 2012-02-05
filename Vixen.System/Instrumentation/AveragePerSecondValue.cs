@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Diagnostics;
 
 namespace Vixen.Instrumentation {
-	abstract public class AverageValue : InstrumentationValue {
+	abstract public class AveragePerSecondValue : InstrumentationValue {
 		private int _totalCount;
-		private int _startTime;
+		private Stopwatch _stopwatch;
 
-		public AverageValue(string name)
+		protected AveragePerSecondValue(string name)
 			: base(name) {
-			_startTime = Environment.TickCount;
+			_stopwatch = Stopwatch.StartNew();
 		}
 
 		// Average - values/second
 		protected override double _GetValue() {
-			int totalMs = Environment.TickCount - _startTime;
+			long totalMs = _stopwatch.ElapsedMilliseconds;
 			double seconds = (double)totalMs / 1000;
 			return _totalCount / seconds;
 		}

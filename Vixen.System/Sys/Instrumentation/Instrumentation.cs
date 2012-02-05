@@ -18,6 +18,10 @@ namespace Vixen.Sys.Instrumentation {
 			}
 		}
 
+		public void RemoveValue(IInstrumentationValue value) {
+			_values.Remove(value.Name);
+		}
+
 		public IEnumerable<string> ValueNames {
 			get { return _values.Keys.ToArray(); }
 		}

@@ -1,22 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Diagnostics;
 
 namespace Vixen.Instrumentation {
 	abstract public class RateValue : InstrumentationValue {
 		private int _count;
-		private int _lastSampleTime;
+		private Stopwatch _stopwatch;
 
-		public RateValue(string name)
+		protected RateValue(string name)
 			: base(name) {
-			_lastSampleTime = Environment.TickCount;
+			_stopwatch = Stopwatch.StartNew();
 		}
 
 		// Rate - values/second.
 		override protected double _GetValue() {
-			int msSinceLastSample = Environment.TickCount - _lastSampleTime;
-			_lastSampleTime = Environment.TickCount;
+			long msSinceLastSample = _stopwatch.ElapsedMilliseconds;
+			_stopwatch.Restart();
 
 			int count = _count;
 			_count = 0;

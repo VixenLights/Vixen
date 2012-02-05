@@ -1,12 +1,13 @@
-﻿using System;
+﻿using System.Diagnostics;
 
 namespace Vixen.Execution {
 	class ControllerUpdateAdjudicator {
 		private int _threshold;
-		private int _lastUpdate;
+		private Stopwatch _stopwatch;
 
 		public ControllerUpdateAdjudicator(int thresholdInMilliseconds) {
 			_threshold = thresholdInMilliseconds;
+			_stopwatch = Stopwatch.StartNew();
 		}
 
 		/// <summary>
@@ -14,11 +15,14 @@ namespace Vixen.Execution {
 		/// </summary>
 		/// <returns>If an update should be done.</returns>
 		public bool PetitionForUpdate() {
-			if(Environment.TickCount - _lastUpdate > _threshold) {
-				_lastUpdate = Environment.TickCount;
-				return true;
+			bool result = false;
+
+			if(_stopwatch.ElapsedMilliseconds > _threshold) {
+				_stopwatch.Restart();
+				result = true;
 			}
-			return false;
+
+			return result;
 		}
 	}
 }

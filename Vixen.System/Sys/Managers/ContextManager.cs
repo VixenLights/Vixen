@@ -1,19 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Vixen.Execution;
 using Vixen.Module.Timing;
+using Vixen.Sys.Instrumentation;
 
 namespace Vixen.Sys.Managers {
 	public class ContextManager : IEnumerable<Context> {
 		private Dictionary<Guid, Context> _instances;
+		private ContextUpdateTimeValue _contextUpdateAverageValue;
+		private Stopwatch _stopwatch;
 
 		public event EventHandler<ContextEventArgs> ContextCreated;
 		public event EventHandler<ContextEventArgs> ContextReleased;
 
 		public ContextManager() {
 			_instances = new Dictionary<Guid, Context>();
+			_contextUpdateAverageValue = new ContextUpdateTimeValue();
+			VixenSystem.Instrumentation.AddValue(_contextUpdateAverageValue);
+			_stopwatch = Stopwatch.StartNew();
 		}
 
 		public Context CreateContext(Program program) {
@@ -50,6 +57,8 @@ namespace Vixen.Sys.Managers {
 
 		public void Update() {
 			lock(_instances) {
+				_stopwatch.Restart();
+				
 				Parallel.ForEach(_instances.Values, context => {
 					// Get a snapshot time value for this update.
 					TimeSpan contextTime = context.GetTimeSnapshot();
@@ -60,6 +69,8 @@ namespace Vixen.Sys.Managers {
 					//are updated.  The controller would have to maintain state so those
 					//outputs could be updated and the whole state sent out.
 				});
+
+				_contextUpdateAverageValue.Set(_stopwatch.ElapsedMilliseconds);
 			}
 		}
 

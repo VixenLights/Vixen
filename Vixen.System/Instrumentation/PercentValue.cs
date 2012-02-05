@@ -8,7 +8,7 @@ namespace Vixen.Instrumentation {
 		private int _totalValues;
 		private int _qualifyingValues;
 
-		public PercentValue(string name)
+		protected PercentValue(string name)
 			: base(name) {
 		}
 

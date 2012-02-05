@@ -5,10 +5,10 @@ using System.Text;
 using Vixen.Instrumentation;
 
 namespace Vixen.Sys.Instrumentation {
-	class TotalChannelCommands : CountValue {
+	class TotalChannelCommandsValue : CountValue {
 		private Channel _channel;
 
-		public TotalChannelCommands(Channel channel)
+		public TotalChannelCommandsValue(Channel channel)
 			: base("Total Channel Commands - " + channel.Name) {
 			_channel = channel;
 		}
