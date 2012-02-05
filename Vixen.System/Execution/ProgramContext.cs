@@ -188,9 +188,9 @@ namespace Vixen.Execution {
 			_dataSource = _programExecutor.GetCurrentSequenceData();
 			_timingSource = _programExecutor.GetCurrentSequenceTiming();
 			
-			//***
-			//_AddPreFilterToSequence();
-			//***
+			//****
+			_AddPreFilterToSequence();
+			//****
 
 			_BuildPreFilterLookup(VixenSystem.Nodes, _programExecutor.GetCurrentSequenceFilters());
 			if(SequenceStarted != null) {
@@ -199,6 +199,7 @@ namespace Vixen.Execution {
 		}
 
 		private void _AddPreFilterToSequence() {
+			//Don't want it applied every time the sequence is started.  The result is cumulative.
 			if(_programExecutor.Current.Sequence.GetPreFilters().Any()) return;
 
 			IPreFilterModuleInstance preFilter = Modules.ModuleManagement.GetPreFilter(new Guid("{E0E26570-6A01-4368-B996-E34576FF4910}"));
@@ -206,6 +207,8 @@ namespace Vixen.Execution {
 			preFilter.TimeSpan = TimeSpan.FromSeconds(5);
 			//Every channel.
 			preFilter.TargetNodes = VixenSystem.Nodes.ToArray();
+			//The first three channels of my 1024-channel group.
+			//preFilter.TargetNodes = VixenSystem.Nodes.Skip(64).Take(3).ToArray();
 			//Starting right away.
 			_programExecutor.Current.Sequence.AddPreFilter(preFilter, TimeSpan.Zero);
 		}

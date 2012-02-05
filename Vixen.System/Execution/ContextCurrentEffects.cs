@@ -31,7 +31,8 @@ namespace Vixen.Execution {
 		}
 
 		private Guid[] _GetChannelsAffected(IEnumerable<EffectNode> effects) {
-			return effects.SelectMany(x => x.Effect.TargetNodes.Select(y => y.Channel.Id)).Distinct().ToArray();
+			return effects.SelectMany(x => x.Effect.TargetNodes).SelectMany(y => y.GetChannelEnumerator()).Select(z => z.Id).Distinct().ToArray();
+			//return effects.SelectMany(x => x.Effect.TargetNodes.Select(y => y.Channel.Id)).Distinct().ToArray();
 		}
 
 		private void _RemoveExpiredEffects(TimeSpan currentTime) {

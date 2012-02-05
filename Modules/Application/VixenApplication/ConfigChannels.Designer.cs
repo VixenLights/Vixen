@@ -43,6 +43,7 @@
 			this.numericUpDownPatchOutputSelect = new System.Windows.Forms.NumericUpDown();
 			this.comboBoxPatchControllerSelect = new System.Windows.Forms.ComboBox();
 			this.groupBoxPatches = new System.Windows.Forms.GroupBox();
+			this.button1 = new System.Windows.Forms.Button();
 			this.checkBoxDisableOutputs = new System.Windows.Forms.CheckBox();
 			this.buttonRemovePatch = new System.Windows.Forms.Button();
 			this.listViewPatches = new System.Windows.Forms.ListView();
@@ -183,6 +184,7 @@
 			// 
 			// groupBoxPatches
 			// 
+			this.groupBoxPatches.Controls.Add(this.button1);
 			this.groupBoxPatches.Controls.Add(this.checkBoxDisableOutputs);
 			this.groupBoxPatches.Controls.Add(this.buttonRemovePatch);
 			this.groupBoxPatches.Controls.Add(this.listViewPatches);
@@ -192,6 +194,17 @@
 			this.groupBoxPatches.TabIndex = 27;
 			this.groupBoxPatches.TabStop = false;
 			this.groupBoxPatches.Text = "Channel Patches";
+			// 
+			// button1
+			// 
+			this.button1.Enabled = false;
+			this.button1.Location = new System.Drawing.Point(175, 130);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(75, 23);
+			this.button1.TabIndex = 31;
+			this.button1.Text = "Secret";
+			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Click += new System.EventHandler(this.button1_Click);
 			// 
 			// checkBoxDisableOutputs
 			// 
@@ -308,7 +321,7 @@
 			this.labelParents.Size = new System.Drawing.Size(268, 28);
 			this.labelParents.TabIndex = 24;
 			this.labelParents.Text = "This node is in <x> groups:\r\nasdfasdfasdfasdfasdfasdfasdfasdfqwerqwerqwerqwer\r\n23" +
-				"4123412341234123412341234";
+    "4123412341234123412341234";
 			// 
 			// buttonRenameItem
 			// 
@@ -425,9 +438,9 @@
 			// multiSelectTreeviewChannelsGroups
 			// 
 			this.multiSelectTreeviewChannelsGroups.AllowDrop = true;
-			this.multiSelectTreeviewChannelsGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.multiSelectTreeviewChannelsGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.multiSelectTreeviewChannelsGroups.ContextMenuStrip = this.contextMenuStripTreeView;
 			this.multiSelectTreeviewChannelsGroups.Cursor = System.Windows.Forms.Cursors.Default;
 			this.multiSelectTreeviewChannelsGroups.CustomDragCursor = null;
@@ -662,5 +675,6 @@
 		private System.Windows.Forms.ToolStripMenuItem moveHereToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem copyHereToolStripMenuItem;
 		private System.Windows.Forms.Button buttonCancel;
+		private System.Windows.Forms.Button button1;
 	}
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Vixen.Sys {
+namespace Vixen.Sys.Managers {
 	public class NodeManager : IEnumerable<ChannelNode> {
 		private ChannelNode _rootNode;
 

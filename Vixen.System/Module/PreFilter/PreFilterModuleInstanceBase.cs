@@ -11,6 +11,12 @@ namespace Vixen.Module.PreFilter {
 
 		virtual public ChannelNode[] TargetNodes { get; set; }
 
+		virtual public bool HasSetup {
+			get { return false; }
+		}
+
+		virtual public bool Setup() { return false; }
+
 		public bool Equals(IPreFilterModuleInstance x, IPreFilterModuleInstance y) {
 			return base.Equals(x, y);
 		}

@@ -6,6 +6,12 @@ namespace Vixen.Module.PostFilter {
 	abstract public class PostFilterModuleInstanceBase : ModuleInstanceBase, IPostFilterModuleInstance, IEqualityComparer<IPostFilterModuleInstance>, IEquatable<IPostFilterModuleInstance>, IEqualityComparer<PostFilterModuleInstanceBase>, IEquatable<PostFilterModuleInstanceBase> {
 		abstract public Command Affect(Command command);
 
+		virtual public bool HasSetup {
+			get { return false; }
+		}
+
+		virtual public bool Setup() { return false; }
+
 		public bool Equals(IPostFilterModuleInstance x, IPostFilterModuleInstance y) {
 			return base.Equals(x, y);
 		}

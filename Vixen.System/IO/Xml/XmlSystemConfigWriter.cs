@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using Vixen.Sys;
+using Vixen.Sys.Output;
 
 //TODO: Distribute among individual classes
 namespace Vixen.IO.Xml {
@@ -19,23 +21,24 @@ namespace Vixen.IO.Xml {
 		private const string ELEMENT_PROPERTY_DATA = "PropertyData";
 		private const string ELEMENT_IDENTITY = "Identity";
 		private const string ELEMENT_DISABLED_CONTROLLERS = "DisabledControllers";
-		private const string ATTR_ID = "id";
-		private const string ATTR_NAME = "name";
-		private const string ATTR_CHANNEL_ID = "channelId";
-		private const string ATTR_IS_CONTEXT = "isContext";
-
 		private const string ELEMENT_CONTROLLERS = "Controllers";
 		private const string ELEMENT_CONTROLLER = "Controller";
 		private const string ELEMENT_OUTPUTS = "Outputs";
 		private const string ELEMENT_OUTPUT = "Output";
-		private const string ELEMENT_TRANSFORMS = "Transforms";
-		private const string ELEMENT_TRANSFORM = "Transform";
 		private const string ELEMENT_MODULE_DATA = "ModuleData";
-		private const string ATTR_LINKED_TO = "linkedTo";
+		private const string ELEMENT_CONTROLLER_LINKS = "ControllerLinks";
+		private const string ELEMENT_CONTROLLER_LINK = "ControllerLink";
+		private const string ATTR_ID = "id";
+		private const string ATTR_NAME = "name";
+		private const string ATTR_CHANNEL_ID = "channelId";
+		private const string ATTR_IS_CONTEXT = "isContext";
+		//private const string ATTR_LINKED_TO = "linkedTo";
 		private const string ATTR_OUTPUT_COUNT = "outputCount";
 		private const string ATTR_HARDWARE_ID = "hardwareId";
 		private const string ATTR_TYPE_ID = "typeId";
 		private const string ATTR_INSTANCE_ID = "instanceId";
+		private const string ATTR_PRIOR_ID = "priorId";
+		private const string ATTR_NEXT_ID = "nextId";
 
 		override protected XElement _CreateContent(SystemConfig obj) {
 			return new XElement(ELEMENT_ROOT,
@@ -45,6 +48,7 @@ namespace Vixen.IO.Xml {
 				_WriteChannels(obj),
 				_WriteBranchNodes(obj),
 				_WriteControllers(obj),
+				_WriteControllerLinks(obj),
 				_WriteChannelPatching(obj),
 				_WriteDisabledControllers(obj));
 		}
@@ -81,6 +85,11 @@ namespace Vixen.IO.Xml {
 		private XElement _WriteControllers(SystemConfig obj) {
 			IEnumerable<XElement> elements = obj.Controllers.Select(_WriteController);
 			return new XElement(ELEMENT_CONTROLLERS, elements);
+		}
+
+		private XElement _WriteControllerLinks(SystemConfig obj) {
+			IEnumerable<XElement> elements = obj.ControllerLinking.Select(_WriteControllerLink);
+			return new XElement(ELEMENT_CONTROLLER_LINKS, elements);
 		}
 
 		private XElement _WriteChannelPatching(SystemConfig obj) {
@@ -122,30 +131,39 @@ namespace Vixen.IO.Xml {
 				new XElement(ELEMENT_PROPERTY_DATA, channelNode.Properties.PropertyData.ToXElement()), channelElements);
 		}
 
-		private XElement _WriteController(OutputController controller) {
-			controller.Commit();
+		private XElement _WriteController(IOutputDevice controllerDevice) {
+			OutputController controller = (OutputController)controllerDevice;
+			//controller.Commit();
 
 			XElement element = new XElement(ELEMENT_CONTROLLER,
 				new XAttribute(ATTR_NAME, controller.Name),
 				new XAttribute(ATTR_HARDWARE_ID, controller.OutputModuleId),
 				new XAttribute(ATTR_OUTPUT_COUNT, controller.OutputCount),
 				new XAttribute(ATTR_ID, controller.Id),
-				new XAttribute(ATTR_LINKED_TO, controller.LinkedTo),
+				//new XAttribute(ATTR_LINKED_TO, controller.LinkedTo),
 
 				new XElement(ELEMENT_MODULE_DATA, _CreateModuleDataContent(controller)),
 				new XElement(ELEMENT_OUTPUTS,
 					controller.Outputs.Select((x, index) =>
 						new XElement(ELEMENT_OUTPUT,
-							new XAttribute(ATTR_NAME, x.Name),
-							new XElement(ELEMENT_TRANSFORMS,
-								_CreateOutputTransformContent(controller, index))))));
+							new XAttribute(ATTR_NAME, x.Name)
+							/*new XElement(ELEMENT_TRANSFORMS,
+								_CreateOutputTransformContent(controller, index))*/))));
 
 			return element;
 		}
 
-		private XElement _WriteDisabledController(OutputController controller) {
+		private XElement _WriteControllerLink(ControllerLink controllerLink) {
+			XElement element = new XElement(ELEMENT_CONTROLLER_LINK,
+				new XAttribute(ATTR_ID, controllerLink.ControllerId),
+				new XAttribute(ATTR_PRIOR_ID, controllerLink.PriorId ?? Guid.Empty),
+				new XAttribute(ATTR_NEXT_ID, controllerLink.NextId ?? Guid.Empty));
+			return element;
+		}
+
+		private XElement _WriteDisabledController(IOutputDevice controllerDevice) {
 			XElement element = new XElement(ELEMENT_CONTROLLER,
-				new XAttribute(ATTR_ID, controller.Id));
+				new XAttribute(ATTR_ID, controllerDevice.Id));
 			return element;
 		}
 
@@ -156,16 +174,16 @@ namespace Vixen.IO.Xml {
 			return null;
 		}
 
-		private IEnumerable<XElement> _CreateOutputTransformContent(OutputController controller, int outputIndex) {
-			if(controller.OutputModule != null) {
-				return controller.OutputModule.GetTransforms(outputIndex).Select(x =>
-					new XElement(ELEMENT_TRANSFORM,
-						new XAttribute(ATTR_TYPE_ID, x.Descriptor.TypeId),
-						new XAttribute(ATTR_INSTANCE_ID, x.InstanceId)));
+		//private IEnumerable<XElement> _CreateOutputTransformContent(OutputController controller, int outputIndex) {
+		//    if(controller.OutputModule != null) {
+		//        return controller.OutputModule.GetTransforms(outputIndex).Select(x =>
+		//            new XElement(ELEMENT_TRANSFORM,
+		//                new XAttribute(ATTR_TYPE_ID, x.Descriptor.TypeId),
+		//                new XAttribute(ATTR_INSTANCE_ID, x.InstanceId)));
 
-			}
-			return null;
-		}
+		//    }
+		//    return null;
+		//}
 
 		private XElement _WriteChannelOutputPatch(ChannelOutputPatch channelOutputPatch) {
 			IEnumerable<XElement> elements = channelOutputPatch.Select(_WriteControllerReference);

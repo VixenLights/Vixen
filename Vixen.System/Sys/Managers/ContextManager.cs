@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Vixen.Execution;
 using Vixen.Module.Timing;
 
-namespace Vixen.Sys {
+namespace Vixen.Sys.Managers {
 	public class ContextManager : IEnumerable<Context> {
 		private Dictionary<Guid, Context> _instances;
 

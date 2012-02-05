@@ -7,7 +7,10 @@ using Vixen.Module;
 using Vixen.IO;
 using Vixen.IO.Xml;
 using Vixen.Instrumentation;
+//using Vixen.Module.PostFilter;
 using Vixen.Module.PostFilter;
+using Vixen.Sys.Managers;
+using Vixen.Sys.Output;
 
 namespace Vixen.Sys {
     public class VixenSystem {
@@ -64,11 +67,11 @@ namespace Vixen.Sys {
 						Execution.OpenExecution();
 					}
 
-					//***
-					foreach(OutputController outputController in VixenSystem.Controllers) {
-						//_AddPostFilterToController(outputController);
-					}
-					//***
+					//****
+					//foreach(OutputController outputController in VixenSystem.Controllers) {
+					//    _AddPostFilterToController(outputController);
+					//}
+					//****
 
 					_state = RunState.Started;
 					Logging.Info("Vixen System successfully started.");
@@ -82,10 +85,10 @@ namespace Vixen.Sys {
 			}
         }
 
-		private static void _AddPostFilterToController(OutputController outputController) {
-			IPostFilterModuleInstance postFilter = Modules.ModuleManagement.GetPostFilter(new Guid("{DAC271B0-0743-45ef-B4E0-D5957AF7F019}"));
-			outputController.AddPostFilter(0, postFilter);
-		}
+		//private static void _AddPostFilterToController(OutputController outputController) {
+		//    IPostFilterModuleInstance postFilter = Modules.ModuleManagement.GetPostFilter(new Guid("{DAC271B0-0743-45ef-B4E0-D5957AF7F019}"));
+		//    outputController.AddPostFilter(0, postFilter);
+		//}
 
         static public void Stop() {
 			if(_state == RunState.Starting || _state == RunState.Started) {
@@ -111,9 +114,11 @@ namespace Vixen.Sys {
 				// 'copy' the current details (nodes/channels/controllers) from the executing state
 				// to the SystemConfig, so they're there for writing when we save
 				SystemConfig.Controllers = Controllers;
+				SystemConfig.OtherOutputDevices = OtherOutputDevices;
 				SystemConfig.Channels = Channels;
 				SystemConfig.Nodes = Nodes.GetRootNodes();
 				SystemConfig.ChannelPatching = ChannelPatching;
+				SystemConfig.ControllerLinking = ControllerLinking;
 				SystemConfig.Save();
 			}
 		}
@@ -123,8 +128,10 @@ namespace Vixen.Sys {
 			Channels = new ChannelManager();
 			Nodes = new NodeManager();
 			Controllers = new ControllerManager();
+			OtherOutputDevices = new OutputDeviceManager();
 			Contexts = new ContextManager();
 			ChannelPatching = new ChannelOutputPatchManager();
+			ControllerLinking = new ControllerLinker();
 
 			// Load system data in order of dependency.
 			// The system data generally resides in the data branch, but it
@@ -143,8 +150,27 @@ namespace Vixen.Sys {
 
 			Channels.AddChannels(SystemConfig.Channels);
 			Nodes.AddNodes(SystemConfig.Nodes);
-			Controllers.AddControllers(SystemConfig.Controllers);
+			Controllers.AddRange(SystemConfig.Controllers);
+			OtherOutputDevices.AddRange(SystemConfig.OtherOutputDevices);
 			ChannelPatching.AddPatches(SystemConfig.ChannelPatching);
+			ControllerLinking.AddRange(SystemConfig.ControllerLinking);
+
+			//Channel channel = Channels.First();
+			//ChannelNode node = Nodes.FirstOrDefault(x => x.Channel == channel);
+			//ChannelNode node2 = Nodes.FirstOrDefault(x => x.Channel.Id == channel.Id);
+			//ChannelNode ref1 = node;
+			//ChannelNode ref2 = node2;
+
+			//****
+			// Add the Color post-filter to the channels of the first 5 nodes of the 1024 channel batch.
+			Channel[] firstFiveChannels = Nodes.Skip(64).Take(5).Select(x => x.Channel).ToArray();
+			for(int i = 0; i < 5; i++) {
+				IPostFilterModuleInstance postFilter = Modules.ModuleManagement.GetPostFilter(new Guid("{B3C06A83-CE75-4e78-853D-B95B4E69CEAC}"));
+				if(postFilter != null) {
+					firstFiveChannels[i].AddPostFilter(postFilter);
+				}
+			}
+			//****
 		}
 
 		static public void ReloadSystemConfig()
@@ -160,7 +186,9 @@ namespace Vixen.Sys {
 			foreach (ChannelNode cn in Nodes.ToArray())
 				Nodes.RemoveNode(cn, null, true);
 			foreach (OutputController oc in Controllers.ToArray())
-				Controllers.RemoveController(oc);
+				Controllers.Remove(oc);
+			foreach (IOutputDevice outputDevice in OtherOutputDevices.ToArray())
+				OtherOutputDevices.Remove(outputDevice);
 
 			LoadSystemConfig();
 
@@ -188,9 +216,11 @@ namespace Vixen.Sys {
 		static public ChannelManager Channels { get; private set; }
 		static public NodeManager Nodes { get; private set; }
 		static public ControllerManager Controllers { get; private set; }
+		static public OutputDeviceManager OtherOutputDevices { get; private set; }
 		static public ContextManager Contexts { get; private set; }
     	static public IInstrumentation Instrumentation { get; private set; }
-    	public static ChannelOutputPatchManager ChannelPatching { get; private set; }
+		static public ChannelOutputPatchManager ChannelPatching { get; private set; }
+		static public ControllerLinker ControllerLinking { get; private set; }
 
     	static internal ModuleStore ModuleStore { get; private set; }
 		static internal SystemConfig SystemConfig { get; private set; }

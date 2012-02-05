@@ -12,7 +12,7 @@ namespace Vixen.Module.Property {
 			get { return false; }
 		}
 
-		virtual public void Setup() { }
+		virtual public bool Setup() { return false; }
 
 		/// <summary>
 		/// Set or reset the property's values to a property-specific default.

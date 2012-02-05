@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Vixen.Commands;
+using Vixen.Sys.Output;
 
 namespace Vixen.Sys.SourceCollection {
 	// Pulling everything dynamically so there isn't any maintenance when channels or 
@@ -25,7 +26,7 @@ namespace Vixen.Sys.SourceCollection {
 		}
 
 		public IEnumerable<OutputSources> GetControllerSources(Guid controllerId) {
-			OutputController controller = VixenSystem.Controllers.Get(controllerId);
+			OutputController controller = (OutputController)VixenSystem.Controllers.Get(controllerId);
 			if(controller != null) {
 				for(int i = 0; i < controller.OutputCount; i++) {
 					yield return GetOutputSources(controllerId, i);

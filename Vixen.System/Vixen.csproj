@@ -127,9 +127,17 @@
     <Compile Include="Instrumentation\InstrumentationValue.cs" />
     <Compile Include="Instrumentation\PercentValue.cs" />
     <Compile Include="Instrumentation\RateValue.cs" />
+    <Compile Include="Sys\ControllerLink.cs" />
+    <Compile Include="Sys\ControllerLinker.cs" />
     <Compile Include="Sys\DataStream.cs" />
     <Compile Include="Sys\DefaultValueArrayMember.cs" />
     <Compile Include="Sys\IDataNode.cs" />
+    <Compile Include="Sys\Managers\IOutputDeviceManager.cs" />
+    <Compile Include="Sys\ISetup.cs" />
+    <Compile Include="Sys\Output\IOutputDevice.cs" />
+    <Compile Include="Sys\Output\OutputDeviceBase.cs" />
+    <Compile Include="Sys\Managers\OutputDeviceManager.cs" />
+    <Compile Include="Sys\Managers\OutputDeviceManagerBase.cs" />
     <Compile Include="Sys\PreFilterNode.cs" />
     <Compile Include="Sys\ValueAttribute.cs" />
     <Compile Include="Sys\EffectIntents.cs" />
@@ -160,15 +168,15 @@
     <Compile Include="Module\PreFilter\PreFilterModuleManagement.cs" />
     <Compile Include="Module\PreFilter\PreFilterModuleRepository.cs" />
     <Compile Include="Sys\ChannelContextSource.cs" />
-    <Compile Include="Sys\ChannelManager.cs" />
+    <Compile Include="Sys\Managers\ChannelManager.cs" />
     <Compile Include="Sys\ChannelOutputPatch.cs" />
-    <Compile Include="Sys\ChannelOutputPatchManager.cs" />
+    <Compile Include="Sys\Managers\ChannelOutputPatchManager.cs" />
     <Compile Include="Sys\CommandStateAggregator.cs" />
     <Compile Include="Sys\CommandStateSource.cs" />
     <Compile Include="Sys\CommandStateSourceCollection.cs" />
     <Compile Include="Sys\ContextEventArgs.cs" />
-    <Compile Include="Sys\ContextManager.cs" />
-    <Compile Include="Sys\ControllerManager.cs" />
+    <Compile Include="Sys\Managers\ContextManager.cs" />
+    <Compile Include="Sys\Managers\ControllerManager.cs" />
     <Compile Include="Execution\MultiStateTimedEnumerator.cs" />
     <Compile Include="ImageResource.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -284,9 +292,6 @@
     <Compile Include="Module\Sequence\SequenceModuleInstanceBase.cs" />
     <Compile Include="Module\Timing\TimingModuleInstanceBase.cs" />
     <Compile Include="Module\Timing\TimingModuleDescriptorBase.cs" />
-    <Compile Include="Module\Transform\CommandsAffected.cs" />
-    <Compile Include="Module\Transform\TransformModuleInstanceBase.cs" />
-    <Compile Include="Module\Transform\TransformModuleDescriptorBase.cs" />
     <Compile Include="Module\Trigger\TriggerInputType.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -383,9 +388,6 @@
     <Compile Include="Module\Effect\EffectModuleImplementation.cs" />
     <Compile Include="Module\Effect\EffectModuleManagement.cs" />
     <Compile Include="Module\Effect\EffectModuleRepository.cs" />
-    <Compile Include="Module\Transform\TransformModuleImplementation.cs" />
-    <Compile Include="Module\Transform\TransformModuleManagement.cs" />
-    <Compile Include="Module\Transform\TransformModuleRepository.cs" />
     <Compile Include="Module\Trigger\TriggerModuleImplementation.cs" />
     <Compile Include="Module\Trigger\TriggerModuleManagement.cs" />
     <Compile Include="Module\Trigger\TriggerModuleRepository.cs" />
@@ -399,10 +401,6 @@
     <Compile Include="Sys\Channel.cs" />
     <Compile Include="Module\GenericModuleManagement.cs" />
     <Compile Include="Module\GenericModuleRepository.cs" />
-    <Compile Include="Module\Transform\CommandParameterReference.cs" />
-    <Compile Include="Module\Transform\ITransform.cs" />
-    <Compile Include="Module\Transform\ITransformModuleDescriptor.cs" />
-    <Compile Include="Module\Transform\ITransformModuleInstance.cs" />
     <Compile Include="Sys\ConcurrentBagLiveEnumerator.cs" />
     <Compile Include="Sys\ConcurrentQueueLiveEnumerator.cs" />
     <Compile Include="Sys\ExecutorMessageEventArgs.cs" />
@@ -441,7 +439,7 @@
     <Compile Include="Sys\State\Execution\TestOpenState.cs" />
     <Compile Include="Sys\State\Execution\TestOpeningState.cs" />
     <Compile Include="Sys\SystemClock.cs" />
-    <Compile Include="Sys\NodeManager.cs" />
+    <Compile Include="Sys\Managers\NodeManager.cs" />
     <Compile Include="Sys\SystemContext.cs" />
     <Compile Include="Sys\SystemConfig.cs" />
     <Compile Include="Sys\ApplicationServices.cs" />
@@ -509,7 +507,7 @@
     <Compile Include="Module\Trigger\ITriggerInput.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Sys\OutputController.cs" />
+    <Compile Include="Sys\Output\OutputController.cs" />
     <Compile Include="Sys\Execution.cs" />
     <Compile Include="Execution\ProgramContext.cs" />
     <Compile Include="Module\App\IApp.cs" />

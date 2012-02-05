@@ -16,6 +16,7 @@ using Vixen.Module.Timing;
 using Vixen.Module.Media;
 using Vixen.Module.Sequence;
 using Vixen.Module.Script;
+using Vixen.Sys.Output;
 
 namespace Vixen.Sys {
 	/// <summary>
@@ -120,7 +121,7 @@ namespace Vixen.Sys {
 		}
 
 		static public OutputController[] GetControllers() {
-			return VixenSystem.Controllers.ToArray();
+			return VixenSystem.Controllers.Cast<OutputController>().ToArray();
 		}
 
 		static public string[] GetScriptLanguages() {

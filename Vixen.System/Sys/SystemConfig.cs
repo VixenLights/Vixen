@@ -4,17 +4,20 @@ using System.Linq;
 using System.IO;
 using Vixen.IO;
 using Vixen.IO.Xml;
+using Vixen.Sys.Output;
 
 namespace Vixen.Sys {
 	class SystemConfig : IVersioned {
 		private string _alternateDataPath;
 		private IEnumerable<Channel> _channels;
 		private IEnumerable<ChannelNode> _nodes;
-		private IEnumerable<OutputController> _controllers;
+		private IEnumerable<IOutputDevice> _controllers;
+		private IEnumerable<IOutputDevice> _otherOutputDevices;
 		private IEnumerable<ChannelOutputPatch> _channelPatching;
+		private IEnumerable<ControllerLink> _controllerLinking;
 		private List<Guid> _disabledControllers;
 
-		private const int VERSION = 5;
+		private const int VERSION = 6;
 
 		[DataPath]
 		static public readonly string Directory = Path.Combine(Paths.DataRootPath, "SystemData");
@@ -51,14 +54,24 @@ namespace Vixen.Sys {
 			set { _nodes = value; }
 		}
 
-		public IEnumerable<OutputController> Controllers {
+		public IEnumerable<IOutputDevice> Controllers {
 			get {
 				if(_controllers == null) {
-					_controllers = new OutputController[0];
+					_controllers = new IOutputDevice[0];
 				}
 				return _controllers;
 			}
 			set { _controllers = value; }
+		}
+
+		public IEnumerable<IOutputDevice> OtherOutputDevices {
+			get {
+				if(_otherOutputDevices == null) {
+					_otherOutputDevices = new IOutputDevice[0];
+				}
+				return _otherOutputDevices;
+			}
+			set { _otherOutputDevices = value; }
 		}
 
 		public IEnumerable<ChannelOutputPatch> ChannelPatching {
@@ -71,7 +84,17 @@ namespace Vixen.Sys {
 			set { _channelPatching = value; }
 		}
 
-		public IEnumerable<OutputController> DisabledControllers {
+		public IEnumerable<ControllerLink> ControllerLinking {
+			get {
+				if(_controllerLinking == null) {
+					_controllerLinking = new ControllerLink[0];
+				}
+				return _controllerLinking;
+			}
+			set { _controllerLinking = value; }
+		}
+
+		public IEnumerable<IOutputDevice> DisabledControllers {
 			get { return _disabledControllers.Select(x => _controllers.FirstOrDefault(y => y.Id == x)).Where(x => x != null); }
 			set { _disabledControllers = new List<Guid>(value.Select(x => x.Id)); }
 		}

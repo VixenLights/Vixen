@@ -4,6 +4,7 @@ using System.Linq;
 using System.Xml.Linq;
 using Vixen.Sys;
 using Vixen.Module;
+using Vixen.Sys.Output;
 
 namespace Vixen.IO.Xml {
 	class XmlSystemConfigReader : XmlReaderBase<SystemConfig> {
@@ -13,34 +14,32 @@ namespace Vixen.IO.Xml {
 		private const string ELEMENT_DATA_DIRECTORY = "DataDirectory";
 		private const string ELEMENT_CHANNELS = "Channels";
 		private const string ELEMENT_NODES = "Nodes";
-		private const string ELEMENT_CHANNEL = "Channel";
 		private const string ELEMENT_PATCHING = "Patching";
-		private const string ELEMENT_PATCH = "Patch";
 		private const string ELEMENT_NODE = "Node";
 		private const string ELEMENT_PROPERTIES = "Properties";
 		private const string ELEMENT_PROPERTY = "Property";
 		private const string ELEMENT_PROPERTY_DATA = "PropertyData";
 		private const string ELEMENT_IDENTITY = "Identity";
 		private const string ELEMENT_DISABLED_CONTROLLERS = "DisabledControllers";
-		private const string ATTR_ID = "id";
-		private const string ATTR_NAME = "name";
-		private const string ATTR_CHANNEL_ID = "channelId";
-		private const string ATTR_IS_CONTEXT = "isContext";
-
 		private const string ELEMENT_CONTROLLERS = "Controllers";
 		private const string ELEMENT_CONTROLLER = "Controller";
 		private const string ELEMENT_OUTPUTS = "Outputs";
 		private const string ELEMENT_OUTPUT = "Output";
-		private const string ELEMENT_TRANSFORMS = "Transforms";
-		private const string ELEMENT_TRANSFORM = "Transform";
 		private const string ELEMENT_TRANSFORM_DATA = "TransformData";
 		private const string ELEMENT_MODULE_DATA = "ModuleData";
-		private const string ATTR_COMB_STRATEGY = "strategy";
+		private const string ELEMENT_CONTROLLER_LINKS = "ControllerLinks";
+		private const string ELEMENT_CONTROLLER_LINK = "ControllerLink";
+		private const string ATTR_ID = "id";
+		private const string ATTR_NAME = "name";
+		private const string ATTR_CHANNEL_ID = "channelId";
+		private const string ATTR_IS_CONTEXT = "isContext";
 		private const string ATTR_LINKED_TO = "linkedTo";
 		private const string ATTR_OUTPUT_COUNT = "outputCount";
 		private const string ATTR_HARDWARE_ID = "hardwareId";
 		private const string ATTR_TYPE_ID = "typeId";
 		private const string ATTR_INSTANCE_ID = "instanceId";
+		private const string ATTR_PRIOR_ID = "priorId";
+		private const string ATTR_NEXT_ID = "nextId";
 
 		override protected SystemConfig _CreateObject(XElement element, string filePath) {
 			SystemConfig obj = new SystemConfig() { LoadedFilePath = filePath };
@@ -54,6 +53,7 @@ namespace Vixen.IO.Xml {
 			_channels = _ReadChannels(element);
 			ChannelNode[] nodes = _ReadNodes(element);
 			OutputController[] controllers = _ReadControllers(element);
+			ControllerLink[] controllerLinks = _ReadControllerLinks(element);
 			ChannelOutputPatch[] channelPatching = _ReadChannelPatching(element);
 			Guid[] disabledControllers = _ReadDisabledControllers(element);
 
@@ -62,6 +62,7 @@ namespace Vixen.IO.Xml {
 			obj.Channels = _channels;
 			obj.Nodes = nodes;
 			obj.Controllers = controllers;
+			obj.ControllerLinking = controllerLinks;
 			obj.ChannelPatching = channelPatching;
 			obj.DisabledControllers = disabledControllers.Select(x => controllers.FirstOrDefault(y => y.Id == x)).Where(x => x != null);
 		}
@@ -71,6 +72,7 @@ namespace Vixen.IO.Xml {
 			if(versionAt < 3 && targetVersion >= 3) yield return _Version_2_to_3;
 			if(versionAt < 4 && targetVersion >= 4) yield return _Version_3_to_4;
 			if(versionAt < 5 && targetVersion >= 5) yield return _Version_4_to_5;
+			if(versionAt < 6 && targetVersion >= 6) yield return _Version_5_to_6;
 		}
 
 		private bool _ReadContextFlag(XElement element) {
@@ -100,6 +102,12 @@ namespace Vixen.IO.Xml {
 			XElement parentNode = element.Element(ELEMENT_CONTROLLERS);
 			OutputController[] controllers = parentNode.Elements().Select(_ReadController).ToArray();
 			return controllers;
+		}
+
+		private ControllerLink[] _ReadControllerLinks(XElement element) {
+			XElement parentNode = element.Element(ELEMENT_CONTROLLER_LINKS);
+			ControllerLink[] controllerLinks = parentNode.Elements().Select(_ReadControllerLink).ToArray();
+			return controllerLinks;
 		}
 
 		private ChannelOutputPatch[] _ReadChannelPatching(XElement element) {
@@ -187,13 +195,25 @@ namespace Vixen.IO.Xml {
 			Guid outputModuleId = new Guid(element.Attribute(ATTR_HARDWARE_ID).Value);
 			int outputCount = int.Parse(element.Attribute(ATTR_OUTPUT_COUNT).Value);
 			Guid id = Guid.Parse(element.Attribute(ATTR_ID).Value);
-			Guid instanceId = Guid.NewGuid();
+			//Guid instanceId = Guid.NewGuid();
 
-			OutputController controller = new OutputController(id, instanceId, name, outputCount, outputModuleId);
+			//OutputController controller = new OutputController(id, instanceId, name, outputCount, outputModuleId);
+			OutputController controller = new OutputController(id, name, outputCount, outputModuleId);
 
 			_PopulateController(controller, element);
 
 			return controller;
+		}
+
+		private ControllerLink _ReadControllerLink(XElement element) {
+			Guid controllerId = Guid.Parse(element.Attribute(ATTR_ID).Value);
+			Guid? priorId = Guid.Parse(element.Attribute(ATTR_PRIOR_ID).Value);
+			Guid? nextId = Guid.Parse(element.Attribute(ATTR_NEXT_ID).Value);
+
+			if(priorId == Guid.Empty) priorId = null;
+			if(nextId == Guid.Empty) nextId = null;
+
+			return new ControllerLink(controllerId) { PriorId = priorId, NextId = nextId };
 		}
 
 		private Guid _ReadDisabledController(XElement element) {
@@ -201,7 +221,10 @@ namespace Vixen.IO.Xml {
 		}
 
 		private void _PopulateController(OutputController controller, XElement element) {
-			controller.LinkedTo = Guid.Parse(element.Attribute(ATTR_LINKED_TO).Value);
+			////controller.LinkedTo = Guid.Parse(element.Attribute(ATTR_LINKED_TO).Value);
+			//Guid? parentControllerId = Guid.Parse(element.Attribute(ATTR_LINKED_TO).Value);
+			//if(parentControllerId == Guid.Empty) parentControllerId = null;
+			//VixenSystem.Controllers.LinkController(controller.Id, parentControllerId);
 
 			controller.ModuleDataSet = _GetModuleData(element);
 
@@ -216,12 +239,12 @@ namespace Vixen.IO.Xml {
 
 				output.Name = outputElement.Attribute(ATTR_NAME).Value;
 
-				IEnumerable<XElement> transformSpecElements = outputElement.Element(ELEMENT_TRANSFORMS).Elements(ELEMENT_TRANSFORM);
-				foreach(XElement transformSpecElement in transformSpecElements) {
-					Guid typeId = Guid.Parse(transformSpecElement.Attribute(ATTR_TYPE_ID).Value);
-					Guid instanceId = Guid.Parse(transformSpecElement.Attribute(ATTR_INSTANCE_ID).Value);
-					controller.OutputTransforms.Add(outputIndex, typeId, instanceId);
-				}
+				//IEnumerable<XElement> transformSpecElements = outputElement.Element(ELEMENT_TRANSFORMS).Elements(ELEMENT_TRANSFORM);
+				//foreach(XElement transformSpecElement in transformSpecElements) {
+				//    Guid typeId = Guid.Parse(transformSpecElement.Attribute(ATTR_TYPE_ID).Value);
+				//    Guid instanceId = Guid.Parse(transformSpecElement.Attribute(ATTR_INSTANCE_ID).Value);
+				//    controller.OutputTransforms.Add(outputIndex, typeId, instanceId);
+				//}
 
 				outputIndex++;
 			}
@@ -264,6 +287,11 @@ namespace Vixen.IO.Xml {
 
 		private XElement _Version_4_to_5(XElement element) {
 			element.Add(new XElement(ELEMENT_DISABLED_CONTROLLERS));
+			return element;
+		}
+
+		private XElement _Version_5_to_6(XElement element) {
+			element.Add(new XElement(ELEMENT_CONTROLLER_LINKS));
 			return element;
 		}
 	}

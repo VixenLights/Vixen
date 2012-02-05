@@ -11,6 +11,7 @@ using System.Media;
 using Vixen.Module.Property;
 using System.Reflection;
 using CommonElements;
+using Vixen.Sys.Output;
 
 namespace VixenApplication
 {
@@ -216,6 +217,7 @@ namespace VixenApplication
 			buttonDeleteNode.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0) && (node != null);
 			buttonCreateGroup.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0) && (node != null);
 			buttonBulkRename.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0) && (node != null);
+			button1.Enabled = (_displayedNode != null) && (_displayedNode.Channel != null) && (_displayedNode.Channel.PostFilters.Any(x => x.HasSetup));
 		}
 
 		private void PopulateGeneralNodeInfo(ChannelNode node)
@@ -305,7 +307,7 @@ namespace VixenApplication
 			buttonAddPatch.Enabled = (comboBoxPatchControllerSelect.SelectedIndex >= 0);
 
 			if (comboBoxPatchControllerSelect.SelectedIndex >= 0) {
-				OutputController oc = VixenSystem.Controllers.Get((Guid)comboBoxPatchControllerSelect.SelectedValue);
+				OutputController oc = VixenSystem.Controllers.GetController((Guid)comboBoxPatchControllerSelect.SelectedValue);
 				numericUpDownPatchOutputSelect.Maximum = oc.OutputCount;
 				if (oc.OutputCount == 0)
 					numericUpDownPatchOutputSelect.Minimum = oc.OutputCount;
@@ -422,7 +424,7 @@ namespace VixenApplication
 			if (comboBoxPatchControllerSelect.SelectedIndex < 0 || numericUpDownPatchOutputSelect.Value <= 0)
 				return;
 
-			OutputController controller = VixenSystem.Controllers.Get((Guid)comboBoxPatchControllerSelect.SelectedValue);
+			OutputController controller = VixenSystem.Controllers.GetController((Guid)comboBoxPatchControllerSelect.SelectedValue);
 			if (controller == null || controller.OutputCount < numericUpDownPatchOutputSelect.Value)
 				return;
 
@@ -947,6 +949,10 @@ namespace VixenApplication
 		}
 
 		#endregion
+
+		private void button1_Click(object sender, EventArgs e) {
+			_displayedNode.Channel.PostFilters.First(x => x.HasSetup).Setup();
+		}
 	}
 
 	public class ComboBoxControllerItem

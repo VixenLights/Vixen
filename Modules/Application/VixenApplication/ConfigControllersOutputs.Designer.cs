@@ -35,6 +35,7 @@
 			this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.copyTransformsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pasteTransformsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.deleteAllTransformsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox = new System.Windows.Forms.GroupBox();
 			this.buttonUpdate = new System.Windows.Forms.Button();
 			this.buttonConfigure = new System.Windows.Forms.Button();
@@ -46,7 +47,7 @@
 			this.buttonAdd = new System.Windows.Forms.Button();
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonBulkRename = new System.Windows.Forms.Button();
-			this.deleteAllTransformsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.button1 = new System.Windows.Forms.Button();
 			this.contextMenuStrip.SuspendLayout();
 			this.groupBox.SuspendLayout();
 			this.SuspendLayout();
@@ -111,6 +112,13 @@
 			this.pasteTransformsToolStripMenuItem.Text = "Paste Transforms";
 			this.pasteTransformsToolStripMenuItem.Click += new System.EventHandler(this.pasteTransformsToolStripMenuItem_Click);
 			// 
+			// deleteAllTransformsToolStripMenuItem
+			// 
+			this.deleteAllTransformsToolStripMenuItem.Name = "deleteAllTransformsToolStripMenuItem";
+			this.deleteAllTransformsToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+			this.deleteAllTransformsToolStripMenuItem.Text = "Delete All Transforms";
+			this.deleteAllTransformsToolStripMenuItem.Click += new System.EventHandler(this.deleteAllTransformsToolStripMenuItem_Click);
+			// 
 			// groupBox
 			// 
 			this.groupBox.Controls.Add(this.buttonUpdate);
@@ -140,6 +148,7 @@
 			// 
 			// buttonConfigure
 			// 
+			this.buttonConfigure.Enabled = false;
 			this.buttonConfigure.Location = new System.Drawing.Point(230, 117);
 			this.buttonConfigure.Name = "buttonConfigure";
 			this.buttonConfigure.Size = new System.Drawing.Size(80, 25);
@@ -150,6 +159,7 @@
 			// 
 			// buttonDelete
 			// 
+			this.buttonDelete.Enabled = false;
 			this.buttonDelete.Location = new System.Drawing.Point(230, 89);
 			this.buttonDelete.Name = "buttonDelete";
 			this.buttonDelete.Size = new System.Drawing.Size(80, 25);
@@ -161,6 +171,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
+			this.label2.Enabled = false;
 			this.label2.Location = new System.Drawing.Point(6, 61);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(62, 13);
@@ -170,6 +181,7 @@
 			// listViewTransforms
 			// 
 			this.listViewTransforms.ContextMenuStrip = this.contextMenuStrip;
+			this.listViewTransforms.Enabled = false;
 			this.listViewTransforms.HideSelection = false;
 			this.listViewTransforms.Location = new System.Drawing.Point(74, 61);
 			this.listViewTransforms.MultiSelect = false;
@@ -199,6 +211,7 @@
 			// 
 			// buttonAdd
 			// 
+			this.buttonAdd.Enabled = false;
 			this.buttonAdd.Location = new System.Drawing.Point(230, 61);
 			this.buttonAdd.Name = "buttonAdd";
 			this.buttonAdd.Size = new System.Drawing.Size(80, 25);
@@ -229,18 +242,23 @@
 			this.buttonBulkRename.UseVisualStyleBackColor = true;
 			this.buttonBulkRename.Click += new System.EventHandler(this.buttonBulkRename_Click);
 			// 
-			// deleteAllTransformsToolStripMenuItem
+			// button1
 			// 
-			this.deleteAllTransformsToolStripMenuItem.Name = "deleteAllTransformsToolStripMenuItem";
-			this.deleteAllTransformsToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-			this.deleteAllTransformsToolStripMenuItem.Text = "Delete All Transforms";
-			this.deleteAllTransformsToolStripMenuItem.Click += new System.EventHandler(this.deleteAllTransformsToolStripMenuItem_Click);
+			this.button1.Enabled = false;
+			this.button1.Location = new System.Drawing.Point(158, 382);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(75, 23);
+			this.button1.TabIndex = 14;
+			this.button1.Text = "Secret";
+			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Click += new System.EventHandler(this.button1_Click);
 			// 
 			// ConfigControllersOutputs
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(357, 415);
+			this.Controls.Add(this.button1);
 			this.Controls.Add(this.buttonBulkRename);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.groupBox);
@@ -278,5 +296,6 @@
 		private System.Windows.Forms.ToolStripMenuItem copyTransformsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem pasteTransformsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem deleteAllTransformsToolStripMenuItem;
+		private System.Windows.Forms.Button button1;
 	}
 }

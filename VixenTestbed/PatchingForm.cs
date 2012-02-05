@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows.Forms;
 using Vixen.Sys;
+using Vixen.Sys.Output;
 
 namespace VixenTestbed {
 	public partial class PatchingForm : Form {

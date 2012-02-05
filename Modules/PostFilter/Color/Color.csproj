@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{ED574555-41A8-4429-AFE7-EA8FB43ACB69}</ProjectGuid>
+    <ProjectGuid>{96C7D2AB-DBE9-4DA1-8EC5-2D37E083D3C0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VixenModule.Intent.Pulse</RootNamespace>
-    <AssemblyName>PulseIntent</AssemblyName>
+    <RootNamespace>Color</RootNamespace>
+    <AssemblyName>Color</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\Output\Modules\PostFilter\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,7 +25,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\..\Release\Modules\PostFilter\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -35,6 +35,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -42,27 +43,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ColorData.cs" />
+    <Compile Include="ColorDescriptor.cs" />
+    <Compile Include="ColorFilter.cs" />
+    <Compile Include="ColorModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Pulse.cs" />
-    <Compile Include="PulseData.cs" />
-    <Compile Include="PulseDescriptor.cs" />
+    <Compile Include="ColorSetupForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ColorSetupForm.Designer.cs">
+      <DependentUpon>ColorSetupForm.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\CommonElements\CommonElements.csproj">
-      <Project>{4EA6B667-2A25-47E8-810B-7CF1C6A8DB9A}</Project>
-      <Name>CommonElements</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
       <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
       <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\App\Curves\Curves.csproj">
-      <Project>{F0BA7127-61B4-453A-802B-ABCB5A0D3D54}</Project>
-      <Name>Curves</Name>
-      <Private>False</Private>
-    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ColorSetupForm.resx">
+      <DependentUpon>ColorSetupForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

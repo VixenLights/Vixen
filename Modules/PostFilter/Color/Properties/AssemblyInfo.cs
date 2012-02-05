@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("PulseIntent")]
+[assembly: AssemblyTitle("Color")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Toshiba")]
-[assembly: AssemblyProduct("PulseIntent")]
+[assembly: AssemblyProduct("Color")]
 [assembly: AssemblyCopyright("Copyright © Toshiba 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("58d365d8-de5c-4dc4-bf54-442a6e04f837")]
+[assembly: Guid("733d2215-13b8-4463-81c2-d7e2f8ba07f8")]
 
 // Version information for an assembly consists of the following four values:
 //

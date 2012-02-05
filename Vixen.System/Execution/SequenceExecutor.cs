@@ -144,7 +144,7 @@ namespace Vixen.Execution {
 				foreach(IMediaModuleInstance media in Sequence.Media) {
 					media.Pause();
 				}
-				VixenSystem.Controllers.PauseControllers();
+				//VixenSystem.Controllers.PauseControllers();
 				OnPausing();
 				_updateTimer.Enabled = false;
 			}
@@ -158,7 +158,7 @@ namespace Vixen.Execution {
 				foreach(IMediaModuleInstance media in Sequence.Media) {
 					media.Resume();
 				}
-				VixenSystem.Controllers.ResumeControllers();
+				//VixenSystem.Controllers.ResumeControllers();
 				_updateTimer.Enabled = true;
 				OnResumed();
 			}

@@ -16,7 +16,8 @@ namespace Vixen.Sys.State.Execution {
 		public override void Enter() {
 			VixenSystem.Logging.Info("Vixen execution engine entering the open state...");
 
-			StandardOpeningBehavior<SystemChannelEnumerator>.Run();
+			//StandardOpeningBehavior<SystemChannelEnumerator>.Run();
+			StandardOpeningBehavior.Run();
 
 			Engine.SetState(Engine.OpenState);
 		}

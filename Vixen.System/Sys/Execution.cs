@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Vixen.Execution;
 using Vixen.Sys.Instrumentation;
+using Vixen.Sys.Managers;
 using Vixen.Sys.State.Execution;
 
 namespace Vixen.Sys {
@@ -23,7 +24,7 @@ namespace Vixen.Sys {
 			remove { NodeManager.NodesChanged -= value; }
 		}
 		
-		static public event Action<ExecutionStateValues> ValuesChanged;
+		//static public event Action<ExecutionStateValues> ValuesChanged;
 		static public event EventHandler ExecutionStateChanged {
 			add { _State.StateChanged += value; }
 			remove { _State.StateChanged -= value; }

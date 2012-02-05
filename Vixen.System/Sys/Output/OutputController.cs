@@ -5,27 +5,28 @@ using System.Threading.Tasks;
 using Vixen.Module;
 using Vixen.Module.Output;
 using Vixen.Module.PostFilter;
-using Vixen.Module.Transform;
 using Vixen.Commands;
 
-namespace Vixen.Sys {
-	public class OutputController : IEnumerable<OutputController>, Vixen.Execution.IExecutionControl {
+namespace Vixen.Sys.Output {
+	public class OutputController : OutputDeviceBase, IEnumerable<OutputController> {
 		private Guid _outputModuleId;
 		private IOutputModuleInstance _outputModule;
 		private List<Output> _outputs = new List<Output>();
-		private ModuleInstanceSpecification<int> _outputTransforms = new ModuleInstanceSpecification<int>();
+		//private ModuleInstanceSpecification<int> _outputTransforms = new ModuleInstanceSpecification<int>();
 		private IModuleDataSet _moduleDataSet = new ModuleLocalDataSet();
 		private Output[] _outputArray = new Output[0];
 
 		//private CommandStateSourceCollection<int> _outputStates;
 
 		public OutputController(string name, int outputCount, Guid outputModuleId)
-			: this(Guid.NewGuid(), Guid.NewGuid(), name, outputCount, outputModuleId) {
+			//: this(Guid.NewGuid(), Guid.NewGuid(), name, outputCount, outputModuleId) {
+			: this(Guid.NewGuid(), name, outputCount, outputModuleId) {
 		}
 
-		public OutputController(Guid id, Guid instanceId, string name, int outputCount, Guid outputModuleId) {
+		//public OutputController(Guid id, Guid instanceId, string name, int outputCount, Guid outputModuleId) {
+		public OutputController(Guid id, string name, int outputCount, Guid outputModuleId) {
 			Id = id;
-			InstanceId = instanceId;
+			//InstanceId = instanceId;
 			Name = name;
 			OutputModuleId = outputModuleId;
 			OutputCount = outputCount;
@@ -33,28 +34,20 @@ namespace Vixen.Sys {
 			//_outputStates = new CommandStateSourceCollection<int>();
 		}
 
-		public void Start() {
-			if(!IsRunning && OutputModule != null) {
-				OutputModule.Start();
-			}
+		override protected void _Start() {
+			OutputModule.Start();
 		}
 
-		public void Pause() {
-			if(IsRunning && OutputModule != null) {
-				OutputModule.Pause();
-			}
-		}
+		//override protected void _Pause() {
+		//    OutputModule.Pause();
+		//}
 
-		public void Resume() {
-			if(IsRunning && OutputModule != null) {
-				OutputModule.Resume();
-			}
-		}
+		//override protected void _Resume() {
+		//    OutputModule.Resume();
+		//}
 
-		public void Stop() {
-			if(IsRunning && OutputModule != null) {
-				OutputModule.Stop();
-			}
+		override protected void _Stop() {
+			OutputModule.Stop();
 		}
 
 		// Must be a property for data binding.
@@ -73,7 +66,7 @@ namespace Vixen.Sys {
 
 					_SetOutputModuleOutputCount();
 					_SetModuleData();
-					_SetOutputModuleTransforms();
+					//_SetOutputModuleTransforms();
 				}
 				return _outputModule;
 			}
@@ -95,30 +88,30 @@ namespace Vixen.Sys {
 			}
 		}
 
-		private void _SetOutputModuleTransforms() {
-			if(_outputModule != null) {
-				// _outputTransforms is an index of transforms for a given output.
-				// Create transforms of the types in the tuple (Item1) and give them
-				// the specified instance id (Item2).
-				foreach(int outputIndex in _outputTransforms.Keys) {
-					IEnumerable<ITransformModuleInstance> outputTransforms =
-						_outputTransforms[outputIndex].Select(x => {
-							ITransformModuleInstance transformModule = Modules.ModuleManagement.GetTransform(x.Item1);
-							transformModule.InstanceId = x.Item2;
-							return transformModule;
-						});
-					_outputModule.SetTransforms(outputIndex, outputTransforms);
-				}
-			}
-		}
+		//private void _SetOutputModuleTransforms() {
+		//    if(_outputModule != null) {
+		//        // _outputTransforms is an index of transforms for a given output.
+		//        // Create transforms of the types in the tuple (Item1) and give them
+		//        // the specified instance id (Item2).
+		//        foreach(int outputIndex in _outputTransforms.Keys) {
+		//            IEnumerable<ITransformModuleInstance> outputTransforms =
+		//                _outputTransforms[outputIndex].Select(x => {
+		//                    ITransformModuleInstance transformModule = Modules.ModuleManagement.GetTransform(x.Item1);
+		//                    transformModule.InstanceId = x.Item2;
+		//                    return transformModule;
+		//                });
+		//            _outputModule.SetTransforms(outputIndex, outputTransforms);
+		//        }
+		//    }
+		//}
 
-		public ModuleInstanceSpecification<int> OutputTransforms {
-			get { return _outputTransforms; }
-			set {
-				_outputTransforms = value;
-				_SetOutputModuleTransforms();
-			}
-		}
+		//public ModuleInstanceSpecification<int> OutputTransforms {
+		//    get { return _outputTransforms; }
+		//    set {
+		//        _outputTransforms = value;
+		//        _SetOutputModuleTransforms();
+		//    }
+		//}
 
 		public IModuleDataSet ModuleDataSet {
 			get { return _moduleDataSet; }
@@ -128,15 +121,15 @@ namespace Vixen.Sys {
 			}
 		}
 
-		public void Update() {
-			// First, get what we pull from to update...
-			Execution.UpdateState();
-			// Then we update ourselves from that.
-			_UpdateState();
-		}
+		//public void Update() {
+		//    // First, get what we pull from to update...
+		//    Execution.UpdateState();
+		//    // Then we update ourselves from that.
+		//    _UpdateState();
+		//}
 
-		private void _UpdateState() {
-			if(IsRootController && _ControllerChainOutputModule != null) {
+		override protected void _UpdateState() {
+			if(VixenSystem.ControllerLinking.IsRootController(this) && _ControllerChainOutputModule != null) {
 				// All controllers in this chain update in parallel.
 				Parallel.ForEach(this, x =>
 				    {
@@ -154,7 +147,8 @@ namespace Vixen.Sys {
 					// A single port may be used to service multiple physical controllers,
 					// such as daisy-chained Renard controllers.  Tell the module where
 					// it is in that chain.
-					controller._ControllerChainOutputModule.ChainIndex = controller.ChainIndex;
+					//controller._ControllerChainOutputModule.ChainIndex = controller.ChainIndex;
+					controller._ControllerChainOutputModule.ChainIndex = VixenSystem.ControllerLinking.GetChainIndex(controller.Id);
 					Command[] outputStates = controller._outputs.Select(x => x.CurrentState).ToArray();
 					controller._ControllerChainOutputModule.UpdateState(outputStates);
 				}
@@ -185,23 +179,23 @@ namespace Vixen.Sys {
 			//}
 		}
 
-		public OutputController Clone() {
-			// Doing a MemberwiseClone does NOT call the constructor.
-			OutputController controller = (OutputController)MemberwiseClone();
+		//public OutputController Clone() {
+		//    // Doing a MemberwiseClone does NOT call the constructor.
+		//    OutputController controller = (OutputController)MemberwiseClone();
 
-			// Wipe out instance link references or the stale references will prevent links.
-			controller.Prior = null;
-			controller.Next = null;
-			controller._outputs = _outputs.Select(x => new Output()).ToList();
+		//    // Wipe out instance link references or the stale references will prevent links.
+		//    controller.Prior = null;
+		//    controller.Next = null;
+		//    controller._outputs = _outputs.Select(x => new Output()).ToList();
 
-			if(_outputModule != null) {
-				controller._outputModule = Modules.ModuleManagement.GetOutput(_outputModule.Descriptor.TypeId);
-			}
+		//    if(_outputModule != null) {
+		//        controller._outputModule = Modules.ModuleManagement.GetOutput(_outputModule.Descriptor.TypeId);
+		//    }
 
-			controller.InstanceId = Guid.NewGuid();
+		//    controller.InstanceId = Guid.NewGuid();
 
-			return controller;
-		}
+		//    return controller;
+		//}
 
 		public Output[] Outputs {
 			get { return _outputArray; }
@@ -227,102 +221,108 @@ namespace Vixen.Sys {
 			}
 		}
 
-		/// <summary>
-		/// States if this output controller instance can be a child of the specified output controller.
-		/// </summary>
-		/// <param name="otherController"></param>
-		/// <returns></returns>
-		public bool CanLinkTo(OutputController otherController) {
-			// A controller can link to a parent controller if:
-			// The other controller doesn't already have a child link.
+		///// <summary>
+		///// States if this output controller instance can be a child of the specified output controller.
+		///// </summary>
+		///// <param name="otherController"></param>
+		///// <returns></returns>
+		//public bool CanLinkTo(OutputController otherController) {
+		//    // A controller can link to a parent controller if:
+		//    // The other controller doesn't already have a child link.
 
-			// If the other controller is null, they're trying to break the link so pass
-			// it through.
-			return
-				otherController == null ||
-				otherController.Next == null;
-		}
+		//    // If the other controller is null, they're trying to break the link so pass
+		//    // it through.
+		//    return
+		//        otherController == null ||
+		//        otherController.Next == null;
+		//}
 
-		/// <summary>
-		/// Links the output controller to another output controller.
-		/// </summary>
-		/// <param name="controller"></param>
-		/// <returns>True if controller could be successfully linked.</returns>
-		public bool LinkTo(OutputController controller) {
-			if(CanLinkTo(controller)) {
-				if(Prior != null) {
-					Prior.Next = null;
-				}
+		///// <summary>
+		///// Links the output controller to another output controller.
+		///// </summary>
+		///// <param name="controller"></param>
+		///// <returns>True if controller could be successfully linked.</returns>
+		//public bool LinkTo(OutputController controller) {
+		//    if(CanLinkTo(controller)) {
+		//        if(Prior != null) {
+		//            Prior.Next = null;
+		//        }
 				
-				Prior = controller;
+		//        Prior = controller;
 				
-				if(Prior != null) {
-					Prior.Next = this;
-				}
+		//        if(Prior != null) {
+		//            Prior.Next = this;
+		//        }
 
-				ChainIndex = _GetChainIndex();
-				return true;
-			}
-			return false;
-		}
+		//        ChainIndex = _GetChainIndex();
+		//        return true;
+		//    }
+		//    return false;
+		//}
 
-		public Guid LinkedTo { get; set; }
-		public int ChainIndex { get; private set; }
+		////public Guid LinkedTo { get; set; }
+		//public Guid LinkedTo {
+		//    get { return (Prior != null) ? Prior.Id : Guid.Empty; }
+		//}
 
-		public bool IsRootController {
-			get { return Prior == null && LinkedTo == Guid.Empty; }
-		}
+		//public int ChainIndex { get; private set; }
 
-		private int _GetChainIndex() {
-			int count = 0;
-			OutputController controller = this;
+		//public bool IsRootController {
+		//    get { return Prior == null && LinkedTo == Guid.Empty; }
+		//}
 
-			while(controller.Prior != null) {
-				count++;
-				controller = controller.Prior;
-			}
+		//private int _GetChainIndex() {
+		//    int count = 0;
+		//    OutputController controller = this;
 
-			return count;
-		}
+		//    while(controller.Prior != null) {
+		//        count++;
+		//        controller = controller.Prior;
+		//    }
+
+		//    return count;
+		//}
 
 		private IOutputModuleInstance _ControllerChainOutputModule {
 			get {
 				// When output controllers are linked, only the root controller will be
 				// connected to the port, therefore only it will have the output module
 				// used during execution.
-				return (Prior != null) ? Prior._ControllerChainOutputModule : _outputModule;
+				//return (Prior != null) ? Prior._ControllerChainOutputModule : _outputModule;
+				OutputController priorController = VixenSystem.Controllers.GetPrior(this);
+				return (priorController != null) ? priorController._ControllerChainOutputModule : _outputModule;
 			}
 		}
 
-		virtual protected void CommitState() {
-			LinkedTo = (Prior != null) ? Prior.Id : Guid.Empty;
-		}
+		//virtual protected void CommitState() {
+		//    LinkedTo = (Prior != null) ? Prior.Id : Guid.Empty;
+		//}
 
-		public bool HasSetup {
+		override public bool HasSetup {
 			get { return _outputModule.HasSetup; }
 		}
 
 		/// <summary>
-		/// Runs the controller setup and commits it upon success.
+		/// Runs the controller setup.
 		/// </summary>
 		/// <returns>True if the setup was successful and committed.  False if the user canceled.</returns>
-		public bool Setup() {
+		override public bool Setup() {
 			if(_outputModule != null) {
 				if(_outputModule.Setup()) {
-					Commit();
+					//Commit();
 					return true;
 				}
 			}
 			return false;
 		}
 
-		public void Commit() {
-			// The data set that the data model was pulled from has a reference to the data
-			// model object and pulls it in upon Serialize.  So it's serialized when its
-			// container is saved.
-			// Commit derivative changes.
-			CommitState();
-		}
+		//public void Commit() {
+		//    // The data set that the data model was pulled from has a reference to the data
+		//    // model object and pulls it in upon Serialize.  So it's serialized when its
+		//    // container is saved.
+		//    // Commit derivative changes.
+		//    CommitState();
+		//}
 
 		public bool AddSource(IStateSource<Command> source, int outputIndex) {
 			if(outputIndex < OutputCount) {
@@ -373,22 +373,21 @@ namespace Vixen.Sys {
 			}
 		}
 
-		// Must be a property for data binding.
-		public Guid Id { get; set; }
+		//public Guid Id { get; set; }
 
-		public string Name { get; set; }
+		//public string Name { get; set; }
 
-		public Guid InstanceId { get; private set; }
+		//public Guid InstanceId { get; private set; }
 
-		public OutputController Prior { get; private set; }
+		//public OutputController Prior { get; private set; }
 
-		public OutputController Next { get; private set; }
+		//public OutputController Next { get; private set; }
 
-		public bool IsRunning {
+		override public bool IsRunning {
 			get { return _outputModule != null && _outputModule.IsRunning; }
 		}
 
-		public int UpdateInterval {
+		override public int UpdateInterval {
 			get { return OutputModule.UpdateInterval; }
 		}
 
@@ -398,7 +397,7 @@ namespace Vixen.Sys {
 
 		#region IEnumerable<OutputController>
 		public IEnumerator<OutputController> GetEnumerator() {
-			if(IsRootController) {
+			if(VixenSystem.ControllerLinking.IsRootController(this)) {
 				return new ChainEnumerator(this);
 			}
 			return Enumerable.Empty<OutputController>().GetEnumerator();
@@ -471,6 +470,10 @@ namespace Vixen.Sys {
 				_postFilters.Clear();
 			}
 
+			public IEnumerable<IPostFilterModuleInstance> PostFilters {
+				get { return _postFilters; }
+			}
+
 			public void UpdateState() {
 				// Aggregate a state.
 				//if(_sources.Count > 0) {
@@ -523,7 +526,8 @@ namespace Vixen.Sys {
 			public bool MoveNext() {
 				if(_next != null) {
 					_current = _next;
-					_next = _current.Next;
+					//_next = _current.Next;
+					_next = VixenSystem.Controllers.GetNext(_current);
 					return true;
 				}
 				return false;

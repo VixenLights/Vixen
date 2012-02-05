@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Vixen.Sys {
+namespace Vixen.Sys.Managers {
 	public class ChannelOutputPatchManager : IEnumerable<ChannelOutputPatch> {
 		private Dictionary<Guid, ChannelOutputPatch> _instances;
 

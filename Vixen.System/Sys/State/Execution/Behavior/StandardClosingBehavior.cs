@@ -1,6 +1,4 @@
-﻿using Vixen.Execution;
-
-namespace Vixen.Sys.State.Execution.Behavior {
+﻿namespace Vixen.Sys.State.Execution.Behavior {
 	class StandardClosingBehavior {
 		static public void Run() {
 			Sys.Execution.Shutdown();
@@ -9,10 +7,10 @@ namespace Vixen.Sys.State.Execution.Behavior {
 			VixenSystem.Contexts.ReleaseContexts();
 
 			// Stop the controllers.
-			VixenSystem.Controllers.CloseControllers();
+			VixenSystem.Controllers.StopAll();
 
-			// Close the channels.
-			VixenSystem.Channels.CloseChannels();
+			//// Close the channels.
+			//VixenSystem.Channels.CloseChannels();
 
 			// Remove the sources.
 			IOutputSourceCollection channelSources = VixenSystem.Channels.GetSources();

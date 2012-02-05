@@ -6,7 +6,7 @@ using Vixen.Commands;
 using Vixen.Sys;
 
 namespace Vixen.Module.PreFilter {
-	public interface IPreFilter {
+	public interface IPreFilter : ISetup {
 		Command Affect(Command command, TimeSpan filterRelativeTime);
 		TimeSpan TimeSpan { get; set; }
 		ChannelNode[] TargetNodes { get; set; }

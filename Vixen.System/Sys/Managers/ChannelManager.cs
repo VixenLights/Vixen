@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Vixen.Commands;
 using Vixen.Sys.SourceCollection;
 
-namespace Vixen.Sys {
+namespace Vixen.Sys.Managers {
 	public class ChannelManager : IEnumerable<Channel> {
 		private Dictionary<Channel, IEnumerator<CommandNode[]>> _channelEnumerators;
 
@@ -15,7 +16,7 @@ namespace Vixen.Sys {
 		// quickly and easily find the node that a particular channel references (eg. if we're previewing the rendered data on a virtual display,
 		// or anything else where we need to actually 'reverse' the rendering process).
 		private Dictionary<Channel, ChannelNode> _channelToChannelNode;
-		private Type _enumeratorChannelsOpenedWith;
+		//private Type _enumeratorChannelsOpenedWith;
 
 		public ChannelManager() {
 			_instances = new Dictionary<Guid,Channel>();
@@ -70,15 +71,15 @@ namespace Vixen.Sys {
 			VixenSystem.Nodes.RemoveChannelLeaf(channel);
 		}
 
-		internal void OpenChannels<T>()
-			where T : IEnumerator<CommandNode[]> {
-			_enumeratorChannelsOpenedWith = typeof(T);
-			//_CreateChannelEnumerators(_instances.Values);
-		}
+		//internal void OpenChannels<T>()
+		//    where T : IEnumerator<CommandNode[]> {
+		//    //_enumeratorChannelsOpenedWith = typeof(T);
+		//    //_CreateChannelEnumerators(_instances.Values);
+		//}
 
-		public void CloseChannels() {
-			//_ResetChannelEnumerators();
-		}
+		//public void CloseChannels() {
+		//    //_ResetChannelEnumerators();
+		//}
 
 		public Channel GetChannel(Guid id) {
 			if (_instances.ContainsKey(id)) {
@@ -141,9 +142,9 @@ namespace Vixen.Sys {
 
 		public void Update() {
 			lock(_instances) {
-				foreach(Channel channel in _instances.Values) {
-					channel.Update();
-				}
+				Parallel.ForEach(_instances.Values, x => x.Update());
+				// (User may be allowed to skip this step in the future).
+				Parallel.ForEach(_instances.Values, x => x.FilterState());
 			}
 		}
 

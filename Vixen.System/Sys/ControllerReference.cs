@@ -1,4 +1,5 @@
 ﻿using System;
+using Vixen.Sys.Output;
 
 namespace Vixen.Sys {
     public class ControllerReference : IEquatable<ControllerReference> {
@@ -31,7 +32,7 @@ namespace Vixen.Sys {
 		}
 
 		public string ToString(bool indexFromZero) {
-			OutputController controller = VixenSystem.Controllers.Get(ControllerId);
+			IOutputDevice controller = VixenSystem.Controllers.Get(ControllerId);
 			string controllerName = (controller != null) ?
 					controller.Name :
 					"(Unknown)";
