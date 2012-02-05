@@ -10,7 +10,7 @@ using Vixen.Sys.Instrumentation;
 namespace Vixen.Sys.Managers {
 	public class ContextManager : IEnumerable<Context> {
 		private Dictionary<Guid, Context> _instances;
-		private ContextUpdateTimeValue _contextUpdateAverageValue;
+		private ContextUpdateTimeValue _contextUpdateTimeValue;
 		private Stopwatch _stopwatch;
 
 		public event EventHandler<ContextEventArgs> ContextCreated;
@@ -18,9 +18,7 @@ namespace Vixen.Sys.Managers {
 
 		public ContextManager() {
 			_instances = new Dictionary<Guid, Context>();
-			_contextUpdateAverageValue = new ContextUpdateTimeValue();
-			VixenSystem.Instrumentation.AddValue(_contextUpdateAverageValue);
-			_stopwatch = Stopwatch.StartNew();
+			_SetupInstrumentation();
 		}
 
 		public Context CreateContext(Program program) {
@@ -70,7 +68,7 @@ namespace Vixen.Sys.Managers {
 					//outputs could be updated and the whole state sent out.
 				});
 
-				_contextUpdateAverageValue.Set(_stopwatch.ElapsedMilliseconds);
+				_contextUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 			}
 		}
 
@@ -96,6 +94,12 @@ namespace Vixen.Sys.Managers {
 			if(ContextReleased != null) {
 				ContextReleased(this, e);
 			}
+		}
+
+		private void _SetupInstrumentation() {
+			_contextUpdateTimeValue = new ContextUpdateTimeValue();
+			VixenSystem.Instrumentation.AddValue(_contextUpdateTimeValue);
+			_stopwatch = Stopwatch.StartNew();
 		}
 
 		private void _AddContext(Context context) {

@@ -120,6 +120,7 @@
     <Compile Include="Execution\ContextCurrentEffects.cs" />
     <Compile Include="Execution\ControllerUpdateAdjudicator.cs" />
     <Compile Include="Execution\NonExpiringChannelEnumerator.cs" />
+    <Compile Include="Instrumentation\AveragePerCountValue.cs" />
     <Compile Include="Instrumentation\AveragePerSecondValue.cs" />
     <Compile Include="Instrumentation\CountValue.cs" />
     <Compile Include="Instrumentation\IInstrumentation.cs" />
@@ -133,6 +134,7 @@
     <Compile Include="Sys\DataStream.cs" />
     <Compile Include="Sys\DefaultValueArrayMember.cs" />
     <Compile Include="Sys\IDataNode.cs" />
+    <Compile Include="Sys\Instrumentation\ChannelUpdateTimeValue.cs" />
     <Compile Include="Sys\Instrumentation\ContextUpdateTimeValue.cs" />
     <Compile Include="Sys\Instrumentation\OutputDeviceRefreshRateValue.cs" />
     <Compile Include="Sys\Instrumentation\OutputDeviceUpdateTimeValue.cs" />

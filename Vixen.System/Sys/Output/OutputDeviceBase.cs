@@ -17,12 +17,7 @@ namespace Vixen.Sys.Output {
 			if(!IsRunning) {
 				_isRunning = true;
 				_Start();
-				_refreshRateValue = new OutputDeviceRefreshRateValue(this);
-				VixenSystem.Instrumentation.AddValue(_refreshRateValue);
-				_updateTimeValue = new OutputDeviceUpdateTimeValue(this);
-				VixenSystem.Instrumentation.AddValue(_updateTimeValue);
-				_stopwatch.Reset();
-				_stopwatch.Start();
+				_SetupInstrumentation();
 			}
 		}
 		abstract protected void _Start();
@@ -71,16 +66,25 @@ namespace Vixen.Sys.Output {
 		}
 
 		public void Update() {
-			_stopwatch.Restart();
-
 			_refreshRateValue.Increment();
+
 			// First, get what we pull from to update...
 			Execution.UpdateState();
+	
 			// Then we update ourselves from that.
+			_stopwatch.Restart();
 			_UpdateState();
-
 			_updateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 		}
 		abstract protected void _UpdateState();
+
+		private void _SetupInstrumentation() {
+			_refreshRateValue = new OutputDeviceRefreshRateValue(this);
+			VixenSystem.Instrumentation.AddValue(_refreshRateValue);
+			_updateTimeValue = new OutputDeviceUpdateTimeValue(this);
+			VixenSystem.Instrumentation.AddValue(_updateTimeValue);
+			_stopwatch.Reset();
+			_stopwatch.Start();
+		}
 	}
 }

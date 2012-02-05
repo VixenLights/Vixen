@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Vixen.Commands;
+using Vixen.Sys.Instrumentation;
 using Vixen.Sys.SourceCollection;
 
 namespace Vixen.Sys.Managers {
 	public class ChannelManager : IEnumerable<Channel> {
 		private Dictionary<Channel, IEnumerator<CommandNode[]>> _channelEnumerators;
+		private ChannelUpdateTimeValue _channelUpdateTimeValue;
+		private Stopwatch _stopwatch;
 
 		// a mapping of channel  GUIDs to channel instances. Used for quick reverse mapping at runtime.
 		private Dictionary<Guid, Channel> _instances;
@@ -22,6 +26,7 @@ namespace Vixen.Sys.Managers {
 			_instances = new Dictionary<Guid,Channel>();
 			_channelToChannelNode = new Dictionary<Channel, ChannelNode>();
 			_channelEnumerators = new Dictionary<Channel, IEnumerator<CommandNode[]>>();
+			_SetupInstrumentation();
 		}
 
 		public ChannelManager(IEnumerable<Channel> channels)
@@ -142,9 +147,13 @@ namespace Vixen.Sys.Managers {
 
 		public void Update() {
 			lock(_instances) {
+				_stopwatch.Restart();
+
 				Parallel.ForEach(_instances.Values, x => x.Update());
 				// (User may be allowed to skip this step in the future).
 				Parallel.ForEach(_instances.Values, x => x.FilterState());
+
+				_channelUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 			}
 		}
 
@@ -198,6 +207,12 @@ namespace Vixen.Sys.Managers {
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
+		}
+
+		private void _SetupInstrumentation() {
+			_channelUpdateTimeValue = new ChannelUpdateTimeValue();
+			VixenSystem.Instrumentation.AddValue(_channelUpdateTimeValue);
+			_stopwatch = Stopwatch.StartNew();
 		}
 	}
 }
