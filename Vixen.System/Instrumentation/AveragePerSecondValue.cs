@@ -2,7 +2,7 @@
 
 namespace Vixen.Instrumentation {
 	abstract public class AveragePerSecondValue : InstrumentationValue {
-		private int _totalCount;
+		private double _totalCount;
 		private Stopwatch _stopwatch;
 
 		protected AveragePerSecondValue(string name)
@@ -17,8 +17,8 @@ namespace Vixen.Instrumentation {
 			return _totalCount / seconds;
 		}
 
-		public void Increment() {
-			_totalCount++;
+		public void Increment(double value = 1) {
+			_totalCount += value;
 		}
 	}
 }

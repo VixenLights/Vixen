@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using Vixen.Sys.Instrumentation;
 using Vixen.Sys.Output;
 
 namespace Vixen.Sys.Managers {
@@ -201,6 +202,7 @@ namespace Vixen.Sys.Managers {
 			private Thread _thread;
 			private ExecutionState _threadState = ExecutionState.Stopped;
 			private EventWaitHandle _finished;
+			private OutputDeviceSleepTimeValue _outputDeviceSleepTimeValue;
 
 			private const int STOP_TIMEOUT = 4000;   // Four seconds should be plenty of time for a thread to stop.
 
@@ -241,6 +243,9 @@ namespace Vixen.Sys.Managers {
 				long frameStart, frameEnd, timeLeft;
 				Stopwatch currentTime = Stopwatch.StartNew();
 
+				_outputDeviceSleepTimeValue = new OutputDeviceSleepTimeValue(OutputDevice);
+				VixenSystem.Instrumentation.AddValue(_outputDeviceSleepTimeValue);
+
 				// Thread main loop
 				try {
 					while(_threadState != ExecutionState.Stopping) {
@@ -250,6 +255,8 @@ namespace Vixen.Sys.Managers {
 						OutputDevice.Update();
 
 						timeLeft = frameEnd - currentTime.ElapsedMilliseconds;
+
+						_outputDeviceSleepTimeValue.Set(timeLeft);
 
 						if(timeLeft > 1) {
 							Thread.Sleep((int)timeLeft);
