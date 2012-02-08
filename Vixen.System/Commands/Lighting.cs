@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Vixen.Sys;
-using Vixen.Module.CommandStandardExtension;
 using Vixen.Commands.KnownDataTypes;
 using System.Drawing;
 
@@ -59,6 +54,11 @@ namespace Vixen.Commands {
 				public override Command Clone() {
 					return new SetLevel(Level);
 				}
+
+				// Must be done in the derived classes.
+				public override void Dispatch(CommandDispatch commandDispatch) {
+					commandDispatch.DispatchCommand(this);
+				}
 			}
 		}
 
@@ -110,6 +110,11 @@ namespace Vixen.Commands {
 
 				public override Command Clone() {
 					return new SetColor(Color);
+				}
+
+				// Must be done in the derived classes.
+				public override void Dispatch(CommandDispatch commandDispatch) {
+					commandDispatch.DispatchCommand(this);
 				}
 			}
 		}

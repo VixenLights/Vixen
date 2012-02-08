@@ -21,6 +21,8 @@ namespace Vixen.Commands {
 			return this;
 		}
 
+		public abstract void Dispatch(CommandDispatch commandDispatch);
+
 		static public Command Combine(IEnumerable<Command> commands) {
 			Command[] commandArray = commands.ToArray();
 

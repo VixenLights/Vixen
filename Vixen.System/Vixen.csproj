@@ -107,6 +107,7 @@
   <ItemGroup>
     <Compile Include="Commands\Animatronics.cs" />
     <Compile Include="Commands\Command.cs" />
+    <Compile Include="Commands\CommandDispatch.cs" />
     <Compile Include="Commands\CommandIdentifier.cs" />
     <Compile Include="Commands\CommandNode.cs" />
     <Compile Include="Commands\ParameterSignature.cs" />

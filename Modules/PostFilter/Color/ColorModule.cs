@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using Vixen.Commands;
 using Vixen.Module;
 using Vixen.Module.PostFilter;
@@ -7,15 +6,23 @@ using Vixen.Module.PostFilter;
 namespace Color {
 	public class ColorModule : PostFilterModuleInstanceBase {
 		private ColorData _data;
-		private Func<System.Drawing.Color, System.Drawing.Color> _filter;
+		//private Func<System.Drawing.Color, System.Drawing.Color> _filter;
+		private ColorCommandDispatch _commandDispatch;
+
+		public ColorModule() {
+			_commandDispatch = new ColorCommandDispatch();
+		}
 
 		public override Command Affect(Command command) {
-			Lighting.Polychrome.SetColor setColorCommand = command as Lighting.Polychrome.SetColor;
-			if(setColorCommand != null) {
-				System.Drawing.Color newColor = _filter(setColorCommand.Color);
-				command = new Lighting.Polychrome.SetColor(newColor);
-			}
-			return command;
+			command.Dispatch(_commandDispatch);
+			return _commandDispatch.Result;
+
+			//Lighting.Polychrome.SetColor setColorCommand = command as Lighting.Polychrome.SetColor;
+			//if(setColorCommand != null) {
+			//    System.Drawing.Color newColor = _filter(setColorCommand.Color);
+			//    command = new Lighting.Polychrome.SetColor(newColor);
+			//}
+			//return command;
 		}
 
 		public override IModuleDataModel ModuleData {
@@ -44,22 +51,23 @@ namespace Color {
 		private void _SetFilter() {
 			switch(_data.ColorFilter) {
 				case ColorFilter.Red:
-					_filter = _FilterRed;
+					//_filter = _FilterRed;
+					_commandDispatch.Filter = _FilterRed;
 					break;
 				case ColorFilter.Green:
-					_filter = _FilterGreen;
+					_commandDispatch.Filter = _FilterGreen;
 					break;
 				case ColorFilter.Blue:
-					_filter = _FilterBlue;
+					_commandDispatch.Filter = _FilterBlue;
 					break;
 				case ColorFilter.Yellow:
-					_filter = _FilterYellow;
+					_commandDispatch.Filter = _FilterYellow;
 					break;
 				case ColorFilter.White:
-					_filter = _FilterWhite;
+					_commandDispatch.Filter = _FilterWhite;
 					break;
 				default:
-					_filter = _FilterNone;
+					_commandDispatch.Filter = _FilterNone;
 					break;
 			}
 		}

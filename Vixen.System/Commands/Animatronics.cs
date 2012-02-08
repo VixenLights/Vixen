@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Vixen.Sys;
-using Vixen.Module.CommandStandardExtension;
 using Vixen.Commands.KnownDataTypes;
 
 namespace Vixen.Commands {
@@ -56,6 +51,11 @@ namespace Vixen.Commands {
 
 				public override Command Clone() {
 					return new SetPosition(Position);
+				}
+
+				// Must be done in the derived classes.
+				public override void Dispatch(CommandDispatch commandDispatch) {
+					commandDispatch.DispatchCommand(this);
 				}
 			}
 		}
@@ -126,6 +126,11 @@ namespace Vixen.Commands {
 
 				public override Command Clone() {
 					return new SetPosition(Position, TimeSpan);
+				}
+
+				// Must be done in the derived classes.
+				public override void Dispatch(CommandDispatch commandDispatch) {
+					commandDispatch.DispatchCommand(this);
 				}
 			}
 		}
