@@ -217,7 +217,6 @@ namespace VixenApplication
 			buttonDeleteNode.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0) && (node != null);
 			buttonCreateGroup.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0) && (node != null);
 			buttonBulkRename.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0) && (node != null);
-			button1.Enabled = (_displayedNode != null) && (_displayedNode.Channel != null) && (_displayedNode.Channel.PostFilters.Any(x => x.HasSetup));
 		}
 
 		private void PopulateGeneralNodeInfo(ChannelNode node)
@@ -949,10 +948,6 @@ namespace VixenApplication
 		}
 
 		#endregion
-
-		private void button1_Click(object sender, EventArgs e) {
-			_displayedNode.Channel.PostFilters.First(x => x.HasSetup).Setup();
-		}
 	}
 
 	public class ComboBoxControllerItem

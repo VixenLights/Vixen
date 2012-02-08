@@ -14,15 +14,18 @@ namespace Color {
 		}
 
 		public override Command Affect(Command command) {
-			command.Dispatch(_commandDispatch);
-			return _commandDispatch.Result;
+			if(command != null) {
+				command.Dispatch(_commandDispatch);
+				command = _commandDispatch.Result;
+			}
 
 			//Lighting.Polychrome.SetColor setColorCommand = command as Lighting.Polychrome.SetColor;
 			//if(setColorCommand != null) {
 			//    System.Drawing.Color newColor = _filter(setColorCommand.Color);
 			//    command = new Lighting.Polychrome.SetColor(newColor);
 			//}
-			//return command;
+
+			return command;
 		}
 
 		public override IModuleDataModel ModuleData {

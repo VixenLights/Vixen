@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Vixen.Commands;
-using Vixen.Module.PostFilter;
 
 namespace Vixen.Sys {
 	// Need to implement IEquatable<T> so that IEnumerable<T>.Except() will not use
@@ -17,7 +16,6 @@ namespace Vixen.Sys {
 		//private IChannelDataStore _data = new ChannelSortedList();
 		private ChannelContextSource _dataSource;
 		private CommandStateAggregator _stateAggregator;
-		private List<IPostFilterModuleInstance> _postFilters;
 
 		public Channel(string name)
 			: this(Guid.NewGuid(), name) {
@@ -32,7 +30,6 @@ namespace Vixen.Sys {
 			Name = name;
 			_dataSource = new ChannelContextSource(Id);
 			_stateAggregator = new CommandStateAggregator();
-			_postFilters = new List<IPostFilterModuleInstance>();
 		}
 
 		//public Channel(Guid id, string name, Patch patch) {
@@ -95,41 +92,6 @@ namespace Vixen.Sys {
 		}
 
 		public Command Value { get; private set; }
-
-		public void AddPostFilter(IPostFilterModuleInstance filter) {
-			_postFilters.Add(filter);
-		}
-
-		public void AddPostFilters(IEnumerable<IPostFilterModuleInstance> filters) {
-			_postFilters.AddRange(filters);
-		}
-
-		public void InsertPostFilter(int index, IPostFilterModuleInstance filter) {
-			_postFilters.Insert(index, filter);
-		}
-
-		public void RemovePostFilter(IPostFilterModuleInstance filter) {
-			_postFilters.Remove(filter);
-		}
-
-		public void RemovePostFilterAt(int index) {
-			_postFilters.RemoveAt(index);
-		}
-
-		public void ClearPostFilters() {
-			_postFilters.Clear();
-		}
-
-		public IEnumerable<IPostFilterModuleInstance> PostFilters {
-			get { return _postFilters; }
-		}
-
-		public void FilterState() {
-			foreach(IPostFilterModuleInstance postFilter in _postFilters) {
-				Value = postFilter.Affect(Value);
-				if(Value == null) break;
-			}
-		}
 
 		public override string ToString() {
 			return Name;

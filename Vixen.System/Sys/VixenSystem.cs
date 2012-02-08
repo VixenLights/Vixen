@@ -68,9 +68,7 @@ namespace Vixen.Sys {
 					}
 
 					//****
-					//foreach(OutputController outputController in VixenSystem.Controllers) {
-					//    _AddPostFilterToController(outputController);
-					//}
+					_AddPostFiltersToControllers();
 					//****
 
 					_state = RunState.Started;
@@ -85,10 +83,19 @@ namespace Vixen.Sys {
 			}
         }
 
-		//private static void _AddPostFilterToController(OutputController outputController) {
-		//    IPostFilterModuleInstance postFilter = Modules.ModuleManagement.GetPostFilter(new Guid("{DAC271B0-0743-45ef-B4E0-D5957AF7F019}"));
-		//    outputController.AddPostFilter(0, postFilter);
-		//}
+		private static void _AddPostFiltersToControllers() {
+			Guid grayscaleFilterId = new Guid("{DAC271B0-0743-45ef-B4E0-D5957AF7F019}");
+			Guid colorFilterId = new Guid("{B3C06A83-CE75-4e78-853D-B95B4E69CEAC}");
+
+			foreach(OutputController outputController in Controllers) {
+				for(int outputIndex = 0; outputIndex < outputController.OutputCount; outputIndex++) {
+					IPostFilterModuleInstance postFilter = Modules.ModuleManagement.GetPostFilter(colorFilterId);
+					if(postFilter != null) {
+						outputController.AddPostFilter(outputIndex, postFilter);
+					}
+				}
+			}
+		}
 
         static public void Stop() {
 			if(_state == RunState.Starting || _state == RunState.Started) {
@@ -162,18 +169,22 @@ namespace Vixen.Sys {
 			//ChannelNode ref2 = node2;
 
 			//****
-			// Add the Color post-filter to the channels of the first 5 nodes of the 1024 channel batch.
-			Channel[] firstFiveChannels = Nodes.Skip(64).Take(5).Select(x => x.Channel).ToArray();
-			for(int i = 0; i < 5; i++) {
-				IPostFilterModuleInstance postFilter = Modules.ModuleManagement.GetPostFilter(new Guid("{B3C06A83-CE75-4e78-853D-B95B4E69CEAC}"));
-				if(postFilter != null) {
-					firstFiveChannels[i].AddPostFilter(postFilter);
-				}
-			}
+			//_AddChannelPostFilter();
 			//****
 		}
 
-		static public void ReloadSystemConfig()
+		//static private void _AddChannelPostFilter() {
+		//    // Add the Color post-filter to the channels of the first 5 nodes of the 1024 channel batch.
+		//    Channel[] firstFiveChannels = Nodes.Skip(64).Take(5).Select(x => x.Channel).ToArray();
+		//    for(int i = 0; i < 5; i++) {
+		//        IPostFilterModuleInstance postFilter = Modules.ModuleManagement.GetPostFilter(new Guid("{B3C06A83-CE75-4e78-853D-B95B4E69CEAC}"));
+		//        if(postFilter != null) {
+		//            firstFiveChannels[i].AddPostFilter(postFilter);
+		//        }
+		//    }
+		//}
+
+    	static public void ReloadSystemConfig()
 		{
 			bool wasRunning = Execution.IsOpen;
 			Execution.CloseExecution();

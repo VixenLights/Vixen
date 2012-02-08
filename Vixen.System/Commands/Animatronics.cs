@@ -55,7 +55,8 @@ namespace Vixen.Commands {
 
 				// Must be done in the derived classes.
 				public override void Dispatch(CommandDispatch commandDispatch) {
-					commandDispatch.DispatchCommand(this);
+					if(commandDispatch != null)
+						commandDispatch.DispatchCommand(this);
 				}
 			}
 		}
@@ -130,7 +131,8 @@ namespace Vixen.Commands {
 
 				// Must be done in the derived classes.
 				public override void Dispatch(CommandDispatch commandDispatch) {
-					commandDispatch.DispatchCommand(this);
+					if(commandDispatch != null)
+						commandDispatch.DispatchCommand(this);
 				}
 			}
 		}

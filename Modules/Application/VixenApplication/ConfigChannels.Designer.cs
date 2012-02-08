@@ -43,7 +43,6 @@
 			this.numericUpDownPatchOutputSelect = new System.Windows.Forms.NumericUpDown();
 			this.comboBoxPatchControllerSelect = new System.Windows.Forms.ComboBox();
 			this.groupBoxPatches = new System.Windows.Forms.GroupBox();
-			this.button1 = new System.Windows.Forms.Button();
 			this.checkBoxDisableOutputs = new System.Windows.Forms.CheckBox();
 			this.buttonRemovePatch = new System.Windows.Forms.Button();
 			this.listViewPatches = new System.Windows.Forms.ListView();
@@ -184,7 +183,6 @@
 			// 
 			// groupBoxPatches
 			// 
-			this.groupBoxPatches.Controls.Add(this.button1);
 			this.groupBoxPatches.Controls.Add(this.checkBoxDisableOutputs);
 			this.groupBoxPatches.Controls.Add(this.buttonRemovePatch);
 			this.groupBoxPatches.Controls.Add(this.listViewPatches);
@@ -194,17 +192,6 @@
 			this.groupBoxPatches.TabIndex = 27;
 			this.groupBoxPatches.TabStop = false;
 			this.groupBoxPatches.Text = "Channel Patches";
-			// 
-			// button1
-			// 
-			this.button1.Enabled = false;
-			this.button1.Location = new System.Drawing.Point(175, 130);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(75, 23);
-			this.button1.TabIndex = 31;
-			this.button1.Text = "Secret";
-			this.button1.UseVisualStyleBackColor = true;
-			this.button1.Click += new System.EventHandler(this.button1_Click);
 			// 
 			// checkBoxDisableOutputs
 			// 
@@ -675,6 +662,5 @@
 		private System.Windows.Forms.ToolStripMenuItem moveHereToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem copyHereToolStripMenuItem;
 		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.Button button1;
 	}
 }
