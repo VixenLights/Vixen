@@ -35,9 +35,9 @@ namespace Vixen.Module {
 				//    - Get our data object and assign it in the module
 				// 4. Neither has a data object.
 				//    - We create one within ourselves and assign it in the module.
-				if(!Contains(module.Descriptor.TypeId) && module.ModuleData != null) {
+				IModuleDataModel dataModel = _GetDataInstance(module);
+				if(!Contains(module.Descriptor.TypeId) && dataModel != null) {
 					// We have no data, but the module does.  Add it.
-					IModuleDataModel dataModel = _GetDataInstance(module);
 					_Add(this, module.Descriptor.TypeId, module.Descriptor.TypeId, dataModel);
 				} else {
 					// In every other case, we have or can create data.
@@ -80,9 +80,9 @@ namespace Vixen.Module {
 				//    - Get our data object and assign it in the module
 				// 4. Neither has a data object.
 				//    - We create one within ourselves and assign it in the module.
-				if(!Contains(module.Descriptor.TypeId, module.InstanceId) && module.ModuleData != null) {
+				IModuleDataModel dataModel = _GetDataInstance(module);
+				if(!Contains(module.Descriptor.TypeId, module.InstanceId) && dataModel != null) {
 					// We have no data, but the module does.  Add it.
-					IModuleDataModel dataModel = _GetDataInstance(module);
 					_Add(this, module.Descriptor.TypeId, module.InstanceId, dataModel);
 				} else {
 					// In every other case, we have or can create data.
@@ -180,94 +180,94 @@ namespace Vixen.Module {
 		/// Use when not using XElement for serialization.
 		/// </summary>
 		/// <returns></returns>
-        public string Serialize() {
-			XElement moduleDataSetElement = new XElement(ROOT_ELEMENT);
-            DataContractSerializer serializer;
+		//public string Serialize() {
+		//    XElement moduleDataSetElement = new XElement(ROOT_ELEMENT);
+		//    DataContractSerializer serializer;
 
-			// Module type id : module type data object
-			foreach(KeyValuePair<Tuple<Guid, Guid>, IModuleDataModel> kvp in _dataModels) {
-				using(MemoryStream stream = new MemoryStream()) {
-					// Serializing each data object as the data object's type.
-					serializer = new DataContractSerializer(kvp.Value.GetType());
-					try {
-						serializer.WriteObject(stream, kvp.Value);
-						string objectData = Encoding.ASCII.GetString(stream.ToArray()).Trim();
-						moduleDataSetElement.Add(
-							new XElement(ELEMENT_MODULE,
-							             new XAttribute(ATTR_MODULE_TYPE, kvp.Key.Item1),
-							             new XAttribute(ATTR_MODULE_INSTANCE, kvp.Key.Item2),
-							             XElement.Parse(objectData))
-							);
-					} catch(Exception ex) {
-						VixenSystem.Logging.Error("Error when serializing data model of type " + kvp.Value.GetType().Name, ex);
-					}
-				}
-			}
+		//    // Module type id : module type data object
+		//    foreach(KeyValuePair<Tuple<Guid, Guid>, IModuleDataModel> kvp in _dataModels) {
+		//        using(MemoryStream stream = new MemoryStream()) {
+		//            // Serializing each data object as the data object's type.
+		//            serializer = new DataContractSerializer(kvp.Value.GetType());
+		//            try {
+		//                serializer.WriteObject(stream, kvp.Value);
+		//                string objectData = Encoding.ASCII.GetString(stream.ToArray()).Trim();
+		//                moduleDataSetElement.Add(
+		//                    new XElement(ELEMENT_MODULE,
+		//                                 new XAttribute(ATTR_MODULE_TYPE, kvp.Key.Item1),
+		//                                 new XAttribute(ATTR_MODULE_INSTANCE, kvp.Key.Item2),
+		//                                 XElement.Parse(objectData))
+		//                    );
+		//            } catch(Exception ex) {
+		//                VixenSystem.Logging.Error("Error when serializing data model of type " + kvp.Value.GetType().Name, ex);
+		//            }
+		//        }
+		//    }
 
-            return moduleDataSetElement.ToString();
-        }
+		//    return moduleDataSetElement.ToString();
+		//}
 
-		public XElement ToXElement() {
-			return XElement.Parse(Serialize());
-		}
+		//public XElement ToXElement() {
+		//    return XElement.Parse(Serialize());
+		//}
 
-		public void Deserialize(string xmlText) {
-            _dataModels.Clear();
+		//public void Deserialize(string xmlText) {
+		//    _dataModels.Clear();
 
-            if(!string.IsNullOrEmpty(xmlText)) {
-                XElement moduleDataSetElement = XElement.Parse(xmlText);
-                // Three possibilities:
-                // 1. The consumer gave us exactly what we needed, our ModuleDataSet element.
-                // 2. The consumer gave us our node plus their wrapping parent node.
-                // 3. The consumer shouldn't be doing what they're doing.
-				if(moduleDataSetElement.Name != ROOT_ELEMENT) {
-                    // They didn't give us just our node.
-					if((moduleDataSetElement = moduleDataSetElement.Element(ROOT_ELEMENT)) == null) {
-                        // They didn't give us anything we could quickly find, so leave.
-                        return;
-                    }
-                }
+		//    if(!string.IsNullOrEmpty(xmlText)) {
+		//        XElement moduleDataSetElement = XElement.Parse(xmlText);
+		//        // Three possibilities:
+		//        // 1. The consumer gave us exactly what we needed, our ModuleDataSet element.
+		//        // 2. The consumer gave us our node plus their wrapping parent node.
+		//        // 3. The consumer shouldn't be doing what they're doing.
+		//        if(moduleDataSetElement.Name != ROOT_ELEMENT) {
+		//            // They didn't give us just our node.
+		//            if((moduleDataSetElement = moduleDataSetElement.Element(ROOT_ELEMENT)) == null) {
+		//                // They didn't give us anything we could quickly find, so leave.
+		//                return;
+		//            }
+		//        }
 
-				Guid moduleTypeId;
-				Guid moduleInstanceId;
-                IModuleDescriptor descriptor;
-                DataContractSerializer serializer;
-				IModuleDataModel dataModel;
-				foreach(XElement moduleElement in moduleDataSetElement.Elements(ELEMENT_MODULE)) {
-                    //Storing the module type id...
-                    // Get the module type.
-					moduleTypeId = new Guid(moduleElement.Attribute(ATTR_MODULE_TYPE).Value);
-					moduleInstanceId = new Guid(moduleElement.Attribute(ATTR_MODULE_INSTANCE).Value);
-                    // Get the descriptor for the type.
-                    descriptor = Modules.GetDescriptorById(moduleTypeId);
-                    if(descriptor != null) {
-                        // Create the serializer for the module type's data model type.
-						//serializer = new DataContractSerializer(descriptor.ModuleDataClass);
-						Type dataSetType = _GetDataSetType(descriptor);
-						// If the module previously had a data object but no longer does,
-						// dataSetType may be null.
-						if(dataSetType != null) {
-							serializer = new DataContractSerializer(dataSetType);
-							dataModel = null;
-							using(MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(moduleElement.FirstNode.ToString()))) {
-								try {
-									dataModel = serializer.ReadObject(stream) as IModuleDataModel;
-								} catch(Exception ex) {
-									string instanceDataSpecifier = _IsInstanceData(moduleTypeId, moduleInstanceId) ? "(instance data)" : "(type data)";
-									VixenSystem.Logging.Error("The data for module \"" + descriptor.TypeName + "\" was not loaded due to errors.");
-									VixenSystem.Logging.Debug("Module \"" + descriptor.TypeName + "\" had data " + instanceDataSpecifier + " that was invalid.", ex);
-								}
-							}
+		//        Guid moduleTypeId;
+		//        Guid moduleInstanceId;
+		//        IModuleDescriptor descriptor;
+		//        DataContractSerializer serializer;
+		//        IModuleDataModel dataModel;
+		//        foreach(XElement moduleElement in moduleDataSetElement.Elements(ELEMENT_MODULE)) {
+		//            //Storing the module type id...
+		//            // Get the module type.
+		//            moduleTypeId = new Guid(moduleElement.Attribute(ATTR_MODULE_TYPE).Value);
+		//            moduleInstanceId = new Guid(moduleElement.Attribute(ATTR_MODULE_INSTANCE).Value);
+		//            // Get the descriptor for the type.
+		//            descriptor = Modules.GetDescriptorById(moduleTypeId);
+		//            if(descriptor != null) {
+		//                // Create the serializer for the module type's data model type.
+		//                //serializer = new DataContractSerializer(descriptor.ModuleDataClass);
+		//                Type dataSetType = _GetDataSetType(descriptor);
+		//                // If the module previously had a data object but no longer does,
+		//                // dataSetType may be null.
+		//                if(dataSetType != null) {
+		//                    serializer = new DataContractSerializer(dataSetType);
+		//                    dataModel = null;
+		//                    using(MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(moduleElement.FirstNode.ToString()))) {
+		//                        try {
+		//                            dataModel = serializer.ReadObject(stream) as IModuleDataModel;
+		//                        } catch(Exception ex) {
+		//                            string instanceDataSpecifier = _IsInstanceData(moduleTypeId, moduleInstanceId) ? "(instance data)" : "(type data)";
+		//                            VixenSystem.Logging.Error("The data for module \"" + descriptor.TypeName + "\" was not loaded due to errors.");
+		//                            VixenSystem.Logging.Debug("Module \"" + descriptor.TypeName + "\" had data " + instanceDataSpecifier + " that was invalid.", ex);
+		//                        }
+		//                    }
 
-							if(dataModel != null) {
-								_SetPedigree(this, dataModel, moduleTypeId, moduleInstanceId);
-								_Add(this, moduleTypeId, moduleInstanceId, dataModel);
-							}
-						}
-                    }
-                }
-            }
-        }
+		//                    if(dataModel != null) {
+		//                        _SetPedigree(this, dataModel, moduleTypeId, moduleInstanceId);
+		//                        _Add(this, moduleTypeId, moduleInstanceId, dataModel);
+		//                    }
+		//                }
+		//            }
+		//        }
+		//    }
+		//}
 
 		/// <summary>
 		/// Adds the module's data object as type data.  Does not overwrite any existing data.
@@ -311,11 +311,10 @@ namespace Vixen.Module {
 
 		public IEnumerable<T> GetInstances<T>()
 			where T : class, IModuleInstance {
-			T instance;
 			foreach(Tuple<Guid, Guid> typeInstance in _dataModels.Keys) {
 				if(Modules.IsOfType(typeInstance.Item1, typeof(T))) {
 					IModuleManagement moduleManager = Modules.GetManager<T>();
-					instance = moduleManager.Get(typeInstance.Item1) as T;
+					T instance = moduleManager.Get(typeInstance.Item1) as T;
 					instance.InstanceId = typeInstance.Item2;
 					GetModuleInstanceData(instance);
 					yield return instance;
@@ -405,8 +404,8 @@ namespace Vixen.Module {
 		abstract protected Type _GetDataSetType(IModuleDescriptor descriptor);
 		abstract protected IModuleDataModel _GetDataInstance(IModuleInstance module);
 
-		private bool _IsInstanceData(Guid typeId, Guid instanceId) {
-			return typeId == instanceId;
-		}
+		//private bool _IsInstanceData(Guid typeId, Guid instanceId) {
+		//    return typeId == instanceId;
+		//}
 	}
 }

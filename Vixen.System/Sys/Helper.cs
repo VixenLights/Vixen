@@ -24,15 +24,25 @@ namespace Vixen.Sys {
 			return true;
 		}
 
-		static public XElement LoadXml(string filePath) {
-			if(File.Exists(filePath)) {
-				using(FileStream fileStream = new FileStream(filePath, FileMode.Open)) {
-					using(StreamReader reader = new StreamReader(fileStream)) {
-						return XElement.Load(reader);
-					}
-				}
-			}
-			return null;
+		static public T Load<T>(string filePath, IFileLoader<T> loader)
+			where T : class {
+			return File.Exists(filePath) ? loader.Load(filePath) : null;
+		}
+
+		//static public XElement LoadXml(string filePath) {
+		//    if(File.Exists(filePath)) {
+		//        using(FileStream fileStream = new FileStream(filePath, FileMode.Open)) {
+		//            using(StreamReader reader = new StreamReader(fileStream)) {
+		//                return XElement.Load(reader);
+		//            }
+		//        }
+		//    }
+		//    return null;
+		//}
+
+		//In case we ever change how times are stored again, we only have to change it in one place.
+		static public TimeSpan? GetXmlTimeValue(XElement element, string attributeName) {
+			return XmlHelper.GetTimeSpanAttribute(element, attributeName);
 		}
 	}
 }

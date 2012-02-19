@@ -10,13 +10,11 @@ namespace Vixen.Module {
 	class ModuleManagement : DynamicObject {
 		private Dictionary<string, ModuleImplementationMethod> _methods = new Dictionary<string, ModuleImplementationMethod>();
 
-		public ModuleManagement(ModuleImplementation[] moduleImplementations) {
-			object obj;
-			MethodInfo mi;
+		public ModuleManagement(IEnumerable<ModuleImplementation> moduleImplementations) {
 			foreach(ModuleImplementation moduleImplementation in moduleImplementations) {
 				//Specific reflection; really fragile, dammit.
-				obj = moduleImplementation.GetType().GetProperty("Management").GetValue(moduleImplementation, null);
-				mi = obj.GetType().GetMethod("Get", new Type[] { typeof(Guid) });
+				object obj = moduleImplementation.GetType().GetProperty("Management").GetValue(moduleImplementation, null);
+				MethodInfo mi = obj.GetType().GetMethod("Get", new Type[] { typeof(Guid) });
 				_methods.Add("Get" + moduleImplementation.TypeOfModule, new ModuleImplementationMethod<LateBoundMethod>(mi, obj));
 				mi = obj.GetType().GetMethod("GetAll");
 				_methods.Add("GetAll" + moduleImplementation.TypeOfModule, new ModuleImplementationMethod<LateBoundMethod>(mi, obj));

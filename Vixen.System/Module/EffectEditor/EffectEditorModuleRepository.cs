@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Vixen.Sys;
-using Vixen.Commands;
 
 namespace Vixen.Module.EffectEditor {
 	class EffectEditorModuleRepository : IModuleRepository<IEffectEditorModuleInstance> {
@@ -44,7 +42,7 @@ namespace Vixen.Module.EffectEditor {
 
 		public void Add(Guid id) {
 			// Create an instance.
-			IEffectEditorModuleInstance instance = Modules.GetById(id) as IEffectEditorModuleInstance;
+			IEffectEditorModuleInstance instance = (IEffectEditorModuleInstance)Modules.GetById(id);
 			// Add to the collection.
 			_effectEditors.Add(instance);
 			// Add to the effect-specific index, if appropriate.

@@ -26,6 +26,6 @@ namespace Vixen.Module {
 		void Clone(IModuleDataSet sourceDataSet);
 		IModuleDataModel CloneTypeData(IModuleInstance sourceModule);
 		IModuleDataModel CloneInstanceData(IModuleInstance sourceModule, IModuleInstance destinationModule);
-		XElement ToXElement();
+		//XElement ToXElement();
 	}
 }

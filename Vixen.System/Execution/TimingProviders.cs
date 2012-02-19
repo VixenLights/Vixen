@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Reflection;
-using System.Xml.Linq;
 using Vixen.Module.Timing;
 using Vixen.Sys;
 
 namespace Vixen.Execution {
 	public class TimingProviders {
 		static private Dictionary<string,ITimingProvider> _providers;
-		private string _selectedProviderType;
-		private string _selectedSourceName;
+		//private string _selectedProviderType;
+		//private string _selectedSourceName;
+		private SelectedTimingProvider _selectedTimingProvider;
 
 		static TimingProviders() {
 			_providers = typeof(ITimingProvider)
 				.FindImplementationsWithin(Assembly.GetExecutingAssembly())
-				.Select(x => Activator.CreateInstance(x))
+				.Select(Activator.CreateInstance)
 				.Cast<ITimingProvider>()
 				.ToDictionary(x => x.TimingProviderTypeName, x => x);
 		}
@@ -27,43 +26,72 @@ namespace Vixen.Execution {
 
 		public TimingProviders(ISequence owner, TimingProviders original)
 			: this(owner) {
+			SelectedTimingProvider = original.SelectedTimingProvider;
 		}
 
 		public ISequence Owner { get; private set; }
 
-		public void GetSelectedSource(out string providerType, out string sourceName) {
-			providerType = _selectedProviderType;
-			sourceName = _selectedSourceName;
+		//public void GetSelectedSource(out string providerType, out string sourceName) {
+		//    providerType = _selectedProviderType;
+		//    sourceName = _selectedSourceName;
+		//}
+		public SelectedTimingProvider SelectedTimingProvider {
+			get { return _selectedTimingProvider; }
+			set {
+				if(!SelectedTimingProvider.IsValid(value)) {
+					// Reset to having no explicit timing source.
+					SelectedTimingProvider = null;
+				} else {
+					ITimingProvider provider;
+					if(_providers.TryGetValue(value.ProviderType, out provider)) {
+						if(provider.GetTimingSource(Owner, value.SourceName) != null) {
+							_selectedTimingProvider = value;
+							return;
+						}
+					}
+					throw new InvalidOperationException("Timing source does not exist.");
+				}
+			}
 		}
 
+		//public ITiming GetSelectedSource() {
+		//    ITiming selectedSource = null;
+
+		//    ITimingProvider provider;
+		//    if(_selectedProviderType != null && _providers.TryGetValue(_selectedProviderType, out provider)) {
+		//        selectedSource = provider.GetTimingSource(Owner, _selectedSourceName);
+		//    }
+
+		//    return selectedSource;
+		//}
 		public ITiming GetSelectedSource() {
 			ITiming selectedSource = null;
 
 			ITimingProvider provider;
-			if(_selectedProviderType != null && _providers.TryGetValue(_selectedProviderType, out provider)) {
-				selectedSource = provider.GetTimingSource(Owner, _selectedSourceName);
+			if(SelectedTimingProvider.IsValid(SelectedTimingProvider) && _providers.TryGetValue(SelectedTimingProvider.ProviderType, out provider)) {
+				selectedSource = provider.GetTimingSource(Owner, SelectedTimingProvider.SourceName);
 			}
 
 			return selectedSource;
 		}
 
-		public void SetSelectedSource(string providerType, string sourceName) {
-			if(providerType == null || sourceName == null) {
-				// Reset to having no explicit timing source.
-				_selectedProviderType = null;
-				_selectedSourceName = null;
-			} else {
-				ITimingProvider provider;
-				if(_providers.TryGetValue(providerType, out provider)) {
-					if(provider.GetTimingSource(Owner, sourceName) != null) {
-						_selectedProviderType = providerType;
-						_selectedSourceName = sourceName;
-						return;
-					}
-				}
-				throw new InvalidOperationException("Timing source does not exist.");
-			}
-		}
+		//public void SetSelectedSource(string providerType, string sourceName) {
+		//    if(providerType == null || sourceName == null) {
+		//        // Reset to having no explicit timing source.
+		//        _selectedProviderType = null;
+		//        _selectedSourceName = null;
+		//    } else {
+		//        ITimingProvider provider;
+		//        if(_providers.TryGetValue(providerType, out provider)) {
+		//            if(provider.GetTimingSource(Owner, sourceName) != null) {
+		//                _selectedProviderType = providerType;
+		//                _selectedSourceName = sourceName;
+		//                return;
+		//            }
+		//        }
+		//        throw new InvalidOperationException("Timing source does not exist.");
+		//    }
+		//}
 
 		public string[] GetTimingProviderTypes() {
 			return _providers.Keys.ToArray();

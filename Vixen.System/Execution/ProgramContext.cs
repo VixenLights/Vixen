@@ -210,7 +210,7 @@ namespace Vixen.Execution {
 			//The first three channels of my 1024-channel group.
 			//preFilter.TargetNodes = VixenSystem.Nodes.Skip(64).Take(3).ToArray();
 			//Starting right away.
-			_programExecutor.Current.Sequence.AddPreFilter(preFilter, TimeSpan.Zero);
+			_programExecutor.Current.Sequence.AddPreFilter(new PreFilterNode(preFilter, TimeSpan.Zero));
 		}
 
 		private IDataSource _dataSource;

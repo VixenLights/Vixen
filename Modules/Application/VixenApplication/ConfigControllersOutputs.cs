@@ -84,6 +84,10 @@ namespace VixenApplication
 
 				buttonDelete.Enabled = false;
 				buttonConfigure.Enabled = false;
+				//*** need to be able to add and remove and setup the selected one
+				//-> and remove the hard-coded filters
+				//-> until then, the filter modules aren't going to have data and will bomb because if a filter is
+				//   being added, its going to try to get the data from the
 				button1.Enabled = outputIndex >= 0 && _controller.Outputs[outputIndex].PostFilters.Any(x => x.HasSetup);
 			}
 		}

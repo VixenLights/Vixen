@@ -5,12 +5,12 @@ namespace Vixen.Commands {
 	public abstract class Command {
 		abstract public CommandIdentifier Identifier { get; }
 
-		// Required for transforms.
-		abstract public ParameterSignature Signature { get; }
-		// Required for transforms.
-		abstract public object GetParameterValue(int index);
-		// Required for transforms.
-		abstract public void SetParameterValue(int index, object value);
+		//// Required for transforms.
+		//abstract public ParameterSignature Signature { get; }
+		//// Required for transforms.
+		//abstract public object GetParameterValue(int index);
+		//// Required for transforms.
+		//abstract public void SetParameterValue(int index, object value);
 		abstract public Command Clone();
 
 		virtual public bool CanCombine(Command other) {

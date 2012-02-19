@@ -339,37 +339,44 @@ namespace Vixen.Sys.Output {
 
 		public void AddPostFilter(int outputIndex, IPostFilterModuleInstance filter) {
 			if(filter != null && outputIndex < OutputCount) {
+				// Must be the controller store, and not the system store, because the system store
+				// deals only with static data.
+				ModuleDataSet.GetModuleInstanceData(filter);
 				_outputs[outputIndex].AddPostFilter(filter);
 			}
 		}
 
-		public void AddPostFilters(int outputIndex, IEnumerable<IPostFilterModuleInstance> filters) {
-			if(filters != null && !filters.Any(x => x == null) && outputIndex < OutputCount) {
-				_outputs[outputIndex].AddPostFilters(filters);
-			}
-		}
+		//public void AddPostFilters(int outputIndex, IEnumerable<IPostFilterModuleInstance> filters) {
+		//    if(filters != null && !filters.Any(x => x == null) && outputIndex < OutputCount) {
+		//        _outputs[outputIndex].AddPostFilters(filters);
+		//    }
+		//}
 
 		public void InsertPostFilter(int outputIndex, int index, IPostFilterModuleInstance filter) {
 			if(filter != null && outputIndex < OutputCount) {
+				ModuleDataSet.GetModuleInstanceData(filter);
 				_outputs[outputIndex].InsertPostFilter(index, filter);
 			}
 		}
 
 		public void RemovePostFilter(int outputIndex, IPostFilterModuleInstance filter) {
 			if(filter != null && outputIndex < OutputCount) {
+				ModuleDataSet.RemoveModuleInstanceData(filter.Descriptor.TypeId, filter.InstanceId);
 				_outputs[outputIndex].RemovePostFilter(filter);
 			}
 		}
 
-		public void RemovePostFilterAt(int outputIndex, int index) {
-			if(outputIndex < OutputCount) {
-				_outputs[outputIndex].RemovePostFilterAt(index);
-			}
-		}
+		//public void RemovePostFilterAt(int outputIndex, int index) {
+		//    if(outputIndex < OutputCount) {
+		//        _outputs[outputIndex].RemovePostFilterAt(index);
+		//    }
+		//}
 
 		public void ClearPostFilters(int outputIndex) {
 			if(outputIndex < OutputCount) {
-				_outputs[outputIndex].ClearPostFilters();
+				foreach(IPostFilterModuleInstance filter in _outputs[outputIndex].PostFilters) {
+					RemovePostFilter(outputIndex, filter);
+				}
 			}
 		}
 
@@ -450,9 +457,9 @@ namespace Vixen.Sys.Output {
 				_postFilters.Add(filter);
 			}
 
-			public void AddPostFilters(IEnumerable<IPostFilterModuleInstance> filters) {
-				_postFilters.AddRange(filters);
-			}
+			//public void AddPostFilters(IEnumerable<IPostFilterModuleInstance> filters) {
+			//    _postFilters.AddRange(filters);
+			//}
 
 			public void InsertPostFilter(int index, IPostFilterModuleInstance filter) {
 				_postFilters.Insert(index, filter);
@@ -462,13 +469,13 @@ namespace Vixen.Sys.Output {
 				_postFilters.Remove(filter);
 			}
 
-			public void RemovePostFilterAt(int index) {
-				_postFilters.RemoveAt(index);
-			}
+			//public void RemovePostFilterAt(int index) {
+			//    _postFilters.RemoveAt(index);
+			//}
 
-			public void ClearPostFilters() {
-				_postFilters.Clear();
-			}
+			//public void ClearPostFilters() {
+			//    _postFilters.Clear();
+			//}
 
 			public IEnumerable<IPostFilterModuleInstance> PostFilters {
 				get { return _postFilters; }

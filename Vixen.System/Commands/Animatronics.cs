@@ -26,19 +26,19 @@ namespace Vixen.Commands {
 
 				override public CommandIdentifier Identifier { get { return CommandIdentifier; } }
 
-				public override ParameterSignature Signature {
-					get { return _signature; }
-				}
+				//public override ParameterSignature Signature {
+				//    get { return _signature; }
+				//}
 
-				public override object GetParameterValue(int index) {
-					return Position;
-				}
+				//public override object GetParameterValue(int index) {
+				//    return Position;
+				//}
 
-				public override void SetParameterValue(int index, object value) {
-					if(value is Position) {
-						Position = (Position)value;
-					}
-				}
+				//public override void SetParameterValue(int index, object value) {
+				//    if(value is Position) {
+				//        Position = (Position)value;
+				//    }
+				//}
 
 				public Position Position { get; set; }
 
@@ -84,35 +84,35 @@ namespace Vixen.Commands {
 
 				override public CommandIdentifier Identifier { get { return CommandIdentifier; } }
 
-				public override ParameterSignature Signature {
-					get { return _signature; }
-				}
+				//public override ParameterSignature Signature {
+				//    get { return _signature; }
+				//}
 
-				public override object GetParameterValue(int index) {
-					switch(index) {
-						case 0:
-							return Position;
-						case 1:
-							return TimeSpan;
-					}
+				//public override object GetParameterValue(int index) {
+				//    switch(index) {
+				//        case 0:
+				//            return Position;
+				//        case 1:
+				//            return TimeSpan;
+				//    }
 
-					return null;
-				}
+				//    return null;
+				//}
 
-				public override void SetParameterValue(int index, object value) {
-					switch(index) {
-						case 0:
-							if(value is Position) {
-								Position = (Position)value;
-							}
-							break;
-						case 1:
-							if(value is TimeSpan) {
-								TimeSpan = (TimeSpan)value;
-							}
-							break;
-					}
-				}
+				//public override void SetParameterValue(int index, object value) {
+				//    switch(index) {
+				//        case 0:
+				//            if(value is Position) {
+				//                Position = (Position)value;
+				//            }
+				//            break;
+				//        case 1:
+				//            if(value is TimeSpan) {
+				//                TimeSpan = (TimeSpan)value;
+				//            }
+				//            break;
+				//    }
+				//}
 
 				public Position Position { get; set; }
 

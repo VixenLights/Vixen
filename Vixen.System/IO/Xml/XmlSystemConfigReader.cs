@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using Vixen.Module.PostFilter;
 using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Sys.Output;
@@ -29,6 +30,8 @@ namespace Vixen.IO.Xml {
 		private const string ELEMENT_MODULE_DATA = "ModuleData";
 		private const string ELEMENT_CONTROLLER_LINKS = "ControllerLinks";
 		private const string ELEMENT_CONTROLLER_LINK = "ControllerLink";
+		private const string ELEMENT_FILTERS = "FilterNodes";
+		private const string ELEMENT_FILTER = "FilterNode";
 		private const string ATTR_ID = "id";
 		private const string ATTR_NAME = "name";
 		private const string ATTR_CHANNEL_ID = "channelId";
@@ -73,6 +76,7 @@ namespace Vixen.IO.Xml {
 			if(versionAt < 4 && targetVersion >= 4) yield return _Version_3_to_4;
 			if(versionAt < 5 && targetVersion >= 5) yield return _Version_4_to_5;
 			if(versionAt < 6 && targetVersion >= 6) yield return _Version_5_to_6;
+			if(versionAt < 7 && targetVersion >= 7) yield return _Version_6_to_7;
 		}
 
 		private bool _ReadContextFlag(XElement element) {
@@ -195,9 +199,7 @@ namespace Vixen.IO.Xml {
 			Guid outputModuleId = new Guid(element.Attribute(ATTR_HARDWARE_ID).Value);
 			int outputCount = int.Parse(element.Attribute(ATTR_OUTPUT_COUNT).Value);
 			Guid id = Guid.Parse(element.Attribute(ATTR_ID).Value);
-			//Guid instanceId = Guid.NewGuid();
 
-			//OutputController controller = new OutputController(id, instanceId, name, outputCount, outputModuleId);
 			OutputController controller = new OutputController(id, name, outputCount, outputModuleId);
 
 			_PopulateController(controller, element);
@@ -221,11 +223,6 @@ namespace Vixen.IO.Xml {
 		}
 
 		private void _PopulateController(OutputController controller, XElement element) {
-			////controller.LinkedTo = Guid.Parse(element.Attribute(ATTR_LINKED_TO).Value);
-			//Guid? parentControllerId = Guid.Parse(element.Attribute(ATTR_LINKED_TO).Value);
-			//if(parentControllerId == Guid.Empty) parentControllerId = null;
-			//VixenSystem.Controllers.LinkController(controller.Id, parentControllerId);
-
 			controller.ModuleDataSet = _GetModuleData(element);
 
 			int outputIndex = 0;
@@ -239,12 +236,15 @@ namespace Vixen.IO.Xml {
 
 				output.Name = outputElement.Attribute(ATTR_NAME).Value;
 
-				//IEnumerable<XElement> transformSpecElements = outputElement.Element(ELEMENT_TRANSFORMS).Elements(ELEMENT_TRANSFORM);
-				//foreach(XElement transformSpecElement in transformSpecElements) {
-				//    Guid typeId = Guid.Parse(transformSpecElement.Attribute(ATTR_TYPE_ID).Value);
-				//    Guid instanceId = Guid.Parse(transformSpecElement.Attribute(ATTR_INSTANCE_ID).Value);
-				//    controller.OutputTransforms.Add(outputIndex, typeId, instanceId);
-				//}
+				controller.ClearPostFilters(outputIndex);
+				IEnumerable<XElement> filterElements = outputElement.Element(ELEMENT_FILTERS).Elements(ELEMENT_FILTER);
+				foreach(XElement filterElement in filterElements) {
+					Guid typeId = Guid.Parse(filterElement.Attribute(ATTR_TYPE_ID).Value);
+					Guid instanceId = Guid.Parse(filterElement.Attribute(ATTR_INSTANCE_ID).Value);
+					IPostFilterModuleInstance filter = Modules.ModuleManagement.GetPostFilter(typeId);
+					filter.InstanceId = instanceId;
+					controller.AddPostFilter(outputIndex, filter);
+				}
 
 				outputIndex++;
 			}
@@ -292,6 +292,15 @@ namespace Vixen.IO.Xml {
 
 		private XElement _Version_5_to_6(XElement element) {
 			element.Add(new XElement(ELEMENT_CONTROLLER_LINKS));
+			return element;
+		}
+
+		private XElement _Version_6_to_7(XElement element) {
+			foreach(XElement controllerElement in element.Elements(ELEMENT_CONTROLLERS).Elements(ELEMENT_CONTROLLER)) {
+				foreach(XElement outputElement in controllerElement.Elements(ELEMENT_OUTPUTS).Elements(ELEMENT_OUTPUT)) {
+					outputElement.Add(new XElement(ELEMENT_FILTERS));
+				}
+			}
 			return element;
 		}
 	}

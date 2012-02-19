@@ -17,9 +17,9 @@ namespace Vixen.Sys {
 		string FilePath { get; set; }
 		void InsertData(EffectNode effectNode);
 		void InsertData(IEnumerable<EffectNode> effectNodes);
-		EffectNode InsertData(IEffectModuleInstance effect, TimeSpan startTime);
+		//EffectNode InsertData(IEffectModuleInstance effect, TimeSpan startTime);
 		bool RemoveData(EffectNode effectNode);
-		PreFilterNode AddPreFilter(IPreFilterModuleInstance preFilter, TimeSpan startTime);
+		void AddPreFilter(PreFilterNode preFilterNode);
 		bool RemovePreFilter(PreFilterNode preFilterNode);
 		InsertDataListenerStack InsertDataListener { get; set; }
 		TimingProviders TimingProvider { get; }

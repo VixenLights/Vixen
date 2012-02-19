@@ -273,14 +273,11 @@ namespace Vixen.Sys {
 		/// <summary>
 		/// Creates a new untyped instance of the module.  This should only be called by repositories.
 		/// </summary>
-		/// <param name="id"></param>
-		/// <returns></returns>
 		static public IModuleInstance GetById(Guid moduleTypeId) {
 			Type instanceType;
 			IModuleInstance instance = null;
 			if(_activators.TryGetValue(moduleTypeId, out instanceType)) {
-				instance = Activator.CreateInstance(instanceType) as IModuleInstance;
-				instance.InstanceId = Guid.NewGuid();
+				instance = (IModuleInstance)Activator.CreateInstance(instanceType);
 				instance.Descriptor = GetDescriptorById(moduleTypeId);
 				try {
 					instance.StaticModuleData = _GetModuleStaticData(instance);

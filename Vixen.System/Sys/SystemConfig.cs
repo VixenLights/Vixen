@@ -17,7 +17,7 @@ namespace Vixen.Sys {
 		private IEnumerable<ControllerLink> _controllerLinking;
 		private List<Guid> _disabledControllers;
 
-		private const int VERSION = 6;
+		private const int VERSION = 7;
 
 		[DataPath]
 		static public readonly string Directory = Path.Combine(Paths.DataRootPath, "SystemData");

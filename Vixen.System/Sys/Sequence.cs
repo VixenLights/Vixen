@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Xml.Linq;
-using Vixen.Module.PreFilter;
 using Vixen.Module.Timing;
 using Vixen.IO;
 using Vixen.Execution;
 using Vixen.Module;
 using Vixen.Module.RuntimeBehavior;
-using Vixen.Module.Effect;
 using Vixen.Module.Sequence;
 using Vixen.IO.Xml;
 
@@ -19,12 +17,14 @@ namespace Vixen.Sys {
 	/// </summary>
 	[Executor(typeof(SequenceExecutor))]
 	[SequenceReader(typeof(XmlSequenceReader))]
-	abstract public class Sequence : Vixen.Sys.ISequence, IVersioned {
+	//*** the version of the xml file has nothing to do with the structure of the object, so the
+	//    sequence object shouldn't have a version
+	abstract public class Sequence : Vixen.Sys.ISequence {//, IVersioned {
 		private IModuleDataSet _moduleDataSet;
 		private Guid _preFilterStreamId;
 
 		private const string DIRECTORY_NAME = "Sequence";
-		private const int VERSION = 1;
+		//private const int VERSION = 2;
 
 		[DataPath]
 		static private readonly string _directory = Path.Combine(Paths.DataRootPath, DIRECTORY_NAME);
@@ -49,9 +49,9 @@ namespace Vixen.Sys {
 		static public Sequence Load(string filePath) {
 			if(string.IsNullOrWhiteSpace(filePath)) return null;
 
-			IReader reader = new XmlAnySequenceReader();
+			XmlAnySequenceReader reader = new XmlAnySequenceReader();
 			if(!Path.IsPathRooted(filePath)) filePath = Path.Combine(DefaultDirectory, filePath);
-			Sequence instance = (Sequence)reader.Read(filePath);
+			Sequence instance = reader.Read(filePath);
 			return instance;
 		}
 
@@ -168,26 +168,44 @@ namespace Vixen.Sys {
 			InsertDataListener.InsertData(effectNodes);
 		}
 
-		public EffectNode InsertData(IEffectModuleInstance effect, TimeSpan startTime)
-		{
-			EffectNode cn = new EffectNode(effect, startTime);
-			InsertData(cn);
-			return cn;
-		}
+		//public EffectNode InsertData(IEffectModuleInstance effect, TimeSpan startTime)
+		//{
+		//    EffectNode cn = new EffectNode(effect, startTime);
+		//    InsertData(cn);
+		//    return cn;
+		//}
 
 		public bool RemoveData(EffectNode effectNode)
 		{
 			return Data.RemoveData(effectNode);
 		}
 
-		public PreFilterNode AddPreFilter(IPreFilterModuleInstance preFilter, TimeSpan startTime) {
-			PreFilterNode preFilterNode = new PreFilterNode(preFilter, startTime);
+		//public PreFilterNode AddPreFilter(IPreFilterModuleInstance preFilter, TimeSpan startTime) {
+		//    PreFilterNode preFilterNode = new PreFilterNode(preFilter, startTime);
+		//    Data.AddData(_preFilterStreamId, preFilterNode);
+		//    return preFilterNode;
+		//}
+		public void AddPreFilters(IEnumerable<PreFilterNode> preFilterNodes) {
+			foreach(PreFilterNode preFilterNode in preFilterNodes) {
+				AddPreFilter(preFilterNode);
+			}
+		}
+
+		public void AddPreFilter(PreFilterNode preFilterNode) {
+			ModuleDataSet.GetModuleInstanceData(preFilterNode.PreFilter);
 			Data.AddData(_preFilterStreamId, preFilterNode);
-			return preFilterNode;
 		}
 
 		public bool RemovePreFilter(PreFilterNode preFilterNode) {
+			ModuleDataSet.RemoveModuleInstanceData(preFilterNode.PreFilter.Descriptor.TypeId, preFilterNode.PreFilter.InstanceId);
 			return Data.RemoveData(preFilterNode);
+		}
+
+		public void ClearPreFilters() {
+			//Data.ClearStream(_preFilterStreamId);
+			foreach(PreFilterNode preFilterNode in GetPreFilters()) {
+				RemovePreFilter(preFilterNode);
+			}
 		}
 
 		public bool IsUntimed
@@ -221,8 +239,8 @@ namespace Vixen.Sys {
 			return Name;
 		}
 
-		virtual public int Version {
-			get { return VERSION; }
-		}
+		//virtual public int Version {
+		//    get { return VERSION; }
+		//}
 	}
 }

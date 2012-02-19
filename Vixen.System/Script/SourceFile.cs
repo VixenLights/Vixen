@@ -10,10 +10,10 @@ namespace Vixen.Script {
             Name = name;
         }
 
-        static public SourceFile Load(string fileName) {
-            if(File.Exists(fileName)) {
-                SourceFile sourceFile = new SourceFile(Path.GetFileName(fileName));
-                sourceFile.Contents = File.ReadAllText(fileName);
+        static public SourceFile Load(string filePath) {
+            if(File.Exists(filePath)) {
+                SourceFile sourceFile = new SourceFile(Path.GetFileName(filePath));
+                sourceFile.Contents = File.ReadAllText(filePath);
                 return sourceFile;
             }
             throw new ArgumentException("File does not exist.");

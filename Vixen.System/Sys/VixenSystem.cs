@@ -68,7 +68,7 @@ namespace Vixen.Sys {
 					}
 
 					//****
-					_AddPostFiltersToControllers();
+					//_AddPostFiltersToControllers();
 					//****
 
 					_state = RunState.Started;

@@ -28,6 +28,8 @@ namespace Vixen.IO.Xml {
 		private const string ELEMENT_MODULE_DATA = "ModuleData";
 		private const string ELEMENT_CONTROLLER_LINKS = "ControllerLinks";
 		private const string ELEMENT_CONTROLLER_LINK = "ControllerLink";
+		private const string ELEMENT_FILTERS = "FilterNodes";
+		private const string ELEMENT_FILTER = "FilterNode";
 		private const string ATTR_ID = "id";
 		private const string ATTR_NAME = "name";
 		private const string ATTR_CHANNEL_ID = "channelId";
@@ -140,15 +142,17 @@ namespace Vixen.IO.Xml {
 				new XAttribute(ATTR_HARDWARE_ID, controller.OutputModuleId),
 				new XAttribute(ATTR_OUTPUT_COUNT, controller.OutputCount),
 				new XAttribute(ATTR_ID, controller.Id),
-				//new XAttribute(ATTR_LINKED_TO, controller.LinkedTo),
 
 				new XElement(ELEMENT_MODULE_DATA, _CreateModuleDataContent(controller)),
 				new XElement(ELEMENT_OUTPUTS,
 					controller.Outputs.Select((x, index) =>
 						new XElement(ELEMENT_OUTPUT,
-							new XAttribute(ATTR_NAME, x.Name)
-							/*new XElement(ELEMENT_TRANSFORMS,
-								_CreateOutputTransformContent(controller, index))*/))));
+							new XAttribute(ATTR_NAME, x.Name),
+							new XElement(ELEMENT_FILTERS,
+								x.PostFilters.Select(y =>
+									new XElement(ELEMENT_FILTER,
+										new XAttribute(ATTR_TYPE_ID, y.Descriptor.TypeId),
+										new XAttribute(ATTR_INSTANCE_ID, y.InstanceId))))))));
 
 			return element;
 		}

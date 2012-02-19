@@ -102,7 +102,7 @@ namespace Vixen.Execution {
 				// Clear the local states of the affected channels.
 				_ClearAffectedChannelStates(affectedChannels);
 
-				_UpdateChannelStatesFromEffects(currentTime, _currentEffects);
+				_UpdateAggregatorsFromEffects(currentTime, _currentEffects);
 
 				// Aggregate the current state of the affected channels from their
 				// new states.
@@ -124,7 +124,7 @@ namespace Vixen.Execution {
 			}
 		}
 
-		private void _UpdateChannelStatesFromEffects(TimeSpan currentTime, IEnumerable<EffectNode> effects) {
+		private void _UpdateAggregatorsFromEffects(TimeSpan currentTime, IEnumerable<EffectNode> effects) {
 			// For each effect in the in-effect list for the context...
 			foreach(EffectNode effectNode in effects) {
 				// Render it to get a dictionary of intent collections by channel id.
@@ -162,7 +162,7 @@ namespace Vixen.Execution {
 			if(channelIds == null) return;
 
 			foreach(Guid channelId in channelIds) {
-				IStateSource<Command> commandStateSource = _stateListStateAggregator.GetValue(channelId);
+				IStateSource<Command> commandStateSource = _channelStates.GetValue(channelId);
 				if(commandStateSource != null && commandStateSource.Value != null) {
 					Command commandState = _ApplyPreFilters(channelId, commandStateSource.Value, currentTime);
 					_channelStates.SetValue(channelId, commandState);
