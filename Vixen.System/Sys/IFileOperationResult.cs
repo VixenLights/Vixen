@@ -1,6 +1,6 @@
 ﻿namespace Vixen.Sys {
 	interface IFileOperationResult {
-		bool Result { get; }
+		bool Success { get; }
 		string Message { get; }
 	}
 }

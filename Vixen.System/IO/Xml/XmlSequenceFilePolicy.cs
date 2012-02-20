@@ -10,7 +10,7 @@ namespace Vixen.IO.Xml {
 		private Sequence _sequence;
 		private XElement _content;
 
-		private const int SEQUENCE_FILE_VERSION = 1;
+		private const string ATTR_TYPE = "type";
 		private const string ATTR_LENGTH = "length";
 
 		public XmlSequenceFilePolicy() {
@@ -18,14 +18,12 @@ namespace Vixen.IO.Xml {
 		}
 
 		public XmlSequenceFilePolicy(Sequence sequence, XElement content) {
-			//write: needs sequence to read from and content to write to
-			//read: needs sequence to read to and content to read from
 			_sequence = sequence;
 			_content = content;
 		}
 
-		public override int GetVersion() {
-			return SEQUENCE_FILE_VERSION;
+		protected override void WriteType() {
+			_content.Add(new XAttribute(ATTR_TYPE, _sequence.Type));
 		}
 
 		protected override void WriteLength() {
@@ -39,7 +37,7 @@ namespace Vixen.IO.Xml {
 		}
 
 		protected override void WriteModuleData() {
-			XmlModuleDataSetSerializer serializer = new XmlModuleDataSetSerializer();
+			XmlModuleLocalDataSetSerializer serializer = new XmlModuleLocalDataSetSerializer();
 			XElement element = serializer.WriteObject(_sequence.ModuleDataSet);
 			_content.Add(element);
 		}
@@ -56,15 +54,26 @@ namespace Vixen.IO.Xml {
 			_content.Add(element);
 		}
 
-		protected override void ReadLength() {
-			XAttribute attribute = _content.Attribute(ATTR_LENGTH);
+		protected override void ReadType() {
+			string type = XmlHelper.GetAttribute(_content, ATTR_TYPE);
 
-			TimeSpan length = TimeSpan.Zero;
-			if(attribute != null) {
-				length = TimeSpan.FromTicks(long.Parse(attribute.Value));
+			SequenceType value = SequenceType.Standard;
+			if(type != null) {
+				value = (SequenceType)Enum.Parse(typeof(SequenceType), type);
 			}
 
-			_sequence.Length = length;
+			_sequence.SequenceType = value;
+		}
+
+		protected override void ReadLength() {
+			string length = XmlHelper.GetAttribute(_content, ATTR_LENGTH);
+
+			TimeSpan value = TimeSpan.Zero;
+			if(length != null) {
+				value = TimeSpan.FromTicks(long.Parse(length));
+			}
+
+			_sequence.Length = value;
 		}
 
 		protected override void ReadTimingSource() {
@@ -73,7 +82,7 @@ namespace Vixen.IO.Xml {
 		}
 
 		protected override void ReadModuleData() {
-			XmlModuleDataSetSerializer serializer = new XmlModuleDataSetSerializer();
+			XmlModuleLocalDataSetSerializer serializer = new XmlModuleLocalDataSetSerializer();
 			_sequence.ModuleDataSet = serializer.ReadObject(_content);
 			// Side effect: With the module dataset now being available, get the sequence's runtime
 			// behaviors' data.

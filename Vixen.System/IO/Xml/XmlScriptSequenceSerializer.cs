@@ -5,10 +5,8 @@ using Vixen.Module.Sequence;
 using Vixen.Sys;
 
 namespace Vixen.IO.Xml {
-	//class XmlScriptSequenceSerializer : IFileSerializer<ScriptSequence, ScriptSequenceSerializationResult> {
 	class XmlScriptSequenceSerializer : FileSerializer<ScriptSequence> {
 		private const string ATTR_VERSION = "version";
-		//private List<IFileOperationResult> _results;
 
 		protected override ScriptSequence _Read(string filePath) {
 			ScriptSequence sequence = _CreateSequenceFor(filePath);
@@ -25,55 +23,6 @@ namespace Vixen.IO.Xml {
 			filePolicy.Write();
 			content.Save(filePath);
 		}
-
-		//public XmlScriptSequenceSerializer() {
-		//    _results = new List<IFileOperationResult>();
-		//}
-
-		//public ScriptSequenceSerializationResult Read(string filePath) {
-		//    ScriptSequenceSerializationResult serializationResult;
-
-		//    _results.Clear();
-
-		//    try {
-		//        if(File.Exists(filePath)) {
-		//            ScriptSequence sequence = _CreateSequenceFor(filePath);
-		//            XElement content = _LoadFile(filePath);
-		//            XmlScriptSequenceFilePolicy filePolicy = new XmlScriptSequenceFilePolicy(sequence, content);
-		//            filePolicy.Read();
-
-		//            serializationResult = new ScriptSequenceSerializationResult(true, "File read successful.", sequence, _results);
-		//        } else {
-		//            serializationResult = new ScriptSequenceSerializationResult(false, "File does not exist.", null, _results);
-		//        }
-		//    } catch(Exception ex) {
-		//        VixenSystem.Logging.Debug(ex);
-		//        serializationResult = new ScriptSequenceSerializationResult(false, ex.Message, null, _results);
-		//    }
-
-		//    return serializationResult;
-		//}
-
-		//public ScriptSequenceSerializationResult Write(ScriptSequence value, string filePath) {
-		//    ScriptSequenceSerializationResult serializationResult;
-
-		//    _results.Clear();
-
-		//    try {
-		//        XElement content = new XElement("Script");
-		//        XmlScriptSequenceFilePolicy filePolicy = new XmlScriptSequenceFilePolicy(value, content);
-		//        filePolicy.Write();
-
-		//        content.Save(filePath);
-
-		//        serializationResult = new ScriptSequenceSerializationResult(true, "File write successful.", value, _results);
-		//    } catch(Exception ex) {
-		//        VixenSystem.Logging.Debug(ex);
-		//        serializationResult = new ScriptSequenceSerializationResult(false, ex.Message, null, _results);
-		//    }
-
-		//    return serializationResult;
-		//}
 
 		private ScriptSequence _CreateSequenceFor(string filePath) {
 			// Get the specific sequence module manager.
@@ -115,9 +64,5 @@ namespace Vixen.IO.Xml {
 			}
 			throw new SerializationException("File does not have a version.");
 		}
-
-		//private void _AddResults(IEnumerable<IFileOperationResult> operationResults) {
-		//    _results.AddRange(operationResults);
-		//}
 	}
 }

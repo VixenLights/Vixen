@@ -28,6 +28,8 @@
 		protected abstract void ReadFrameworkAssemblies();
 		protected abstract void ReadExternalAssemblies();
 
-		public abstract int GetVersion();
+		public int GetVersion() {
+			return 1;
+		}
 	}
 }

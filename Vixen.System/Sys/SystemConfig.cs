@@ -95,7 +95,7 @@ namespace Vixen.Sys {
 		}
 
 		public IEnumerable<IOutputDevice> DisabledControllers {
-			get { return _disabledControllers.Select(x => _controllers.FirstOrDefault(y => y.Id == x)).Where(x => x != null); }
+			get { return _disabledControllers.Select(x => _controllers.FirstOrDefault(y => y.Id == x)).NotNull(); }
 			set { _disabledControllers = new List<Guid>(value.Select(x => x.Id)); }
 		}
 

@@ -16,7 +16,6 @@ namespace Vixen.Sys {
 	/// Base class for any sequence implementation.
 	/// </summary>
 	[Executor(typeof(SequenceExecutor))]
-	[SequenceReader(typeof(XmlSequenceReader))]
 	//*** the version of the xml file has nothing to do with the structure of the object, so the
 	//    sequence object shouldn't have a version
 	abstract public class Sequence : Vixen.Sys.ISequence {//, IVersioned {
@@ -151,6 +150,8 @@ namespace Vixen.Sys {
 				}
 			}
 		}
+
+		public SequenceType SequenceType { get; set; }
 
 		public TimeSpan Length { get; set; }
 

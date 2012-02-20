@@ -12,11 +12,11 @@ namespace Vixen.IO {
 			get { return _instance ?? (_instance = new SerializerFactory()); }
 		}
 
-		public IFileSerializer<Sequence, SequenceSerializationResult> CreateStandardSequenceSerializer() {
+		public FileSerializer<Sequence> CreateStandardSequenceSerializer() {
 			return new XmlSequenceSerializer();
 		}
 
-		public IFileSerializer<ScriptSequence, ScriptSequenceSerializationResult> CreateScriptSequenceSerializer() {
+		public FileSerializer<ScriptSequence> CreateScriptSequenceSerializer() {
 			return new XmlScriptSequenceSerializer();
 		}
 	}

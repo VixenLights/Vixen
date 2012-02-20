@@ -16,6 +16,11 @@ namespace Vixen.Sys {
 			return (attributeValue != null) ? Guid.Parse(attributeValue) : (Guid?)null;
 		}
 
+		static public int? GetIntAttribute(XElement element, string attributeName) {
+			string attributeValue = GetAttribute(element, attributeName);
+			return (attributeValue != null) ? int.Parse(attributeValue) : (int?)null;
+		}
+
 		static public long? GetLongAttribute(XElement element, string attributeName) {
 			string attributeValue = GetAttribute(element, attributeName);
 			return (attributeValue != null) ? long.Parse(attributeValue) : (long?)null;

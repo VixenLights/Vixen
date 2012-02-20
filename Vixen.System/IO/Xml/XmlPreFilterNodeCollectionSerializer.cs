@@ -37,6 +37,7 @@ namespace Vixen.IO.Xml {
 
 			List<PreFilterNode> preFilterNodes = new List<PreFilterNode>();
 
+			//*** call a method that reads a single node
 			element = element.Element(ELEMENT_FILTER_NODES);
 			if(element != null) {
 				foreach(XElement filterNodeElement in element.Elements(ELEMENT_FILTER_NODE)) {

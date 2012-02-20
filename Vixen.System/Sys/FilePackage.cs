@@ -12,7 +12,7 @@ namespace Vixen.Sys {
 
 		private List<IPackageFileContent> _files = new List<IPackageFileContent>();
 
-		public Guid SourceIdentity { get; private set; }
+		public Guid SourceIdentity { get; set; }
 
 		public void AddFile(IPackageFileContent contextFile) {
 			_files.Add(contextFile);

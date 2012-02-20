@@ -59,7 +59,7 @@ namespace Vixen.Sys {
 
 		public IModuleDataSet PropertyData {
 			get { return _propertyData; }
-			private set {
+			set {
 				_propertyData = value;
 				// Update any properties we already have.
 				foreach(IPropertyModuleInstance propertyModule in _items.Values) {

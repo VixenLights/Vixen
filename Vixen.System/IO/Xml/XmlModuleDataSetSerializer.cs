@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Xml.Linq;
@@ -8,31 +9,33 @@ using Vixen.Module;
 using Vixen.Sys;
 
 namespace Vixen.IO.Xml {
-	class XmlModuleDataSetSerializer : IXmlSerializer<IModuleDataSet> {
+	class XmlModuleDataSetSerializer<DataSetType> : IXmlSerializer<DataSetType>
+		where DataSetType : class, IModuleDataSet, new() {
 		private const string ELEMENT_MODULE_DATA = "ModuleData";
 
-		public XElement WriteObject(IModuleDataSet value) {
+		public XElement WriteObject(DataSetType value) {
 			string dataSetAsString = _SerializeDataSetToString();
 			XElement element = XElement.Parse(dataSetAsString);
 			return new XElement(ELEMENT_MODULE_DATA, element);
 		}
 
-		public IModuleDataSet ReadObject(XElement element) {
+		public DataSetType ReadObject(XElement element) {
 			string moduleDataString = element.Element(ELEMENT_MODULE_DATA).InnerXml();
-			ModuleLocalDataSet dataSet = new ModuleLocalDataSet();
+			DataSetType dataSet = new DataSetType();
 			_DeserializeDataSetFromString(dataSet, moduleDataString);
 			return dataSet;
 		}
 
 		private string _SerializeDataSetToString() {
-			XElement moduleDataSetElement = new XElement(ROOT_ELEMENT);
-			DataContractSerializer serializer;
+			XElement moduleDataSetElement = new XElement(ELEMENT_MODULE_DATA);
 
+			//*** _dataModels is entirely encapsulated.  To avoid exposing it, need to
+			//    provide the dataset something it can use to write its internals
 			// Module type id : module type data object
 			foreach(KeyValuePair<Tuple<Guid, Guid>, IModuleDataModel> kvp in _dataModels) {
 				using(MemoryStream stream = new MemoryStream()) {
 					// Serializing each data object as the data object's type.
-					serializer = new DataContractSerializer(kvp.Value.GetType());
+					DataContractSerializer serializer = new DataContractSerializer(kvp.Value.GetType());
 					try {
 						serializer.WriteObject(stream, kvp.Value);
 						string objectData = Encoding.ASCII.GetString(stream.ToArray()).Trim();
@@ -115,6 +118,5 @@ namespace Vixen.IO.Xml {
 		private bool _IsInstanceData(Guid typeId, Guid instanceId) {
 			return typeId == instanceId;
 		}
-
 	}
 }

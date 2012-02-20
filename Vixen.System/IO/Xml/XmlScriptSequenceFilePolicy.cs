@@ -9,7 +9,6 @@ namespace Vixen.IO.Xml {
 		private ScriptSequence _sequence;
 		private XElement _content;
 
-		private const int SCRIPT_SEQUENCE_FILE_VERSION = 1;
 		private const string ELEMENT_LANGUAGE = "Language";
 		private const string ELEMENT_CLASS_NAME = "ClassName";
 		private const string ATTR_NAME = "name";
@@ -23,10 +22,6 @@ namespace Vixen.IO.Xml {
 		public XmlScriptSequenceFilePolicy(ScriptSequence sequence, XElement content) {
 			_sequence = sequence;
 			_content = content;
-		}
-
-		public override int GetVersion() {
-			return SCRIPT_SEQUENCE_FILE_VERSION;
 		}
 
 		protected override void WriteLanguage() {

@@ -3,11 +3,11 @@
 namespace Vixen.IO {
 	class MigrationResult : IFileOperationResult {
 		public MigrationResult(bool result, string message, int fromVersion, int toVersion) {
-			Result = result;
+			Success = result;
 			Message = "Migration from version " + fromVersion + " to " + toVersion + ". " + message;
 		}
 
-		public bool Result { get; private set; }
+		public bool Success { get; private set; }
 
 		public string Message { get; private set; }
 	}

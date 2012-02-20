@@ -1,11 +1,11 @@
 ﻿namespace Vixen.Sys {
 	class FileOperationResult : IFileOperationResult {
 		public FileOperationResult(bool result, string message) {
-			Result = result;
+			Success = result;
 			Message = message;
 		}
 
-		public bool Result { get; private set; }
+		public bool Success { get; private set; }
 
 		public string Message { get; private set; }
 	}

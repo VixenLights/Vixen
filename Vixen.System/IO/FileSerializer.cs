@@ -12,8 +12,13 @@ namespace Vixen.IO {
 			_results = new List<IFileOperationResult>();
 		}
 
-		public SerializationResult<ObjectType> Read(string filePath) {
+		public SerializationResult<ObjectType> Read(string fileName) {
 			SerializationResult<ObjectType> serializationResult;
+
+			string filePath = fileName;
+			if(!Path.IsPathRooted(filePath)) {
+				filePath = Path.Combine(Sequence.DefaultDirectory, filePath);
+			}
 
 			_ClearResults();
 
@@ -32,8 +37,11 @@ namespace Vixen.IO {
 			return serializationResult;
 		}
 
-		public SerializationResult<ObjectType> Write(ObjectType value, string filePath) {
+		public SerializationResult<ObjectType> Write(ObjectType value, string fileName) {
 			SerializationResult<ObjectType> serializationResult;
+
+			if(string.IsNullOrWhiteSpace(fileName)) throw new InvalidOperationException("A name is required.");
+			string filePath = Path.Combine(Sequence.DefaultDirectory, Path.GetFileName(fileName));
 
 			_ClearResults();
 

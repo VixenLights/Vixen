@@ -1,6 +1,7 @@
 ﻿namespace Vixen.IO {
 	abstract class SequenceFilePolicy : IFilePolicy {
 		virtual public void Write() {
+			WriteType();
 			WriteLength();
 			WriteTimingSource();
 			WriteModuleData();
@@ -8,6 +9,7 @@
 			WriteFilterNodes();
 		}
 
+		protected abstract void WriteType();
 		protected abstract void WriteLength();
 		protected abstract void WriteTimingSource();
 		protected abstract void WriteModuleData();
@@ -15,6 +17,7 @@
 		protected abstract void WriteFilterNodes();
 
 		virtual public void Read() {
+			ReadType();
 			ReadLength();
 			ReadTimingSource();
 			ReadModuleData();
@@ -23,6 +26,7 @@
 			ReadMediaData();
 		}
 
+		protected abstract void ReadType();
 		protected abstract void ReadLength();
 		protected abstract void ReadTimingSource();
 		protected abstract void ReadModuleData();
@@ -30,6 +34,8 @@
 		protected abstract void ReadFilterNodes();
 		protected abstract void ReadMediaData();
 
-		public abstract int GetVersion();
+		public int GetVersion() {
+			return 2;
+		}
 	}
 }

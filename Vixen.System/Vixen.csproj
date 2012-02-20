@@ -131,6 +131,8 @@
     <Compile Include="Instrumentation\PercentValue.cs" />
     <Compile Include="Instrumentation\RateValue.cs" />
     <Compile Include="Instrumentation\DoubleValue.cs" />
+    <Compile Include="IO\ContextFilePolicy.cs" />
+    <Compile Include="IO\FileCompressor.cs" />
     <Compile Include="IO\FileSerializer.cs" />
     <Compile Include="IO\IFilePolicy.cs" />
     <Compile Include="IO\IFileSerializer.cs" />
@@ -140,15 +142,38 @@
     <Compile Include="IO\MigrationPath.cs" />
     <Compile Include="IO\MigrationResult.cs" />
     <Compile Include="IO\MigrationSegment.cs" />
+    <Compile Include="IO\ModuleStoreFilePolicy.cs" />
+    <Compile Include="IO\ProgramFilePolicy.cs" />
     <Compile Include="IO\ScriptSequenceFilePolicy.cs" />
     <Compile Include="IO\SequenceFilePolicy.cs" />
     <Compile Include="IO\GeneralMigrationPolicy.cs" />
     <Compile Include="IO\SerializerFactory.cs" />
-    <Compile Include="IO\XmlSystemConfigFilePolicy.cs" />
+    <Compile Include="IO\SystemConfigFilePolicy.cs" />
+    <Compile Include="IO\Xml\XmlChannelPatchingSerializer.cs" />
+    <Compile Include="IO\Xml\XmlChannelSerializer.cs" />
+    <Compile Include="IO\Xml\XmlCompressedFileCollectionSerializer.cs" />
+    <Compile Include="IO\Xml\XmlCompressedFileSerializer.cs" />
+    <Compile Include="IO\Xml\XmlContextFilePolicy.cs" />
+    <Compile Include="IO\Xml\XmlControllerCollectionSerializer.cs" />
+    <Compile Include="IO\Xml\XmlControllerLinkCollectionSerializer.cs" />
+    <Compile Include="IO\Xml\XmlControllerReferenceSerializer.cs" />
+    <Compile Include="IO\Xml\XmlControllerSerializer.cs" />
+    <Compile Include="IO\Xml\XmlDisabledControllerCollectionSerializer.cs" />
+    <Compile Include="IO\Xml\XmlChannelNodeCollectionSerializer.cs" />
+    <Compile Include="IO\Xml\XmlChannelNodeSerializer.cs" />
+    <Compile Include="IO\Xml\XmlModuleDataSetSerializer.cs" />
+    <Compile Include="IO\Xml\XmlModuleStaticDataSetSerializer.cs" />
+    <Compile Include="IO\Xml\XmlModuleStoreFilePolicy.cs" />
+    <Compile Include="IO\Xml\XmlPostFilterCollectionSerializer.cs" />
+    <Compile Include="IO\Xml\XmlProgramFilePolicy.cs" />
+    <Compile Include="IO\Xml\XmlPropertyCollectionSerializer.cs" />
+    <Compile Include="IO\Xml\XmlSequenceListSerializer.cs" />
+    <Compile Include="IO\Xml\XmlSystemConfigFilePolicy.cs" />
     <Compile Include="IO\Xml\IXmlSerializer.cs" />
+    <Compile Include="IO\Xml\XmlChannelCollectionSerializer.cs" />
     <Compile Include="IO\Xml\XmlEffectNodeCollectionSerializer.cs" />
     <Compile Include="IO\Xml\XmlFileLoader.cs" />
-    <Compile Include="IO\Xml\XmlModuleDataSetSerializer.cs" />
+    <Compile Include="IO\Xml\XmlModuleLocalDataSetSerializer.cs" />
     <Compile Include="IO\Xml\XmlPreFilterNodeCollectionSerializer.cs" />
     <Compile Include="IO\Xml\XmlScriptSequenceFilePolicy.cs" />
     <Compile Include="IO\Xml\XmlScriptSequenceMigrator.cs" />
@@ -228,10 +253,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ImageResource.resx</DependentUpon>
     </Compile>
-    <Compile Include="IO\Xml\XmlContextReader.cs" />
-    <Compile Include="IO\Xml\XmlContextWriter.cs" />
-    <Compile Include="IO\Xml\XmlModuleStoreReader.cs" />
-    <Compile Include="IO\Xml\XmlModuleStoreWriter.cs" />
     <Compile Include="Module\Editor\IEditorUserInterface.cs" />
     <Compile Include="Module\Effect\ChannelCommands.cs" />
     <Compile Include="Module\MediaRenderer\IMediaRenderer.cs" />
@@ -275,12 +296,6 @@
     <Compile Include="Sys\ProgramEventArgs.cs" />
     <Compile Include="Sys\SequenceEventArgs.cs" />
     <Compile Include="Execution\ExecutorEffectEnumerator.cs" />
-    <Compile Include="IO\Xml\XmlChannelNodeTemplateReader.cs" />
-    <Compile Include="IO\Xml\XmlChannelNodeTemplateWriter.cs" />
-    <Compile Include="IO\Xml\XmlProgramReader.cs" />
-    <Compile Include="IO\Xml\XmlProgramWriter.cs" />
-    <Compile Include="IO\Xml\XmlSystemConfigReader.cs" />
-    <Compile Include="IO\Xml\XmlSystemConfigWriter.cs" />
     <Compile Include="Module\App\AppModuleInstanceBase.cs" />
     <Compile Include="Module\App\AppModuleDescriptorBase.cs" />
     <Compile Include="Module\CommandStandardExtension\CommandStandardExtensionModuleInstanceBase.cs" />
@@ -379,7 +394,6 @@
     <Compile Include="Script\IScriptFrameworkGenerator.cs" />
     <Compile Include="Script\IScriptSkeletonGenerator.cs" />
     <Compile Include="Script\IUserScriptHost.cs" />
-    <Compile Include="Sys\ChannelNodeDefinition.cs" />
     <Compile Include="Sys\GroupNode.cs" />
     <Compile Include="Sys\PropertyManager.cs" />
     <Compile Include="Sys\ScriptSequence.cs" />

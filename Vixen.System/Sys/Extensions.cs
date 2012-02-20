@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Reflection;
@@ -110,7 +109,7 @@ namespace Vixen.Sys
 			return source.IndexOf(value, comparison) >= 0;
 		}
 
-		public static void Raise(this MulticastDelegate thisEvent, object sender, EventArgs e) {
+		static public void Raise(this MulticastDelegate thisEvent, object sender, EventArgs e) {
 			//AsyncCallback callback = new AsyncCallback(EndAsynchronousEvent);
 
 			foreach(Delegate d in thisEvent.GetInvocationList()) {
@@ -121,6 +120,11 @@ namespace Vixen.Sys
 					else uiMethod.BeginInvoke(sender, e, null, uiMethod);
 				}
 			}
+		}
+
+		static public IEnumerable<T> NotNull<T>(this IEnumerable<T> values)
+			where T : class {
+			return values.Where(x => x != null);
 		}
 	}
 }
