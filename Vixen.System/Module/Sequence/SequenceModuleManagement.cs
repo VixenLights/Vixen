@@ -24,5 +24,13 @@ namespace Vixen.Module.Sequence {
 			}
 			return null;
 		}
+
+		public SequenceType GetSequenceType(string sequenceFileType) {
+			ISequenceModuleInstance module = Get(sequenceFileType);
+			if(module != null) {
+				return ((Vixen.Sys.Sequence)module).SequenceType;
+			}
+			return SequenceType.None;
+		}
 	}
 }

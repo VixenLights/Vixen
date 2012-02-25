@@ -39,7 +39,7 @@ namespace Vixen.Script {
 				files.Add(fileName);
 
 				// Add the user's source files.
-				foreach(SourceFile sourceFile in sequence.SourceFiles) {
+				foreach(SourceFile sourceFile in sequence.GetAllSourceFiles()) {
 					fileName = Path.Combine(Path.GetTempPath(), sourceFile.Name);
 					File.WriteAllText(fileName, sourceFile.Contents);
 					files.Add(fileName);

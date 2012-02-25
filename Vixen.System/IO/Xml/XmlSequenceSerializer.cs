@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Runtime.Serialization;
 using System.Xml.Linq;
 using Vixen.Module.Sequence;
@@ -9,10 +10,16 @@ namespace Vixen.IO.Xml {
 		private const string ATTR_VERSION = "version";
 
 		protected override Sequence _Read(string filePath) {
+			if(!Path.IsPathRooted(filePath)) {
+				filePath = Path.Combine(Sequence.DefaultDirectory, filePath);
+			}
+
 			Sequence sequence = _CreateSequenceFor(filePath);
 			XElement content = _LoadFile(filePath);
 			XmlSequenceFilePolicy filePolicy = new XmlSequenceFilePolicy(sequence, content);
 			filePolicy.Read();
+
+			sequence.FilePath = filePath;
 
 			return sequence;
 		}
@@ -21,7 +28,11 @@ namespace Vixen.IO.Xml {
 			XElement content = new XElement("Sequence");
 			XmlSequenceFilePolicy filePolicy = new XmlSequenceFilePolicy(value, content);
 			filePolicy.Write();
+
+			filePath = Path.Combine(Sequence.DefaultDirectory, Path.GetFileName(filePath));
 			content.Save(filePath);
+
+			value.FilePath = filePath;
 		}
 
 		private XElement _LoadFile(string filePath) {

@@ -3,23 +3,23 @@ using System.Xml.Linq;
 using Vixen.Sys;
 
 namespace Vixen.IO.Xml {
-	class XmlSystemConfigSerializer : FileSerializer<SystemConfig> {
+	class XmlModuleStoreSerializer : FileSerializer<ModuleStore> {
 		private const string ATTR_VERSION = "version";
 
-		override protected SystemConfig _Read(string filePath) {
-			SystemConfig systemConfig = new SystemConfig();
+		protected override ModuleStore _Read(string filePath) {
+			ModuleStore moduleStore = new ModuleStore();
 			XElement content = _LoadFile(filePath);
-			XmlSystemConfigFilePolicy filePolicy = new XmlSystemConfigFilePolicy(systemConfig, content);
+			XmlModuleStoreFilePolicy filePolicy = new XmlModuleStoreFilePolicy(moduleStore, content);
 			filePolicy.Read();
 
-			systemConfig.LoadedFilePath = filePath;
+			moduleStore.LoadedFilePath = filePath;
 
-			return systemConfig;
+			return moduleStore;
 		}
 
-		override protected void _Write(SystemConfig value, string filePath) {
-			XElement content = new XElement("SystemConfig");
-			XmlSystemConfigFilePolicy filePolicy = new XmlSystemConfigFilePolicy(value, content);
+		protected override void _Write(ModuleStore value, string filePath) {
+			XElement content = new XElement("ModuleStore");
+			XmlModuleStoreFilePolicy filePolicy = new XmlModuleStoreFilePolicy(value, content);
 			filePolicy.Write();
 			content.Save(filePath);
 
@@ -36,11 +36,11 @@ namespace Vixen.IO.Xml {
 		private XElement _EnsureContentIsUpToDate(XElement content, string originalFilePath) {
 			int fileVersion = _GetVersion(content);
 
-			XmlSystemConfigFilePolicy filePolicy = new XmlSystemConfigFilePolicy();
-			IMigrator migrator = new XmlSystemConfigMigrator(content);
+			XmlModuleStoreFilePolicy filePolicy = new XmlModuleStoreFilePolicy();
+			IMigrator migrator = new XmlModuleStoreMigrator(content);
 			GeneralMigrationPolicy<XElement> migrationPolicy = new GeneralMigrationPolicy<XElement>(filePolicy, migrator);
 			content = migrationPolicy.MatureContent(fileVersion, content, originalFilePath);
-			
+
 			_AddResults(migrationPolicy.MigrationResults);
 
 			return content;

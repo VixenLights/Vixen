@@ -1,29 +1,32 @@
-﻿using System.Runtime.Serialization;
+﻿using System.IO;
+using System.Runtime.Serialization;
 using System.Xml.Linq;
 using Vixen.Sys;
 
 namespace Vixen.IO.Xml {
-	class XmlSystemConfigSerializer : FileSerializer<SystemConfig> {
+	class XmlProgramSerializer : FileSerializer<Program> {
 		private const string ATTR_VERSION = "version";
 
-		override protected SystemConfig _Read(string filePath) {
-			SystemConfig systemConfig = new SystemConfig();
+		protected override Program _Read(string filePath) {
+			if(!Path.IsPathRooted(filePath)) filePath = Path.Combine(Program.Directory, filePath);
+			filePath = Path.ChangeExtension(filePath, Program.Extension);
+
+			Program program = new Program(Path.GetFileNameWithoutExtension(filePath));
 			XElement content = _LoadFile(filePath);
-			XmlSystemConfigFilePolicy filePolicy = new XmlSystemConfigFilePolicy(systemConfig, content);
+			XmlProgramFilePolicy filePolicy = new XmlProgramFilePolicy(program, content);
 			filePolicy.Read();
 
-			systemConfig.LoadedFilePath = filePath;
-
-			return systemConfig;
+			return program;
 		}
 
-		override protected void _Write(SystemConfig value, string filePath) {
-			XElement content = new XElement("SystemConfig");
-			XmlSystemConfigFilePolicy filePolicy = new XmlSystemConfigFilePolicy(value, content);
+		protected override void _Write(Program value, string filePath) {
+			XElement content = new XElement("Program");
+			XmlProgramFilePolicy filePolicy = new XmlProgramFilePolicy(value, content);
 			filePolicy.Write();
-			content.Save(filePath);
 
-			value.LoadedFilePath = filePath;
+			filePath = Path.Combine(Program.Directory, Path.GetFileName(filePath));
+			filePath = Path.ChangeExtension(filePath, Program.Extension);
+			content.Save(filePath);
 		}
 
 		private XElement _LoadFile(string filePath) {
@@ -36,11 +39,11 @@ namespace Vixen.IO.Xml {
 		private XElement _EnsureContentIsUpToDate(XElement content, string originalFilePath) {
 			int fileVersion = _GetVersion(content);
 
-			XmlSystemConfigFilePolicy filePolicy = new XmlSystemConfigFilePolicy();
-			IMigrator migrator = new XmlSystemConfigMigrator(content);
+			XmlProgramFilePolicy filePolicy = new XmlProgramFilePolicy();
+			IMigrator migrator = new XmlProgramMigrator(content);
 			GeneralMigrationPolicy<XElement> migrationPolicy = new GeneralMigrationPolicy<XElement>(filePolicy, migrator);
 			content = migrationPolicy.MatureContent(fileVersion, content, originalFilePath);
-			
+
 			_AddResults(migrationPolicy.MigrationResults);
 
 			return content;

@@ -3,24 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Xml.Linq;
+using Vixen.Module.Media;
 using Vixen.Module.Timing;
 using Vixen.IO;
 using Vixen.Execution;
 using Vixen.Module;
 using Vixen.Module.RuntimeBehavior;
 using Vixen.Module.Sequence;
-using Vixen.IO.Xml;
 
 namespace Vixen.Sys {
 	/// <summary>
 	/// Base class for any sequence implementation.
 	/// </summary>
 	[Executor(typeof(SequenceExecutor))]
-	//*** the version of the xml file has nothing to do with the structure of the object, so the
-	//    sequence object shouldn't have a version
 	abstract public class Sequence : Vixen.Sys.ISequence {//, IVersioned {
-		private IModuleDataSet _moduleDataSet;
+		private ModuleLocalDataSet _moduleDataSet;
 		private Guid _preFilterStreamId;
+		private MediaCollection _media;
 
 		private const string DIRECTORY_NAME = "Sequence";
 		//private const int VERSION = 2;
@@ -40,19 +39,19 @@ namespace Vixen.Sys {
 		/// </summary>
 		static public string DefaultDirectory { get { return _directory; } }
 
-		/// <summary>
-		/// Loads an existing instance.
-		/// </summary>
-		/// <param name="filePath"></param>
-		/// <returns></returns>
-		static public Sequence Load(string filePath) {
-			if(string.IsNullOrWhiteSpace(filePath)) return null;
+		///// <summary>
+		///// Loads an existing instance.
+		///// </summary>
+		///// <param name="filePath"></param>
+		///// <returns></returns>
+		//static public Sequence Load(string filePath) {
+		//    if(string.IsNullOrWhiteSpace(filePath)) return null;
 
-			XmlAnySequenceReader reader = new XmlAnySequenceReader();
-			if(!Path.IsPathRooted(filePath)) filePath = Path.Combine(DefaultDirectory, filePath);
-			Sequence instance = reader.Read(filePath);
-			return instance;
-		}
+		//    XmlAnySequenceReader reader = new XmlAnySequenceReader();
+		//    if(!Path.IsPathRooted(filePath)) filePath = Path.Combine(DefaultDirectory, filePath);
+		//    Sequence instance = reader.Read(filePath);
+		//    return instance;
+		//}
 
 		static public Sequence Create(string fileType) {
 			// Get the specific sequence module manager.
@@ -92,7 +91,7 @@ namespace Vixen.Sys {
 			TimingProvider = new TimingProviders(this);
 			RuntimeBehaviors = Modules.ModuleManagement.GetAllRuntimeBehavior();
 			ModuleDataSet = new ModuleLocalDataSet();
-			// Media set in ModuleDataSet setter.
+			_media = new MediaCollection();
 			// Runtime behaviors set in ModuleDataSet setter.
 		}
 
@@ -104,31 +103,35 @@ namespace Vixen.Sys {
 			_preFilterStreamId = original._preFilterStreamId;
 			TimingProvider = new TimingProviders(this, original.TimingProvider);
 			RuntimeBehaviors = Modules.ModuleManagement.GetAllRuntimeBehavior();
-			ModuleDataSet = original.ModuleDataSet.Clone();
+			ModuleDataSet = (ModuleLocalDataSet)original.ModuleDataSet.Clone();
 
 			Length = original.Length;
 		}
 
 		private bool _DataListener(EffectNode effectNode) {
 			Data.AddData(effectNode);
-			ModuleDataSet.GetModuleInstanceData(effectNode.Effect);
+			ModuleDataSet.AssignModuleInstanceData(effectNode.Effect);
 			// Do not cancel the event.
 			return false;
 		}
 
-		public void Save(string filePath) {
-			if(string.IsNullOrWhiteSpace(filePath)) throw new InvalidOperationException("A name is required.");
-			filePath = Path.Combine(this.Directory, Path.GetFileName(filePath));
-			IWriter writer = _GetSequenceWriter();
-			writer.Write(filePath, this);
-			this.FilePath = filePath;
+		//public void Save(string filePath) {
+		//    if(string.IsNullOrWhiteSpace(filePath)) throw new InvalidOperationException("A name is required.");
+		//    filePath = Path.Combine(this.Directory, Path.GetFileName(filePath));
+		//    IWriter writer = _GetSequenceWriter();
+		//    writer.Write(filePath, this);
+		//    this.FilePath = filePath;
+		//}
+		virtual public void Save(string filePath) {
+			FileSerializer<Sequence> serializer = SerializerFactory.Instance.CreateStandardSequenceSerializer();
+			serializer.Write(this, filePath);
 		}
 
-		virtual protected IWriter _GetSequenceWriter() {
-			return new XmlSequenceWriter();
-		}
+		//virtual protected IWriter _GetSequenceWriter() {
+		//    return new XmlSequenceWriter();
+		//}
 
-		public void Save() {
+		virtual public void Save() {
 			Save(FilePath);
 		}
 
@@ -136,22 +139,24 @@ namespace Vixen.Sys {
 			get { return Path.GetFileNameWithoutExtension(FilePath); }
 		}
 
-		public IModuleDataSet ModuleDataSet {
+		public ModuleLocalDataSet ModuleDataSet {
 			get { return _moduleDataSet; }
 			set {
 				if(_moduleDataSet != value) {
 					_moduleDataSet = value;
-					Media = new MediaCollection(_moduleDataSet);
+					//Media = new MediaCollection(_moduleDataSet);
 					// The runtime behavior module instances will need data in the sequence's
 					// data set.
 					foreach(IRuntimeBehaviorModuleInstance runtimeBehavior in RuntimeBehaviors) {
-						_moduleDataSet.GetModuleTypeData(runtimeBehavior);
+						_moduleDataSet.AssignModuleTypeData(runtimeBehavior);
 					}
 				}
 			}
 		}
 
-		public SequenceType SequenceType { get; set; }
+		virtual public SequenceType SequenceType {
+			get { return SequenceType.Standard; }
+		}
 
 		public TimeSpan Length { get; set; }
 
@@ -181,11 +186,34 @@ namespace Vixen.Sys {
 			return Data.RemoveData(effectNode);
 		}
 
-		//public PreFilterNode AddPreFilter(IPreFilterModuleInstance preFilter, TimeSpan startTime) {
-		//    PreFilterNode preFilterNode = new PreFilterNode(preFilter, startTime);
-		//    Data.AddData(_preFilterStreamId, preFilterNode);
-		//    return preFilterNode;
-		//}
+
+		#region IHasMedia
+		public void AddMedia(IEnumerable<IMediaModuleInstance> modules) {
+			foreach(IMediaModuleInstance module in modules) {
+				AddMedia(module);
+			}
+		}
+
+		public void AddMedia(IMediaModuleInstance module) {
+			_moduleDataSet.AssignModuleInstanceData(module);
+			_media.Add(module);
+		}
+
+		public bool RemoveMedia(IMediaModuleInstance module) {
+			_moduleDataSet.RemoveModuleInstanceData(module);
+			return _media.Remove(module);
+		}
+
+		public IEnumerable<IMediaModuleInstance> GetAllMedia() {
+			return _media;
+		}
+
+		public void ClearMedia() {
+			_media.Clear();
+		}
+		#endregion
+
+		#region IHasPreFilters
 		public void AddPreFilters(IEnumerable<PreFilterNode> preFilterNodes) {
 			foreach(PreFilterNode preFilterNode in preFilterNodes) {
 				AddPreFilter(preFilterNode);
@@ -193,21 +221,22 @@ namespace Vixen.Sys {
 		}
 
 		public void AddPreFilter(PreFilterNode preFilterNode) {
-			ModuleDataSet.GetModuleInstanceData(preFilterNode.PreFilter);
+			ModuleDataSet.AssignModuleInstanceData(preFilterNode.PreFilter);
 			Data.AddData(_preFilterStreamId, preFilterNode);
 		}
 
 		public bool RemovePreFilter(PreFilterNode preFilterNode) {
-			ModuleDataSet.RemoveModuleInstanceData(preFilterNode.PreFilter.Descriptor.TypeId, preFilterNode.PreFilter.InstanceId);
+			ModuleDataSet.RemoveModuleInstanceData(preFilterNode.PreFilter);
 			return Data.RemoveData(preFilterNode);
 		}
 
 		public void ClearPreFilters() {
 			//Data.ClearStream(_preFilterStreamId);
-			foreach(PreFilterNode preFilterNode in GetPreFilters()) {
+			foreach(PreFilterNode preFilterNode in GetAllPreFilters()) {
 				RemovePreFilter(preFilterNode);
 			}
 		}
+		#endregion
 
 		public bool IsUntimed
 		{
@@ -228,7 +257,7 @@ namespace Vixen.Sys {
 			return Data.GetMainStreamData().Cast<EffectNode>();
 		}
 
-		public IEnumerable<PreFilterNode> GetPreFilters() {
+		public IEnumerable<PreFilterNode> GetAllPreFilters() {
 			return Data.GetStreamData(_preFilterStreamId).Cast<PreFilterNode>();
 		}
 

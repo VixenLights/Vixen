@@ -34,7 +34,7 @@ namespace TestTemplate {
 				transform.InstanceId = transformReference.InstanceId;
 				// Get data for each instance from our transform module data set.
 				// Get as instance data, not type data.
-				_data.TransformData.GetModuleInstanceData(transform);
+				_data.TransformData.AssignModuleInstanceData(transform);
 				transforms.Add(transform);
 			}
 			return transforms.ToArray();

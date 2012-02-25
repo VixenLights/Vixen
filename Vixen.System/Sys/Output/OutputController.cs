@@ -13,7 +13,7 @@ namespace Vixen.Sys.Output {
 		private IOutputModuleInstance _outputModule;
 		private List<Output> _outputs = new List<Output>();
 		//private ModuleInstanceSpecification<int> _outputTransforms = new ModuleInstanceSpecification<int>();
-		private IModuleDataSet _moduleDataSet = new ModuleLocalDataSet();
+		private ModuleLocalDataSet _moduleDataSet = new ModuleLocalDataSet();
 		private Output[] _outputArray = new Output[0];
 
 		//private CommandStateSourceCollection<int> _outputStates;
@@ -113,7 +113,7 @@ namespace Vixen.Sys.Output {
 		//    }
 		//}
 
-		public IModuleDataSet ModuleDataSet {
+		public ModuleLocalDataSet ModuleDataSet {
 			get { return _moduleDataSet; }
 			set {
 				_moduleDataSet = value;
@@ -341,7 +341,7 @@ namespace Vixen.Sys.Output {
 			if(filter != null && outputIndex < OutputCount) {
 				// Must be the controller store, and not the system store, because the system store
 				// deals only with static data.
-				ModuleDataSet.GetModuleInstanceData(filter);
+				ModuleDataSet.AssignModuleInstanceData(filter);
 				_outputs[outputIndex].AddPostFilter(filter);
 			}
 		}
@@ -354,14 +354,14 @@ namespace Vixen.Sys.Output {
 
 		public void InsertPostFilter(int outputIndex, int index, IPostFilterModuleInstance filter) {
 			if(filter != null && outputIndex < OutputCount) {
-				ModuleDataSet.GetModuleInstanceData(filter);
+				ModuleDataSet.AssignModuleInstanceData(filter);
 				_outputs[outputIndex].InsertPostFilter(index, filter);
 			}
 		}
 
 		public void RemovePostFilter(int outputIndex, IPostFilterModuleInstance filter) {
 			if(filter != null && outputIndex < OutputCount) {
-				ModuleDataSet.RemoveModuleInstanceData(filter.Descriptor.TypeId, filter.InstanceId);
+				ModuleDataSet.RemoveModuleInstanceData(filter);
 				_outputs[outputIndex].RemovePostFilter(filter);
 			}
 		}

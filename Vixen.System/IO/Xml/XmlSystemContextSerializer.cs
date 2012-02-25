@@ -3,27 +3,23 @@ using System.Xml.Linq;
 using Vixen.Sys;
 
 namespace Vixen.IO.Xml {
-	class XmlSystemConfigSerializer : FileSerializer<SystemConfig> {
+	class XmlSystemContextSerializer : FileSerializer<SystemContext> {
 		private const string ATTR_VERSION = "version";
 
-		override protected SystemConfig _Read(string filePath) {
-			SystemConfig systemConfig = new SystemConfig();
+		protected override SystemContext _Read(string filePath) {
+			SystemContext systemContext = new SystemContext();
 			XElement content = _LoadFile(filePath);
-			XmlSystemConfigFilePolicy filePolicy = new XmlSystemConfigFilePolicy(systemConfig, content);
+			XmlSystemContextFilePolicy filePolicy = new XmlSystemContextFilePolicy(systemContext, content);
 			filePolicy.Read();
 
-			systemConfig.LoadedFilePath = filePath;
-
-			return systemConfig;
+			return systemContext;
 		}
 
-		override protected void _Write(SystemConfig value, string filePath) {
-			XElement content = new XElement("SystemConfig");
-			XmlSystemConfigFilePolicy filePolicy = new XmlSystemConfigFilePolicy(value, content);
+		protected override void _Write(SystemContext value, string filePath) {
+			XElement content = new XElement("SystemContext");
+			XmlSystemContextFilePolicy filePolicy = new XmlSystemContextFilePolicy(value, content);
 			filePolicy.Write();
 			content.Save(filePath);
-
-			value.LoadedFilePath = filePath;
 		}
 
 		private XElement _LoadFile(string filePath) {
@@ -36,11 +32,11 @@ namespace Vixen.IO.Xml {
 		private XElement _EnsureContentIsUpToDate(XElement content, string originalFilePath) {
 			int fileVersion = _GetVersion(content);
 
-			XmlSystemConfigFilePolicy filePolicy = new XmlSystemConfigFilePolicy();
-			IMigrator migrator = new XmlSystemConfigMigrator(content);
+			XmlSystemContextFilePolicy filePolicy = new XmlSystemContextFilePolicy();
+			IMigrator migrator = new XmlSystemContextMigrator(content);
 			GeneralMigrationPolicy<XElement> migrationPolicy = new GeneralMigrationPolicy<XElement>(filePolicy, migrator);
 			content = migrationPolicy.MatureContent(fileVersion, content, originalFilePath);
-			
+
 			_AddResults(migrationPolicy.MigrationResults);
 
 			return content;

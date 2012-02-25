@@ -140,18 +140,39 @@ namespace Vixen.Sys {
 		}
 
 		static public IEditorUserInterface CreateEditor(string sequenceFilePath) {
-			// Get the sequence.
+			// Get the sequence type.
+			SequenceModuleManagement sequenceManager = (SequenceModuleManagement)Modules.GetManager<ISequenceModuleInstance>();
+			SequenceType sequenceType = sequenceManager.GetSequenceType(sequenceFilePath);
+
+			// Get the sequence type's serializer and load the sequence.
+			// Note: THIS IS CRAP.
 			Sequence sequence = null;
-			if(File.Exists(sequenceFilePath)) {
-				sequence = Sequence.Load(sequenceFilePath);
-			} else {
-				sequence = Sequence.Create(sequenceFilePath);
+			switch(sequenceType) {
+				case SequenceType.Standard:
+					FileSerializer<Sequence> sequenceSerializer = SerializerFactory.Instance.CreateStandardSequenceSerializer();
+					SerializationResult<Sequence> sequenceResult = sequenceSerializer.Read(sequenceFilePath);
+					sequence = sequenceResult.Object;
+					break;
+				case SequenceType.Script:
+					FileSerializer<ScriptSequence> scriptSequenceSerializer = SerializerFactory.Instance.CreateScriptSequenceSerializer();
+					SerializationResult<ScriptSequence> scriptSequenceResult = scriptSequenceSerializer.Read(sequenceFilePath);
+					sequence = scriptSequenceResult.Object;
+					break;
 			}
 
-			if(sequence != null) {
-				// Get any sequence module data.
-				sequence.ModuleDataSet.GetModuleTypeData(sequence as ISequenceModuleInstance);
-			}
+			//// Get the sequence.
+			//Sequence sequence = null;
+			//if(File.Exists(sequenceFilePath)) {
+			//    sequence = Sequence.Load(sequenceFilePath);
+			//} else {
+			//    sequence = Sequence.Create(sequenceFilePath);
+			//}
+
+			//*** isn't this done as part of the sequence loading?
+			//if(sequence != null) {
+			//    // Get any sequence module data.
+			//    sequence.ModuleDataSet.AssignModuleTypeData(sequence as ISequenceModuleInstance);
+			//}
 
 			// Get the editor.
 			IEditorUserInterface editor = null;
@@ -161,8 +182,8 @@ namespace Vixen.Sys {
 			}
 
 			if(editor != null && sequence != null) {
-				// Get any editor module data.
-				sequence.ModuleDataSet.GetModuleTypeData(editor.OwnerModule);
+				// Get any editor module data from the sequence.
+				sequence.ModuleDataSet.AssignModuleTypeData(editor.OwnerModule);
 
 				// Assign the sequence to the editor.
 				editor.Sequence = sequence;

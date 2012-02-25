@@ -200,7 +200,7 @@ namespace Vixen.Execution {
 
 		private void _AddPreFilterToSequence() {
 			//Don't want it applied every time the sequence is started.  The result is cumulative.
-			if(_programExecutor.Current.Sequence.GetPreFilters().Any()) return;
+			if(_programExecutor.Current.Sequence.GetAllPreFilters().Any()) return;
 
 			IPreFilterModuleInstance preFilter = Modules.ModuleManagement.GetPreFilter(new Guid("{E0E26570-6A01-4368-B996-E34576FF4910}"));
 			//Fade out over 5 seconds.

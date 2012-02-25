@@ -144,10 +144,13 @@ namespace Vixen.Sys {
 			// The system data generally resides in the data branch, but it
 			// may not be in the case of an alternate context.
 			string systemDataPath = _GetSystemDataPath();
-			IReader reader = new XmlModuleStoreReader();
-			ModuleStore = (ModuleStore)reader.Read(Path.Combine(systemDataPath, ModuleStore.FileName));
-			reader = new XmlSystemConfigReader();
-			SystemConfig = (SystemConfig)reader.Read(Path.Combine(systemDataPath, SystemConfig.FileName));
+			ModuleStore = _LoadModuleStore(systemDataPath);
+			SystemConfig = _LoadSystemConfig(systemDataPath);
+
+			//IReader reader = new XmlModuleStoreReader();
+			//ModuleStore = (ModuleStore)reader.Read(Path.Combine(systemDataPath, ModuleStore.FileName));
+			//reader = new XmlSystemConfigReader();
+			//SystemConfig = (SystemConfig)reader.Read(Path.Combine(systemDataPath, SystemConfig.FileName));
 
 			if(SystemConfig == null)
 				SystemConfig = new SystemConfig();
@@ -171,6 +174,20 @@ namespace Vixen.Sys {
 			//****
 			//_AddChannelPostFilter();
 			//****
+		}
+
+		private static ModuleStore _LoadModuleStore(string systemDataPath) {
+			string moduleStoreFilePath = Path.Combine(systemDataPath, ModuleStore.FileName);
+			FileSerializer<ModuleStore> serializer = SerializerFactory.Instance.CreateModuleStoreSerializer();
+			SerializationResult<ModuleStore> result = serializer.Read(moduleStoreFilePath);
+			return result.Object;
+		}
+
+		private static SystemConfig _LoadSystemConfig(string systemDataPath) {
+			string systemConfigFilePath = Path.Combine(systemDataPath, SystemConfig.FileName);
+			FileSerializer<SystemConfig> serializer = SerializerFactory.Instance.CreateSystemConfigSerializer();
+			SerializationResult<SystemConfig> result = serializer.Read(systemConfigFilePath);
+			return result.Object;
 		}
 
 		//static private void _AddChannelPostFilter() {
@@ -247,7 +264,7 @@ namespace Vixen.Sys {
 		static private string _GetSystemDataPath() {
 			// Look for a user data file in the binary directory.
 			string filePath = Path.Combine(Paths.BinaryRootPath, SystemConfig.FileName);
-			XElement element = Helper.LoadXml(filePath);
+			XElement element = Helper.Load(filePath, new XmlFileLoader());
 			if(element != null) {
 				// Are we operating within a context?
 				if(element.Attribute(ATTRIBUTE_IS_CONTEXT) != null) {
@@ -263,7 +280,7 @@ namespace Vixen.Sys {
 
 		static private string _GetUserDataPath() {
 			// Look for a user data file in the binary directory.
-			XElement element = Helper.LoadXml(SystemConfig.DefaultFilePath);
+			XElement element = Helper.Load(SystemConfig.DefaultFilePath, new XmlFileLoader());
 			if(element != null) {
 				// Does it specify an alternate data path?
 				XElement dataDirectory = element.Element(ELEMENT_DATA_DIRECTORY);

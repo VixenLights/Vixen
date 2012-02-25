@@ -40,7 +40,7 @@ namespace TestTemplate {
 		private void buttonAddTransform_Click(object sender, EventArgs e) {
 			if(comboBoxTransforms.SelectedItem != null) {
 				ITransformModuleInstance instance = ApplicationServices.Get<ITransformModuleInstance>((Guid)comboBoxTransforms.SelectedValue);
-				_transformDatum.GetModuleInstanceData(instance);
+				_transformDatum.AssignModuleInstanceData(instance);
 				_templateTransforms.Add(instance);
 				_UpdateTransformList();
 			}

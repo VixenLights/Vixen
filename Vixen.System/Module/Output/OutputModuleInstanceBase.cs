@@ -4,7 +4,7 @@ using Vixen.Commands;
 
 namespace Vixen.Module.Output {
 	abstract public class OutputModuleInstanceBase : ModuleInstanceBase, IOutputModuleInstance, IEqualityComparer<IOutputModuleInstance>, IEquatable<IOutputModuleInstance>, IEqualityComparer<OutputModuleInstanceBase>, IEquatable<OutputModuleInstanceBase> {
-		private IModuleDataSet _moduleDataSet;
+		private ModuleLocalDataSet _moduleDataSet;
 		//private List<List<ITransformModuleInstance>> _outputTransforms = new List<List<ITransformModuleInstance>>();
 		private int _outputCount;
 
@@ -24,11 +24,11 @@ namespace Vixen.Module.Output {
 
 		abstract protected void _SetOutputCount(int outputCount);
 
-		virtual public IModuleDataSet ModuleDataSet {
+		virtual public ModuleLocalDataSet ModuleDataSet {
 			get { return _moduleDataSet; }
 			set {
 				_moduleDataSet = value;
-				_moduleDataSet.GetModuleTypeData(this);
+				_moduleDataSet.AssignModuleTypeData(this);
 			}
 		}
 

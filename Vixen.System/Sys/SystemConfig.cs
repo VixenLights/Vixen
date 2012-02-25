@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using Vixen.IO;
-using Vixen.IO.Xml;
 using Vixen.Sys.Output;
 
 namespace Vixen.Sys {
-	class SystemConfig : IVersioned {
+	class SystemConfig {
 		private string _alternateDataPath;
 		private IEnumerable<Channel> _channels;
 		private IEnumerable<ChannelNode> _nodes;
@@ -17,7 +16,7 @@ namespace Vixen.Sys {
 		private IEnumerable<ControllerLink> _controllerLinking;
 		private List<Guid> _disabledControllers;
 
-		private const int VERSION = 7;
+		//private const int VERSION = 7;
 
 		[DataPath]
 		static public readonly string Directory = Path.Combine(Paths.DataRootPath, "SystemData");
@@ -114,14 +113,13 @@ namespace Vixen.Sys {
 		}
 
 		public void Save() {
+			FileSerializer<SystemConfig> serializer = SerializerFactory.Instance.CreateSystemConfigSerializer();
 			string filePath = LoadedFilePath ?? Path.Combine(Directory, FileName);
-			IWriter writer = new XmlSystemConfigWriter();
-			writer.Write(filePath, this);
-			LoadedFilePath = filePath;
+			serializer.Write(this, filePath);
 		}
 
-		public int Version {
-			get { return VERSION; }
-		}
+		//public int Version {
+		//    get { return VERSION; }
+		//}
 	}
 }

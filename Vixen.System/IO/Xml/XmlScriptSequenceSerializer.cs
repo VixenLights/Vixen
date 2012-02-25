@@ -14,6 +14,8 @@ namespace Vixen.IO.Xml {
 			XmlScriptSequenceFilePolicy filePolicy = new XmlScriptSequenceFilePolicy(sequence, content);
 			filePolicy.Read();
 
+			sequence.FilePath = filePath;
+
 			return sequence;
 		}
 
@@ -22,6 +24,8 @@ namespace Vixen.IO.Xml {
 			XmlScriptSequenceFilePolicy filePolicy = new XmlScriptSequenceFilePolicy(value, content);
 			filePolicy.Write();
 			content.Save(filePath);
+
+			value.FilePath = filePath;
 		}
 
 		private ScriptSequence _CreateSequenceFor(string filePath) {

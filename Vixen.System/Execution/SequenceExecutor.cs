@@ -6,7 +6,6 @@ using System.Linq;
 // you specify the thread context for the Elapsed event.
 using System.Timers;
 using System.Threading;
-using Vixen.Module.PreFilter;
 using Vixen.Sys;
 using Vixen.Module.RuntimeBehavior;
 using Vixen.Module.Timing;
@@ -131,7 +130,7 @@ namespace Vixen.Execution {
 
 		public IEnumerable<PreFilterNode> GetSequenceFilters() {
 			if(_sequence != null) {
-				return _sequence.GetPreFilters();
+				return _sequence.GetAllPreFilters();
 			}
 			return Enumerable.Empty<PreFilterNode>();
 		}

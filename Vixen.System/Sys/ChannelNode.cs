@@ -12,7 +12,7 @@ namespace Vixen.Sys {
 	/// <summary>
 	/// A logical node that encapsulates a single Channel or a branch/group of other ChannelNodes.
 	/// </summary>
-	public class ChannelNode : GroupNode<Channel>, IEqualityComparer<ChannelNode>, IVersioned {
+	public class ChannelNode : GroupNode<Channel>, IEqualityComparer<ChannelNode> {
 		// Making this static so there doesn't have to be potentially thousands of
 		// subscriptions from the node manager.
 		static public event EventHandler Changed;

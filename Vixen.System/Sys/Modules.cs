@@ -16,8 +16,8 @@ namespace Vixen.Sys {
 		static private Dictionary<Guid, IModuleDescriptor> _moduleDescriptors = new Dictionary<Guid, IModuleDescriptor>();
 		// ModuleImplementation : descriptors for modules of that type
 		static private Dictionary<ModuleImplementation, HashSet<IModuleDescriptor>> _moduleImplementationDescriptors = new Dictionary<ModuleImplementation, HashSet<IModuleDescriptor>>();
-		// Module type id : module type's static data singleton
-		static private Dictionary<Guid, IModuleDataModel> _moduleStaticDataRepository = new Dictionary<Guid, IModuleDataModel>();
+		//// Module type id : module type's static data singleton
+		//static private Dictionary<Guid, IModuleDataModel> _moduleStaticDataRepository = new Dictionary<Guid, IModuleDataModel>();
 
 		static public dynamic ModuleManagement { get; private set; }
 		static public dynamic ModuleRepository { get; private set; }
@@ -461,15 +461,19 @@ namespace Vixen.Sys {
 		static private IModuleDataModel _GetModuleStaticData(IModuleInstance instance) {
 			// All instances of a given module type will share a single instance of that type's
 			// static data.  A change in one is reflected in all.
-			IModuleDataModel data = null;
-			if(!_moduleStaticDataRepository.TryGetValue(instance.Descriptor.TypeId, out data)) {
-				if(instance.Descriptor.ModuleStaticDataClass != null) {
-					data = VixenSystem.ModuleStore.Data.RetrieveTypeData(instance.Descriptor);
-					_moduleStaticDataRepository[instance.Descriptor.TypeId] = data;
-				}
-			}
 
-			return data;
+			return VixenSystem.ModuleStore.Data.GetTypeData(instance);
+			
+			//IModuleDataModel data = null;
+
+			//if(!_moduleStaticDataRepository.TryGetValue(instance.Descriptor.TypeId, out data)) {
+			//    if(instance.Descriptor.ModuleStaticDataClass != null) {
+			//        VixenSystem.ModuleStore.Data.GetModuleTypeData(instance);
+			//        _moduleStaticDataRepository[instance.Descriptor.TypeId] = data;
+			//    }
+			//}
+
+			//return data;
 		}
 	}
 }

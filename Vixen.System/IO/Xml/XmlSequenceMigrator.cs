@@ -1,22 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Xml.Linq;
-using Vixen.Sys;
+﻿using System.Xml.Linq;
 
 namespace Vixen.IO.Xml {
-	class XmlSequenceMigrator : IMigrator {
+	class XmlSequenceMigrator : EmptyMigrator {
 		private XElement _content;
 
 		public XmlSequenceMigrator(XElement content) {
 			_content = content;
-		}
-
-		public IEnumerable<IFileOperationResult> Migrate(int fromVersion, int toVersion) {
-			return new FileOperationResult(false, "There is only one version.").AsEnumerable();
-		}
-
-		public IEnumerable<MigrationSegment> ValidMigrations {
-			get { return Enumerable.Empty<MigrationSegment>(); }
 		}
 	}
 }

@@ -7,10 +7,11 @@ using Vixen.Module.RuntimeBehavior;
 
 namespace Vixen.Sys {
 	public enum SequenceType {
+		None,
 		Standard,
 		Script
 	};
-	public interface ISequence {
+	public interface ISequence : IHasMedia, IHasPreFilterNodes {
         string Name { get; }
 		void Save();
 		void Save(string fileName);
@@ -20,16 +21,13 @@ namespace Vixen.Sys {
 		void InsertData(EffectNode effectNode);
 		void InsertData(IEnumerable<EffectNode> effectNodes);
 		bool RemoveData(EffectNode effectNode);
-		void AddPreFilter(PreFilterNode preFilterNode);
-		bool RemovePreFilter(PreFilterNode preFilterNode);
 		InsertDataListenerStack InsertDataListener { get; set; }
 		TimingProviders TimingProvider { get; }
 		DataStreams Data { get; }
 		IRuntimeBehaviorModuleInstance[] RuntimeBehaviors { get; }
 		MediaCollection Media { get; }
-		IModuleDataSet ModuleDataSet { get; }
+		ModuleLocalDataSet ModuleDataSet { get; }
 		IEnumerable<EffectNode> GetData();
-		IEnumerable<PreFilterNode> GetPreFilters();
 		ITiming GetTiming();
 		SequenceType SequenceType { get; }
 	}

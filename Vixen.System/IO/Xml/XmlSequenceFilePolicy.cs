@@ -10,7 +10,6 @@ namespace Vixen.IO.Xml {
 		private Sequence _sequence;
 		private XElement _content;
 
-		private const string ATTR_TYPE = "type";
 		private const string ATTR_LENGTH = "length";
 
 		public XmlSequenceFilePolicy() {
@@ -22,10 +21,6 @@ namespace Vixen.IO.Xml {
 			_content = content;
 		}
 
-		protected override void WriteType() {
-			_content.Add(new XAttribute(ATTR_TYPE, _sequence.Type));
-		}
-
 		protected override void WriteLength() {
 			_content.Add(new XAttribute(ATTR_LENGTH, _sequence.Length.Ticks));
 		}
@@ -33,6 +28,12 @@ namespace Vixen.IO.Xml {
 		protected override void WriteTimingSource() {
 			XmlSelectedTimingProviderSerializer serializer = new XmlSelectedTimingProviderSerializer();
 			XElement element = serializer.WriteObject(_sequence.TimingProvider.SelectedTimingProvider);
+			_content.Add(element);
+		}
+
+		protected override void WriteMedia() {
+			XmlMediaCollectionSerializer serializer = new XmlMediaCollectionSerializer();
+			XElement element = serializer.WriteObject(_sequence.Media);
 			_content.Add(element);
 		}
 
@@ -50,19 +51,8 @@ namespace Vixen.IO.Xml {
 
 		protected override void WriteFilterNodes() {
 			XmlPreFilterNodeCollectionSerializer serializer = new XmlPreFilterNodeCollectionSerializer();
-			XElement element = serializer.WriteObject(_sequence.GetPreFilters());
+			XElement element = serializer.WriteObject(_sequence.GetAllPreFilters());
 			_content.Add(element);
-		}
-
-		protected override void ReadType() {
-			string type = XmlHelper.GetAttribute(_content, ATTR_TYPE);
-
-			SequenceType value = SequenceType.Standard;
-			if(type != null) {
-				value = (SequenceType)Enum.Parse(typeof(SequenceType), type);
-			}
-
-			_sequence.SequenceType = value;
 		}
 
 		protected override void ReadLength() {
@@ -79,6 +69,13 @@ namespace Vixen.IO.Xml {
 		protected override void ReadTimingSource() {
 			XmlSelectedTimingProviderSerializer serializer = new XmlSelectedTimingProviderSerializer();
 			_sequence.TimingProvider.SelectedTimingProvider = serializer.ReadObject(_content);
+		}
+
+		protected override void ReadMedia() {
+			XmlMediaCollectionSerializer serializer = new XmlMediaCollectionSerializer();
+			MediaCollection modules = serializer.ReadObject(_content);
+			_sequence.ClearMedia();
+			_sequence.AddMedia(modules);
 		}
 
 		protected override void ReadModuleData() {
@@ -103,13 +100,9 @@ namespace Vixen.IO.Xml {
 			_sequence.AddPreFilters(preFilterNodes);
 		}
 
-		protected override void ReadMediaData() {
-			_sequence.Media = new MediaCollection(_sequence.ModuleDataSet);
-		}
-
 		private void _GetBehaviorData(Sequence sequence) {
 			foreach(IModuleInstance runtimeBehavior in sequence.RuntimeBehaviors) {
-				sequence.ModuleDataSet.GetModuleTypeData(runtimeBehavior);
+				sequence.ModuleDataSet.AssignModuleTypeData(runtimeBehavior);
 			}
 		}
 	}

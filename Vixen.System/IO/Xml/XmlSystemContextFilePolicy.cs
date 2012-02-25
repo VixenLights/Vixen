@@ -4,7 +4,7 @@ using System.Xml.Linq;
 using Vixen.Sys;
 
 namespace Vixen.IO.Xml {
-	class XmlContextFilePolicy : ContextFilePolicy {
+	class XmlSystemContextFilePolicy : SystemContextFilePolicy {
 		private SystemContext _context;
 		private XElement _content;
 
@@ -12,11 +12,11 @@ namespace Vixen.IO.Xml {
 		private const string ELEMENT_CONTEXT_NAME = "Name";
 		private const string ELEMENT_CONTEXT_DESCRIPTION = "Description";
 
-		public XmlContextFilePolicy() {
+		public XmlSystemContextFilePolicy() {
 			// Used when wanting just the current version of the sequence file.
 		}
 
-		public XmlContextFilePolicy(SystemContext context, XElement content) {
+		public XmlSystemContextFilePolicy(SystemContext context, XElement content) {
 			_context = context;
 			_content = content;
 		}

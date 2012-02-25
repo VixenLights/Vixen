@@ -9,7 +9,7 @@ using Vixen.IO.Xml;
 using Vixen.Sys;
 
 namespace Vixen.Sys {
-	public class Program : IEnumerable<ISequence>, IVersioned {
+	public class Program : IEnumerable<ISequence> {
 		private const string DIRECTORY_NAME = "Program";
 		private const int VERSION = 1;
 
@@ -45,11 +45,14 @@ namespace Vixen.Sys {
 		static public Program Load(string filePath) {
 			if(string.IsNullOrWhiteSpace(filePath)) return null;
 
-			filePath = Path.ChangeExtension(filePath, Program.Extension);
-			IReader reader = new XmlProgramReader();
-			if(!Path.IsPathRooted(filePath)) filePath = Path.Combine(Directory, filePath);
-			Program program = (Program)reader.Read(filePath);
-			return program;
+			FileSerializer<Program> serializer = SerializerFactory.Instance.CreateProgramSerializer();
+			SerializationResult<Program> result = serializer.Read(filePath);
+			return result.Object;
+			//filePath = Path.ChangeExtension(filePath, Program.Extension);
+			//IReader reader = new XmlProgramReader();
+			//if(!Path.IsPathRooted(filePath)) filePath = Path.Combine(Directory, filePath);
+			//Program program = (Program)reader.Read(filePath);
+			//return program;
 		}
 
 		public string FilePath { get; set; }
@@ -73,11 +76,13 @@ namespace Vixen.Sys {
 
 		public void Save(string filePath) {
 			if(string.IsNullOrWhiteSpace(filePath)) throw new InvalidOperationException("A name is required.");
-			filePath = Path.Combine(Directory, Path.GetFileName(filePath));
-			filePath = Path.ChangeExtension(filePath, Program.Extension);
+			//filePath = Path.Combine(Directory, Path.GetFileName(filePath));
+			//filePath = Path.ChangeExtension(filePath, Program.Extension);
 
-			IWriter writer = new XmlProgramWriter();
-			writer.Write(filePath, this);
+			FileSerializer<Program> serializer = SerializerFactory.Instance.CreateProgramSerializer();
+			serializer.Write(this, filePath);
+			//IWriter writer = new XmlProgramWriter();
+			//writer.Write(filePath, this);
 
 			FilePath = filePath;
 		}

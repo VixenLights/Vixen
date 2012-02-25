@@ -1,5 +1,5 @@
 ﻿namespace Vixen.IO {
-	abstract class ContextFilePolicy : IFilePolicy {
+	abstract class SystemContextFilePolicy : IFilePolicy {
 		public void Write() {
 			WriteSourceIdentity();
 			WriteContextName();

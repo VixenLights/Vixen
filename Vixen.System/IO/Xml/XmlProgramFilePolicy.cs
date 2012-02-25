@@ -7,8 +7,6 @@ namespace Vixen.IO.Xml {
 		private Program _program;
 		private XElement _content;
 
-		private const string ELEMENT_PROGRAM = "Program";
-
 		public XmlProgramFilePolicy() {
 			// Used when wanting just the current version of the sequence file.
 		}
@@ -20,9 +18,7 @@ namespace Vixen.IO.Xml {
 
 		protected override void WriteSequences() {
 			XmlSequenceListSerializer sequenceListSerializer = new XmlSequenceListSerializer();
-			XElement sequenceListElement = sequenceListSerializer.WriteObject(_program.Sequences);
-
-			_content.Add(new XElement(ELEMENT_PROGRAM, sequenceListElement));
+			_content.Add(sequenceListSerializer.WriteObject(_program.Sequences));
 		}
 
 		protected override void ReadSequences() {
