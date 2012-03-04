@@ -12,7 +12,7 @@ namespace Vixen.Execution {
 		}
 
 		/// <summary>
-		/// 
+		/// Updates the collection of current affects, returning the ids of the affected channels.
 		/// </summary>
 		/// <param name="dataSource"></param>
 		/// <param name="currentTime"></param>

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using Vixen.Commands;
+using System.Drawing;
 using Vixen.Sys;
 
 namespace Vixen.Module.PreFilter {
 	abstract public class PreFilterModuleInstanceBase : ModuleInstanceBase, IPreFilterModuleInstance, IEqualityComparer<IPreFilterModuleInstance>, IEquatable<IPreFilterModuleInstance>, IEqualityComparer<PreFilterModuleInstanceBase>, IEquatable<PreFilterModuleInstanceBase> {
-		abstract public Command Affect(Command command, TimeSpan filterRelativeTime);
+		//abstract public Command Affect(Command command, TimeSpan filterRelativeTime);
 
 		virtual public TimeSpan TimeSpan { get; set; }
 
@@ -16,6 +16,22 @@ namespace Vixen.Module.PreFilter {
 		}
 
 		virtual public bool Setup() { return false; }
+
+		virtual public float Affect(float value, float percentIntoFilter) {
+			return value;
+		}
+
+		virtual public Color Affect(Color value, float percentIntoFilter) {
+			return value;
+		}
+
+		virtual public DateTime Affect(DateTime value, float percentIntoFilter) {
+			return value;
+		}
+
+		virtual public IFilterState CreateFilterState(TimeSpan filterRelativeTime) {
+			return new PreFilterState(this, filterRelativeTime);
+		}
 
 		public bool Equals(IPreFilterModuleInstance x, IPreFilterModuleInstance y) {
 			return base.Equals(x, y);

@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandHandler.cs" />
     <Compile Include="DummyLighting.cs" />
     <Compile Include="DummyLightingData.cs" />
     <Compile Include="DummyLightingDescriptor.cs" />

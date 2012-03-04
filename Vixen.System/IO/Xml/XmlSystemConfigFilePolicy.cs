@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Xml.Linq;
 using Vixen.Sys;
 
@@ -44,7 +45,7 @@ namespace Vixen.IO.Xml {
 		}
 
 		protected override void WriteNodes() {
-			XmlChannelNodeCollectionSerializer serializer = new XmlChannelNodeCollectionSerializer();
+			XmlChannelNodeCollectionSerializer serializer = new XmlChannelNodeCollectionSerializer(_systemConfig.Channels);
 			XElement element = serializer.WriteObject(_systemConfig.Nodes);
 			_content.Add(element);
 		}
@@ -79,7 +80,12 @@ namespace Vixen.IO.Xml {
 		}
 
 		protected override void ReadIdentity() {
-			_systemConfig.Identity = XmlHelper.GetGuidAttribute(_content, ELEMENT_IDENTITY).GetValueOrDefault();
+			XElement identityElement = _content.Element(ELEMENT_IDENTITY);
+			if(identityElement != null) {
+				_systemConfig.Identity = Guid.Parse(identityElement.Value);
+			} else {
+				VixenSystem.Logging.Warning("System config does not have an identity value.");
+			}
 		}
 
 		//protected override void ReadAlternateDataDirectory() {
@@ -92,7 +98,7 @@ namespace Vixen.IO.Xml {
 		}
 
 		protected override void ReadNodes() {
-			XmlChannelNodeCollectionSerializer serializer = new XmlChannelNodeCollectionSerializer();
+			XmlChannelNodeCollectionSerializer serializer = new XmlChannelNodeCollectionSerializer(_systemConfig.Channels);
 			_systemConfig.Nodes = serializer.ReadObject(_content);
 		}
 

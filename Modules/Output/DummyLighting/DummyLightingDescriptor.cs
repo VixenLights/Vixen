@@ -44,5 +44,11 @@ namespace VixenModules.Output.DummyLighting
 		{
 			get { return typeof(DummyLightingData); }
 		}
+
+		public override int UpdateInterval {
+			get {
+				return 20;
+			}
+		}
 	}
 }

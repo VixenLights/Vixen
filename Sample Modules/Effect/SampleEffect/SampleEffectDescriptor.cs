@@ -5,6 +5,7 @@ using System.Text;
 using Vixen.Module.Effect;
 using Vixen.Commands;
 using Vixen.Commands.KnownDataTypes;
+using Vixen.Sys;
 
 namespace SampleEffect {
 	public class SampleEffectDescriptor : EffectModuleDescriptorBase {

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Vixen.Commands;
+using System.Linq;
 
 namespace Vixen.Sys {
 	// Need to implement IEquatable<T> so that IEnumerable<T>.Except() will not use
@@ -8,90 +8,33 @@ namespace Vixen.Sys {
 	/// <summary>
 	/// A logical channel of low-level CommandData that is intended to be executed by a controller.
 	/// </summary>
-	//public class Channel : IEnumerable<CommandNode>, IEqualityComparer<Channel>, IEquatable<Channel> {
-	public class Channel : IStateSource<Command>, IEqualityComparer<Channel>, IEquatable<Channel> {
-		//The relationship between channels and outputs should be maintained separate
-		//from the entities.  Like what would be done in a database.
-		//private Patch _patch;
-		//private IChannelDataStore _data = new ChannelSortedList();
+	public class Channel : IOutputStateSource, IEqualityComparer<Channel>, IEquatable<Channel> {
 		private ChannelContextSource _dataSource;
-		private CommandStateAggregator _stateAggregator;
+		private IIntentStateList _state;
 
 		public Channel(string name)
 			: this(Guid.NewGuid(), name) {
 		}
 
-		//public Channel(string name)
-		//    : this(Guid.NewGuid(), name, new Patch()) {
-		//}
-
 		public Channel(Guid id, string name) {
 			Id = id;
 			Name = name;
 			_dataSource = new ChannelContextSource(Id);
-			_stateAggregator = new CommandStateAggregator();
 		}
-
-		//public Channel(Guid id, string name, Patch patch) {
-		//    Id = id;
-		//    Name = name;
-		//    Patch = patch;
-		//    ChannelContextSource dataSource = new ChannelContextSource(Id);
-		//    _stateAggregator = new CommandStateAggregator(dataSource);
-		//}
 
 		public string Name { get; set; }
 
 		public Guid Id { get; protected set; }
 
-		//public Patch Patch {
-		//    get { return _patch; }
-		//    set {
-		//        // Want any controller references to be properly removed.
-		//        if(_patch != null) {
-		//            _patch.Clear();
-		//        }
-		//        _patch = value;
-		//    }
-		//}
-
 		public bool Masked { get; set; }
-		//public bool Masked {
-		//    get { return !Patch.Enabled; }
-		//    set { Patch.Enabled = !value; }
-		//}
-
-		//public IEnumerator<CommandNode> GetEnumerator() {
-		//    // We need an enumerator that is live and does not operate upon a snapshot
-		//    // of the data.
-		//    return _data.GetEnumerator();
-		//}
-
-		//System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
-		//    return this.GetEnumerator();
-		//}
-
-		//public void AddData(IEnumerable<CommandNode> data) {
-		//    foreach(CommandNode dataElement in data) {
-		//        _data.Add(dataElement);
-		//    }
-		//}
-
-		//public void AddData(CommandNode data) {
-		//    _data.Add(data);
-		//}
-
-		//public void Clear() {
-		//    _data.Clear();
-		//}
 
 		public void Update() {
-			// Aggregate our state from the contexts.
-			_stateAggregator.Aggregate(_dataSource);
-			Value = _stateAggregator.Value;
+			_state = _AggregateStateFromContexts();
 		}
 
-		public Command Value { get; private set; }
+		public IIntentStateList State {
+			get { return _state; }
+		}
 
 		public override string ToString() {
 			return Name;
@@ -115,6 +58,17 @@ namespace Vixen.Sys {
 
 		public override int GetHashCode() {
 			return Id.GetHashCode();
+		}
+
+		private IIntentStateList _AggregateStateFromContexts() {
+			//In reality, all this needs to do is call GetChannelState on each context
+			//and put them all into a single collection.
+			// NotNull() - filter out any null lists resulting from the context not yet having
+			// a state for the channel.  This versus creating a new list in
+			// ChannelStateSourceCollection.GetState (or maybe Context.GetState instead, may
+			// make more sense there) on a dictionary miss.
+			IEnumerable<IIntentState> intentStates = _dataSource.NotNull().SelectMany(x => x.State);
+			return new IntentStateList(intentStates);
 		}
 	}
 }

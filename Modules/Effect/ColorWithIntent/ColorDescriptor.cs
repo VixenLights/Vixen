@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using Vixen.Commands;
 using Vixen.Module.Effect;
+using Vixen.Sys;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 
 namespace ColorWithIntent {
 	public class ColorDescriptor : EffectModuleDescriptorBase {
-		static internal Guid _colorIntentId = new Guid("{C66DEB83-1252-4d28-8C50-535ECCE183EC}");
+		//static internal Guid _colorIntentId = new Guid("{C66DEB83-1252-4d28-8C50-535ECCE183EC}");
 		private Guid _typeId = new Guid("{2C8B4C3A-14E9-42f6-BC26-44571F672224}");
 		private ParameterSignature _signature;
 
@@ -56,8 +56,8 @@ namespace ColorWithIntent {
 			get { return _signature; }
 		}
 
-		public override Guid[] Dependencies {
-			get { return new[] { _colorIntentId }; }
-		}
+		//public override Guid[] Dependencies {
+		//    get { return new[] { _colorIntentId }; }
+		//}
 	}
 }

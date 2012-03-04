@@ -1,17 +1,16 @@
 ﻿using System.Collections.Generic;
-using Vixen.Commands;
 
 namespace Vixen.Sys {
-	public class OutputSources : IEnumerable<IStateSource<Command>> {
+	public class OutputSources : IEnumerable<IOutputStateSource> {
 		public OutputSources(int outputIndex) {
 			OutputIndex = outputIndex;
-			Sources = new List<IStateSource<Command>>();
+			Sources = new List<IOutputStateSource>();
 		}
 
 		public int OutputIndex { get; private set; }
-		public List<IStateSource<Command>> Sources { get; private set; }
+		public List<IOutputStateSource> Sources { get; private set; }
 
-		public IEnumerator<IStateSource<Command>> GetEnumerator() {
+		public IEnumerator<IOutputStateSource> GetEnumerator() {
 			return Sources.GetEnumerator();
 		}
 

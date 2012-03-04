@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Module.EffectEditor;
-using Vixen.Commands;
-using Vixen.Commands.KnownDataTypes;
 
 namespace VixenModules.EffectEditor.LevelTypeEditor
 {
@@ -29,7 +27,7 @@ namespace VixenModules.EffectEditor.LevelTypeEditor
 		public override Type[] ParameterSignature
 		{
 			get
-			{ return new[] { typeof(Level) }; }
+			{ return new[] { typeof(float) }; }
 		}
 	}
 }

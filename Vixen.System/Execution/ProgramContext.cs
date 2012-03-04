@@ -10,6 +10,7 @@ namespace Vixen.Execution {
 	/// </summary>
 	public class ProgramContext : Context {
 		private ProgramExecutor _programExecutor;
+		private IDataSource _dataSource;
 
 		public event EventHandler<SequenceStartedEventArgs> SequenceStarted;
 		public event EventHandler<SequenceEventArgs> SequenceEnded;
@@ -203,7 +204,7 @@ namespace Vixen.Execution {
 			if(_programExecutor.Current.Sequence.GetAllPreFilters().Any()) return;
 
 			IPreFilterModuleInstance preFilter = Modules.ModuleManagement.GetPreFilter(new Guid("{E0E26570-6A01-4368-B996-E34576FF4910}"));
-			//Fade out over 5 seconds.
+			//Fade out over the first 5 seconds.
 			preFilter.TimeSpan = TimeSpan.FromSeconds(5);
 			//Every channel.
 			preFilter.TargetNodes = VixenSystem.Nodes.ToArray();
@@ -213,7 +214,6 @@ namespace Vixen.Execution {
 			_programExecutor.Current.Sequence.AddPreFilter(new PreFilterNode(preFilter, TimeSpan.Zero));
 		}
 
-		private IDataSource _dataSource;
 		protected override IDataSource _DataSource {
 			get { return _dataSource; }
 		}

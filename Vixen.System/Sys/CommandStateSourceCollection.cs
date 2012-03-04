@@ -15,10 +15,10 @@ namespace Vixen.Sys {
 				commandState = new CommandStateSource();
 				_commandStates[key] = commandState;
 			}
-			commandState.Value = value;
+			commandState.State = value;
 		}
 
-		public IStateSource<Command> GetValue(K key) {
+		public IStateSource<Command> GetState(K key) {
 			CommandStateSource commandState;
 			_commandStates.TryGetValue(key, out commandState);
 			return commandState;

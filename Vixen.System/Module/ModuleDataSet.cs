@@ -184,7 +184,7 @@ namespace Vixen.Module {
 		}
 
 		private void _Add(IModuleDataModel dataModel, Guid moduleTypeId, Guid moduleInstanceId) {
-			if(dataModel == null) throw new ArgumentNullException("dataModel");
+			if(dataModel == null) return;// throw new ArgumentNullException("dataModel");
 
 			_dataModels.Add(dataModel);
 			dataModel.ModuleTypeId = moduleTypeId;

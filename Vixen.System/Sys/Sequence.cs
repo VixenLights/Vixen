@@ -199,6 +199,18 @@ namespace Vixen.Sys {
 			_media.Add(module);
 		}
 
+		public IMediaModuleInstance AddMedia(string filePath) {
+			MediaModuleManagement manager = Modules.GetManager<IMediaModuleInstance, MediaModuleManagement>();
+			IMediaModuleInstance module = manager.Get(filePath);
+			if(module != null) {
+				// Set the file in the instance.
+				module.MediaFilePath = filePath;
+				AddMedia(module);
+			}
+
+			return module;
+		}
+
 		public bool RemoveMedia(IMediaModuleInstance module) {
 			_moduleDataSet.RemoveModuleInstanceData(module);
 			return _media.Remove(module);
@@ -251,7 +263,7 @@ namespace Vixen.Sys {
 		// Every sequence will get a collection of all available runtime behaviors.
 		public IRuntimeBehaviorModuleInstance[] RuntimeBehaviors { get; private set; }
 
-		public MediaCollection Media { get; set; }
+		//public MediaCollection Media { get; set; }
 
 		public IEnumerable<EffectNode> GetData() {
 			return Data.GetMainStreamData().Cast<EffectNode>();

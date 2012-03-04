@@ -3,7 +3,7 @@ using System.IO;
 using Vixen.Sys;
 
 namespace Vixen.IO {
-	class GeneralMigrationPolicy<ContentType> {
+	class GeneralMigrationPolicy {
 		private IFilePolicy _filePolicy;
 		private IMigrator _migrator;
 		public GeneralMigrationPolicy(IFilePolicy filePolicy, IMigrator migrator) {
@@ -11,7 +11,7 @@ namespace Vixen.IO {
 			_migrator = migrator;
 		}
 
-		public ContentType MatureContent(int fileVersion, ContentType content, string originalFilePath) {
+		public void MatureContent(int fileVersion, string originalFilePath) {
 			List<IFileOperationResult> migrationResults = new List<IFileOperationResult>();
 
 			int policyVersion = _filePolicy.GetVersion();
@@ -26,8 +26,6 @@ namespace Vixen.IO {
 			}
 
 			MigrationResults = migrationResults;
-
-			return content;
 		}
 
 		public IEnumerable<IFileOperationResult> MigrationResults { get; private set; }

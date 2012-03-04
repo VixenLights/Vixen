@@ -5,6 +5,10 @@ using System.Text;
 
 namespace Vixen.Module {
 	public abstract class ModuleInstanceBase : IModuleInstance, IEqualityComparer<IModuleInstance>, IEquatable<IModuleInstance>, IEqualityComparer<ModuleInstanceBase>, IEquatable<ModuleInstanceBase> {
+		protected ModuleInstanceBase() {
+			InstanceId = Guid.NewGuid();
+		}
+
 		public Guid InstanceId { get; set; }
 
 		virtual public IModuleDataModel ModuleData { get; set; }

@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Vixen.Commands;
+using System.Drawing;
 using Vixen.Sys;
 
 namespace Vixen.Module.PostFilter {
 	public interface IPostFilter : ISetup {
-		Command Affect(Command command);
+		float Affect(float value);
+		Color Affect(Color value);
+		DateTime Affect(DateTime value);
+		IFilterState CreateFilterState();
 	}
 }

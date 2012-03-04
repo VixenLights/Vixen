@@ -14,8 +14,8 @@ namespace Vixen.Sys {
 			if(left == null) return right;
 			if(right == null) return left;
 
-			Command value1 = left.Value;
-			Command value2 = right.Value;
+			Command value1 = left.State;
+			Command value2 = right.State;
 
 			if(value1 == null)
 				return right;

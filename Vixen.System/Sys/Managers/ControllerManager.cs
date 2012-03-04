@@ -1,5 +1,4 @@
 ﻿using System;
-using Vixen.Commands;
 using Vixen.Sys.Output;
 
 namespace Vixen.Sys.Managers {
@@ -130,7 +129,7 @@ namespace Vixen.Sys.Managers {
 
 			foreach(Guid controllerId in sources.Controllers) {
 				foreach(OutputSources outputSources in sources.GetControllerSources(controllerId)) {
-					foreach(IStateSource<Command> source in outputSources) {
+					foreach(IOutputStateSource source in outputSources) {
 						AddSource(source, new ControllerReference(controllerId, outputSources.OutputIndex));
 					}
 				}
@@ -142,21 +141,21 @@ namespace Vixen.Sys.Managers {
 
 			foreach(Guid controllerId in sources.Controllers) {
 				foreach(OutputSources outputSources in sources.GetControllerSources(controllerId)) {
-					foreach(IStateSource<Command> source in outputSources) {
+					foreach(IOutputStateSource source in outputSources) {
 						RemoveSource(source, new ControllerReference(controllerId, outputSources.OutputIndex));
 					}
 				}
 			}
 		}
 
-		public void AddSource(IStateSource<Command> source, ControllerReference controllerReference) {
+		public void AddSource(IOutputStateSource source, ControllerReference controllerReference) {
 			OutputController controller = GetController(controllerReference.ControllerId);
 			if(controller != null) {
 				controller.AddSource(source, controllerReference.OutputIndex);
 			}
 		}
 
-		public void RemoveSource(IStateSource<Command> source, ControllerReference controllerReference) {
+		public void RemoveSource(IOutputStateSource source, ControllerReference controllerReference) {
 			OutputController controller = GetController(controllerReference.ControllerId);
 			if(controller != null) {
 				controller.RemoveSource(source, controllerReference.OutputIndex);

@@ -91,7 +91,7 @@ namespace Vixen.Execution {
 				}
 
 				// Load the media.
-				foreach(IMediaModuleInstance media in Sequence.Media) {
+				foreach(IMediaModuleInstance media in Sequence.GetAllMedia()) {
 					media.LoadMedia(StartTime);
 				}
 
@@ -100,7 +100,7 @@ namespace Vixen.Execution {
 				OnSequenceStarted(new SequenceStartedEventArgs(Sequence, _TimingSource));
 
 				// Start the media.
-				foreach(IMediaModuleInstance media in Sequence.Media) {
+				foreach(IMediaModuleInstance media in Sequence.GetAllMedia()) {
 					media.Start();
 				}
 				_TimingSource.Position = StartTime;
@@ -140,10 +140,10 @@ namespace Vixen.Execution {
 		public void Pause() {
 			if(_updateTimer.Enabled) {
 				_TimingSource.Pause();
-				foreach(IMediaModuleInstance media in Sequence.Media) {
+				foreach(IMediaModuleInstance media in Sequence.GetAllMedia()) {
 					media.Pause();
 				}
-				//VixenSystem.Controllers.PauseControllers();
+
 				OnPausing();
 				_updateTimer.Enabled = false;
 			}
@@ -154,10 +154,10 @@ namespace Vixen.Execution {
 		public void Resume() {
 			if(!_updateTimer.Enabled && Sequence != null) {
 				_TimingSource.Resume();
-				foreach(IMediaModuleInstance media in Sequence.Media) {
+				foreach(IMediaModuleInstance media in Sequence.GetAllMedia()) {
 					media.Resume();
 				}
-				//VixenSystem.Controllers.ResumeControllers();
+
 				_updateTimer.Enabled = true;
 				OnResumed();
 			}
@@ -193,7 +193,7 @@ namespace Vixen.Execution {
 			OnSequenceEnded(new SequenceEventArgs(Sequence));
 
 			_TimingSource.Stop();
-			foreach(IMediaModuleInstance media in Sequence.Media) {
+			foreach(IMediaModuleInstance media in Sequence.GetAllMedia()) {
 				media.Stop();
 			}
 		}
@@ -268,8 +268,10 @@ namespace Vixen.Execution {
 			if(attribute != null) {
 				// Create the executor.
 				executor = Activator.CreateInstance(attribute.ExecutorType) as IExecutor;
-				// Assign the sequence to the executor.
-				executor.Sequence = executable;
+				if(executor != null) {
+					// Assign the sequence to the executor.
+					executor.Sequence = executable;
+				}
 			}
 			return executor;
 		}

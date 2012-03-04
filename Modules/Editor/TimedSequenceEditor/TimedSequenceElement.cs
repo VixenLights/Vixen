@@ -6,7 +6,6 @@ using System.Windows.Forms;
 using CommonElements.Timeline;
 using Vixen.Module.Editor;
 using Vixen.Module.Effect;
-using VixenModules.Property.RGB;
 using Vixen.Sys;
 using Vixen.Commands;
 using System.Drawing;

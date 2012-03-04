@@ -3,9 +3,9 @@
 namespace Vixen.Sys {
 	class CommandStateSource : IStateSource<Command> {
 		public CommandStateSource(Command state = null) {
-			Value = state;
+			State = state;
 		}
 
-		public Command Value { get; set; }
+		public Command State { get; set; }
 	}
 }

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Linq;
-using Vixen.Commands.KnownDataTypes;
+using Vixen.Intents;
 using Vixen.Module;
 using Vixen.Module.Effect;
-using Vixen.Module.Intent;
 using Vixen.Sys;
 
 namespace RampWithIntent {
@@ -24,9 +23,11 @@ namespace RampWithIntent {
 			//EndLevel = ParameterValues[1].DynamicCast<Level>();
 
 			foreach(Channel channel in channels) {
-				IIntentModuleInstance intent = ApplicationServices.Get<IIntentModuleInstance>(RampDescriptor._levelIntentId);
-				intent.TimeSpan = TimeSpan;
-				intent.Values = new object[] { StartLevel, EndLevel };
+				//IIntentModuleInstance intent = ApplicationServices.Get<IIntentModuleInstance>(RampDescriptor._levelIntentId);
+				//intent.TimeSpan = TimeSpan;
+				//intent.Values = new object[] { StartLevel, EndLevel };
+				//_intents.AddIntentForChannel(channel.Id, new IntentNode(intent, TimeSpan.Zero));
+				IIntent intent = new NumericTransitionIntent(StartLevel, EndLevel, TimeSpan);
 				_intents.AddIntentForChannel(channel.Id, new IntentNode(intent, TimeSpan.Zero));
 			}
 		}
@@ -42,13 +43,13 @@ namespace RampWithIntent {
 
 		//For automatically-set parameter values...
 		[Value]
-		public Level StartLevel {
+		public float StartLevel {
 			get { return _data.StartLevel; }
 			set { _data.StartLevel = value; }
 		}
 
 		[Value]
-		public Level EndLevel {
+		public float EndLevel {
 			get { return _data.EndLevel; }
 			set { _data.EndLevel = value; }
 		}

@@ -2,7 +2,7 @@
 using Vixen.Module.PreFilter;
 
 namespace Vixen.Sys {
-	public class PreFilterNode : IDataNode, IComparable<PreFilterNode> {
+	public class PreFilterNode : IPreFilterNode {
 		public PreFilterNode(IPreFilterModuleInstance preFilter, TimeSpan startTime) {
 			PreFilter = preFilter;
 			StartTime = startTime;
@@ -20,8 +20,18 @@ namespace Vixen.Sys {
 			get { return (PreFilter != null) ? StartTime + TimeSpan : StartTime; }
 		}
 
+		public IFilterState CreateFilterState(TimeSpan filterRelativeTime) {
+			//prefilterstate
+			return PreFilter.CreateFilterState(filterRelativeTime);
+		}
+
 		public int CompareTo(PreFilterNode other) {
 			return StartTime.CompareTo(other.StartTime);
 		}
+	}
+
+	public interface IPreFilterNode : IDataNode, IComparable<PreFilterNode> {
+		IPreFilterModuleInstance PreFilter { get; }
+		IFilterState CreateFilterState(TimeSpan filterRelativeTime);
 	}
 }

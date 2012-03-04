@@ -25,7 +25,7 @@ namespace Vixen.IO.Xml {
 					serializer.WriteObject(stream, value);
 					string objectData = Encoding.ASCII.GetString(stream.ToArray()).Trim();
 					return new XElement(ELEMENT_MODULE,
-						new XAttribute(ATTR_DATA_MODEL_TYPE, value.GetType()),
+						new XAttribute(ATTR_DATA_MODEL_TYPE, _GetDataModelTypeString(value)),
 						new XAttribute(ATTR_MODULE_TYPE, value.ModuleTypeId),
 						new XAttribute(ATTR_MODULE_INSTANCE, value.ModuleInstanceId),
 						XElement.Parse(objectData));
@@ -34,6 +34,12 @@ namespace Vixen.IO.Xml {
 					return null;
 				}
 			}
+		}
+
+		private string _GetDataModelTypeString(IModuleDataModel dataModel) {
+			//return dataModel.GetType().AssemblyQualifiedName;
+			Type dataModelType = dataModel.GetType();
+			return dataModelType.FullName + ", " + dataModelType.Assembly.GetName().Name;
 		}
 
 		public IModuleDataModel ReadObject(XElement element) {

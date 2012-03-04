@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Vixen.Commands;
+using System.Drawing;
 using Vixen.Sys;
 
 namespace Vixen.Module.PreFilter {
 	public interface IPreFilter : ISetup {
-		Command Affect(Command command, TimeSpan filterRelativeTime);
 		TimeSpan TimeSpan { get; set; }
 		ChannelNode[] TargetNodes { get; set; }
+		float Affect(float value, float percentIntoFilter);
+		DateTime Affect(DateTime value, float percentIntoFilter);
+		Color Affect(Color value, float percentIntoFilter);
+		IFilterState CreateFilterState(TimeSpan filterRelativeTime);
 	}
 }

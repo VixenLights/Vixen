@@ -202,7 +202,8 @@ namespace Vixen.Sys.Managers {
 			private Thread _thread;
 			private ExecutionState _threadState = ExecutionState.Stopped;
 			private EventWaitHandle _finished;
-			private OutputDeviceSleepTimeValue _outputDeviceSleepTimeValue;
+			private OutputDeviceSleepTimeActualValue _outputDeviceSleepTimeActualValue;
+			private OutputDeviceSleepTimeRequestedValue _outputDeviceSleepTimeRequestedValue;
 
 			private const int STOP_TIMEOUT = 4000;   // Four seconds should be plenty of time for a thread to stop.
 
@@ -243,8 +244,10 @@ namespace Vixen.Sys.Managers {
 				long frameStart, frameEnd, timeLeft;
 				Stopwatch currentTime = Stopwatch.StartNew();
 
-				_outputDeviceSleepTimeValue = new OutputDeviceSleepTimeValue(OutputDevice);
-				VixenSystem.Instrumentation.AddValue(_outputDeviceSleepTimeValue);
+				_outputDeviceSleepTimeRequestedValue = new OutputDeviceSleepTimeRequestedValue(OutputDevice);
+				VixenSystem.Instrumentation.AddValue(_outputDeviceSleepTimeRequestedValue);
+				_outputDeviceSleepTimeActualValue = new OutputDeviceSleepTimeActualValue(OutputDevice);
+				VixenSystem.Instrumentation.AddValue(_outputDeviceSleepTimeActualValue);
 
 				// Thread main loop
 				try {
@@ -256,11 +259,7 @@ namespace Vixen.Sys.Managers {
 
 						timeLeft = frameEnd - currentTime.ElapsedMilliseconds;
 
-						_outputDeviceSleepTimeValue.Set(timeLeft);
-
-						if(timeLeft > 1) {
-							Thread.Sleep((int)timeLeft);
-						}
+						_Sleep((int)timeLeft, currentTime);
 					}
 					_threadState = ExecutionState.Stopped;
 					_finished.Set();
@@ -275,6 +274,18 @@ namespace Vixen.Sys.Managers {
 					VixenSystem.Logging.Debug("Controller error:" + Environment.NewLine + ex.StackTrace);
 					OnError();
 				}
+			}
+
+			private void _Sleep(int timeLeft, Stopwatch threadTime) {
+				_outputDeviceSleepTimeRequestedValue.Set(timeLeft);
+
+				long timeBeforeSleep = threadTime.ElapsedMilliseconds;
+
+				if(timeLeft > 1) {
+					Thread.Sleep(timeLeft);
+				}
+
+				_outputDeviceSleepTimeActualValue.Set(threadTime.ElapsedMilliseconds - timeBeforeSleep);
 			}
 
 			protected virtual void OnError() {

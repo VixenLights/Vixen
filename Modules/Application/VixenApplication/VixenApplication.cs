@@ -409,9 +409,9 @@ namespace VixenApplication
 		}
 
 		private void channelGroupTestToolStripMenuItem_Click(object sender, EventArgs e) {
-			using(TestForm testForm = new TestForm()) {
-				testForm.ShowDialog();
-			}
+			//using(TestForm testForm = new TestForm()) {
+			//    testForm.ShowDialog();
+			//}
 		}
 
 		#region Stats

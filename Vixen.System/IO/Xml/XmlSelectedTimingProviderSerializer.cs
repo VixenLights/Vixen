@@ -11,8 +11,8 @@ namespace Vixen.IO.Xml {
 		public XElement WriteObject(SelectedTimingProvider value) {
 			return new XElement(ELEMENT_TIMING_SOURCE,
 				new XElement(ELEMENT_SELECTED_TIMING,
-					new XAttribute(ATTR_SELECTED_TIMING_TYPE, value.ProviderType ?? string.Empty),
-					new XAttribute(ATTR_SELECTED_TIMING_SOURCE, value.SourceName ?? string.Empty)));
+					new XAttribute(ATTR_SELECTED_TIMING_TYPE, (value != null) ? (value.ProviderType ?? string.Empty) : string.Empty),
+					new XAttribute(ATTR_SELECTED_TIMING_SOURCE, (value != null) ? (value.SourceName ?? string.Empty) : string.Empty)));
 		}
 
 		public SelectedTimingProvider ReadObject(XElement element) {

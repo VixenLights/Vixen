@@ -40,7 +40,7 @@ namespace Vixen.Execution {
 			get { return _channelStates.Keys; }
 		}
 
-		public IStateSource<Command> GetValue(Guid key) {
+		public IStateSource<Command> GetState(Guid key) {
 			CommandStateAggregator aggregator;
 			_channelStates.TryGetValue(key, out aggregator);
 			return aggregator;

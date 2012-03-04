@@ -7,7 +7,6 @@ using Vixen.Module;
 using Vixen.IO;
 using Vixen.IO.Xml;
 using Vixen.Instrumentation;
-//using Vixen.Module.PostFilter;
 using Vixen.Module.PostFilter;
 using Vixen.Sys.Managers;
 using Vixen.Sys.Output;
@@ -147,11 +146,6 @@ namespace Vixen.Sys {
 			ModuleStore = _LoadModuleStore(systemDataPath);
 			SystemConfig = _LoadSystemConfig(systemDataPath);
 
-			//IReader reader = new XmlModuleStoreReader();
-			//ModuleStore = (ModuleStore)reader.Read(Path.Combine(systemDataPath, ModuleStore.FileName));
-			//reader = new XmlSystemConfigReader();
-			//SystemConfig = (SystemConfig)reader.Read(Path.Combine(systemDataPath, SystemConfig.FileName));
-
 			if(SystemConfig == null)
 				SystemConfig = new SystemConfig();
 
@@ -164,16 +158,6 @@ namespace Vixen.Sys {
 			OtherOutputDevices.AddRange(SystemConfig.OtherOutputDevices);
 			ChannelPatching.AddPatches(SystemConfig.ChannelPatching);
 			ControllerLinking.AddRange(SystemConfig.ControllerLinking);
-
-			//Channel channel = Channels.First();
-			//ChannelNode node = Nodes.FirstOrDefault(x => x.Channel == channel);
-			//ChannelNode node2 = Nodes.FirstOrDefault(x => x.Channel.Id == channel.Id);
-			//ChannelNode ref1 = node;
-			//ChannelNode ref2 = node2;
-
-			//****
-			//_AddChannelPostFilter();
-			//****
 		}
 
 		private static ModuleStore _LoadModuleStore(string systemDataPath) {
@@ -189,17 +173,6 @@ namespace Vixen.Sys {
 			SerializationResult<SystemConfig> result = serializer.Read(systemConfigFilePath);
 			return result.Object;
 		}
-
-		//static private void _AddChannelPostFilter() {
-		//    // Add the Color post-filter to the channels of the first 5 nodes of the 1024 channel batch.
-		//    Channel[] firstFiveChannels = Nodes.Skip(64).Take(5).Select(x => x.Channel).ToArray();
-		//    for(int i = 0; i < 5; i++) {
-		//        IPostFilterModuleInstance postFilter = Modules.ModuleManagement.GetPostFilter(new Guid("{B3C06A83-CE75-4e78-853D-B95B4E69CEAC}"));
-		//        if(postFilter != null) {
-		//            firstFiveChannels[i].AddPostFilter(postFilter);
-		//        }
-		//    }
-		//}
 
     	static public void ReloadSystemConfig()
 		{
@@ -264,21 +237,22 @@ namespace Vixen.Sys {
 		static private string _GetSystemDataPath() {
 			// Look for a user data file in the binary directory.
 			string filePath = Path.Combine(Paths.BinaryRootPath, SystemConfig.FileName);
-			XElement element = Helper.Load(filePath, new XmlFileLoader());
-			if(element != null) {
-				// Are we operating within a context?
-				if(element.Attribute(ATTRIBUTE_IS_CONTEXT) != null) {
-					// We're going to use the context's user data file and not the
-					// one in the data branch.
-					return Path.GetDirectoryName(filePath);
-				}
+			if(_OperatingWithinContext(filePath)) {
+				// We're going to use the context's user data file and not the
+				// one in the data branch.
+				return Path.GetDirectoryName(filePath);
 			}
 
 			// Use the default path in the data branch.
 			return SystemConfig.Directory;
 		}
 
-		static private string _GetUserDataPath() {
+		static private bool _OperatingWithinContext(string systemConfigFilePath) {
+			XElement element = Helper.Load(systemConfigFilePath, new XmlFileLoader());
+			return element != null && element.Attribute(ATTRIBUTE_IS_CONTEXT) != null;
+		}
+
+    	static private string _GetUserDataPath() {
 			// Look for a user data file in the binary directory.
 			XElement element = Helper.Load(SystemConfig.DefaultFilePath, new XmlFileLoader());
 			if(element != null) {

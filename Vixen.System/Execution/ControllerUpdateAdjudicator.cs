@@ -4,9 +4,11 @@ namespace Vixen.Execution {
 	class ControllerUpdateAdjudicator {
 		private int _threshold;
 		private Stopwatch _stopwatch;
+		private bool _firstTime;
 
 		public ControllerUpdateAdjudicator(int thresholdInMilliseconds) {
 			_threshold = thresholdInMilliseconds;
+			_firstTime = true;
 			_stopwatch = Stopwatch.StartNew();
 		}
 
@@ -17,7 +19,8 @@ namespace Vixen.Execution {
 		public bool PetitionForUpdate() {
 			bool result = false;
 
-			if(_stopwatch.ElapsedMilliseconds > _threshold) {
+			if(_firstTime || _stopwatch.ElapsedMilliseconds > _threshold) {
+				_firstTime = false;
 				_stopwatch.Restart();
 				result = true;
 			}

@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Vixen.Commands;
 using Vixen.Sys.Instrumentation;
 using Vixen.Sys.SourceCollection;
 
 namespace Vixen.Sys.Managers {
 	public class ChannelManager : IEnumerable<Channel> {
-		private Dictionary<Channel, IEnumerator<CommandNode[]>> _channelEnumerators;
+		//private Dictionary<Channel, IEnumerator<CommandNode[]>> _channelEnumerators;
 		private ChannelUpdateTimeValue _channelUpdateTimeValue;
 		private Stopwatch _stopwatch;
 
@@ -25,7 +24,7 @@ namespace Vixen.Sys.Managers {
 		public ChannelManager() {
 			_instances = new Dictionary<Guid,Channel>();
 			_channelToChannelNode = new Dictionary<Channel, ChannelNode>();
-			_channelEnumerators = new Dictionary<Channel, IEnumerator<CommandNode[]>>();
+			//_channelEnumerators = new Dictionary<Channel, IEnumerator<CommandNode[]>>();
 			_SetupInstrumentation();
 		}
 
@@ -59,16 +58,16 @@ namespace Vixen.Sys.Managers {
 		}
 
 		public void RemoveChannel(Channel channel) {
-			IEnumerator<CommandNode[]> enumerator;
-			if(_channelEnumerators.TryGetValue(channel, out enumerator)) {
-				lock(_channelEnumerators) {
-					// Kill enumerator if it hasn't been already.
-					if (enumerator != null)
-						enumerator.Dispose();
-					// Remove from channel dictionary.
-					_channelEnumerators.Remove(channel);
-				}
-			}
+			//IEnumerator<CommandNode[]> enumerator;
+			//if(_channelEnumerators.TryGetValue(channel, out enumerator)) {
+			//    lock(_channelEnumerators) {
+			//        // Kill enumerator if it hasn't been already.
+			//        if (enumerator != null)
+			//            enumerator.Dispose();
+			//        // Remove from channel dictionary.
+			//        _channelEnumerators.Remove(channel);
+			//    }
+			//}
 			lock(_instances) {
 				_instances.Remove(channel.Id);
 			}
@@ -190,7 +189,7 @@ namespace Vixen.Sys.Managers {
 				int counter = 2;
 				do {
 					name = originalName + "-" + counter++;
-					unique = !_channelEnumerators.Keys.Any(x => x.Name == name);
+					unique = !_instances.Values.Any(x => x.Name == name);
 				} while(!unique);
 			}
 			return name;

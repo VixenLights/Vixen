@@ -92,7 +92,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//Debugger.Break();
 
 			Debug.WriteLine("***** Effects in Sequence *****");
-			foreach (var x in _sequence.Data.GetEffects())
+			foreach (var x in _sequence.GetData())
 				Debug.WriteLine("{0} - {1}: {2}", x.StartTime, x.EndTime, x.Effect.InstanceId);
 		}
 #endif
@@ -1074,7 +1074,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			// for now, only allow a single Audio type media to be assocated. If they want to add another, confirm and remove it.
 			HashSet<IMediaModuleInstance> modulesToRemove = new HashSet<IMediaModuleInstance>();
-			foreach (IMediaModuleInstance module in _sequence.Media)
+			foreach (IMediaModuleInstance module in _sequence.GetAllMedia())
 			{
 				if (module is VixenModules.Media.Audio.Audio)
 				{
@@ -1095,7 +1095,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
-				IMediaModuleInstance newInstance = _sequence.Media.Add(openFileDialog.FileName);
+				IMediaModuleInstance newInstance = _sequence.AddMedia(openFileDialog.FileName);
 				if (newInstance == null)
 				{
 					MessageBox.Show("The selected file is not a supported type.");
@@ -1105,7 +1105,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				// we're going ahead and adding the new audio, so remove any of the old ones we found earlier
 				foreach (IMediaModuleInstance module in modulesToRemove)
 				{
-					_sequence.Media.Remove(module);
+					_sequence.RemoveMedia(module);
 				}
 
 				TimeSpan length = TimeSpan.Zero;

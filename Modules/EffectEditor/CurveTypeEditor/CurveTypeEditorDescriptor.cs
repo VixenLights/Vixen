@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Module.EffectEditor;
-using Vixen.Commands;
-using Vixen.Commands.KnownDataTypes;
 using VixenModules.App.Curves;
 
 namespace VixenModules.EffectEditor.CurveTypeEditor

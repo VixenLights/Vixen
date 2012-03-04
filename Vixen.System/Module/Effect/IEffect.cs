@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
 using Vixen.Sys;
-using Vixen.Commands;
 
 namespace Vixen.Module.Effect {
 	// Effect instances are no longer singletons that render for all, they now contain

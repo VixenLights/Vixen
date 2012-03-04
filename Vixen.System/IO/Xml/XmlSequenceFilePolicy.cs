@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using Vixen.Module;
+using Vixen.Module.Media;
 using Vixen.Sys;
 
 namespace Vixen.IO.Xml {
@@ -26,6 +27,8 @@ namespace Vixen.IO.Xml {
 		}
 
 		protected override void WriteTimingSource() {
+			//*** can it have a null timing provider to use the default timing source?
+			//-> If so, the writer and reader need to accommodate this
 			XmlSelectedTimingProviderSerializer serializer = new XmlSelectedTimingProviderSerializer();
 			XElement element = serializer.WriteObject(_sequence.TimingProvider.SelectedTimingProvider);
 			_content.Add(element);
@@ -33,7 +36,7 @@ namespace Vixen.IO.Xml {
 
 		protected override void WriteMedia() {
 			XmlMediaCollectionSerializer serializer = new XmlMediaCollectionSerializer();
-			XElement element = serializer.WriteObject(_sequence.Media);
+			XElement element = serializer.WriteObject(_sequence.GetAllMedia());
 			_content.Add(element);
 		}
 
@@ -73,7 +76,7 @@ namespace Vixen.IO.Xml {
 
 		protected override void ReadMedia() {
 			XmlMediaCollectionSerializer serializer = new XmlMediaCollectionSerializer();
-			MediaCollection modules = serializer.ReadObject(_content);
+			IEnumerable<IMediaModuleInstance> modules = serializer.ReadObject(_content);
 			_sequence.ClearMedia();
 			_sequence.AddMedia(modules);
 		}

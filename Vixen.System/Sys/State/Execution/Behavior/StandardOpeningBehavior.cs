@@ -8,6 +8,9 @@ namespace Vixen.Sys.State.Execution.Behavior {
 	class StandardOpeningBehavior {
 		// No state needed for this, so going to make it static.
 		static public void Run() {
+			WindowsMultimedia wm = new WindowsMultimedia();
+			wm.BeginEnhancedResolution();
+
 			// Have the outputs draw their data from the channels.
 			IOutputSourceCollection channelSources = VixenSystem.Channels.GetSources();
 			VixenSystem.Controllers.AddSources(channelSources);

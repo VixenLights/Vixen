@@ -140,24 +140,13 @@ namespace Vixen.Sys {
 		}
 
 		static public IEditorUserInterface CreateEditor(string sequenceFilePath) {
-			// Get the sequence type.
-			SequenceModuleManagement sequenceManager = (SequenceModuleManagement)Modules.GetManager<ISequenceModuleInstance>();
-			SequenceType sequenceType = sequenceManager.GetSequenceType(sequenceFilePath);
-
 			// Get the sequence type's serializer and load the sequence.
 			// Note: THIS IS CRAP.
 			Sequence sequence = null;
-			switch(sequenceType) {
-				case SequenceType.Standard:
-					FileSerializer<Sequence> sequenceSerializer = SerializerFactory.Instance.CreateStandardSequenceSerializer();
-					SerializationResult<Sequence> sequenceResult = sequenceSerializer.Read(sequenceFilePath);
-					sequence = sequenceResult.Object;
-					break;
-				case SequenceType.Script:
-					FileSerializer<ScriptSequence> scriptSequenceSerializer = SerializerFactory.Instance.CreateScriptSequenceSerializer();
-					SerializationResult<ScriptSequence> scriptSequenceResult = scriptSequenceSerializer.Read(sequenceFilePath);
-					sequence = scriptSequenceResult.Object;
-					break;
+			if(File.Exists(sequenceFilePath)) {
+				sequence = _LoadSequence(sequenceFilePath);
+			} else {
+				sequence = _CreateSequence(sequenceFilePath);
 			}
 
 			//// Get the sequence.
@@ -190,6 +179,29 @@ namespace Vixen.Sys {
 			}
 
 			return editor;
+		}
+
+		private static Sequence _LoadSequence(string sequenceFilePath) {
+			// Get the sequence type.
+			SequenceModuleManagement sequenceManager = (SequenceModuleManagement)Modules.GetManager<ISequenceModuleInstance>();
+			SequenceType sequenceType = sequenceManager.GetSequenceType(sequenceFilePath);
+
+			switch(sequenceType) {
+				case SequenceType.Standard:
+					FileSerializer<Sequence> sequenceSerializer = SerializerFactory.Instance.CreateStandardSequenceSerializer();
+					SerializationResult<Sequence> sequenceResult = sequenceSerializer.Read(sequenceFilePath);
+					return sequenceResult.Object;
+				case SequenceType.Script:
+					FileSerializer<ScriptSequence> scriptSequenceSerializer = SerializerFactory.Instance.CreateScriptSequenceSerializer();
+					SerializationResult<ScriptSequence> scriptSequenceResult = scriptSequenceSerializer.Read(sequenceFilePath);
+					return scriptSequenceResult.Object;
+			}
+
+			return null;
+		}
+
+		private static Sequence _CreateSequence(string sequenceFilePath) {
+			return Sequence.Create(sequenceFilePath);
 		}
 
 

@@ -32,9 +32,10 @@ namespace Vixen.IO.Xml {
 					if(instanceId == null) continue;
 
 					IPostFilterModuleInstance postFilter = Modules.ModuleManagement.GetPostFilter(typeId);
-					postFilter.InstanceId = instanceId.Value;
-
-					postFilters.Add(postFilter);
+					if(postFilter != null) {
+						postFilter.InstanceId = instanceId.Value;
+						postFilters.Add(postFilter);
+					}
 				}
 			}
 

@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Vixen.Commands;
 using Vixen.Module.Output;
 using Vixen.Module;
 using Vixen.Sys;
-using Vixen.Commands;
 using System.Diagnostics;
 using System.Windows.Forms;
 
@@ -13,16 +11,18 @@ namespace VixenModules.Output.DummyLighting
 {
 	public class DummyLighting : OutputModuleInstanceBase
 	{
-		private List<string> _output = new List<string>();
+		//private List<string> _output = new List<string>();
 		private DummyLightingOutputForm _form;
 		private Stopwatch _sw;
 		private int _updateCount;
 		private DummyLightingData _data;
+		private IDataPolicy _dataPolicy;
 
 		public DummyLighting()
 		{
 			_form = new DummyLightingOutputForm();
 			_sw = new Stopwatch();
+			_dataPolicy = new RenardDataPolicy();
 		}
 
 		public override IModuleDataModel ModuleData
@@ -40,7 +40,7 @@ namespace VixenModules.Output.DummyLighting
 			_form.OutputCount = outputCount;
 		}
 
-		override protected void _UpdateState(Command[] outputStates)
+		override protected void _UpdateState(ICommand[] outputStates)
 		{
 			if (_updateCount++ == 0) {
 				_sw.Reset();
@@ -86,6 +86,10 @@ namespace VixenModules.Output.DummyLighting
 		override public bool IsRunning
 		{
 			get { return _form != null && (_form.Visible || _form.IsDisposed); }
+		}
+
+		override public IDataPolicy DataPolicy {
+			get { return _dataPolicy; }
 		}
 
 		override public void Dispose()

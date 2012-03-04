@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Vixen.Commands;
 using Vixen.Sys.Output;
 
 namespace Vixen.Sys.SourceCollection {
@@ -12,7 +11,7 @@ namespace Vixen.Sys.SourceCollection {
 			OutputSources outputSources = new OutputSources(outputIndex);
 
 			// Get patches with references to the output.
-			IEnumerable<IStateSource<Command>> patchReferences = _GetOutputSources(controllerId, outputIndex);
+			IEnumerable<IOutputStateSource> patchReferences = _GetOutputSources(controllerId, outputIndex);
 			// Get a collection of { Patch, OutputIndex } objects to iterate of references
 			// to this controller.
 			outputSources.Sources.AddRange(patchReferences);
@@ -38,7 +37,7 @@ namespace Vixen.Sys.SourceCollection {
 			}
 		}
 
-		private IEnumerable<IStateSource<Command>> _GetOutputSources(Guid controllerId, int outputIndex) {
+		private IEnumerable<IOutputStateSource> _GetOutputSources(Guid controllerId, int outputIndex) {
 			//return VixenSystem.Channels.Select(x => x.Patch).Where(x => x.ControllerReferences.Any(y => y.ControllerId == controllerId && y.OutputIndex == outputIndex));
 			IEnumerable<Guid> channelIds = VixenSystem.ChannelPatching.Where(x => x.ControllerReferences.Any(y => y.ControllerId == controllerId && y.OutputIndex == outputIndex)).Select(x => x.ChannelId);
 			return channelIds.Select(VixenSystem.Channels.GetChannel);

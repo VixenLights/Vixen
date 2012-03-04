@@ -1,18 +1,16 @@
 ﻿using System;
-using Vixen.Commands;
-using Vixen.Commands.KnownDataTypes;
 using Vixen.Module.Effect;
+using Vixen.Sys;
 
 namespace RampWithIntent {
 	public class RampDescriptor : EffectModuleDescriptorBase {
 		private Guid _typeId = new Guid("{CCB599F3-41B2-4f84-9EDA-9EF84E3F80A3}");
 		private ParameterSignature _signature;
-		static internal Guid _levelIntentId = new Guid("{0DFDF022-B1C4-49b9-9D65-2568A372FE28}");
 
 		public RampDescriptor() {
 			_signature = new ParameterSignature(
-				new ParameterSpecification("Start level", typeof(Level)),
-				new ParameterSpecification("End level", typeof(Level)));
+				new ParameterSpecification("Start level", typeof(float)),
+				new ParameterSpecification("End level", typeof(float)));
 		}
 
 		public override string TypeName {
@@ -51,8 +49,8 @@ namespace RampWithIntent {
 			get { return _signature; }
 		}
 
-		public override Guid[] Dependencies {
-			get { return new[] { _levelIntentId }; }
-		}
+		//public override Guid[] Dependencies {
+		//    get { return new[] { _levelIntentId }; }
+		//}
 	}
 }

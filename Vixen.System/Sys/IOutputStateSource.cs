@@ -5,7 +5,7 @@ using System.Text;
 using Vixen.Commands;
 
 namespace Vixen.Sys {
-	public interface IOutputStateSource {
-		Command SourceState { get; }
+	public interface IOutputStateSource : IStateSource<IIntentStateList> {
+		//Command SourceState { get; }
 	}
 }

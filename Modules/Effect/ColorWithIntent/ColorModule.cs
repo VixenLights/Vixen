@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Vixen.Intents;
 using Vixen.Module;
 using Vixen.Module.Effect;
-using Vixen.Module.Intent;
 using Vixen.Sys;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
@@ -19,9 +19,10 @@ namespace ColorWithIntent {
 			Channel[] channels = TargetNodes.SelectMany(x => x).ToArray();
 
 			foreach(Channel channel in channels) {
-				IIntentModuleInstance intent = ApplicationServices.Get<IIntentModuleInstance>(ColorDescriptor._colorIntentId);
-				intent.TimeSpan = TimeSpan;
-				intent.Values = new object[] { LevelCurve, ColorGradient };
+				//IIntentModuleInstance intent = ApplicationServices.Get<IIntentModuleInstance>(ColorDescriptor._colorIntentId);
+				ColorTransitionIntent intent = new ColorTransitionIntent(ColorGradient.Colors.First().Color.ToRGB(), ColorGradient.Colors.Last().Color.ToRGB(), TimeSpan);
+				//intent.TimeSpan = TimeSpan;
+				//intent.Values = new object[] { LevelCurve, ColorGradient };
 				_intents.AddIntentForChannel(channel.Id, new IntentNode(intent, TimeSpan.Zero));
 			}
 		}

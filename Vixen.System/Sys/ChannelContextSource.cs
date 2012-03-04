@@ -2,19 +2,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Vixen.Commands;
 
 namespace Vixen.Sys {
-	internal class ChannelContextSource : IStateSourceCollectionAdapter<Guid, Command> {
+	internal class ChannelContextSource : IStateSourceCollectionAdapter<Guid, IEnumerable<IIntentState>> {
 		public ChannelContextSource(Guid channelId) {
 			Key = channelId;
 		}
 
 		public Guid Key { get; set; }
 
-		public IEnumerator<IStateSource<Command>> GetEnumerator() {
-			return VixenSystem.Contexts.Select(x => x.GetValue(Key)).GetEnumerator();
+		public IEnumerator<IStateSource<IEnumerable<IIntentState>>> GetEnumerator() {
+			return VixenSystem.Contexts.Select(x => x.GetState(Key)).NotNull().GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator() {

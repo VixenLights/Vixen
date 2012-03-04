@@ -6,10 +6,8 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using Vixen.Sys;
 using Vixen.Module.EffectEditor;
 using Vixen.Module.Effect;
-using Vixen.Commands.KnownDataTypes;
 
 namespace VixenModules.EffectEditor.LevelTypeEditor
 {
@@ -29,14 +27,14 @@ namespace VixenModules.EffectEditor.LevelTypeEditor
 			set
 			{
 				if (value.Length >= 1)
-					LevelValue = (Level)value[0];
+					LevelValue = (float)value[0];
 			}
 		}
 
-		public Level LevelValue
+		public float LevelValue
 		{
-			get { return valueUpDown.Value; }
-			set { valueUpDown.Value = (int)value; }
+			get { return (float)valueUpDown.Value / 100 * 255; }
+			set { valueUpDown.Value = (int)(value / 255 * 100); }
 		}
 	}
 }

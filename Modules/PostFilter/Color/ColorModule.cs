@@ -1,31 +1,15 @@
-﻿using System.Windows.Forms;
-using Vixen.Commands;
+﻿using System;
+using System.Windows.Forms;
 using Vixen.Module;
 using Vixen.Module.PostFilter;
 
 namespace Color {
 	public class ColorModule : PostFilterModuleInstanceBase {
 		private ColorData _data;
-		//private Func<System.Drawing.Color, System.Drawing.Color> _filter;
-		private ColorCommandDispatch _commandDispatch;
+		private Func<System.Drawing.Color, System.Drawing.Color> _filter;
 
-		public ColorModule() {
-			_commandDispatch = new ColorCommandDispatch();
-		}
-
-		public override Command Affect(Command command) {
-			if(command != null) {
-				command.Dispatch(_commandDispatch);
-				command = _commandDispatch.Result;
-			}
-
-			//Lighting.Polychrome.SetColor setColorCommand = command as Lighting.Polychrome.SetColor;
-			//if(setColorCommand != null) {
-			//    System.Drawing.Color newColor = _filter(setColorCommand.Color);
-			//    command = new Lighting.Polychrome.SetColor(newColor);
-			//}
-
-			return command;
+		public override System.Drawing.Color Affect(System.Drawing.Color value) {
+			return _filter(value);
 		}
 
 		public override IModuleDataModel ModuleData {
@@ -54,47 +38,58 @@ namespace Color {
 		private void _SetFilter() {
 			switch(_data.ColorFilter) {
 				case ColorFilter.Red:
-					//_filter = _FilterRed;
-					_commandDispatch.Filter = _FilterRed;
+					_filter = _FilterRed;
+					//_commandDispatch.Filter = _FilterRed;
 					break;
 				case ColorFilter.Green:
-					_commandDispatch.Filter = _FilterGreen;
+					_filter = _FilterGreen;
+					//_commandDispatch.Filter = _FilterGreen;
 					break;
 				case ColorFilter.Blue:
-					_commandDispatch.Filter = _FilterBlue;
+					_filter = _FilterBlue;
+					//_commandDispatch.Filter = _FilterBlue;
 					break;
 				case ColorFilter.Yellow:
-					_commandDispatch.Filter = _FilterYellow;
+					_filter = _FilterYellow;
+					//_commandDispatch.Filter = _FilterYellow;
 					break;
 				case ColorFilter.White:
-					_commandDispatch.Filter = _FilterWhite;
+					_filter = _FilterWhite;
+					//_commandDispatch.Filter = _FilterWhite;
 					break;
 				default:
-					_commandDispatch.Filter = _FilterNone;
+					_filter = _FilterNone;
+					//_commandDispatch.Filter = _FilterNone;
 					break;
 			}
 		}
 
+		//Move the desired color to the lowest byte for use as a byte value going to a single output.
 		private System.Drawing.Color _FilterRed(System.Drawing.Color color) {
-			return System.Drawing.Color.FromArgb(color.R, 0, 0);
+			//return System.Drawing.Color.FromArgb(color.R, 0, 0);
+			return System.Drawing.Color.FromArgb(0, 0, color.R);
 		}
 
 		private System.Drawing.Color _FilterGreen(System.Drawing.Color color) {
-			return System.Drawing.Color.FromArgb(0, color.G, 0);
+			//return System.Drawing.Color.FromArgb(0, color.G, 0);
+			return System.Drawing.Color.FromArgb(0, 0, color.G);
 		}
 
 		private System.Drawing.Color _FilterBlue(System.Drawing.Color color) {
+			//return System.Drawing.Color.FromArgb(0, 0, color.B);
 			return System.Drawing.Color.FromArgb(0, 0, color.B);
 		}
 
 		private System.Drawing.Color _FilterYellow(System.Drawing.Color color) {
 			int yellow = (color.R + color.G) / 2;
-			return System.Drawing.Color.FromArgb(yellow, yellow, 0);
+			//return System.Drawing.Color.FromArgb(yellow, yellow, 0);
+			return System.Drawing.Color.FromArgb(0, 0, yellow);
 		}
 
 		private System.Drawing.Color _FilterWhite(System.Drawing.Color color) {
 			int white = (color.R + color.G + color.B) / 3;
-			return System.Drawing.Color.FromArgb(white, white, white);
+			//return System.Drawing.Color.FromArgb(white, white, white);
+			return System.Drawing.Color.FromArgb(0, 0, white);
 		}
 
 		private System.Drawing.Color _FilterNone(System.Drawing.Color color) {

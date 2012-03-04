@@ -22,12 +22,12 @@ namespace Vixen.Sys {
 
 			IStateSource<V>[] inputStateSourcesArray = inputStateSources.ToArray();
 			if(inputStateSourcesArray.Length == 0) {
-				Value = default(V);
+				State = default(V);
 				return;
 			}
 			IStateSource<V> firstCommand = inputStateSourcesArray[0];
 			if(inputStateSourcesArray.Length == 1) {
-				Value = _GetValueFromState(firstCommand);
+				State = _GetValueFromState(firstCommand);
 				// This is part of two things: context and channel
 				//Context: Getting the channel states set in the context; effect is being
 				//aggregated into it.
@@ -36,15 +36,15 @@ namespace Vixen.Sys {
 			}
 
 			IStateSource<V> state = inputStateSourcesArray.Aggregate(_Combinator);
-			Value = _GetValueFromState(state);
+			State = _GetValueFromState(state);
 		}
 
-		public V Value { get; private set; }
+		public V State { get; private set; }
 
 		abstract protected IStateSource<V> _Combinator(IStateSource<V> left, IStateSource<V> right);
 
 		private V _GetValueFromState(IStateSource<V> state) {
-			return (state != null) ? state.Value : default(V);
+			return (state != null) ? state.State : default(V);
 		}
 	}
 }

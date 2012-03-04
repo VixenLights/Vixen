@@ -1,5 +1,4 @@
 ﻿using System.Runtime.Serialization;
-using Vixen.Commands.KnownDataTypes;
 using Vixen.Module;
 
 namespace RampWithIntent {
@@ -10,9 +9,9 @@ namespace RampWithIntent {
 		}
 
 		[DataMember]
-		public Level StartLevel { get; set; }
+		public float StartLevel { get; set; }
 
 		[DataMember]
-		public Level EndLevel { get; set; }
+		public float EndLevel { get; set; }
 	}
 }

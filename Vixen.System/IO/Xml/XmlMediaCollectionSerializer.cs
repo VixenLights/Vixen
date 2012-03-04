@@ -1,16 +1,18 @@
-﻿using System;using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Linq;
 using Vixen.Module.Media;
 using Vixen.Sys;
 
 namespace Vixen.IO.Xml {
-	class XmlMediaCollectionSerializer : IXmlSerializer<MediaCollection> {
+	class XmlMediaCollectionSerializer : IXmlSerializer<IEnumerable<IMediaModuleInstance>> {
 		private const string ELEMENT_MEDIA = "Media";
 		private const string ELEMENT_MEDIA_SOURCE = "MediaSource";
 		private const string ATTR_TYPE_ID = "typeId";
 		private const string ATTR_INSTANCE_ID = "instanceId";
 
-		public XElement WriteObject(MediaCollection value) {
+		public XElement WriteObject(IEnumerable<IMediaModuleInstance> value) {
 			return new XElement(ELEMENT_MEDIA,
 				value.Select(x => new XElement(ELEMENT_MEDIA_SOURCE,
 					new XAttribute(ATTR_TYPE_ID, x.Descriptor.TypeId),
@@ -18,7 +20,7 @@ namespace Vixen.IO.Xml {
 					x.MediaFilePath)));
 		}
 
-		public MediaCollection ReadObject(XElement element) {
+		public IEnumerable<IMediaModuleInstance> ReadObject(XElement element) {
 			MediaCollection mediaModules = new MediaCollection();
 
 			XElement mediaElement = element.Element(ELEMENT_MEDIA);

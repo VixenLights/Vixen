@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Vixen.Commands;
 using Vixen.Module.Timing;
 using Vixen.Sys;
 
 namespace Vixen.Execution {
-	public class Context : IStateSourceCollection<Guid, Command>, IDisposable {
-		private CommandStateSourceCollection<Guid> _channelStates;
+	public class Context : IStateSourceCollection<Guid, IIntentStateList>, IDisposable {
+		private ChannelStateSourceCollection _channelStates;
 		private ContextCurrentEffects _currentEffects;
-		private ChannelStateListStateAggregator _stateListStateAggregator;
+		private IntentStateBuilder _channelStateBuilder;
 		private Dictionary<Guid, PreFilterNode[]> _preFilterCache;
 		private bool _disposed;
 
 		public event EventHandler ContextStarted;
 		public event EventHandler ContextEnded;
+
+		delegate void IntentDiscoveryAction(Guid channelId, IIntentNode intentNode, TimeSpan intentRelativeTime);
 
 		internal Context(string name, IDataSource dataSource, ITiming timingSource)
 			: this(name) {
@@ -29,14 +30,11 @@ namespace Vixen.Execution {
 			Id = Guid.NewGuid();
 			Name = name;
 
-			_channelStates = new CommandStateSourceCollection<Guid>();
+			_channelStates = new ChannelStateSourceCollection();
 			_currentEffects = new ContextCurrentEffects();
-			_stateListStateAggregator = new ChannelStateListStateAggregator();
 			_preFilterCache = new Dictionary<Guid, PreFilterNode[]>();
+			_channelStateBuilder = new IntentStateBuilder();
 		}
-
-		virtual protected IDataSource _DataSource { get; private set; }
-		virtual protected ITiming _TimingSource { get; private set; }
 
 		public Guid Id { get; private set; }
 
@@ -87,44 +85,53 @@ namespace Vixen.Execution {
 			return (_TimingSource != null) ? _TimingSource.Position : TimeSpan.Zero;
 		}
 
-		/// <summary>
-		/// If the context is playing, the context will aggregate new states based on the current time.
-		/// </summary>
-		/// <returns>The ids of the channels affected by the update.</returns>
 		public IEnumerable<Guid> UpdateChannelStates(TimeSpan currentTime) {
 			Guid[] affectedChannels = null;
 
-			// Allowing this to update even when it's paused will have the same effect,
-			// but may as well save the cycles.
 			if(IsPlaying && !IsPaused) {
-				affectedChannels = _currentEffects.UpdateCurrentEffects(_DataSource, currentTime);
-
-				// Clear the local states of the affected channels.
-				_ClearAffectedChannelStates(affectedChannels);
-
-				_UpdateAggregatorsFromEffects(currentTime, _currentEffects);
-
-				// Aggregate the current state of the affected channels from their
-				// new states.
-				_AggregateChannelStates(affectedChannels);
+				affectedChannels = _UpdateCurrentEffectList(currentTime);
+				_RepopulateChannelBuffer(currentTime, affectedChannels);
 			}
 
 			return affectedChannels;
 		}
 
-		private void _AggregateChannelStates(IEnumerable<Guid> affectedChannels) {
-			foreach(Guid channelId in affectedChannels) {
-				_stateListStateAggregator.AggregateState(channelId);
-				// The aggregator could be the one to return a channel's state
-				// for the context, but filtering will result in a changed value
-				// that needs to be stored and that's not what an aggregator does.
-				// So there is a separate object that has the official channel
-				// values for the context.
-				_channelStates.SetValue(channelId, _stateListStateAggregator.GetValue(channelId).Value);
+		public IStateSource<IIntentStateList> GetState(Guid key) {
+			return _channelStates.GetState(key);
+		}
+
+		public void FilterChannelStates(IEnumerable<Guid> channelIds, TimeSpan currentTime) {
+			if(channelIds == null) return;
+
+			foreach(Guid channelId in channelIds) {
+				// Get the pre-filters that would affect this channel.
+				IEnumerable<PreFilterNode> preFilters = _GetPreFiltersForChannel(channelId, currentTime);
+				// Get the list of stated intents that are going to affect this channel.
+				IStateSource<IIntentStateList> stateSource = _channelStates.GetState(channelId);
+				if(stateSource != null && stateSource.State != null) {
+					// Add the channel's filters to each intent state.
+					IEnumerable<IFilterState> filterStates = preFilters.Select(x => x.CreateFilterState(_GetPreFilterRelativeTime(currentTime, x)));
+					stateSource.State.AddFilters(filterStates);
+				}
 			}
 		}
 
-		private void _UpdateAggregatorsFromEffects(TimeSpan currentTime, IEnumerable<EffectNode> effects) {
+		private Guid[] _UpdateCurrentEffectList(TimeSpan currentTime) {
+			// We have an object that does this for us.
+			return _currentEffects.UpdateCurrentEffects(_DataSource, currentTime);
+		}
+
+		private void _RepopulateChannelBuffer(TimeSpan currentTime, IEnumerable<Guid> affectedChannelIds) {
+			_InitializeChannelStateBuilder();
+			_DiscoverIntentsFromCurrentEffects(currentTime, _AddIntentToChannelStateBuilder);
+			_LatchChannelStatesFromBuilder(affectedChannelIds);
+		}
+
+		private void _DiscoverIntentsFromCurrentEffects(TimeSpan currentTime, IntentDiscoveryAction intentDiscoveryAction) {
+			_DiscoverIntentsFromEffects(currentTime, _currentEffects, intentDiscoveryAction);
+		}
+
+		private void _DiscoverIntentsFromEffects(TimeSpan currentTime, IEnumerable<EffectNode> effects, IntentDiscoveryAction intentDiscoveryAction) {
 			// For each effect in the in-effect list for the context...
 			foreach(EffectNode effectNode in effects) {
 				// Render it to get a dictionary of intent collections by channel id.
@@ -138,91 +145,37 @@ namespace Vixen.Execution {
 					if(intentNode != null) {
 						// Get the current state command by intent-relative time.
 						TimeSpan intentRelativeTime = _GetIntentRelativeTime(effectRelativeTime, intentNode);
-						Command currentIntentState = _GetCurrentIntentState(intentRelativeTime, intentNode);
-						if(currentIntentState != null) {
-							_stateListStateAggregator.AddState(channelId, currentIntentState);
-						}
+						intentDiscoveryAction(channelId, intentNode, intentRelativeTime);
 					}
 				}
 			}
 		}
 
-		private void _ClearAffectedChannelStates(IEnumerable<Guid> affectedChannels) {
-			foreach(Guid channelId in affectedChannels) {
-				_stateListStateAggregator.ClearState(channelId);
+		private void _InitializeChannelStateBuilder() {
+			_channelStateBuilder.Clear();
+		}
+
+		private void _AddIntentToChannelStateBuilder(Guid channelId, IIntentNode intentNode, TimeSpan intentRelativeTime) {
+			IIntentState intentState = intentNode.CreateIntentState(intentRelativeTime);
+			_channelStateBuilder.AddChannelState(channelId, intentState);
+		}
+
+		private void _LatchChannelStatesFromBuilder(IEnumerable<Guid> affectedChannelIds) {
+			foreach(Guid channelId in affectedChannelIds) {
+				_channelStates.SetValue(channelId, _channelStateBuilder.GetChannelState(channelId));
 			}
 		}
 
 		private void _ResetChannelStates() {
-			_stateListStateAggregator.ClearState();
-			_AggregateChannelStates(_stateListStateAggregator.ChannelsWithState);
+			_InitializeChannelStateBuilder();
+			_LatchChannelStatesFromBuilder(_channelStates.ChannelsInCollection);
 		}
 
-		public void FilterChannelStates(IEnumerable<Guid> channelIds, TimeSpan currentTime) {
-			if(channelIds == null) return;
-
-			foreach(Guid channelId in channelIds) {
-				IStateSource<Command> commandStateSource = _channelStates.GetValue(channelId);
-				if(commandStateSource != null && commandStateSource.Value != null) {
-					Command commandState = _ApplyPreFilters(channelId, commandStateSource.Value, currentTime);
-					_channelStates.SetValue(channelId, commandState);
-				}
-			}
-		}
-
-		protected virtual bool _OnPlay(TimeSpan startTime, TimeSpan endTime) {
-			return true;
-		}
-
-		protected virtual void _OnPause() {
-		}
-
-		protected virtual void _OnResume() {
-		}
-
-		protected virtual void _OnStop() {
-		}
-
-		protected virtual void OnContextStarted(EventArgs e) {
-			if(ContextStarted != null) {
-				ContextStarted(this, e);
-			}
-		}
-
-		protected virtual void OnContextEnded(EventArgs e) {
-			if(ContextEnded != null) {
-				ContextEnded(this, e);
-			}
-		}
-
-		public IStateSource<Command> GetValue(Guid key) {
-			return _channelStates.GetValue(key);
-		}
-
-		public void Dispose() {
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
-
-		protected virtual void Dispose(bool disposing) {
-			if(!_disposed) {
-				if(disposing) {
-					Stop();
-				}
-				_disposed = true;
-			}
-		}
-
-		~Context() {
-			Dispose(false);
-		}
-
-		protected void _BuildPreFilterLookup(IEnumerable<ChannelNode> logicalNodes, IEnumerable<PreFilterNode> preFilters) {
-			_preFilterCache.Clear();
-			Stack<IEnumerable<PreFilterNode>> preFilterStack = new Stack<IEnumerable<PreFilterNode>>();
-			foreach(ChannelNode node in logicalNodes) {
-				_SearchLogicalBranchForFilters(node, preFilters, preFilterStack);
-			}
+		private IEnumerable<PreFilterNode> _GetPreFiltersForChannel(Guid channelId, TimeSpan currentTime) {
+			PreFilterNode[] preFilters;
+			_preFilterCache.TryGetValue(channelId, out preFilters);
+			if(preFilters != null) return preFilters.Where(x => _PreFilterQualifies(x, currentTime));
+			return Enumerable.Empty<PreFilterNode>();
 		}
 
 		private void _SearchLogicalBranchForFilters(ChannelNode node, IEnumerable<PreFilterNode> preFilters, Stack<IEnumerable<PreFilterNode>> preFiltersFound) {
@@ -261,32 +214,68 @@ namespace Vixen.Execution {
 			return effectRelativeTime - intentNode.StartTime;
 		}
 
+		private TimeSpan _GetPreFilterRelativeTime(TimeSpan sequenceRelativeTime, PreFilterNode preFilterNode) {
+			return sequenceRelativeTime - preFilterNode.StartTime;
+		}
+
 		private IntentNode _GetCurrentEffectIntent(TimeSpan effectRelativeTime, IEnumerable<IntentNode> intentNodes) {
 			return intentNodes.FirstOrDefault(x => effectRelativeTime >= x.StartTime && effectRelativeTime <= x.EndTime);
 		}
 
-		private Command _GetCurrentIntentState(TimeSpan intentRelativeTime, IntentNode intentNode) {
-			return intentNode.Intent.GetCurrentState(intentRelativeTime);
-		}
-
-		private Command _ApplyPreFilters(Guid channelId, Command value, TimeSpan currentTime) {
-			if(value != null) {
-				PreFilterNode[] preFilters;
-				if(_preFilterCache.TryGetValue(channelId, out preFilters)) {
-					foreach(PreFilterNode preFilterNode in preFilters) {
-						if(_PreFilterQualifies(preFilterNode, currentTime)) {
-							TimeSpan filterRelativeTime = currentTime - preFilterNode.StartTime;
-							value = preFilterNode.PreFilter.Affect(value, filterRelativeTime);
-							if(value == null) break;
-						}
-					}
-				}
-			}
-			return value;
-		}
-
 		private bool _PreFilterQualifies(PreFilterNode preFilterNode, TimeSpan currentTime) {
 			return currentTime >= preFilterNode.StartTime && currentTime < preFilterNode.EndTime;
+		}
+
+		protected void _BuildPreFilterLookup(IEnumerable<ChannelNode> logicalNodes, IEnumerable<PreFilterNode> preFilters) {
+			_preFilterCache.Clear();
+			Stack<IEnumerable<PreFilterNode>> preFilterStack = new Stack<IEnumerable<PreFilterNode>>();
+			foreach(ChannelNode node in logicalNodes) {
+				_SearchLogicalBranchForFilters(node, preFilters, preFilterStack);
+			}
+		}
+
+		virtual protected IDataSource _DataSource { get; private set; }
+
+		virtual protected ITiming _TimingSource { get; private set; }
+
+		protected virtual bool _OnPlay(TimeSpan startTime, TimeSpan endTime) {
+			return true;
+		}
+
+		protected virtual void _OnPause() { }
+
+		protected virtual void _OnResume() { }
+
+		protected virtual void _OnStop() { }
+
+		protected virtual void OnContextStarted(EventArgs e) {
+			if(ContextStarted != null) {
+				ContextStarted(this, e);
+			}
+		}
+
+		protected virtual void OnContextEnded(EventArgs e) {
+			if(ContextEnded != null) {
+				ContextEnded(this, e);
+			}
+		}
+
+		public void Dispose() {
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing) {
+			if(!_disposed) {
+				if(disposing) {
+					Stop();
+				}
+				_disposed = true;
+			}
+		}
+
+		~Context() {
+			Dispose(false);
 		}
 	}
 }

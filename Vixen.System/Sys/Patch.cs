@@ -71,7 +71,7 @@ namespace Vixen.Sys {
 		// This is of Patch, not of the IOutputStateSource interface.
 		public void Write(Command command) {
 			//SourceState = command;
-			Value = command;
+			State = command;
 		}
 
 		// This is of the IOutputStateSource interface, not of Patch.
@@ -115,7 +115,7 @@ namespace Vixen.Sys {
 			Clear();
 		}
 
-		public Command Value {
+		public Command State {
 			get {
 				return Enabled ? _state : null;
 			}

@@ -1,13 +1,12 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.Serialization;
 using System.Xml.Linq;
 using Vixen.Module.Sequence;
 using Vixen.Sys;
 
 namespace Vixen.IO.Xml {
 	class XmlSequenceSerializer : FileSerializer<Sequence> {
-		private const string ATTR_VERSION = "version";
+		//private const string ATTR_VERSION = "version";
 
 		protected override Sequence _Read(string filePath) {
 			if(!Path.IsPathRooted(filePath)) {
@@ -25,9 +24,16 @@ namespace Vixen.IO.Xml {
 		}
 
 		protected override void _Write(Sequence value, string filePath) {
-			XElement content = new XElement("Sequence");
-			XmlSequenceFilePolicy filePolicy = new XmlSequenceFilePolicy(value, content);
+			XmlVersionedContent content = new XmlVersionedContent("Sequence");
+			IFilePolicy filePolicy = new XmlSequenceFilePolicy(value, content);
+			content.Version = filePolicy.GetVersion();
 			filePolicy.Write();
+
+			//XElement content = new XElement("Sequence");
+			//XmlFileVersion fileVersioner = new XmlFileVersion();
+			//XmlSequenceFilePolicy filePolicy = new XmlSequenceFilePolicy(value, content);
+			//fileVersioner.PutVersion(content, ATTR_VERSION, filePolicy.GetVersion());
+			//filePolicy.Write();
 
 			filePath = Path.Combine(Sequence.DefaultDirectory, Path.GetFileName(filePath));
 			content.Save(filePath);
@@ -43,27 +49,33 @@ namespace Vixen.IO.Xml {
 		}
 
 		private XElement _EnsureContentIsUpToDate(XElement content, string originalFilePath) {
-			int fileVersion = _GetVersion(content);
-			XmlSequenceFilePolicy filePolicy = new XmlSequenceFilePolicy();
 			IMigrator sequenceMigrator = new XmlSequenceMigrator(content);
-			GeneralMigrationPolicy<XElement> migrationPolicy = new GeneralMigrationPolicy<XElement>(filePolicy, sequenceMigrator);
-			content = migrationPolicy.MatureContent(fileVersion, content, originalFilePath);
-			_AddResults(migrationPolicy.MigrationResults);
+			IFilePolicy filePolicy = new XmlSequenceFilePolicy();
+			XmlFileSerializationHelper serializationHelper = new XmlFileSerializationHelper();
+			_AddResults(serializationHelper.EnsureContentIsUpToDate(content, originalFilePath, filePolicy, sequenceMigrator));
+
+			//XmlFileVersion fileVersioner = new XmlFileVersion();
+			//int fileVersion = fileVersioner.GetVersion(content, ATTR_VERSION);
+			//XmlSequenceFilePolicy filePolicy = new XmlSequenceFilePolicy();
+			//IMigrator sequenceMigrator = new XmlSequenceMigrator(content);
+			//GeneralMigrationPolicy<XElement> migrationPolicy = new GeneralMigrationPolicy<XElement>(filePolicy, sequenceMigrator);
+			//content = migrationPolicy.MatureContent(fileVersion, content, originalFilePath);
+			//_AddResults(migrationPolicy.MigrationResults);
 
 			return content;
 		}
 
-		private int _GetVersion(XElement content) {
-			XAttribute versionAttribute = content.Attribute(ATTR_VERSION);
-			if(versionAttribute != null) {
-				int version;
-				if(int.TryParse(versionAttribute.Value, out version)) {
-					return version;
-				}
-				throw new SerializationException("File version could not be determined.");
-			}
-			throw new SerializationException("File does not have a version.");
-		}
+		//private int _GetVersion(XElement content) {
+		//    XAttribute versionAttribute = content.Attribute(ATTR_VERSION);
+		//    if(versionAttribute != null) {
+		//        int version;
+		//        if(int.TryParse(versionAttribute.Value, out version)) {
+		//            return version;
+		//        }
+		//        throw new SerializationException("File version could not be determined.");
+		//    }
+		//    throw new SerializationException("File does not have a version.");
+		//}
 
 		private Sequence _CreateSequenceFor(string filePath) {
 			// Get the specific sequence module manager.

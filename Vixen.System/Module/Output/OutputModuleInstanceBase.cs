@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Vixen.Commands;
+using Vixen.Sys;
 
 namespace Vixen.Module.Output {
 	abstract public class OutputModuleInstanceBase : ModuleInstanceBase, IOutputModuleInstance, IEqualityComparer<IOutputModuleInstance>, IEquatable<IOutputModuleInstance>, IEqualityComparer<OutputModuleInstanceBase>, IEquatable<OutputModuleInstanceBase> {
@@ -38,6 +39,8 @@ namespace Vixen.Module.Output {
 		//virtual public IEnumerable<ITransformModuleInstance> BaseTransforms { get; set; }
 
 		public virtual int ChainIndex { get; set; }
+
+		abstract public IDataPolicy DataPolicy { get; }
 
 		//virtual public void SetTransforms(int outputIndex, IEnumerable<ITransformModuleInstance> transforms) {
 		//    List<ITransformModuleInstance> transformList = _GetTransformList(outputIndex);
@@ -82,29 +85,29 @@ namespace Vixen.Module.Output {
 		//    }
 		//}
 
-		virtual public void UpdateState(Command[] outputStates) {
-			// Transform...
-			for(int i = 0; i < outputStates.Length; i++) {
-				Command outputState = outputStates[i];
-				if(outputState != null) {
-					// Make a copy of the state so that we're not modifying the actual state
-					// with the transforms.
-					// Otherwise, we're going to end up transforming a previously tranformed value.
-					outputState = outputState.Clone();
-					outputStates[i] = outputState;
+		virtual public void UpdateState(ICommand[] outputStates) {
+			//// Transform...
+			//for(int i = 0; i < outputStates.Length; i++) {
+			//    Command outputState = outputStates[i];
+			//    if(outputState != null) {
+			//        // Make a copy of the state so that we're not modifying the actual state
+			//        // with the transforms.
+			//        // Otherwise, we're going to end up transforming a previously tranformed value.
+			//        outputState = outputState.Clone();
+			//        outputStates[i] = outputState;
 
-					//List<ITransformModuleInstance> outputTransforms = _outputTransforms[i];
-					//foreach(ITransformModuleInstance transform in outputTransforms) {
-					//    transform.Transform(outputState);
-					//}
-				}
-			}
+			//        List<ITransformModuleInstance> outputTransforms = _outputTransforms[i];
+			//        foreach(ITransformModuleInstance transform in outputTransforms) {
+			//            transform.Transform(outputState);
+			//        }
+			//    }
+			//}
 
 			// Send on to the output module.
 			_UpdateState(outputStates);
 		}
 
-		abstract protected void _UpdateState(Command[] outputStates);
+		abstract protected void _UpdateState(ICommand[] outputStates);
 
 		/// <summary>
 		/// If overriding this, please also override Start and Stop.

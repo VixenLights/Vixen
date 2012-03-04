@@ -40,7 +40,7 @@ namespace Vixen.Execution {
 			set {
 				if(!SelectedTimingProvider.IsValid(value)) {
 					// Reset to having no explicit timing source.
-					SelectedTimingProvider = null;
+					_selectedTimingProvider = null;
 				} else {
 					ITimingProvider provider;
 					if(_providers.TryGetValue(value.ProviderType, out provider)) {
