@@ -1,39 +1,48 @@
-﻿using Vixen.IO.Xml;
+﻿using System;
+using Vixen.IO.Xml;
 using Vixen.Sys;
 
 namespace Vixen.IO {
 	class SerializerFactory {
 		static private SerializerFactory _instance;
+		static private ISerializerFactory _factory;
 
-		private SerializerFactory() {
-		}
+		private SerializerFactory() { }
 
 		public static SerializerFactory Instance {
 			get { return _instance ?? (_instance = new SerializerFactory()); }
 		}
 
+		public static ISerializerFactory Factory {
+			get {
+				if(_factory == null) throw new Exception("Serializer factory has not been set.");
+				return _factory;
+			}
+			set { _factory = value; }
+		}
+
 		public FileSerializer<Sequence> CreateStandardSequenceSerializer() {
-			return new XmlSequenceSerializer();
+			return Factory.CreateStandardSequenceSerializer();
 		}
 
 		public FileSerializer<ScriptSequence> CreateScriptSequenceSerializer() {
-			return new XmlScriptSequenceSerializer();
+			return Factory.CreateScriptSequenceSerializer();
 		}
 
 		public FileSerializer<SystemConfig> CreateSystemConfigSerializer() {
-			return new XmlSystemConfigSerializer();
+			return Factory.CreateSystemConfigSerializer();
 		}
 
 		public FileSerializer<ModuleStore> CreateModuleStoreSerializer() {
-			return new XmlModuleStoreSerializer();
+			return Factory.CreateModuleStoreSerializer();
 		}
 
 		public FileSerializer<SystemContext> CreateSystemContextSerializer() {
-			return new XmlSystemContextSerializer();
+			return Factory.CreateSystemContextSerializer();
 		}
 
 		public FileSerializer<Program> CreateProgramSerializer() {
-			return new XmlProgramSerializer();
+			return Factory.CreateProgramSerializer();
 		}
 	}
 }

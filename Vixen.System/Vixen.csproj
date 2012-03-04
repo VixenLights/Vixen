@@ -116,6 +116,8 @@
     <Compile Include="Intents\Interpolators\NumericInterpolator.cs" />
     <Compile Include="Intents\NumericTransitionIntent.cs" />
     <Compile Include="Intents\NumericTransitionIntentState.cs" />
+    <Compile Include="IO\Factory\XmlSerializerFactory.cs" />
+    <Compile Include="IO\ISerializerFactory.cs" />
     <Compile Include="IO\Xml\XmlFileSerializationHelper.cs" />
     <Compile Include="IO\Xml\XmlVersionedContent.cs" />
     <Compile Include="Sys\ByteCommandGenerator.cs" />

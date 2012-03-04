@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.IO;
 using System.Xml.Linq;
+using Vixen.IO.Factory;
 using Vixen.Module;
 using Vixen.IO;
 using Vixen.IO.Xml;
@@ -21,7 +22,11 @@ namespace Vixen.Sys {
 		public enum RunState { Stopped, Starting, Started, Stopping };
 		static private RunState _state = RunState.Stopped;
 
-        static public void Start(IApplication clientApplication, bool openExecution = true, bool disableControllers = false) {
+		static VixenSystem() {
+			SerializerFactory.Factory = new XmlSerializerFactory();
+		}
+
+    	static public void Start(IApplication clientApplication, bool openExecution = true, bool disableControllers = false) {
 			if(_state == RunState.Stopped) {
 				try {
 					_state = RunState.Starting;
