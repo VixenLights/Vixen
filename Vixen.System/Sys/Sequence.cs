@@ -10,6 +10,7 @@ using Vixen.Execution;
 using Vixen.Module;
 using Vixen.Module.RuntimeBehavior;
 using Vixen.Module.Sequence;
+using Vixen.Sys.Attribute;
 
 namespace Vixen.Sys {
 	/// <summary>

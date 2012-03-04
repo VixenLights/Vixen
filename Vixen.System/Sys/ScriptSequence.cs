@@ -6,7 +6,7 @@ using Vixen.Script;
 using System.IO;
 using Vixen.Execution;
 using Vixen.Module.Script;
-using Vixen.IO.Xml;
+using Vixen.Sys.Attribute;
 
 namespace Vixen.Sys {
 	/// <summary>

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Vixen.Sys;
+using Vixen.Sys.Attribute;
 
 namespace Vixen.Module.Output {
 	[TypeOfModule("Output")]

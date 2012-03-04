@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using Vixen.IO;
-using Vixen.IO.Xml;
+using Vixen.IO.Result;
 
 namespace Vixen.Sys {
 	class SystemContext : FilePackage {

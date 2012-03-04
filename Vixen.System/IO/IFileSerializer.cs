@@ -1,4 +1,4 @@
-﻿using Vixen.Sys;
+﻿using Vixen.IO.Result;
 
 namespace Vixen.IO {
 	interface IFileSerializer<T, U> 

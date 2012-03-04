@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Xml.Linq;
+using Vixen.IO.Policy;
 using Vixen.Module.Sequence;
 using Vixen.Sys;
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using Vixen.IO;
+using Vixen.Sys.Attribute;
 using Vixen.Sys.Output;
 
 namespace Vixen.Sys {

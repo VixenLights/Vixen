@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Vixen.Sys;
+using Vixen.IO.Result;
 
 namespace Vixen.IO {
 	interface IMigrator {

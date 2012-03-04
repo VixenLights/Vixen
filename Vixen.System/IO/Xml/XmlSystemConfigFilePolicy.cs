@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Xml.Linq;
+using Vixen.IO.Policy;
 using Vixen.Sys;
 
 namespace Vixen.IO.Xml {

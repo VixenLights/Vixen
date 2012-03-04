@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Vixen.Sys.Enumerator;
 
 namespace Vixen.Sys {
 	class DataStream : IEnumerable<IDataNode> {

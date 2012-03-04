@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using Vixen.IO.Policy;
 using Vixen.Module;
 using Vixen.Module.Media;
 using Vixen.Sys;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
+using Vixen.Sys.Enumerator;
 
 // Data is only pulled from this at execution start.
 // Data written during sequence execution is handled by runtime behaviors and is written

@@ -10,6 +10,7 @@ using Vixen.Sys;
 using Vixen.Module.RuntimeBehavior;
 using Vixen.Module.Timing;
 using Vixen.Module.Media;
+using Vixen.Sys.Attribute;
 
 namespace Vixen.Execution {
 	class SequenceExecutor : IExecutor {

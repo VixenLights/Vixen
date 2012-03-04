@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using System.Xml;
 using Vixen.IO;
-using Vixen.IO.Xml;
-using Vixen.Sys;
+using Vixen.IO.Result;
+using Vixen.Sys.Attribute;
 
 namespace Vixen.Sys {
 	public class Program : IEnumerable<ISequence> {

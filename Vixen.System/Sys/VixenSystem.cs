@@ -4,6 +4,7 @@ using System.Reflection;
 using System.IO;
 using System.Xml.Linq;
 using Vixen.IO.Factory;
+using Vixen.IO.Result;
 using Vixen.Module;
 using Vixen.IO;
 using Vixen.IO.Xml;

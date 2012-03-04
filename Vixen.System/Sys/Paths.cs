@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Reflection;
+using Vixen.Sys.Attribute;
 
 namespace Vixen.Sys {
     static public class Paths {

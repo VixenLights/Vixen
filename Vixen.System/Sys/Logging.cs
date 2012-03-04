@@ -5,6 +5,7 @@ using System.Text;
 using Vixen.Sys;
 using System.Dynamic;
 using System.IO;
+using Vixen.Sys.Attribute;
 
 namespace Vixen.Sys {
 	// Cannot be static because of DynamicObject inheritance.

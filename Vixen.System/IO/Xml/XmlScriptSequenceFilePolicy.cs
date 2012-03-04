@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using Vixen.IO.Policy;
 using Vixen.Script;
 using Vixen.Sys;
 

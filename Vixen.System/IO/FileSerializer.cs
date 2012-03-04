@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Vixen.IO.Result;
 using Vixen.Sys;
 
 namespace Vixen.IO {

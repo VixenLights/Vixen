@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Linq;
-using Vixen.Sys;
+using Vixen.IO.Policy;
+using Vixen.IO.Result;
 
 namespace Vixen.IO.Xml {
 	class XmlFileSerializationHelper {

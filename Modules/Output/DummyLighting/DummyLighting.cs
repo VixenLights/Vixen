@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Vixen.Commands;
+using Vixen.Data.Policy;
 using Vixen.Module.Output;
 using Vixen.Module;
 using Vixen.Sys;

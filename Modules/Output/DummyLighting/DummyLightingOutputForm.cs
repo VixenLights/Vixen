@@ -105,25 +105,6 @@ namespace VixenModules.Output.DummyLighting
 				ICommand command = outputStates[i];
 				command.Dispatch(_commandHandler);
 				_values[i] = _commandHandler.Value;
-				//if (renderingStyle == RenderStyle.Monochrome || renderingStyle == RenderStyle.RGBMultiChannel) {
-				//    if (command != null) {
-				//        if (command is Lighting.Monochrome.SetLevel) {
-				//            Level level = (command as Lighting.Monochrome.SetLevel).Level;
-				//            _values[i] = (byte)(level * byte.MaxValue / 100);
-				//        }
-				//    } else {
-				//        // Clear the output.
-				//        _values[i] = 0;
-				//    }
-				//} else if (renderingStyle == RenderStyle.RGBSingleChannel) {
-				//    if (command != null) {
-				//        if (command is Lighting.Polychrome.SetColor) {
-				//            _colorValues[i] = (command as Lighting.Polychrome.SetColor).Color;
-				//        }
-				//    } else {
-				//        _colorValues[i] = Color.Black;
-				//    }
-				//}
 			}
 
 			if (!IsDisposed)

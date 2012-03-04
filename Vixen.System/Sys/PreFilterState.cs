@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Drawing;
-using Vixen.Intents.Interpolators;
+using Vixen.Interpolator;
 using Vixen.Module.PreFilter;
 
 namespace Vixen.Sys {
 	class PreFilterState : IFilterState {
-		private FloatInterpolator _interpolator;
+		private NumericInterpolator _interpolator;
 		public PreFilterState(IPreFilter filter, TimeSpan relativeTime) {
 			Filter = filter;
 			RelativeTime = relativeTime;
-			_interpolator = new FloatInterpolator();
+			_interpolator = new NumericInterpolator();
 		}
 
 		public IPreFilter Filter { get; private set; }
