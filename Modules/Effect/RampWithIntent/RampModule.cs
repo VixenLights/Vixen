@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq;
-using Vixen.Intents;
+using Vixen.Intent;
 using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Sys;
+using Vixen.Sys.Attribute;
 
 namespace RampWithIntent {
 	public class RampModule : EffectModuleInstanceBase {
@@ -12,21 +13,9 @@ namespace RampWithIntent {
 
 		protected override void _PreRender() {
 			_intents = new EffectIntents();
-			//TargetNodes
-			//ParameterValues
 			Channel[] channels = TargetNodes.SelectMany(x => x).ToArray();
-			//*** it should do this for us; values should always goes through ParameterValues
-			//    and that should lead to members in the data being set (the latter being
-			//    a module responsibility).
-			//if(ParameterValues.Length != 2) throw new InvalidOperationException("Invalid number of parameters.");
-			//StartLevel = ParameterValues[0].DynamicCast<Level>();
-			//EndLevel = ParameterValues[1].DynamicCast<Level>();
 
 			foreach(Channel channel in channels) {
-				//IIntentModuleInstance intent = ApplicationServices.Get<IIntentModuleInstance>(RampDescriptor._levelIntentId);
-				//intent.TimeSpan = TimeSpan;
-				//intent.Values = new object[] { StartLevel, EndLevel };
-				//_intents.AddIntentForChannel(channel.Id, new IntentNode(intent, TimeSpan.Zero));
 				IIntent intent = new NumericTransitionIntent(StartLevel, EndLevel, TimeSpan);
 				_intents.AddIntentForChannel(channel.Id, new IntentNode(intent, TimeSpan.Zero));
 			}
