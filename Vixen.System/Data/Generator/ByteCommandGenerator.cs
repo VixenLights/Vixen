@@ -23,5 +23,14 @@ namespace Vixen.Data.Generator {
 		public void Handle(ICombinator<Color> obj) {
 			// Ignored
 		}
+
+		public void Handle(ICombinator<long> obj) {
+			Value = new ByteValue((byte)obj.Value);
+		}
+
+		public void Handle(ICombinator<double> obj) {
+			//double = %
+			Value = new ByteValue((byte)(obj.Value * byte.MaxValue));
+		}
 	}
 }

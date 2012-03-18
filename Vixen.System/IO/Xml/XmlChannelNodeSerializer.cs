@@ -6,18 +6,18 @@ using Vixen.Sys;
 
 namespace Vixen.IO.Xml {
 	class XmlChannelNodeSerializer : IXmlSerializer<ChannelNode> {
-		private IEnumerable<Channel> _channels;
+		private IEnumerable<Channel> _underlyingChannels;
 
 		private const string ELEMENT_NODE = "Node";
 		private const string ATTR_ID = "id";
 		private const string ATTR_NAME = "name";
 		private const string ATTR_CHANNEL_ID = "channelId";
 
-		public XmlChannelNodeSerializer(IEnumerable<Channel> channels) {
+		public XmlChannelNodeSerializer(IEnumerable<Channel> underlyingChannelsForRead) {
 			// VixenSystem.Channels has not yet been populated because the file is in the
 			// middle of being read/written.  This serializer has a dependency on the
 			// newly read channel collection.
-			_channels = channels;
+			_underlyingChannels = underlyingChannelsForRead;
 		}
 
 		public XElement WriteObject(ChannelNode value) {
@@ -71,7 +71,7 @@ namespace Vixen.IO.Xml {
 				node = new ChannelNode(id.Value, name, null, childNodes);
 			} else {
 				// Leaf
-				Channel channel = _channels.FirstOrDefault(x => x.Id == channelId);
+				Channel channel = _underlyingChannels.FirstOrDefault(x => x.Id == channelId);
 				if(channel != null) {
 					node = new ChannelNode(id.Value, name, channel, null);
 				}

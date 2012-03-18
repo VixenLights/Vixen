@@ -6,6 +6,7 @@ using Vixen.Module;
 using Vixen.Module.ModuleTemplate;
 using Vixen.Module.Transform;
 using Vixen.Module.Output;
+using Vixen.Services;
 using Vixen.Sys;
 
 namespace TestTemplate {

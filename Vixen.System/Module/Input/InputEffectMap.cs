@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 //using Vixen.Commands.KnownDataTypes;
 using Vixen.Module.Effect;
+using Vixen.Services;
 using Vixen.Sys;
 
 namespace Vixen.Module.Input {

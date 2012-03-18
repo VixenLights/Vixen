@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Vixen.Services;
 using Vixen.Sys;
 using System.Media;
 using Vixen.Module.Property;
@@ -712,8 +713,9 @@ namespace VixenApplication
 					else
 						newName = textDialog.Response;
 
-					ChannelNode newNode = new ChannelNode(newName);
-					VixenSystem.Nodes.AddChildToParent(newNode, parent, index);
+					ChannelNode newNode = Vixen.Services.ChannelNodeService.Instance.CreateSingle(parent, newName, index: index);
+					//ChannelNode newNode = new ChannelNode(newName);
+					//VixenSystem.Nodes.AddChildToParent(newNode, parent, index);
 					PopulateNodeTree();
 					return newNode;
 				}
@@ -948,6 +950,21 @@ namespace VixenApplication
 		}
 
 		#endregion
+
+		private void createAndNameToolStripMenuItem_Click(object sender, EventArgs e) {
+			using(CreateAndNameChannels form = new CreateAndNameChannels()) {
+				form.ShowDialog();
+				PopulateNodeTree();
+			}
+		}
+
+		private void patchToolStripMenuItem_Click(object sender, EventArgs e) {
+			IEnumerable<ChannelNode> channelNodes = multiSelectTreeviewChannelsGroups.SelectedNodes.Select(x => x.Tag).Cast<ChannelNode>();
+			using(PatchChannels form = new PatchChannels(channelNodes)) {
+				form.ShowDialog();
+				PopulateFormWithNode(null, true);
+			}
+		}
 	}
 
 	public class ComboBoxControllerItem

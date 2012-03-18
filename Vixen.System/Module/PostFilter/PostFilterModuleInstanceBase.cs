@@ -25,6 +25,14 @@ namespace Vixen.Module.PostFilter {
 			return value;
 		}
 
+		virtual public long Affect(long value) {
+			return value;
+		}
+
+		virtual public double Affect(double value) {
+			return value;
+		}
+
 		virtual public IFilterState CreateFilterState() {
 			return new PostFilterState(this);
 		}

@@ -10,6 +10,7 @@ using Vixen.IO;
 using Vixen.IO.Xml;
 using Vixen.Instrumentation;
 using Vixen.Module.PostFilter;
+using Vixen.Services;
 using Vixen.Sys.Managers;
 using Vixen.Sys.Output;
 
@@ -220,10 +221,11 @@ namespace Vixen.Sys {
 			get { return _logging; }
 		}
 
+		//*** Internalize, put calls through the services
 		static public ChannelManager Channels { get; private set; }
 		static public NodeManager Nodes { get; private set; }
 		static public ControllerManager Controllers { get; private set; }
-		static public OutputDeviceManager OtherOutputDevices { get; private set; }
+		static internal OutputDeviceManager OtherOutputDevices { get; private set; }
 		static public ContextManager Contexts { get; private set; }
     	static public IInstrumentation Instrumentation { get; private set; }
 		static public ChannelOutputPatchManager ChannelPatching { get; private set; }

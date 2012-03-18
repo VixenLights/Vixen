@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
 using Vixen.IO;
 using Vixen.IO.Result;
@@ -10,11 +9,13 @@ using Vixen.Sys.Attribute;
 namespace Vixen.Sys {
 	public class Program : IEnumerable<ISequence> {
 		private const string DIRECTORY_NAME = "Program";
-		private const int VERSION = 1;
 
 		private List<ISequence> _sequences = new List<ISequence>();
 
 		public const string Extension = ".pro";
+
+		public Program() {
+		}
 
 		public Program(string name) {
 			FilePath = Path.Combine(Program.Directory, Path.ChangeExtension(name, Program.Extension));
@@ -88,10 +89,6 @@ namespace Vixen.Sys {
 
 		public void Save() {
 			Save(FilePath);
-		}
-
-		public int Version {
-			get { return VERSION; }
 		}
 
 		public TimeSpan Length {

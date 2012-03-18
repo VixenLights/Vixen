@@ -12,11 +12,11 @@ namespace Vixen.Sys {
 		private ChannelContextSource _dataSource;
 		private IIntentStateList _state;
 
-		public Channel(string name)
+		internal Channel(string name)
 			: this(Guid.NewGuid(), name) {
 		}
 
-		public Channel(Guid id, string name) {
+		internal Channel(Guid id, string name) {
 			Id = id;
 			Name = name;
 			_dataSource = new ChannelContextSource(Id);

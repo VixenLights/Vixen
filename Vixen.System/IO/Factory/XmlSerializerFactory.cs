@@ -26,5 +26,14 @@ namespace Vixen.IO.Factory {
 		public FileSerializer<Program> CreateProgramSerializer() {
 			return new XmlProgramSerializer();
 		}
+
+		public FileSerializer<ChannelNodeTemplate> CreateChannelNodeTemplateSerializer() {
+			return new XmlChannelNodeTemplateSerializer();
+		}
+
+		public FileSerializer<PostFilterTemplate> CreatePostFilterTemplateSerializer() {
+			return new XmlPostFilterTemplateSerializer();
+		}
+
 	}
 }

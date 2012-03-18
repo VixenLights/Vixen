@@ -29,6 +29,14 @@ namespace Vixen.Module.PreFilter {
 			return value;
 		}
 
+		virtual public long Affect(long value, float percentIntoFilter) {
+			return value;
+		}
+
+		virtual public double Affect(double value, float percentIntoFilter) {
+			return value;
+		}
+
 		virtual public IFilterState CreateFilterState(TimeSpan filterRelativeTime) {
 			return new PreFilterState(this, filterRelativeTime);
 		}

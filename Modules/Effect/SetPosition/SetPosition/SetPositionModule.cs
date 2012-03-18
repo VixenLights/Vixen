@@ -4,6 +4,7 @@ using Vixen.Commands.KnownDataTypes;
 using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Module.Intent;
+using Vixen.Services;
 using Vixen.Sys;
 
 namespace VixenModules.Effect.SetPosition {

@@ -21,5 +21,13 @@ namespace Vixen.Sys {
 		public DateTime Affect(DateTime value) {
 			return Filter.Affect(value);
 		}
+
+		public long Affect(long value) {
+			return Filter.Affect(value);
+		}
+
+		public double Affect(double value) {
+			return Filter.Affect(value);
+		}
 	}
 }

@@ -7,6 +7,8 @@ namespace Vixen.Module.PostFilter {
 		float Affect(float value);
 		Color Affect(Color value);
 		DateTime Affect(DateTime value);
+		long Affect(long value);
+		double Affect(double value);
 		IFilterState CreateFilterState();
 	}
 }

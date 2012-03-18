@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
+using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Module.Effect;
 

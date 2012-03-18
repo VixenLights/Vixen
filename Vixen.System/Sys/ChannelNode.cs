@@ -20,7 +20,7 @@ namespace Vixen.Sys {
 		private const int VERSION = 1;
 
 		#region Constructors
-		public ChannelNode(Guid id, string name, Channel channel, IEnumerable<ChannelNode> content)
+		internal ChannelNode(Guid id, string name, Channel channel, IEnumerable<ChannelNode> content)
 			: base(name, content) {
 			if (VixenSystem.Nodes.ChannelNodeExists(id)) {
 				throw new InvalidOperationException("Trying to create a ChannelNode that already exists.");
@@ -32,11 +32,11 @@ namespace Vixen.Sys {
 			Properties = new PropertyManager(this);
 		}
 
-		public ChannelNode(string name, Channel channel, IEnumerable<ChannelNode> content)
+		internal ChannelNode(string name, Channel channel, IEnumerable<ChannelNode> content)
 			: this(Guid.NewGuid(), name, channel, content) {
 		}
 
-		public ChannelNode(string name, IEnumerable<ChannelNode> content)
+		internal ChannelNode(string name, IEnumerable<ChannelNode> content)
 			: this(name, null, content) {
 		}
 
@@ -44,11 +44,11 @@ namespace Vixen.Sys {
 			: this(id, name, channel, content as IEnumerable<ChannelNode>) {
 		}
 
-		public ChannelNode(string name, Channel channel, params ChannelNode[] content)
+		internal ChannelNode(string name, Channel channel, params ChannelNode[] content)
 			: this(name, channel, content as IEnumerable<ChannelNode>) {
 		}
 
-		public ChannelNode(string name, params ChannelNode[] content)
+		internal ChannelNode(string name, params ChannelNode[] content)
 			: this(name, null, content) {
 		}
 		#endregion
@@ -66,6 +66,16 @@ namespace Vixen.Sys {
 		}
 
 		public Guid Id { get; private set; }
+
+		public override string Name {
+			get { return base.Name; }
+			set { 
+				base.Name = value;
+				if(_channel != null) {
+					_channel.Name = value;
+				}
+			}
+		}
 
 		new public ChannelNode Find(string childName) {
 			return base.Find(childName) as ChannelNode;

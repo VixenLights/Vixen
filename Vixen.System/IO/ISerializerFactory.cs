@@ -8,5 +8,7 @@ namespace Vixen.IO {
 		FileSerializer<ModuleStore> CreateModuleStoreSerializer();
 		FileSerializer<SystemContext> CreateSystemContextSerializer();
 		FileSerializer<Program> CreateProgramSerializer();
+		FileSerializer<ChannelNodeTemplate> CreateChannelNodeTemplateSerializer();
+		FileSerializer<PostFilterTemplate> CreatePostFilterTemplateSerializer(); 
 	}
 }

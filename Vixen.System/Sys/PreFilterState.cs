@@ -5,11 +5,11 @@ using Vixen.Module.PreFilter;
 
 namespace Vixen.Sys {
 	class PreFilterState : IFilterState {
-		private NumericInterpolator _interpolator;
+		private FloatInterpolator _interpolator;
 		public PreFilterState(IPreFilter filter, TimeSpan relativeTime) {
 			Filter = filter;
 			RelativeTime = relativeTime;
-			_interpolator = new NumericInterpolator();
+			_interpolator = new FloatInterpolator();
 		}
 
 		public IPreFilter Filter { get; private set; }
@@ -25,6 +25,14 @@ namespace Vixen.Sys {
 		}
 
 		public DateTime Affect(DateTime value) {
+			return Filter.Affect(value, _GetPercentIntoFilter());
+		}
+
+		public long Affect(long value) {
+			return Filter.Affect(value, _GetPercentIntoFilter());
+		}
+
+		public double Affect(double value) {
 			return Filter.Affect(value, _GetPercentIntoFilter());
 		}
 

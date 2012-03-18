@@ -22,7 +22,7 @@ namespace Vixen.Sys {
 		//private const int VERSION = 1;
 
 		[DataPath]
-		static private readonly string _sourceDirectory = Path.Combine(Paths.DataRootPath, SOURCE_DIRECTORY_NAME);
+		static public readonly string Directory = Path.Combine(Paths.DataRootPath, SOURCE_DIRECTORY_NAME);
 
 		protected ScriptSequence(string language) {
 			Length = Forever;

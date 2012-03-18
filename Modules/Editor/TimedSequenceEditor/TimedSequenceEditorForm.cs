@@ -10,6 +10,7 @@ using Vixen.Module.Editor;
 using Vixen.Module.Effect;
 using Vixen.Module.Media;
 using Vixen.Module.Timing;
+using Vixen.Services;
 using Vixen.Sys;
 using VixenModules.Sequence.Timed;
 
@@ -616,7 +617,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			//Debug.WriteLine("{0}   addNewEffectById({1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, effectId);
 			// get a new instance of this effect, populate it, and make a node for it
-			IEffectModuleInstance effect = Vixen.Sys.ApplicationServices.Get<IEffectModuleInstance>(effectId);
+			IEffectModuleInstance effect = ApplicationServices.Get<IEffectModuleInstance>(effectId);
 			addEffectInstance(effect, row, startTime, timeSpan);
 		}
 

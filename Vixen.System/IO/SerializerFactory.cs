@@ -1,9 +1,8 @@
 ﻿using System;
-using Vixen.IO.Xml;
 using Vixen.Sys;
 
 namespace Vixen.IO {
-	class SerializerFactory {
+	class SerializerFactory : ISerializerFactory {
 		static private SerializerFactory _instance;
 		static private ISerializerFactory _factory;
 
@@ -43,6 +42,14 @@ namespace Vixen.IO {
 
 		public FileSerializer<Program> CreateProgramSerializer() {
 			return Factory.CreateProgramSerializer();
+		}
+
+		public FileSerializer<ChannelNodeTemplate> CreateChannelNodeTemplateSerializer() {
+			return Factory.CreateChannelNodeTemplateSerializer();
+		}
+
+		public FileSerializer<PostFilterTemplate> CreatePostFilterTemplateSerializer() {
+			return Factory.CreatePostFilterTemplateSerializer();
 		}
 	}
 }

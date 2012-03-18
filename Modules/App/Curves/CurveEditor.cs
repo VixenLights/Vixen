@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Vixen.Module.App;
+using Vixen.Services;
 using Vixen.Sys;
 using ZedGraph;
 

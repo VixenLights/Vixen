@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using Vixen.Module.Intent;
+using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Effect;

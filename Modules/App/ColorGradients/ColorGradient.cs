@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using CommonElements.ColorManagement.ColorModels;
 using CommonElements.ControlsEx;
 using Vixen.Module;
+using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Module.App;
 

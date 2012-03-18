@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Module.Effect;
 using Vixen.Module.Property;

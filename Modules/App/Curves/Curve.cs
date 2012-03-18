@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Runtime.Serialization;
 using Vixen.Module;
 using Vixen.Module.App;
+using Vixen.Services;
 using Vixen.Sys;
 using ZedGraph;
 

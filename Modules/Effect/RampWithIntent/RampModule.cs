@@ -16,7 +16,9 @@ namespace RampWithIntent {
 			Channel[] channels = TargetNodes.SelectMany(x => x).ToArray();
 
 			foreach(Channel channel in channels) {
-				IIntent intent = new NumericTransitionIntent(StartLevel, EndLevel, TimeSpan);
+				//IIntent intent = new FloatTransitionIntent(StartLevel, EndLevel, TimeSpan);
+				//IIntent intent = new PercentageTransitionIntent(StartLevel / 255, EndLevel / 255, TimeSpan);
+				IIntent intent = new LongTransitionIntent((long)StartLevel, (long)EndLevel, TimeSpan);
 				_intents.AddIntentForChannel(channel.Id, new IntentNode(intent, TimeSpan.Zero));
 			}
 		}

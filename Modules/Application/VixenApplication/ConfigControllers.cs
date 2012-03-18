@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Vixen.Module;
 using Vixen.Module.Output;
+using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Output;
 
@@ -33,7 +34,7 @@ namespace VixenApplication
 				ListViewItem item = new ListViewItem();
 				item.Text = oc.Name;
 				item.Checked = oc.IsRunning;
-				item.SubItems.Add(Vixen.Sys.ApplicationServices.GetModuleDescriptor(oc.OutputModuleId).TypeName);
+				item.SubItems.Add(ApplicationServices.GetModuleDescriptor(oc.OutputModuleId).TypeName);
 				item.SubItems.Add(oc.OutputCount.ToString());
 				item.Tag = oc;
 				// I'm sorry for this.  Someone know of a better way?

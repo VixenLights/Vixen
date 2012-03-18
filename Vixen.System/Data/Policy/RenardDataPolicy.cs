@@ -6,13 +6,17 @@ using Vixen.Sys;
 namespace Vixen.Data.Policy {
 	public class RenardDataPolicy : StandardDataPolicy {
 		protected override IEvaluator GetEvaluator() {
-			//modified to accommodate color, revert later
-			return new NumericEvaluator();
+			//When testing with effect generating 0-1 % values
+			//return new PercentEvaluator();
+			//When testing with effect generating 0-255 float values
+			//return new FloatEvaluator();
+			//When testing with effect generating 0-255 integer values
+			return new LongEvaluator();
 		}
 
 		protected override ICombinator GetCombinator() {
-			//modified to accommodate color, revert later
-			return new NumericHighestWinsCombinator();
+			return new FloatHighestWinsCombinator();
+			//return new PercentageHighestWinsCombinator();
 		}
 
 		protected override IGenerator GetGenerator() {

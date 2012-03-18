@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.IO;
 using Vixen.IO;
+using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Sequence;

@@ -107,21 +107,66 @@
   <ItemGroup>
     <Compile Include="Commands\SignedLongValue.cs" />
     <Compile Include="Commands\UnsignedLongValue.cs" />
+    <Compile Include="Data\Combinator\PercentageHighestWinsCombinator.cs" />
+    <Compile Include="Data\Evaluator\Evaluator.cs" />
+    <Compile Include="Data\Evaluator\LongEvaluator.cs" />
+    <Compile Include="Data\Evaluator\PercentEvaluator.cs" />
     <Compile Include="Execution\IChannelStateBuilder.cs" />
     <Compile Include="Execution\IntentStateBuilder.cs" />
     <Compile Include="Intent\ColorTransitionIntent.cs" />
     <Compile Include="Intent\ColorTransitionIntentState.cs" />
+    <Compile Include="Intent\LongTransitionIntent.cs" />
+    <Compile Include="Intent\LongTransitionIntentState.cs" />
+    <Compile Include="Intent\PercentageTransitionIntentState.cs" />
+    <Compile Include="Intent\PercentageTransitionIntent.cs" />
     <Compile Include="Interpolator\ColorInterpolator.cs" />
-    <Compile Include="Interpolator\NumericInterpolator.cs" />
-    <Compile Include="Intent\NumericTransitionIntent.cs" />
-    <Compile Include="Intent\NumericTransitionIntentState.cs" />
+    <Compile Include="Interpolator\DoubleInterpolator.cs" />
+    <Compile Include="Interpolator\FloatInterpolator.cs" />
+    <Compile Include="Intent\FloatTransitionIntent.cs" />
+    <Compile Include="Intent\FloatTransitionIntentState.cs" />
+    <Compile Include="Interpolator\LongInterpolator.cs" />
     <Compile Include="IO\Factory\XmlSerializerFactory.cs" />
     <Compile Include="IO\ISerializerFactory.cs" />
+    <Compile Include="IO\Policy\ChannelNodeTemplatePolicy.cs" />
+    <Compile Include="IO\Policy\PostFilterTemplatePolicy.cs" />
+    <Compile Include="IO\Xml\Template\XmlChannelNodeTemplateSerializerTemplate.cs" />
+    <Compile Include="IO\Xml\Template\XmlModuleStoreSerializerTemplate.cs" />
+    <Compile Include="IO\Xml\Template\XmlPostFilterTemplateSerializerTemplate.cs" />
+    <Compile Include="IO\Xml\Template\XmlProgramSerializerTemplate.cs" />
+    <Compile Include="IO\Xml\Template\XmlScriptSequenceSerializerTemplate.cs" />
+    <Compile Include="IO\Xml\Template\XmlSequenceSerializerTemplate.cs" />
+    <Compile Include="IO\Xml\Template\XmlSystemConfigSerializerTemplate.cs" />
+    <Compile Include="IO\Xml\Template\XmlSystemContextSerializerTemplate.cs" />
+    <Compile Include="IO\Xml\Template\XmlTemplatedSerializer.cs" />
+    <Compile Include="IO\Xml\Migrator\XmlChannelNodeTemplateMigrator.cs" />
+    <Compile Include="IO\Xml\Policy\XmlChannelNodeTemplatePolicy.cs" />
+    <Compile Include="IO\Xml\XmlChannelNodeTemplateSerializer.cs" />
     <Compile Include="IO\Xml\XmlFileSerializationHelper.cs" />
+    <Compile Include="IO\Xml\XmlPostFilterSerializer.cs" />
+    <Compile Include="IO\Xml\Migrator\XmlPostFilterTemplateMigrator.cs" />
+    <Compile Include="IO\Xml\Policy\XmlPostFilterTemplatePolicy.cs" />
+    <Compile Include="IO\Xml\XmlPostFilterTemplateSerializer.cs" />
+    <Compile Include="IO\Xml\Template\IXmlStandardFileReadTemplate.cs" />
+    <Compile Include="IO\Xml\Template\IXmlStandardFileWriteTemplate.cs" />
     <Compile Include="IO\Xml\XmlVersionedContent.cs" />
     <Compile Include="Data\Generator\ByteCommandGenerator.cs" />
+    <Compile Include="Rule\Name\GridTemplate.cs" />
+    <Compile Include="Rule\INamingRule.cs" />
+    <Compile Include="Rule\IPatchingRule.cs" />
+    <Compile Include="Rule\Name\FlatNumericTemplate.cs" />
+    <Compile Include="Rule\Name\FlatLetterTemplate.cs" />
+    <Compile Include="Rule\Patch\PatchingHelper.cs" />
+    <Compile Include="Rule\Patch\ToNOutputsAtOutput.cs" />
+    <Compile Include="Rule\Patch\ToNOutputsAtOutputs.cs" />
+    <Compile Include="Rule\Patch\ToNOutputsOverControllers.cs" />
+    <Compile Include="Services\ChannelNodeService.cs" />
+    <Compile Include="Services\PostFilterService.cs" />
+    <Compile Include="Sys\ChannelNodeTemplate.cs" />
     <Compile Include="Sys\ChannelStateSource.cs" />
     <Compile Include="Sys\ChannelStateSourceCollection.cs" />
+    <Compile Include="Sys\ControllerReference.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Sys\Dispatch\CommandDispatch.cs" />
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\SignedIntValue.cs" />
@@ -146,6 +191,9 @@
     <Compile Include="Sys\Dispatch\IAnyCombinatorHandler.cs" />
     <Compile Include="Sys\Dispatch\IAnyEvaluatorHandler.cs" />
     <Compile Include="Sys\Dispatch\IAnyIntentStateHandler.cs" />
+    <Compile Include="Sys\GroupNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Sys\IChannelStateSource.cs" />
     <Compile Include="Sys\ICombinator.cs" />
     <Compile Include="Sys\IDataPolicy.cs" />
@@ -177,14 +225,14 @@
     <Compile Include="IO\GeneralMigrationPolicy.cs" />
     <Compile Include="IO\SerializerFactory.cs" />
     <Compile Include="IO\Policy\SystemConfigFilePolicy.cs" />
-    <Compile Include="IO\Xml\EmptyMigrator.cs" />
+    <Compile Include="IO\Xml\Migrator\EmptyMigrator.cs" />
     <Compile Include="IO\Xml\XmlChannelPatchingSerializer.cs" />
     <Compile Include="IO\Xml\XmlChannelSerializer.cs" />
     <Compile Include="IO\Xml\XmlCompressedFileCollectionSerializer.cs" />
     <Compile Include="IO\Xml\XmlCompressedFileSerializer.cs" />
-    <Compile Include="IO\Xml\XmlProgramMigrator.cs" />
+    <Compile Include="IO\Xml\Migrator\XmlProgramMigrator.cs" />
     <Compile Include="IO\Xml\XmlProgramSerializer.cs" />
-    <Compile Include="IO\Xml\XmlSystemContextFilePolicy.cs" />
+    <Compile Include="IO\Xml\Policy\XmlSystemContextFilePolicy.cs" />
     <Compile Include="IO\Xml\XmlControllerCollectionSerializer.cs" />
     <Compile Include="IO\Xml\XmlControllerLinkCollectionSerializer.cs" />
     <Compile Include="IO\Xml\XmlControllerReferenceSerializer.cs" />
@@ -197,31 +245,31 @@
     <Compile Include="IO\Xml\XmlModuleDataModelSerializer.cs" />
     <Compile Include="IO\Xml\XmlModuleDataSetSerializer.cs" />
     <Compile Include="IO\Xml\XmlModuleStaticDataSetSerializer.cs" />
-    <Compile Include="IO\Xml\XmlModuleStoreFilePolicy.cs" />
-    <Compile Include="IO\Xml\XmlModuleStoreMigrator.cs" />
+    <Compile Include="IO\Xml\Policy\XmlModuleStoreFilePolicy.cs" />
+    <Compile Include="IO\Xml\Migrator\XmlModuleStoreMigrator.cs" />
     <Compile Include="IO\Xml\XmlModuleStoreSerializer.cs" />
     <Compile Include="IO\Xml\XmlPostFilterCollectionSerializer.cs" />
-    <Compile Include="IO\Xml\XmlProgramFilePolicy.cs" />
+    <Compile Include="IO\Xml\Policy\XmlProgramFilePolicy.cs" />
     <Compile Include="IO\Xml\XmlPropertyCollectionSerializer.cs" />
     <Compile Include="IO\Xml\XmlSequenceListSerializer.cs" />
-    <Compile Include="IO\Xml\XmlSystemConfigFilePolicy.cs" />
+    <Compile Include="IO\Xml\Policy\XmlSystemConfigFilePolicy.cs" />
     <Compile Include="IO\Xml\IXmlSerializer.cs" />
     <Compile Include="IO\Xml\XmlChannelCollectionSerializer.cs" />
     <Compile Include="IO\Xml\XmlEffectNodeCollectionSerializer.cs" />
     <Compile Include="IO\Xml\XmlFileLoader.cs" />
     <Compile Include="IO\Xml\XmlModuleLocalDataSetSerializer.cs" />
     <Compile Include="IO\Xml\XmlPreFilterNodeCollectionSerializer.cs" />
-    <Compile Include="IO\Xml\XmlScriptSequenceFilePolicy.cs" />
-    <Compile Include="IO\Xml\XmlScriptSequenceMigrator.cs" />
+    <Compile Include="IO\Xml\Policy\XmlScriptSequenceFilePolicy.cs" />
+    <Compile Include="IO\Xml\Migrator\XmlScriptSequenceMigrator.cs" />
     <Compile Include="IO\Xml\XmlScriptSequenceSerializer.cs" />
     <Compile Include="IO\Xml\XmlScriptSourceFileCollectionSerializer.cs" />
     <Compile Include="IO\Xml\XmlSelectedTimingProviderSerializer.cs" />
-    <Compile Include="IO\Xml\XmlSequenceFilePolicy.cs" />
-    <Compile Include="IO\Xml\XmlSequenceMigrator.cs" />
+    <Compile Include="IO\Xml\Policy\XmlSequenceFilePolicy.cs" />
+    <Compile Include="IO\Xml\Migrator\XmlSequenceMigrator.cs" />
     <Compile Include="IO\Xml\XmlSequenceSerializer.cs" />
-    <Compile Include="IO\Xml\XmlSystemConfigMigrator.cs" />
+    <Compile Include="IO\Xml\Migrator\XmlSystemConfigMigrator.cs" />
     <Compile Include="IO\Xml\XmlSystemConfigSerializer.cs" />
-    <Compile Include="IO\Xml\XmlSystemContextMigrator.cs" />
+    <Compile Include="IO\Xml\Migrator\XmlSystemContextMigrator.cs" />
     <Compile Include="IO\Xml\XmlSystemContextSerializer.cs" />
     <Compile Include="Sys\ControllerLink.cs" />
     <Compile Include="Sys\ControllerLinker.cs" />
@@ -244,13 +292,15 @@
     <Compile Include="Sys\IntentStateList.cs" />
     <Compile Include="Sys\IOutputStateSource.cs" />
     <Compile Include="Sys\ITypeAffector.cs" />
-    <Compile Include="Data\Evaluator\NumericEvaluator.cs" />
-    <Compile Include="Data\Combinator\NumericHighestWinsCombinator.cs" />
+    <Compile Include="Data\Evaluator\FloatEvaluator.cs" />
+    <Compile Include="Data\Combinator\FloatHighestWinsCombinator.cs" />
     <Compile Include="Sys\OutputIntentStateList.cs" />
     <Compile Include="Sys\OutputStateSource.cs" />
     <Compile Include="Sys\ParameterSignature.cs" />
     <Compile Include="Sys\ParameterSpecification.cs" />
+    <Compile Include="Sys\PostFilterCollection.cs" />
     <Compile Include="Sys\PostFilterState.cs" />
+    <Compile Include="Sys\PostFilterTemplate.cs" />
     <Compile Include="Sys\PreFilterState.cs" />
     <Compile Include="Data\Policy\RenardDataPolicy.cs" />
     <Compile Include="Data\Policy\StandardDataPolicy.cs" />
@@ -429,7 +479,6 @@
     <Compile Include="Script\IScriptFrameworkGenerator.cs" />
     <Compile Include="Script\IScriptSkeletonGenerator.cs" />
     <Compile Include="Script\IUserScriptHost.cs" />
-    <Compile Include="Sys\GroupNode.cs" />
     <Compile Include="Sys\PropertyManager.cs" />
     <Compile Include="Sys\ScriptSequence.cs" />
     <Compile Include="Sys\SequenceStartedEventArgs.cs">
@@ -519,14 +568,11 @@
     <Compile Include="Sys\Managers\NodeManager.cs" />
     <Compile Include="Sys\SystemContext.cs" />
     <Compile Include="Sys\SystemConfig.cs" />
-    <Compile Include="Sys\ApplicationServices.cs" />
+    <Compile Include="Services\ApplicationServices.cs" />
     <Compile Include="Module\Trigger\AnalogInputTriggerCondition.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Sys\AppCommand.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Sys\ControllerReference.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Sys\Attribute\DataPathAttribute.cs">
@@ -642,7 +688,6 @@
   <ItemGroup>
     <None Include="Resources\Effect64.png" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

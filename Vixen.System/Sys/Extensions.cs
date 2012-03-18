@@ -126,5 +126,16 @@ namespace Vixen.Sys
 			where T : class {
 			return values.Where(x => x != null);
 		}
+
+		static public T[] SubArray<T>(this T[] data, int index, int length) {
+			T[] result = new T[length];
+			Array.Copy(data, index, result, 0, length);
+			return result;
+		}
+
+		static public T[] SubArray<T>(this T[] data, int index) {
+			int length = data.Length - index;
+			return SubArray(data, index, length);
+		}
 	}
 }

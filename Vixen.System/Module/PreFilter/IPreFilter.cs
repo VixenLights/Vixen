@@ -9,6 +9,8 @@ namespace Vixen.Module.PreFilter {
 		float Affect(float value, float percentIntoFilter);
 		DateTime Affect(DateTime value, float percentIntoFilter);
 		Color Affect(Color value, float percentIntoFilter);
+		long Affect(long value, float percentIntoFilter);
+		double Affect(double value, float percentIntoFilter);
 		IFilterState CreateFilterState(TimeSpan filterRelativeTime);
 	}
 }

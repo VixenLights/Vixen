@@ -1,42 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using Vixen.Module.PostFilter;
 using Vixen.Sys;
 
 namespace Vixen.IO.Xml {
-	class XmlPostFilterCollectionSerializer : IXmlSerializer<IEnumerable<IPostFilterModuleInstance>> {
-		private const string ELEMENT_FILTERS = "FilterNodes";
-		private const string ELEMENT_FILTER = "FilterNode";
-		private const string ATTR_TYPE_ID = "typeId";
-		private const string ATTR_INSTANCE_ID = "instanceId";
+	class XmlPostFilterCollectionSerializer : IXmlSerializer<PostFilterCollection> {
+		private const string ELEMENT_FILTERS = "Filters";
 
-		public XElement WriteObject(IEnumerable<IPostFilterModuleInstance> value) {
-			return new XElement(ELEMENT_FILTERS, value.Select(x =>
-									new XElement(ELEMENT_FILTER,
-										new XAttribute(ATTR_TYPE_ID, x.Descriptor.TypeId),
-										new XAttribute(ATTR_INSTANCE_ID, x.InstanceId))));
+		public XElement WriteObject(PostFilterCollection value) {
+			XmlPostFilterSerializer postFilterSerializer = new XmlPostFilterSerializer();
+			IEnumerable<XElement> elements = value.Select(postFilterSerializer.WriteObject);
+			return new XElement(ELEMENT_FILTERS, elements);
 		}
 
-		public IEnumerable<IPostFilterModuleInstance> ReadObject(XElement element) {
-			List<IPostFilterModuleInstance> postFilters = new List<IPostFilterModuleInstance>();
+		public PostFilterCollection ReadObject(XElement element) {
+			PostFilterCollection postFilters = new PostFilterCollection();
 			
-			XElement filterElements = element.Element(ELEMENT_FILTERS);
-			if(filterElements != null) {
-				foreach(XElement filterElement in filterElements.Elements(ELEMENT_FILTER)) {
-					Guid? typeId = XmlHelper.GetGuidAttribute(filterElement, ATTR_TYPE_ID);
-					if(typeId == null) continue;
-
-					Guid? instanceId = XmlHelper.GetGuidAttribute(filterElement, ATTR_INSTANCE_ID);
-					if(instanceId == null) continue;
-
-					IPostFilterModuleInstance postFilter = Modules.ModuleManagement.GetPostFilter(typeId);
-					if(postFilter != null) {
-						postFilter.InstanceId = instanceId.Value;
-						postFilters.Add(postFilter);
-					}
-				}
+			XElement filtersElement = element.Element(ELEMENT_FILTERS);
+			if(filtersElement != null) {
+				XmlPostFilterSerializer postFilterSerializer = new XmlPostFilterSerializer();
+				IEnumerable<IPostFilterModuleInstance> filters = filtersElement.Elements().Select(postFilterSerializer.ReadObject).NotNull();
+				postFilters.AddRange(filters);
 			}
 
 			return postFilters;

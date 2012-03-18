@@ -100,6 +100,12 @@
     <Compile Include="ConfigControllersOutputs.Designer.cs">
       <DependentUpon>ConfigControllersOutputs.cs</DependentUpon>
     </Compile>
+    <Compile Include="CreateAndNameChannels.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CreateAndNameChannels.Designer.cs">
+      <DependentUpon>CreateAndNameChannels.cs</DependentUpon>
+    </Compile>
     <Compile Include="EffectParametersForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -111,6 +117,62 @@
     </Compile>
     <Compile Include="InstalledModules.Designer.cs">
       <DependentUpon>InstalledModules.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NamingControls\FlatNumericTemplateEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NamingControls\FlatNumericTemplateEditor.Designer.cs">
+      <DependentUpon>FlatNumericTemplateEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NamingControls\FlatStringTemplateEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NamingControls\FlatStringTemplateEditor.Designer.cs">
+      <DependentUpon>FlatStringTemplateEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NamingControls\GridEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NamingControls\GridEditor.Designer.cs">
+      <DependentUpon>GridEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NamingControls\IHasNameRule.cs" />
+    <Compile Include="PatchChannels.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PatchChannels.Designer.cs">
+      <DependentUpon>PatchChannels.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PatchingControls\IHasPatchRule.cs" />
+    <Compile Include="PatchingControls\ToNOutputsAtOutputEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PatchingControls\ToNOutputsAtOutputEditor.Designer.cs">
+      <DependentUpon>ToNOutputsAtOutputEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PatchingControls\ToNOutputsAtOutputsEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PatchingControls\ToNOutputsAtOutputsEditor.Designer.cs">
+      <DependentUpon>ToNOutputsAtOutputsEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PatchingControls\ToNOutputsOverControllersEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PatchingControls\ToNOutputsOverControllersEditor.Designer.cs">
+      <DependentUpon>ToNOutputsOverControllersEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PostFilterTemplateControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PostFilterTemplateControl.Designer.cs">
+      <DependentUpon>PostFilterTemplateControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RuleEditorContainer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RuleEditorContainer.Designer.cs">
+      <DependentUpon>RuleEditorContainer.cs</DependentUpon>
     </Compile>
     <Compile Include="VixenApplication.cs">
       <SubType>Form</SubType>
@@ -135,11 +197,41 @@
     <EmbeddedResource Include="ConfigControllersOutputs.resx">
       <DependentUpon>ConfigControllersOutputs.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CreateAndNameChannels.resx">
+      <DependentUpon>CreateAndNameChannels.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="EffectParametersForm.resx">
       <DependentUpon>EffectParametersForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="InstalledModules.resx">
       <DependentUpon>InstalledModules.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NamingControls\FlatNumericTemplateEditor.resx">
+      <DependentUpon>FlatNumericTemplateEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NamingControls\FlatStringTemplateEditor.resx">
+      <DependentUpon>FlatStringTemplateEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NamingControls\GridEditor.resx">
+      <DependentUpon>GridEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PatchChannels.resx">
+      <DependentUpon>PatchChannels.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PatchingControls\ToNOutputsAtOutputEditor.resx">
+      <DependentUpon>ToNOutputsAtOutputEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PatchingControls\ToNOutputsAtOutputsEditor.resx">
+      <DependentUpon>ToNOutputsAtOutputsEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PatchingControls\ToNOutputsOverControllersEditor.resx">
+      <DependentUpon>ToNOutputsOverControllersEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PostFilterTemplateControl.resx">
+      <DependentUpon>PostFilterTemplateControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RuleEditorContainer.resx">
+      <DependentUpon>RuleEditorContainer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="VixenApplication.resx">
       <DependentUpon>VixenApplication.cs</DependentUpon>

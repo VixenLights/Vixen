@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Vixen.Sys.Output;
 
 namespace Vixen.Sys.Managers {
@@ -168,6 +170,11 @@ namespace Vixen.Sys.Managers {
 				return controllerReference.OutputIndex < controller.OutputCount;
 			}
 			return false;
+		}
+
+		public OutputController[] GetValidControllers(IEnumerable<Guid> controllerIds) {
+			Guid[] validControllerIds = controllerIds.Distinct().ToArray();
+			return validControllerIds.Select(VixenSystem.Controllers.Get).NotNull().Cast<OutputController>().ToArray();
 		}
 
 		//private IEnumerable<OutputController> _GetRootControllers() {

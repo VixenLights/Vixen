@@ -81,28 +81,31 @@ namespace Vixen.Sys.Output {
 
 		override protected void _UpdateState() {
 			if(VixenSystem.ControllerLinking.IsRootController(this) && _ControllerChainOutputModule != null) {
-				foreach(OutputController controller in this) {
-					// All outputs for a controller update in parallel.
-					Parallel.ForEach(controller._outputs, x => {
-						x.UpdateState();
-						// (User may be allowed to skip this step in the future).
-						x.FilterState();
-						//*** don't like Output.Command
-						x.Command = _GenerateCommand(x.State);
-					});
-				}
+				lock(_outputs) {
+					foreach(OutputController controller in this) {
+						// All outputs for a controller update in parallel.
+						Parallel.ForEach(controller._outputs, x =>
+						                                      	{
+						                                      		x.UpdateState();
+						                                      		// (User may be allowed to skip this step in the future).
+						                                      		x.FilterState();
+						                                      		//*** don't like Output.Command
+						                                      		x.Command = _GenerateCommand(x.State);
+						                                      	});
+					}
 
-				// Latch out the new state.
-				// This must be done in order of the chain links so that data
-				// goes out the port in the correct order.
-				foreach(OutputController controller in this) {
-					// A single port may be used to service multiple physical controllers,
-					// such as daisy-chained Renard controllers.  Tell the module where
-					// it is in that chain.
-					controller._ControllerChainOutputModule.ChainIndex = VixenSystem.ControllerLinking.GetChainIndex(controller.Id);
-					
-					ICommand[] outputStates = controller._outputs.Select(x => x.Command).ToArray();
-					controller._ControllerChainOutputModule.UpdateState(outputStates);
+					// Latch out the new state.
+					// This must be done in order of the chain links so that data
+					// goes out the port in the correct order.
+					foreach(OutputController controller in this) {
+						// A single port may be used to service multiple physical controllers,
+						// such as daisy-chained Renard controllers.  Tell the module where
+						// it is in that chain.
+						controller._ControllerChainOutputModule.ChainIndex = VixenSystem.ControllerLinking.GetChainIndex(controller.Id);
+
+						ICommand[] outputStates = controller._outputs.Select(x => x.Command).ToArray();
+						controller._ControllerChainOutputModule.UpdateState(outputStates);
+					}
 				}
 			}
 		}
@@ -119,13 +122,15 @@ namespace Vixen.Sys.Output {
 			get { return _outputs.Count; }
 			set {
 				// Adjust the outputs list.
-				if(value < _outputs.Count) {
-					_outputs.RemoveRange(value, _outputs.Count - value);
-				} else {
-					while(_outputs.Count < value) {
-						// Create a new output.
-						Output output = new Output();
-						_outputs.Add(output);
+				lock(_outputs) {
+					if(value < _outputs.Count) {
+						_outputs.RemoveRange(value, _outputs.Count - value);
+					} else {
+						while(_outputs.Count < value) {
+							// Create a new output.
+							Output output = new Output();
+							_outputs.Add(output);
+						}
 					}
 				}
 
@@ -178,7 +183,7 @@ namespace Vixen.Sys.Output {
 		public void AddPostFilter(int outputIndex, IPostFilterModuleInstance filter) {
 			if(filter != null && outputIndex < OutputCount) {
 				// Must be the controller store, and not the system store, because the system store
-				// deals only with static data.
+				// deals only with static data and there may be multiple instances of a type of filter.
 				ModuleDataSet.AssignModuleInstanceData(filter);
 				_outputs[outputIndex].AddPostFilter(filter);
 			}
@@ -234,12 +239,12 @@ namespace Vixen.Sys.Output {
 		#region class Output
 		public class Output : IHasPostFilters, IHasOutputSources {
 			private LinkedList<IOutputStateSource> _sources;
-			private List<IPostFilterModuleInstance> _postFilters;
+			private PostFilterCollection _postFilters;
 			private OutputIntentStateList _state;
 
 			public Output() {
 				Name = "Unnamed";
-				_postFilters = new List<IPostFilterModuleInstance>();
+				_postFilters = new PostFilterCollection();
 				_sources = new LinkedList<IOutputStateSource>();
 			}
 
@@ -278,7 +283,7 @@ namespace Vixen.Sys.Output {
 				_postFilters.Clear();
 			}
 
-			public IEnumerable<IPostFilterModuleInstance> PostFilters {
+			public PostFilterCollection PostFilters {
 				get { return _postFilters; }
 			}
 
