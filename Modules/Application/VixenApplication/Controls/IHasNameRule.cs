@@ -1,6 +1,6 @@
 ﻿using Vixen.Rule;
 
-namespace VixenApplication.NamingControls {
+namespace VixenApplication.Controls {
 	interface IHasNameRule {
 		INamingRule Rule { get; }
 	}

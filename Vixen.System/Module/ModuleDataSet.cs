@@ -412,7 +412,7 @@ namespace Vixen.Module {
 			// modules the data belongs to.
 			foreach(IModuleDataModel dataModel in source._dataModels) {
 				IModuleDataModel newModel = dataModel.Clone();
-				_Add(dataModel, dataModel.ModuleTypeId, dataModel.ModuleInstanceId);
+				destination._Add(newModel, dataModel.ModuleTypeId, dataModel.ModuleInstanceId);
 			}
 		}
 

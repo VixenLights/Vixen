@@ -1,4 +1,4 @@
-﻿namespace VixenApplication {
+﻿namespace VixenApplication.Controls {
 	partial class PostFilterTemplateControl {
 		/// <summary> 
 		/// Required designer variable.
@@ -30,12 +30,13 @@
 			this.comboBoxFilters = new System.Windows.Forms.ComboBox();
 			this.buttonAdd = new System.Windows.Forms.Button();
 			this.buttonConfigure = new System.Windows.Forms.Button();
+			this.labelTitle = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// buttonMoveUp
 			// 
 			this.buttonMoveUp.Enabled = false;
-			this.buttonMoveUp.Location = new System.Drawing.Point(15, 19);
+			this.buttonMoveUp.Location = new System.Drawing.Point(12, 32);
 			this.buttonMoveUp.Name = "buttonMoveUp";
 			this.buttonMoveUp.Size = new System.Drawing.Size(33, 35);
 			this.buttonMoveUp.TabIndex = 0;
@@ -45,7 +46,7 @@
 			// buttonMoveDown
 			// 
 			this.buttonMoveDown.Enabled = false;
-			this.buttonMoveDown.Location = new System.Drawing.Point(15, 60);
+			this.buttonMoveDown.Location = new System.Drawing.Point(12, 73);
 			this.buttonMoveDown.Name = "buttonMoveDown";
 			this.buttonMoveDown.Size = new System.Drawing.Size(33, 35);
 			this.buttonMoveDown.TabIndex = 1;
@@ -58,10 +59,10 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.listBoxFilters.FormattingEnabled = true;
-			this.listBoxFilters.Location = new System.Drawing.Point(62, 19);
+			this.listBoxFilters.Location = new System.Drawing.Point(62, 32);
 			this.listBoxFilters.Name = "listBoxFilters";
 			this.listBoxFilters.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-			this.listBoxFilters.Size = new System.Drawing.Size(211, 199);
+			this.listBoxFilters.Size = new System.Drawing.Size(187, 199);
 			this.listBoxFilters.TabIndex = 2;
 			this.listBoxFilters.SelectedIndexChanged += new System.EventHandler(this.listBoxFilters_SelectedIndexChanged);
 			// 
@@ -69,7 +70,7 @@
 			// 
 			this.buttonRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.buttonRemove.Enabled = false;
-			this.buttonRemove.Location = new System.Drawing.Point(62, 227);
+			this.buttonRemove.Location = new System.Drawing.Point(62, 240);
 			this.buttonRemove.Name = "buttonRemove";
 			this.buttonRemove.Size = new System.Drawing.Size(75, 23);
 			this.buttonRemove.TabIndex = 3;
@@ -82,9 +83,9 @@
 			this.comboBoxFilters.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.comboBoxFilters.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxFilters.FormattingEnabled = true;
-			this.comboBoxFilters.Location = new System.Drawing.Point(294, 19);
+			this.comboBoxFilters.Location = new System.Drawing.Point(267, 32);
 			this.comboBoxFilters.Name = "comboBoxFilters";
-			this.comboBoxFilters.Size = new System.Drawing.Size(201, 21);
+			this.comboBoxFilters.Size = new System.Drawing.Size(228, 21);
 			this.comboBoxFilters.TabIndex = 4;
 			this.comboBoxFilters.SelectedIndexChanged += new System.EventHandler(this.comboBoxFilters_SelectedIndexChanged);
 			// 
@@ -92,7 +93,7 @@
 			// 
 			this.buttonAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonAdd.Enabled = false;
-			this.buttonAdd.Location = new System.Drawing.Point(294, 46);
+			this.buttonAdd.Location = new System.Drawing.Point(267, 59);
 			this.buttonAdd.Name = "buttonAdd";
 			this.buttonAdd.Size = new System.Drawing.Size(75, 23);
 			this.buttonAdd.TabIndex = 5;
@@ -104,7 +105,7 @@
 			// 
 			this.buttonConfigure.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonConfigure.Enabled = false;
-			this.buttonConfigure.Location = new System.Drawing.Point(294, 113);
+			this.buttonConfigure.Location = new System.Drawing.Point(267, 127);
 			this.buttonConfigure.Name = "buttonConfigure";
 			this.buttonConfigure.Size = new System.Drawing.Size(75, 23);
 			this.buttonConfigure.TabIndex = 6;
@@ -112,10 +113,21 @@
 			this.buttonConfigure.UseVisualStyleBackColor = true;
 			this.buttonConfigure.Click += new System.EventHandler(this.buttonConfigure_Click);
 			// 
+			// labelTitle
+			// 
+			this.labelTitle.AutoSize = true;
+			this.labelTitle.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelTitle.Location = new System.Drawing.Point(1, 2);
+			this.labelTitle.Name = "labelTitle";
+			this.labelTitle.Size = new System.Drawing.Size(69, 16);
+			this.labelTitle.TabIndex = 7;
+			this.labelTitle.Text = "Output X";
+			// 
 			// PostFilterTemplateControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.labelTitle);
 			this.Controls.Add(this.buttonConfigure);
 			this.Controls.Add(this.buttonAdd);
 			this.Controls.Add(this.comboBoxFilters);
@@ -124,9 +136,10 @@
 			this.Controls.Add(this.buttonMoveDown);
 			this.Controls.Add(this.buttonMoveUp);
 			this.Name = "PostFilterTemplateControl";
-			this.Size = new System.Drawing.Size(507, 264);
+			this.Size = new System.Drawing.Size(507, 277);
 			this.Load += new System.EventHandler(this.PostFilterTemplateControl_Load);
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -139,5 +152,6 @@
 		private System.Windows.Forms.ComboBox comboBoxFilters;
 		private System.Windows.Forms.Button buttonAdd;
 		private System.Windows.Forms.Button buttonConfigure;
+		private System.Windows.Forms.Label labelTitle;
 	}
 }

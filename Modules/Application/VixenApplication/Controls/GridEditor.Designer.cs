@@ -1,4 +1,4 @@
-﻿namespace VixenApplication.NamingControls {
+﻿namespace VixenApplication.Controls {
 	partial class GridEditor {
 		/// <summary> 
 		/// Required designer variable.

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Xml.Linq;
 using Vixen.IO.Policy;
+using Vixen.Module;
 using Vixen.Sys;
 
 namespace Vixen.IO.Xml.Policy {
@@ -37,12 +38,16 @@ namespace Vixen.IO.Xml.Policy {
 		}
 
 		protected override void ReadOutputFilterCollections() {
+			// We don't want to wipe out the dataset we just loaded, but we do want the
+			// filter collection to leave.
+			var dataSet = (ModuleLocalDataSet)_template.DataSet.Clone();
 			_template.ClearOutputFilters();
+			_template.DataSet = dataSet;
 			
 			XElement element = _content.Element(ELEMENT_FILTER_COLLECTIONS);
 			if(element != null) {
 				XmlPostFilterCollectionSerializer serializer = new XmlPostFilterCollectionSerializer();
-				_template.AddOutputFilters(element.Elements().Select(serializer.ReadObject).NotNull());
+				_template.AddOutputFilters(element.Elements().Select(serializer.ReadUnwrappedCollection).NotNull());
 			}
 		}
 	}

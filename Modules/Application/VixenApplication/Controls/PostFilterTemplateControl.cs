@@ -1,21 +1,29 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Vixen.Module;
 using Vixen.Module.PostFilter;
 
-namespace VixenApplication {
+namespace VixenApplication.Controls {
 	public partial class PostFilterTemplateControl : UserControl {
 		private IModuleDataSet _dataSet;
+		private List<IPostFilterModuleInstance> _modules;
 
-		public PostFilterTemplateControl(IModuleDataSet dataSet) {
+		public PostFilterTemplateControl(IModuleDataSet dataSet, string title) {
 			InitializeComponent();
 			_dataSet = dataSet;
+			_modules = new List<IPostFilterModuleInstance>();
+			labelTitle.Text = title;
+		}
+
+		public IEnumerable<IPostFilterModuleInstance> Filters {
+			get { return _modules; }
 		}
 
 		private void PostFilterTemplateControl_Load(object sender, EventArgs e) {
-			var modules = Vixen.Services.ApplicationServices.GetAvailableModules<IPostFilterModuleInstance>().ToArray();
-			comboBoxFilters.DisplayMember = "Name";
+			var modules = Vixen.Services.ApplicationServices.GetAvailableModules<IPostFilterModuleInstance>().Select(x => new KeyValuePair<string,Guid>(x.Value, x.Key)).ToArray();
+			comboBoxFilters.DisplayMember = "Key";
 			comboBoxFilters.ValueMember = "Value";
 			comboBoxFilters.DataSource = modules;
 		}
@@ -23,22 +31,29 @@ namespace VixenApplication {
 		private void _UpdateEnabledStates() {
 			buttonMoveUp.Enabled = listBoxFilters.SelectedItems.Count == 1 && listBoxFilters.SelectedIndex > 0;
 			buttonMoveDown.Enabled = listBoxFilters.SelectedItems.Count == 1 && listBoxFilters.SelectedIndex < listBoxFilters.Items.Count - 1;
-			buttonRemove.Enabled = listBoxFilters.SelectedItems.Count < 0;
-			buttonConfigure.Enabled = listBoxFilters.SelectedItems.Count < 0;
+			buttonRemove.Enabled = listBoxFilters.SelectedItems.Count > 0;
+			buttonConfigure.Enabled = _SelectedFilter != null && _SelectedFilter.HasSetup;
 		}
 
 		private void _AddModule(IPostFilterModuleInstance module) {
-			listBoxFilters.Items.Add(module);
+			_modules.Add(module);
 			_dataSet.AssignModuleInstanceData(module);
+			listBoxFilters.Items.Add(module.Descriptor.TypeName);
 		}
 
 		private void _RemoveModule(IPostFilterModuleInstance module) {
-			listBoxFilters.Items.Remove(module);
+			listBoxFilters.Items.RemoveAt(_modules.IndexOf(module));
 			_dataSet.AssignModuleInstanceData(module);
+			_modules.Remove(module);
 		}
 
-		private IPostFilterModuleInstance _SelectedAvailableFilter {
-			get { return (IPostFilterModuleInstance)listBoxFilters.SelectedItem; }
+		private IPostFilterModuleInstance _SelectedFilter {
+			get {
+				if(listBoxFilters.SelectedItems.Count == 1) {
+					return _modules[listBoxFilters.SelectedIndex];
+				}
+				return null;
+			}
 		}
 
 		private void listBoxFilters_SelectedIndexChanged(object sender, EventArgs e) {
@@ -46,7 +61,7 @@ namespace VixenApplication {
 		}
 
 		private void comboBoxFilters_SelectedIndexChanged(object sender, EventArgs e) {
-			buttonAdd.Enabled = _SelectedAvailableFilter != null && _SelectedAvailableFilter.HasSetup;
+			buttonAdd.Enabled = comboBoxFilters.SelectedItem != null;
 		}
 
 		private void buttonMoveUp_Click(object sender, EventArgs e) {
@@ -74,14 +89,14 @@ namespace VixenApplication {
 		}
 
 		private void buttonRemove_Click(object sender, EventArgs e) {
-			IPostFilterModuleInstance[] modulesToRemove = listBoxFilters.SelectedItems.Cast<IPostFilterModuleInstance>().ToArray();
+			IPostFilterModuleInstance[] modulesToRemove = listBoxFilters.SelectedIndices.Cast<int>().Select(x => _modules[x]).ToArray();
 			foreach(IPostFilterModuleInstance module in modulesToRemove) {
 				_RemoveModule(module);
 			}
 		}
 
 		private void buttonConfigure_Click(object sender, EventArgs e) {
-			_SelectedAvailableFilter.Setup();
+			_SelectedFilter.Setup();
 		}
 	}
 }

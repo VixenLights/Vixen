@@ -1,4 +1,4 @@
-﻿namespace VixenApplication.PatchingControls {
+﻿namespace VixenApplication.Controls {
 	partial class ToNOutputsAtOutputEditor {
 		/// <summary> 
 		/// Required designer variable.

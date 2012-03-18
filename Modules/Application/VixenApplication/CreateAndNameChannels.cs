@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using Vixen.Rule;
 using Vixen.Rule.Name;
 using Vixen.Sys;
-using VixenApplication.NamingControls;
+using VixenApplication.Controls;
 
 //Just to test a concept, not permanent
 namespace VixenApplication {

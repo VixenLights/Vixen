@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using Vixen.Rule;
 using Vixen.Rule.Name;
 
-namespace VixenApplication.NamingControls {
+namespace VixenApplication.Controls {
 	public partial class GridEditor : UserControl, IHasNameRule {
 		public GridEditor() {
 			InitializeComponent();

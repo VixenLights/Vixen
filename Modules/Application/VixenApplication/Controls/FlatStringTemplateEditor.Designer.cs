@@ -1,4 +1,4 @@
-﻿namespace VixenApplication.NamingControls {
+﻿namespace VixenApplication.Controls {
 	partial class FlatStringTemplateEditor {
 		/// <summary> 
 		/// Required designer variable.

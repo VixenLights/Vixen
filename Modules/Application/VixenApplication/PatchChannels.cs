@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Vixen.Rule;
 using Vixen.Rule.Patch;
 using Vixen.Sys;
-using VixenApplication.PatchingControls;
+using VixenApplication.Controls;
 
 namespace VixenApplication {
 	public partial class PatchChannels : Form {
@@ -14,10 +15,8 @@ namespace VixenApplication {
 
 		public PatchChannels(IEnumerable<ChannelNode> channelNodes) {
 			InitializeComponent();
-			//***
-			//Needs to be restricted to only the nodes that have channels, but for testing...
-			//_channelNodes = channelNodes.Where(x => x.Channel != null).ToArray();
-			_channelNodes = channelNodes.ToArray();
+			//Needs to be restricted to only the nodes that have channels.
+			_channelNodes = channelNodes.Where(x => x.Channel != null).ToArray();
 		}
 
 		private void PatchChannels_Load(object sender, EventArgs e) {
@@ -27,6 +26,8 @@ namespace VixenApplication {
 			comboBoxPatchingMethod.DisplayMember = "Description";
 			comboBoxPatchingMethod.ValueMember = "";
 			comboBoxPatchingMethod.DataSource = namingRules;
+
+			_ReloadPostFilterTemplates();
 		}
 
 		private IPatchingRule _GetSelectedPatchingRule() {
@@ -43,6 +44,19 @@ namespace VixenApplication {
 
 		private Control _GetPatchingRuleEditor(ToNOutputsOverControllers rule) {
 			return new ToNOutputsOverControllersEditor();
+		}
+
+		private bool _DoApplyFilterTemplate {
+			get { return checkBoxApplyFilterTemplate.Checked; }
+		}
+
+		private string _SelectedFilterTemplate {
+			get { return (string)comboBoxFilterTemplate.SelectedItem; }
+		}
+
+		private void _ReloadPostFilterTemplates() {
+			IEnumerable<PostFilterTemplate> postFilterTemplates = PostFilterTemplate.GetAll();
+			comboBoxFilterTemplate.Items.AddRange(postFilterTemplates.Select(x => Path.GetFileNameWithoutExtension(x.FilePath)).ToArray());
 		}
 
 		private void buttonConfigurePatchingRule_Click(object sender, EventArgs e) {
@@ -65,33 +79,57 @@ namespace VixenApplication {
 				return false;
 			}
 
+			if(_DoApplyFilterTemplate && _SelectedFilterTemplate == null) {
+				MessageBox.Show("You selected to apply a template, but not the template to apply.");
+				return false;
+			}
+
 			return true;
 		}
 
 		private void buttonPreview_Click(object sender, EventArgs e) {
 			if(Validate()) {
-				ControllerReference[] controllerReferences = _patchingRule.GenerateControllerReferences(_channelNodes.Length);
-				Queue<ControllerReference> referenceQueue = new Queue<ControllerReference>(controllerReferences);
+				IEnumerable<ControllerReferenceCollection> controllerReferences = _patchingRule.GenerateControllerReferenceCollections(_channelNodes.Length);
+				Queue<ControllerReferenceCollection> referenceQueue = new Queue<ControllerReferenceCollection>(controllerReferences);
 
 				listViewPreview.Items.Clear();
-				int referencesPerChannel = controllerReferences.Length / _channelNodes.Length;
+
 				string lastChannelNode = null;
 				foreach(ChannelNode channelNode in _channelNodes) {
-					for(int i = 0; i < referencesPerChannel; i++) {
-						ControllerReference reference = referenceQueue.Dequeue();
-						string channelNodeName = lastChannelNode == channelNode.Name ? string.Empty : channelNode.Name;
-						string[] referenceDetails = new[] { channelNodeName, reference.ToString() };
-						listViewPreview.Items.Add(new ListViewItem(referenceDetails));
-						lastChannelNode = channelNode.Name;
-					}
+					//for(int i = 0; i < _patchingRule.OutputCountToPatch; i++) {
+						if(referenceQueue.Count == 0) continue;
+
+						ControllerReferenceCollection references = referenceQueue.Dequeue();
+						foreach(ControllerReference reference in references) {
+							string channelNodeName = (lastChannelNode == channelNode.Name) ? string.Empty : channelNode.Name;
+							string[] referenceDetails = new[] {channelNodeName, reference.ToString()};
+							listViewPreview.Items.Add(new ListViewItem(referenceDetails));
+							lastChannelNode = channelNode.Name;
+						}
+					//}
 				}
 			}
 		}
 
+		private void checkBoxApplyFilterTemplate_CheckedChanged(object sender, EventArgs e) {
+			buttonCreateFilterTemplate.Enabled = 
+			comboBoxFilterTemplate.Enabled = checkBoxApplyFilterTemplate.Checked;
+		}
+
 		private void buttonCommit_Click(object sender, EventArgs e) {
-			if(Validate()) {
+			if(_Validate()) {
 				Vixen.Services.ChannelNodeService.Instance.Patch(_channelNodes, _patchingRule);
+				if(_DoApplyFilterTemplate) {
+					Vixen.Services.PostFilterService.Instance.ApplyTemplateMany(_SelectedFilterTemplate, _patchingRule, _channelNodes.Length);
+				}
 				MessageBox.Show("Patched " + _channelNodes.Length + " channels.");
+			}
+		}
+
+		private void buttonCreateFilterTemplate_Click(object sender, EventArgs e) {
+			using(PostFilterTemplateForm form = new PostFilterTemplateForm()) {
+				form.ShowDialog();
+				_ReloadPostFilterTemplates();
 			}
 		}
 	}

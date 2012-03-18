@@ -15,11 +15,15 @@ namespace Vixen.Data.Evaluator {
 			return intentState.FilterStates.Aggregate(intentState.GetValue(), (current, filterState) => filterState.Affect(current));
 		}
 
-		static public int Default(IIntentState<Color> intentState) {
+		static public int ColorAsInt(IIntentState<Color> intentState) {
 			Color color = intentState.FilterStates.Aggregate(intentState.GetValue(), (current, filterState) => filterState.Affect(current));
 
 			// Stripping the alpha quantity to keep it from going negative.
 			return color.ToArgb() & 0xffffff;
+		}
+
+		static public Color Default(IIntentState<Color> intentState) {
+			return intentState.FilterStates.Aggregate(intentState.GetValue(), (current, filterState) => filterState.Affect(current));
 		}
 
 		static public double Default(IIntentState<double> intentState) {

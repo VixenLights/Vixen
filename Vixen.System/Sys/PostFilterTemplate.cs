@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using Vixen.IO;
+using Vixen.IO.Result;
 using Vixen.Module;
 using Vixen.Module.PostFilter;
 using Vixen.Sys.Attribute;
 
 namespace Vixen.Sys {
-	class PostFilterTemplate {
+	public class PostFilterTemplate {
 		private List<PostFilterCollection> _outputFilters;
 
 		private const string DIRECTORY_NAME = "Template\\PostFilter";
@@ -21,6 +24,35 @@ namespace Vixen.Sys {
 			DataSet = new ModuleLocalDataSet();
 			_outputFilters = new List<PostFilterCollection>();
 		}
+
+		static public IEnumerable<PostFilterTemplate> GetAll() {
+			foreach(string filePath in System.IO.Directory.GetFiles(PostFilterTemplate.Directory, "*" + Extension)) {
+				yield return Load(filePath);
+			}
+		}
+
+		static public PostFilterTemplate Load(string filePath) {
+			if(string.IsNullOrWhiteSpace(filePath)) return null;
+
+			FileSerializer<PostFilterTemplate> serializer = SerializerFactory.Instance.CreatePostFilterTemplateSerializer();
+			SerializationResult<PostFilterTemplate> result = serializer.Read(filePath);
+			return result.Object;
+		}
+
+		public void Save(string filePath) {
+			if(string.IsNullOrWhiteSpace(filePath)) throw new InvalidOperationException("A name is required.");
+
+			FileSerializer<PostFilterTemplate> serializer = SerializerFactory.Instance.CreatePostFilterTemplateSerializer();
+			serializer.Write(this, filePath);
+
+			FilePath = filePath;
+		}
+
+		public void Save() {
+			Save(FilePath);
+		}
+		
+		public string FilePath { get; set; }
 
 		public ModuleLocalDataSet DataSet;
 

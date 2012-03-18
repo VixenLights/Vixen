@@ -18,33 +18,26 @@ namespace Vixen.Services {
 			get { return _instance ?? (_instance = new PostFilterService()); }
 		}
 
-		public void ApplyTemplateOnce(string templateFileName, IPatchingRule mappingRule) {
+		public void ApplyTemplateOnce(string templateFileName, IPatchingRule patchingRule) {
 			var serializer = SerializerFactory.Instance.CreatePostFilterTemplateSerializer();
 			var result = serializer.Read(templateFileName);
 			if(!result.Success) return;
 
-			//*** file reader needs to populate the modules with instance data from the template's
-			//    dataset
-			ControllerReference[] controllerReferences = mappingRule.GenerateControllerReferences(1);
-			_ApplyTemplateToOutputs(result.Object, controllerReferences);
+			IEnumerable<ControllerReferenceCollection> controllerReferences = patchingRule.GenerateControllerReferenceCollections(1);
+			_ApplyTemplateToOutputs(result.Object, controllerReferences.First().ToArray());
 		}
 
-		public void ApplyTemplateMany(string templateFileName, IPatchingRule mappingRule, int count) {
+		public void ApplyTemplateMany(string templateFileName, IPatchingRule patchingRule, int channelCount) {
 			var serializer = SerializerFactory.Instance.CreatePostFilterTemplateSerializer();
 			var result = serializer.Read(templateFileName);
 			if(!result.Success) return;
 
 			PostFilterTemplate template = result.Object;
 
-			ControllerReference[] controllerReferences = mappingRule.GenerateControllerReferences(count);
-			int referencesPerOutput = controllerReferences.Length / count;
-			int countToAffect = _GetCountToAffect(controllerReferences, template.OutputFilters);
+			IEnumerable<ControllerReferenceCollection> controllerReferenceCollections = patchingRule.GenerateControllerReferenceCollections(1);
 
-			int referenceStartIndex = 0;
-			while(count-- > 0) {
-				ControllerReference[] referencesForApplicationOfTemplate = controllerReferences.SubArray(referenceStartIndex, countToAffect);
-				_ApplyTemplateToOutputs(template, referencesForApplicationOfTemplate);
-				referenceStartIndex += referencesPerOutput;
+			foreach(ControllerReferenceCollection controllerReferences in controllerReferenceCollections) {
+				_ApplyTemplateToOutputs(template, controllerReferences.ToArray());
 			}
 		}
 

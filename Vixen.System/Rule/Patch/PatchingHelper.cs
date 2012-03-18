@@ -20,7 +20,7 @@ namespace Vixen.Rule.Patch {
 		}
 
 		static public bool IsValidOutputIndex(int outputIndex, OutputController controller) {
-			return outputIndex < controller.OutputCount - 1;
+			return outputIndex < controller.OutputCount;
 		}
 	}
 }

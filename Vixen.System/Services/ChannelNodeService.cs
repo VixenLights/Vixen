@@ -66,14 +66,10 @@ namespace Vixen.Services {
 
 		public void Patch(IEnumerable<ChannelNode> channelNodes, IPatchingRule patchingRule) {
 			Channel[] channelArray = channelNodes.Select(x => x.Channel).NotNull().ToArray();
-			ControllerReference[] destinations = patchingRule.GenerateControllerReferences(channelArray.Length);
-			int patchesPerChannel = destinations.Length / channelArray.Length;
-			int patchesTaken = 0;
-			foreach(Channel channel in channelArray) {
-				ControllerReference[] channelPatches = new ControllerReference[patchesPerChannel];
-				Array.Copy(destinations, patchesTaken, channelPatches, 0, patchesPerChannel);
-				VixenSystem.ChannelPatching.AddPatches(channel.Id, channelPatches);
-				patchesTaken += patchesPerChannel;
+			ControllerReferenceCollection[] destinations = patchingRule.GenerateControllerReferenceCollections(channelArray.Length).ToArray();
+
+			for(int i=0; i<channelArray.Length; i++) {
+				VixenSystem.ChannelPatching.AddPatches(channelArray[i].Id, destinations[i]);
 			}
 		}
 

@@ -16,13 +16,21 @@ namespace Vixen.IO.Xml {
 
 		public PostFilterCollection ReadObject(XElement element) {
 			PostFilterCollection postFilters = new PostFilterCollection();
-			
+
 			XElement filtersElement = element.Element(ELEMENT_FILTERS);
 			if(filtersElement != null) {
-				XmlPostFilterSerializer postFilterSerializer = new XmlPostFilterSerializer();
-				IEnumerable<IPostFilterModuleInstance> filters = filtersElement.Elements().Select(postFilterSerializer.ReadObject).NotNull();
-				postFilters.AddRange(filters);
+				postFilters.AddRange(ReadUnwrappedCollection(filtersElement));
 			}
+
+			return postFilters;
+		}
+
+		public PostFilterCollection ReadUnwrappedCollection(XElement element) {
+			PostFilterCollection postFilters = new PostFilterCollection();
+
+			XmlPostFilterSerializer postFilterSerializer = new XmlPostFilterSerializer();
+			IEnumerable<IPostFilterModuleInstance> filters = element.Elements().Select(postFilterSerializer.ReadObject).NotNull();
+			postFilters.AddRange(filters);
 
 			return postFilters;
 		}

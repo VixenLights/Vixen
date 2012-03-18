@@ -107,7 +107,9 @@
   <ItemGroup>
     <Compile Include="Commands\SignedLongValue.cs" />
     <Compile Include="Commands\UnsignedLongValue.cs" />
+    <Compile Include="Data\Combinator\ColorCombinator.cs" />
     <Compile Include="Data\Combinator\PercentageHighestWinsCombinator.cs" />
+    <Compile Include="Data\Evaluator\ColorEvaluator.cs" />
     <Compile Include="Data\Evaluator\Evaluator.cs" />
     <Compile Include="Data\Evaluator\LongEvaluator.cs" />
     <Compile Include="Data\Evaluator\PercentEvaluator.cs" />
@@ -167,6 +169,7 @@
     <Compile Include="Sys\ControllerReference.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Sys\ControllerReferenceCollection.cs" />
     <Compile Include="Sys\Dispatch\CommandDispatch.cs" />
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\SignedIntValue.cs" />

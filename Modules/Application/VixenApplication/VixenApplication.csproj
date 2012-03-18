@@ -118,55 +118,61 @@
     <Compile Include="InstalledModules.Designer.cs">
       <DependentUpon>InstalledModules.cs</DependentUpon>
     </Compile>
-    <Compile Include="NamingControls\FlatNumericTemplateEditor.cs">
+    <Compile Include="Controls\FlatNumericTemplateEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="NamingControls\FlatNumericTemplateEditor.Designer.cs">
+    <Compile Include="Controls\FlatNumericTemplateEditor.Designer.cs">
       <DependentUpon>FlatNumericTemplateEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="NamingControls\FlatStringTemplateEditor.cs">
+    <Compile Include="Controls\FlatStringTemplateEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="NamingControls\FlatStringTemplateEditor.Designer.cs">
+    <Compile Include="Controls\FlatStringTemplateEditor.Designer.cs">
       <DependentUpon>FlatStringTemplateEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="NamingControls\GridEditor.cs">
+    <Compile Include="Controls\GridEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="NamingControls\GridEditor.Designer.cs">
+    <Compile Include="Controls\GridEditor.Designer.cs">
       <DependentUpon>GridEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="NamingControls\IHasNameRule.cs" />
+    <Compile Include="Controls\IHasNameRule.cs" />
     <Compile Include="PatchChannels.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PatchChannels.Designer.cs">
       <DependentUpon>PatchChannels.cs</DependentUpon>
     </Compile>
-    <Compile Include="PatchingControls\IHasPatchRule.cs" />
-    <Compile Include="PatchingControls\ToNOutputsAtOutputEditor.cs">
+    <Compile Include="Controls\IHasPatchRule.cs" />
+    <Compile Include="Controls\ToNOutputsAtOutputEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PatchingControls\ToNOutputsAtOutputEditor.Designer.cs">
+    <Compile Include="Controls\ToNOutputsAtOutputEditor.Designer.cs">
       <DependentUpon>ToNOutputsAtOutputEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="PatchingControls\ToNOutputsAtOutputsEditor.cs">
+    <Compile Include="Controls\ToNOutputsAtOutputsEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PatchingControls\ToNOutputsAtOutputsEditor.Designer.cs">
+    <Compile Include="Controls\ToNOutputsAtOutputsEditor.Designer.cs">
       <DependentUpon>ToNOutputsAtOutputsEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="PatchingControls\ToNOutputsOverControllersEditor.cs">
+    <Compile Include="Controls\ToNOutputsOverControllersEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PatchingControls\ToNOutputsOverControllersEditor.Designer.cs">
+    <Compile Include="Controls\ToNOutputsOverControllersEditor.Designer.cs">
       <DependentUpon>ToNOutputsOverControllersEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="PostFilterTemplateControl.cs">
+    <Compile Include="Controls\PostFilterTemplateControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PostFilterTemplateControl.Designer.cs">
+    <Compile Include="Controls\PostFilterTemplateControl.Designer.cs">
       <DependentUpon>PostFilterTemplateControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PostFilterTemplateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PostFilterTemplateForm.Designer.cs">
+      <DependentUpon>PostFilterTemplateForm.cs</DependentUpon>
     </Compile>
     <Compile Include="RuleEditorContainer.cs">
       <SubType>Form</SubType>
@@ -206,29 +212,32 @@
     <EmbeddedResource Include="InstalledModules.resx">
       <DependentUpon>InstalledModules.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NamingControls\FlatNumericTemplateEditor.resx">
+    <EmbeddedResource Include="Controls\FlatNumericTemplateEditor.resx">
       <DependentUpon>FlatNumericTemplateEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NamingControls\FlatStringTemplateEditor.resx">
+    <EmbeddedResource Include="Controls\FlatStringTemplateEditor.resx">
       <DependentUpon>FlatStringTemplateEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NamingControls\GridEditor.resx">
+    <EmbeddedResource Include="Controls\GridEditor.resx">
       <DependentUpon>GridEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PatchChannels.resx">
       <DependentUpon>PatchChannels.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PatchingControls\ToNOutputsAtOutputEditor.resx">
+    <EmbeddedResource Include="Controls\ToNOutputsAtOutputEditor.resx">
       <DependentUpon>ToNOutputsAtOutputEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PatchingControls\ToNOutputsAtOutputsEditor.resx">
+    <EmbeddedResource Include="Controls\ToNOutputsAtOutputsEditor.resx">
       <DependentUpon>ToNOutputsAtOutputsEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PatchingControls\ToNOutputsOverControllersEditor.resx">
+    <EmbeddedResource Include="Controls\ToNOutputsOverControllersEditor.resx">
       <DependentUpon>ToNOutputsOverControllersEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PostFilterTemplateControl.resx">
+    <EmbeddedResource Include="Controls\PostFilterTemplateControl.resx">
       <DependentUpon>PostFilterTemplateControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PostFilterTemplateForm.resx">
+      <DependentUpon>PostFilterTemplateForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="RuleEditorContainer.resx">
       <DependentUpon>RuleEditorContainer.cs</DependentUpon>

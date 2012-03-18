@@ -8,24 +8,12 @@ using Vixen.Module;
 namespace Color {
 	[DataContract]
 	public class ColorData : ModuleDataModelBase {
-		//public ColorData() {
-		//    _Initialize();
-		//}
-
 		public override IModuleDataModel Clone() {
-			ColorData newInstance = new ColorData();
+			ColorData newInstance = (ColorData)MemberwiseClone();
 			return newInstance;
 		}
 
 		[DataMember]
 		public ColorFilter ColorFilter { get; set; }
-
-		//[OnDeserializing]
-		//private void OnDeserializing(StreamingContext context) {
-		//    _Initialize();
-		//}
-
-		//private void _Initialize() {
-		//}
 	}
 }

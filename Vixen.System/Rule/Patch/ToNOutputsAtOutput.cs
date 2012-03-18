@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Vixen.Sys;
 using Vixen.Sys.Output;
 
@@ -19,17 +20,17 @@ namespace Vixen.Rule.Patch {
 			get { return "To multiple outputs on a single controller"; }
 		}
 
-		public ControllerReference[] GenerateControllerReferences(int consecutiveApplicationCount) {
-			List<ControllerReference> controllerReferences = new List<ControllerReference>();
+		public IEnumerable<ControllerReferenceCollection> GenerateControllerReferenceCollections(int channelCount) {
+			List<ControllerReferenceCollection> controllerReferences = new List<ControllerReferenceCollection>();
 
 			// If the controller doesn't exist, abandon.
 			OutputController controller = (OutputController)VixenSystem.Controllers.Get(StartingPoint.ControllerId);
-			if(controller == null) return new ControllerReference[0];
+			if(controller == null) return controllerReferences;
 
 			int outputIndex = StartingPoint.OutputIndex;
-			while(consecutiveApplicationCount-- > 0 && PatchingHelper.IsValidOutputIndex(outputIndex, controller)) {
+			while(channelCount-- > 0 && PatchingHelper.IsValidOutputIndex(outputIndex, controller)) {
 				IEnumerable<ControllerReference> references = PatchingHelper.PatchControllerAt(controller, outputIndex, OutputCountToPatch);
-				controllerReferences.AddRange(references);
+				controllerReferences.Add(new ControllerReferenceCollection(references));
 				outputIndex += OutputCountToPatch;
 			}
 

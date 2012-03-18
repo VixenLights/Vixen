@@ -27,7 +27,7 @@ namespace Vixen.Data.Evaluator {
 
 			//// Stripping the alpha quantity to keep it from going negative.
 			//Value = color.ToArgb() & 0xffffff;
-			Value = Evaluator.Default(obj);
+			Value = Evaluator.ColorAsInt(obj);
 		}
 
 		public void Handle(IIntentState<long> obj) {

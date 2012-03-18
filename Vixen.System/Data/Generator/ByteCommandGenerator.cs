@@ -21,7 +21,7 @@ namespace Vixen.Data.Generator {
 		}
 
 		public void Handle(ICombinator<Color> obj) {
-			// Ignored
+			Value = new ByteValue((byte)(obj.Value.ToArgb() & 0xff));
 		}
 
 		public void Handle(ICombinator<long> obj) {

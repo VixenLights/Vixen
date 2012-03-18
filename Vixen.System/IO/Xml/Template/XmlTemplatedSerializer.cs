@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Xml.Linq;
 using Vixen.IO.Policy;
 using Vixen.IO.Result;
@@ -15,6 +16,11 @@ namespace Vixen.IO.Xml.Template {
 
 		public T Read(ref string filePath, IXmlStandardFileReadTemplate<T> readTemplate) {
 			filePath = readTemplate.GetAbsoluteFilePath(filePath);
+			if(!File.Exists(filePath)) {
+				_results.Add(new FileOperationResult(false, "File does not exist."));
+				return default(T);
+			}
+
 			XElement content = _LoadFile(filePath, readTemplate);
 
 			T obj = readTemplate.CreateNewObjectFor(filePath);

@@ -23,24 +23,44 @@ namespace Vixen.Rule.Patch {
 			get { return "To multiple outputs over a series of controllers"; }
 		}
 
-		public ControllerReference[] GenerateControllerReferences(int consecutiveApplicationCount) {
+		public IEnumerable<ControllerReferenceCollection> GenerateControllerReferenceCollections(int channelCount) {
+			List<ControllerReferenceCollection> controllerReferences = new List<ControllerReferenceCollection>();
+
 			// If the starting reference is bad, abandon?
 			OutputController startingController = (OutputController)VixenSystem.Controllers.Get(StartingPoint.ControllerId);
-			if(startingController == null || startingController.OutputCount <= StartingPoint.OutputIndex) return new ControllerReference[0];
+			if(startingController == null || startingController.OutputCount <= StartingPoint.OutputIndex) return controllerReferences;
 
 			// Build the list of controllers we're going to go over.
 			List<OutputController> subsequentControllers = new List<OutputController>(VixenSystem.Controllers.GetValidControllers(SubsequentControllers));
 
 			// Create a list of references from the controllers involved.
 			List<ControllerReference> allOutputs = new List<ControllerReference>();
+			// Start with the starting controller and the starting output.
 			allOutputs.AddRange(Enumerable.Range(StartingPoint.OutputIndex, startingController.OutputCount - StartingPoint.OutputIndex - 1).Select(x => new ControllerReference(startingController.Id, x)));
+			// Then add the subsequent controllers and all of their outputs.
 			foreach(OutputController controller in subsequentControllers) {
 				allOutputs.AddRange(Enumerable.Range(0, controller.OutputCount).Select(x => new ControllerReference(startingController.Id, x)));
 			}
 
-			// Take what we need from the list of references.
-			int referenceCount = Math.Min(consecutiveApplicationCount * OutputCountToPatch, allOutputs.Count);
-			return allOutputs.Take(referenceCount).ToArray();
+			// Take what we need from the list of references, creating a list for each
+			// channel involved (even if it ends up being empty).
+			while(channelCount-- > 0) {
+				ControllerReferenceCollection references = new ControllerReferenceCollection(allOutputs.Take(OutputCountToPatch));
+				controllerReferences.Add(references);
+			}
+
+			return controllerReferences;
+
+			//// Create a list of references from the controllers involved.
+			//List<ControllerReference> allOutputs = new List<ControllerReference>();
+			//allOutputs.AddRange(Enumerable.Range(StartingPoint.OutputIndex, startingController.OutputCount - StartingPoint.OutputIndex - 1).Select(x => new ControllerReference(startingController.Id, x)));
+			//foreach(OutputController controller in subsequentControllers) {
+			//    allOutputs.AddRange(Enumerable.Range(0, controller.OutputCount).Select(x => new ControllerReference(startingController.Id, x)));
+			//}
+
+			//// Take what we need from the list of references.
+			//int referenceCount = Math.Min(channelCount * OutputCountToPatch, allOutputs.Count);
+			//return allOutputs.Take(referenceCount).ToArray();
 		}
 	}
 }

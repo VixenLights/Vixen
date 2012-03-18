@@ -1,6 +1,6 @@
 ﻿using Vixen.Rule;
 
-namespace VixenApplication.PatchingControls {
+namespace VixenApplication.Controls {
 	interface IHasPatchRule {
 		IPatchingRule Rule { get; }
 	}

@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using Vixen.Rule;
 using Vixen.Rule.Patch;
 using Vixen.Sys;
 using Vixen.Sys.Output;
 
-namespace VixenApplication.PatchingControls {
+namespace VixenApplication.Controls {
 	public partial class ToNOutputsOverControllersEditor : UserControl, IHasPatchRule {
 		public ToNOutputsOverControllersEditor() {
 			InitializeComponent();

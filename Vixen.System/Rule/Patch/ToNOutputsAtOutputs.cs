@@ -21,8 +21,8 @@ namespace Vixen.Rule.Patch {
 			get { return "To a single series of outputs mirrored across multiple controllers"; }
 		}
 
-		public ControllerReference[] GenerateControllerReferences(int consecutiveApplicationCount) {
-			List<ControllerReference> controllerReferences = new List<ControllerReference>();
+		public IEnumerable<ControllerReferenceCollection> GenerateControllerReferenceCollections(int channelCount) {
+			List<ControllerReferenceCollection> controllerReferences = new List<ControllerReferenceCollection>();
 
 			// Get the mappings for only the valid controllers.
 			OutputController[] controllers = VixenSystem.Controllers.GetValidControllers(ControllerReferences.Select(x => x.ControllerId));
@@ -30,7 +30,7 @@ namespace Vixen.Rule.Patch {
 			ControllerReference[] validControllerReferences = ControllerReferences.Where(x => validControllerIds.Contains(x.ControllerId)).ToArray();
 
 			foreach(ControllerReference controllerReference in validControllerReferences) {
-				controllerReferences.AddRange(PatchingHelper.PatchControllerAt(controllers.FirstOrDefault(x => x.Id == controllerReference.ControllerId), controllerReference.OutputIndex, OutputCountToPatch));
+				controllerReferences.Add(new ControllerReferenceCollection(PatchingHelper.PatchControllerAt(controllers.FirstOrDefault(x => x.Id == controllerReference.ControllerId), controllerReference.OutputIndex, OutputCountToPatch)));
 			}
 
 			return controllerReferences.ToArray();

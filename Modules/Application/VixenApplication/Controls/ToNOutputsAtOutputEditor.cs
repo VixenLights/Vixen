@@ -7,7 +7,7 @@ using Vixen.Rule.Patch;
 using Vixen.Sys;
 using Vixen.Sys.Output;
 
-namespace VixenApplication.PatchingControls {
+namespace VixenApplication.Controls {
 	public partial class ToNOutputsAtOutputEditor : UserControl, IHasPatchRule {
 		public ToNOutputsAtOutputEditor() {
 			InitializeComponent();

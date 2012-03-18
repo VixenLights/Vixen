@@ -12,7 +12,9 @@ namespace Vixen.IO.Xml {
 		}
 
 		protected override PostFilterTemplate _Read(string filePath) {
-			return _templatedSerializer.Read(ref filePath, _serializerTemplate);
+			PostFilterTemplate template = _templatedSerializer.Read(ref filePath, _serializerTemplate);
+			template.FilePath = filePath;
+			return template;
 			//if(!Path.IsPathRooted(filePath)) filePath = Path.Combine(PostFilterTemplate.Directory, filePath);
 			//filePath = Path.ChangeExtension(filePath, PostFilterTemplate.Extension);
 
@@ -26,6 +28,7 @@ namespace Vixen.IO.Xml {
 
 		protected override void _Write(PostFilterTemplate value, string filePath) {
 			_templatedSerializer.Write(value, ref filePath, _serializerTemplate);
+			value.FilePath = filePath;
 			//XmlVersionedContent content = new XmlVersionedContent("PostFilterTemplate");
 			//IFilePolicy filePolicy = new XmlPostFilterTemplatePolicy(value, content);
 			//content.Version = filePolicy.GetVersion();

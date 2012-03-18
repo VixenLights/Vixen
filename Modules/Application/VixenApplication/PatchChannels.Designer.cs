@@ -33,6 +33,9 @@
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.buttonCommit = new System.Windows.Forms.Button();
+			this.checkBoxApplyFilterTemplate = new System.Windows.Forms.CheckBox();
+			this.comboBoxFilterTemplate = new System.Windows.Forms.ComboBox();
+			this.buttonCreateFilterTemplate = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -87,7 +90,7 @@
 			// 
 			// buttonPreview
 			// 
-			this.buttonPreview.Location = new System.Drawing.Point(219, 102);
+			this.buttonPreview.Location = new System.Drawing.Point(219, 144);
 			this.buttonPreview.Name = "buttonPreview";
 			this.buttonPreview.Size = new System.Drawing.Size(75, 23);
 			this.buttonPreview.TabIndex = 11;
@@ -104,9 +107,9 @@
             this.columnHeader1,
             this.columnHeader2});
 			this.listViewPreview.FullRowSelect = true;
-			this.listViewPreview.Location = new System.Drawing.Point(221, 144);
+			this.listViewPreview.Location = new System.Drawing.Point(221, 173);
 			this.listViewPreview.Name = "listViewPreview";
-			this.listViewPreview.Size = new System.Drawing.Size(356, 173);
+			this.listViewPreview.Size = new System.Drawing.Size(356, 144);
 			this.listViewPreview.TabIndex = 12;
 			this.listViewPreview.UseCompatibleStateImageBehavior = false;
 			this.listViewPreview.View = System.Windows.Forms.View.Details;
@@ -132,11 +135,46 @@
 			this.buttonCommit.UseVisualStyleBackColor = true;
 			this.buttonCommit.Click += new System.EventHandler(this.buttonCommit_Click);
 			// 
+			// checkBoxApplyFilterTemplate
+			// 
+			this.checkBoxApplyFilterTemplate.AutoSize = true;
+			this.checkBoxApplyFilterTemplate.Location = new System.Drawing.Point(219, 84);
+			this.checkBoxApplyFilterTemplate.Name = "checkBoxApplyFilterTemplate";
+			this.checkBoxApplyFilterTemplate.Size = new System.Drawing.Size(117, 17);
+			this.checkBoxApplyFilterTemplate.TabIndex = 14;
+			this.checkBoxApplyFilterTemplate.Text = "Apply filter template";
+			this.checkBoxApplyFilterTemplate.UseVisualStyleBackColor = true;
+			this.checkBoxApplyFilterTemplate.CheckedChanged += new System.EventHandler(this.checkBoxApplyFilterTemplate_CheckedChanged);
+			// 
+			// comboBoxFilterTemplate
+			// 
+			this.comboBoxFilterTemplate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxFilterTemplate.Enabled = false;
+			this.comboBoxFilterTemplate.FormattingEnabled = true;
+			this.comboBoxFilterTemplate.Location = new System.Drawing.Point(342, 82);
+			this.comboBoxFilterTemplate.Name = "comboBoxFilterTemplate";
+			this.comboBoxFilterTemplate.Size = new System.Drawing.Size(155, 21);
+			this.comboBoxFilterTemplate.TabIndex = 15;
+			// 
+			// buttonCreateFilterTemplate
+			// 
+			this.buttonCreateFilterTemplate.Enabled = false;
+			this.buttonCreateFilterTemplate.Location = new System.Drawing.Point(503, 80);
+			this.buttonCreateFilterTemplate.Name = "buttonCreateFilterTemplate";
+			this.buttonCreateFilterTemplate.Size = new System.Drawing.Size(52, 23);
+			this.buttonCreateFilterTemplate.TabIndex = 16;
+			this.buttonCreateFilterTemplate.Text = "New";
+			this.buttonCreateFilterTemplate.UseVisualStyleBackColor = true;
+			this.buttonCreateFilterTemplate.Click += new System.EventHandler(this.buttonCreateFilterTemplate_Click);
+			// 
 			// PatchChannels
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(623, 358);
+			this.Controls.Add(this.buttonCreateFilterTemplate);
+			this.Controls.Add(this.comboBoxFilterTemplate);
+			this.Controls.Add(this.checkBoxApplyFilterTemplate);
 			this.Controls.Add(this.buttonCommit);
 			this.Controls.Add(this.listViewPreview);
 			this.Controls.Add(this.buttonPreview);
@@ -165,5 +203,8 @@
 		private System.Windows.Forms.Button buttonCommit;
 		private System.Windows.Forms.ColumnHeader columnHeader1;
 		private System.Windows.Forms.ColumnHeader columnHeader2;
+		private System.Windows.Forms.CheckBox checkBoxApplyFilterTemplate;
+		private System.Windows.Forms.ComboBox comboBoxFilterTemplate;
+		private System.Windows.Forms.Button buttonCreateFilterTemplate;
 	}
 }

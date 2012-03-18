@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using Vixen.IO.Result;
 using Vixen.Sys;
 
@@ -21,8 +20,8 @@ namespace Vixen.IO {
 			_ClearResults();
 
 			try {
-				if(File.Exists(filePath)) {
-					ObjectType value = _Read(filePath);
+				ObjectType value = _Read(filePath);
+				if(value != default(ObjectType)) {
 					serializationResult = new SerializationResult<ObjectType>(true, "File read successful.", value, _results);
 				} else {
 					serializationResult = new SerializationResult<ObjectType>(false, "File does not exist.", null, _results);
