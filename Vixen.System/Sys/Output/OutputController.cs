@@ -84,14 +84,17 @@ namespace Vixen.Sys.Output {
 				lock(_outputs) {
 					foreach(OutputController controller in this) {
 						// All outputs for a controller update in parallel.
-						Parallel.ForEach(controller._outputs, x =>
-						                                      	{
-						                                      		x.UpdateState();
-						                                      		// (User may be allowed to skip this step in the future).
-						                                      		x.FilterState();
-						                                      		//*** don't like Output.Command
-						                                      		x.Command = _GenerateCommand(x.State);
-						                                      	});
+						// ForAll doesn't collate the results, a slight optimization since
+						// we don't care about the order they complete in.
+						controller._outputs.AsParallel().ForAll(x =>
+						//Parallel.ForEach(controller._outputs, x =>
+							{
+								x.UpdateState();
+								// (User may be allowed to skip this step in the future).
+								x.FilterState();
+								//*** don't like Output.Command
+								x.Command = _GenerateCommand(x.State);
+							});
 					}
 
 					// Latch out the new state.

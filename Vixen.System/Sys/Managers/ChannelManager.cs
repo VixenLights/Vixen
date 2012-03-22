@@ -148,9 +148,7 @@ namespace Vixen.Sys.Managers {
 			lock(_instances) {
 				_stopwatch.Restart();
 
-				Parallel.ForEach(_instances.Values, x => x.Update());
-				//// (User may be allowed to skip this step in the future).
-				//Parallel.ForEach(_instances.Values, x => x.FilterState());
+				_instances.Values.AsParallel().ForAll(x => x.Update());
 
 				_channelUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 			}

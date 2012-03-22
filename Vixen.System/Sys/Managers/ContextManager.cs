@@ -57,7 +57,7 @@ namespace Vixen.Sys.Managers {
 			lock(_instances) {
 				_stopwatch.Restart();
 				
-				Parallel.ForEach(_instances.Values, context => {
+				_instances.Values.AsParallel().ForAll(context => {
 					// Get a snapshot time value for this update.
 					TimeSpan contextTime = context.GetTimeSnapshot();
 					// Broken up so that filtering can be skipped at some future point.

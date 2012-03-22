@@ -54,25 +54,25 @@ namespace Vixen.Sys {
 			get { return Effect == null; }
 		}
 
-		public EffectIntents RenderEffectData() {
-			return !IsEmpty ? Effect.Render() : null;
-		}
+		//public EffectIntents RenderEffectData() {
+		//    return !IsEmpty ? Effect.Render() : null;
+		//}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="desiredStartTime">Relative to the start of the EffectNode.</param>
-		/// <param name="desiredDuration">Duration of effect to render.</param>
-		/// <returns></returns>
-		public EffectIntents RenderEffectData(TimeSpan desiredStartTime, TimeSpan desiredDuration) {
-			if(!IsEmpty) {
-				// We're providing the length of the desired effect and a relative start time for rendering.
-				TimeSpan renderStartTime = (desiredStartTime < TimeSpan) ? desiredStartTime : TimeSpan.Zero;
-				TimeSpan renderTimeSpan = (renderStartTime + desiredDuration < TimeSpan) ? desiredDuration : TimeSpan - renderStartTime;
-				return Effect.Render(renderStartTime, renderTimeSpan);
-			}
-			return null;
-		}
+		///// <summary>
+		///// 
+		///// </summary>
+		///// <param name="desiredStartTime">Relative to the start of the EffectNode.</param>
+		///// <param name="desiredDuration">Duration of effect to render.</param>
+		///// <returns></returns>
+		//public EffectIntents RenderEffectData(TimeSpan desiredStartTime, TimeSpan desiredDuration) {
+		//    if(!IsEmpty) {
+		//        // We're providing the length of the desired effect and a relative start time for rendering.
+		//        TimeSpan renderStartTime = (desiredStartTime < TimeSpan) ? desiredStartTime : TimeSpan.Zero;
+		//        TimeSpan renderTimeSpan = (renderStartTime + desiredDuration < TimeSpan) ? desiredDuration : TimeSpan - renderStartTime;
+		//        return Effect.Render(renderStartTime, renderTimeSpan);
+		//    }
+		//    return null;
+		//}
 
 		static public readonly EffectNode Empty = new EffectNode();
 
