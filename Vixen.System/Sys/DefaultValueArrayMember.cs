@@ -15,6 +15,10 @@ namespace Vixen.Sys {
 			_valueProperties = _owner.GetType().GetProperties().Where(x => x.GetCustomAttributes(typeof(ValueAttribute), true).Length == 1).ToArray();
 		}
 
+		/// <summary>
+		/// Read-only array of values.  Writes to this array will not persist.
+		/// Set this property's value to affect the array.
+		/// </summary>
 		public object[] Values {
 			get { return _valueProperties.Select(x => x.GetValue(_owner, null)).ToArray(); }
 			set {

@@ -8,64 +8,59 @@ namespace Vixen.Module.Effect {
 	abstract public class EffectModuleInstanceBase : ModuleInstanceBase, IEffectModuleInstance, IEqualityComparer<IEffectModuleInstance>, IEquatable<IEffectModuleInstance>, IEqualityComparer<EffectModuleInstanceBase>, IEquatable<EffectModuleInstanceBase> {
 		private ChannelNode[] _targetNodes;
 		private TimeSpan _timeSpan;
-		//private PropertyInfo[] _parameterValues;
 		private DefaultValueArrayMember _parameterValues;
 		private ChannelIntents _channelIntents;
+		private bool _isDirty;
 
 		protected EffectModuleInstanceBase() {
+			SubordinateEffects = new List<SubordinateEffect>();
 			TargetNodes = new ChannelNode[0];
 			TimeSpan = TimeSpan.Zero;
 			IsDirty = true;
-			//*** Going with automatic value handling now!  Super cool! ***
-			//ParameterValues = new object[0];
-			//_parameterValues = ValueAttribute.GetValueMembers(this);
 			_parameterValues = new DefaultValueArrayMember(this);
-			SubordinateEffects = new List<SubordinateEffect>();
 			_channelIntents = new ChannelIntents();
 		}
 
-		//*** consider subordinates
-		virtual public bool IsDirty { get; protected set; }
+		public bool IsDirty {
+			get { return _isDirty || SubordinateEffects.Any(x => x.Effect.IsDirty); }
+			private set { _isDirty = value; }
+		}
 
-		//*** update subordinates
-		virtual public ChannelNode[] TargetNodes {
+		public ChannelNode[] TargetNodes {
 			get { return _targetNodes; }
 			set {
 				if(value != _targetNodes) {
 					_targetNodes = value;
+					foreach(SubordinateEffect subordinateEffect in SubordinateEffects) {
+						subordinateEffect.Effect.TargetNodes = value;
+					}
 					IsDirty = true;
 				}
 			}
 		}
 
-		//*** update subordinates
-		virtual public TimeSpan TimeSpan {
+		public TimeSpan TimeSpan {
 			get { return _timeSpan; }
 			set {
 				if(value != _timeSpan) {
 					_timeSpan = value;
+					foreach(SubordinateEffect subordinateEffect in SubordinateEffects) {
+						subordinateEffect.Effect.TimeSpan = value;
+					}
 					IsDirty = true;
 				}
 			}
 		}
 
-		//virtual public object[] ParameterValues { get; set; }
-		//virtual public object[] ParameterValues { 
-		//    get { return _parameterValues.Select(x => x.GetValue(this, null)).ToArray(); }
-		//    set {
-		//        if(value.Length != _parameterValues.Length) throw new InvalidOperationException("Invalid number of values.  Expected " + _valueProperties.Length + ".");
-		//        for(int i = 0; i < value.Length; i++) {
-		//            _parameterValues[i].SetValue(this, value[i], null);
-		//        }
-		//    }
-		//}
-		public virtual object[] ParameterValues {
+		public object[] ParameterValues {
 			get { return _parameterValues.Values; }
-			set { _parameterValues.Values = value; }
+			set { 
+				_parameterValues.Values = value;
+				IsDirty = true;
+			}
 		}
 
 		public void PreRender() {
-			// System-side caching/dirty would use this hook.
 			_PreRender();
 			IsDirty = false;
 		}

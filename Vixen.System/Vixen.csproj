@@ -167,6 +167,11 @@
     <Compile Include="Sys\ChannelNodeTemplate.cs" />
     <Compile Include="Sys\ChannelStateSource.cs" />
     <Compile Include="Sys\ChannelStateSourceCollection.cs" />
+    <Compile Include="Sys\CombinationOperation\BooleanNand.cs" />
+    <Compile Include="Sys\CombinationOperation\BooleanNor.cs" />
+    <Compile Include="Sys\CombinationOperation\BooleanXnor.cs" />
+    <Compile Include="Sys\CombinationOperation\BooleanXor.cs" />
+    <Compile Include="Sys\CombinationOperation\BooleanOr.cs" />
     <Compile Include="Sys\ControllerReference.cs">
       <SubType>Code</SubType>
     </Compile>

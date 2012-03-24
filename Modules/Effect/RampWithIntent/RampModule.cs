@@ -21,7 +21,7 @@ namespace RampWithIntent {
 				_addedSubordinate = true;
 				SubordinateEffects.Clear();
 				IEffectModuleInstance otherEffect = Vixen.Services.ApplicationServices.Get<IEffectModuleInstance>(Descriptor.TypeId);
-				otherEffect.ParameterValues = new object[] {0xf, 0xf};
+				otherEffect.ParameterValues = new object[] {0x1f, 0x1f};
 				otherEffect.TimeSpan = TimeSpan;
 				otherEffect.TargetNodes = TargetNodes;
 				SubordinateEffects.Add(new SubordinateEffect(otherEffect, new BooleanAnd()));
