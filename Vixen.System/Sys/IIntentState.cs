@@ -6,6 +6,7 @@ namespace Vixen.Sys {
 		TimeSpan RelativeTime { get; }
 		List<IFilterState> FilterStates { get; }
 		IIntentState Clone();
+		List<SubordinateIntentState> SubordinateIntentStates { get; }
 	}
 
 	interface IIntentState<out T> : IIntentState {

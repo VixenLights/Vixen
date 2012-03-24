@@ -13,6 +13,7 @@ namespace Vixen.Intent {
 			RelativeTime = intentRelativeTime;
 			_interpolator = new DoubleInterpolator();
 			FilterStates = new List<IFilterState>();
+			SubordinateIntentStates = new List<SubordinateIntentState>();
 		}
 
 		public TimeSpan RelativeTime { get; private set; }
@@ -22,12 +23,15 @@ namespace Vixen.Intent {
 		public double GetValue() {
 			double value;
 			_interpolator.Interpolate(RelativeTime, _intent.TimeSpan, _intent.StartValue, _intent.EndValue, out value);
-			return value;
+			return SubordinateIntentState.Aggregate(value, SubordinateIntentStates);
 		}
+
+		public List<SubordinateIntentState> SubordinateIntentStates { get; private set; }
 
 		public IIntentState Clone() {
 			PercentageTransitionIntentState newState = new PercentageTransitionIntentState(_intent, RelativeTime);
 			newState.FilterStates.AddRange(FilterStates);
+			newState.SubordinateIntentStates.AddRange(SubordinateIntentStates);
 			return newState;
 		}
 	}

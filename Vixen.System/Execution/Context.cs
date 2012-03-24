@@ -110,7 +110,7 @@ namespace Vixen.Execution {
 				IStateSource<IIntentStateList> stateSource = _channelStates.GetState(channelId);
 				if(stateSource != null && stateSource.State != null) {
 					// Add the channel's filters to each intent state.
-					IEnumerable<IFilterState> filterStates = preFilters.Select(x => x.CreateFilterState(_GetPreFilterRelativeTime(currentTime, x)));
+					IEnumerable<IFilterState> filterStates = preFilters.Select(x => x.CreateFilterState(Helper.GetPreFilterRelativeTime(currentTime, x)));
 					stateSource.State.AddFilters(filterStates);
 				}
 			}
@@ -134,19 +134,18 @@ namespace Vixen.Execution {
 		private void _DiscoverIntentsFromEffects(TimeSpan currentTime, IEnumerable<EffectNode> effects, IntentDiscoveryAction intentDiscoveryAction) {
 			// For each effect in the in-effect list for the context...
 			foreach(EffectNode effectNode in effects) {
-				// Render it to get a dictionary of intent collections by channel id.
-				EffectIntents effectIntents = effectNode.Effect.Render();
-				// For each channel id in the dictionary...
-				foreach(Guid channelId in effectIntents.Keys) {
-					// Get the current intent by effect-relative time.
-					TimeSpan effectRelativeTime = _GetEffectRelativeTime(currentTime, effectNode);
-					IntentNode intentNode = _GetCurrentEffectIntent(effectRelativeTime, effectIntents[channelId]);
-					// If there is an intent,
-					if(intentNode != null) {
-						// Get the current state command by intent-relative time.
-						TimeSpan intentRelativeTime = _GetIntentRelativeTime(effectRelativeTime, intentNode);
-						intentDiscoveryAction(channelId, intentNode, intentRelativeTime);
-					}
+				// Get a time value relative to the start of the effect.
+				TimeSpan effectRelativeTime = Helper.GetEffectRelativeTime(currentTime, effectNode);
+				// Get the channels the effect affects and the ways it will do so.
+				ChannelIntents channelIntents = effectNode.Effect.GetChannelIntents(effectRelativeTime);
+				// For each channel...
+				foreach(Guid channelId in channelIntents.ChannelIds) {
+					// Get the root intent node.
+					IntentNode intentNode = channelIntents[channelId];
+					// Get a timing value relative to the intent.
+					TimeSpan intentRelativeTime = Helper.GetIntentRelativeTime(effectRelativeTime, intentNode);
+					// Do whatever is going to be done.
+					intentDiscoveryAction(channelId, intentNode, intentRelativeTime);
 				}
 			}
 		}
@@ -206,17 +205,17 @@ namespace Vixen.Execution {
 			return preFilters.Where(x => x.PreFilter.TargetNodes.Contains(node)).ToArray();
 		}
 
-		private TimeSpan _GetEffectRelativeTime(TimeSpan currentTime, EffectNode effectNode) {
-			return currentTime - effectNode.StartTime;
-		}
+		//private TimeSpan _GetEffectRelativeTime(TimeSpan currentTime, EffectNode effectNode) {
+		//    return currentTime - effectNode.StartTime;
+		//}
 
-		private TimeSpan _GetIntentRelativeTime(TimeSpan effectRelativeTime, IntentNode intentNode) {
-			return effectRelativeTime - intentNode.StartTime;
-		}
+		//private TimeSpan _GetIntentRelativeTime(TimeSpan effectRelativeTime, IntentNode intentNode) {
+		//    return effectRelativeTime - intentNode.StartTime;
+		//}
 
-		private TimeSpan _GetPreFilterRelativeTime(TimeSpan sequenceRelativeTime, PreFilterNode preFilterNode) {
-			return sequenceRelativeTime - preFilterNode.StartTime;
-		}
+		//private TimeSpan _GetPreFilterRelativeTime(TimeSpan sequenceRelativeTime, PreFilterNode preFilterNode) {
+		//    return sequenceRelativeTime - preFilterNode.StartTime;
+		//}
 
 		private IntentNode _GetCurrentEffectIntent(TimeSpan effectRelativeTime, IEnumerable<IntentNode> intentNodes) {
 			return intentNodes.FirstOrDefault(x => effectRelativeTime >= x.StartTime && effectRelativeTime <= x.EndTime);

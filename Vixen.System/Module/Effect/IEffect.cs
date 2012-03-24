@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using Vixen.Sys;
 
@@ -29,10 +30,11 @@ namespace Vixen.Module.Effect {
 		// with every call.
 		EffectIntents Render();
 		EffectIntents Render(TimeSpan restrictingOffsetTime, TimeSpan restrictingTimeSpan);
-		//ChannelData Render();
-		//ChannelData Render(TimeSpan restrictingOffsetTime, TimeSpan restrictingTimeSpan);
 		string EffectName { get; }
 		ParameterSignature Parameters { get; }
 		void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle);
-	}
+
+    	List<SubordinateEffect> SubordinateEffects { get; }
+		ChannelIntents GetChannelIntents(TimeSpan currentTime);
+    }
 }

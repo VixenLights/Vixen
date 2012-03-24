@@ -5,13 +5,29 @@ using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
+using Vixen.Sys.CombinationOperation;
 
 namespace RampWithIntent {
 	public class RampModule : EffectModuleInstanceBase {
 		private RampData _data;
 		private EffectIntents _intents;
 
+		static private bool _addedSubordinate = false;
 		protected override void _PreRender() {
+			//**********************
+			//*** going to add a subordinate, just for testing
+			//*** only add one to the first instance of this effect
+			if(!_addedSubordinate) {
+				_addedSubordinate = true;
+				SubordinateEffects.Clear();
+				IEffectModuleInstance otherEffect = Vixen.Services.ApplicationServices.Get<IEffectModuleInstance>(Descriptor.TypeId);
+				otherEffect.ParameterValues = new object[] {0xf, 0xf};
+				otherEffect.TimeSpan = TimeSpan;
+				otherEffect.TargetNodes = TargetNodes;
+				SubordinateEffects.Add(new SubordinateEffect(otherEffect, new BooleanAnd()));
+			}
+			//**********************
+			
 			_intents = new EffectIntents();
 			Channel[] channels = TargetNodes.SelectMany(x => x).ToArray();
 
@@ -19,7 +35,7 @@ namespace RampWithIntent {
 				//IIntent intent = new FloatTransitionIntent(StartLevel, EndLevel, TimeSpan);
 				//IIntent intent = new PercentageTransitionIntent(StartLevel / 255, EndLevel / 255, TimeSpan);
 				IIntent intent = new LongTransitionIntent((long)StartLevel, (long)EndLevel, TimeSpan);
-				_intents.AddIntentForChannel(channel.Id, new IntentNode(intent, TimeSpan.Zero));
+				_intents.AddIntentForChannel(channel.Id, intent, TimeSpan.Zero);
 			}
 		}
 

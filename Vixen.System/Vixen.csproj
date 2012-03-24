@@ -163,6 +163,7 @@
     <Compile Include="Rule\Patch\ToNOutputsOverControllers.cs" />
     <Compile Include="Services\ChannelNodeService.cs" />
     <Compile Include="Services\PostFilterService.cs" />
+    <Compile Include="Sys\ChannelIntents.cs" />
     <Compile Include="Sys\ChannelNodeTemplate.cs" />
     <Compile Include="Sys\ChannelStateSource.cs" />
     <Compile Include="Sys\ChannelStateSourceCollection.cs" />
@@ -293,10 +294,15 @@
     <Compile Include="Sys\Instrumentation\OutputDeviceSleepTimeRequestedValue.cs" />
     <Compile Include="Sys\Instrumentation\OutputDeviceUpdateTimeValue.cs" />
     <Compile Include="Sys\IntentStateList.cs" />
+    <Compile Include="Sys\CombinationOperation\BooleanAnd.cs" />
+    <Compile Include="Sys\CombinationOperation\ICombinationOperation.cs" />
     <Compile Include="Sys\IOutputStateSource.cs" />
     <Compile Include="Sys\ITypeAffector.cs" />
     <Compile Include="Data\Evaluator\FloatEvaluator.cs" />
     <Compile Include="Data\Combinator\FloatHighestWinsCombinator.cs" />
+    <Compile Include="Sys\SubordinateEffect.cs" />
+    <Compile Include="Sys\SubordinateIntent.cs" />
+    <Compile Include="Sys\SubordinateIntentState.cs" />
     <Compile Include="Sys\OutputIntentStateList.cs" />
     <Compile Include="Sys\OutputStateSource.cs" />
     <Compile Include="Sys\ParameterSignature.cs" />
@@ -691,6 +697,7 @@
   <ItemGroup>
     <None Include="Resources\Effect64.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

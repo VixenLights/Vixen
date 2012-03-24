@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using Vixen.Sys;
-using Vixen.Commands;
 
 namespace Vixen.Module.Effect {
 	abstract public class EffectModuleInstanceBase : ModuleInstanceBase, IEffectModuleInstance, IEqualityComparer<IEffectModuleInstance>, IEquatable<IEffectModuleInstance>, IEqualityComparer<EffectModuleInstanceBase>, IEquatable<EffectModuleInstanceBase> {
@@ -10,6 +10,7 @@ namespace Vixen.Module.Effect {
 		private TimeSpan _timeSpan;
 		//private PropertyInfo[] _parameterValues;
 		private DefaultValueArrayMember _parameterValues;
+		private ChannelIntents _channelIntents;
 
 		protected EffectModuleInstanceBase() {
 			TargetNodes = new ChannelNode[0];
@@ -19,10 +20,14 @@ namespace Vixen.Module.Effect {
 			//ParameterValues = new object[0];
 			//_parameterValues = ValueAttribute.GetValueMembers(this);
 			_parameterValues = new DefaultValueArrayMember(this);
+			SubordinateEffects = new List<SubordinateEffect>();
+			_channelIntents = new ChannelIntents();
 		}
 
+		//*** consider subordinates
 		virtual public bool IsDirty { get; protected set; }
 
+		//*** update subordinates
 		virtual public ChannelNode[] TargetNodes {
 			get { return _targetNodes; }
 			set {
@@ -33,6 +38,7 @@ namespace Vixen.Module.Effect {
 			}
 		}
 
+		//*** update subordinates
 		virtual public TimeSpan TimeSpan {
 			get { return _timeSpan; }
 			set {
@@ -65,7 +71,6 @@ namespace Vixen.Module.Effect {
 		}
 
 		public EffectIntents Render() {
-			// System-side caching/dirty would use this hook.
 			if(IsDirty) {
 				PreRender();
 			}
@@ -73,7 +78,6 @@ namespace Vixen.Module.Effect {
 		}
 
 		public EffectIntents Render(TimeSpan restrictingOffsetTime, TimeSpan restrictingTimeSpan) {
-			// System-side caching/dirty would use this hook.
 			EffectIntents effectIntents = Render();
 			// NB: the ChannelData.Restrict method takes a start and end time, not a start and duration
 			effectIntents = EffectIntents.Restrict(effectIntents, restrictingOffsetTime, restrictingOffsetTime + restrictingTimeSpan);
@@ -99,6 +103,40 @@ namespace Vixen.Module.Effect {
 		public virtual void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle) {
 			g.Clear(Color.White);
 			g.DrawRectangle(Pens.Black, clipRectangle.X, clipRectangle.Y, clipRectangle.Width - 1, clipRectangle.Height - 1);
+		}
+
+		public List<SubordinateEffect> SubordinateEffects { get; private set; }
+
+		virtual public ChannelIntents GetChannelIntents(TimeSpan effectRelativeTime) {
+			_channelIntents.Clear();
+
+			_AddLocalIntents(effectRelativeTime);
+			_AddSubordinateIntents(effectRelativeTime);
+	
+			return _channelIntents;
+		}
+
+		private void _AddLocalIntents(TimeSpan effectRelativeTime) {
+			EffectIntents effectIntents = Render();
+			foreach(Guid channelId in effectIntents.ChannelIds) {
+				IntentNode channelIntent = _GetChannelIntent(effectIntents, channelId, effectRelativeTime);
+				_channelIntents.AddIntentNodeToChannel(channelId, channelIntent, null);
+			}
+		}
+
+		private void _AddSubordinateIntents(TimeSpan effectRelativeTime) {
+			foreach(SubordinateEffect subordinateEffect in SubordinateEffects) {
+				ChannelIntents subordinateChannelIntents = subordinateEffect.Effect.GetChannelIntents(effectRelativeTime);
+				_channelIntents.AddIntentNodesToChannels(subordinateChannelIntents, subordinateEffect.CombinationOperation);
+			}
+		}
+
+		private IntentNode _GetChannelIntent(EffectIntents effectIntents, Guid channelId, TimeSpan effectRelativeTime) {
+			List<IntentNode> channelIntents;
+			if(effectIntents.TryGetValue(channelId, out channelIntents)) {
+				return channelIntents.FirstOrDefault(x => effectRelativeTime >= x.StartTime && effectRelativeTime <= x.EndTime);
+			}
+			return null;
 		}
 
 		public override string ToString() {

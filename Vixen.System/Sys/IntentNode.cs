@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Vixen.Sys {
 	public class IntentNode : IIntentNode {
 		public IntentNode(IIntent intent, TimeSpan startTime) {
 			Intent = intent;
 			StartTime = startTime;
+			SubordinateIntents = new List<SubordinateIntent>();
 		}
 
 		public IIntent Intent { get; private set; }
@@ -21,8 +23,25 @@ namespace Vixen.Sys {
 		}
 
 		virtual public IIntentState CreateIntentState(TimeSpan intentRelativeTime) {
-			return Intent.CreateIntentState(intentRelativeTime);
+			IIntentState intentState = Intent.CreateIntentState(intentRelativeTime);
+
+			intentState.SubordinateIntentStates.AddRange(_GetSubordinateIntentStates(intentRelativeTime));
+
+			return intentState;
 		}
+
+		private IEnumerable<SubordinateIntentState> _GetSubordinateIntentStates(TimeSpan intentRelativeTime) {
+			return SubordinateIntents.Select(x => _GetSubordinateIntentState(intentRelativeTime, x));
+		}
+
+		private SubordinateIntentState _GetSubordinateIntentState(TimeSpan intentRelativeTime, SubordinateIntent subordinateIntent) {
+			TimeSpan otherIntentRelativeTime = Helper.TranslateIntentRelativeTime(intentRelativeTime, this, subordinateIntent.IntentNode);
+			IIntentState otherIntentState = subordinateIntent.IntentNode.CreateIntentState(otherIntentRelativeTime);
+			SubordinateIntentState subordinateIntentState = new SubordinateIntentState(otherIntentState, subordinateIntent.CombinationOperation);
+			return subordinateIntentState;
+		}
+
+		public List<SubordinateIntent> SubordinateIntents { get; private set; }
 
 		#region IComparer<IntentNode>
 		public class Comparer : IComparer<IIntentNode> {
@@ -39,35 +58,15 @@ namespace Vixen.Sys {
 		#endregion
 	}
 
-	//abstract public class IntentNode<T> : IntentNode, IIntentNode<T> where T : IIntent {
-	//    protected IntentNode(T intent, TimeSpan timeSpan)
-	//        : base(intent, timeSpan) {
-	//        Intent = intent;
-	//    }
-
-	//    new public T Intent { get; private set; }
-
-	//    override public IIntentState CreateIntentState(TimeSpan intentRelativeTime) {
-	//        return Intent.CreateIntentState(intentRelativeTime);
-	//    }
-	//}
-
-	//-------
-
 	public interface IIntentNode : IDataNode, IComparable<IIntentNode> {
 		IIntent Intent { get; }
-
-		//TimeSpan StartTime { get; set; }
-
-		//TimeSpan TimeSpan { get; }
-
-		//TimeSpan EndTime { get; }
 		IIntentState CreateIntentState(TimeSpan intentRelativeTime);
+		List<SubordinateIntent> SubordinateIntents { get; }
 	}
 
-	public interface IIntentNode<out T> : IIntentNode
-		where T : IIntent {
-		new T Intent { get; }
-	}
+	//public interface IIntentNode<T> : IIntentNode
+	//    where T : IIntent {
+	//    new T Intent { get; }
+	//}
 
 }

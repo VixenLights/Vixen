@@ -44,5 +44,27 @@ namespace Vixen.Sys {
 		static public TimeSpan? GetXmlTimeValue(XElement element, string attributeName) {
 			return XmlHelper.GetTimeSpanAttribute(element, attributeName);
 		}
+
+		static public TimeSpan GetEffectRelativeTime(TimeSpan currentTime, EffectNode effectNode) {
+			return currentTime - effectNode.StartTime;
+		}
+
+		static public TimeSpan GetIntentRelativeTime(TimeSpan effectRelativeTime, IntentNode intentNode) {
+			return effectRelativeTime - intentNode.StartTime;
+		}
+
+		static public TimeSpan GetPreFilterRelativeTime(TimeSpan sequenceRelativeTime, PreFilterNode preFilterNode) {
+			return sequenceRelativeTime - preFilterNode.StartTime;
+		}
+
+		static public TimeSpan GetEffectRelativeTime(TimeSpan intentRelativeTime, IntentNode intentNode) {
+			return intentNode.StartTime + intentRelativeTime;
+		}
+
+		static public TimeSpan TranslateIntentRelativeTime(TimeSpan intent1RelativeTime, IntentNode intent1, IntentNode intent2) {
+			TimeSpan effectRelativeTime = GetEffectRelativeTime(intent1RelativeTime, intent1);
+			TimeSpan otherIntentRelativeTime = GetIntentRelativeTime(effectRelativeTime, intent2);
+			return otherIntentRelativeTime;
+		}
 	}
 }

@@ -11,18 +11,18 @@ namespace Vixen.Data.Policy {
 			//When testing with effect generating 0-255 float values; produces float
 			//return new FloatEvaluator();
 			//When testing with effect generating 0-255 integer values; produces long
-			//return new LongEvaluator();
+			return new LongEvaluator();
 			//When tetsting with effect generating color values; produces color
-			return new ColorEvaluator();
+			//return new ColorEvaluator();
 		}
 
 		protected override ICombinator GetCombinator() {
-			//Combines evaluator values as floats
-			//return new FloatHighestWinsCombinator();
+			//Combines evaluator values as floats (use with float or long)
+			return new FloatHighestWinsCombinator();
 			//Combines evaluator values as % (double 0-1)
 			//return new PercentageHighestWinsCombinator();
 			//Combines evaluator values as colors
-			return new ColorCombinator();
+			//return new ColorCombinator();
 		}
 
 		protected override IGenerator GetGenerator() {
