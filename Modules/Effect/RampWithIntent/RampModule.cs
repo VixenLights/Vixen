@@ -12,18 +12,17 @@ namespace RampWithIntent {
 		private RampData _data;
 		private EffectIntents _intents;
 
-		static private bool _addedSubordinate = false;
+		private bool _isSubordinate;
 		protected override void _PreRender() {
 			//**********************
 			//*** going to add a subordinate, just for testing
-			//*** only add one to the first instance of this effect
-			if(!_addedSubordinate) {
-				_addedSubordinate = true;
+			if(!_isSubordinate) {
 				SubordinateEffects.Clear();
-				IEffectModuleInstance otherEffect = Vixen.Services.ApplicationServices.Get<IEffectModuleInstance>(Descriptor.TypeId);
+				RampModule otherEffect = (RampModule)Vixen.Services.ApplicationServices.Get<IEffectModuleInstance>(Descriptor.TypeId);
 				otherEffect.ParameterValues = new object[] {0x1f, 0x1f};
 				otherEffect.TimeSpan = TimeSpan;
 				otherEffect.TargetNodes = TargetNodes;
+				otherEffect._isSubordinate = true;
 				SubordinateEffects.Add(new SubordinateEffect(otherEffect, new BooleanAnd()));
 			}
 			//**********************

@@ -34,7 +34,7 @@ namespace Vixen.Services {
 
 			PostFilterTemplate template = result.Object;
 
-			IEnumerable<ControllerReferenceCollection> controllerReferenceCollections = patchingRule.GenerateControllerReferenceCollections(1);
+			IEnumerable<ControllerReferenceCollection> controllerReferenceCollections = patchingRule.GenerateControllerReferenceCollections(channelCount);
 
 			foreach(ControllerReferenceCollection controllerReferences in controllerReferenceCollections) {
 				_ApplyTemplateToOutputs(template, controllerReferences.ToArray());

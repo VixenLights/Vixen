@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Drawing;
 using System.Linq;
 using Vixen.Intent;
 using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
+using Vixen.Sys.CombinationOperation;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 
@@ -13,7 +15,22 @@ namespace ColorWithIntent {
 		private ColorData _data;
 		private EffectIntents _intents;
 
+		private bool _isSubordinate;
 		protected override void _PreRender() {
+			//**********************
+			//*** going to add a subordinate, just for testing
+			if(!_isSubordinate) {
+				ColorModule otherEffect = (ColorModule)Vixen.Services.ApplicationServices.Get<IEffectModuleInstance>(Descriptor.TypeId);
+				Curve levelCurve = LevelCurve;
+				ColorGradient colorGradient = new ColorGradient(Color.FromArgb(64,128,192));
+				otherEffect.ParameterValues = new object[] {levelCurve, colorGradient};
+				otherEffect.TimeSpan = TimeSpan;
+				otherEffect.TargetNodes = TargetNodes;
+				otherEffect._isSubordinate = true;
+				SubordinateEffects.Add(new SubordinateEffect(otherEffect, new BooleanAnd()));
+			}
+			//**********************
+
 			_intents = new EffectIntents();
 			Channel[] channels = TargetNodes.SelectMany(x => x).ToArray();
 
@@ -22,7 +39,7 @@ namespace ColorWithIntent {
 				ColorTransitionIntent intent = new ColorTransitionIntent(ColorGradient.Colors.First().Color.ToRGB(), ColorGradient.Colors.Last().Color.ToRGB(), TimeSpan);
 				//intent.TimeSpan = TimeSpan;
 				//intent.Values = new object[] { LevelCurve, ColorGradient };
-				_intents.AddIntentForChannel(channel.Id, new IntentNode(intent, TimeSpan.Zero));
+				_intents.AddIntentForChannel(channel.Id, intent, TimeSpan.Zero);
 			}
 		}
 

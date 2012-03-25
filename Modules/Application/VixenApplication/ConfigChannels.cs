@@ -960,6 +960,15 @@ namespace VixenApplication
 
 		private void patchToolStripMenuItem_Click(object sender, EventArgs e) {
 			IEnumerable<ChannelNode> channelNodes = multiSelectTreeviewChannelsGroups.SelectedNodes.Select(x => x.Tag).Cast<ChannelNode>();
+			_PatchAndName(channelNodes);
+		}
+
+		private void patchAllToolStripMenuItem_Click(object sender, EventArgs e) {
+			IEnumerable<ChannelNode> channelNodes = multiSelectTreeviewChannelsGroups.Nodes.Cast<TreeNode>().Select(x => x.Tag as ChannelNode);
+			_PatchAndName(channelNodes);
+		}
+
+		private void _PatchAndName(IEnumerable<ChannelNode> channelNodes) {
 			using(PatchChannels form = new PatchChannels(channelNodes)) {
 				form.ShowDialog();
 				PopulateFormWithNode(null, true);
