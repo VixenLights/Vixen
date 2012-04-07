@@ -65,11 +65,24 @@ namespace Vixen.Services {
 		}
 
 		public void Patch(IEnumerable<ChannelNode> channelNodes, IPatchingRule patchingRule) {
+			// If this were instead a part of an ongoing operation involving multiple calls to a method
+			// like this, the change set would have to be outside this method and passed in with the
+			// caller being responsible for its commitment.
+			ChannelPatchingChangeSet channelPatchingChangeSet = new ChannelPatchingChangeSet();
+
+			_PatchUsingChangeset(channelNodes, patchingRule, channelPatchingChangeSet);
+	
+			channelPatchingChangeSet.Commit();
+		}
+
+		private void _PatchUsingChangeset(IEnumerable<ChannelNode> channelNodes, IPatchingRule patchingRule, ChannelPatchingChangeSet channelPatchingChangeSet) {
 			Channel[] channelArray = channelNodes.Select(x => x.Channel).NotNull().ToArray();
 			ControllerReferenceCollection[] destinations = patchingRule.GenerateControllerReferenceCollections(channelArray.Length).ToArray();
 
-			for(int i=0; i<channelArray.Length; i++) {
-				VixenSystem.ChannelPatching.AddPatches(channelArray[i].Id, destinations[i]);
+			int patchesToAdd = Math.Min(channelArray.Length, destinations.Length);
+			for(int i = 0; i < patchesToAdd; i++) {
+				//VixenSystem.ChannelPatching.AddPatches(channelArray[i].Id, destinations[i]);
+				channelPatchingChangeSet.AddChannelPatches(channelArray[i].Id, destinations[i]);
 			}
 		}
 

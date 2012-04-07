@@ -46,8 +46,12 @@ namespace Vixen.Services {
 
 			for(int i = 0; i < countToAffect; i++) {
 				// Apply the appropriate list of filters to the appropriate output.
-				_ApplyFilterCollectionToOutput(template[i], controllerReferences[i]);
+				_ApplyFilterCollectionToOutput(_CloneFilters(template[i]), controllerReferences[i]);
 			}
+		}
+
+		private IEnumerable<IPostFilterModuleInstance> _CloneFilters(IEnumerable<IPostFilterModuleInstance> postFilterModules) {
+			return postFilterModules.Select(x => (IPostFilterModuleInstance)x.Clone());
 		}
 
 		private int _GetCountToAffect(IEnumerable<ControllerReference> controllerReferences, IEnumerable<PostFilterCollection> filterCollections) {

@@ -13,7 +13,9 @@ namespace Vixen.IO.Xml {
 
 		protected override ScriptSequence _Read(string filePath) {
 			ScriptSequence sequence = _templatedSerializer.Read(ref filePath, _serializerTemplate);
-			sequence.FilePath = filePath;
+			if(sequence != null) {
+				sequence.FilePath = filePath;
+			}
 			return sequence;
 			//ScriptSequence sequence = _CreateSequenceFor(filePath);
 			//XElement content = _LoadFile(filePath);

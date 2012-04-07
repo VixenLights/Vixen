@@ -7,11 +7,5 @@ namespace Vixen.Commands {
 		}
 
 		public byte Value { get; private set; }
-
-		//public void Dispatch(CommandDispatch commandDispatch) {
-		//    // Must be done in the classes being dispatched.
-		//    if(commandDispatch != null)
-		//        commandDispatch.DispatchCommand(this);
-		//}
 	}
 }

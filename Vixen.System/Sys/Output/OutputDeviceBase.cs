@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using Vixen.Commands;
 using Vixen.Sys.Instrumentation;
 
 namespace Vixen.Sys.Output {
@@ -9,7 +11,9 @@ namespace Vixen.Sys.Output {
 		private OutputDeviceUpdateTimeValue _updateTimeValue;
 		private Stopwatch _stopwatch;
 
-		protected OutputDeviceBase() {
+		protected OutputDeviceBase(Guid id, string name) {
+			Id = id;
+			Name = name;
 			_stopwatch = new Stopwatch();
 		}
 
@@ -59,7 +63,7 @@ namespace Vixen.Sys.Output {
 
 		virtual public string Name { get; set; }
 
-		abstract public int UpdateInterval { get; }
+		public int UpdateInterval { get; set; }
 
 		virtual public bool IsRunning {
 			get { return _isRunning; }
@@ -76,6 +80,13 @@ namespace Vixen.Sys.Output {
 			_UpdateState();
 			_updateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 		}
+
+		public IDataPolicy DataPolicy { get; set; }
+
+		public ICommand GenerateCommand(IEnumerable<IIntentState> outputState) {
+			return DataPolicy.GenerateCommand(outputState);
+		}
+
 		abstract protected void _UpdateState();
 
 		private void _SetupInstrumentation() {

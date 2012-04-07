@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Vixen.Module.Output;
+using Vixen.Module.Controller;
 
 namespace VixenModules.Output.DummyLighting
 {
-	public class DummyLightingDescriptor : OutputModuleDescriptorBase
+	public class DummyLightingDescriptor : ControllerModuleDescriptorBase
 	{
 		private Guid _typeId = new Guid("{b6ee6308-189c-4268-8996-32a4bab8ab5f}");
 
@@ -47,7 +47,7 @@ namespace VixenModules.Output.DummyLighting
 
 		public override int UpdateInterval {
 			get {
-				return 20;
+				return 40;
 			}
 		}
 	}

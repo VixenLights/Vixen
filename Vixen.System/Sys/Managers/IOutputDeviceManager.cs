@@ -6,7 +6,7 @@ namespace Vixen.Sys.Managers {
 	public interface IOutputDeviceManager : IEnumerable<IOutputDevice> {
 		void Start(IOutputDevice outputDevice);
 		void Stop(IOutputDevice outputDevice);
-		void StartAll();
+		//void StartAll();
 		void StopAll();
 		void StartAll(IEnumerable<IOutputDevice> outputDevices);
 		void StopAll(IEnumerable<IOutputDevice> outputDevices);

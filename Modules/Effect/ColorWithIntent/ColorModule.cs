@@ -22,8 +22,8 @@ namespace ColorWithIntent {
 			if(!_isSubordinate) {
 				ColorModule otherEffect = (ColorModule)Vixen.Services.ApplicationServices.Get<IEffectModuleInstance>(Descriptor.TypeId);
 				Curve levelCurve = LevelCurve;
-				ColorGradient colorGradient = new ColorGradient(Color.FromArgb(64,128,192));
-				otherEffect.ParameterValues = new object[] {levelCurve, colorGradient};
+				ColorGradient colorGradient = new ColorGradient(Color.FromArgb(64, 128, 192));
+				otherEffect.ParameterValues = new object[] { levelCurve, colorGradient };
 				otherEffect.TimeSpan = TimeSpan;
 				otherEffect.TargetNodes = TargetNodes;
 				otherEffect._isSubordinate = true;

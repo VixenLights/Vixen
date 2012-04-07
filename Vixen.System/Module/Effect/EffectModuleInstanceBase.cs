@@ -102,12 +102,14 @@ namespace Vixen.Module.Effect {
 
 		public List<SubordinateEffect> SubordinateEffects { get; private set; }
 
-		virtual public ChannelIntents GetChannelIntents(TimeSpan effectRelativeTime) {
+		/*virtual*/ public ChannelIntents GetChannelIntents(TimeSpan effectRelativeTime) {
 			_channelIntents.Clear();
 
 			_AddLocalIntents(effectRelativeTime);
-			_AddSubordinateIntents(effectRelativeTime);
-	
+			if(VixenSystem.AllowSubordinateEffects) {
+				_AddSubordinateIntents(effectRelativeTime);
+			}
+
 			return _channelIntents;
 		}
 

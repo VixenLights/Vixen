@@ -12,6 +12,9 @@
 			// Stop the controllers.
 			VixenSystem.Controllers.StopAll();
 
+			// Stop the previews.
+			VixenSystem.Previews.StopAll();
+
 			//// Close the channels.
 			//VixenSystem.Channels.CloseChannels();
 

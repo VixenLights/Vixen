@@ -5,11 +5,11 @@ using System.Text;
 using Vixen.Sys;
 using System.Diagnostics;
 using Vixen.Module;
-using Vixen.Module.Output;
+using Vixen.Module.Controller;
 using Vixen.Commands;
 
 namespace TestOutput {
-    public class _595 : OutputModuleInstanceBase {
+    public class _595 : ControllerModuleInstanceBase {
         private List<string> _output = new List<string>();
         private _595_Form _form;
         private Stopwatch _sw;

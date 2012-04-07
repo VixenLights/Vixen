@@ -127,7 +127,7 @@ namespace Vixen.Sys {
 				// 'copy' the current details (nodes/channels/controllers) from the executing state
 				// to the SystemConfig, so they're there for writing when we save
 				SystemConfig.Controllers = Controllers;
-				SystemConfig.OtherOutputDevices = OtherOutputDevices;
+				SystemConfig.Previews = Previews;
 				SystemConfig.Channels = Channels;
 				SystemConfig.Nodes = Nodes.GetRootNodes();
 				SystemConfig.ChannelPatching = ChannelPatching;
@@ -141,7 +141,7 @@ namespace Vixen.Sys {
 			Channels = new ChannelManager();
 			Nodes = new NodeManager();
 			Controllers = new ControllerManager();
-			OtherOutputDevices = new OutputDeviceManager();
+			Previews = new PreviewManager();
 			Contexts = new ContextManager();
 			ChannelPatching = new ChannelOutputPatchManager();
 			ControllerLinking = new ControllerLinker();
@@ -162,23 +162,9 @@ namespace Vixen.Sys {
 			Channels.AddChannels(SystemConfig.Channels);
 			Nodes.AddNodes(SystemConfig.Nodes);
 			Controllers.AddRange(SystemConfig.Controllers);
-			OtherOutputDevices.AddRange(SystemConfig.OtherOutputDevices);
+			Previews.AddRange(SystemConfig.Previews);
 			ChannelPatching.AddPatches(SystemConfig.ChannelPatching);
 			ControllerLinking.AddRange(SystemConfig.ControllerLinking);
-		}
-
-		private static ModuleStore _LoadModuleStore(string systemDataPath) {
-			string moduleStoreFilePath = Path.Combine(systemDataPath, ModuleStore.FileName);
-			FileSerializer<ModuleStore> serializer = SerializerFactory.Instance.CreateModuleStoreSerializer();
-			SerializationResult<ModuleStore> result = serializer.Read(moduleStoreFilePath);
-			return result.Object;
-		}
-
-		private static SystemConfig _LoadSystemConfig(string systemDataPath) {
-			string systemConfigFilePath = Path.Combine(systemDataPath, SystemConfig.FileName);
-			FileSerializer<SystemConfig> serializer = SerializerFactory.Instance.CreateSystemConfigSerializer();
-			SerializationResult<SystemConfig> result = serializer.Read(systemConfigFilePath);
-			return result.Object;
 		}
 
     	static public void ReloadSystemConfig()
@@ -195,8 +181,8 @@ namespace Vixen.Sys {
 				Nodes.RemoveNode(cn, null, true);
 			foreach (OutputController oc in Controllers.ToArray())
 				Controllers.Remove(oc);
-			foreach (IOutputDevice outputDevice in OtherOutputDevices.ToArray())
-				OtherOutputDevices.Remove(outputDevice);
+			foreach (IOutputDevice outputDevice in Previews.ToArray())
+				Previews.Remove(outputDevice);
 
 			LoadSystemConfig();
 
@@ -221,11 +207,20 @@ namespace Vixen.Sys {
 			get { return _logging; }
 		}
 
-		//*** Internalize, put calls through the services
-		static public ChannelManager Channels { get; private set; }
+    	public static bool AllowFilterEvaluation {
+    		get { return SystemConfig.AllowFilterEvaluation; }
+    		set { SystemConfig.AllowFilterEvaluation = value; }
+    	}
+
+    	public static bool AllowSubordinateEffects {
+    		get { return SystemConfig.AllowSubordinateEffects; }
+    		set { SystemConfig.AllowSubordinateEffects = value; }
+    	}
+
+    	static public ChannelManager Channels { get; private set; }
 		static public NodeManager Nodes { get; private set; }
 		static public ControllerManager Controllers { get; private set; }
-		static internal OutputDeviceManager OtherOutputDevices { get; private set; }
+    	static public PreviewManager Previews { get; private set; }
 		static public ContextManager Contexts { get; private set; }
     	static public IInstrumentation Instrumentation { get; private set; }
 		static public ChannelOutputPatchManager ChannelPatching { get; private set; }
@@ -233,6 +228,20 @@ namespace Vixen.Sys {
 
     	static internal ModuleStore ModuleStore { get; private set; }
 		static internal SystemConfig SystemConfig { get; private set; }
+
+		private static ModuleStore _LoadModuleStore(string systemDataPath) {
+			string moduleStoreFilePath = Path.Combine(systemDataPath, ModuleStore.FileName);
+			FileSerializer<ModuleStore> serializer = SerializerFactory.Instance.CreateModuleStoreSerializer();
+			SerializationResult<ModuleStore> result = serializer.Read(moduleStoreFilePath);
+			return result.Object;
+		}
+
+		private static SystemConfig _LoadSystemConfig(string systemDataPath) {
+			string systemConfigFilePath = Path.Combine(systemDataPath, SystemConfig.FileName);
+			FileSerializer<SystemConfig> serializer = SerializerFactory.Instance.CreateSystemConfigSerializer();
+			SerializationResult<SystemConfig> result = serializer.Read(systemConfigFilePath);
+			return result.Object;
+		}
 
 		static private void _InitializeLogging() {
 			_logging = new Logging();

@@ -33,7 +33,7 @@ namespace Vixen.IO {
 		public IEnumerable<IFileOperationResult> MigrationResults { get; private set; }
 
 		private void _BackupFile(string originalFilePath, int fileVersion) {
-			File.Copy(originalFilePath, originalFilePath + "." + fileVersion);
+			File.Copy(originalFilePath, originalFilePath + "." + fileVersion, true);
 		}
 	}
 }

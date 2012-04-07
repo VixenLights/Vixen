@@ -30,7 +30,7 @@ namespace Vixen.Rule.Patch {
 			ControllerReference[] validControllerReferences = ControllerReferences.Where(x => validControllerIds.Contains(x.ControllerId)).ToArray();
 
 			foreach(ControllerReference controllerReference in validControllerReferences) {
-				controllerReferences.Add(new ControllerReferenceCollection(PatchingHelper.PatchControllerAt(controllers.FirstOrDefault(x => x.Id == controllerReference.ControllerId), controllerReference.OutputIndex, OutputCountToPatch)));
+				controllerReferences.Add(new ControllerReferenceCollection(PatchingHelper.GenerateControllerReferences(controllers.FirstOrDefault(x => x.Id == controllerReference.ControllerId), controllerReference.OutputIndex, OutputCountToPatch)));
 			}
 
 			return controllerReferences.ToArray();

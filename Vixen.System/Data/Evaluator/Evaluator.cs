@@ -1,12 +1,31 @@
 ﻿using System.Drawing;
 using System.Linq;
 using Vixen.Sys;
+using Vixen.Sys.Dispatch;
 
 namespace Vixen.Data.Evaluator {
-	class Evaluator {
-		//static public T NumericDefault<T>(IIntentState<T> intentState) {
-		//    return intentState.FilterStates.Aggregate(intentState.GetValue(), (current, filterState) => filterState.Affect(current));
-		//}
+	public abstract class Evaluator<T, ResultType> : Dispatchable<T>, IEvaluator<ResultType>, IAnyIntentStateHandler
+		where T : Evaluator<T, ResultType> {
+		public void Evaluate(IIntentState intentState) {
+			intentState.Dispatch(this);
+		}
+
+		// Opt-in, not opt-out.  Default handlers will not be called
+		// from the base class.
+		virtual public void Handle(IIntentState<float> obj) { }
+
+		virtual public void Handle(IIntentState<System.DateTime> obj) { }
+
+		virtual public void Handle(IIntentState<Color> obj) { }
+
+		virtual public void Handle(IIntentState<long> obj) { }
+
+		virtual public void Handle(IIntentState<double> obj) { }
+
+		public ResultType Value { get; protected set; }
+	}
+
+	static public class Evaluator {
 		static public float Default(IIntentState<float> intentState) {
 			return intentState.FilterStates.Aggregate(intentState.GetValue(), (current, filterState) => filterState.Affect(current));
 		}

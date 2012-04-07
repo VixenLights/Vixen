@@ -1,80 +1,87 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Vixen.Module;
-using Vixen.Module.Output;
+using Vixen.Module.Controller;
 using Vixen.Module.PostFilter;
 using Vixen.Commands;
 
 namespace Vixen.Sys.Output {
 	public class OutputController : OutputDeviceBase, IEnumerable<OutputController> {
-		private Guid _outputModuleId;
-		private IOutputModuleInstance _outputModule;
+		private Guid _moduleId;
+		private IControllerModuleInstance _module;
 		private List<Output> _outputs = new List<Output>();
-		private ModuleLocalDataSet _moduleDataSet = new ModuleLocalDataSet();
+		private ModuleLocalDataSet _dataSet = new ModuleLocalDataSet();
 		private Output[] _outputArray = new Output[0];
+		private HashSet<IOutputSourceCollection> _sourceCollections;
 
-		public OutputController(string name, int outputCount, Guid outputModuleId)
-			: this(Guid.NewGuid(), name, outputCount, outputModuleId) {
+		public OutputController(string name, int outputCount, Guid moduleId)
+			: this(Guid.NewGuid(), name, outputCount, moduleId) {
 		}
 
-		public OutputController(Guid id, string name, int outputCount, Guid outputModuleId) {
-			Id = id;
-			Name = name;
-			OutputModuleId = outputModuleId;
+		public OutputController(Guid id, string name, int outputCount, Guid moduleId)
+			: base(id, name) {
+			//Id = id;
+			//Name = name;
+			ModuleId = moduleId;
 			OutputCount = outputCount;
+			_sourceCollections = new HashSet<IOutputSourceCollection>();
 		}
 
 		override protected void _Start() {
-			OutputModule.Start();
-		}
-
-		override protected void _Stop() {
-			OutputModule.Stop();
-		}
-
-		// Must be a property for data binding.
-		public Guid OutputModuleId {
-			get { return _outputModuleId; }
-			set {
-				_outputModuleId = value;
-				_outputModule = null;
+			if(Module != null) {
+				Module.Start(OutputCount);
 			}
 		}
 
-		public IOutputModuleInstance OutputModule {
-			get {
-				if(_outputModule == null) {
-					_outputModule = Modules.ModuleManagement.GetOutput(_outputModuleId);
+		override protected void _Stop() {
+			if(Module != null) {
+				Module.Stop();
+			}
+		}
 
-					_SetOutputModuleOutputCount();
-					_SetModuleData();
+		// Must be a property for data binding.
+		public Guid ModuleId {
+			get { return _moduleId; }
+			set {
+				_moduleId = value;
+				_module = null;
+			}
+		}
+
+		public IControllerModuleInstance Module {
+			get {
+				if(_module == null) {
+					_module = Modules.ModuleManagement.GetController(_moduleId);
+
+					if(_module != null) {
+						_SetOutputModuleOutputCount();
+						_SetModuleData();
+						ResetUpdateInterval();
+						ResetDataPolicy();
+					}
 				}
-				return _outputModule;
+				return _module;
 			}
 		}
 
 		private void _SetOutputModuleOutputCount() {
-			if(_outputModule != null && OutputCount != 0) {
-				_outputModule.OutputCount = OutputCount;
+			if(_module != null && OutputCount != 0) {
+				_module.OutputCount = OutputCount;
 			}
 		}
 
 		private void _SetModuleData() {
-			// Normally, we'd be responsible for providing the module with its
-			// data object and the module wouldn't have to worry about it, but
-			// the output module is going to store transform module data in the
-			// same dataset, so we'll give it the dataset and let it handle both.
-			if(_outputModule != null) {
-				_outputModule.ModuleDataSet = ModuleDataSet;
+			if(_module != null && ModuleDataSet != null) {
+				//_outputModule.ModuleDataSet = ModuleDataSet;
+				ModuleDataSet.AssignModuleTypeData(_module);
 			}
 		}
 
 		public ModuleLocalDataSet ModuleDataSet {
-			get { return _moduleDataSet; }
+			get { return _dataSet; }
 			set {
-				_moduleDataSet = value;
+				_dataSet = value;
 				_SetModuleData();
 			}
 		}
@@ -93,7 +100,7 @@ namespace Vixen.Sys.Output {
 								// (User may be allowed to skip this step in the future).
 								x.FilterState();
 								//*** don't like Output.Command
-								x.Command = _GenerateCommand(x.State);
+								x.Command = GenerateCommand(x.State);
 							});
 					}
 
@@ -113,9 +120,9 @@ namespace Vixen.Sys.Output {
 			}
 		}
 
-		private ICommand _GenerateCommand(IEnumerable<IIntentState> outputState) {
-			return OutputModule.DataPolicy.GenerateCommand(outputState);
-		}
+		//private ICommand _GenerateCommand(IEnumerable<IIntentState> outputState) {
+		//    return OutputModule.DataPolicy.GenerateCommand(outputState);
+		//}
 
 		public Output[] Outputs {
 			get { return _outputArray; }
@@ -143,18 +150,18 @@ namespace Vixen.Sys.Output {
 			}
 		}
 
-		private IOutputModuleInstance _ControllerChainOutputModule {
+		private IControllerModuleInstance _ControllerChainOutputModule {
 			get {
 				// When output controllers are linked, only the root controller will be
 				// connected to the port, therefore only it will have the output module
 				// used during execution.
 				OutputController priorController = VixenSystem.Controllers.GetPrior(this);
-				return (priorController != null) ? priorController._ControllerChainOutputModule : _outputModule;
+				return (priorController != null) ? priorController._ControllerChainOutputModule : _module;
 			}
 		}
 
 		override public bool HasSetup {
-			get { return _outputModule.HasSetup; }
+			get { return _module.HasSetup; }
 		}
 
 		/// <summary>
@@ -162,8 +169,8 @@ namespace Vixen.Sys.Output {
 		/// </summary>
 		/// <returns>True if the setup was successful and committed.  False if the user canceled.</returns>
 		override public bool Setup() {
-			if(_outputModule != null) {
-				if(_outputModule.Setup()) {
+			if(_module != null) {
+				if(_module.Setup()) {
 					//Commit();
 					return true;
 				}
@@ -171,15 +178,59 @@ namespace Vixen.Sys.Output {
 			return false;
 		}
 
-		public void AddSource(IOutputStateSource source, int outputIndex) {
-			if(source != null && outputIndex < OutputCount) {
-				_outputs[outputIndex].AddSource(source);
+		public void AddSources(IOutputSourceCollection sourceCollection) {
+			if(_sourceCollections.Add(sourceCollection)) {
+				ReloadSources();
 			}
 		}
 
-		public void RemoveSource(IOutputStateSource source, int outputIndex) {
-			if(source != null && outputIndex < OutputCount) {
-				_outputs[outputIndex].RemoveSource(source);
+		public void RemoveSources(IOutputSourceCollection sourceCollection) {
+			if(sourceCollection != null) {
+				if(_sourceCollections.Remove(sourceCollection)) {
+					ReloadSources();
+				}
+			}
+		}
+
+		public void ReloadSources() {
+			for(int i=0; i<OutputCount; i++) {
+				ReloadOutputSources(i);
+			}
+		}
+
+		public void ReloadOutputSources(int outputIndex) {
+			if(outputIndex < OutputCount) {
+				Output output = _outputs[outputIndex];
+				IEnumerable<IOutputStateSource> outputSources = _GetAllOutputSources(outputIndex);
+				output.ClearSources();
+				output.AddSources(outputSources);
+			}
+		}
+
+		private IEnumerable<IOutputStateSource> _GetAllOutputSources(int outputIndex) {
+			if(outputIndex < OutputCount) {
+				return _sourceCollections.SelectMany(x => x.GetOutputSources(Id, outputIndex));
+			}
+			return Enumerable.Empty<IOutputStateSource>();
+		}
+
+
+
+		//public void AddSource(IOutputStateSource source, int outputIndex) {
+		//    if(source != null && outputIndex < OutputCount) {
+		//        _outputs[outputIndex].AddSource(source);
+		//    }
+		//}
+
+		//public void RemoveSource(IOutputStateSource source, int outputIndex) {
+		//    if(source != null && outputIndex < OutputCount) {
+		//        _outputs[outputIndex].RemoveSource(source);
+		//    }
+		//}
+
+		public void ClearSources(int outputIndex) {
+			if(outputIndex < OutputCount) {
+				_outputs[outputIndex].ClearSources();
 			}
 		}
 
@@ -215,11 +266,19 @@ namespace Vixen.Sys.Output {
 		}
 
 		override public bool IsRunning {
-			get { return _outputModule != null && _outputModule.IsRunning; }
+			get { return _module != null && _module.IsRunning; }
 		}
 
-		override public int UpdateInterval {
-			get { return OutputModule.UpdateInterval; }
+		public void ResetUpdateInterval() {
+			if(Module != null) {
+				UpdateInterval = Module.UpdateInterval;
+			}
+		}
+
+		public void ResetDataPolicy() {
+			if(Module != null) {
+				DataPolicy = Module.DataPolicy;
+			}
 		}
 
 		public override string ToString() {
@@ -241,14 +300,16 @@ namespace Vixen.Sys.Output {
 
 		#region class Output
 		public class Output : IHasPostFilters, IHasOutputSources {
-			private LinkedList<IOutputStateSource> _sources;
+			//private LinkedList<IOutputStateSource> _sources;
+			private HashSet<IOutputStateSource> _sources;
 			private PostFilterCollection _postFilters;
 			private OutputIntentStateList _state;
 
 			public Output() {
 				Name = "Unnamed";
 				_postFilters = new PostFilterCollection();
-				_sources = new LinkedList<IOutputStateSource>();
+				//_sources = new LinkedList<IOutputStateSource>();
+				_sources = new HashSet<IOutputStateSource>();
 			}
 
 			//temporary
@@ -256,9 +317,24 @@ namespace Vixen.Sys.Output {
 			// Completely independent; nothing is current dependent upon this value.
 			public string Name { get; set; }
 
+			public void AddSources(IEnumerable<IOutputStateSource> sources) {
+				foreach(IOutputStateSource source in sources) {
+					AddSource(source);
+				}
+			}
+
 			public void AddSource(IOutputStateSource source) {
-				if(!_sources.Contains(source)) {
-					_sources.AddLast(source);
+				//Notable enough performance gain with the linked list enumerator to warrant a linked list
+				//collection with a HashSet index?
+				//if(!_sources.Contains(source)) {
+				//    _sources.AddLast(source);
+				//}
+				_sources.Add(source);
+			}
+
+			public void RemoveSources(IEnumerable<IOutputStateSource> sources) {
+				foreach(IOutputStateSource source in sources) {
+					_sources.Remove(source);
 				}
 			}
 
@@ -309,8 +385,12 @@ namespace Vixen.Sys.Output {
 			}
 
 			private void _AppendOutputFilters() {
-				IEnumerable<IFilterState> filterStates = _postFilters.Select(x => x.CreateFilterState());
-				_state.AddFilters(filterStates);
+				// VixenSystem.AllowFilterEvaluation would actually be caught by AddFilters, but
+				// we're going to save the time to do the LINQ.
+				if(VixenSystem.AllowFilterEvaluation) {
+					IEnumerable<IFilterState> filterStates = _postFilters.Select(x => x.CreateFilterState());
+					_state.AddFilters(filterStates);
+				}
 			}
 
 			public IIntentStateList State {

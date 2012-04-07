@@ -4,48 +4,60 @@
 			WriteContextFlag();
 			WriteIdentity();
 			WriteAlternateDataDirectory();
+			WriteFilterEvaluationAllowance();
+			WriteSubordinateEffectAllowance();
 			WriteChannels();
 			WriteNodes();
 			WriteControllers();
 			WriteControllerLinks();
 			WriteChannelPatching();
 			WriteDisabledControllers();
+			WritePreviews();
 		}
 
 		protected abstract void WriteContextFlag();
 		protected abstract void WriteIdentity();
 		protected abstract void WriteAlternateDataDirectory();
+		protected abstract void WriteFilterEvaluationAllowance();
+		protected abstract void WriteSubordinateEffectAllowance();
 		protected abstract void WriteChannels();
 		protected abstract void WriteNodes();
 		protected abstract void WriteControllers();
 		protected abstract void WriteControllerLinks();
 		protected abstract void WriteChannelPatching();
 		protected abstract void WriteDisabledControllers();
+		protected abstract void WritePreviews();
 
 		public void Read() {
 			ReadContextFlag();
 			ReadIdentity();
 			//ReadAlternateDataDirectory();
+			ReadFilterEvaluationAllowance();
+			ReadSubordinateEffectAllowance();
 			ReadChannels();
 			ReadNodes();
 			ReadControllers();
 			ReadControllerLinks();
 			ReadChannelPatching();
 			ReadDisabledControllers();
+			ReadPreviews();
 		}
 
 		protected abstract void ReadContextFlag();
 		protected abstract void ReadIdentity();
 		//protected abstract void ReadAlternateDataDirectory();
+		protected abstract void ReadSubordinateEffectAllowance();
+		protected abstract void ReadFilterEvaluationAllowance();
 		protected abstract void ReadChannels();
 		protected abstract void ReadNodes();
 		protected abstract void ReadControllers();
 		protected abstract void ReadControllerLinks();
 		protected abstract void ReadChannelPatching();
 		protected abstract void ReadDisabledControllers();
+		protected abstract void ReadPreviews();
 
 		public int GetVersion() {
-			return 7;
+			return 10;
 		}
 	}
 }

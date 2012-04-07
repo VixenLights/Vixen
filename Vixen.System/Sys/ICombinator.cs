@@ -5,7 +5,7 @@ namespace Vixen.Sys {
 		void Combine(IEnumerable<IEvaluator> evaluators);
 	}
 
-	interface ICombinator<out T> : ICombinator {
+	public interface ICombinator<out T> : ICombinator {
 		T Value { get; }
 	}
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Vixen.Sys;
 using Vixen.Module;
-using Vixen.Module.Output;
+using Vixen.Module.Controller;
 using Vixen.Commands;
 using Vixen.Commands.KnownDataTypes;
 using System.Net;
@@ -14,7 +14,7 @@ using System.Diagnostics;
 
 namespace VixenModules.Output.BlinkyLinky
 {
-	class BlinkyLinky : OutputModuleInstanceBase
+	class BlinkyLinky : ControllerModuleInstanceBase
 	{
 		private Dictionary<int, byte> _lastValues;
 		private Dictionary<int, int> _nullCommands;

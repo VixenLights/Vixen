@@ -29,7 +29,7 @@ namespace Vixen.Rule.Patch {
 
 			int outputIndex = StartingPoint.OutputIndex;
 			while(channelCount-- > 0 && PatchingHelper.IsValidOutputIndex(outputIndex, controller)) {
-				IEnumerable<ControllerReference> references = PatchingHelper.PatchControllerAt(controller, outputIndex, OutputCountToPatch);
+				IEnumerable<ControllerReference> references = PatchingHelper.GenerateControllerReferences(controller, outputIndex, OutputCountToPatch);
 				controllerReferences.Add(new ControllerReferenceCollection(references));
 				outputIndex += OutputCountToPatch;
 			}

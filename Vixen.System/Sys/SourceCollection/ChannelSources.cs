@@ -39,7 +39,8 @@ namespace Vixen.Sys.SourceCollection {
 
 		private IEnumerable<IOutputStateSource> _GetOutputSources(Guid controllerId, int outputIndex) {
 			//return VixenSystem.Channels.Select(x => x.Patch).Where(x => x.ControllerReferences.Any(y => y.ControllerId == controllerId && y.OutputIndex == outputIndex));
-			IEnumerable<Guid> channelIds = VixenSystem.ChannelPatching.Where(x => x.ControllerReferences.Any(y => y.ControllerId == controllerId && y.OutputIndex == outputIndex)).Select(x => x.ChannelId);
+			//IEnumerable<Guid> channelIds = VixenSystem.ChannelPatching.Where(x => x.ControllerReferences.Any(y => y.ControllerId == controllerId && y.OutputIndex == outputIndex)).Select(x => x.ChannelId);
+			IEnumerable<Guid> channelIds = VixenSystem.ChannelPatching.Where(x => x.Any(y => y.ControllerId == controllerId && y.OutputIndex == outputIndex)).Select(x => x.ChannelId);
 			return channelIds.Select(VixenSystem.Channels.GetChannel);
 		}
 	}

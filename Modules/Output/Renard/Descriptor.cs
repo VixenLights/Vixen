@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Module;
-using Vixen.Module.Output;
+using Vixen.Module.Controller;
 
 namespace VixenModules.Output.Renard
 {
-	public class Descriptor : OutputModuleDescriptorBase {
+	public class Descriptor : ControllerModuleDescriptorBase {
 		private Guid _typeId = new Guid("{F66130A6-FF8A-48a7-BF1E-FAC6CEC2FC2C}");
 
 		public override string Author {

@@ -2,13 +2,22 @@
 
 namespace Vixen.IO {
 	class MigrationSegment : IEquatable<MigrationSegment> {
-		public MigrationSegment(int fromVersion, int toVersion) {
+		private Action _migrationAction;
+
+		public MigrationSegment(int fromVersion, int toVersion, Action migrationAction) {
+			if(migrationAction == null) throw new ArgumentNullException("migrationAction");
+
 			FromVersion = fromVersion;
 			ToVersion = toVersion;
+			_migrationAction = migrationAction;
 		}
 
 		public int FromVersion { get; private set; }
 		public int ToVersion { get; private set; }
+
+		public void Execute() {
+			_migrationAction();
+		}
 
 		public bool Equals(MigrationSegment other) {
 			return other.FromVersion == FromVersion && other.ToVersion == ToVersion;

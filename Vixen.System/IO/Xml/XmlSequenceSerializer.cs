@@ -13,7 +13,9 @@ namespace Vixen.IO.Xml {
 
 		protected override Sequence _Read(string filePath) {
 			Sequence sequence = _templatedSerializer.Read(ref filePath, _serializerTemplate);
-			sequence.FilePath = filePath;
+			if(sequence != null) {
+				sequence.FilePath = filePath;
+			}
 			return sequence;
 			//if(!Path.IsPathRooted(filePath)) {
 			//    filePath = Path.Combine(Sequence.DefaultDirectory, filePath);

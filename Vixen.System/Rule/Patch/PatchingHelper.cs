@@ -7,7 +7,7 @@ using Vixen.Sys.Output;
 
 namespace Vixen.Rule.Patch {
 	class PatchingHelper {
-		static public IEnumerable<ControllerReference> PatchControllerAt(OutputController controller, int outputIndex, int countToPatch) {
+		static public IEnumerable<ControllerReference> GenerateControllerReferences(OutputController controller, int outputIndex, int countToPatch) {
 			List<ControllerReference> controllerReferences = new List<ControllerReference>();
 
 			int outputsToPatch = Math.Min(countToPatch, controller.OutputCount - outputIndex);

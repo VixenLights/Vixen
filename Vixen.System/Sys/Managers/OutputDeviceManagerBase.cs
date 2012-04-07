@@ -134,17 +134,21 @@ namespace Vixen.Sys.Managers {
 
 					outputDevice.Start();
 
-					// Create / Start the thread that updates the hardware.
-					HardwareUpdateThread thread = new HardwareUpdateThread(outputDevice);
-					thread.Error += _HardwareError;
-					lock(_updateThreads) {
-						_updateThreads[outputDevice.Id] = thread;
-					}
-					thread.Start();
+					if(outputDevice.IsRunning) {
+						// Create / Start the thread that updates the hardware.
+						HardwareUpdateThread thread = new HardwareUpdateThread(outputDevice);
+						thread.Error += _HardwareError;
+						lock(_updateThreads) {
+							_updateThreads[outputDevice.Id] = thread;
+						}
+						thread.Start();
 
-					_StartedDevice(outputDevice);
+						_StartedDevice(outputDevice);
+					} else {
+						VixenSystem.Logging.Error("Tried to start device " + outputDevice.Name + ", but it did not start.");
+					}
 				} catch(Exception ex) {
-					VixenSystem.Logging.Error("Error starting controller " + outputDevice.Name, ex);
+					VixenSystem.Logging.Error("Error starting device " + outputDevice.Name, ex);
 				}
 			}
 		}

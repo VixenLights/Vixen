@@ -3,7 +3,7 @@
 		void Evaluate(IIntentState intentState);
 	}
 
-	interface IEvaluator<out T> : IEvaluator {
+	public interface IEvaluator<out T> : IEvaluator {
 		T Value { get; }
 	}
 }

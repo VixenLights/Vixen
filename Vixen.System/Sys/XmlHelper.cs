@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 
 namespace Vixen.Sys {
@@ -29,6 +26,17 @@ namespace Vixen.Sys {
 		static public TimeSpan? GetTimeSpanAttribute(XElement element, string attributeName) {
 			long? attributeValue = GetLongAttribute(element, attributeName);
 			return (attributeValue != null) ? TimeSpan.FromTicks(attributeValue.Value) : (TimeSpan?)null;
+		}
+
+		static public bool GetElementValue(XElement contentElement, string childElementName, bool defaultValue) {
+			bool value = defaultValue;
+
+			XElement element = contentElement.Element(childElementName);
+			if(element != null) {
+				bool.TryParse(element.Value, out value);
+			}
+
+			return value;
 		}
 	}
 }

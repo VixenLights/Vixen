@@ -6,11 +6,11 @@ using Vixen.Sys;
 using System.Diagnostics;
 using System.Windows.Forms;
 using Vixen.Module;
-using Vixen.Module.Output;
+using Vixen.Module.Controller;
 using Vixen.Commands;
 
 namespace TestOutput {
-	public class Renard : OutputModuleInstanceBase {
+	public class Renard : ControllerModuleInstanceBase {
 	    private List<string> _output = new List<string>();
         private RenardForm _form;
         private Stopwatch _sw;

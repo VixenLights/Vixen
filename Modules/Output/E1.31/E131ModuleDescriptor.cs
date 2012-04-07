@@ -1,11 +1,11 @@
 ﻿namespace VixenModules.Controller.E131
 {
     using System;
-    using Vixen.Module.Output;
+    using Vixen.Module.Controller;
 
     using VixenModules.Output.E131;
 
-    public class E131ModuleDescriptor : OutputModuleDescriptorBase
+    public class E131ModuleDescriptor : ControllerModuleDescriptorBase
     {
         public override string TypeName
         {

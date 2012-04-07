@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using Vixen.Commands;
+using Vixen.Sys.Dispatch;
+
+namespace TestPreview {
+	class CommandHandler : CommandDispatch {
+		public override void Handle(ColorValue c) {
+			Value = c.Value;
+		}
+
+		public Color Value;
+	}
+}

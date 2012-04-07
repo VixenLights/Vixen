@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Vixen.Module;
-using Vixen.Module.Output;
+using Vixen.Module.Controller;
 using Vixen.Commands;
 
 namespace SampleOutput {
-	public class SampleOutputModule : OutputModuleInstanceBase {
+	public class SampleOutputModule : ControllerModuleInstanceBase {
 		private SampleOutputData _data;
 		private DisplayForm _form;
 

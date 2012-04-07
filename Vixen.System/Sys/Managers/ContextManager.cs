@@ -60,8 +60,8 @@ namespace Vixen.Sys.Managers {
 				_instances.Values.AsParallel().ForAll(context => {
 					// Get a snapshot time value for this update.
 					TimeSpan contextTime = context.GetTimeSnapshot();
-					// Broken up so that filtering can be skipped at some future point.
 					IEnumerable<Guid> affectedChannels = context.UpdateChannelStates(contextTime);
+					// (User may be allowed to skip this step in the future).
 					context.FilterChannelStates(affectedChannels, contextTime);
 					//Could possibly return affectedChannels so only affected outputs
 					//are updated.  The controller would have to maintain state so those

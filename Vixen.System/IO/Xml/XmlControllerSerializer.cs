@@ -22,15 +22,15 @@ namespace Vixen.IO.Xml {
 
 			XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
 			XElement dataSetElement = null;
-			if(controller.OutputModule != null) {
-				dataSetElement = dataSetSerializer.WriteObject(controller.OutputModule.ModuleDataSet);
+			if(controller.ModuleDataSet != null) {
+				dataSetElement = dataSetSerializer.WriteObject(controller.ModuleDataSet);
 			}
 
 			XmlPostFilterCollectionSerializer postFilterCollectionSerializer = new XmlPostFilterCollectionSerializer();
 
 			XElement element = new XElement(ELEMENT_CONTROLLER,
 				new XAttribute(ATTR_NAME, controller.Name),
-				new XAttribute(ATTR_HARDWARE_ID, controller.OutputModuleId),
+				new XAttribute(ATTR_HARDWARE_ID, controller.ModuleId),
 				new XAttribute(ATTR_OUTPUT_COUNT, controller.OutputCount),
 				new XAttribute(ATTR_ID, controller.Id),
 

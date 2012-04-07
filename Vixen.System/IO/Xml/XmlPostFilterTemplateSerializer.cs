@@ -13,7 +13,9 @@ namespace Vixen.IO.Xml {
 
 		protected override PostFilterTemplate _Read(string filePath) {
 			PostFilterTemplate template = _templatedSerializer.Read(ref filePath, _serializerTemplate);
-			template.FilePath = filePath;
+			if(template != null) {
+				template.FilePath = filePath;
+			}
 			return template;
 			//if(!Path.IsPathRooted(filePath)) filePath = Path.Combine(PostFilterTemplate.Directory, filePath);
 			//filePath = Path.ChangeExtension(filePath, PostFilterTemplate.Extension);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.IO;
@@ -65,6 +66,59 @@ namespace Vixen.Sys {
 			TimeSpan effectRelativeTime = GetEffectRelativeTime(intent1RelativeTime, intent1);
 			TimeSpan otherIntentRelativeTime = GetIntentRelativeTime(effectRelativeTime, intent2);
 			return otherIntentRelativeTime;
+		}
+
+		static public Color ConvertToGrayscale(float value) {
+			// Convert to grayscale, capping at 255.
+			byte b = ConvertToByte(value);
+			return ConvertToGrayscale(b);
+		}
+
+		static public Color ConvertToGrayscale(long value) {
+			// Convert to grayscale, capping at 255.
+			byte b = ConvertToByte(value);
+			return ConvertToGrayscale(b);
+		}
+
+		static public Color ConvertToGrayscale(int value) {
+			// Convert to grayscale, capping at 255.
+			byte b = ConvertToByte(value);
+			return ConvertToGrayscale(b);
+		}
+
+		static public Color ConvertToGrayscale(byte value) {
+			return Color.FromArgb(value, value, value);
+		}
+
+		static public Color ConvertToGrayscale(double value) {
+			// 0-1 representing 0-100%
+			byte b = (byte)(value * byte.MaxValue);
+			return ConvertToGrayscale(b);
+		}
+
+		static public byte ConvertToByte(float value) {
+			int i = (int)value;
+			i = Math.Max(byte.MinValue, i);
+			i = Math.Min(byte.MaxValue, i);
+			return (byte)i;
+		}
+
+		static public byte ConvertToByte(int value) {
+			value = Math.Max(byte.MinValue, value);
+			value = Math.Min(byte.MaxValue, value);
+			return (byte)value;
+		}
+
+		static public byte ConvertToByte(double value) {
+			// 0-1 representing 0-100%
+			value = value * byte.MaxValue;
+			return (byte)value;
+		}
+
+		static public byte ConvertToByte(long value) {
+			value = Math.Max(byte.MinValue, value);
+			value = Math.Min(byte.MaxValue, value);
+			return (byte)value;
 		}
 	}
 }

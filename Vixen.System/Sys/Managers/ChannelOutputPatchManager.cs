@@ -42,7 +42,7 @@ namespace Vixen.Sys.Managers {
 			channelPatch.Remove(controllerReference);
 		}
 
-		public ChannelOutputPatch GetChannelPatch(Guid channelId) {
+		public IEnumerable<ControllerReference> GetChannelPatches(Guid channelId) {
 			return _GetChannelPatch(channelId);
 		}
 

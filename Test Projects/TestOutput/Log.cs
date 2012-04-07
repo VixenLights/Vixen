@@ -5,11 +5,11 @@ using System.Text;
 using System.IO;
 using Vixen.Sys;
 using Vixen.Module;
-using Vixen.Module.Output;
+using Vixen.Module.Controller;
 using Vixen.Commands;
 
 namespace TestOutput {
-	public class Log : OutputModuleInstanceBase {
+	public class Log : ControllerModuleInstanceBase {
 		private bool _running = false;
 		private string _filePath = @"C:\VixenLogger.txt";
 		private StreamWriter _file;

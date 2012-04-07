@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Vixen.Module;
-using Vixen.Module.Output;
+using Vixen.Module.Controller;
 using Vixen.Commands;
 using Vixen.Commands.KnownDataTypes;
 
@@ -29,7 +29,7 @@ namespace VixenModules.Output.Hill320
             }
         }
     }
-    public class Module : OutputModuleInstanceBase
+    public class Module : ControllerModuleInstanceBase
     {
 
         private Data _moduleData;

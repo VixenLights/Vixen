@@ -9,7 +9,7 @@ namespace Vixen.Sys {
 		List<SubordinateIntentState> SubordinateIntentStates { get; }
 	}
 
-	interface IIntentState<out T> : IIntentState {
+	public interface IIntentState<out T> : IIntentState {
 		T GetValue();
 	}
 }

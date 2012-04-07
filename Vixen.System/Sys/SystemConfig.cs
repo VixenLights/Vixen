@@ -12,12 +12,10 @@ namespace Vixen.Sys {
 		private IEnumerable<Channel> _channels;
 		private IEnumerable<ChannelNode> _nodes;
 		private IEnumerable<IOutputDevice> _controllers;
-		private IEnumerable<IOutputDevice> _otherOutputDevices;
+		private IEnumerable<IOutputDevice> _previews;
 		private IEnumerable<ChannelOutputPatch> _channelPatching;
 		private IEnumerable<ControllerLink> _controllerLinking;
 		private List<Guid> _disabledControllers;
-
-		//private const int VERSION = 7;
 
 		[DataPath]
 		static public readonly string Directory = Path.Combine(Paths.DataRootPath, "SystemData");
@@ -27,6 +25,9 @@ namespace Vixen.Sys {
 		public SystemConfig() {
 			Identity = Guid.NewGuid();
 			_disabledControllers = new List<Guid>();
+			IsPreviewThreaded = true; // opt-out
+			AllowFilterEvaluation = true; // opt-out
+			AllowSubordinateEffects = true; // opt-out
 		}
 
 		public string LoadedFilePath { get; set; }
@@ -64,14 +65,14 @@ namespace Vixen.Sys {
 			set { _controllers = value; }
 		}
 
-		public IEnumerable<IOutputDevice> OtherOutputDevices {
+		public IEnumerable<IOutputDevice> Previews {
 			get {
-				if(_otherOutputDevices == null) {
-					_otherOutputDevices = new IOutputDevice[0];
+				if(_previews == null) {
+					_previews = new IOutputDevice[0];
 				}
-				return _otherOutputDevices;
+				return _previews;
 			}
-			set { _otherOutputDevices = value; }
+			set { _previews = value; }
 		}
 
 		public IEnumerable<ChannelOutputPatch> ChannelPatching {
@@ -101,6 +102,8 @@ namespace Vixen.Sys {
 
 		public bool IsContext { get; set; }
 
+		public bool IsPreviewThreaded { get; set; }
+
 		public string AlternateDataPath {
 			get { return _alternateDataPath; }
 			set {
@@ -113,14 +116,13 @@ namespace Vixen.Sys {
 			}
 		}
 
+		public bool AllowFilterEvaluation { get; set; }
+		public bool AllowSubordinateEffects { get; set; }
+
 		public void Save() {
 			FileSerializer<SystemConfig> serializer = SerializerFactory.Instance.CreateSystemConfigSerializer();
 			string filePath = LoadedFilePath ?? Path.Combine(Directory, FileName);
 			serializer.Write(this, filePath);
 		}
-
-		//public int Version {
-		//    get { return VERSION; }
-		//}
 	}
 }

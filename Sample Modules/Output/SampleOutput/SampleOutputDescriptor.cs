@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Vixen.Module.Output;
+using Vixen.Module.Controller;
 
 namespace SampleOutput {
-	public class SampleOutputDescriptor : OutputModuleDescriptorBase {
+	public class SampleOutputDescriptor : ControllerModuleDescriptorBase {
 		private Guid _typeId = new Guid("{BE95370C-1E68-422d-BD2E-EABFAED65A1B}");
 
 		public override string Author {

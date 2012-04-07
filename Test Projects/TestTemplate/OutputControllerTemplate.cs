@@ -5,7 +5,7 @@ using System.Text;
 using Vixen.Module;
 using Vixen.Module.ModuleTemplate;
 using Vixen.Module.Transform;
-using Vixen.Module.Output;
+using Vixen.Module.Controller;
 using Vixen.Services;
 using Vixen.Sys;
 
@@ -14,7 +14,7 @@ namespace TestTemplate {
 		private OutputControllerTemplateData _data;
 
 		public override void Project(IModuleInstance target) {
-			IOutputModuleInstance outputModule = target as IOutputModuleInstance;
+			IControllerModuleInstance outputModule = target as IControllerModuleInstance;
 			// Get instances of the transforms we reference.
 			ITransformModuleInstance[] transforms = _GetTransforms();
 			

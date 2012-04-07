@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Vixen.Sys;
 
-namespace Vixen.Module.Output {
-	class OutputModuleManagement : GenericModuleManagement<IOutputModuleInstance> {
+namespace Vixen.Module.Preview {
+	class PreviewModuleManagement : GenericModuleManagement<IPreviewModuleInstance> {
 	}
 }

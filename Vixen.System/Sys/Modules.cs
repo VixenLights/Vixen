@@ -293,6 +293,8 @@ namespace Vixen.Sys {
 				// See if there are any templates to apply to the instance.
 				ModuleTemplateModuleManagement manager = Modules.GetManager<IModuleTemplateModuleInstance, ModuleTemplateModuleManagement>();
 				manager.ProjectTemplateInto(instance);
+			} else {
+				VixenSystem.Logging.Warning("Attempt to instantiate non-existent module " + moduleTypeId);
 			}
 			return instance;
 		}

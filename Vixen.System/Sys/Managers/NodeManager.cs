@@ -49,7 +49,7 @@ namespace Vixen.Sys.Managers {
 
 		public void RemoveChannelLeaf(Channel channel) {
 			// Find any leaf nodes that reference this channel.
-			ChannelNode[] leafNodes = RootNode.GetNodeEnumerator().Where(x => x.Channel == channel).ToArray();
+			ChannelNode[] leafNodes = _instances.Values.Where(x => x.Channel == channel).ToArray();
 			// Remove all instances.
 			foreach(ChannelNode leafNode in leafNodes) {
 				// since we're effectively trying to remove the channel, we'll be removing
@@ -137,13 +137,13 @@ namespace Vixen.Sys.Managers {
 		}
 
 		private string _Uniquify(string name) {
-			if (RootNode.GetNodeEnumerator().Any(x => x.Name == name)) {
+			if (_instances.Values.Any(x => x.Name == name)) {
 				string originalName = name;
 				bool unique;
 				int counter = 2;
 				do {
 					name = originalName + "-" + counter++;
-					unique = !RootNode.GetNodeEnumerator().Any(x => x.Name == name);
+					unique = _instances.Values.All(x => x.Name != name);
 				} while(!unique);
 			}
 			return name;
@@ -197,7 +197,8 @@ namespace Vixen.Sys.Managers {
 		}
 
 		public IEnumerable<ChannelNode> GetAllNodes() {
-			return RootNode.Children.SelectMany(x => x.GetNodeEnumerator());
+			//return RootNode.Children.SelectMany(x => x.GetNodeEnumerator());
+			return _instances.Values;
 		}
 
 		public IEnumerator<ChannelNode> GetEnumerator()

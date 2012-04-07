@@ -121,7 +121,7 @@ namespace VixenTestbed {
 		private void _AddChannelNode(Channel channel) {
 			TreeNode channelNode = treeViewPatching.Nodes.Add(channel.Name);
 			channelNode.Tag = channel;
-			foreach(ControllerReference controllerReference in VixenSystem.ChannelPatching.GetChannelPatch(channel.Id)) {
+			foreach(ControllerReference controllerReference in VixenSystem.ChannelPatching.GetChannelPatches(channel.Id)) {
 				_AddChannelPatchNode(channelNode, controllerReference);
 			}
 		}

@@ -116,14 +116,14 @@ namespace Vixen.Sys {
 			// Load the system config into a new instance.
 			FileSerializer<SystemConfig> serializer = SerializerFactory.Instance.CreateSystemConfigSerializer();
 			SerializationResult<SystemConfig> result = serializer.Read(VixenSystem.SystemConfig.LoadedFilePath);
-			SystemConfig contextUserData = result.Object;
+			SystemConfig contextSysConfig = result.Object;
 
 			// Set the context flag.
-			contextUserData.IsContext = true;
+			contextSysConfig.IsContext = true;
 			
 			// Save to a temp file.
 			string tempFilePath = Path.GetTempFileName();
-			serializer.Write(contextUserData, tempFilePath);
+			serializer.Write(contextSysConfig, tempFilePath);
 
 			return tempFilePath;
 		}

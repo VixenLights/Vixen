@@ -171,16 +171,16 @@ namespace VixenApplication
 			}
 		}
 
-		private void AddNodeToTree(TreeNodeCollection collection, ChannelNode channel)
+		private void AddNodeToTree(TreeNodeCollection collection, ChannelNode channelNode)
 		{
 			TreeNode addedNode = new TreeNode();
-			addedNode.Name = channel.Id.ToString();
-			addedNode.Text = channel.Name;
-			addedNode.Tag = channel;
+			addedNode.Name = channelNode.Id.ToString();
+			addedNode.Text = channelNode.Name;
+			addedNode.Tag = channelNode;
 
-			if (channel.Children.Count() <= 0) {
-				if (channel.Channel != null && VixenSystem.ChannelPatching.GetChannelPatch(channel.Id).Count() > 0) {
-					if (channel.Channel.Masked)
+			if (!channelNode.Children.Any()) {
+				if (channelNode.Channel != null && VixenSystem.ChannelPatching.GetChannelPatches(channelNode.Channel.Id).Any()) {
+					if (channelNode.Channel.Masked)
 						addedNode.ImageKey = addedNode.SelectedImageKey = "RedBall";
 					else
 						addedNode.ImageKey = addedNode.SelectedImageKey = "GreenBall";
@@ -192,7 +192,7 @@ namespace VixenApplication
 
 			collection.Add(addedNode);
 
-			foreach (ChannelNode childNode in channel.Children) {
+			foreach (ChannelNode childNode in channelNode.Children) {
 				AddNodeToTree(addedNode.Nodes, childNode);
 			}
 		}
@@ -281,7 +281,7 @@ namespace VixenApplication
 			listViewPatches.Items.Clear();
 
 			if (node != null && node.Channel != null) {
-				ChannelOutputPatch channelPatch = VixenSystem.ChannelPatching.GetChannelPatch(node.Channel.Id);
+				var channelPatch = VixenSystem.ChannelPatching.GetChannelPatches(node.Channel.Id);
 				foreach (ControllerReference patch in channelPatch) {
 					ListViewItem item = new ListViewItem();
 					item.Text = patch.ToString();
@@ -408,7 +408,7 @@ namespace VixenApplication
 				if (MessageBox.Show(message, title, MessageBoxButtons.OKCancel) == DialogResult.OK) {
 					foreach (ListViewItem item in listViewPatches.SelectedItems) {
 						if (item.Tag is ControllerReference) {
-							VixenSystem.ChannelPatching.GetChannelPatch(_displayedNode.Channel.Id).Remove((ControllerReference)item.Tag);
+							VixenSystem.ChannelPatching.RemovePatch(_displayedNode.Channel.Id, (ControllerReference)item.Tag);
 						} else {
 							VixenSystem.Logging.Error("ConfigChannels: Trying to remove patch, but it's not a ControllerReference");
 						}
@@ -737,7 +737,7 @@ namespace VixenApplication
 
 		private bool CheckIfNodeWillLosePatches(ChannelNode node)
 		{
-			if (node != null && node.Channel != null && VixenSystem.ChannelPatching.GetChannelPatch(node.Channel.Id).Count() > 0) {
+			if (node != null && node.Channel != null && VixenSystem.ChannelPatching.GetChannelPatches(node.Channel.Id).Any()) {
 				string message = "Adding nodes to this Channel will convert it into a Group, which will remove any " +
 					"patches to outputs it may have. Are you sure you want to continue?";
 				string title = "Convert Channel to Group?";

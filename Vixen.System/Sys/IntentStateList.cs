@@ -5,11 +5,13 @@ namespace Vixen.Sys {
 		public IntentStateList() {
 		}
 
-		public IntentStateList(IEnumerable<IIntentState> states)
-			: base(states) {
+		public IntentStateList(IEnumerable<IIntentState> states) {
+			foreach(IIntentState intentState in states) {
+				AddIntentState(intentState);
+			}
 		}
 
-		public void AddIntentState(IIntentState intentState) {
+		virtual public void AddIntentState(IIntentState intentState) {
 			Add(intentState);
 		}
 
@@ -18,8 +20,10 @@ namespace Vixen.Sys {
 		/// </summary>
 		/// <param name="filterStates"></param>
 		public void AddFilters(IEnumerable<IFilterState> filterStates) {
-			foreach(IIntentState intentState in this) {
-				intentState.FilterStates.AddRange(filterStates);
+			if(VixenSystem.AllowFilterEvaluation) {
+				foreach(IIntentState intentState in this) {
+					intentState.FilterStates.AddRange(filterStates);
+				}
 			}
 		}
 	}

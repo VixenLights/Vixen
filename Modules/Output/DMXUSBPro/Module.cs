@@ -7,7 +7,7 @@ namespace VixenModules.Output.DmxUsbPro
     using CommonElements;
 
     using Vixen.Commands;
-    using Vixen.Module.Output;
+    using Vixen.Module.Controller;
 
     public class Module : OutputModuleInstanceBase
     {

@@ -13,7 +13,9 @@ namespace Vixen.IO.Xml {
 
 		protected override Program _Read(string filePath) {
 			Program program = _templatedSerializer.Read(ref filePath, _serializerTemplate);
-			program.FilePath = filePath;
+			if(program != null) {
+				program.FilePath = filePath;
+			}
 			return program;
 			//if(!Path.IsPathRooted(filePath)) filePath = Path.Combine(Program.Directory, filePath);
 			//filePath = Path.ChangeExtension(filePath, Program.Extension);

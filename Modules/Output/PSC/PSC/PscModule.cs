@@ -3,10 +3,10 @@ using System.Windows.Forms;
 using CommonElements;
 using Vixen.Commands;
 using Vixen.Module;
-using Vixen.Module.Output;
+using Vixen.Module.Controller;
 
 namespace PSC {
-	public class PscModule : OutputModuleInstanceBase {
+	public class PscModule : ControllerModuleInstanceBase {
 		private SerialPort _port;
 		private PscData _data;
 		private PSC _psc;

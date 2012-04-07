@@ -2,7 +2,7 @@
 {
     using System;
 
-    using Vixen.Module.Output;
+    using Vixen.Module.Controller;
 
     internal class Descriptor : OutputModuleDescriptorBase
     {

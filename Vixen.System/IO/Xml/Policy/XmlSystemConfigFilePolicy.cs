@@ -11,12 +11,13 @@ namespace Vixen.IO.Xml.Policy {
 
 		private const string ELEMENT_DATA_DIRECTORY = "DataDirectory";
 		private const string ELEMENT_IDENTITY = "Identity";
+		private const string ELEMENT_EVAL_FILTERS = "AllowFilterEvaluation";
+		private const string ELEMENT_SUB_EFFECTS = "AllowSubordinateEffects";
 		private const string ATTR_IS_CONTEXT = "isContext";
 
 		public XmlSystemConfigFilePolicy() {
 		}
 
-		//private const string ELEMENT_ROOT = "SystemConfig";
 		public XmlSystemConfigFilePolicy(SystemConfig systemConfig, XElement content) {
 			_systemConfig = systemConfig;
 			_content = content;
@@ -37,6 +38,14 @@ namespace Vixen.IO.Xml.Policy {
 			if(!string.IsNullOrWhiteSpace(_systemConfig.AlternateDataPath)) {
 				_content.Add(new XElement(ELEMENT_DATA_DIRECTORY, _systemConfig.AlternateDataPath));
 			}
+		}
+
+		protected override void WriteFilterEvaluationAllowance() {
+			_content.Add(new XElement(ELEMENT_EVAL_FILTERS, _systemConfig.AllowFilterEvaluation));
+		}
+
+		protected override void WriteSubordinateEffectAllowance() {
+			_content.Add(new XElement(ELEMENT_SUB_EFFECTS, _systemConfig.AllowSubordinateEffects));
 		}
 
 		protected override void WriteChannels() {
@@ -75,6 +84,12 @@ namespace Vixen.IO.Xml.Policy {
 			_content.Add(element);
 		}
 
+		protected override void WritePreviews() {
+			XmlPreviewCollectionSerializer serializer = new XmlPreviewCollectionSerializer();
+			XElement element = serializer.WriteObject(_systemConfig.Previews);
+			_content.Add(element);
+		}
+
 		protected override void ReadContextFlag() {
 			// The presence of the flag is enough.  The value is immaterial.
 			_systemConfig.IsContext = _content.Attribute(ATTR_IS_CONTEXT) != null;
@@ -92,6 +107,16 @@ namespace Vixen.IO.Xml.Policy {
 		//protected override void ReadAlternateDataDirectory() {
 		//    throw new NotImplementedException();
 		//}
+
+		protected override void ReadFilterEvaluationAllowance() {
+			// If it can't be determined, default to true.
+			_systemConfig.AllowFilterEvaluation = XmlHelper.GetElementValue(_content, ELEMENT_EVAL_FILTERS, true);
+		}
+
+		protected override void ReadSubordinateEffectAllowance() {
+			// If it can't be determined, default to true.
+			_systemConfig.AllowSubordinateEffects = XmlHelper.GetElementValue(_content, ELEMENT_SUB_EFFECTS, true);
+		}
 
 		protected override void ReadChannels() {
 			XmlChannelCollectionSerializer serializer = new XmlChannelCollectionSerializer();
@@ -121,6 +146,11 @@ namespace Vixen.IO.Xml.Policy {
 		protected override void ReadDisabledControllers() {
 			XmlDisabledControllerCollectionSerializer serializer = new XmlDisabledControllerCollectionSerializer();
 			_systemConfig.DisabledControllers = serializer.ReadObject(_content).Select(x => _systemConfig.Controllers.FirstOrDefault(y => x == y.Id)).NotNull();
+		}
+
+		protected override void ReadPreviews() {
+			XmlPreviewCollectionSerializer serializer = new XmlPreviewCollectionSerializer();
+			_systemConfig.Previews = serializer.ReadObject(_content);
 		}
 	}
 }

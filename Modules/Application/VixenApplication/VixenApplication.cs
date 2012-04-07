@@ -241,6 +241,16 @@ namespace VixenApplication
 			}
 		}
 
+		private void buttonSetupOutputPreviews_Click(object sender, EventArgs e) {
+			ConfigPreviews form = new ConfigPreviews();
+			DialogResult result = form.ShowDialog();
+			if(result == System.Windows.Forms.DialogResult.OK) {
+				VixenSystem.SaveSystemConfig();
+			} else {
+				VixenSystem.ReloadSystemConfig();
+			}
+		}
+
 		private void startToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Execution.OpenExecution();

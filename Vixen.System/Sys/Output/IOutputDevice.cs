@@ -6,8 +6,9 @@ namespace Vixen.Sys.Output {
 		void Stop();
 		Guid Id { get; }
 		string Name { get; set; }
-		int UpdateInterval { get; }
+		int UpdateInterval { get; set; }
 		bool IsRunning { get; }
 		void Update();
+		IDataPolicy DataPolicy { get; set; }
 	}
 }

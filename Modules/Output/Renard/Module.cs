@@ -3,12 +3,12 @@ using System.Text;
 using System.IO.Ports;
 using System.Windows.Forms;
 using Vixen.Module;
-using Vixen.Module.Output;
+using Vixen.Module.Controller;
 using Vixen.Commands;
 
 namespace VixenModules.Output.Renard
 {
-	public class Module : OutputModuleInstanceBase {
+	public class Module : ControllerModuleInstanceBase {
 		private Data _moduleData;
 
 		private byte[] _p1Packet;

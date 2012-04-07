@@ -103,6 +103,10 @@ namespace Vixen.Execution {
 		public void FilterChannelStates(IEnumerable<Guid> channelIds, TimeSpan currentTime) {
 			if(channelIds == null) return;
 
+			// VixenSystem.AllowFilterEvaluation would actually be caught by AddFilters, but
+			// we're going to save the time to do this loop.
+			if(!VixenSystem.AllowFilterEvaluation) return;
+
 			foreach(Guid channelId in channelIds) {
 				// Get the pre-filters that would affect this channel.
 				IEnumerable<PreFilterNode> preFilters = _GetPreFiltersForChannel(channelId, currentTime);

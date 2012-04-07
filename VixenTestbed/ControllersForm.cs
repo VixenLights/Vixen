@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Vixen.Services;
 using Vixen.Sys;
-using Vixen.Module.Output;
+using Vixen.Module.Controller;
 using Vixen.Sys.Output;
 
 namespace VixenTestbed {
@@ -31,7 +31,7 @@ namespace VixenTestbed {
 		private void _LoadOutputModules() {
 			comboBoxOutputModule.DisplayMember = "Value";
 			comboBoxOutputModule.ValueMember = "Key";
-			comboBoxOutputModule.DataSource = ApplicationServices.GetAvailableModules<IOutputModuleInstance>().ToArray();
+			comboBoxOutputModule.DataSource = ApplicationServices.GetAvailableModules<IControllerModuleInstance>().ToArray();
 		}
 
 		private void _LoadControllers() {
@@ -50,7 +50,7 @@ namespace VixenTestbed {
 			ListViewItem item = new ListViewItem(new string[] {
                 controller.Name,
 				controller.OutputCount.ToString(),
-				ApplicationServices.GetModuleDescriptor<IOutputModuleDescriptor>(controller.OutputModuleId).TypeName
+				ApplicationServices.GetModuleDescriptor<IControllerModuleDescriptor>(controller.ModuleId).TypeName
             });
 			item.Tag = controller;
 			listViewControllers.Items.Add(item);
@@ -111,7 +111,7 @@ namespace VixenTestbed {
 			if(controller != null) {
 				_ControllerName = controller.Name;
 				_OutputCount = controller.OutputCount;
-				_OutputModule = controller.OutputModuleId;
+				_OutputModule = controller.ModuleId;
 				buttonControllerSetup.Enabled = controller.HasSetup;
 				buttonUpdateController.Enabled = true;
 				buttonDeleteController.Enabled = true;
@@ -171,7 +171,7 @@ namespace VixenTestbed {
 					OutputController controller = _SelectedController;
 					if(controller != null) {
 						controller.OutputCount = _OutputCount;
-						controller.OutputModuleId = _OutputModule;
+						controller.ModuleId = _OutputModule;
 					} else {
 						MessageBox.Show("Controller must be selected.");
 					}

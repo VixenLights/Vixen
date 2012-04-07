@@ -54,7 +54,7 @@ namespace VixenModules.Controller.E131
     using System.Xml;
 
     using Vixen.Commands;
-    using Vixen.Module.Output;
+    using Vixen.Module.Controller;
 
     using VixenModules.Controller.E131.J1Sys;
     using VixenModules.Output.E131;
@@ -64,7 +64,7 @@ namespace VixenModules.Controller.E131
     // OutputPlugin - the output plugin class for vixen
     // 
     // -----------------------------------------------------------------
-    public class E131OutputPlugin : OutputModuleInstanceBase
+    public class E131OutputPlugin : ControllerModuleInstanceBase
     {
         // our option settings
         private int _eventCnt;
