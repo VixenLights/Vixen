@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Xml.Linq;
 
@@ -119,6 +116,22 @@ namespace Vixen.Sys {
 			value = Math.Max(byte.MinValue, value);
 			value = Math.Min(byte.MaxValue, value);
 			return (byte)value;
+		}
+
+		static public TimeSpan GetIntentNodeTimeSpan(IPreFilterNode intentNode) {
+			return GetNodeTimeSpan(intentNode);
+		}
+
+		static public TimeSpan GetEffectNodeTimeSpan(IEffectNode intentNode) {
+			return GetNodeTimeSpan(intentNode);
+		}
+
+		static public TimeSpan GetPreFilterNodeTimeSpan(IIntentNode intentNode) {
+			return GetNodeTimeSpan(intentNode);
+		}
+
+		static public TimeSpan GetNodeTimeSpan(IDataNode node) {
+			return (node != null) ? node.TimeSpan : TimeSpan.Zero;
 		}
 	}
 }

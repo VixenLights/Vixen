@@ -12,5 +12,9 @@ namespace Vixen.Intent {
 		public override IIntentState CreateIntentState(TimeSpan intentRelativeTime) {
 			return new ColorTransitionIntentState(this, intentRelativeTime);
 		}
+
+		protected override TransitionIntent<Color> _CreateSegment(Color startValue, Color endValue, TimeSpan timeSpan) {
+			return new ColorTransitionIntent(startValue, endValue, timeSpan);
+		}
 	}
 }

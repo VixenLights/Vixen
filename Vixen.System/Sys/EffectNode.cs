@@ -7,7 +7,7 @@ namespace Vixen.Sys {
 	/// <summary>
 	/// Qualifies a Command with a start time and length.
 	/// </summary>
-	public class EffectNode : IDataNode, IComparable<EffectNode> {
+	public class EffectNode : IEffectNode {
 		public EffectNode()
 			: this(null, TimeSpan.Zero) {
 			// Default instance is empty.
@@ -15,7 +15,9 @@ namespace Vixen.Sys {
 
 		public EffectNode(IEffectModuleInstance effect, TimeSpan startTime) {
 			Effect = effect;
-			StartTime = startTime;
+
+			TimeSpan timeSpan = (Effect != null) ? Effect.TimeSpan : TimeSpan.Zero;
+			TimeNode = new TimeNode(startTime, timeSpan);
 
 			if(!IsEmpty) {
 				// If the effect requires any properties, make sure the target nodes have those
@@ -40,54 +42,42 @@ namespace Vixen.Sys {
 
 		public IEffectModuleInstance Effect { get; private set; }
 
-		public TimeSpan StartTime { get; set; }
+		public TimeNode TimeNode { get; private set; }
 
-		public TimeSpan TimeSpan {
-			get { return (Effect != null) ? Effect.TimeSpan : TimeSpan.Zero; }
+		public TimeSpan StartTime {
+			get { return TimeNode.StartTime; }
+			set { TimeNode = new TimeNode(value, TimeSpan); }
 		}
 
-		public TimeSpan EndTime { 
-			get { return (Effect != null) ? StartTime + TimeSpan : StartTime; }
+		public TimeSpan TimeSpan {
+			get { return TimeNode.TimeSpan; }
+		}
+
+		public TimeSpan EndTime {
+			get { return TimeNode.EndTime; }
 		}
 		
 		public bool IsEmpty {
 			get { return Effect == null; }
 		}
 
-		//public EffectIntents RenderEffectData() {
-		//    return !IsEmpty ? Effect.Render() : null;
-		//}
-
-		///// <summary>
-		///// 
-		///// </summary>
-		///// <param name="desiredStartTime">Relative to the start of the EffectNode.</param>
-		///// <param name="desiredDuration">Duration of effect to render.</param>
-		///// <returns></returns>
-		//public EffectIntents RenderEffectData(TimeSpan desiredStartTime, TimeSpan desiredDuration) {
-		//    if(!IsEmpty) {
-		//        // We're providing the length of the desired effect and a relative start time for rendering.
-		//        TimeSpan renderStartTime = (desiredStartTime < TimeSpan) ? desiredStartTime : TimeSpan.Zero;
-		//        TimeSpan renderTimeSpan = (renderStartTime + desiredDuration < TimeSpan) ? desiredDuration : TimeSpan - renderStartTime;
-		//        return Effect.Render(renderStartTime, renderTimeSpan);
-		//    }
-		//    return null;
-		//}
-
 		static public readonly EffectNode Empty = new EffectNode();
 
-		#region IComparer<EffectNode>
-		public class Comparer : IComparer<EffectNode> {
-			public int Compare(EffectNode x, EffectNode y) {
-				return x.StartTime.CompareTo(y.StartTime);
-			}
+		#region IComparable<IEffectNode>
+		public int CompareTo(IEffectNode other) {
+			return CompareTo((IDataNode)other);
 		}
 		#endregion
 
-		#region IComparable<EffectNode>
-		public int CompareTo(EffectNode other) {
-			return StartTime.CompareTo(other.StartTime);
+		#region IComparable<IDataNode>
+		public int CompareTo(IDataNode other) {
+			return TimeNode.CompareTo(other.TimeNode);
 		}
 		#endregion
+	}
+
+	public interface IEffectNode : IDataNode, IComparable<IEffectNode> {
+		IEffectModuleInstance Effect { get; }
+		bool IsEmpty { get; }
 	}
 }

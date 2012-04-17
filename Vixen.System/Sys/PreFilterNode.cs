@@ -5,32 +5,46 @@ namespace Vixen.Sys {
 	public class PreFilterNode : IPreFilterNode {
 		public PreFilterNode(IPreFilterModuleInstance preFilter, TimeSpan startTime) {
 			PreFilter = preFilter;
-			StartTime = startTime;
+
+			TimeSpan timeSpan = (PreFilter != null) ? PreFilter.TimeSpan : TimeSpan.Zero;
+			TimeNode = new TimeNode(startTime, timeSpan);
 		}
 
 		public IPreFilterModuleInstance PreFilter { get; private set; }
 
-		public TimeSpan StartTime { get; set; }
+		public TimeNode TimeNode { get; private set; }
+		
+		public TimeSpan StartTime {
+			get { return TimeNode.StartTime; }
+			set { TimeNode = new TimeNode(value, TimeSpan); }
+		}
 
 		public TimeSpan TimeSpan {
-			get { return (PreFilter != null) ? PreFilter.TimeSpan : TimeSpan.Zero; }
+			get { return TimeNode.TimeSpan; }
 		}
 
 		public TimeSpan EndTime {
-			get { return (PreFilter != null) ? StartTime + TimeSpan : StartTime; }
+			get { return TimeNode.EndTime; }
 		}
 
 		public IFilterState CreateFilterState(TimeSpan filterRelativeTime) {
-			//prefilterstate
 			return PreFilter.CreateFilterState(filterRelativeTime);
 		}
 
-		public int CompareTo(PreFilterNode other) {
-			return StartTime.CompareTo(other.StartTime);
+		#region IComparable<IPreFilterNode>
+		public int CompareTo(IPreFilterNode other) {
+			return CompareTo((IDataNode)other);
 		}
+		#endregion
+
+		#region IComparable<IDataNode>
+		public int CompareTo(IDataNode other) {
+			return TimeNode.CompareTo(other.TimeNode);
+		}
+		#endregion
 	}
 
-	public interface IPreFilterNode : IDataNode, IComparable<PreFilterNode> {
+	public interface IPreFilterNode : IDataNode, IComparable<IPreFilterNode> {
 		IPreFilterModuleInstance PreFilter { get; }
 		IFilterState CreateFilterState(TimeSpan filterRelativeTime);
 	}

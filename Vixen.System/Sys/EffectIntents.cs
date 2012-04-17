@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Vixen.Sys {
-	public class EffectIntents : Dictionary<Guid, List<IntentNode>> {
+	public class EffectIntents : Dictionary<Guid, IntentNodeCollection> {
 		public EffectIntents() {
 		}
 
-		public EffectIntents(IDictionary<Guid, List<IntentNode>> data)
+		public EffectIntents(IDictionary<Guid, IntentNodeCollection> data)
 			: base(data) {
 		}
 
@@ -15,34 +15,23 @@ namespace Vixen.Sys {
 			get { return Keys; }
 		}
 
-		//public void AddIntentForChannel(Guid channelId, params IntentNode[] data) {
-		//    AddIntentsForChannel(channelId, data);
-		//}
 		public void AddIntentForChannel(Guid channelId, IIntent intent, TimeSpan startTime) {
 			_AddIntentForChannel(channelId, new IntentNode(intent, startTime));
 		}
-
-		//public void AddIntentsForChannel(Guid channelId, IEnumerable<IntentNode> data) {
-		//    if(ContainsKey(channelId)) {
-		//        this[channelId] = this[channelId].Concat(data).ToArray();
-		//    } else {
-		//        this[channelId] = data.ToArray();
-		//    }
-		//}
 
 		private void _AddIntentForChannel(Guid channelId, IntentNode intentNode) {
 			if(ContainsKey(channelId)) {
 				this[channelId].Add(intentNode);
 			} else {
-				this[channelId] = new List<IntentNode> { intentNode };
+				this[channelId] = new IntentNodeCollection { intentNode };
 			}
 		}
 
-		public void _AddIntentsForChannel(Guid channelId, IEnumerable<IntentNode> intentNodes) {
+		private void _AddIntentsForChannel(Guid channelId, IEnumerable<IntentNode> intentNodes) {
 			if(ContainsKey(channelId)) {
 				this[channelId].AddRange(intentNodes);
 			} else {
-				this[channelId] = new List<IntentNode>(intentNodes);
+				this[channelId] = new IntentNodeCollection(intentNodes);
 			}
 		}
 
@@ -55,7 +44,7 @@ namespace Vixen.Sys {
 		static public EffectIntents Restrict(EffectIntents effectIntents, TimeSpan startTime, TimeSpan endTime) {
 			return new EffectIntents(effectIntents.ToDictionary(
 				x => x.Key,
-				x => x.Value.Where(y => !(y.StartTime >= endTime || y.EndTime < startTime)).ToList()));
+				x => new IntentNodeCollection(x.Value.Where(y => !(y.StartTime >= endTime || y.EndTime < startTime)))));
 		}
 	}
 }

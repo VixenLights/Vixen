@@ -14,5 +14,9 @@ namespace Vixen.Intent {
 		public override IIntentState CreateIntentState(TimeSpan intentRelativeTime) {
 			return new LongTransitionIntentState(this, intentRelativeTime);
 		}
+
+		protected override TransitionIntent<long> _CreateSegment(long startValue, long endValue, TimeSpan timeSpan) {
+			return new LongTransitionIntent(startValue, endValue, timeSpan);
+		}
 	}
 }

@@ -13,5 +13,9 @@ namespace Vixen.Intent {
 		public override IIntentState CreateIntentState(TimeSpan intentRelativeTime) {
 			return new PercentageTransitionIntentState(this, intentRelativeTime);
 		}
+
+		protected override TransitionIntent<double> _CreateSegment(double startValue, double endValue, TimeSpan timeSpan) {
+			return new PercentageTransitionIntent(startValue, endValue, timeSpan);
+		}
 	}
 }

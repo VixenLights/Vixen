@@ -5,11 +5,14 @@ using Vixen.Sys;
 namespace Vixen.Data.Policy {
 	abstract public class StandardDataPolicy : IDataPolicy {
 		public ICommand GenerateCommand(IEnumerable<IIntentState> intentStates) {
+			// Stage 1: Evaluate into a single type of data (possibly transforming).
 			IEnumerable<IEvaluator> evaluators = _EvaluateIntentStates(intentStates);
 			//Either need to create a new combinator and generator every time or lock
 			//around the combinator and generator because they have state that would
 			//be shared by multiple threads.
+			// Stage 2: Combine values of that type.
 			ICombinator combinator = _CombineEvaluations(evaluators);
+			// Stage 3: Wrap the value in an object (possibly transforming again).
 			ICommand command = _GenerateCommandFromCombinator(combinator);
 
 			return command;

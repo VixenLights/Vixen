@@ -129,7 +129,7 @@ namespace Vixen.Module.Effect {
 		}
 
 		private IntentNode _GetChannelIntent(EffectIntents effectIntents, Guid channelId, TimeSpan effectRelativeTime) {
-			List<IntentNode> channelIntents;
+			IntentNodeCollection channelIntents;
 			if(effectIntents.TryGetValue(channelId, out channelIntents)) {
 				return channelIntents.FirstOrDefault(x => effectRelativeTime >= x.StartTime && effectRelativeTime <= x.EndTime);
 			}

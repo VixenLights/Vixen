@@ -23,10 +23,28 @@ namespace Vixen.Intent {
 
 		public TimeSpan TimeSpan { get; private set; }
 
-		public T GetCurrentState(TimeSpan timeOffset) {
+		public T GetStateAt(TimeSpan timeOffset) {
 			T value;
 			_interpolator.Interpolate(timeOffset, TimeSpan, StartValue, EndValue, out value);
 			return value;
 		}
+
+		public IntentNodeSegment CreateSegment(TimeSpan offset, TimeSpan timeSpan) {
+			offset = offset > TimeSpan.Zero ? offset : TimeSpan.Zero;
+			offset = offset < TimeSpan ? offset : TimeSpan;
+
+			if(offset + timeSpan > TimeSpan) {
+				timeSpan = TimeSpan - offset;
+			}
+
+			// Get this intent to create a segment of itself.
+			TimeNode segmentTimeNode = new TimeNode(offset, timeSpan);
+			T startValue = GetStateAt(segmentTimeNode.StartTime);
+			T endValue = GetStateAt(segmentTimeNode.EndTime);
+			var newIntent = _CreateSegment(startValue, endValue, timeSpan);
+			return new IntentNodeSegment(newIntent, segmentTimeNode);
+		}
+
+		protected abstract TransitionIntent<T> _CreateSegment(T startValue, T endValue, TimeSpan timeSpan);
 	}
 }

@@ -11,5 +11,9 @@ namespace Vixen.Intent {
 		public override IIntentState CreateIntentState(TimeSpan intentRelativeTime) {
 			return new FloatTransitionIntentState(this, intentRelativeTime);
 		}
+
+		protected override TransitionIntent<float> _CreateSegment(float startValue, float endValue, TimeSpan timeSpan) {
+			return new FloatTransitionIntent(startValue, endValue, timeSpan);
+		}
 	}
 }

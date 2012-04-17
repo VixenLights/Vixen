@@ -20,6 +20,7 @@ namespace Vixen.Sys {
 			Id = id;
 			Name = name;
 			_dataSource = new ChannelContextSource(Id);
+			_state = new IntentStateList();
 		}
 
 		public string Name { get; set; }

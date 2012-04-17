@@ -327,6 +327,10 @@
     <Compile Include="Sys\Instrumentation\OutputDeviceSleepTimeActualValue.cs" />
     <Compile Include="Sys\Instrumentation\OutputDeviceSleepTimeRequestedValue.cs" />
     <Compile Include="Sys\Instrumentation\OutputDeviceUpdateTimeValue.cs" />
+    <Compile Include="Sys\IntentNodeCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Sys\IntentNodeSegment.cs" />
     <Compile Include="Sys\IntentStateList.cs" />
     <Compile Include="Sys\CombinationOperation\BooleanAnd.cs" />
     <Compile Include="Sys\CombinationOperation\ICombinationOperation.cs" />
@@ -696,6 +700,7 @@
     <Compile Include="Module\ModuleDataSet.cs" />
     <Compile Include="Sys\Modules.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sys\TimeNode.cs" />
     <Compile Include="Sys\UIThread.cs" />
     <Compile Include="Sys\VixenSystem.cs" />
     <Compile Include="Sys\WarningLog.cs" />
