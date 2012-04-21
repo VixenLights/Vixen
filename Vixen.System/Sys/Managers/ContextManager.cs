@@ -61,8 +61,8 @@ namespace Vixen.Sys.Managers {
 					// Get a snapshot time value for this update.
 					TimeSpan contextTime = context.GetTimeSnapshot();
 					IEnumerable<Guid> affectedChannels = context.UpdateChannelStates(contextTime);
-					// (User may be allowed to skip this step in the future).
-					context.FilterChannelStates(affectedChannels, contextTime);
+					//// (User may be allowed to skip this step in the future).
+					//context.FilterChannelStates(affectedChannels, contextTime);
 					//Could possibly return affectedChannels so only affected outputs
 					//are updated.  The controller would have to maintain state so those
 					//outputs could be updated and the whole state sent out.

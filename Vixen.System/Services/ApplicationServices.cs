@@ -7,6 +7,7 @@ using Vixen.IO.Result;
 using Vixen.IO;
 using Vixen.Module;
 using Vixen.Module.Editor;
+using Vixen.Module.Effect;
 using Vixen.Module.EffectEditor;
 using Vixen.Module.Sequence;
 using Vixen.Module.Script;
@@ -186,6 +187,11 @@ namespace Vixen.Services {
 			return typeof(IPatchingRule).FindConcreteImplementationsWithin(Assembly.GetExecutingAssembly()).Select(Activator.CreateInstance).Cast<IPatchingRule>().ToArray();
 		}
 
+		static public bool AreAllEffectRequiredPropertiesPresent(IEffectModuleInstance effectModule) {
+			EffectModuleDescriptorBase effectDescriptor = Modules.GetDescriptorById<EffectModuleDescriptorBase>(effectModule.Descriptor.TypeId);
+			return effectModule.TargetNodes.All(x => x.Properties.Select(y => y.Descriptor.TypeId).Intersect(effectDescriptor.PropertyDependencies).Count() == effectDescriptor.PropertyDependencies.Length);
+		}
+
 		private static Sequence _LoadSequence(string sequenceFilePath) {
 			// Get the sequence type.
 			SequenceModuleManagement sequenceManager = (SequenceModuleManagement)Modules.GetManager<ISequenceModuleInstance>();
@@ -208,7 +214,5 @@ namespace Vixen.Services {
 		private static Sequence _CreateSequence(string sequenceFilePath) {
 			return Sequence.Create(sequenceFilePath);
 		}
-
-
 	}
 }

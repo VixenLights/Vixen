@@ -1,16 +1,20 @@
 ﻿using System;
 
 namespace Vixen.Sys {
-	public struct TimeNode : IEquatable<TimeNode>, IComparable<TimeNode> {
-		public TimeNode(TimeSpan startTime, TimeSpan timeSpan) {
+	public struct TimeNode : IEquatable<TimeNode>, IComparable<TimeNode>, ITimeNode {
+		public TimeNode(TimeSpan startTime, TimeSpan timeSpan)
+			: this() {
 			StartTime = startTime;
 			TimeSpan = timeSpan;
 			EndTime = startTime + timeSpan;
 		}
 
-		public readonly TimeSpan StartTime;
-		public readonly TimeSpan TimeSpan;
-		public readonly TimeSpan EndTime;
+		//public readonly TimeSpan StartTime;
+		//public readonly TimeSpan TimeSpan;
+		//public readonly TimeSpan EndTime;
+		public TimeSpan StartTime { get; private set; }
+		public TimeSpan TimeSpan { get; private set; }
+		public TimeSpan EndTime { get; private set; }
 
 		public bool Intersects(TimeSpan timeSpan) {
 			return timeSpan > StartTime && timeSpan < EndTime;
@@ -44,7 +48,8 @@ namespace Vixen.Sys {
 			return !left.Equals(right);
 		}
 
-		public static readonly TimeNode Empty = new TimeNode(TimeSpan.Zero, TimeSpan.Zero);
+		//public static readonly TimeNode Empty = new TimeNode(TimeSpan.Zero, TimeSpan.Zero);
+		public static readonly TimeNode Empty;
 
 		public static TimeNode Intersect(TimeNode left, TimeNode right) {
 			TimeSpan intersectionStart = TimeSpan.FromMilliseconds(Math.Max(left.StartTime.TotalMilliseconds, right.StartTime.TotalMilliseconds));
@@ -57,8 +62,18 @@ namespace Vixen.Sys {
 			return Empty;
 		}
 
+		public static TimeNode FromTimeSpan(TimeSpan timeSpan) {
+			return new TimeNode(timeSpan, TimeSpan.Zero);
+		}
+
 		public int CompareTo(TimeNode other) {
 			return StartTime.CompareTo(other.StartTime);
 		}
+	}
+
+	public interface ITimeNode {
+		TimeSpan StartTime { get; }
+		TimeSpan TimeSpan { get; }
+		TimeSpan EndTime { get; }
 	}
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Vixen.Sys.CombinationOperation;
 
 namespace Vixen.Sys {
@@ -16,7 +15,8 @@ namespace Vixen.Sys {
 			if(!ContainsKey(channelId)) {
 				_AddRootIntentNode(channelId, intentNode);
 			} else {
-				_AddSubordinateIntentNode(channelId, intentNode, combinationOperation);
+				//Subordinates may be supported later, but not yet.
+				//_AddSubordinateIntentNode(channelId, intentNode, combinationOperation);
 			}
 		}
 
@@ -31,10 +31,10 @@ namespace Vixen.Sys {
 			this[channelId] = intentNode;
 		}
 
-		private void _AddSubordinateIntentNode(Guid channelId, IntentNode intentNode, ICombinationOperation combinationOperation) {
-			IntentNode rootNode = _GetRootNode(channelId);
-			rootNode.SubordinateIntents.Add(new SubordinateIntent(intentNode, combinationOperation));
-		}
+		//private void _AddSubordinateIntentNode(Guid channelId, IntentNode intentNode, ICombinationOperation combinationOperation) {
+		//    IntentNode rootNode = _GetRootNode(channelId);
+		//    rootNode.SubordinateIntents.Add(new SubordinateIntent(intentNode, combinationOperation));
+		//}
 
 		private IntentNode _GetRootNode(Guid channelId) {
 			return this[channelId];

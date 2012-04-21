@@ -3,7 +3,7 @@ using Vixen.Interpolator;
 using Vixen.Sys;
 
 namespace Vixen.Intent {
-	public class PercentageTransitionIntent : TransitionIntent<double> {
+	public class PercentageTransitionIntent : Intent<PercentageTransitionIntent,double> {
 		public PercentageTransitionIntent(double startValue, double endValue, TimeSpan timeSpan)
 			: base(startValue, endValue, timeSpan, new DoubleInterpolator()) {
 			if(startValue < 0 || startValue > 1) throw new ArgumentException("startValue is out of range");
@@ -12,10 +12,6 @@ namespace Vixen.Intent {
 
 		public override IIntentState CreateIntentState(TimeSpan intentRelativeTime) {
 			return new PercentageTransitionIntentState(this, intentRelativeTime);
-		}
-
-		protected override TransitionIntent<double> _CreateSegment(double startValue, double endValue, TimeSpan timeSpan) {
-			return new PercentageTransitionIntent(startValue, endValue, timeSpan);
 		}
 	}
 }

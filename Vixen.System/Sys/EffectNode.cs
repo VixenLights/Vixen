@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Vixen.Module.Effect;
 
 namespace Vixen.Sys {
@@ -15,48 +13,21 @@ namespace Vixen.Sys {
 
 		public EffectNode(IEffectModuleInstance effect, TimeSpan startTime) {
 			Effect = effect;
-
-			TimeSpan timeSpan = (Effect != null) ? Effect.TimeSpan : TimeSpan.Zero;
-			TimeNode = new TimeNode(startTime, timeSpan);
-
-			if(!IsEmpty) {
-				// If the effect requires any properties, make sure the target nodes have those
-				// properties.
-				EffectModuleDescriptorBase effectDescriptor = Modules.GetDescriptorById<EffectModuleDescriptorBase>(effect.Descriptor.TypeId);
-				if(!effect.TargetNodes.All(x => x.Properties.Select(y => y.Descriptor.TypeId).Intersect(effectDescriptor.PropertyDependencies).Count() == effectDescriptor.PropertyDependencies.Length)) {
-
-					List<string> message = new List<string>();
-					message.Add("The \"" + effectDescriptor.TypeName + "\" effect has property requirements that are missing:");
-					message.Add("");
-					foreach(ChannelNode channelNode in effect.TargetNodes) {
-						Guid[] missingPropertyIds = effectDescriptor.PropertyDependencies.Except(channelNode.Properties.Select(x => x.Descriptor.TypeId)).ToArray();
-						if(missingPropertyIds.Length > 0) {
-							message.Add((channelNode.Children.Count() > 0 ? "Group " : "Channel ") + channelNode.Name);
-							message.AddRange(missingPropertyIds.Select(x => " - Property " + Modules.GetDescriptorById(x).TypeName));
-						}
-					}
-					throw new InvalidOperationException(string.Join(Environment.NewLine, message));
-				}
-			}
+			StartTime = startTime;
 		}
 
 		public IEffectModuleInstance Effect { get; private set; }
 
-		public TimeNode TimeNode { get; private set; }
-
-		public TimeSpan StartTime {
-			get { return TimeNode.StartTime; }
-			set { TimeNode = new TimeNode(value, TimeSpan); }
-		}
+		public TimeSpan StartTime { get; set; }
 
 		public TimeSpan TimeSpan {
-			get { return TimeNode.TimeSpan; }
+			get { return (Effect != null) ? Effect.TimeSpan : TimeSpan.Zero; }
 		}
 
 		public TimeSpan EndTime {
-			get { return TimeNode.EndTime; }
+			get { return StartTime + TimeSpan; }
 		}
-		
+
 		public bool IsEmpty {
 			get { return Effect == null; }
 		}
@@ -65,13 +36,7 @@ namespace Vixen.Sys {
 
 		#region IComparable<IEffectNode>
 		public int CompareTo(IEffectNode other) {
-			return CompareTo((IDataNode)other);
-		}
-		#endregion
-
-		#region IComparable<IDataNode>
-		public int CompareTo(IDataNode other) {
-			return TimeNode.CompareTo(other.TimeNode);
+			return DataNode.Compare(this, other);
 		}
 		#endregion
 	}

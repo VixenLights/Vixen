@@ -123,16 +123,19 @@
     <Compile Include="Intent\ColorTransitionIntent.cs" />
     <Compile Include="Intent\ColorTransitionIntentState.cs" />
     <Compile Include="Intent\IntentState.cs" />
+    <Compile Include="Intent\LightingIntent.cs" />
+    <Compile Include="Intent\LightingIntentState.cs" />
+    <Compile Include="Intent\LightingValue.cs" />
     <Compile Include="Intent\LongTransitionIntent.cs" />
     <Compile Include="Intent\LongTransitionIntentState.cs" />
     <Compile Include="Intent\PercentageTransitionIntentState.cs" />
     <Compile Include="Intent\PercentageTransitionIntent.cs" />
-    <Compile Include="Intent\TransitionIntentState.cs" />
     <Compile Include="Interpolator\ColorInterpolator.cs" />
     <Compile Include="Interpolator\DoubleInterpolator.cs" />
     <Compile Include="Interpolator\FloatInterpolator.cs" />
     <Compile Include="Intent\FloatTransitionIntent.cs" />
     <Compile Include="Intent\FloatTransitionIntentState.cs" />
+    <Compile Include="Interpolator\LightingInterpolator.cs" />
     <Compile Include="Interpolator\LongInterpolator.cs" />
     <Compile Include="IO\Factory\XmlSerializerFactory.cs" />
     <Compile Include="IO\ISerializerFactory.cs" />
@@ -236,14 +239,13 @@
     <Compile Include="Sys\ICombinator.cs" />
     <Compile Include="Sys\IDataPolicy.cs" />
     <Compile Include="Sys\IEvaluator.cs" />
-    <Compile Include="Sys\IFilterState.cs" />
     <Compile Include="Sys\IGenerator.cs" />
     <Compile Include="Sys\IHasOutputSources.cs" />
     <Compile Include="Sys\IHasPostFilters.cs" />
     <Compile Include="Sys\IIntent.cs" />
+    <Compile Include="Sys\IIntentSegment.cs" />
     <Compile Include="Sys\IIntentState.cs" />
     <Compile Include="Interpolator\Interpolator.cs" />
-    <Compile Include="Intent\TransitionIntent.cs" />
     <Compile Include="IO\Policy\SystemContextFilePolicy.cs" />
     <Compile Include="IO\FileCompressor.cs" />
     <Compile Include="IO\FileSerializer.cs" />
@@ -327,10 +329,12 @@
     <Compile Include="Sys\Instrumentation\OutputDeviceSleepTimeActualValue.cs" />
     <Compile Include="Sys\Instrumentation\OutputDeviceSleepTimeRequestedValue.cs" />
     <Compile Include="Sys\Instrumentation\OutputDeviceUpdateTimeValue.cs" />
+    <Compile Include="Sys\Intent.cs" />
     <Compile Include="Sys\IntentNodeCollection.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Sys\IntentNodeSegment.cs" />
+    <Compile Include="Sys\IntentSegment.cs" />
+    <Compile Include="Sys\IntentSegmentNode.cs" />
     <Compile Include="Sys\IntentStateList.cs" />
     <Compile Include="Sys\CombinationOperation\BooleanAnd.cs" />
     <Compile Include="Sys\CombinationOperation\ICombinationOperation.cs" />
@@ -352,9 +356,7 @@
     <Compile Include="Sys\ParameterSignature.cs" />
     <Compile Include="Sys\ParameterSpecification.cs" />
     <Compile Include="Sys\PostFilterCollection.cs" />
-    <Compile Include="Sys\PostFilterState.cs" />
     <Compile Include="Sys\PostFilterTemplate.cs" />
-    <Compile Include="Sys\PreFilterState.cs" />
     <Compile Include="Data\Policy\RenardDataPolicy.cs" />
     <Compile Include="Data\Policy\StandardDataPolicy.cs" />
     <Compile Include="IO\Result\ScriptSequenceSerializationResult.cs" />
@@ -743,7 +745,13 @@
   <ItemGroup>
     <None Include="Resources\Effect64.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\Users\Development\Documents\Visual Studio 2010\Projects\IntervalTreeLib\IntervalTreeLib.csproj">
+      <Project>{0207A18A-6BC1-490B-B010-7A3DA3178890}</Project>
+      <Name>IntervalTreeLib</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

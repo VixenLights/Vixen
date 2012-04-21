@@ -100,25 +100,25 @@ namespace Vixen.Execution {
 			return _channelStates.GetState(key);
 		}
 
-		public void FilterChannelStates(IEnumerable<Guid> channelIds, TimeSpan currentTime) {
-			if(channelIds == null) return;
+		//public void FilterChannelStates(IEnumerable<Guid> channelIds, TimeSpan currentTime) {
+		//    if(channelIds == null) return;
 
-			// VixenSystem.AllowFilterEvaluation would actually be caught by AddFilters, but
-			// we're going to save the time to do this loop.
-			if(!VixenSystem.AllowFilterEvaluation) return;
+		//    // VixenSystem.AllowFilterEvaluation would actually be caught by AddFilters, but
+		//    // we're going to save the time to do this loop.
+		//    if(!VixenSystem.AllowFilterEvaluation) return;
 
-			foreach(Guid channelId in channelIds) {
-				// Get the pre-filters that would affect this channel.
-				IEnumerable<PreFilterNode> preFilters = _GetPreFiltersForChannel(channelId, currentTime);
-				// Get the list of stated intents that are going to affect this channel.
-				IStateSource<IIntentStateList> stateSource = _channelStates.GetState(channelId);
-				if(stateSource != null && stateSource.State != null) {
-					// Add the channel's filters to each intent state.
-					IEnumerable<IFilterState> filterStates = preFilters.Select(x => x.CreateFilterState(Helper.GetPreFilterRelativeTime(currentTime, x)));
-					stateSource.State.AddFilters(filterStates);
-				}
-			}
-		}
+		//    foreach(Guid channelId in channelIds) {
+		//        // Get the pre-filters that would affect this channel.
+		//        IEnumerable<PreFilterNode> preFilters = _GetPreFiltersForChannel(channelId, currentTime);
+		//        // Get the list of stated intents that are going to affect this channel.
+		//        IStateSource<IIntentStateList> stateSource = _channelStates.GetState(channelId);
+		//        if(stateSource != null && stateSource.State != null) {
+		//            // Add the channel's filters to each intent state.
+		//            IEnumerable<IFilterState> filterStates = preFilters.Select(x => x.CreateFilterState(Helper.GetPreFilterRelativeTime(currentTime, x)));
+		//            stateSource.State.AddFilters(filterStates);
+		//        }
+		//    }
+		//}
 
 		private Guid[] _UpdateCurrentEffectList(TimeSpan currentTime) {
 			// We have an object that does this for us.

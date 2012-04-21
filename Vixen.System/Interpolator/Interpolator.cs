@@ -3,17 +3,21 @@
 namespace Vixen.Interpolator {
 	public abstract class Interpolator<T> {
 		public bool Interpolate(TimeSpan timeOffset, TimeSpan timeSpan, T startValue, T endValue, out T value) {
+			float percent = (float)(timeOffset.TotalMilliseconds / timeSpan.TotalMilliseconds);
+			return Interpolate(percent, startValue, endValue, out value);
+		}
+
+		public bool Interpolate(double percentage, T startValue, T endValue, out T value) {
 			value = default(T);
 
-			if(timeOffset > TimeSpan.Zero && timeOffset < timeSpan) {
-				float percent = (float)(timeOffset.TotalMilliseconds / timeSpan.TotalMilliseconds);
-				value = InterpolateValue(startValue, endValue, percent);
+			if(percentage > 0 && percentage < 1) {
+				value = InterpolateValue(percentage, startValue, endValue);
 				return true;
 			}
-			
+
 			return false;
 		}
 
-		abstract protected T InterpolateValue(T startValue, T endValue, float percent);
+		abstract protected T InterpolateValue(double percent, T startValue, T endValue);
 	}
 }

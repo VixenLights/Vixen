@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Vixen.Services;
 using Vixen.Sys;
 
 namespace Vixen.Module.Effect {
@@ -31,9 +32,8 @@ namespace Vixen.Module.Effect {
 			set {
 				if(value != _targetNodes) {
 					_targetNodes = value;
-					foreach(SubordinateEffect subordinateEffect in SubordinateEffects) {
-						subordinateEffect.Effect.TargetNodes = value;
-					}
+					_AssignTargetNodesToSubordinates();
+					_EnsureTargetNodeProperties();
 					IsDirty = true;
 				}
 			}
@@ -44,9 +44,7 @@ namespace Vixen.Module.Effect {
 			set {
 				if(value != _timeSpan) {
 					_timeSpan = value;
-					foreach(SubordinateEffect subordinateEffect in SubordinateEffects) {
-						subordinateEffect.Effect.TimeSpan = value;
-					}
+					_AssignTimeSpanToSubordinates();
 					IsDirty = true;
 				}
 			}
@@ -113,6 +111,18 @@ namespace Vixen.Module.Effect {
 			return _channelIntents;
 		}
 
+		private void _AssignTargetNodesToSubordinates() {
+			foreach(SubordinateEffect subordinateEffect in SubordinateEffects) {
+				subordinateEffect.Effect.TargetNodes = TargetNodes;
+			}
+		}
+
+		private void _AssignTimeSpanToSubordinates() {
+			foreach(SubordinateEffect subordinateEffect in SubordinateEffects) {
+				subordinateEffect.Effect.TimeSpan = TimeSpan;
+			}
+		}
+
 		private void _AddLocalIntents(TimeSpan effectRelativeTime) {
 			EffectIntents effectIntents = Render();
 			foreach(Guid channelId in effectIntents.ChannelIds) {
@@ -134,6 +144,27 @@ namespace Vixen.Module.Effect {
 				return channelIntents.FirstOrDefault(x => effectRelativeTime >= x.StartTime && effectRelativeTime <= x.EndTime);
 			}
 			return null;
+		}
+
+		private void _EnsureTargetNodeProperties() {
+			// If the effect requires any properties, make sure the target nodes have those properties.
+			if(TargetNodes == null) return;
+
+			if(!ApplicationServices.AreAllEffectRequiredPropertiesPresent(this)) {
+				EffectModuleDescriptorBase effectDescriptor = Modules.GetDescriptorById<EffectModuleDescriptorBase>(Descriptor.TypeId);
+
+				List<string> message = new List<string> {
+						"The \"" + effectDescriptor.TypeName + "\" effect has property requirements that are missing:", 
+						""};
+				foreach(ChannelNode channelNode in TargetNodes) {
+					Guid[] missingPropertyIds = effectDescriptor.PropertyDependencies.Except(channelNode.Properties.Select(x => x.Descriptor.TypeId)).ToArray();
+					if(missingPropertyIds.Length > 0) {
+						message.Add((channelNode.Children.Any() ? "Group " : "Channel ") + channelNode.Name);
+						message.AddRange(missingPropertyIds.Select(x => " - Property " + Modules.GetDescriptorById(x).TypeName));
+					}
+				}
+				throw new InvalidOperationException(string.Join(Environment.NewLine, message));
+			}
 		}
 
 		public override string ToString() {

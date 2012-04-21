@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.Linq;
 using Vixen.Sys;
 using Vixen.Sys.Dispatch;
 
@@ -27,26 +26,28 @@ namespace Vixen.Data.Evaluator {
 
 	static public class Evaluator {
 		static public float Default(IIntentState<float> intentState) {
-			return intentState.FilterStates.Aggregate(intentState.GetValue(), (current, filterState) => filterState.Affect(current));
+			return intentState.GetValue();
+			//return intentState.FilterStates.Aggregate(intentState.GetValue(), (current, filterState) => filterState.Affect(current));
 		}
 
 		static public long Default(IIntentState<long> intentState) {
-			return intentState.FilterStates.Aggregate(intentState.GetValue(), (current, filterState) => filterState.Affect(current));
+			return intentState.GetValue();
 		}
 
 		static public int ColorAsInt(IIntentState<Color> intentState) {
-			Color color = intentState.FilterStates.Aggregate(intentState.GetValue(), (current, filterState) => filterState.Affect(current));
+			Color color = intentState.GetValue();
+			//Color color = intentState.FilterStates.Aggregate(intentState.GetValue(), (current, filterState) => filterState.Affect(current));
 
 			// Stripping the alpha quantity to keep it from going negative.
 			return color.ToArgb() & 0xffffff;
 		}
 
 		static public Color Default(IIntentState<Color> intentState) {
-			return intentState.FilterStates.Aggregate(intentState.GetValue(), (current, filterState) => filterState.Affect(current));
+			return intentState.GetValue();
 		}
 
 		static public double Default(IIntentState<double> intentState) {
-			return intentState.FilterStates.Aggregate(intentState.GetValue(), (current, filterState) => filterState.Affect(current));
+			return intentState.GetValue();
 		}
 	}
 }

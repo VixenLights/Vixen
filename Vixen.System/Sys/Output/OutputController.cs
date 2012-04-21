@@ -388,8 +388,8 @@ namespace Vixen.Sys.Output {
 				// VixenSystem.AllowFilterEvaluation would actually be caught by AddFilters, but
 				// we're going to save the time to do the LINQ.
 				if(VixenSystem.AllowFilterEvaluation) {
-					IEnumerable<IFilterState> filterStates = _postFilters.Select(x => x.CreateFilterState());
-					_state.AddFilters(filterStates);
+					//IEnumerable<IFilterState> filterStates = _postFilters.Select(x => x.CreateFilterState());
+					//_state.AddFilters(filterStates);
 				}
 			}
 

@@ -1,41 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using Vixen.Sys;
+using Vixen.Commands;
 
 namespace Vixen.Module.PostFilter {
 	abstract public class PostFilterModuleInstanceBase : ModuleInstanceBase, IPostFilterModuleInstance, IEqualityComparer<IPostFilterModuleInstance>, IEquatable<IPostFilterModuleInstance>, IEqualityComparer<PostFilterModuleInstanceBase>, IEquatable<PostFilterModuleInstanceBase> {
-		//abstract public Command Affect(Command command);
-
 		virtual public bool HasSetup {
 			get { return false; }
 		}
 
 		virtual public bool Setup() { return false; }
 
-		virtual public float Affect(float value) {
-			return value;
-		}
+		virtual public void Affect(ICommand<float> value) { }
 
-		virtual public Color Affect(Color value) {
-			return value;
-		}
+		virtual public void Affect(ICommand<Color> value) { }
 
-		virtual public DateTime Affect(DateTime value) {
-			return value;
-		}
+		virtual public void Affect(ICommand<DateTime> value) { }
 
-		virtual public long Affect(long value) {
-			return value;
-		}
+		virtual public void Affect(ICommand<long> value) { }
 
-		virtual public double Affect(double value) {
-			return value;
-		}
-
-		virtual public IFilterState CreateFilterState() {
-			return new PostFilterState(this);
-		}
+		virtual public void Affect(ICommand<double> value) { }
 
 		public bool Equals(IPostFilterModuleInstance x, IPostFilterModuleInstance y) {
 			return base.Equals(x, y);
