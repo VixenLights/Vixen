@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Vixen.Sys;
 
 namespace Vixen.Execution {
@@ -30,11 +28,8 @@ namespace Vixen.Execution {
 				if(_queue.Count <= 0) continue;
 
 				effectNode = _queue.Peek();
-				TimeSpan t = effectNode.StartTime; //for the trace
 				effectNode = (time >= effectNode.StartTime) ? _queue.Dequeue() : null;
-				if(effectNode == null) {
-					Trace.WriteLine("Qualified @ " + t + " [" + time + "]");
-				}
+
 				//if(_queue.TryPeek(out effectNode)) {
 				//    if(time >= effectNode.StartTime) {
 				//        _queue.TryDequeue(out effectNode);

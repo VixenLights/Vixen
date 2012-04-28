@@ -9,9 +9,6 @@ namespace Vixen.Sys {
 			EndTime = startTime + timeSpan;
 		}
 
-		//public readonly TimeSpan StartTime;
-		//public readonly TimeSpan TimeSpan;
-		//public readonly TimeSpan EndTime;
 		public TimeSpan StartTime { get; private set; }
 		public TimeSpan TimeSpan { get; private set; }
 		public TimeSpan EndTime { get; private set; }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using Vixen.Sys;
@@ -116,11 +115,9 @@ namespace Vixen.Execution {
 			IEnumerator<IEffectNode> dataEnumerator = _effectNodeSource.GetEnumerator();
 			try {
 				while(IsRunning) {
-					Trace.WriteLine(Environment.TickCount + " Buffer start: " + Thread.CurrentThread.Name);
 					while(_IsBufferInadequate() && IsRunning && dataEnumerator.MoveNext()) {
 						_AddToQueue(dataEnumerator.Current);
 					}
-					Trace.WriteLine(Environment.TickCount + " Buffer end: " + Thread.CurrentThread.Name);
 
 					_bufferReadSignal.WaitOne();
 				}
@@ -132,7 +129,6 @@ namespace Vixen.Execution {
 		}
 
 		private void _AddToQueue(IEffectNode effectNode) {
-			Trace.WriteLine("Writing to queue, node time = " + effectNode.StartTime);
 			_effectNodeQueue.Add(effectNode);
 			_LastBufferWritePoint = effectNode.StartTime;
 		}
@@ -169,7 +165,6 @@ namespace Vixen.Execution {
 		
 		private IEnumerable<IEffectNode> _GetEffectNodesAt(TimeSpan time) {
 			IEffectNode[] effectNodes = _effectNodeQueue.Get(time).ToArray();
-			Trace.WriteLine(Environment.TickCount + "[" + Thread.CurrentThread.ManagedThreadId + "] " + ": " + Thread.CurrentThread.Name + " (" + effectNodes.Length + ")");
 			if(effectNodes.Length > 0) {
 				_LastBufferReadPoint = effectNodes[effectNodes.Length - 1].StartTime;
 			}

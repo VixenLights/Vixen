@@ -12,7 +12,6 @@ namespace Vixen.Sys {
 		private HashSet<Guid> _changedChannels;
 
 		public ChannelPatchingChangeSet() {
-			//_channelPatches = VixenSystem.ChannelPatching.ToDictionary(x => x.ChannelId, x => new ChannelOutputPatch(x.ChannelId, x));
 			_channelPatches = new Dictionary<Guid, ChannelOutputPatch>();
 			_changedChannels = new HashSet<Guid>();
 		}
@@ -72,11 +71,9 @@ namespace Vixen.Sys {
 		}
 
 		private HashSet<ControllerReference> _GetChannelPatches(Guid channelId) {
-			//HashSet<ControllerReference> channelPatches;
 			ChannelOutputPatch channelPatches;
 
 			if(!_channelPatches.TryGetValue(channelId, out channelPatches)) {
-				//channelPatches = new HashSet<ControllerReference>();
 				channelPatches = new ChannelOutputPatch(channelId);
 				_channelPatches[channelId] = channelPatches;
 			}

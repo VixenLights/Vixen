@@ -18,13 +18,6 @@ namespace Vixen.Services {
 			return lookup;
 		}
 
-		//static public void FilterEffect(EffectNode effectNode, IEnumerable<IPreFilterNode> applicableFilters) {
-		//    EffectIntents effectIntents = effectNode.Effect.Render();
-		//    foreach(IPreFilterNode preFilterNode in applicableFilters) {
-		//        effectIntents.ApplyFilter(preFilterNode, effectNode.StartTime);
-		//    }
-		//}
-
 		static private void _SearchBranchForFilters(ChannelNode node, IEnumerable<IPreFilterNode> preFilters, Stack<IEnumerable<IPreFilterNode>> preFiltersFound, PreFilterLookup lookup) {
 			// Must push a single value for each level we enter.
 			IPreFilterNode[] preFilterNodes = _GetPreFiltersForNode(node, preFilters);

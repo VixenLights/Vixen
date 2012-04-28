@@ -39,19 +39,5 @@ namespace Vixen.Sys {
 			get { return EndValue; }
 			set { EndValue = (T)value; }
 		}
-		//public IntentNodeSegment[] SplitAt(TimeSpan segmentRelativeTime) {
-		//    if(Intent != null && TimeNode.Intersects(segmentRelativeTime)) {
-		//        IntentNodeSegment[] segments = new IntentNodeSegment[2];
-		//        segments[0] = Intent.CreateSegment(StartTime, segmentRelativeTime - StartTime);
-		//        segments[1] = Intent.CreateSegment(StartTime + segmentRelativeTime, TimeSpan - segmentRelativeTime);
-		//        return segments;
-		//    }
-		//    // Can't split at this time point.
-		//    return null;
-		//}
-
-		//public int CompareTo(IDataNode other) {
-		//    return TimeNode.CompareTo(other.TimeNode);
-		//}
 	}
 }

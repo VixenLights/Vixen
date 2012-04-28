@@ -86,16 +86,11 @@ namespace Vixen.Execution {
         public bool IsPaused { get; private set; } // Can be paused and in the Playing state.
 
     	public bool IsPlaying {
-			//get { return _executor != null && _executor.IsPlaying; }
     		get { return _executor != null && _executor.IsPlaying && _intentBuffer != null; }
     	}
 
     	public IDataSource GetCurrentSequenceData() {
 			if(_executor != null) {
-				//IEnumerable<IEffectNode> sequenceData = _executor.GetSequenceData();
-				//IEnumerable<IPreFilterNode> sequenceFilters = _executor.GetSequenceFilters();
-				////return new SequenceDataSource(sequenceData);
-				//return new CachingSequenceDataSource(sequenceData, sequenceFilters);
 				return _intentBuffer;
 			}
 			return null;

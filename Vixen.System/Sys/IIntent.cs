@@ -7,7 +7,6 @@ namespace Vixen.Sys {
 		IIntentState CreateIntentState(TimeSpan intentRelativeTime);
 		void SplitAt(TimeSpan intentRelativeTime);
 		void SplitAt(IEnumerable<TimeSpan> intentRelativeTimes);
-		//void SplitAt(params TimeSpan[] intentRelativeTimes);
 		void SplitAt(ITimeNode intentRelativeTime);
 		void ApplyFilter(IPreFilterNode preFilterNode, TimeSpan contextAbsoluteIntentStartTime);
 		object GetStateAt(TimeSpan timeOffset);
