@@ -47,12 +47,14 @@ namespace Vixen.Execution {
 			get { return IsRunning; }
 		}
 
-		private bool _DataListener(EffectNode effectNode) {
+		private bool _DataListener(IEffectNode effectNode) {
 			// Data has been inserted into the sequence.
 			// Give every behavior a chance at the data.
 			foreach(IRuntimeBehaviorModuleInstance behavior in _runtimeBehaviors) {
 				if(behavior.Enabled) {
-					effectNode.StartTime = _TimingSource.Position;
+					//*** Can't remember why this is being set here in this fashion. 
+					//    Shouldn't it be done by whatever creates the node?
+					//effectNode.StartTime = _TimingSource.Position;
 					behavior.Handle(effectNode);
 				}
 			}
@@ -97,6 +99,8 @@ namespace Vixen.Execution {
 				}
 
 				// Start the crazy train.
+				// Need to set IsRunning to true before firing the SequenceStarted event, otherwise
+				// we will be lying to our subscribers and they will be very confused.
 				IsRunning = true;
 				OnSequenceStarted(new SequenceStartedEventArgs(Sequence, _TimingSource));
 
@@ -118,7 +122,7 @@ namespace Vixen.Execution {
 			}
 		}
 
-		public IEnumerable<EffectNode> GetSequenceData() {
+		public IEnumerable<IEffectNode> GetSequenceData() {
 			if(_sequence != null) {
 				return _sequence.GetData();
 			}
@@ -129,11 +133,20 @@ namespace Vixen.Execution {
 			return _TimingSource;
 		}
 
-		public IEnumerable<PreFilterNode> GetSequenceFilters() {
+		public IEnumerable<IPreFilterNode> GetSequenceFilters() {
 			if(_sequence != null) {
 				return _sequence.GetAllPreFilters();
 			}
 			return Enumerable.Empty<PreFilterNode>();
+		}
+
+		public string Name {
+			get {
+				if(_sequence != null) {
+					return _sequence.Name;
+				}
+				return null;
+			}
 		}
 
 		virtual protected void OnPlaying(TimeSpan startTime, TimeSpan endTime) { }

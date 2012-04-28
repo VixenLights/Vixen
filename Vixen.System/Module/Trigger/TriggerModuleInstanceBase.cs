@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 
 namespace Vixen.Module.Trigger {
@@ -27,7 +26,7 @@ namespace Vixen.Module.Trigger {
 					trigger.Set += _TriggerSet;
 				}
 				// Start monitoring the hardware.
-				_stateUpdateThread = new Thread(_StateUpdate);
+				_stateUpdateThread = new Thread(_StateUpdate) { Name = "Trigger update" };
 				_stateUpdateThread.IsBackground = true;
 				_stateUpdateThread.Start();
 			}

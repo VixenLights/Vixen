@@ -12,8 +12,8 @@ namespace Vixen.Sys {
 		private HashSet<Guid> _changedChannels;
 
 		public ChannelPatchingChangeSet() {
-			//_channelPatches = VixenSystem.ChannelPatching.ToDictionary(x => x.ChannelId, x => new HashSet<ControllerReference>(x));
-			_channelPatches = VixenSystem.ChannelPatching.ToDictionary(x => x.ChannelId, x => new ChannelOutputPatch(x.ChannelId, x));
+			//_channelPatches = VixenSystem.ChannelPatching.ToDictionary(x => x.ChannelId, x => new ChannelOutputPatch(x.ChannelId, x));
+			_channelPatches = new Dictionary<Guid, ChannelOutputPatch>();
 			_changedChannels = new HashSet<Guid>();
 		}
 
@@ -37,7 +37,7 @@ namespace Vixen.Sys {
 			_AddChangedChannel(channelId);
 		}
 
-		public void Commit() {
+		public void Commit(bool clearExisting = false) {
 			// Don't want to know about outputs affected while patches are being thrown about.
 			// Only want to know about outputs affected by:
 			// 1: The original patches of the affected channels.
@@ -47,15 +47,17 @@ namespace Vixen.Sys {
 
 			foreach(Guid channelId in _changedChannels) {
 				_AffectOutputs(originalChannelPatches[channelId], outputSourceChangeSet);
-				_CommitPatches(channelId);
+				_CommitPatches(channelId, clearExisting);
 				_AffectOutputs(_channelPatches[channelId], outputSourceChangeSet);
 			}
 
 			outputSourceChangeSet.Commit();
 		}
 
-		private void _CommitPatches(Guid channelId) {
-			VixenSystem.ChannelPatching.ClearPatching(channelId);
+		private void _CommitPatches(Guid channelId, bool clearExisting) {
+			if(clearExisting) {
+				VixenSystem.ChannelPatching.ClearPatching(channelId);
+			}
 			VixenSystem.ChannelPatching.AddPatches(channelId, _channelPatches[channelId]);
 		}
 

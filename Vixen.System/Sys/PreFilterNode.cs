@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Vixen.Module.PreFilter;
 
 namespace Vixen.Sys {
@@ -21,7 +22,25 @@ namespace Vixen.Sys {
 		}
 
 		public void AffectIntent(IIntentSegment intentSegment, TimeSpan contextAbsoluteStartTime, TimeSpan contextAbsoluteEndTime) {
-			PreFilter.AffectIntent(intentSegment, StartTime - contextAbsoluteStartTime, EndTime - contextAbsoluteEndTime);
+			TimeSpan filterRelativeStartTime = _GetFilterRelativeStartTime(contextAbsoluteStartTime);
+			TimeSpan filterRelativeEndTime = _GetFilterRelativeEndTime(contextAbsoluteEndTime);
+			if(filterRelativeStartTime < TimeSpan && filterRelativeEndTime > TimeSpan.Zero) {
+				PreFilter.AffectIntent(intentSegment, filterRelativeStartTime, filterRelativeEndTime);
+			}
+		}
+
+		private TimeSpan _GetFilterRelativeStartTime(TimeSpan contextAbsoluteStartTime) {
+			double filterRelativeStartTime = _GetFilterRelativeTimeInMilliseconds(contextAbsoluteStartTime);
+			return TimeSpan.FromMilliseconds(Math.Max(0, filterRelativeStartTime));
+		}
+
+		private TimeSpan _GetFilterRelativeEndTime(TimeSpan contextAbsoluteEndTime) {
+			double filterRelativeEndTime = _GetFilterRelativeTimeInMilliseconds(contextAbsoluteEndTime);
+			return TimeSpan.FromMilliseconds(Math.Min(PreFilter.TimeSpan.TotalMilliseconds, filterRelativeEndTime));
+		}
+
+		private double _GetFilterRelativeTimeInMilliseconds(TimeSpan time) {
+			return (time - StartTime).TotalMilliseconds;
 		}
 
 		#region IComparable<IPreFilterNode>

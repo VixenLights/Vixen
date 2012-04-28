@@ -169,31 +169,5 @@ namespace Vixen.Sys {
 				VixenSystem.Channels.Update();
 			}
 		}
-
-		#region LiveDataSource Class
-		private class LiveDataSource : IDataSource {
-			private EffectNodeQueue _data;
-
-			public LiveDataSource() {
-				_data = new EffectNodeQueue();
-			}
-
-			public void AddData(EffectNode effectNode) {
-				_data.Add(effectNode);
-			}
-
-			public void AddData(IEnumerable<EffectNode> effectNodes) {
-				foreach(EffectNode effectNode in effectNodes) {
-					effectNode.StartTime += SystemTime.Position;
-					_data.Add(effectNode);
-				}
-			}
-
-			public IEnumerable<EffectNode> GetDataAt(TimeSpan time) {
-				EffectNode[] data = _data.Get(time).ToArray();
-				return data;
-			}
-		}
-		#endregion
 	}
 }

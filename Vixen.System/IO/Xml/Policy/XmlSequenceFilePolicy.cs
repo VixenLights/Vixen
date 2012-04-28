@@ -97,7 +97,7 @@ namespace Vixen.IO.Xml.Policy {
 
 		protected override void ReadFilterNodes() {
 			XmlPreFilterNodeCollectionSerializer serializer = new XmlPreFilterNodeCollectionSerializer();
-			IEnumerable<PreFilterNode> preFilterNodes = serializer.ReadObject(_content);
+			IEnumerable<IPreFilterNode> preFilterNodes = serializer.ReadObject(_content);
 			_sequence.ClearPreFilters();
 			_sequence.AddPreFilters(preFilterNodes);
 		}

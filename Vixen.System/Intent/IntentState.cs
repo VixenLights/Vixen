@@ -11,8 +11,14 @@ namespace Vixen.Intent {
 		}
 
 		public TimeSpan RelativeTime { get; private set; }
+		
 		public List<SubordinateIntentState> SubordinateIntentStates { get; private set; }
+	
 		abstract public ResultType GetValue();
+
+		object IIntentState.GetValue() {
+			return GetValue();
+		}
 
 		public IIntentState Clone() {
 			IntentState<IntentStateType, ResultType> newIntentState = _Clone();

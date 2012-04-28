@@ -10,6 +10,7 @@ namespace Vixen.Sys {
 		//void SplitAt(params TimeSpan[] intentRelativeTimes);
 		void SplitAt(ITimeNode intentRelativeTime);
 		void ApplyFilter(IPreFilterNode preFilterNode, TimeSpan contextAbsoluteIntentStartTime);
+		object GetStateAt(TimeSpan timeOffset);
 	}
 	public interface IIntent<out T> : IIntent {
 		T GetStateAt(TimeSpan timeOffset);

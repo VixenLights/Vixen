@@ -2,10 +2,10 @@
 
 namespace Vixen.Sys {
 	public interface IHasPreFilterNodes {
-		void AddPreFilter(PreFilterNode module);
-		void AddPreFilters(IEnumerable<PreFilterNode> module);
-		bool RemovePreFilter(PreFilterNode module);
-		IEnumerable<PreFilterNode> GetAllPreFilters();
+		void AddPreFilter(IPreFilterNode module);
+		void AddPreFilters(IEnumerable<IPreFilterNode> module);
+		bool RemovePreFilter(IPreFilterNode module);
+		IEnumerable<IPreFilterNode> GetAllPreFilters();
 		void ClearPreFilters();
 	}
 }

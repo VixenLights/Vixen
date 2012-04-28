@@ -36,6 +36,7 @@
 			this.checkBoxApplyFilterTemplate = new System.Windows.Forms.CheckBox();
 			this.comboBoxFilterTemplate = new System.Windows.Forms.ComboBox();
 			this.buttonCreateFilterTemplate = new System.Windows.Forms.Button();
+			this.checkBoxClearExisting = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -167,11 +168,22 @@
 			this.buttonCreateFilterTemplate.UseVisualStyleBackColor = true;
 			this.buttonCreateFilterTemplate.Click += new System.EventHandler(this.buttonCreateFilterTemplate_Click);
 			// 
+			// checkBoxClearExisting
+			// 
+			this.checkBoxClearExisting.AutoSize = true;
+			this.checkBoxClearExisting.Location = new System.Drawing.Point(342, 333);
+			this.checkBoxClearExisting.Name = "checkBoxClearExisting";
+			this.checkBoxClearExisting.Size = new System.Drawing.Size(148, 17);
+			this.checkBoxClearExisting.TabIndex = 17;
+			this.checkBoxClearExisting.Text = "Clear existing patches first";
+			this.checkBoxClearExisting.UseVisualStyleBackColor = true;
+			// 
 			// PatchChannels
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(623, 358);
+			this.Controls.Add(this.checkBoxClearExisting);
 			this.Controls.Add(this.buttonCreateFilterTemplate);
 			this.Controls.Add(this.comboBoxFilterTemplate);
 			this.Controls.Add(this.checkBoxApplyFilterTemplate);
@@ -206,5 +218,6 @@
 		private System.Windows.Forms.CheckBox checkBoxApplyFilterTemplate;
 		private System.Windows.Forms.ComboBox comboBoxFilterTemplate;
 		private System.Windows.Forms.Button buttonCreateFilterTemplate;
+		private System.Windows.Forms.CheckBox checkBoxClearExisting;
 	}
 }

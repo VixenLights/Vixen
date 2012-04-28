@@ -38,7 +38,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\Output\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -118,14 +118,22 @@
     <Compile Include="Data\Evaluator\PercentEvaluator.cs" />
     <Compile Include="Data\Generator\ColorCommandGenerator.cs" />
     <Compile Include="Data\Generator\Generator.cs" />
+    <Compile Include="Execution\ContextCurrentEffectsFull.cs" />
     <Compile Include="Execution\IChannelStateBuilder.cs" />
+    <Compile Include="Execution\IContextCurrentEffects.cs" />
+    <Compile Include="Execution\IntentBuffer.cs" />
+    <Compile Include="Execution\FilteringIntentCache.cs" />
     <Compile Include="Execution\IntentStateBuilder.cs" />
+    <Compile Include="Execution\SequenceDataSource.cs" />
     <Compile Include="Intent\ColorTransitionIntent.cs" />
     <Compile Include="Intent\ColorTransitionIntentState.cs" />
     <Compile Include="Intent\IntentState.cs" />
     <Compile Include="Intent\LightingIntent.cs" />
     <Compile Include="Intent\LightingIntentState.cs" />
-    <Compile Include="Intent\LightingValue.cs" />
+    <Compile Include="Sys\Dispatch\IAnyCommandHandler.cs" />
+    <Compile Include="Sys\Dispatch\IntentSegmentDispatch.cs" />
+    <Compile Include="Sys\Instrumentation\BufferSizeInSeconds.cs" />
+    <Compile Include="Sys\LightingValue.cs" />
     <Compile Include="Intent\LongTransitionIntent.cs" />
     <Compile Include="Intent\LongTransitionIntentState.cs" />
     <Compile Include="Intent\PercentageTransitionIntentState.cs" />
@@ -190,6 +198,7 @@
     <Compile Include="Rule\Patch\ToNOutputsOverControllers.cs" />
     <Compile Include="Services\ChannelNodeService.cs" />
     <Compile Include="Services\PostFilterService.cs" />
+    <Compile Include="Services\PreFilterService.cs" />
     <Compile Include="Sys\ChannelIntents.cs" />
     <Compile Include="Sys\ChannelNodeTemplate.cs" />
     <Compile Include="Sys\ChannelPatchingChangeSet.cs" />
@@ -216,7 +225,7 @@
     <Compile Include="Commands\UnsignedIntValue.cs" />
     <Compile Include="Commands\UnsignedShortValue.cs" />
     <Compile Include="Execution\Context.cs" />
-    <Compile Include="Execution\ContextCurrentEffects.cs" />
+    <Compile Include="Execution\ContextCurrentEffectsIncremental.cs" />
     <Compile Include="Execution\ControllerUpdateAdjudicator.cs" />
     <Compile Include="Execution\SelectedTimingProvider.cs" />
     <Compile Include="Instrumentation\AveragePerCountValue.cs" />
@@ -231,6 +240,7 @@
     <Compile Include="Sys\Dispatchable.cs" />
     <Compile Include="Sys\Dispatch\IAnyCombinatorHandler.cs" />
     <Compile Include="Sys\Dispatch\IAnyEvaluatorHandler.cs" />
+    <Compile Include="Sys\Dispatch\IAnyIntentSegmentHandler.cs" />
     <Compile Include="Sys\Dispatch\IAnyIntentStateHandler.cs" />
     <Compile Include="Sys\GroupNode.cs">
       <SubType>Code</SubType>
@@ -342,12 +352,14 @@
     <Compile Include="Sys\ITypeAffector.cs" />
     <Compile Include="Data\Evaluator\FloatEvaluator.cs" />
     <Compile Include="Data\Combinator\FloatHighestWinsCombinator.cs" />
+    <Compile Include="Sys\LiveDataSource.cs" />
     <Compile Include="Sys\Managers\PreviewManager.cs" />
     <Compile Include="Sys\OutputSourceChangeSet.cs" />
     <Compile Include="Sys\Output\IOutputModule.cs" />
     <Compile Include="Sys\Output\IOutputModuleDescriptor.cs" />
     <Compile Include="Sys\Output\OutputModuleInstanceBase.cs" />
     <Compile Include="Sys\Output\OutputPreview.cs" />
+    <Compile Include="Sys\PreFilterLookup.cs" />
     <Compile Include="Sys\SubordinateEffect.cs" />
     <Compile Include="Sys\SubordinateIntent.cs" />
     <Compile Include="Sys\SubordinateIntentState.cs" />
@@ -427,7 +439,7 @@
     <Compile Include="Sys\Instrumentation\TotalCommandsPulledValue.cs" />
     <Compile Include="Sys\Instrumentation\TotalEffectsValue.cs" />
     <Compile Include="Sys\IntentNode.cs" />
-    <Compile Include="Sys\EffectNodeQueue.cs" />
+    <Compile Include="Execution\EffectNodeQueue.cs" />
     <Compile Include="Sys\IPackageFileContent.cs" />
     <Compile Include="Sys\IOutputSourceCollection.cs" />
     <Compile Include="Sys\IStateSource.cs" />
@@ -744,13 +756,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Effect64.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Users\Development\Documents\Visual Studio 2010\Projects\IntervalTreeLib\IntervalTreeLib.csproj">
-      <Project>{0207A18A-6BC1-490B-B010-7A3DA3178890}</Project>
-      <Name>IntervalTreeLib</Name>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

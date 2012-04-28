@@ -16,15 +16,15 @@ namespace RampWithIntent {
 		protected override void _PreRender() {
 			//**********************
 			//*** going to add a subordinate, just for testing
-			if(!_isSubordinate) {
-				SubordinateEffects.Clear();
-				RampModule otherEffect = (RampModule)Vixen.Services.ApplicationServices.Get<IEffectModuleInstance>(Descriptor.TypeId);
-				otherEffect.ParameterValues = new object[] {0x1f, 0x1f};
-				otherEffect.TimeSpan = TimeSpan;
-				otherEffect.TargetNodes = TargetNodes;
-				otherEffect._isSubordinate = true;
-				SubordinateEffects.Add(new SubordinateEffect(otherEffect, new BooleanAnd()));
-			}
+			//if(!_isSubordinate) {
+			//    SubordinateEffects.Clear();
+			//    RampModule otherEffect = (RampModule)Vixen.Services.ApplicationServices.Get<IEffectModuleInstance>(Descriptor.TypeId);
+			//    otherEffect.ParameterValues = new object[] {0x1f, 0x1f};
+			//    otherEffect.TimeSpan = TimeSpan;
+			//    otherEffect.TargetNodes = TargetNodes;
+			//    otherEffect._isSubordinate = true;
+			//    SubordinateEffects.Add(new SubordinateEffect(otherEffect, new BooleanAnd()));
+			//}
 			//**********************
 			
 			_intents = new EffectIntents();

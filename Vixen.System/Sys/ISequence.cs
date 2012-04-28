@@ -18,16 +18,16 @@ namespace Vixen.Sys {
 		TimeSpan Length { get; set; }
 		bool IsUntimed { get; set; }
 		string FilePath { get; set; }
-		void InsertData(EffectNode effectNode);
-		void InsertData(IEnumerable<EffectNode> effectNodes);
-		bool RemoveData(EffectNode effectNode);
+		void InsertData(IEffectNode effectNode);
+		void InsertData(IEnumerable<IEffectNode> effectNodes);
+		bool RemoveData(IEffectNode effectNode);
 		InsertDataListenerStack InsertDataListener { get; set; }
 		TimingProviders TimingProvider { get; }
 		DataStreams Data { get; }
 		IRuntimeBehaviorModuleInstance[] RuntimeBehaviors { get; }
 		//MediaCollection Media { get; }
 		ModuleLocalDataSet ModuleDataSet { get; }
-		IEnumerable<EffectNode> GetData();
+		IEnumerable<IEffectNode> GetData();
 		ITiming GetTiming();
 		SequenceType SequenceType { get; }
 	}

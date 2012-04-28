@@ -118,7 +118,7 @@ namespace VixenApplication {
 
 		private void buttonCommit_Click(object sender, EventArgs e) {
 			if(_Validate()) {
-				Vixen.Services.ChannelNodeService.Instance.Patch(_channelNodes, _patchingRule);
+				Vixen.Services.ChannelNodeService.Instance.Patch(_channelNodes, _patchingRule, checkBoxClearExisting.Checked);
 				if(_DoApplyFilterTemplate) {
 					Vixen.Services.PostFilterService.Instance.ApplyTemplateMany(_SelectedFilterTemplate, _patchingRule, _channelNodes.Length);
 				}

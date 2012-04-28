@@ -20,7 +20,7 @@ namespace Vixen.Sys {
 			return timeSpan > StartTime && timeSpan < EndTime;
 		}
 
-		public bool Intersects(TimeNode timeNode) {
+		public bool Intersects(ITimeNode timeNode) {
 			return Intersects(timeNode.StartTime) || Intersects(timeNode.EndTime);
 		}
 
@@ -51,7 +51,7 @@ namespace Vixen.Sys {
 		//public static readonly TimeNode Empty = new TimeNode(TimeSpan.Zero, TimeSpan.Zero);
 		public static readonly TimeNode Empty;
 
-		public static TimeNode Intersect(TimeNode left, TimeNode right) {
+		public static ITimeNode Intersect(ITimeNode left, ITimeNode right) {
 			TimeSpan intersectionStart = TimeSpan.FromMilliseconds(Math.Max(left.StartTime.TotalMilliseconds, right.StartTime.TotalMilliseconds));
 			TimeSpan intersectionEnd = TimeSpan.FromMilliseconds(Math.Min(left.EndTime.TotalMilliseconds, right.EndTime.TotalMilliseconds));
 			
@@ -62,7 +62,15 @@ namespace Vixen.Sys {
 			return Empty;
 		}
 
-		public static TimeNode FromTimeSpan(TimeSpan timeSpan) {
+		public static bool Intersects(ITimeNode timeNode, TimeSpan timeSpan) {
+			return timeSpan > timeNode.StartTime && timeSpan < timeNode.EndTime;
+		}
+
+		public static bool Intersects(ITimeNode timeNode1, ITimeNode timeNode2) {
+			return !(timeNode1.EndTime < timeNode2.StartTime || timeNode1.StartTime > timeNode2.EndTime);
+		}
+
+		public static ITimeNode FromTimeSpan(TimeSpan timeSpan) {
 			return new TimeNode(timeSpan, TimeSpan.Zero);
 		}
 

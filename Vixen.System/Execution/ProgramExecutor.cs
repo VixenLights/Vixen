@@ -10,6 +10,8 @@ namespace Vixen.Execution {
         private IExecutor _executor;
 		private TimeSpan _startTime, _endTime;
 		private TimeSpan _currentSequenceStartTime, _currentSequenceEndTime;
+		private FilteringIntentCache _intentCache;
+		private IntentBuffer _intentBuffer;
 
 		static public readonly TimeSpan START_ENTIRE_SEQUENCE = TimeSpan.Zero;
 		static public readonly TimeSpan END_ENTIRE_SEQUENCE = TimeSpan.MaxValue;
@@ -25,7 +27,9 @@ namespace Vixen.Execution {
         public ProgramExecutor(Program program) {
             State = RunState.Stopped;
             Program = program;
-        }
+			// Don't want to create this for every execution.
+			_intentCache = new FilteringIntentCache();
+		}
 
 		private bool _PlayAllSequences {
 			get { return _startTime == START_ENTIRE_SEQUENCE && _endTime == END_ENTIRE_SEQUENCE; }
@@ -82,33 +86,48 @@ namespace Vixen.Execution {
         public bool IsPaused { get; private set; } // Can be paused and in the Playing state.
 
     	public bool IsPlaying {
-    		get { return _executor != null && _executor.IsPlaying; }
+			//get { return _executor != null && _executor.IsPlaying; }
+    		get { return _executor != null && _executor.IsPlaying && _intentBuffer != null; }
     	}
 
     	public IDataSource GetCurrentSequenceData() {
 			if(_executor != null) {
-				IEnumerable<EffectNode> sequenceData = _executor.GetSequenceData();
-				return new SequenceDataSource(sequenceData);
+				//IEnumerable<IEffectNode> sequenceData = _executor.GetSequenceData();
+				//IEnumerable<IPreFilterNode> sequenceFilters = _executor.GetSequenceFilters();
+				////return new SequenceDataSource(sequenceData);
+				//return new CachingSequenceDataSource(sequenceData, sequenceFilters);
+				return _intentBuffer;
 			}
 			return null;
 		}
 
-		public ITiming GetCurrentSequenceTiming() {
+		private IntentBuffer _CreateIntentBuffer() {
+			IEnumerable<IEffectNode> sequenceData = _executor.GetSequenceData();
+			IEnumerable<IPreFilterNode> sequenceFilters = _executor.GetSequenceFilters();
+			// The buffer needs to use the cache as its source of effect data so that it will
+			// pull data through the cache and buffer pre-filtered data.
+			_intentCache.Use(sequenceData, sequenceFilters);
+			return new IntentBuffer(_intentCache, _executor.Name);
+		}
+
+    	public ITiming GetCurrentSequenceTiming() {
 			if(_executor != null) {
 				return _executor.GetSequenceTiming();
 			}
 			return null;
 		}
 
-		public IEnumerable<PreFilterNode> GetCurrentSequenceFilters() {
+		public IEnumerable<IPreFilterNode> GetCurrentSequenceFilters() {
 			if(_executor != null) {
 				return _executor.GetSequenceFilters();
 			}
-			return Enumerable.Empty<PreFilterNode>();
+			return Enumerable.Empty<IPreFilterNode>();
 		}
 
     	#region Events
 		protected virtual void OnSequenceStarted(object sender, SequenceStartedEventArgs e) {
+			_intentBuffer = _CreateIntentBuffer();
+			_intentBuffer.Start();
             if(SequenceStarted != null) {
                 SequenceStarted(sender, e);
             }
@@ -118,6 +137,8 @@ namespace Vixen.Execution {
             if(SequenceEnded != null) {
                 SequenceEnded(sender, e);
             }
+			_intentBuffer.Stop();
+			_intentBuffer = null;
 			_NextSequence(() => {
 				State = RunState.Stopped;
 				_ProgramEnded();
@@ -277,17 +298,5 @@ namespace Vixen.Execution {
 		}
 
 		#endregion
-
-    	private class SequenceDataSource : IDataSource {
-			private EffectNodeQueue _data;
-
-			public SequenceDataSource(IEnumerable<EffectNode> sequenceData) {
-				_data = new EffectNodeQueue(sequenceData.OrderBy(x => x.StartTime));
-			}
-
-			public IEnumerable<EffectNode> GetDataAt(TimeSpan time) {
-				return _data.Get(time);
-			}
-		}
     }
 }

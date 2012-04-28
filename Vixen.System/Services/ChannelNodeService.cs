@@ -60,11 +60,11 @@ namespace Vixen.Services {
 			}
 		}
 
-		public void Patch(ChannelNode channelNode, IPatchingRule patchingRule) {
-			Patch(channelNode.AsEnumerable(), patchingRule);
+		public void Patch(ChannelNode channelNode, IPatchingRule patchingRule, bool clearExisting = false) {
+			Patch(channelNode.AsEnumerable(), patchingRule, clearExisting);
 		}
 
-		public void Patch(IEnumerable<ChannelNode> channelNodes, IPatchingRule patchingRule) {
+		public void Patch(IEnumerable<ChannelNode> channelNodes, IPatchingRule patchingRule, bool clearExisting = false) {
 			// If this were instead a part of an ongoing operation involving multiple calls to a method
 			// like this, the change set would have to be outside this method and passed in with the
 			// caller being responsible for its commitment.
@@ -72,7 +72,7 @@ namespace Vixen.Services {
 
 			_PatchUsingChangeset(channelNodes, patchingRule, channelPatchingChangeSet);
 	
-			channelPatchingChangeSet.Commit();
+			channelPatchingChangeSet.Commit(clearExisting);
 		}
 
 		private void _PatchUsingChangeset(IEnumerable<ChannelNode> channelNodes, IPatchingRule patchingRule, ChannelPatchingChangeSet channelPatchingChangeSet) {
@@ -81,7 +81,6 @@ namespace Vixen.Services {
 
 			int patchesToAdd = Math.Min(channelArray.Length, destinations.Length);
 			for(int i = 0; i < patchesToAdd; i++) {
-				//VixenSystem.ChannelPatching.AddPatches(channelArray[i].Id, destinations[i]);
 				channelPatchingChangeSet.AddChannelPatches(channelArray[i].Id, destinations[i]);
 			}
 		}

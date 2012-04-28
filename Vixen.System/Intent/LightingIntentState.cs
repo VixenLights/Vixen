@@ -1,4 +1,5 @@
 ﻿using System;
+using Vixen.Sys;
 
 namespace Vixen.Intent {
 	class LightingIntentState : IntentState<LightingIntentState, LightingValue> {

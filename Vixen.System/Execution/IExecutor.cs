@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Vixen.Module.PreFilter;
 using Vixen.Module.Timing;
 using Vixen.Sys;
 
@@ -22,8 +19,9 @@ namespace Vixen.Execution
 		void Resume();
 		void Stop();
 
-		IEnumerable<EffectNode> GetSequenceData();
+		IEnumerable<IEffectNode> GetSequenceData();
 		ITiming GetSequenceTiming();
-		IEnumerable<PreFilterNode> GetSequenceFilters();
+		IEnumerable<IPreFilterNode> GetSequenceFilters();
+		string Name { get; }
 	}
 }

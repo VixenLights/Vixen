@@ -4,15 +4,36 @@ using Vixen.Sys;
 
 namespace Vixen.Module.PreFilter {
 	abstract public class PreFilterModuleInstanceBase : ModuleInstanceBase, IPreFilterModuleInstance, IEqualityComparer<IPreFilterModuleInstance>, IEquatable<IPreFilterModuleInstance>, IEqualityComparer<PreFilterModuleInstanceBase>, IEquatable<PreFilterModuleInstanceBase> {
-		virtual public TimeSpan TimeSpan { get; set; }
+		private ChannelNode[] _targetNodes;
+		private TimeSpan _timeSpan;
 
-		virtual public ChannelNode[] TargetNodes { get; set; }
+		public TimeSpan TimeSpan {
+			get { return _timeSpan; }
+			set {
+				if(value != _timeSpan) {
+					_timeSpan = value;
+					IsDirty = true;
+				}
+			}
+		}
+
+		public ChannelNode[] TargetNodes {
+			get { return _targetNodes; }
+			set {
+				if(value != _targetNodes) {
+					_targetNodes = value;
+					IsDirty = true;
+				}
+			}
+		}
 
 		virtual public bool HasSetup {
 			get { return false; }
 		}
 
 		virtual public bool Setup() { return false; }
+
+		public bool IsDirty { get; protected set; }
 
 		abstract public void AffectIntent(IIntentSegment intentSegment, TimeSpan filterRelativeStartTime, TimeSpan filterRelativeEndTime);
 

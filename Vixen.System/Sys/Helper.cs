@@ -43,7 +43,7 @@ namespace Vixen.Sys {
 			return XmlHelper.GetTimeSpanAttribute(element, attributeName);
 		}
 
-		static public TimeSpan GetEffectRelativeTime(TimeSpan currentTime, EffectNode effectNode) {
+		static public TimeSpan GetEffectRelativeTime(TimeSpan currentTime, IEffectNode effectNode) {
 			return currentTime - effectNode.StartTime;
 		}
 

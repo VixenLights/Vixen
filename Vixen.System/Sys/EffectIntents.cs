@@ -15,9 +15,23 @@ namespace Vixen.Sys {
 			get { return Keys; }
 		}
 
+		public IntentNodeCollection GetIntentNodesForChannel(Guid channelId) {
+			IntentNodeCollection intentNodeCollection;
+			TryGetValue(channelId, out intentNodeCollection);
+			return intentNodeCollection;
+		}
+
 		public void AddIntentForChannel(Guid channelId, IIntent intent, TimeSpan startTime) {
 			_AddIntentForChannel(channelId, new IntentNode(intent, startTime));
 		}
+
+		//public void ApplyFilter(IPreFilterNode preFilterNode, TimeSpan contextAbsoluteEffectStartTime) {
+		//    foreach(IntentNodeCollection intentNodes in Values) {
+		//        foreach(IntentNode intentNode in intentNodes) {
+		//            intentNode.ApplyFilter(preFilterNode, contextAbsoluteEffectStartTime);
+		//        }
+		//    }
+		//}
 
 		private void _AddIntentForChannel(Guid channelId, IntentNode intentNode) {
 			if(ContainsKey(channelId)) {

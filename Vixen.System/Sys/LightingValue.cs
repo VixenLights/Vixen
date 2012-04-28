@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 
-namespace Vixen.Intent {
-	struct LightingValue {
+namespace Vixen.Sys {
+	public struct LightingValue {
 		public LightingValue(Color color, double intensity) {
 			Color = color;
 			Intensity = intensity;

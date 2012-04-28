@@ -45,6 +45,7 @@
     <Compile Include="FadeOutData.cs" />
     <Compile Include="FadeOutDescriptor.cs" />
     <Compile Include="FadeOutModule.cs" />
+    <Compile Include="IntentHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -6,7 +6,7 @@ using Vixen.Module.PreFilter;
 using Vixen.Sys;
 
 namespace Vixen.IO.Xml {
-	class XmlPreFilterNodeCollectionSerializer : IXmlSerializer<IEnumerable<PreFilterNode>> {
+	class XmlPreFilterNodeCollectionSerializer : IXmlSerializer<IEnumerable<IPreFilterNode>> {
 		private const string ELEMENT_FILTER_NODES = "FilterNodes";
 		private const string ELEMENT_FILTER_NODE = "FilterNode";
 		private const string ELEMENT_TARGET_NODES = "TargetNodes";
@@ -17,7 +17,7 @@ namespace Vixen.IO.Xml {
 		private const string ATTR_INSTANCE_ID = "instanceId";
 		private const string ATTR_ID = "id";
 
-		public XElement WriteObject(IEnumerable<PreFilterNode> value) {
+		public XElement WriteObject(IEnumerable<IPreFilterNode> value) {
 			return new XElement(ELEMENT_FILTER_NODES,
 				value.Select(x =>
 					new XElement(ELEMENT_FILTER_NODE,
@@ -31,7 +31,7 @@ namespace Vixen.IO.Xml {
 									new XAttribute(ATTR_ID, y.Id)))))));
 		}
 
-		public IEnumerable<PreFilterNode> ReadObject(XElement element) {
+		public IEnumerable<IPreFilterNode> ReadObject(XElement element) {
 			// Create a channel node lookup of channels that are currently valid.
 			var channelNodes = VixenSystem.Nodes.Distinct().ToDictionary(x => x.Id);
 

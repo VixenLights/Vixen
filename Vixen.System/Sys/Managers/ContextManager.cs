@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Vixen.Execution;
 using Vixen.Module.Timing;
 using Vixen.Sys.Instrumentation;
@@ -56,12 +55,11 @@ namespace Vixen.Sys.Managers {
 		public void Update() {
 			lock(_instances) {
 				_stopwatch.Restart();
-				
+
 				_instances.Values.AsParallel().ForAll(context => {
 					// Get a snapshot time value for this update.
 					TimeSpan contextTime = context.GetTimeSnapshot();
 					IEnumerable<Guid> affectedChannels = context.UpdateChannelStates(contextTime);
-					//// (User may be allowed to skip this step in the future).
 					//context.FilterChannelStates(affectedChannels, contextTime);
 					//Could possibly return affectedChannels so only affected outputs
 					//are updated.  The controller would have to maintain state so those

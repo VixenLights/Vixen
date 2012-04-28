@@ -1,7 +1,7 @@
 ﻿using Vixen.Commands;
 
 namespace Vixen.Sys.Dispatch {
-	abstract public class CommandDispatch : IHandler<ByteValue>, IHandler<SignedShortValue>, IHandler<UnsignedShortValue>, IHandler<SignedIntValue>, IHandler<UnsignedIntValue>, IHandler<SignedLongValue>, IHandler<UnsignedLongValue>, IHandler<ColorValue> {
+	abstract public class CommandDispatch : IAnyCommandHandler {
 		virtual public void Handle(ByteValue c) { }
 
 		virtual public void Handle(SignedShortValue c) { }
@@ -17,5 +17,7 @@ namespace Vixen.Sys.Dispatch {
 		virtual public void Handle(UnsignedLongValue c) { }
 
 		virtual public void Handle(ColorValue c) { }
+
+		virtual public void Handle(LightingValue obj) { }
 	}
 }

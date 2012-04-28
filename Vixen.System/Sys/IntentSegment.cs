@@ -3,7 +3,7 @@ using Vixen.Interpolator;
 
 namespace Vixen.Sys {
 	// Times are relative to the start of the owning Intent.
-	class IntentSegment<T> : IIntentSegment<T> {
+	class IntentSegment<T> : Dispatchable<IntentSegment<T>>, IIntentSegment<T> {
 		private Interpolator<T> _interpolator;
 
 		public IntentSegment(T startValue, T endValue, TimeSpan timeSpan, Interpolator<T> interpolator) {
@@ -13,6 +13,8 @@ namespace Vixen.Sys {
 			TimeSpan = timeSpan;
 			_interpolator = interpolator;
 		}
+
+		public bool Filtered { get; set; }
 
 		public T StartValue { get; set; }
 
@@ -28,6 +30,15 @@ namespace Vixen.Sys {
 			return default(T);
 		}
 
+		object IIntentSegment.StartValue {
+			get { return StartValue; }
+			set { StartValue = (T)value; }
+		}
+
+		object IIntentSegment.EndValue {
+			get { return EndValue; }
+			set { EndValue = (T)value; }
+		}
 		//public IntentNodeSegment[] SplitAt(TimeSpan segmentRelativeTime) {
 		//    if(Intent != null && TimeNode.Intersects(segmentRelativeTime)) {
 		//        IntentNodeSegment[] segments = new IntentNodeSegment[2];

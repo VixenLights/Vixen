@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using System.Xml.Linq;
 using Vixen.Module.Media;
 using Vixen.Module.Timing;
 using Vixen.IO;
@@ -21,6 +20,8 @@ namespace Vixen.Sys {
 		private ModuleLocalDataSet _moduleDataSet;
 		private Guid _preFilterStreamId;
 		private MediaCollection _media;
+		//private PreFilterLookup _preFilterLookup;
+		//private IntentCache _intentCache;
 
 		private const string DIRECTORY_NAME = "Sequence";
 		//private const int VERSION = 2;
@@ -94,6 +95,7 @@ namespace Vixen.Sys {
 			ModuleDataSet = new ModuleLocalDataSet();
 			_media = new MediaCollection();
 			// Runtime behaviors set in ModuleDataSet setter.
+			//_preFilterLookup = PreFilterService.BuildPreFilterLookup(VixenSystem.Nodes, GetAllPreFilters());
 		}
 
 		protected Sequence(Sequence original) {
@@ -105,11 +107,11 @@ namespace Vixen.Sys {
 			TimingProvider = new TimingProviders(this, original.TimingProvider);
 			RuntimeBehaviors = Modules.ModuleManagement.GetAllRuntimeBehavior();
 			ModuleDataSet = (ModuleLocalDataSet)original.ModuleDataSet.Clone();
-
 			Length = original.Length;
+			//_preFilterLookup = PreFilterService.BuildPreFilterLookup(VixenSystem.Nodes, GetAllPreFilters());
 		}
 
-		private bool _DataListener(EffectNode effectNode) {
+		private bool _DataListener(IEffectNode effectNode) {
 			Data.AddData(effectNode);
 			ModuleDataSet.AssignModuleInstanceData(effectNode.Effect);
 			// Do not cancel the event.
@@ -165,12 +167,12 @@ namespace Vixen.Sys {
 
 		public InsertDataListenerStack InsertDataListener { get; set; }
 
-		public void InsertData(EffectNode effectNode)
+		public void InsertData(IEffectNode effectNode)
 		{
 			InsertDataListener.InsertData(effectNode);
 		}
 
-		public void InsertData(IEnumerable<EffectNode> effectNodes)
+		public void InsertData(IEnumerable<IEffectNode> effectNodes)
 		{
 			InsertDataListener.InsertData(effectNodes);
 		}
@@ -182,7 +184,7 @@ namespace Vixen.Sys {
 		//    return cn;
 		//}
 
-		public bool RemoveData(EffectNode effectNode)
+		public bool RemoveData(IEffectNode effectNode)
 		{
 			return Data.RemoveData(effectNode);
 		}
@@ -227,25 +229,25 @@ namespace Vixen.Sys {
 		#endregion
 
 		#region IHasPreFilters
-		public void AddPreFilters(IEnumerable<PreFilterNode> preFilterNodes) {
+		public void AddPreFilters(IEnumerable<IPreFilterNode> preFilterNodes) {
 			foreach(PreFilterNode preFilterNode in preFilterNodes) {
 				AddPreFilter(preFilterNode);
 			}
 		}
 
-		public void AddPreFilter(PreFilterNode preFilterNode) {
+		public void AddPreFilter(IPreFilterNode preFilterNode) {
 			ModuleDataSet.AssignModuleInstanceData(preFilterNode.PreFilter);
 			Data.AddData(_preFilterStreamId, preFilterNode);
 		}
 
-		public bool RemovePreFilter(PreFilterNode preFilterNode) {
+		public bool RemovePreFilter(IPreFilterNode preFilterNode) {
 			ModuleDataSet.RemoveModuleInstanceData(preFilterNode.PreFilter);
 			return Data.RemoveData(preFilterNode);
 		}
 
 		public void ClearPreFilters() {
 			//Data.ClearStream(_preFilterStreamId);
-			foreach(PreFilterNode preFilterNode in GetAllPreFilters()) {
+			foreach(IPreFilterNode preFilterNode in GetAllPreFilters()) {
 				RemovePreFilter(preFilterNode);
 			}
 		}
@@ -266,12 +268,12 @@ namespace Vixen.Sys {
 
 		//public MediaCollection Media { get; set; }
 
-		public IEnumerable<EffectNode> GetData() {
-			return Data.GetMainStreamData().Cast<EffectNode>();
+		public IEnumerable<IEffectNode> GetData() {
+			return Data.GetMainStreamData().Cast<IEffectNode>();
 		}
 
-		public IEnumerable<PreFilterNode> GetAllPreFilters() {
-			return Data.GetStreamData(_preFilterStreamId).Cast<PreFilterNode>();
+		public IEnumerable<IPreFilterNode> GetAllPreFilters() {
+			return Data.GetStreamData(_preFilterStreamId).Cast<IPreFilterNode>();
 		}
 
 		public ITiming GetTiming() {

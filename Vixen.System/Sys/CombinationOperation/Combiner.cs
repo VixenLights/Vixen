@@ -21,5 +21,7 @@ namespace Vixen.Sys.CombinationOperation {
 		virtual public void Handle(IIntentState<long> obj) { }
 
 		virtual public void Handle(IIntentState<double> obj) { }
+
+		virtual public void Handle(IIntentState<LightingValue> obj) { }
 	}
 }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using Vixen.Module.PreFilter;
 using Vixen.Module.Timing;
 using Vixen.Sys;
 
@@ -11,6 +9,7 @@ namespace Vixen.Execution {
 	public class ProgramContext : Context {
 		private ProgramExecutor _programExecutor;
 		private IDataSource _dataSource;
+		private ITiming _timingSource;
 
 		public event EventHandler<SequenceStartedEventArgs> SequenceStarted;
 		public event EventHandler<SequenceEventArgs> SequenceEnded;
@@ -18,14 +17,11 @@ namespace Vixen.Execution {
 		public event EventHandler<ProgramEventArgs> ProgramEnded;
 		public event EventHandler<ExecutorMessageEventArgs> Message;
 		public event EventHandler<ExecutorMessageEventArgs> Error;
-		//public event EventHandler ContextStarted;
-		//public event EventHandler ContextEnded;
 
 		public ProgramContext(Program program)
 			: base(program.Name) {
 			Program = program;
 			_programExecutor = new ProgramExecutor(Program);
-			//Id = Guid.NewGuid();
 
 			_programExecutor.SequenceStarted += _programExecutor_SequenceStarted;
 			_programExecutor.SequenceEnded += _programExecutor_SequenceEnded;
@@ -38,16 +34,8 @@ namespace Vixen.Execution {
 		public Program Program { get; private set; }
 
 		public override bool IsPlaying {
-			//get { return _programExecutor != null && _programExecutor.IsPlaying; }
 			get { return _ProgramExecutorIsPlaying() && _DataIsReady(); }
 		}
-		//public Guid Id { get; private set; }
-
-		//public string Name {
-		//    get {
-		//        return (Program != null) ? Program.Name : null;
-		//    }
-		//}
 
 		protected override bool _OnPlay(TimeSpan startTime, TimeSpan endTime) {
 			_programExecutor.Play(startTime, endTime);
@@ -65,33 +53,6 @@ namespace Vixen.Execution {
 		protected override void _OnStop() {
 			_programExecutor.Stop();
 		}
-		//public bool Play() {
-		//    return _Play(ProgramExecutor.START_ENTIRE_SEQUENCE, ProgramExecutor.END_ENTIRE_SEQUENCE);
-		//}
-
-		//public bool Play(TimeSpan startTime, TimeSpan endTime) {
-		//    return _Play(startTime, endTime);
-		//}
-
-		//public void Pause() {
-		//    _programExecutor.Pause();
-		//}
-
-		//public void Stop() {
-		//    if(IsPlaying) { // Which will be true even if paused.
-		//        _programExecutor.Stop();
-		//    }
-		//}
-
-		//public bool IsPaused {
-		//    get { return _programExecutor.IsPaused; }
-		//}
-
-		//public bool IsPlaying {
-		//    get {
-		//        return _programExecutor.State == ProgramExecutor.RunState.Playing;
-		//    }
-		//}
 
 		/// <summary>
 		/// 
@@ -105,33 +66,11 @@ namespace Vixen.Execution {
 			return 0;
 		}
 
-		///// <summary>
-		///// 
-		///// </summary>
-		///// <param name="startTime"></param>
-		///// <param name="endTime"></param>
-		///// <returns>True if execution entered the playing state.</returns>
-		//private bool _Play(TimeSpan startTime, TimeSpan endTime) {
-		//    try {
-		//        if(!IsPlaying) {
-		//            _programExecutor.Play(startTime, endTime);
-		//        } else if(IsPaused) {
-		//            // Paused, must be resumed.
-		//            _programExecutor.Resume();
-		//        }
-		//        return true;
-		//    } catch(Exception ex) {
-		//        VixenSystem.Logging.Error(ex);
-		//        return false;
-		//    }
-		//}
-
 		~ProgramContext() {
 			Dispose();
 		}
 
 		override protected void Dispose(bool disposing) {
-			//Stop();
 			if(disposing) {
 				_programExecutor.SequenceStarted -= _programExecutor_SequenceStarted;
 				_programExecutor.SequenceEnded -= _programExecutor_SequenceEnded;
@@ -146,10 +85,6 @@ namespace Vixen.Execution {
 				// act of being released.
 				VixenSystem.Contexts.ReleaseContext(this);
 			}
-			//// In case we're being disposed by something other than the
-			//// act of being released.
-			//Vixen.Sys.Execution.ReleaseContext(this);
-			//GC.SuppressFinalize(this);
 		}
 
 		#region Events
@@ -189,51 +124,39 @@ namespace Vixen.Execution {
 			_dataSource = _programExecutor.GetCurrentSequenceData();
 			_timingSource = _programExecutor.GetCurrentSequenceTiming();
 			
+			//Once a sequence is executed with this present, it can be saved and this
+			//line commented out.  The sequence file will have it at that point.
 			//****
-			_AddPreFilterToSequence();
+			//_AddPreFilterToSequence();
 			//****
 
-			_BuildPreFilterLookup(VixenSystem.Nodes, _programExecutor.GetCurrentSequenceFilters());
 			if(SequenceStarted != null) {
 				SequenceStarted(this, e);
 			}
 		}
 
-		private void _AddPreFilterToSequence() {
-			//Don't want it applied every time the sequence is started.  The result is cumulative.
-			if(_programExecutor.Current.Sequence.GetAllPreFilters().Any()) return;
+		//private void _AddPreFilterToSequence() {
+		//    //Don't want it applied every time the sequence is started.  The result is cumulative.
+		//    if(_programExecutor.Current.Sequence.GetAllPreFilters().Any()) return;
 
-			IPreFilterModuleInstance preFilter = Modules.ModuleManagement.GetPreFilter(new Guid("{E0E26570-6A01-4368-B996-E34576FF4910}"));
-			//Fade out over the first 5 seconds.
-			preFilter.TimeSpan = TimeSpan.FromSeconds(5);
-			//Every channel.
-			preFilter.TargetNodes = VixenSystem.Nodes.ToArray();
-			//The first three channels of my 1024-channel group.
-			//preFilter.TargetNodes = VixenSystem.Nodes.Skip(64).Take(3).ToArray();
-			//Starting right away.
-			_programExecutor.Current.Sequence.AddPreFilter(new PreFilterNode(preFilter, TimeSpan.Zero));
-		}
+		//    IPreFilterModuleInstance preFilter = Modules.ModuleManagement.GetPreFilter(new Guid("{E0E26570-6A01-4368-B996-E34576FF4910}"));
+		//    //Fade out over the first 5 seconds.
+		//    preFilter.TimeSpan = TimeSpan.FromSeconds(5);
+		//    //Every channel.
+		//    preFilter.TargetNodes = VixenSystem.Nodes.ToArray();
+		//    //The first three channels of my 1024-channel group.
+		//    //preFilter.TargetNodes = VixenSystem.Nodes.Skip(64).Take(3).ToArray();
+		//    //Starting right away.
+		//    _programExecutor.Current.Sequence.AddPreFilter(new PreFilterNode(preFilter, TimeSpan.Zero));
+		//}
 
 		protected override IDataSource _DataSource {
 			get { return _dataSource; }
 		}
 
-		private ITiming _timingSource;
 		protected override ITiming _TimingSource {
 			get { return _timingSource; }
 		}
-
-		//protected virtual void OnContextStarted(EventArgs e) {
-		//    if(ContextStarted != null) {
-		//        ContextStarted(this, e);
-		//    }
-		//}
-
-		//protected virtual void OnContextEnded(EventArgs e) {
-		//    if(ContextEnded != null) {
-		//        ContextEnded(this, e);
-		//    }
-		//}
 
 		#endregion
 

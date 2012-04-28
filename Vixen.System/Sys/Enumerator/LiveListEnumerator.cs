@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Vixen.Sys.Enumerator {
 	// Makes more sense for this to not subclass LiveEnumerator.
@@ -25,6 +26,9 @@ namespace Vixen.Sys.Enumerator {
 		public bool MoveNext() {
 			if(_index+1 < _list.Count) {
 				_current = _list[++_index];
+				IEffectNode effectNode = _current as IEffectNode;
+				if(effectNode != null)
+					Trace.WriteLine("Pulled from enumerator: " + effectNode.StartTime);
 				return true;
 			} else {
 				_current = default(T);

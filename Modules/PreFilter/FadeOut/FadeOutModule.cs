@@ -1,23 +1,21 @@
-﻿using System.Drawing;
+﻿using System;
 using Vixen.Module.PreFilter;
+using Vixen.Sys;
 
 namespace FadeOut {
 	public class FadeOutModule : PreFilterModuleInstanceBase {
-		public override float Affect(float value, float percentIntoFilter) {
-			return value - value * percentIntoFilter;
+		private IntentHandler _intentHandler;
+
+		public FadeOutModule() {
+			_intentHandler = new IntentHandler();
 		}
 
-		public override Color Affect(Color value, float percentIntoFilter) {
-			float percentOn = 1f - percentIntoFilter;
-			return Color.FromArgb((int)(value.R * percentOn), (int)(value.G * percentOn), (int)(value.B * percentOn));
+		public override void AffectIntent(IIntentSegment intentSegment, TimeSpan filterRelativeStartTime, TimeSpan filterRelativeEndTime) {
+			_intentHandler.TimeSpan = TimeSpan;
+			_intentHandler.StartTime = filterRelativeStartTime;
+			_intentHandler.EndTime = filterRelativeEndTime;
+			intentSegment.Dispatch(_intentHandler);
 		}
 
-		public override double Affect(double value, float percentIntoFilter) {
-			return value - value * percentIntoFilter;
-		}
-
-		public override long Affect(long value, float percentIntoFilter) {
-			return (long)(value - value * percentIntoFilter);
-		}
 	}
 }

@@ -215,8 +215,7 @@ namespace Vixen.Sys.Managers {
 
 			public HardwareUpdateThread(IOutputDevice outputDevice) {
 				OutputDevice = outputDevice;
-				_thread = new Thread(_ThreadFunc);
-				_thread.IsBackground = true;
+				_thread = new Thread(_ThreadFunc) { Name = outputDevice.Name + " update", IsBackground = true };
 				_finished = new EventWaitHandle(false, EventResetMode.ManualReset);
 			}
 

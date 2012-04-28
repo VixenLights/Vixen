@@ -24,7 +24,7 @@ namespace Vixen.Module.Effect {
 
 		public bool IsDirty {
 			get { return _isDirty || SubordinateEffects.Any(x => x.Effect.IsDirty); }
-			private set { _isDirty = value; }
+			protected set { _isDirty = value; }
 		}
 
 		public ChannelNode[] TargetNodes {
@@ -148,7 +148,7 @@ namespace Vixen.Module.Effect {
 
 		private void _EnsureTargetNodeProperties() {
 			// If the effect requires any properties, make sure the target nodes have those properties.
-			if(TargetNodes == null) return;
+			if(TargetNodes == null || TargetNodes.Length == 0) return;
 
 			if(!ApplicationServices.AreAllEffectRequiredPropertiesPresent(this)) {
 				EffectModuleDescriptorBase effectDescriptor = Modules.GetDescriptorById<EffectModuleDescriptorBase>(Descriptor.TypeId);

@@ -26,5 +26,9 @@ namespace Vixen.Data.Combinator {
 		virtual public void Handle(IEvaluator<double> obj) { }
 
 		public ResultType Value { get; protected set; }
+
+		object ICombinator.Value {
+			get { return Value; }
+		}
 	}
 }

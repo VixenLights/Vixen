@@ -15,7 +15,7 @@ namespace Vixen.Sys {
 			if(threadInit == null) throw new ArgumentNullException();
 			_applicationContextThreadInit = threadInit;
 
-			_thread = new Thread(_ApplicationContextThread);
+			_thread = new Thread(_ApplicationContextThread) { Name = "Application context thread" };
 			_thread.SetApartmentState(ApartmentState.STA);
 			
 			_exitAction = _ApplicationContextExit;
@@ -24,8 +24,8 @@ namespace Vixen.Sys {
 		public UIThread(Func<Form> threadInit) {
 			if(threadInit == null) throw new ArgumentNullException();
 			_formThreadInit = threadInit;
-			
-			_thread = new Thread(_FormThread);
+
+			_thread = new Thread(_FormThread) { Name = "Form thread" };
 			_thread.SetApartmentState(ApartmentState.STA);
 			
 			_exitAction = _FormExit;

@@ -21,7 +21,13 @@ namespace Vixen.Data.Evaluator {
 
 		virtual public void Handle(IIntentState<double> obj) { }
 
+		virtual public void Handle(IIntentState<LightingValue> obj) { }
+
 		public ResultType Value { get; protected set; }
+
+		object IEvaluator.Value {
+			get { return Value; }
+		}
 	}
 
 	static public class Evaluator {

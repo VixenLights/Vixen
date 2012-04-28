@@ -1,5 +1,5 @@
 ﻿using System.Drawing;
-using Vixen.Intent;
+using Vixen.Sys;
 
 namespace Vixen.Interpolator {
 	class LightingInterpolator : Interpolator<LightingValue> {

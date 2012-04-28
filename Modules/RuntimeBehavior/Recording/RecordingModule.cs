@@ -8,7 +8,7 @@ namespace Recording {
 	public class RecordingModule : RuntimeBehaviorModuleInstanceBase {
 		private Tuple<string, Action>[] _actions;
 		private ISequence _sequence;
-		private List<EffectNode> _buffer = new List<EffectNode>();
+		private List<IEffectNode> _buffer = new List<IEffectNode>();
 		private int _bufferItems;
 		private Guid _sequenceChannelId = Guid.Empty;
 		private RecordingData _moduleData;
@@ -44,7 +44,7 @@ namespace Recording {
 			return _sequenceChannelId;
 		}
 
-		override public void Handle(EffectNode effectNode) {
+		override public void Handle(IEffectNode effectNode) {
 			_buffer.Add(effectNode);
 		}
 
