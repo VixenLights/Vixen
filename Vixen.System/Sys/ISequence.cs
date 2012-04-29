@@ -25,7 +25,6 @@ namespace Vixen.Sys {
 		TimingProviders TimingProvider { get; }
 		DataStreams Data { get; }
 		IRuntimeBehaviorModuleInstance[] RuntimeBehaviors { get; }
-		//MediaCollection Media { get; }
 		ModuleLocalDataSet ModuleDataSet { get; }
 		IEnumerable<IEffectNode> GetData();
 		ITiming GetTiming();

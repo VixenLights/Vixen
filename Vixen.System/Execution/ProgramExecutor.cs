@@ -97,7 +97,7 @@ namespace Vixen.Execution {
 		}
 
 		private IntentBuffer _CreateIntentBuffer() {
-			IEnumerable<IEffectNode> sequenceData = _executor.GetSequenceData();
+			IEnumerable<IEffectNode> sequenceData = _executor.GetSequenceData().OrderBy(x => x.StartTime);
 			IEnumerable<IPreFilterNode> sequenceFilters = _executor.GetSequenceFilters();
 			// The buffer needs to use the cache as its source of effect data so that it will
 			// pull data through the cache and buffer pre-filtered data.
