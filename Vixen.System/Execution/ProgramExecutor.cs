@@ -101,7 +101,7 @@ namespace Vixen.Execution {
 			IEnumerable<IPreFilterNode> sequenceFilters = _executor.GetSequenceFilters();
 			// The buffer needs to use the cache as its source of effect data so that it will
 			// pull data through the cache and buffer pre-filtered data.
-			_intentCache.Use(sequenceData, sequenceFilters);
+			_intentCache.Use(sequenceData, sequenceFilters, _executor.Name);
 			return new IntentBuffer(_intentCache, _executor.Name);
 		}
 
@@ -195,7 +195,11 @@ namespace Vixen.Execution {
                 _executor.Dispose();
 				_executor = null;
             }
-            GC.SuppressFinalize(this);
+			if(_intentCache != null) {
+				_intentCache.Dispose();
+				_intentCache = null;
+			}
+        	GC.SuppressFinalize(this);
         }
 
 

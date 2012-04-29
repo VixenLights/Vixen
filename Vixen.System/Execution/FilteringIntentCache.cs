@@ -1,26 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Vixen.Services;
 using Vixen.Sys;
+using Vixen.Sys.Instrumentation;
 
 namespace Vixen.Execution {
-	class FilteringIntentCache : IEnumerable<IEffectNode> {
+	class FilteringIntentCache : IDisposable, IEnumerable<IEffectNode> {
 		private IEnumerable<IEffectNode> _effectNodes;
 		private PreFilterLookup _preFilterLookup;
 		private Dictionary<IEffectNode, EffectIntents> _effectIntentCache;
+		private CacheHitPercentValue _cacheHitPercentValue;
 
 		public FilteringIntentCache() {
 			_effectIntentCache = new Dictionary<IEffectNode, EffectIntents>();
 		}
 
-		public void Use(IEnumerable<IEffectNode> effectNodes, IEnumerable<IPreFilterNode> sequencePreFilters) {
+		public void Use(IEnumerable<IEffectNode> effectNodes, IEnumerable<IPreFilterNode> sequencePreFilters, string contextName = null) {
 			if(effectNodes == null) throw new ArgumentNullException("effectNodes");
 			if(sequencePreFilters == null) throw new ArgumentNullException("sequencePreFilters");
 
 			_effectNodes = effectNodes;
 			_preFilterLookup = PreFilterService.BuildPreFilterLookup(VixenSystem.Nodes, sequencePreFilters);
+			_CreateInstrumentationValues(contextName);
 		}
 
 		// Needs to pass-through the IEnumerable in order to get back effect nodes to check against the cache.
@@ -37,16 +39,40 @@ namespace Vixen.Execution {
 			}
 		}
 
+        ~FilteringIntentCache() {
+            Dispose();
+        }
+
+		public void Dispose() {
+			_RemoveInstrumentationValues();
+			GC.SuppressFinalize(this);
+		}
+
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
 			return GetEnumerator();
 		}
 
+		private void _CreateInstrumentationValues(string contextName) {
+			_RemoveInstrumentationValues();
+			_cacheHitPercentValue = new CacheHitPercentValue(contextName);
+			VixenSystem.Instrumentation.AddValue(_cacheHitPercentValue);
+		}
+
+		private void _RemoveInstrumentationValues() {
+			if(_cacheHitPercentValue != null) {
+				VixenSystem.Instrumentation.RemoveValue(_cacheHitPercentValue);
+			}
+		}
+
 		private void _PassThroughCache(IEffectNode effectNode) {
 			if(_EffectNeedsToBeCached(effectNode)) {
+				_cacheHitPercentValue.IncrementUnqualifying();
 				if(VixenSystem.AllowFilterEvaluation) {
 					_FilterEffectIntents(effectNode);
 				}
 				_Add(effectNode);
+			} else {
+				_cacheHitPercentValue.IncrementQualifying();
 			}
 		}
 

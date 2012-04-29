@@ -19,7 +19,7 @@ namespace Vixen.Instrumentation {
 		}
 
 		protected override string _GetFormattedValue() {
-			return _GetValue() * 100 + "%";
+			return _GetValue().ToString("P2");
 		}
 
 		public void IncrementQualifying() {
@@ -29,6 +29,11 @@ namespace Vixen.Instrumentation {
 
 		public void IncrementUnqualifying() {
 			_totalValues++;
+		}
+
+		public void Clear() {
+			_qualifyingValues = 0;
+			_totalValues = 0;
 		}
 	}
 }

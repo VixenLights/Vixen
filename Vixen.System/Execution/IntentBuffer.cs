@@ -9,7 +9,7 @@ namespace Vixen.Execution {
 	class IntentBuffer : IDataSource {
 		private IEnumerable<IEffectNode> _effectNodeSource;
 		private EffectNodeQueue _effectNodeQueue;
-		private BufferSizeInSeconds _bufferSizeValue;
+		private BufferSizeInSeconds _bufferSizeSecondsValue;
 		private AutoResetEvent _bufferReadSignal;
 		private Thread _bufferPopulationThread;
 		private TimeSpan _lastBufferReadPoint;
@@ -45,7 +45,7 @@ namespace Vixen.Execution {
 				if(EffectNodeSource == null) throw new InvalidOperationException("Effect node source has not been provided.");
 
 				_CreateBuffer();
-				_AddInstrumentationValue();
+				_AddInstrumentationValues();
 				_StartThread();
 			}
 		}
@@ -53,7 +53,7 @@ namespace Vixen.Execution {
 		public void Stop() {
 			if(IsRunning) {
 				_ReleaseBuffer();
-				_RemoveInstrumentationValue();
+				_RemoveInstrumentationValues();
 				_StopThread();
 			}
 		}
@@ -68,13 +68,13 @@ namespace Vixen.Execution {
 			_effectNodeQueue = null;
 		}
 
-		private void _AddInstrumentationValue() {
-			_bufferSizeValue = new BufferSizeInSeconds(ContextName);
-			VixenSystem.Instrumentation.AddValue(_bufferSizeValue);
+		private void _AddInstrumentationValues() {
+			_bufferSizeSecondsValue = new BufferSizeInSeconds(ContextName);
+			VixenSystem.Instrumentation.AddValue(_bufferSizeSecondsValue);
 		}
 
-		private void _RemoveInstrumentationValue() {
-			VixenSystem.Instrumentation.RemoveValue(_bufferSizeValue);
+		private void _RemoveInstrumentationValues() {
+			VixenSystem.Instrumentation.RemoveValue(_bufferSizeSecondsValue);
 		}
 
 		private void _StartThread() {
@@ -84,7 +84,7 @@ namespace Vixen.Execution {
 		}
 
 		private void _StopThread() {
-			_bufferSizeValue.Set(0);
+			_bufferSizeSecondsValue.Set(0);
 
 			IsRunning = false;
 			_bufferReadSignal.Set();
@@ -145,7 +145,7 @@ namespace Vixen.Execution {
 			get { return _lastBufferWritePoint; }
 			set {
 				_lastBufferWritePoint = value;
-				_bufferSizeValue.Set(_SecondsBuffered());
+				_bufferSizeSecondsValue.Set(_SecondsBuffered());
 			}
 		}
 
@@ -154,7 +154,7 @@ namespace Vixen.Execution {
 			set {
 				_lastBufferReadPoint = value;
 				_bufferReadSignal.Set();
-				_bufferSizeValue.Set(_SecondsBuffered());
+				_bufferSizeSecondsValue.Set(_SecondsBuffered());
 			}
 		}
 
