@@ -1,34 +1,18 @@
-﻿using Vixen.Commands;
-using Vixen.Module;
+﻿using Vixen.Module;
 
 namespace Vixen.Sys.Output {
 	abstract public class OutputModuleInstanceBase : ModuleInstanceBase, IOutputModule {
-		//private ModuleLocalDataSet _moduleDataSet;
-
-		//protected OutputModuleInstanceBase() {
-		//    _moduleDataSet = new ModuleLocalDataSet();
-		//}
-
-		//virtual public ModuleLocalDataSet ModuleDataSet {
-		//    get { return _moduleDataSet; }
-		//    set {
-		//        _moduleDataSet = value;
-		//        _moduleDataSet.AssignModuleTypeData(this);
-		//    }
-		//}
-
 		abstract public IDataPolicy DataPolicy { get; }
-
-		//virtual public void UpdateState(ICommand[] outputStates) {
-		//    _UpdateState(outputStates);
-		//}
-
-		//abstract protected void _UpdateState(ICommand[] outputStates);
 
 		/// <summary>
 		/// If overriding this, please also override Start and Stop.
 		/// </summary>
 		virtual public bool IsRunning { get; private set; }
+
+		/// <summary>
+		/// If overriding this, please also override Pause and Resume.
+		/// </summary>
+		virtual public bool IsPaused { get; private set; }
 
 		virtual public bool HasSetup {
 			get { return false; }
@@ -52,10 +36,18 @@ namespace Vixen.Sys.Output {
 			IsRunning = false;
 		}
 
+		/// <summary>
+		/// If overriding this, please also override Resume and IsPaused.
+		/// </summary>
 		virtual public void Pause() {
+			IsPaused = true;
 		}
 
+		/// <summary>
+		/// If overriding this, please also override Pause and IsPaused.
+		/// </summary>
 		virtual public void Resume() {
+			IsPaused = false;
 		}
 
 		virtual public int UpdateInterval {

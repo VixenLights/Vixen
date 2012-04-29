@@ -101,10 +101,18 @@ namespace VixenModules.Output.DummyLighting
 			_fps = fps;
 
 			for (int i = 0; i < outputStates.Length; i++) {
-				_commandHandler.Value = 0;
+				_commandHandler.Reset();
+
+				//Was: An object wrapping a possibly-default value type.
+				//Now: A possibly-default wrapping object.
 				ICommand command = outputStates[i];
-				command.Dispatch(_commandHandler);
-				_values[i] = _commandHandler.Value;
+				if(command != null) {
+					command.Dispatch(_commandHandler);
+					//_values[i] = _commandHandler.Value;
+					_values[i] = _commandHandler.ByteValue;
+				} else {
+					_values[i] = 0;
+				}
 			}
 
 			if (!IsDisposed)

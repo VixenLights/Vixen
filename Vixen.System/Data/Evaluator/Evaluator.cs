@@ -23,10 +23,10 @@ namespace Vixen.Data.Evaluator {
 
 		virtual public void Handle(IIntentState<LightingValue> obj) { }
 
-		public ResultType Value { get; protected set; }
+		public ResultType EvaluatorValue { get; protected set; }
 
-		object IEvaluator.Value {
-			get { return Value; }
+		object IEvaluator.EvaluatorValue {
+			get { return EvaluatorValue; }
 		}
 	}
 
@@ -53,6 +53,10 @@ namespace Vixen.Data.Evaluator {
 		}
 
 		static public double Default(IIntentState<double> intentState) {
+			return intentState.GetValue();
+		}
+
+		static public LightingValue Default(IIntentState<LightingValue> intentState) {
 			return intentState.GetValue();
 		}
 	}

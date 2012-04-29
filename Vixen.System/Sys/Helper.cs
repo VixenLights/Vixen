@@ -27,17 +27,6 @@ namespace Vixen.Sys {
 			return File.Exists(filePath) ? loader.Load(filePath) : null;
 		}
 
-		//static public XElement LoadXml(string filePath) {
-		//    if(File.Exists(filePath)) {
-		//        using(FileStream fileStream = new FileStream(filePath, FileMode.Open)) {
-		//            using(StreamReader reader = new StreamReader(fileStream)) {
-		//                return XElement.Load(reader);
-		//            }
-		//        }
-		//    }
-		//    return null;
-		//}
-
 		//In case we ever change how times are stored again, we only have to change it in one place.
 		static public TimeSpan? GetXmlTimeValue(XElement element, string attributeName) {
 			return XmlHelper.GetTimeSpanAttribute(element, attributeName);
@@ -65,20 +54,26 @@ namespace Vixen.Sys {
 			return otherIntentRelativeTime;
 		}
 
+		/// <summary>
+		/// Converts to grayscale, capping at 255.
+		/// </summary>
 		static public Color ConvertToGrayscale(float value) {
-			// Convert to grayscale, capping at 255.
 			byte b = ConvertToByte(value);
 			return ConvertToGrayscale(b);
 		}
 
+		/// <summary>
+		/// Converts to grayscale, capping at 255.
+		/// </summary>
 		static public Color ConvertToGrayscale(long value) {
-			// Convert to grayscale, capping at 255.
 			byte b = ConvertToByte(value);
 			return ConvertToGrayscale(b);
 		}
 
+		/// <summary>
+		/// Converts to grayscale, capping at 255.
+		/// </summary>
 		static public Color ConvertToGrayscale(int value) {
-			// Convert to grayscale, capping at 255.
 			byte b = ConvertToByte(value);
 			return ConvertToGrayscale(b);
 		}
@@ -87,8 +82,10 @@ namespace Vixen.Sys {
 			return Color.FromArgb(value, value, value);
 		}
 
+		/// <summary>
+		/// 0-1 representing 0-100%
+		/// </summary>
 		static public Color ConvertToGrayscale(double value) {
-			// 0-1 representing 0-100%
 			byte b = (byte)(value * byte.MaxValue);
 			return ConvertToGrayscale(b);
 		}
@@ -106,8 +103,10 @@ namespace Vixen.Sys {
 			return (byte)value;
 		}
 
+		/// <summary>
+		/// 0-1 representing 0-100%
+		/// </summary>
 		static public byte ConvertToByte(double value) {
-			// 0-1 representing 0-100%
 			value = value * byte.MaxValue;
 			return (byte)value;
 		}

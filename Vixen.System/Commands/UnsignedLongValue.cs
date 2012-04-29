@@ -3,14 +3,14 @@
 namespace Vixen.Commands {
 	public class UnsignedLongValue : Dispatchable<UnsignedLongValue>, ICommand<ulong> {
 		public UnsignedLongValue(ulong value) {
-			Value = value;
+			CommandValue = value;
 		}
 
-		public ulong Value { get; set; }
+		public ulong CommandValue { get; set; }
 
-		object ICommand.Value {
-			get { return Value; }
-			set { Value = (ulong)value; }
+		object ICommand.CommandValue {
+			get { return CommandValue; }
+			set { CommandValue = (ulong)value; }
 		}
 
 		//public void Dispatch(CommandDispatch commandDispatch) {

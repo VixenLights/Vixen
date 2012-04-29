@@ -107,17 +107,22 @@
   <ItemGroup>
     <Compile Include="Commands\ChannelCommands.cs" />
     <Compile Include="Commands\ColorValue.cs" />
+    <Compile Include="Commands\DoubleValue.cs" />
+    <Compile Include="Commands\FloatValue.cs" />
+    <Compile Include="Commands\LightingValueCommand.cs" />
     <Compile Include="Commands\SignedLongValue.cs" />
     <Compile Include="Commands\UnsignedLongValue.cs" />
     <Compile Include="Data\Combinator\ColorCombinator.cs" />
     <Compile Include="Data\Combinator\Combinator.cs" />
+    <Compile Include="Data\Combinator\LightingCombinator.cs" />
     <Compile Include="Data\Combinator\PercentageHighestWinsCombinator.cs" />
     <Compile Include="Data\Evaluator\ColorEvaluator.cs" />
     <Compile Include="Data\Evaluator\Evaluator.cs" />
+    <Compile Include="Data\Evaluator\LightingEvaluator.cs" />
     <Compile Include="Data\Evaluator\LongEvaluator.cs" />
     <Compile Include="Data\Evaluator\PercentEvaluator.cs" />
-    <Compile Include="Data\Generator\ColorCommandGenerator.cs" />
-    <Compile Include="Data\Generator\Generator.cs" />
+    <Compile Include="Data\Policy\ControllerDataPolicy.cs" />
+    <Compile Include="Data\Policy\OutputDataPolicy.cs" />
     <Compile Include="Execution\ContextCurrentEffectsFull.cs" />
     <Compile Include="Execution\IChannelStateBuilder.cs" />
     <Compile Include="Execution\IContextCurrentEffects.cs" />
@@ -174,7 +179,6 @@
     <Compile Include="IO\Xml\XmlPreviewCollectionSerializer.cs" />
     <Compile Include="IO\Xml\XmlPreviewSerializer.cs" />
     <Compile Include="IO\Xml\XmlVersionedContent.cs" />
-    <Compile Include="Data\Generator\ByteCommandGenerator.cs" />
     <Compile Include="Module\Preview\AppContextPreviewModuleInstanceBase.cs" />
     <Compile Include="Module\Preview\FormPreviewModuleInstanceBase.cs" />
     <Compile Include="Module\Preview\IPreviewModuleDescriptor.cs" />
@@ -250,7 +254,6 @@
     <Compile Include="Sys\ICombinator.cs" />
     <Compile Include="Sys\IDataPolicy.cs" />
     <Compile Include="Sys\IEvaluator.cs" />
-    <Compile Include="Sys\IGenerator.cs" />
     <Compile Include="Sys\IHasOutputSources.cs" />
     <Compile Include="Sys\IHasPostFilters.cs" />
     <Compile Include="Sys\IIntent.cs" />
@@ -371,7 +374,6 @@
     <Compile Include="Sys\PostFilterCollection.cs" />
     <Compile Include="Sys\PostFilterTemplate.cs" />
     <Compile Include="Data\Policy\RenardDataPolicy.cs" />
-    <Compile Include="Data\Policy\StandardDataPolicy.cs" />
     <Compile Include="IO\Result\ScriptSequenceSerializationResult.cs" />
     <Compile Include="IO\Result\SerializationResult.cs" />
     <Compile Include="Sys\Managers\IOutputDeviceManager.cs" />

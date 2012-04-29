@@ -3,7 +3,7 @@
 namespace Vixen.Data.Evaluator {
 	public class PercentEvaluator : Evaluator<PercentEvaluator, double> {
 		override public void Handle(IIntentState<double> obj) {
-			Value = Evaluator.Default(obj);
+			EvaluatorValue = Evaluator.Default(obj);
 		}
 	}
 	//public class PercentEvaluator : Dispatchable<PercentEvaluator>, IEvaluator<double>, IAnyIntentStateHandler {

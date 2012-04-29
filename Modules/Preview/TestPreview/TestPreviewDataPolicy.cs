@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using Vixen.Data.Combinator;
 using Vixen.Data.Evaluator;
-using Vixen.Data.Generator;
 using Vixen.Data.Policy;
 using Vixen.Sys;
 
 namespace TestPreview {
-	class TestPreviewDataPolicy : StandardDataPolicy {
+	//*** Need a PreviewDataPolicy so previews aren't coupled to controllers
+	class TestPreviewDataPolicy : ControllerDataPolicy {
 		protected override IEvaluator GetEvaluator() {
 			return new ColorEvaluator();
 		}
@@ -18,8 +18,8 @@ namespace TestPreview {
 			return new ColorCombinator();
 		}
 
-		protected override IGenerator GetGenerator() {
-			return new ColorCommandGenerator();
-		}
+		//protected override IGenerator GetGenerator() {
+		//    return new ColorCommandGenerator();
+		//}
 	}
 }

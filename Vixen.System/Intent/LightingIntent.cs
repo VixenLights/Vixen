@@ -3,7 +3,7 @@ using Vixen.Interpolator;
 using Vixen.Sys;
 
 namespace Vixen.Intent {
-	class LightingIntent : Intent<LightingIntent, LightingValue> {
+	public class LightingIntent : Intent<LightingIntent, LightingValue> {
 		public LightingIntent(LightingValue startValue, LightingValue endValue, TimeSpan timeSpan)
 			: base(startValue, endValue, timeSpan, new LightingInterpolator()) {
 		}

@@ -4,19 +4,19 @@ using Vixen.Sys;
 namespace Vixen.Data.Evaluator {
 	public class LongEvaluator : Evaluator<LongEvaluator, long> {
 		override public void Handle(IIntentState<float> obj) {
-			Value = (long)Evaluator.Default(obj);
+			EvaluatorValue = (long)Evaluator.Default(obj);
 		}
 
 		override public void Handle(IIntentState<Color> obj) {
-			Value = Evaluator.ColorAsInt(obj);
+			EvaluatorValue = Evaluator.ColorAsInt(obj);
 		}
 
 		override public void Handle(IIntentState<long> obj) {
-			Value = Evaluator.Default(obj);
+			EvaluatorValue = Evaluator.Default(obj);
 		}
 
 		override public void Handle(IIntentState<double> obj) {
-			Value = (long)Evaluator.Default(obj);
+			EvaluatorValue = (long)Evaluator.Default(obj);
 		}
 	}
 	//public class LongEvaluator : Dispatchable<LongEvaluator>, IEvaluator<long>, IAnyIntentStateHandler {

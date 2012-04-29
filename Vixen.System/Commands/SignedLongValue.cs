@@ -3,14 +3,14 @@
 namespace Vixen.Commands {
 	public class SignedLongValue : Dispatchable<SignedLongValue>, ICommand<long> {
 		public SignedLongValue(long value) {
-			Value = value;
+			CommandValue = value;
 		}
 
-		public long Value { get; set; }
+		public long CommandValue { get; set; }
 
-		object ICommand.Value {
-			get { return Value; }
-			set { Value = (long)value; }
+		object ICommand.CommandValue {
+			get { return CommandValue; }
+			set { CommandValue = (long)value; }
 		}
 
 		//public void Dispatch(CommandDispatch commandDispatch) {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
@@ -136,6 +137,16 @@ namespace Vixen.Sys
 		static public T[] SubArray<T>(this T[] data, int index) {
 			int length = data.Length - index;
 			return SubArray(data, index, length);
+		}
+
+		/// <summary>
+		/// Returns a color of highest-wins of each component.
+		/// </summary>
+		static public Color Combine(this Color color, Color otherColor) {
+			return Color.FromArgb(
+				Math.Max(color.R, otherColor.R),
+				Math.Max(color.G, otherColor.G),
+				Math.Max(color.B, otherColor.B));
 		}
 	}
 }

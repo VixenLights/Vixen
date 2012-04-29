@@ -27,5 +27,9 @@ namespace Vixen.Instrumentation {
 		public void Increment(int value = 1) {
 			_count += value;
 		}
+
+		public void Clear() {
+			_count = 0;
+		}
 	}
 }

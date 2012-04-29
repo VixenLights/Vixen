@@ -9,22 +9,8 @@ namespace Vixen.Sys {
 		}
 
 		public Guid ControllerId { get; private set; }
+
 		public int OutputIndex { get; private set; }
-
-		//public override int GetHashCode() {
-		//    return (ControllerId.ToString() + OutputIndex).GetHashCode();
-		//}
-
-		//public override bool Equals(object obj) {
-		//    if(obj is ControllerReference) {
-		//        return GetHashCode() == obj.GetHashCode();
-		//    }
-		//    return base.Equals(obj);
-		//}
-
-		//public bool Equals(ControllerReference other) {
-		//    return this.GetHashCode() == other.GetHashCode();
-		//}
 
 		public override string ToString() {
 			// make the index human-friendly -- index it from 1.

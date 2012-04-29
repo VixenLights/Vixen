@@ -1,25 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using Vixen.Commands;
+using Vixen.Sys.Dispatch;
 
 namespace Vixen.Module.PostFilter {
-	abstract public class PostFilterModuleInstanceBase : ModuleInstanceBase, IPostFilterModuleInstance, IEqualityComparer<IPostFilterModuleInstance>, IEquatable<IPostFilterModuleInstance>, IEqualityComparer<PostFilterModuleInstanceBase>, IEquatable<PostFilterModuleInstanceBase> {
+	abstract public class PostFilterModuleInstanceBase : ModuleInstanceBase, IAnyCommandHandler, IPostFilterModuleInstance, IEqualityComparer<IPostFilterModuleInstance>, IEquatable<IPostFilterModuleInstance>, IEqualityComparer<PostFilterModuleInstanceBase>, IEquatable<PostFilterModuleInstanceBase> {
 		virtual public bool HasSetup {
 			get { return false; }
 		}
 
 		virtual public bool Setup() { return false; }
 
-		virtual public void Affect(ICommand<float> value) { }
-
-		virtual public void Affect(ICommand<Color> value) { }
-
-		virtual public void Affect(ICommand<DateTime> value) { }
-
-		virtual public void Affect(ICommand<long> value) { }
-
-		virtual public void Affect(ICommand<double> value) { }
+		abstract public ICommand Affect(ICommand command);
 
 		public bool Equals(IPostFilterModuleInstance x, IPostFilterModuleInstance y) {
 			return base.Equals(x, y);
@@ -43,6 +35,42 @@ namespace Vixen.Module.PostFilter {
 
 		public bool Equals(PostFilterModuleInstanceBase other) {
 			return Equals(other as IPostFilterModuleInstance);
+		}
+
+		public void Handle(ByteValue obj) {
+			Affect(obj);
+		}
+
+		public void Handle(SignedShortValue obj) {
+			Affect(obj);
+		}
+
+		public void Handle(UnsignedShortValue obj) {
+			Affect(obj);
+		}
+
+		public void Handle(SignedIntValue obj) {
+			Affect(obj);
+		}
+
+		public void Handle(UnsignedIntValue obj) {
+			Affect(obj);
+		}
+
+		public void Handle(SignedLongValue obj) {
+			Affect(obj);
+		}
+
+		public void Handle(UnsignedLongValue obj) {
+			Affect(obj);
+		}
+
+		public void Handle(ColorValue obj) {
+			Affect(obj);
+		}
+
+		public void Handle(LightingValueCommand obj) {
+			Affect(obj);
 		}
 	}
 }

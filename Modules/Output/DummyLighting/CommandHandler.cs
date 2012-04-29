@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Vixen.Commands;
+﻿using Vixen.Commands;
 using Vixen.Sys.Dispatch;
 
 namespace VixenModules.Output.DummyLighting {
 	class CommandHandler : CommandDispatch {
-		public override void Handle(ByteValue c) {
-			Value = c.Value;
+		public void Reset() {
+			ByteValue = 0;
 		}
 
-		public byte Value;
+		public override void Handle(ByteValue obj) {
+			ByteValue = obj.CommandValue;
+		}
+
+		public byte ByteValue;
 	}
 }

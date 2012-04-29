@@ -2,10 +2,10 @@
 
 namespace Vixen.Commands {
 	public interface ICommand : IDispatchable {
-		object Value { get; set; }
+		object CommandValue { get; set; }
 	}
 
 	public interface ICommand<T> : ICommand {
-		T Value { get; set; }
+		T CommandValue { get; set; }
 	}
 }

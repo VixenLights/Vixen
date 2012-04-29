@@ -3,14 +3,14 @@
 namespace Vixen.Commands {
 	public class UnsignedIntValue : Dispatchable<UnsignedIntValue>, ICommand<uint> {
 		public UnsignedIntValue(uint value) {
-			Value = value;
+			CommandValue = value;
 		}
 
-		public uint Value { get; set; }
+		public uint CommandValue { get; set; }
 
-		object ICommand.Value {
-			get { return Value; }
-			set { Value = (uint)value; }
+		object ICommand.CommandValue {
+			get { return CommandValue; }
+			set { CommandValue = (uint)value; }
 		}
 
 

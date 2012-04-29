@@ -1,10 +1,10 @@
 ﻿using Vixen.Data.Combinator;
 using Vixen.Data.Evaluator;
-using Vixen.Data.Generator;
 using Vixen.Sys;
 
+//THIS DOES NOT REMAIN.  FOR TESTING ONLY.
 namespace Vixen.Data.Policy {
-	public class RenardDataPolicy : StandardDataPolicy {
+	public class RenardDataPolicy : ControllerDataPolicy {
 		protected override IEvaluator GetEvaluator() {
 			//When testing with effect generating 0-1 % values, produces double value
 			//return new PercentEvaluator();
@@ -13,7 +13,8 @@ namespace Vixen.Data.Policy {
 			//When testing with effect generating 0-255 integer values; produces long value
 			//return new LongEvaluator();
 			//When testing with effect generating color values; produces color value
-			return new ColorEvaluator();
+			//return new ColorEvaluator();
+			return new LightingEvaluator();
 		}
 
 		protected override ICombinator GetCombinator() {
@@ -22,12 +23,13 @@ namespace Vixen.Data.Policy {
 			//Combines evaluator values as % (double 0-1)
 			//return new PercentageHighestWinsCombinator();
 			//Combines evaluator values as colors
-			return new ColorCombinator();
+			//return new ColorCombinator();
+			return new LightingCombinator();
 		}
 
-		protected override IGenerator GetGenerator() {
-			//Just works :)
-			return new ByteCommandGenerator();
-		}
+		//protected override IGenerator GetGenerator() {
+		//    //Just works :)
+		//    return new ByteCommandGenerator();
+		//}
 	}
 }

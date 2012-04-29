@@ -4,14 +4,14 @@ using Vixen.Sys;
 namespace Vixen.Commands {
 	public class ColorValue : Dispatchable<ColorValue>, ICommand<Color> {
 		public ColorValue(Color value) {
-			Value = value;
+			CommandValue = value;
 		}
 
-		public Color Value { get; set; }
+		public Color CommandValue { get; set; }
 
-		object ICommand.Value {
-			get { return Value; }
-			set { Value = (Color)value; }
+		object ICommand.CommandValue {
+			get { return CommandValue; }
+			set { CommandValue = (Color)value; }
 		}
 	}
 }

@@ -118,11 +118,18 @@ namespace VixenApplication {
 
 		private void buttonCommit_Click(object sender, EventArgs e) {
 			if(_Validate()) {
-				Vixen.Services.ChannelNodeService.Instance.Patch(_channelNodes, _patchingRule, checkBoxClearExisting.Checked);
-				if(_DoApplyFilterTemplate) {
-					Vixen.Services.PostFilterService.Instance.ApplyTemplateMany(_SelectedFilterTemplate, _patchingRule, _channelNodes.Length);
+				Cursor = Cursors.WaitCursor;
+				try {
+					Vixen.Services.ChannelNodeService.Instance.Patch(_channelNodes, _patchingRule, checkBoxClearExistingPatches.Checked);
+					if(_DoApplyFilterTemplate) {
+						Vixen.Services.PostFilterService.Instance.ApplyTemplateMany(_SelectedFilterTemplate, _patchingRule, _channelNodes.Length, checkBoxClearExistingFilters.Checked);
+					}
+					MessageBox.Show("Patched " + _channelNodes.Length + " channels.");
+				} catch(Exception ex) {
+					MessageBox.Show(ex.Message);
+				} finally {
+					Cursor = Cursors.Default;
 				}
-				MessageBox.Show("Patched " + _channelNodes.Length + " channels.");
 			}
 		}
 

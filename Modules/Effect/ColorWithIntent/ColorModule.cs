@@ -19,26 +19,28 @@ namespace ColorWithIntent {
 		protected override void _PreRender() {
 			//**********************
 			//*** going to add a subordinate, just for testing
-			if(!_isSubordinate) {
-				ColorModule otherEffect = (ColorModule)Vixen.Services.ApplicationServices.Get<IEffectModuleInstance>(Descriptor.TypeId);
-				Curve levelCurve = LevelCurve;
-				ColorGradient colorGradient = new ColorGradient(Color.FromArgb(64, 128, 192));
-				otherEffect.ParameterValues = new object[] { levelCurve, colorGradient };
-				otherEffect.TimeSpan = TimeSpan;
-				otherEffect.TargetNodes = TargetNodes;
-				otherEffect._isSubordinate = true;
-				SubordinateEffects.Add(new SubordinateEffect(otherEffect, new BooleanAnd()));
-			}
+			//if(!_isSubordinate) {
+			//    ColorModule otherEffect = (ColorModule)Vixen.Services.ApplicationServices.Get<IEffectModuleInstance>(Descriptor.TypeId);
+			//    Curve levelCurve = LevelCurve;
+			//    ColorGradient colorGradient = new ColorGradient(Color.FromArgb(64, 128, 192));
+			//    otherEffect.ParameterValues = new object[] { levelCurve, colorGradient };
+			//    otherEffect.TimeSpan = TimeSpan;
+			//    otherEffect.TargetNodes = TargetNodes;
+			//    otherEffect._isSubordinate = true;
+			//    SubordinateEffects.Add(new SubordinateEffect(otherEffect, new BooleanAnd()));
+			//}
 			//**********************
 
 			_intents = new EffectIntents();
 			Channel[] channels = TargetNodes.SelectMany(x => x).ToArray();
 
 			foreach(Channel channel in channels) {
-				//IIntentModuleInstance intent = ApplicationServices.Get<IIntentModuleInstance>(ColorDescriptor._colorIntentId);
-				ColorTransitionIntent intent = new ColorTransitionIntent(ColorGradient.Colors.First().Color.ToRGB(), ColorGradient.Colors.Last().Color.ToRGB(), TimeSpan);
-				//intent.TimeSpan = TimeSpan;
-				//intent.Values = new object[] { LevelCurve, ColorGradient };
+				// Generating color intents...
+				//ColorTransitionIntent intent = new ColorTransitionIntent(ColorGradient.Colors.First().Color.ToRGB(), ColorGradient.Colors.Last().Color.ToRGB(), TimeSpan);
+				// Generating lighting intents...
+				LightingValue startValue = new LightingValue(ColorGradient.Colors.First().Color.ToRGB(), 1);
+				LightingValue endValue = new LightingValue(ColorGradient.Colors.Last().Color.ToRGB(), 1);
+				LightingIntent intent = new LightingIntent(startValue, endValue, TimeSpan);
 				_intents.AddIntentForChannel(channel.Id, intent, TimeSpan.Zero);
 			}
 		}

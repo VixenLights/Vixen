@@ -4,15 +4,15 @@ using Vixen.Sys;
 namespace Vixen.Data.Evaluator {
 	public class FloatEvaluator : Evaluator<FloatEvaluator, float> {
 		override public void Handle(IIntentState<float> obj) {
-			Value = Evaluator.Default(obj);
+			EvaluatorValue = Evaluator.Default(obj);
 		}
 
 		override public void Handle(IIntentState<Color> obj) {
-			Value = Evaluator.ColorAsInt(obj);
+			EvaluatorValue = Evaluator.ColorAsInt(obj);
 		}
 
 		override public void Handle(IIntentState<long> obj) {
-			Value = Evaluator.Default(obj);
+			EvaluatorValue = Evaluator.Default(obj);
 		}
 	}
 	//public class FloatEvaluator : Dispatchable<FloatEvaluator>, IEvaluator<float>, IAnyIntentStateHandler {

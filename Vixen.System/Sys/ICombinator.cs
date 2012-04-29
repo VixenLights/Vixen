@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
+using Vixen.Commands;
 
 namespace Vixen.Sys {
 	public interface ICombinator : IDispatchable {
 		void Combine(IEnumerable<IEvaluator> evaluators);
-		object Value { get; }
+		ICommand CombinatorValue { get; }
 	}
 
-	public interface ICombinator<out T> : ICombinator {
-		T Value { get; }
+	public interface ICombinator<T> : ICombinator {
+		ICommand<T> CombinatorValue { get; }
 	}
 }

@@ -18,16 +18,18 @@ namespace Vixen.Services {
 			get { return _instance ?? (_instance = new PostFilterService()); }
 		}
 
-		public void ApplyTemplateOnce(string templateFileName, IPatchingRule patchingRule) {
+		public void ApplyTemplateOnce(string templateFileName, IPatchingRule patchingRule, bool clearExisting = false) {
 			var serializer = SerializerFactory.Instance.CreatePostFilterTemplateSerializer();
 			var result = serializer.Read(templateFileName);
 			if(!result.Success) return;
 
-			IEnumerable<ControllerReferenceCollection> controllerReferences = patchingRule.GenerateControllerReferenceCollections(1);
-			_ApplyTemplateToOutputs(result.Object, controllerReferences.First().ToArray());
+			ControllerReference[] controllerReferences = patchingRule.GenerateControllerReferenceCollections(1).First().ToArray();
+			_PauseControllers(controllerReferences);
+			_ApplyTemplateToOutputs(result.Object, controllerReferences, clearExisting);
+			_ResumeControllers(controllerReferences);
 		}
 
-		public void ApplyTemplateMany(string templateFileName, IPatchingRule patchingRule, int channelCount) {
+		public void ApplyTemplateMany(string templateFileName, IPatchingRule patchingRule, int channelCount, bool clearExisting = false) {
 			var serializer = SerializerFactory.Instance.CreatePostFilterTemplateSerializer();
 			var result = serializer.Read(templateFileName);
 			if(!result.Success) return;
@@ -36,17 +38,36 @@ namespace Vixen.Services {
 
 			IEnumerable<ControllerReferenceCollection> controllerReferenceCollections = patchingRule.GenerateControllerReferenceCollections(channelCount);
 
+			_PauseControllers(controllerReferenceCollections.SelectMany(x => x));
 			foreach(ControllerReferenceCollection controllerReferences in controllerReferenceCollections) {
-				_ApplyTemplateToOutputs(template, controllerReferences.ToArray());
+				_ApplyTemplateToOutputs(template, controllerReferences.ToArray(), clearExisting);
+			}
+			_ResumeControllers(controllerReferenceCollections.SelectMany(x => x));
+		}
+
+		private void _PauseControllers(IEnumerable<ControllerReference> controllerReferences) {
+			foreach(OutputController controller in _GetReferencedControllers(controllerReferences)) {
+				controller.Pause();
 			}
 		}
 
-		private void _ApplyTemplateToOutputs(PostFilterTemplate template, ControllerReference[] controllerReferences) {
+		private void _ResumeControllers(IEnumerable<ControllerReference> controllerReferences) {
+			foreach(OutputController controller in _GetReferencedControllers(controllerReferences)) {
+				controller.Resume();
+			}
+		}
+
+		private IEnumerable<OutputController> _GetReferencedControllers(IEnumerable<ControllerReference> controllerReferences) {
+			var controllerIds = controllerReferences.Select(x => x.ControllerId).Distinct();
+			return controllerIds.Select(VixenSystem.Controllers.Get).Cast<OutputController>().NotNull();
+		}
+
+		private void _ApplyTemplateToOutputs(PostFilterTemplate template, ControllerReference[] controllerReferences, bool clearExisting = false) {
 			int countToAffect = _GetCountToAffect(controllerReferences, template.OutputFilters);
 
 			for(int i = 0; i < countToAffect; i++) {
 				// Apply the appropriate list of filters to the appropriate output.
-				_ApplyFilterCollectionToOutput(_CloneFilters(template[i]), controllerReferences[i]);
+				_ApplyFilterCollectionToOutput(_CloneFilters(template[i]), controllerReferences[i], clearExisting);
 			}
 		}
 
@@ -58,9 +79,12 @@ namespace Vixen.Services {
 			return Math.Min(controllerReferences.Count(), filterCollections.Count());
 		}
 
-		private void _ApplyFilterCollectionToOutput(IEnumerable<IPostFilterModuleInstance> filters, ControllerReference controllerReference) {
+		private void _ApplyFilterCollectionToOutput(IEnumerable<IPostFilterModuleInstance> filters, ControllerReference controllerReference, bool clearExisting = false) {
 			OutputController controller = (OutputController)VixenSystem.Controllers.Get(controllerReference.ControllerId);
 			if(controller != null) {
+				if(clearExisting) {
+					controller.ClearPostFilters(controllerReference.OutputIndex);
+				}
 				foreach(IPostFilterModuleInstance filter in filters) {
 					controller.AddPostFilter(controllerReference.OutputIndex, filter);
 				}

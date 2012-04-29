@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Vixen.Data.Policy;
 using Vixen.Module;
 using Vixen.Module.Controller;
 using Vixen.Module.PostFilter;
@@ -37,6 +38,18 @@ namespace Vixen.Sys.Output {
 		override protected void _Stop() {
 			if(Module != null) {
 				Module.Stop();
+			}
+		}
+
+		protected override void _Pause() {
+			if(Module != null) {
+				Module.Pause();
+			}
+		}
+
+		protected override void _Resume() {
+			if(Module != null) {
+				Module.Resume();
 			}
 		}
 
@@ -97,10 +110,8 @@ namespace Vixen.Sys.Output {
 						//Parallel.ForEach(controller._outputs, x =>
 							{
 								x.UpdateState();
-								// (User may be allowed to skip this step in the future).
-								x.FilterState();
 								//*** don't like Output.Command
-								x.Command = GenerateCommand(x.State);
+								x.Command = GenerateCommand(x.State, x.DataPolicy ?? DataPolicy);
 							});
 					}
 
@@ -119,10 +130,6 @@ namespace Vixen.Sys.Output {
 				}
 			}
 		}
-
-		//private ICommand _GenerateCommand(IEnumerable<IIntentState> outputState) {
-		//    return OutputModule.DataPolicy.GenerateCommand(outputState);
-		//}
 
 		public Output[] Outputs {
 			get { return _outputArray; }
@@ -259,7 +266,7 @@ namespace Vixen.Sys.Output {
 
 		public void ClearPostFilters(int outputIndex) {
 			if(outputIndex < OutputCount) {
-				foreach(IPostFilterModuleInstance filter in _outputs[outputIndex].PostFilters) {
+				foreach(IPostFilterModuleInstance filter in _outputs[outputIndex].PostFilters.ToArray()) {
 					RemovePostFilter(outputIndex, filter);
 				}
 			}
@@ -313,7 +320,18 @@ namespace Vixen.Sys.Output {
 			}
 
 			//temporary
-			public ICommand Command;
+			private ICommand _command;
+
+			public ICommand Command {
+				get { return _command; }
+				set {
+					if(_command != value) {
+						_command = value;
+						_FilterState();
+					}
+				}
+			}
+
 			// Completely independent; nothing is current dependent upon this value.
 			public string Name { get; set; }
 
@@ -380,22 +398,22 @@ namespace Vixen.Sys.Output {
 				return source.State;
 			}
 
-			public void FilterState() {
-				_AppendOutputFilters();
-			}
-
-			private void _AppendOutputFilters() {
-				// VixenSystem.AllowFilterEvaluation would actually be caught by AddFilters, but
-				// we're going to save the time to do the LINQ.
-				if(VixenSystem.AllowFilterEvaluation) {
-					//IEnumerable<IFilterState> filterStates = _postFilters.Select(x => x.CreateFilterState());
-					//_state.AddFilters(filterStates);
+			private void _FilterState() {
+				if(VixenSystem.AllowFilterEvaluation && Command != null) {
+					foreach(IPostFilterModuleInstance postFilter in PostFilters) {
+						_command = postFilter.Affect(_command);
+						if(_command == null) return;
+					}
 				}
 			}
 
 			public IIntentStateList State {
 				get { return _state; }
 			}
+
+			//*** Not yet any way to set this for an output.
+			//    It is intended to allow an output to override the controller's data policy.
+			public OutputDataPolicy DataPolicy { get; set; }
 
 		}
 		#endregion

@@ -3,14 +3,26 @@
 namespace Vixen.Commands {
 	public class ByteValue : Dispatchable<ByteValue>, ICommand<byte> {
 		public ByteValue(byte value) {
-			Value = value;
+			CommandValue = value;
 		}
 
-		public byte Value { get; set; }
+		public ByteValue(int value) {
+			CommandValue = (byte)value;
+		}
 
-		object ICommand.Value {
-			get { return Value; }
-			set { Value = (byte)value; }
+		public ByteValue(float value) {
+			CommandValue = (byte)value;
+		}
+
+		public ByteValue(long value) {
+			CommandValue = (byte)value;
+		}
+
+		public byte CommandValue { get; set; }
+
+		object ICommand.CommandValue {
+			get { return CommandValue; }
+			set { CommandValue = (byte)value; }
 		}
 	}
 }

@@ -3,14 +3,14 @@
 namespace Vixen.Commands {
 	public class SignedIntValue : Dispatchable<SignedIntValue>, ICommand<int> {
 		public SignedIntValue(int value) {
-			Value = value;
+			CommandValue = value;
 		}
 
-		public int Value { get; set; }
+		public int CommandValue { get; set; }
 
-		object ICommand.Value {
-			get { return Value; }
-			set { Value = (int)value; }
+		object ICommand.CommandValue {
+			get { return CommandValue; }
+			set { CommandValue = (int)value; }
 		}
 
 		//public void Dispatch(CommandDispatch commandDispatch) {

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Vixen.Commands;
 using Vixen.Module;
@@ -29,6 +28,18 @@ namespace Vixen.Sys.Output {
 		protected override void _Stop() {
 			if(Module != null) {
 				Module.Stop();
+			}
+		}
+
+		protected override void _Pause() {
+			if(Module != null) {
+				Module.Pause();
+			}
+		}
+
+		protected override void _Resume() {
+			if(Module != null) {
+				Module.Resume();
 			}
 		}
 
