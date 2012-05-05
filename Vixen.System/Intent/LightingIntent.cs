@@ -8,8 +8,9 @@ namespace Vixen.Intent {
 			: base(startValue, endValue, timeSpan, new LightingInterpolator()) {
 		}
 
-		public override IIntentState CreateIntentState(TimeSpan intentRelativeTime) {
-			return new LightingIntentState(this, intentRelativeTime);
-		}
+		//public override IIntentState CreateIntentState(TimeSpan intentRelativeTime) {
+		//    //return new LightingIntentState(this, intentRelativeTime);
+		//    return new IntentState<LightingValue>(this, intentRelativeTime);
+		//}
 	}
 }

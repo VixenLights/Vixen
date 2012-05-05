@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Vixen.Sys {
-	public class IntentNodeCollection : List<IntentNode> {
+	public class IntentNodeCollection : List<IIntentNode> {
 		public IntentNodeCollection() {
 		}
 
-		public IntentNodeCollection(IEnumerable<IntentNode> intentNodes) {
+		public IntentNodeCollection(IEnumerable<IIntentNode> intentNodes) {
 			AddRange(intentNodes);
 		}
 	}

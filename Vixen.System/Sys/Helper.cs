@@ -36,7 +36,7 @@ namespace Vixen.Sys {
 			return currentTime - effectNode.StartTime;
 		}
 
-		static public TimeSpan GetIntentRelativeTime(TimeSpan effectRelativeTime, IntentNode intentNode) {
+		static public TimeSpan GetIntentRelativeTime(TimeSpan effectRelativeTime, IIntentNode intentNode) {
 			return effectRelativeTime - intentNode.StartTime;
 		}
 
@@ -44,7 +44,7 @@ namespace Vixen.Sys {
 			return sequenceRelativeTime - preFilterNode.StartTime;
 		}
 
-		static public TimeSpan GetEffectRelativeTime(TimeSpan intentRelativeTime, IntentNode intentNode) {
+		static public TimeSpan GetEffectRelativeTime(TimeSpan intentRelativeTime, IIntentNode intentNode) {
 			return intentNode.StartTime + intentRelativeTime;
 		}
 

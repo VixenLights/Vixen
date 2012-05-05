@@ -10,8 +10,9 @@ namespace Vixen.Intent {
 			if(endValue < 0 || endValue > 1) throw new ArgumentException("endValue is out of range");
 		}
 
-		public override IIntentState CreateIntentState(TimeSpan intentRelativeTime) {
-			return new PercentageTransitionIntentState(this, intentRelativeTime);
-		}
+		//public override IIntentState CreateIntentState(TimeSpan intentRelativeTime) {
+		//    //return new PercentageTransitionIntentState(this, intentRelativeTime);
+		//    return new IntentState<double>(this, intentRelativeTime);
+		//}
 	}
 }

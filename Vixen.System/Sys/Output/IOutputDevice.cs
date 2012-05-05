@@ -10,7 +10,7 @@ namespace Vixen.Sys.Output {
 		string Name { get; set; }
 		int UpdateInterval { get; set; }
 		bool IsRunning { get; }
+		bool IsPaused { get; }
 		void Update();
-		IDataPolicy DataPolicy { get; set; }
 	}
 }

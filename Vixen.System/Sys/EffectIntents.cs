@@ -33,7 +33,7 @@ namespace Vixen.Sys {
 		//    }
 		//}
 
-		private void _AddIntentForChannel(Guid channelId, IntentNode intentNode) {
+		private void _AddIntentForChannel(Guid channelId, IIntentNode intentNode) {
 			if(ContainsKey(channelId)) {
 				this[channelId].Add(intentNode);
 			} else {
@@ -41,7 +41,7 @@ namespace Vixen.Sys {
 			}
 		}
 
-		private void _AddIntentsForChannel(Guid channelId, IEnumerable<IntentNode> intentNodes) {
+		private void _AddIntentsForChannel(Guid channelId, IEnumerable<IIntentNode> intentNodes) {
 			if(ContainsKey(channelId)) {
 				this[channelId].AddRange(intentNodes);
 			} else {

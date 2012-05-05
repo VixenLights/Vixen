@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using Vixen.Sys.CombinationOperation;
 
 namespace Vixen.Sys {
-	public class ChannelIntents : Dictionary<Guid,IntentNode> {
+	public class ChannelIntents : Dictionary<Guid,IIntentNode> {
 		// For better storytelling.
 		public IEnumerable<Guid> ChannelIds {
 			get { return Keys; }
 		}
 
-		public void AddIntentNodeToChannel(Guid channelId, IntentNode intentNode, ICombinationOperation combinationOperation) {
+		public void AddIntentNodeToChannel(Guid channelId, IIntentNode intentNode, ICombinationOperation combinationOperation) {
 			if(intentNode == null) return;
 
 			if(!ContainsKey(channelId)) {
@@ -22,12 +22,12 @@ namespace Vixen.Sys {
 
 		public void AddIntentNodesToChannels(ChannelIntents channelIntents, ICombinationOperation combinationOperation) {
 			foreach(Guid channelId in channelIntents.ChannelIds) {
-				IntentNode intentNode = channelIntents[channelId];
+				IIntentNode intentNode = channelIntents[channelId];
 				AddIntentNodeToChannel(channelId, intentNode, combinationOperation);
 			}
 		}
 
-		private void _AddRootIntentNode(Guid channelId, IntentNode intentNode) {
+		private void _AddRootIntentNode(Guid channelId, IIntentNode intentNode) {
 			this[channelId] = intentNode;
 		}
 
@@ -36,7 +36,7 @@ namespace Vixen.Sys {
 		//    rootNode.SubordinateIntents.Add(new SubordinateIntent(intentNode, combinationOperation));
 		//}
 
-		private IntentNode _GetRootNode(Guid channelId) {
+		private IIntentNode _GetRootNode(Guid channelId) {
 			return this[channelId];
 		}
 	}

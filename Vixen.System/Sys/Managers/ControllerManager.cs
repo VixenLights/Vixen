@@ -15,6 +15,10 @@ namespace Vixen.Sys.Managers {
 			return (OutputController)Get(id);
 		}
 
+		public IEnumerable<OutputController> GetControllers(IEnumerable<ControllerReference> controllerReferences) {
+			return controllerReferences.Distinct().Select(x => Get(x.ControllerId)).Cast<OutputController>().NotNull();
+		}
+
 		public void AddSources(IOutputSourceCollection sources) {
 			if(sources == null) throw new ArgumentNullException("sources");
 
@@ -22,11 +26,6 @@ namespace Vixen.Sys.Managers {
 				foreach(Guid controllerId in sources.Controllers) {
 					OutputController controller = GetController(controllerId);
 					controller.AddSources(sources);
-					//foreach(OutputSources outputSources in sources.GetControllerSources(controllerId)) {
-					//    foreach(IOutputStateSource source in outputSources) {
-					//        AddSource(source, new ControllerReference(controllerId, outputSources.OutputIndex));
-					//    }
-					//}
 				}
 			}
 		}
@@ -39,27 +38,8 @@ namespace Vixen.Sys.Managers {
 			foreach(Guid controllerId in sources.Controllers) {
 				OutputController controller = GetController(controllerId);
 				controller.RemoveSources(sources);
-				//foreach(OutputSources outputSources in sources.GetControllerSources(controllerId)) {
-				//    foreach(IOutputStateSource source in outputSources) {
-				//        RemoveSource(source, new ControllerReference(controllerId, outputSources.OutputIndex));
-				//    }
-				//}
 			}
 		}
-
-		//public void AddSource(IOutputStateSource source, ControllerReference controllerReference) {
-		//    OutputController controller = GetController(controllerReference.ControllerId);
-		//    if(controller != null) {
-		//        controller.AddSource(source, controllerReference.OutputIndex);
-		//    }
-		//}
-
-		//public void RemoveSource(IOutputStateSource source, ControllerReference controllerReference) {
-		//    OutputController controller = GetController(controllerReference.ControllerId);
-		//    if(controller != null) {
-		//        controller.RemoveSource(source, controllerReference.OutputIndex);
-		//    }
-		//}
 
 		public bool IsValidReference(ControllerReference controllerReference) {
 			OutputController controller = GetController(controllerReference.ControllerId);

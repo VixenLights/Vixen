@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Vixen.Sys.Output;
 
 //*** use this when changing patching in the UI for any reason; get rid of reloads on cancel
 namespace Vixen.Sys {
@@ -44,11 +45,20 @@ namespace Vixen.Sys {
 			OutputSourceChangeSet outputSourceChangeSet = new OutputSourceChangeSet();
 			Dictionary<Guid, ChannelOutputPatch> originalChannelPatches = VixenSystem.ChannelPatching.ToDictionary(x => x.ChannelId, x => x);
 
+			IEnumerable<ControllerReference> originalReferences = _changedChannels.SelectMany(x => originalChannelPatches[x].Select(y => y));
+			IEnumerable<ControllerReference> newReferences = _changedChannels.SelectMany(x => _channelPatches[x].Select(y => y));
+			IEnumerable<ControllerReference> allControllerReferences = originalReferences.Concat(newReferences);
+
+			IEnumerable<OutputController> referencedControllers = VixenSystem.Controllers.GetControllers(allControllerReferences).ToArray();
+			VixenSystem.Controllers.Pause(referencedControllers);
+			
 			foreach(Guid channelId in _changedChannels) {
 				_AffectOutputs(originalChannelPatches[channelId], outputSourceChangeSet);
 				_CommitPatches(channelId, clearExisting);
 				_AffectOutputs(_channelPatches[channelId], outputSourceChangeSet);
 			}
+
+			VixenSystem.Controllers.Resume(referencedControllers);
 
 			outputSourceChangeSet.Commit();
 		}

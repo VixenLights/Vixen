@@ -2,8 +2,6 @@
 
 namespace Vixen.Sys.Output {
 	abstract public class OutputModuleInstanceBase : ModuleInstanceBase, IOutputModule {
-		abstract public IDataPolicy DataPolicy { get; }
-
 		/// <summary>
 		/// If overriding this, please also override Start and Stop.
 		/// </summary>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Vixen.Commands;
+using Vixen.Sys;
 using Vixen.Sys.Output;
 
 namespace Vixen.Module.Preview {
@@ -18,6 +19,8 @@ namespace Vixen.Module.Preview {
 		public override bool IsRunning {
 			get { return ThreadBehavior.IsRunning; }
 		}
+
+		abstract public IDataPolicy DataPolicy { get; }
 
 		abstract public void UpdateState(ChannelCommands channelCommands);
 

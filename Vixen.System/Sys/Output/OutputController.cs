@@ -22,8 +22,6 @@ namespace Vixen.Sys.Output {
 
 		public OutputController(Guid id, string name, int outputCount, Guid moduleId)
 			: base(id, name) {
-			//Id = id;
-			//Name = name;
 			ModuleId = moduleId;
 			OutputCount = outputCount;
 			_sourceCollections = new HashSet<IOutputSourceCollection>();
@@ -31,7 +29,7 @@ namespace Vixen.Sys.Output {
 
 		override protected void _Start() {
 			if(Module != null) {
-				Module.Start(OutputCount);
+				Module.Start();
 			}
 		}
 
@@ -110,8 +108,7 @@ namespace Vixen.Sys.Output {
 						//Parallel.ForEach(controller._outputs, x =>
 							{
 								x.UpdateState();
-								//*** don't like Output.Command
-								x.Command = GenerateCommand(x.State, x.DataPolicy ?? DataPolicy);
+								x.Command = _GenerateOutputCommand(x);
 							});
 					}
 
@@ -288,6 +285,15 @@ namespace Vixen.Sys.Output {
 			}
 		}
 
+		private ICommand _GenerateOutputCommand(Output output) {
+			IDataPolicy effectiveDataPolicy = _GetOutputEffectiveDataPolicy(output);
+			return effectiveDataPolicy.GenerateCommand(output.State);
+		}
+
+		private IDataPolicy _GetOutputEffectiveDataPolicy(Output output) {
+			return output.DataPolicy ?? DataPolicy;
+		}
+
 		public override string ToString() {
 			return Name;
 		}
@@ -307,7 +313,6 @@ namespace Vixen.Sys.Output {
 
 		#region class Output
 		public class Output : IHasPostFilters, IHasOutputSources {
-			//private LinkedList<IOutputStateSource> _sources;
 			private HashSet<IOutputStateSource> _sources;
 			private PostFilterCollection _postFilters;
 			private OutputIntentStateList _state;
@@ -315,11 +320,9 @@ namespace Vixen.Sys.Output {
 			public Output() {
 				Name = "Unnamed";
 				_postFilters = new PostFilterCollection();
-				//_sources = new LinkedList<IOutputStateSource>();
 				_sources = new HashSet<IOutputStateSource>();
 			}
 
-			//temporary
 			private ICommand _command;
 
 			public ICommand Command {
@@ -342,11 +345,6 @@ namespace Vixen.Sys.Output {
 			}
 
 			public void AddSource(IOutputStateSource source) {
-				//Notable enough performance gain with the linked list enumerator to warrant a linked list
-				//collection with a HashSet index?
-				//if(!_sources.Contains(source)) {
-				//    _sources.AddLast(source);
-				//}
 				_sources.Add(source);
 			}
 

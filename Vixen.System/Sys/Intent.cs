@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Vixen.Intent;
 using Vixen.Interpolator;
 
 namespace Vixen.Sys {
@@ -83,7 +84,9 @@ namespace Vixen.Sys {
 			}
 		}
 
-		abstract public IIntentState CreateIntentState(TimeSpan intentRelativeTime);
+		public IIntentState CreateIntentState(TimeSpan intentRelativeTime) {
+			return new IntentState<TypeOfValue>(this, intentRelativeTime);
+		}
 
 		private IEnumerable<IntentSegmentNode<TypeOfValue>> _GetIntersectingSegments(ITimeNode timeNode) {
 			int segmentIndex = _FindSegmentAt(timeNode.StartTime);

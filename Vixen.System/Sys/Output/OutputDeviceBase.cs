@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using Vixen.Commands;
 using Vixen.Sys.Instrumentation;
 
 namespace Vixen.Sys.Output {
@@ -87,10 +85,6 @@ namespace Vixen.Sys.Output {
 		}
 
 		public IDataPolicy DataPolicy { get; set; }
-
-		public ICommand GenerateCommand(IEnumerable<IIntentState> outputState, IDataPolicy dataPolicy) {
-			return dataPolicy.GenerateCommand(outputState);
-		}
 
 		abstract protected void _UpdateState();
 

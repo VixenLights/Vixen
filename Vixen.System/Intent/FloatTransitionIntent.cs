@@ -8,8 +8,9 @@ namespace Vixen.Intent {
 			: base(startValue, endValue, timeSpan, new FloatInterpolator()) {
 		}
 
-		public override IIntentState CreateIntentState(TimeSpan intentRelativeTime) {
-			return new FloatTransitionIntentState(this, intentRelativeTime);
-		}
+		//public override IIntentState CreateIntentState(TimeSpan intentRelativeTime) {
+		//    //return new FloatTransitionIntentState(this, intentRelativeTime);
+		//    return new IntentState<float>(this, intentRelativeTime);
+		//}
 	}
 }

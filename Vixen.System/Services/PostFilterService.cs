@@ -24,9 +24,13 @@ namespace Vixen.Services {
 			if(!result.Success) return;
 
 			ControllerReference[] controllerReferences = patchingRule.GenerateControllerReferenceCollections(1).First().ToArray();
-			_PauseControllers(controllerReferences);
+			IEnumerable<OutputController> referencedControllers = VixenSystem.Controllers.GetControllers(controllerReferences).ToArray();
+
+			VixenSystem.Controllers.Pause(referencedControllers);
+	
 			_ApplyTemplateToOutputs(result.Object, controllerReferences, clearExisting);
-			_ResumeControllers(controllerReferences);
+			
+			VixenSystem.Controllers.Resume(referencedControllers);
 		}
 
 		public void ApplyTemplateMany(string templateFileName, IPatchingRule patchingRule, int channelCount, bool clearExisting = false) {
@@ -36,30 +40,16 @@ namespace Vixen.Services {
 
 			PostFilterTemplate template = result.Object;
 
-			IEnumerable<ControllerReferenceCollection> controllerReferenceCollections = patchingRule.GenerateControllerReferenceCollections(channelCount);
+			IEnumerable<ControllerReferenceCollection> controllerReferenceCollections = patchingRule.GenerateControllerReferenceCollections(channelCount).ToArray();
 
-			_PauseControllers(controllerReferenceCollections.SelectMany(x => x));
+			IEnumerable<OutputController> referencedControllers = VixenSystem.Controllers.GetControllers(controllerReferenceCollections.SelectMany(x => x)).ToArray();
+			VixenSystem.Controllers.Pause(referencedControllers);
+
 			foreach(ControllerReferenceCollection controllerReferences in controllerReferenceCollections) {
 				_ApplyTemplateToOutputs(template, controllerReferences.ToArray(), clearExisting);
 			}
-			_ResumeControllers(controllerReferenceCollections.SelectMany(x => x));
-		}
-
-		private void _PauseControllers(IEnumerable<ControllerReference> controllerReferences) {
-			foreach(OutputController controller in _GetReferencedControllers(controllerReferences)) {
-				controller.Pause();
-			}
-		}
-
-		private void _ResumeControllers(IEnumerable<ControllerReference> controllerReferences) {
-			foreach(OutputController controller in _GetReferencedControllers(controllerReferences)) {
-				controller.Resume();
-			}
-		}
-
-		private IEnumerable<OutputController> _GetReferencedControllers(IEnumerable<ControllerReference> controllerReferences) {
-			var controllerIds = controllerReferences.Select(x => x.ControllerId).Distinct();
-			return controllerIds.Select(VixenSystem.Controllers.Get).Cast<OutputController>().NotNull();
+			
+			VixenSystem.Controllers.Resume(referencedControllers);
 		}
 
 		private void _ApplyTemplateToOutputs(PostFilterTemplate template, ControllerReference[] controllerReferences, bool clearExisting = false) {

@@ -8,5 +8,6 @@ using Vixen.Sys.Output;
 namespace Vixen.Module.Preview {
     public interface IPreview : IOutputModule {
 		void UpdateState(ChannelCommands channelCommands);
+		IDataPolicy DataPolicy { get; }
 	}
 }

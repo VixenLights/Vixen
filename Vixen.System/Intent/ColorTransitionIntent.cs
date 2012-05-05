@@ -9,8 +9,9 @@ namespace Vixen.Intent {
 			: base(startValue, endValue, timeSpan, new ColorInterpolator()) {
 		}
 
-		public override IIntentState CreateIntentState(TimeSpan intentRelativeTime) {
-			return new ColorTransitionIntentState(this, intentRelativeTime);
-		}
+		//public override IIntentState CreateIntentState(TimeSpan intentRelativeTime) {
+		//    //return new ColorTransitionIntentState(this, intentRelativeTime);
+		//    return new IntentState<Color>(this, intentRelativeTime);
+		//}
 	}
 }

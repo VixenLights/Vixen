@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Vixen.Commands;
 using Vixen.Data.Policy;
 using Vixen.Module.Controller;
@@ -44,7 +43,7 @@ namespace VixenModules.Output.DummyLighting {
 			_form.UpdateState(1000 * ((double)_updateCount / _sw.ElapsedMilliseconds), outputStates);
 		}
 
-		public override void Start(int outputCount) {
+		public override void Start() {
 			//_formThread = new UIThread(() => {
 			//    _form = new DummyLightingOutputForm();
 			//    _form.renderingStyle = _data.RenderStyle;
