@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace Vixen.Sys.Output {
-	public interface IOutputDevice : ISetup {
+	public interface IOutputDevice : IHasSetup {
 		void Start();
 		void Stop();
 		void Pause();

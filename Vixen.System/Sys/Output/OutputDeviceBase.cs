@@ -84,7 +84,7 @@ namespace Vixen.Sys.Output {
 			}
 		}
 
-		public IDataPolicy DataPolicy { get; set; }
+		//public IDataPolicy DataPolicy { get; set; }
 
 		abstract protected void _UpdateState();
 

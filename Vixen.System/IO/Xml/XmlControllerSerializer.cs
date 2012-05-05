@@ -76,7 +76,7 @@ namespace Vixen.IO.Xml {
 					if(outputIndex >= controller.OutputCount) break;
 
 					// The outputs were created when the output count was set.
-					OutputController.Output output = controller.Outputs[outputIndex];
+					CommandOutput output = controller.Outputs[outputIndex];
 
 					output.Name = XmlHelper.GetAttribute(outputElement, ATTR_NAME) ?? "Unnamed output";
 

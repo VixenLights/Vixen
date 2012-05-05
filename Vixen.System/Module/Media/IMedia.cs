@@ -7,7 +7,7 @@ using Vixen.Module.Timing;
 using Vixen.Sys;
 
 namespace Vixen.Module.Media {
-	public interface IMedia : IExecutionControl, ISetup {
+	public interface IMedia : IExecutionControl, IHasSetup {
 		string MediaFilePath { get; set; }
 		/// <summary>
 		/// Load or prepare the media for execution starting at a given time offset.

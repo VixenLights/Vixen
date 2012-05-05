@@ -2,7 +2,7 @@
 using Vixen.Sys;
 
 namespace Vixen.Module.PostFilter {
-	public interface IPostFilter : ISetup {
+	public interface IPostFilter : IHasSetup {
 		ICommand Affect(ICommand command);
 	}
 }

@@ -2,7 +2,7 @@
 using Vixen.Sys;
 
 namespace Vixen.Module.PreFilter {
-	public interface IPreFilter : ISetup {
+	public interface IPreFilter : IHasSetup {
 		bool IsDirty { get; }
 		TimeSpan TimeSpan { get; set; }
 		ChannelNode[] TargetNodes { get; set; }

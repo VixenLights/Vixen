@@ -1,22 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Vixen.Commands;
-using Vixen.Module.PostFilter;
 using Vixen.Sys;
-using Vixen.Sys.Output;
 
 namespace Vixen.Data.Policy {
 	public abstract class OutputDataPolicy : IDataPolicy {
-		private OutputController.Output _output;
 		private ControllerDataPolicy _controllerDataPolicy;
 
-		protected OutputDataPolicy(OutputController.Output output, ControllerDataPolicy controllerDataPolicy) {
-			if(output == null) throw new ArgumentNullException("output");
+		protected OutputDataPolicy(ControllerDataPolicy controllerDataPolicy) {
 			if(controllerDataPolicy == null) throw new ArgumentNullException("controllerDataPolicy");
 
-			_output = output;
 			_controllerDataPolicy = controllerDataPolicy;
 		}
 

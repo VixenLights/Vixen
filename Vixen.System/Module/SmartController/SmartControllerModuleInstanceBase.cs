@@ -17,9 +17,7 @@ namespace Vixen.Module.SmartController {
 
 		abstract protected void _SetOutputCount(int outputCount);
 
-		abstract public void UpdateState(IntentCollection[] outputStates);
-
-		public abstract SmartControllerUpdate UpdateMode { get; }
+		abstract public void UpdateState(IntentChangeCollection[] outputStates);
 
 		public bool Equals(ISmartControllerModuleInstance x, ISmartControllerModuleInstance y) {
 			return base.Equals(x, y);

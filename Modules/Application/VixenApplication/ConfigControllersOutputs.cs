@@ -32,7 +32,7 @@ namespace VixenApplication
 			if (!IsIndexValid(outputIndex))
 				return;
 
-			OutputController.Output output = _controller.Outputs[outputIndex];
+			CommandOutput output = _controller.Outputs[outputIndex];
 			item.Text = (outputIndex + 1).ToString();
 			item.SubItems.Add(output.Name);
 			item.Tag = outputIndex;

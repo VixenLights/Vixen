@@ -3,7 +3,7 @@
 namespace Vixen.Sys.Instrumentation {
 	class CacheHitPercentValue : PercentValue {
 		public CacheHitPercentValue(string contextName)
-			: base("Cache hit (%) - " + contextName) {
+			: base("Cache hit (%) [" + contextName + "]") {
 		}
 	}
 }

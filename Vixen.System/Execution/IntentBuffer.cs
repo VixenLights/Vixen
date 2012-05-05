@@ -9,7 +9,7 @@ namespace Vixen.Execution {
 	class IntentBuffer : IDataSource {
 		private IEnumerable<IEffectNode> _effectNodeSource;
 		private EffectNodeQueue _effectNodeQueue;
-		private BufferSizeInSeconds _bufferSizeSecondsValue;
+		private BufferSizeInSecondsValue _bufferSizeSecondsValue;
 		private AutoResetEvent _bufferReadSignal;
 		private Thread _bufferPopulationThread;
 		private TimeSpan _lastBufferReadPoint;
@@ -69,7 +69,7 @@ namespace Vixen.Execution {
 		}
 
 		private void _AddInstrumentationValues() {
-			_bufferSizeSecondsValue = new BufferSizeInSeconds(ContextName);
+			_bufferSizeSecondsValue = new BufferSizeInSecondsValue(ContextName);
 			VixenSystem.Instrumentation.AddValue(_bufferSizeSecondsValue);
 		}
 

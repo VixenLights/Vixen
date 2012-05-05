@@ -8,7 +8,7 @@ namespace Vixen.Sys.Output {
 	public class OutputPreview : OutputDeviceBase {
 		private Guid _moduleId;
 		private IPreviewModuleInstance _module;
-		private ModuleLocalDataSet _dataSet = new ModuleLocalDataSet();
+		private ModuleLocalDataSet _dataSet;
 
 		public OutputPreview(string name, Guid moduleId)
 			: this(Guid.NewGuid(), name, moduleId) {
@@ -17,6 +17,7 @@ namespace Vixen.Sys.Output {
 		public OutputPreview(Guid id, string name, Guid moduleId)
 			: base(id, name) {
 			ModuleId = moduleId;
+			_dataSet = new ModuleLocalDataSet();
 		}
 
 		protected override void _Start() {
@@ -72,6 +73,8 @@ namespace Vixen.Sys.Output {
 				return _module;
 			}
 		}
+
+		public IDataPolicy DataPolicy { get; set; }
 
 		public ModuleLocalDataSet ModuleDataSet {
 			get { return _dataSet; }
