@@ -370,6 +370,7 @@
     <Compile Include="Sys\Output\IOutputModule.cs" />
     <Compile Include="Sys\Output\IOutputModuleDescriptor.cs" />
     <Compile Include="Sys\Output\ModuleBasedController.cs" />
+    <Compile Include="Sys\Output\ModuleBasedOutputDevice.cs" />
     <Compile Include="Sys\Output\Output.cs" />
     <Compile Include="Sys\Output\OutputCollection.cs" />
     <Compile Include="Sys\Output\OutputModuleInstanceBase.cs" />

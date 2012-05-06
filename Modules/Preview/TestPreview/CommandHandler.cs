@@ -12,6 +12,10 @@ namespace TestPreview {
 			Value = obj.CommandValue;
 		}
 
+		public override void Handle(LightingValueCommand obj) {
+			Value = obj.CommandValue.Color;
+		}
+
 		public Color Value;
 	}
 }

@@ -1,47 +1,22 @@
 ﻿using System;
 using System.Linq;
 using Vixen.Commands;
-using Vixen.Module;
 using Vixen.Module.Preview;
 
 namespace Vixen.Sys.Output {
-	public class OutputPreview : OutputDeviceBase {
-		private Guid _moduleId;
-		private IPreviewModuleInstance _module;
-		private ModuleLocalDataSet _dataSet;
-
+	public class OutputPreview : ModuleBasedOutputDevice<IPreviewModuleInstance> {
 		public OutputPreview(string name, Guid moduleId)
 			: this(Guid.NewGuid(), name, moduleId) {
 		}
 
 		public OutputPreview(Guid id, string name, Guid moduleId)
-			: base(id, name) {
-			ModuleId = moduleId;
-			_dataSet = new ModuleLocalDataSet();
+			: base(id, name, moduleId) {
 		}
 
-		protected override void _Start() {
-			if(Module != null) {
-				Module.Start();
-			}
-		}
-
-		protected override void _Stop() {
-			if(Module != null) {
-				Module.Stop();
-			}
-		}
-
-		protected override void _Pause() {
-			if(Module != null) {
-				Module.Pause();
-			}
-		}
-
-		protected override void _Resume() {
-			if(Module != null) {
-				Module.Resume();
-			}
+		protected override IPreviewModuleInstance GetModule(Guid moduleId) {
+			IPreviewModuleInstance module = Modules.ModuleManagement.GetPreview(moduleId);
+			ResetDataPolicy(module);
+			return module;
 		}
 
 		protected override void _UpdateState() {
@@ -51,62 +26,11 @@ namespace Vixen.Sys.Output {
 			}
 		}
 
-		public Guid ModuleId {
-			get { return _moduleId; }
-			set {
-				_moduleId = value;
-				_module = null;
-			}
-		}
-
-		public IPreviewModuleInstance Module {
-			get {
-				if(_module == null) {
-					_module = Modules.ModuleManagement.GetPreview(_moduleId);
-
-					if(_module != null) {
-						_SetModuleData();
-						ResetUpdateInterval();
-						ResetDataPolicy();
-					}
-				}
-				return _module;
-			}
-		}
-
 		public IDataPolicy DataPolicy { get; set; }
 
-		public ModuleLocalDataSet ModuleDataSet {
-			get { return _dataSet; }
-			set {
-				_dataSet = value;
-				_SetModuleData();
-			}
-		}
-
-		override public bool IsRunning {
-			get { return _module != null && _module.IsRunning; }
-		}
-
-		public void ResetUpdateInterval() {
-			if(Module != null) {
-				UpdateInterval = Module.UpdateInterval;
-			}
-		}
-
-		public void ResetDataPolicy() {
-			if(Module != null) {
-				DataPolicy = Module.DataPolicy;
-			}
-		}
-
-		public override string ToString() {
-			return Name;
-		}
-
-		private void _SetModuleData() {
-			if(_module != null && ModuleDataSet != null) {
-				ModuleDataSet.AssignModuleTypeData(_module);
+		public void ResetDataPolicy(IPreviewModuleInstance module) {
+			if(module != null) {
+				DataPolicy = module.DataPolicy;
 			}
 		}
 	}
