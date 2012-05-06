@@ -72,6 +72,12 @@ namespace Vixen.IO.Xml.Policy {
 			_content.Add(element);
 		}
 
+		protected override void WriteSmartControllers() {
+			XmlSmartControllerCollectionSerializer serializer = new XmlSmartControllerCollectionSerializer();
+			XElement element = serializer.WriteObject(_systemConfig.SmartControllers);
+			_content.Add(element);
+		}
+
 		protected override void WriteChannelPatching() {
 			XmlChannelPatchingSerializer serializer = new XmlChannelPatchingSerializer();
 			XElement element = serializer.WriteObject(_systemConfig.ChannelPatching);
@@ -136,6 +142,11 @@ namespace Vixen.IO.Xml.Policy {
 		protected override void ReadControllerLinks() {
 			XmlControllerLinkCollectionSerializer serializer = new XmlControllerLinkCollectionSerializer();
 			_systemConfig.ControllerLinking = serializer.ReadObject(_content);
+		}
+
+		protected override void ReadSmartControllers() {
+			XmlSmartControllerCollectionSerializer serializer = new XmlSmartControllerCollectionSerializer();
+			_systemConfig.SmartControllers = serializer.ReadObject(_content);
 		}
 
 		protected override void ReadChannelPatching() {

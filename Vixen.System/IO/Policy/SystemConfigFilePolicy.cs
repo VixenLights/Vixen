@@ -10,6 +10,7 @@
 			WriteNodes();
 			WriteControllers();
 			WriteControllerLinks();
+			WriteSmartControllers();
 			WriteChannelPatching();
 			WriteDisabledControllers();
 			WritePreviews();
@@ -24,6 +25,7 @@
 		protected abstract void WriteNodes();
 		protected abstract void WriteControllers();
 		protected abstract void WriteControllerLinks();
+		protected abstract void WriteSmartControllers();
 		protected abstract void WriteChannelPatching();
 		protected abstract void WriteDisabledControllers();
 		protected abstract void WritePreviews();
@@ -38,6 +40,7 @@
 			ReadNodes();
 			ReadControllers();
 			ReadControllerLinks();
+			ReadSmartControllers();
 			ReadChannelPatching();
 			ReadDisabledControllers();
 			ReadPreviews();
@@ -52,12 +55,13 @@
 		protected abstract void ReadNodes();
 		protected abstract void ReadControllers();
 		protected abstract void ReadControllerLinks();
+		protected abstract void ReadSmartControllers();
 		protected abstract void ReadChannelPatching();
 		protected abstract void ReadDisabledControllers();
 		protected abstract void ReadPreviews();
 
 		public int GetVersion() {
-			return 10;
+			return 11;
 		}
 	}
 }

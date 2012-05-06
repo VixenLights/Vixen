@@ -126,7 +126,8 @@ namespace Vixen.Sys {
 			if (SystemConfig != null) {
 				// 'copy' the current details (nodes/channels/controllers) from the executing state
 				// to the SystemConfig, so they're there for writing when we save
-				SystemConfig.Controllers = Controllers;
+				SystemConfig.Controllers = Controllers.OfType<OutputController>();
+				SystemConfig.SmartControllers = Controllers.OfType<SmartOutputController>();
 				SystemConfig.Previews = Previews;
 				SystemConfig.Channels = Channels;
 				SystemConfig.Nodes = Nodes.GetRootNodes();
@@ -161,7 +162,10 @@ namespace Vixen.Sys {
 
 			Channels.AddChannels(SystemConfig.Channels);
 			Nodes.AddNodes(SystemConfig.Nodes);
+			// Putting both types of controllers into a single controller manager
+			// class so that all can be managed at once.
 			Controllers.AddRange(SystemConfig.Controllers);
+			Controllers.AddRange(SystemConfig.SmartControllers);
 			Previews.AddRange(SystemConfig.Previews);
 			ChannelPatching.AddPatches(SystemConfig.ChannelPatching);
 			ControllerLinking.AddRange(SystemConfig.ControllerLinking);

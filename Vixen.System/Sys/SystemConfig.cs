@@ -13,6 +13,7 @@ namespace Vixen.Sys {
 		private IEnumerable<ChannelNode> _nodes;
 		private IEnumerable<IOutputDevice> _controllers;
 		private IEnumerable<IOutputDevice> _previews;
+		private IEnumerable<IOutputDevice> _smartControllers;
 		private IEnumerable<ChannelOutputPatch> _channelPatching;
 		private IEnumerable<ControllerLink> _controllerLinking;
 		private List<Guid> _disabledControllers;
@@ -73,6 +74,16 @@ namespace Vixen.Sys {
 				return _previews;
 			}
 			set { _previews = value; }
+		}
+
+		public IEnumerable<IOutputDevice> SmartControllers {
+			get {
+				if(_smartControllers == null) {
+					_smartControllers = new IOutputDevice[0];
+				}
+				return _smartControllers;
+			}
+			set { _smartControllers = value; }
 		}
 
 		public IEnumerable<ChannelOutputPatch> ChannelPatching {

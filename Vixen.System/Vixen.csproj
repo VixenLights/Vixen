@@ -132,6 +132,8 @@
     <Compile Include="Intent\ColorTransitionIntent.cs" />
     <Compile Include="Intent\IntentState.cs" />
     <Compile Include="Intent\LightingIntent.cs" />
+    <Compile Include="IO\Xml\XmlSmartControllerCollectionSerializer.cs" />
+    <Compile Include="IO\Xml\XmlSmartControllerSerializer.cs" />
     <Compile Include="Module\SmartController\ISmartController.cs" />
     <Compile Include="Module\SmartController\ISmartControllerModuleDescriptor.cs" />
     <Compile Include="Module\SmartController\ISmartControllerModuleInstance.cs" />
