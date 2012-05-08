@@ -60,9 +60,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandHandler.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="Descriptor.cs" />
+    <Compile Include="IRenardProtocolFormatter.cs" />
     <Compile Include="Module.cs" />
+    <Compile Include="Protocol1.cs" />
+    <Compile Include="Protocol2.cs" />
+    <Compile Include="ProtocolFormatterService.cs" />
+    <Compile Include="ProtocolVersionAttribute.cs" />
+    <Compile Include="RenardDataPolicy.cs" />
     <Compile Include="SetupDialog.cs">
       <SubType>Form</SubType>
     </Compile>

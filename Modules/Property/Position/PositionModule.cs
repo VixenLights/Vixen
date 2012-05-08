@@ -29,13 +29,15 @@ namespace VixenModules.Property.Position {
 			get { return true; }
 		}
 
-		public override void Setup() {
+		public override bool Setup() {
 			using(SetupForm setupForm = new SetupForm(this)) {
 				if(setupForm.ShowDialog() == DialogResult.OK) {
 					if(_HaveMap(Owner)) {
 						_ParseNode(Owner);
 					}
+					return true;
 				}
+				return false;
 			}
 		}
 

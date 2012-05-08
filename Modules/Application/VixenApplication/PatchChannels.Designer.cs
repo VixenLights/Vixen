@@ -38,6 +38,7 @@
 			this.buttonCreateFilterTemplate = new System.Windows.Forms.Button();
 			this.checkBoxClearExistingPatches = new System.Windows.Forms.CheckBox();
 			this.checkBoxClearExistingFilters = new System.Windows.Forms.CheckBox();
+			this.checkBoxFilterTemplateOnly = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -92,7 +93,7 @@
 			// 
 			// buttonPreview
 			// 
-			this.buttonPreview.Location = new System.Drawing.Point(219, 144);
+			this.buttonPreview.Location = new System.Drawing.Point(221, 157);
 			this.buttonPreview.Name = "buttonPreview";
 			this.buttonPreview.Size = new System.Drawing.Size(75, 23);
 			this.buttonPreview.TabIndex = 11;
@@ -109,9 +110,9 @@
             this.columnHeader1,
             this.columnHeader2});
 			this.listViewPreview.FullRowSelect = true;
-			this.listViewPreview.Location = new System.Drawing.Point(221, 173);
+			this.listViewPreview.Location = new System.Drawing.Point(221, 186);
 			this.listViewPreview.Name = "listViewPreview";
-			this.listViewPreview.Size = new System.Drawing.Size(356, 144);
+			this.listViewPreview.Size = new System.Drawing.Size(356, 131);
 			this.listViewPreview.TabIndex = 12;
 			this.listViewPreview.UseCompatibleStateImageBehavior = false;
 			this.listViewPreview.View = System.Windows.Forms.View.Details;
@@ -184,18 +185,29 @@
 			// checkBoxClearExistingFilters
 			// 
 			this.checkBoxClearExistingFilters.AutoSize = true;
-			this.checkBoxClearExistingFilters.Location = new System.Drawing.Point(219, 107);
+			this.checkBoxClearExistingFilters.Location = new System.Drawing.Point(236, 107);
 			this.checkBoxClearExistingFilters.Name = "checkBoxClearExistingFilters";
 			this.checkBoxClearExistingFilters.Size = new System.Drawing.Size(134, 17);
 			this.checkBoxClearExistingFilters.TabIndex = 18;
 			this.checkBoxClearExistingFilters.Text = "Clear existing filters first";
 			this.checkBoxClearExistingFilters.UseVisualStyleBackColor = true;
 			// 
+			// checkBoxFilterTemplateOnly
+			// 
+			this.checkBoxFilterTemplateOnly.AutoSize = true;
+			this.checkBoxFilterTemplateOnly.Location = new System.Drawing.Point(236, 130);
+			this.checkBoxFilterTemplateOnly.Name = "checkBoxFilterTemplateOnly";
+			this.checkBoxFilterTemplateOnly.Size = new System.Drawing.Size(269, 17);
+			this.checkBoxFilterTemplateOnly.TabIndex = 19;
+			this.checkBoxFilterTemplateOnly.Text = "Apply filter template only, don\'t change the patching";
+			this.checkBoxFilterTemplateOnly.UseVisualStyleBackColor = true;
+			// 
 			// PatchChannels
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(623, 358);
+			this.Controls.Add(this.checkBoxFilterTemplateOnly);
 			this.Controls.Add(this.checkBoxClearExistingFilters);
 			this.Controls.Add(this.checkBoxClearExistingPatches);
 			this.Controls.Add(this.buttonCreateFilterTemplate);
@@ -234,5 +246,6 @@
 		private System.Windows.Forms.Button buttonCreateFilterTemplate;
 		private System.Windows.Forms.CheckBox checkBoxClearExistingPatches;
 		private System.Windows.Forms.CheckBox checkBoxClearExistingFilters;
+		private System.Windows.Forms.CheckBox checkBoxFilterTemplateOnly;
 	}
 }

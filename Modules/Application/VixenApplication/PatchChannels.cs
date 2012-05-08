@@ -50,6 +50,10 @@ namespace VixenApplication {
 			get { return checkBoxApplyFilterTemplate.Checked; }
 		}
 
+		private bool _DoApplyPatching {
+			get { return !checkBoxFilterTemplateOnly.Checked; }
+		}
+
 		private string _SelectedFilterTemplate {
 			get { return (string)comboBoxFilterTemplate.SelectedItem; }
 		}
@@ -75,7 +79,7 @@ namespace VixenApplication {
 
 		private bool _Validate() {
 			if(_patchingRule == null) {
-				MessageBox.Show("Patching rule must be configured first.");
+				MessageBox.Show("Rule must be configured first.");
 				return false;
 			}
 
@@ -120,11 +124,13 @@ namespace VixenApplication {
 			if(_Validate()) {
 				Cursor = Cursors.WaitCursor;
 				try {
-					Vixen.Services.ChannelNodeService.Instance.Patch(_channelNodes, _patchingRule, checkBoxClearExistingPatches.Checked);
+					if(_DoApplyPatching) {
+						Vixen.Services.ChannelNodeService.Instance.Patch(_channelNodes, _patchingRule, checkBoxClearExistingPatches.Checked);
+					}
 					if(_DoApplyFilterTemplate) {
 						Vixen.Services.PostFilterService.Instance.ApplyTemplateMany(_SelectedFilterTemplate, _patchingRule, _channelNodes.Length, checkBoxClearExistingFilters.Checked);
 					}
-					MessageBox.Show("Patched " + _channelNodes.Length + " channels.");
+					MessageBox.Show(_channelNodes.Length + " channels done.");
 				} catch(Exception ex) {
 					MessageBox.Show(ex.Message);
 				} finally {
