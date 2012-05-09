@@ -43,6 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandHandler.cs" />
+    <Compile Include="DataPolicy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PSC.cs" />
     <Compile Include="PscData.cs" />

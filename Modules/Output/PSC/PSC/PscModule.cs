@@ -4,27 +4,33 @@ using CommonElements;
 using Vixen.Commands;
 using Vixen.Module;
 using Vixen.Module.Controller;
+using Vixen.Sys;
 
 namespace PSC {
 	public class PscModule : ControllerModuleInstanceBase {
 		private SerialPort _port;
 		private PscData _data;
 		private PSC _psc;
+		private IDataPolicy _dataPolicy;
+		private CommandHandler _commandHandler;
 
 		public PscModule() {
 			_psc = new PSC();
+			_dataPolicy = new DataPolicy();
+			_commandHandler = new CommandHandler();
 		}
 
 		protected override void _SetOutputCount(int outputCount) {
 		}
 
-		protected override void _UpdateState(Command[] outputStates) {
+		public override void UpdateState(ICommand[] outputStates) {
 			byte index = 0;
-			foreach(Command command in outputStates) {
-				Animatronics.BasicPositioning.SetPosition setPositionCommand = command as Animatronics.BasicPositioning.SetPosition;
-				
-				if(setPositionCommand != null) {
-					_psc.SetPosition(index, setPositionCommand.Position);
+			foreach(ICommand command in outputStates) {
+				_commandHandler.Reset();
+				if(command != null) {
+					command.Dispatch(_commandHandler);
+					// Not going to reset the position on a null command.
+					_psc.SetPosition(index, _commandHandler.Value);
 				}
 				
 				index++;
@@ -111,6 +117,10 @@ namespace PSC {
 			} else {
 				_port = null;
 			}
+		}
+
+		public override IDataPolicy DataPolicy {
+			get { return _dataPolicy; }
 		}
 	}
 }

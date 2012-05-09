@@ -72,5 +72,9 @@ namespace Vixen.Module.PostFilter {
 		public void Handle(LightingValueCommand obj) {
 			Affect(obj);
 		}
+
+		public void Handle(DoubleValue obj) {
+			Affect(obj);
+		}
 	}
 }

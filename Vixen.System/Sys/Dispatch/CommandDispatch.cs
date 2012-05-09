@@ -19,5 +19,7 @@ namespace Vixen.Sys.Dispatch {
 		virtual public void Handle(ColorValue obj) { }
 
 		virtual public void Handle(LightingValueCommand obj) { }
+
+		virtual public void Handle(DoubleValue obj) { }
 	}
 }
