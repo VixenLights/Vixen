@@ -59,7 +59,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandHandler.cs" />
     <Compile Include="Data.cs" />
+    <Compile Include="DataPolicy.cs" />
     <Compile Include="Descriptor.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="SetupDialog.cs">
