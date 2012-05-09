@@ -40,7 +40,7 @@ namespace ColorWithIntent {
 				// Generating lighting intents...
 				LightingValue startValue = new LightingValue(ColorGradient.Colors.First().Color.ToRGB(), 1);
 				LightingValue endValue = new LightingValue(ColorGradient.Colors.Last().Color.ToRGB(), 1);
-				LightingIntent intent = new LightingIntent(startValue, endValue, TimeSpan);
+				LightingLinearIntent intent = new LightingLinearIntent(startValue, endValue, TimeSpan);
 				_intents.AddIntentForChannel(channel.Id, intent, TimeSpan.Zero);
 			}
 		}

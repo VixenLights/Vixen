@@ -129,9 +129,9 @@
     <Compile Include="Execution\IntentBuffer.cs" />
     <Compile Include="Execution\FilteringIntentCache.cs" />
     <Compile Include="Execution\IntentStateBuilder.cs" />
-    <Compile Include="Intent\ColorTransitionIntent.cs" />
+    <Compile Include="Intent\ColorLinearIntent.cs" />
     <Compile Include="Intent\IntentState.cs" />
-    <Compile Include="Intent\LightingIntent.cs" />
+    <Compile Include="Intent\LightingLinearIntent.cs" />
     <Compile Include="IO\Xml\XmlSmartControllerCollectionSerializer.cs" />
     <Compile Include="IO\Xml\XmlSmartControllerSerializer.cs" />
     <Compile Include="Module\SmartController\ISmartController.cs" />
@@ -149,12 +149,12 @@
     <Compile Include="Sys\Instrumentation\CacheHitPercentValue.cs" />
     <Compile Include="Sys\IntentChangeCollection.cs" />
     <Compile Include="Sys\LightingValue.cs" />
-    <Compile Include="Intent\LongTransitionIntent.cs" />
-    <Compile Include="Intent\PercentageTransitionIntent.cs" />
+    <Compile Include="Intent\LongLinearIntent.cs" />
+    <Compile Include="Intent\PercentageLinearIntent.cs" />
     <Compile Include="Interpolator\ColorInterpolator.cs" />
     <Compile Include="Interpolator\DoubleInterpolator.cs" />
     <Compile Include="Interpolator\FloatInterpolator.cs" />
-    <Compile Include="Intent\FloatTransitionIntent.cs" />
+    <Compile Include="Intent\FloatLinearIntent.cs" />
     <Compile Include="Interpolator\LightingInterpolator.cs" />
     <Compile Include="Interpolator\LongInterpolator.cs" />
     <Compile Include="IO\Factory\XmlSerializerFactory.cs" />
@@ -349,7 +349,7 @@
     <Compile Include="Sys\Instrumentation\OutputDeviceSleepTimeActualValue.cs" />
     <Compile Include="Sys\Instrumentation\OutputDeviceSleepTimeRequestedValue.cs" />
     <Compile Include="Sys\Instrumentation\OutputDeviceUpdateTimeValue.cs" />
-    <Compile Include="Sys\Intent.cs" />
+    <Compile Include="Sys\LinearIntent.cs" />
     <Compile Include="Sys\IntentNodeCollection.cs">
       <SubType>Code</SubType>
     </Compile>

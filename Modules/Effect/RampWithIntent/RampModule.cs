@@ -33,7 +33,7 @@ namespace RampWithIntent {
 			foreach(Channel channel in channels) {
 				//IIntent intent = new FloatTransitionIntent(StartLevel, EndLevel, TimeSpan);
 				//IIntent intent = new PercentageTransitionIntent(StartLevel / 255, EndLevel / 255, TimeSpan);
-				IIntent intent = new LongTransitionIntent((long)StartLevel, (long)EndLevel, TimeSpan);
+				IIntent intent = new LongLinearIntent((long)StartLevel, (long)EndLevel, TimeSpan);
 				_intents.AddIntentForChannel(channel.Id, intent, TimeSpan.Zero);
 			}
 		}

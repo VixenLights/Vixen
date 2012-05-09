@@ -5,8 +5,7 @@ using Vixen.Intent;
 using Vixen.Interpolator;
 
 namespace Vixen.Sys {
-	// All intents are now to be linear interpolations.
-	abstract public class Intent<IntentType,TypeOfValue> : Dispatchable<IntentType>, IIntent<TypeOfValue>
+	abstract public class LinearIntent<IntentType,TypeOfValue> : Dispatchable<IntentType>, IIntent<TypeOfValue>
 		where IntentType : Dispatchable<IntentType> {
 		private SortedList<TimeSpan, IntentSegmentNode<TypeOfValue>> _segmentTimeIndex;
 		//An interval tree would be great, but I could only find one C# implementation on the web
@@ -14,9 +13,8 @@ namespace Vixen.Sys {
 		//private IntervalTree<IntentSegmentNode<TypeOfValue>, TimeSpan> _segmentIntervalIndex;
 		private Interpolator<TypeOfValue> _interpolator;
 
-		protected Intent(TypeOfValue startValue, TypeOfValue endValue, TimeSpan timeSpan, Interpolator<TypeOfValue> interpolator) {
+		protected LinearIntent(TypeOfValue startValue, TypeOfValue endValue, TimeSpan timeSpan, Interpolator<TypeOfValue> interpolator) {
 			_segmentTimeIndex = new SortedList<TimeSpan, IntentSegmentNode<TypeOfValue>>();
-			//_segmentIntervalIndex = new IntervalTree<IntentSegmentNode<TypeOfValue>, TimeSpan>();
 			StartValue = startValue;
 			EndValue = endValue;
 			TimeSpan = timeSpan;
@@ -75,7 +73,6 @@ namespace Vixen.Sys {
 		}
 
 		public void ApplyFilter(IPreFilterNode preFilterNode, TimeSpan contextAbsoluteIntentStartTime) {
-			//SplitAt(preFilterNode);
 			SplitAt(preFilterNode.StartTime - contextAbsoluteIntentStartTime);
 			SplitAt(preFilterNode.EndTime - contextAbsoluteIntentStartTime);
 			var segmentNodes = _GetIntersectingSegments(preFilterNode);
@@ -104,7 +101,6 @@ namespace Vixen.Sys {
 		}
 
 		private IntentSegmentNode<TypeOfValue> _GetSegmentIntersecting(TimeSpan intentRelativeTime) {
-			//return _segmentIntervalIndex.Get(intentRelativeTime).FirstOrDefault();
 			//Linear search. Just ugly.
 			return _segmentTimeIndex.Values.FirstOrDefault(x => TimeNode.Intersects(x, intentRelativeTime));
 		}
@@ -134,16 +130,10 @@ namespace Vixen.Sys {
 		private void _Insert(IntentSegment<TypeOfValue> segment, TimeSpan startTime) {
 			IntentSegmentNode<TypeOfValue> segmentNode = new IntentSegmentNode<TypeOfValue>(segment, startTime);
 			_segmentTimeIndex.Add(startTime, segmentNode);
-			//_segmentIntervalIndex.AddInterval(startTime, segment.TimeSpan, segmentNode);
 		}
 
 		private void _RemoveAt(TimeSpan segmentStartTime) {
 			_segmentTimeIndex.Remove(segmentStartTime);
-
-			//var interval = _segmentIntervalIndex.GetIntervals(segmentStartTime).FirstOrDefault();
-			//if(interval != null) {
-			//    _segmentIntervalIndex.Intervals.Remove(interval);
-			//}
 		}
 	}
 }
