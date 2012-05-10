@@ -41,6 +41,8 @@
 //
 //=====================================================================
 
+using Vixen.Sys;
+
 namespace VixenModules.Controller.E131
 {
     using System;
@@ -98,7 +100,13 @@ namespace VixenModules.Controller.E131
 
         private bool _warningsOption;
 
-        public void Initialize()
+		private IDataPolicy _dataPolicy;
+
+		public E131OutputPlugin() {
+			_dataPolicy = new DataPolicy();
+		}
+
+    	public void Initialize()
         {
             // load all of our xml into working objects
             this.LoadSetupNodeInfo();
@@ -527,8 +535,7 @@ namespace VixenModules.Controller.E131
         {
         }
 
-        protected override void _UpdateState(Command[] outputStates)
-        {
+		public override void UpdateState(ICommand[] outputStates) {
             Stopwatch stopWatch = Stopwatch.StartNew();
             var channelValues = outputStates.ToChannelValuesAsBytes();
             this._eventCnt++;
@@ -687,5 +694,9 @@ namespace VixenModules.Controller.E131
                 this._guid = Guid.NewGuid();
             }
         }
-    }
+
+		public override IDataPolicy DataPolicy {
+			get { return _dataPolicy; }
+		}
+	}
 }
