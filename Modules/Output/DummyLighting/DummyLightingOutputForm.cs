@@ -108,8 +108,7 @@ namespace VixenModules.Output.DummyLighting
 				ICommand command = outputStates[i];
 				if(command != null) {
 					command.Dispatch(_commandHandler);
-					//_values[i] = _commandHandler.Value;
-					_values[i] = _commandHandler.ByteValue;
+					_values[i] = _commandHandler.Value;
 				} else {
 					_values[i] = 0;
 				}

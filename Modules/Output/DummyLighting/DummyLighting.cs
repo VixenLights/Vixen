@@ -1,6 +1,5 @@
 ﻿using System;
 using Vixen.Commands;
-using Vixen.Data.Policy;
 using Vixen.Module.Controller;
 using Vixen.Module;
 using Vixen.Sys;
@@ -19,7 +18,7 @@ namespace VixenModules.Output.DummyLighting {
 		public DummyLighting() {
 			_form = new DummyLightingOutputForm();
 			_sw = new Stopwatch();
-			_dataPolicy = new RenardDataPolicy();
+			_dataPolicy = new DataPolicy();
 		}
 
 		public override IModuleDataModel ModuleData {

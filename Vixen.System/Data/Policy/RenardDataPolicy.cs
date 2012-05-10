@@ -4,7 +4,7 @@ using Vixen.Sys;
 
 //THIS DOES NOT REMAIN.  FOR TESTING ONLY.
 namespace Vixen.Data.Policy {
-	public class RenardDataPolicy : ControllerDataPolicy {
+	internal class RenardDataPolicy : ControllerDataPolicy {
 		protected override IEvaluator GetEvaluator() {
 			//When testing with effect generating 0-1 % values, produces double value
 			//return new PercentEvaluator();
@@ -26,10 +26,5 @@ namespace Vixen.Data.Policy {
 			//return new ColorCombinator();
 			return new LightingCombinator();
 		}
-
-		//protected override IGenerator GetGenerator() {
-		//    //Just works :)
-		//    return new ByteCommandGenerator();
-		//}
 	}
 }
