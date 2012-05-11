@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Vixen.Module.PostFilter;
+using Vixen.Module.OutputFilter;
 
 namespace Color {
-	public class ColorDescriptor : PostFilterModuleDescriptorBase {
+	public class ColorDescriptor : OutputFilterModuleDescriptorBase {
 		private Guid _typeId = new Guid("{B3C06A83-CE75-4e78-853D-B95B4E69CEAC}");
 
 		public override string TypeName {
@@ -34,10 +34,6 @@ namespace Color {
 
 		public override string Version {
 			get { throw new NotImplementedException(); }
-		}
-
-		public override string PostFilterName {
-			get { return TypeName; }
 		}
 	}
 }

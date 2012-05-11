@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using Vixen.Commands;
 using Vixen.Data.Policy;
-using Vixen.Module.PostFilter;
+using Vixen.Module.OutputFilter;
 
 namespace Vixen.Sys.Output {
-	public class CommandOutput : Output, IHasPostFilters {
-		private PostFilterCollection _postFilters;
+	public class CommandOutput : Output, IHasOutputFilters {
+		private OutputFilterCollection _filters;
 		private ICommand _command;
 
 		public CommandOutput() {
-			_postFilters = new PostFilterCollection();
+			_filters = new OutputFilterCollection();
 		}
 
 		public ICommand Command {
@@ -22,34 +22,34 @@ namespace Vixen.Sys.Output {
 			}
 		}
 
-		public void AddPostFilter(IPostFilterModuleInstance module) {
-			_postFilters.Add(module);
+		public void AddOutputFilter(IOutputFilterModuleInstance module) {
+			_filters.Add(module);
 		}
 
-		public void InsertPostFilter(int index, IPostFilterModuleInstance module) {
-			_postFilters.Insert(index, module);
+		public void InsertOutputFilter(int index, IOutputFilterModuleInstance module) {
+			_filters.Insert(index, module);
 		}
 
-		public void RemovePostFilter(IPostFilterModuleInstance module) {
-			_postFilters.Remove(module);
+		public void RemoveOutputFilter(IOutputFilterModuleInstance module) {
+			_filters.Remove(module);
 		}
 
-		public void RemovePostFilterAt(int index) {
-			_postFilters.RemoveAt(index);
+		public void RemoveOutputFilterAt(int index) {
+			_filters.RemoveAt(index);
 		}
 
-		public void ClearPostFilters() {
-			_postFilters.Clear();
+		public void ClearOutputFilters() {
+			_filters.Clear();
 		}
 
 		// For the interface.
-		public IEnumerable<IPostFilterModuleInstance> GetAllPostFilters() {
-			return _postFilters;
+		public IEnumerable<IOutputFilterModuleInstance> GetAllOutputFilters() {
+			return _filters;
 		}
 
 		// For the serializer
-		public PostFilterCollection PostFilters {
-			get { return _postFilters; }
+		public OutputFilterCollection OutputFilters {
+			get { return _filters; }
 		}
 
 		//*** Not yet any way to set this for an output.
@@ -58,8 +58,8 @@ namespace Vixen.Sys.Output {
 
 		private void _FilterState() {
 			if(VixenSystem.AllowFilterEvaluation && Command != null) {
-				foreach(IPostFilterModuleInstance postFilter in _postFilters) {
-					_command = postFilter.Affect(_command);
+				foreach(IOutputFilterModuleInstance filter in _filters) {
+					_command = filter.Affect(_command);
 					if(_command == null) return;
 				}
 			}

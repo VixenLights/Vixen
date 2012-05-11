@@ -23,10 +23,10 @@ namespace Vixen.Sys {
 		}
 
 		//contextAbsoluteEffectStartTime = effectNode.StartTime
-		public void ApplyFilter(IPreFilterNode preFilterNode, TimeSpan contextAbsoluteEffectStartTime) {
+		public void ApplyFilter(ISequenceFilterNode sequenceFilterNode, TimeSpan contextAbsoluteEffectStartTime) {
 			// Pre-filters have context-absolute timing, so the intent needs to be told
 			// where in context-absolute time it is.
-			Intent.ApplyFilter(preFilterNode, contextAbsoluteEffectStartTime + StartTime);
+			Intent.ApplyFilter(sequenceFilterNode, contextAbsoluteEffectStartTime + StartTime);
 		}
 
 		virtual public IIntentState CreateIntentState(TimeSpan intentRelativeTime) {
@@ -69,6 +69,6 @@ namespace Vixen.Sys {
 		IIntent Intent { get; }
 		IIntentState CreateIntentState(TimeSpan intentRelativeTime);
 		//List<SubordinateIntent> SubordinateIntents { get; }
-		void ApplyFilter(IPreFilterNode preFilterNode, TimeSpan contextAbsoluteEffectStartTime);
+		void ApplyFilter(ISequenceFilterNode sequenceFilterNode, TimeSpan contextAbsoluteEffectStartTime);
 	}
 }

@@ -1,8 +1,8 @@
 ﻿using System;
-using Vixen.Module.PostFilter;
+using Vixen.Module.OutputFilter;
 
 namespace Grayscale {
-	public class GrayscaleDescriptor : PostFilterModuleDescriptorBase {
+	public class GrayscaleDescriptor : OutputFilterModuleDescriptorBase {
 		private Guid _typeId = new Guid("{DAC271B0-0743-45ef-B4E0-D5957AF7F019}");
 
 		public override string TypeName {
@@ -31,10 +31,6 @@ namespace Grayscale {
 
 		public override string Version {
 			get { throw new NotImplementedException(); }
-		}
-
-		public override string PostFilterName {
-			get { return TypeName; }
 		}
 	}
 }

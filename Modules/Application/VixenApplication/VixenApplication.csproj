@@ -168,11 +168,11 @@
     <Compile Include="Controls\ToNOutputsOverControllersEditor.Designer.cs">
       <DependentUpon>ToNOutputsOverControllersEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\PostFilterTemplateControl.cs">
+    <Compile Include="Controls\OutputFilterTemplateControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\PostFilterTemplateControl.Designer.cs">
-      <DependentUpon>PostFilterTemplateControl.cs</DependentUpon>
+    <Compile Include="Controls\OutputFilterTemplateControl.Designer.cs">
+      <DependentUpon>OutputFilterTemplateControl.cs</DependentUpon>
     </Compile>
     <Compile Include="PostFilterTemplateForm.cs">
       <SubType>Form</SubType>
@@ -242,8 +242,8 @@
     <EmbeddedResource Include="Controls\ToNOutputsOverControllersEditor.resx">
       <DependentUpon>ToNOutputsOverControllersEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\PostFilterTemplateControl.resx">
-      <DependentUpon>PostFilterTemplateControl.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\OutputFilterTemplateControl.resx">
+      <DependentUpon>OutputFilterTemplateControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PostFilterTemplateForm.resx">
       <DependentUpon>PostFilterTemplateForm.cs</DependentUpon>

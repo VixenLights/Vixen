@@ -133,11 +133,11 @@ namespace Vixen.Execution {
 			return _TimingSource;
 		}
 
-		public IEnumerable<IPreFilterNode> GetSequenceFilters() {
+		public IEnumerable<ISequenceFilterNode> GetSequenceFilters() {
 			if(_sequence != null) {
-				return _sequence.GetAllPreFilters();
+				return _sequence.GetAllSequenceFilters();
 			}
-			return Enumerable.Empty<PreFilterNode>();
+			return Enumerable.Empty<SequenceFilterNode>();
 		}
 
 		public string Name {

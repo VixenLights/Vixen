@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Vixen.Sys {
 	public interface IDataNode : ITimeNode {
-		// Currently used by classes that wrap data in a start time -- EffectNode, IntentNode, PreFilterNode.
+		// Currently used by classes that wrap data in a start time -- EffectNode, IntentNode, sequenceFilterNode.
 		// Going to keep this around in case we need to differentiate from ITimeNode.
 	}
 

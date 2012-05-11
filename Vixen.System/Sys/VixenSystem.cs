@@ -9,7 +9,7 @@ using Vixen.Module;
 using Vixen.IO;
 using Vixen.IO.Xml;
 using Vixen.Instrumentation;
-using Vixen.Module.PostFilter;
+using Vixen.Module.OutputFilter;
 using Vixen.Services;
 using Vixen.Sys.Managers;
 using Vixen.Sys.Output;
@@ -95,9 +95,9 @@ namespace Vixen.Sys {
 
 			foreach(OutputController outputController in Controllers) {
 				for(int outputIndex = 0; outputIndex < outputController.OutputCount; outputIndex++) {
-					IPostFilterModuleInstance postFilter = Modules.ModuleManagement.GetPostFilter(colorFilterId);
-					if(postFilter != null) {
-						outputController.AddPostFilter(outputIndex, postFilter);
+					IOutputFilterModuleInstance outputFilter = Modules.ModuleManagement.GetOutputFilter(colorFilterId);
+					if(outputFilter != null) {
+						outputController.AddOutputFilter(outputIndex, outputFilter);
 					}
 				}
 			}

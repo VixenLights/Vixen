@@ -213,9 +213,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RuntimeBehavior", "RuntimeB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recording", "Modules\RuntimeBehavior\Recording\Recording.csproj", "{A1B55A53-64C2-464A-923A-13059F0852CD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PreFilter", "PreFilter", "{3503C3B1-AD83-405E-9776-2DE1D3B8075F}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SequenceFilter", "SequenceFilter", "{3503C3B1-AD83-405E-9776-2DE1D3B8075F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostFilter", "PostFilter", "{EC3DEE21-95FE-46E0-B34D-86D86361517D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OutputFilter", "OutputFilter", "{EC3DEE21-95FE-46E0-B34D-86D86361517D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RampWithIntent", "Modules\Effect\RampWithIntent\RampWithIntent.csproj", "{6C9B8B74-7A12-418F-9B3F-8F3A32B3A3D6}"
 EndProject

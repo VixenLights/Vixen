@@ -48,8 +48,8 @@ namespace Vixen.IO {
 			return Factory.CreateChannelNodeTemplateSerializer();
 		}
 
-		public FileSerializer<PostFilterTemplate> CreatePostFilterTemplateSerializer() {
-			return Factory.CreatePostFilterTemplateSerializer();
+		public FileSerializer<OutputFilterTemplate> CreateOutputFilterTemplateSerializer() {
+			return Factory.CreateOutputFilterTemplateSerializer();
 		}
 	}
 }

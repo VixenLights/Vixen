@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using Vixen.IO;
-using Vixen.Module.PreFilter;
+using Vixen.Module.SequenceFilter;
 using Vixen.Sys;
 using Vixen.Module.Property;
 

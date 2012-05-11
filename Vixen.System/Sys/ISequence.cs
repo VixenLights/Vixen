@@ -11,7 +11,7 @@ namespace Vixen.Sys {
 		Standard,
 		Script
 	};
-	public interface ISequence : IHasMedia, IHasPreFilterNodes {
+	public interface ISequence : IHasMedia, IHasSequenceFilterNodes {
         string Name { get; }
 		void Save();
 		void Save(string fileName);

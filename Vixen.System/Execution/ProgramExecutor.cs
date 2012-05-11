@@ -98,7 +98,7 @@ namespace Vixen.Execution {
 
 		private IntentBuffer _CreateIntentBuffer() {
 			IEnumerable<IEffectNode> sequenceData = _executor.GetSequenceData().OrderBy(x => x.StartTime);
-			IEnumerable<IPreFilterNode> sequenceFilters = _executor.GetSequenceFilters();
+			IEnumerable<ISequenceFilterNode> sequenceFilters = _executor.GetSequenceFilters();
 			// The buffer needs to use the cache as its source of effect data so that it will
 			// pull data through the cache and buffer pre-filtered data.
 			_intentCache.Use(sequenceData, sequenceFilters, _executor.Name);
@@ -112,11 +112,11 @@ namespace Vixen.Execution {
 			return null;
 		}
 
-		public IEnumerable<IPreFilterNode> GetCurrentSequenceFilters() {
+		public IEnumerable<ISequenceFilterNode> GetCurrentSequenceFilters() {
 			if(_executor != null) {
 				return _executor.GetSequenceFilters();
 			}
-			return Enumerable.Empty<IPreFilterNode>();
+			return Enumerable.Empty<ISequenceFilterNode>();
 		}
 
     	#region Events

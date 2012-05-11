@@ -21,7 +21,7 @@ namespace Vixen.Execution
 
 		IEnumerable<IEffectNode> GetSequenceData();
 		ITiming GetSequenceTiming();
-		IEnumerable<IPreFilterNode> GetSequenceFilters();
+		IEnumerable<ISequenceFilterNode> GetSequenceFilters();
 		string Name { get; }
 	}
 }

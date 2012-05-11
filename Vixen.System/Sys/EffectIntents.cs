@@ -25,14 +25,6 @@ namespace Vixen.Sys {
 			_AddIntentForChannel(channelId, new IntentNode(intent, startTime));
 		}
 
-		//public void ApplyFilter(IPreFilterNode preFilterNode, TimeSpan contextAbsoluteEffectStartTime) {
-		//    foreach(IntentNodeCollection intentNodes in Values) {
-		//        foreach(IntentNode intentNode in intentNodes) {
-		//            intentNode.ApplyFilter(preFilterNode, contextAbsoluteEffectStartTime);
-		//        }
-		//    }
-		//}
-
 		private void _AddIntentForChannel(Guid channelId, IIntentNode intentNode) {
 			if(ContainsKey(channelId)) {
 				this[channelId].Add(intentNode);

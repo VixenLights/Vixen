@@ -31,8 +31,8 @@ namespace Vixen.IO.Factory {
 			return new XmlChannelNodeTemplateSerializer();
 		}
 
-		public FileSerializer<PostFilterTemplate> CreatePostFilterTemplateSerializer() {
-			return new XmlPostFilterTemplateSerializer();
+		public FileSerializer<OutputFilterTemplate> CreateOutputFilterTemplateSerializer() {
+			return new XmlOutputFilterTemplateSerializer();
 		}
 
 	}

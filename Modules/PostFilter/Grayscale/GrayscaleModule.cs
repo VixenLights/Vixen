@@ -1,9 +1,9 @@
 ﻿using Vixen.Commands;
 using Vixen.Module;
-using Vixen.Module.PostFilter;
+using Vixen.Module.OutputFilter;
 
 namespace Grayscale {
-	public class GrayscaleModule : PostFilterModuleInstanceBase {
+	public class GrayscaleModule : OutputFilterModuleInstanceBase {
 		private GrayscaleData _data;
 		private CommandHandler _commandHandler;
 

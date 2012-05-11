@@ -52,8 +52,8 @@ namespace Vixen.IO.Xml.Policy {
 		}
 
 		protected override void WriteFilterNodes() {
-			XmlPreFilterNodeCollectionSerializer serializer = new XmlPreFilterNodeCollectionSerializer();
-			XElement element = serializer.WriteObject(_sequence.GetAllPreFilters());
+			XmlSequenceFilterNodeCollectionSerializer serializer = new XmlSequenceFilterNodeCollectionSerializer();
+			XElement element = serializer.WriteObject(_sequence.GetAllSequenceFilters());
 			_content.Add(element);
 		}
 
@@ -96,10 +96,10 @@ namespace Vixen.IO.Xml.Policy {
 		}
 
 		protected override void ReadFilterNodes() {
-			XmlPreFilterNodeCollectionSerializer serializer = new XmlPreFilterNodeCollectionSerializer();
-			IEnumerable<IPreFilterNode> preFilterNodes = serializer.ReadObject(_content);
-			_sequence.ClearPreFilters();
-			_sequence.AddPreFilters(preFilterNodes);
+			XmlSequenceFilterNodeCollectionSerializer serializer = new XmlSequenceFilterNodeCollectionSerializer();
+			IEnumerable<ISequenceFilterNode> filterNodes = serializer.ReadObject(_content);
+			_sequence.ClearSequenceFilters();
+			_sequence.AddSequenceFilters(filterNodes);
 		}
 
 		private void _GetBehaviorData(Sequence sequence) {

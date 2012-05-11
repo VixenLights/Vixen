@@ -1,9 +1,9 @@
 ﻿using System;
-using Vixen.Module.PreFilter;
+using Vixen.Module.SequenceFilter;
 using Vixen.Sys;
 
 namespace FadeOut {
-	public class FadeOutModule : PreFilterModuleInstanceBase {
+	public class FadeOutModule : SequenceFilterModuleInstanceBase {
 		private IntentHandler _intentHandler;
 
 		public FadeOutModule() {

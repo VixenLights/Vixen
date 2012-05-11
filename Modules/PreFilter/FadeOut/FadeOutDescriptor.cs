@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Vixen.Module.PreFilter;
+using Vixen.Module.SequenceFilter;
 
 namespace FadeOut {
-	public class FadeOutDescriptor : PreFilterModuleDescriptorBase {
+	public class FadeOutDescriptor : SequenceFilterModuleDescriptorBase {
 		private Guid _typeId = new Guid("{E0E26570-6A01-4368-B996-E34576FF4910}");
 
 		public override string TypeName {
@@ -34,10 +34,6 @@ namespace FadeOut {
 
 		public override string Version {
 			get { throw new NotImplementedException(); }
-		}
-
-		public override string PreFilterName {
-			get { return TypeName; }
 		}
 	}
 }

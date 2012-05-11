@@ -137,7 +137,7 @@ namespace Vixen.Execution {
 
 		//private void _AddPreFilterToSequence() {
 		//    //Don't want it applied every time the sequence is started.  The result is cumulative.
-		//    if(_programExecutor.Current.Sequence.GetAllPreFilters().Any()) return;
+		//    if(_programExecutor.Current.Sequence.GetAllSequenceFilters().Any()) return;
 
 		//    IPreFilterModuleInstance preFilter = Modules.ModuleManagement.GetPreFilter(new Guid("{E0E26570-6A01-4368-B996-E34576FF4910}"));
 		//    //Fade out over the first 5 seconds.
@@ -147,7 +147,7 @@ namespace Vixen.Execution {
 		//    //The first three channels of my 1024-channel group.
 		//    //preFilter.TargetNodes = VixenSystem.Nodes.Skip(64).Take(3).ToArray();
 		//    //Starting right away.
-		//    _programExecutor.Current.Sequence.AddPreFilter(new PreFilterNode(preFilter, TimeSpan.Zero));
+		//    _programExecutor.Current.Sequence.AddSequenceFilter(new sequenceFilterNode(preFilter, TimeSpan.Zero));
 		//}
 
 		protected override IDataSource _DataSource {

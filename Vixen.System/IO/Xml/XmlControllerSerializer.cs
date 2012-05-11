@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using Vixen.Module.PostFilter;
+using Vixen.Module.OutputFilter;
 using Vixen.Sys;
 using Vixen.Sys.Output;
 
@@ -59,12 +59,12 @@ namespace Vixen.IO.Xml {
 		}
 
 		private XElement _WriteOutputs(OutputController controller) {
-			XmlPostFilterCollectionSerializer postFilterCollectionSerializer = new XmlPostFilterCollectionSerializer();
+			XmlOutputFilterCollectionSerializer filterCollectionSerializer = new XmlOutputFilterCollectionSerializer();
 			return new XElement(ELEMENT_OUTPUTS,
 					controller.Outputs.Select((x, index) =>
 						new XElement(ELEMENT_OUTPUT,
 							new XAttribute(ATTR_NAME, x.Name),
-							postFilterCollectionSerializer.WriteObject(x.PostFilters))));
+							filterCollectionSerializer.WriteObject(x.OutputFilters))));
 		}
 
 		private void _ReadOutputs(OutputController controller, XElement element) {
@@ -81,11 +81,11 @@ namespace Vixen.IO.Xml {
 
 					output.Name = XmlHelper.GetAttribute(outputElement, ATTR_NAME) ?? "Unnamed output";
 
-					XmlPostFilterCollectionSerializer postFilterCollectionSerializer = new XmlPostFilterCollectionSerializer();
-					IEnumerable<IPostFilterModuleInstance> postFilters = postFilterCollectionSerializer.ReadObject(outputElement);
-					controller.ClearPostFilters(outputIndex);
-					foreach(IPostFilterModuleInstance postFilter in postFilters) {
-						controller.AddPostFilter(outputIndex, postFilter);
+					XmlOutputFilterCollectionSerializer filterCollectionSerializer = new XmlOutputFilterCollectionSerializer();
+					IEnumerable<IOutputFilterModuleInstance> filters = filterCollectionSerializer.ReadObject(outputElement);
+					controller.ClearOutputFilters(outputIndex);
+					foreach(IOutputFilterModuleInstance filter in filters) {
+						controller.AddOutputFilter(outputIndex, filter);
 					}
 
 					outputIndex++;

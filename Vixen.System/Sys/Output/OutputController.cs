@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Vixen.Module.Controller;
-using Vixen.Module.PostFilter;
 using Vixen.Commands;
+using Vixen.Module.OutputFilter;
 
 namespace Vixen.Sys.Output {
 	public class OutputController : ModuleBasedController<IControllerModuleInstance, CommandOutput>, IEnumerable<OutputController> {
@@ -58,33 +58,33 @@ namespace Vixen.Sys.Output {
 			}
 		}
 
-		public void AddPostFilter(int outputIndex, IPostFilterModuleInstance filter) {
+		public void AddOutputFilter(int outputIndex, IOutputFilterModuleInstance filter) {
 			if(filter != null && outputIndex < OutputCount) {
 				// Must be the controller store, and not the system store, because the system store
 				// deals only with static data and there may be multiple instances of a type of filter.
 				ModuleDataSet.AssignModuleInstanceData(filter);
-				Outputs[outputIndex].AddPostFilter(filter);
+				Outputs[outputIndex].AddOutputFilter(filter);
 			}
 		}
 
-		public void InsertPostFilter(int outputIndex, int index, IPostFilterModuleInstance filter) {
+		public void InsertOutputFilter(int outputIndex, int index, IOutputFilterModuleInstance filter) {
 			if(filter != null && outputIndex < OutputCount) {
 				ModuleDataSet.AssignModuleInstanceData(filter);
-				Outputs[outputIndex].InsertPostFilter(index, filter);
+				Outputs[outputIndex].InsertOutputFilter(index, filter);
 			}
 		}
 
-		public void RemovePostFilter(int outputIndex, IPostFilterModuleInstance filter) {
+		public void RemoveOutputFilter(int outputIndex, IOutputFilterModuleInstance filter) {
 			if(filter != null && outputIndex < OutputCount) {
 				ModuleDataSet.RemoveModuleInstanceData(filter);
-				Outputs[outputIndex].RemovePostFilter(filter);
+				Outputs[outputIndex].RemoveOutputFilter(filter);
 			}
 		}
 
-		public void ClearPostFilters(int outputIndex) {
+		public void ClearOutputFilters(int outputIndex) {
 			if(outputIndex < OutputCount) {
-				foreach(IPostFilterModuleInstance filter in Outputs[outputIndex].GetAllPostFilters().ToArray()) {
-					RemovePostFilter(outputIndex, filter);
+				foreach(IOutputFilterModuleInstance filter in Outputs[outputIndex].GetAllOutputFilters().ToArray()) {
+					RemoveOutputFilter(outputIndex, filter);
 				}
 			}
 		}

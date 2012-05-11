@@ -72,12 +72,12 @@ namespace Vixen.Sys {
 			SplitAt(intentRelativeTime.StartTime, intentRelativeTime.EndTime);
 		}
 
-		public void ApplyFilter(IPreFilterNode preFilterNode, TimeSpan contextAbsoluteIntentStartTime) {
-			SplitAt(preFilterNode.StartTime - contextAbsoluteIntentStartTime);
-			SplitAt(preFilterNode.EndTime - contextAbsoluteIntentStartTime);
-			var segmentNodes = _GetIntersectingSegments(preFilterNode);
+		public void ApplyFilter(ISequenceFilterNode sequenceFilterNode, TimeSpan contextAbsoluteIntentStartTime) {
+			SplitAt(sequenceFilterNode.StartTime - contextAbsoluteIntentStartTime);
+			SplitAt(sequenceFilterNode.EndTime - contextAbsoluteIntentStartTime);
+			var segmentNodes = _GetIntersectingSegments(sequenceFilterNode);
 			foreach(var segmentNode in segmentNodes) {
-				preFilterNode.AffectIntent(segmentNode.Segment, contextAbsoluteIntentStartTime + segmentNode.StartTime, contextAbsoluteIntentStartTime + segmentNode.EndTime);
+				sequenceFilterNode.AffectIntent(segmentNode.Segment, contextAbsoluteIntentStartTime + segmentNode.StartTime, contextAbsoluteIntentStartTime + segmentNode.EndTime);
 			}
 		}
 

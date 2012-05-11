@@ -40,8 +40,8 @@ namespace Vixen.Sys {
 			return effectRelativeTime - intentNode.StartTime;
 		}
 
-		static public TimeSpan GetPreFilterRelativeTime(TimeSpan sequenceRelativeTime, PreFilterNode preFilterNode) {
-			return sequenceRelativeTime - preFilterNode.StartTime;
+		static public TimeSpan GetSequenceFilterRelativeTime(TimeSpan sequenceRelativeTime, SequenceFilterNode sequenceFilterNode) {
+			return sequenceRelativeTime - sequenceFilterNode.StartTime;
 		}
 
 		static public TimeSpan GetEffectRelativeTime(TimeSpan intentRelativeTime, IIntentNode intentNode) {
@@ -117,7 +117,7 @@ namespace Vixen.Sys {
 			return (byte)value;
 		}
 
-		static public TimeSpan GetIntentNodeTimeSpan(IPreFilterNode intentNode) {
+		static public TimeSpan GetIntentNodeTimeSpan(ISequenceFilterNode intentNode) {
 			return GetNodeTimeSpan(intentNode);
 		}
 
@@ -125,7 +125,7 @@ namespace Vixen.Sys {
 			return GetNodeTimeSpan(intentNode);
 		}
 
-		static public TimeSpan GetPreFilterNodeTimeSpan(IIntentNode intentNode) {
+		static public TimeSpan GetSequenceFilterNodeTimeSpan(IIntentNode intentNode) {
 			return GetNodeTimeSpan(intentNode);
 		}
 

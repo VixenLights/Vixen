@@ -88,7 +88,7 @@ namespace VixenApplication
 				//-> and remove the hard-coded filters
 				//-> until then, the filter modules aren't going to have data and will bomb because if a filter is
 				//   being added, its going to try to get the data from the
-				button1.Enabled = outputIndex >= 0 && _controller.Outputs[outputIndex].PostFilters.Any(x => x.HasSetup);
+				button1.Enabled = outputIndex >= 0 && _controller.Outputs[outputIndex].OutputFilters.Any(x => x.HasSetup);
 			}
 		}
 
@@ -300,7 +300,7 @@ namespace VixenApplication
 		}
 
 		private void button1_Click(object sender, EventArgs e) {
-			_controller.Outputs[_selectedOutputIndex].PostFilters.First(x => x.HasSetup).Setup();
+			_controller.Outputs[_selectedOutputIndex].OutputFilters.First(x => x.HasSetup).Setup();
 		}
 	}
 }

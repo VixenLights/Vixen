@@ -59,7 +59,7 @@ namespace VixenApplication {
 		}
 
 		private void _ReloadPostFilterTemplates() {
-			IEnumerable<PostFilterTemplate> postFilterTemplates = PostFilterTemplate.GetAll();
+			IEnumerable<OutputFilterTemplate> postFilterTemplates = OutputFilterTemplate.GetAll();
 			comboBoxFilterTemplate.Items.AddRange(postFilterTemplates.Select(x => Path.GetFileNameWithoutExtension(x.FilePath)).ToArray());
 		}
 
@@ -128,7 +128,7 @@ namespace VixenApplication {
 						Vixen.Services.ChannelNodeService.Instance.Patch(_channelNodes, _patchingRule, checkBoxClearExistingPatches.Checked);
 					}
 					if(_DoApplyFilterTemplate) {
-						Vixen.Services.PostFilterService.Instance.ApplyTemplateMany(_SelectedFilterTemplate, _patchingRule, _channelNodes.Length, checkBoxClearExistingFilters.Checked);
+						Vixen.Services.OutputFilterService.Instance.ApplyTemplateMany(_SelectedFilterTemplate, _patchingRule, _channelNodes.Length, checkBoxClearExistingFilters.Checked);
 					}
 					MessageBox.Show(_channelNodes.Length + " channels done.");
 				} catch(Exception ex) {

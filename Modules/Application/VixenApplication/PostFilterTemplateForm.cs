@@ -39,7 +39,7 @@ namespace VixenApplication {
 		}
 
 		private void buttonAdd_Click(object sender, EventArgs e) {
-			PostFilterTemplateControl control = new PostFilterTemplateControl(_dataSet, "Output " + (panelContainer.Controls.Count + 1));
+			OutputFilterTemplateControl control = new OutputFilterTemplateControl(_dataSet, "Output " + (panelContainer.Controls.Count + 1));
 			control.Dock = DockStyle.Top;
 			panelContainer.Controls.Add(control);
 			panelContainer.Controls.SetChildIndex(control, 0);
@@ -51,10 +51,10 @@ namespace VixenApplication {
 
 		private void buttonSave_Click(object sender, EventArgs e) {
 			if(_Validate()) {
-				PostFilterTemplate template = new PostFilterTemplate();
+				OutputFilterTemplate template = new OutputFilterTemplate();
 				template.FilePath = _TemplateName;
-				foreach(PostFilterTemplateControl templateControl in panelContainer.Controls.Cast<PostFilterTemplateControl>().Reverse()) {
-					template.AddOutputFilters(new PostFilterCollection(templateControl.Filters));
+				foreach(OutputFilterTemplateControl templateControl in panelContainer.Controls.Cast<OutputFilterTemplateControl>().Reverse()) {
+					template.AddOutputFilters(new OutputFilterCollection(templateControl.Filters));
 				}
 				template.Save();
 			}
