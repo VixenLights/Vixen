@@ -2,8 +2,8 @@
 using Vixen.Sys;
 
 namespace Vixen.Commands {
-	public class ColorValue : Dispatchable<ColorValue>, ICommand<Color> {
-		public ColorValue(Color value) {
+	public class ColorValueCommand : Dispatchable<ColorValueCommand>, ICommand<Color> {
+		public ColorValueCommand(Color value) {
 			CommandValue = value;
 		}
 

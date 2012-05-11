@@ -8,7 +8,7 @@ using Vixen.Sys.Dispatch;
 
 namespace TestPreview {
 	class CommandHandler : CommandDispatch {
-		public override void Handle(ColorValue obj) {
+		public override void Handle(ColorValueCommand obj) {
 			Value = obj.CommandValue;
 		}
 

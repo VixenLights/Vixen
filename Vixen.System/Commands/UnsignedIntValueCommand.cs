@@ -1,17 +1,18 @@
 ﻿using Vixen.Sys;
 
 namespace Vixen.Commands {
-	public class SignedShortValue : Dispatchable<SignedShortValue>, ICommand<short> {
-		public SignedShortValue(short value) {
+	public class UnsignedIntValueCommand : Dispatchable<UnsignedIntValueCommand>, ICommand<uint> {
+		public UnsignedIntValueCommand(uint value) {
 			CommandValue = value;
 		}
 
-		public short CommandValue { get; set; }
+		public uint CommandValue { get; set; }
 
 		object ICommand.CommandValue {
 			get { return CommandValue; }
-			set { CommandValue = (short)value; }
+			set { CommandValue = (uint)value; }
 		}
+
 
 		//public void Dispatch(CommandDispatch commandDispatch) {
 		//    // Must be done in the classes being dispatched.

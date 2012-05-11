@@ -1,8 +1,8 @@
 ﻿using Vixen.Sys;
 
 namespace Vixen.Commands {
-	public class FloatValue : Dispatchable<FloatValue>, ICommand<float> {
-		public FloatValue(float value) {
+	public class FloatValueCommand : Dispatchable<FloatValueCommand>, ICommand<float> {
+		public FloatValueCommand(float value) {
 			CommandValue = value;
 		}
 

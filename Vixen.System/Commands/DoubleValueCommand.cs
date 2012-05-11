@@ -1,8 +1,8 @@
 ﻿using Vixen.Sys;
 
 namespace Vixen.Commands {
-	public class DoubleValue : Dispatchable<DoubleValue>, ICommand<double>{
-		public DoubleValue(double value) {
+	public class DoubleValueCommand : Dispatchable<DoubleValueCommand>, ICommand<double>{
+		public DoubleValueCommand(double value) {
 			CommandValue = value;
 		}
 

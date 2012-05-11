@@ -1,20 +1,20 @@
 ﻿using Vixen.Sys;
 
 namespace Vixen.Commands {
-	public class ByteValue : Dispatchable<ByteValue>, ICommand<byte> {
-		public ByteValue(byte value) {
+	public class ByteValueCommand : Dispatchable<ByteValueCommand>, ICommand<byte> {
+		public ByteValueCommand(byte value) {
 			CommandValue = value;
 		}
 
-		public ByteValue(int value) {
+		public ByteValueCommand(int value) {
 			CommandValue = (byte)value;
 		}
 
-		public ByteValue(float value) {
+		public ByteValueCommand(float value) {
 			CommandValue = (byte)value;
 		}
 
-		public ByteValue(long value) {
+		public ByteValueCommand(long value) {
 			CommandValue = (byte)value;
 		}
 

@@ -18,7 +18,7 @@ namespace PSC {
 			Value = _MidValue;
 		}
 
-		public override void Handle(DoubleValue obj) {
+		public override void Handle(DoubleValueCommand obj) {
 			Value = MinValue + (MaxValue - MinValue) * obj.CommandValue;
 		}
 	}

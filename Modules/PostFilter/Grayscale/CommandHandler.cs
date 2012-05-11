@@ -12,11 +12,11 @@ namespace Grayscale {
 		public ICommand Result;
 
 		public override void Handle(LightingValueCommand obj) {
-			Result = new ByteValue(_BasicGrayscaleLuma(obj.CommandValue.Color));
+			Result = new ByteValueCommand(_BasicGrayscaleLuma(obj.CommandValue.Color));
 		}
 
-		public override void Handle(ColorValue obj) {
-			Result = new ByteValue(_BasicGrayscaleLuma(obj.CommandValue));
+		public override void Handle(ColorValueCommand obj) {
+			Result = new ByteValueCommand(_BasicGrayscaleLuma(obj.CommandValue));
 		}
 
 		private byte _BasicGrayscaleLuma(Color color) {

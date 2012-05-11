@@ -11,7 +11,7 @@ namespace Vixen.Data.Combinator {
 			// Blue + Yellow = Green ([0,255,0] + [255,0,255] = [0,0,255]?)
 			// Bah, just going with highest-wins on each component for now.
 			if(CombinatorValue == null) {
-				CombinatorValue = new ColorValue(obj.EvaluatorValue);
+				CombinatorValue = new ColorValueCommand(obj.EvaluatorValue);
 			} else {
 				CombinatorValue.CommandValue = CombinatorValue.CommandValue.Combine(obj.EvaluatorValue);
 			}

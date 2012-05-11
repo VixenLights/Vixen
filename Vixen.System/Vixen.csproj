@@ -106,12 +106,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\ChannelCommands.cs" />
-    <Compile Include="Commands\ColorValue.cs" />
-    <Compile Include="Commands\DoubleValue.cs" />
-    <Compile Include="Commands\FloatValue.cs" />
+    <Compile Include="Commands\ColorValueCommand.cs" />
+    <Compile Include="Commands\DoubleValueCommand.cs" />
+    <Compile Include="Commands\FloatValueCommand.cs" />
     <Compile Include="Commands\LightingValueCommand.cs" />
-    <Compile Include="Commands\SignedLongValue.cs" />
-    <Compile Include="Commands\UnsignedLongValue.cs" />
+    <Compile Include="Commands\SignedLongValueCommand.cs" />
+    <Compile Include="Commands\UnsignedLongValueCommand.cs" />
     <Compile Include="Data\Combinator\ColorCombinator.cs" />
     <Compile Include="Data\Combinator\Combinator.cs" />
     <Compile Include="Data\Combinator\LightingCombinator.cs" />
@@ -230,11 +230,11 @@
     <Compile Include="Sys\ControllerReferenceCollection.cs" />
     <Compile Include="Sys\Dispatch\CommandDispatch.cs" />
     <Compile Include="Commands\ICommand.cs" />
-    <Compile Include="Commands\SignedIntValue.cs" />
-    <Compile Include="Commands\SignedShortValue.cs" />
-    <Compile Include="Commands\ByteValue.cs" />
-    <Compile Include="Commands\UnsignedIntValue.cs" />
-    <Compile Include="Commands\UnsignedShortValue.cs" />
+    <Compile Include="Commands\SignedIntValueCommand.cs" />
+    <Compile Include="Commands\SignedShortValueCommand.cs" />
+    <Compile Include="Commands\ByteValueCommand.cs" />
+    <Compile Include="Commands\UnsignedIntValueCommand.cs" />
+    <Compile Include="Commands\UnsignedShortValueCommand.cs" />
     <Compile Include="Execution\Context.cs" />
     <Compile Include="Execution\ContextCurrentEffectsIncremental.cs" />
     <Compile Include="Execution\ControllerUpdateAdjudicator.cs" />

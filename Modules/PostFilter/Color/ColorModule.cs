@@ -68,25 +68,25 @@ namespace Color {
 		}
 
 		private ICommand _FilterRed(ICommand<LightingValue> command) {
-			return new ByteValue((byte)(command.CommandValue.Color.R * command.CommandValue.Intensity));
+			return new ByteValueCommand((byte)(command.CommandValue.Color.R * command.CommandValue.Intensity));
 		}
 
 		private ICommand _FilterGreen(ICommand<LightingValue> command) {
-			return new ByteValue((byte)(command.CommandValue.Color.G * command.CommandValue.Intensity));
+			return new ByteValueCommand((byte)(command.CommandValue.Color.G * command.CommandValue.Intensity));
 		}
 
 		private ICommand _FilterBlue(ICommand<LightingValue> command) {
-			return new ByteValue((byte)(command.CommandValue.Color.B * command.CommandValue.Intensity));
+			return new ByteValueCommand((byte)(command.CommandValue.Color.B * command.CommandValue.Intensity));
 		}
 
 		private ICommand _FilterYellow(ICommand<LightingValue> command) {
 			double yellow = (command.CommandValue.Color.R + command.CommandValue.Color.G) / 2 * command.CommandValue.Intensity;
-			return new ByteValue((byte)yellow);
+			return new ByteValueCommand((byte)yellow);
 		}
 
 		private ICommand _FilterWhite(ICommand<LightingValue> command) {
 			double white = (command.CommandValue.Color.R + command.CommandValue.Color.G + command.CommandValue.Color.B) / 3 * command.CommandValue.Intensity;
-			return new ByteValue((byte)white);
+			return new ByteValueCommand((byte)white);
 		}
 
 		private ICommand _FilterNone(ICommand<LightingValue> command) {

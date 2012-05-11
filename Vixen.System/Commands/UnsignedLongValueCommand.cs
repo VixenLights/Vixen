@@ -1,16 +1,16 @@
 ﻿using Vixen.Sys;
 
 namespace Vixen.Commands {
-	public class SignedIntValue : Dispatchable<SignedIntValue>, ICommand<int> {
-		public SignedIntValue(int value) {
+	public class UnsignedLongValueCommand : Dispatchable<UnsignedLongValueCommand>, ICommand<ulong> {
+		public UnsignedLongValueCommand(ulong value) {
 			CommandValue = value;
 		}
 
-		public int CommandValue { get; set; }
+		public ulong CommandValue { get; set; }
 
 		object ICommand.CommandValue {
 			get { return CommandValue; }
-			set { CommandValue = (int)value; }
+			set { CommandValue = (ulong)value; }
 		}
 
 		//public void Dispatch(CommandDispatch commandDispatch) {

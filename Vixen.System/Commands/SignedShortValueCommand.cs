@@ -1,16 +1,16 @@
 ﻿using Vixen.Sys;
 
 namespace Vixen.Commands {
-	public class UnsignedShortValue : Dispatchable<UnsignedShortValue>, ICommand<ushort> {
-		public UnsignedShortValue(ushort value) {
+	public class SignedShortValueCommand : Dispatchable<SignedShortValueCommand>, ICommand<short> {
+		public SignedShortValueCommand(short value) {
 			CommandValue = value;
 		}
 
-		public ushort CommandValue { get; set; }
+		public short CommandValue { get; set; }
 
 		object ICommand.CommandValue {
 			get { return CommandValue; }
-			set { CommandValue = (ushort)value; }
+			set { CommandValue = (short)value; }
 		}
 
 		//public void Dispatch(CommandDispatch commandDispatch) {

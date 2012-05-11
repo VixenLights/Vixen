@@ -7,7 +7,7 @@ namespace Vixen.Data.Combinator {
 	public class FloatHighestWinsCombinator : Combinator<FloatHighestWinsCombinator, float> {
 		override public void Handle(IEvaluator<float> obj) {
 			if(CombinatorValue == null) {
-				CombinatorValue = new FloatValue(obj.EvaluatorValue);
+				CombinatorValue = new FloatValueCommand(obj.EvaluatorValue);
 			} else {
 				CombinatorValue.CommandValue = Math.Max(CombinatorValue.CommandValue, obj.EvaluatorValue);
 			}

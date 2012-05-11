@@ -7,7 +7,7 @@ namespace Vixen.Data.Combinator {
 	public class PercentageHighestWinsCombinator : Combinator<PercentageHighestWinsCombinator, double> {
 		override public void Handle(IEvaluator<double> obj) {
 			if(CombinatorValue == null) {
-				CombinatorValue = new DoubleValue(obj.EvaluatorValue);
+				CombinatorValue = new DoubleValueCommand(obj.EvaluatorValue);
 			} else {
 				CombinatorValue.CommandValue = Math.Max(CombinatorValue.CommandValue, obj.EvaluatorValue);
 			}
