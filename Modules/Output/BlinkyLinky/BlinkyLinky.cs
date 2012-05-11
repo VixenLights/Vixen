@@ -176,10 +176,10 @@ namespace VixenModules.Output.BlinkyLinky
 				byte newValue = 0;
 
 				if (outputStates[i] != null) {
-					Lighting.Monochrome.SetLevel setLevelCommand = outputStates[i] as Lighting.Monochrome.SetLevel;
-					if (setLevelCommand == null)
+					LightingValueCommand lightingCommand = outputStates[i] as LightingValueCommand;
+					if (lightingCommand == null)
 						continue;
-					newValue = (byte)(setLevelCommand.Level / 100.0 * Byte.MaxValue);
+					newValue = (byte)(lightingCommand.CommandValue.Intensity * Byte.MaxValue);
 					_nullCommands[i] = 0;
 				} else {
 					// it was a null command. We should turn it off; however, to avoid some potentially nasty flickering,
