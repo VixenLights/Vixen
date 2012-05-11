@@ -1,3 +1,6 @@
+using System;
+using Vixen.Sys;
+
 namespace VixenModules.Output.DmxUsbPro
 {
     using System.IO.Ports;
@@ -9,13 +12,19 @@ namespace VixenModules.Output.DmxUsbPro
     using Vixen.Commands;
     using Vixen.Module.Controller;
 
-    public class Module : OutputModuleInstanceBase
+    public class Module : ControllerModuleInstanceBase
     {
         private SerialPort _serialPort;
 
         private DmxUsbProSender _dmxUsbProSender;
 
-        public override bool HasSetup
+		private IDataPolicy _dataPolicy;
+
+		public Module() {
+			_dataPolicy = new DataPolicy();
+		}
+
+    	public override bool HasSetup
         {
             get
             {
@@ -97,7 +106,7 @@ namespace VixenModules.Output.DmxUsbPro
         {            
         }
        
-        protected override void _UpdateState(Command[] outputStates)
+		public override void UpdateState(ICommand[] outputStates)
         {
             this._dmxUsbProSender.SendDmxPacket(outputStates);
         }
@@ -124,5 +133,9 @@ namespace VixenModules.Output.DmxUsbPro
 				                   };
 			}
         }
-    }
+
+		public override IDataPolicy DataPolicy {
+			get { return _dataPolicy; }
+		}
+	}
 }
