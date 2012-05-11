@@ -24,7 +24,7 @@ namespace Vixen.Sys.Output {
 		public IDataPolicy DataPolicy { get; set; }
 
 		override protected void _UpdateState() {
-			if(VixenSystem.ControllerLinking.IsRootController(this) && _ControllerChainOutputModule != null) {
+			if(VixenSystem.ControllerLinking.IsRootController(this) && _ControllerChainModule != null) {
 				BeginOutputChange();
 				try {
 					foreach(OutputController controller in this) {
@@ -38,9 +38,9 @@ namespace Vixen.Sys.Output {
 						// A single port may be used to service multiple physical controllers,
 						// such as daisy-chained Renard controllers.  Tell the module where
 						// it is in that chain.
-						controller._ControllerChainOutputModule.ChainIndex = VixenSystem.ControllerLinking.GetChainIndex(controller.Id);
+						controller._ControllerChainModule.ChainIndex = VixenSystem.ControllerLinking.GetChainIndex(controller.Id);
 						ICommand[] outputStates = controller.ExtractFromOutputs(x => x.Command).ToArray();
-						controller._ControllerChainOutputModule.UpdateState(outputStates);
+						controller._ControllerChainModule.UpdateState(outputStates);
 					}
 				} finally {
 					EndOutputChange();
@@ -48,13 +48,13 @@ namespace Vixen.Sys.Output {
 			}
 		}
 
-		private IControllerModuleInstance _ControllerChainOutputModule {
+		private IControllerModuleInstance _ControllerChainModule {
 			get {
 				// When output controllers are linked, only the root controller will be
 				// connected to the port, therefore only it will have the output module
 				// used during execution.
 				OutputController priorController = VixenSystem.Controllers.GetPrior(this);
-				return (priorController != null) ? priorController._ControllerChainOutputModule : Module;
+				return (priorController != null) ? priorController._ControllerChainModule : Module;
 			}
 		}
 

@@ -40,15 +40,15 @@ namespace Vixen.IO.Xml {
 			string name = XmlHelper.GetAttribute(element, ATTR_NAME);
 			if(name == null) return null;
 
-			Guid? outputModuleId = XmlHelper.GetGuidAttribute(element, ATTR_HARDWARE_ID);
-			if(outputModuleId == null) return null;
+			Guid? moduleId = XmlHelper.GetGuidAttribute(element, ATTR_HARDWARE_ID);
+			if(moduleId == null) return null;
 
 			int? outputCount = XmlHelper.GetIntAttribute(element, ATTR_OUTPUT_COUNT);
 
 			Guid? id = XmlHelper.GetGuidAttribute(element, ATTR_ID);
 			if(id == null) return null;
 
-			OutputController controller = new OutputController(id.Value, name, outputCount.GetValueOrDefault(), outputModuleId.Value);
+			OutputController controller = new OutputController(id.Value, name, outputCount.GetValueOrDefault(), moduleId.Value);
 
 			XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
 			controller.ModuleDataSet = dataSetSerializer.ReadObject(element);
