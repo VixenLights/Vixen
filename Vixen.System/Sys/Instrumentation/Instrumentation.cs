@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Vixen.Instrumentation;
@@ -13,13 +14,16 @@ namespace Vixen.Sys.Instrumentation {
 		}
 
 		public void AddValue(IInstrumentationValue value) {
-			if(!_values.ContainsKey(value.Name)) {
+			Debug.Assert(value != null);
+			if(value != null && !_values.ContainsKey(value.Name)) {
 				_values[value.Name] = value;
 			}
 		}
 
 		public void RemoveValue(IInstrumentationValue value) {
-			_values.Remove(value.Name);
+			if(value != null) {
+				_values.Remove(value.Name);
+			}
 		}
 
 		public IEnumerable<string> ValueNames {
@@ -31,6 +35,7 @@ namespace Vixen.Sys.Instrumentation {
 		}
 
 		public IInstrumentationValue GetValue(string name) {
+			Debug.Assert(name != null);
 			IInstrumentationValue value;
 			_values.TryGetValue(name, out value);
 			return value;

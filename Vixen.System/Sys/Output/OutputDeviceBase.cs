@@ -98,9 +98,15 @@ namespace Vixen.Sys.Output {
 		}
 
 		private void _RemoveInstrumentation() {
-			VixenSystem.Instrumentation.RemoveValue(_refreshRateValue);
-			VixenSystem.Instrumentation.RemoveValue(_updateTimeValue);
-			_stopwatch.Stop();
+			if(_refreshRateValue != null) {
+				VixenSystem.Instrumentation.RemoveValue(_refreshRateValue);
+			}
+			if(_updateTimeValue != null) {
+				VixenSystem.Instrumentation.RemoveValue(_updateTimeValue);
+			}
+			if(_stopwatch != null) {
+				_stopwatch.Stop();
+			}
 		}
 	}
 }
