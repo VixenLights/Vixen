@@ -13,11 +13,12 @@ namespace Vixen.Execution
 		event EventHandler<ExecutorMessageEventArgs> Error;
 
 		ISequence Sequence { get; set; }
-		bool IsPlaying { get; }
 		void Play(TimeSpan startTime, TimeSpan endTime);
 		void Pause();
 		void Resume();
 		void Stop();
+		bool IsRunning { get; }
+		bool IsPaused { get; }
 
 		IEnumerable<IEffectNode> GetSequenceData();
 		ITiming GetSequenceTiming();

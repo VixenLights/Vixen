@@ -86,7 +86,7 @@ namespace Vixen.Execution {
         public bool IsPaused { get; private set; } // Can be paused and in the Playing state.
 
     	public bool IsPlaying {
-    		get { return _executor != null && _executor.IsPlaying && _intentBuffer != null; }
+    		get { return _executor != null && _executor.IsRunning && _intentBuffer != null; }
     	}
 
     	public IDataSource GetCurrentSequenceData() {
@@ -120,30 +120,46 @@ namespace Vixen.Execution {
 		}
 
     	#region Events
-		protected virtual void OnSequenceStarted(object sender, SequenceStartedEventArgs e) {
+		private void InternalSequenceStarted(object sender, SequenceStartedEventArgs e) {
 			_intentBuffer = _CreateIntentBuffer();
 			_intentBuffer.Start();
+			OnSequenceStarted(sender, e);
+		}
+
+    	protected virtual void OnSequenceStarted(object sender, SequenceStartedEventArgs e) {
             if(SequenceStarted != null) {
                 SequenceStarted(sender, e);
             }
         }
 
-        protected virtual void OnSequenceEnded(object sender, SequenceEventArgs e) {
-            if(SequenceEnded != null) {
-                SequenceEnded(sender, e);
-            }
+        private void InternalSequenceEnded(object sender, SequenceEventArgs e) {
 			_intentBuffer.Stop();
 			_intentBuffer = null;
 			_NextSequence(() => {
 				State = RunState.Stopped;
 				_ProgramEnded();
 			});
+			OnSequenceEnded(sender, e);
         }
+
+        protected virtual void OnSequenceEnded(object sender, SequenceEventArgs e) {
+            if(SequenceEnded != null) {
+                SequenceEnded(sender, e);
+            }
+        }
+
+		private void InternalMessage(object sender, ExecutorMessageEventArgs e) {
+			OnMessage(sender, e);
+		}
 
 		protected virtual void OnMessage(object sender, ExecutorMessageEventArgs e) {
 			if(Message != null) {
 				Message(sender, e);
 			}
+		}
+
+		private void InternalError(object sender, ExecutorMessageEventArgs e) {
+			OnError(sender, e);
 		}
 
 		protected virtual void OnError(object sender, ExecutorMessageEventArgs e) {
@@ -228,10 +244,10 @@ namespace Vixen.Execution {
 		public bool MoveNext() {
 			if(_cursor != null) {
 				// Cleanup after the prior sequence.
-				_cursor.SequenceStarted -= OnSequenceStarted;
-				_cursor.SequenceEnded -= OnSequenceEnded;
-				_cursor.Message -= OnMessage;
-				_cursor.Error -= OnError;
+				_cursor.SequenceStarted -= InternalSequenceStarted;
+				_cursor.SequenceEnded -= InternalSequenceEnded;
+				_cursor.Message -= InternalMessage;
+				_cursor.Error -= InternalError;
 				_cursor.Dispose();
 				_cursor = null;
 				if(State != RunState.Playing) return false;
@@ -249,10 +265,10 @@ namespace Vixen.Execution {
 				_currentSequenceStartTime = TimeSpan.Zero > _startTime ? TimeSpan.Zero : _startTime;
 				_currentSequenceEndTime = (_endTime == END_ENTIRE_SEQUENCE) ? sequence.Length : _endTime;
 
-				sequenceExecutor.SequenceStarted += OnSequenceStarted;
-				sequenceExecutor.SequenceEnded += OnSequenceEnded;
-				sequenceExecutor.Message += OnMessage;
-				sequenceExecutor.Error += OnError;
+				sequenceExecutor.SequenceStarted += InternalSequenceStarted;
+				sequenceExecutor.SequenceEnded += InternalSequenceEnded;
+				sequenceExecutor.Message += InternalMessage;
+				sequenceExecutor.Error += InternalError;
 
 				_cursor = sequenceExecutor;
 				return true;

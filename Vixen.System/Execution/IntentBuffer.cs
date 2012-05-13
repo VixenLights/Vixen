@@ -160,7 +160,10 @@ namespace Vixen.Execution {
 
 		#region IDataSource
 		public IEnumerable<IEffectNode> GetDataAt(TimeSpan time) {
-			return _GetEffectNodesAt(time);
+			if(IsRunning) {
+				return _GetEffectNodesAt(time);
+			}
+			return Enumerable.Empty<IEffectNode>();
 		}
 		
 		private IEnumerable<IEffectNode> _GetEffectNodesAt(TimeSpan time) {
