@@ -69,11 +69,6 @@
       <Name>Curves</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\Property\RGB\RGB.csproj">
-      <Project>{3D1BD0E2-B947-4235-A2A7-30AA4F13CA86}</Project>
-      <Name>RGB</Name>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -116,21 +116,5 @@ namespace Vixen.Sys {
 			value = Math.Min(byte.MaxValue, value);
 			return (byte)value;
 		}
-
-		static public TimeSpan GetIntentNodeTimeSpan(ISequenceFilterNode intentNode) {
-			return GetNodeTimeSpan(intentNode);
-		}
-
-		static public TimeSpan GetEffectNodeTimeSpan(IEffectNode intentNode) {
-			return GetNodeTimeSpan(intentNode);
-		}
-
-		static public TimeSpan GetSequenceFilterNodeTimeSpan(IIntentNode intentNode) {
-			return GetNodeTimeSpan(intentNode);
-		}
-
-		static public TimeSpan GetNodeTimeSpan(IDataNode node) {
-			return (node != null) ? node.TimeSpan : TimeSpan.Zero;
-		}
 	}
 }
