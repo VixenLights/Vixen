@@ -45,7 +45,9 @@ namespace Vixen.IO.Xml {
 		public IModuleDataModel ReadObject(XElement element) {
 			string dataModelTypeString = XmlHelper.GetAttribute(element, ATTR_DATA_MODEL_TYPE);
 			if(dataModelTypeString == null) return null;
+
 			Type dataModelType = Type.GetType(dataModelTypeString);
+			if(dataModelType == null) return null;
 
 			Guid? moduleTypeId = XmlHelper.GetGuidAttribute(element, ATTR_MODULE_TYPE);
 			if(moduleTypeId == null) return null;
@@ -60,20 +62,18 @@ namespace Vixen.IO.Xml {
 				return null;
 			}
 
-			IModuleDataModel dataModel = null;
+			IModuleDataModel dataModel;
 
-			if(dataModelType != null) {
-				try {
-					dataModel = _DeserializeDataModel(dataModelType, element);
-				} catch(Exception ex) {
-					VixenSystem.Logging.Error("The data for module \"" + descriptor.TypeName + "\" was not loaded due to errors.", ex);
-					return null;
-				}
+			try {
+				dataModel = _DeserializeDataModel(dataModelType, element);
+			} catch(Exception ex) {
+				VixenSystem.Logging.Error("The data for module \"" + descriptor.TypeName + "\" was not loaded due to errors.", ex);
+				return null;
+			}
 
-				if(dataModel != null) {
-					dataModel.ModuleTypeId = moduleTypeId.Value;
-					dataModel.ModuleInstanceId = moduleInstanceId.Value;
-				}
+			if(dataModel != null) {
+				dataModel.ModuleTypeId = moduleTypeId.Value;
+				dataModel.ModuleInstanceId = moduleInstanceId.Value;
 			}
 
 			return dataModel;

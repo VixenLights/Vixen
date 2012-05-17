@@ -188,8 +188,14 @@ namespace Vixen.Services {
 		}
 
 		static public bool AreAllEffectRequiredPropertiesPresent(IEffectModuleInstance effectModule) {
-			EffectModuleDescriptorBase effectDescriptor = Modules.GetDescriptorById<EffectModuleDescriptorBase>(effectModule.Descriptor.TypeId);
-			return effectModule.TargetNodes.All(x => x.Properties.Select(y => y.Descriptor.TypeId).Intersect(effectDescriptor.PropertyDependencies).Count() == effectDescriptor.PropertyDependencies.Length);
+			// This only happens if the effect is created outside of us.
+			// In that case, it's not really a module instance and we can't check for required properties.
+			// They're on their own as far as the outcome.
+			if(effectModule.Descriptor != null) {
+				EffectModuleDescriptorBase effectDescriptor = Modules.GetDescriptorById<EffectModuleDescriptorBase>(effectModule.Descriptor.TypeId);
+				return effectModule.TargetNodes.All(x => x.Properties.Select(y => y.Descriptor.TypeId).Intersect(effectDescriptor.PropertyDependencies).Count() == effectDescriptor.PropertyDependencies.Length);
+			}
+			return true;
 		}
 
 		private static Sequence _LoadSequence(string sequenceFilePath) {

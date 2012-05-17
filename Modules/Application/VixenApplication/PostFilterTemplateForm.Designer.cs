@@ -104,7 +104,7 @@
 			this.Controls.Add(this.label1);
 			this.Name = "PostFilterTemplateForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "PostFilterTemplateForm";
+			this.Text = "Post Filter Template [TEST]";
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

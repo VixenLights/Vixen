@@ -92,7 +92,7 @@
 			this.buttonConfigureNamingRule.Location = new System.Drawing.Point(312, 56);
 			this.buttonConfigureNamingRule.Name = "buttonConfigureNamingRule";
 			this.buttonConfigureNamingRule.Size = new System.Drawing.Size(75, 23);
-			this.buttonConfigureNamingRule.TabIndex = 7;
+			this.buttonConfigureNamingRule.TabIndex = 5;
 			this.buttonConfigureNamingRule.Text = "Configure";
 			this.buttonConfigureNamingRule.UseVisualStyleBackColor = true;
 			this.buttonConfigureNamingRule.Click += new System.EventHandler(this.buttonConfigureNamingRule_Click);
@@ -106,14 +106,14 @@
 			this.listBoxPreview.Location = new System.Drawing.Point(29, 135);
 			this.listBoxPreview.Name = "listBoxPreview";
 			this.listBoxPreview.Size = new System.Drawing.Size(196, 186);
-			this.listBoxPreview.TabIndex = 8;
+			this.listBoxPreview.TabIndex = 7;
 			// 
 			// buttonCommit
 			// 
 			this.buttonCommit.Location = new System.Drawing.Point(312, 298);
 			this.buttonCommit.Name = "buttonCommit";
 			this.buttonCommit.Size = new System.Drawing.Size(75, 23);
-			this.buttonCommit.TabIndex = 9;
+			this.buttonCommit.TabIndex = 8;
 			this.buttonCommit.Text = "Commit";
 			this.buttonCommit.UseVisualStyleBackColor = true;
 			this.buttonCommit.Click += new System.EventHandler(this.buttonCommit_Click);
@@ -135,7 +135,7 @@
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Name = "CreateAndNameChannels";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "CreateAndNameChannels";
+			this.Text = "Create and Name Channels [TEST]";
 			this.Load += new System.EventHandler(this.CreateAndNameChannels_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();

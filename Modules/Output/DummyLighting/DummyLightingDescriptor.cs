@@ -47,7 +47,7 @@ namespace VixenModules.Output.DummyLighting
 
 		public override int UpdateInterval {
 			get {
-				return 40;
+				return 20;
 			}
 		}
 	}

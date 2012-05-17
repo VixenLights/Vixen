@@ -29,6 +29,17 @@ namespace Vixen.Sys {
 			Intent.ApplyFilter(sequenceFilterNode, contextAbsoluteEffectStartTime + StartTime);
 		}
 
+		public IIntentNode[] DivideAt(TimeSpan effectRelativeTime) {
+			if(effectRelativeTime > StartTime && effectRelativeTime < EndTime) {
+				TimeSpan intentRelativeTime = Helper.GetIntentRelativeTime(effectRelativeTime, this);
+				IIntent[] intents = Intent.DivideAt(intentRelativeTime);
+				return new[] {
+					new IntentNode(intents[0], StartTime),
+					new IntentNode(intents[1], effectRelativeTime)};
+			}
+			return null;
+		}
+
 		virtual public IIntentState CreateIntentState(TimeSpan intentRelativeTime) {
 			IIntentState intentState = Intent.CreateIntentState(intentRelativeTime);
 
@@ -70,5 +81,6 @@ namespace Vixen.Sys {
 		IIntentState CreateIntentState(TimeSpan intentRelativeTime);
 		//List<SubordinateIntent> SubordinateIntents { get; }
 		void ApplyFilter(ISequenceFilterNode sequenceFilterNode, TimeSpan contextAbsoluteEffectStartTime);
+		IIntentNode[] DivideAt(TimeSpan effectRelativeTime);
 	}
 }

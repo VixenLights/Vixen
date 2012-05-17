@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Linq;
@@ -9,11 +8,9 @@ using System.Windows.Forms;
 using Vixen.Sys;
 using Vixen.Module.EffectEditor;
 using Vixen.Module.Effect;
-using Vixen.Commands.KnownDataTypes;
 using VixenModules.Effect.Spin;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using VixenModules.Property.RGB;
 
 namespace VixenModules.EffectEditor.SpinEffectEditor
 {
@@ -64,7 +61,7 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 				RevolutionTime = (int)value[5];
 				PulseTime = (int)value[6];
 				PulsePercentage = (int)value[7];
-				DefaultLevel = (Level)value[8];
+				DefaultLevel = (double)value[8];
 				StaticColor = (Color)value[9];
 				ColorGradient = (ColorGradient)value[10];
 				PulseCurve = (Curve)value[11];
@@ -245,7 +242,7 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 			}
 		}
 
-		public Level DefaultLevel
+		public double DefaultLevel
 		{
 			get { return levelTypeEditorControlDefaultLevel.LevelValue; }
 			set { levelTypeEditorControlDefaultLevel.LevelValue = value; }
@@ -319,8 +316,8 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 			if (TargetEffect == null)
 				return;
 
-			List<ChannelNode> renderNodes = RGBModule.FindAllRenderableChildren(TargetEffect.TargetNodes);
-			int targetNodeCount = renderNodes.Count;
+			//List<ChannelNode> renderNodes = RGBModule.FindAllRenderableChildren(TargetEffect.TargetNodes);
+			//int targetNodeCount = renderNodes.Count;
 
 			double totalTime = TargetEffect.TimeSpan.TotalMilliseconds;
 			double pulseConstant = 0;			// how much of each pulse is a constant time
@@ -334,7 +331,7 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 			} else if (radioButtonPulsePercentage.Checked) {
 				pulseFractional = PulsePercentage / 100.0;
 			} else if (radioButtonPulseEvenlyDistributed.Checked) {
-				pulseFractional = 1.0 / (double)targetNodeCount;
+				pulseFractional = 1.0d / TargetEffect.TargetNodes.Length;
 			}
 
 			// figure out either the revolution count or time, based on what data we have

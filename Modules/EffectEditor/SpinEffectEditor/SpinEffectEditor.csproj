@@ -83,11 +83,6 @@
       <Name>Spin</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\Property\RGB\RGB.csproj">
-      <Project>{3D1BD0E2-B947-4235-A2A7-30AA4F13CA86}</Project>
-      <Name>RGB</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\ColorGradientTypeEditor\ColorGradientTypeEditor.csproj">
       <Project>{48CF28EC-8DC9-44F8-A258-BD264DF187D9}</Project>
       <Name>ColorGradientTypeEditor</Name>

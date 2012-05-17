@@ -119,7 +119,7 @@ namespace Vixen.Execution {
 			foreach(IEffectNode effectNode in effects) {
 				// Get a time value relative to the start of the effect.
 				TimeSpan effectRelativeTime = Helper.GetEffectRelativeTime(currentTime, effectNode);
-				// Get the channels the effect affects and the ways it will do so.
+				// Get the channels the effect affects at this time and the ways it will do so.
 				ChannelIntents channelIntents = effectNode.Effect.GetChannelIntents(effectRelativeTime);
 				// For each channel...
 				foreach(Guid channelId in channelIntents.ChannelIds) {

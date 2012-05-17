@@ -28,7 +28,7 @@ namespace Vixen.Sys {
 		}
 
 		private bool _FilterQualifies(ISequenceFilterNode sequenceFilterNode, ITimeNode timeNode) {
-			return TimeNode.Intersects(timeNode, sequenceFilterNode);
+			return TimeNode.IntersectsExclusively(timeNode, sequenceFilterNode);
 		}
 	}
 }

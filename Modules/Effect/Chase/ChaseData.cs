@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Runtime.Serialization;
-using CommonElements.ColorManagement.ColorModels;
+﻿using System.Runtime.Serialization;
 using Vixen.Module;
-using Vixen.Commands.KnownDataTypes;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using System.Drawing;
@@ -22,7 +16,7 @@ namespace VixenModules.Effect.Chase
 		public int PulseOverlap { get; set; }
 
 		[DataMember]
-		public Level DefaultLevel { get; set; }
+		public double DefaultLevel { get; set; }
 
 		[DataMember]
 		public Color StaticColor { get; set; }

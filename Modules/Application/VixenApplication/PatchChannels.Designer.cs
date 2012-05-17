@@ -66,7 +66,7 @@
 			this.buttonConfigurePatchingRule.Location = new System.Drawing.Point(502, 25);
 			this.buttonConfigurePatchingRule.Name = "buttonConfigurePatchingRule";
 			this.buttonConfigurePatchingRule.Size = new System.Drawing.Size(75, 23);
-			this.buttonConfigurePatchingRule.TabIndex = 10;
+			this.buttonConfigurePatchingRule.TabIndex = 4;
 			this.buttonConfigurePatchingRule.Text = "Configure";
 			this.buttonConfigurePatchingRule.UseVisualStyleBackColor = true;
 			this.buttonConfigurePatchingRule.Click += new System.EventHandler(this.buttonConfigurePatchingRule_Click);
@@ -80,7 +80,7 @@
 			this.comboBoxPatchingMethod.Location = new System.Drawing.Point(221, 53);
 			this.comboBoxPatchingMethod.Name = "comboBoxPatchingMethod";
 			this.comboBoxPatchingMethod.Size = new System.Drawing.Size(356, 21);
-			this.comboBoxPatchingMethod.TabIndex = 9;
+			this.comboBoxPatchingMethod.TabIndex = 3;
 			// 
 			// label3
 			// 
@@ -88,7 +88,7 @@
 			this.label3.Location = new System.Drawing.Point(216, 30);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(126, 13);
-			this.label3.TabIndex = 8;
+			this.label3.TabIndex = 2;
 			this.label3.Text = "Patch them according to:";
 			// 
 			// buttonPreview
@@ -96,7 +96,7 @@
 			this.buttonPreview.Location = new System.Drawing.Point(221, 157);
 			this.buttonPreview.Name = "buttonPreview";
 			this.buttonPreview.Size = new System.Drawing.Size(75, 23);
-			this.buttonPreview.TabIndex = 11;
+			this.buttonPreview.TabIndex = 10;
 			this.buttonPreview.Text = "Preview";
 			this.buttonPreview.UseVisualStyleBackColor = true;
 			this.buttonPreview.Click += new System.EventHandler(this.buttonPreview_Click);
@@ -113,7 +113,7 @@
 			this.listViewPreview.Location = new System.Drawing.Point(221, 186);
 			this.listViewPreview.Name = "listViewPreview";
 			this.listViewPreview.Size = new System.Drawing.Size(356, 131);
-			this.listViewPreview.TabIndex = 12;
+			this.listViewPreview.TabIndex = 11;
 			this.listViewPreview.UseCompatibleStateImageBehavior = false;
 			this.listViewPreview.View = System.Windows.Forms.View.Details;
 			// 
@@ -141,10 +141,10 @@
 			// checkBoxApplyFilterTemplate
 			// 
 			this.checkBoxApplyFilterTemplate.AutoSize = true;
-			this.checkBoxApplyFilterTemplate.Location = new System.Drawing.Point(219, 84);
+			this.checkBoxApplyFilterTemplate.Location = new System.Drawing.Point(221, 84);
 			this.checkBoxApplyFilterTemplate.Name = "checkBoxApplyFilterTemplate";
 			this.checkBoxApplyFilterTemplate.Size = new System.Drawing.Size(117, 17);
-			this.checkBoxApplyFilterTemplate.TabIndex = 14;
+			this.checkBoxApplyFilterTemplate.TabIndex = 5;
 			this.checkBoxApplyFilterTemplate.Text = "Apply filter template";
 			this.checkBoxApplyFilterTemplate.UseVisualStyleBackColor = true;
 			this.checkBoxApplyFilterTemplate.CheckedChanged += new System.EventHandler(this.checkBoxApplyFilterTemplate_CheckedChanged);
@@ -154,18 +154,18 @@
 			this.comboBoxFilterTemplate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxFilterTemplate.Enabled = false;
 			this.comboBoxFilterTemplate.FormattingEnabled = true;
-			this.comboBoxFilterTemplate.Location = new System.Drawing.Point(342, 82);
+			this.comboBoxFilterTemplate.Location = new System.Drawing.Point(344, 82);
 			this.comboBoxFilterTemplate.Name = "comboBoxFilterTemplate";
 			this.comboBoxFilterTemplate.Size = new System.Drawing.Size(155, 21);
-			this.comboBoxFilterTemplate.TabIndex = 15;
+			this.comboBoxFilterTemplate.TabIndex = 6;
 			// 
 			// buttonCreateFilterTemplate
 			// 
 			this.buttonCreateFilterTemplate.Enabled = false;
-			this.buttonCreateFilterTemplate.Location = new System.Drawing.Point(503, 80);
+			this.buttonCreateFilterTemplate.Location = new System.Drawing.Point(505, 80);
 			this.buttonCreateFilterTemplate.Name = "buttonCreateFilterTemplate";
 			this.buttonCreateFilterTemplate.Size = new System.Drawing.Size(52, 23);
-			this.buttonCreateFilterTemplate.TabIndex = 16;
+			this.buttonCreateFilterTemplate.TabIndex = 7;
 			this.buttonCreateFilterTemplate.Text = "New";
 			this.buttonCreateFilterTemplate.UseVisualStyleBackColor = true;
 			this.buttonCreateFilterTemplate.Click += new System.EventHandler(this.buttonCreateFilterTemplate_Click);
@@ -178,7 +178,7 @@
 			this.checkBoxClearExistingPatches.Location = new System.Drawing.Point(342, 333);
 			this.checkBoxClearExistingPatches.Name = "checkBoxClearExistingPatches";
 			this.checkBoxClearExistingPatches.Size = new System.Drawing.Size(148, 17);
-			this.checkBoxClearExistingPatches.TabIndex = 17;
+			this.checkBoxClearExistingPatches.TabIndex = 12;
 			this.checkBoxClearExistingPatches.Text = "Clear existing patches first";
 			this.checkBoxClearExistingPatches.UseVisualStyleBackColor = true;
 			// 
@@ -188,7 +188,7 @@
 			this.checkBoxClearExistingFilters.Location = new System.Drawing.Point(236, 107);
 			this.checkBoxClearExistingFilters.Name = "checkBoxClearExistingFilters";
 			this.checkBoxClearExistingFilters.Size = new System.Drawing.Size(134, 17);
-			this.checkBoxClearExistingFilters.TabIndex = 18;
+			this.checkBoxClearExistingFilters.TabIndex = 8;
 			this.checkBoxClearExistingFilters.Text = "Clear existing filters first";
 			this.checkBoxClearExistingFilters.UseVisualStyleBackColor = true;
 			// 
@@ -198,7 +198,7 @@
 			this.checkBoxFilterTemplateOnly.Location = new System.Drawing.Point(236, 130);
 			this.checkBoxFilterTemplateOnly.Name = "checkBoxFilterTemplateOnly";
 			this.checkBoxFilterTemplateOnly.Size = new System.Drawing.Size(269, 17);
-			this.checkBoxFilterTemplateOnly.TabIndex = 19;
+			this.checkBoxFilterTemplateOnly.TabIndex = 9;
 			this.checkBoxFilterTemplateOnly.Text = "Apply filter template only, don\'t change the patching";
 			this.checkBoxFilterTemplateOnly.UseVisualStyleBackColor = true;
 			// 
@@ -222,7 +222,7 @@
 			this.Controls.Add(this.listBoxChannels);
 			this.Controls.Add(this.label1);
 			this.Name = "PatchChannels";
-			this.Text = "PatchChannels";
+			this.Text = "Patch Channels [TEST]";
 			this.Load += new System.EventHandler(this.PatchChannels_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();

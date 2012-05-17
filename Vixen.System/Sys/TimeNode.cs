@@ -13,12 +13,16 @@ namespace Vixen.Sys {
 		public TimeSpan TimeSpan { get; private set; }
 		public TimeSpan EndTime { get; private set; }
 
-		public bool Intersects(TimeSpan timeSpan) {
+		public bool IntersectsInclusively(TimeSpan timeSpan) {
+			return timeSpan >= StartTime && timeSpan <= EndTime;
+		}
+
+		public bool IntersectsExclusively(TimeSpan timeSpan) {
 			return timeSpan > StartTime && timeSpan < EndTime;
 		}
 
 		public bool Intersects(ITimeNode timeNode) {
-			return Intersects(timeNode.StartTime) || Intersects(timeNode.EndTime);
+			return IntersectsExclusively(timeNode.StartTime) || IntersectsExclusively(timeNode.EndTime);
 		}
 
 		public bool Equals(TimeNode other) {
@@ -59,13 +63,25 @@ namespace Vixen.Sys {
 			return Empty;
 		}
 
-		public static bool Intersects(ITimeNode timeNode, TimeSpan timeSpan) {
+		public static bool IntersectsExclusively(ITimeNode timeNode, TimeSpan timeSpan) {
 			return timeSpan > timeNode.StartTime && timeSpan < timeNode.EndTime;
 		}
 
-		public static bool Intersects(ITimeNode timeNode1, ITimeNode timeNode2) {
+		public static bool IntersectsInclusively(ITimeNode timeNode, TimeSpan timeSpan) {
+			return timeSpan >= timeNode.StartTime && timeSpan <= timeNode.EndTime;
+		}
+
+		public static bool IntersectsExclusively(ITimeNode timeNode1, ITimeNode timeNode2) {
+			return !(timeNode1.EndTime <= timeNode2.StartTime || timeNode1.StartTime >= timeNode2.EndTime);
+		}
+
+		public static bool IntersectsInclusively(ITimeNode timeNode1, ITimeNode timeNode2) {
 			return !(timeNode1.EndTime < timeNode2.StartTime || timeNode1.StartTime > timeNode2.EndTime);
 		}
+
+		//public static bool Intersects(ITimeNode timeNode1, ITimeNode timeNode2) {
+		//    return !(timeNode1.EndTime < timeNode2.StartTime || timeNode1.StartTime > timeNode2.EndTime);
+		//}
 
 		public static ITimeNode FromTimeSpan(TimeSpan timeSpan) {
 			return new TimeNode(timeSpan, TimeSpan.Zero);

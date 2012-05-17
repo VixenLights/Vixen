@@ -2,6 +2,7 @@
 using Vixen.Sys;
 
 namespace Vixen.Interpolator {
+	[Vixen.Sys.Attribute.Interpolator(typeof(LightingValue))]
 	class LightingInterpolator : Interpolator<LightingValue> {
 		private ColorInterpolator _colorInterpolator;
 		private DoubleInterpolator _doubleInterpolator;

@@ -100,17 +100,15 @@ namespace VixenApplication {
 
 				string lastChannelNode = null;
 				foreach(ChannelNode channelNode in _channelNodes) {
-					//for(int i = 0; i < _patchingRule.OutputCountToPatch; i++) {
-						if(referenceQueue.Count == 0) continue;
+					if(referenceQueue.Count == 0) continue;
 
-						ControllerReferenceCollection references = referenceQueue.Dequeue();
-						foreach(ControllerReference reference in references) {
-							string channelNodeName = (lastChannelNode == channelNode.Name) ? string.Empty : channelNode.Name;
-							string[] referenceDetails = new[] {channelNodeName, reference.ToString()};
-							listViewPreview.Items.Add(new ListViewItem(referenceDetails));
-							lastChannelNode = channelNode.Name;
-						}
-					//}
+					ControllerReferenceCollection references = referenceQueue.Dequeue();
+					foreach(ControllerReference reference in references) {
+						string channelNodeName = (lastChannelNode == channelNode.Name) ? string.Empty : channelNode.Name;
+						string[] referenceDetails = new[] {channelNodeName, reference.ToString()};
+						listViewPreview.Items.Add(new ListViewItem(referenceDetails));
+						lastChannelNode = channelNode.Name;
+					}
 				}
 			}
 		}

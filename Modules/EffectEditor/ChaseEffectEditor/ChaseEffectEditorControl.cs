@@ -9,11 +9,9 @@ using System.Windows.Forms;
 using Vixen.Sys;
 using Vixen.Module.EffectEditor;
 using Vixen.Module.Effect;
-using Vixen.Commands.KnownDataTypes;
 using VixenModules.Effect.Chase;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using VixenModules.Property.RGB;
 
 namespace VixenModules.EffectEditor.ChaseEffectEditor
 {
@@ -54,7 +52,7 @@ namespace VixenModules.EffectEditor.ChaseEffectEditor
 
 				ColorHandling = (ChaseColorHandling)value[0];
 				PulseOverlap = (int)value[1];
-				DefaultLevel = (Level)value[2];
+				DefaultLevel = (double)value[2];
 				StaticColor = (Color)value[3];
 				ColorGradient = (ColorGradient)value[4];
 				PulseCurve = (Curve)value[5];
@@ -113,7 +111,7 @@ namespace VixenModules.EffectEditor.ChaseEffectEditor
 			}
 		}
 
-		public Level DefaultLevel
+		public double DefaultLevel
 		{
 			get { return levelTypeEditorControlDefaultLevel.LevelValue; }
 			set { levelTypeEditorControlDefaultLevel.LevelValue = value; }

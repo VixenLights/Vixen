@@ -100,7 +100,7 @@ namespace Vixen.Module.Effect {
 
 		public List<SubordinateEffect> SubordinateEffects { get; private set; }
 
-		/*virtual*/ public ChannelIntents GetChannelIntents(TimeSpan effectRelativeTime) {
+		public ChannelIntents GetChannelIntents(TimeSpan effectRelativeTime) {
 			_channelIntents.Clear();
 
 			_AddLocalIntents(effectRelativeTime);
@@ -126,7 +126,7 @@ namespace Vixen.Module.Effect {
 		private void _AddLocalIntents(TimeSpan effectRelativeTime) {
 			EffectIntents effectIntents = Render();
 			foreach(Guid channelId in effectIntents.ChannelIds) {
-				IIntentNode channelIntent = _GetChannelIntent(effectIntents, channelId, effectRelativeTime);
+				IIntentNode channelIntent = effectIntents.GetChannelIntentAtTime(channelId, effectRelativeTime);
 				_channelIntents.AddIntentNodeToChannel(channelId, channelIntent, null);
 			}
 		}
@@ -136,14 +136,6 @@ namespace Vixen.Module.Effect {
 				ChannelIntents subordinateChannelIntents = subordinateEffect.Effect.GetChannelIntents(effectRelativeTime);
 				_channelIntents.AddIntentNodesToChannels(subordinateChannelIntents, subordinateEffect.CombinationOperation);
 			}
-		}
-
-		private IIntentNode _GetChannelIntent(EffectIntents effectIntents, Guid channelId, TimeSpan effectRelativeTime) {
-			IntentNodeCollection channelIntents;
-			if(effectIntents.TryGetValue(channelId, out channelIntents)) {
-				return channelIntents.FirstOrDefault(x => effectRelativeTime >= x.StartTime && effectRelativeTime <= x.EndTime);
-			}
-			return null;
 		}
 
 		private void _EnsureTargetNodeProperties() {

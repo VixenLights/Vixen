@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 
 namespace Vixen.Interpolator {
+	[Vixen.Sys.Attribute.Interpolator(typeof(Color))]
 	class ColorInterpolator : Interpolator<Color> {
 		protected override Color InterpolateValue(double percent, Color startValue, Color endValue) {
 			int r = (int)(startValue.R + (endValue.R - startValue.R) * percent);

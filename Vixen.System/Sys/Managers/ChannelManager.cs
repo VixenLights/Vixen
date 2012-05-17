@@ -41,13 +41,13 @@ namespace Vixen.Sys.Managers {
 		}
 
 		public void AddChannel(Channel channel) {
-			// Create an enumerator.
-			//_CreateChannelEnumerators(channel);
-			if (_instances.ContainsKey(channel.Id))
-				VixenSystem.Logging.Error("ChannelManager: Adding a channel, but it's already in the instance map!");
+			if(channel != null) {
+				if(_instances.ContainsKey(channel.Id))
+					VixenSystem.Logging.Error("ChannelManager: Adding a channel, but it's already in the instance map!");
 
-			lock(_instances) {
-				_instances[channel.Id] = channel;
+				lock(_instances) {
+					_instances[channel.Id] = channel;
+				}
 			}
 		}
 

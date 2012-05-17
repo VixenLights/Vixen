@@ -21,6 +21,15 @@ namespace Vixen.Sys {
 			return intentNodeCollection;
 		}
 
+		public IIntentNode GetChannelIntentAtTime(Guid channelId, TimeSpan effectRelativeTime) {
+			IntentNodeCollection channelIntents;
+			if(TryGetValue(channelId, out channelIntents)) {
+				//return channelIntents.FirstOrDefault(x => effectRelativeTime >= x.StartTime && effectRelativeTime <= x.EndTime);
+				return channelIntents.FirstOrDefault(x => TimeNode.IntersectsInclusively(x, effectRelativeTime));
+			}
+			return null;
+		}
+
 		public void AddIntentForChannel(Guid channelId, IIntent intent, TimeSpan startTime) {
 			_AddIntentForChannel(channelId, new IntentNode(intent, startTime));
 		}
@@ -29,7 +38,7 @@ namespace Vixen.Sys {
 			if(ContainsKey(channelId)) {
 				this[channelId].Add(intentNode);
 			} else {
-				this[channelId] = new IntentNodeCollection { intentNode };
+				this[channelId] = IntentNodeCollection.Create(new[] { intentNode });
 			}
 		}
 
@@ -37,7 +46,7 @@ namespace Vixen.Sys {
 			if(ContainsKey(channelId)) {
 				this[channelId].AddRange(intentNodes);
 			} else {
-				this[channelId] = new IntentNodeCollection(intentNodes);
+				this[channelId] = IntentNodeCollection.Create(intentNodes);
 			}
 		}
 
@@ -47,10 +56,24 @@ namespace Vixen.Sys {
 			}
 		}
 
+		public void OffsetAllCommandsByTime(TimeSpan offset) {
+			foreach(IntentNodeCollection intentNodes in Values) {
+				IntentNode[] newIntentNodes = intentNodes.Select(x => new IntentNode(x.Intent, x.StartTime + offset)).ToArray();
+				intentNodes.Clear();
+				intentNodes.AddRange(newIntentNodes);
+			}
+			//foreach(KeyValuePair<Guid, CommandNode[]> kvp in this.ToArray()) {
+			//    List<CommandNode> newCommands = new List<CommandNode>();
+			//    foreach(CommandNode cn in kvp.Value)
+			//        newCommands.Add(new CommandNode(cn.Command, cn.StartTime + offset, cn.TimeSpan));
+			//    this[kvp.Key] = newCommands.ToArray();
+			//}
+		}
+
 		static public EffectIntents Restrict(EffectIntents effectIntents, TimeSpan startTime, TimeSpan endTime) {
 			return new EffectIntents(effectIntents.ToDictionary(
 				x => x.Key,
-				x => new IntentNodeCollection(x.Value.Where(y => !(y.StartTime >= endTime || y.EndTime < startTime)))));
+				x => IntentNodeCollection.Create(x.Value.Where(y => !(y.StartTime >= endTime || y.EndTime < startTime)))));
 		}
 	}
 }

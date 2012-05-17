@@ -58,6 +58,13 @@ namespace Vixen.Sys.Output {
 			}
 		}
 
+		public IEnumerable<IOutputFilterModuleInstance> GetAllOutputFilters(int outputIndex) {
+			if(outputIndex < OutputCount) {
+				return Outputs[outputIndex].GetAllOutputFilters();
+			}
+			return Enumerable.Empty<IOutputFilterModuleInstance>();
+		}
+
 		public void AddOutputFilter(int outputIndex, IOutputFilterModuleInstance filter) {
 			if(filter != null && outputIndex < OutputCount) {
 				// Must be the controller store, and not the system store, because the system store

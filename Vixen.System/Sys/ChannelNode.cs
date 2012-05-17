@@ -17,8 +17,6 @@ namespace Vixen.Sys {
 		// subscriptions from the node manager.
 		static public event EventHandler Changed;
 
-		private const int VERSION = 1;
-
 		#region Constructors
 		internal ChannelNode(Guid id, string name, Channel channel, IEnumerable<ChannelNode> content)
 			: base(name, content) {
@@ -122,7 +120,7 @@ namespace Vixen.Sys {
 		}
 
 		public bool IsLeaf {
-			get { return base.Children.Count() == 0; }
+			get { return !base.Children.Any(); }
 		}
 
 		/// <summary>
@@ -148,10 +146,6 @@ namespace Vixen.Sys {
 		}
 
 		public PropertyManager Properties { get; private set; }
-
-		public int Version {
-			get { return VERSION; }
-		}
 
 		#region Overrides
 		public override void AddChild(GroupNode<Channel> node) {
