@@ -33,8 +33,6 @@ namespace Vixen.Module.Effect {
 		string EffectName { get; }
 		ParameterSignature Parameters { get; }
 		void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle);
-
-    	List<SubordinateEffect> SubordinateEffects { get; }
 		ChannelIntents GetChannelIntents(TimeSpan currentTime);
     }
 }

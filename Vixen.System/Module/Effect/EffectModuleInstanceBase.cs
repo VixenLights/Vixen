@@ -11,10 +11,8 @@ namespace Vixen.Module.Effect {
 		private TimeSpan _timeSpan;
 		private DefaultValueArrayMember _parameterValues;
 		private ChannelIntents _channelIntents;
-		private bool _isDirty;
 
 		protected EffectModuleInstanceBase() {
-			SubordinateEffects = new List<SubordinateEffect>();
 			TargetNodes = new ChannelNode[0];
 			TimeSpan = TimeSpan.Zero;
 			IsDirty = true;
@@ -22,17 +20,13 @@ namespace Vixen.Module.Effect {
 			_channelIntents = new ChannelIntents();
 		}
 
-		public bool IsDirty {
-			get { return _isDirty || SubordinateEffects.Any(x => x.Effect.IsDirty); }
-			protected set { _isDirty = value; }
-		}
+		virtual public bool IsDirty { get; protected set; }
 
 		public ChannelNode[] TargetNodes {
 			get { return _targetNodes; }
 			set {
 				if(value != _targetNodes) {
 					_targetNodes = value;
-					_AssignTargetNodesToSubordinates();
 					_EnsureTargetNodeProperties();
 					IsDirty = true;
 				}
@@ -44,7 +38,6 @@ namespace Vixen.Module.Effect {
 			set {
 				if(value != _timeSpan) {
 					_timeSpan = value;
-					_AssignTimeSpanToSubordinates();
 					IsDirty = true;
 				}
 			}
@@ -98,43 +91,19 @@ namespace Vixen.Module.Effect {
 			g.DrawRectangle(Pens.Black, clipRectangle.X, clipRectangle.Y, clipRectangle.Width - 1, clipRectangle.Height - 1);
 		}
 
-		public List<SubordinateEffect> SubordinateEffects { get; private set; }
-
 		public ChannelIntents GetChannelIntents(TimeSpan effectRelativeTime) {
 			_channelIntents.Clear();
 
 			_AddLocalIntents(effectRelativeTime);
-			if(VixenSystem.AllowSubordinateEffects) {
-				_AddSubordinateIntents(effectRelativeTime);
-			}
 
 			return _channelIntents;
-		}
-
-		private void _AssignTargetNodesToSubordinates() {
-			foreach(SubordinateEffect subordinateEffect in SubordinateEffects) {
-				subordinateEffect.Effect.TargetNodes = TargetNodes;
-			}
-		}
-
-		private void _AssignTimeSpanToSubordinates() {
-			foreach(SubordinateEffect subordinateEffect in SubordinateEffects) {
-				subordinateEffect.Effect.TimeSpan = TimeSpan;
-			}
 		}
 
 		private void _AddLocalIntents(TimeSpan effectRelativeTime) {
 			EffectIntents effectIntents = Render();
 			foreach(Guid channelId in effectIntents.ChannelIds) {
 				IIntentNode channelIntent = effectIntents.GetChannelIntentAtTime(channelId, effectRelativeTime);
-				_channelIntents.AddIntentNodeToChannel(channelId, channelIntent, null);
-			}
-		}
-
-		private void _AddSubordinateIntents(TimeSpan effectRelativeTime) {
-			foreach(SubordinateEffect subordinateEffect in SubordinateEffects) {
-				ChannelIntents subordinateChannelIntents = subordinateEffect.Effect.GetChannelIntents(effectRelativeTime);
-				_channelIntents.AddIntentNodesToChannels(subordinateChannelIntents, subordinateEffect.CombinationOperation);
+				_channelIntents.AddIntentNodeToChannel(channelId, channelIntent);
 			}
 		}
 

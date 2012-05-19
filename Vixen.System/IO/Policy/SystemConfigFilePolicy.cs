@@ -5,7 +5,6 @@
 			WriteIdentity();
 			WriteAlternateDataDirectory();
 			WriteFilterEvaluationAllowance();
-			WriteSubordinateEffectAllowance();
 			WriteChannels();
 			WriteNodes();
 			WriteControllers();
@@ -20,7 +19,6 @@
 		protected abstract void WriteIdentity();
 		protected abstract void WriteAlternateDataDirectory();
 		protected abstract void WriteFilterEvaluationAllowance();
-		protected abstract void WriteSubordinateEffectAllowance();
 		protected abstract void WriteChannels();
 		protected abstract void WriteNodes();
 		protected abstract void WriteControllers();
@@ -35,7 +33,6 @@
 			ReadIdentity();
 			//ReadAlternateDataDirectory();
 			ReadFilterEvaluationAllowance();
-			ReadSubordinateEffectAllowance();
 			ReadChannels();
 			ReadNodes();
 			ReadControllers();
@@ -49,7 +46,6 @@
 		protected abstract void ReadContextFlag();
 		protected abstract void ReadIdentity();
 		//protected abstract void ReadAlternateDataDirectory();
-		protected abstract void ReadSubordinateEffectAllowance();
 		protected abstract void ReadFilterEvaluationAllowance();
 		protected abstract void ReadChannels();
 		protected abstract void ReadNodes();

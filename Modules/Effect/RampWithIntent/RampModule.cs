@@ -5,28 +5,13 @@ using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
-using Vixen.Sys.CombinationOperation;
 
 namespace RampWithIntent {
 	public class RampModule : EffectModuleInstanceBase {
 		private RampData _data;
 		private EffectIntents _intents;
 
-		private bool _isSubordinate;
 		protected override void _PreRender() {
-			//**********************
-			//*** going to add a subordinate, just for testing
-			//if(!_isSubordinate) {
-			//    SubordinateEffects.Clear();
-			//    RampModule otherEffect = (RampModule)Vixen.Services.ApplicationServices.Get<IEffectModuleInstance>(Descriptor.TypeId);
-			//    otherEffect.ParameterValues = new object[] {0x1f, 0x1f};
-			//    otherEffect.TimeSpan = TimeSpan;
-			//    otherEffect.TargetNodes = TargetNodes;
-			//    otherEffect._isSubordinate = true;
-			//    SubordinateEffects.Add(new SubordinateEffect(otherEffect, new BooleanAnd()));
-			//}
-			//**********************
-			
 			_intents = new EffectIntents();
 			Channel[] channels = TargetNodes.SelectMany(x => x).ToArray();
 

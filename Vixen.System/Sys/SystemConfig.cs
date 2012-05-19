@@ -28,7 +28,6 @@ namespace Vixen.Sys {
 			_disabledControllers = new List<Guid>();
 			IsPreviewThreaded = true; // opt-out
 			AllowFilterEvaluation = true; // opt-out
-			AllowSubordinateEffects = true; // opt-out
 		}
 
 		public string LoadedFilePath { get; set; }
@@ -128,7 +127,6 @@ namespace Vixen.Sys {
 		}
 
 		public bool AllowFilterEvaluation { get; set; }
-		public bool AllowSubordinateEffects { get; set; }
 
 		public void Save() {
 			FileSerializer<SystemConfig> serializer = SerializerFactory.Instance.CreateSystemConfigSerializer();

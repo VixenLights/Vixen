@@ -6,8 +6,6 @@ namespace Vixen.Sys {
 		public IntentNode(IIntent intent, TimeSpan startTime) {
 			Intent = intent;
 			StartTime = startTime;
-			//Subordinates may be supported later, but not yet.
-			//SubordinateIntents = new List<SubordinateIntent>();
 		}
 
 		public IIntent Intent { get; private set; }
@@ -43,25 +41,8 @@ namespace Vixen.Sys {
 		virtual public IIntentState CreateIntentState(TimeSpan intentRelativeTime) {
 			IIntentState intentState = Intent.CreateIntentState(intentRelativeTime);
 
-			//intentState.SubordinateIntentStates.AddRange(_GetSubordinateIntentStates(intentRelativeTime));
-
 			return intentState;
 		}
-
-		#region Subordinate support
-		//private IEnumerable<SubordinateIntentState> _GetSubordinateIntentStates(TimeSpan intentRelativeTime) {
-		//    return SubordinateIntents.Select(x => _GetSubordinateIntentState(intentRelativeTime, x));
-		//}
-
-		//private SubordinateIntentState _GetSubordinateIntentState(TimeSpan intentRelativeTime, SubordinateIntent subordinateIntent) {
-		//    TimeSpan otherIntentRelativeTime = Helper.TranslateIntentRelativeTime(intentRelativeTime, this, subordinateIntent.IntentNode);
-		//    IIntentState otherIntentState = subordinateIntent.IntentNode.CreateIntentState(otherIntentRelativeTime);
-		//    SubordinateIntentState subordinateIntentState = new SubordinateIntentState(otherIntentState, subordinateIntent.CombinationOperation);
-		//    return subordinateIntentState;
-		//}
-
-		//public List<SubordinateIntent> SubordinateIntents { get; private set; }
-		#endregion
 
 		#region IComparable<IIntentNode>
 		public int CompareTo(IIntentNode other) {
@@ -79,7 +60,6 @@ namespace Vixen.Sys {
 	public interface IIntentNode : IDataNode, IComparable<IIntentNode> {
 		IIntent Intent { get; }
 		IIntentState CreateIntentState(TimeSpan intentRelativeTime);
-		//List<SubordinateIntent> SubordinateIntents { get; }
 		void ApplyFilter(ISequenceFilterNode sequenceFilterNode, TimeSpan contextAbsoluteEffectStartTime);
 		IIntentNode[] DivideAt(TimeSpan effectRelativeTime);
 	}

@@ -216,11 +216,6 @@ namespace Vixen.Sys {
     		set { SystemConfig.AllowFilterEvaluation = value; }
     	}
 
-    	public static bool AllowSubordinateEffects {
-    		get { return SystemConfig.AllowSubordinateEffects; }
-    		set { SystemConfig.AllowSubordinateEffects = value; }
-    	}
-
     	static public ChannelManager Channels { get; private set; }
 		static public NodeManager Nodes { get; private set; }
 		static public ControllerManager Controllers { get; private set; }

@@ -216,15 +216,6 @@
     <Compile Include="Sys\ChannelPatchingChangeSet.cs" />
     <Compile Include="Sys\ChannelStateSource.cs" />
     <Compile Include="Sys\ChannelStateSourceCollection.cs" />
-    <Compile Include="Sys\CombinationOperation\BooleanNand.cs" />
-    <Compile Include="Sys\CombinationOperation\BooleanNor.cs" />
-    <Compile Include="Sys\CombinationOperation\BooleanOperation.cs" />
-    <Compile Include="Sys\CombinationOperation\BooleanXnor.cs" />
-    <Compile Include="Sys\CombinationOperation\BooleanXor.cs" />
-    <Compile Include="Sys\CombinationOperation\BooleanOr.cs" />
-    <Compile Include="Sys\CombinationOperation\Combiner.cs" />
-    <Compile Include="Sys\CombinationOperation\DoubleValueCombiner.cs" />
-    <Compile Include="Sys\CombinationOperation\ICombiner.cs" />
     <Compile Include="Sys\ControllerReference.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -357,8 +348,6 @@
     <Compile Include="Sys\IntentSegment.cs" />
     <Compile Include="Sys\IntentSegmentNode.cs" />
     <Compile Include="Sys\IntentStateList.cs" />
-    <Compile Include="Sys\CombinationOperation\BooleanAnd.cs" />
-    <Compile Include="Sys\CombinationOperation\ICombinationOperation.cs" />
     <Compile Include="Sys\IOutputStateSource.cs" />
     <Compile Include="Sys\ITypeAffector.cs" />
     <Compile Include="Data\Evaluator\FloatEvaluator.cs" />
@@ -379,9 +368,6 @@
     <Compile Include="Sys\Output\SmartOutputController.cs" />
     <Compile Include="Sys\Output\StateHoldingIntentOutput.cs" />
     <Compile Include="Sys\SequenceFilterLookup.cs" />
-    <Compile Include="Sys\SubordinateEffect.cs" />
-    <Compile Include="Sys\SubordinateIntent.cs" />
-    <Compile Include="Sys\SubordinateIntentState.cs" />
     <Compile Include="Sys\OutputIntentStateList.cs" />
     <Compile Include="Sys\OutputStateSource.cs" />
     <Compile Include="Sys\ParameterSignature.cs" />

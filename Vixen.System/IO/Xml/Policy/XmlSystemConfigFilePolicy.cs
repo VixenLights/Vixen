@@ -12,7 +12,6 @@ namespace Vixen.IO.Xml.Policy {
 		private const string ELEMENT_DATA_DIRECTORY = "DataDirectory";
 		private const string ELEMENT_IDENTITY = "Identity";
 		private const string ELEMENT_EVAL_FILTERS = "AllowFilterEvaluation";
-		private const string ELEMENT_SUB_EFFECTS = "AllowSubordinateEffects";
 		private const string ATTR_IS_CONTEXT = "isContext";
 
 		public XmlSystemConfigFilePolicy() {
@@ -42,10 +41,6 @@ namespace Vixen.IO.Xml.Policy {
 
 		protected override void WriteFilterEvaluationAllowance() {
 			_content.Add(new XElement(ELEMENT_EVAL_FILTERS, _systemConfig.AllowFilterEvaluation));
-		}
-
-		protected override void WriteSubordinateEffectAllowance() {
-			_content.Add(new XElement(ELEMENT_SUB_EFFECTS, _systemConfig.AllowSubordinateEffects));
 		}
 
 		protected override void WriteChannels() {
@@ -117,11 +112,6 @@ namespace Vixen.IO.Xml.Policy {
 		protected override void ReadFilterEvaluationAllowance() {
 			// If it can't be determined, default to true.
 			_systemConfig.AllowFilterEvaluation = XmlHelper.GetElementValue(_content, ELEMENT_EVAL_FILTERS, true);
-		}
-
-		protected override void ReadSubordinateEffectAllowance() {
-			// If it can't be determined, default to true.
-			_systemConfig.AllowSubordinateEffects = XmlHelper.GetElementValue(_content, ELEMENT_SUB_EFFECTS, true);
 		}
 
 		protected override void ReadChannels() {
