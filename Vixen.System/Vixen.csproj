@@ -131,9 +131,6 @@
     <Compile Include="Execution\IntentStateBuilder.cs" />
     <Compile Include="Intent\ColorLinearIntent.cs" />
     <Compile Include="Intent\IntentState.cs" />
-    <Compile Include="Intent\IntersectionStrategy\CombineIntents.cs" />
-    <Compile Include="Intent\IntersectionStrategy\ReplaceWithBase.cs" />
-    <Compile Include="Intent\IntersectionStrategy\ReplaceWithOther.cs" />
     <Compile Include="Intent\LightingLinearIntent.cs" />
     <Compile Include="IO\Xml\XmlSmartControllerCollectionSerializer.cs" />
     <Compile Include="IO\Xml\XmlSmartControllerSerializer.cs" />
@@ -149,11 +146,8 @@
     <Compile Include="Sys\Dispatch\IAnyCommandHandler.cs" />
     <Compile Include="Sys\Dispatch\IntentSegmentDispatch.cs" />
     <Compile Include="Sys\IHasOutputs.cs" />
-    <Compile Include="Sys\IIntentAddStrategy.cs" />
-    <Compile Include="Sys\IIntersectionStrategy.cs" />
     <Compile Include="Sys\Instrumentation\BufferSizeInSecondsValue.cs" />
     <Compile Include="Sys\Instrumentation\CacheHitPercentValue.cs" />
-    <Compile Include="Sys\IntentReplaceWithOtherStrategy.cs" />
     <Compile Include="Sys\IntentChangeCollection.cs" />
     <Compile Include="Sys\LightingValue.cs" />
     <Compile Include="Intent\LongLinearIntent.cs" />
@@ -385,7 +379,6 @@
     <Compile Include="Sys\Output\SmartOutputController.cs" />
     <Compile Include="Sys\Output\StateHoldingIntentOutput.cs" />
     <Compile Include="Sys\SequenceFilterLookup.cs" />
-    <Compile Include="Sys\StrategyList.cs" />
     <Compile Include="Sys\SubordinateEffect.cs" />
     <Compile Include="Sys\SubordinateIntent.cs" />
     <Compile Include="Sys\SubordinateIntentState.cs" />

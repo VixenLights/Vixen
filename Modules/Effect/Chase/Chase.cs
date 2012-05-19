@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Reflection;
 using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Effect;
-using Vixen.Sys.Attribute;
+using Vixen.Commands;
+using Vixen.Commands.KnownDataTypes;
+using CommonElements.ColorManagement.ColorModels;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
+using VixenModules.Property.RGB;
 using System.Drawing;
 using ZedGraph;
 
@@ -15,7 +20,7 @@ namespace VixenModules.Effect.Chase
 	public class Chase : EffectModuleInstanceBase
 	{
 		private ChaseData _data;
-		private EffectIntents _channelData = null;
+		private ChannelData _channelData = null;
 
 		public Chase()
 		{
@@ -24,11 +29,11 @@ namespace VixenModules.Effect.Chase
 
 		protected override void _PreRender()
 		{
-			_channelData = new EffectIntents();
+			_channelData = new ChannelData();
 			DoRendering();
 		}
 
-		protected override EffectIntents _Render()
+		protected override ChannelData _Render()
 		{
 			return _channelData;
 		}
@@ -39,60 +44,59 @@ namespace VixenModules.Effect.Chase
 			set { _data = value as ChaseData; }
 		}
 
-		//public override object[] ParameterValues
-		//{
-		//    get
-		//    {
-		//        return new object[] {
-		//            ColorHandling,
-		//            PulseOverlap,
-		//            DefaultLevel,
-		//            StaticColor,
-		//            ColorGradient,
-		//            PulseCurve,
-		//            ChaseMovement
-		//        };
-		//    }
-		//    set
-		//    {
-		//        if (value.Length != 7) {
-		//            VixenSystem.Logging.Warning("Chase effect parameters set with " + value.Length + " parameters");
-		//            return;
-		//        }
+		public override object[] ParameterValues
+		{
+			get
+			{
+				return new object[] {
+					ColorHandling,
+					PulseOverlap,
+					DefaultLevel,
+					StaticColor,
+					ColorGradient,
+					PulseCurve,
+					ChaseMovement
+				};
+			}
+			set
+			{
+				if (value.Length != 7) {
+					VixenSystem.Logging.Warning("Chase effect parameters set with " + value.Length + " parameters");
+					return;
+				}
 
-		//        ColorHandling = (ChaseColorHandling)value[0];
-		//        PulseOverlap = (int)value[1];
-		//        DefaultLevel = (Level)value[2];
-		//        StaticColor = (Color)value[3];
-		//        ColorGradient = (ColorGradient)value[4];
-		//        PulseCurve = (Curve)value[5];
-		//        ChaseMovement = (Curve)value[6];
-		//    }
-		//}
+				ColorHandling = (ChaseColorHandling)value[0];
+				PulseOverlap = (int)value[1];
+				DefaultLevel = (Level)value[2];
+				StaticColor = (Color)value[3];
+				ColorGradient = (ColorGradient)value[4];
+				PulseCurve = (Curve)value[5];
+				ChaseMovement = (Curve)value[6];
+			}
+		}
 
 
-		//public override bool IsDirty
-		//{
-		//    get
-		//    {
-		//        if (!PulseCurve.CheckLibraryReference())
-		//            return true;
+		public override bool IsDirty
+		{
+			get
+			{
+				if (!PulseCurve.CheckLibraryReference())
+					return true;
 
-		//        if (!ChaseMovement.CheckLibraryReference())
-		//            return true;
+				if (!ChaseMovement.CheckLibraryReference())
+					return true;
 
-		//        if (!ColorGradient.CheckLibraryReference())
-		//            return true;
+				if (!ColorGradient.CheckLibraryReference())
+				    return true;
 
-		//        return base.IsDirty;
-		//    }
-		//    protected set
-		//    {
-		//        base.IsDirty = value;
-		//    }
-		//}
+				return base.IsDirty;
+			}
+			protected set
+			{
+				base.IsDirty = value;
+			}
+		}
 
-		[Value]
 		public ChaseColorHandling ColorHandling
 		{
 			get { return _data.ColorHandling; }
@@ -100,42 +104,36 @@ namespace VixenModules.Effect.Chase
 		}
 
 
-		[Value]
 		public int PulseOverlap
 		{
 			get { return _data.PulseOverlap; }
 			set { _data.PulseOverlap = value; IsDirty = true; }
 		}
 
-		[Value]
-		public double DefaultLevel
+		public Level DefaultLevel
 		{
 			get { return _data.DefaultLevel; }
 			set { _data.DefaultLevel = value; IsDirty = true; }
 		}
 
-		[Value]
 		public Color StaticColor
 		{
 			get { return _data.StaticColor; }
 			set { _data.StaticColor = value; IsDirty = true; }
 		}
 
-		[Value]
 		public ColorGradient ColorGradient
 		{
 			get { return _data.ColorGradient; }
 			set { _data.ColorGradient = value; IsDirty = true; }
 		}
 
-		[Value]
 		public Curve PulseCurve
 		{
 			get { return _data.PulseCurve; }
 			set { _data.PulseCurve = value; IsDirty = true; }
 		}
 
-		[Value]
 		public Curve ChaseMovement
 		{
 			get { return _data.ChaseMovement; }
@@ -148,20 +146,19 @@ namespace VixenModules.Effect.Chase
 			//TODO: get a better increment time. doing it every X ms is..... shitty at best.
 			TimeSpan increment = TimeSpan.FromMilliseconds(10);
 
-			//List<ChannelNode> renderNodes = RGBModule.FindAllRenderableChildren(TargetNodes);
-			ChannelNode[] channels = TargetNodes.SelectMany(x => x.GetNodeEnumerator()).ToArray();
-			int targetNodeCount = channels.Length;
+			List<ChannelNode> renderNodes = RGBModule.FindAllRenderableChildren(TargetNodes);
+			int targetNodeCount = renderNodes.Count;
 
 			Pulse.Pulse pulse;
-			EffectIntents pulseData;
+			ChannelData pulseData;
 
 			// apply the 'background' values to all targets
 			int i = 0;
-			foreach (ChannelNode target in channels) {
+			foreach (ChannelNode target in renderNodes) {
 				pulse = new Pulse.Pulse();
 				pulse.TargetNodes = new ChannelNode[] { target };
 				pulse.TimeSpan = TimeSpan;
-				pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { DefaultLevel * 100, DefaultLevel * 100 }));
+				pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { DefaultLevel, DefaultLevel }));
 
 				// figure out what color gradient to use for the pulse
 				switch (ColorHandling) {
@@ -183,9 +180,10 @@ namespace VixenModules.Effect.Chase
 				}
 
 				pulseData = pulse.Render();
-				_channelData.Add(pulseData);
+				_channelData.AddChannelData(pulseData);
 				i++;
 			}
+
 
 			// the total chase time
 			TimeSpan chaseTime = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds - PulseOverlap);
@@ -211,7 +209,7 @@ namespace VixenModules.Effect.Chase
 					continue;
 				}
 
-				ChannelNode currentNode = channels[currentNodeIndex];
+				ChannelNode currentNode = renderNodes[currentNodeIndex];
 				if (currentNode == lastTargetedNode)
 					continue;
 
@@ -233,12 +231,12 @@ namespace VixenModules.Effect.Chase
 				GeneratePulse(lastTargetedNode, lastNodeStartTime, TimeSpan - lastNodeStartTime, 1.0);
 			}
 
-			_channelData = EffectIntents.Restrict(_channelData, TimeSpan.Zero, TimeSpan);
+			_channelData = ChannelData.Restrict(_channelData, TimeSpan.Zero, TimeSpan);
 		}
 
 		private void GeneratePulse(ChannelNode target, TimeSpan startTime, TimeSpan duration, double currentMovementPosition)
 		{
-			EffectIntents result;
+			ChannelData result;
 			Pulse.Pulse pulse = new Pulse.Pulse();
 			pulse.TargetNodes = new ChannelNode[] { target };
 			pulse.TimeSpan = duration;
@@ -267,7 +265,7 @@ namespace VixenModules.Effect.Chase
 
 			result = pulse.Render();
 			result.OffsetAllCommandsByTime(startTime);
-			_channelData.Add(result);
+			_channelData.AddChannelData(result);
 		}
 	}
 }

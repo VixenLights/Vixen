@@ -24,7 +24,6 @@ namespace Vixen.Sys {
 		public IIntentNode GetChannelIntentAtTime(Guid channelId, TimeSpan effectRelativeTime) {
 			IntentNodeCollection channelIntents;
 			if(TryGetValue(channelId, out channelIntents)) {
-				//return channelIntents.FirstOrDefault(x => effectRelativeTime >= x.StartTime && effectRelativeTime <= x.EndTime);
 				return channelIntents.FirstOrDefault(x => TimeNode.IntersectsInclusively(x, effectRelativeTime));
 			}
 			return null;
@@ -38,7 +37,7 @@ namespace Vixen.Sys {
 			if(ContainsKey(channelId)) {
 				this[channelId].Add(intentNode);
 			} else {
-				this[channelId] = IntentNodeCollection.Create(new[] { intentNode });
+				this[channelId] = new IntentNodeCollection(new[] { intentNode });
 			}
 		}
 
@@ -46,7 +45,7 @@ namespace Vixen.Sys {
 			if(ContainsKey(channelId)) {
 				this[channelId].AddRange(intentNodes);
 			} else {
-				this[channelId] = IntentNodeCollection.Create(intentNodes);
+				this[channelId] = new IntentNodeCollection(intentNodes);
 			}
 		}
 
@@ -73,7 +72,7 @@ namespace Vixen.Sys {
 		static public EffectIntents Restrict(EffectIntents effectIntents, TimeSpan startTime, TimeSpan endTime) {
 			return new EffectIntents(effectIntents.ToDictionary(
 				x => x.Key,
-				x => IntentNodeCollection.Create(x.Value.Where(y => !(y.StartTime >= endTime || y.EndTime < startTime)))));
+				x => new IntentNodeCollection(x.Value.Where(y => !(y.StartTime >= endTime || y.EndTime < startTime)))));
 		}
 	}
 }
