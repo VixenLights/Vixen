@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Reflection;
 using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Effect;
-using Vixen.Commands;
-using Vixen.Commands.KnownDataTypes;
-using CommonElements.ColorManagement.ColorModels;
+using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using VixenModules.Property.RGB;
 using System.Drawing;
 using ZedGraph;
 
@@ -44,50 +39,6 @@ namespace VixenModules.Effect.Spin
 			set { _data = value as SpinData; }
 		}
 
-		public override object[] ParameterValues
-		{
-			get
-			{
-				return new object[] {
-					SpeedFormat,
-					PulseLengthFormat,
-					ColorHandling,
-					RevolutionCount,
-					RevolutionFrequency,
-					RevolutionTime,
-					PulseTime,
-					PulsePercentage,
-					DefaultLevel,
-					StaticColor,
-					ColorGradient,
-					PulseCurve,
-					ReverseSpin
-				};
-			}
-			set
-			{
-				if (value.Length != 13) {
-					VixenSystem.Logging.Warning("Spin effect parameters set with " + value.Length + " parameters");
-					return;
-				}
-
-				SpeedFormat = (SpinSpeedFormat)value[0];
-				PulseLengthFormat = (SpinPulseLengthFormat)value[1];
-				ColorHandling = (SpinColorHandling)value[2];
-				RevolutionCount = (double)value[3];
-				RevolutionFrequency = (double)value[4];
-				RevolutionTime = (int)value[5];
-				PulseTime = (int)value[6];
-				PulsePercentage = (int)value[7];
-				DefaultLevel = (Level)value[8];
-				StaticColor = (Color)value[9];
-				ColorGradient = (ColorGradient)value[10];
-				PulseCurve = (Curve)value[11];
-				ReverseSpin = (bool)value[12];
-			}
-		}
-
-
 		public override bool IsDirty
 		{
 			get
@@ -106,79 +57,91 @@ namespace VixenModules.Effect.Spin
 			}
 		}
 
-
+		[Value]
 		public SpinSpeedFormat SpeedFormat
 		{
 		    get { return _data.SpeedFormat; }
 		    set { _data.SpeedFormat = value; IsDirty = true; }
 		}
 
+		[Value]
 		public SpinPulseLengthFormat PulseLengthFormat
 		{
 			get { return _data.PulseLengthFormat; }
 			set { _data.PulseLengthFormat = value; IsDirty = true; }
 		}
 
+		[Value]
 		public SpinColorHandling ColorHandling
 		{
 			get { return _data.ColorHandling; }
 			set { _data.ColorHandling = value; IsDirty = true; }
 		}
 
+		[Value]
 		public double RevolutionCount
 		{
 			get { return _data.RevolutionCount; }
 			set { _data.RevolutionCount = value; IsDirty = true; }
 		}
 
+		[Value]
 		public double RevolutionFrequency
 		{
 			get { return _data.RevolutionFrequency; }
 			set { _data.RevolutionFrequency = value; IsDirty = true; }
 		}
 
+		[Value]
 		public int RevolutionTime
 		{
 			get { return _data.RevolutionTime; }
 			set { _data.RevolutionTime = value; IsDirty = true; }
 		}
 
+		[Value]
 		public int PulseTime
 		{
 			get { return _data.PulseTime; }
 			set { _data.PulseTime = value; IsDirty = true; }
 		}
 
+		[Value]
 		public int PulsePercentage
 		{
 			get { return _data.PulsePercentage; }
 			set { _data.PulsePercentage = value; IsDirty = true; }
 		}
 
-		public Level DefaultLevel
+		[Value]
+		public double DefaultLevel
 		{
 			get { return _data.DefaultLevel; }
 			set { _data.DefaultLevel = value; IsDirty = true; }
 		}
 
+		[Value]
 		public Color StaticColor
 		{
 			get { return _data.StaticColor; }
 			set { _data.StaticColor = value; IsDirty = true; }
 		}
 
+		[Value]
 		public ColorGradient ColorGradient
 		{
 			get { return _data.ColorGradient; }
 			set { _data.ColorGradient = value; IsDirty = true; }
 		}
 
+		[Value]
 		public Curve PulseCurve
 		{
 			get { return _data.PulseCurve; }
 			set { _data.PulseCurve = value; IsDirty = true; }
 		}
 
+		[Value]
 		public bool ReverseSpin
 		{
 			get { return _data.ReverseSpin; }
@@ -190,7 +153,7 @@ namespace VixenModules.Effect.Spin
 			//TODO: get a better increment time. doing it every X ms is..... shitty at best.
 			TimeSpan increment = TimeSpan.FromMilliseconds(10);
 
-			List<ChannelNode> renderNodes = RGBModule.FindAllRenderableChildren(TargetNodes);
+			List<ChannelNode> renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).ToList();
 			int targetNodeCount = renderNodes.Count;
 			ChannelNode lastTargetedNode = null;
 
@@ -225,8 +188,7 @@ namespace VixenModules.Effect.Spin
 				}
 
 				pulseData = pulse.Render();
-				//TODO
-				//_channelData.AddChannelData(pulseData);
+				_channelData.Add(pulseData);
 				i++;
 			}
 
@@ -308,7 +270,7 @@ namespace VixenModules.Effect.Spin
 						double startPos = ((double)current.Ticks / (double)TimeSpan.Ticks);
 						double endPos = 1.0;
 						if (TimeSpan - current >= pulseTimeSpan)
-							endPos = ((double)(current + TimeSpan.FromMilliseconds(PulseTime)).Ticks / (double)TimeSpan.Ticks);
+							endPos = ((double)(current + pulseTimeSpan).Ticks / (double)TimeSpan.Ticks);
 						pulse.ColorGradient = ColorGradient.GetSubGradient(startPos, endPos);
 						break;
 
@@ -322,9 +284,8 @@ namespace VixenModules.Effect.Spin
 				}
 
 				pulseData = pulse.Render();
-				//TODO
-				//pulseData.OffsetAllCommandsByTime(current);
-				//_channelData.AddChannelData(pulseData);
+				pulseData.OffsetAllCommandsByTime(current);
+				_channelData.Add(pulseData);
 				
 				lastTargetedNode = currentNode;
 			}
