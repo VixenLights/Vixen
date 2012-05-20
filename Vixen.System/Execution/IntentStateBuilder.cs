@@ -23,6 +23,10 @@ namespace Vixen.Execution {
 			channelIntentList.AddIntentState(state);
 		}
 
+		public IIntentStateList GetChannelState(Guid channelId) {
+			return _GetChannelIntentList(channelId);
+		}
+
 		private IIntentStateList _GetChannelIntentList(Guid channelId) {
 			IIntentStateList channelIntentList;
 			if(!_channelStates.TryGetValue(channelId, out channelIntentList)) {
@@ -30,10 +34,6 @@ namespace Vixen.Execution {
 				_channelStates[channelId] = channelIntentList;
 			}
 			return channelIntentList;
-		}
-
-		public IIntentStateList GetChannelState(Guid channelId) {
-			return _GetChannelIntentList(channelId);
 		}
 	}
 }

@@ -123,12 +123,15 @@ namespace Vixen.Execution {
 				ChannelIntents channelIntents = effectNode.Effect.GetChannelIntents(effectRelativeTime);
 				// For each channel...
 				foreach(Guid channelId in channelIntents.ChannelIds) {
-					// Get the root intent node.
-					IIntentNode intentNode = channelIntents[channelId];
-					// Get a timing value relative to the intent.
-					TimeSpan intentRelativeTime = Helper.GetIntentRelativeTime(effectRelativeTime, intentNode);
-					// Do whatever is going to be done.
-					intentDiscoveryAction(channelId, intentNode, intentRelativeTime);
+					// Get the intent nodes.
+					IIntentNode[] intentNodes = channelIntents[channelId];
+					// For each intent node.
+					foreach(IIntentNode intentNode in intentNodes) {
+						// Get a timing value relative to the intent.
+						TimeSpan intentRelativeTime = Helper.GetIntentRelativeTime(effectRelativeTime, intentNode);
+						// Do whatever is going to be done.
+						intentDiscoveryAction(channelId, intentNode, intentRelativeTime);
+					}
 				}
 			}
 		}

@@ -21,10 +21,10 @@ namespace Vixen.Sys {
 			return intentNodeCollection;
 		}
 
-		public IIntentNode GetChannelIntentAtTime(Guid channelId, TimeSpan effectRelativeTime) {
+		public IIntentNode[] GetChannelIntentsAtTime(Guid channelId, TimeSpan effectRelativeTime) {
 			IntentNodeCollection channelIntents;
 			if(TryGetValue(channelId, out channelIntents)) {
-				return channelIntents.FirstOrDefault(x => TimeNode.IntersectsInclusively(x, effectRelativeTime));
+				return channelIntents.Where(x => TimeNode.IntersectsInclusively(x, effectRelativeTime)).ToArray();
 			}
 			return null;
 		}

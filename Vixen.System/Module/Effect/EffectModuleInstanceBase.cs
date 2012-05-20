@@ -102,8 +102,8 @@ namespace Vixen.Module.Effect {
 		private void _AddLocalIntents(TimeSpan effectRelativeTime) {
 			EffectIntents effectIntents = Render();
 			foreach(Guid channelId in effectIntents.ChannelIds) {
-				IIntentNode channelIntent = effectIntents.GetChannelIntentAtTime(channelId, effectRelativeTime);
-				_channelIntents.AddIntentNodeToChannel(channelId, channelIntent);
+				IIntentNode[] channelIntents = effectIntents.GetChannelIntentsAtTime(channelId, effectRelativeTime);
+				_channelIntents.AddIntentNodeToChannel(channelId, channelIntents);
 			}
 		}
 

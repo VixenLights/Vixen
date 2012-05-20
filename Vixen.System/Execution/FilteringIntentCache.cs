@@ -13,6 +13,9 @@ namespace Vixen.Execution {
 		private CacheHitPercentValue _cacheHitPercentValue;
 
 		public FilteringIntentCache() {
+			//*** Not actually doing anything.  Intents are filtered in-place in the effect, if need be.
+			//    The dictionary is used to determine if it's been run through the filters or not, but
+			//    the values stored in the dictionary aren't ever actually used.
 			_effectIntentCache = new Dictionary<IEffectNode, EffectIntents>();
 		}
 

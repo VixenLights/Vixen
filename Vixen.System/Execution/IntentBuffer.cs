@@ -112,7 +112,7 @@ namespace Vixen.Execution {
 		private void _BufferPopulationThread() {
 			IsRunning = true;
 
-			IEnumerator<IEffectNode> dataEnumerator = _effectNodeSource.GetEnumerator();
+			IEnumerator<IEffectNode> dataEnumerator = EffectNodeSource.GetEnumerator();
 			try {
 				while(IsRunning) {
 					while(_IsBufferInadequate() && IsRunning && dataEnumerator.MoveNext()) {
