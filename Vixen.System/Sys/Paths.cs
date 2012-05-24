@@ -11,7 +11,7 @@ namespace Vixen.Sys {
         // System- or user-defined parent directory of "Vixen" directory.
         static private string _dataRootPath = null;
 
-        private const string VIXEN_DATA_DIR = "Vixen";
+        private const string VIXEN_DATA_DIR = "Vixen 3";
 
         static Paths() {
 			// Basing the binary directory on Vixen.dll instead of the current application's
