@@ -129,6 +129,7 @@
     <Compile Include="Execution\IntentBuffer.cs" />
     <Compile Include="Execution\FilteringIntentCache.cs" />
     <Compile Include="Execution\IntentStateBuilder.cs" />
+    <Compile Include="Execution\LiveContext.cs" />
     <Compile Include="Intent\ColorLinearIntent.cs" />
     <Compile Include="Intent\IntentState.cs" />
     <Compile Include="Intent\LightingLinearIntent.cs" />

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Vixen.Execution;
-using Vixen.Sys.Instrumentation;
 using Vixen.Sys.Managers;
 using Vixen.Sys.State.Execution;
 
@@ -10,15 +9,9 @@ namespace Vixen.Sys {
 	public class Execution {
 		static internal SystemClock SystemTime = new SystemClock();
 		static private ExecutionStateEngine _state;
-		static private TotalEffectsValue _totalEffectsValue;
-		static private EffectsPerSecondValue _effectsPerSecondValue;
-		static private Context _systemContext;
-		static private LiveDataSource _liveDataSource;
 		static private ControllerUpdateAdjudicator _updateAdjudicator;
 
 		// These are system-level events.
-		//static public event EventHandler<ProgramContextEventArgs> ProgramContextCreated;
-		//static public event EventHandler<ProgramContextEventArgs> ProgramContextReleased;
 		static public event EventHandler NodesChanged {
 			add { NodeManager.NodesChanged += value; }
 			remove { NodeManager.NodesChanged -= value; }
@@ -47,13 +40,9 @@ namespace Vixen.Sys {
 		}
 
 		static internal void Startup() {
-			//*** if the logical node tree changes structure or attributes, such as
-			//    the pre-filters, the system context will need to be rebuilt
-			//-> or if the physical list of channels changes
 			// Create the system context for live execution.
-			_liveDataSource = new LiveDataSource();
-			_systemContext = VixenSystem.Contexts.CreateContext("System", _liveDataSource, SystemTime, VixenSystem.Nodes);
-			_systemContext.Play();
+			Context systemContext = VixenSystem.Contexts.GetSystemLiveContext();
+			systemContext.Play();
 		}
 
 		static internal void Shutdown() {
@@ -61,31 +50,8 @@ namespace Vixen.Sys {
 
 		private static ControllerUpdateAdjudicator _UpdateAdjudicator {
 			get {
-				if(_updateAdjudicator == null) {
-					//*** user-configurable threshold value
-					_updateAdjudicator = new ControllerUpdateAdjudicator(10);
-				}
-				return _updateAdjudicator;
-			}
-		}
-
-		static private TotalEffectsValue _TotalEffects {
-			get {
-				if(_totalEffectsValue == null) {
-					_totalEffectsValue = new TotalEffectsValue();
-					VixenSystem.Instrumentation.AddValue(_totalEffectsValue);
-				}
-				return _totalEffectsValue;
-			}
-		}
-
-		static private EffectsPerSecondValue _EffectsPerSecond {
-			get {
-				if(_effectsPerSecondValue == null) {
-					_effectsPerSecondValue = new EffectsPerSecondValue();
-					VixenSystem.Instrumentation.AddValue(_effectsPerSecondValue);
-				}
-				return _effectsPerSecondValue;
+				//*** user-configurable threshold value
+				return _updateAdjudicator ?? (_updateAdjudicator = new ControllerUpdateAdjudicator(10));
 			}
 		}
 
@@ -147,19 +113,6 @@ namespace Vixen.Sys {
 			// Else context exists, but it's not a ProgramContext, so it can't be queued
 			// into.
 			return 0;
-		}
-
-		/// <summary>
-		/// Adds data to the system context to be executed as a system-relative time.
-		/// </summary>
-		/// <param name="data"></param>
-		static public void Write(IEnumerable<EffectNode> data) {
-			EffectNode[] effectNodes = data.ToArray();
-
-			_TotalEffects.Add(effectNodes.Length);
-			_EffectsPerSecond.Increment(effectNodes.Length);
-
-			_liveDataSource.AddData(effectNodes);
 		}
 
 		static public void UpdateState() {

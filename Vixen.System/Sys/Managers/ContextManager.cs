@@ -11,6 +11,7 @@ namespace Vixen.Sys.Managers {
 		private Dictionary<Guid, Context> _instances;
 		private ContextUpdateTimeValue _contextUpdateTimeValue;
 		private Stopwatch _stopwatch;
+		private LiveContext _systemLiveContext;
 
 		public event EventHandler<ContextEventArgs> ContextCreated;
 		public event EventHandler<ContextEventArgs> ContextReleased;
@@ -18,6 +19,14 @@ namespace Vixen.Sys.Managers {
 		public ContextManager() {
 			_instances = new Dictionary<Guid, Context>();
 			_SetupInstrumentation();
+		}
+
+		public LiveContext GetSystemLiveContext() {
+			if(_systemLiveContext == null) {
+				_systemLiveContext = new LiveContext("System");
+				_AddContext(_systemLiveContext);
+			}
+			return _systemLiveContext;
 		}
 
 		public Context CreateContext(Program program) {
@@ -32,7 +41,7 @@ namespace Vixen.Sys.Managers {
 			return CreateContext(program);
 		}
 
-		internal Context CreateContext(string name, IDataSource dataSource, ITiming timingSource, IEnumerable<ChannelNode> logicalNodes) {
+		internal Context CreateContext(string name, IDataSource dataSource, ITiming timingSource) {
 			Context context = new Context(name, dataSource, timingSource);
 			_AddContext(context);
 			
@@ -60,7 +69,6 @@ namespace Vixen.Sys.Managers {
 					// Get a snapshot time value for this update.
 					TimeSpan contextTime = context.GetTimeSnapshot();
 					IEnumerable<Guid> affectedChannels = context.UpdateChannelStates(contextTime);
-					//context.FilterChannelStates(affectedChannels, contextTime);
 					//Could possibly return affectedChannels so only affected outputs
 					//are updated.  The controller would have to maintain state so those
 					//outputs could be updated and the whole state sent out.
