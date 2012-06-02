@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
 using Vixen.Sys;
-using Vixen.Commands;
 
 namespace Vixen.Module.Effect {
 	// Effect instances are no longer singletons that render for all, they now contain
@@ -31,10 +28,11 @@ namespace Vixen.Module.Effect {
 		// Having two methods instead of a single one with default values so that the
 		// effect doesn't have to check to see if there is a time frame restriction
 		// with every call.
-		ChannelData Render();
-		ChannelData Render(TimeSpan restrictingOffsetTime, TimeSpan restrictingTimeSpan);
+		EffectIntents Render();
+		EffectIntents Render(TimeSpan restrictingOffsetTime, TimeSpan restrictingTimeSpan);
 		string EffectName { get; }
 		ParameterSignature Parameters { get; }
 		void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle);
-	}
+		ChannelIntents GetChannelIntents(TimeSpan currentTime);
+    }
 }

@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using Vixen.Commands.KnownDataTypes;
+//using Vixen.Commands.KnownDataTypes;
 using Vixen.Module.Effect;
+using Vixen.Services;
 using Vixen.Sys;
 
 namespace Vixen.Module.Input {
 	[DataContract]
-	// Not excited about these.
-	[KnownType(typeof(Level))]
-	[KnownType(typeof(Position))]
-	[KnownType(typeof(System.Drawing.Color))]
+	//// Not excited about these.
+	//[KnownType(typeof(Level))]
+	//[KnownType(typeof(Position))]
+	//[KnownType(typeof(System.Drawing.Color))]
 	public class InputEffectMap : IInputEffectMap, IEquatable<InputEffectMap>, IEquatable<IInputEffectMap> {
 		public InputEffectMap(IInputModuleInstance inputModule, IEffectModuleInstance effectModule, IInputInput input, int parameterIndex, IEnumerable<Guid> nodes) {
 			InputModuleId = inputModule.InstanceId;

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Vixen.Sys;
 
 namespace Vixen.Module.ModuleTemplate {
@@ -16,7 +15,7 @@ namespace Vixen.Module.ModuleTemplate {
 		}
 
 		public IModuleTemplateModuleInstance Get(Guid id) {
-			IModuleTemplateModuleInstance instance = null;
+			IModuleTemplateModuleInstance instance;
 			_instances.TryGetValue(id, out instance);
 			return instance;
 		}

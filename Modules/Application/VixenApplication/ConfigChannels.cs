@@ -6,11 +6,13 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Vixen.Services;
 using Vixen.Sys;
 using System.Media;
 using Vixen.Module.Property;
 using System.Reflection;
 using CommonElements;
+using Vixen.Sys.Output;
 
 namespace VixenApplication
 {
@@ -169,16 +171,16 @@ namespace VixenApplication
 			}
 		}
 
-		private void AddNodeToTree(TreeNodeCollection collection, ChannelNode channel)
+		private void AddNodeToTree(TreeNodeCollection collection, ChannelNode channelNode)
 		{
 			TreeNode addedNode = new TreeNode();
-			addedNode.Name = channel.Id.ToString();
-			addedNode.Text = channel.Name;
-			addedNode.Tag = channel;
+			addedNode.Name = channelNode.Id.ToString();
+			addedNode.Text = channelNode.Name;
+			addedNode.Tag = channelNode;
 
-			if (channel.Children.Count() <= 0) {
-				if (channel.Channel != null && channel.Channel.Patch.Count() > 0) {
-					if (channel.Channel.Masked)
+			if (!channelNode.Children.Any()) {
+				if (channelNode.Channel != null && VixenSystem.ChannelPatching.GetChannelPatches(channelNode.Channel.Id).Any()) {
+					if (channelNode.Channel.Masked)
 						addedNode.ImageKey = addedNode.SelectedImageKey = "RedBall";
 					else
 						addedNode.ImageKey = addedNode.SelectedImageKey = "GreenBall";
@@ -190,7 +192,7 @@ namespace VixenApplication
 
 			collection.Add(addedNode);
 
-			foreach (ChannelNode childNode in channel.Children) {
+			foreach (ChannelNode childNode in channelNode.Children) {
 				AddNodeToTree(addedNode.Nodes, childNode);
 			}
 		}
@@ -279,7 +281,8 @@ namespace VixenApplication
 			listViewPatches.Items.Clear();
 
 			if (node != null && node.Channel != null) {
-				foreach (ControllerReference patch in node.Channel.Patch.ControllerReferences) {
+				var channelPatch = VixenSystem.ChannelPatching.GetChannelPatches(node.Channel.Id);
+				foreach (ControllerReference patch in channelPatch) {
 					ListViewItem item = new ListViewItem();
 					item.Text = patch.ToString();
 					item.Tag = patch;
@@ -304,7 +307,7 @@ namespace VixenApplication
 			buttonAddPatch.Enabled = (comboBoxPatchControllerSelect.SelectedIndex >= 0);
 
 			if (comboBoxPatchControllerSelect.SelectedIndex >= 0) {
-				OutputController oc = VixenSystem.Controllers.Get((Guid)comboBoxPatchControllerSelect.SelectedValue);
+				OutputController oc = VixenSystem.Controllers.GetController((Guid)comboBoxPatchControllerSelect.SelectedValue);
 				numericUpDownPatchOutputSelect.Maximum = oc.OutputCount;
 				if (oc.OutputCount == 0)
 					numericUpDownPatchOutputSelect.Minimum = oc.OutputCount;
@@ -405,7 +408,7 @@ namespace VixenApplication
 				if (MessageBox.Show(message, title, MessageBoxButtons.OKCancel) == DialogResult.OK) {
 					foreach (ListViewItem item in listViewPatches.SelectedItems) {
 						if (item.Tag is ControllerReference) {
-							_displayedNode.Channel.Patch.Remove(item.Tag as ControllerReference);
+							VixenSystem.ChannelPatching.RemovePatch(_displayedNode.Channel.Id, (ControllerReference)item.Tag);
 						} else {
 							VixenSystem.Logging.Error("ConfigChannels: Trying to remove patch, but it's not a ControllerReference");
 						}
@@ -421,14 +424,14 @@ namespace VixenApplication
 			if (comboBoxPatchControllerSelect.SelectedIndex < 0 || numericUpDownPatchOutputSelect.Value <= 0)
 				return;
 
-			OutputController controller = VixenSystem.Controllers.Get((Guid)comboBoxPatchControllerSelect.SelectedValue);
+			OutputController controller = VixenSystem.Controllers.GetController((Guid)comboBoxPatchControllerSelect.SelectedValue);
 			if (controller == null || controller.OutputCount < numericUpDownPatchOutputSelect.Value)
 				return;
 
 			if (_displayedNode.Channel == null) {
 				_displayedNode.Channel = VixenSystem.Channels.AddChannel(_displayedNode.Name);
 			}
-			_displayedNode.Channel.Patch.Add(new ControllerReference((Guid)comboBoxPatchControllerSelect.SelectedValue, ((int)numericUpDownPatchOutputSelect.Value) - 1));
+			VixenSystem.ChannelPatching.AddPatch(_displayedNode.Channel.Id, new ControllerReference((Guid)comboBoxPatchControllerSelect.SelectedValue, ((int)numericUpDownPatchOutputSelect.Value) - 1));
 
 			PopulateCurrentPatchesArea(_displayedNode);
 			PopulateNodeTree();
@@ -710,8 +713,9 @@ namespace VixenApplication
 					else
 						newName = textDialog.Response;
 
-					ChannelNode newNode = new ChannelNode(newName);
-					VixenSystem.Nodes.AddChildToParent(newNode, parent, index);
+					ChannelNode newNode = Vixen.Services.ChannelNodeService.Instance.CreateSingle(parent, newName, index: index);
+					//ChannelNode newNode = new ChannelNode(newName);
+					//VixenSystem.Nodes.AddChildToParent(newNode, parent, index);
 					PopulateNodeTree();
 					return newNode;
 				}
@@ -733,7 +737,7 @@ namespace VixenApplication
 
 		private bool CheckIfNodeWillLosePatches(ChannelNode node)
 		{
-			if (node != null && node.Channel != null && node.Channel.Patch.Count() > 0) {
+			if (node != null && node.Channel != null && VixenSystem.ChannelPatching.GetChannelPatches(node.Channel.Id).Any()) {
 				string message = "Adding nodes to this Channel will convert it into a Group, which will remove any " +
 					"patches to outputs it may have. Are you sure you want to continue?";
 				string title = "Convert Channel to Group?";
@@ -946,6 +950,30 @@ namespace VixenApplication
 		}
 
 		#endregion
+
+		private void createAndNameToolStripMenuItem_Click(object sender, EventArgs e) {
+			using(CreateAndNameChannels form = new CreateAndNameChannels()) {
+				form.ShowDialog();
+				PopulateNodeTree();
+			}
+		}
+
+		private void patchToolStripMenuItem_Click(object sender, EventArgs e) {
+			IEnumerable<ChannelNode> channelNodes = multiSelectTreeviewChannelsGroups.SelectedNodes.Select(x => x.Tag).Cast<ChannelNode>();
+			_PatchAndName(channelNodes);
+		}
+
+		private void patchAllToolStripMenuItem_Click(object sender, EventArgs e) {
+			IEnumerable<ChannelNode> channelNodes = multiSelectTreeviewChannelsGroups.Nodes.Cast<TreeNode>().Select(x => x.Tag as ChannelNode);
+			_PatchAndName(channelNodes);
+		}
+
+		private void _PatchAndName(IEnumerable<ChannelNode> channelNodes) {
+			using(PatchChannels form = new PatchChannels(channelNodes)) {
+				form.ShowDialog();
+				PopulateFormWithNode(null, true);
+			}
+		}
 	}
 
 	public class ComboBoxControllerItem

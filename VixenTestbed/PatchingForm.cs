@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using Vixen.Sys;
+using Vixen.Sys.Output;
 
 namespace VixenTestbed {
 	public partial class PatchingForm : Form {
@@ -51,8 +47,9 @@ namespace VixenTestbed {
 
 		private void buttonPatch_Click(object sender, EventArgs e) {
 			try {
-				_SelectedChannel.Patch.Add(_SelectedController.Id, _SelectedOutput);
-				_AddChannelPatchNode(_SelectedChannel, new ControllerReference(_SelectedController.Id, _SelectedOutput));
+				ControllerReference controllerReference = new ControllerReference(_SelectedController.Id, _SelectedOutput);
+				VixenSystem.ChannelPatching.AddPatch(_SelectedChannel.Id, controllerReference);
+				_AddChannelPatchNode(_SelectedChannel, controllerReference);
 			} catch(Exception ex) {
 				MessageBox.Show(ex.Message);
 			}
@@ -60,7 +57,7 @@ namespace VixenTestbed {
 
 		private void buttonRemove_Click(object sender, EventArgs e) {
 			try {
-				_SelectedPatchChannel.Patch.Remove(_SelectedPatch);
+				VixenSystem.ChannelPatching.RemovePatch(_SelectedPatchChannel.Id, _SelectedPatch);
 				treeViewPatching.Nodes.Remove(treeViewPatching.SelectedNode);
 			} catch(Exception ex) {
 				MessageBox.Show(ex.Message);
@@ -124,7 +121,7 @@ namespace VixenTestbed {
 		private void _AddChannelNode(Channel channel) {
 			TreeNode channelNode = treeViewPatching.Nodes.Add(channel.Name);
 			channelNode.Tag = channel;
-			foreach(ControllerReference controllerReference in channel.Patch) {
+			foreach(ControllerReference controllerReference in VixenSystem.ChannelPatching.GetChannelPatches(channel.Id)) {
 				_AddChannelPatchNode(channelNode, controllerReference);
 			}
 		}

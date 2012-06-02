@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Vixen.Sys {
 	public class InsertDataListenerStack {
-		public delegate bool DataListener(EffectNode effectNode);
+		public delegate bool DataListener(IEffectNode effectNode);
 
 		private LinkedList<DataListener> _listeners = new LinkedList<DataListener>();
 
-		public void InsertData(EffectNode effectNode) {
+		public void InsertData(IEffectNode effectNode) {
 			bool cancel = false;
 			IEnumerator<DataListener> enumerator = _listeners.GetEnumerator();
 			while(!cancel && enumerator.MoveNext()) {
@@ -17,11 +16,11 @@ namespace Vixen.Sys {
 			}
 		}
 
-		public void InsertData(IEnumerable<EffectNode> effectNodes) {
+		public void InsertData(IEnumerable<IEffectNode> effectNodes) {
 			bool cancel = false;
 			IEnumerator<DataListener> enumerator = _listeners.GetEnumerator();
 			while(!cancel && enumerator.MoveNext()) {
-				foreach(EffectNode effectNode in effectNodes) {
+				foreach(IEffectNode effectNode in effectNodes) {
 					cancel = enumerator.Current(effectNode);
 				}
 			}

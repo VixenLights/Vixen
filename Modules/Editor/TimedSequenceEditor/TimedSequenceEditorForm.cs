@@ -10,6 +10,7 @@ using Vixen.Module.Editor;
 using Vixen.Module.Effect;
 using Vixen.Module.Media;
 using Vixen.Module.Timing;
+using Vixen.Services;
 using Vixen.Sys;
 using VixenModules.Sequence.Timed;
 
@@ -79,8 +80,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
             InitUndo();
 			updateButtonStates();
 
-			ScrollOnPlayback = true;
-
 #if DEBUG
 			ToolStripButton b = new ToolStripButton("[Debug Break]");
 			b.Click += b_Click;
@@ -94,7 +93,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//Debugger.Break();
 
 			Debug.WriteLine("***** Effects in Sequence *****");
-			foreach (var x in _sequence.Data.GetEffects())
+			foreach (var x in _sequence.GetData())
 				Debug.WriteLine("{0} - {1}: {2}", x.StartTime, x.EndTime, x.Effect.InstanceId);
 		}
 #endif
@@ -190,7 +189,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			// load the new data: get all the commands in the sequence, and make a new element for each of them.
 			_effectNodeToElement = new Dictionary<EffectNode, Element>();
-			foreach (EffectNode node in _sequence.Data.GetEffects()) {
+			foreach (EffectNode node in _sequence.Data.GetMainStreamData()) {
 				addElementForEffectNode(node);
 			}
 
@@ -439,7 +438,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_context != null) {
 				CloseSequenceContext();
 			}
-			_context = Execution.CreateContext(Sequence);
+			_context = (ProgramContext)VixenSystem.Contexts.CreateContext(Sequence);
 			_context.SequenceStarted += context_SequenceStarted;
 			_context.SequenceEnded += context_SequenceEnded;
 			_context.ProgramEnded += _context_ProgramEnded;
@@ -453,7 +452,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_context.SequenceStarted -= context_SequenceStarted;
 			_context.SequenceEnded -= context_SequenceEnded;
 			_context.ProgramEnded -= _context_ProgramEnded;
-			Execution.ReleaseContext(_context);
+			VixenSystem.Contexts.ReleaseContext(_context);
 			updateButtonStates();
 		}
 
@@ -524,7 +523,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		protected void timerPlaying_Tick(object sender, EventArgs e)
 		{
-			if (_timingSource != null && ScrollOnPlayback) {
+			if (_timingSource != null) {
 				timelineControl.PlaybackCurrentTime = _timingSource.Position;
 			}
 		}
@@ -618,7 +617,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			//Debug.WriteLine("{0}   addNewEffectById({1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, effectId);
 			// get a new instance of this effect, populate it, and make a node for it
-			IEffectModuleInstance effect = Vixen.Sys.ApplicationServices.Get<IEffectModuleInstance>(effectId);
+			IEffectModuleInstance effect = ApplicationServices.Get<IEffectModuleInstance>(effectId);
 			addEffectInstance(effect, row, startTime, timeSpan);
 		}
 
@@ -858,7 +857,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		protected override void OnFormClosed(FormClosedEventArgs e)
 		{
-			Execution.ReleaseContext(_context);
+			VixenSystem.Contexts.ReleaseContext(_context);
 		}
 
 		#endregion
@@ -958,16 +957,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				IEffectModuleInstance newEffect = (IEffectModuleInstance)elem.EffectNode.Effect.Clone();
 				addEffectInstance(newEffect, visibleRows[targetRowIndex], targetTime, elem.Duration);
 			}
-		}
-
-		public void CopyElementToTime(TimedSequenceElement element, TimeSpan targetTime)
-		{
-			if (element == null)
-				return;
-
-			Row targetRow = timelineControl.SelectedRow ?? timelineControl.TopVisibleRow;
-			IEffectModuleInstance newEffect = element.EffectNode.Effect.Clone() as IEffectModuleInstance;
-			addEffectInstance(newEffect, targetRow, targetTime, element.Duration);
 		}
 
 		#endregion
@@ -1086,7 +1075,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			// for now, only allow a single Audio type media to be assocated. If they want to add another, confirm and remove it.
 			HashSet<IMediaModuleInstance> modulesToRemove = new HashSet<IMediaModuleInstance>();
-			foreach (IMediaModuleInstance module in _sequence.Media)
+			foreach (IMediaModuleInstance module in _sequence.GetAllMedia())
 			{
 				if (module is VixenModules.Media.Audio.Audio)
 				{
@@ -1107,7 +1096,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
-				IMediaModuleInstance newInstance = _sequence.Media.Add(openFileDialog.FileName);
+				IMediaModuleInstance newInstance = _sequence.AddMedia(openFileDialog.FileName);
 				if (newInstance == null)
 				{
 					MessageBox.Show("The selected file is not a supported type.");
@@ -1117,7 +1106,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				// we're going ahead and adding the new audio, so remove any of the old ones we found earlier
 				foreach (IMediaModuleInstance module in modulesToRemove)
 				{
-					_sequence.Media.Remove(module);
+					_sequence.RemoveMedia(module);
 				}
 
 				TimeSpan length = TimeSpan.Zero;
@@ -1148,8 +1137,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripMenuItem_MarkManager_Click(object sender, EventArgs e)
 		{
-			MarkManager manager = new MarkManager(new List<MarkCollection>(_sequence.MarkCollections), this, this, this);
-			if (manager.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+			MarkManager manager = new MarkManager(new List<MarkCollection>(_sequence.MarkCollections), this, this);
+			if (manager.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
 				_sequence.MarkCollections = manager.MarkCollections;
 				populateGridWithMarks();
 				sequenceModified();
@@ -1176,33 +1166,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 }
             } while (true);
 		}
-
-
-		public TimelineElementsClipboardData ClipboardData
-		{
-			get { return _clipboard; }
-		}
-
-		private void renderEffectsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			foreach (EffectNode en in _sequence.Data.GetEffects()) {
-				if (en.Effect.IsDirty)
-					en.Effect.PreRender();
-			}
-		}
-
-		private void renderElementsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			foreach (Element element in timelineControl.SelectedElements) {
-				(element as TimedSequenceElement).RenderInsetImage();
-			}
-		}
-
-		private void toolStripMenuItem_scrollOnPlayback_Click(object sender, EventArgs e)
-		{
-			ScrollOnPlayback = toolStripMenuItem_scrollOnPlayback.Checked;
-		}
-
 
 		#endregion
 
@@ -1356,8 +1319,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region IExecutionControl and ITiming implementation - beat tapping
 
-
-		// implementation of IExecutionControl and ITiming interfaces, for the beat track tapping.
 		void IExecutionControl.Resume()
 		{
 			PlaySequence();
@@ -1380,12 +1341,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		TimeSpan ITiming.Position
 		{
-			get
-			{
-				if (_timingSource == null)
-					return TimeSpan.Zero;
-				return _timingSource.Position;
-			}
+			get { return _timingSource.Position; }
 			set { }
 		}
 
@@ -1400,16 +1356,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			set { throw new NotSupportedException(); }
 		}
 
-		private bool _scrollOnPlayback;
-		public bool ScrollOnPlayback
-		{
-			get { return _scrollOnPlayback; }
-			set
-			{
-				_scrollOnPlayback = value;
-				toolStripMenuItem_scrollOnPlayback.Checked = value;
-			}
-		}
 		#endregion
 
 	}

@@ -5,7 +5,6 @@ using System.Text;
 using Vixen.Module;
 using Vixen.Module.App;
 using System.Runtime.Serialization;
-using System.Drawing;
 
 namespace VixenModules.App.Curves
 {
@@ -34,12 +33,10 @@ namespace VixenModules.App.Curves
 			}
 		}
 
-		[DataMember]
-		public Rectangle SelectorWindowBounds { get; set; }
-
 		public override IModuleDataModel Clone()
 		{
 			CurveLibraryStaticData result = new CurveLibraryStaticData();
+			// TODO: this is only a shallow copy. Don't think it'll matter, this module is a singleton...
 			result.Library = new Dictionary<string, Curve>(Library);
 			return result;
 		}

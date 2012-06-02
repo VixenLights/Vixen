@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Module.App;
 
@@ -21,18 +22,6 @@ namespace VixenModules.App.Curves
 		private void CurveLibrarySelector_Load(object sender, EventArgs e)
 		{
 			PopulateListWithCurves();
-			CurveLibraryStaticData data;
-			data = (ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary).StaticModuleData as CurveLibraryStaticData;
-			if (Screen.GetWorkingArea(this).Contains(data.SelectorWindowBounds) && data.SelectorWindowBounds.Width >= MinimumSize.Width) {
-				Bounds = data.SelectorWindowBounds;
-			}
-		}
-
-		private void CurveLibrarySelector_FormClosing(object sender, FormClosingEventArgs e)
-		{
-			CurveLibraryStaticData data;
-			data = (ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary).StaticModuleData as CurveLibraryStaticData;
-			data.SelectorWindowBounds = Bounds;
 		}
 
 		private void PopulateListWithCurves()

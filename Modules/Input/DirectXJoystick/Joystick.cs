@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using DirectXJoystick;
 using SlimDX.DirectInput;
-using Vixen.Commands.KnownDataTypes;
 using Vixen.Module.Input;
 using VixenModules.Input.DirectXJoystick.Input;
 using Vixen.Sys;
@@ -42,7 +42,8 @@ namespace VixenModules.Input.DirectXJoystick {
 				_device.Acquire();
 				// Must be set before any notifications come through.
 				IsAcquired = true;
-				new Thread(_UpdateThread).Start();
+				Thread thread = new Thread(_UpdateThread) { Name = "Joystick" };
+				thread.Start();
 			}
 		}
 
@@ -94,7 +95,7 @@ namespace VixenModules.Input.DirectXJoystick {
 				device = new SlimDX.DirectInput.Joystick(directInput, deviceInstance.InstanceGuid);
 				// This needs System.Windows.Forms.Control.
 				device.SetCooperativeLevel(IntPtr.Zero, CooperativeLevel.Nonexclusive | CooperativeLevel.Background);
-				device.Properties.SetRange(Position.MinValue, Position.MaxValue);
+				device.Properties.SetRange((int)Position.MinValue, (int)Position.MaxValue);
 
 				Inputs = _GetInputs(device).ToArray();
 			}

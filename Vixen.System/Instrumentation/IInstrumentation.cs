@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Vixen.Instrumentation {
 	public interface IInstrumentation {
 		void AddValue(IInstrumentationValue value);
+		void RemoveValue(IInstrumentationValue value);
 		IEnumerable<string> ValueNames { get; }
 		IEnumerable<IInstrumentationValue> Values { get; }
 	}

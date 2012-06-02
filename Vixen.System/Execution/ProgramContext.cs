@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Vixen.Module.Timing;
 using Vixen.Sys;
 
 namespace Vixen.Execution {
 	/// <summary>
 	/// Execution context for a Program of sequences.
 	/// </summary>
-	public class ProgramContext : IDisposable {
+	public class ProgramContext : Context {
 		private ProgramExecutor _programExecutor;
+		private IDataSource _dataSource;
+		private ITiming _timingSource;
 
 		public event EventHandler<SequenceStartedEventArgs> SequenceStarted;
 		public event EventHandler<SequenceEventArgs> SequenceEnded;
@@ -17,13 +17,11 @@ namespace Vixen.Execution {
 		public event EventHandler<ProgramEventArgs> ProgramEnded;
 		public event EventHandler<ExecutorMessageEventArgs> Message;
 		public event EventHandler<ExecutorMessageEventArgs> Error;
-		public event EventHandler ContextStarted;
-		public event EventHandler ContextEnded;
 
-		public ProgramContext(Program program) {
-			this.Program = program;
-			_programExecutor = new ProgramExecutor(this.Program);
-			Id = Guid.NewGuid();
+		public ProgramContext(Program program)
+			: base(program.Name) {
+			Program = program;
+			_programExecutor = new ProgramExecutor(Program);
 
 			_programExecutor.SequenceStarted += _programExecutor_SequenceStarted;
 			_programExecutor.SequenceEnded += _programExecutor_SequenceEnded;
@@ -35,43 +33,25 @@ namespace Vixen.Execution {
 
 		public Program Program { get; private set; }
 
-		public Guid Id { get; private set; }
-
-		public string Name {
-			get {
-				if(this.Program != null) {
-					return this.Program.Name;
-				}
-				return null;
-			}
+		public override bool IsPlaying {
+			get { return _ProgramExecutorIsPlaying() && _DataIsReady(); }
 		}
 
-		public bool Play() {
-			return _Play(ProgramExecutor.START_ENTIRE_SEQUENCE, ProgramExecutor.END_ENTIRE_SEQUENCE);
+		protected override bool _OnPlay(TimeSpan startTime, TimeSpan endTime) {
+			_programExecutor.Play(startTime, endTime);
+			return true;
 		}
 
-		public bool Play(TimeSpan startTime, TimeSpan endTime) {
-			return _Play(startTime, endTime);
-		}
-
-		public void Pause() {
+		protected override void _OnPause() {
 			_programExecutor.Pause();
 		}
 
-		public void Stop() {
-			if(IsPlaying) { // Which will be true even if paused.
-				_programExecutor.Stop();
-			}
+		protected override void _OnResume() {
+			_programExecutor.Resume();
 		}
 
-		public bool IsPaused {
-			get { return _programExecutor.IsPaused; }
-		}
-
-		public bool IsPlaying {
-			get {
-				return _programExecutor.State == ProgramExecutor.RunState.Playing;
-			}
+		protected override void _OnStop() {
+			_programExecutor.Stop();
 		}
 
 		/// <summary>
@@ -86,48 +66,25 @@ namespace Vixen.Execution {
 			return 0;
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="startTime"></param>
-		/// <param name="endTime"></param>
-		/// <returns>True if execution entered the playing state.</returns>
-		private bool _Play(TimeSpan startTime, TimeSpan endTime) {
-			try {
-				if(!IsPlaying) {
-					_programExecutor.Play(startTime, endTime);
-				} else if(IsPaused) {
-					// Paused, must be resumed.
-					_programExecutor.Resume();
-				}
-				return true;
-			} catch(Exception ex) {
-				VixenSystem.Logging.Error(ex);
-				return false;
-			}
-		}
-
 		~ProgramContext() {
 			Dispose();
 		}
 
-		public void Dispose() {
-			Stop();
+		override protected void Dispose(bool disposing) {
+			if(disposing) {
+				_programExecutor.SequenceStarted -= _programExecutor_SequenceStarted;
+				_programExecutor.SequenceEnded -= _programExecutor_SequenceEnded;
+				_programExecutor.ProgramStarted -= _programExecutor_ProgramStarted;
+				_programExecutor.ProgramEnded -= _programExecutor_ProgramEnded;
+				_programExecutor.Message -= _programExecutor_Message;
+				_programExecutor.Error -= _programExecutor_Error;
 
-			_programExecutor.SequenceStarted -= _programExecutor_SequenceStarted;
-			_programExecutor.SequenceEnded -= _programExecutor_SequenceEnded;
-			_programExecutor.ProgramStarted -= _programExecutor_ProgramStarted;
-			_programExecutor.ProgramEnded -= _programExecutor_ProgramEnded;
-			_programExecutor.Message -= _programExecutor_Message;
-			_programExecutor.Error -= _programExecutor_Error;
-
-			_programExecutor.Dispose();
-			_programExecutor = null;
-
-			// In case we're being disposed by something other than the
-			// act of being released.
-			Vixen.Sys.Execution.ReleaseContext(this);
-			GC.SuppressFinalize(this);
+				_programExecutor.Dispose();
+				_programExecutor = null;
+				// In case we're being disposed by something other than the
+				// act of being released.
+				VixenSystem.Contexts.ReleaseContext(this);
+			}
 		}
 
 		#region Events
@@ -164,23 +121,51 @@ namespace Vixen.Execution {
 		}
 
 		void _programExecutor_SequenceStarted(object sender, SequenceStartedEventArgs e) {
+			_dataSource = _programExecutor.GetCurrentSequenceData();
+			_timingSource = _programExecutor.GetCurrentSequenceTiming();
+			
+			//Once a sequence is executed with this present, it can be saved and this
+			//line commented out.  The sequence file will have it at that point.
+			//****
+			//_AddPreFilterToSequence();
+			//****
+
 			if(SequenceStarted != null) {
 				SequenceStarted(this, e);
 			}
 		}
 
-		protected virtual void OnContextStarted(EventArgs e) {
-			if(ContextStarted != null) {
-				ContextStarted(this, e);
-			}
+		//private void _AddPreFilterToSequence() {
+		//    //Don't want it applied every time the sequence is started.  The result is cumulative.
+		//    if(_programExecutor.Current.Sequence.GetAllSequenceFilters().Any()) return;
+
+		//    IPreFilterModuleInstance preFilter = Modules.ModuleManagement.GetPreFilter(new Guid("{E0E26570-6A01-4368-B996-E34576FF4910}"));
+		//    //Fade out over the first 5 seconds.
+		//    preFilter.TimeSpan = TimeSpan.FromSeconds(5);
+		//    //Every channel.
+		//    preFilter.TargetNodes = VixenSystem.Nodes.ToArray();
+		//    //The first three channels of my 1024-channel group.
+		//    //preFilter.TargetNodes = VixenSystem.Nodes.Skip(64).Take(3).ToArray();
+		//    //Starting right away.
+		//    _programExecutor.Current.Sequence.AddSequenceFilter(new sequenceFilterNode(preFilter, TimeSpan.Zero));
+		//}
+
+		protected override IDataSource _DataSource {
+			get { return _dataSource; }
 		}
 
-		protected virtual void OnContextEnded(EventArgs e) {
-			if(ContextEnded != null) {
-				ContextEnded(this, e);
-			}
+		protected override ITiming _TimingSource {
+			get { return _timingSource; }
 		}
 
 		#endregion
+
+		private bool _ProgramExecutorIsPlaying() {
+			return _programExecutor != null && _programExecutor.IsPlaying;
+		}
+
+		private bool _DataIsReady() {
+			return _dataSource != null && _timingSource != null;
+		}
 	}
 }

@@ -38,7 +38,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\Output\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -105,48 +105,321 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\Animatronics.cs" />
-    <Compile Include="Commands\Command.cs" />
-    <Compile Include="Commands\CommandIdentifier.cs" />
-    <Compile Include="Commands\CommandNode.cs" />
-    <Compile Include="Commands\ParameterSignature.cs" />
-    <Compile Include="Commands\ParameterSpecification.cs" />
-    <Compile Include="Commands\CustomCommandBehavior.cs" />
-    <Compile Include="Commands\ICustomCommandBehavior.cs" />
-    <Compile Include="Commands\Lighting.cs" />
-    <Compile Include="Commands\Types.cs" />
-    <Compile Include="Execution\NonExpiringChannelEnumerator.cs" />
-    <Compile Include="Instrumentation\AverageValue.cs" />
+    <Compile Include="Commands\ChannelCommands.cs" />
+    <Compile Include="Commands\ColorValueCommand.cs" />
+    <Compile Include="Commands\DoubleValueCommand.cs" />
+    <Compile Include="Commands\FloatValueCommand.cs" />
+    <Compile Include="Commands\LightingValueCommand.cs" />
+    <Compile Include="Commands\SignedLongValueCommand.cs" />
+    <Compile Include="Commands\UnsignedLongValueCommand.cs" />
+    <Compile Include="Data\Combinator\ColorCombinator.cs" />
+    <Compile Include="Data\Combinator\Combinator.cs" />
+    <Compile Include="Data\Combinator\LightingCombinator.cs" />
+    <Compile Include="Data\Combinator\PercentageHighestWinsCombinator.cs" />
+    <Compile Include="Data\Evaluator\ColorEvaluator.cs" />
+    <Compile Include="Data\Evaluator\Evaluator.cs" />
+    <Compile Include="Data\Evaluator\LightingEvaluator.cs" />
+    <Compile Include="Data\Evaluator\LongEvaluator.cs" />
+    <Compile Include="Data\Evaluator\PercentEvaluator.cs" />
+    <Compile Include="Data\Policy\ControllerDataPolicy.cs" />
+    <Compile Include="Data\Policy\OutputDataPolicy.cs" />
+    <Compile Include="Execution\ContextCurrentEffectsFull.cs" />
+    <Compile Include="Execution\IChannelStateBuilder.cs" />
+    <Compile Include="Execution\IContextCurrentEffects.cs" />
+    <Compile Include="Execution\IntentBuffer.cs" />
+    <Compile Include="Execution\FilteringIntentCache.cs" />
+    <Compile Include="Execution\IntentStateBuilder.cs" />
+    <Compile Include="Execution\LiveContext.cs" />
+    <Compile Include="Intent\ColorLinearIntent.cs" />
+    <Compile Include="Intent\IntentState.cs" />
+    <Compile Include="Intent\LightingLinearIntent.cs" />
+    <Compile Include="IO\Xml\XmlSmartControllerCollectionSerializer.cs" />
+    <Compile Include="IO\Xml\XmlSmartControllerSerializer.cs" />
+    <Compile Include="Module\SmartController\ISmartController.cs" />
+    <Compile Include="Module\SmartController\ISmartControllerModuleDescriptor.cs" />
+    <Compile Include="Module\SmartController\ISmartControllerModuleInstance.cs" />
+    <Compile Include="Module\SmartController\SmartControllerModuleDescriptorBase.cs" />
+    <Compile Include="Module\SmartController\SmartControllerModuleImplementation.cs" />
+    <Compile Include="Module\SmartController\SmartControllerModuleInstanceBase.cs" />
+    <Compile Include="Module\SmartController\SmartControllerModuleManagement.cs" />
+    <Compile Include="Module\SmartController\SmartControllerModuleRepository.cs" />
+    <Compile Include="Sys\Attribute\InterpolatorAttribute.cs" />
+    <Compile Include="Sys\Dispatch\IAnyCommandHandler.cs" />
+    <Compile Include="Sys\Dispatch\IntentSegmentDispatch.cs" />
+    <Compile Include="Sys\IHasOutputs.cs" />
+    <Compile Include="Sys\Instrumentation\BufferSizeInSecondsValue.cs" />
+    <Compile Include="Sys\Instrumentation\CacheHitPercentValue.cs" />
+    <Compile Include="Sys\IntentChangeCollection.cs" />
+    <Compile Include="Sys\LightingValue.cs" />
+    <Compile Include="Intent\LongLinearIntent.cs" />
+    <Compile Include="Intent\PercentageLinearIntent.cs" />
+    <Compile Include="Interpolator\ColorInterpolator.cs" />
+    <Compile Include="Interpolator\DoubleInterpolator.cs" />
+    <Compile Include="Interpolator\FloatInterpolator.cs" />
+    <Compile Include="Intent\FloatLinearIntent.cs" />
+    <Compile Include="Interpolator\LightingInterpolator.cs" />
+    <Compile Include="Interpolator\LongInterpolator.cs" />
+    <Compile Include="IO\Factory\XmlSerializerFactory.cs" />
+    <Compile Include="IO\ISerializerFactory.cs" />
+    <Compile Include="IO\Policy\ChannelNodeTemplatePolicy.cs" />
+    <Compile Include="IO\Policy\OutputFilterTemplatePolicy.cs" />
+    <Compile Include="IO\Migrator.cs" />
+    <Compile Include="IO\Xml\Migrator\XmlMigrator.cs" />
+    <Compile Include="IO\Xml\Template\XmlChannelNodeTemplateSerializerTemplate.cs" />
+    <Compile Include="IO\Xml\Template\XmlModuleStoreSerializerTemplate.cs" />
+    <Compile Include="IO\Xml\Template\XmlOutputFilterTemplateSerializerTemplate.cs" />
+    <Compile Include="IO\Xml\Template\XmlProgramSerializerTemplate.cs" />
+    <Compile Include="IO\Xml\Template\XmlScriptSequenceSerializerTemplate.cs" />
+    <Compile Include="IO\Xml\Template\XmlSequenceSerializerTemplate.cs" />
+    <Compile Include="IO\Xml\Template\XmlSystemConfigSerializerTemplate.cs" />
+    <Compile Include="IO\Xml\Template\XmlSystemContextSerializerTemplate.cs" />
+    <Compile Include="IO\Xml\Template\XmlTemplatedSerializer.cs" />
+    <Compile Include="IO\Xml\Migrator\XmlChannelNodeTemplateMigrator.cs" />
+    <Compile Include="IO\Xml\Policy\XmlChannelNodeTemplatePolicy.cs" />
+    <Compile Include="IO\Xml\XmlChannelNodeTemplateSerializer.cs" />
+    <Compile Include="IO\Xml\XmlFileSerializationHelper.cs" />
+    <Compile Include="IO\Xml\XmlOutputFilterSerializer.cs" />
+    <Compile Include="IO\Xml\Migrator\XmlOutputFilterTemplateMigrator.cs" />
+    <Compile Include="IO\Xml\Policy\XmlOutputFilterTemplatePolicy.cs" />
+    <Compile Include="IO\Xml\XmlOutputFilterTemplateSerializer.cs" />
+    <Compile Include="IO\Xml\Template\IXmlStandardFileReadTemplate.cs" />
+    <Compile Include="IO\Xml\Template\IXmlStandardFileWriteTemplate.cs" />
+    <Compile Include="IO\Xml\XmlPreviewCollectionSerializer.cs" />
+    <Compile Include="IO\Xml\XmlPreviewSerializer.cs" />
+    <Compile Include="IO\Xml\XmlVersionedContent.cs" />
+    <Compile Include="Module\Preview\AppContextPreviewModuleInstanceBase.cs" />
+    <Compile Include="Module\Preview\FormPreviewModuleInstanceBase.cs" />
+    <Compile Include="Module\Preview\IPreviewModuleDescriptor.cs" />
+    <Compile Include="Module\Preview\IPreviewModuleInstance.cs" />
+    <Compile Include="Module\Preview\IPreview.cs" />
+    <Compile Include="Module\Preview\IThreadBehavior.cs" />
+    <Compile Include="Module\Preview\MultiThreadBehavior.cs" />
+    <Compile Include="Module\Preview\PreviewModuleDescriptorBase.cs" />
+    <Compile Include="Module\Preview\PreviewModuleImplementation.cs" />
+    <Compile Include="Module\Preview\PreviewModuleInstanceBase.cs" />
+    <Compile Include="Module\Preview\PreviewModuleManagement.cs" />
+    <Compile Include="Module\Preview\PreviewModuleRepository.cs" />
+    <Compile Include="Module\Preview\SingleThreadBehavior.cs" />
+    <Compile Include="Rule\Name\GridTemplate.cs" />
+    <Compile Include="Rule\INamingRule.cs" />
+    <Compile Include="Rule\IPatchingRule.cs" />
+    <Compile Include="Rule\Name\FlatNumericTemplate.cs" />
+    <Compile Include="Rule\Name\FlatLetterTemplate.cs" />
+    <Compile Include="Rule\Patch\PatchingHelper.cs" />
+    <Compile Include="Rule\Patch\ToNOutputsAtOutput.cs" />
+    <Compile Include="Rule\Patch\ToNOutputsAtOutputs.cs" />
+    <Compile Include="Rule\Patch\ToNOutputsOverControllers.cs" />
+    <Compile Include="Services\ChannelNodeService.cs" />
+    <Compile Include="Services\OutputFilterService.cs" />
+    <Compile Include="Services\SequenceFilterService.cs" />
+    <Compile Include="Sys\ChannelIntents.cs" />
+    <Compile Include="Sys\ChannelNodeTemplate.cs" />
+    <Compile Include="Sys\ChannelPatchingChangeSet.cs" />
+    <Compile Include="Sys\ChannelStateSource.cs" />
+    <Compile Include="Sys\ChannelStateSourceCollection.cs" />
+    <Compile Include="Sys\ControllerReference.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Sys\ControllerReferenceCollection.cs" />
+    <Compile Include="Sys\Dispatch\CommandDispatch.cs" />
+    <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\SignedIntValueCommand.cs" />
+    <Compile Include="Commands\SignedShortValueCommand.cs" />
+    <Compile Include="Commands\ByteValueCommand.cs" />
+    <Compile Include="Commands\UnsignedIntValueCommand.cs" />
+    <Compile Include="Commands\UnsignedShortValueCommand.cs" />
+    <Compile Include="Execution\Context.cs" />
+    <Compile Include="Execution\ContextCurrentEffectsIncremental.cs" />
+    <Compile Include="Execution\ControllerUpdateAdjudicator.cs" />
+    <Compile Include="Execution\SelectedTimingProvider.cs" />
+    <Compile Include="Instrumentation\AveragePerCountValue.cs" />
+    <Compile Include="Instrumentation\AveragePerSecondValue.cs" />
     <Compile Include="Instrumentation\CountValue.cs" />
     <Compile Include="Instrumentation\IInstrumentation.cs" />
     <Compile Include="Instrumentation\IInstrumentationValue.cs" />
     <Compile Include="Instrumentation\InstrumentationValue.cs" />
     <Compile Include="Instrumentation\PercentValue.cs" />
     <Compile Include="Instrumentation\RateValue.cs" />
+    <Compile Include="Instrumentation\DoubleValue.cs" />
+    <Compile Include="Sys\Dispatchable.cs" />
+    <Compile Include="Sys\Dispatch\IAnyCombinatorHandler.cs" />
+    <Compile Include="Sys\Dispatch\IAnyEvaluatorHandler.cs" />
+    <Compile Include="Sys\Dispatch\IAnyIntentSegmentHandler.cs" />
+    <Compile Include="Sys\Dispatch\IAnyIntentStateHandler.cs" />
+    <Compile Include="Sys\GroupNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Sys\IChannelStateSource.cs" />
+    <Compile Include="Sys\ICombinator.cs" />
+    <Compile Include="Sys\IDataPolicy.cs" />
+    <Compile Include="Sys\IEvaluator.cs" />
+    <Compile Include="Sys\IHasOutputSources.cs" />
+    <Compile Include="Sys\IHasOutputFilters.cs" />
+    <Compile Include="Sys\IIntent.cs" />
+    <Compile Include="Sys\IIntentSegment.cs" />
+    <Compile Include="Sys\IIntentState.cs" />
+    <Compile Include="Interpolator\Interpolator.cs" />
+    <Compile Include="IO\Policy\SystemContextFilePolicy.cs" />
+    <Compile Include="IO\FileCompressor.cs" />
+    <Compile Include="IO\FileSerializer.cs" />
+    <Compile Include="IO\IModuleDataModelCollectionSerializer.cs" />
+    <Compile Include="IO\Policy\IFilePolicy.cs" />
+    <Compile Include="IO\IFileSerializer.cs" />
+    <Compile Include="IO\IMigrator.cs" />
+    <Compile Include="IO\ISerializer.cs" />
+    <Compile Include="IO\MigrationDriver.cs" />
+    <Compile Include="IO\MigrationPath.cs" />
+    <Compile Include="IO\Result\MigrationResult.cs" />
+    <Compile Include="IO\MigrationSegment.cs" />
+    <Compile Include="IO\Policy\ModuleStoreFilePolicy.cs" />
+    <Compile Include="IO\Policy\ProgramFilePolicy.cs" />
+    <Compile Include="IO\Policy\ScriptSequenceFilePolicy.cs" />
+    <Compile Include="IO\Policy\SequenceFilePolicy.cs" />
+    <Compile Include="IO\GeneralMigrationPolicy.cs" />
+    <Compile Include="IO\SerializerFactory.cs" />
+    <Compile Include="IO\Policy\SystemConfigFilePolicy.cs" />
+    <Compile Include="IO\Xml\Migrator\EmptyMigrator.cs" />
+    <Compile Include="IO\Xml\XmlChannelPatchingSerializer.cs" />
+    <Compile Include="IO\Xml\XmlChannelSerializer.cs" />
+    <Compile Include="IO\Xml\XmlCompressedFileCollectionSerializer.cs" />
+    <Compile Include="IO\Xml\XmlCompressedFileSerializer.cs" />
+    <Compile Include="IO\Xml\Migrator\XmlProgramMigrator.cs" />
+    <Compile Include="IO\Xml\XmlProgramSerializer.cs" />
+    <Compile Include="IO\Xml\Policy\XmlSystemContextFilePolicy.cs" />
+    <Compile Include="IO\Xml\XmlControllerCollectionSerializer.cs" />
+    <Compile Include="IO\Xml\XmlControllerLinkCollectionSerializer.cs" />
+    <Compile Include="IO\Xml\XmlControllerReferenceSerializer.cs" />
+    <Compile Include="IO\Xml\XmlControllerSerializer.cs" />
+    <Compile Include="IO\Xml\XmlDisabledControllerCollectionSerializer.cs" />
+    <Compile Include="IO\Xml\XmlChannelNodeCollectionSerializer.cs" />
+    <Compile Include="IO\Xml\XmlChannelNodeSerializer.cs" />
+    <Compile Include="IO\Xml\XmlMediaCollectionSerializer.cs" />
+    <Compile Include="IO\Xml\XmlModuleDataModelCollectionSerializer.cs" />
+    <Compile Include="IO\Xml\XmlModuleDataModelSerializer.cs" />
+    <Compile Include="IO\Xml\XmlModuleDataSetSerializer.cs" />
+    <Compile Include="IO\Xml\XmlModuleStaticDataSetSerializer.cs" />
+    <Compile Include="IO\Xml\Policy\XmlModuleStoreFilePolicy.cs" />
+    <Compile Include="IO\Xml\Migrator\XmlModuleStoreMigrator.cs" />
+    <Compile Include="IO\Xml\XmlModuleStoreSerializer.cs" />
+    <Compile Include="IO\Xml\XmlOutputFilterCollectionSerializer.cs" />
+    <Compile Include="IO\Xml\Policy\XmlProgramFilePolicy.cs" />
+    <Compile Include="IO\Xml\XmlPropertyCollectionSerializer.cs" />
+    <Compile Include="IO\Xml\XmlSequenceListSerializer.cs" />
+    <Compile Include="IO\Xml\Policy\XmlSystemConfigFilePolicy.cs" />
+    <Compile Include="IO\Xml\IXmlSerializer.cs" />
+    <Compile Include="IO\Xml\XmlChannelCollectionSerializer.cs" />
+    <Compile Include="IO\Xml\XmlEffectNodeCollectionSerializer.cs" />
+    <Compile Include="IO\Xml\XmlFileLoader.cs" />
+    <Compile Include="IO\Xml\XmlModuleLocalDataSetSerializer.cs" />
+    <Compile Include="IO\Xml\XmlSequenceFilterNodeCollectionSerializer.cs" />
+    <Compile Include="IO\Xml\Policy\XmlScriptSequenceFilePolicy.cs" />
+    <Compile Include="IO\Xml\Migrator\XmlScriptSequenceMigrator.cs" />
+    <Compile Include="IO\Xml\XmlScriptSequenceSerializer.cs" />
+    <Compile Include="IO\Xml\XmlScriptSourceFileCollectionSerializer.cs" />
+    <Compile Include="IO\Xml\XmlSelectedTimingProviderSerializer.cs" />
+    <Compile Include="IO\Xml\Policy\XmlSequenceFilePolicy.cs" />
+    <Compile Include="IO\Xml\Migrator\XmlSequenceMigrator.cs" />
+    <Compile Include="IO\Xml\XmlSequenceSerializer.cs" />
+    <Compile Include="IO\Xml\Migrator\XmlSystemConfigMigrator.cs" />
+    <Compile Include="IO\Xml\XmlSystemConfigSerializer.cs" />
+    <Compile Include="IO\Xml\Migrator\XmlSystemContextMigrator.cs" />
+    <Compile Include="IO\Xml\XmlSystemContextSerializer.cs" />
+    <Compile Include="Sys\ControllerLink.cs" />
+    <Compile Include="Sys\ControllerLinker.cs" />
+    <Compile Include="Sys\DataStream.cs" />
+    <Compile Include="Sys\DefaultValueArrayMember.cs" />
+    <Compile Include="IO\Result\FileOperationResult.cs" />
+    <Compile Include="Sys\IDataNode.cs" />
+    <Compile Include="Sys\IFileLoader.cs" />
+    <Compile Include="IO\Result\IFileOperationResult.cs" />
+    <Compile Include="Sys\IHasMedia.cs" />
+    <Compile Include="Sys\IHasSequenceFilterNodes.cs" />
+    <Compile Include="Sys\IHasSourceFiles.cs" />
+    <Compile Include="Sys\IIntentStateList.cs" />
+    <Compile Include="Sys\Instrumentation\ChannelUpdateTimeValue.cs" />
+    <Compile Include="Sys\Instrumentation\ContextUpdateTimeValue.cs" />
+    <Compile Include="Sys\Instrumentation\OutputDeviceRefreshRateValue.cs" />
+    <Compile Include="Sys\Instrumentation\OutputDeviceSleepTimeActualValue.cs" />
+    <Compile Include="Sys\Instrumentation\OutputDeviceSleepTimeRequestedValue.cs" />
+    <Compile Include="Sys\Instrumentation\OutputDeviceUpdateTimeValue.cs" />
+    <Compile Include="Sys\LinearIntent.cs" />
+    <Compile Include="Sys\IntentNodeCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Sys\IntentSegment.cs" />
+    <Compile Include="Sys\IntentSegmentNode.cs" />
+    <Compile Include="Sys\IntentStateList.cs" />
+    <Compile Include="Sys\IOutputStateSource.cs" />
+    <Compile Include="Sys\ITypeAffector.cs" />
+    <Compile Include="Data\Evaluator\FloatEvaluator.cs" />
+    <Compile Include="Data\Combinator\FloatHighestWinsCombinator.cs" />
+    <Compile Include="Sys\LiveDataSource.cs" />
+    <Compile Include="Sys\Managers\PreviewManager.cs" />
+    <Compile Include="Sys\OutputSourceChangeSet.cs" />
+    <Compile Include="Sys\Output\CommandOutput.cs" />
+    <Compile Include="Sys\Output\IntentOutput.cs" />
+    <Compile Include="Sys\Output\IOutputModule.cs" />
+    <Compile Include="Sys\Output\IOutputModuleDescriptor.cs" />
+    <Compile Include="Sys\Output\ModuleBasedController.cs" />
+    <Compile Include="Sys\Output\ModuleBasedOutputDevice.cs" />
+    <Compile Include="Sys\Output\Output.cs" />
+    <Compile Include="Sys\Output\OutputCollection.cs" />
+    <Compile Include="Sys\Output\OutputModuleInstanceBase.cs" />
+    <Compile Include="Sys\Output\OutputPreview.cs" />
+    <Compile Include="Sys\Output\SmartOutputController.cs" />
+    <Compile Include="Sys\Output\StateHoldingIntentOutput.cs" />
+    <Compile Include="Sys\SequenceFilterLookup.cs" />
+    <Compile Include="Sys\OutputIntentStateList.cs" />
+    <Compile Include="Sys\OutputStateSource.cs" />
+    <Compile Include="Sys\ParameterSignature.cs" />
+    <Compile Include="Sys\ParameterSpecification.cs" />
+    <Compile Include="Sys\OutputFilterCollection.cs" />
+    <Compile Include="Sys\OutputFilterTemplate.cs" />
+    <Compile Include="Data\Policy\RenardDataPolicy.cs" />
+    <Compile Include="IO\Result\ScriptSequenceSerializationResult.cs" />
+    <Compile Include="IO\Result\SerializationResult.cs" />
+    <Compile Include="Sys\Managers\IOutputDeviceManager.cs" />
+    <Compile Include="Sys\IHasSetup.cs" />
+    <Compile Include="Sys\Output\IOutputDevice.cs" />
+    <Compile Include="Sys\Output\OutputDeviceBase.cs" />
+    <Compile Include="Sys\Managers\OutputDeviceManager.cs" />
+    <Compile Include="Sys\Managers\OutputDeviceManagerBase.cs" />
+    <Compile Include="Sys\SequenceFilterNode.cs" />
+    <Compile Include="Sys\SourceFileCollection.cs" />
+    <Compile Include="IO\Result\SystemConfigSerializationResult.cs" />
+    <Compile Include="Sys\Attribute\ValueAttribute.cs" />
+    <Compile Include="Sys\EffectIntents.cs" />
     <Compile Include="Module\Input\IInputEffectMap.cs" />
     <Compile Include="Module\Input\InputEffectMap.cs" />
-    <Compile Include="Module\Intent\IIntent.cs" />
-    <Compile Include="Module\Intent\IIntentModuleDescriptor.cs" />
-    <Compile Include="Module\Intent\IIntentModuleInstance.cs" />
-    <Compile Include="Module\Intent\IntentModuleDescriptorBase.cs" />
-    <Compile Include="Module\Intent\IntentModuleImplementation.cs" />
-    <Compile Include="Module\Intent\IntentModuleInstanceBase.cs" />
-    <Compile Include="Module\Intent\IntentModuleManagement.cs" />
-    <Compile Include="Module\Intent\IntentModuleRepository.cs" />
-    <Compile Include="Sys\ChannelManager.cs" />
-    <Compile Include="Sys\ControllerManager.cs" />
-    <Compile Include="Execution\MultiStateTimedEnumerator.cs" />
+    <Compile Include="Module\OutputFilter\IOutputFilter.cs" />
+    <Compile Include="Module\OutputFilter\IOutputFilterModuleDescriptor.cs" />
+    <Compile Include="Module\OutputFilter\IOutputFilterModuleInstance.cs" />
+    <Compile Include="Module\OutputFilter\OutputFilterModuleDescriptorBase.cs" />
+    <Compile Include="Module\OutputFilter\OutputFilterModuleImplementation.cs" />
+    <Compile Include="Module\OutputFilter\OutputFilterModuleInstanceBase.cs" />
+    <Compile Include="Module\OutputFilter\OutputFilterModuleManagement.cs" />
+    <Compile Include="Module\OutputFilter\OutputFilterModuleRepository.cs" />
+    <Compile Include="Module\SequenceFilter\ISequenceFilter.cs" />
+    <Compile Include="Module\SequenceFilter\ISequenceFilterModuleDescriptor.cs" />
+    <Compile Include="Module\SequenceFilter\ISequenceFilterModuleInstance.cs" />
+    <Compile Include="Module\SequenceFilter\SequenceFilterModuleDescriptorBase.cs" />
+    <Compile Include="Module\SequenceFilter\SequenceFilterModuleImplementation.cs" />
+    <Compile Include="Module\SequenceFilter\SequenceFilterModuleInstanceBase.cs" />
+    <Compile Include="Module\SequenceFilter\SequenceFilterModuleManagement.cs" />
+    <Compile Include="Module\SequenceFilter\SequenceFilterModuleRepository.cs" />
+    <Compile Include="Sys\ChannelContextSource.cs" />
+    <Compile Include="Sys\Managers\ChannelManager.cs" />
+    <Compile Include="Sys\ChannelOutputPatch.cs" />
+    <Compile Include="Sys\Managers\ChannelOutputPatchManager.cs" />
+    <Compile Include="Sys\ContextEventArgs.cs" />
+    <Compile Include="Sys\Managers\ContextManager.cs" />
+    <Compile Include="Sys\Managers\ControllerManager.cs" />
     <Compile Include="ImageResource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ImageResource.resx</DependentUpon>
     </Compile>
-    <Compile Include="IO\Xml\XmlContextReader.cs" />
-    <Compile Include="IO\Xml\XmlContextWriter.cs" />
-    <Compile Include="IO\Xml\XmlModuleStoreReader.cs" />
-    <Compile Include="IO\Xml\XmlModuleStoreWriter.cs" />
     <Compile Include="Module\Editor\IEditorUserInterface.cs" />
-    <Compile Include="Module\Effect\ChannelCommands.cs" />
     <Compile Include="Module\MediaRenderer\IMediaRenderer.cs" />
     <Compile Include="Module\MediaRenderer\IMediaRendererModuleDescriptor.cs" />
     <Compile Include="Module\MediaRenderer\IMediaRendererModuleInstance.cs" />
@@ -157,11 +430,9 @@
     <Compile Include="Module\MediaRenderer\MediaRendererModuleRepository.cs" />
     <Compile Include="Module\ModuleLocalDataSet.cs" />
     <Compile Include="Module\ModuleStaticDataSet.cs" />
-    <Compile Include="Sys\ChannelSortedList.cs" />
     <Compile Include="Sys\ControllerSources.cs" />
-    <Compile Include="Sys\ExecutionStateValues.cs" />
     <Compile Include="Sys\FilePackage.cs" />
-    <Compile Include="Sys\IChannelDataStore.cs" />
+    <Compile Include="Sys\IDataSource.cs" />
     <Compile Include="Sys\Instrumentation\ChannelCommandsPerSecondValue.cs" />
     <Compile Include="Sys\Instrumentation\CommandsExpiredCountValue.cs" />
     <Compile Include="Sys\Instrumentation\CommandsExpiredPercentValue.cs" />
@@ -169,13 +440,17 @@
     <Compile Include="Sys\Instrumentation\CommandsQualifiedPercentValue.cs" />
     <Compile Include="Sys\Instrumentation\EffectsPerSecondValue.cs" />
     <Compile Include="Sys\Instrumentation\Instrumentation.cs" />
-    <Compile Include="Sys\Instrumentation\TotalChannelCommands.cs" />
+    <Compile Include="Sys\Instrumentation\TotalChannelCommandsValue.cs" />
     <Compile Include="Sys\Instrumentation\TotalCommandsPulledValue.cs" />
     <Compile Include="Sys\Instrumentation\TotalEffectsValue.cs" />
+    <Compile Include="Sys\IntentNode.cs" />
+    <Compile Include="Execution\EffectNodeQueue.cs" />
     <Compile Include="Sys\IPackageFileContent.cs" />
     <Compile Include="Sys\IOutputSourceCollection.cs" />
-    <Compile Include="Sys\ITimed.cs" />
-    <Compile Include="Sys\LiveListEnumerator.cs" />
+    <Compile Include="Sys\IStateSource.cs" />
+    <Compile Include="Sys\IStateSourceCollection.cs" />
+    <Compile Include="Sys\IStateSourceCollectionAdapter.cs" />
+    <Compile Include="Sys\Enumerator\LiveListEnumerator.cs" />
     <Compile Include="Sys\ModuleInstanceSpecification.cs" />
     <Compile Include="Sys\ModuleStore.cs" />
     <Compile Include="Sys\OutputSources.cs" />
@@ -183,34 +458,13 @@
     <Compile Include="Sys\ProgramContextEventArgs.cs" />
     <Compile Include="Sys\ProgramEventArgs.cs" />
     <Compile Include="Sys\SequenceEventArgs.cs" />
-    <Compile Include="Sys\SequenceReaderAttribute.cs" />
-    <Compile Include="Execution\ExecutorEffectEnumerator.cs" />
-    <Compile Include="IO\IReader.cs" />
-    <Compile Include="IO\IVersioned.cs" />
-    <Compile Include="IO\IWriter.cs" />
-    <Compile Include="IO\Xml\XmlReaderBase.cs" />
-    <Compile Include="IO\Xml\XmlWriterBase.cs" />
-    <Compile Include="IO\Xml\XmlAnySequenceReader.cs" />
-    <Compile Include="IO\Xml\XmlChannelNodeTemplateReader.cs" />
-    <Compile Include="IO\Xml\XmlChannelNodeTemplateWriter.cs" />
-    <Compile Include="IO\Xml\XmlProgramReader.cs" />
-    <Compile Include="IO\Xml\XmlProgramWriter.cs" />
-    <Compile Include="IO\Xml\XmlScriptSequenceReader.cs" />
-    <Compile Include="IO\Xml\XmlScriptSequenceWriter.cs" />
-    <Compile Include="IO\Xml\XmlSequenceReader.cs" />
-    <Compile Include="IO\Xml\XmlSequenceWriter.cs" />
-    <Compile Include="IO\Xml\XmlSystemConfigReader.cs" />
-    <Compile Include="IO\Xml\XmlSystemConfigWriter.cs" />
     <Compile Include="Module\App\AppModuleInstanceBase.cs" />
     <Compile Include="Module\App\AppModuleDescriptorBase.cs" />
-    <Compile Include="Module\CommandStandardExtension\CommandStandardExtensionModuleInstanceBase.cs" />
-    <Compile Include="Module\CommandStandardExtension\CommandStandardExtensionModuleDescriptorBase.cs" />
     <Compile Include="Module\Editor\EditorModuleInstanceBase.cs" />
     <Compile Include="Module\Editor\EditorModuleDescriptorBase.cs" />
     <Compile Include="Module\Editor\EditorValues.cs" />
     <Compile Include="Module\EffectEditor\EffectEditorModuleInstanceBase.cs" />
     <Compile Include="Module\EffectEditor\EffectEditorModuleDescriptorBase.cs" />
-    <Compile Include="Module\Effect\ChannelData.cs" />
     <Compile Include="Module\Effect\EffectModuleInstanceBase.cs" />
     <Compile Include="Module\Effect\EffectModuleDescriptorBase.cs" />
     <Compile Include="Module\ModuleDataModelBase.cs" />
@@ -221,8 +475,8 @@
     <Compile Include="Module\Media\MediaModuleDescriptorBase.cs" />
     <Compile Include="Module\ModuleDescriptorBase.cs" />
     <Compile Include="Module\ModuleInstanceBase.cs" />
-    <Compile Include="Module\Output\OutputModuleInstanceBase.cs" />
-    <Compile Include="Module\Output\OutputModuleDescriptorBase.cs" />
+    <Compile Include="Module\Controller\ControllerModuleInstanceBase.cs" />
+    <Compile Include="Module\Controller\ControllerModuleDescriptorBase.cs" />
     <Compile Include="Module\Property\IProperty.cs" />
     <Compile Include="Module\Property\IPropertyModuleDescriptor.cs" />
     <Compile Include="Module\Property\IPropertyModuleInstance.cs" />
@@ -246,9 +500,6 @@
     <Compile Include="Module\Sequence\SequenceModuleInstanceBase.cs" />
     <Compile Include="Module\Timing\TimingModuleInstanceBase.cs" />
     <Compile Include="Module\Timing\TimingModuleDescriptorBase.cs" />
-    <Compile Include="Module\Transform\CommandsAffected.cs" />
-    <Compile Include="Module\Transform\TransformModuleInstanceBase.cs" />
-    <Compile Include="Module\Transform\TransformModuleDescriptorBase.cs" />
     <Compile Include="Module\Trigger\TriggerInputType.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -258,11 +509,8 @@
     <Compile Include="Execution\IExecutionControl.cs" />
     <Compile Include="Execution\ITimingProvider.cs" />
     <Compile Include="Execution\MediaTimingProvider.cs" />
-    <Compile Include="Execution\SystemChannelEnumerator.cs" />
-    <Compile Include="Execution\SingleTimedEnumerator.cs" />
     <Compile Include="Execution\TimingModuleTimingProvider.cs" />
     <Compile Include="Execution\TimingProviders.cs" />
-    <Compile Include="Sys\IOutputStateSource.cs" />
     <Compile Include="Module\Input\IInput.cs" />
     <Compile Include="Module\Input\IInputInput.cs" />
     <Compile Include="Module\Input\IInputModuleDescriptor.cs" />
@@ -303,15 +551,13 @@
     <Compile Include="Script\IScriptFrameworkGenerator.cs" />
     <Compile Include="Script\IScriptSkeletonGenerator.cs" />
     <Compile Include="Script\IUserScriptHost.cs" />
-    <Compile Include="Sys\ChannelNodeDefinition.cs" />
-    <Compile Include="Sys\GroupNode.cs" />
     <Compile Include="Sys\PropertyManager.cs" />
     <Compile Include="Sys\ScriptSequence.cs" />
     <Compile Include="Sys\SequenceStartedEventArgs.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Sys\EffectNode.cs" />
-    <Compile Include="Sys\EffectStreams.cs" />
+    <Compile Include="Sys\DataStreams.cs" />
     <Compile Include="Sys\DebugLog.cs" />
     <Compile Include="Sys\DelegateFactory.cs" />
     <Compile Include="Sys\ErrorLog.cs" />
@@ -327,10 +573,6 @@
     <Compile Include="Module\EffectEditor\EffectEditorModuleImplementation.cs" />
     <Compile Include="Module\EffectEditor\EffectEditorModuleManagement.cs" />
     <Compile Include="Module\EffectEditor\EffectEditorModuleRepository.cs" />
-    <Compile Include="Module\CommandStandardExtension\CommandStandardExtensionModuleImplementation.cs" />
-    <Compile Include="Module\CommandStandardExtension\CommandStandardExtensionModuleManagement.cs" />
-    <Compile Include="Module\CommandStandardExtension\CommandStandardExtensionModuleRepository.cs" />
-    <Compile Include="Module\CommandStandardExtension\ICommandStandardExtension.cs" />
     <Compile Include="Module\Editor\EditorModuleImplementation.cs" />
     <Compile Include="Module\Editor\EditorModuleManagement.cs" />
     <Compile Include="Module\Editor\EditorModuleRepository.cs" />
@@ -340,20 +582,16 @@
     <Compile Include="Module\ModuleTemplate\IModuleTemplate.cs" />
     <Compile Include="Module\ModuleTemplate\IModuleTemplateModuleDescriptor.cs" />
     <Compile Include="Module\ModuleTemplate\IModuleTemplateModuleInstance.cs" />
-    <Compile Include="Module\Output\OutputModuleImplementation.cs" />
-    <Compile Include="Module\Output\OutputModuleManagement.cs" />
-    <Compile Include="Module\Output\OutputModuleRepository.cs" />
+    <Compile Include="Module\Controller\ControllerModuleImplementation.cs" />
+    <Compile Include="Module\Controller\ControllerModuleManagement.cs" />
+    <Compile Include="Module\Controller\ControllerModuleRepository.cs" />
     <Compile Include="Module\Effect\EffectModuleImplementation.cs" />
     <Compile Include="Module\Effect\EffectModuleManagement.cs" />
     <Compile Include="Module\Effect\EffectModuleRepository.cs" />
-    <Compile Include="Module\Transform\TransformModuleImplementation.cs" />
-    <Compile Include="Module\Transform\TransformModuleManagement.cs" />
-    <Compile Include="Module\Transform\TransformModuleRepository.cs" />
     <Compile Include="Module\Trigger\TriggerModuleImplementation.cs" />
     <Compile Include="Module\Trigger\TriggerModuleManagement.cs" />
     <Compile Include="Module\Trigger\TriggerModuleRepository.cs" />
     <Compile Include="Sys\InfoLog.cs" />
-    <Compile Include="Sys\EffectStream.cs" />
     <Compile Include="Sys\InsertDataStack.cs" />
     <Compile Include="Sys\Log.cs" />
     <Compile Include="Sys\LogEventArgs.cs" />
@@ -363,12 +601,7 @@
     <Compile Include="Sys\Channel.cs" />
     <Compile Include="Module\GenericModuleManagement.cs" />
     <Compile Include="Module\GenericModuleRepository.cs" />
-    <Compile Include="Module\Transform\CommandParameterReference.cs" />
-    <Compile Include="Module\Transform\ITransform.cs" />
-    <Compile Include="Module\Transform\ITransformModuleDescriptor.cs" />
-    <Compile Include="Module\Transform\ITransformModuleInstance.cs" />
-    <Compile Include="Sys\ConcurrentBagLiveEnumerator.cs" />
-    <Compile Include="Sys\ConcurrentQueueLiveEnumerator.cs" />
+    <Compile Include="Sys\Enumerator\ConcurrentQueueLiveEnumerator.cs" />
     <Compile Include="Sys\ExecutorMessageEventArgs.cs" />
     <Compile Include="Module\Editor\IEditor.cs" />
     <Compile Include="Module\Editor\IEditorModuleDescriptor.cs" />
@@ -379,8 +612,8 @@
     <Compile Include="Module\Effect\IEffectModuleInstance.cs" />
     <Compile Include="Module\Trigger\AnalogTriggerInput.cs" />
     <Compile Include="Module\Trigger\DigitalTriggerInput.cs" />
-    <Compile Include="Sys\LiveEnumerator.cs" />
-    <Compile Include="Sys\ModuleDataPathAttribute.cs" />
+    <Compile Include="Sys\Enumerator\LiveEnumerator.cs" />
+    <Compile Include="Sys\Attribute\ModuleDataPathAttribute.cs" />
     <Compile Include="Script\UserScriptHost.cs" />
     <Compile Include="Script\ScriptHostGenerator.cs" />
     <Compile Include="Execution\ScriptSequenceExecutor.cs" />
@@ -404,26 +637,23 @@
     <Compile Include="Sys\State\Execution\TestOpenState.cs" />
     <Compile Include="Sys\State\Execution\TestOpeningState.cs" />
     <Compile Include="Sys\SystemClock.cs" />
-    <Compile Include="Sys\NodeManager.cs" />
+    <Compile Include="Sys\Managers\NodeManager.cs" />
     <Compile Include="Sys\SystemContext.cs" />
     <Compile Include="Sys\SystemConfig.cs" />
-    <Compile Include="Sys\ApplicationServices.cs" />
+    <Compile Include="Services\ApplicationServices.cs" />
     <Compile Include="Module\Trigger\AnalogInputTriggerCondition.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Sys\AppCommand.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Sys\ControllerReference.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Sys\DataPathAttribute.cs">
+    <Compile Include="Sys\Attribute\DataPathAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Module\Trigger\DigitalInputTriggerCondition.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Sys\ExecutorAttribute.cs">
+    <Compile Include="Sys\Attribute\ExecutorAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Sys\Extensions.cs">
@@ -438,7 +668,7 @@
     <Compile Include="Sys\LatchedEventArgs.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Sys\TypeOfModuleAttribute.cs">
+    <Compile Include="Sys\Attribute\TypeOfModuleAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Sys\Paths.cs">
@@ -472,7 +702,7 @@
     <Compile Include="Module\Trigger\ITriggerInput.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Sys\OutputController.cs" />
+    <Compile Include="Sys\Output\OutputController.cs" />
     <Compile Include="Sys\Execution.cs" />
     <Compile Include="Execution\ProgramContext.cs" />
     <Compile Include="Module\App\IApp.cs" />
@@ -482,18 +712,20 @@
     <Compile Include="Execution\ProgramExecutor.cs" />
     <Compile Include="Module\EffectEditor\IEffectEditorModuleDescriptor.cs" />
     <Compile Include="Module\EffectEditor\IEffectEditorModuleInstance.cs" />
-    <Compile Include="Module\CommandStandardExtension\ICommandStandardExtensionModuleDescriptor.cs" />
     <Compile Include="Module\EffectEditor\IEffectEditor.cs" />
-    <Compile Include="Module\CommandStandardExtension\ICommandStandardExtensionModuleInstance.cs" />
-    <Compile Include="Module\Output\IOutput.cs" />
-    <Compile Include="Module\Output\IOutputModuleDescriptor.cs" />
-    <Compile Include="Module\Output\IOutputModuleInstance.cs" />
+    <Compile Include="Module\Controller\IController.cs" />
+    <Compile Include="Module\Controller\IControllerModuleDescriptor.cs" />
+    <Compile Include="Module\Controller\IControllerModuleInstance.cs" />
     <Compile Include="Module\ModuleDataSet.cs" />
     <Compile Include="Sys\Modules.cs" />
-    <Compile Include="Sys\Patch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sys\TimeNode.cs" />
+    <Compile Include="Sys\UIThread.cs" />
     <Compile Include="Sys\VixenSystem.cs" />
     <Compile Include="Sys\WarningLog.cs" />
+    <Compile Include="Sys\WindowsMultimedia.cs" />
+    <Compile Include="Sys\XmlHelper.cs" />
+    <Compile Include="IO\Result\SequenceSerializationResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -529,9 +761,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Effect64.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Intents\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -11,7 +11,7 @@ namespace Vixen.Module.RuntimeBehavior {
 
 		abstract public void Shutdown();
 
-		abstract public void Handle(EffectNode effectNode);
+		abstract public void Handle(IEffectNode effectNode);
 
 		virtual public bool Enabled { get; set; }
 

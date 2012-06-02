@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;
-using Vixen.Commands;
+﻿using System.Drawing;
+using Vixen.Sys;
 
 namespace Vixen.Module.Effect {
 	public interface IEffectModuleDescriptor : IModuleDescriptor {

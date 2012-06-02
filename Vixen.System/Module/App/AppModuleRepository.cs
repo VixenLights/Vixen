@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Vixen.Services;
 using Vixen.Sys;
 
 namespace Vixen.Module.App {
@@ -10,7 +10,7 @@ namespace Vixen.Module.App {
 
 		public void Add(Guid id) {
 			// Create a singleton instance.
-			IAppModuleInstance instance = Modules.GetById(id) as IAppModuleInstance;
+			IAppModuleInstance instance = (IAppModuleInstance)Modules.GetById(id);
 			// Add it to the repository.
 			_instances[id] = instance;
 			// Assign the AOM reference for the client application.
@@ -20,7 +20,7 @@ namespace Vixen.Module.App {
 		}
 
 		public IAppModuleInstance Get(Guid id) {
-			IAppModuleInstance instance = null;
+			IAppModuleInstance instance;
 			_instances.TryGetValue(id, out instance);
 			return instance;
 		}

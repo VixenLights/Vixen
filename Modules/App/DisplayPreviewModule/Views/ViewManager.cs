@@ -38,7 +38,7 @@ namespace VixenModules.App.DisplayPreview.Views
         {
             if (_view != null)
             {
-                //_view.Focus();
+                _view.Focus();
             }
             else
             {

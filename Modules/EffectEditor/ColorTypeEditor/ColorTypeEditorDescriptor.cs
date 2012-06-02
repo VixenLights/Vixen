@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using Vixen.Module.EffectEditor;
-using Vixen.Commands;
-using Vixen.Commands.KnownDataTypes;
 
 namespace VixenModules.EffectEditor.ColorTypeEditor
 {

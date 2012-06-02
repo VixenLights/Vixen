@@ -17,7 +17,7 @@ namespace Vixen.Module.Media {
 			get { return false; }
 		}
 
-		virtual public void Setup() { }
+		virtual public bool Setup() { return false; }
 
 		abstract public void Start();
 

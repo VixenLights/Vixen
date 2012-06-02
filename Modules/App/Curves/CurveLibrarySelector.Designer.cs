@@ -95,10 +95,8 @@
 			// 
 			// CurveLibrarySelector
 			// 
-			this.AcceptButton = this.buttonOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(478, 310);
 			this.Controls.Add(this.buttonDeleteCurve);
 			this.Controls.Add(this.buttonEditCurve);
@@ -106,16 +104,9 @@
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);
 			this.DoubleBuffered = true;
-			this.MaximizeBox = false;
-			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(400, 300);
 			this.Name = "CurveLibrarySelector";
-			this.ShowIcon = false;
-			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Curve Library";
-			this.TopMost = true;
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CurveLibrarySelector_FormClosing);
 			this.Load += new System.EventHandler(this.CurveLibrarySelector_Load);
 			this.ResumeLayout(false);
 

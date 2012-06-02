@@ -8,7 +8,7 @@ namespace Recording {
 	public class RecordingModule : RuntimeBehaviorModuleInstanceBase {
 		private Tuple<string, Action>[] _actions;
 		private ISequence _sequence;
-		private List<EffectNode> _buffer = new List<EffectNode>();
+		private List<IEffectNode> _buffer = new List<IEffectNode>();
 		private int _bufferItems;
 		private Guid _sequenceChannelId = Guid.Empty;
 		private RecordingData _moduleData;
@@ -31,20 +31,20 @@ namespace Recording {
 				// Get a channel into the sequence's input channels.
 				Guid sequenceChannelId = _GetSequenceChannelId();
 				// Clear it.
-				_sequence.Data.ClearEffectStream(sequenceChannelId);
+				_sequence.Data.ClearStream(sequenceChannelId);
 				// Copy our buffered data to it.
-				_sequence.Data.AddEffects(sequenceChannelId, _buffer);
+				_sequence.Data.AddData(sequenceChannelId, _buffer);
 			}
 		}
 
 		private Guid _GetSequenceChannelId() {
 			if(_sequenceChannelId == Guid.Empty) {
-				_sequenceChannelId = _sequence.Data.CreateEffectStream("Recording");
+				_sequenceChannelId = _sequence.Data.CreateStream("Recording");
 			}
 			return _sequenceChannelId;
 		}
 
-		override public void Handle(EffectNode effectNode) {
+		override public void Handle(IEffectNode effectNode) {
 			_buffer.Add(effectNode);
 		}
 
@@ -77,7 +77,7 @@ namespace Recording {
 
 		private void _RemoveSequenceChannel() {
 			if(_sequenceChannelId != Guid.Empty) {
-				_sequence.Data.RemoveEffectStream(_sequenceChannelId);
+				_sequence.Data.RemoveStream(_sequenceChannelId);
 				_sequenceChannelId = Guid.Empty;
 			}
 		}

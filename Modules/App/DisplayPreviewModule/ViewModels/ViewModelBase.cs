@@ -3,15 +3,12 @@ namespace VixenModules.App.DisplayPreview.ViewModels
     using System;
     using System.ComponentModel;
     using System.Diagnostics;
-    using System.Windows.Threading;
 
     /// <summary>
     ///   The view model base.
     /// </summary>
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
-        private readonly Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
-
         /// <summary>
         ///   Raised when a property on this object has a new value.
         /// </summary>
@@ -25,13 +22,8 @@ namespace VixenModules.App.DisplayPreview.ViewModels
         /// </param>
         protected void OnPropertyChanged(string propertyName)
         {
-            if (!_dispatcher.CheckAccess())
-            {
-                _dispatcher.Invoke(new Action(() => OnPropertyChanged(propertyName)));
-                return;
-            }
-
             VerifyPropertyName(propertyName);
+
             var handler = PropertyChanged;
             if (handler != null)
             {

@@ -3,11 +3,20 @@
 		static public void Run() {
 			Sys.Execution.Shutdown();
 
-			// Stop the controllers.
-			VixenSystem.Controllers.CloseControllers();
+			WindowsMultimedia wm = new WindowsMultimedia();
+			wm.EndEnhancedResolution();
 
-			// Close the channels.
-			VixenSystem.Channels.CloseChannels();
+			// Release all contexts.
+			VixenSystem.Contexts.ReleaseContexts();
+
+			// Stop the controllers.
+			VixenSystem.Controllers.StopAll();
+
+			// Stop the previews.
+			VixenSystem.Previews.StopAll();
+
+			//// Close the channels.
+			//VixenSystem.Channels.CloseChannels();
 
 			// Remove the sources.
 			IOutputSourceCollection channelSources = VixenSystem.Channels.GetSources();

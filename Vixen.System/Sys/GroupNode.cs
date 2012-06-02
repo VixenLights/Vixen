@@ -21,7 +21,7 @@ namespace Vixen.Sys {
 			: this(name, (IEnumerable<GroupNode<T>>)content) {
 		}
 
-		public string Name { get; set; }
+		virtual public string Name { get; set; }
 
 		virtual public void AddChild(GroupNode<T> node) {
 			if (!_children.Contains(node)) {

@@ -1,14 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Reflection;
 using System.IO;
 using System.Xml.Linq;
+using Vixen.IO.Factory;
+using Vixen.IO.Result;
 using Vixen.Module;
 using Vixen.IO;
 using Vixen.IO.Xml;
 using Vixen.Instrumentation;
+using Vixen.Module.OutputFilter;
+using Vixen.Services;
+using Vixen.Sys.Managers;
+using Vixen.Sys.Output;
 
 namespace Vixen.Sys {
     public class VixenSystem {
@@ -20,7 +24,11 @@ namespace Vixen.Sys {
 		public enum RunState { Stopped, Starting, Started, Stopping };
 		static private RunState _state = RunState.Stopped;
 
-        static public void Start(IApplication clientApplication, bool openExecution = true, bool disableControllers = false) {
+		static VixenSystem() {
+			SerializerFactory.Factory = new XmlSerializerFactory();
+		}
+
+    	static public void Start(IApplication clientApplication, bool openExecution = true, bool disableControllers = false) {
 			if(_state == RunState.Stopped) {
 				try {
 					_state = RunState.Starting;
@@ -33,7 +41,7 @@ namespace Vixen.Sys {
 					_InitializeLogging();
 					Logging.Info("Vixen System starting up...");
 
-					Instrumentation = new Vixen.Sys.Instrumentation.Instrumentation();
+					Instrumentation = new Instrumentation.Instrumentation();
 
 					ModuleImplementation[] moduleImplementations = Modules.GetImplementations();
 
@@ -62,8 +70,12 @@ namespace Vixen.Sys {
 						SystemConfig.DisabledControllers = Controllers;
 					}
 					if(openExecution) {
-						Vixen.Sys.Execution.OpenExecution();
+						Execution.OpenExecution();
 					}
+
+					//****
+					//_AddPostFiltersToControllers();
+					//****
 
 					_state = RunState.Started;
 					Logging.Info("Vixen System successfully started.");
@@ -77,6 +89,20 @@ namespace Vixen.Sys {
 			}
         }
 
+		private static void _AddPostFiltersToControllers() {
+			Guid grayscaleFilterId = new Guid("{DAC271B0-0743-45ef-B4E0-D5957AF7F019}");
+			Guid colorFilterId = new Guid("{B3C06A83-CE75-4e78-853D-B95B4E69CEAC}");
+
+			foreach(OutputController outputController in Controllers) {
+				for(int outputIndex = 0; outputIndex < outputController.OutputCount; outputIndex++) {
+					IOutputFilterModuleInstance outputFilter = Modules.ModuleManagement.GetOutputFilter(colorFilterId);
+					if(outputFilter != null) {
+						outputController.AddOutputFilter(outputIndex, outputFilter);
+					}
+				}
+			}
+		}
+
         static public void Stop() {
 			if(_state == RunState.Starting || _state == RunState.Started) {
 				_state = RunState.Stopping;
@@ -84,7 +110,7 @@ namespace Vixen.Sys {
 				ApplicationServices.ClientApplication = null;
 				// Need to get the disabled controllers before stopping them all.
 				SystemConfig.DisabledControllers = Controllers.Where(x => !x.IsRunning);
-				Vixen.Sys.Execution.CloseExecution();
+				Execution.CloseExecution();
 				Modules.ClearRepositories();
 				if(ModuleStore != null) {
 					ModuleStore.Save();
@@ -100,9 +126,13 @@ namespace Vixen.Sys {
 			if (SystemConfig != null) {
 				// 'copy' the current details (nodes/channels/controllers) from the executing state
 				// to the SystemConfig, so they're there for writing when we save
-				SystemConfig.Controllers = Controllers;
+				SystemConfig.Controllers = Controllers.OfType<OutputController>();
+				SystemConfig.SmartControllers = Controllers.OfType<SmartOutputController>();
+				SystemConfig.Previews = Previews;
 				SystemConfig.Channels = Channels;
 				SystemConfig.Nodes = Nodes.GetRootNodes();
+				SystemConfig.ChannelPatching = ChannelPatching;
+				SystemConfig.ControllerLinking = ControllerLinking;
 				SystemConfig.Save();
 			}
 		}
@@ -112,28 +142,36 @@ namespace Vixen.Sys {
 			Channels = new ChannelManager();
 			Nodes = new NodeManager();
 			Controllers = new ControllerManager();
+			Previews = new PreviewManager();
+			Contexts = new ContextManager();
+			ChannelPatching = new ChannelOutputPatchManager();
+			ControllerLinking = new ControllerLinker();
 
 			// Load system data in order of dependency.
 			// The system data generally resides in the data branch, but it
 			// may not be in the case of an alternate context.
 			string systemDataPath = _GetSystemDataPath();
-			IReader reader = new XmlModuleStoreReader();
-			ModuleStore = (ModuleStore)reader.Read(Path.Combine(systemDataPath, ModuleStore.FileName));
-			reader = new XmlSystemConfigReader();
-			SystemConfig = (SystemConfig)reader.Read(Path.Combine(systemDataPath, SystemConfig.FileName));
+			ModuleStore = _LoadModuleStore(systemDataPath);
+			SystemConfig = _LoadSystemConfig(systemDataPath);
 
-			if (SystemConfig == null)
+			if(SystemConfig == null)
 				SystemConfig = new SystemConfig();
 
-			if (ModuleStore == null)
+			if(ModuleStore == null)
 				ModuleStore = new ModuleStore();
 
 			Channels.AddChannels(SystemConfig.Channels);
 			Nodes.AddNodes(SystemConfig.Nodes);
-			Controllers.AddControllers(SystemConfig.Controllers);
+			// Putting both types of controllers into a single controller manager
+			// class so that all can be managed at once.
+			Controllers.AddRange(SystemConfig.Controllers);
+			Controllers.AddRange(SystemConfig.SmartControllers);
+			Previews.AddRange(SystemConfig.Previews);
+			ChannelPatching.AddPatches(SystemConfig.ChannelPatching);
+			ControllerLinking.AddRange(SystemConfig.ControllerLinking);
 		}
 
-		static public void ReloadSystemConfig()
+    	static public void ReloadSystemConfig()
 		{
 			bool wasRunning = Execution.IsOpen;
 			Execution.CloseExecution();
@@ -146,7 +184,9 @@ namespace Vixen.Sys {
 			foreach (ChannelNode cn in Nodes.ToArray())
 				Nodes.RemoveNode(cn, null, true);
 			foreach (OutputController oc in Controllers.ToArray())
-				Controllers.RemoveController(oc);
+				Controllers.Remove(oc);
+			foreach (IOutputDevice outputDevice in Previews.ToArray())
+				Previews.Remove(outputDevice);
 
 			LoadSystemConfig();
 
@@ -171,13 +211,36 @@ namespace Vixen.Sys {
 			get { return _logging; }
 		}
 
-		static public ChannelManager Channels { get; private set; }
+    	public static bool AllowFilterEvaluation {
+    		get { return SystemConfig.AllowFilterEvaluation; }
+    		set { SystemConfig.AllowFilterEvaluation = value; }
+    	}
+
+    	static public ChannelManager Channels { get; private set; }
 		static public NodeManager Nodes { get; private set; }
 		static public ControllerManager Controllers { get; private set; }
-		static public IInstrumentation Instrumentation { get; private set; }
+    	static public PreviewManager Previews { get; private set; }
+		static public ContextManager Contexts { get; private set; }
+    	static public IInstrumentation Instrumentation { get; private set; }
+		static public ChannelOutputPatchManager ChannelPatching { get; private set; }
+		static public ControllerLinker ControllerLinking { get; private set; }
 
-		static internal ModuleStore ModuleStore { get; private set; }
+    	static internal ModuleStore ModuleStore { get; private set; }
 		static internal SystemConfig SystemConfig { get; private set; }
+
+		private static ModuleStore _LoadModuleStore(string systemDataPath) {
+			string moduleStoreFilePath = Path.Combine(systemDataPath, ModuleStore.FileName);
+			FileSerializer<ModuleStore> serializer = SerializerFactory.Instance.CreateModuleStoreSerializer();
+			SerializationResult<ModuleStore> result = serializer.Read(moduleStoreFilePath);
+			return result.Object;
+		}
+
+		private static SystemConfig _LoadSystemConfig(string systemDataPath) {
+			string systemConfigFilePath = Path.Combine(systemDataPath, SystemConfig.FileName);
+			FileSerializer<SystemConfig> serializer = SerializerFactory.Instance.CreateSystemConfigSerializer();
+			SerializationResult<SystemConfig> result = serializer.Read(systemConfigFilePath);
+			return result.Object;
+		}
 
 		static private void _InitializeLogging() {
 			_logging = new Logging();
@@ -190,23 +253,24 @@ namespace Vixen.Sys {
 		static private string _GetSystemDataPath() {
 			// Look for a user data file in the binary directory.
 			string filePath = Path.Combine(Paths.BinaryRootPath, SystemConfig.FileName);
-			XElement element = Helper.LoadXml(filePath);
-			if(element != null) {
-				// Are we operating within a context?
-				if(element.Attribute(ATTRIBUTE_IS_CONTEXT) != null) {
-					// We're going to use the context's user data file and not the
-					// one in the data branch.
-					return Path.GetDirectoryName(filePath);
-				}
+			if(_OperatingWithinContext(filePath)) {
+				// We're going to use the context's user data file and not the
+				// one in the data branch.
+				return Path.GetDirectoryName(filePath);
 			}
 
 			// Use the default path in the data branch.
 			return SystemConfig.Directory;
 		}
 
-		static private string _GetUserDataPath() {
+		static private bool _OperatingWithinContext(string systemConfigFilePath) {
+			XElement element = Helper.Load(systemConfigFilePath, new XmlFileLoader());
+			return element != null && element.Attribute(ATTRIBUTE_IS_CONTEXT) != null;
+		}
+
+    	static private string _GetUserDataPath() {
 			// Look for a user data file in the binary directory.
-			XElement element = Helper.LoadXml(SystemConfig.DefaultFilePath);
+			XElement element = Helper.Load(SystemConfig.DefaultFilePath, new XmlFileLoader());
 			if(element != null) {
 				// Does it specify an alternate data path?
 				XElement dataDirectory = element.Element(ELEMENT_DATA_DIRECTORY);

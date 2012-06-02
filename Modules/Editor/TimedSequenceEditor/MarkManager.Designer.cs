@@ -56,7 +56,6 @@
 			this.textBoxTime = new System.Windows.Forms.TextBox();
 			this.buttonSelectAllMarks = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
-			this.buttonPasteEffectToMarks = new System.Windows.Forms.Button();
 			this.groupBoxMarkCollections.SuspendLayout();
 			this.groupBoxSelectedMarkCollection.SuspendLayout();
 			this.groupBoxDetails.SuspendLayout();
@@ -250,14 +249,13 @@
 			// 
 			// groupBoxOperations
 			// 
-			this.groupBoxOperations.Controls.Add(this.buttonPasteEffectToMarks);
 			this.groupBoxOperations.Controls.Add(this.buttonOffsetMarks);
 			this.groupBoxOperations.Controls.Add(this.buttonGenerateSubmarks);
 			this.groupBoxOperations.Controls.Add(this.buttonEvenlySpaceMarks);
 			this.groupBoxOperations.Controls.Add(this.buttonTapNewMarks);
 			this.groupBoxOperations.Location = new System.Drawing.Point(301, 19);
 			this.groupBoxOperations.Name = "groupBoxOperations";
-			this.groupBoxOperations.Size = new System.Drawing.Size(164, 177);
+			this.groupBoxOperations.Size = new System.Drawing.Size(164, 145);
 			this.groupBoxOperations.TabIndex = 8;
 			this.groupBoxOperations.TabStop = false;
 			this.groupBoxOperations.Text = "Operations";
@@ -372,16 +370,6 @@
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			// 
-			// buttonPasteEffectToMarks
-			// 
-			this.buttonPasteEffectToMarks.Location = new System.Drawing.Point(6, 143);
-			this.buttonPasteEffectToMarks.Name = "buttonPasteEffectToMarks";
-			this.buttonPasteEffectToMarks.Size = new System.Drawing.Size(151, 25);
-			this.buttonPasteEffectToMarks.TabIndex = 9;
-			this.buttonPasteEffectToMarks.Text = "Paste effect to marks";
-			this.buttonPasteEffectToMarks.UseVisualStyleBackColor = true;
-			this.buttonPasteEffectToMarks.Click += new System.EventHandler(this.buttonPasteEffectToMarks_Click);
-			// 
 			// MarkManager
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -443,7 +431,6 @@
 		private System.Windows.Forms.NumericUpDown numericUpDownWeight;
 		private System.Windows.Forms.TextBox textBoxCollectionName;
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Button buttonPasteEffectToMarks;
 
 	}
 }

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Module.EffectEditor;
-using Vixen.Commands;
-using Vixen.Commands.KnownDataTypes;
 
 namespace VixenModules.EffectEditor.LevelTypeEditor
 {
@@ -14,7 +12,7 @@ namespace VixenModules.EffectEditor.LevelTypeEditor
 
 		public override string Author { get { return "Vixen Team"; } }
 
-		public override string Description { get { return "A control which will edit a parameter of type Level."; } }
+		public override string Description { get { return "A control which will edit a parameter of type double."; } }
 
 		public override Guid EffectTypeId { get { return Guid.Empty; } }
 
@@ -29,7 +27,7 @@ namespace VixenModules.EffectEditor.LevelTypeEditor
 		public override Type[] ParameterSignature
 		{
 			get
-			{ return new[] { typeof(Level) }; }
+			{ return new[] { typeof(double) }; }
 		}
 	}
 }

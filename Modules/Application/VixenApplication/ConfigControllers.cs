@@ -7,8 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Vixen.Module;
-using Vixen.Module.Output;
+using Vixen.Module.Controller;
+using Vixen.Services;
 using Vixen.Sys;
+using Vixen.Sys.Output;
 
 
 namespace VixenApplication
@@ -32,7 +34,7 @@ namespace VixenApplication
 				ListViewItem item = new ListViewItem();
 				item.Text = oc.Name;
 				item.Checked = oc.IsRunning;
-				item.SubItems.Add(Vixen.Sys.ApplicationServices.GetModuleDescriptor(oc.OutputModuleId).TypeName);
+				item.SubItems.Add(ApplicationServices.GetModuleDescriptor(oc.ModuleId).TypeName);
 				item.SubItems.Add(oc.OutputCount.ToString());
 				item.Tag = oc;
 				// I'm sorry for this.  Someone know of a better way?
@@ -75,7 +77,7 @@ namespace VixenApplication
 		private void buttonAddController_Click(object sender, EventArgs e)
 		{
 			List<KeyValuePair<string, object>> outputModules = new List<KeyValuePair<string, object>>();
-			foreach (KeyValuePair<Guid, string> kvp in ApplicationServices.GetAvailableModules<IOutputModuleInstance>()) {
+			foreach (KeyValuePair<Guid, string> kvp in ApplicationServices.GetAvailableModules<IControllerModuleInstance>()) {
 				outputModules.Add(new KeyValuePair<string, object>(kvp.Value, kvp.Key));
 			}
 			CommonElements.ListSelectDialog addForm = new CommonElements.ListSelectDialog("Add Controller", (outputModules));
@@ -83,7 +85,7 @@ namespace VixenApplication
 				IModuleDescriptor moduleDescriptor = ApplicationServices.GetModuleDescriptor((Guid)addForm.SelectedItem);
 				string name = moduleDescriptor.TypeName;
 				OutputController oc = new OutputController(name, 0, (Guid)addForm.SelectedItem);
-				VixenSystem.Controllers.AddController(oc);
+				VixenSystem.Controllers.Add(oc);
 				// In the case of a controller that has a form, the form will not be shown
 				// until this event handler completes.  To make sure it's in a visible state
 				// before evaluating if it's running or not, we're calling DoEvents.
@@ -112,7 +114,7 @@ namespace VixenApplication
 				if (MessageBox.Show(message, title, MessageBoxButtons.OKCancel) == DialogResult.OK) {
 					foreach (ListViewItem item in listViewControllers.SelectedItems) {
 						OutputController oc = item.Tag as OutputController;
-						VixenSystem.Controllers.RemoveController(oc);
+						VixenSystem.Controllers.Remove(oc);
 					}
 					_PopulateControllerList();
 				}
@@ -162,7 +164,7 @@ namespace VixenApplication
 					// find them, then remove them from the list as we don't need to add them anymore.
 					foreach(ChannelNode node in VixenSystem.Nodes) {
 						if (node.Channel != null) {
-							foreach (ControllerReference cr in node.Channel.Patch) {
+							foreach (ControllerReference cr in VixenSystem.ChannelPatching.GetChannelPatches(node.Channel.Id)) {
 								if (refsToAdd.Contains(cr)) {
 									refsToAdd.Remove(cr);
 								}
@@ -175,13 +177,13 @@ namespace VixenApplication
 
 					// add any controller references we have left.
 					foreach (ControllerReference cr in refsToAdd) {
-						string name = VixenSystem.Controllers.Get(cr.ControllerId).Outputs[cr.OutputIndex].Name;
+						string name = VixenSystem.Controllers.GetController(cr.ControllerId).Outputs[cr.OutputIndex].Name;
 
 						ChannelNode newNode = VixenSystem.Nodes.AddNode(name);
 						if (newNode.Channel == null) {
 							newNode.Channel = VixenSystem.Channels.AddChannel(name);
 						}
-						newNode.Channel.Patch.Add(cr);
+						VixenSystem.ChannelPatching.AddPatch(newNode.Channel.Id, cr);
 						channelsAdded++;
 					}
 
@@ -239,9 +241,9 @@ namespace VixenApplication
 			if(!_internal) {
 				OutputController controller = e.Item.Tag as OutputController;
 				if(e.Item.Checked) {
-					VixenSystem.Controllers.StartController(controller);
+					VixenSystem.Controllers.Start(controller);
 				} else {
-					VixenSystem.Controllers.StopController(controller);
+					VixenSystem.Controllers.Stop(controller);
 				}
 			}
 		}

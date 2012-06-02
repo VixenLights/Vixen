@@ -1,18 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Reflection;
 using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Effect;
-using Vixen.Commands;
-using Vixen.Commands.KnownDataTypes;
-using CommonElements.ColorManagement.ColorModels;
+using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using VixenModules.Property.RGB;
-using VixenModules.Effect.Pulse;
 using System.Drawing;
 using ZedGraph;
 
@@ -23,7 +17,7 @@ namespace VixenModules.Effect.Twinkle
 		private static Random _random = new Random();
 
 		private TwinkleData _data;
-		private ChannelData _channelData = null;
+		private EffectIntents _channelData = null;
 
 		public Twinkle()
 		{
@@ -32,22 +26,20 @@ namespace VixenModules.Effect.Twinkle
 
 		protected override void _PreRender()
 		{
-			_channelData = new ChannelData();
+			_channelData = new EffectIntents();
 
-			IEnumerable<ChannelNode> targetNodes = RGBModule.FindAllRenderableChildren(TargetNodes);
+			IEnumerable<ChannelNode> targetNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator());
 
 			List<IndividualTwinkleDetails> twinkles = null;
 			if (!IndividualChannels)
 				twinkles = GenerateTwinkleData();
 
-			int i = 0;
 			foreach (ChannelNode node in targetNodes) {
-				_channelData.AddChannelData(RenderChannel(node, twinkles, (double)i / (double)targetNodes.Count()));
-				i++;
+				_channelData.Add(node.Channel.Id, RenderChannel(node, twinkles));
 			}
 		}
 
-		protected override ChannelData _Render()
+		protected override EffectIntents _Render()
 		{
 			return _channelData;
 		}
@@ -56,43 +48,6 @@ namespace VixenModules.Effect.Twinkle
 		{
 			get { return _data; }
 			set { _data = value as TwinkleData; }
-		}
-
-		public override object[] ParameterValues
-		{
-			get
-			{
-				return new object[] {
-					IndividualChannels,
-					MinimumLevel,
-					MaximumLevel,
-					LevelVariation,
-					AveragePulseTime,
-					PulseTimeVariation,
-					AverageCoverage,
-					ColorHandling,
-					StaticColor,
-					ColorGradient
-				};
-			}
-			set
-			{
-				if (value.Length != 10) {
-					VixenSystem.Logging.Warning("Twinkle effect parameters set with " + value.Length + " parameters");
-					return;
-				}
-
-				IndividualChannels = (bool)value[0];
-				MinimumLevel = (Level)value[1];
-				MaximumLevel = (Level)value[2];
-				LevelVariation = (int)value[3];
-				AveragePulseTime = (int)value[4];
-				PulseTimeVariation = (int)value[5];
-				AverageCoverage = (int)value[6];
-				ColorHandling = (TwinkleColorHandling)value[7];
-				StaticColor = (Color)value[8];
-				ColorGradient = (ColorGradient)value[9];
-			}
 		}
 
 		public override bool IsDirty
@@ -110,67 +65,77 @@ namespace VixenModules.Effect.Twinkle
 			}
 		}
 
+		[Value]
 		public bool IndividualChannels
 		{
 			get { return _data.IndividualChannels; }
 			set { _data.IndividualChannels = value; IsDirty = true; }
 		}
 
-		public Level MinimumLevel
+		[Value]
+		public double MinimumLevel
 		{
 			get { return _data.MinimumLevel; }
 			set { _data.MinimumLevel = value; IsDirty = true; }
 		}
 
-		public Level MaximumLevel
+		[Value]
+		public double MaximumLevel
 		{
 			get { return _data.MaximumLevel; }
 			set { _data.MaximumLevel = value; IsDirty = true; }
 		}
 
+		[Value]
 		public int LevelVariation
 		{
 			get { return _data.LevelVariation; }
 			set { _data.LevelVariation = value; IsDirty = true; }
 		}
 
+		[Value]
 		public int AveragePulseTime
 		{
 			get { return _data.AveragePulseTime; }
 			set { _data.AveragePulseTime = value; IsDirty = true; }
 		}
 
+		[Value]
 		public int PulseTimeVariation
 		{
 			get { return _data.PulseTimeVariation; }
 			set { _data.PulseTimeVariation = value; IsDirty = true; }
 		}
 
+		[Value]
 		public int AverageCoverage
 		{
 			get { return _data.AverageCoverage; }
 			set { _data.AverageCoverage = value; IsDirty = true; }
 		}
 
+		[Value]
 		public TwinkleColorHandling ColorHandling
 		{
 			get { return _data.ColorHandling; }
 			set { _data.ColorHandling = value; IsDirty = true; }
 		}
 
+		[Value]
 		public Color StaticColor
 		{
 			get { return _data.StaticColor; }
 			set { _data.StaticColor = value; IsDirty = true; }
 		}
 
+		[Value]
 		public ColorGradient ColorGradient
 		{
 			get { return _data.ColorGradient; }
 			set { _data.ColorGradient = value; IsDirty = true; }
 		}
 
-		private ChannelData RenderChannel(ChannelNode node, List<IndividualTwinkleDetails> twinkles, double positionWithinGroup)
+		private IntentNodeCollection RenderChannel(ChannelNode node, List<IndividualTwinkleDetails> twinkles = null)
 		{
 			if (node == null)
 				return null;
@@ -178,7 +143,7 @@ namespace VixenModules.Effect.Twinkle
 			if (twinkles == null)
 				twinkles = GenerateTwinkleData();
 
-			ChannelData result = new ChannelData();
+			EffectIntents result = new EffectIntents();
 
 			// render the flat 'minimum value' across the entire effect
 			Pulse.Pulse pulse = new Pulse.Pulse();
@@ -199,14 +164,10 @@ namespace VixenModules.Effect.Twinkle
 				case TwinkleColorHandling.StaticColor:
 					pulse.ColorGradient = new ColorGradient(StaticColor);
 					break;
-
-				case TwinkleColorHandling.ColorAcrossItems:
-					pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup));
-					break;
 			}
 
-			ChannelData pulseData = pulse.Render();
-			result.AddChannelData(pulseData);
+			EffectIntents pulseData = pulse.Render();
+			result.Add(pulseData);
 
 			// render all the individual twinkles
 			foreach (IndividualTwinkleDetails twinkle in twinkles) {
@@ -232,19 +193,15 @@ namespace VixenModules.Effect.Twinkle
 						case TwinkleColorHandling.StaticColor:
 							pulse.ColorGradient = new ColorGradient(StaticColor);
 							break;
-
-						case TwinkleColorHandling.ColorAcrossItems:
-							pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup));
-							break;
 					}
 
 					pulseData = pulse.Render();
 					pulseData.OffsetAllCommandsByTime(twinkle.StartTime);
-					result.AddChannelData(pulseData);
+					result.Add(pulseData);
 				}
 			}
 
-			return result;
+			return result.GetIntentNodesForChannel(node.Channel.Id);
 		}
 
 
@@ -287,11 +244,11 @@ namespace VixenModules.Effect.Twinkle
 				}
 
 				// generate the levels/curve for it
-				Level minLevel = MinimumLevel;
+				double minLevel = MinimumLevel;
 				int maxLevelVariation = (int)((LevelVariation / 100.0) * (MaximumLevel - MinimumLevel));
 				int reduction = _random.Next(maxLevelVariation);
-				Level maxLevel = MaximumLevel - reduction;
-				Curve curve = new Curve(new PointPairList(new double[] { 0, 50, 100 }, new double[] { minLevel, maxLevel, minLevel }));
+				double maxLevel = MaximumLevel - reduction;
+				Curve curve = new Curve(new PointPairList(new double[] { 0, 50, 100 }, new double[] { minLevel * 100, maxLevel * 100, minLevel * 100 }));
 
 				IndividualTwinkleDetails occurance = new IndividualTwinkleDetails();
 				occurance.StartTime = current;

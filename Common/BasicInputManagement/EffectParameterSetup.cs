@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Vixen.Module.Effect;
 using Vixen.Module.EffectEditor;
+using Vixen.Services;
 using Vixen.Sys;
 
 namespace BasicInputManagement {

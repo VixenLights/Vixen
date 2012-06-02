@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using Vixen.Sys;
-using Vixen.Module.Sequence;
 
 namespace Vixen.Script {
 	// Public for script frameworks' usage.
 	abstract public class UserScriptHost : IUserScriptHost {
-		private Thread _thread = null;
+		private Thread _thread;
 
 		public event EventHandler<ExecutorMessageEventArgs> Error;
 		public event EventHandler Ended;
@@ -18,7 +16,7 @@ namespace Vixen.Script {
 
 		public void Start() {
 			if(_thread == null) {
-				_thread = new Thread(_PlayThread);
+				_thread = new Thread(_PlayThread) { Name = Sequence.Name + " script host" };
 				// Do NOT.
 				//_thread.IsBackground = true;
 				_thread.Start();

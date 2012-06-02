@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Module.EffectEditor;
-using Vixen.Commands;
-using Vixen.Commands.KnownDataTypes;
 
 namespace VixenModules.EffectEditor.TwinkleEffectEditor
 {
@@ -21,9 +19,9 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 
 		public override Guid TypeId { get { return _typeId; } }
 
-		public override string TypeName { get { return "Twinkle Effect Editor"; } }
+		public override string TypeName { get { return "Spin Effect Editor"; } }
 
-		public override string Version { get { return "1.1"; } }
+		public override string Version { get { return "1.0"; } }
 
 		public override Type[] ParameterSignature { get { return null; } }
 

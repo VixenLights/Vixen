@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using Vixen.Sys;
 using Vixen.Module;
-using Vixen.Module.Output;
+using Vixen.Module.Controller;
 using Vixen.Commands;
-using Vixen.Commands.KnownDataTypes;
 using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
@@ -14,7 +13,7 @@ using System.Diagnostics;
 
 namespace VixenModules.Output.BlinkyLinky
 {
-	class BlinkyLinky : OutputModuleInstanceBase
+	class BlinkyLinky : ControllerModuleInstanceBase
 	{
 		private Dictionary<int, byte> _lastValues;
 		private Dictionary<int, int> _nullCommands;
@@ -22,6 +21,7 @@ namespace VixenModules.Output.BlinkyLinky
 		private TcpClient _tcpClient;
 		private NetworkStream _networkStream;
 		private Stopwatch _timeoutStopwatch;
+		private IDataPolicy _dataPolicy;
 
 		public static byte HEADER_1 = 0xDE;
 		public static byte HEADER_2 = 0xAD;
@@ -37,6 +37,7 @@ namespace VixenModules.Output.BlinkyLinky
 			_nullCommands = new Dictionary<int, int>();
 			_data = new BlinkyLinkyData();
 			_timeoutStopwatch = new Stopwatch();
+			_dataPolicy = new DataPolicy();
 		}
 
 		private void _setupDataBuffers()
@@ -139,9 +140,8 @@ namespace VixenModules.Output.BlinkyLinky
 		}
 
 
-		protected override void _UpdateState(Command[] outputStates)
-		{
-			if (_networkStream == null) {
+		public override void UpdateState(ICommand[] outputStates) {
+			if(_networkStream == null) {
 				bool success = OpenConnection();
 				if (!success) {
 					VixenSystem.Logging.Warning("BlinkyLinky: failed to connect to device, not updating the current state.");
@@ -176,10 +176,10 @@ namespace VixenModules.Output.BlinkyLinky
 				byte newValue = 0;
 
 				if (outputStates[i] != null) {
-					Lighting.Monochrome.SetLevel setLevelCommand = outputStates[i] as Lighting.Monochrome.SetLevel;
-					if (setLevelCommand == null)
+					LightingValueCommand lightingCommand = outputStates[i] as LightingValueCommand;
+					if (lightingCommand == null)
 						continue;
-					newValue = (byte)(setLevelCommand.Level / 100.0 * Byte.MaxValue);
+					newValue = (byte)(lightingCommand.CommandValue.Intensity * Byte.MaxValue);
 					_nullCommands[i] = 0;
 				} else {
 					// it was a null command. We should turn it off; however, to avoid some potentially nasty flickering,
@@ -216,6 +216,10 @@ namespace VixenModules.Output.BlinkyLinky
 					CloseConnection();
 				}
 			}
+		}
+
+		public override IDataPolicy DataPolicy {
+			get { return _dataPolicy; }
 		}
 	}
 }

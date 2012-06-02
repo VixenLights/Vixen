@@ -1,5 +1,5 @@
-﻿using SlimDX.DirectInput;
-using Vixen.Commands.KnownDataTypes;
+﻿using DirectXJoystick;
+using SlimDX.DirectInput;
 
 namespace VixenModules.Input.DirectXJoystick.Input {
 	class Button : JoystickInput {
@@ -12,8 +12,8 @@ namespace VixenModules.Input.DirectXJoystick.Input {
 
 		protected override double _GetValue(JoystickState joystickState) {
 			return joystickState.GetButtons()[ButtonIndex] ? 
-				Position.MaxValue :
-				Position.MinValue;
+				(int)Position.MaxValue :
+				(int)Position.MinValue;
 		}
 	}
 }

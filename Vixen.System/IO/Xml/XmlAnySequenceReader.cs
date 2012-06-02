@@ -8,8 +8,8 @@ using Vixen.Sys;
 using Vixen.Module.Sequence;
 
 namespace Vixen.IO.Xml {
-	class XmlAnySequenceReader : XmlReaderBase<Sequence> {
-		public override Sequence Read(string filePath) {
+	class XmlAnySequenceReader {// : XmlReaderBase<Sequence> {
+		public Sequence Read(string filePath) {
 			// Get an instance of a sequence appropriate for the file path.
 			Sequence sequence = Sequence.Create(filePath);
 			if(sequence == null) throw new InvalidOperationException("No sequence type defined for file " + filePath);

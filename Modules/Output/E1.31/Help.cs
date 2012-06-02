@@ -26,7 +26,7 @@
 // or implied, of Joshua 1 Systems Inc.
 // =====================================================================
 
-namespace VixenModules.Output.E131
+namespace VixenModules.Controller.E131
 {
     using System;
     using System.Diagnostics;
@@ -34,10 +34,22 @@ namespace VixenModules.Output.E131
     using System.Net.Sockets;
     using System.Text;
     using System.Windows.Forms;
-    using VixenModules.Output.E131.J1Sys;
+
+    using VixenModules.Controller.E131.J1Sys;
 
     internal static class Help
     {
+        // --------------------------------------------------------------------
+        // AboutClick() - command to run the about dialog
+        // --------------------------------------------------------------------
+        public static void AboutClick(object sender, EventArgs e)
+        {
+            using (var aboutBox = new AboutBox())
+            {
+                aboutBox.ShowDialog();
+            }
+        }
+
         // --------------------------------------------------------------------
         // ShowSysClick() - command to show system info
         // --------------------------------------------------------------------

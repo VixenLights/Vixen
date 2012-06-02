@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Vixen.Sys;
-using Vixen.Module.CommandStandardExtension;
 using Vixen.Commands.KnownDataTypes;
 using System.Drawing;
 
@@ -34,30 +29,39 @@ namespace Vixen.Commands {
 
 				override public CommandIdentifier Identifier { get { return CommandIdentifier; } }
 
-				public override ParameterSignature Signature {
-					get { return _signature; }
-				}
+				//public override ParameterSignature Signature {
+				//    get { return _signature; }
+				//}
 
-				public override object GetParameterValue(int index) {
-					return Level;
-				}
+				//public override object GetParameterValue(int index) {
+				//    return Level;
+				//}
 
-				public override void SetParameterValue(int index, object value) {
-					if(value is Level) {
-						Level = (Level)value;
-					}
-				}
+				//public override void SetParameterValue(int index, object value) {
+				//    if(value is Level) {
+				//        Level = (Level)value;
+				//    }
+				//}
 
 				public Level Level { get; set; }
 
 				public override Command Combine(Command other) {
 					SetLevel otherSetLevelCommand = other as SetLevel;
-					double level = Math.Max(Level, otherSetLevelCommand.Level);
-					return new SetLevel(level);
+					if(otherSetLevelCommand != null) {
+						double level = Math.Max(Level, otherSetLevelCommand.Level);
+						return new SetLevel(level);
+					}
+					return this;
 				}
 
 				public override Command Clone() {
 					return new SetLevel(Level);
+				}
+
+				// Must be done in the derived classes.
+				public override void Dispatch(CommandDispatch commandDispatch) {
+					if(commandDispatch != null)
+						commandDispatch.DispatchCommand(this);
 				}
 			}
 		}
@@ -82,34 +86,43 @@ namespace Vixen.Commands {
 
 				override public CommandIdentifier Identifier { get { return CommandIdentifier; } }
 
-				public override ParameterSignature Signature {
-					get { return _signature; }
-				}
+				//public override ParameterSignature Signature {
+				//    get { return _signature; }
+				//}
 
-				public override object GetParameterValue(int index) {
-					return Color;
-				}
+				//public override object GetParameterValue(int index) {
+				//    return Color;
+				//}
 
-				public override void SetParameterValue(int index, object value) {
-					if(value is Color) {
-						Color = (Color)value;
-					}
-				}
+				//public override void SetParameterValue(int index, object value) {
+				//    if(value is Color) {
+				//        Color = (Color)value;
+				//    }
+				//}
 
 				public Color Color { get; set; }
 
 				public override Command Combine(Command other) {
 					SetColor otherCommand = other as SetColor;
-					Color color = Color.FromArgb(
-						Math.Max(Color.R, otherCommand.Color.R),
-						Math.Max(Color.G, otherCommand.Color.G),
-						Math.Max(Color.B, otherCommand.Color.B)
-						);
-					return new SetColor(color);
+					if(otherCommand != null) {
+						Color color = Color.FromArgb(
+							Math.Max(Color.R, otherCommand.Color.R),
+							Math.Max(Color.G, otherCommand.Color.G),
+							Math.Max(Color.B, otherCommand.Color.B)
+							);
+						return new SetColor(color);
+					}
+					return this;
 				}
 
 				public override Command Clone() {
 					return new SetColor(Color);
+				}
+
+				// Must be done in the derived classes.
+				public override void Dispatch(CommandDispatch commandDispatch) {
+					if(commandDispatch != null)
+						commandDispatch.DispatchCommand(this);
 				}
 			}
 		}

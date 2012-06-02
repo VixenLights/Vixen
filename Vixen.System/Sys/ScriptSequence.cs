@@ -1,36 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Xml.Linq;
-using Vixen.Sys;
 using Vixen.IO;
 using Vixen.Script;
 using System.IO;
 using Vixen.Execution;
 using Vixen.Module.Script;
-using Vixen.IO.Xml;
+using Vixen.Sys.Attribute;
 
 namespace Vixen.Sys {
 	/// <summary>
 	/// Base class for script sequence type module implementations.
 	/// </summary>
 	[Executor(typeof(ScriptSequenceExecutor))]
-	[SequenceReader(typeof(XmlScriptSequenceReader))]
-	abstract public class ScriptSequence : Sequence {
+	abstract public class ScriptSequence : Sequence, IHasSourceFiles {
 		private string _language;
+		private SourceFileCollection _sourceFiles;
 
-		private const string DIRECTORY_NAME = "Sequence";
+		//private const string DIRECTORY_NAME = "Sequence";
 		private const string SOURCE_DIRECTORY_NAME = "ScriptSource";
-		private const int VERSION = 1;
+		//private const int VERSION = 1;
 
 		[DataPath]
-		static private readonly string _sourceDirectory = Path.Combine(Paths.DataRootPath, SOURCE_DIRECTORY_NAME);
+		static public readonly string Directory = Path.Combine(Paths.DataRootPath, SOURCE_DIRECTORY_NAME);
 
 		protected ScriptSequence(string language) {
 			Length = Forever;
 
-			SourceFiles = new List<SourceFile>();
+			//SourceFiles = new List<SourceFile>();
+			//SourceFiles = new SourceFileCollection();
+			_sourceFiles = new SourceFileCollection();
 			FrameworkAssemblies = new HashSet<string>();
 			ExternalAssemblies = new HashSet<string>();
 
@@ -45,7 +44,11 @@ namespace Vixen.Sys {
 		protected ScriptSequence(string language, ScriptSequence original) {
 			Length = Forever;
 
-			SourceFiles = new List<SourceFile>(original.SourceFiles);
+			//SourceFiles = new List<SourceFile>(original.SourceFiles);
+			//SourceFiles = new SourceFileCollection();
+			//SourceFiles.Files.AddRange(original.SourceFiles.Files);
+			_sourceFiles = new SourceFileCollection();
+			AddSourceFiles(original.GetAllSourceFiles());
 			FrameworkAssemblies = new HashSet<string>(original.FrameworkAssemblies);
 			ExternalAssemblies = new HashSet<string>(original.ExternalAssemblies);
 
@@ -54,16 +57,47 @@ namespace Vixen.Sys {
 			ClassName = original.ClassName;
 		}
 
-		public string SourceDirectory {
-			get { return _sourceDirectory; }
+		override public SequenceType SequenceType {
+			get { return SequenceType.Script; }
 		}
 
-		public List<SourceFile> SourceFiles { get; private set; }
+		//public string SourceDirectory {
+		//    get { return _sourceDirectory; }
+		//}
+
+		//public List<SourceFile> SourceFiles { get; private set; }
+		//public SourceFileCollection SourceFiles { get; set; }
+		#region IHasSourceFiles
+		public void AddSourceFile(SourceFile sourceFile) {
+			_sourceFiles.Files.Add(sourceFile);
+		}
+
+		public void AddSourceFiles(IEnumerable<SourceFile> sourceFiles) {
+			foreach(SourceFile sourceFile in sourceFiles) {
+				AddSourceFile(sourceFile);
+			}
+		}
+
+		public bool RemoveSourceFile(SourceFile sourceFile) {
+			return _sourceFiles.Files.Remove(sourceFile);
+		}
+
+		public IEnumerable<SourceFile> GetAllSourceFiles() {
+			return _sourceFiles.Files;
+		}
+
+		public void ClearSourceFiles() {
+			_sourceFiles.Files.Clear();
+		}
+
+		public string SourceFileDirectory { get; set; }
+		#endregion
 
 		public string Language {
 			get { return _language; }
 			set {
-				SourceFiles.Clear();
+				//SourceFiles.Files.Clear();
+				ClearSourceFiles();
 				ScriptModuleManagement manager = Modules.GetManager<IScriptModuleInstance, ScriptModuleManagement>();
 				if(!manager.GetLanguages().Any(x => string.Equals(x, value, StringComparison.OrdinalIgnoreCase))) {
 					throw new Exception("There is no script type " + value);
@@ -81,7 +115,7 @@ namespace Vixen.Sys {
 
 		private bool _FileExists(string fileName) {
 			fileName = Path.GetFileNameWithoutExtension(fileName);
-			return SourceFiles.Any(x => string.Equals(x.Name, fileName, StringComparison.OrdinalIgnoreCase));
+			return _sourceFiles.Files.Any(x => string.Equals(x.Name, fileName, StringComparison.OrdinalIgnoreCase));
 		}
 
 		public SourceFile CreateNewFile(string fileName) {
@@ -93,9 +127,9 @@ namespace Vixen.Sys {
 			ScriptModuleManagement manager = Modules.GetManager<IScriptModuleInstance, ScriptModuleManagement>();
 			fileName = Path.ChangeExtension(fileName, manager.GetFileExtension(Language));
 
-			SourceFile sourceFile = null;
+			SourceFile sourceFile;
 
-			if(SourceFiles.Count == 0) {
+			if(_sourceFiles.Files.Count == 0) {
 				sourceFile = _CreateSkeletonFile(fileName);
 			} else {
 				sourceFile = _CreateBlankFile(fileName);
@@ -121,16 +155,20 @@ namespace Vixen.Sys {
 
 		private SourceFile _CreateBlankFile(string fileName) {
 			SourceFile sourceFile = new SourceFile(Path.GetFileName(fileName));
-			SourceFiles.Add(sourceFile);
+			AddSourceFile(sourceFile);
 			return sourceFile;
 		}
 
-		override protected IWriter _GetSequenceWriter() {
-			return new XmlScriptSequenceWriter();
-		}
+		//override protected IWriter _GetSequenceWriter() {
+		//    return new XmlScriptSequenceWriter();
+		//}
 
-		public override int Version {
-			get { return VERSION; }
+		//public override int Version {
+		//    get { return VERSION; }
+		//}
+		public override void Save(string filePath) {
+			FileSerializer<ScriptSequence> serializer = SerializerFactory.Instance.CreateScriptSequenceSerializer();
+			serializer.Write(this, filePath);
 		}
 	}
 }

@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using Vixen.Sys;
-using Vixen.Commands;
-using Vixen.Commands.KnownDataTypes;
 using Vixen.Module.Effect;
 
 namespace VixenModules.Effect.SetLevel
@@ -13,7 +11,6 @@ namespace VixenModules.Effect.SetLevel
 	public class SetLevelDescriptor : EffectModuleDescriptorBase
 	{
 		private static Guid _typeId = new Guid("{32cff8e0-5b10-4466-a093-0d232c55aac0}");
-		internal static Guid _RGBPropertyId = new Guid("{5c31be79-a6a7-4864-a660-4e0215ad4778}");
 
 		public override string EffectName { get { return "Set Level"; } }
 
@@ -31,14 +28,12 @@ namespace VixenModules.Effect.SetLevel
 
 		public override string Version { get { return "1.0"; } }
 
-		public override Guid[] Dependencies { get { return new Guid[] { _RGBPropertyId }; } }
-
 		public override ParameterSignature Parameters
 		{
 			get
 			{
 				return new ParameterSignature(
-					new ParameterSpecification("Level", typeof(Level)),
+					new ParameterSpecification("Level", typeof(double)),
 					new ParameterSpecification("Color", typeof(Color))
 					);
 			}

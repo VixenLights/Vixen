@@ -20,7 +20,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\..\..\Output\Modules\Output\</OutputPath>
+    <OutputPath>..\..\..\Output\Modules\Controller\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,7 +35,7 @@
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>..\..\..\Release\Modules\Output\</OutputPath>
+    <OutputPath>..\..\..\Release\Modules\Controller\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -60,9 +60,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandHandler.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="Descriptor.cs" />
+    <Compile Include="IRenardProtocolFormatter.cs" />
     <Compile Include="Module.cs" />
+    <Compile Include="Protocol1.cs" />
+    <Compile Include="Protocol2.cs" />
+    <Compile Include="ProtocolFormatterService.cs" />
+    <Compile Include="ProtocolVersionAttribute.cs" />
+    <Compile Include="RenardDataPolicy.cs" />
     <Compile Include="SetupDialog.cs">
       <SubType>Form</SubType>
     </Compile>

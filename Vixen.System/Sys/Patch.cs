@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Vixen.Sys;
 using Vixen.Commands;
 
 namespace Vixen.Sys {
-    public class Patch : IDisposable, IOutputStateSource, IEnumerable<ControllerReference> {
+    public class Patch : IDisposable, IStateSource<Command>, IEnumerable<ControllerReference> {
         private HashSet<ControllerReference> _controllerReferences = new HashSet<ControllerReference>();
-		private Command _state = null;
+		private Command _state;
 
         public Patch() {
             Enabled = true;
@@ -72,23 +70,24 @@ namespace Vixen.Sys {
 
 		// This is of Patch, not of the IOutputStateSource interface.
 		public void Write(Command command) {
-			SourceState = command;
+			//SourceState = command;
+			State = command;
 		}
 
 		// This is of the IOutputStateSource interface, not of Patch.
-		public Command SourceState {
-			get {
-				if(Enabled) {
-					return _state;
-				}
-				return null;
-			}
-			set {
-				if(Enabled) {
-					_state = value;
-				}
-			}
-		}
+		//public Command SourceState {
+		//    get {
+		//        if(Enabled) {
+		//            return _state;
+		//        }
+		//        return null;
+		//    }
+		//    private set {
+		//        if(Enabled) {
+		//            _state = value;
+		//        }
+		//    }
+		//}
 
         public IEnumerable<ControllerReference> ControllerReferences {
             get { return _controllerReferences; }
@@ -114,6 +113,13 @@ namespace Vixen.Sys {
 
 		~Patch() {
 			Clear();
+		}
+
+		public Command State {
+			get {
+				return Enabled ? _state : null;
+			}
+			private set { _state = value; }
 		}
 	}
 }

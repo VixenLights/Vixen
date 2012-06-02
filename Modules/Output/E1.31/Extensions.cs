@@ -1,4 +1,4 @@
-namespace VixenModules.Output.E131
+namespace VixenModules.Controller.E131
 {
     using System;
     using System.Text;
@@ -18,7 +18,7 @@ namespace VixenModules.Output.E131
             return converted;
         }
 
-        public static byte[] ToChannelValuesAsBytes(this Command[] outputStates)
+        public static byte[] ToChannelValuesAsBytes(this ICommand[] outputStates)
         {
             if (outputStates == null)
             {
@@ -28,7 +28,7 @@ namespace VixenModules.Output.E131
             var channelValues = new byte[outputStates.Length];
             for (int index = 0; index < outputStates.Length; index++)
             {
-                Command command = outputStates[index];
+                ICommand command = outputStates[index];
                 if (command == null)
                 {
                     // State reset
@@ -37,11 +37,11 @@ namespace VixenModules.Output.E131
                 }
 
                 // Casting is fasting than comparing strings.
-                var setLevelCommand = command as Lighting.Monochrome.SetLevel;
-                if (setLevelCommand != null)
+				var lightingCommand = command as LightingValueCommand;
+				if(lightingCommand != null)
                 {
                     // Good command
-                    var level = Convert.ToByte(0xFF * setLevelCommand.Level / 100);
+                    var level = (byte)(0xFF * lightingCommand.CommandValue.Intensity);
                     channelValues[index] = level;
                 }
             }

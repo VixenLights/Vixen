@@ -120,7 +120,8 @@ namespace VixenApplication {
 		private void trackBar_Scroll(object sender, EventArgs e) {
 			Guid channelId = _commands[trackBar.Value].Item1;
 			CommandNode commandNode = _commands[trackBar.Value].Item2;
-			VixenSystem.Channels.GetChannel(channelId).AddData(commandNode);
+			//TODO
+			//VixenSystem.Channels.GetChannel(channelId).AddData(commandNode);
 		}
 
 		private void backgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
@@ -128,8 +129,9 @@ namespace VixenApplication {
 			// Would be unnecessary with dynamic evaluation.
 			_Effect.TimeSpan = TimeSpan.FromSeconds(5);
 			_Effect.TargetNodes = _SelectedNodes;
-			_channelData = _Effect.Render();
-			_commands = _channelData.Keys.SelectMany(x => _channelData[x].Select(y => Tuple.Create(x, y))).OrderBy(x => x.Item2.StartTime).ToArray();
+			//TODO
+			//_channelData = _Effect.Render();
+			//_commands = _channelData.Keys.SelectMany(x => _channelData[x].Select(y => Tuple.Create(x, y))).OrderBy(x => x.Item2.StartTime).ToArray();
 		}
 
 		private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {

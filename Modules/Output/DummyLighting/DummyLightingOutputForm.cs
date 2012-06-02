@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using Vixen.Sys;
 using Vixen.Commands;
-using Vixen.Commands.KnownDataTypes;
 
 namespace VixenModules.Output.DummyLighting
 {
@@ -22,6 +15,7 @@ namespace VixenModules.Output.DummyLighting
 		private SolidBrush _brush;
 		private int _outputCount;
 		private RenderStyle _renderingStyle;
+		private CommandHandler _commandHandler;
 
 		public DummyLightingOutputForm()
 		{
@@ -35,6 +29,7 @@ namespace VixenModules.Output.DummyLighting
 			IntPtr handle = this.Handle;
 
 			renderingStyle = RenderStyle.Monochrome;
+			_commandHandler = new CommandHandler();
 		}
 
 		public RenderStyle renderingStyle
@@ -100,36 +95,30 @@ namespace VixenModules.Output.DummyLighting
 		}
 
 		private double _fps;
-		public void UpdateState(double fps, Command[] outputStates)
+		public void UpdateState(double fps, ICommand[] outputStates)
 		{
 			_count++;
 			_fps = fps;
 
-			Command command;
 			for (int i = 0; i < outputStates.Length; i++) {
-				command = outputStates[i];
-				if (renderingStyle == RenderStyle.Monochrome || renderingStyle == RenderStyle.RGBMultiChannel) {
-					if (command != null) {
-						if (command is Lighting.Monochrome.SetLevel) {
-							Level level = (command as Lighting.Monochrome.SetLevel).Level;
-							_values[i] = (byte)(level * byte.MaxValue / 100);
-						}
-					} else {
-						// Clear the output.
-						_values[i] = 0;
-					}
-				} else if (renderingStyle == RenderStyle.RGBSingleChannel) {
-					if (command != null) {
-						if (command is Lighting.Polychrome.SetColor) {
-							_colorValues[i] = (command as Lighting.Polychrome.SetColor).Color;
-						}
-					} else {
-						_colorValues[i] = Color.Black;
-					}
+				_commandHandler.Reset();
+
+				//Was: An object wrapping a possibly-default value type.
+				//Now: A possibly-default wrapping object.
+				ICommand command = outputStates[i];
+				if(command != null) {
+					command.Dispatch(_commandHandler);
+				}
+
+				if(_values != null) {
+					_values[i] = _commandHandler.ByteValue;
+				}
+				if(_colorValues != null) {
+					_colorValues[i] = _commandHandler.ColorValue;
 				}
 			}
 
-		    if (!IsDisposed)
+			if (!IsDisposed)
 		    {
 		        BeginInvoke(new MethodInvoker(Refresh));
 		    }

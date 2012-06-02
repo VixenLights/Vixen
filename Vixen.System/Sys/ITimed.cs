@@ -7,6 +7,6 @@ namespace Vixen.Sys {
 	interface ITimed {
 		TimeSpan StartTime { get; }
 		TimeSpan EndTime { get; }
-		bool IsEmpty { get; }
+		//bool IsEmpty { get; }
 	}
 }

@@ -2,14 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using Vixen.Sys;
 using Vixen.Module.EffectEditor;
 using Vixen.Module.Effect;
-using Vixen.Commands.KnownDataTypes;
 using VixenModules.Effect.Twinkle;
 using VixenModules.App.ColorGradients;
 
@@ -55,8 +52,8 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 				}
 
 				IndividualChannels = (bool)value[0];
-				MinimumLevel = (Level)value[1];
-				MaximumLevel = (Level)value[2];
+				MinimumLevel = (double)value[1];
+				MaximumLevel = (double)value[2];
 				LevelVariation = (int)value[3];
 				AveragePulseTime = (int)value[4];
 				PulseTimeVariation = (int)value[5];
@@ -73,13 +70,13 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 			set { if (value) radioButtonIndividualChannels.Checked = true; else radioButtonSynchronizedChannels.Checked = true; }
 		}
 
-		public Level MinimumLevel
+		public double MinimumLevel
 		{
 			get { return levelTypeEditorControlMinValue.LevelValue; }
 			set { levelTypeEditorControlMinValue.LevelValue = value; }
 		}
 
-		public Level MaximumLevel
+		public double MaximumLevel
 		{
 			get { return levelTypeEditorControlMaxValue.LevelValue; }
 			set { levelTypeEditorControlMaxValue.LevelValue = value; }
@@ -117,9 +114,7 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 					return TwinkleColorHandling.StaticColor;
 				if (radioButtonGradientOverWhole.Checked)
 					return TwinkleColorHandling.GradientThroughWholeEffect;
-				if (radioButtonGradientIndividual.Checked)
-					return TwinkleColorHandling.GradientForEachPulse;
-				return TwinkleColorHandling.ColorAcrossItems;
+				return TwinkleColorHandling.GradientForEachPulse;
 			}
 			set
 			{
@@ -134,10 +129,6 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 
 					case TwinkleColorHandling.StaticColor:
 						radioButtonStaticColor.Checked = true;
-						break;
-
-					case TwinkleColorHandling.ColorAcrossItems:
-						radioButtonGradientAcrossItems.Checked = true;
 						break;
 				}
 			}

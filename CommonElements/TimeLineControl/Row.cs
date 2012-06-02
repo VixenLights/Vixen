@@ -41,7 +41,7 @@ namespace CommonElements.Timeline
 				// cap the height to a minimum of 10 pixels
 				RowLabel.Height = m_height = Math.Max(value, 10); ;
 				//_RowChanged();
-				_RowHeightChanged(this);
+				_RowHeightChanged();
 			}
 		}
 
@@ -49,13 +49,13 @@ namespace CommonElements.Timeline
 		public object Tag
 		{
 			get { return m_tag; }
-			set { m_tag = value; _RowChanged(this); }
+			set { m_tag = value; _RowChanged(); }
 		}
 
 		public string Name
 		{
 			get { return RowLabel.Name; }
-			set { RowLabel.Name = value; _RowChanged(this); }
+			set { RowLabel.Name = value; _RowChanged(); }
 		}
 
 		protected IEnumerable<Element> Elements
@@ -92,7 +92,7 @@ namespace CommonElements.Timeline
 				m_rowLabel.HeightChanged += HeightChangedHandler;
 				m_rowLabel.LabelClicked += LabelClickedHandler;
 
-				_RowChanged(this);
+				_RowChanged();
 			}
 		}
 
@@ -131,7 +131,7 @@ namespace CommonElements.Timeline
 					row.Visible = value;
 
 				m_treeOpen = value;
-				_RowChanged(this);
+				_RowChanged();
 			}
 		}
 
@@ -149,7 +149,7 @@ namespace CommonElements.Timeline
 
 				RowLabel.Visible = value;
 				m_visible = value;
-				_RowChanged(this);
+				_RowChanged();
 			}
 		}
 
@@ -163,7 +163,7 @@ namespace CommonElements.Timeline
 					return;
 
 				m_selected = value;
-				_RowChanged(this);
+				_RowChanged();
 			}
 		}
 
@@ -176,16 +176,16 @@ namespace CommonElements.Timeline
 
 		public event EventHandler<ElementEventArgs> ElementAdded;
 		public event EventHandler<ElementEventArgs> ElementRemoved;
-		public static event EventHandler<RowEventArgs> RowToggled;
-		public static event EventHandler<RowEventArgs> RowChanged;
-		public static event EventHandler<RowEventArgs> RowHeightChanged;
+		public static event EventHandler RowToggled;
+		public static event EventHandler RowChanged;
+		public static event EventHandler RowHeightChanged;
 		public static event EventHandler<ModifierKeysEventArgs> RowSelectedChanged;
 
 		private void _ElementAdded(Element te) { if (ElementAdded != null) ElementAdded(this, new ElementEventArgs(te)); }
 		private void _ElementRemoved(Element te) { if (ElementRemoved != null) ElementRemoved(this, new ElementEventArgs(te)); }
-		private void _RowToggled(Row r) { if (RowToggled != null) RowToggled(this, new RowEventArgs(r)); }
-		private void _RowChanged(Row r) { if (RowChanged != null) RowChanged(this, new RowEventArgs(r)); }
-		private void _RowHeightChanged(Row r) { if (RowHeightChanged != null) RowHeightChanged(this, new RowEventArgs(r)); }
+		private void _RowToggled() { if (RowToggled != null) RowToggled(this, EventArgs.Empty); }
+		private void _RowChanged() { if (RowChanged != null) RowChanged(this, EventArgs.Empty); }
+		private void _RowHeightChanged() { if (RowHeightChanged != null) RowHeightChanged(this, EventArgs.Empty); }
 		private void _RowSelectedChanged(Keys k) { if (RowSelectedChanged != null) RowSelectedChanged(this, new ModifierKeysEventArgs(k)); }
 
 		#endregion
@@ -195,13 +195,13 @@ namespace CommonElements.Timeline
 
 		protected void ElementContentChangedHandler(object sender, EventArgs e)
 		{
-			_RowChanged(this);
+			_RowChanged();
 		}
 
 		protected void ElementMovedHandler(object sender, EventArgs e)
 		{
 			m_elements.Sort();
-			_RowChanged(this);
+			_RowChanged();
 		}
 
 		protected void ElementSelectedHandler(object sender, EventArgs e)
@@ -211,13 +211,13 @@ namespace CommonElements.Timeline
 			else
 				m_selectedElements.Remove(sender as Element);
 
-			_RowChanged(this);
+			_RowChanged();
 		}
 
 		protected void TreeToggledHandler(object sender, EventArgs e)
 		{
 			TreeOpen = !TreeOpen;
-			_RowToggled(this);
+			_RowToggled();
 		}
 
 		protected void HeightChangedHandler(object sender, RowHeightChangedEventArgs e)
@@ -251,7 +251,7 @@ namespace CommonElements.Timeline
 			element.SelectedChanged += ElementSelectedHandler;
 			m_elements.Sort();
 			_ElementAdded(element);
-			_RowChanged(this);
+			_RowChanged();
 		}
 
 		public bool AddUniqueElement(Element element)
@@ -273,7 +273,7 @@ namespace CommonElements.Timeline
 			element.SelectedChanged -= ElementSelectedHandler;
 			m_elements.Sort();
 			_ElementRemoved(element);
-			_RowChanged(this);
+			_RowChanged();
 		}
 
 		public bool ContainsElement(Element element)
@@ -302,7 +302,7 @@ namespace CommonElements.Timeline
 			foreach (Element element in m_elements.ToArray())
 				RemoveElement(element);
 
-			_RowChanged(this);
+			_RowChanged();
 		}
 
 		public void AddChildRow(Row row)

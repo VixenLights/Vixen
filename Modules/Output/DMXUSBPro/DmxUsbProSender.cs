@@ -28,7 +28,7 @@ namespace VixenModules.Output.DmxUsbPro
             this.Dispose();
         }
 
-        public void SendDmxPacket(Command[] outputStates)
+        public void SendDmxPacket(ICommand[] outputStates)
         {
             if (outputStates == null || this._statePacket == null || _serialPort == null)
             {
@@ -38,7 +38,7 @@ namespace VixenModules.Output.DmxUsbPro
             var channelValues = new byte[outputStates.Length];
             for (int index = 0; index < outputStates.Length; index++)
             {
-                Command command = outputStates[index];
+                ICommand command = outputStates[index];
                 if (command == null)
                 {
                     // State reset
@@ -47,11 +47,11 @@ namespace VixenModules.Output.DmxUsbPro
                 }
 
                 // Casting is fasting than comparing strings.
-                var setLevelCommand = command as Lighting.Monochrome.SetLevel;
-                if (setLevelCommand != null)
+                var lightingCommand = command as LightingValueCommand;
+                if (lightingCommand != null)
                 {
                     // Good command
-                    var level = (byte)(0xFF * setLevelCommand.Level / 100);
+                    var level = (byte)(0xFF * lightingCommand.CommandValue.Intensity);
                     channelValues[index] = level;
                 }                
             }

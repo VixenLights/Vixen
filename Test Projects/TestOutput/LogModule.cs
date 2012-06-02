@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Vixen.Module.Output;
+using Vixen.Module.Controller;
 
 namespace TestOutput {
-	public class LogModule : OutputModuleDescriptorBase {
+	public class LogModule : ControllerModuleDescriptorBase {
 		private Guid _typeId = new Guid("{36AF9D3E-E965-49fc-A426-0AC496D15EF3}");
 
 		override public Guid TypeId {

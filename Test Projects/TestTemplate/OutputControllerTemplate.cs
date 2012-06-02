@@ -5,7 +5,8 @@ using System.Text;
 using Vixen.Module;
 using Vixen.Module.ModuleTemplate;
 using Vixen.Module.Transform;
-using Vixen.Module.Output;
+using Vixen.Module.Controller;
+using Vixen.Services;
 using Vixen.Sys;
 
 namespace TestTemplate {
@@ -13,7 +14,7 @@ namespace TestTemplate {
 		private OutputControllerTemplateData _data;
 
 		public override void Project(IModuleInstance target) {
-			IOutputModuleInstance outputModule = target as IOutputModuleInstance;
+			IControllerModuleInstance outputModule = target as IControllerModuleInstance;
 			// Get instances of the transforms we reference.
 			ITransformModuleInstance[] transforms = _GetTransforms();
 			
@@ -34,7 +35,7 @@ namespace TestTemplate {
 				transform.InstanceId = transformReference.InstanceId;
 				// Get data for each instance from our transform module data set.
 				// Get as instance data, not type data.
-				_data.TransformData.GetModuleInstanceData(transform);
+				_data.TransformData.AssignModuleInstanceData(transform);
 				transforms.Add(transform);
 			}
 			return transforms.ToArray();

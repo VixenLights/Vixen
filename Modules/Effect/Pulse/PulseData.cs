@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
-using CommonElements.ColorManagement.ColorModels;
 using Vixen.Module;
-using Vixen.Commands.KnownDataTypes;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 

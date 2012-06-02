@@ -1,7 +1,10 @@
-﻿namespace VixenModules.Output.DmxUsbPro
+﻿using System.Linq;
+
+namespace VixenModules.Output.DmxUsbPro
 {
     using System.IO.Ports;
     using System.Runtime.Serialization;
+
     using Vixen.Module;
 
     [DataContract]
@@ -24,7 +27,15 @@
 
         public override IModuleDataModel Clone()
         {
-            return MemberwiseClone() as IModuleDataModel;
+            var result = new Data
+                {
+                    BaudRate = this.BaudRate, 
+                    DataBits = this.DataBits, 
+                    Partity = this.Partity, 
+                    PortName = this.PortName, 
+                    StopBits = this.StopBits
+                };
+            return result;
         }
     }
 }

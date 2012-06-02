@@ -95,10 +95,8 @@
 			// 
 			// ColorGradientLibrarySelector
 			// 
-			this.AcceptButton = this.buttonOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(478, 310);
 			this.Controls.Add(this.buttonDeleteColorGradient);
 			this.Controls.Add(this.buttonEditColorGradient);
@@ -106,16 +104,9 @@
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);
 			this.DoubleBuffered = true;
-			this.MaximizeBox = false;
-			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(400, 300);
 			this.Name = "ColorGradientLibrarySelector";
-			this.ShowIcon = false;
-			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Color Gradient Library";
-			this.TopMost = true;
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ColorGradientLibrarySelector_FormClosing);
 			this.Load += new System.EventHandler(this.ColorGradientLibrarySelector_Load);
 			this.ResumeLayout(false);
 

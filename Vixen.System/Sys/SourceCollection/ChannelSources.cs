@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Vixen.Sys.Output;
 
 namespace Vixen.Sys.SourceCollection {
 	// Pulling everything dynamically so there isn't any maintenance when channels or 
@@ -24,7 +25,7 @@ namespace Vixen.Sys.SourceCollection {
 		}
 
 		public IEnumerable<OutputSources> GetControllerSources(Guid controllerId) {
-			OutputController controller = VixenSystem.Controllers.Get(controllerId);
+			OutputController controller = (OutputController)VixenSystem.Controllers.Get(controllerId);
 			if(controller != null) {
 				for(int i = 0; i < controller.OutputCount; i++) {
 					yield return GetOutputSources(controllerId, i);
@@ -37,7 +38,10 @@ namespace Vixen.Sys.SourceCollection {
 		}
 
 		private IEnumerable<IOutputStateSource> _GetOutputSources(Guid controllerId, int outputIndex) {
-			return VixenSystem.Channels.Select(x => x.Patch).Where(x => x.ControllerReferences.Any(y => y.ControllerId == controllerId && y.OutputIndex == outputIndex));
+			//return VixenSystem.Channels.Select(x => x.Patch).Where(x => x.ControllerReferences.Any(y => y.ControllerId == controllerId && y.OutputIndex == outputIndex));
+			//IEnumerable<Guid> channelIds = VixenSystem.ChannelPatching.Where(x => x.ControllerReferences.Any(y => y.ControllerId == controllerId && y.OutputIndex == outputIndex)).Select(x => x.ChannelId);
+			IEnumerable<Guid> channelIds = VixenSystem.ChannelPatching.Where(x => x.Any(y => y.ControllerId == controllerId && y.OutputIndex == outputIndex)).Select(x => x.ChannelId);
+			return channelIds.Select(VixenSystem.Channels.GetChannel);
 		}
 	}
 }

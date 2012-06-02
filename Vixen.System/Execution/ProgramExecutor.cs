@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Vixen.Module.Timing;
 using Vixen.Sys;
 
 namespace Vixen.Execution {
@@ -9,6 +10,8 @@ namespace Vixen.Execution {
         private IExecutor _executor;
 		private TimeSpan _startTime, _endTime;
 		private TimeSpan _currentSequenceStartTime, _currentSequenceEndTime;
+		private FilteringIntentCache _intentCache;
+		private IntentBuffer _intentBuffer;
 
 		static public readonly TimeSpan START_ENTIRE_SEQUENCE = TimeSpan.Zero;
 		static public readonly TimeSpan END_ENTIRE_SEQUENCE = TimeSpan.MaxValue;
@@ -24,7 +27,9 @@ namespace Vixen.Execution {
         public ProgramExecutor(Program program) {
             State = RunState.Stopped;
             Program = program;
-        }
+			// Don't want to create this for every execution.
+			_intentCache = new FilteringIntentCache();
+		}
 
 		private bool _PlayAllSequences {
 			get { return _startTime == START_ENTIRE_SEQUENCE && _endTime == END_ENTIRE_SEQUENCE; }
@@ -80,26 +85,81 @@ namespace Vixen.Execution {
         
         public bool IsPaused { get; private set; } // Can be paused and in the Playing state.
 
-        protected virtual void OnSequenceStarted(object sender, SequenceStartedEventArgs e) {
+    	public bool IsPlaying {
+    		get { return _executor != null && _executor.IsRunning && _intentBuffer != null; }
+    	}
+
+    	public IDataSource GetCurrentSequenceData() {
+			if(_executor != null) {
+				return _intentBuffer;
+			}
+			return null;
+		}
+
+		private IntentBuffer _CreateIntentBuffer() {
+			IEnumerable<IEffectNode> sequenceData = _executor.GetSequenceData().OrderBy(x => x.StartTime);
+			IEnumerable<ISequenceFilterNode> sequenceFilters = _executor.GetSequenceFilters();
+			// The buffer needs to use the cache as its source of effect data so that it will
+			// pull data through the cache and buffer pre-filtered data.
+			_intentCache.Use(sequenceData, sequenceFilters, _executor.Name);
+			return new IntentBuffer(_intentCache, _executor.Name);
+		}
+
+    	public ITiming GetCurrentSequenceTiming() {
+			if(_executor != null) {
+				return _executor.GetSequenceTiming();
+			}
+			return null;
+		}
+
+		public IEnumerable<ISequenceFilterNode> GetCurrentSequenceFilters() {
+			if(_executor != null) {
+				return _executor.GetSequenceFilters();
+			}
+			return Enumerable.Empty<ISequenceFilterNode>();
+		}
+
+    	#region Events
+		private void InternalSequenceStarted(object sender, SequenceStartedEventArgs e) {
+			_intentBuffer = _CreateIntentBuffer();
+			_intentBuffer.Start();
+			OnSequenceStarted(sender, e);
+		}
+
+    	protected virtual void OnSequenceStarted(object sender, SequenceStartedEventArgs e) {
             if(SequenceStarted != null) {
                 SequenceStarted(sender, e);
             }
+        }
+
+        private void InternalSequenceEnded(object sender, SequenceEventArgs e) {
+			_intentBuffer.Stop();
+			_intentBuffer = null;
+			_NextSequence(() => {
+				State = RunState.Stopped;
+				_ProgramEnded();
+			});
+			OnSequenceEnded(sender, e);
         }
 
         protected virtual void OnSequenceEnded(object sender, SequenceEventArgs e) {
             if(SequenceEnded != null) {
                 SequenceEnded(sender, e);
             }
-			_NextSequence(() => {
-				State = RunState.Stopped;
-				_ProgramEnded();
-			});
         }
+
+		private void InternalMessage(object sender, ExecutorMessageEventArgs e) {
+			OnMessage(sender, e);
+		}
 
 		protected virtual void OnMessage(object sender, ExecutorMessageEventArgs e) {
 			if(Message != null) {
 				Message(sender, e);
 			}
+		}
+
+		private void InternalError(object sender, ExecutorMessageEventArgs e) {
+			OnError(sender, e);
 		}
 
 		protected virtual void OnError(object sender, ExecutorMessageEventArgs e) {
@@ -119,8 +179,9 @@ namespace Vixen.Execution {
                 ProgramEnded(null, new ProgramEventArgs(Program));
             }
         }
+		#endregion
 
-        private void _NextSequence(Action actionOnFail) {
+		private void _NextSequence(Action actionOnFail) {
             _executor = null;
 			try {
 				if(State != RunState.Stopping && _sequences.MoveNext()) {
@@ -150,7 +211,11 @@ namespace Vixen.Execution {
                 _executor.Dispose();
 				_executor = null;
             }
-            GC.SuppressFinalize(this);
+			if(_intentCache != null) {
+				_intentCache.Dispose();
+				_intentCache = null;
+			}
+        	GC.SuppressFinalize(this);
         }
 
 
@@ -179,10 +244,10 @@ namespace Vixen.Execution {
 		public bool MoveNext() {
 			if(_cursor != null) {
 				// Cleanup after the prior sequence.
-				_cursor.SequenceStarted -= OnSequenceStarted;
-				_cursor.SequenceEnded -= OnSequenceEnded;
-				_cursor.Message -= OnMessage;
-				_cursor.Error -= OnError;
+				_cursor.SequenceStarted -= InternalSequenceStarted;
+				_cursor.SequenceEnded -= InternalSequenceEnded;
+				_cursor.Message -= InternalMessage;
+				_cursor.Error -= InternalError;
 				_cursor.Dispose();
 				_cursor = null;
 				if(State != RunState.Playing) return false;
@@ -200,10 +265,10 @@ namespace Vixen.Execution {
 				_currentSequenceStartTime = TimeSpan.Zero > _startTime ? TimeSpan.Zero : _startTime;
 				_currentSequenceEndTime = (_endTime == END_ENTIRE_SEQUENCE) ? sequence.Length : _endTime;
 
-				sequenceExecutor.SequenceStarted += OnSequenceStarted;
-				sequenceExecutor.SequenceEnded += OnSequenceEnded;
-				sequenceExecutor.Message += OnMessage;
-				sequenceExecutor.Error += OnError;
+				sequenceExecutor.SequenceStarted += InternalSequenceStarted;
+				sequenceExecutor.SequenceEnded += InternalSequenceEnded;
+				sequenceExecutor.Message += InternalMessage;
+				sequenceExecutor.Error += InternalError;
 
 				_cursor = sequenceExecutor;
 				return true;
@@ -248,6 +313,5 @@ namespace Vixen.Execution {
 		}
 
 		#endregion
-	}
-
+    }
 }

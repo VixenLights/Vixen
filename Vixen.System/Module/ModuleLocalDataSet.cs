@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.Serialization;
 
 namespace Vixen.Module {
 	[DataContract]
 	public class ModuleLocalDataSet : ModuleDataSet {
-		override protected Type _GetDataSetType(IModuleDescriptor descriptor) {
+		override protected Type _GetDataModelType(IModuleDescriptor descriptor) {
 			return _GetModuleDataSetType(descriptor);
 		}
 
@@ -16,7 +13,14 @@ namespace Vixen.Module {
 		}
 
 		static public IModuleDataModel CreateModuleDataInstance(IModuleInstance module) {
-			return _CreateModuleDataInstance(_GetModuleDataSetType(module.Descriptor), module.Descriptor.TypeId, module.InstanceId);
+			IModuleDataModel dataModel = null;
+
+			Type moduleDataSetType = _GetModuleDataSetType(module.Descriptor);
+			if(moduleDataSetType != null) {
+				dataModel = _CreateDataModel(moduleDataSetType);
+			}
+
+			return dataModel;
 		}
 
 		static private Type _GetModuleDataSetType(IModuleDescriptor descriptor) {

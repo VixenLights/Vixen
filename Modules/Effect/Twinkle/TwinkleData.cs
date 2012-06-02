@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Runtime.Serialization;
 using System.Drawing;
-using CommonElements.ColorManagement.ColorModels;
 using Vixen.Module;
-using Vixen.Commands.KnownDataTypes;
 using VixenModules.App.ColorGradients;
-using VixenModules.App.Curves;
 
 namespace VixenModules.Effect.Twinkle
 {
@@ -19,10 +15,10 @@ namespace VixenModules.Effect.Twinkle
 		public bool IndividualChannels { get; set; }
 
 		[DataMember]
-		public Level MinimumLevel { get; set; }
+		public double MinimumLevel { get; set; }
 
 		[DataMember]
-		public Level MaximumLevel { get; set; }
+		public double MaximumLevel { get; set; }
 
 		[DataMember]
 		public int LevelVariation { get; set; }

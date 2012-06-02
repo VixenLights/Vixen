@@ -79,10 +79,14 @@
 			this.deleteNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.createGroupWithNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.renameNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+			this.createAndNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.patchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStripDragging = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.moveHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.buttonCancel = new System.Windows.Forms.Button();
+			this.patchAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBoxSelectedNode.SuspendLayout();
 			this.groupBoxAddPatch.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPatchOutputSelect)).BeginInit();
@@ -308,7 +312,7 @@
 			this.labelParents.Size = new System.Drawing.Size(268, 28);
 			this.labelParents.TabIndex = 24;
 			this.labelParents.Text = "This node is in <x> groups:\r\nasdfasdfasdfasdfasdfasdfasdfasdfqwerqwerqwerqwer\r\n23" +
-				"4123412341234123412341234";
+    "4123412341234123412341234";
 			// 
 			// buttonRenameItem
 			// 
@@ -425,9 +429,9 @@
 			// multiSelectTreeviewChannelsGroups
 			// 
 			this.multiSelectTreeviewChannelsGroups.AllowDrop = true;
-			this.multiSelectTreeviewChannelsGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.multiSelectTreeviewChannelsGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.multiSelectTreeviewChannelsGroups.ContextMenuStrip = this.contextMenuStripTreeView;
 			this.multiSelectTreeviewChannelsGroups.Cursor = System.Windows.Forms.Cursors.Default;
 			this.multiSelectTreeviewChannelsGroups.CustomDragCursor = null;
@@ -460,9 +464,13 @@
             this.addNewNodeToolStripMenuItem,
             this.deleteNodesToolStripMenuItem,
             this.createGroupWithNodesToolStripMenuItem,
-            this.renameNodesToolStripMenuItem});
+            this.renameNodesToolStripMenuItem,
+            this.toolStripMenuItem1,
+            this.createAndNameToolStripMenuItem,
+            this.patchToolStripMenuItem,
+            this.patchAllToolStripMenuItem});
 			this.contextMenuStripTreeView.Name = "contextMenuStripTreeView";
-			this.contextMenuStripTreeView.Size = new System.Drawing.Size(205, 192);
+			this.contextMenuStripTreeView.Size = new System.Drawing.Size(205, 286);
 			this.contextMenuStripTreeView.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripTreeView_Opening);
 			// 
 			// cutNodesToolStripMenuItem
@@ -547,6 +555,25 @@
 			this.renameNodesToolStripMenuItem.Text = "Rename nodes";
 			this.renameNodesToolStripMenuItem.Click += new System.EventHandler(this.renameNodesToolStripMenuItem_Click);
 			// 
+			// toolStripMenuItem1
+			// 
+			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(201, 6);
+			// 
+			// createAndNameToolStripMenuItem
+			// 
+			this.createAndNameToolStripMenuItem.Name = "createAndNameToolStripMenuItem";
+			this.createAndNameToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+			this.createAndNameToolStripMenuItem.Text = "Create and name";
+			this.createAndNameToolStripMenuItem.Click += new System.EventHandler(this.createAndNameToolStripMenuItem_Click);
+			// 
+			// patchToolStripMenuItem
+			// 
+			this.patchToolStripMenuItem.Name = "patchToolStripMenuItem";
+			this.patchToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+			this.patchToolStripMenuItem.Text = "Patch";
+			this.patchToolStripMenuItem.Click += new System.EventHandler(this.patchToolStripMenuItem_Click);
+			// 
 			// contextMenuStripDragging
 			// 
 			this.contextMenuStripDragging.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -577,6 +604,13 @@
 			this.buttonCancel.TabIndex = 26;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
+			// 
+			// patchAllToolStripMenuItem
+			// 
+			this.patchAllToolStripMenuItem.Name = "patchAllToolStripMenuItem";
+			this.patchAllToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+			this.patchAllToolStripMenuItem.Text = "Patch all";
+			this.patchAllToolStripMenuItem.Click += new System.EventHandler(this.patchAllToolStripMenuItem_Click);
 			// 
 			// ConfigChannels
 			// 
@@ -662,5 +696,9 @@
 		private System.Windows.Forms.ToolStripMenuItem moveHereToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem copyHereToolStripMenuItem;
 		private System.Windows.Forms.Button buttonCancel;
+		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+		private System.Windows.Forms.ToolStripMenuItem createAndNameToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem patchToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem patchAllToolStripMenuItem;
 	}
 }

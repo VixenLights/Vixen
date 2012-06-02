@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.IO;
-using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.ModuleTemplate;
+using Vixen.Sys.Attribute;
 
 namespace Vixen.Sys {
 	class Modules {
@@ -16,8 +16,8 @@ namespace Vixen.Sys {
 		static private Dictionary<Guid, IModuleDescriptor> _moduleDescriptors = new Dictionary<Guid, IModuleDescriptor>();
 		// ModuleImplementation : descriptors for modules of that type
 		static private Dictionary<ModuleImplementation, HashSet<IModuleDescriptor>> _moduleImplementationDescriptors = new Dictionary<ModuleImplementation, HashSet<IModuleDescriptor>>();
-		// Module type id : module type's static data singleton
-		static private Dictionary<Guid, IModuleDataModel> _moduleStaticDataRepository = new Dictionary<Guid, IModuleDataModel>();
+		//// Module type id : module type's static data singleton
+		//static private Dictionary<Guid, IModuleDataModel> _moduleStaticDataRepository = new Dictionary<Guid, IModuleDataModel>();
 
 		static public dynamic ModuleManagement { get; private set; }
 		static public dynamic ModuleRepository { get; private set; }
@@ -240,7 +240,8 @@ namespace Vixen.Sys {
 				foreach(Type moduleDescriptorType in moduleDescriptorTypes) {
 					try {
 						// Get the module descriptor.
-						moduleDescriptor = Activator.CreateInstance(moduleDescriptorType) as IModuleDescriptor;
+						object o = Activator.CreateInstance(moduleDescriptorType);
+						moduleDescriptor = o as IModuleDescriptor;
 
 						if(moduleDescriptor != null) {
 							if(moduleDescriptor.ModuleClass != null) {
@@ -258,7 +259,7 @@ namespace Vixen.Sys {
 								VixenSystem.Logging.Debug("Tried to load module " + moduleDescriptor.TypeName + " from " + Path.GetFileName(filePath) + ", but the ModuleClass is null.");
 							}
 						} else {
-							VixenSystem.Logging.Debug("Tried to load module " + moduleDescriptor.TypeName + " from " + Path.GetFileName(filePath) + ", but the descriptor does not implement IModuleDescriptor.");
+							VixenSystem.Logging.Debug("Tried to load module of type " + moduleDescriptorType.Name + " from " + Path.GetFileName(filePath) + ", but the descriptor does not implement IModuleDescriptor.");
 						}
 					} catch(Exception ex) {
 						VixenSystem.Logging.Error("Error loading module descriptor " + moduleDescriptorType.Name + " from " + Path.GetFileName(filePath) + ".", ex);
@@ -272,14 +273,11 @@ namespace Vixen.Sys {
 		/// <summary>
 		/// Creates a new untyped instance of the module.  This should only be called by repositories.
 		/// </summary>
-		/// <param name="id"></param>
-		/// <returns></returns>
 		static public IModuleInstance GetById(Guid moduleTypeId) {
 			Type instanceType;
 			IModuleInstance instance = null;
 			if(_activators.TryGetValue(moduleTypeId, out instanceType)) {
-				instance = Activator.CreateInstance(instanceType) as IModuleInstance;
-				instance.InstanceId = Guid.NewGuid();
+				instance = (IModuleInstance)Activator.CreateInstance(instanceType);
 				instance.Descriptor = GetDescriptorById(moduleTypeId);
 				try {
 					instance.StaticModuleData = _GetModuleStaticData(instance);
@@ -295,6 +293,8 @@ namespace Vixen.Sys {
 				// See if there are any templates to apply to the instance.
 				ModuleTemplateModuleManagement manager = Modules.GetManager<IModuleTemplateModuleInstance, ModuleTemplateModuleManagement>();
 				manager.ProjectTemplateInto(instance);
+			} else {
+				VixenSystem.Logging.Warning("Attempt to instantiate non-existent module " + moduleTypeId);
 			}
 			return instance;
 		}
@@ -463,15 +463,19 @@ namespace Vixen.Sys {
 		static private IModuleDataModel _GetModuleStaticData(IModuleInstance instance) {
 			// All instances of a given module type will share a single instance of that type's
 			// static data.  A change in one is reflected in all.
-			IModuleDataModel data = null;
-			if(!_moduleStaticDataRepository.TryGetValue(instance.Descriptor.TypeId, out data)) {
-				if(instance.Descriptor.ModuleStaticDataClass != null) {
-					data = VixenSystem.ModuleStore.Data.RetrieveTypeData(instance.Descriptor);
-					_moduleStaticDataRepository[instance.Descriptor.TypeId] = data;
-				}
-			}
 
-			return data;
+			return VixenSystem.ModuleStore.Data.GetTypeData(instance);
+			
+			//IModuleDataModel data = null;
+
+			//if(!_moduleStaticDataRepository.TryGetValue(instance.Descriptor.TypeId, out data)) {
+			//    if(instance.Descriptor.ModuleStaticDataClass != null) {
+			//        VixenSystem.ModuleStore.Data.GetModuleTypeData(instance);
+			//        _moduleStaticDataRepository[instance.Descriptor.TypeId] = data;
+			//    }
+			//}
+
+			//return data;
 		}
 	}
 }

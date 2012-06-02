@@ -2,6 +2,7 @@
 using Vixen.Commands;
 using Vixen.Commands.KnownDataTypes;
 using Vixen.Module.Effect;
+using Vixen.Sys;
 
 namespace VixenModules.Effect.SetPosition {
 	public class SetPositionDescriptor : EffectModuleDescriptorBase {

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using Vixen.IO;
-using Vixen.IO.Xml;
+using Vixen.IO.Result;
 
 namespace Vixen.Sys {
-	class SystemContext : FilePackage, IVersioned {
+	class SystemContext : FilePackage {
 		private const int VERSION = 1;
 		private const string TEMP_DIRECTORY_NAME = "VixenContext";
 
@@ -40,8 +40,8 @@ namespace Vixen.Sys {
 		}
 
 		public void Save(string targetFilePath) {
-			IWriter contextWriter = new XmlContextWriter();
-			contextWriter.Write(targetFilePath, this);
+			FileSerializer<SystemContext> serializer = SerializerFactory.Instance.CreateSystemContextSerializer();
+			serializer.Write(this, targetFilePath);
 		}
 
 		/// <summary>
@@ -101,10 +101,9 @@ namespace Vixen.Sys {
 		}
 
 		static public SystemContext UnpackageSystemContext(string contextFilePath) {
-			XmlContextReader contextReader = new XmlContextReader();
-			SystemContext context = contextReader.Read(contextFilePath);
-
-			return context;
+			FileSerializer<SystemContext> serializer = SerializerFactory.Instance.CreateSystemContextSerializer();
+			SerializationResult<SystemContext> result = serializer.Read(contextFilePath);
+			return result.Object;
 		}
 
 		static private string _PrepSystemConfig() {
@@ -113,15 +112,18 @@ namespace Vixen.Sys {
 
 			// Flush the system data.
 			VixenSystem.SystemConfig.Save();
+			
 			// Load the system config into a new instance.
-			XmlSystemConfigReader reader = new XmlSystemConfigReader();
-			SystemConfig contextUserData = reader.Read(VixenSystem.SystemConfig.LoadedFilePath);
+			FileSerializer<SystemConfig> serializer = SerializerFactory.Instance.CreateSystemConfigSerializer();
+			SerializationResult<SystemConfig> result = serializer.Read(VixenSystem.SystemConfig.LoadedFilePath);
+			SystemConfig contextSysConfig = result.Object;
+
 			// Set the context flag.
-			contextUserData.IsContext = true;
+			contextSysConfig.IsContext = true;
+			
 			// Save to a temp file.
 			string tempFilePath = Path.GetTempFileName();
-			XmlSystemConfigWriter writer = new XmlSystemConfigWriter();
-			writer.Write(tempFilePath, contextUserData);
+			serializer.Write(contextSysConfig, tempFilePath);
 
 			return tempFilePath;
 		}

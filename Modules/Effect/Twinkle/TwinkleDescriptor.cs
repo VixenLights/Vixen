@@ -4,11 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using Vixen.Sys;
-using Vixen.Commands;
-using Vixen.Commands.KnownDataTypes;
 using Vixen.Module.Effect;
 using VixenModules.App.ColorGradients;
-using VixenModules.App.Curves;
 
 namespace VixenModules.Effect.Twinkle
 {
@@ -34,7 +31,7 @@ namespace VixenModules.Effect.Twinkle
 
 		public override string Description { get { return "Randomly generates flickering pulses of light on the target channels."; } }
 
-		public override string Version { get { return "1.1"; } }
+		public override string Version { get { return "1.0"; } }
 
 		public override Guid[] Dependencies { get { return new Guid[] { _CurvesId, _ColorGradientId, _PulseId }; } }
 
@@ -44,8 +41,8 @@ namespace VixenModules.Effect.Twinkle
 			{
 				return new ParameterSignature(
 					new ParameterSpecification("Individual Channels", typeof(bool)),
-					new ParameterSpecification("Minimum Level", typeof(Level)),
-					new ParameterSpecification("Maximum Level", typeof(Level)),
+					new ParameterSpecification("Minimum Level", typeof(double)),
+					new ParameterSpecification("Maximum Level", typeof(double)),
 					new ParameterSpecification("Level Variation (%)", typeof(int)),
 					new ParameterSpecification("Average Pulse Time (ms)", typeof(int)),
 					new ParameterSpecification("Pulse Time Variation (%)", typeof(int)),
@@ -62,7 +59,6 @@ namespace VixenModules.Effect.Twinkle
 	{
 		StaticColor,
 		GradientThroughWholeEffect,
-		GradientForEachPulse,
-		ColorAcrossItems
+		GradientForEachPulse
 	}
 }

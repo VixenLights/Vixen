@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Vixen.Module;
 using Vixen.Module.Transform;
+using Vixen.Services;
 using Vixen.Sys;
 
 namespace TestTemplate {
@@ -21,7 +22,7 @@ namespace TestTemplate {
 			InitializeComponent();
 			_transformDatum = transformDatum;
 			//_transformNames = ApplicationServices.GetAvailableModules("Transform");
-			_transformNames = Vixen.Sys.ApplicationServices.GetAvailableModules<ITransformModuleInstance>();
+			_transformNames = ApplicationServices.GetAvailableModules<ITransformModuleInstance>();
 			comboBoxTransforms.DisplayMember = "Value";
 			comboBoxTransforms.ValueMember = "Key";
 			comboBoxTransforms.DataSource = _transformNames.ToArray();
@@ -40,7 +41,7 @@ namespace TestTemplate {
 		private void buttonAddTransform_Click(object sender, EventArgs e) {
 			if(comboBoxTransforms.SelectedItem != null) {
 				ITransformModuleInstance instance = ApplicationServices.Get<ITransformModuleInstance>((Guid)comboBoxTransforms.SelectedValue);
-				_transformDatum.GetModuleInstanceData(instance);
+				_transformDatum.AssignModuleInstanceData(instance);
 				_templateTransforms.Add(instance);
 				_UpdateTransformList();
 			}

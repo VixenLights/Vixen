@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 using Vixen.Module;
 using Vixen.Module.Property;
 using Vixen.Module.Effect;
@@ -30,11 +31,11 @@ namespace VixenModules.Property.RGB
 			}
 		}
 
-		public override void Setup()
+		public override bool Setup()
 		{
 			List<ChannelNode> channels = new List<ChannelNode>(Owner.Children);
 			using (RGBSetup form = new RGBSetup(_data, channels.ToArray())) {
-				form.ShowDialog();
+				return form.ShowDialog() == DialogResult.OK;
 			}
 		}
 

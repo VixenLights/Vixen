@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Module.Effect;
 using Vixen.Module.EffectEditor;
@@ -27,11 +28,12 @@ namespace VixenTestbed {
 		}
 
 		private void EffectEditorContainerForm_Load(object sender, EventArgs e) {
-			_controls = ApplicationServices.GetEffectEditorControls(_effectModule.Descriptor.TypeId).ToArray();
-			if(_controls.Length == 0) {
+			IEnumerable<IEffectEditorControl> controls = ApplicationServices.GetEffectEditorControls(_effectModule.Descriptor.TypeId);
+			if(controls == null) {
 				MessageBox.Show("Appropriate effect editors could not be found.");
 				DialogResult = DialogResult.Cancel;
 			} else {
+				_controls = controls.ToArray();
 				tableLayoutPanel.RowCount = _controls.Length;
 				for(int i = 0; i < _controls.Length; i++) {
 					Control control = _controls[i] as Control;

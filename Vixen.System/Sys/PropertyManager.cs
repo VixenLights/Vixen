@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Vixen.Module;
 using Vixen.Module.Property;
 
 namespace Vixen.Sys {
 	public class PropertyManager : IEnumerable<IPropertyModuleInstance> {
 		private Dictionary<Guid, IPropertyModuleInstance> _items = new Dictionary<Guid, IPropertyModuleInstance>();
-		private IModuleDataSet _propertyData;
+		private ModuleLocalDataSet _propertyData;
 		private ChannelNode _owner;
 
 		public PropertyManager(ChannelNode owner) {
@@ -24,7 +22,7 @@ namespace Vixen.Sys {
 				if(instance != null) {
 					instance.Owner = _owner;
 					_items[id] = instance;
-					PropertyData.GetModuleTypeData(instance);
+					PropertyData.AssignModuleTypeData(instance);
 					instance.SetDefaultValues();
 				}
 			}
@@ -37,7 +35,7 @@ namespace Vixen.Sys {
 			if(_items.TryGetValue(id, out instance)) {
 				instance.Owner = null;
 				_items.Remove(id);
-				PropertyData.RemoveModuleTypeData(id);
+				PropertyData.RemoveModuleTypeData(instance);
 			}
 		}
 
@@ -57,13 +55,13 @@ namespace Vixen.Sys {
 			return _items.ContainsKey(propertyTypeId);
 		}
 
-		public IModuleDataSet PropertyData {
+		public ModuleLocalDataSet PropertyData {
 			get { return _propertyData; }
-			private set {
+			set {
 				_propertyData = value;
 				// Update any properties we already have.
 				foreach(IPropertyModuleInstance propertyModule in _items.Values) {
-					_propertyData.GetModuleTypeData(propertyModule);
+					_propertyData.AssignModuleTypeData(propertyModule);
 				}
 			}
 		}

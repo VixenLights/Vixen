@@ -9,7 +9,6 @@ using System.Windows.Forms;
 using Vixen.Sys;
 using Vixen.Module.EffectEditor;
 using Vixen.Module.Effect;
-using Vixen.Commands.KnownDataTypes;
 using VixenModules.App.Curves;
 
 namespace VixenModules.EffectEditor.CurveTypeEditor

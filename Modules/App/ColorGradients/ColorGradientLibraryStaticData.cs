@@ -5,7 +5,6 @@ using System.Text;
 using Vixen.Module;
 using Vixen.Module.App;
 using System.Runtime.Serialization;
-using System.Drawing;
 
 namespace VixenModules.App.ColorGradients
 {
@@ -33,9 +32,6 @@ namespace VixenModules.App.ColorGradients
 				_library = value;
 			}
 		}
-
-		[DataMember]
-		public Rectangle SelectorWindowBounds { get; set; }
 
 		public override IModuleDataModel Clone()
 		{

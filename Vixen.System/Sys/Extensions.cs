@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Reflection;
@@ -107,6 +108,45 @@ namespace Vixen.Sys
 
 		static public bool ContainsString(this string source, string value, StringComparison comparison = StringComparison.Ordinal) {
 			return source.IndexOf(value, comparison) >= 0;
+		}
+
+		static public void Raise(this MulticastDelegate thisEvent, object sender, EventArgs e) {
+			//AsyncCallback callback = new AsyncCallback(EndAsynchronousEvent);
+
+			foreach(Delegate d in thisEvent.GetInvocationList()) {
+				EventHandler uiMethod = d as EventHandler;
+				if(uiMethod != null) {
+					ISynchronizeInvoke target = d.Target as ISynchronizeInvoke;
+					if(target != null) target.BeginInvoke(uiMethod, new[] { sender, e });
+					else uiMethod.BeginInvoke(sender, e, null, uiMethod);
+				}
+			}
+		}
+
+		static public IEnumerable<T> NotNull<T>(this IEnumerable<T> values)
+			where T : class {
+			return values.Where(x => x != null);
+		}
+
+		static public T[] SubArray<T>(this T[] data, int index, int length) {
+			T[] result = new T[length];
+			Array.Copy(data, index, result, 0, length);
+			return result;
+		}
+
+		static public T[] SubArray<T>(this T[] data, int index) {
+			int length = data.Length - index;
+			return SubArray(data, index, length);
+		}
+
+		/// <summary>
+		/// Returns a color of highest-wins of each component.
+		/// </summary>
+		static public Color Combine(this Color color, Color otherColor) {
+			return Color.FromArgb(
+				Math.Max(color.R, otherColor.R),
+				Math.Max(color.G, otherColor.G),
+				Math.Max(color.B, otherColor.B));
 		}
 	}
 }

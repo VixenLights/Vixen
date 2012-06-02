@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Vixen.Module.Timing;
 using Vixen.Sys;
 
 namespace Vixen.Execution
@@ -18,5 +17,12 @@ namespace Vixen.Execution
 		void Pause();
 		void Resume();
 		void Stop();
+		bool IsRunning { get; }
+		bool IsPaused { get; }
+
+		IEnumerable<IEffectNode> GetSequenceData();
+		ITiming GetSequenceTiming();
+		IEnumerable<ISequenceFilterNode> GetSequenceFilters();
+		string Name { get; }
 	}
 }

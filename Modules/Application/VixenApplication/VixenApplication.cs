@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.IO;
 using System.Xml.Serialization;
+using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Module.Editor;
 using Vixen.Module.Sequence;
@@ -240,6 +241,16 @@ namespace VixenApplication
 			}
 		}
 
+		private void buttonSetupOutputPreviews_Click(object sender, EventArgs e) {
+			ConfigPreviews form = new ConfigPreviews();
+			DialogResult result = form.ShowDialog();
+			if(result == System.Windows.Forms.DialogResult.OK) {
+				VixenSystem.SaveSystemConfig();
+			} else {
+				VixenSystem.ReloadSystemConfig();
+			}
+		}
+
 		private void startToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Execution.OpenExecution();
@@ -409,9 +420,9 @@ namespace VixenApplication
 		}
 
 		private void channelGroupTestToolStripMenuItem_Click(object sender, EventArgs e) {
-			using(TestForm testForm = new TestForm()) {
-				testForm.ShowDialog();
-			}
+			//using(TestForm testForm = new TestForm()) {
+			//    testForm.ShowDialog();
+			//}
 		}
 
 		#region Stats

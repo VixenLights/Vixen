@@ -20,7 +20,8 @@ namespace Vixen.Sys.State.Execution {
 		public override void Enter() {
 			VixenSystem.Logging.Info("Vixen execution engine entering the testing state...");
 
-			StandardOpeningBehavior<NonExpiringChannelEnumerator>.Run();
+			//StandardOpeningBehavior<NonExpiringChannelEnumerator>.Run();
+			StandardOpeningBehavior.Run();
 
 			Engine.SetState(Engine.TestOpenState);
 		}

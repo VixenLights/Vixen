@@ -6,8 +6,10 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Vixen.Services;
 using Vixen.Sys;
-using Vixen.Module.Output;
+using Vixen.Module.Controller;
+using Vixen.Sys.Output;
 
 namespace VixenTestbed {
 	public partial class ControllersForm : Form {
@@ -29,14 +31,14 @@ namespace VixenTestbed {
 		private void _LoadOutputModules() {
 			comboBoxOutputModule.DisplayMember = "Value";
 			comboBoxOutputModule.ValueMember = "Key";
-			comboBoxOutputModule.DataSource = ApplicationServices.GetAvailableModules<IOutputModuleInstance>().ToArray();
+			comboBoxOutputModule.DataSource = ApplicationServices.GetAvailableModules<IControllerModuleInstance>().ToArray();
 		}
 
 		private void _LoadControllers() {
 			listViewControllers.Items.Clear();
 			_controllers.Clear();
 
-			_controllers.AddRange(VixenSystem.Controllers);
+			_controllers.AddRange(VixenSystem.Controllers.Cast<OutputController>());
 			foreach(OutputController controller in _controllers) {
 				_AddControllerToView(controller);
 			}
@@ -48,7 +50,7 @@ namespace VixenTestbed {
 			ListViewItem item = new ListViewItem(new string[] {
                 controller.Name,
 				controller.OutputCount.ToString(),
-				ApplicationServices.GetModuleDescriptor<IOutputModuleDescriptor>(controller.OutputModuleId).TypeName
+				ApplicationServices.GetModuleDescriptor<IControllerModuleDescriptor>(controller.ModuleId).TypeName
             });
 			item.Tag = controller;
 			listViewControllers.Items.Add(item);
@@ -83,23 +85,19 @@ namespace VixenTestbed {
 			set { comboBoxOutputModule.SelectedValue = value; }
 		}
 
-		private Guid _LinkedTo {
+		private Guid? _LinkedTo {
 			get {
 				if(comboBoxLinkedTo.SelectedValue != null) {
 					return (Guid)comboBoxLinkedTo.SelectedValue;
 				}
-				return Guid.Empty;
+				return null;
 			}
 			set { comboBoxLinkedTo.SelectedValue = value; }
 		}
 
 		private void _UpdateLinkCombo() {
 			OutputController controller = _SelectedController;
-			if(controller != null) {
-				_LinkedTo = (controller.Prior == null) ? Guid.Empty : controller.Prior.Id;
-			} else {
-				_LinkedTo = Guid.Empty;
-			}
+			_LinkedTo = (controller != null) ? VixenSystem.ControllerLinking.GetPrior(controller.Id) : null;
 		}
 
 		private void _ResetLinkedToCombo() {
@@ -113,7 +111,7 @@ namespace VixenTestbed {
 			if(controller != null) {
 				_ControllerName = controller.Name;
 				_OutputCount = controller.OutputCount;
-				_OutputModule = controller.OutputModuleId;
+				_OutputModule = controller.ModuleId;
 				buttonControllerSetup.Enabled = controller.HasSetup;
 				buttonUpdateController.Enabled = true;
 				buttonDeleteController.Enabled = true;
@@ -157,7 +155,7 @@ namespace VixenTestbed {
 			try {
 				if(_Validate()) {
 					OutputController controller = new OutputController(_ControllerName, _OutputCount, _OutputModule);
-					VixenSystem.Controllers.AddController(controller);
+					VixenSystem.Controllers.Add(controller);
 					_AddControllerToView(controller);
 					_controllers.Add(controller);
 					_ResetLinkedToCombo();
@@ -173,7 +171,7 @@ namespace VixenTestbed {
 					OutputController controller = _SelectedController;
 					if(controller != null) {
 						controller.OutputCount = _OutputCount;
-						controller.OutputModuleId = _OutputModule;
+						controller.ModuleId = _OutputModule;
 					} else {
 						MessageBox.Show("Controller must be selected.");
 					}
@@ -186,7 +184,7 @@ namespace VixenTestbed {
 		private void buttonDeleteController_Click(object sender, EventArgs e) {
 			try {
 				if(_SelectedController != null) {
-					VixenSystem.Controllers.RemoveController(_SelectedController);
+					VixenSystem.Controllers.Remove(_SelectedController);
 					_LoadControllers();
 					_DisplayControllerDetails(null);
 				}
@@ -202,7 +200,8 @@ namespace VixenTestbed {
 		private void buttonLinkController_Click(object sender, EventArgs e) {
 			try {
 				if(_LinkedTo != null && _SelectedController != null) {
-					_SelectedController.LinkTo(_controllers.First(x => x.Id == _LinkedTo));
+					Guid parentControllerId = _controllers.First(x => x.Id == _LinkedTo).Id;
+					VixenSystem.ControllerLinking.LinkController(_SelectedController.Id, parentControllerId);
 				}
 			} catch(Exception ex) {
 				MessageBox.Show(ex.Message);
@@ -212,7 +211,7 @@ namespace VixenTestbed {
 		private void buttonRemoveControllerLink_Click(object sender, EventArgs e) {
 			try {
 				if(_SelectedController != null) {
-					_SelectedController.LinkTo(null);
+					VixenSystem.ControllerLinking.RemoveControllerFromParent(_SelectedController.Id);
 					_UpdateLinkCombo();
 				}
 			} catch(Exception ex) {

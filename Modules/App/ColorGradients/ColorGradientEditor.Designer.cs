@@ -43,7 +43,7 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(366, 258);
+			this.buttonCancel.Location = new System.Drawing.Point(342, 234);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(80, 25);
 			this.buttonCancel.TabIndex = 5;
@@ -54,7 +54,7 @@
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOK.Location = new System.Drawing.Point(280, 258);
+			this.buttonOK.Location = new System.Drawing.Point(256, 234);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(80, 25);
 			this.buttonOK.TabIndex = 4;
@@ -71,7 +71,7 @@
 			this.gradientEditPanel.MinimumSize = new System.Drawing.Size(357, 120);
 			this.gradientEditPanel.Name = "gradientEditPanel";
 			this.gradientEditPanel.ReadOnly = false;
-			this.gradientEditPanel.Size = new System.Drawing.Size(434, 144);
+			this.gradientEditPanel.Size = new System.Drawing.Size(410, 120);
 			this.gradientEditPanel.TabIndex = 0;
 			// 
 			// groupBoxLibrary
@@ -83,9 +83,9 @@
 			this.groupBoxLibrary.Controls.Add(this.labelCurve);
 			this.groupBoxLibrary.Controls.Add(this.buttonSaveToLibrary);
 			this.groupBoxLibrary.Controls.Add(this.buttonLoadFromLibrary);
-			this.groupBoxLibrary.Location = new System.Drawing.Point(12, 162);
+			this.groupBoxLibrary.Location = new System.Drawing.Point(12, 138);
 			this.groupBoxLibrary.Name = "groupBoxLibrary";
-			this.groupBoxLibrary.Size = new System.Drawing.Size(434, 85);
+			this.groupBoxLibrary.Size = new System.Drawing.Size(410, 85);
 			this.groupBoxLibrary.TabIndex = 9;
 			this.groupBoxLibrary.TabStop = false;
 			this.groupBoxLibrary.Text = "Library";
@@ -141,25 +141,16 @@
 			// 
 			// ColorGradientEditor
 			// 
-			this.AcceptButton = this.buttonOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(458, 295);
+			this.ClientSize = new System.Drawing.Size(434, 271);
 			this.Controls.Add(this.groupBoxLibrary);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.gradientEditPanel);
-			this.DoubleBuffered = true;
-			this.MaximizeBox = false;
-			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(450, 310);
 			this.Name = "ColorGradientEditor";
-			this.ShowIcon = false;
-			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Color Gradient Editor";
-			this.TopMost = true;
 			this.groupBoxLibrary.ResumeLayout(false);
 			this.groupBoxLibrary.PerformLayout();
 			this.ResumeLayout(false);

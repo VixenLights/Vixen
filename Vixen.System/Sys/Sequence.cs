@@ -1,33 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
-using System.Xml.Linq;
-using Vixen.Sys;
+using Vixen.Module.Media;
+using Vixen.Module.Timing;
 using Vixen.IO;
 using Vixen.Execution;
 using Vixen.Module;
 using Vixen.Module.RuntimeBehavior;
-using Vixen.Module.Media;
-using Vixen.Module.Effect;
 using Vixen.Module.Sequence;
-using Vixen.IO.Xml;
+using Vixen.Sys.Attribute;
 
 namespace Vixen.Sys {
 	/// <summary>
 	/// Base class for any sequence implementation.
 	/// </summary>
 	[Executor(typeof(SequenceExecutor))]
-	[SequenceReader(typeof(XmlSequenceReader))]
-	abstract public class Sequence : Vixen.Sys.ISequence, IVersioned {
-		private IModuleDataSet _moduleDataSet;
+	abstract public class Sequence : Vixen.Sys.ISequence {
+		private ModuleLocalDataSet _moduleDataSet;
+		private Guid _sequenceFilterStreamId;
+		private MediaCollection _media;
 
 		private const string DIRECTORY_NAME = "Sequence";
-		private const int VERSION = 1;
 
 		[DataPath]
-		static private readonly string _directory = System.IO.Path.Combine(Paths.DataRootPath, DIRECTORY_NAME);
+		static private readonly string _directory = Path.Combine(Paths.DataRootPath, DIRECTORY_NAME);
 
 		/// <summary>
 		/// The directory that this sequence type will be saved in.
@@ -40,20 +37,6 @@ namespace Vixen.Sys {
 		/// The generic default directory for all sequence types.
 		/// </summary>
 		static public string DefaultDirectory { get { return _directory; } }
-
-		/// <summary>
-		/// Loads an existing instance.
-		/// </summary>
-		/// <param name="filePath"></param>
-		/// <returns></returns>
-		static public Sequence Load(string filePath) {
-			if(string.IsNullOrWhiteSpace(filePath)) return null;
-
-			IReader reader = new XmlAnySequenceReader();
-			if(!Path.IsPathRooted(filePath)) filePath = Path.Combine(DefaultDirectory, filePath);
-			Sequence instance = (Sequence)reader.Read(filePath);
-			return instance;
-		}
 
 		static public Sequence Create(string fileType) {
 			// Get the specific sequence module manager.
@@ -88,46 +71,39 @@ namespace Vixen.Sys {
 			FilePath = "";
 			InsertDataListener = new InsertDataListenerStack();
 			InsertDataListener += _DataListener;
-			Data = new EffectStreams();
+			Data = new DataStreams();
+			_sequenceFilterStreamId = Data.CreateStream("SequenceFilter");
 			TimingProvider = new TimingProviders(this);
 			RuntimeBehaviors = Modules.ModuleManagement.GetAllRuntimeBehavior();
 			ModuleDataSet = new ModuleLocalDataSet();
-			// Media set in ModuleDataSet setter.
-			// Runtime behaviors set in ModuleDataSet setter.
+			_media = new MediaCollection();
 		}
 
 		protected Sequence(Sequence original) {
 			FilePath = original.FilePath;
 			InsertDataListener = new InsertDataListenerStack();
 			InsertDataListener += _DataListener;
-			Data = new EffectStreams(original.Data);
+			Data = new DataStreams(original.Data);
+			_sequenceFilterStreamId = original._sequenceFilterStreamId;
 			TimingProvider = new TimingProviders(this, original.TimingProvider);
 			RuntimeBehaviors = Modules.ModuleManagement.GetAllRuntimeBehavior();
-			ModuleDataSet = original.ModuleDataSet.Clone();
-
+			ModuleDataSet = (ModuleLocalDataSet)original.ModuleDataSet.Clone();
 			Length = original.Length;
 		}
 
-		private bool _DataListener(EffectNode effectNode) {
-			Data.AddEffect(effectNode);
-			ModuleDataSet.GetModuleInstanceData(effectNode.Effect);
+		private bool _DataListener(IEffectNode effectNode) {
+			Data.AddData(effectNode);
+			ModuleDataSet.AssignModuleInstanceData(effectNode.Effect);
 			// Do not cancel the event.
 			return false;
 		}
 
-		public void Save(string filePath) {
-			if(string.IsNullOrWhiteSpace(filePath)) throw new InvalidOperationException("A name is required.");
-			filePath = Path.Combine(this.Directory, Path.GetFileName(filePath));
-			IWriter writer = _GetSequenceWriter();
-			writer.Write(filePath, this);
-			this.FilePath = filePath;
+		virtual public void Save(string filePath) {
+			FileSerializer<Sequence> serializer = SerializerFactory.Instance.CreateStandardSequenceSerializer();
+			serializer.Write(this, filePath);
 		}
 
-		virtual protected IWriter _GetSequenceWriter() {
-			return new XmlSequenceWriter();
-		}
-
-		public void Save() {
+		virtual public void Save() {
 			Save(FilePath);
 		}
 
@@ -135,19 +111,22 @@ namespace Vixen.Sys {
 			get { return Path.GetFileNameWithoutExtension(FilePath); }
 		}
 
-		public IModuleDataSet ModuleDataSet {
+		public ModuleLocalDataSet ModuleDataSet {
 			get { return _moduleDataSet; }
 			set {
 				if(_moduleDataSet != value) {
 					_moduleDataSet = value;
-					Media = new MediaCollection(_moduleDataSet);
 					// The runtime behavior module instances will need data in the sequence's
 					// data set.
 					foreach(IRuntimeBehaviorModuleInstance runtimeBehavior in RuntimeBehaviors) {
-						_moduleDataSet.GetModuleTypeData(runtimeBehavior);
+						_moduleDataSet.AssignModuleTypeData(runtimeBehavior);
 					}
 				}
 			}
+		}
+
+		virtual public SequenceType SequenceType {
+			get { return SequenceType.Standard; }
 		}
 
 		public TimeSpan Length { get; set; }
@@ -156,27 +135,83 @@ namespace Vixen.Sys {
 
 		public InsertDataListenerStack InsertDataListener { get; set; }
 
-		public void InsertData(EffectNode effectNode)
+		public void InsertData(IEffectNode effectNode)
 		{
 			InsertDataListener.InsertData(effectNode);
 		}
 
-		public void InsertData(IEnumerable<EffectNode> effectNodes)
+		public void InsertData(IEnumerable<IEffectNode> effectNodes)
 		{
 			InsertDataListener.InsertData(effectNodes);
 		}
 
-		public EffectNode InsertData(IEffectModuleInstance effect, TimeSpan startTime)
+		public bool RemoveData(IEffectNode effectNode)
 		{
-			EffectNode cn = new EffectNode(effect, startTime);
-			InsertData(cn);
-			return cn;
+			return Data.RemoveData(effectNode);
 		}
 
-		public bool RemoveData(EffectNode effectNode)
-		{
-			return Data.RemoveEffect(effectNode);
+
+		#region IHasMedia
+		public void AddMedia(IEnumerable<IMediaModuleInstance> modules) {
+			foreach(IMediaModuleInstance module in modules) {
+				AddMedia(module);
+			}
 		}
+
+		public void AddMedia(IMediaModuleInstance module) {
+			_moduleDataSet.AssignModuleInstanceData(module);
+			_media.Add(module);
+		}
+
+		public IMediaModuleInstance AddMedia(string filePath) {
+			MediaModuleManagement manager = Modules.GetManager<IMediaModuleInstance, MediaModuleManagement>();
+			IMediaModuleInstance module = manager.Get(filePath);
+			if(module != null) {
+				// Set the file in the instance.
+				module.MediaFilePath = filePath;
+				AddMedia(module);
+			}
+
+			return module;
+		}
+
+		public bool RemoveMedia(IMediaModuleInstance module) {
+			_moduleDataSet.RemoveModuleInstanceData(module);
+			return _media.Remove(module);
+		}
+
+		public IEnumerable<IMediaModuleInstance> GetAllMedia() {
+			return _media;
+		}
+
+		public void ClearMedia() {
+			_media.Clear();
+		}
+		#endregion
+
+		#region IHasSequenceFilters
+		public void AddSequenceFilters(IEnumerable<ISequenceFilterNode> filterNodes) {
+			foreach(SequenceFilterNode filterNode in filterNodes) {
+				AddSequenceFilter(filterNode);
+			}
+		}
+
+		public void AddSequenceFilter(ISequenceFilterNode sequenceFilterNode) {
+			ModuleDataSet.AssignModuleInstanceData(sequenceFilterNode.Filter);
+			Data.AddData(_sequenceFilterStreamId, sequenceFilterNode);
+		}
+
+		public bool RemoveSequenceFilter(ISequenceFilterNode sequenceFilterNode) {
+			ModuleDataSet.RemoveModuleInstanceData(sequenceFilterNode.Filter);
+			return Data.RemoveData(sequenceFilterNode);
+		}
+
+		public void ClearSequenceFilters() {
+			foreach(ISequenceFilterNode filterNode in GetAllSequenceFilters()) {
+				RemoveSequenceFilter(filterNode);
+			}
+		}
+		#endregion
 
 		public bool IsUntimed
 		{
@@ -186,19 +221,25 @@ namespace Vixen.Sys {
 
 		public TimingProviders TimingProvider { get; protected set; }
 
-		public EffectStreams Data { get; private set; }
+		public DataStreams Data { get; private set; }
 
 		// Every sequence will get a collection of all available runtime behaviors.
 		public IRuntimeBehaviorModuleInstance[] RuntimeBehaviors { get; private set; }
 
-		public MediaCollection Media { get; set; }
+		public IEnumerable<IEffectNode> GetData() {
+			return Data.GetMainStreamData().Cast<IEffectNode>();
+		}
+
+		public IEnumerable<ISequenceFilterNode> GetAllSequenceFilters() {
+			return Data.GetStreamData(_sequenceFilterStreamId).Cast<ISequenceFilterNode>();
+		}
+
+		public ITiming GetTiming() {
+			return TimingProvider.GetSelectedSource();
+		}
 
 		public override string ToString() {
 			return Name;
-		}
-
-		virtual public int Version {
-			get { return VERSION; }
 		}
 	}
 }

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Module;
-using Vixen.Module.Output;
+using Vixen.Module.Controller;
 using System.Net;
 
 namespace VixenModules.Output.BlinkyLinky
 {
-	class BlinkyLinkyDescriptor : OutputModuleDescriptorBase
+	class BlinkyLinkyDescriptor : ControllerModuleDescriptorBase
 	{
 		private Guid _typeId = new Guid("{b9d5d3a1-c746-4395-8e19-a0c975ced438}");
 
@@ -49,7 +49,7 @@ namespace VixenModules.Output.BlinkyLinky
 
 		public override int UpdateInterval
 		{
-			get { return 20; }
+			get { return 10; }
 		}
 	}
 }

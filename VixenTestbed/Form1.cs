@@ -12,7 +12,7 @@ using Vixen.Module.Editor;
 using Vixen.Module.Effect;
 using Vixen.Module.EffectEditor;
 using Vixen.Module.Media;
-using Vixen.Module.Output;
+using Vixen.Module.Controller;
 using Vixen.Module.Property;
 using Vixen.Module.Timing;
 

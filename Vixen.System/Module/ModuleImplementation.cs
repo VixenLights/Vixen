@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Vixen.Sys;
+using Vixen.Sys.Attribute;
 
 namespace Vixen.Module {
 	abstract class ModuleImplementation {
@@ -14,8 +14,8 @@ namespace Vixen.Module {
 			ModuleInstanceType = moduleInstanceType;
 		}
 
-		public string TypeOfModule { get; private set; } // i.e. "Output"
-		public Type ModuleInstanceType { get; private set; } // i.e. "IOutputModuleInstance"
+		public string TypeOfModule { get; private set; } // i.e. "Controller"
+		public Type ModuleInstanceType { get; private set; } // i.e. "IControllerModuleInstance"
 		public string Path { get; set; } // Path that holds modules of this type.
 
 		abstract public IModuleRepository Repository { get; protected set; }

@@ -63,6 +63,7 @@
     <Compile Include="Input\ZRotationalAxis.cs" />
     <Compile Include="Joystick.cs" />
     <Compile Include="JoystickInput.cs" />
+    <Compile Include="Position.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetupForm.cs">
       <SubType>Form</SubType>

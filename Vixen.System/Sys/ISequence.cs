@@ -1,30 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Vixen.Sys;
+using Vixen.Module.Timing;
 using Vixen.Execution;
 using Vixen.Module;
-using Vixen.Module.Effect;
 using Vixen.Module.RuntimeBehavior;
-using Vixen.Module.Media;
 
 namespace Vixen.Sys {
-    public interface ISequence {
+	public enum SequenceType {
+		None,
+		Standard,
+		Script
+	};
+	public interface ISequence : IHasMedia, IHasSequenceFilterNodes {
         string Name { get; }
 		void Save();
 		void Save(string fileName);
 		TimeSpan Length { get; set; }
 		bool IsUntimed { get; set; }
 		string FilePath { get; set; }
-		void InsertData(EffectNode effectNode);
-		void InsertData(IEnumerable<EffectNode> effectNodes);
-		EffectNode InsertData(IEffectModuleInstance effect, TimeSpan startTime);
+		void InsertData(IEffectNode effectNode);
+		void InsertData(IEnumerable<IEffectNode> effectNodes);
+		bool RemoveData(IEffectNode effectNode);
 		InsertDataListenerStack InsertDataListener { get; set; }
 		TimingProviders TimingProvider { get; }
-		EffectStreams Data { get; }
+		DataStreams Data { get; }
 		IRuntimeBehaviorModuleInstance[] RuntimeBehaviors { get; }
-		MediaCollection Media { get; }
-		IModuleDataSet ModuleDataSet { get; }
+		ModuleLocalDataSet ModuleDataSet { get; }
+		IEnumerable<IEffectNode> GetData();
+		ITiming GetTiming();
+		SequenceType SequenceType { get; }
 	}
 }

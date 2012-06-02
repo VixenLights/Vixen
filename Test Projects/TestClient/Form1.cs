@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.IO;
 using Vixen.IO;
+using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Sequence;
@@ -16,7 +17,7 @@ using Vixen.Module.Editor;
 using Vixen.Module.ModuleTemplate;
 using Vixen.Module.Effect;
 using Vixen.Module.EffectEditor;
-using Vixen.Module.Output;
+using Vixen.Module.Controller;
 
 namespace TestClient
 {
@@ -51,7 +52,7 @@ namespace TestClient
             // Output modules
 			comboBoxOutputModule.DisplayMember = "Value";
 			comboBoxOutputModule.ValueMember = "Key";
-			comboBoxOutputModule.DataSource = ApplicationServices.GetAvailableModules<IOutputModuleInstance>().ToArray();
+			comboBoxOutputModule.DataSource = ApplicationServices.GetAvailableModules<IControllerModuleInstance>().ToArray();
 
             // Controllers
 			_LoadControllers();
@@ -269,7 +270,7 @@ namespace TestClient
             ListViewItem item = new ListViewItem(new string[] {
                 controller.Name,
 				controller.OutputCount.ToString(),
-				ApplicationServices.GetModuleDescriptor<IOutputModuleDescriptor>(controller.OutputModuleId).TypeName
+				ApplicationServices.GetModuleDescriptor<IControllerModuleDescriptor>(controller.OutputModuleId).TypeName
             });
             item.Tag = controller;
             listViewControllers.Items.Add(item);

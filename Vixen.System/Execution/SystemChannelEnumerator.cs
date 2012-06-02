@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Vixen.Sys;
 using Vixen.Module.Timing;
 using Vixen.Commands;
@@ -15,16 +13,8 @@ namespace Vixen.Execution {
 		private CommandsExpiredCountValue _commandsExpiredCountValue;
 		
 		public SystemChannelEnumerator(IEnumerable<CommandNode> data, ITiming timingSource)
-			: base(data, timingSource, TimeSpan.Zero, TimeSpan.MaxValue) {
-			_commandsQualifiedPercentValue = new CommandsQualifiedPercentValue();
-			_commandsExpiredPercentValue = new CommandsExpiredPercentValue();
-			_commandsQualifiedCountValue = new CommandsQualifiedCountValue();
-			_commandsExpiredCountValue = new CommandsExpiredCountValue();
-
-			VixenSystem.Instrumentation.AddValue(_commandsQualifiedPercentValue);
-			VixenSystem.Instrumentation.AddValue(_commandsExpiredPercentValue);
-			VixenSystem.Instrumentation.AddValue(_commandsQualifiedCountValue);
-			VixenSystem.Instrumentation.AddValue(_commandsExpiredCountValue);
+			: base(data, timingSource, TimeSpan.Zero) {
+			_SetupInstrumentation();
 		}
 
 		protected override void _ItemQualified(CommandNode value) {
@@ -35,6 +25,18 @@ namespace Vixen.Execution {
 		protected override void _ItemExpired(CommandNode value) {
 			_commandsExpiredPercentValue.IncrementUnqualifying();
 			_commandsExpiredCountValue.Add(1);
+		}
+
+		private void _SetupInstrumentation() {
+			_commandsQualifiedPercentValue = new CommandsQualifiedPercentValue();
+			_commandsExpiredPercentValue = new CommandsExpiredPercentValue();
+			_commandsQualifiedCountValue = new CommandsQualifiedCountValue();
+			_commandsExpiredCountValue = new CommandsExpiredCountValue();
+
+			VixenSystem.Instrumentation.AddValue(_commandsQualifiedPercentValue);
+			VixenSystem.Instrumentation.AddValue(_commandsExpiredPercentValue);
+			VixenSystem.Instrumentation.AddValue(_commandsQualifiedCountValue);
+			VixenSystem.Instrumentation.AddValue(_commandsExpiredCountValue);
 		}
 	}
 }

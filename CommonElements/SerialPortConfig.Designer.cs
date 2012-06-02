@@ -41,9 +41,9 @@
 			// 
 			// groupBox
 			// 
-			this.groupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox.Controls.Add(this.comboBoxBaudRate);
 			this.groupBox.Controls.Add(this.comboBoxStopBits);
 			this.groupBox.Controls.Add(this.comboBoxParity);
@@ -191,16 +191,12 @@
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.groupBox);
-			this.DoubleBuffered = true;
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "SerialPortConfig";
-			this.ShowIcon = false;
-			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Serial Port Config";
-			this.TopMost = true;
 			this.groupBox.ResumeLayout(false);
 			this.groupBox.PerformLayout();
 			this.ResumeLayout(false);

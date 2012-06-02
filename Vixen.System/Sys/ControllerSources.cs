@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Vixen.Sys.Output;
 
 namespace Vixen.Sys {
 	class ControllerSources {

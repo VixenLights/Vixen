@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Collections.Concurrent;
-using System.Xml.Linq;
-using Vixen.Sys;
-using Vixen.Commands;
 
 namespace Vixen.Sys {
 	// Need to implement IEquatable<T> so that IEnumerable<T>.Except() will not use
@@ -13,62 +8,37 @@ namespace Vixen.Sys {
 	/// <summary>
 	/// A logical channel of low-level CommandData that is intended to be executed by a controller.
 	/// </summary>
-	public class Channel : IEnumerable<CommandNode>, IEqualityComparer<Channel>, IEquatable<Channel> {
-		private Patch _patch;
-		private IChannelDataStore _data = new ChannelSortedList();
+	public class Channel : IOutputStateSource, IEqualityComparer<Channel>, IEquatable<Channel> {
+		private ChannelContextSource _dataSource;
+		private IIntentStateList _state;
 
-		public Channel(string name)
-			: this(Guid.NewGuid(), name, new Patch()) {
+		internal Channel(string name)
+			: this(Guid.NewGuid(), name) {
 		}
 
-		public Channel(Guid id, string name, Patch patch) {
+		internal Channel(Guid id, string name) {
 			Id = id;
 			Name = name;
-			Patch = patch;
+			_dataSource = new ChannelContextSource(Id);
+			_state = new IntentStateList();
 		}
 
 		public string Name { get; set; }
 
 		public Guid Id { get; protected set; }
 
-		public Patch Patch {
-			get { return _patch; }
-			set {
-				// Want any controller references to be properly removed.
-				if(_patch != null) {
-					_patch.Clear();
-				}
-				_patch = value;
-			}
+		public bool Masked { get; set; }
+
+		public void Update() {
+			_state = _AggregateStateFromContexts();
 		}
 
-		public bool Masked {
-			get { return !this.Patch.Enabled; }
-			set { this.Patch.Enabled = !value; }
+		public IIntentStateList State {
+			get { return _state; }
 		}
 
-		public IEnumerator<CommandNode> GetEnumerator() {
-			// We need an enumerator that is live and does not operate upon a snapshot
-			// of the data.
-			return _data.GetEnumerator();
-		}
-
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
-			return this.GetEnumerator();
-		}
-
-		public void AddData(IEnumerable<CommandNode> data) {
-			foreach(CommandNode dataElement in data) {
-				_data.Add(dataElement);
-			}
-		}
-
-		public void AddData(CommandNode data) {
-			_data.Add(data);
-		}
-
-		public void Clear() {
-			_data.Clear();
+		public override string ToString() {
+			return Name;
 		}
 
 		public bool Equals(Channel x, Channel y) {
@@ -84,15 +54,22 @@ namespace Vixen.Sys {
 		// Equals(object) is overridden (which it really isn't, but this is what is said and
 		// it doesn't work otherwise).
 		public bool Equals(Channel other) {
-			return this.Id == other.Id;
+			return Id == other.Id;
 		}
 
 		public override int GetHashCode() {
 			return Id.GetHashCode();
 		}
 
-		public override string ToString() {
-			return Name;
+		private IIntentStateList _AggregateStateFromContexts() {
+			//In reality, all this needs to do is call GetChannelState on each context
+			//and put them all into a single collection.
+			// NotNull() - filter out any null lists resulting from the context not yet having
+			// a state for the channel.  This versus creating a new list in
+			// ChannelStateSourceCollection.GetState (or maybe Context.GetState instead, may
+			// make more sense there) on a dictionary miss.
+			IEnumerable<IIntentState> intentStates = _dataSource.NotNull().SelectMany(x => x.State);
+			return new IntentStateList(intentStates);
 		}
 	}
 }

@@ -19,15 +19,6 @@ namespace CommonElements.Timeline
 		public Element Element { get; private set; }
 	}
 
-	public class RowEventArgs : EventArgs
-	{
-		public RowEventArgs(Row r)
-		{
-			Row = r;
-		}
-
-		public Row Row { get; private set; }
-	}
 
 	public class MultiElementEventArgs : EventArgs
 	{
