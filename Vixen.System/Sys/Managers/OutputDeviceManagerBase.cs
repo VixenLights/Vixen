@@ -307,12 +307,13 @@ namespace Vixen.Sys.Managers {
 		}
 
 		#region class HardwareUpdateThread
-		class HardwareUpdateThread {
+		class HardwareUpdateThread : IDisposable {
 			private Thread _thread;
 			private ExecutionState _threadState = ExecutionState.Stopped;
 			private EventWaitHandle _finished;
 			private OutputDeviceSleepTimeActualValue _outputDeviceSleepTimeActualValue;
-			private OutputDeviceSleepTimeRequestedValue _outputDeviceSleepTimeRequestedValue;
+			private AutoResetEvent _updateSignalerSync;
+			private Stopwatch _localTime;
 
 			private const int STOP_TIMEOUT = 4000;   // Four seconds should be plenty of time for a thread to stop.
 
@@ -322,6 +323,8 @@ namespace Vixen.Sys.Managers {
 				OutputDevice = outputDevice;
 				_thread = new Thread(_ThreadFunc) { Name = outputDevice.Name + " update", IsBackground = true };
 				_finished = new EventWaitHandle(false, EventResetMode.ManualReset);
+				_updateSignalerSync = new AutoResetEvent(false);
+				_localTime = new Stopwatch();
 			}
 
 			public IOutputDevice OutputDevice { get; private set; }
@@ -330,6 +333,7 @@ namespace Vixen.Sys.Managers {
 				if(_threadState == ExecutionState.Stopped) {
 					_threadState = ExecutionState.Started;
 					_finished.Reset();
+					_localTime.Start();
 					_thread.Start();
 				}
 			}
@@ -337,6 +341,8 @@ namespace Vixen.Sys.Managers {
 			public void Stop() {
 				if(_threadState == ExecutionState.Started) {
 					_threadState = ExecutionState.Stopping;
+					_updateSignalerSync.Set();
+					_localTime.Stop();
 				}
 			}
 
@@ -349,26 +355,20 @@ namespace Vixen.Sys.Managers {
 			}
 
 			private void _ThreadFunc() {
-				long frameStart, frameEnd, timeLeft;
-				Stopwatch currentTime = Stopwatch.StartNew();
-
-				_outputDeviceSleepTimeRequestedValue = new OutputDeviceSleepTimeRequestedValue(OutputDevice);
-				VixenSystem.Instrumentation.AddValue(_outputDeviceSleepTimeRequestedValue);
 				_outputDeviceSleepTimeActualValue = new OutputDeviceSleepTimeActualValue(OutputDevice);
 				VixenSystem.Instrumentation.AddValue(_outputDeviceSleepTimeActualValue);
 
 				// Thread main loop
 				try {
+					IOutputDeviceUpdateSignaler signaler = OutputDevice.UpdateSignaler ?? new IntervalUpdateSignaler();
+					signaler.OutputDevice = OutputDevice;
+					signaler.UpdateSignal = _updateSignalerSync;
+
 					while(_threadState != ExecutionState.Stopping) {
-						frameStart = currentTime.ElapsedMilliseconds;
-						frameEnd = frameStart + OutputDevice.UpdateInterval;
-
 						OutputDevice.Update();
-
-						timeLeft = frameEnd - currentTime.ElapsedMilliseconds;
-
-						_Sleep((int)timeLeft, currentTime);
+						_WaitOnSignal(signaler);
 					}
+
 					_threadState = ExecutionState.Stopped;
 					_finished.Set();
 				} catch(Exception ex) {
@@ -381,25 +381,43 @@ namespace Vixen.Sys.Managers {
 					VixenSystem.Logging.Error("Controller " + OutputDevice.Name + " error", ex);
 					VixenSystem.Logging.Debug("Controller error:" + Environment.NewLine + ex.StackTrace);
 					OnError();
+				} finally {
+					VixenSystem.Instrumentation.RemoveValue(_outputDeviceSleepTimeActualValue);
 				}
 			}
 
-			private void _Sleep(int timeLeft, Stopwatch threadTime) {
-				_outputDeviceSleepTimeRequestedValue.Set(timeLeft);
+			private void _WaitOnSignal(IOutputDeviceUpdateSignaler signaler) {
+				long timeBeforeSignal = _localTime.ElapsedMilliseconds;
 
-				long timeBeforeSleep = threadTime.ElapsedMilliseconds;
+				signaler.RaiseSignal();
+				_updateSignalerSync.WaitOne();
 
-				if(timeLeft > 1) {
-					Thread.Sleep(timeLeft);
-				}
+				long timeAfterSignal = _localTime.ElapsedMilliseconds;
+				_SubmitActualSleepTime(timeAfterSignal - timeBeforeSignal);
+			}
 
-				_outputDeviceSleepTimeActualValue.Set(threadTime.ElapsedMilliseconds - timeBeforeSleep);
+			private void _SubmitActualSleepTime(long timeInMs) {
+				_outputDeviceSleepTimeActualValue.Set(timeInMs);
 			}
 
 			protected virtual void OnError() {
 				if(Error != null) {
 					Error.Raise(this, EventArgs.Empty);
 				}
+			}
+
+			public void Dispose() {
+				_Dispose();
+			}
+
+			~HardwareUpdateThread() {
+				_Dispose();
+				GC.SuppressFinalize(this);
+			}
+
+			private void _Dispose() {
+				_finished.Dispose();
+				_updateSignalerSync.Dispose();
 			}
 		}
 		#endregion

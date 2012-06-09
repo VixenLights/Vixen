@@ -12,5 +12,6 @@ namespace Vixen.Sys.Output {
 		bool IsRunning { get; }
 		bool IsPaused { get; }
 		void Update();
+		IOutputDeviceUpdateSignaler UpdateSignaler { get; }
 	}
 }

@@ -358,6 +358,8 @@
     <Compile Include="Sys\OutputSourceChangeSet.cs" />
     <Compile Include="Sys\Output\CommandOutput.cs" />
     <Compile Include="Sys\Output\IntentOutput.cs" />
+    <Compile Include="Sys\Output\IntervalUpdateSignaler.cs" />
+    <Compile Include="Sys\Output\IOutputDeviceUpdateSignaler.cs" />
     <Compile Include="Sys\Output\IOutputModule.cs" />
     <Compile Include="Sys\Output\IOutputModuleDescriptor.cs" />
     <Compile Include="Sys\Output\ModuleBasedController.cs" />

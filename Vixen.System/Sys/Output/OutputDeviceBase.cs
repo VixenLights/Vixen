@@ -84,9 +84,12 @@ namespace Vixen.Sys.Output {
 			}
 		}
 
-		//public IDataPolicy DataPolicy { get; set; }
-
 		abstract protected void _UpdateState();
+
+		virtual public IOutputDeviceUpdateSignaler UpdateSignaler {
+			// Let the system assign a default object.
+			get { return null; }
+		}
 
 		private void _CreateInstrumentation() {
 			_refreshRateValue = new OutputDeviceRefreshRateValue(this);
