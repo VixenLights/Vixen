@@ -12,5 +12,9 @@ namespace Vixen.Sys {
 		/// Percentage value between 0 and 1.
 		/// </summary>
 		public double Intensity;
+
+		public Color GetIntensityAffectedColor() {
+			return Color.FromArgb(0xff, (int)(Color.R * Intensity), (int)(Color.G * Intensity), (int)(Color.B * Intensity));
+		}
 	}
 }

@@ -15,7 +15,7 @@ namespace Vixen.Commands {
 		}
 
 		public Color GetIntensityAffectedValue() {
-			return Color.FromArgb(0xff, (int)(CommandValue.Color.R * CommandValue.Intensity), (int)(CommandValue.Color.G * CommandValue.Intensity), (int)(CommandValue.Color.B * CommandValue.Intensity));
+			return CommandValue.GetIntensityAffectedColor();
 		}
 	}
 }

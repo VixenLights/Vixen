@@ -60,6 +60,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EffectRasterizer.cs" />
+    <Compile Include="IntentRasterizer.cs" />
     <Compile Include="MarkManager.cs">
       <SubType>Form</SubType>
     </Compile>

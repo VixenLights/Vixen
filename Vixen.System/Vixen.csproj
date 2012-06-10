@@ -145,6 +145,8 @@
     <Compile Include="Module\SmartController\SmartControllerModuleRepository.cs" />
     <Compile Include="Sys\Attribute\InterpolatorAttribute.cs" />
     <Compile Include="Sys\Dispatch\IAnyCommandHandler.cs" />
+    <Compile Include="Sys\Dispatch\IAnyIntentHandler.cs" />
+    <Compile Include="Sys\Dispatch\IntentDispatch.cs" />
     <Compile Include="Sys\Dispatch\IntentSegmentDispatch.cs" />
     <Compile Include="Sys\IHasOutputs.cs" />
     <Compile Include="Sys\Instrumentation\BufferSizeInSecondsValue.cs" />

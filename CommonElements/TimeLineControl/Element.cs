@@ -214,11 +214,11 @@ namespace CommonElements.Timeline
 
 		public virtual Bitmap Draw(Size imageSize)
 		{
-			Brush b = new SolidBrush(BackColor);
 			Bitmap result = new Bitmap(imageSize.Width, imageSize.Height);
-
 			Graphics g = Graphics.FromImage(result);
-			g.FillRectangle(b, 0, 0, imageSize.Width, imageSize.Height);
+			using(Brush b = new SolidBrush(BackColor)) {
+				g.FillRectangle(b, 0, 0, imageSize.Width, imageSize.Height);
+			}
 
 			// Width - bold if selected
 			int b_wd = Selected ? 3 : 1;
@@ -232,11 +232,12 @@ namespace CommonElements.Timeline
 				);
 			
 			// Draw it!
-			Pen border = new Pen(BorderColor);
-			border.Width = b_wd;
-			//border.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
-			//graphics.DrawRectangle(border, rect);
-			g.DrawRectangle(border, b_rect);
+			using(Pen border = new Pen(BorderColor)) {
+				border.Width = b_wd;
+				//border.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
+				//graphics.DrawRectangle(border, rect);
+				g.DrawRectangle(border, b_rect);
+			}
 
 			return result;
 		}

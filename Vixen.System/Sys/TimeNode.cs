@@ -64,7 +64,10 @@ namespace Vixen.Sys {
 		}
 
 		public static bool IntersectsExclusively(ITimeNode timeNode, TimeSpan timeSpan) {
-			return timeSpan > timeNode.StartTime && timeSpan < timeNode.EndTime;
+			//Leaving this here as a reminder that it used to be this way,
+			//but I'm not sure if it was for a reason.
+			//return timeSpan > timeNode.StartTime && timeSpan < timeNode.EndTime;
+			return timeSpan >= timeNode.StartTime && timeSpan < timeNode.EndTime;
 		}
 
 		public static bool IntersectsInclusively(ITimeNode timeNode, TimeSpan timeSpan) {

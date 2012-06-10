@@ -43,8 +43,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public override System.Drawing.Bitmap Draw(System.Drawing.Size imageSize)
 		{
-			//TODO
 			Bitmap result = base.Draw(imageSize);
+			EffectRasterizer effectRasterizer = new EffectRasterizer();
+			using(Graphics g = Graphics.FromImage(result)) {
+				effectRasterizer.Rasterize(EffectNode.Effect, g);
+			}
 			//Bitmap inset = new Bitmap(imageSize.Width - 4, imageSize.Height - 4);
 
 			//// if the inset image may have changed, then re-render it.
