@@ -6,7 +6,7 @@ using Vixen.Module.Effect;
 using Vixen.Sys;
 
 namespace Vixen.IO.Xml {
-	class XmlEffectNodeCollectionSerializer : IXmlSerializer<IEnumerable<EffectNode>> {
+	class XmlEffectNodeCollectionSerializer : IXmlSerializer<IEnumerable<IEffectNode>> {
 		private const string ELEMENT_EFFECT_NODES = "EffectNodes";
 		private const string ELEMENT_EFFECT_NODE = "EffectNode";
 		private const string ELEMENT_TARGET_NODES = "TargetNodes";
@@ -17,7 +17,7 @@ namespace Vixen.IO.Xml {
 		private const string ATTR_INSTANCE_ID = "instanceId";
 		private const string ATTR_ID = "id";
 
-		public XElement WriteObject(IEnumerable<EffectNode> value) {
+		public XElement WriteObject(IEnumerable<IEffectNode> value) {
 			return new XElement(ELEMENT_EFFECT_NODES,
 				value.Select(x =>
 					new XElement(ELEMENT_EFFECT_NODE,
@@ -31,7 +31,7 @@ namespace Vixen.IO.Xml {
 									new XAttribute(ATTR_ID, y.Id)))))));
 		}
 
-		public IEnumerable<EffectNode> ReadObject(XElement element) {
+		public IEnumerable<IEffectNode> ReadObject(XElement element) {
 			// Create a channel node lookup of channels that are currently valid.
 			var channelNodes = VixenSystem.Nodes.Distinct().ToDictionary(x => x.Id);
 

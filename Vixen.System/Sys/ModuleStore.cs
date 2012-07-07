@@ -1,11 +1,11 @@
 ﻿using System.IO;
+using Vixen.IO.Result;
 using Vixen.Module;
 using Vixen.IO;
+using Vixen.Services;
 
 namespace Vixen.Sys {
 	class ModuleStore {
-		//private const int VERSION = 1;
-
 		static public readonly string Directory = SystemConfig.Directory;
 		public const string FileName = "ModuleStore.xml";
 		static public readonly string DefaultFilePath = Path.Combine(Directory, FileName);
@@ -19,13 +19,15 @@ namespace Vixen.Sys {
 		public ModuleStaticDataSet Data { get; set; }
 
 		public void Save() {
-			FileSerializer<ModuleStore> serializer = SerializerFactory.Instance.CreateModuleStoreSerializer();
+			VersionedFileSerializer serializer = FileService.Instance.CreateModuleStoreSerializer();
 			string filePath = LoadedFilePath ?? DefaultFilePath;
 			serializer.Write(this, filePath);
 		}
 
-		//public int Version {
-		//    get { return VERSION; }
-		//}
+		static public ModuleStore Load(string filePath) {
+			VersionedFileSerializer serializer = FileService.Instance.CreateModuleStoreSerializer();
+			ISerializationResult result = serializer.Read(filePath);
+			return (ModuleStore)result.Object;
+		}
 	}
 }

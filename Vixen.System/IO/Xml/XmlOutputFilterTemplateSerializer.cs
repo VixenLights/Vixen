@@ -2,26 +2,36 @@
 using Vixen.Sys;
 
 namespace Vixen.IO.Xml {
-	class XmlOutputFilterTemplateSerializer : FileSerializer<OutputFilterTemplate> {
-		private XmlTemplatedSerializer<OutputFilterTemplate> _templatedSerializer;
-		private XmlOutputFilterTemplateSerializerTemplate _serializerTemplate;
+	class XmlOutputFilterTemplateSerializer : IVersionedFileSerializer {
+		private XmlSerializerBehaviorTemplate<OutputFilterTemplate> _serializerBehaviorTemplate;
+		private XmlOutputFilterTemplateSerializerContractFulfillment _serializerContractFulfillment;
 
 		public XmlOutputFilterTemplateSerializer() {
-			_templatedSerializer = new XmlTemplatedSerializer<OutputFilterTemplate>();
-			_serializerTemplate = new XmlOutputFilterTemplateSerializerTemplate();
+			_serializerBehaviorTemplate = new XmlSerializerBehaviorTemplate<OutputFilterTemplate>();
+			_serializerContractFulfillment = new XmlOutputFilterTemplateSerializerContractFulfillment();
 		}
 
-		protected override OutputFilterTemplate _Read(string filePath) {
-			OutputFilterTemplate template = _templatedSerializer.Read(ref filePath, _serializerTemplate);
+		public int FileVersion {
+			get { return _serializerBehaviorTemplate.FileVersion; }
+			//set { _serializerBehaviorTemplate.FileVersion = value; }
+		}
+
+		public int ClassVersion {
+			get { return _serializerContractFulfillment.GetEmptyFilePolicy().Version; }
+		}
+
+		public object Read(string filePath) {
+			OutputFilterTemplate template = _serializerBehaviorTemplate.Read(ref filePath, _serializerContractFulfillment);
 			if(template != null) {
 				template.FilePath = filePath;
 			}
 			return template;
 		}
 
-		protected override void _Write(OutputFilterTemplate value, string filePath) {
-			_templatedSerializer.Write(value, ref filePath, _serializerTemplate);
-			value.FilePath = filePath;
+		public void Write(object value, string filePath) {
+			OutputFilterTemplate outputFilterTemplate = (OutputFilterTemplate)value;
+			_serializerBehaviorTemplate.Write(outputFilterTemplate, ref filePath, _serializerContractFulfillment);
+			outputFilterTemplate.FilePath = filePath;
 		}
 	}
 }

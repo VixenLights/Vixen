@@ -2,26 +2,36 @@
 using Vixen.Sys;
 
 namespace Vixen.IO.Xml {
-	class XmlSystemConfigSerializer : FileSerializer<SystemConfig> {
-		private XmlTemplatedSerializer<SystemConfig> _templatedSerializer;
-		private XmlSystemConfigSerializerTemplate _serializerTemplate;
+	class XmlSystemConfigSerializer : IVersionedFileSerializer {
+		private XmlSerializerBehaviorTemplate<SystemConfig> _serializerBehaviorTemplate;
+		private XmlSystemConfigSerializerContractFulfillment _serializerContractFulfillment;
 
 		public XmlSystemConfigSerializer() {
-			_templatedSerializer = new XmlTemplatedSerializer<SystemConfig>();
-			_serializerTemplate = new XmlSystemConfigSerializerTemplate();
+			_serializerBehaviorTemplate = new XmlSerializerBehaviorTemplate<SystemConfig>();
+			_serializerContractFulfillment = new XmlSystemConfigSerializerContractFulfillment();
 		}
 
-		override protected SystemConfig _Read(string filePath) {
-			SystemConfig systemConfig = _templatedSerializer.Read(ref filePath, _serializerTemplate);
+		public int FileVersion {
+			get { return _serializerBehaviorTemplate.FileVersion; }
+			//set { _serializerBehaviorTemplate.FileVersion = value; }
+		}
+
+		public int ClassVersion {
+			get { return _serializerContractFulfillment.GetEmptyFilePolicy().Version; }
+		}
+
+		public object Read(string filePath) {
+			SystemConfig systemConfig = _serializerBehaviorTemplate.Read(ref filePath, _serializerContractFulfillment);
 			if(systemConfig != null) {
 				systemConfig.LoadedFilePath = filePath;
 			}
 			return systemConfig;
 		}
 
-		override protected void _Write(SystemConfig value, string filePath) {
-			_templatedSerializer.Write(value, ref filePath, _serializerTemplate);
-			value.LoadedFilePath = filePath;
+		public void Write(object value, string filePath) {
+			SystemConfig systemConfig = (SystemConfig)value;
+			_serializerBehaviorTemplate.Write(systemConfig, ref filePath, _serializerContractFulfillment);
+			systemConfig.LoadedFilePath = filePath;
 		}
 	}
 }

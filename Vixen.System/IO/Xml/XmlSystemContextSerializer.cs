@@ -1,51 +1,31 @@
-﻿using System.Xml.Linq;
-using Vixen.IO.Policy;
-using Vixen.IO.Xml.Template;
+﻿using Vixen.IO.Xml.Template;
 using Vixen.Sys;
 
 namespace Vixen.IO.Xml {
-	class XmlSystemContextSerializer : FileSerializer<SystemContext> {
-		private XmlTemplatedSerializer<SystemContext> _templatedSerializer;
-		private XmlSystemContextSerializerTemplate _serializerTemplate;
+	class XmlSystemContextSerializer : IVersionedFileSerializer {
+		private XmlSerializerBehaviorTemplate<SystemContext> _serializerBehaviorTemplate;
+		private XmlSystemContextSerializerContractFulfillment _serializerContractFulfillment;
 
 		public XmlSystemContextSerializer() {
-			_templatedSerializer = new XmlTemplatedSerializer<SystemContext>();
-			_serializerTemplate = new XmlSystemContextSerializerTemplate();
+			_serializerBehaviorTemplate = new XmlSerializerBehaviorTemplate<SystemContext>();
+			_serializerContractFulfillment = new XmlSystemContextSerializerContractFulfillment();
 		}
 
-		protected override SystemContext _Read(string filePath) {
-			return _templatedSerializer.Read(ref filePath, _serializerTemplate);
-			//SystemContext systemContext = new SystemContext();
-			//XElement content = _LoadFile(filePath);
-			//XmlSystemContextFilePolicy filePolicy = new XmlSystemContextFilePolicy(systemContext, content);
-			//filePolicy.Read();
-
-			//return systemContext;
+		public int FileVersion {
+			get { return _serializerBehaviorTemplate.FileVersion; }
+			//set { _serializerBehaviorTemplate.FileVersion = value; }
 		}
 
-		protected override void _Write(SystemContext value, string filePath) {
-			_templatedSerializer.Write(value, ref filePath, _serializerTemplate);
-			//XmlVersionedContent content = new XmlVersionedContent("SystemContext");
-			//IFilePolicy filePolicy = new XmlSystemContextFilePolicy(value, content);
-			//content.Version = filePolicy.GetVersion();
-			//filePolicy.Write();
-			//content.Save(filePath);
+		public int ClassVersion {
+			get { return _serializerContractFulfillment.GetEmptyFilePolicy().Version; }
 		}
 
-		//private XElement _LoadFile(string filePath) {
-		//    XmlFileLoader fileLoader = new XmlFileLoader();
-		//    XElement content = Helper.Load(filePath, fileLoader);
-		//    content = _EnsureContentIsUpToDate(content, filePath);
-		//    return content;
-		//}
+		public object Read(string filePath) {
+			return _serializerBehaviorTemplate.Read(ref filePath, _serializerContractFulfillment);
+		}
 
-		//private XElement _EnsureContentIsUpToDate(XElement content, string originalFilePath) {
-		//    IMigrator sequenceMigrator = new XmlSystemContextMigrator(content);
-		//    IFilePolicy filePolicy = new XmlSystemContextFilePolicy();
-		//    XmlFileSerializationHelper serializationHelper = new XmlFileSerializationHelper();
-		//    _AddResults(serializationHelper.EnsureContentIsUpToDate(content, originalFilePath, filePolicy, sequenceMigrator));
-
-		//    return content;
-		//}
+		public void Write(object value, string filePath) {
+			_serializerBehaviorTemplate.Write((SystemContext)value, ref filePath, _serializerContractFulfillment);
+		}
 	}
 }

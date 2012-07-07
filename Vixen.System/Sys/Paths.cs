@@ -63,52 +63,51 @@ namespace Vixen.Sys {
 		static internal void AddDataPaths(Type owningType, Type pathAttributeType) {
 			// Iterate static members of the type, public and private.
 			// They must be static because we won't have an instance to pull values from.
-			string path;
 			bool isWriteable = false;
 			foreach(MemberInfo mi in owningType.GetMembers(BindingFlags.DeclaredOnly | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static)) {
-				path = null;
+				string path = null;
 
 				// Does the member have an appropriate attribute?
-				if(mi.GetCustomAttributes(pathAttributeType, false).Length != 0) {
+				if(mi.GetCustomAttributes(pathAttributeType, false).Any()) {
 					// Get the value from the property or field.
-					if(mi.MemberType == MemberTypes.Property) {
-						PropertyInfo pi = mi as PropertyInfo;
-						if(pi.CanRead && pi.PropertyType == typeof(string)) {
-							path = pi.GetValue(null, null) as string;
-							isWriteable = pi.CanWrite;
-						}
-					} else if(mi.MemberType == MemberTypes.Field) {
-						FieldInfo fi = mi as FieldInfo;
-						if(fi.FieldType == typeof(string)) {
-							path = fi.GetValue(null) as string;
-							isWriteable = true;
-						}
+					switch(mi.MemberType) {
+						case MemberTypes.Property:
+							PropertyInfo pi = (PropertyInfo)mi;
+							if(pi.CanRead && pi.PropertyType == typeof(string)) {
+								path = pi.GetValue(null, null) as string;
+								isWriteable = pi.CanWrite;
+							}
+							break;
+						case MemberTypes.Field:
+							FieldInfo fi = (FieldInfo)mi;
+							if(fi.FieldType == typeof(string)) {
+								path = fi.GetValue(null) as string;
+								isWriteable = true;
+							}
+							break;
 					}
 				}
 
+				if(path == null) continue;
+
+				// Value may or may not be qualified.
+				if(!Path.IsPathRooted(path)) {
+					path = Path.Combine(ModuleDataFilesPath, path);
+				}
+
 				// Ensure the path's presence.
-				if(path != null) {
-					// Value may or may not be qualified.
-					if(!Path.IsPathRooted(path)) {
-						// Assume it to be a data path; parent it to the ModuleData directory.
-						if(isWriteable) {
-							path = Path.Combine(ModuleDataFilesPath, path);
-							// Write back the resolved path.
-							if(mi is PropertyInfo) {
-								(mi as PropertyInfo).SetValue(null, path, null);
-							} else if(mi is FieldInfo) {
-								(mi as FieldInfo).SetValue(null, path);
-							}
-						} else {
-							// If it's not a qualified path, the implementor needs to know the
-							// resulting qualified path, so the declaration needs to be writeable.
-							// Otherwise, no path for you.
-							path = null;
-						}
-					}
-					if(path != null) {
-						Helper.EnsureDirectory(path);
-					}
+				// Make sure the path exists before writing it back
+				// in case the module's descriptor does something
+				// with the directory upon it being set.
+				Helper.EnsureDirectory(path);
+
+				if(!isWriteable) continue;
+
+				// Write back the resolved path.
+				if(mi is PropertyInfo) {
+					((PropertyInfo)mi).SetValue(null, path, null);
+				} else if(mi is FieldInfo) {
+					((FieldInfo)mi).SetValue(null, path);
 				}
 			}
 		}

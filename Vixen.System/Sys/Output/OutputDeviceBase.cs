@@ -73,7 +73,7 @@ namespace Vixen.Sys.Output {
 				_refreshRateValue.Increment();
 
 				// First, get what we pull from to update...
-				Execution.UpdateState();
+				if(!Execution.UpdateState()) return;
 
 				// Then we update ourselves from that.
 				_stopwatch.Restart();

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Module;
-using Vixen.Module.Sequence;
+using Vixen.Module.SequenceType;
 
 namespace VixenModules.Sequence.Vixen2x
 {
-	public class Vixen2xSequenceModuleDescriptor : SequenceModuleDescriptorBase
+	public class Vixen2xSequenceModuleDescriptor : SequenceTypeModuleDescriptorBase
 	{
 		private readonly Guid _typeId = new Guid("92BBD2CB-B750-437F-8A88-49864D569AB4");
 

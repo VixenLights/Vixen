@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Vixen.Module {
     public interface IModuleInstance : IDisposable {
+		/// <summary>
+		/// Module-supplied id of the module.
+		/// </summary>
+		Guid TypeId { get; }
 		/// <summary>
 		/// System-supplied id of the instance of the module.
 		/// </summary>

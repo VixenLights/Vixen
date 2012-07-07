@@ -1,4 +1,6 @@
-﻿namespace Vixen.Execution {
+﻿using System.Runtime.Serialization;
+
+namespace Vixen.Execution {
 	public class SelectedTimingProvider {
 		public SelectedTimingProvider(string providerType, string sourceName) {
 			ProviderType = providerType;
@@ -6,6 +8,7 @@
 		}
 
 		public string ProviderType { get; private set; }
+
 		public string SourceName { get; private set; }
 
 		static public bool IsValid(SelectedTimingProvider selectedTimingProvider) {

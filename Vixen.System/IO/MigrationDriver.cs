@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Vixen.IO.Result;
-using Vixen.Sys;
 
 namespace Vixen.IO {
 	class MigrationDriver {
@@ -26,13 +25,13 @@ namespace Vixen.IO {
 			}
 		}
 
-		public IEnumerable<IFileOperationResult> Migrate() {
-			List<IFileOperationResult> results = new List<IFileOperationResult>();
+		public IEnumerable<IResult> Migrate(object value) {
+			List<IResult> results = new List<IResult>();
 
 			MigrationPath migrationPath = _BuildPath(_fromVersion, _toVersion);
 			if(migrationPath != null) {
 				foreach(MigrationSegment migrationSegment in migrationPath) {
-					results.AddRange(_migrator.Migrate(migrationSegment.FromVersion, migrationSegment.ToVersion));
+					results.AddRange(_migrator.Migrate(value, migrationSegment.FromVersion, migrationSegment.ToVersion));
 				}
 				results.Add(new MigrationResult(true, "Migration successful.", _fromVersion, _toVersion));
 			} else {

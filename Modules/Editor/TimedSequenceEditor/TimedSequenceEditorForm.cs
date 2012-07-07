@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using CommonElements.Timeline;
 using Vixen.Execution;
+using Vixen.Execution.Context;
 using Vixen.Module.Editor;
 using Vixen.Module.Effect;
 using Vixen.Module.Media;
@@ -24,7 +25,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private TimedSequence _sequence;
 
 		// the program context we will be playing this sequence in: used to interact with the execution engine.
-		private ProgramContext _context;
+		private ISequenceContext _context;
 
 		// the timing source this sequence will be executing against. Used to update times, etc.
 		private ITiming _timingSource;
@@ -93,8 +94,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//Debugger.Break();
 
 			Debug.WriteLine("***** Effects in Sequence *****");
-			foreach (var x in _sequence.GetData())
-				Debug.WriteLine("{0} - {1}: {2}", x.StartTime, x.EndTime, x.Effect.InstanceId);
+			foreach (var x in _sequence.SequenceData.EffectData)
+				Debug.WriteLine("{0} - {1}: {2}", x.StartTime, x.EndTime, ((IEffectNode)x).Effect.InstanceId);
 		}
 #endif
 
@@ -189,7 +190,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			// load the new data: get all the commands in the sequence, and make a new element for each of them.
 			_effectNodeToElement = new Dictionary<EffectNode, Element>();
-			foreach (EffectNode node in _sequence.Data.GetMainStreamData()) {
+			foreach (EffectNode node in _sequence.SequenceData.EffectData) {
 				addElementForEffectNode(node);
 			}
 
@@ -438,10 +439,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_context != null) {
 				CloseSequenceContext();
 			}
-			_context = (ProgramContext)VixenSystem.Contexts.CreateContext(Sequence);
+			//_context = (ProgramContext)VixenSystem.Contexts.CreateContext(Sequence);
+			_context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.ContextLevelCaching), Sequence);
+			if(_context == null) {
+				MessageBox.Show("Unable to play this sequence.  See error log for details.");
+				return;
+			}
 			_context.SequenceStarted += context_SequenceStarted;
 			_context.SequenceEnded += context_SequenceEnded;
-			_context.ProgramEnded += _context_ProgramEnded;
+			//_context.ProgramEnded += _context_ProgramEnded;
+			_context.ContextEnded += context_ContextEnded;
 
 			updateButtonStates();
 		}
@@ -451,7 +458,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			_context.SequenceStarted -= context_SequenceStarted;
 			_context.SequenceEnded -= context_SequenceEnded;
-			_context.ProgramEnded -= _context_ProgramEnded;
+			//_context.ProgramEnded -= _context_ProgramEnded;
+			_context.ContextEnded -= context_ContextEnded;
+
 			VixenSystem.Contexts.ReleaseContext(_context);
 			updateButtonStates();
 		}
@@ -512,7 +521,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_timingSource = null;
 		}
 
-		protected void _context_ProgramEnded(object sender, ProgramEventArgs e)
+		protected void context_ContextEnded(object sender, EventArgs e)
 		{
 			updateButtonStates();
 
@@ -546,7 +555,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return;
 			}
 
-			if (_context.IsPlaying)
+			if (_context.IsRunning)
 			{
 				if (_context.IsPaused)
 				{
@@ -678,8 +687,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						if (!_effectNodeToElement.ContainsKey(node))
 							_effectNodeToElement[node] = element;
-						else
-							VixenSystem.Logging.Debug("TimedSequenceEditor: Making a new element, but the map already has one!");
+						//else
+						//    VixenSystem.Logging.Debug("TimedSequenceEditor: Making a new element, but the map already has one!");
 
 						row.AddElement(element);
 					}
@@ -830,7 +839,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					break;
 
 				case Keys.Space:
-					if (!_context.IsPlaying)
+					if (!_context.IsRunning)
 						PlaySequence();
 					else {
 						if (_context.IsPaused)

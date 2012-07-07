@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Vixen.IO;
 using Vixen.Rule;
 using Vixen.Sys;
 
@@ -34,13 +33,12 @@ namespace Vixen.Services {
 		}
 
 		public ChannelNode ImportTemplateOnce(string templateFileName, ChannelNode parentNode) {
-			FileSerializer<ChannelNodeTemplate> serializer = SerializerFactory.Instance.CreateChannelNodeTemplateSerializer();
-			var result = serializer.Read(templateFileName);
-			if(!result.Success) return null;
+			ChannelNodeTemplate channelNodeTemplate = ChannelNodeTemplate.Load(templateFileName);
+			if(channelNodeTemplate == null) return null;
 
-			ChannelNode channelNode = result.Object.ChannelNode;
-			VixenSystem.Nodes.AddChildToParent(channelNode, parentNode);
-			return channelNode;
+			VixenSystem.Nodes.AddChildToParent(channelNodeTemplate.ChannelNode, parentNode);
+
+			return channelNodeTemplate.ChannelNode;
 		}
 
 		public ChannelNode[] ImportTemplateMany(string templateFileName, ChannelNode parentNode, int count) {

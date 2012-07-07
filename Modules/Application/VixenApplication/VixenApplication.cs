@@ -12,7 +12,7 @@ using System.Xml.Serialization;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Module.Editor;
-using Vixen.Module.Sequence;
+using Vixen.Module.SequenceType;
 using Vixen.Sys.State.Execution;
 
 namespace VixenApplication
@@ -52,7 +52,7 @@ namespace VixenApplication
 		private void VixenApplication_Load(object sender, EventArgs e)
 		{
 			initializeEditorTypes();
-			openFileDialog.InitialDirectory = Vixen.Sys.Sequence.DefaultDirectory;
+			openFileDialog.InitialDirectory = SequenceService.SequenceDirectory;
 
 			// Add menu items for the logs.
 			foreach(string logName in VixenSystem.Logs.LogNames) {
@@ -114,9 +114,9 @@ namespace VixenApplication
 		private void initializeEditorTypes()
 		{
 			ToolStripMenuItem item;
-			foreach(KeyValuePair<Guid, string> typeId_FileTypeName in ApplicationServices.GetAvailableModules<ISequenceModuleInstance>()) {
+			foreach(KeyValuePair<Guid, string> typeId_FileTypeName in ApplicationServices.GetAvailableModules<ISequenceTypeModuleInstance>()) {
 				item = new ToolStripMenuItem(typeId_FileTypeName.Value);
-				ISequenceModuleDescriptor descriptor = ApplicationServices.GetModuleDescriptor(typeId_FileTypeName.Key) as ISequenceModuleDescriptor;
+				ISequenceTypeModuleDescriptor descriptor = ApplicationServices.GetModuleDescriptor(typeId_FileTypeName.Key) as ISequenceTypeModuleDescriptor;
 
 				if (descriptor.CanCreateNew) {
 					item.Tag = descriptor.FileExtension;
@@ -184,8 +184,8 @@ namespace VixenApplication
 			// configure the open file dialog with a filter for currently available sequence types
 			string filter = "";
 			string allTypes = "";
-			IEnumerable<ISequenceModuleDescriptor> sequenceDescriptors = ApplicationServices.GetModuleDescriptors<ISequenceModuleInstance>().Cast<ISequenceModuleDescriptor>();
-			foreach (ISequenceModuleDescriptor descriptor in sequenceDescriptors) {
+			IEnumerable<ISequenceTypeModuleDescriptor> sequenceDescriptors = ApplicationServices.GetModuleDescriptors<ISequenceTypeModuleInstance>().Cast<ISequenceTypeModuleDescriptor>();
+			foreach (ISequenceTypeModuleDescriptor descriptor in sequenceDescriptors) {
 				filter += descriptor.TypeName + " (*" + descriptor.FileExtension + ")|*" + descriptor.FileExtension + "|";
 				allTypes += "*" + descriptor.FileExtension + ";";
 			}

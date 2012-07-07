@@ -1,75 +1,90 @@
-﻿using Vixen.IO.Xml.Template;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Xml;
+using Vixen.Services;
 using Vixen.Sys;
 
 namespace Vixen.IO.Xml {
-	class XmlSequenceSerializer : FileSerializer<Sequence> {
-		private XmlTemplatedSerializer<Sequence> _templatedSerializer;
-		private XmlSequenceSerializerTemplate _serializerTemplate;
+	class XmlSequenceSerializer : IVersionedFileSerializer {
+		private string _fileType;
 
-		public XmlSequenceSerializer() {
-			_templatedSerializer = new XmlTemplatedSerializer<Sequence>();
-			_serializerTemplate = new XmlSequenceSerializerTemplate();
-		}
+		public int FileVersion { get; private set; }
 
-		protected override Sequence _Read(string filePath) {
-			Sequence sequence = _templatedSerializer.Read(ref filePath, _serializerTemplate);
-			if(sequence != null) {
-				sequence.FilePath = filePath;
+		public int ClassVersion {
+			get {
+				// This cannot be known until a file is read or written.
+				if(string.IsNullOrEmpty(_fileType)) throw new InvalidOperationException("Attempt to get sequence class version without a sequence type.");
+
+				var sequenceType = SequenceTypeService.Instance.CreateSequenceFactory(_fileType);
+				return sequenceType.ClassVersion;
 			}
+		}
+
+		public object Read(string filePath) {
+			_fileType = filePath;
+
+			// Create a sequence instance.
+			var sequenceType = SequenceTypeService.Instance.CreateSequenceFactory(filePath);
+			ISequence sequence = sequenceType.CreateSequence();
+
+			if(sequenceType.Descriptor.ModuleDataClass != null) {
+				// Load the data.
+				using(FileStream stream = new FileStream(filePath, FileMode.Open)) {
+					DataContractSerializer serializer = new DataContractSerializer(sequenceType.Descriptor.ModuleDataClass, ApplicationServices.GetTypesOfModules().SelectMany(Modules.GetDescriptors).Select(x => x.ModuleDataClass).NotNull());
+					var sequenceData = serializer.ReadObject(stream);
+					if(!(sequenceData is ISequenceTypeDataModel)) {
+						VixenSystem.Logging.Warning("Could not assign sequence data when reading sequence due to the object type.  File: " + filePath);
+						FileVersion = 0;
+					} else {
+						sequence.SequenceData = (ISequenceTypeDataModel)sequenceData;
+						FileVersion = sequence.SequenceData.Version;
+					}
+				}
+			}
+
 			return sequence;
-			//if(!Path.IsPathRooted(filePath)) {
-			//    filePath = Path.Combine(Sequence.DefaultDirectory, filePath);
-			//}
-
-			//Sequence sequence = _CreateSequenceFor(filePath);
-			//XElement content = _LoadFile(filePath);
-			//XmlSequenceFilePolicy filePolicy = new XmlSequenceFilePolicy(sequence, content);
-			//filePolicy.Read();
-
-			//sequence.FilePath = filePath;
-
-			//return sequence;
 		}
 
-		protected override void _Write(Sequence value, string filePath) {
-			_templatedSerializer.Write(value, ref filePath, _serializerTemplate);
-			value.FilePath = filePath;
-			//XmlVersionedContent content = new XmlVersionedContent("Sequence");
-			//IFilePolicy filePolicy = new XmlSequenceFilePolicy(value, content);
-			//content.Version = filePolicy.GetVersion();
-			//filePolicy.Write();
+		public void Write(object value, string filePath) {
+			_fileType = filePath;
 
-			//filePath = Path.Combine(Sequence.DefaultDirectory, Path.GetFileName(filePath));
-			//content.Save(filePath);
-
-			//value.FilePath = filePath;
+			ISequence sequence = (ISequence)value;
+			using(FileStream stream = new FileStream(filePath, FileMode.Create)) {
+				DataContractSerializer serializer = new DataContractSerializer(sequence.SequenceData.GetType(), ApplicationServices.GetTypesOfModules().SelectMany(Modules.GetDescriptors).Select(x => x.ModuleDataClass).NotNull());
+				sequence.SequenceData.Version = ClassVersion;
+				//serializer.WriteObject(stream, sequence.SequenceData);
+				using(XmlWriter xmlWriter = XmlWriter.Create(stream)) {
+					serializer.WriteStartObject(xmlWriter, sequence.SequenceData);
+					_WriteKnownNamespaces(xmlWriter);
+					serializer.WriteObjectContent(xmlWriter, sequence.SequenceData);
+					serializer.WriteEndObject(xmlWriter);
+				}
+			}
 		}
 
-		//private XElement _LoadFile(string filePath) {
-		//    XmlFileLoader fileLoader = new XmlFileLoader();
-		//    XElement content = Helper.Load(filePath, fileLoader);
-		//    content = _EnsureContentIsUpToDate(content, filePath);
-		//    return content;
-		//}
+		private void _WriteKnownNamespaces(XmlWriter xmlWriter) {
+			List<string> namespaces = new List<string> {
+				"http://www.w3.org/2001/XMLSchema"
+			};
 
-		//private XElement _EnsureContentIsUpToDate(XElement content, string originalFilePath) {
-		//    IMigrator sequenceMigrator = new XmlSequenceMigrator(content);
-		//    IFilePolicy filePolicy = new XmlSequenceFilePolicy();
-		//    XmlFileSerializationHelper serializationHelper = new XmlFileSerializationHelper();
-		//    _AddResults(serializationHelper.EnsureContentIsUpToDate(content, originalFilePath, filePolicy, sequenceMigrator));
+			int aliasIndex = 0;
+			foreach(string ns in namespaces) {
+				string alias = _GetAlias(aliasIndex++);
+				xmlWriter.WriteAttributeString("xmlns", alias, null, ns);
+			}
+		}
 
-		//    return content;
-		//}
-
-		//private Sequence _CreateSequenceFor(string filePath) {
-		//    // Get the specific sequence module manager.
-		//    SequenceModuleManagement manager = Modules.GetManager<ISequenceModuleInstance, SequenceModuleManagement>();
-
-		//    // Get an instance of the appropriate sequence module.
-		//    Sequence sequence = (Sequence)manager.Get(filePath);
-		//    if(sequence == null) throw new InvalidOperationException("No sequence type defined for file " + filePath);
-
-		//    return sequence;
-		//}
+		//http://stackoverflow.com/questions/297213/translate-an-index-into-an-excel-column-name
+		private string _GetAlias(int aliasIndex) {
+			int quotient = aliasIndex / 26;
+			if(quotient > 0) {
+				return _GetAlias(quotient - 1) + (char)(aliasIndex % 26 + 'a');
+			} else {
+				return ((char)(aliasIndex + 'a')).ToString();
+			}
+		}
 	}
 }

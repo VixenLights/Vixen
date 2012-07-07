@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Vixen.Sys.Enumerator;
 
 namespace Vixen.Sys {
-	class DataStream : IEnumerable<IDataNode> {
+	public class DataStream : IEnumerable<IDataNode> {
 		private List<IDataNode> _data = new List<IDataNode>();
 
 		public DataStream(string name) {

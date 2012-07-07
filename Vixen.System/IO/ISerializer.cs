@@ -1,4 +1,9 @@
 ﻿namespace Vixen.IO {
+	public interface ISerializer {
+		object WriteObject(object value);
+		object ReadObject(object source);
+	}
+
 	/// <summary>
 	/// 
 	/// </summary>
@@ -8,6 +13,6 @@
 		where T : class 
 		where U : class {
 		U WriteObject(T value);
-		T ReadObject(U element);
+		T ReadObject(U source);
 	}
 }

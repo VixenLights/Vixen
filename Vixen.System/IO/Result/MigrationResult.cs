@@ -1,7 +1,5 @@
-﻿using Vixen.Sys;
-
-namespace Vixen.IO.Result {
-	class MigrationResult : IFileOperationResult {
+﻿namespace Vixen.IO.Result {
+	class MigrationResult : IResult {
 		public MigrationResult(bool result, string message, int fromVersion, int toVersion) {
 			Success = result;
 			Message = "Migration from version " + fromVersion + " to " + toVersion + ". " + message;

@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.Serialization;
 
 namespace Vixen.Module {
-	[DataContract]
+	[DataContract(Namespace = "")]
 	public abstract class ModuleDataModelBase : IModuleDataModel {
 		/// <summary>
 		/// Module type that the data model belongs to.
 		/// </summary>
+		[DataMember]
 		public Guid ModuleTypeId { get; set; }
 		/// <summary>
 		/// Module data set that the data model was created from.
@@ -18,6 +16,7 @@ namespace Vixen.Module {
 		/// <summary>
 		/// The InstanceId of the of module that the data model belongs to.
 		/// </summary>
+		[DataMember]
 		public Guid ModuleInstanceId { get; set; }
 		/// <summary>
 		/// Performs a deep cloning of the data object.

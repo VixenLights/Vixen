@@ -1,5 +1,4 @@
 ﻿using System;
-using Vixen.Sys;
 
 namespace Vixen.IO {
 	class SerializerFactory : ISerializerFactory {
@@ -12,7 +11,7 @@ namespace Vixen.IO {
 			get { return _instance ?? (_instance = new SerializerFactory()); }
 		}
 
-		public static ISerializerFactory Factory {
+		internal static ISerializerFactory Factory {
 			get {
 				if(_factory == null) throw new Exception("Serializer factory has not been set.");
 				return _factory;
@@ -20,35 +19,31 @@ namespace Vixen.IO {
 			set { _factory = value; }
 		}
 
-		public FileSerializer<Sequence> CreateStandardSequenceSerializer() {
-			return Factory.CreateStandardSequenceSerializer();
+		public IVersionedFileSerializer CreateSequenceSerializer(string fileType) {
+			return Factory.CreateSequenceSerializer(fileType);
 		}
 
-		public FileSerializer<ScriptSequence> CreateScriptSequenceSerializer() {
-			return Factory.CreateScriptSequenceSerializer();
-		}
-
-		public FileSerializer<SystemConfig> CreateSystemConfigSerializer() {
+		public IVersionedFileSerializer CreateSystemConfigSerializer() {
 			return Factory.CreateSystemConfigSerializer();
 		}
 
-		public FileSerializer<ModuleStore> CreateModuleStoreSerializer() {
+		public IVersionedFileSerializer CreateModuleStoreSerializer() {
 			return Factory.CreateModuleStoreSerializer();
 		}
 
-		public FileSerializer<SystemContext> CreateSystemContextSerializer() {
+		public IVersionedFileSerializer CreateSystemContextSerializer() {
 			return Factory.CreateSystemContextSerializer();
 		}
 
-		public FileSerializer<Program> CreateProgramSerializer() {
+		public IVersionedFileSerializer CreateProgramSerializer() {
 			return Factory.CreateProgramSerializer();
 		}
 
-		public FileSerializer<ChannelNodeTemplate> CreateChannelNodeTemplateSerializer() {
+		public IVersionedFileSerializer CreateChannelNodeTemplateSerializer() {
 			return Factory.CreateChannelNodeTemplateSerializer();
 		}
 
-		public FileSerializer<OutputFilterTemplate> CreateOutputFilterTemplateSerializer() {
+		public IVersionedFileSerializer CreateOutputFilterTemplateSerializer() {
 			return Factory.CreateOutputFilterTemplateSerializer();
 		}
 	}

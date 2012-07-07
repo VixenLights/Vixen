@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Vixen.Module;
-using Vixen.Module.Sequence;
+using Vixen.Module.SequenceType;
 
 namespace VixenModules.Sequence.Timed {
-	public class TimedSequenceModuleDescriptor : SequenceModuleDescriptorBase {
+	public class TimedSequenceModuleDescriptor : SequenceTypeModuleDescriptorBase {
 		private Guid _typeId = new Guid("{296bdba2-9bf3-4bff-a9f2-13efac5c8ecb}");
 
 		override public string FileExtension {
@@ -18,7 +17,7 @@ namespace VixenModules.Sequence.Timed {
 		}
 
 		override public Type ModuleClass {
-			get { return typeof(TimedSequence); }
+			get { return typeof(TimedSequenceTypeModule); }
 		}
 
 		override public Type ModuleDataClass {
@@ -39,6 +38,10 @@ namespace VixenModules.Sequence.Timed {
 
 		override public string Version {
 			get { return "1.0"; }
+		}
+
+		public override int ClassVersion {
+			get { return 3; }
 		}
 	}
 }

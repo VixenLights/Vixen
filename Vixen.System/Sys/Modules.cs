@@ -6,6 +6,7 @@ using System.Reflection;
 using System.IO;
 using Vixen.Module;
 using Vixen.Module.ModuleTemplate;
+using Vixen.Services;
 using Vixen.Sys.Attribute;
 
 namespace Vixen.Sys {
@@ -203,7 +204,7 @@ namespace Vixen.Sys {
 				} catch(BadImageFormatException) {
 				} catch(ReflectionTypeLoadException ex) {
 					foreach(Exception loaderException in ex.LoaderExceptions) {
-						VixenSystem.Logging.Debug("Loader exception:" + Environment.NewLine + loaderException.Message + Environment.NewLine + Environment.NewLine + "The system has been stopped.", loaderException);
+						VixenSystem.Logging.Error("Loader exception:" + Environment.NewLine + loaderException.Message + Environment.NewLine + Environment.NewLine + "The system has been stopped.", loaderException);
 					}
 				} catch(Exception ex) {
 					VixenSystem.Logging.Error("Error loading modules from " + filePath, ex);
@@ -253,13 +254,13 @@ namespace Vixen.Sys {
 									moduleDescriptor.Assembly = assembly;
 									descriptors.Add(moduleDescriptor);
 								} else {
-									VixenSystem.Logging.Debug("Tried to load module " + moduleDescriptor.TypeName + " from " + Path.GetFileName(filePath) + ", but the ModuleClass does not implement IModuleInstance.");
+									VixenSystem.Logging.Error("Tried to load module " + moduleDescriptor.TypeName + " from " + Path.GetFileName(filePath) + ", but the ModuleClass does not implement IModuleInstance.");
 								}
 							} else {
-								VixenSystem.Logging.Debug("Tried to load module " + moduleDescriptor.TypeName + " from " + Path.GetFileName(filePath) + ", but the ModuleClass is null.");
+								VixenSystem.Logging.Error("Tried to load module " + moduleDescriptor.TypeName + " from " + Path.GetFileName(filePath) + ", but the ModuleClass is null.");
 							}
 						} else {
-							VixenSystem.Logging.Debug("Tried to load module of type " + moduleDescriptorType.Name + " from " + Path.GetFileName(filePath) + ", but the descriptor does not implement IModuleDescriptor.");
+							VixenSystem.Logging.Error("Tried to load module of type " + moduleDescriptorType.Name + " from " + Path.GetFileName(filePath) + ", but the descriptor does not implement IModuleDescriptor.");
 						}
 					} catch(Exception ex) {
 						VixenSystem.Logging.Error("Error loading module descriptor " + moduleDescriptorType.Name + " from " + Path.GetFileName(filePath) + ".", ex);
@@ -282,17 +283,16 @@ namespace Vixen.Sys {
 				try {
 					instance.StaticModuleData = _GetModuleStaticData(instance);
 				} catch(Exception ex) {
-					VixenSystem.Logging.Debug("Error when assigning module static data.", ex);
+					VixenSystem.Logging.Error("Error when assigning module static data.", ex);
 				}
 				try {
 					instance.ModuleData = _GetModuleData(instance);
 				} catch(Exception ex) {
-					VixenSystem.Logging.Debug("Error when assigning module data.", ex);
+					VixenSystem.Logging.Error("Error when assigning module data.", ex);
 				}
 
 				// See if there are any templates to apply to the instance.
-				ModuleTemplateModuleManagement manager = Modules.GetManager<IModuleTemplateModuleInstance, ModuleTemplateModuleManagement>();
-				manager.ProjectTemplateInto(instance);
+				ModuleTemplateService.Instance.ProjectTemplateInto(instance);
 			} else {
 				VixenSystem.Logging.Warning("Attempt to instantiate non-existent module " + moduleTypeId);
 			}
@@ -447,13 +447,13 @@ namespace Vixen.Sys {
 		/// <param name="instance"></param>
 		/// <returns></returns>
 		static private IModuleDataModel _GetModuleData(IModuleInstance instance) {
-			// Remember, the data is orphaned!
+			// Remember, the data is orphaned initially!
 			IModuleDataModel dataModel = null;
 
 			if(instance.Descriptor.ModuleDataClass != null) {
 				dataModel = ModuleLocalDataSet.CreateModuleDataInstance(instance);
 				if(dataModel == null) {
-					VixenSystem.Logging.Debug("Module \"" + instance.Descriptor.TypeName + "\" in " + instance.Descriptor.FileName + " has a reference to type " + instance.Descriptor.ModuleDataClass.Name + " for its module data class, but it's not an implementation of " + typeof(IModuleDataModel).Name + ".");
+					VixenSystem.Logging.Error("Module \"" + instance.Descriptor.TypeName + "\" in " + instance.Descriptor.FileName + " has a reference to type " + instance.Descriptor.ModuleDataClass.Name + " for its module data class, but it's not an implementation of " + typeof(IModuleDataModel).Name + ".");
 				}
 			}
 

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using Vixen.IO;
 using Vixen.IO.Result;
+using Vixen.Services;
 
 namespace Vixen.Sys {
 	class SystemContext : FilePackage {
@@ -40,7 +38,7 @@ namespace Vixen.Sys {
 		}
 
 		public void Save(string targetFilePath) {
-			FileSerializer<SystemContext> serializer = SerializerFactory.Instance.CreateSystemContextSerializer();
+			VersionedFileSerializer serializer = FileService.Instance.CreateSystemContextSerializer();
 			serializer.Write(this, targetFilePath);
 		}
 
@@ -100,10 +98,10 @@ namespace Vixen.Sys {
 			return context;
 		}
 
-		static public SystemContext UnpackageSystemContext(string contextFilePath) {
-			FileSerializer<SystemContext> serializer = SerializerFactory.Instance.CreateSystemContextSerializer();
-			SerializationResult<SystemContext> result = serializer.Read(contextFilePath);
-			return result.Object;
+		static public SystemContext Load(string contextFilePath) {
+			VersionedFileSerializer serializer = FileService.Instance.CreateSystemContextSerializer();
+			ISerializationResult result = serializer.Read(contextFilePath);
+			return (SystemContext)result.Object;
 		}
 
 		static private string _PrepSystemConfig() {
@@ -114,16 +112,14 @@ namespace Vixen.Sys {
 			VixenSystem.SystemConfig.Save();
 			
 			// Load the system config into a new instance.
-			FileSerializer<SystemConfig> serializer = SerializerFactory.Instance.CreateSystemConfigSerializer();
-			SerializationResult<SystemConfig> result = serializer.Read(VixenSystem.SystemConfig.LoadedFilePath);
-			SystemConfig contextSysConfig = result.Object;
+			SystemConfig contextSysConfig = SystemConfig.Load(VixenSystem.SystemConfig.LoadedFilePath);
 
 			// Set the context flag.
 			contextSysConfig.IsContext = true;
 			
-			// Save to a temp file.
+			// Save it to a temp file.
 			string tempFilePath = Path.GetTempFileName();
-			serializer.Write(contextSysConfig, tempFilePath);
+			contextSysConfig.Save(tempFilePath);
 
 			return tempFilePath;
 		}

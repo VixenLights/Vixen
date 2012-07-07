@@ -1,16 +1,11 @@
 ﻿using System;
 
 namespace Vixen.Sys.Output {
-	public interface IOutputDevice : IHasSetup {
-		void Start();
-		void Stop();
-		void Pause();
-		void Resume();
+	//*** clarify use of this and IOutputModule
+	public interface IOutputDevice : IHardware, IHasSetup {
 		Guid Id { get; }
 		string Name { get; set; }
 		int UpdateInterval { get; set; }
-		bool IsRunning { get; }
-		bool IsPaused { get; }
 		void Update();
 		IOutputDeviceUpdateSignaler UpdateSignaler { get; }
 	}

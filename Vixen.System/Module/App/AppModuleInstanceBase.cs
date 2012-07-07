@@ -18,6 +18,7 @@ namespace Vixen.Module.App {
 		}
 
 		public override IModuleInstance Clone() {
+			// Singleton
 			throw new NotSupportedException();
 		}
 

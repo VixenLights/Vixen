@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 
 namespace Vixen.IO.Xml.Migrator {
-	class XmlSystemConfigMigrator : XmlMigrator {
+	class XmlSystemConfigMigrator : IO.Migrator {
 		private MigrationSegment[] _segments;
 
-		public XmlSystemConfigMigrator(XElement content)
-			: base(content) {
+		public XmlSystemConfigMigrator() {
 			_segments = new[] {
 				new MigrationSegment(1, 2, _Version_1_to_2),
 				new MigrationSegment(2, 3, _Version_2_to_3),
@@ -25,15 +24,17 @@ namespace Vixen.IO.Xml.Migrator {
 			get { return _segments; }
 		}
 
-		private void _Version_1_to_2() {
-			Content.Add(new XElement("Identity", Guid.NewGuid().ToString()));
+		private void _Version_1_to_2(object content) {
+			XElement contentElement = (XElement)content;
+			contentElement.Add(new XElement("Identity", Guid.NewGuid().ToString()));
 		}
 
-		private void _Version_2_to_3() {
-			Content.Add(new XElement("Controllers"));
+		private void _Version_2_to_3(object content) {
+			XElement contentElement = (XElement)content;
+			contentElement.Add(new XElement("Controllers"));
 		}
 
-		private void _Version_3_to_4() {
+		private void _Version_3_to_4(object content) {
 			//XElement controllersElement = _content.Element(XmlControllerCollectionSerializer.ELEMENT_CONTROLLERS);
 			//if(controllersElement != null) {
 			//    foreach(XElement controllerElement in controllersElement.Elements(XmlControllerCollectionSerializer.ELEMENT_CONTROLLER)) {
@@ -47,16 +48,19 @@ namespace Vixen.IO.Xml.Migrator {
 			//return element;
 		}
 
-		private void _Version_4_to_5() {
-			Content.Add(new XElement("DisabledControllers"));
+		private void _Version_4_to_5(object content) {
+			XElement contentElement = (XElement)content;
+			contentElement.Add(new XElement("DisabledControllers"));
 		}
 
-		private void _Version_5_to_6() {
-			Content.Add(new XElement("ControllerLinks"));
+		private void _Version_5_to_6(object content) {
+			XElement contentElement = (XElement)content;
+			contentElement.Add(new XElement("ControllerLinks"));
 		}
 
-		private void _Version_6_to_7() {
-			XElement controllersElement = Content.Element("Controllers");
+		private void _Version_6_to_7(object content) {
+			XElement contentElement = (XElement)content;
+			XElement controllersElement = contentElement.Element("Controllers");
 			if(controllersElement != null) {
 				foreach(XElement controllerElement in controllersElement.Elements("Controller")) {
 					XElement outputsElement = controllerElement.Element("Outputs");
@@ -69,20 +73,24 @@ namespace Vixen.IO.Xml.Migrator {
 			}
 		}
 
-		private void _Version_7_to_8() {
-			Content.Add(new XElement("Previews"));
+		private void _Version_7_to_8(object content) {
+			XElement contentElement = (XElement)content;
+			contentElement.Add(new XElement("Previews"));
 		}
 
-		private void _Version_8_to_9() {
-			Content.Add(new XElement("AllowFilterEvaluation", true));
+		private void _Version_8_to_9(object content) {
+			XElement contentElement = (XElement)content;
+			contentElement.Add(new XElement("AllowFilterEvaluation", true));
 		}
 
-		private void _Version_9_to_10() {
-			Content.Add(new XElement("AllowSubordinateEffects", true));
+		private void _Version_9_to_10(object content) {
+			XElement contentElement = (XElement)content;
+			contentElement.Add(new XElement("AllowSubordinateEffects", true));
 		}
 
-		private void _Version_10_to_11() {
-			Content.Add(new XElement("SmartControllers"));
+		private void _Version_10_to_11(object content) {
+			XElement contentElement = (XElement)content;
+			contentElement.Add(new XElement("SmartControllers"));
 		}
 	}
 }

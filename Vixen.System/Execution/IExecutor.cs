@@ -3,26 +3,15 @@ using System.Collections.Generic;
 using Vixen.Module.Timing;
 using Vixen.Sys;
 
-namespace Vixen.Execution
-{
-	interface IExecutor : IDisposable
-	{
+namespace Vixen.Execution {
+	public interface IExecutor : IExecutionControl, IRuns {
 		event EventHandler<SequenceStartedEventArgs> SequenceStarted;
 		event EventHandler<SequenceEventArgs> SequenceEnded;
 		event EventHandler<ExecutorMessageEventArgs> Message;
 		event EventHandler<ExecutorMessageEventArgs> Error;
 
-		ISequence Sequence { get; set; }
-		void Play(TimeSpan startTime, TimeSpan endTime);
-		void Pause();
-		void Resume();
-		void Stop();
-		bool IsRunning { get; }
-		bool IsPaused { get; }
-
-		IEnumerable<IEffectNode> GetSequenceData();
-		ITiming GetSequenceTiming();
-		IEnumerable<ISequenceFilterNode> GetSequenceFilters();
 		string Name { get; }
+		ITiming TimingSource { get; }
+		IEnumerable<ISequenceFilterNode> SequenceFilters { get; }
 	}
 }

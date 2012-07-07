@@ -26,6 +26,7 @@ namespace Vixen.Sys {
 
 		static VixenSystem() {
 			SerializerFactory.Factory = new XmlSerializerFactory();
+			MigratorFactory.Factory = new XmlMigratorFactory();
 		}
 
     	static public void Start(IApplication clientApplication, bool openExecution = true, bool disableControllers = false) {
@@ -82,8 +83,8 @@ namespace Vixen.Sys {
 				} catch(Exception ex) {
 					// The client is expected to have subscribed to the logging event
 					// so that it knows that an exception occurred during loading.
-					Logging.Error("Error during system startup; the system has been stopped");
-					Logging.Debug(ex);
+					Logging.Error("Error during system startup; the system has been stopped.", ex);
+					//Logging.Debug(ex);
 					Stop();
 				}
 			}
@@ -200,7 +201,7 @@ namespace Vixen.Sys {
 		}
 
 		static public string AssemblyFileName {
-			get { return Assembly.GetExecutingAssembly().Location; }
+			get { return Assembly.GetExecutingAssembly().GetFilePath(); }
 		}
 
 		static public dynamic Logging {
@@ -230,16 +231,12 @@ namespace Vixen.Sys {
 
 		private static ModuleStore _LoadModuleStore(string systemDataPath) {
 			string moduleStoreFilePath = Path.Combine(systemDataPath, ModuleStore.FileName);
-			FileSerializer<ModuleStore> serializer = SerializerFactory.Instance.CreateModuleStoreSerializer();
-			SerializationResult<ModuleStore> result = serializer.Read(moduleStoreFilePath);
-			return result.Object;
+			return ModuleStore.Load(moduleStoreFilePath);
 		}
 
 		private static SystemConfig _LoadSystemConfig(string systemDataPath) {
 			string systemConfigFilePath = Path.Combine(systemDataPath, SystemConfig.FileName);
-			FileSerializer<SystemConfig> serializer = SerializerFactory.Instance.CreateSystemConfigSerializer();
-			SerializationResult<SystemConfig> result = serializer.Read(systemConfigFilePath);
-			return result.Object;
+			return SystemConfig.Load(systemConfigFilePath);
 		}
 
 		static private void _InitializeLogging() {

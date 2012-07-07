@@ -2,8 +2,8 @@
 using Vixen.IO.Result;
 
 namespace Vixen.IO {
-	interface IMigrator {
-		IEnumerable<IFileOperationResult> Migrate(int fromVersion, int toVersion);
+	public interface IMigrator {
+		IEnumerable<IResult> Migrate(object value, int fromVersion, int toVersion);
 		IEnumerable<MigrationSegment> ValidMigrations { get; }
 	}
 }

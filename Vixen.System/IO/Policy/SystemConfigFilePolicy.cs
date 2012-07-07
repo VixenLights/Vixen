@@ -56,8 +56,8 @@
 		protected abstract void ReadDisabledControllers();
 		protected abstract void ReadPreviews();
 
-		public int GetVersion() {
-			return 11;
+		public int Version {
+			get { return 11; }
 		}
 	}
 }

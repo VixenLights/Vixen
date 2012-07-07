@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Vixen.Sys;
-
-namespace Vixen.Module.Script {
+﻿namespace Vixen.Module.Script {
 	public interface IScript {
+		IScriptSkeletonGenerator SkeletonGenerator { get; set; }
+		IScriptFrameworkGenerator FrameworkGenerator { get; set; }
+		IScriptCodeProvider CodeProvider { get; set; }
+		string FileExtension { get; }
 	}
 }

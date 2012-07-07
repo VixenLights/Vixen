@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
 using System.Linq;
-using Vixen.Sys.Enumerator;
 
 // Data is only pulled from this at execution start.
 // Data written during sequence execution is handled by runtime behaviors and is written
@@ -14,13 +12,13 @@ namespace Vixen.Sys {
 		// There will always be at least one stream.
 		private List<DataStream> _dataStreams = new List<DataStream>();
 		private DataStream _mainStream;
-		private DataNodeCollection _executingData;
+		//private DataNodeCollection _executingData;
 
 		public DataStreams() {
 			// The sequence will have at least one stream to hold effect data.
 			_mainStream = new DataStream("Main");
 			_dataStreams.Add(_mainStream);
-			_executingData = new DataNodeCollection();
+			//_executingData = new DataNodeCollection();
 		}
 
 		public DataStreams(DataStreams original)
@@ -39,7 +37,7 @@ namespace Vixen.Sys {
 		}
 
 		public IEnumerable<IDataNode> GetStreamData(Guid streamId) {
-			return _GetDataStream(streamId);
+			return GetDataStream(streamId);
 		}
 
 		// During authoring, as data is written to the sequence, it is stored in the
@@ -50,7 +48,7 @@ namespace Vixen.Sys {
 
 		// Used to add to the pre-filter stream.
 		public void AddData(Guid streamId, IDataNode data) {
-			DataStream dataStream = _GetDataStream(streamId);
+			DataStream dataStream = GetDataStream(streamId);
 			if(dataStream != null) {
 				dataStream.AddData(data);
 			}
@@ -63,7 +61,7 @@ namespace Vixen.Sys {
 
 		// Used by the recording behavior.
 		public void AddData(Guid streamId, IEnumerable<IDataNode> data) {
-			DataStream dataStream = _GetDataStream(streamId);
+			DataStream dataStream = GetDataStream(streamId);
 			if(dataStream != null) {
 				dataStream.AddData(data);
 			}
@@ -76,38 +74,43 @@ namespace Vixen.Sys {
 
 		public bool RemoveData(Guid streamId, IDataNode data)
 		{
-			DataStream stream = _GetDataStream(streamId);
+			DataStream stream = GetDataStream(streamId);
 			return stream.RemoveData(data);
 		}
 
-		/// <summary>
-		/// If a sequence is executing, data written to a sequence by way of this
-		/// method will be considered by the enumerator.
-		/// </summary>
-		/// <param name="data"></param>
-		public void AddLive(IEnumerable<IDataNode> data) {
-			if(_executingData != null) {
-				_executingData.AddRange(data);
-			}
-		}
+		///// <summary>
+		///// If a sequence is executing, data written to a sequence by way of this
+		///// method will be considered by the enumerator.
+		///// </summary>
+		///// <param name="data"></param>
+		//public void AddLive(IEnumerable<IDataNode> data) {
+		//    if(_executingData != null) {
+		//        _executingData.AddRange(data);
+		//    }
+		//}
 
-		/// <summary>
-		/// If a sequence is executing, data written to a sequence by way of this
-		/// method will be considered by the enumerator.
-		/// </summary>
-		/// <param name="data"></param>
-		public void AddLive(IDataNode data) {
-			if(_executingData != null) {
-				_executingData.Add(data);
-			}
-		}
+		///// <summary>
+		///// If a sequence is executing, data written to a sequence by way of this
+		///// method will be considered by the enumerator.
+		///// </summary>
+		///// <param name="data"></param>
+		//public void AddLive(IDataNode data) {
+		//    if(_executingData != null) {
+		//        _executingData.Add(data);
+		//    }
+		//}
 		#endregion
 
 		#region Streams
-		public Guid CreateStream(string name) {
+		//public Guid CreateStream(string name) {
+		//    DataStream dataStream = new DataStream(name);
+		//    _dataStreams.Add(dataStream);
+		//    return dataStream.Id;
+		//}
+		public DataStream CreateStream(string name) {
 			DataStream dataStream = new DataStream(name);
 			_dataStreams.Add(dataStream);
-			return dataStream.Id;
+			return dataStream;
 		}
 
 		public void ClearStream() {
@@ -116,52 +119,26 @@ namespace Vixen.Sys {
 
 		public void ClearStream(Guid dataStreamId) {
 			//*** dictionary!
-			DataStream dataStream = _GetDataStream(dataStreamId);
+			DataStream dataStream = GetDataStream(dataStreamId);
 			if(dataStream != null) {
 				dataStream.Clear();
 			}
 		}
 
-		public void RemoveStream(Guid dataStreamId) {
-			DataStream dataStream = _GetDataStream(dataStreamId);
-			if(dataStream != null) {
-				_dataStreams.Remove(dataStream);
-			}
-		}
-		#endregion
-
-		#region DataNodeCollection
-		class DataNodeCollection : IEnumerable<IDataNode> {
-			private ConcurrentQueue<IDataNode> _data;
-
-			public DataNodeCollection() {
-				_data = new ConcurrentQueue<IDataNode>();
-			}
-
-			public void Add(IDataNode value) {
-				_data.Enqueue(value);
-			}
-
-			public void AddRange(IEnumerable<IDataNode> values) {
-				foreach(IDataNode value in values) {
-					_data.Enqueue(value);
-				}
-			}
-
-			public IEnumerator<IDataNode> GetEnumerator() {
-				// We need an enumerator that is live and does not operate upon a snapshot
-				// of the data.
-				return new ConcurrentQueueLiveEnumerator<IDataNode>(_data);
-			}
-
-			System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
-				return GetEnumerator();
-			}
-		}
-		#endregion
-
-		private DataStream _GetDataStream(Guid dataStreamId) {
+		public DataStream GetDataStream(Guid? dataStreamId) {
+			if(!dataStreamId.HasValue) return _mainStream;
 			return _dataStreams.FirstOrDefault(x => x.Id == dataStreamId);
 		}
+		
+		//public void RemoveStream(Guid dataStreamId) {
+		//    DataStream dataStream = _GetDataStream(dataStreamId);
+		//    if(dataStream != null) {
+		//        _dataStreams.Remove(dataStream);
+		//    }
+		//}
+		public void RemoveStream(DataStream dataStream) {
+			_dataStreams.Remove(dataStream);
+		}
+		#endregion
 	}
 }

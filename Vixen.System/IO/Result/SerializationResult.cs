@@ -1,12 +1,8 @@
-﻿using System.Collections.Generic;
-using Vixen.Sys;
-
-namespace Vixen.IO.Result {
-	class SerializationResult : IFileOperationResult {
-		public SerializationResult(bool success, string message, object obj, IEnumerable<IFileOperationResult> operationResults) {
+﻿namespace Vixen.IO.Result {
+	public class SerializationResult : ISerializationResult {
+		public SerializationResult(bool success, string message, object obj) {
 			Success = success;
 			Message = message;
-			OperationResults = operationResults;
 			Object = obj;
 		}
 
@@ -15,13 +11,11 @@ namespace Vixen.IO.Result {
 		public string Message { get; private set; }
 
 		public object Object { get; private set; }
-
-		public IEnumerable<IFileOperationResult> OperationResults { get; private set; }
 	}
 
-	class SerializationResult<ObjectType> : SerializationResult {
-		public SerializationResult(bool success, string message, ObjectType obj, IEnumerable<IFileOperationResult> operationResults)
-			: base(success, message, obj, operationResults) {
+	public class SerializationResult<ObjectType> : SerializationResult {
+		public SerializationResult(bool success, string message, ObjectType obj)
+			: base(success, message, obj) {
 			Object = obj;
 		}
 

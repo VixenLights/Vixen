@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 
 namespace Vixen.Sys.Enumerator {
-	// Makes more sense for this to not subclass LiveEnumerator.
 	class LiveListEnumerator<T> : IEnumerator<T> {
 		private List<T> _list;
 		private T _current;
@@ -16,7 +15,8 @@ namespace Vixen.Sys.Enumerator {
 			get { return _current; }
 		}
 
-		public void Dispose() { }
+		public void Dispose() {
+		}
 
 		object System.Collections.IEnumerator.Current {
 			get { return Current; }
@@ -26,10 +26,9 @@ namespace Vixen.Sys.Enumerator {
 			if(_index+1 < _list.Count) {
 				_current = _list[++_index];
 				return true;
-			} else {
-				_current = default(T);
-				return false;
 			}
+			_current = default(T);
+			return false;
 		}
 
 		public void Reset() {

@@ -17,7 +17,7 @@ namespace Vixen.Module.Script {
 
 		abstract public override string Version { get; }
 
-		abstract public string Language { get; }
+		abstract public string LanguageName { get; }
 
 		abstract public string FileExtension { get; }
 

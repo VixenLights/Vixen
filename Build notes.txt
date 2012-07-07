@@ -1,0 +1,71 @@
+3.0.1.1
+
+Spin and twinkle effect updates so they will work with the new changes.
+
+
+3.0.1.2
+
+Changed the data directory to "Vixen 3" to avoid clashing with 2.x.
+Removed TestPreview.dll from the build.
+
+
+3.0.1.3
+
+Removed Write() from Vixen.Execution.  Replaced it with a formalized "live" context available by calling VixenSystem.Contexts.GetSystemLiveContext().
+
+
+3.0.1.4
+
+Added abstraction for output device update signaling.
+
+
+3.0.1.5
+
+Brought back effect preview rendering in the editor, but only for effects that use LightingValue commands.  So far, that's all of the ones that are in the package.
+
+
+3.0.1.6 [branch build]
+
+How come there hasn't been an update in so long?  Well...
+
+
+Removed the "Runtime Behavior" module type.  They will be doing their phoenix impression at a later date.
+
+The "Sequence" module type is now the "SequenceType" module type.  This is a significant change, so it's detailed below.  * THIS IS A BREAKING CHANGE. *
+
+New SequenceContext and some changes to how execution contexts are requested and fulfilled.
+
+Slightly revamped data sourcing model for contexts.
+
+Existing timed and script sequence types have been reimplemented as modules.
+
+Expansion of service classes to better serve up core services through Vixen.Services. :)
+(Okay, okay...this is the start of a consolidation effort to put all available consumer services in one easy-to-find place.)
+
+
+
+* Sequence => Sequence Type Module Change: *
+
+This removes any concrete definition of a sequence from the core assembly and puts it entirely into modules.  The core assembly defines a sequence interface, as well as other interfaces necessary to the sequence type module, but there is no sequence class defined.  That's the job of the module.  This means:
+
+GOOD: Sequences can be defined more freely now, within certain limits defined by the interface (e.g. still have to work with effect data, sequence filters).
+
+MAYBE SCARY: The module is now responsible for everything having to do with that sequence type.
+
+Since the module now defines the sequence class, it also needs to define several other things:
+
+1. How that sequence will be stored.
+
+The sequence-type module's data class will be used to define how a sequence will be stored.  There is a base class to handle the mundane members of the ISequence interface, but it's up to the module to extend it to define any additional members.
+
+2. How older sequence files of that type will be brought up to date.
+
+Versioning is a requirement of all files.  When a sequence is opened and it's not of the latest version, the module needs to handle bringing it up through intervening versions to make that sequence current.
+
+3. The biggy: How the sequence is executed.
+
+It's through this that everything is told that a sequence is starting, that it's ended, what rules its timing...everything.
+
+NOTE:
+Like we said, it may be weeks between updates because of large-granular changes like this that are pretty core changes.  Not that we aim to do core changes at this point, but a conceived real-life use demanded that it be attempted.
+This is a non-trunk build, so it's easily abandoned should civilization fall due to these changes.

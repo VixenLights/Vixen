@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Vixen.IO;
 using Vixen.Module.OutputFilter;
 using Vixen.Rule;
 using Vixen.Sys;
@@ -19,26 +18,22 @@ namespace Vixen.Services {
 		}
 
 		public void ApplyTemplateOnce(string templateFileName, IPatchingRule patchingRule, bool clearExisting = false) {
-			var serializer = SerializerFactory.Instance.CreateOutputFilterTemplateSerializer();
-			var result = serializer.Read(templateFileName);
-			if(!result.Success) return;
+			OutputFilterTemplate outputFilterTemplate = OutputFilterTemplate.Load(templateFileName);
+			if(outputFilterTemplate == null) return;
 
 			ControllerReference[] controllerReferences = patchingRule.GenerateControllerReferenceCollections(1).First().ToArray();
 			IEnumerable<OutputController> referencedControllers = VixenSystem.Controllers.GetControllers(controllerReferences).ToArray();
 
 			VixenSystem.Controllers.Pause(referencedControllers);
 	
-			_ApplyTemplateToOutputs(result.Object, controllerReferences, clearExisting);
+			_ApplyTemplateToOutputs(outputFilterTemplate, controllerReferences, clearExisting);
 			
 			VixenSystem.Controllers.Resume(referencedControllers);
 		}
 
 		public void ApplyTemplateMany(string templateFileName, IPatchingRule patchingRule, int channelCount, bool clearExisting = false) {
-			var serializer = SerializerFactory.Instance.CreateOutputFilterTemplateSerializer();
-			var result = serializer.Read(templateFileName);
-			if(!result.Success) return;
-
-			OutputFilterTemplate template = result.Object;
+			OutputFilterTemplate outputFilterTemplate = OutputFilterTemplate.Load(templateFileName);
+			if(outputFilterTemplate == null) return;
 
 			IEnumerable<ControllerReferenceCollection> controllerReferenceCollections = patchingRule.GenerateControllerReferenceCollections(channelCount).ToArray();
 
@@ -46,7 +41,7 @@ namespace Vixen.Services {
 			VixenSystem.Controllers.Pause(referencedControllers);
 
 			foreach(ControllerReferenceCollection controllerReferences in controllerReferenceCollections) {
-				_ApplyTemplateToOutputs(template, controllerReferences.ToArray(), clearExisting);
+				_ApplyTemplateToOutputs(outputFilterTemplate, controllerReferences.ToArray(), clearExisting);
 			}
 			
 			VixenSystem.Controllers.Resume(referencedControllers);

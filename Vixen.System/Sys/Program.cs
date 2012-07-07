@@ -4,21 +4,37 @@ using System.Linq;
 using System.IO;
 using Vixen.IO;
 using Vixen.IO.Result;
+using Vixen.Services;
 using Vixen.Sys.Attribute;
 
 namespace Vixen.Sys {
-	public class Program : IEnumerable<ISequence> {
+	public class Program : IProgram {
 		private const string DIRECTORY_NAME = "Program";
 
 		private List<ISequence> _sequences = new List<ISequence>();
 
 		public const string Extension = ".pro";
 
+		[DataPath]
+		static public string ProgramDirectory {
+			get { return Path.Combine(Paths.DataRootPath, DIRECTORY_NAME); }
+		}
+
+		static public IEnumerable<Program> GetAll() {
+			return Directory.GetFiles(ProgramDirectory, "*" + Extension).Select(Load);
+		}
+
+		static public Program Load(string filePath) {
+			VersionedFileSerializer serializer = FileService.Instance.CreateProgramSerializer();
+			ISerializationResult result = serializer.Read(filePath);
+			return (Program)result.Object;
+		}
+
 		public Program() {
 		}
 
 		public Program(string name) {
-			FilePath = Path.Combine(Program.Directory, Path.ChangeExtension(name, Program.Extension));
+			FilePath = Path.Combine(ProgramDirectory, Path.ChangeExtension(name, Extension));
 		}
 
 		public Program(ISequence sequence)
@@ -26,33 +42,9 @@ namespace Vixen.Sys {
 			Add(sequence);
 		}
 
-		public Program(Program original) {
+		public Program(IProgram original) {
 			FilePath = original.FilePath;
 			_sequences.AddRange(original.Sequences);
-		}
-
-		[DataPath]
-		static public string Directory {
-			get { return Path.Combine(Paths.DataRootPath, DIRECTORY_NAME); }
-		}
-
-		static public IEnumerable<Program> GetAll() {
-			foreach(string filePath in System.IO.Directory.GetFiles(Program.Directory, "*" + Extension)) {
-				yield return Load(filePath);
-			}
-		}
-
-		static public Program Load(string filePath) {
-			if(string.IsNullOrWhiteSpace(filePath)) return null;
-
-			FileSerializer<Program> serializer = SerializerFactory.Instance.CreateProgramSerializer();
-			SerializationResult<Program> result = serializer.Read(filePath);
-			return result.Object;
-			//filePath = Path.ChangeExtension(filePath, Program.Extension);
-			//IReader reader = new XmlProgramReader();
-			//if(!Path.IsPathRooted(filePath)) filePath = Path.Combine(Directory, filePath);
-			//Program program = (Program)reader.Read(filePath);
-			//return program;
 		}
 
 		public string FilePath { get; set; }
@@ -71,20 +63,11 @@ namespace Vixen.Sys {
 
 		public List<ISequence> Sequences {
 			get { return _sequences; }
-			set { _sequences = value; }
 		}
 
 		public void Save(string filePath) {
-			if(string.IsNullOrWhiteSpace(filePath)) throw new InvalidOperationException("A name is required.");
-			//filePath = Path.Combine(Directory, Path.GetFileName(filePath));
-			//filePath = Path.ChangeExtension(filePath, Program.Extension);
-
-			FileSerializer<Program> serializer = SerializerFactory.Instance.CreateProgramSerializer();
+			VersionedFileSerializer serializer = FileService.Instance.CreateProgramSerializer();
 			serializer.Write(this, filePath);
-			//IWriter writer = new XmlProgramWriter();
-			//writer.Write(filePath, this);
-
-			FilePath = filePath;
 		}
 
 		public void Save() {

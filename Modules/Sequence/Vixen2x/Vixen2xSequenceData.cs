@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
 using Vixen.Module;
-using Vixen.Module.Sequence;
+using Vixen.Module.SequenceType;
 
 namespace VixenModules.Sequence.Vixen2x
 {

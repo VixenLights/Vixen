@@ -24,8 +24,8 @@
 		protected abstract void ReadContextDescription();
 		protected abstract void ReadFiles();
 
-		public int GetVersion() {
-			return 1;
+		public int Version {
+			get { return 1; }
 		}
 	}
 }

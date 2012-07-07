@@ -3,10 +3,10 @@ using Vixen.Execution;
 
 namespace Vixen.Sys {
 	public class ContextEventArgs : EventArgs {
-		public ContextEventArgs(Context context) {
+		public ContextEventArgs(IContext context) {
 			Context = context;
 		}
 
-		public Context Context { get; private set; }
+		public IContext Context { get; private set; }
 	}
 }

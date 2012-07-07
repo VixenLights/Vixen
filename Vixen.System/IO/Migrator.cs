@@ -6,16 +6,16 @@ using Vixen.Sys;
 
 namespace Vixen.IO {
 	abstract class Migrator : IMigrator {
-		public IEnumerable<IFileOperationResult> Migrate(int fromVersion, int toVersion) {
+		public IEnumerable<IResult> Migrate(object fileContent, int fromVersion, int toVersion) {
 			MigrationResult migrationResult;
 
 			MigrationSegment migrationSegment = ValidMigrations.FirstOrDefault(x => x.FromVersion == fromVersion && x.ToVersion == toVersion);
 			if(migrationSegment != null) {
-				Exception exception = _CatchMigrationException(migrationSegment.Execute);
-				if(exception == null) {
+				try {
+					migrationSegment.Execute(fileContent);
 					migrationResult = new MigrationResult(true, "Migration successful.", fromVersion, toVersion);
-				} else {
-					migrationResult = new MigrationResult(false, exception.Message, fromVersion, toVersion);
+				} catch(Exception ex) {
+					migrationResult = new MigrationResult(false, ex.Message, fromVersion, toVersion);
 				}
 			} else {
 				migrationResult = new MigrationResult(false, "No migration path available.", fromVersion, toVersion);
@@ -25,14 +25,5 @@ namespace Vixen.IO {
 		}
 
 		public abstract IEnumerable<MigrationSegment> ValidMigrations { get; }
-
-		private Exception _CatchMigrationException(Action migrationAction) {
-			try {
-				migrationAction();
-				return null;
-			} catch(Exception ex) {
-				return ex;
-			}
-		}
 	}
 }

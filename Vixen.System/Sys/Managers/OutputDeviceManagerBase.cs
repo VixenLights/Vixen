@@ -379,7 +379,7 @@ namespace Vixen.Sys.Managers {
 					_finished.Set();
 
 					VixenSystem.Logging.Error("Controller " + OutputDevice.Name + " error", ex);
-					VixenSystem.Logging.Debug("Controller error:" + Environment.NewLine + ex.StackTrace);
+					//VixenSystem.Logging.Debug("Controller error:" + Environment.NewLine + ex.StackTrace);
 					OnError();
 				} finally {
 					VixenSystem.Instrumentation.RemoveValue(_outputDeviceSleepTimeActualValue);

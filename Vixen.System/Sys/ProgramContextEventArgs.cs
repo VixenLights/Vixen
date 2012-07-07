@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Vixen.Execution;
+using Vixen.Execution.Context;
 
 namespace Vixen.Sys {
 	public class ProgramContextEventArgs : EventArgs {
-		public ProgramContextEventArgs(ProgramContext programContext) {
+		public ProgramContextEventArgs(IProgramContext programContext) {
 			ProgramContext = programContext;
 		}
 
-		public ProgramContext ProgramContext { get; private set; }
+		public IProgramContext ProgramContext { get; private set; }
 	}
 }

@@ -12,8 +12,8 @@
 
 		abstract protected void ReadChannelNode();
 
-		public int GetVersion() {
-			return 1;
+		public int Version {
+			get { return 1; }
 		}
 	}
 }

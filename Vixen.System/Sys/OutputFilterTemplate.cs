@@ -5,6 +5,7 @@ using Vixen.IO;
 using Vixen.IO.Result;
 using Vixen.Module;
 using Vixen.Module.OutputFilter;
+using Vixen.Services;
 using Vixen.Sys.Attribute;
 
 namespace Vixen.Sys {
@@ -34,15 +35,15 @@ namespace Vixen.Sys {
 		static public OutputFilterTemplate Load(string filePath) {
 			if(string.IsNullOrWhiteSpace(filePath)) return null;
 
-			FileSerializer<OutputFilterTemplate> serializer = SerializerFactory.Instance.CreateOutputFilterTemplateSerializer();
-			SerializationResult<OutputFilterTemplate> result = serializer.Read(filePath);
-			return result.Object;
+			VersionedFileSerializer serializer = FileService.Instance.CreateOutputFilterTemplateSerializer();
+			ISerializationResult result = serializer.Read(filePath);
+			return (OutputFilterTemplate)result.Object;
 		}
 
 		public void Save(string filePath) {
 			if(string.IsNullOrWhiteSpace(filePath)) throw new InvalidOperationException("A name is required.");
 
-			FileSerializer<OutputFilterTemplate> serializer = SerializerFactory.Instance.CreateOutputFilterTemplateSerializer();
+			VersionedFileSerializer serializer = FileService.Instance.CreateOutputFilterTemplateSerializer();
 			serializer.Write(this, filePath);
 
 			FilePath = filePath;

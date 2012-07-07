@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Vixen.Execution;
+using Vixen.Execution.Context;
 using Vixen.Sys.Managers;
 using Vixen.Sys.State.Execution;
 
@@ -41,8 +41,8 @@ namespace Vixen.Sys {
 
 		static internal void Startup() {
 			// Create the system context for live execution.
-			Context systemContext = VixenSystem.Contexts.GetSystemLiveContext();
-			systemContext.Play();
+			ContextBase systemContext = VixenSystem.Contexts.GetSystemLiveContext();
+			systemContext.Start();
 		}
 
 		static internal void Shutdown() {
@@ -89,38 +89,40 @@ namespace Vixen.Sys {
 		/// <returns>The resulting length of the queue.  0 if it cannot be added.</returns>
 		static public int QueueSequence(ISequence sequence, string contextName = null) {
 			// Look for an execution context with that name.
-			Context context = VixenSystem.Contexts.FirstOrDefault(x => x.Name.Equals(contextName, StringComparison.OrdinalIgnoreCase));
+			IContext context = VixenSystem.Contexts.FirstOrDefault(x => x.Name.Equals(contextName, StringComparison.OrdinalIgnoreCase));
 			
 			if(context == null) {
 				// Context does not exist.
 				// The context must be created and managed since the user is not doing it.
-				ProgramContext programContext = (ProgramContext)VixenSystem.Contexts.CreateContext(sequence, contextName);
+				context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.SequenceLevelCaching), sequence);
 				// When the program ends, release the context.
-				programContext.ProgramEnded += (sender, e) => VixenSystem.Contexts.ReleaseContext(programContext);
-				programContext.Play();
+				//*** Make sure this fires when a single-sequence context ends!!
+				context.ContextEnded += (sender, e) => VixenSystem.Contexts.ReleaseContext(context);
+				context.Start();
 				// It is the sequence playing now.
 				return 1;
 			} 
 			
-			if(context is ProgramContext) {
-				// Context already exists as a ProgramContext.  Add sequence to it.
+			if(context is IProgramContext) {
+				// Context already exists as a program context.  Add sequence to it.
 				// Can't just add the sequence to the program because it's executing and the
 				// thing executing it has likely cached the state.  Need to go through the
 				// appropriate layers.
-				return (context as ProgramContext).Queue(sequence);
+				return (context as IProgramContext).Queue(sequence);
 			}
 
-			// Else context exists, but it's not a ProgramContext, so it can't be queued
+			// Else context exists, but it's not a program context, so it can't be queued
 			// into.
 			return 0;
 		}
 
-		static public void UpdateState() {
+		static public bool UpdateState() {
 			bool allowUpdate = _UpdateAdjudicator.PetitionForUpdate();
 			if(allowUpdate) {
 				VixenSystem.Contexts.Update();
 				VixenSystem.Channels.Update();
 			}
+			return allowUpdate;
 		}
 	}
 }

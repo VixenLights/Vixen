@@ -16,8 +16,8 @@
 		abstract protected void ReadModuleDataSet();
 		abstract protected void ReadOutputFilterCollections();
 
-		public int GetVersion() {
-			return 1;
+		public int Version {
+			get { return 1; }
 		}
 	}
 }

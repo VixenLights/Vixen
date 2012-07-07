@@ -1,7 +1,7 @@
 ﻿using Vixen.Module;
 
 namespace Vixen.Sys.Output {
-	abstract public class OutputModuleInstanceBase : ModuleInstanceBase, IOutputModule {
+	abstract public class OutputModuleInstanceBase : ModuleInstanceBase, IOutputModule, IHasSetup, IHardware {
 		/// <summary>
 		/// If overriding this, please also override Start and Stop.
 		/// </summary>

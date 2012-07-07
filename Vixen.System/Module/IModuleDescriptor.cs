@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Reflection;
 
 namespace Vixen.Module {
@@ -37,10 +34,6 @@ namespace Vixen.Module {
 		/// The file that the module was borne from.  Set by the system.
 		/// </summary>
 		Assembly Assembly { get; set; }
-		///// <summary>
-		///// Set by the system when the module is loaded; matches ModuleTypeAttribute constructor parameter.
-		///// </summary>
-		//string TypeOfModule { get; set; }
 		/// <summary>
 		/// TypeIds of modules that this module is dependent upon.
 		/// </summary>

@@ -1,7 +1,8 @@
-﻿namespace Vixen.IO.Policy {
-	interface IFilePolicy {
+﻿using Vixen.Sys;
+
+namespace Vixen.IO.Policy {
+	public interface IFilePolicy : IVersioned {
 		void Write();
 		void Read();
-		int GetVersion();
 	}
 }

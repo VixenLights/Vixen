@@ -6,7 +6,7 @@ using Vixen.Sys.Output;
 // Previews have no such real-life model and therefore don't implement outputs or chaining.
 
 namespace Vixen.Module.Preview {
-    public interface IPreview : IOutputModule {
+    public interface IPreview : IOutputModule, IHardwareModule {
 		void UpdateState(ChannelCommands channelCommands);
 		IDataPolicy DataPolicy { get; }
 	}

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Vixen.Module {
 	public abstract class ModuleInstanceBase : IModuleInstance, IEqualityComparer<IModuleInstance>, IEquatable<IModuleInstance>, IEqualityComparer<ModuleInstanceBase>, IEquatable<ModuleInstanceBase> {
@@ -10,6 +8,10 @@ namespace Vixen.Module {
 		}
 
 		public Guid InstanceId { get; set; }
+
+		public Guid TypeId {
+			get { return Descriptor.TypeId; }
+		}
 
 		virtual public IModuleDataModel ModuleData { get; set; }
 

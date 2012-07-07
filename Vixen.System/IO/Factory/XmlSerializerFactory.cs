@@ -1,39 +1,33 @@
 ﻿using Vixen.IO.Xml;
-using Vixen.Sys;
 
 namespace Vixen.IO.Factory {
 	class XmlSerializerFactory : ISerializerFactory {
-		public FileSerializer<Sequence> CreateStandardSequenceSerializer() {
+		public IVersionedFileSerializer CreateSequenceSerializer(string fileType) {
 			return new XmlSequenceSerializer();
 		}
 
-		public FileSerializer<ScriptSequence> CreateScriptSequenceSerializer() {
-			return new XmlScriptSequenceSerializer();
-		}
-
-		public FileSerializer<SystemConfig> CreateSystemConfigSerializer() {
+		public IVersionedFileSerializer CreateSystemConfigSerializer() {
 			return new XmlSystemConfigSerializer();
 		}
 
-		public FileSerializer<ModuleStore> CreateModuleStoreSerializer() {
+		public IVersionedFileSerializer CreateModuleStoreSerializer() {
 			return new XmlModuleStoreSerializer();
 		}
 
-		public FileSerializer<SystemContext> CreateSystemContextSerializer() {
+		public IVersionedFileSerializer CreateSystemContextSerializer() {
 			return new XmlSystemContextSerializer();
 		}
 
-		public FileSerializer<Program> CreateProgramSerializer() {
+		public IVersionedFileSerializer CreateProgramSerializer() {
 			return new XmlProgramSerializer();
 		}
 
-		public FileSerializer<ChannelNodeTemplate> CreateChannelNodeTemplateSerializer() {
+		public IVersionedFileSerializer CreateChannelNodeTemplateSerializer() {
 			return new XmlChannelNodeTemplateSerializer();
 		}
 
-		public FileSerializer<OutputFilterTemplate> CreateOutputFilterTemplateSerializer() {
+		public IVersionedFileSerializer CreateOutputFilterTemplateSerializer() {
 			return new XmlOutputFilterTemplateSerializer();
 		}
-
 	}
 }

@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
 using Vixen.Module;
-using Vixen.Module.Sequence;
 
 namespace VixenModules.Sequence.Timed
 {
 	[DataContract]
-	public class TimedSequenceData : ModuleDataModelBase
+	public class TimedSequenceData : BaseSequence.SequenceData
 	{
 		[DataMember]
 		public List<MarkCollection> MarkCollections { get; set; }

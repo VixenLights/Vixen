@@ -1,4 +1,3 @@
-using System;
 using Vixen.Sys;
 
 namespace VixenModules.Output.DmxUsbPro

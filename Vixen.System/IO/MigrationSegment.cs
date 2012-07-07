@@ -1,10 +1,10 @@
 ﻿using System;
 
 namespace Vixen.IO {
-	class MigrationSegment : IEquatable<MigrationSegment> {
-		private Action _migrationAction;
+	public class MigrationSegment : IEquatable<MigrationSegment> {
+		private Action<object> _migrationAction;
 
-		public MigrationSegment(int fromVersion, int toVersion, Action migrationAction) {
+		public MigrationSegment(int fromVersion, int toVersion, Action<object> migrationAction) {
 			if(migrationAction == null) throw new ArgumentNullException("migrationAction");
 
 			FromVersion = fromVersion;
@@ -15,8 +15,8 @@ namespace Vixen.IO {
 		public int FromVersion { get; private set; }
 		public int ToVersion { get; private set; }
 
-		public void Execute() {
-			_migrationAction();
+		public void Execute(object fileContent) {
+			_migrationAction(fileContent);
 		}
 
 		public bool Equals(MigrationSegment other) {

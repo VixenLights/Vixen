@@ -10,18 +10,20 @@ namespace Vixen.Sys {
 
 		public void InsertData(IEffectNode effectNode) {
 			bool cancel = false;
-			IEnumerator<DataListener> enumerator = _listeners.GetEnumerator();
-			while(!cancel && enumerator.MoveNext()) {
-				cancel = enumerator.Current(effectNode);
+			using(IEnumerator<DataListener> enumerator = _listeners.GetEnumerator()) {
+				while(!cancel && enumerator.MoveNext()) {
+					cancel = enumerator.Current(effectNode);
+				}
 			}
 		}
 
 		public void InsertData(IEnumerable<IEffectNode> effectNodes) {
 			bool cancel = false;
-			IEnumerator<DataListener> enumerator = _listeners.GetEnumerator();
-			while(!cancel && enumerator.MoveNext()) {
-				foreach(IEffectNode effectNode in effectNodes) {
-					cancel = enumerator.Current(effectNode);
+			using(IEnumerator<DataListener> enumerator = _listeners.GetEnumerator()) {
+				while(!cancel && enumerator.MoveNext()) {
+					foreach(IEffectNode effectNode in effectNodes) {
+						cancel = enumerator.Current(effectNode);
+					}
 				}
 			}
 		}

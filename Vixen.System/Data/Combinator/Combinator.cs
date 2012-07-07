@@ -6,10 +6,6 @@ using Vixen.Sys;
 using Vixen.Sys.Dispatch;
 
 namespace Vixen.Data.Combinator {
-	//*** Subclasses of this are currently ugly because every one of them has to branch on if CombinatorValue
-	//    is null.  Is there another way?  It can only receive a single evaluator at a time due to
-	//    double-dispatch and each value type needs to be handled separately and specifically to be able to
-	//    create any meaningful or useful results.
 	abstract public class Combinator<T, ResultType> : Dispatchable<T>, ICombinator<ResultType>, IAnyEvaluatorHandler
 		where T : Combinator<T, ResultType>  {
 		public void Combine(IEnumerable<IEvaluator> evaluators) {

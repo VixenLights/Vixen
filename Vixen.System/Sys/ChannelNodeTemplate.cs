@@ -1,4 +1,7 @@
 ﻿using System.IO;
+using Vixen.IO;
+using Vixen.IO.Result;
+using Vixen.Services;
 using Vixen.Sys.Attribute;
 
 namespace Vixen.Sys {
@@ -11,6 +14,12 @@ namespace Vixen.Sys {
 		}
 
 		public const string Extension = ".cha";
+
+		static public ChannelNodeTemplate Load(string filePath) {
+			VersionedFileSerializer serializer = FileService.Instance.CreateChannelNodeTemplateSerializer();
+			ISerializationResult result = serializer.Read(filePath);
+			return (ChannelNodeTemplate)result.Object;
+		}
 
 		public ChannelNode ChannelNode;
 	}

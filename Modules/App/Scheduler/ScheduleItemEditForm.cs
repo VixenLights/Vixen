@@ -396,7 +396,7 @@ namespace VixenModules.App.Scheduler {
 		}
 
 		private void buttonSelectProgram_Click(object sender, EventArgs e) {
-			openFileDialog.InitialDirectory = Program.Directory;
+			openFileDialog.InitialDirectory = Program.ProgramDirectory;
 			if(openFileDialog.ShowDialog() == DialogResult.OK) {
 				Program program = _LoadProgram(openFileDialog.FileName);
 				_Program = program;

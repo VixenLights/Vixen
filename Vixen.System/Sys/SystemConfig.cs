@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using Vixen.IO;
+using Vixen.IO.Result;
+using Vixen.Services;
 using Vixen.Sys.Attribute;
 using Vixen.Sys.Output;
 
@@ -128,9 +130,18 @@ namespace Vixen.Sys {
 
 		public bool AllowFilterEvaluation { get; set; }
 
+		static public SystemConfig Load(string filePath) {
+			VersionedFileSerializer serializer = FileService.Instance.CreateSystemConfigSerializer();
+			ISerializationResult result = serializer.Read(filePath);
+			return (SystemConfig)result.Object;
+		}
+
 		public void Save() {
-			FileSerializer<SystemConfig> serializer = SerializerFactory.Instance.CreateSystemConfigSerializer();
-			string filePath = LoadedFilePath ?? Path.Combine(Directory, FileName);
+			Save(LoadedFilePath ?? Path.Combine(Directory, FileName));
+		}
+
+		public void Save(string filePath) {
+			VersionedFileSerializer serializer = FileService.Instance.CreateSystemConfigSerializer();
 			serializer.Write(this, filePath);
 		}
 	}
