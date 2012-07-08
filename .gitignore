@@ -1,13 +1,11 @@
 bin/
 obj/
-*.dll
 *.pdb
 _ReSharper*
 *.exe
 *.exe.*
 *.user
 *.suo
-Output
-Release*
+/Output
+/Release*
 Vixen 3*
-*.zip
