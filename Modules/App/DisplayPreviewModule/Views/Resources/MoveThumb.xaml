@@ -1,0 +1,12 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:WPF="clr-namespace:VixenModules.App.DisplayPreview.WPF">
+
+	<BooleanToVisibilityConverter x:Key="boolConverter" />
+	<ControlTemplate x:Key="MoveThumbTemplate"
+	                 TargetType="{x:Type WPF:MoveThumb}">
+		<Rectangle Fill="Transparent"
+		           Visibility="{Binding Path=IsSelected, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}, Converter={StaticResource boolConverter}}" />
+	</ControlTemplate>
+
+</ResourceDictionary>

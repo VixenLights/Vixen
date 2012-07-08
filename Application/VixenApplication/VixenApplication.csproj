@@ -1,0 +1,330 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2572F3DF-7CF2-4B6C-9FC2-8E11D0BC08D6}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VixenApplication</RootNamespace>
+    <AssemblyName>VixenApplication</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\..\Output\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\Comet.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>..\..\..\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\Comet.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>
+    </StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ConfigControllersOutputs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigControllersOutputs.Designer.cs">
+      <DependentUpon>ConfigControllersOutputs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConfigPreviews.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigPreviews.Designer.cs">
+      <DependentUpon>ConfigPreviews.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CreateAndNameChannels.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CreateAndNameChannels.Designer.cs">
+      <DependentUpon>CreateAndNameChannels.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EffectParametersForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EffectParametersForm.Designer.cs">
+      <DependentUpon>EffectParametersForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InstalledModules.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InstalledModules.Designer.cs">
+      <DependentUpon>InstalledModules.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FlatNumericTemplateEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\FlatNumericTemplateEditor.Designer.cs">
+      <DependentUpon>FlatNumericTemplateEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FlatStringTemplateEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\FlatStringTemplateEditor.Designer.cs">
+      <DependentUpon>FlatStringTemplateEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GridEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\GridEditor.Designer.cs">
+      <DependentUpon>GridEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\IHasNameRule.cs" />
+    <Compile Include="PatchChannels.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PatchChannels.Designer.cs">
+      <DependentUpon>PatchChannels.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\IHasPatchRule.cs" />
+    <Compile Include="Controls\ToNOutputsAtOutputEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ToNOutputsAtOutputEditor.Designer.cs">
+      <DependentUpon>ToNOutputsAtOutputEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ToNOutputsAtOutputsEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ToNOutputsAtOutputsEditor.Designer.cs">
+      <DependentUpon>ToNOutputsAtOutputsEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ToNOutputsOverControllersEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ToNOutputsOverControllersEditor.Designer.cs">
+      <DependentUpon>ToNOutputsOverControllersEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\OutputFilterTemplateControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\OutputFilterTemplateControl.Designer.cs">
+      <DependentUpon>OutputFilterTemplateControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PostFilterTemplateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PostFilterTemplateForm.Designer.cs">
+      <DependentUpon>PostFilterTemplateForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RuleEditorContainer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RuleEditorContainer.Designer.cs">
+      <DependentUpon>RuleEditorContainer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VixenApplication.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VixenApplication.Designer.cs">
+      <DependentUpon>VixenApplication.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConfigChannels.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigChannels.Designer.cs">
+      <DependentUpon>ConfigChannels.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConfigControllers.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigControllers.Designer.cs">
+      <DependentUpon>ConfigControllers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="ConfigControllersOutputs.resx">
+      <DependentUpon>ConfigControllersOutputs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConfigPreviews.resx">
+      <DependentUpon>ConfigPreviews.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CreateAndNameChannels.resx">
+      <DependentUpon>CreateAndNameChannels.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EffectParametersForm.resx">
+      <DependentUpon>EffectParametersForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InstalledModules.resx">
+      <DependentUpon>InstalledModules.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\FlatNumericTemplateEditor.resx">
+      <DependentUpon>FlatNumericTemplateEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\FlatStringTemplateEditor.resx">
+      <DependentUpon>FlatStringTemplateEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\GridEditor.resx">
+      <DependentUpon>GridEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PatchChannels.resx">
+      <DependentUpon>PatchChannels.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ToNOutputsAtOutputEditor.resx">
+      <DependentUpon>ToNOutputsAtOutputEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ToNOutputsAtOutputsEditor.resx">
+      <DependentUpon>ToNOutputsAtOutputsEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ToNOutputsOverControllersEditor.resx">
+      <DependentUpon>ToNOutputsOverControllersEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\OutputFilterTemplateControl.resx">
+      <DependentUpon>OutputFilterTemplateControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PostFilterTemplateForm.resx">
+      <DependentUpon>PostFilterTemplateForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RuleEditorContainer.resx">
+      <DependentUpon>RuleEditorContainer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VixenApplication.resx">
+      <DependentUpon>VixenApplication.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConfigChannels.resx">
+      <DependentUpon>ConfigChannels.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConfigControllers.resx">
+      <DependentUpon>ConfigControllers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 Client Profile %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\CommonElements\CommonElements.csproj">
+      <Project>{4EA6B667-2A25-47E8-810B-7CF1C6A8DB9A}</Project>
+      <Name>CommonElements</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
+      <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
+      <Name>Vixen</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

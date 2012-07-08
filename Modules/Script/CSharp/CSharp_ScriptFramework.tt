@@ -1,0 +1,90 @@
+﻿<#@ template language="C#" debug="true" #>
+<#@ assembly name="Vixen.dll" #>
+<#@ import namespace="Vixen.Sys" #>
+<#@ import namespace="Vixen.Module.Effect" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ assembly Name="System.Core" #>
+<#@ assembly Name="Microsoft.CSharp" #>
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Dynamic;
+using Vixen.Sys;
+using Vixen.Module.SequenceType;
+using Vixen.Module.Effect;
+using Vixen.Module.Script;
+using Vixen.Commands;
+
+namespace <#=Namespace#> {
+	public partial class <#=ClassName#> : UserScriptHost {
+		private UserScriptNode[] _nodes;
+		// Effect name : Effect type id
+		private Dictionary<string, Guid> _effects = new Dictionary<string, Guid>();
+
+		public <#=ClassName#>() {
+			_nodes = VixenSystem.Nodes.Select(x => new UserScriptNode(x)).ToArray();
+<#
+	foreach(string effectName in Effects.Keys) {
+#>
+			_effects["<#=effectName#>"] = new Guid("<#= Effects[effectName].TypeId#>");
+<# } #>		
+		}
+
+		override public ISequence Sequence { 
+			get { return base.Sequence; }
+			set {
+				base.Sequence = value;
+			}
+		}
+
+		protected void _InvokeEffect(string effectName, IEnumerable<UserScriptNode> targetNodes, TimeSpan timeSpan, params object[] args) {
+			Guid effectId;
+			if(_effects.TryGetValue(effectName, out effectId)) {
+				IEffectModuleInstance effect = Vixen.Services.ApplicationServices.Get<IEffectModuleInstance>(effectId);
+				effect.TimeSpan = timeSpan;
+				effect.TargetNodes = targetNodes.Select(x => x.Node).ToArray();
+				effect.ParameterValues = args;
+				EffectNode effectNode = new EffectNode(effect, TimeSpan.Zero);
+				Sequence.InsertData(effectNode);
+			}
+		}
+		
+// == Effects ==
+
+<#
+	foreach(string effectName in Effects.Keys) {
+		IEffectModuleDescriptor effect = Effects[effectName];
+		string effectParameters =
+			string.Join(", ",
+			(from parameter in effect.Parameters
+			select parameter.Type.ToString() + " " + _Mangle(parameter.Name)).ToArray());
+		string parameterNames =
+			string.Join(", ",
+			(from parameter in effect.Parameters
+			select _Mangle(parameter.Name)).ToArray());
+#>
+		// Original name: <#=effect.EffectName#>
+		public void <#=effectName#>(IEnumerable<UserScriptNode> targetNodes, TimeSpan timeSpan, <#=effectParameters#>) {
+			_InvokeEffect("<#=effectName#>", targetNodes, timeSpan, <#=parameterNames#>);
+		}
+
+<# } #>
+
+		// == Nodes ==
+		
+<#
+	// This needs to match the node collection that the script created in its constructor.
+	ChannelNode[] nodes = VixenSystem.Nodes.ToArray();
+	List<string> usedNames = new List<string>();
+	for(int i=0; i < nodes.Length; i++) { #>
+		// Original name: <#=nodes[i].Name#>
+		public dynamic <#=_Fix(nodes[i].Name, usedNames)#> { 
+			get { return _nodes[<#= i #>]; }
+		}
+<# } #>
+	}
+}
