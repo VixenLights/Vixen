@@ -7,5 +7,5 @@ _ReSharper*
 *.user
 *.suo
 /Output
-/Release*
+/Release
 Vixen 3*
