@@ -8,7 +8,7 @@
     <ProjectGuid>{8791C204-4BFE-4D65-AA9F-837B2C8B7B65}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VixenModules.Output.Hill320</RootNamespace>
+    <RootNamespace>VixenModules.Controller.Hill320</RootNamespace>
     <AssemblyName>Hill320</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\Output\Modules\Controller\</OutputPath>
+    <OutputPath>%24%28SolutionDir%29\Output\Modules\Controller\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

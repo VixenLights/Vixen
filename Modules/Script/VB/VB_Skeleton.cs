@@ -7,7 +7,7 @@
 //     the code is regenerated.
 // </auto-generated>
 // ------------------------------------------------------------------------------
-namespace VB
+namespace VixenModules.Script.VB
 {
     using System;
     

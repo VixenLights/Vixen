@@ -8,7 +8,7 @@
     <ProjectGuid>{FD4FFE48-DE2F-43B6-B1C0-D4CE61342AE1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VB</RootNamespace>
+    <RootNamespace>VixenModules.Script.VB</RootNamespace>
     <AssemblyName>VB</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\Output\Modules\Script\</OutputPath>
+    <OutputPath>%24%28SolutionDir%29\Output\Modules\Script\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

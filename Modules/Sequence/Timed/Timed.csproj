@@ -8,7 +8,7 @@
     <ProjectGuid>{45E1228A-F714-41D5-BB9B-A776F2B23143}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VixenModules.Sequence.Timed</RootNamespace>
+    <RootNamespace>VixenModules.SequenceType.Timed</RootNamespace>
     <AssemblyName>Timed</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
@@ -20,7 +20,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\..\..\Output\Modules\SequenceType\</OutputPath>
+    <OutputPath>%24%28SolutionDir%29\Output\Modules\SequenceType\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>

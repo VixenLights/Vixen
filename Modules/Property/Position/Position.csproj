@@ -8,7 +8,7 @@
     <ProjectGuid>{14D6531E-D56E-4A11-93FE-01119001E7E6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Position</RootNamespace>
+    <RootNamespace>VixenModules.Property.Position</RootNamespace>
     <AssemblyName>Position</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\Output\Modules\Property\</OutputPath>
+    <OutputPath>%24%28SolutionDir%29\Output\Modules\Property\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

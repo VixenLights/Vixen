@@ -8,7 +8,7 @@
     <ProjectGuid>{4ADC4F0D-2F3B-4F4D-A5FC-C6AEB6B222CE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VixenModules.Output.Olsen595</RootNamespace>
+    <RootNamespace>VixenModules.Controller.Olsen595</RootNamespace>
     <AssemblyName>Olsen595</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
@@ -20,7 +20,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\..\..\Output\Modules\Controller\</OutputPath>
+    <OutputPath>%24%28SolutionDir%29\Output\Modules\Controller\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>

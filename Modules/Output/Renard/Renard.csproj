@@ -8,7 +8,7 @@
     <ProjectGuid>{2149D717-7256-477B-BEC5-F9E7E6E93885}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VixenModules.Output.Renard</RootNamespace>
+    <RootNamespace>VixenModules.Controller.Renard</RootNamespace>
     <AssemblyName>Renard</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
@@ -20,7 +20,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\..\..\Output\Modules\Controller\</OutputPath>
+    <OutputPath>%24%28SolutionDir%29\Output\Modules\Controller\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>

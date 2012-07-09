@@ -8,7 +8,7 @@
     <ProjectGuid>{35FF71CD-8870-4D5F-920D-D121E35AB6F8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ScriptSequence</RootNamespace>
+    <RootNamespace>Common.ScriptSequence</RootNamespace>
     <AssemblyName>ScriptSequence</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -18,7 +18,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Output\Common\</OutputPath>
+    <OutputPath>%24%28SolutionDir%29\Output\Common\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

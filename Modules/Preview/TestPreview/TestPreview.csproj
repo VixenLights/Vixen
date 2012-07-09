@@ -8,7 +8,7 @@
     <ProjectGuid>{36FDE8F1-D02F-4B8D-968E-B61309D4EB50}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TestPreview</RootNamespace>
+    <RootNamespace>VixenModules.Preview.TestPreview</RootNamespace>
     <AssemblyName>TestPreview</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\Output\Modules\Preview\</OutputPath>
+    <OutputPath>%24%28SolutionDir%29\Output\Modules\Preview\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

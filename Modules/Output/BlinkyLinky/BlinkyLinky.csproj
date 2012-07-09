@@ -8,7 +8,7 @@
     <ProjectGuid>{4FF97A6E-2376-4257-B45F-A88D6EB441ED}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VixenModules.Output.BlinkyLinky</RootNamespace>
+    <RootNamespace>VixenModules.Controller.BlinkyLinky</RootNamespace>
     <AssemblyName>BlinkyLinky</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\Output\Modules\Controller\</OutputPath>
+    <OutputPath>%24%28SolutionDir%29\Output\Modules\Controller\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

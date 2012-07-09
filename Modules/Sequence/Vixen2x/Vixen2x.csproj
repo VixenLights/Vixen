@@ -8,7 +8,7 @@
     <ProjectGuid>{BD18AB57-1ABF-4C5B-A3F6-8B4AC6013C36}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Vixen2x</RootNamespace>
+    <RootNamespace>VixenModules.SequenceType.Vixen2x</RootNamespace>
     <AssemblyName>Vixen2x</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\Output\Modules\SequenceType\</OutputPath>
+    <OutputPath>%24%28SolutionDir%29\Output\Modules\SequenceType\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

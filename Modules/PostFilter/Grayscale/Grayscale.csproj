@@ -8,7 +8,7 @@
     <ProjectGuid>{DC39338E-EAE0-4716-9557-C01E2C7E5096}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Grayscale</RootNamespace>
+    <RootNamespace>VixenModules.OutputFilter.Grayscale</RootNamespace>
     <AssemblyName>Grayscale</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\Output\Modules\OutputFilter\</OutputPath>
+    <OutputPath>%24%28SolutionDir%29\Output\Modules\OutputFilter\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

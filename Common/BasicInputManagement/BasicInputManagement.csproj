@@ -8,7 +8,7 @@
     <ProjectGuid>{4B448396-DF5D-4864-A133-7A0AA69CA028}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BasicInputManagement</RootNamespace>
+    <RootNamespace>Common.BasicInputManagement</RootNamespace>
     <AssemblyName>BasicInputManagement</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Output\Common\</OutputPath>
+    <OutputPath>%24%28SolutionDir%29\Output\Common\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

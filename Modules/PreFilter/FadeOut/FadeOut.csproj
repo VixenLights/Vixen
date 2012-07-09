@@ -8,7 +8,7 @@
     <ProjectGuid>{76641C50-FFDA-4690-8DB5-84CCA417B29D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FadeOut</RootNamespace>
+    <RootNamespace>VixenModules.SequenceFilter.FadeOut</RootNamespace>
     <AssemblyName>FadeOut</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\Output\Modules\SequenceFilter\</OutputPath>
+    <OutputPath>%24%28SolutionDir%29\Output\Modules\SequenceFilter\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

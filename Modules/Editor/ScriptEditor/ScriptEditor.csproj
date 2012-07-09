@@ -8,7 +8,7 @@
     <ProjectGuid>{7AEAE45A-C9F4-4029-BA5A-29742505F8A5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ScriptEditor</RootNamespace>
+    <RootNamespace>VixenModules.Editor.ScriptEditor</RootNamespace>
     <AssemblyName>ScriptEditor</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\Output\Modules\Editor\</OutputPath>
+    <OutputPath>%24%28SolutionDir%29\Output\Modules\Editor\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -71,7 +71,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\Sequence\Script\Script.csproj">
       <Project>{68B02FFD-EC04-4705-A9FC-B379EC7CB52F}</Project>
-      <Name>Script %28VixenModules\Modules\Sequence\Script%29</Name>
+      <Name>Script %28Modules\SequenceType\Script%29</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

@@ -8,7 +8,7 @@
     <ProjectGuid>{96C7D2AB-DBE9-4DA1-8EC5-2D37E083D3C0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Color</RootNamespace>
+    <RootNamespace>VixenModules.OutputFilter.Color</RootNamespace>
     <AssemblyName>Color</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\Output\Modules\OutputFilter\</OutputPath>
+    <OutputPath>%24%28SolutionDir%29\Output\Modules\OutputFilter\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

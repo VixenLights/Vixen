@@ -7,7 +7,7 @@
 //     the code is regenerated.
 // </auto-generated>
 // ------------------------------------------------------------------------------
-namespace CSharp
+namespace VixenModules.Script.CSharp
 {
     using Vixen.Sys;
     using Vixen.Module.Effect;
