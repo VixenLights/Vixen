@@ -29,7 +29,7 @@ namespace VixenModules.Output.Renard
 		}
 
 		private void buttonPortSetup_Click(object sender, EventArgs e) {
-			using(CommonElements.SerialPortConfig serialPortConfig = new CommonElements.SerialPortConfig(_port)) {
+			using(Common.Controls.SerialPortConfig serialPortConfig = new Common.Controls.SerialPortConfig(_port)) {
 				if(serialPortConfig.ShowDialog() == DialogResult.OK) {
 					_port = serialPortConfig.SelectedPort;
 				}

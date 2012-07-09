@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections;
 
 
-namespace CommonElements
+namespace Common.Controls
 {
 
     public class ModifyItemUndoAction : UndoAction

@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 
-namespace CommonElements.ControlsEx.ListControls
+namespace Common.Controls.ControlsEx.ListControls
 {
 	/// <summary>
 	/// DisplayElements can be displayed in DisplayEdit

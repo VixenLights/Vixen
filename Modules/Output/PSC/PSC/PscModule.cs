@@ -1,6 +1,6 @@
 ﻿using System.IO.Ports;
 using System.Windows.Forms;
-using CommonElements;
+using Common.Controls;
 using Vixen.Commands;
 using Vixen.Module;
 using Vixen.Module.Controller;

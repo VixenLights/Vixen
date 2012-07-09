@@ -6,7 +6,7 @@ namespace VixenModules.Output.DmxUsbPro
     using System.Text;
     using System.Windows.Forms;
 
-    using CommonElements;
+    using Common.Controls;
 
     using Vixen.Commands;
     using Vixen.Module.Controller;

@@ -770,7 +770,7 @@ Left Click and drag outside to pick a color from screen.</value>
     <value>lblColorOut</value>
   </data>
   <data name="&gt;&gt;lblColorOut.Type" xml:space="preserve">
-    <value>CommonElements.ColorPicker.ColorLabel, CommonElements, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+    <value>Common.Controls.ColorPicker.ColorLabel, Common.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;lblColorOut.Parent" xml:space="preserve">
     <value>$this</value>
@@ -794,7 +794,7 @@ Left Click and drag outside to pick a color from screen.</value>
     <value>colorSelectionFader1</value>
   </data>
   <data name="&gt;&gt;colorSelectionFader1.Type" xml:space="preserve">
-    <value>CommonElements.ColorPicker.ColorSelectionFader, CommonElements, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+    <value>Common.Controls.ColorPicker.ColorSelectionFader, Common.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;colorSelectionFader1.Parent" xml:space="preserve">
     <value>$this</value>
@@ -818,7 +818,7 @@ Left Click and drag outside to pick a color from screen.</value>
     <value>colorSelectionPlane1</value>
   </data>
   <data name="&gt;&gt;colorSelectionPlane1.Type" xml:space="preserve">
-    <value>CommonElements.ColorPicker.ColorSelectionPlane, CommonElements, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+    <value>Common.Controls.ColorPicker.ColorSelectionPlane, Common.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;colorSelectionPlane1.Parent" xml:space="preserve">
     <value>$this</value>

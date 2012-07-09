@@ -33,7 +33,7 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.panelRecurrence = new System.Windows.Forms.Panel();
-			this.recurrenceControls = new CommonElements.TablessTabControl(this.components);
+			this.recurrenceControls = new Common.Controls.TablessTabControl(this.components);
 			this.noneTab = new System.Windows.Forms.TabPage();
 			this.dayTab = new System.Windows.Forms.TabPage();
 			this.weekTab = new System.Windows.Forms.TabPage();
@@ -719,7 +719,7 @@
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Panel panelRecurrence;
-		private CommonElements.TablessTabControl recurrenceControls;
+		private Common.Controls.TablessTabControl recurrenceControls;
 		private System.Windows.Forms.TabPage weekTab;
 		private System.Windows.Forms.RadioButton radioButtonSaturday;
 		private System.Windows.Forms.RadioButton radioButtonFriday;

@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Collections;
 
-namespace CommonElements.ControlsEx
+namespace Common.Controls.ControlsEx
 {
 	/// <summary>
 	/// generic-reimplementation of the System.Collections.CollectionBase

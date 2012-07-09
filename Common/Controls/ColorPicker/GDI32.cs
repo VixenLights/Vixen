@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 
-namespace CommonElements.ColorManagement.ColorPicker
+namespace Common.Controls.ColorManagement.ColorPicker
 {
 	/// <summary>
 	/// gdi wrapper - get pixel

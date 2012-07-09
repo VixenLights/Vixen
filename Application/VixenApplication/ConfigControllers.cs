@@ -80,7 +80,7 @@ namespace VixenApplication
 			foreach (KeyValuePair<Guid, string> kvp in ApplicationServices.GetAvailableModules<IControllerModuleInstance>()) {
 				outputModules.Add(new KeyValuePair<string, object>(kvp.Value, kvp.Key));
 			}
-			CommonElements.ListSelectDialog addForm = new CommonElements.ListSelectDialog("Add Controller", (outputModules));
+			Common.Controls.ListSelectDialog addForm = new Common.Controls.ListSelectDialog("Add Controller", (outputModules));
 			if (addForm.ShowDialog() == DialogResult.OK) {
 				IModuleDescriptor moduleDescriptor = ApplicationServices.GetModuleDescriptor((Guid)addForm.SelectedItem);
 				string name = moduleDescriptor.TypeName;

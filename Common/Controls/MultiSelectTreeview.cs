@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms.Design;
 
 
-namespace CommonElements
+namespace Common.Controls
 {
 	public class MultiSelectTreeview : TreeView
 	{

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CommonElements.Timeline
+namespace Common.Controls.Timeline
 {
 	/// <summary>
 	/// Provides time information to consumers and events to notify when they have been changed.

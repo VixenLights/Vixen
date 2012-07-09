@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace CommonElements.ControlsEx.ValueControls
+namespace Common.Controls.ControlsEx.ValueControls
 {
 	/// <summary>
 	/// encapsulates a trackbar

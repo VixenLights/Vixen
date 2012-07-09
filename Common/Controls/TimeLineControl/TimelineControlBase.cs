@@ -7,7 +7,7 @@ using System.Drawing;
 using System.Diagnostics;
 using System.ComponentModel;
 
-namespace CommonElements.Timeline
+namespace Common.Controls.Timeline
 {
 
 	/// <summary>

@@ -28,7 +28,7 @@
 		private void InitializeComponent()
 		{
 			this.label2 = new System.Windows.Forms.Label();
-			this.valueUpDown = new CommonElements.ControlsEx.ValueControls.ValueUpDown();
+			this.valueUpDown = new Common.Controls.ControlsEx.ValueControls.ValueUpDown();
 			this.SuspendLayout();
 			// 
 			// label2
@@ -68,7 +68,7 @@
 
 		#endregion
 
-		private CommonElements.ControlsEx.ValueControls.ValueUpDown valueUpDown;
+		private Common.Controls.ControlsEx.ValueControls.ValueUpDown valueUpDown;
 		private System.Windows.Forms.Label label2;
 	}
 }

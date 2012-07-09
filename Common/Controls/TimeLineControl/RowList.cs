@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace CommonElements.Timeline
+namespace Common.Controls.Timeline
 {
 	[System.ComponentModel.DesignerCategory("")]    // Prevent this from showing up in designer.
 	public class RowList : UserControl

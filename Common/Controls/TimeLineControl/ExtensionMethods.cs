@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace CommonElements.Timeline
+namespace Common.Controls.Timeline
 {
 	public static class ExtensionMethods
 	{

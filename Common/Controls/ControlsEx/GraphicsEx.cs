@@ -1,7 +1,7 @@
 using System;
 using System.Drawing;
 
-namespace CommonElements.ControlsEx
+namespace Common.Controls.ControlsEx
 {
 	/// <summary>
 	/// Zusammenfassung für GraphicsEx.

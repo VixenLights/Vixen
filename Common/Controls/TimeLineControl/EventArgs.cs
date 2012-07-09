@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace CommonElements.Timeline
+namespace Common.Controls.Timeline
 {
 	public class ElementEventArgs : EventArgs
 	{

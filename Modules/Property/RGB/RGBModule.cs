@@ -9,7 +9,7 @@ using Vixen.Module.Effect;
 using Vixen.Commands;
 using Vixen.Commands.KnownDataTypes;
 using Vixen.Sys;
-using CommonElements.ColorManagement.ColorModels;
+using Common.Controls.ColorManagement.ColorModels;
 using System.Drawing;
 
 namespace VixenModules.Property.RGB
@@ -88,7 +88,7 @@ namespace VixenModules.Property.RGB
 			return result;
 		}
 
-		public static ChannelCommands RenderColorToCommandsForNode(ChannelNode node, CommonElements.ColorManagement.ColorModels.RGB color, Level level)
+		public static ChannelCommands RenderColorToCommandsForNode(ChannelNode node, Common.Controls.ColorManagement.ColorModels.RGB color, Level level)
 		{
 			RGBModule instance = node.Properties.Get(RGBDescriptor.ModuleID) as RGBModule;
 			if (instance == null)

@@ -65,7 +65,7 @@
 			this.buttonAddNode = new System.Windows.Forms.Button();
 			this.label4 = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
-			this.multiSelectTreeviewChannelsGroups = new CommonElements.MultiSelectTreeview();
+			this.multiSelectTreeviewChannelsGroups = new Common.Controls.MultiSelectTreeview();
 			this.contextMenuStripTreeView = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.cutNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -649,7 +649,7 @@
 
 		private System.Windows.Forms.Button buttonOk;
 		private System.Windows.Forms.GroupBox groupBoxSelectedNode;
-		private CommonElements.MultiSelectTreeview multiSelectTreeviewChannelsGroups;
+		private Common.Controls.MultiSelectTreeview multiSelectTreeviewChannelsGroups;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.TextBox textBoxName;
 		private System.Windows.Forms.Button buttonRenameItem;

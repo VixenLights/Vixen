@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Vixen.Module.OutputFilter;
 using Vixen.Sys;
-using CommonElements;
+using Common.Controls;
 using Vixen.Sys.Output;
 using Vixen.Services;
 

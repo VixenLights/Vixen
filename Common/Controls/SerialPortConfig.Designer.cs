@@ -1,4 +1,4 @@
-﻿namespace CommonElements {
+﻿namespace Common.Controls {
 	partial class SerialPortConfig {
 		/// <summary>
 		/// Required designer variable.

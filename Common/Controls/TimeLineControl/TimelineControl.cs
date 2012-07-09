@@ -9,7 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
 
-namespace CommonElements.Timeline
+namespace Common.Controls.Timeline
 {
     [System.ComponentModel.DesignerCategory("")]    // Prevent this from showing up in designer.
 	public class TimelineControl : TimelineControlBase, IEnumerable<Row>

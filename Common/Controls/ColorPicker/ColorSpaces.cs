@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.ComponentModel;
 
-namespace CommonElements.ColorManagement.ColorModels
+namespace Common.Controls.ColorManagement.ColorModels
 {
 	/// <summary>
 	/// CIE XYZ color space

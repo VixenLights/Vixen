@@ -225,7 +225,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void buttonOffsetMarks_Click(object sender, EventArgs e)
 		{
-			CommonElements.TextDialog prompt = new CommonElements.TextDialog("Time to offset (in seconds):");
+			Common.Controls.TextDialog prompt = new Common.Controls.TextDialog("Time to offset (in seconds):");
 			if (prompt.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 				TimeSpan time;
 
@@ -286,7 +286,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return;
 			}
 
-			CommonElements.TextDialog prompt = new CommonElements.TextDialog("Break each interval into how many equal segments?");
+			Common.Controls.TextDialog prompt = new Common.Controls.TextDialog("Break each interval into how many equal segments?");
 			if (prompt.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 				int divisions;
 				if (int.TryParse(prompt.Response, out divisions)) {
@@ -318,7 +318,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						foreach (MarkCollection mc in MarkCollections) {
 							options.Add(new KeyValuePair<string, object>(mc.Name, mc));
 						}
-						CommonElements.ListSelectDialog selector = new CommonElements.ListSelectDialog("Destination Mark Collection?", options);
+						Common.Controls.ListSelectDialog selector = new Common.Controls.ListSelectDialog("Destination Mark Collection?", options);
 						if (selector.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 							destination = selector.SelectedItem as MarkCollection;
 						}
@@ -359,7 +359,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void panelColor_Click(object sender, EventArgs e)
 		{
-			CommonElements.ColorManagement.ColorPicker.ColorPicker picker = new CommonElements.ColorManagement.ColorPicker.ColorPicker();
+			Common.Controls.ColorManagement.ColorPicker.ColorPicker picker = new Common.Controls.ColorManagement.ColorPicker.ColorPicker();
 
 			DialogResult result = picker.ShowDialog();
 			if (result == System.Windows.Forms.DialogResult.OK) {

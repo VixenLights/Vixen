@@ -40,7 +40,7 @@ namespace VixenApplication {
 			foreach(KeyValuePair<Guid, string> kvp in ApplicationServices.GetAvailableModules<IPreviewModuleInstance>()) {
 				outputModules.Add(new KeyValuePair<string, object>(kvp.Value, kvp.Key));
 			}
-			CommonElements.ListSelectDialog addForm = new CommonElements.ListSelectDialog("Add Preview", (outputModules));
+			Common.Controls.ListSelectDialog addForm = new Common.Controls.ListSelectDialog("Add Preview", (outputModules));
 			if(addForm.ShowDialog() == DialogResult.OK) {
 				IModuleDescriptor moduleDescriptor = ApplicationServices.GetModuleDescriptor((Guid)addForm.SelectedItem);
 				string name = moduleDescriptor.TypeName;

@@ -1,7 +1,7 @@
 using System;
 using System.Drawing;
 
-namespace CommonElements.ColorManagement.ColorModels
+namespace Common.Controls.ColorManagement.ColorModels
 {
 	/// <summary>
 	/// utility functions for colors

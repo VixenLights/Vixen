@@ -9,8 +9,8 @@ using System.Windows.Forms;
 using Vixen.Sys;
 using Vixen.Module.EffectEditor;
 using Vixen.Module.Effect;
-using CommonElements.ColorManagement.ColorModels;
-using CommonElements.ColorManagement.ColorPicker;
+using Common.Controls.ColorManagement.ColorModels;
+using Common.Controls.ColorManagement.ColorPicker;
 
 namespace VixenModules.EffectEditor.ColorTypeEditor
 {

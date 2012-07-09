@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
 
-namespace CommonElements
+namespace Common.Controls
 {
     public partial class UndoDropDownControl : UserControl
     {

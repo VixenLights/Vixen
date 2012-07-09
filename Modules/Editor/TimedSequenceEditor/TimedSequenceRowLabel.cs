@@ -8,7 +8,7 @@ using System.Drawing;
 namespace VixenModules.Editor.TimedSequenceEditor
 {
     [System.ComponentModel.DesignerCategory("")]    // Prevent this from showing up in designer.
-	class TimedSequenceRowLabel : CommonElements.Timeline.RowLabel
+	class TimedSequenceRowLabel : Common.Controls.Timeline.RowLabel
 	{
 		protected override void OnPaint(System.Windows.Forms.PaintEventArgs e)
 		{

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using CommonElements.Timeline;
+using Common.Controls.Timeline;
 using Vixen.Module.Editor;
 using Vixen.Module.Effect;
 using Vixen.Sys;

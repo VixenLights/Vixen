@@ -5,9 +5,9 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
-using CommonElements.ControlsEx.ValueControls;
-using CommonElements.ColorManagement.ColorModels;
-using CommonElements.ColorManagement.ColorPicker;
+using Common.Controls.ControlsEx.ValueControls;
+using Common.Controls.ColorManagement.ColorModels;
+using Common.Controls.ColorManagement.ColorPicker;
 
 namespace VixenModules.App.ColorGradients
 {

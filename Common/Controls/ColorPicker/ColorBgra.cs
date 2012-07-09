@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 
-namespace CommonElements.ColorManagement.ColorModels
+namespace Common.Controls.ColorManagement.ColorModels
 {
 	/// <summary>
 	/// encapsulates a bgra color structure

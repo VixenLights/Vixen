@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Diagnostics;
 
-namespace CommonElements
+namespace Common.Controls
 {
     [System.ComponentModel.DesignerCategory("")]    // Prevent this from showing up in designer.
     public class UndoButton : ToolStripSplitButton

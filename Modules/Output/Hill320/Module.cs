@@ -35,7 +35,7 @@ namespace VixenModules.Output.Hill320 {
 		}
 
 		public override bool Setup() {
-			using(CommonElements.ParallelPortConfig parallelPortConfig = new CommonElements.ParallelPortConfig(_portAddress)) {
+			using(Common.Controls.ParallelPortConfig parallelPortConfig = new Common.Controls.ParallelPortConfig(_portAddress)) {
 				if(parallelPortConfig.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 					_portAddress = parallelPortConfig.PortAddress;
 					_moduleData.PortAddress = _portAddress;

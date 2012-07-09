@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
-using CommonElements.ControlsEx.ValueControls;
+using Common.Controls.ControlsEx.ValueControls;
 using System.ComponentModel;
 
-namespace CommonElements.ControlsEx
+namespace Common.Controls.ControlsEx
 {
 	/// <summary>
 	/// scrollbar control for zoom levels in toolstrip or statusstrip

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CommonElements
+namespace Common.Controls
 {
 	public class UndoManager
 	{

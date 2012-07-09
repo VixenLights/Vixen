@@ -3,9 +3,9 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-using CommonElements.ColorManagement.ColorModels;
+using Common.Controls.ColorManagement.ColorModels;
 
-namespace CommonElements.ColorManagement.ColorPicker
+namespace Common.Controls.ColorManagement.ColorPicker
 {
 	/// <summary>
 	/// Zusammenfassung für ColorSelectionPlane.

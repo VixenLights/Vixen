@@ -6,7 +6,7 @@ using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 
-namespace CommonElements.ControlsEx.ListControls
+namespace Common.Controls.ControlsEx.ListControls
 {
 	/// <summary>
 	/// list with fixed height items and custom rendering

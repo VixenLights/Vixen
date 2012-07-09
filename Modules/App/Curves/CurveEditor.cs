@@ -224,7 +224,7 @@ namespace VixenModules.App.Curves
 
 		private void buttonSaveCurveToLibrary_Click(object sender, EventArgs e)
 		{
-			CommonElements.TextDialog dialog = new CommonElements.TextDialog("Curve name?");
+			Common.Controls.TextDialog dialog = new Common.Controls.TextDialog("Curve name?");
 
 			while (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 				if (dialog.Response == "") {

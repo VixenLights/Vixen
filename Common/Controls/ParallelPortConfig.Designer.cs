@@ -1,5 +1,5 @@
 ﻿using System.Windows.Forms;
-namespace CommonElements
+namespace Common.Controls
 {
     partial class ParallelPortConfig
     {

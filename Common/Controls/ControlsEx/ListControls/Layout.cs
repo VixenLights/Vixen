@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
 
-namespace CommonElements.ControlsEx.ListControls
+namespace Common.Controls.ControlsEx.ListControls
 {
 	public interface ILayout
 	{

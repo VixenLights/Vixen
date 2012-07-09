@@ -30,8 +30,8 @@
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GradientEditPanel));
 			this.grpStops = new System.Windows.Forms.GroupBox();
-			this.lblColorSelect = new CommonElements.ColorManagement.ColorPicker.ColorLabel();
-			this.vColorLoc = new CommonElements.ControlsEx.ValueControls.ValueUpDown();
+			this.lblColorSelect = new Common.Controls.ColorManagement.ColorPicker.ColorLabel();
+			this.vColorLoc = new Common.Controls.ControlsEx.ValueControls.ValueUpDown();
 			this.btnDeleteColor = new System.Windows.Forms.Button();
 			this.label5 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
@@ -62,7 +62,7 @@
 			resources.ApplyResources(this.vColorLoc, "vColorLoc");
 			this.vColorLoc.Name = "vColorLoc";
 			this.vColorLoc.TrackerOrientation = System.Windows.Forms.Orientation.Vertical;
-			this.vColorLoc.ValueChanged += new CommonElements.ControlsEx.ValueControls.ValueChangedEH(this.vColorLoc_ValueChanged);
+			this.vColorLoc.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.vColorLoc_ValueChanged);
 			// 
 			// btnDeleteColor
 			// 
@@ -104,8 +104,8 @@
 		#endregion
 
 		private System.Windows.Forms.GroupBox grpStops;
-		private CommonElements.ColorManagement.ColorPicker.ColorLabel lblColorSelect;
-		private CommonElements.ControlsEx.ValueControls.ValueUpDown vColorLoc;
+		private Common.Controls.ColorManagement.ColorPicker.ColorLabel lblColorSelect;
+		private Common.Controls.ControlsEx.ValueControls.ValueUpDown vColorLoc;
 		private System.Windows.Forms.Button btnDeleteColor;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Label label4;

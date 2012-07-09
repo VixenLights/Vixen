@@ -27,7 +27,7 @@ namespace VixenModules.Output.Renard
 		}
 
 		public override bool Setup() {
-			using(CommonElements.SerialPortConfig serialPortConfig = new CommonElements.SerialPortConfig(_port)) {
+			using(Common.Controls.SerialPortConfig serialPortConfig = new Common.Controls.SerialPortConfig(_port)) {
 				if(serialPortConfig.ShowDialog() == DialogResult.OK) {
 					SerialPort port = serialPortConfig.SelectedPort;
 					if(port != null) {

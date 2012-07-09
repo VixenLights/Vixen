@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO.Ports;
 
-namespace CommonElements {
+namespace Common.Controls {
 	public partial class SerialPortConfig : Form {
 		public SerialPortConfig(SerialPort serialPort, bool allowPortEdit = true, bool allowBaudEdit = true, bool allowParityEdit = true, bool allowDataEdit = true, bool allowStopEdit = true) {
 			InitializeComponent();

@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace CommonElements.ControlsEx
+namespace Common.Controls.ControlsEx
 {
 	public class Win32
 	{

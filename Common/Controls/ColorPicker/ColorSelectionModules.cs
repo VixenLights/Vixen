@@ -1,9 +1,9 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using CommonElements.ColorManagement.ColorModels;
+using Common.Controls.ColorManagement.ColorModels;
 
-namespace CommonElements.ColorManagement.ColorPicker
+namespace Common.Controls.ColorManagement.ColorPicker
 {
 	public abstract class ColorSelectionModule
 	{

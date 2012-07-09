@@ -29,15 +29,15 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TimedSequenceEditorForm));
-			this.toolStripOperations = new CommonElements.ToolStripEx();
+			this.toolStripOperations = new Common.Controls.ToolStripEx();
 			this.toolStripButton_Start = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton_Play = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton_Stop = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton_Pause = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton_End = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-			this.undoButton = new CommonElements.UndoButton();
-			this.redoButton = new CommonElements.UndoButton();
+			this.undoButton = new Common.Controls.UndoButton();
+			this.redoButton = new Common.Controls.UndoButton();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripButton_Cut = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton_Copy = new System.Windows.Forms.ToolStripButton();
@@ -48,7 +48,7 @@
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripButton_ZoomTimeIn = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton_ZoomTimeOut = new System.Windows.Forms.ToolStripButton();
-			this.menuStrip = new CommonElements.MenuStripEx();
+			this.menuStrip = new Common.Controls.MenuStripEx();
 			this.sequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_Save = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_SaveAs = new System.Windows.Forms.ToolStripMenuItem();
@@ -86,8 +86,8 @@
 			this.toolStripStatusLabel_sequenceLength = new System.Windows.Forms.ToolStripStatusLabel();
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
-			this.timelineControl = new CommonElements.Timeline.TimelineControl();
-			this.toolStripEffects = new CommonElements.ToolStripEx();
+			this.timelineControl = new Common.Controls.Timeline.TimelineControl();
+			this.toolStripEffects = new Common.Controls.ToolStripEx();
 			this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
 			this.toolStripOperations.SuspendLayout();
 			this.menuStrip.SuspendLayout();
@@ -184,7 +184,7 @@
 			// 
 			// undoButton
 			// 
-			this.undoButton.ButtonType = CommonElements.UndoButtonType.UndoButton;
+			this.undoButton.ButtonType = Common.Controls.UndoButtonType.UndoButton;
 			this.undoButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.undoButton.Image = ((System.Drawing.Image)(resources.GetObject("undoButton.Image")));
 			this.undoButton.Name = "undoButton";
@@ -194,7 +194,7 @@
 			// 
 			// redoButton
 			// 
-			this.redoButton.ButtonType = CommonElements.UndoButtonType.RedoButton;
+			this.redoButton.ButtonType = Common.Controls.UndoButtonType.RedoButton;
 			this.redoButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.redoButton.Image = ((System.Drawing.Image)(resources.GetObject("redoButton.Image")));
 			this.redoButton.Name = "redoButton";
@@ -691,8 +691,8 @@
 
 		#endregion
 
-		private CommonElements.ToolStripEx toolStripOperations;
-		private CommonElements.MenuStripEx menuStrip;
+		private Common.Controls.ToolStripEx toolStripOperations;
+		private Common.Controls.MenuStripEx menuStrip;
 		private System.Windows.Forms.ToolStripMenuItem sequenceToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_Save;
 		private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
@@ -722,8 +722,8 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_deleteElements;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-        private CommonElements.UndoButton undoButton;
-        private CommonElements.UndoButton redoButton;
+        private Common.Controls.UndoButton undoButton;
+        private Common.Controls.UndoButton redoButton;
 		private System.Windows.Forms.ToolStripButton toolStripButton_Start;
 		private System.Windows.Forms.ToolStripButton toolStripButton_End;
 		private System.Windows.Forms.ToolStripMenuItem selectAllElementsToolStripMenuItem;
@@ -739,8 +739,8 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
 		private System.Windows.Forms.ToolStripContainer toolStripContainer;
-		private CommonElements.ToolStripEx toolStripEffects;
-		private CommonElements.Timeline.TimelineControl timelineControl;
+		private Common.Controls.ToolStripEx toolStripEffects;
+		private Common.Controls.Timeline.TimelineControl timelineControl;
 		private System.Windows.Forms.ToolStripMenuItem addEffectToolStripMenuItem;
 		private System.Windows.Forms.ToolStripButton toolStripButton_Cut;
 		private System.Windows.Forms.ToolStripButton toolStripButton_Copy;

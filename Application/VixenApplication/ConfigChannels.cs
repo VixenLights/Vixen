@@ -11,7 +11,7 @@ using Vixen.Sys;
 using System.Media;
 using Vixen.Module.Property;
 using System.Reflection;
-using CommonElements;
+using Common.Controls;
 using Vixen.Sys.Output;
 
 namespace VixenApplication
@@ -443,7 +443,7 @@ namespace VixenApplication
 			foreach (KeyValuePair<Guid, string> kvp in ApplicationServices.GetAvailableModules<IPropertyModuleInstance>()) {
 				properties.Add(new KeyValuePair<string, object>(kvp.Value, kvp.Key));
 			}
-			CommonElements.ListSelectDialog addForm = new CommonElements.ListSelectDialog("Add Property", (properties));
+			Common.Controls.ListSelectDialog addForm = new Common.Controls.ListSelectDialog("Add Property", (properties));
 			if (addForm.ShowDialog() == DialogResult.OK) {
 				_displayedNode.Properties.Add((Guid)addForm.SelectedItem);
 				PopulatePropertiesArea(_displayedNode);
@@ -705,7 +705,7 @@ namespace VixenApplication
 			if (CheckIfNodeWillLosePatches(parent))
 				return null;
 
-			using (CommonElements.TextDialog textDialog = new CommonElements.TextDialog("Node Name?")) {
+			using (Common.Controls.TextDialog textDialog = new Common.Controls.TextDialog("Node Name?")) {
 				if (textDialog.ShowDialog() == DialogResult.OK) {
 					string newName;
 					if (textDialog.Response == "")

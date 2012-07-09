@@ -4,9 +4,9 @@ using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Runtime.Serialization;
-using CommonElements.ColorManagement.ColorModels;
+using Common.Controls.ColorManagement.ColorModels;
 
-namespace CommonElements.ColorManagement.ColorPicker
+namespace Common.Controls.ColorManagement.ColorPicker
 {
 	/// <summary>
 	/// Zusammenfassung für Form1.
@@ -115,9 +115,9 @@ namespace CommonElements.ColorManagement.ColorPicker
 			this.lblSecond_2 = new System.Windows.Forms.Label();
 			this.lblSecond_3 = new System.Windows.Forms.Label();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-			this.lblColorOut = new CommonElements.ColorManagement.ColorPicker.ColorLabel();
-			this.colorSelectionFader1 = new CommonElements.ColorManagement.ColorPicker.ColorSelectionFader();
-			this.colorSelectionPlane1 = new CommonElements.ColorManagement.ColorPicker.ColorSelectionPlane();
+			this.lblColorOut = new Common.Controls.ColorManagement.ColorPicker.ColorLabel();
+			this.colorSelectionFader1 = new Common.Controls.ColorManagement.ColorPicker.ColorSelectionFader();
+			this.colorSelectionPlane1 = new Common.Controls.ColorManagement.ColorPicker.ColorSelectionPlane();
 			this.SuspendLayout();
 			// 
 			// label1

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Globalization;
 
-namespace CommonElements
+namespace Common.Controls
 {
     public partial class ParallelPortConfig : Form
     {

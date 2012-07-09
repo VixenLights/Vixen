@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace CommonElements.ControlsEx.ListControls
+namespace Common.Controls.ControlsEx.ListControls
 {
 	/// <summary>
 	/// abstract base class for VTableDisplayList and HTableList

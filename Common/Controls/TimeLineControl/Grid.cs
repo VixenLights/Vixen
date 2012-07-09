@@ -11,7 +11,7 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
 
-namespace CommonElements.Timeline
+namespace Common.Controls.Timeline
 {
 
 	/// <summary>

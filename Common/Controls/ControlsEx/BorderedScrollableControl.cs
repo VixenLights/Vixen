@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
-namespace CommonElements.ControlsEx
+namespace Common.Controls.ControlsEx
 {
 	/// <summary>
 	/// BorderedScrollableControl paints a thin border

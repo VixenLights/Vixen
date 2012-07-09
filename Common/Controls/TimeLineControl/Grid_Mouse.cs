@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
 
-namespace CommonElements.Timeline
+namespace Common.Controls.Timeline
 {
     public partial class Grid
     {

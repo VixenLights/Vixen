@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace CommonElements
+namespace Common.Controls
 {
 	public partial class ListSelectDialog : Form
 	{

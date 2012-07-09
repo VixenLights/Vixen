@@ -1,4 +1,4 @@
-﻿namespace CommonElements {
+﻿namespace Common.Controls {
 	partial class TablessTabControl {
 		/// <summary> 
 		/// Required designer variable.

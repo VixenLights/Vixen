@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using CommonElements.Timeline;
+using Common.Controls.Timeline;
 using Vixen.Execution;
 using Vixen.Execution.Context;
 using Vixen.Module.Editor;
@@ -47,7 +47,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private TimelineElementsClipboardData _clipboard;
 
 		// Undo manager
-        private CommonElements.UndoManager _undoMgr;
+        private Common.Controls.UndoManager _undoMgr;
 
 		private TimeSpan? m_prevPlaybackStart = null;
 		private TimeSpan? m_prevPlaybackEnd = null;
@@ -213,7 +213,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (filePath == null | forcePrompt) {
 				if (_sequence.FilePath.Trim() == "" || forcePrompt) {
-					CommonElements.TextDialog prompt = new CommonElements.TextDialog("Please enter a sequence name:");
+					Common.Controls.TextDialog prompt = new Common.Controls.TextDialog("Please enter a sequence name:");
 					prompt.ShowDialog();
 					string extension = Path.GetExtension(prompt.Response);
 					string name = Path.GetFileNameWithoutExtension(prompt.Response);
@@ -619,7 +619,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// Creates a new effect instance, and adds it to the sequence and timelineControl.
 		/// </summary>
 		/// <param name="effectId">The GUID of the effect module to instantiate</param>
-		/// <param name="row">The CommonElements.Timeline.Row to add the effect to</param>
+		/// <param name="row">The Common.Controls.Timeline.Row to add the effect to</param>
 		/// <param name="startTime">The start time of the effect</param>
 		/// <param name="timeSpan">The duration of the effect</param>
 		private void addNewEffectById(Guid effectId, Row row, TimeSpan startTime, TimeSpan timeSpan)
@@ -634,7 +634,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// Wraps an effect instance in an EffectNode, adds it to the sequence, and an associated element to the timeline control.
 		/// </summary>
 		/// <param name="effectInstance">Effect instance</param>
-		/// <param name="row">CommonElements.Timeline.Row to add the effect instance to</param>
+		/// <param name="row">Common.Controls.Timeline.Row to add the effect instance to</param>
 		/// <param name="startTime">The start time of the effect</param>
 		/// <param name="timeSpan">The duration of the effect</param>
 		private void addEffectInstance(IEffectModuleInstance effectInstance, Row row, TimeSpan startTime, TimeSpan timeSpan)
@@ -1158,7 +1158,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void modifySequenceLengthToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			string oldLength = _sequence.Length.ToString("m\\:ss\\.fff");
-			CommonElements.TextDialog prompt = new CommonElements.TextDialog("Enter new sequence length:", "Sequence Length", oldLength, true);
+			Common.Controls.TextDialog prompt = new Common.Controls.TextDialog("Enter new sequence length:", "Sequence Length", oldLength, true);
 
             do {
                 if (prompt.ShowDialog() != DialogResult.OK)
@@ -1217,7 +1217,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void InitUndo()
 		{
-			_undoMgr = new CommonElements.UndoManager();
+			_undoMgr = new Common.Controls.UndoManager();
 			_undoMgr.UndoItemsChanged += _undoMgr_UndoItemsChanged;
 			_undoMgr.RedoItemsChanged += _undoMgr_RedoItemsChanged;
 
@@ -1234,7 +1234,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_undoMgr.Undo();
 		}
 
-		private void undoButton_ItemChosen(object sender, CommonElements.UndoMultipleItemsEventArgs e)
+		private void undoButton_ItemChosen(object sender, Common.Controls.UndoMultipleItemsEventArgs e)
 		{
 			_undoMgr.Undo(e.NumItems);
 		}
@@ -1244,7 +1244,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_undoMgr.Redo();
 		}
 
-		private void redoButton_ItemChosen(object sender, CommonElements.UndoMultipleItemsEventArgs e)
+		private void redoButton_ItemChosen(object sender, Common.Controls.UndoMultipleItemsEventArgs e)
 		{
 			_undoMgr.Redo(e.NumItems);
 		}

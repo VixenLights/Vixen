@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
 using System.Drawing;
-using CommonElements.ColorManagement.ColorModels;
+using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Module;
 
 namespace VixenModules.Effect.SetLevel

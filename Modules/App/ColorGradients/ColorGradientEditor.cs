@@ -121,7 +121,7 @@ namespace VixenModules.App.ColorGradients
 
 		private void buttonSaveToLibrary_Click(object sender, EventArgs e)
 		{
-			CommonElements.TextDialog dialog = new CommonElements.TextDialog("Gradient name?");
+			Common.Controls.TextDialog dialog = new Common.Controls.TextDialog("Gradient name?");
 
 			while (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 				if (dialog.Response == "") {

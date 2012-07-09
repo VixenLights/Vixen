@@ -1,5 +1,5 @@
 ﻿
-namespace CommonElements
+namespace Common.Controls
 {
     public enum UndoState { ReadyForUndo, ReadyForRedo }
 

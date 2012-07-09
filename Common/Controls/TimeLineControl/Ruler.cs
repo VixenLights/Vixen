@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using System.Drawing.Drawing2D;
 using System.Diagnostics;
 
-namespace CommonElements.Timeline
+namespace Common.Controls.Timeline
 {
 	[System.ComponentModel.DesignerCategory("")]    // Prevent this from showing up in designer.
 	public class Ruler : TimelineControlBase

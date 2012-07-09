@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Collections.Generic;
 
-namespace CommonElements.Timeline
+namespace Common.Controls.Timeline
 {
 	[Serializable]
     public class Element : IComparable<Element>, ITimePeriod

@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using CommonElements;
-using CommonElements.Timeline;
+using Common.Controls;
+using Common.Controls.Timeline;
 using Vixen.Module.Effect;
 using Vixen.Sys;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-    public class ElementsTimeChangedUndoAction : CommonElements.UndoAction
+    public class ElementsTimeChangedUndoAction : Common.Controls.UndoAction
     {
         private Dictionary<Element, ElementTimeInfo> m_changedElements;
         private ElementMoveType m_moveType;
@@ -70,7 +70,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 
 
-	public class EffectsAddedRemovedUndoAction : CommonElements.UndoAction
+	public class EffectsAddedRemovedUndoAction : Common.Controls.UndoAction
 	{
 		private TimedSequenceEditorForm m_form;
 		private IEnumerable<EffectNode> m_effectNodes;

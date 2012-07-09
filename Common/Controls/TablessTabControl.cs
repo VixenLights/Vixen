@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace CommonElements {
+namespace Common.Controls {
 	[ToolboxBitmap(typeof(TabControl))]
 	public partial class TablessTabControl : TabControl {
 		public TablessTabControl() {

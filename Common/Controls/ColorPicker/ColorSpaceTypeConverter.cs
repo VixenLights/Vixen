@@ -4,7 +4,7 @@ using System;
 using System.ComponentModel.Design.Serialization;
 using System.Reflection;
 
-namespace CommonElements.ColorManagement.ColorModels
+namespace Common.Controls.ColorManagement.ColorModels
 {
 	/// <summary>
 	/// type converter for xyz color

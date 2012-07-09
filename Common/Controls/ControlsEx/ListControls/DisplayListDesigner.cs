@@ -5,7 +5,7 @@ using System.Windows.Forms.Design;
 using System.ComponentModel.Design;
 using System.Collections.Generic;
 
-namespace CommonElements.ControlsEx.ListControls
+namespace Common.Controls.ControlsEx.ListControls
 {
 	/// <summary>
 	/// Zusammenfassung für DisplayListDesigner.

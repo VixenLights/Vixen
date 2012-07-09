@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace CommonElements.ControlsEx.ValueControls
+namespace Common.Controls.ControlsEx.ValueControls
 {
 	public abstract class ValueScrollBar:ValueControl
 	{
