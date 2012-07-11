@@ -140,9 +140,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Property\RGB\RGB.csproj">
-      <Project>{3D1BD0E2-B947-4235-A2A7-30AA4F13CA86}</Project>
-      <Name>RGB</Name>
+    <ProjectReference Include="..\..\..\..\Vixen.System\Vixen.csproj">
+      <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
+      <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
