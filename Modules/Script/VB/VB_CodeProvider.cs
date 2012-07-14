@@ -3,7 +3,7 @@ using System.CodeDom.Compiler;
 using Microsoft.VisualBasic;
 using Vixen.Module.Script;
 
-namespace VB {
+namespace VixenModules.Script.VB {
 	public class VB_CodeProvider : IScriptCodeProvider {
 		VBCodeProvider _codeProvider = new VBCodeProvider();
 

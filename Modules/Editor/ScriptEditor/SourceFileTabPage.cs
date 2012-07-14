@@ -1,9 +1,13 @@
-﻿using System.Windows.Forms;
-using ScriptSequence.Script;
+﻿using System;
+using System.Drawing;
+using System.Windows.Forms;
+using Common.ScriptSequence.Script;
 
-namespace ScriptEditor {
+namespace VixenModules.Editor.ScriptEditor {
 	public partial class SourceFileTabPage : UserControl {
 		private SourceFile _sourceFile;
+
+		public event EventHandler SelectionChanged;
 
 		public SourceFileTabPage(SourceFile sourceFile) {
 			InitializeComponent();
@@ -30,5 +34,23 @@ namespace ScriptEditor {
 			get { return richTextBox.Modified; }
 		}
 
+		public Point CaretLocation { get; private set; }
+
+		protected virtual void OnSelectionChanged(EventArgs e) {
+			if(SelectionChanged != null) {
+				SelectionChanged(this, e);
+			}
+		}
+
+		private Point _GetCaretLocation() {
+			int x = richTextBox.SelectionStart - richTextBox.GetFirstCharIndexOfCurrentLine();
+			int y = richTextBox.GetLineFromCharIndex(richTextBox.SelectionStart);
+			return new Point(x, y);
+		}
+
+		private void richTextBox_SelectionChanged(object sender, EventArgs e) {
+			CaretLocation = _GetCaretLocation();
+			OnSelectionChanged(e);
+		}
 	}
 }

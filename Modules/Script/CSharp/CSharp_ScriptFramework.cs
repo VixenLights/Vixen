@@ -16,7 +16,7 @@ namespace VixenModules.Script.CSharp
     using System;
     
     
-    #line 1 "C:\Git\vixen\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
+    #line 1 "C:\Git\vixen\Public\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "10.0.0.0")]
     public partial class CSharp_ScriptFramework : CSharp_ScriptFrameworkBase
     {
@@ -37,14 +37,14 @@ using Vixen.Commands;
 
 namespace ");
             
-            #line 22 "C:\Git\vixen\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
+            #line 22 "C:\Git\vixen\Public\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Namespace));
             
             #line default
             #line hidden
             this.Write(" {\r\n\tpublic partial class ");
             
-            #line 23 "C:\Git\vixen\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
+            #line 23 "C:\Git\vixen\Public\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ClassName));
             
             #line default
@@ -53,7 +53,7 @@ namespace ");
                     "t type id\r\n\t\tprivate Dictionary<string, Guid> _effects = new Dictionary<string, " +
                     "Guid>();\r\n\r\n\t\tpublic ");
             
-            #line 28 "C:\Git\vixen\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
+            #line 28 "C:\Git\vixen\Public\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ClassName));
             
             #line default
@@ -61,7 +61,7 @@ namespace ");
             this.Write("() {\r\n\t\t\t_nodes = VixenSystem.Nodes.Select(x => new UserScriptNode(x)).ToArray();" +
                     "\r\n");
             
-            #line 30 "C:\Git\vixen\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
+            #line 30 "C:\Git\vixen\Public\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
 
 	foreach(string effectName in Effects.Keys) {
 
@@ -70,21 +70,21 @@ namespace ");
             #line hidden
             this.Write("\t\t\t_effects[\"");
             
-            #line 33 "C:\Git\vixen\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
+            #line 33 "C:\Git\vixen\Public\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(effectName));
             
             #line default
             #line hidden
             this.Write("\"] = new Guid(\"");
             
-            #line 33 "C:\Git\vixen\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
+            #line 33 "C:\Git\vixen\Public\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Effects[effectName].TypeId));
             
             #line default
             #line hidden
             this.Write("\");\r\n");
             
-            #line 34 "C:\Git\vixen\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
+            #line 34 "C:\Git\vixen\Public\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
  } 
             
             #line default
@@ -115,7 +115,7 @@ namespace ");
 
 ");
             
-            #line 58 "C:\Git\vixen\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
+            #line 58 "C:\Git\vixen\Public\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
 
 	foreach(string effectName in Effects.Keys) {
 		IEffectModuleDescriptor effect = Effects[effectName];
@@ -133,49 +133,49 @@ namespace ");
             #line hidden
             this.Write("\t\t// Original name: ");
             
-            #line 70 "C:\Git\vixen\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
+            #line 70 "C:\Git\vixen\Public\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(effect.EffectName));
             
             #line default
             #line hidden
             this.Write("\r\n\t\tpublic void ");
             
-            #line 71 "C:\Git\vixen\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
+            #line 71 "C:\Git\vixen\Public\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(effectName));
             
             #line default
             #line hidden
             this.Write("(IEnumerable<UserScriptNode> targetNodes, TimeSpan timeSpan, ");
             
-            #line 71 "C:\Git\vixen\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
+            #line 71 "C:\Git\vixen\Public\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(effectParameters));
             
             #line default
             #line hidden
             this.Write(") {\r\n\t\t\t_InvokeEffect(\"");
             
-            #line 72 "C:\Git\vixen\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
+            #line 72 "C:\Git\vixen\Public\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(effectName));
             
             #line default
             #line hidden
             this.Write("\", targetNodes, timeSpan, ");
             
-            #line 72 "C:\Git\vixen\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
+            #line 72 "C:\Git\vixen\Public\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(parameterNames));
             
             #line default
             #line hidden
             this.Write(");\r\n\t\t}\r\n\r\n");
             
-            #line 75 "C:\Git\vixen\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
+            #line 75 "C:\Git\vixen\Public\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
  } 
             
             #line default
             #line hidden
             this.Write("\r\n\t\t// == Nodes ==\r\n\t\t\r\n");
             
-            #line 79 "C:\Git\vixen\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
+            #line 79 "C:\Git\vixen\Public\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
 
 	// This needs to match the node collection that the script created in its constructor.
 	ChannelNode[] nodes = VixenSystem.Nodes.ToArray();
@@ -186,28 +186,28 @@ namespace ");
             #line hidden
             this.Write("\t\t// Original name: ");
             
-            #line 84 "C:\Git\vixen\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
+            #line 84 "C:\Git\vixen\Public\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(nodes[i].Name));
             
             #line default
             #line hidden
             this.Write("\r\n\t\tpublic dynamic ");
             
-            #line 85 "C:\Git\vixen\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
+            #line 85 "C:\Git\vixen\Public\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(_Fix(nodes[i].Name, usedNames)));
             
             #line default
             #line hidden
             this.Write(" { \r\n\t\t\tget { return _nodes[");
             
-            #line 86 "C:\Git\vixen\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
+            #line 86 "C:\Git\vixen\Public\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(i));
             
             #line default
             #line hidden
             this.Write("]; }\r\n\t\t}\r\n");
             
-            #line 88 "C:\Git\vixen\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
+            #line 88 "C:\Git\vixen\Public\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
  } 
             
             #line default

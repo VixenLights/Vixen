@@ -3,7 +3,7 @@ using System.CodeDom.Compiler;
 using Microsoft.CSharp;
 using Vixen.Module.Script;
 
-namespace CSharp {
+namespace VixenModules.Script.CSharp {
 	public class CSharp_CodeProvider : IScriptCodeProvider {
 		private CSharpCodeProvider _codeProvider = new CSharpCodeProvider();
 

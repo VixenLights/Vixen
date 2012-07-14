@@ -14,7 +14,6 @@ imports System.Text
 imports System.Threading
 imports System.Dynamic
 imports Vixen.Sys
-imports Vixen.Common
 imports Vixen.Module.SequenceType
 imports Vixen.Module.Effect
 imports Vixen.Module.Script
@@ -48,14 +47,15 @@ Namespace <#=Namespace#>
 			End Set
 		End Property
 
-		Protected Sub _InvokeEffect(effectName as String, channels as IEnumerable(Of UserScriptNode), timeSpan as TimeSpan, effectName as String, ParamArray args() as object)
+		Protected Sub _InvokeEffect(effectName as String, targetNodes as IEnumerable(Of UserScriptNode), timeSpan as TimeSpan, ParamArray args() as object)
+			Dim effectId as Guid
 			If _effects.TryGetValue(effectName, effectId) Then
-				IEffectModuleInstance effect = Vixen.Services.ApplicationServices.Get(Of IEffectModuleInstance)(effectId);
-				effect.TimeSpan = timeSpan;
-				effect.TargetNodes = targetNodes.Select(Function(x) x.Node).ToArray();
-				effect.ParameterValues = args;
-				EffectNode effectNode = New EffectNode(effect, TimeSpan.Zero);
-				Sequence.InsertData(effectNode);
+				Dim effect as IEffectModuleInstance = Vixen.Services.ApplicationServices.Get(Of IEffectModuleInstance)(effectId)
+				effect.TimeSpan = timeSpan
+				effect.TargetNodes = targetNodes.Select(Function(x) x.Node).ToArray()
+				effect.ParameterValues = args
+				Dim effectNode as EffectNode = New EffectNode(effect, TimeSpan.Zero)
+				Sequence.InsertData(effectNode)
 			End If
 		End Sub
 

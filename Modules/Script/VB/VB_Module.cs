@@ -1,6 +1,6 @@
 ﻿using Vixen.Module.Script;
 
-namespace VB {
+namespace VixenModules.Script.VB {
 	public class VB_Module : ScriptModuleInstanceBase {
 	}
 }

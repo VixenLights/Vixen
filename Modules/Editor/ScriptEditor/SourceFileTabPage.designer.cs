@@ -1,4 +1,4 @@
-﻿namespace ScriptEditor {
+﻿namespace VixenModules.Editor.ScriptEditor {
 	partial class SourceFileTabPage {
 		/// <summary> 
 		/// Required designer variable.
@@ -36,6 +36,7 @@
 			this.richTextBox.Size = new System.Drawing.Size(471, 274);
 			this.richTextBox.TabIndex = 0;
 			this.richTextBox.Text = "";
+			this.richTextBox.SelectionChanged += new System.EventHandler(this.richTextBox_SelectionChanged);
 			// 
 			// SourceFileTabPage
 			// 

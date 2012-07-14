@@ -1,6 +1,6 @@
 ﻿using Vixen.Module.Script;
 
-namespace CSharp {
+namespace VixenModules.Script.CSharp {
 	public class CSharp_Module : ScriptModuleInstanceBase {
 	}
 }

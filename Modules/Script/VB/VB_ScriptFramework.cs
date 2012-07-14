@@ -7,7 +7,7 @@
 //     the code is regenerated.
 // </auto-generated>
 // ------------------------------------------------------------------------------
-namespace VB
+namespace VixenModules.Script.VB
 {
     using Vixen.Sys;
     using Vixen.Module.Effect;
@@ -16,7 +16,7 @@ namespace VB
     using System;
     
     
-    #line 1 "C:\Git\vixen\Modules\Script\VB\VB_ScriptFramework.tt"
+    #line 1 "C:\Git\vixen\Public\Modules\Script\VB\VB_ScriptFramework.tt"
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "10.0.0.0")]
     public partial class VB_ScriptFramework : VB_ScriptFrameworkBase
     {
@@ -31,7 +31,6 @@ imports System.Text
 imports System.Threading
 imports System.Dynamic
 imports Vixen.Sys
-imports Vixen.Common
 imports Vixen.Module.SequenceType
 imports Vixen.Module.Effect
 imports Vixen.Module.Script
@@ -39,14 +38,14 @@ imports Vixen.Commands
 
 Namespace ");
             
-            #line 23 "C:\Git\vixen\Modules\Script\VB\VB_ScriptFramework.tt"
+            #line 22 "C:\Git\vixen\Public\Modules\Script\VB\VB_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Namespace));
             
             #line default
             #line hidden
             this.Write(" \r\n\tPartial Public Class ");
             
-            #line 24 "C:\Git\vixen\Modules\Script\VB\VB_ScriptFramework.tt"
+            #line 23 "C:\Git\vixen\Public\Modules\Script\VB\VB_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ClassName));
             
             #line default
@@ -64,7 +63,7 @@ Namespace ");
 			_effects = New Dictionary(Of String, Guid)
 ");
             
-            #line 35 "C:\Git\vixen\Modules\Script\VB\VB_ScriptFramework.tt"
+            #line 34 "C:\Git\vixen\Public\Modules\Script\VB\VB_ScriptFramework.tt"
 
 	foreach(string effectName in Effects.Keys) {
 
@@ -73,21 +72,21 @@ Namespace ");
             #line hidden
             this.Write("\t\t\t_effects.Add(\"");
             
-            #line 38 "C:\Git\vixen\Modules\Script\VB\VB_ScriptFramework.tt"
+            #line 37 "C:\Git\vixen\Public\Modules\Script\VB\VB_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(effectName));
             
             #line default
             #line hidden
             this.Write("\", New Guid(\"");
             
-            #line 38 "C:\Git\vixen\Modules\Script\VB\VB_ScriptFramework.tt"
+            #line 37 "C:\Git\vixen\Public\Modules\Script\VB\VB_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Effects[effectName].TypeId));
             
             #line default
             #line hidden
             this.Write("\"))\r\n");
             
-            #line 39 "C:\Git\vixen\Modules\Script\VB\VB_ScriptFramework.tt"
+            #line 38 "C:\Git\vixen\Public\Modules\Script\VB\VB_ScriptFramework.tt"
  } 
             
             #line default
@@ -104,14 +103,15 @@ Namespace ");
 			End Set
 		End Property
 
-		Protected Sub _InvokeEffect(effectName as String, channels as IEnumerable(Of UserScriptNode), timeSpan as TimeSpan, effectName as String, ParamArray args() as object)
+		Protected Sub _InvokeEffect(effectName as String, targetNodes as IEnumerable(Of UserScriptNode), timeSpan as TimeSpan, ParamArray args() as object)
+			Dim effectId as Guid
 			If _effects.TryGetValue(effectName, effectId) Then
-				IEffectModuleInstance effect = Vixen.Services.ApplicationServices.Get(Of IEffectModuleInstance)(effectId);
-				effect.TimeSpan = timeSpan;
-				effect.TargetNodes = targetNodes.Select(Function(x) x.Node).ToArray();
-				effect.ParameterValues = args;
-				EffectNode effectNode = New EffectNode(effect, TimeSpan.Zero);
-				Sequence.InsertData(effectNode);
+				Dim effect as IEffectModuleInstance = Vixen.Services.ApplicationServices.Get(Of IEffectModuleInstance)(effectId)
+				effect.TimeSpan = timeSpan
+				effect.TargetNodes = targetNodes.Select(Function(x) x.Node).ToArray()
+				effect.ParameterValues = args
+				Dim effectNode as EffectNode = New EffectNode(effect, TimeSpan.Zero)
+				Sequence.InsertData(effectNode)
 			End If
 		End Sub
 
@@ -119,7 +119,7 @@ Namespace ");
 
 ");
             
-            #line 64 "C:\Git\vixen\Modules\Script\VB\VB_ScriptFramework.tt"
+            #line 64 "C:\Git\vixen\Public\Modules\Script\VB\VB_ScriptFramework.tt"
 
 	foreach(string effectName in Effects.Keys) {
 		IEffectModuleDescriptor effect = Effects[effectName];
@@ -137,49 +137,49 @@ Namespace ");
             #line hidden
             this.Write("\t\t\' Original name: ");
             
-            #line 76 "C:\Git\vixen\Modules\Script\VB\VB_ScriptFramework.tt"
+            #line 76 "C:\Git\vixen\Public\Modules\Script\VB\VB_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(effect.EffectName));
             
             #line default
             #line hidden
             this.Write("\r\n\t\tPublic Sub ");
             
-            #line 77 "C:\Git\vixen\Modules\Script\VB\VB_ScriptFramework.tt"
+            #line 77 "C:\Git\vixen\Public\Modules\Script\VB\VB_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(effectName));
             
             #line default
             #line hidden
             this.Write("(targetNodes As IEnumerable(Of UserScriptNode), timeSpan As TimeSpan, ");
             
-            #line 77 "C:\Git\vixen\Modules\Script\VB\VB_ScriptFramework.tt"
+            #line 77 "C:\Git\vixen\Public\Modules\Script\VB\VB_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(effectParameters));
             
             #line default
             #line hidden
             this.Write(")\r\n\t\t\t_InvokeEffect(\"");
             
-            #line 78 "C:\Git\vixen\Modules\Script\VB\VB_ScriptFramework.tt"
+            #line 78 "C:\Git\vixen\Public\Modules\Script\VB\VB_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(effectName));
             
             #line default
             #line hidden
             this.Write("\", targetNodes, timeSpan, ");
             
-            #line 78 "C:\Git\vixen\Modules\Script\VB\VB_ScriptFramework.tt"
+            #line 78 "C:\Git\vixen\Public\Modules\Script\VB\VB_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(parameterNames));
             
             #line default
             #line hidden
             this.Write(")\r\n\t\tEnd Sub\r\n\r\n");
             
-            #line 81 "C:\Git\vixen\Modules\Script\VB\VB_ScriptFramework.tt"
+            #line 81 "C:\Git\vixen\Public\Modules\Script\VB\VB_ScriptFramework.tt"
  } 
             
             #line default
             #line hidden
             this.Write("\r\n\' == Nodes ==\r\n\r\n");
             
-            #line 85 "C:\Git\vixen\Modules\Script\VB\VB_ScriptFramework.tt"
+            #line 85 "C:\Git\vixen\Public\Modules\Script\VB\VB_ScriptFramework.tt"
 
 	// This needs to match the node collection that the script created in its constructor.
 	ChannelNode[] nodes = VixenSystem.Nodes.ToArray();
@@ -190,28 +190,28 @@ Namespace ");
             #line hidden
             this.Write("\t\t\' Original name: ");
             
-            #line 90 "C:\Git\vixen\Modules\Script\VB\VB_ScriptFramework.tt"
+            #line 90 "C:\Git\vixen\Public\Modules\Script\VB\VB_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(nodes[i].Name));
             
             #line default
             #line hidden
             this.Write("\r\n\t\tPublic ReadOnly Property ");
             
-            #line 91 "C:\Git\vixen\Modules\Script\VB\VB_ScriptFramework.tt"
+            #line 91 "C:\Git\vixen\Public\Modules\Script\VB\VB_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(_Fix(nodes[i].Name, usedNames)));
             
             #line default
             #line hidden
             this.Write("() As Object\r\n\t\t\tGet\r\n\t\t\t\tReturn _nodes(");
             
-            #line 93 "C:\Git\vixen\Modules\Script\VB\VB_ScriptFramework.tt"
+            #line 93 "C:\Git\vixen\Public\Modules\Script\VB\VB_ScriptFramework.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(i));
             
             #line default
             #line hidden
             this.Write(")\r\n\t\t\tEnd Get\r\n\t\tEnd Property\r\n");
             
-            #line 96 "C:\Git\vixen\Modules\Script\VB\VB_ScriptFramework.tt"
+            #line 96 "C:\Git\vixen\Public\Modules\Script\VB\VB_ScriptFramework.tt"
  } 
             
             #line default

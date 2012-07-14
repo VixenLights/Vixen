@@ -5,7 +5,7 @@ using Vixen.Module.Script;
 using Vixen.Services;
 using Vixen.Module.Effect;
 
-namespace CSharp {
+namespace VixenModules.Script.CSharp {
 	public partial class CSharp_ScriptFramework : IScriptFrameworkGenerator {
 		public string Generate(string nameSpace, string className) {
 			Namespace = nameSpace;
@@ -53,13 +53,7 @@ namespace CSharp {
 				chars.Add('_');
 			}
 
-			foreach(char ch in str) {
-				if(_IsValidSymbolChar(ch)) {
-					chars.Add(ch);
-				} else {
-					chars.Add('_');
-				}
-			}
+			chars.AddRange(str.Select(x => _IsValidSymbolChar(x) ? x : '_'));
 
 			return new string(chars.ToArray());
 		}
@@ -69,7 +63,6 @@ namespace CSharp {
 		}
 
 		private string _Fix(string str, List<string> usedSet) {
-			string originalString = str;
 			str = _Mangle(str);
 			str = _EnsureUnique(str, usedSet);
 			usedSet.Add(str);
@@ -77,14 +70,11 @@ namespace CSharp {
 		}
 
 		private string _EnsureUnique(string str, List<string> usedSet) {
-			int index;
-			// Static method, can't initialize in the declaration to reset it.
-			index = 2;
+			int index = 2;
 			while(usedSet.Contains(str)) {
 				str = str + "_" + index++;
 			}
 			return str;
 		}
-
 	}
 }

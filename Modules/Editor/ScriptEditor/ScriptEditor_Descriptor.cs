@@ -1,12 +1,12 @@
 ﻿using System;
 using Vixen.Module.Editor;
 
-namespace ScriptEditor {
+namespace VixenModules.Editor.ScriptEditor {
 	public class ScriptEditor_Descriptor : EditorModuleDescriptorBase {
 		private Guid _typeId = new Guid("{CEFF9B1C-BB75-4f76-96C2-C0BBADB75035}");
 		private string[] _extensions = new[] { ".scr" };
 		private Guid[] _dependencies = new[] {
-			new Guid("{CD5CA8E5-10D8-4342-9A42-AED48209C7CC}")
+			new Guid("{CD5CA8E5-10D8-4342-9A42-AED48209C7CC}") // ScriptSequence
 		};
 
 		public override string TypeName {
@@ -22,7 +22,7 @@ namespace ScriptEditor {
 		}
 
 		public override string Author {
-			get { return "Vixen team"; }
+			get { return "Vixen Team"; }
 		}
 
 		public override string Description {

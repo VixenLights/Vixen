@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.IO;
 using System.Xml.Serialization;
-using Vixen.Services;
-using Vixen.Sys;
 using Vixen.Module.Editor;
 using Vixen.Module.SequenceType;
-using Vixen.Sys.State.Execution;
+using Vixen.Services;
+using Vixen.Sys;
 
 namespace VixenApplication
 {
@@ -123,7 +119,7 @@ namespace VixenApplication
 					item.Click += (sender, e) => {
 						ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
 						string fileType = (string)menuItem.Tag;
-						IEditorUserInterface editor = ApplicationServices.CreateEditor(fileType);
+						IEditorUserInterface editor = EditorService.Instance.CreateEditor(fileType);
 						if (editor != null) {
 							_OpenEditor(editor);
 						}
@@ -207,7 +203,7 @@ namespace VixenApplication
 		private void OpenSequenceFromFile(string filename)
 		{
 			try {
-				IEditorUserInterface editor = ApplicationServices.CreateEditor(filename);
+				IEditorUserInterface editor = EditorService.Instance.CreateEditor(filename);
 
 				if (editor == null) {
 					VixenSystem.Logging.Error("Can't find an appropriate editor to open file " + filename);

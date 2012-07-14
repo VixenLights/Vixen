@@ -1,7 +1,7 @@
 ﻿using System;
 using Vixen.Module.Script;
 
-namespace CSharp {
+namespace VixenModules.Script.CSharp {
 	public class CSharp_Descriptor : ScriptModuleDescriptorBase {
 		private Guid _typeId = new Guid("{2D17E4A5-8B05-4a3d-810E-4F6724777799}");
 
@@ -38,15 +38,15 @@ namespace CSharp {
 		}
 
 		override public string Author {
-			get { throw new NotImplementedException(); }
+			get { return "Vixen Team"; }
 		}
 
 		override public string Description {
-			get { throw new NotImplementedException(); }
+			get { return "Implementation of the C# language for scripted sequences."; }
 		}
 
 		override public string Version {
-			get { throw new NotImplementedException(); }
+			get { return "1.0"; }
 		}
 	}
 }

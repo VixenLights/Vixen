@@ -1,4 +1,4 @@
-﻿namespace ScriptEditor {
+﻿namespace VixenModules.Editor.ScriptEditor {
 	partial class ScriptEditor {
 		/// <summary>
 		/// Required designer variable.
@@ -27,15 +27,15 @@
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.buttonCompile = new System.Windows.Forms.Button();
 			this.buttonStop = new System.Windows.Forms.Button();
-			this.button1 = new System.Windows.Forms.Button();
+			this.buttonRun = new System.Windows.Forms.Button();
 			this.splitContainer = new System.Windows.Forms.SplitContainer();
 			this.tabControlErrors = new System.Windows.Forms.TabControl();
 			this.tabPageCompileErrors = new System.Windows.Forms.TabPage();
 			this.listBoxCompileErrors = new System.Windows.Forms.ListBox();
 			this.tabPageRuntimeErrors = new System.Windows.Forms.TabPage();
 			this.listBoxRuntimeErrors = new System.Windows.Forms.ListBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.comboBoxLanguage = new System.Windows.Forms.ComboBox();
+			this.statusStrip = new System.Windows.Forms.StatusStrip();
+			this.labelCaretLocation = new System.Windows.Forms.ToolStripStatusLabel();
 			this.panel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
 			this.splitContainer.Panel1.SuspendLayout();
@@ -44,6 +44,7 @@
 			this.tabControlErrors.SuspendLayout();
 			this.tabPageCompileErrors.SuspendLayout();
 			this.tabPageRuntimeErrors.SuspendLayout();
+			this.statusStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tabControl
@@ -57,11 +58,9 @@
 			// 
 			// panel1
 			// 
-			this.panel1.Controls.Add(this.comboBoxLanguage);
-			this.panel1.Controls.Add(this.label1);
 			this.panel1.Controls.Add(this.buttonCompile);
 			this.panel1.Controls.Add(this.buttonStop);
-			this.panel1.Controls.Add(this.button1);
+			this.panel1.Controls.Add(this.buttonRun);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
 			this.panel1.Location = new System.Drawing.Point(0, 0);
 			this.panel1.Name = "panel1";
@@ -88,15 +87,15 @@
 			this.buttonStop.UseVisualStyleBackColor = true;
 			this.buttonStop.Click += new System.EventHandler(this.buttonStop_Click);
 			// 
-			// button1
+			// buttonRun
 			// 
-			this.button1.Location = new System.Drawing.Point(12, 9);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(105, 23);
-			this.button1.TabIndex = 0;
-			this.button1.Text = "Build and Run";
-			this.button1.UseVisualStyleBackColor = true;
-			this.button1.Click += new System.EventHandler(this.button1_Click);
+			this.buttonRun.Location = new System.Drawing.Point(12, 9);
+			this.buttonRun.Name = "buttonRun";
+			this.buttonRun.Size = new System.Drawing.Size(105, 23);
+			this.buttonRun.TabIndex = 0;
+			this.buttonRun.Text = "Build and Run";
+			this.buttonRun.UseVisualStyleBackColor = true;
+			this.buttonRun.Click += new System.EventHandler(this.buttonRun_Click);
 			// 
 			// splitContainer
 			// 
@@ -112,6 +111,7 @@
 			// splitContainer.Panel2
 			// 
 			this.splitContainer.Panel2.Controls.Add(this.tabControlErrors);
+			this.splitContainer.Panel2.Controls.Add(this.statusStrip);
 			this.splitContainer.Size = new System.Drawing.Size(629, 467);
 			this.splitContainer.SplitterDistance = 311;
 			this.splitContainer.TabIndex = 2;
@@ -124,8 +124,8 @@
 			this.tabControlErrors.Location = new System.Drawing.Point(0, 0);
 			this.tabControlErrors.Name = "tabControlErrors";
 			this.tabControlErrors.SelectedIndex = 0;
-			this.tabControlErrors.Size = new System.Drawing.Size(629, 152);
-			this.tabControlErrors.TabIndex = 1;
+			this.tabControlErrors.Size = new System.Drawing.Size(629, 130);
+			this.tabControlErrors.TabIndex = 3;
 			// 
 			// tabPageCompileErrors
 			// 
@@ -133,7 +133,7 @@
 			this.tabPageCompileErrors.Location = new System.Drawing.Point(4, 22);
 			this.tabPageCompileErrors.Name = "tabPageCompileErrors";
 			this.tabPageCompileErrors.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPageCompileErrors.Size = new System.Drawing.Size(621, 126);
+			this.tabPageCompileErrors.Size = new System.Drawing.Size(621, 104);
 			this.tabPageCompileErrors.TabIndex = 0;
 			this.tabPageCompileErrors.Text = "Compile";
 			this.tabPageCompileErrors.UseVisualStyleBackColor = true;
@@ -143,9 +143,10 @@
 			this.listBoxCompileErrors.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.listBoxCompileErrors.FormattingEnabled = true;
 			this.listBoxCompileErrors.HorizontalScrollbar = true;
+			this.listBoxCompileErrors.IntegralHeight = false;
 			this.listBoxCompileErrors.Location = new System.Drawing.Point(3, 3);
 			this.listBoxCompileErrors.Name = "listBoxCompileErrors";
-			this.listBoxCompileErrors.Size = new System.Drawing.Size(615, 120);
+			this.listBoxCompileErrors.Size = new System.Drawing.Size(615, 98);
 			this.listBoxCompileErrors.TabIndex = 0;
 			// 
 			// tabPageRuntimeErrors
@@ -154,7 +155,7 @@
 			this.tabPageRuntimeErrors.Location = new System.Drawing.Point(4, 22);
 			this.tabPageRuntimeErrors.Name = "tabPageRuntimeErrors";
 			this.tabPageRuntimeErrors.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPageRuntimeErrors.Size = new System.Drawing.Size(621, 126);
+			this.tabPageRuntimeErrors.Size = new System.Drawing.Size(621, 104);
 			this.tabPageRuntimeErrors.TabIndex = 1;
 			this.tabPageRuntimeErrors.Text = "Runtime";
 			this.tabPageRuntimeErrors.UseVisualStyleBackColor = true;
@@ -163,29 +164,26 @@
 			// 
 			this.listBoxRuntimeErrors.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.listBoxRuntimeErrors.FormattingEnabled = true;
+			this.listBoxRuntimeErrors.IntegralHeight = false;
 			this.listBoxRuntimeErrors.Location = new System.Drawing.Point(3, 3);
 			this.listBoxRuntimeErrors.Name = "listBoxRuntimeErrors";
-			this.listBoxRuntimeErrors.Size = new System.Drawing.Size(615, 120);
+			this.listBoxRuntimeErrors.Size = new System.Drawing.Size(615, 98);
 			this.listBoxRuntimeErrors.TabIndex = 1;
 			// 
-			// label1
+			// statusStrip
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(397, 13);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(55, 13);
-			this.label1.TabIndex = 3;
-			this.label1.Text = "Language";
+			this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.labelCaretLocation});
+			this.statusStrip.Location = new System.Drawing.Point(0, 130);
+			this.statusStrip.Name = "statusStrip";
+			this.statusStrip.Size = new System.Drawing.Size(629, 22);
+			this.statusStrip.TabIndex = 2;
 			// 
-			// comboBoxLanguage
+			// labelCaretLocation
 			// 
-			this.comboBoxLanguage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxLanguage.FormattingEnabled = true;
-			this.comboBoxLanguage.Location = new System.Drawing.Point(458, 10);
-			this.comboBoxLanguage.Name = "comboBoxLanguage";
-			this.comboBoxLanguage.Size = new System.Drawing.Size(121, 21);
-			this.comboBoxLanguage.TabIndex = 4;
-			this.comboBoxLanguage.SelectedIndexChanged += new System.EventHandler(this.comboBoxLanguage_SelectedIndexChanged);
+			this.labelCaretLocation.Name = "labelCaretLocation";
+			this.labelCaretLocation.Size = new System.Drawing.Size(25, 17);
+			this.labelCaretLocation.Text = "0, 0";
 			// 
 			// ScriptEditor
 			// 
@@ -196,16 +194,17 @@
 			this.Controls.Add(this.panel1);
 			this.Name = "ScriptEditor";
 			this.Text = "ScriptEditor";
-			this.Load += new System.EventHandler(this.ScriptEditor_Load);
 			this.panel1.ResumeLayout(false);
-			this.panel1.PerformLayout();
 			this.splitContainer.Panel1.ResumeLayout(false);
 			this.splitContainer.Panel2.ResumeLayout(false);
+			this.splitContainer.Panel2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
 			this.splitContainer.ResumeLayout(false);
 			this.tabControlErrors.ResumeLayout(false);
 			this.tabPageCompileErrors.ResumeLayout(false);
 			this.tabPageRuntimeErrors.ResumeLayout(false);
+			this.statusStrip.ResumeLayout(false);
+			this.statusStrip.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -214,16 +213,16 @@
 
 		private System.Windows.Forms.TabControl tabControl;
 		private System.Windows.Forms.Panel panel1;
-		private System.Windows.Forms.Button button1;
+		private System.Windows.Forms.Button buttonRun;
 		private System.Windows.Forms.SplitContainer splitContainer;
-		private System.Windows.Forms.ListBox listBoxCompileErrors;
-		private System.Windows.Forms.TabControl tabControlErrors;
-		private System.Windows.Forms.TabPage tabPageCompileErrors;
-		private System.Windows.Forms.TabPage tabPageRuntimeErrors;
-		private System.Windows.Forms.ListBox listBoxRuntimeErrors;
 		private System.Windows.Forms.Button buttonStop;
 		private System.Windows.Forms.Button buttonCompile;
-		private System.Windows.Forms.ComboBox comboBoxLanguage;
-		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.TabControl tabControlErrors;
+		private System.Windows.Forms.TabPage tabPageCompileErrors;
+		private System.Windows.Forms.ListBox listBoxCompileErrors;
+		private System.Windows.Forms.TabPage tabPageRuntimeErrors;
+		private System.Windows.Forms.ListBox listBoxRuntimeErrors;
+		private System.Windows.Forms.StatusStrip statusStrip;
+		private System.Windows.Forms.ToolStripStatusLabel labelCaretLocation;
 	}
 }

@@ -1,6 +1,6 @@
 ﻿using Vixen.Module.Editor;
 
-namespace ScriptEditor {
+namespace VixenModules.Editor.ScriptEditor {
 	public class ScriptEditor_Module : EditorModuleInstanceBase {
 	}
 }

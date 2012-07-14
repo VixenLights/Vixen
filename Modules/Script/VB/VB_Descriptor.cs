@@ -1,7 +1,7 @@
 ﻿using System;
 using Vixen.Module.Script;
 
-namespace VB {
+namespace VixenModules.Script.VB {
 	public class VB_Descriptor : ScriptModuleDescriptorBase {
 		private Guid _typeId = new Guid("{413B76C5-1FD6-4a49-BE2A-CF36BDCA7D59}");
 
@@ -38,15 +38,15 @@ namespace VB {
 		}
 
 		override public string Author {
-			get { throw new NotImplementedException(); }
+			get { return "Vixen Team"; }
 		}
 
 		override public string Description {
-			get { throw new NotImplementedException(); }
+			get { return "Implementation of the Visual Basic language for scripted sequences."; }
 		}
 
 		override public string Version {
-			get { throw new NotImplementedException(); }
+			get { return "1.0"; }
 		}
 	}
 }
