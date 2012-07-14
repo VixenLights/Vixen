@@ -173,6 +173,7 @@
     <Compile Include="Module\Script\IUserScriptHost.cs" />
     <Compile Include="Module\Script\UserScriptHost.cs" />
     <Compile Include="Module\Script\UserScriptNode.cs" />
+    <Compile Include="Services\EditorService.cs" />
     <Compile Include="Services\ModuleTemplateService.cs" />
     <Compile Include="Sys\Attribute\ContextAttribute.cs" />
     <Compile Include="Sys\DataNodeCollection.cs" />

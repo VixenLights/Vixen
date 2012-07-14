@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.IO;
 using System.Reflection;
 using Vixen.Module;
-using Vixen.Module.Editor;
 using Vixen.Module.Effect;
 using Vixen.Module.EffectEditor;
 using Vixen.Module.SequenceType;
@@ -13,9 +11,6 @@ using Vixen.Sys;
 using Vixen.Sys.Output;
 
 namespace Vixen.Services {
-	/// <summary>
-	/// Provides controlled access to otherwise inaccessible members and some convenience methods.
-	/// </summary>
     public class ApplicationServices {
         static internal IApplication ClientApplication;
 
@@ -127,34 +122,6 @@ namespace Vixen.Services {
 			return context.Explode(contextFilePath);
 		}
 
-		static public IEditorUserInterface CreateEditor(string sequenceFilePath) {
-			// Create or load a sequence.
-			ISequence sequence;
-			if(File.Exists(sequenceFilePath)) {
-				sequence = SequenceService.Instance.Load(sequenceFilePath);
-			} else {
-				sequence = SequenceService.Instance.CreateNew(sequenceFilePath);
-			}
-
-			// Get the editor.
-			IEditorUserInterface editor = null;
-			EditorModuleManagement manager = Modules.GetManager<IEditorModuleInstance, EditorModuleManagement>();
-			if(manager != null) {
-				editor = manager.Get(sequenceFilePath);
-			}
-
-			if(editor != null && sequence != null) {
-				// Get any editor module data from the sequence.
-				//...serious LoD violation...
-				sequence.SequenceData.LocalDataSet.AssignModuleTypeData(editor.OwnerModule);
-
-				// Assign the sequence to the editor.
-				editor.Sequence = sequence;
-			}
-
-			return editor;
-		}
-
 		static public INamingRule[] GetAllNamingRules() {
 			return typeof(INamingRule).FindConcreteImplementationsWithin(Assembly.GetExecutingAssembly()).Select(Activator.CreateInstance).Cast<INamingRule>().ToArray();
 		}
@@ -173,28 +140,5 @@ namespace Vixen.Services {
 			}
 			return true;
 		}
-
-		//private static Sequence _LoadSequence(string sequenceFilePath) {
-		//    // Get the sequence type.
-		//    SequenceTypeModuleManagement sequenceManager = (SequenceTypeModuleManagement)Modules.GetManager<ISequenceTypeModuleInstance>();
-		//    SequenceType sequenceType = sequenceManager.GetSequenceType(sequenceFilePath);
-
-		//    switch(sequenceType) {
-		//        case SequenceType.Standard:
-		//            VersionedFileSerializer<Sequence> sequenceSerializer = SerializerFactory.Instance.CreateStandardSequenceSerializer();
-		//            SerializationResult<Sequence> sequenceResult = sequenceSerializer.Read(sequenceFilePath);
-		//            return sequenceResult.Object;
-		//        case SequenceType.Script:
-		//            VersionedFileSerializer<ScriptSequence> scriptSequenceSerializer = SerializerFactory.Instance.CreateScriptSequenceSerializer();
-		//            SerializationResult<ScriptSequence> scriptSequenceResult = scriptSequenceSerializer.Read(sequenceFilePath);
-		//            return scriptSequenceResult.Object;
-		//    }
-
-		//    return null;
-		//}
-
-		//private static Sequence _CreateSequence(string sequenceFilePath) {
-		//    return Sequence.Create(sequenceFilePath);
-		//}
 	}
 }
