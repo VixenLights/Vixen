@@ -4,9 +4,8 @@ using System.Windows.Forms;
 using Vixen.Module.Effect;
 using Vixen.Module.EffectEditor;
 using Vixen.Services;
-using Vixen.Sys;
 
-namespace BasicInputManagement {
+namespace Common.BasicInputManagement {
 	public partial class EffectParameterSetup : Form {
 		private IEffectModuleDescriptor _descriptor;
 

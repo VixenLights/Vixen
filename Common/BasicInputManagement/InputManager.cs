@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using Vixen.Module.Input;
 using Vixen.Sys;
 
-namespace BasicInputManagement {
+namespace Common.BasicInputManagement {
 	public class InputManager {
 		private List<IInputModuleInstance> _inputModules;
 		private List<InputEffectMap> _inputEffects;

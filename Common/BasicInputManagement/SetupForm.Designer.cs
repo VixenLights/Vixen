@@ -1,4 +1,4 @@
-﻿namespace BasicInputManagement {
+﻿namespace Common.BasicInputManagement {
 	partial class SetupForm {
 		/// <summary>
 		/// Required designer variable.

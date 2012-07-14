@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BaseSequence;
-using ScriptSequence.Script;
+using Common.ScriptSequence.Script;
 using Vixen.Module.Script;
 
-namespace ScriptSequence {
+namespace Common.ScriptSequence {
 	public class ScriptSequence : Sequence {
 		public ScriptSequence() {
 			Length = Forever;

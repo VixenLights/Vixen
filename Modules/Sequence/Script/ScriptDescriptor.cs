@@ -1,8 +1,9 @@
 ﻿using System;
+using Script;
 using Vixen.Module.SequenceType;
 using Vixen.Sys.Attribute;
 
-namespace Script {
+namespace VixenModules.SequenceType.Script {
 	public class ScriptDescriptor : SequenceTypeModuleDescriptorBase {
 		static ScriptDescriptor() {
 			ScriptSourceDirectory = "ScriptSource";
@@ -30,7 +31,7 @@ namespace Script {
 		}
 
 		public override string Author {
-			get { return "Vixen team"; }
+			get { return "Vixen Team"; }
 		}
 
 		public override string Description {

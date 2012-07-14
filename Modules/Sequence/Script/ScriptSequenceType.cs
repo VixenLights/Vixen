@@ -1,4 +1,4 @@
-﻿namespace Script {
-	public class ScriptSequenceType : ScriptSequence.ScriptSequence {
+﻿namespace VixenModules.SequenceType.Script {
+	public class ScriptSequenceType : Common.ScriptSequence.ScriptSequence {
 	}
 }

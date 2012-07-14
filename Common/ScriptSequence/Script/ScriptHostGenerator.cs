@@ -7,7 +7,7 @@ using Vixen.Sys;
 using System.Reflection;
 using Vixen.Module.Script;
 
-namespace ScriptSequence.Script {
+namespace Common.ScriptSequence.Script {
 	class ScriptHostGenerator {
 		private List<string> _errors = new List<string>();
 		private string[] _standardReferences = {

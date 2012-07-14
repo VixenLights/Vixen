@@ -1,4 +1,4 @@
-﻿namespace Color {
+﻿namespace VixenModules.OutputFilter.Color {
 	partial class ColorSetupForm {
 		/// <summary>
 		/// Required designer variable.

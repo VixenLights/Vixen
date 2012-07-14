@@ -32,6 +32,7 @@ namespace VixenModules.App.InputEffectRouter {
 
 		// Need to do it this way so that there is a single instance created from the data
 		// and so this member is kept up-to-date.
+		//*** IModuleDataSet changed
 		public IEnumerable<IInputModuleInstance> InputModules {
 			get { return _inputModules ?? (_inputModules = ModuleData.GetInstances<IInputModuleInstance>().ToList()); }
 			set {

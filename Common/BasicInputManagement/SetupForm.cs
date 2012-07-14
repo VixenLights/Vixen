@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using Vixen.Commands;
 using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Module.Input;
 using Vixen.Services;
 using Vixen.Sys;
 
-namespace BasicInputManagement {
+namespace Common.BasicInputManagement {
 	public partial class SetupForm : Form {
 		private List<InputEffectMap> _maps;
 		private List<IInputModuleInstance> _inputModules;

@@ -2,7 +2,7 @@
 using Vixen.Commands;
 using Vixen.Sys;
 
-namespace Color {
+namespace VixenModules.OutputFilter.Color {
 	class CommandDispatch : Vixen.Sys.Dispatch.CommandDispatch {
 		public Func<ICommand<LightingValue>, ICommand> Filter;
 		public ICommand Command;

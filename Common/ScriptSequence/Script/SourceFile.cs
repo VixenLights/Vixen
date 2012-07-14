@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace ScriptSequence.Script {
+namespace Common.ScriptSequence.Script {
     public class SourceFile {
         public SourceFile(string name) {
             Name = name;

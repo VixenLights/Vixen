@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace Color {
+namespace VixenModules.OutputFilter.Color {
 	public partial class ColorSetupForm : Form {
 		public ColorSetupForm(ColorData data) {
 			InitializeComponent();

@@ -1,5 +1,4 @@
-﻿using DirectXJoystick;
-using SlimDX.DirectInput;
+﻿using SlimDX.DirectInput;
 
 namespace VixenModules.Input.DirectXJoystick.Input {
 	class Button : JoystickInput {

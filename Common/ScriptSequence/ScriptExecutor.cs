@@ -3,7 +3,7 @@ using BaseSequence;
 using Vixen.Module.Script;
 using Vixen.Sys;
 
-namespace ScriptSequence {
+namespace Common.ScriptSequence {
 	public class ScriptExecutor : SequenceExecutor {
 		private IUserScriptHost _scriptHost;
 

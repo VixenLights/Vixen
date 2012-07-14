@@ -1,8 +1,8 @@
 ﻿using System.Linq;
-using ScriptSequence.Script;
+using Common.ScriptSequence.Script;
 using Vixen.Module.Script;
 
-namespace ScriptSequence {
+namespace Common.ScriptSequence {
 	class ScriptCompiler {
 		public void Compile(ScriptSequence sequence) {
 			ScriptHostGenerator hostGenerator = new ScriptHostGenerator();

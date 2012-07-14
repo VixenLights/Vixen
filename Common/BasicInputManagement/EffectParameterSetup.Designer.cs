@@ -1,4 +1,4 @@
-﻿namespace BasicInputManagement {
+﻿namespace Common.BasicInputManagement {
 	partial class EffectParameterSetup {
 		/// <summary>
 		/// Required designer variable.

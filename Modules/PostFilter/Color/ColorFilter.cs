@@ -1,4 +1,4 @@
-﻿namespace Color {
+﻿namespace VixenModules.OutputFilter.Color {
 	public enum ColorFilter {
 		None,
 		Red,

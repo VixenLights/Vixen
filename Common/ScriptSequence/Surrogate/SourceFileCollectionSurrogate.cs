@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Runtime.Serialization;
-using ScriptSequence.Script;
+using Common.ScriptSequence.Script;
 
-namespace ScriptSequence.Surrogate {
+namespace Common.ScriptSequence.Surrogate {
 	[DataContract]
 	class SourceFileCollectionSurrogate {
 		public SourceFileCollectionSurrogate(SourceFileCollection sourceFileCollection) {

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using ScriptSequence.Script;
-using ScriptSequence.Surrogate;
+using Common.ScriptSequence.Script;
+using Common.ScriptSequence.Surrogate;
 using Vixen.Module.SequenceType;
 
-namespace ScriptSequence {
+namespace Common.ScriptSequence {
 	[DataContract]
 	public class ScriptSequenceData : SequenceTypeDataModelBase {
 		public ScriptSequenceData() {

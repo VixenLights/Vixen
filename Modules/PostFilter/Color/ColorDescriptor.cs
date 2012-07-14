@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Vixen.Module.OutputFilter;
 
-namespace Color {
+namespace VixenModules.OutputFilter.Color {
 	public class ColorDescriptor : OutputFilterModuleDescriptorBase {
 		private Guid _typeId = new Guid("{B3C06A83-CE75-4e78-853D-B95B4E69CEAC}");
 
@@ -25,15 +22,15 @@ namespace Color {
 		}
 
 		public override string Author {
-			get { throw new NotImplementedException(); }
+			get { return "Vixen Team"; }
 		}
 
 		public override string Description {
-			get { throw new NotImplementedException(); }
+			get { return "Output filters for color components."; }
 		}
 
 		public override string Version {
-			get { throw new NotImplementedException(); }
+			get { return "1.0"; }
 		}
 	}
 }

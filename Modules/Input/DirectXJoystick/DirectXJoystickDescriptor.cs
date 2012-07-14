@@ -22,7 +22,7 @@ namespace VixenModules.Input.DirectXJoystick {
 		}
 
 		public override string Author {
-			get { return "Vixen team"; }
+			get { return "Vixen Team"; }
 		}
 
 		public override string Description {

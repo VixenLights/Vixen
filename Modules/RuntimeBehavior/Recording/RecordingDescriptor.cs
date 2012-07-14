@@ -18,7 +18,7 @@ namespace Recording {
 		}
 
 		override public string Author {
-			get { return "Vixen team"; }
+			get { return "Vixen Team"; }
 		}
 
 		override public string TypeName {

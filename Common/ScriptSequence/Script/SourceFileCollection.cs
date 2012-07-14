@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ScriptSequence.Script {
+namespace Common.ScriptSequence.Script {
 	public class SourceFileCollection : List<SourceFile> {
 	}
 }

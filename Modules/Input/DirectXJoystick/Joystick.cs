@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using DirectXJoystick;
 using SlimDX.DirectInput;
 using Vixen.Module.Input;
 using VixenModules.Input.DirectXJoystick.Input;

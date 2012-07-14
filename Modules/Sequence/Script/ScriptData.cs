@@ -1,7 +1,7 @@
 ﻿using System.Runtime.Serialization;
-using ScriptSequence;
+using Common.ScriptSequence;
 
-namespace Script {
+namespace VixenModules.SequenceType.Script {
 	[DataContract]
 	public class ScriptData : ScriptSequenceData {
 	}

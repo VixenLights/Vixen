@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Vixen.Data.Combinator;
+﻿using Vixen.Data.Combinator;
 using Vixen.Data.Evaluator;
 using Vixen.Data.Policy;
 using Vixen.Sys;

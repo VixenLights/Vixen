@@ -5,7 +5,7 @@ using Vixen.Module;
 using Vixen.Module.OutputFilter;
 using Vixen.Sys;
 
-namespace Color {
+namespace VixenModules.OutputFilter.Color {
 	public class ColorModule : OutputFilterModuleInstanceBase {
 		private ColorData _data;
 		private Func<ICommand<LightingValue>, ICommand> _filter;

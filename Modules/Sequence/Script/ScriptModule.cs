@@ -1,10 +1,11 @@
-﻿using ScriptSequence;
+﻿using Common.ScriptSequence;
+using Script;
 using Vixen.Execution;
 using Vixen.IO;
 using Vixen.Module.SequenceType;
 using Vixen.Sys;
 
-namespace Script {
+namespace VixenModules.SequenceType.Script {
 	public class ScriptModule : SequenceTypeModuleInstanceBase {
 		public override ISequence CreateSequence() {
 			return new ScriptSequenceType();

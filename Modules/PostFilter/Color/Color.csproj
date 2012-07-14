@@ -47,7 +47,6 @@
     <Compile Include="ColorDescriptor.cs" />
     <Compile Include="ColorFilter.cs" />
     <Compile Include="ColorModule.cs" />
-    <Compile Include="ColorCommandDispatch.cs" />
     <Compile Include="CommandDispatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ColorSetupForm.cs">

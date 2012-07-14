@@ -1,5 +1,6 @@
 ﻿using System.Windows.Forms;
-using BasicInputManagement;
+using Common.BasicInputManagement;
+using Vixen.Execution.Context;
 using Vixen.Module;
 using Vixen.Module.App;
 using Vixen.Sys;
@@ -46,14 +47,15 @@ namespace VixenModules.App.InputEffectRouter {
 		public override IModuleDataModel StaticModuleData {
 			get { return _data; }
 			set { 
-				_data = value as InputEffectRouterData;
+				_data = (InputEffectRouterData)value;
 				_inputManagement = new InputManager(_data.InputModules, _data.Map);
 				_inputManagement.InputsChanged += _inputManagement_InputsChanged;
 			}
 		}
 
 		private void _inputManagement_InputsChanged(object sender, InputsChangedEventArgs e) {
-			Execution.Write(e.EffectNodes);
+			LiveContext systemContext = VixenSystem.Contexts.GetSystemLiveContext();
+			systemContext.Execute(e.EffectNodes);
 		}
 
 		private bool _AppSupportsCommands {

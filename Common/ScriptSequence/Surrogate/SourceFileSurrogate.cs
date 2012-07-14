@@ -1,7 +1,7 @@
 ﻿using System.Runtime.Serialization;
-using ScriptSequence.Script;
+using Common.ScriptSequence.Script;
 
-namespace ScriptSequence.Surrogate {
+namespace Common.ScriptSequence.Surrogate {
 	[DataContract]
 	class SourceFileSurrogate {
 		public SourceFileSurrogate(SourceFile sourceFile) {
