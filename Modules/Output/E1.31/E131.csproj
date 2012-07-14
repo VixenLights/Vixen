@@ -51,7 +51,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>..\..\..\Release\Modules\Controller\</OutputPath>
+    <OutputPath>..\..\..\..\Release\Modules\Controller\</OutputPath>
     <Optimize>true</Optimize>
   </PropertyGroup>
   <ItemGroup>
