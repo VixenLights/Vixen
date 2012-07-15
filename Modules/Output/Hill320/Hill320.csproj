@@ -47,12 +47,8 @@
     <Compile Include="Descriptor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="inpout32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="inpoutx64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="inpout32.dll" />
+    <Content Include="inpoutx64.dll" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Vixen.System\Vixen.csproj">
