@@ -73,4 +73,11 @@ Like we said, it may be weeks between updates because of large-granular changes 
 == 3.0.1.7 ============================
 
 Changes for sequence and language modules.
-* Modules have been split from the core source repository at this point. *
+
+
+******************** Modules have been split from the core source repository at this point. ********************
+
+
+== 3.0.1.8 ============================
+
+Handling BadImageFormatException explicitly to allow non-assembly DLLs to reside in the module directories.
