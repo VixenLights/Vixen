@@ -21,17 +21,17 @@ namespace VixenModules.Editor.ScriptEditor {
 			}
 			set {
 				_sourceFile = value;
-				richTextBox.Text = value.Contents;
+				scintilla.Text = value.Contents;
 			}
 		}
 
 		public void Commit() {
-			_sourceFile.Contents = richTextBox.Text;
-			richTextBox.Modified = false;
+			_sourceFile.Contents = scintilla.Text;
+			scintilla.Modified = false;
 		}
 
 		public bool IsModified {
-			get { return richTextBox.Modified; }
+			get { return scintilla.Modified; }
 		}
 
 		public Point CaretLocation { get; private set; }
@@ -43,12 +43,12 @@ namespace VixenModules.Editor.ScriptEditor {
 		}
 
 		private Point _GetCaretLocation() {
-			int x = richTextBox.SelectionStart - richTextBox.GetFirstCharIndexOfCurrentLine();
-			int y = richTextBox.GetLineFromCharIndex(richTextBox.SelectionStart);
+			int x = scintilla.GetColumn(scintilla.Caret.Position);
+			int y = scintilla.Lines.Current.Number;
 			return new Point(x, y);
 		}
 
-		private void richTextBox_SelectionChanged(object sender, EventArgs e) {
+		private void scintilla_SelectionChanged(object sender, EventArgs e) {
 			CaretLocation = _GetCaretLocation();
 			OnSelectionChanged(e);
 		}

@@ -23,34 +23,44 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			this.richTextBox = new System.Windows.Forms.RichTextBox();
+			this.scintilla = new ScintillaNET.Scintilla();
+			((System.ComponentModel.ISupportInitialize)(this.scintilla)).BeginInit();
 			this.SuspendLayout();
 			// 
-			// richTextBox
+			// scintilla
 			// 
-			this.richTextBox.AcceptsTab = true;
-			this.richTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.richTextBox.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.richTextBox.Location = new System.Drawing.Point(0, 0);
-			this.richTextBox.Name = "richTextBox";
-			this.richTextBox.Size = new System.Drawing.Size(471, 274);
-			this.richTextBox.TabIndex = 0;
-			this.richTextBox.Text = "";
-			this.richTextBox.SelectionChanged += new System.EventHandler(this.richTextBox_SelectionChanged);
+			this.scintilla.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.scintilla.Font = new System.Drawing.Font("Courier New", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.scintilla.Location = new System.Drawing.Point(0, 0);
+			this.scintilla.Margins.Margin0.Width = 50;
+			this.scintilla.Name = "scintilla";
+			this.scintilla.Size = new System.Drawing.Size(471, 274);
+			this.scintilla.Styles.BraceBad.Size = 10F;
+			this.scintilla.Styles.BraceLight.Size = 10F;
+			this.scintilla.Styles.ControlChar.Size = 10F;
+			this.scintilla.Styles.Default.BackColor = System.Drawing.SystemColors.Window;
+			this.scintilla.Styles.Default.Size = 10F;
+			this.scintilla.Styles.IndentGuide.Size = 10F;
+			this.scintilla.Styles.LastPredefined.Size = 10F;
+			this.scintilla.Styles.LineNumber.Size = 9F;
+			this.scintilla.Styles.Max.Size = 10F;
+			this.scintilla.TabIndex = 1;
+			this.scintilla.SelectionChanged += new System.EventHandler(this.scintilla_SelectionChanged);
 			// 
 			// SourceFileTabPage
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.richTextBox);
+			this.Controls.Add(this.scintilla);
 			this.Name = "SourceFileTabPage";
 			this.Size = new System.Drawing.Size(471, 274);
+			((System.ComponentModel.ISupportInitialize)(this.scintilla)).EndInit();
 			this.ResumeLayout(false);
 
 		}
 
 		#endregion
 
-		private System.Windows.Forms.RichTextBox richTextBox;
+		private ScintillaNET.Scintilla scintilla;
 	}
 }
