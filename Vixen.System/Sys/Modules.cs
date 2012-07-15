@@ -229,12 +229,12 @@ namespace Vixen.Sys {
 				} catch(NotSupportedException) {
 					VixenSystem.Logging.Error("Could not load module assembly " + filePath + ".  See http://vanderbiest.org/blog/2010/08/11/system-notsupportedexception-when-referencing-to-an-assembly/");
 					return new IModuleDescriptor[0];
+				} catch(BadImageFormatException) {
+					return new IModuleDescriptor[0];
 				} catch(Exception ex) {
 					VixenSystem.Logging.Error("Could not load module assembly " + filePath + ".", ex);
 					return new IModuleDescriptor[0];
 				}
-
-				IModuleDescriptor moduleDescriptor = null;
 
 				// Look for concrete module descriptors.
 				IEnumerable<Type> moduleDescriptorTypes = typeof(IModuleDescriptor).FindImplementationsWithin(assembly).Where(x => !x.IsAbstract);
@@ -242,7 +242,7 @@ namespace Vixen.Sys {
 					try {
 						// Get the module descriptor.
 						object o = Activator.CreateInstance(moduleDescriptorType);
-						moduleDescriptor = o as IModuleDescriptor;
+						IModuleDescriptor moduleDescriptor = o as IModuleDescriptor;
 
 						if(moduleDescriptor != null) {
 							if(moduleDescriptor.ModuleClass != null) {
