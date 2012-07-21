@@ -153,6 +153,10 @@ namespace Vixen.Sys
 			return nodes.SelectMany(x => x.GetChannelEnumerator()).ToArray();
 		}
 
+		static public Channel[] GetChannels(this ChannelNode node) {
+			return node.GetChannelEnumerator().ToArray();
+		}
+
 		static public string GetFilePath(this Assembly assembly) {
 			return assembly.Location;
 		}
