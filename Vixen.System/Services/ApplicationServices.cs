@@ -112,8 +112,10 @@ namespace Vixen.Services {
 			return VixenSystem.Controllers.Cast<OutputController>().ToArray();
 		}
 
-		static public void PackageSystemContext(string targetFilePath) {
+		static public void PackageSystemContext(string contextName, string contextDescription, string targetFilePath) {
 			SystemContext context = SystemContext.PackageSystemContext(targetFilePath);
+			context.ContextName = contextName;
+			context.ContextDescription = contextDescription;
 			context.Save(targetFilePath);
 		}
 
