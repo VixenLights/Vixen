@@ -226,6 +226,10 @@ namespace Vixen.Sys {
 		static public ChannelOutputPatchManager ChannelPatching { get; private set; }
 		static public ControllerLinker ControllerLinking { get; private set; }
 
+    	public static Guid Identity {
+    		get { return SystemConfig.Identity; }
+    	}
+
     	static internal ModuleStore ModuleStore { get; private set; }
 		static internal SystemConfig SystemConfig { get; private set; }
 
