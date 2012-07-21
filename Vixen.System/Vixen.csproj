@@ -173,6 +173,14 @@
     <Compile Include="Module\Script\IUserScriptHost.cs" />
     <Compile Include="Module\Script\UserScriptHost.cs" />
     <Compile Include="Module\Script\UserScriptNode.cs" />
+    <Compile Include="Module\Service\IService.cs" />
+    <Compile Include="Module\Service\IServiceModuleDescriptor.cs" />
+    <Compile Include="Module\Service\IServiceModuleInstance.cs" />
+    <Compile Include="Module\Service\ServiceModuleDescriptorBase.cs" />
+    <Compile Include="Module\Service\ServiceModuleImplementation.cs" />
+    <Compile Include="Module\Service\ServiceModuleInstanceBase.cs" />
+    <Compile Include="Module\Service\ServiceModuleManagement.cs" />
+    <Compile Include="Module\Service\ServiceModuleRepository.cs" />
     <Compile Include="Services\EditorService.cs" />
     <Compile Include="Services\ModuleTemplateService.cs" />
     <Compile Include="Sys\Attribute\ContextAttribute.cs" />
@@ -509,7 +517,6 @@
     <Compile Include="Module\App\AppModuleDescriptorBase.cs" />
     <Compile Include="Module\Editor\EditorModuleInstanceBase.cs" />
     <Compile Include="Module\Editor\EditorModuleDescriptorBase.cs" />
-    <Compile Include="Module\Editor\EditorValues.cs" />
     <Compile Include="Module\EffectEditor\EffectEditorModuleInstanceBase.cs" />
     <Compile Include="Module\EffectEditor\EffectEditorModuleDescriptorBase.cs" />
     <Compile Include="Module\Effect\EffectModuleInstanceBase.cs" />
@@ -809,6 +816,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
