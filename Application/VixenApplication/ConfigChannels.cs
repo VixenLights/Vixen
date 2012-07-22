@@ -787,6 +787,12 @@ namespace VixenApplication
 			createGroupWithNodesToolStripMenuItem.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0);
 			deleteNodesToolStripMenuItem.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0);
 			renameNodesToolStripMenuItem.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0);
+			createAndNameToolStripMenuItem.Enabled = multiSelectTreeviewChannelsGroups.SelectedNode != null;
+			createAndNameInToolStripMenuItem.Enabled = multiSelectTreeviewChannelsGroups.SelectedNode != null;
+			createAndNameInToolStripMenuItem.Text = "Create and name in ";
+			if(createAndNameInToolStripMenuItem.Enabled) {
+				createAndNameInToolStripMenuItem.Text += multiSelectTreeviewChannelsGroups.SelectedNode.Text;
+			}
 		}
 
 		// TODO: use the system clipboard properly; I couldn't get it working in the sequencer, so I'm not
@@ -953,6 +959,13 @@ namespace VixenApplication
 
 		private void createAndNameToolStripMenuItem_Click(object sender, EventArgs e) {
 			using(CreateAndNameChannels form = new CreateAndNameChannels()) {
+				form.ShowDialog();
+				PopulateNodeTree();
+			}
+		}
+
+		private void createAndNameInToolStripMenuItem_Click(object sender, EventArgs e) {
+			using(CreateAndNameChannels form = new CreateAndNameChannels((ChannelNode)multiSelectTreeviewChannelsGroups.SelectedNode.Tag)) {
 				form.ShowDialog();
 				PopulateNodeTree();
 			}

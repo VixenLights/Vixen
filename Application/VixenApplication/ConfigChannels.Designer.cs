@@ -82,11 +82,12 @@
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			this.createAndNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.patchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.patchAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStripDragging = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.moveHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.buttonCancel = new System.Windows.Forms.Button();
-			this.patchAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.createAndNameInToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBoxSelectedNode.SuspendLayout();
 			this.groupBoxAddPatch.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPatchOutputSelect)).BeginInit();
@@ -467,10 +468,11 @@
             this.renameNodesToolStripMenuItem,
             this.toolStripMenuItem1,
             this.createAndNameToolStripMenuItem,
+            this.createAndNameInToolStripMenuItem,
             this.patchToolStripMenuItem,
             this.patchAllToolStripMenuItem});
 			this.contextMenuStripTreeView.Name = "contextMenuStripTreeView";
-			this.contextMenuStripTreeView.Size = new System.Drawing.Size(205, 286);
+			this.contextMenuStripTreeView.Size = new System.Drawing.Size(205, 308);
 			this.contextMenuStripTreeView.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripTreeView_Opening);
 			// 
 			// cutNodesToolStripMenuItem
@@ -574,6 +576,13 @@
 			this.patchToolStripMenuItem.Text = "Patch";
 			this.patchToolStripMenuItem.Click += new System.EventHandler(this.patchToolStripMenuItem_Click);
 			// 
+			// patchAllToolStripMenuItem
+			// 
+			this.patchAllToolStripMenuItem.Name = "patchAllToolStripMenuItem";
+			this.patchAllToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+			this.patchAllToolStripMenuItem.Text = "Patch all";
+			this.patchAllToolStripMenuItem.Click += new System.EventHandler(this.patchAllToolStripMenuItem_Click);
+			// 
 			// contextMenuStripDragging
 			// 
 			this.contextMenuStripDragging.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -605,12 +614,12 @@
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			// 
-			// patchAllToolStripMenuItem
+			// createAndNameInToolStripMenuItem
 			// 
-			this.patchAllToolStripMenuItem.Name = "patchAllToolStripMenuItem";
-			this.patchAllToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
-			this.patchAllToolStripMenuItem.Text = "Patch all";
-			this.patchAllToolStripMenuItem.Click += new System.EventHandler(this.patchAllToolStripMenuItem_Click);
+			this.createAndNameInToolStripMenuItem.Name = "createAndNameInToolStripMenuItem";
+			this.createAndNameInToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+			this.createAndNameInToolStripMenuItem.Text = "Create and name in";
+			this.createAndNameInToolStripMenuItem.Click += new System.EventHandler(this.createAndNameInToolStripMenuItem_Click);
 			// 
 			// ConfigChannels
 			// 
@@ -700,5 +709,6 @@
 		private System.Windows.Forms.ToolStripMenuItem createAndNameToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem patchToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem patchAllToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem createAndNameInToolStripMenuItem;
 	}
 }

@@ -43,43 +43,6 @@ namespace VixenModules.Effect.Pulse
 			set { _data = value as PulseData; }
 		}
 
-		//public override object[] ParameterValues
-		//{
-		//    get
-		//    {
-		//        return new object[] { LevelCurve, ColorGradient };
-		//    }
-		//    set
-		//    {
-		//        if (value.Length != 2) {
-		//            VixenSystem.Logging.Error("Pulse parameters set with " + value.Length + " parameters!");
-		//        } else {
-		//            LevelCurve = (Curve)value[0];
-		//            ColorGradient = (ColorGradient)value[1];
-		//        }
-		//    }
-		//}
-
-		//...don't forget...
-		//public override bool IsDirty
-		//{
-		//    get
-		//    {
-		//        if (!LevelCurve.CheckLibraryReference())
-		//            return true;
-
-		//        if (!ColorGradient.CheckLibraryReference())
-		//            return true;
-
-		//        return base.IsDirty;
-		//    }
-		//    protected set
-		//    {
-		//        base.IsDirty = value;
-		//    }
-		//}
-
-
 		[Value]
 		public Curve LevelCurve
 		{

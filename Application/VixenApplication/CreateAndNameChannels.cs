@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using Vixen.Rule;
 using Vixen.Rule.Name;
@@ -15,9 +9,15 @@ using VixenApplication.Controls;
 namespace VixenApplication {
 	public partial class CreateAndNameChannels : Form {
 		private INamingRule _namingRule;
+		private ChannelNode _parentNode;
 
 		public CreateAndNameChannels() {
 			InitializeComponent();
+		}
+
+		public CreateAndNameChannels(ChannelNode parentNode)
+			: this() {
+			_parentNode = parentNode;
 		}
 
 		private void CreateAndNameChannels_Load(object sender, EventArgs e) {
@@ -89,7 +89,7 @@ namespace VixenApplication {
 
 		private void buttonCommit_Click(object sender, EventArgs e) {
 			if(_Validate()) {
-				ChannelNode[] nodes = Vixen.Services.ChannelNodeService.Instance.CreateMultiple(null, _ChannelCount, true);
+				ChannelNode[] nodes = Vixen.Services.ChannelNodeService.Instance.CreateMultiple(_parentNode, _ChannelCount, true, false);
 				Vixen.Services.ChannelNodeService.Instance.Rename(nodes, _namingRule);
 				MessageBox.Show("Created " + _ChannelCount + " channels and nodes.");
 			}

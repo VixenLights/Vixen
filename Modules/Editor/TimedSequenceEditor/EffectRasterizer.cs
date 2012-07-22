@@ -20,11 +20,13 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 			IntentRasterizer intentRasterizer = new IntentRasterizer();
 			float y = 0;
 			foreach(Channel channel in channels) {
-				var channelIntents = effectIntents.GetIntentNodesForChannel(channel.Id);
-				foreach(IntentNode channelIntentNode in channelIntents) {
-					float startPixelX = width * _GetPercentage(channelIntentNode.StartTime, effect.TimeSpan);
-					float widthPixelX = width * _GetPercentage(channelIntentNode.TimeSpan, effect.TimeSpan);
-					intentRasterizer.Rasterize(channelIntentNode.Intent, new RectangleF(startPixelX, y, widthPixelX, heightPerChannel), g);
+				IntentNodeCollection channelIntents = effectIntents.GetIntentNodesForChannel(channel.Id);
+				if(channelIntents != null) {
+					foreach(IntentNode channelIntentNode in channelIntents) {
+						float startPixelX = width*_GetPercentage(channelIntentNode.StartTime, effect.TimeSpan);
+						float widthPixelX = width*_GetPercentage(channelIntentNode.TimeSpan, effect.TimeSpan);
+						intentRasterizer.Rasterize(channelIntentNode.Intent, new RectangleF(startPixelX, y, widthPixelX, heightPerChannel), g);
+					}
 				}
 				y += heightPerChannel;
 			}
