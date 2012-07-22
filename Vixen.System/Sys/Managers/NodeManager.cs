@@ -94,8 +94,10 @@ namespace Vixen.Sys.Managers {
 			}
 		}
 
-		public ChannelNode AddNode(string name) {
-			name = _Uniquify(name);
+		public ChannelNode AddNode(string name, bool uniquifyName = true) {
+			if(uniquifyName) {
+				name = _Uniquify(name);
+			}
 			ChannelNode newNode = new ChannelNode(name);
 			AddNode(newNode);
 			return newNode;

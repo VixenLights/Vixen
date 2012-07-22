@@ -15,10 +15,10 @@ namespace Vixen.Services {
 			get { return _instance ?? (_instance = new ChannelNodeService()); }
 		}
 
-		public ChannelNode CreateSingle(ChannelNode parentNode, string name = null, bool createChannel = false, int index = -1) {
+		public ChannelNode CreateSingle(ChannelNode parentNode, string name = null, bool createChannel = false, bool uniquifyName = true, int index = -1) {
 			name = name ?? "Unnamed";
 
-			ChannelNode channelNode = VixenSystem.Nodes.AddNode(name);
+			ChannelNode channelNode = VixenSystem.Nodes.AddNode(name, uniquifyName);
 			VixenSystem.Nodes.AddChildToParent(channelNode, parentNode, index);
 
 			Channel channel = createChannel ? _CreateChannel(name) : null;
@@ -28,8 +28,8 @@ namespace Vixen.Services {
 			return channelNode;
 		}
 
-		public ChannelNode[] CreateMultiple(ChannelNode parentNode, int count, bool createChannel = false) {
-			return Enumerable.Range(0, count).Select(x => CreateSingle(parentNode, null, createChannel)).ToArray();
+		public ChannelNode[] CreateMultiple(ChannelNode parentNode, int count, bool createChannel = false, bool uniquifyNames = true) {
+			return Enumerable.Range(0, count).Select(x => CreateSingle(parentNode, null, createChannel, uniquifyNames)).ToArray();
 		}
 
 		public ChannelNode ImportTemplateOnce(string templateFileName, ChannelNode parentNode) {

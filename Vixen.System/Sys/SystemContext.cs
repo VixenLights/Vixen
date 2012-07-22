@@ -5,7 +5,7 @@ using Vixen.IO.Result;
 using Vixen.Services;
 
 namespace Vixen.Sys {
-	class SystemContext : FilePackage {
+	public class SystemContext : FilePackage {
 		private const int VERSION = 1;
 		private const string TEMP_DIRECTORY_NAME = "VixenContext";
 

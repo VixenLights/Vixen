@@ -21,9 +21,9 @@ namespace Vixen.Sys {
 				instance = Modules.ModuleManagement.GetProperty(id);
 				if(instance != null) {
 					instance.Owner = _owner;
+					instance.SetDefaultValues();
 					_items[id] = instance;
 					PropertyData.AssignModuleTypeData(instance);
-					instance.SetDefaultValues();
 				}
 			}
 

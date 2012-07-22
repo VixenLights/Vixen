@@ -62,11 +62,6 @@ namespace Vixen.Services {
 				VixenSystem.Logging.Error(result.Message);
 			}
 			return (ISequence)result.Object;
-			//ISequence sequence = _CreateSequenceInstance(filePath);
-			//if(sequence != null) {
-			//    sequence.SequenceData = _LoadSequenceDataInstance(filePath);
-			//}
-			//return sequence;
 		}
 
 		public ISequence CreateNew(string fileType) {
@@ -104,14 +99,5 @@ namespace Vixen.Services {
 			}
 			return null;
 		}
-
-		//private object _LoadSequenceDataInstance(string filePath) {
-		//    VersionedFileSerializer serializer = FileService.Instance.CreateSequenceSerializer(filePath);
-		//    ISerializationResult result = serializer.Read(filePath);
-		//    if(!result.Success) {
-		//        VixenSystem.Logging.Warning("Could not create the data object for sequence " + filePath);
-		//    }
-		//    return result.Object;
-		//}
 	}
 }

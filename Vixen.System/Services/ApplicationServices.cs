@@ -98,30 +98,8 @@ namespace Vixen.Services {
 			return manager.GetEffectEditors(effectId);
 		}
 
-		//Maybe have an overload that takes a file type filter.
-		static public string[] GetSequenceFileNames() {
-			return SequenceService.Instance.GetAllSequenceFileNames();
-		}
-
-		static public ISequence CreateSequence(string sequenceFileType) {
-			SequenceTypeModuleManagement manager = Modules.GetManager<ISequenceTypeModuleInstance, SequenceTypeModuleManagement>();
-			return manager.Get(sequenceFileType) as ISequence;
-		}
-
 		static public OutputController[] GetControllers() {
 			return VixenSystem.Controllers.Cast<OutputController>().ToArray();
-		}
-
-		static public void PackageSystemContext(string contextName, string contextDescription, string targetFilePath) {
-			SystemContext context = SystemContext.PackageSystemContext(targetFilePath);
-			context.ContextName = contextName;
-			context.ContextDescription = contextDescription;
-			context.Save(targetFilePath);
-		}
-
-		static public string UnpackageSystemContext(string contextFilePath) {
-			SystemContext context = SystemContext.Load(contextFilePath);
-			return context.Explode(contextFilePath);
 		}
 
 		static public INamingRule[] GetAllNamingRules() {

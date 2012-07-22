@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Drawing;
-using Vixen.Commands;
 using Vixen.Sys;
 
 namespace Vixen.Module.Effect {
@@ -29,10 +27,7 @@ namespace Vixen.Module.Effect {
 
 		virtual public ParameterSignature Parameters { get; private set; }
 
-		/// <summary>
-		/// Properties that the effect can utilize, but isn't dependent upon.
-		/// </summary>
-		virtual public Guid[] PropertyDependencies { get; set; }
+		virtual public Guid[] PropertyDependencies { get; private set; }
 
 		virtual public Image GetRepresentativeImage(int desiredWidth, int desiredHeight) {
 			int maxDimension = Math.Max(desiredWidth, desiredHeight);

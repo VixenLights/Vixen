@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
 
 namespace Vixen.Sys {
-	abstract class FilePackage : IEnumerable<IPackageFileContent> {
+	abstract public class FilePackage : IEnumerable<IPackageFileContent> {
 		protected FilePackage(Guid sourceIdentity) {
 			SourceIdentity = sourceIdentity;
 		}
