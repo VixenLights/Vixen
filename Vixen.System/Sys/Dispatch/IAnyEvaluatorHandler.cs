@@ -1,7 +1,6 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace Vixen.Sys.Dispatch {
-	interface IAnyEvaluatorHandler : IHandler<IEvaluator<float>>, IHandler<IEvaluator<DateTime>>, IHandler<IEvaluator<Color>>, IHandler<IEvaluator<long>>, IHandler<IEvaluator<double>>, IHandler<IEvaluator<LightingValue>> {
+	interface IAnyEvaluatorHandler : IHandler<IEvaluator<byte>>, IHandler<IEvaluator<ushort>>, IHandler<IEvaluator<uint>>, IHandler<IEvaluator<ulong>>, IHandler<IEvaluator<Color>> {
 	}
 }

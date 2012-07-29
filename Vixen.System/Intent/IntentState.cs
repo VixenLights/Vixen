@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
+using Vixen.Data.Value;
 using Vixen.Sys;
 
 namespace Vixen.Intent {
-	class IntentState<ResultType> : Dispatchable<IntentState<ResultType>>, IIntentState<ResultType> {
+	class IntentState<ResultType> : Dispatchable<IntentState<ResultType>>, IIntentState<ResultType>
+		where ResultType : IIntentDataType {
 		public IntentState(IIntent<ResultType> intent, TimeSpan intentRelativeTime) {
 			if(intent == null) throw new ArgumentNullException("intent");
 

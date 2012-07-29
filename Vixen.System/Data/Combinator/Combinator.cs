@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using Vixen.Commands;
 using Vixen.Sys;
@@ -16,17 +15,19 @@ namespace Vixen.Data.Combinator {
 			}
 		}
 
-		virtual public void Handle(IEvaluator<float> obj) { }
+		//Can't be a float, must be discrete, digital as it's the type going to the controller.
+		//The types need to match the types wrapped by the commands.
+		//virtual public void Handle(IEvaluator<float> obj) { }
 
-		virtual public void Handle(IEvaluator<DateTime> obj) { }
+		virtual public void Handle(IEvaluator<byte> obj) { }
+
+		virtual public void Handle(IEvaluator<ushort> obj) { }
+
+		virtual public void Handle(IEvaluator<uint> obj) { }
+
+		virtual public void Handle(IEvaluator<ulong> obj) { }
 
 		virtual public void Handle(IEvaluator<Color> obj) { }
-
-		virtual public void Handle(IEvaluator<long> obj) { }
-
-		virtual public void Handle(IEvaluator<double> obj) { }
-
-		virtual public void Handle(IEvaluator<LightingValue> obj) { }
 
 		public ICommand<ResultType> CombinatorValue { get; protected set; }
 

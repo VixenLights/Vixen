@@ -1,7 +1,6 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace Vixen.Sys.Dispatch {
-	interface IAnyCombinatorHandler : IHandler<ICombinator<float>>, IHandler<ICombinator<DateTime>>, IHandler<ICombinator<Color>>, IHandler<ICombinator<long>>, IHandler<ICombinator<double>>, IHandler<ICombinator<LightingValue>> {
+	interface IAnyCombinatorHandler : IHandler<ICombinator<byte>>, IHandler<ICombinator<ushort>>, IHandler<ICombinator<uint>>, IHandler<ICombinator<ulong>>, IHandler<ICombinator<Color>> {
 	}
 }

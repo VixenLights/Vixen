@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using Vixen.Data.Value;
 
 namespace Vixen.Sys {
 	public interface IIntentState : IDispatchable {
@@ -9,7 +9,8 @@ namespace Vixen.Sys {
 		object GetValue();
 	}
 
-	public interface IIntentState<out T> : IIntentState {
+	public interface IIntentState<out T> : IIntentState
+		where T : IIntentDataType {
 		IIntent<T> Intent { get; }
 		T GetValue();
 	}

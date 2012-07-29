@@ -1,6 +1,6 @@
 ﻿using Vixen.Commands;
 
 namespace Vixen.Sys.Dispatch {
-	interface IAnyCommandHandler : IHandler<ByteValueCommand>, IHandler<SignedShortValueCommand>, IHandler<UnsignedShortValueCommand>, IHandler<SignedIntValueCommand>, IHandler<UnsignedIntValueCommand>, IHandler<SignedLongValueCommand>, IHandler<UnsignedLongValueCommand>, IHandler<ColorValueCommand>, IHandler<LightingValueCommand>, IHandler<DoubleValueCommand> {
+	interface IAnyCommandHandler : IHandler<_8BitCommand>, IHandler<_16BitCommand>, IHandler<_32BitCommand>, IHandler<_64BitCommand>, IHandler<ColorCommand> {
 	}
 }

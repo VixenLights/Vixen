@@ -37,43 +37,23 @@ namespace Vixen.Module.OutputFilter {
 			return Equals(other as IOutputFilterModuleInstance);
 		}
 
-		public void Handle(ByteValueCommand obj) {
+		public void Handle(_8BitCommand obj) {
 			Affect(obj);
 		}
 
-		public void Handle(SignedShortValueCommand obj) {
+		public void Handle(_16BitCommand obj) {
 			Affect(obj);
 		}
 
-		public void Handle(UnsignedShortValueCommand obj) {
+		public void Handle(_32BitCommand obj) {
 			Affect(obj);
 		}
 
-		public void Handle(SignedIntValueCommand obj) {
+		public void Handle(_64BitCommand obj) {
 			Affect(obj);
 		}
 
-		public void Handle(UnsignedIntValueCommand obj) {
-			Affect(obj);
-		}
-
-		public void Handle(SignedLongValueCommand obj) {
-			Affect(obj);
-		}
-
-		public void Handle(UnsignedLongValueCommand obj) {
-			Affect(obj);
-		}
-
-		public void Handle(ColorValueCommand obj) {
-			Affect(obj);
-		}
-
-		public void Handle(LightingValueCommand obj) {
-			Affect(obj);
-		}
-
-		public void Handle(DoubleValueCommand obj) {
+		public void Handle(ColorCommand obj) {
 			Affect(obj);
 		}
 	}

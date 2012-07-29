@@ -1,7 +1,6 @@
-﻿using System;
-using System.Drawing;
+﻿using Vixen.Data.Value;
 
 namespace Vixen.Sys.Dispatch {
-	interface IAnyIntentStateHandler : IHandler<IIntentState<float>>, IHandler<IIntentState<DateTime>>, IHandler<IIntentState<Color>>, IHandler<IIntentState<long>>, IHandler<IIntentState<double>>, IHandler<IIntentState<LightingValue>> {
+	interface IAnyIntentStateHandler : IHandler<IIntentState<ColorValue>>, IHandler<IIntentState<LightingValue>>, IHandler<IIntentState<PositionValue>>, IHandler<IIntentState<CommandValue>> {
 	}
 }

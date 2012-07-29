@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Vixen.Data.Value;
 
 namespace Vixen.Sys {
 	public interface IIntent : IDispatchable {
@@ -10,9 +11,11 @@ namespace Vixen.Sys {
 		void FractureAt(ITimeNode intentRelativeTime);
 		IIntent[] DivideAt(TimeSpan intentRelativeTime);
 		void ApplyFilter(ISequenceFilterNode sequenceFilterNode, TimeSpan contextAbsoluteIntentStartTime);
-		object GetStateAt(TimeSpan timeOffset);
+		object GetStateAt(TimeSpan intentRelativeTime);
 	}
-	public interface IIntent<out T> : IIntent {
-		T GetStateAt(TimeSpan timeOffset);
+
+	public interface IIntent<out T> : IIntent
+		where T : IIntentDataType {
+		T GetStateAt(TimeSpan intentRelativeTime);
 	}
 }
