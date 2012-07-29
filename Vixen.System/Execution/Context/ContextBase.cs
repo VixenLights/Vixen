@@ -5,7 +5,7 @@ using Vixen.Module.Timing;
 using Vixen.Sys;
 
 namespace Vixen.Execution.Context {
-	abstract public class ContextBase : IContext, IStateSourceCollection<Guid, IIntentStateList> {
+	abstract public class ContextBase : IContext, IStateSourceCollection<Guid, IIntentStates> {
 		private ChannelStateSourceCollection _channelStates;
 		private IContextCurrentEffects _currentEffects;
 		private IntentStateBuilder _channelStateBuilder;
@@ -83,7 +83,7 @@ namespace Vixen.Execution.Context {
 			return affectedChannels;
 		}
 
-		public IStateSource<IIntentStateList> GetState(Guid key) {
+		public IStateSource<IIntentStates> GetState(Guid key) {
 			return _channelStates.GetState(key);
 		}
 

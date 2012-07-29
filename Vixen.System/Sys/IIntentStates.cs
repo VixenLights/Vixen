@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 namespace Vixen.Sys {
-	public interface IIntentStateList : IEnumerable<IIntentState> {
+	public interface IIntentStates : IEnumerable<IIntentState> {
 		void AddIntentState(IIntentState intentState);
 	}
 }

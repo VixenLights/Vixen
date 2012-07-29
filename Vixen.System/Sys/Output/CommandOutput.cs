@@ -17,7 +17,6 @@ namespace Vixen.Sys.Output {
 			set {
 				if(!Equals(_command, value)) {
 					_command = value;
-					_FilterState();
 				}
 			}
 		}
@@ -52,15 +51,27 @@ namespace Vixen.Sys.Output {
 			get { return _filters; }
 		}
 
+		public override void UpdateState() {
+			IIntentState[] outputStates = GetOutputStateData();
+
+			_FilterIntentValues(outputStates);
+
+			State = new OutputIntentStateList(outputStates);
+		}
+
 		//*** Not yet any way to set this for an output.
 		//    It is intended to allow an output to override the controller's data policy.
 		public OutputDataPolicy DataPolicy { get; set; }
 
-		private void _FilterState() {
-			if(VixenSystem.AllowFilterEvaluation && Command != null) {
-				foreach(IOutputFilterModuleInstance filter in _filters) {
-					_command = filter.Affect(_command);
-					if(_command == null) return;
+		private void _FilterIntentValues(IIntentState[] intentValues) {
+			if(!VixenSystem.AllowFilterEvaluation) return;
+
+			// Go through each intent value.
+			for(int intentValueIndex = 0; intentValueIndex < intentValues.Length; intentValueIndex++) {
+				// And apply the output's filters to it.
+				foreach(var outputFilter in OutputFilters) {
+					intentValues[intentValueIndex] = outputFilter.Affect(intentValues[intentValueIndex]);
+					if(intentValues[intentValueIndex] == null) break;
 				}
 			}
 		}

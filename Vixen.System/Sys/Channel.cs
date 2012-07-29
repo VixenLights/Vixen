@@ -10,7 +10,7 @@ namespace Vixen.Sys {
 	/// </summary>
 	public class Channel : IOutputStateSource, IEqualityComparer<Channel>, IEquatable<Channel> {
 		private ChannelContextSource _dataSource;
-		private IIntentStateList _state;
+		private IIntentStates _state;
 
 		internal Channel(string name)
 			: this(Guid.NewGuid(), name) {
@@ -33,7 +33,7 @@ namespace Vixen.Sys {
 			_state = _AggregateStateFromContexts();
 		}
 
-		public IIntentStateList State {
+		public IIntentStates State {
 			get { return _state; }
 		}
 
@@ -61,7 +61,7 @@ namespace Vixen.Sys {
 			return Id.GetHashCode();
 		}
 
-		private IIntentStateList _AggregateStateFromContexts() {
+		private IIntentStates _AggregateStateFromContexts() {
 			//In reality, all this needs to do is call GetChannelState on each context
 			//and put them all into a single collection.
 			// NotNull() - filter out any null lists resulting from the context not yet having

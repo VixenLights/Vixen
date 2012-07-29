@@ -7,6 +7,6 @@
 		//    State = state;
 		//}
 
-		public IIntentStateList State { get; set; }
+		public IIntentStates State { get; set; }
 	}
 }

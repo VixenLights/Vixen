@@ -4,7 +4,6 @@ using System.Linq;
 namespace Vixen.Sys.Output {
 	abstract public class Output : IHasOutputSources {
 		private HashSet<IOutputStateSource> _sources;
-		private OutputIntentStateList _state;
 
 		internal Output() {
 			Name = "Unnamed";
@@ -14,13 +13,11 @@ namespace Vixen.Sys.Output {
 		// Completely independent; nothing is current dependent upon this value.
 		public string Name { get; set; }
 
-		public void UpdateState() {
-			_state = _GetOutputStateData();
+		virtual public void UpdateState() {
+			State = new OutputIntentStateList(GetOutputStateData());
 		}
 
-		public IIntentStateList State {
-			get { return _state; }
-		}
+		public IIntentStates State { get; protected set; }
 
 		public void AddSource(IOutputStateSource source) {
 			_sources.Add(source);
@@ -38,13 +35,11 @@ namespace Vixen.Sys.Output {
 			_sources.Clear();
 		}
 
-		private OutputIntentStateList _GetOutputStateData() {
-			IEnumerable<IIntentState> intentStates = _sources.SelectMany(_GetSourceData).NotNull();
-			IIntentState[] states = intentStates.ToArray();
-			return new OutputIntentStateList(states);
+		protected IIntentState[] GetOutputStateData() {
+			return _sources.SelectMany(_GetSourceData).NotNull().ToArray();
 		}
 
-		private IIntentStateList _GetSourceData(IOutputStateSource source) {
+		private IIntentStates _GetSourceData(IOutputStateSource source) {
 			return source.State;
 		}
 	}

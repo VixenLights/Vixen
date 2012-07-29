@@ -13,6 +13,6 @@ namespace Vixen.Execution {
 		string Name { get; }
 		TimeSpan GetTimeSnapshot();
 		IEnumerable<Guid> UpdateChannelStates(TimeSpan currentTime);
-		IStateSource<IIntentStateList> GetState(Guid key);
+		IStateSource<IIntentStates> GetState(Guid key);
 	}
 }

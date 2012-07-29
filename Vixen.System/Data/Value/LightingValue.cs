@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using Vixen.Sys;
 
 namespace Vixen.Data.Value {
 	public struct LightingValue : IIntentDataType {

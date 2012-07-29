@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using Vixen.Commands;
+using Vixen.Data.Value;
+using Vixen.Sys;
 using Vixen.Sys.Dispatch;
 
 namespace Vixen.Module.OutputFilter {
-	abstract public class OutputFilterModuleInstanceBase : ModuleInstanceBase, IAnyCommandHandler, IOutputFilterModuleInstance, IEqualityComparer<IOutputFilterModuleInstance>, IEquatable<IOutputFilterModuleInstance>, IEqualityComparer<OutputFilterModuleInstanceBase>, IEquatable<OutputFilterModuleInstanceBase> {
+	abstract public class OutputFilterModuleInstanceBase : ModuleInstanceBase, IAnyIntentStateHandler, IOutputFilterModuleInstance, IEqualityComparer<IOutputFilterModuleInstance>, IEquatable<IOutputFilterModuleInstance>, IEqualityComparer<OutputFilterModuleInstanceBase>, IEquatable<OutputFilterModuleInstanceBase> {
 		virtual public bool HasSetup {
 			get { return false; }
 		}
 
 		virtual public bool Setup() { return false; }
 
-		abstract public ICommand Affect(ICommand command);
+		abstract public IIntentState Affect(IIntentState intentValue);
 
 		public bool Equals(IOutputFilterModuleInstance x, IOutputFilterModuleInstance y) {
 			return base.Equals(x, y);
@@ -37,23 +38,19 @@ namespace Vixen.Module.OutputFilter {
 			return Equals(other as IOutputFilterModuleInstance);
 		}
 
-		public void Handle(_8BitCommand obj) {
+		public void Handle(IIntentState<ColorValue> obj) {
 			Affect(obj);
 		}
 
-		public void Handle(_16BitCommand obj) {
+		public void Handle(IIntentState<LightingValue> obj) {
 			Affect(obj);
 		}
 
-		public void Handle(_32BitCommand obj) {
+		public void Handle(IIntentState<PositionValue> obj) {
 			Affect(obj);
 		}
 
-		public void Handle(_64BitCommand obj) {
-			Affect(obj);
-		}
-
-		public void Handle(ColorCommand obj) {
+		public void Handle(IIntentState<CommandValue> obj) {
 			Affect(obj);
 		}
 	}

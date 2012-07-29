@@ -1,4 +1,4 @@
 ﻿namespace Vixen.Sys {
-	public interface IChannelStateSource : IStateSource<IIntentStateList> {
+	public interface IChannelStateSource : IStateSource<IIntentStates> {
 	}
 }
