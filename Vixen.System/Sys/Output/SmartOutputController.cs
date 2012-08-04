@@ -21,18 +21,23 @@ namespace Vixen.Sys.Output {
 			if(Module != null) {
 				BeginOutputChange();
 				try {
-					UpdateOutputStates(x => {
-							IntentChangeCollection intentChanges = null;
-							IEnumerable<IIntent> currentState = x.LastSetState;
-							IEnumerable<IIntent> newState = x.State.Select(y => y.Intent);
-							if(!currentState.SequenceEqual(newState)) { //*** test the effectiveness of this
-								IEnumerable<IIntent> addedIntents = newState.Except(currentState);
-								IEnumerable<IIntent> removedIntents = currentState.Except(newState);
-								intentChanges = new IntentChangeCollection(addedIntents, removedIntents);
-							}
-							x.IntentChangeCollection = intentChanges;
-							x.LastSetState = newState.ToArray();
-						});
+					Outputs.AsParallel().ForAll(x => {
+						x.UpdateState();
+
+					//UpdateOutputStates(x => {
+						IntentChangeCollection intentChanges = null;
+						IIntent[] currentState = x.LastSetState;
+						IIntent[] newState = x.State.Select(y => y.Intent).ToArray();
+						if(!currentState.SequenceEqual(newState)) { //*** test the effectiveness of this
+							IEnumerable<IIntent> addedIntents = newState.Except(currentState);
+							IEnumerable<IIntent> removedIntents = currentState.Except(newState);
+							intentChanges = new IntentChangeCollection(addedIntents, removedIntents);
+						}
+						x.IntentChangeCollection = intentChanges;
+						x.LastSetState = newState.ToArray();
+					
+						x.LogicalFiltering();
+					});
 					Module.UpdateState(ExtractFromOutputs(x => x.IntentChangeCollection).ToArray());
 				} finally {
 					EndOutputChange();

@@ -40,15 +40,6 @@ namespace Vixen.Sys.Output {
 			get { return _outputArray[index]; }
 		}
 
-		public void UpdateState(Action<T> outputUpdateAction) {
-			_outputs.AsParallel().ForAll(x =>
-			//Parallel.ForEach(_outputs, x =>
-				{
-					x.UpdateState();
-					outputUpdateAction(x);
-				});
-		}
-
 		public void AddSources(IOutputSourceCollection sourceCollection) {
 			if(_sourceCollections.Add(sourceCollection)) {
 				ReloadSources();
@@ -84,13 +75,6 @@ namespace Vixen.Sys.Output {
 			}
 		}
 
-		private IEnumerable<IOutputStateSource> _GetAllOutputSources(int outputIndex) {
-			if(outputIndex < Count) {
-				return _sourceCollections.SelectMany(x => x.GetOutputSources(_controllerId, outputIndex));
-			}
-			return Enumerable.Empty<IOutputStateSource>();
-		}
-
 		public T[] AsArray {
 			get { return _outputArray; }
 		}
@@ -101,6 +85,13 @@ namespace Vixen.Sys.Output {
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
 			return GetEnumerator();
+		}
+
+		private IEnumerable<IOutputStateSource> _GetAllOutputSources(int outputIndex) {
+			if(outputIndex < Count) {
+				return _sourceCollections.SelectMany(x => x.GetOutputSources(_controllerId, outputIndex));
+			}
+			return Enumerable.Empty<IOutputStateSource>();
 		}
 	}
 }

@@ -52,28 +52,28 @@ namespace Vixen.Sys.Output {
 		}
 
 		public override void UpdateState() {
-			IIntentState[] outputStates = GetOutputStateData();
+			State = new OutputIntentStateList(GetOutputStateData());
+		}
 
-			_FilterIntentValues(outputStates);
+		public void LogicalFiltering() {
+			if(!VixenSystem.AllowFilterEvaluation) return;
 
-			State = new OutputIntentStateList(outputStates);
+			// Go through each intent value.
+			for(int intentValueIndex = 0; intentValueIndex < State.Count; intentValueIndex++) {
+				// And apply the output's filters to it.
+				foreach(var outputFilter in OutputFilters) {
+					State[intentValueIndex] = outputFilter.Affect(State[intentValueIndex]);
+					if(State[intentValueIndex] == null) break;
+				}
+			}
+		}
+
+		public void PhysicalFiltering() {
+			// No physical filters yet.
 		}
 
 		//*** Not yet any way to set this for an output.
 		//    It is intended to allow an output to override the controller's data policy.
 		public OutputDataPolicy DataPolicy { get; set; }
-
-		private void _FilterIntentValues(IIntentState[] intentValues) {
-			if(!VixenSystem.AllowFilterEvaluation) return;
-
-			// Go through each intent value.
-			for(int intentValueIndex = 0; intentValueIndex < intentValues.Length; intentValueIndex++) {
-				// And apply the output's filters to it.
-				foreach(var outputFilter in OutputFilters) {
-					intentValues[intentValueIndex] = outputFilter.Affect(intentValues[intentValueIndex]);
-					if(intentValues[intentValueIndex] == null) break;
-				}
-			}
-		}
 	}
 }

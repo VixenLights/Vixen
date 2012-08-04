@@ -28,7 +28,12 @@ namespace Vixen.Sys.Output {
 				BeginOutputChange();
 				try {
 					foreach(OutputController controller in this) {
-						controller.UpdateOutputStates(x => x.Command = _GenerateOutputCommand(x));
+						controller.Outputs.AsParallel().ForAll(x => {
+							x.UpdateState();
+							x.LogicalFiltering();
+							x.Command = _GenerateOutputCommand(x);
+							x.PhysicalFiltering();
+						});
 					}
 
 					// Latch out the new state.

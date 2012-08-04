@@ -37,10 +37,6 @@ namespace Vixen.Sys.Output {
 			Monitor.Exit(_outputs);
 		}
 
-		protected void UpdateOutputStates(Action<U> outputUpdateAction) {
-			_outputs.UpdateState(outputUpdateAction);
-		}
-
 		protected IEnumerable<V> ExtractFromOutputs<V>(Func<U,V> outputPropertySelector) {
 			return _outputs.Select(outputPropertySelector);
 		}
