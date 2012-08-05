@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{32FE8B99-4091-4B3B-95EF-53976217B8EB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NShapeTest</RootNamespace>
+    <AssemblyName>NShapeTest</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(SolutionDir)\Output\Common\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>$(SolutionDir)\Release\Common\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>..\..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DelaySign>false</DelaySign>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\Dataweb.NShape.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="CommandTest.cs" />
+    <Compile Include="ExceptionTest.cs" />
+    <Compile Include="GeometryTest.cs" />
+    <Compile Include="RepositoryComparer.cs" />
+    <Compile Include="RepositoryTest.cs" />
+    <Compile Include="DiagramBaseTest.cs" />
+    <Compile Include="Helpers.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AuthoringTests.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Shadow Include="Test References\Dataweb.nShape.Core.accessor" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\NShape.csproj">
+      <Project>{9EFE1059-E2DC-4576-B9E3-4AE3F998CB28}</Project>
+      <Name>NShape %28VixenModules\Common\NShape\NShape%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ElectricalShapes\NShapeElectricalShapes.csproj">
+      <Project>{D8A7182E-BE69-4B4D-B20D-851FE1800C3C}</Project>
+      <Name>NShapeElectricalShapes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FlowChartShapes\NShapeFlowChartShapes.csproj">
+      <Project>{DB90D9B2-D4F8-4D09-92C5-A7C1AC57FA4E}</Project>
+      <Name>NShapeFlowChartShapes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GeneralModelObjects\NShapeGeneralModelObjects.csproj">
+      <Project>{5FDD54E9-BE12-4C3D-8051-0F90A4EA27D4}</Project>
+      <Name>NShapeGeneralModelObjects</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GeneralShapes\NShapeGeneralShapes.csproj">
+      <Project>{1272F77E-D926-4310-AE8B-858909B10F0C}</Project>
+      <Name>NShapeGeneralShapes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftwareArchitectureShapes\NShapeSoftwareArchitectureShapes.csproj">
+      <Project>{FFC46D3E-DA4E-4214-84C9-53A49C75BA77}</Project>
+      <Name>NShapeSoftwareArchitectureShapes</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Dataweb.NShape.snk">
+      <Link>Dataweb.NShape.snk</Link>
+    </None>
+    <None Include="app.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
