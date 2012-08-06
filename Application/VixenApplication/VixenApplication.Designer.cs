@@ -58,6 +58,7 @@
 			this.labelVersion = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.groupBoxSystemConfig = new System.Windows.Forms.GroupBox();
+			this.buttonSetupOutputPreviews = new System.Windows.Forms.Button();
 			this.buttonSetupOutputControllers = new System.Windows.Forms.Button();
 			this.buttonSetupChannels = new System.Windows.Forms.Button();
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
@@ -65,7 +66,7 @@
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabelExecutionState = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabel_memory = new System.Windows.Forms.ToolStripStatusLabel();
-			this.buttonSetupOutputPreviews = new System.Windows.Forms.Button();
+			this.button1 = new System.Windows.Forms.Button();
 			this.menuStripMain.SuspendLayout();
 			this.groupBoxSequences.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -231,8 +232,8 @@
 			// 
 			// panel1
 			// 
-			this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.panel1.BackColor = System.Drawing.Color.White;
 			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panel1.Controls.Add(this.label3);
@@ -286,6 +287,16 @@
 			this.groupBoxSystemConfig.TabIndex = 12;
 			this.groupBoxSystemConfig.TabStop = false;
 			this.groupBoxSystemConfig.Text = "System Configuration";
+			// 
+			// buttonSetupOutputPreviews
+			// 
+			this.buttonSetupOutputPreviews.Location = new System.Drawing.Point(12, 103);
+			this.buttonSetupOutputPreviews.Name = "buttonSetupOutputPreviews";
+			this.buttonSetupOutputPreviews.Size = new System.Drawing.Size(180, 30);
+			this.buttonSetupOutputPreviews.TabIndex = 7;
+			this.buttonSetupOutputPreviews.Text = "Configure Previews";
+			this.buttonSetupOutputPreviews.UseVisualStyleBackColor = true;
+			this.buttonSetupOutputPreviews.Click += new System.EventHandler(this.buttonSetupOutputPreviews_Click);
 			// 
 			// buttonSetupOutputControllers
 			// 
@@ -351,21 +362,22 @@
 			this.toolStripStatusLabel_memory.Text = "Resource Usage";
 			this.toolStripStatusLabel_memory.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
-			// buttonSetupOutputPreviews
+			// button1
 			// 
-			this.buttonSetupOutputPreviews.Location = new System.Drawing.Point(12, 103);
-			this.buttonSetupOutputPreviews.Name = "buttonSetupOutputPreviews";
-			this.buttonSetupOutputPreviews.Size = new System.Drawing.Size(180, 30);
-			this.buttonSetupOutputPreviews.TabIndex = 7;
-			this.buttonSetupOutputPreviews.Text = "Configure Previews";
-			this.buttonSetupOutputPreviews.UseVisualStyleBackColor = true;
-			this.buttonSetupOutputPreviews.Click += new System.EventHandler(this.buttonSetupOutputPreviews_Click);
+			this.button1.Location = new System.Drawing.Point(284, 314);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(75, 23);
+			this.button1.TabIndex = 14;
+			this.button1.Text = "button1";
+			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Click += new System.EventHandler(this.button1_Click);
 			// 
 			// VixenApplication
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(461, 407);
+			this.Controls.Add(this.button1);
 			this.Controls.Add(this.statusStrip);
 			this.Controls.Add(this.groupBoxSystemConfig);
 			this.Controls.Add(this.panel1);
@@ -428,6 +440,7 @@
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel_memory;
 		private System.Windows.Forms.Button buttonSetupOutputPreviews;
+		private System.Windows.Forms.Button button1;
 	}
 }
 

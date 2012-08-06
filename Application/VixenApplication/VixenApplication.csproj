@@ -84,6 +84,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -117,6 +118,12 @@
     </Compile>
     <Compile Include="EffectParametersForm.Designer.cs">
       <DependentUpon>EffectParametersForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="InstalledModules.cs">
       <SubType>Form</SubType>
@@ -180,6 +187,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="EffectParametersForm.resx">
       <DependentUpon>EffectParametersForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="InstalledModules.resx">
       <DependentUpon>InstalledModules.cs</DependentUpon>
@@ -257,6 +267,45 @@
     <ProjectReference Include="..\..\Common\Controls\Controls.csproj">
       <Project>{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}</Project>
       <Name>Controls</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\NShape\Core\NShape.csproj">
+      <Project>{9EFE1059-E2DC-4576-B9E3-4AE3F998CB28}</Project>
+      <Name>NShape %28VixenModules\Common\NShape\NShape%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\NShape\ElectricalModelObjects\NShapeElectricalModelObjects.csproj">
+      <Project>{98D7199F-0A57-429A-94B0-C7585A924302}</Project>
+      <Name>NShapeElectricalModelObjects</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\NShape\ElectricalShapes\NShapeElectricalShapes.csproj">
+      <Project>{D8A7182E-BE69-4B4D-B20D-851FE1800C3C}</Project>
+      <Name>NShapeElectricalShapes</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\NShape\FlowChartShapes\NShapeFlowChartShapes.csproj">
+      <Project>{DB90D9B2-D4F8-4D09-92C5-A7C1AC57FA4E}</Project>
+      <Name>NShapeFlowChartShapes</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\NShape\GeneralModelObjects\NShapeGeneralModelObjects.csproj">
+      <Project>{5FDD54E9-BE12-4C3D-8051-0F90A4EA27D4}</Project>
+      <Name>NShapeGeneralModelObjects</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\NShape\GeneralShapes\NShapeGeneralShapes.csproj">
+      <Project>{1272F77E-D926-4310-AE8B-858909B10F0C}</Project>
+      <Name>NShapeGeneralShapes</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\NShape\SoftwareArchitectureShapes\NShapeSoftwareArchitectureShapes.csproj">
+      <Project>{FFC46D3E-DA4E-4214-84C9-53A49C75BA77}</Project>
+      <Name>NShapeSoftwareArchitectureShapes</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\NShape\WinFormsUI\NShapeWinFormsUI.csproj">
+      <Project>{5EAB131C-1C93-4C3F-A1D8-D711053DE33C}</Project>
+      <Name>NShapeWinFormsUI</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
