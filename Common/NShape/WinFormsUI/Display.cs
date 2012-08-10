@@ -817,9 +817,21 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// </summary>
 		[Category("Behavior")]
 		[DefaultValue(Display.DefaultValueMinRotateDistance)]
-		public int MinRotateRange {
+		public int MinRotateRange
+		{
 			get { return minRotateDistance; }
 			set { minRotateDistance = value; }
+		}
+
+		/// <summary>
+		/// Specifies if clicks and double clicks should only be passed to the top-most shape, or to all.
+		/// </summary>
+		[Category("Behavior")]
+		[DefaultValue(Display.DefaultValueClicksOnlyAffectTopShape)]
+		public bool ClicksOnlyAffectTopShape
+		{
+			get { return clicksOnlyAffectTopShape; }
+			set { clicksOnlyAffectTopShape = value; }
 		}
 
 		#endregion
@@ -4432,13 +4444,31 @@ namespace Dataweb.NShape.WinFormsUI {
 				// FindShapes can return duplicates, so we have to check if the 
 				// ShapeClick event was already raised for a found shape
 				shapeBuffer.Clear();
+				Shape topShape = null;
 				foreach (Shape clickedShape in Diagram.Shapes.FindShapes(mouseX, mouseY, ControlPointCapabilities.All, GripSize)) {
 					if (!shapeBuffer.Contains(clickedShape)) {
 						shapeBuffer.Add(clickedShape);
-						// Raise ShapeClick-Events if a shape has been clicked
+					}
+					if (topShape == null || topShape.ZOrder < clickedShape.ZOrder) {
+						if ((clickedShape.Layers & HiddenLayers) != clickedShape.Layers)
+							topShape = clickedShape;
+					}
+				}
+
+				// Raise ShapeClick-Events if a shape has been clicked
+				if (ClicksOnlyAffectTopShape) {
+					if (topShape != null) {
 						if (isDoubleClickEvent)
-							OnShapeDoubleClick(new DiagramPresenterShapeClickEventArgs(clickedShape, WinFormHelpers.GetMouseEventArgs(MouseEventType.MouseUp, eventArgs)));
-						else OnShapeClick(new DiagramPresenterShapeClickEventArgs(clickedShape, WinFormHelpers.GetMouseEventArgs(MouseEventType.MouseUp, eventArgs)));
+							OnShapeDoubleClick(new DiagramPresenterShapeClickEventArgs(topShape, WinFormHelpers.GetMouseEventArgs(MouseEventType.MouseUp, eventArgs)));
+						else
+							OnShapeClick(new DiagramPresenterShapeClickEventArgs(topShape,WinFormHelpers.GetMouseEventArgs(MouseEventType.MouseUp,eventArgs)));
+					}
+				} else {
+					foreach (var shape in shapeBuffer) {
+						if (isDoubleClickEvent)
+							OnShapeDoubleClick(new DiagramPresenterShapeClickEventArgs(shape, WinFormHelpers.GetMouseEventArgs(MouseEventType.MouseUp, eventArgs)));
+						else
+							OnShapeClick(new DiagramPresenterShapeClickEventArgs(shape, WinFormHelpers.GetMouseEventArgs(MouseEventType.MouseUp, eventArgs)));
 					}
 				}
 			}
@@ -5477,6 +5507,7 @@ namespace Dataweb.NShape.WinFormsUI {
 		private const bool DefaultValueSnapToGrid = true;
 		private const int DefaultValueSnapDistance = 5;
 		private const int DefaultValueMinRotateDistance = 30;
+		private const bool DefaultValueClicksOnlyAffectTopShape = false;
 
 		// Appearance
 		private const int DefaultValueGripSize = 3;
@@ -5553,6 +5584,7 @@ namespace Dataweb.NShape.WinFormsUI {
 		private Timer autoScrollTimer = new Timer();
 		private ScrollEventArgs scrollEventArgsH = new ScrollEventArgs(ScrollEventType.ThumbTrack, 0);
 		private ScrollEventArgs scrollEventArgsV = new ScrollEventArgs(ScrollEventType.ThumbTrack, 0);
+		private bool clicksOnlyAffectTopShape = false;
 
 		private bool showScrollBars = DefaultValueShowScrollBars;
 		private bool hideMenuItemsIfNotGranted = DefaultValueHideMenuItemsIfNotGranted;
