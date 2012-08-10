@@ -21,8 +21,13 @@ namespace VixenApplication
 		private Project myproject;
 		private DiagramSetController dsc;
 
-		private Shape secondlastshape;
+		private List<FilterShape> ChannelShapes;
+
 		private Shape lastshape;
+		private Shape secondlastshape;
+
+		private Layer _visibleLayer;
+		private Layer _hiddenLayer;
 
 		public Form1()
 		{
@@ -51,13 +56,38 @@ namespace VixenApplication
 
 			diagramDisplay.Diagram = dsc.CreateDiagram("qwer");
 			diagramDisplay.Diagram.Size = new Size(600, 600);
+			//diagramDisplay.AutoScrollPosition = new Point(0, 0);
+			//diagramDisplay.AutoScrollMinSize = diagramDisplay.Size; // Size(600, 800);
+
+			_visibleLayer = new Layer("Visible");
+			//_visibleLayer.Id = LayerIds.Layer01;
+			_hiddenLayer = new Layer("Hidden");
+			//_hiddenLayer.Id = LayerIds.Layer02;
+
+			diagramDisplay.Diagram.Layers.Add(_visibleLayer);
+			diagramDisplay.Diagram.Layers.Add(_hiddenLayer);
+			diagramDisplay.SetLayerVisibility(_visibleLayer.Id, true);
+			diagramDisplay.SetLayerVisibility(_hiddenLayer.Id, false);
 
 			diagramDisplay.CurrentTool = new SelectionTool();
 			diagramDisplay.ShowDefaultContextMenu = false;
+			diagramDisplay.ClicksOnlyAffectTopShape = true;
+
+			ChannelShapes = new List<FilterShape>();
+
+
+			// A: fixed shapes: connect only
+			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
+				'A', StandardRole.Operator, Permission.Connect);
+			// B: movable shapes (filters): connect, layout (movable)
+			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
+				'B', StandardRole.Operator, Permission.Connect | Permission.Layout);
+			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).CurrentRole = StandardRole.Operator;
 		}
 
 		private void button2_Click(object sender, EventArgs e)
 		{
+			/*
 			EllipseBase ellipse = (EllipseBase)myproject.ShapeTypes["Ellipse"].CreateInstance();
 			//d.Shapes.Add(ellipse);
 			diagramDisplay.Diagram.Shapes.Add(ellipse);
@@ -69,11 +99,22 @@ namespace VixenApplication
 			
 
 			diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape)ellipse, diagramDisplay.Diagram);
+			 */
+			Template template = new Template("connector", myproject.ShapeTypes["Polyline"].CreateInstance());
+			diagramDisplay.CurrentTool = new LinearShapeCreationTool(template);
+
+
+
 		}
 
 		private void button3_Click(object sender, EventArgs e)
 		{
-			if (diagramDisplay.Diagram.Shapes.Count < 2)
+			diagramDisplay.CurrentTool = new SelectionTool();
+
+
+			/*
+			if
+				(diagramDisplay.Diagram.Shapes.Count < 2)
 				return;
 
 			Polyline line = (Polyline)myproject.ShapeTypes["Polyline"].CreateInstance();
@@ -82,13 +123,13 @@ namespace VixenApplication
 
 			line.Connect(ControlPointId.FirstVertex, secondlastshape, ControlPointId.Reference);
 			line.Connect(ControlPointId.LastVertex, lastshape, ControlPointId.Reference);
-			
+			*/
+
+
 		}
 
 		private void button4_Click(object sender, EventArgs e)
 		{
-			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions('A', StandardRole.Guest, Permission.Connect);
-			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).CurrentRole = StandardRole.Guest;
 
 			//display1.Diagram = d;
 
@@ -108,6 +149,30 @@ namespace VixenApplication
 		private void display1_ShapeDoubleClick(object sender, DiagramPresenterShapeClickEventArgs e)
 		{
 			log("shape doubleclick: " + e.Shape.Type);
+			var shape = (FilterShape)e.Shape;
+
+			// workaround: only modify the shape if it's currently selected. The diagram likes to
+			// send click events to all shapes under the mouse, even if they're not active.
+			if (!diagramDisplay.SelectedShapes.Contains(shape)) {
+				log("shape doubleclick: NOT acting on shape " + shape.Node.Name + ", as it's not selected");
+				return;
+			}
+
+			if (shape.Expanded) {
+				log("closing shape: " + shape.Node.Name);
+				shape.Expanded = false;
+				//foreach (var childShape in shape.ChildFilterShapes) {
+				//    _HideShapeAndChildren(childShape);
+				//}
+			} else {
+				log("opening shape: " + shape.Node.Name);
+				shape.Expanded = true;
+				//foreach (var childShape in shape.ChildFilterShapes) {
+				//    _ShowShapeAndChildren(childShape);
+				//}
+			}
+
+			_ResizeAndPositionChannelShapes();
 		}
 
 		private void display1_ShapesInserted(object sender, DiagramPresenterShapesEventArgs e)
@@ -144,83 +209,104 @@ namespace VixenApplication
 
 		private void button5_Click(object sender, EventArgs e)
 		{
-			//int nodeXOffset = 30;
-			int nodeYOffset = SHAPE_CHANNELS_Y_TOP;
-
 			foreach (var node in VixenSystem.Nodes.GetRootNodes())
 			{
-				FilterShape shape = MakeChannelNodeShape(node, SHAPE_CHANNELS_WIDTH, nodeYOffset, 1);
-				nodeYOffset += shape.Height + SHAPE_CHANNELS_SPACING;
-
-				//diagramDisplay.Diagram.Shapes.Add(shape);
-				//diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape)shape, diagramDisplay.Diagram);
-
-				/*
-				FilterShape nodebox = (FilterShape)myproject.ShapeTypes["FilterShape"].CreateInstance();
-				nodebox.SetCaptionText(0, node.Name);
-				diagramDisplay.Diagram.Shapes.Add(nodebox);
-				diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape)nodebox, diagramDisplay.Diagram);
-
-				foreach (var child in node.Children)
-				{
-					FilterShape childbox = (FilterShape)myproject.ShapeTypes["FilterShape"].CreateInstance();
-					childbox.SetCaptionText(0, child.Name);
-					diagramDisplay.Diagram.Shapes.Add(childbox);
-					diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape)childbox, diagramDisplay.Diagram);				
-				}
-
-
-				nodebox.Width = 200;
-				nodebox.Height = 30;
-
-				nodebox.X = nodeXOffset + nodebox.Width / 2;
-				nodebox.Y = nodeYOffset + nodebox.Height / 2;
-
-				nodeYOffset += nodebox.Height + 10;
-				 */
-
+				FilterShape shape = _MakeChannelNodeShape(node, 1);
+				ChannelShapes.Add(shape);
 			}
 		}
 
 		private void button6_Click(object sender, EventArgs e)
 		{
-
+			_ResizeAndPositionChannelShapes();
 		}
 
 		private void button7_Click(object sender, EventArgs e)
 		{
-
+			Debugger.Break();
 		}
 
-		private FilterShape MakeChannelNodeShape(ChannelNode node, int width, int yTop, int zOrder)
+		private void _ResizeAndPositionChannelShapes()
+		{
+			int y = SHAPE_CHANNELS_Y_TOP;
+			foreach (var channelShape in ChannelShapes) {
+				_ResizeAndPositionChannelShape(channelShape, SHAPE_CHANNELS_WIDTH, y, true);
+				y += channelShape.Height + SHAPE_CHANNELS_SPACING;
+			}
+		}
+
+		private void _ResizeAndPositionChannelShape(FilterShape shape, int width, int y, bool visible)
+		{
+			if (visible) {
+				_ShowShape(shape);
+			} else {
+				_HideShape(shape);
+			}
+
+			if (visible && shape.Expanded && shape.ChildFilterShapes.Count > 0) {
+				int curY = y + SHAPE_CHANNELS_GROUP_HEADER_HEIGHT;
+				foreach (var childShape in shape.ChildFilterShapes) {
+					_ResizeAndPositionChannelShape(childShape, width - SHAPE_CHILD_WIDTH_REDUCTION, curY, true);
+					curY += childShape.Height + SHAPE_CHANNELS_SPACING;
+				}
+				shape.Width = width;
+				shape.Height = (curY - SHAPE_CHANNELS_SPACING + SHAPE_CHANNELS_GROUP_FOOTER_HEIGHT) - y;
+			} else {
+				shape.Width = width;
+				shape.Height = SHAPE_CHANNELS_HEIGHT;
+				foreach (var childShape in shape.ChildFilterShapes) {
+					_ResizeAndPositionChannelShape(childShape, width, y, false);
+				}
+			}
+			shape.X = SHAPE_CHANNELS_X_LOCATION;
+			shape.Y = y + shape.Height / 2;
+		}
+
+		private FilterShape _MakeChannelNodeShape(ChannelNode node, int zOrder)
 		{
 			FilterShape shape = (FilterShape)myproject.ShapeTypes["FilterShape"].CreateInstance();
 			shape.Node = node;
 			diagramDisplay.Diagram.Shapes.Add(shape, zOrder);
 			diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape)shape, diagramDisplay.Diagram);
+			diagramDisplay.Diagram.AddShapeToLayers(shape, _visibleLayer.Id);
 
 			if (node.Children.Count() > 0) {
-				int currentYTop = yTop + SHAPE_CHANNELS_GROUP_HEADER_HEIGHT;
-
 				foreach (var child in node.Children) {
-					FilterShape childShape = MakeChannelNodeShape(child, width - SHAPE_CHILD_WIDTH_REDUCTION, currentYTop, zOrder + 1);
-					currentYTop += childShape.Height + SHAPE_CHANNELS_SPACING;
+					FilterShape childShape = _MakeChannelNodeShape(child, zOrder + 1);
 					shape.ChildFilterShapes.Add(childShape);
-					//shape.Children.Add(childShape, zOrder + 1);
 				}
-
-				shape.Width = width;
-				shape.Height = (currentYTop - SHAPE_CHANNELS_SPACING + SHAPE_CHANNELS_GROUP_FOOTER_HEIGHT) - yTop;
-			}
-			else {
-				shape.Width = width;
-				shape.Height = SHAPE_CHANNELS_HEIGHT;
+			} else {
 				shape.OutputCount = 1;
 			}
-			shape.X = SHAPE_CHANNELS_X_LOCATION;
-			shape.Y = yTop + shape.Height / 2;
-
 			return shape;
+		}
+
+		private void _HideShape(FilterShape shape)
+		{
+			diagramDisplay.Diagram.AddShapeToLayers(shape, _hiddenLayer.Id);
+			diagramDisplay.Diagram.RemoveShapeFromLayers(shape, _visibleLayer.Id);
+		}
+
+		private void _ShowShape(FilterShape shape)
+		{
+			diagramDisplay.Diagram.AddShapeToLayers(shape, _visibleLayer.Id);
+			diagramDisplay.Diagram.RemoveShapeFromLayers(shape, _hiddenLayer.Id);
+		}
+
+		private void _HideShapeAndChildren(FilterShape shape)
+		{
+			_HideShape(shape);
+			foreach (var childFilterShape in shape.ChildFilterShapes) {
+				_HideShapeAndChildren(childFilterShape);
+			}
+		}
+
+		private void _ShowShapeAndChildren(FilterShape shape)
+		{
+			_ShowShape(shape);
+			foreach (var childFilterShape in shape.ChildFilterShapes) {
+				_ShowShapeAndChildren(childFilterShape);
+			}
 		}
 
 		// the central X point of all channel shapes
@@ -257,6 +343,7 @@ namespace VixenApplication
 			ChildFilterShapes = new List<FilterShape>();
 			_font = new Font("Arial", 14, GraphicsUnit.Pixel);
 			_textBrush = new SolidBrush(Color.Black);
+			Expanded = true;
 		}
 
 		public FilterShape(ShapeType shapeType, Template template) : base(shapeType, template)
@@ -308,9 +395,10 @@ namespace VixenApplication
 
 		public List<FilterShape> ChildFilterShapes { get; private set; }
 		public ChannelNode Node { get; set; }
+		public bool Expanded { get; set; }
+
 		private Font _font { get; set; }
 		private Brush _textBrush { get; set; }
-
 
 		public override void Draw(Graphics graphics)
 		{

@@ -272,6 +272,7 @@
     <ProjectReference Include="..\..\Common\NShape\Core\NShape.csproj">
       <Project>{9EFE1059-E2DC-4576-B9E3-4AE3F998CB28}</Project>
       <Name>NShape %28VixenModules\Common\NShape\NShape%29</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Common\NShape\ElectricalModelObjects\NShapeElectricalModelObjects.csproj">
       <Project>{98D7199F-0A57-429A-94B0-C7585A924302}</Project>
