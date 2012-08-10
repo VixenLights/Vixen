@@ -1918,6 +1918,8 @@ namespace Dataweb.NShape {
 				case Action.Select:
 					// Perform selection
 					ShapeAtCursorInfo shapeAtCursorInfo = ShapeAtCursorInfo.Empty;
+					// temp hack to always select the top-most shape: don't try and select the lower shapes
+					/*
 					if (!selectedShapeAtCursorInfo.IsEmpty) {
 						if (selectedShapeAtCursorInfo.Shape.ContainsPoint(mouseState.X, mouseState.Y)) {
 							Shape shape = ActionDiagramPresenter.Diagram.Shapes.FindShape(mouseState.X, mouseState.Y, ControlPointCapabilities.None, 0, selectedShapeAtCursorInfo.Shape);
@@ -1927,7 +1929,9 @@ namespace Dataweb.NShape {
 								shapeAtCursorInfo.CaptionIndex = -1;
 							}
 						}
-					} else shapeAtCursorInfo = FindShapeAtCursor(diagramPresenter, mouseState.X, mouseState.Y, ControlPointCapabilities.None, 0, false);
+					} else
+					*/
+					shapeAtCursorInfo = FindShapeAtCursor(diagramPresenter, mouseState.X, mouseState.Y, ControlPointCapabilities.None, 0, false);
 					result = PerformSelection(ActionDiagramPresenter, mouseState, shapeAtCursorInfo);
 
 					SetSelectedShapeAtCursor(ActionDiagramPresenter, mouseState.X, mouseState.Y, ActionDiagramPresenter.ZoomedGripSize, ControlPointCapabilities.All);
@@ -2142,11 +2146,14 @@ namespace Dataweb.NShape {
 							}
 						}
 					}
+					// temp hack to always select the top-most shape: don't try and select the lower shapes
+					/*
 					// Third, check if there are non-selected shapes below the selected shape under the cursor
 					Shape startShape = selectedShapeAtCursorInfo.Shape;
 					while (startShape.Parent != null) startShape = startShape.Parent;
 					if (shapeToSelect == null && diagramPresenter.Diagram.Shapes.Contains(startShape))
 						shapeToSelect = diagramPresenter.Diagram.Shapes.FindShape(mouseState.X, mouseState.Y, capabilities, range, startShape);
+					*/
 				}
 			}
 
