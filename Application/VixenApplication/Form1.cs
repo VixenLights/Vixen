@@ -13,6 +13,7 @@ using Dataweb.NShape.Advanced;
 using Dataweb.NShape.Controllers;
 using Dataweb.NShape.GeneralShapes;
 using Vixen.Sys;
+using Vixen.Sys.Output;
 
 namespace VixenApplication
 {
@@ -21,7 +22,8 @@ namespace VixenApplication
 		private Project myproject;
 		private DiagramSetController dsc;
 
-		private List<FilterShape> ChannelShapes;
+		private List<ChannelNodeShape> ChannelShapes;
+		private List<ControllerShape> ControllerShapes;
 
 		private Shape lastshape;
 		private Shape secondlastshape;
@@ -73,15 +75,15 @@ namespace VixenApplication
 			diagramDisplay.ShowDefaultContextMenu = false;
 			diagramDisplay.ClicksOnlyAffectTopShape = true;
 
-			ChannelShapes = new List<FilterShape>();
-
-
-			// A: fixed shapes: connect only
+			// A: fixed shapes with no connection points: nothing
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
-				'A', StandardRole.Operator, Permission.Connect);
-			// B: movable shapes (filters): connect, layout (movable)
+				'A', StandardRole.Operator, Permission.None);
+			// B: fixed shapes with connection points: connect only
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
-				'B', StandardRole.Operator, Permission.Connect | Permission.Layout);
+				'B', StandardRole.Operator, Permission.Connect);
+			// C: movable shapes (filters): connect, layout (movable)
+			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
+				'C', StandardRole.Operator, Permission.Connect | Permission.Layout);
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).CurrentRole = StandardRole.Operator;
 		}
 
@@ -131,14 +133,6 @@ namespace VixenApplication
 		private void button4_Click(object sender, EventArgs e)
 		{
 
-			//display1.Diagram = d;
-
-
-			//if (display1.DiagramSetController.Project.Repository.GetDiagram("qwer"))
-			//display1.DiagramSetController.Project.Repository.Update(display1.Diagram);
-			//display1.DiagramSetController.Project.Repository.InsertAll(display1.Diagram);
-			//display1.DiagramSetController.Project.Repository.Update(display1.Diagram);
-
 		}
 
 		private void display1_ShapeClick(object sender, DiagramPresenterShapeClickEventArgs e)
@@ -149,30 +143,28 @@ namespace VixenApplication
 		private void display1_ShapeDoubleClick(object sender, DiagramPresenterShapeClickEventArgs e)
 		{
 			log("shape doubleclick: " + e.Shape.Type);
-			var shape = (FilterShape)e.Shape;
+			var shape = (FilterSetupShapeBase)e.Shape;
 
 			// workaround: only modify the shape if it's currently selected. The diagram likes to
 			// send click events to all shapes under the mouse, even if they're not active.
 			if (!diagramDisplay.SelectedShapes.Contains(shape)) {
-				log("shape doubleclick: NOT acting on shape " + shape.Node.Name + ", as it's not selected");
+				log("shape doubleclick: NOT acting on shape " + shape.Title + ", as it's not selected");
 				return;
 			}
 
-			if (shape.Expanded) {
-				log("closing shape: " + shape.Node.Name);
-				shape.Expanded = false;
-				//foreach (var childShape in shape.ChildFilterShapes) {
-				//    _HideShapeAndChildren(childShape);
-				//}
-			} else {
-				log("opening shape: " + shape.Node.Name);
-				shape.Expanded = true;
-				//foreach (var childShape in shape.ChildFilterShapes) {
-				//    _ShowShapeAndChildren(childShape);
-				//}
+			if (shape is NestingSetupShape) {
+				NestingSetupShape s = (shape as NestingSetupShape);
+				if (s.Expanded) {
+					log("closing shape: " + shape.Title);
+					s.Expanded = false;
+				}
+				else {
+					log("opening shape: " + shape.Title);
+					s.Expanded = true;
+				}
 			}
 
-			_ResizeAndPositionChannelShapes();
+			_ResizeAndPositionShapes();
 		}
 
 		private void display1_ShapesInserted(object sender, DiagramPresenterShapesEventArgs e)
@@ -209,16 +201,13 @@ namespace VixenApplication
 
 		private void button5_Click(object sender, EventArgs e)
 		{
-			foreach (var node in VixenSystem.Nodes.GetRootNodes())
-			{
-				FilterShape shape = _MakeChannelNodeShape(node, 1);
-				ChannelShapes.Add(shape);
-			}
+			_CreateShapesFromChannels();
+			_CreateShapesFromControllers();
 		}
 
 		private void button6_Click(object sender, EventArgs e)
 		{
-			_ResizeAndPositionChannelShapes();
+			_ResizeAndPositionShapes();
 		}
 
 		private void button7_Click(object sender, EventArgs e)
@@ -226,16 +215,23 @@ namespace VixenApplication
 			Debugger.Break();
 		}
 
+
+
+
+
+
+
+		/*
 		private void _ResizeAndPositionChannelShapes()
 		{
 			int y = SHAPE_CHANNELS_Y_TOP;
-			foreach (var channelShape in ChannelShapes) {
+			foreach (ChannelNodeShape channelShape in ChannelShapes) {
 				_ResizeAndPositionChannelShape(channelShape, SHAPE_CHANNELS_WIDTH, y, true);
 				y += channelShape.Height + SHAPE_CHANNELS_SPACING;
 			}
 		}
 
-		private void _ResizeAndPositionChannelShape(FilterShape shape, int width, int y, bool visible)
+		private void _ResizeAndPositionChannelShape(ChannelNodeShape shape, int width, int y, bool visible)
 		{
 			if (visible) {
 				_ShowShape(shape);
@@ -245,7 +241,7 @@ namespace VixenApplication
 
 			if (visible && shape.Expanded && shape.ChildFilterShapes.Count > 0) {
 				int curY = y + SHAPE_CHANNELS_GROUP_HEADER_HEIGHT;
-				foreach (var childShape in shape.ChildFilterShapes) {
+				foreach (ChannelNodeShape childShape in shape.ChildFilterShapes) {
 					_ResizeAndPositionChannelShape(childShape, width - SHAPE_CHILD_WIDTH_REDUCTION, curY, true);
 					curY += childShape.Height + SHAPE_CHANNELS_SPACING;
 				}
@@ -254,168 +250,312 @@ namespace VixenApplication
 			} else {
 				shape.Width = width;
 				shape.Height = SHAPE_CHANNELS_HEIGHT;
-				foreach (var childShape in shape.ChildFilterShapes) {
+				foreach (ChannelNodeShape childShape in shape.ChildFilterShapes) {
 					_ResizeAndPositionChannelShape(childShape, width, y, false);
 				}
 			}
 			shape.X = SHAPE_CHANNELS_X_LOCATION;
 			shape.Y = y + shape.Height / 2;
 		}
+		*/
 
-		private FilterShape _MakeChannelNodeShape(ChannelNode node, int zOrder)
+
+		private void _CreateShapesFromChannels()
 		{
-			FilterShape shape = (FilterShape)myproject.ShapeTypes["FilterShape"].CreateInstance();
+			ChannelShapes = new List<ChannelNodeShape>();
+			foreach (ChannelNode node in VixenSystem.Nodes.GetRootNodes()) {
+				ChannelNodeShape channelShape = _MakeChannelNodeShape(node, 1);
+				ChannelShapes.Add(channelShape);
+			}
+		}
+
+		private void _CreateShapesFromControllers()
+		{
+			ControllerShapes = new List<ControllerShape>();
+			foreach (IOutputDevice controller in VixenSystem.Controllers) {
+				ControllerShape controllerShape = _MakeControllerShape(controller.Id, 1);
+				ControllerShapes.Add(controllerShape);
+			}
+		}
+
+
+		private void _ResizeAndPositionShapes()
+		{
+			int y = SHAPE_Y_TOP;
+			foreach (ChannelNodeShape channelShape in ChannelShapes) {
+				_ResizeAndPositionShape(channelShape, SHAPE_CHANNELS_WIDTH, SHAPE_CHANNELS_X_LOCATION, y, true);
+				y += channelShape.Height + SHAPE_VERTICAL_SPACING;
+			}
+			y = SHAPE_Y_TOP;
+			foreach (ControllerShape controllerShape in ControllerShapes) {
+				_ResizeAndPositionShape(controllerShape, SHAPE_CONTROLLERS_WIDTH, SHAPE_CONTROLLERS_X_LOCATION, y, true);
+				y += controllerShape.Height + SHAPE_VERTICAL_SPACING;
+			}
+		}
+
+		private void _ResizeAndPositionShape(FilterSetupShapeBase shape, int width, int x, int y, bool visible)
+		{
+			if (visible) {
+				_ShowShape(shape);
+			} else {
+				_HideShape(shape);
+			}
+
+			if (visible && (shape is NestingSetupShape) && (shape as NestingSetupShape).Expanded &&
+				(shape as NestingSetupShape).ChildFilterShapes.Count > 0)
+			{
+				int curY = y + SHAPE_GROUP_HEADER_HEIGHT;
+				foreach (FilterSetupShapeBase childShape in (shape as NestingSetupShape).ChildFilterShapes) {
+					_ResizeAndPositionShape(childShape, width - SHAPE_CHILD_WIDTH_REDUCTION, x, curY, true);
+					curY += childShape.Height + SHAPE_VERTICAL_SPACING;
+				}
+				shape.Width = width;
+				shape.Height = (curY - SHAPE_VERTICAL_SPACING + SHAPE_GROUP_FOOTER_HEIGHT) - y;
+			} else {
+				shape.Width = width;
+				shape.Height = SHAPE_CHANNELS_HEIGHT;
+				if (shape is NestingSetupShape) {
+					foreach (FilterSetupShapeBase childShape in (shape as NestingSetupShape).ChildFilterShapes) {
+						_ResizeAndPositionShape(childShape, width, x, y, false);
+					}
+				}
+			}
+			shape.X = x;
+			shape.Y = y + shape.Height / 2;
+		}
+
+
+
+
+
+		private ChannelNodeShape _MakeChannelNodeShape(ChannelNode node, int zOrder)
+		{
+			ChannelNodeShape shape = (ChannelNodeShape)myproject.ShapeTypes["ChannelNodeShape"].CreateInstance();
 			shape.Node = node;
+			shape.Title = node.Name;
 			diagramDisplay.Diagram.Shapes.Add(shape, zOrder);
 			diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape)shape, diagramDisplay.Diagram);
 			diagramDisplay.Diagram.AddShapeToLayers(shape, _visibleLayer.Id);
 
 			if (node.Children.Count() > 0) {
 				foreach (var child in node.Children) {
-					FilterShape childShape = _MakeChannelNodeShape(child, zOrder + 1);
-					shape.ChildFilterShapes.Add(childShape);
+					FilterSetupShapeBase childSetupShapeBase = _MakeChannelNodeShape(child, zOrder + 1);
+					shape.ChildFilterShapes.Add(childSetupShapeBase);
 				}
+				shape.SecurityDomainName = 'A';
 			} else {
-				shape.OutputCount = 1;
+				shape.SecurityDomainName = 'B';
 			}
 			return shape;
 		}
 
-		private void _HideShape(FilterShape shape)
+
+		private ControllerShape _MakeControllerShape(Guid controllerId, int zOrder)
 		{
-			diagramDisplay.Diagram.AddShapeToLayers(shape, _hiddenLayer.Id);
-			diagramDisplay.Diagram.RemoveShapeFromLayers(shape, _visibleLayer.Id);
+			OutputController controller = VixenSystem.Controllers.GetController(controllerId);
+
+			ControllerShape controllerShape = (ControllerShape)myproject.ShapeTypes["ControllerShape"].CreateInstance();
+			controllerShape.ControllerId = controllerId;
+			controllerShape.Title = controller.Name;
+			controllerShape.SecurityDomainName = 'A';
+
+			diagramDisplay.Diagram.Shapes.Add(controllerShape, zOrder);
+			diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape)controllerShape, diagramDisplay.Diagram);
+			diagramDisplay.Diagram.AddShapeToLayers(controllerShape, _visibleLayer.Id);
+
+			for (int i = 0; i < controller.OutputCount; i++ )
+			{
+				OutputShape outputShape = (OutputShape)myproject.ShapeTypes["OutputShape"].CreateInstance();
+				outputShape.ControllerReference = new ControllerReference(controllerId, i);
+				if (controller.Outputs[i].Name.Length <= 0)
+					outputShape.Title = outputShape.ControllerReference.ToString();
+				else
+					outputShape.Title = controller.Outputs[i].Name;
+				outputShape.SecurityDomainName = 'B';
+				
+				diagramDisplay.Diagram.Shapes.Add(outputShape, zOrder + 1);
+				diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape)outputShape, diagramDisplay.Diagram);
+				diagramDisplay.Diagram.AddShapeToLayers(outputShape, _visibleLayer.Id);
+
+				controllerShape.ChildFilterShapes.Add(outputShape);
+			}
+
+			return controllerShape;
 		}
 
-		private void _ShowShape(FilterShape shape)
+
+
+
+
+
+
+
+		private void _HideShape(FilterSetupShapeBase setupShapeBase)
 		{
-			diagramDisplay.Diagram.AddShapeToLayers(shape, _visibleLayer.Id);
-			diagramDisplay.Diagram.RemoveShapeFromLayers(shape, _hiddenLayer.Id);
+			diagramDisplay.Diagram.AddShapeToLayers(setupShapeBase, _hiddenLayer.Id);
+			diagramDisplay.Diagram.RemoveShapeFromLayers(setupShapeBase, _visibleLayer.Id);
 		}
 
-		private void _HideShapeAndChildren(FilterShape shape)
+		private void _ShowShape(FilterSetupShapeBase setupShapeBase)
 		{
-			_HideShape(shape);
-			foreach (var childFilterShape in shape.ChildFilterShapes) {
-				_HideShapeAndChildren(childFilterShape);
+			diagramDisplay.Diagram.AddShapeToLayers(setupShapeBase, _visibleLayer.Id);
+			diagramDisplay.Diagram.RemoveShapeFromLayers(setupShapeBase, _hiddenLayer.Id);
+		}
+
+		private void _HideShapeAndChildren(NestingSetupShape nestingShape)
+		{
+			_HideShape(nestingShape);
+			foreach (var childFilterShape in nestingShape.ChildFilterShapes) {
+				if (childFilterShape is NestingSetupShape)
+					_HideShapeAndChildren((NestingSetupShape)childFilterShape);
 			}
 		}
 
-		private void _ShowShapeAndChildren(FilterShape shape)
+		private void _ShowShapeAndChildren(NestingSetupShape nestingShape)
 		{
-			_ShowShape(shape);
-			foreach (var childFilterShape in shape.ChildFilterShapes) {
-				_ShowShapeAndChildren(childFilterShape);
+			_ShowShape(nestingShape);
+			foreach (var childFilterShape in nestingShape.ChildFilterShapes) {
+				if (childFilterShape is NestingSetupShape)
+					_ShowShapeAndChildren((NestingSetupShape)childFilterShape);
 			}
 		}
 
-		// the central X point of all channel shapes
+		// the central X point of shapes
 		internal const int SHAPE_CHANNELS_X_LOCATION = 100;
-		// the starting top of all channel shapes
-		internal const int SHAPE_CHANNELS_Y_TOP = 30;
-		// the (base) width of all channels (inner children will be smaller)
+		internal const int SHAPE_CONTROLLERS_X_LOCATION = 500;
+
+		// the starting top of all shapes
+		internal const int SHAPE_Y_TOP = 30;
+
+		// the (base) width of all shapes (inner children will be smaller)
 		internal const int SHAPE_CHANNELS_WIDTH = 160;
-		// the height of all channel shapes
+		internal const int SHAPE_CONTROLLERS_WIDTH = 200;
+		internal const int SHAPE_FILTERS_WIDTH = 160;
+
+		// the default height of all shapes
 		internal const int SHAPE_CHANNELS_HEIGHT = 32;
+		internal const int SHAPE_CONTROLLERS_HEIGHT = 32;
+		internal const int SHAPE_FILTERS_HEIGHT = 60;
+
 		// the vertical spacing between channels
-		internal const int SHAPE_CHANNELS_SPACING = 10;
+		internal const int SHAPE_VERTICAL_SPACING = 10;
+
 		// how much the width of inner children is reduced
 		internal const int SHAPE_CHILD_WIDTH_REDUCTION = 16;
+
 		// how much of a parent shape should be reserved/kept for the wrapping above/below
-		internal const int SHAPE_CHANNELS_GROUP_HEADER_HEIGHT = 32;
-		internal const int SHAPE_CHANNELS_GROUP_FOOTER_HEIGHT = 8;
-
-
-		internal const int SHAPE_OUTPUTS_X_LOCATION = 500;
-
+		internal const int SHAPE_GROUP_HEADER_HEIGHT = 32;
+		internal const int SHAPE_GROUP_FOOTER_HEIGHT = 8;
 	}
 
 
 
 
 
-	public class FilterShape : RoundedBox
+
+
+
+
+
+
+
+
+
+
+
+
+	public abstract class FilterSetupShapeBase : RoundedBox
 	{
-		private void _init()
+		protected virtual void _init()
 		{
 			_inputCount = 0;
 			_outputCount = 0;
-			ChildFilterShapes = new List<FilterShape>();
-			_font = new Font("Arial", 14, GraphicsUnit.Pixel);
-			_textBrush = new SolidBrush(Color.Black);
-			Expanded = true;
 		}
 
-		public FilterShape(ShapeType shapeType, Template template) : base(shapeType, template)
+		protected FilterSetupShapeBase(ShapeType shapeType, Template template) : base(shapeType, template)
 		{
-			_init();
 		}
 
-		public FilterShape(ShapeType shapeType, IStyleSet styleSet) : base(shapeType, styleSet)
+		protected FilterSetupShapeBase(ShapeType shapeType, IStyleSet styleSet) : base(shapeType, styleSet)
 		{
-			_init();
 		}
 
-		public override Shape Clone()
+		public override void CopyFrom(Shape source)
 		{
-			FilterShape result = new FilterShape(Type, (Template)null);
-			result.CopyFrom(this);
-			result.InputCount = InputCount;
-			result.OutputCount = OutputCount;
-			result.ChildFilterShapes = new List<FilterShape>(ChildFilterShapes);
-			result.Node = Node;
-			return result;
+			base.CopyFrom(source);
+			if (source is FilterSetupShapeBase)
+			{
+				FilterSetupShapeBase src = (FilterSetupShapeBase)source;
+				InputCount = src.InputCount;
+				OutputCount = src.OutputCount;
+			}
 		}
 
-		static public FilterShape CreateInstance(ShapeType shapeType, Template template)
-		{
-			return new FilterShape(shapeType, template);
-		}
-
-
-		private void _recalcControlPoints()
+		protected void _recalcControlPoints()
 		{
 			controlPoints = new Point[ControlPointCount];
 			CalcControlPoints();			
 		}
 
 		private int _inputCount;
-		public int InputCount
+		public virtual int InputCount
 		{
 			get { return _inputCount; }
 			set { _inputCount = value; _recalcControlPoints(); }
 		}
 
 		private int _outputCount;
-		public int OutputCount
+		public virtual int OutputCount
 		{
 			get { return _outputCount; }
 			set { _outputCount = value; _recalcControlPoints(); }
 		}
 
-		public List<FilterShape> ChildFilterShapes { get; private set; }
-		public ChannelNode Node { get; set; }
-		public bool Expanded { get; set; }
+		private Font _customFont = null;
+		private static readonly Font _defaultFont = new Font("Arial", 14, GraphicsUnit.Pixel);
+		protected Font _font
+		{
+			get
+			{
+				if (_customFont != null)
+					return _customFont;
+				else
+					return _defaultFont;
+			}
+			set { _customFont = value; }
+		}
 
-		private Font _font { get; set; }
-		private Brush _textBrush { get; set; }
+		private Brush _customTextBrush = null;
+		private static readonly Brush _defaultTextBrush = new SolidBrush(Color.Black);
+		protected Brush _textBrush
+		{
+			get
+			{
+				if (_customTextBrush != null)
+					return _customTextBrush;
+				else
+					return _defaultTextBrush;
+			}
+			set { _customTextBrush = value; }
+		}
+
+		public virtual string Title { get; set; }
 
 		public override void Draw(Graphics graphics)
 		{
 			base.Draw(graphics);
-
-			SizeF stringSize = graphics.MeasureString(Node.Name, _font);
-			float x = X - (stringSize.Width / 2f);
-			float y = Y - (Height / 2f);
-
-			if (ChildFilterShapes.Count > 0)
-				y += (Form1.SHAPE_CHANNELS_GROUP_HEADER_HEIGHT - stringSize.Height) / 2f;
-			else
-				y += (Height - stringSize.Height) / 2f;
-
-			graphics.DrawString(Node.Name, _font, _textBrush, x, y);
+			DrawCustom(graphics);
 		}
 
+		public virtual void DrawCustom(Graphics graphics)
+		{
+			SizeF stringSize = graphics.MeasureString(Title, _font);
+			float x = X - (stringSize.Width / 2f);
+			float y = Y - (Height / 2f);
+			y += (Height - stringSize.Height) / 2f;
+
+			graphics.DrawString(Title, _font, _textBrush, x, y);
+		}
 
 		public override bool HasControlPointCapability(ControlPointId controlPointId, ControlPointCapabilities controlPointCapability)
 		{
@@ -428,11 +568,16 @@ namespace VixenApplication
 
 			if (controlPointId == ControlPointId.Reference || index == 0)
 			{
-				return ((controlPointCapability & ControlPointCapabilities.Reference) > 0);
+				return ReferenceControlPointHasCapability(controlPointCapability);
 			}
 
 			// default to any other control points not having any capabilities (shouldn't be any left, really)
 			return false;
+		}
+
+		protected virtual bool ReferenceControlPointHasCapability(ControlPointCapabilities controlPointCapability)
+		{
+			return ((controlPointCapability & ControlPointCapabilities.Reference) > 0);
 		}
 
 		protected override void CalcControlPoints()
@@ -486,14 +631,351 @@ namespace VixenApplication
 	}
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+	public abstract class NestingSetupShape : FilterSetupShapeBase
+	{
+		protected override void _init()
+		{
+			base._init();
+			ChildFilterShapes = new List<FilterSetupShapeBase>();
+			Expanded = true;
+		}
+
+		protected NestingSetupShape(ShapeType shapeType, Template template)
+			: base(shapeType, template)
+		{
+		}
+
+		protected NestingSetupShape(ShapeType shapeType, IStyleSet styleSet)
+			: base(shapeType, styleSet)
+		{
+		}
+
+		public override void CopyFrom(Shape source)
+		{
+			base.CopyFrom(source);
+			if (source is NestingSetupShape) {
+				NestingSetupShape src = (NestingSetupShape)source;
+				ChildFilterShapes = new List<FilterSetupShapeBase>(src.ChildFilterShapes);
+			}
+		}
+
+		public List<FilterSetupShapeBase> ChildFilterShapes { get; private set; }
+
+		public bool Expanded { get; set; }
+
+		public override void DrawCustom(Graphics graphics)
+		{
+			if (ChildFilterShapes.Count == 0)
+			{
+				base.DrawCustom(graphics);
+				return;
+			}
+
+			SizeF stringSize = graphics.MeasureString(Title, _font);
+			float x = X - (stringSize.Width / 2f);
+			float y = Y - (Height / 2f);
+			y += (Form1.SHAPE_GROUP_HEADER_HEIGHT - stringSize.Height) / 2f;
+
+			graphics.DrawString(Title, _font, _textBrush, x, y);
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	public class ChannelNodeShape : NestingSetupShape
+	{
+		protected override void _init()
+		{
+			base._init();
+			_recalcControlPoints();
+		}
+
+		public ChannelNodeShape(ShapeType shapeType, Template template)
+			: base(shapeType, template)
+		{
+			_init();
+		}
+
+		public ChannelNodeShape(ShapeType shapeType, IStyleSet styleSet)
+			: base(shapeType, styleSet)
+		{
+			_init();
+		}
+
+		public override void CopyFrom(Shape source)
+		{
+			base.CopyFrom(source);
+			if (source is ChannelNodeShape) {
+				ChannelNodeShape src = (ChannelNodeShape)source;
+				Node = src.Node;
+			}
+		}
+
+		public override Shape Clone()
+		{
+			ChannelNodeShape result = new ChannelNodeShape(Type, (Template)null);
+			result.CopyFrom(this);
+			return result;
+		}
+
+		static public ChannelNodeShape CreateInstance(ShapeType shapeType, Template template)
+		{
+			return new ChannelNodeShape(shapeType, template);
+		}
+
+		public ChannelNode Node { get; set; }
+
+		public override int InputCount
+		{
+			get { return 0; }
+			set { }
+		}
+
+		public override int OutputCount
+		{
+			get { return (ChildFilterShapes != null && ChildFilterShapes.Count > 0) ? 0 : 1; }
+			set { }
+		}
+
+		public override void DrawCustom(Graphics graphics)
+		{
+			base.DrawCustom(graphics);
+		}
+
+		protected override bool ReferenceControlPointHasCapability(ControlPointCapabilities controlPointCapability)
+		{
+			return (controlPointCapability & ControlPointCapabilities.Reference) > 0 ||
+				(OutputCount == 1 && (controlPointCapability & ControlPointCapabilities.Connect) > 0);
+		}
+
+	}
+
+
+
+
+
+
+
+
+	public class ControllerShape : NestingSetupShape
+	{
+		protected override void _init()
+		{
+			base._init();
+		}
+
+		public ControllerShape(ShapeType shapeType, Template template)
+			: base(shapeType, template)
+		{
+			_init();
+		}
+
+		public ControllerShape(ShapeType shapeType, IStyleSet styleSet)
+			: base(shapeType, styleSet)
+		{
+			_init();
+		}
+
+		public override void CopyFrom(Shape source)
+		{
+			base.CopyFrom(source);
+			if (source is ControllerShape) {
+				ControllerShape src = (ControllerShape)source;
+				ControllerId = src.ControllerId;
+			}
+		}
+
+		public override Shape Clone()
+		{
+			ControllerShape result = new ControllerShape(Type, (Template)null);
+			result.CopyFrom(this);
+			return result;
+		}
+
+		static public ControllerShape CreateInstance(ShapeType shapeType, Template template)
+		{
+			return new ControllerShape(shapeType, template);
+		}
+
+		public Guid ControllerId;
+
+		
+		public override int InputCount
+		{
+			get { return 0; }
+			set { }
+		}
+
+		public override int OutputCount
+		{
+			get { return 0; }
+			set { }
+		}
+
+
+		public override void DrawCustom(Graphics graphics)
+		{
+			base.DrawCustom(graphics);
+		}
+	}
+
+
+
+
+
+
+
+
+
+	public class OutputShape : FilterSetupShapeBase
+	{
+		protected override void _init()
+		{
+			base._init();
+		}
+
+		public OutputShape(ShapeType shapeType, Template template)
+			: base(shapeType, template)
+		{
+			_init();
+		}
+
+		public OutputShape(ShapeType shapeType, IStyleSet styleSet)
+			: base(shapeType, styleSet)
+		{
+			_init();
+		}
+
+		public override void CopyFrom(Shape source)
+		{
+			base.CopyFrom(source);
+			if (source is OutputShape) {
+				OutputShape src = (OutputShape)source;
+				ControllerReference = src.ControllerReference;
+			}
+		}
+
+		public override Shape Clone()
+		{
+			OutputShape result = new OutputShape(Type, (Template)null);
+			result.CopyFrom(this);
+			return result;
+		}
+
+		static public OutputShape CreateInstance(ShapeType shapeType, Template template)
+		{
+			return new OutputShape(shapeType, template);
+		}
+
+		public ControllerReference ControllerReference;
+
+		public override int InputCount
+		{
+			get { return 1; }
+			set { }
+		}
+
+		public override int OutputCount
+		{
+			get { return 0; }
+			set { }
+		}
+
+		public override void DrawCustom(Graphics graphics)
+		{
+			base.DrawCustom(graphics);
+		}
+
+		protected override bool ReferenceControlPointHasCapability(ControlPointCapabilities controlPointCapability)
+		{
+			return (controlPointCapability & ControlPointCapabilities.Reference) > 0 ||
+				(controlPointCapability & ControlPointCapabilities.Connect) > 0;
+		}
+
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	public static class NShapeLibraryInitializer
 	{
 		public static void Initialize(IRegistrar registrar)
 		{
 			registrar.RegisterLibrary(namespaceName, preferredRepositoryVersion);
 			registrar.RegisterShapeType(
-				new ShapeType("FilterShape", namespaceName, namespaceName, FilterShape.CreateInstance, FilterShape.GetPropertyDefinitions)
-			);
+				new ShapeType("ChannelNodeShape", namespaceName, namespaceName, ChannelNodeShape.CreateInstance, ChannelNodeShape.GetPropertyDefinitions)
+				);
+			registrar.RegisterShapeType(
+				new ShapeType("ControllerShape", namespaceName, namespaceName, ControllerShape.CreateInstance, ControllerShape.GetPropertyDefinitions)
+				);
+			registrar.RegisterShapeType(
+				new ShapeType("OutputShape", namespaceName, namespaceName, OutputShape.CreateInstance, OutputShape.GetPropertyDefinitions)
+				);
 		}
 
 		private const string namespaceName = "VixenFilterShapes";
