@@ -25,9 +25,5 @@ namespace Vixen.IO.Factory {
 		public IVersionedFileSerializer CreateChannelNodeTemplateSerializer() {
 			return new XmlChannelNodeTemplateSerializer();
 		}
-
-		public IVersionedFileSerializer CreateOutputFilterTemplateSerializer() {
-			return new XmlOutputFilterTemplateSerializer();
-		}
 	}
 }

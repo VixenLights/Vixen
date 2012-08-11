@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Vixen.Sys.Instrumentation;
-using Vixen.Sys.SourceCollection;
 
 namespace Vixen.Sys.Managers {
 	public class ChannelManager : IEnumerable<Channel> {
-		//private Dictionary<Channel, IEnumerator<CommandNode[]>> _channelEnumerators;
 		private ChannelUpdateTimeValue _channelUpdateTimeValue;
 		private Stopwatch _stopwatch;
+		private ChannelDataFlowAdapterFactory _dataFlowAdapters;
 
 		// a mapping of channel  GUIDs to channel instances. Used for quick reverse mapping at runtime.
 		private Dictionary<Guid, Channel> _instances;
@@ -19,13 +17,12 @@ namespace Vixen.Sys.Managers {
 		// quickly and easily find the node that a particular channel references (eg. if we're previewing the rendered data on a virtual display,
 		// or anything else where we need to actually 'reverse' the rendering process).
 		private Dictionary<Channel, ChannelNode> _channelToChannelNode;
-		//private Type _enumeratorChannelsOpenedWith;
 
 		public ChannelManager() {
 			_instances = new Dictionary<Guid,Channel>();
 			_channelToChannelNode = new Dictionary<Channel, ChannelNode>();
-			//_channelEnumerators = new Dictionary<Channel, IEnumerator<CommandNode[]>>();
 			_SetupInstrumentation();
+			_dataFlowAdapters = new ChannelDataFlowAdapterFactory();
 		}
 
 		public ChannelManager(IEnumerable<Channel> channels)
@@ -48,6 +45,8 @@ namespace Vixen.Sys.Managers {
 				lock(_instances) {
 					_instances[channel.Id] = channel;
 				}
+
+				_AddDataFlowParticipant(channel);
 			}
 		}
 
@@ -58,32 +57,15 @@ namespace Vixen.Sys.Managers {
 		}
 
 		public void RemoveChannel(Channel channel) {
-			//IEnumerator<CommandNode[]> enumerator;
-			//if(_channelEnumerators.TryGetValue(channel, out enumerator)) {
-			//    lock(_channelEnumerators) {
-			//        // Kill enumerator if it hasn't been already.
-			//        if (enumerator != null)
-			//            enumerator.Dispose();
-			//        // Remove from channel dictionary.
-			//        _channelEnumerators.Remove(channel);
-			//    }
-			//}
 			lock(_instances) {
 				_instances.Remove(channel.Id);
 			}
+
+			_RemoveDataFlowParticipant(channel);
+
 			// Remove any nodes that reference the channel.
 			VixenSystem.Nodes.RemoveChannelLeaf(channel);
 		}
-
-		//internal void OpenChannels<T>()
-		//    where T : IEnumerator<CommandNode[]> {
-		//    //_enumeratorChannelsOpenedWith = typeof(T);
-		//    //_CreateChannelEnumerators(_instances.Values);
-		//}
-
-		//public void CloseChannels() {
-		//    //_ResetChannelEnumerators();
-		//}
 
 		public Channel GetChannel(Guid id) {
 			if (_instances.ContainsKey(id)) {
@@ -111,39 +93,6 @@ namespace Vixen.Sys.Managers {
 			return null;
 		}
 
-		internal IOutputSourceCollection GetSources() {
-			return new ChannelPatch();
-		}
-
-		///// <summary>
-		///// 
-		///// </summary>
-		///// <param name="channel"></param>
-		///// <returns>Channel's new state, null if no state change.</returns>
-		//public Command UpdateChannelState(Channel channel, out bool updatedState) {
-		//    IEnumerator<CommandNode[]> enumerator;
-		//    updatedState = false;
-
-		//    lock(_channelEnumerators) {
-		//        // we potentially might be trying to update a channel one last time just after it's been
-		//        // deleted (since the _UpdateChannelStates in Execution iterates over a copy of these
-		//        // channels). If so, just ignore it if we can't find this channel. This is probably the
-		//        // best performing solution that doesn't need locking around big chunks of code.
-		//        if (!_channelEnumerators.ContainsKey(channel))
-		//            return null;
-		//        enumerator = _channelEnumerators[channel];
-		//        // Will return true if state has changed.
-		//        // State changes when data qualifies for execution.
-		//        if(enumerator.MoveNext()) {
-		//            Command channelState = Command.Combine(enumerator.Current.Select(x => x.Command));
-		//            channel.Patch.Write(channelState);
-		//            updatedState = true;
-		//            return channelState;
-		//        }
-		//        return null;
-		//    }
-		//}
-
 		public void Update() {
 			lock(_instances) {
 				_stopwatch.Restart();
@@ -154,31 +103,13 @@ namespace Vixen.Sys.Managers {
 			}
 		}
 
-		//private void _CreateChannelEnumerators(params Channel[] channels) {
-		//    _CreateChannelEnumerators(channels as IEnumerable<Channel>);
-		//}
+		private void _AddDataFlowParticipant(Channel channel) {
+			VixenSystem.DataFlow.AddComponent(_dataFlowAdapters.GetAdapter(channel));
+		}
 
-		//private void _CreateChannelEnumerators(IEnumerable<Channel> channels) {
-		//    if(_enumeratorChannelsOpenedWith == null) return;
-
-		//    lock(_channelEnumerators) {
-		//        foreach(Channel channel in channels.ToArray()) {
-		//            if(!_channelEnumerators.ContainsKey(channel) || _channelEnumerators[channel] == null) {
-		//                IEnumerator<CommandNode[]> enumerator = Activator.CreateInstance(_enumeratorChannelsOpenedWith, channel, Vixen.Sys.Execution.SystemTime) as IEnumerator<CommandNode[]>;
-		//                _channelEnumerators[channel] = enumerator;
-		//            }
-		//        }
-		//    }
-		//}
-
-		//private void _ResetChannelEnumerators() {
-		//    lock(_channelEnumerators) {
-		//        foreach(Channel channel in _channelEnumerators.Keys.ToArray()) {
-		//            _channelEnumerators[channel].Dispose();
-		//            _channelEnumerators[channel] = null;
-		//        }
-		//    }
-		//}
+		private void _RemoveDataFlowParticipant(Channel channel) {
+			VixenSystem.DataFlow.RemoveComponent(_dataFlowAdapters.GetAdapter(channel));
+		}
 
 		private string _Uniquify(string name) {
 			if(_instances.Values.Any(x => x.Name == name)) {
@@ -193,6 +124,12 @@ namespace Vixen.Sys.Managers {
 			return name;
 		}
 
+		private void _SetupInstrumentation() {
+			_channelUpdateTimeValue = new ChannelUpdateTimeValue();
+			VixenSystem.Instrumentation.AddValue(_channelUpdateTimeValue);
+			_stopwatch = Stopwatch.StartNew();
+		}
+
 		public IEnumerator<Channel> GetEnumerator()
 		{
 			lock(_instances) {
@@ -204,12 +141,6 @@ namespace Vixen.Sys.Managers {
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
-		}
-
-		private void _SetupInstrumentation() {
-			_channelUpdateTimeValue = new ChannelUpdateTimeValue();
-			VixenSystem.Instrumentation.AddValue(_channelUpdateTimeValue);
-			_stopwatch = Stopwatch.StartNew();
 		}
 	}
 }

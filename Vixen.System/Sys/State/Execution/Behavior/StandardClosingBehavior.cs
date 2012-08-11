@@ -18,9 +18,9 @@
 			//// Close the channels.
 			//VixenSystem.Channels.CloseChannels();
 
-			// Remove the sources.
-			IOutputSourceCollection channelSources = VixenSystem.Channels.GetSources();
-			VixenSystem.Controllers.RemoveSources(channelSources);
+			//// Remove the sources.
+			//IOutputSourceCollection channelSources = VixenSystem.Channels.GetSources();
+			//VixenSystem.Controllers.RemoveSources(channelSources);
 		}
 	}
 }

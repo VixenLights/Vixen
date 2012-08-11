@@ -11,12 +11,15 @@ namespace Vixen.Sys {
 		static public readonly string DefaultFilePath = Path.Combine(Directory, FileName);
 
 		public ModuleStore() {
-			Data = new ModuleStaticDataSet();
+			TypeData = new ModuleStaticDataSet();
+			InstanceData = new ModuleLocalDataSet();
 		}
 
 		public string LoadedFilePath { get; set; }
 
-		public ModuleStaticDataSet Data { get; set; }
+		public ModuleStaticDataSet TypeData { get; set; }
+
+		public ModuleLocalDataSet InstanceData { get; set; }
 
 		public void Save() {
 			VersionedFileSerializer serializer = FileService.Instance.CreateModuleStoreSerializer();

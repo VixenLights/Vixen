@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using Vixen.Commands;
+﻿using Vixen.Commands;
+using Vixen.Data.Flow;
 
 namespace Vixen.Sys {
 	public interface IDataPolicy {
-		ICommand GenerateCommand(IEnumerable<IIntentState> intentStates); 
+		ICommand GenerateCommand(IDataFlowData dataFlowData); 
 	}
 }

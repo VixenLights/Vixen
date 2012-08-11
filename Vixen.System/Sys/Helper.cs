@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Xml.Linq;
+using Vixen.Data.Flow;
 
 namespace Vixen.Sys {
 	static class Helper {
@@ -115,6 +116,10 @@ namespace Vixen.Sys {
 			value = Math.Max(byte.MinValue, value);
 			value = Math.Min(byte.MaxValue, value);
 			return (byte)value;
+		}
+
+		static public IDataFlowData GetOutputState(IDataFlowComponent dataFlowComponent, int outputIndex) {
+			return (outputIndex < dataFlowComponent.Outputs.Length) ? dataFlowComponent.Outputs[outputIndex].Data : null;
 		}
 	}
 }

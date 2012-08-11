@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using Vixen.Module.OutputFilter;
 using Vixen.Sys;
 using Vixen.Sys.Output;
 
@@ -19,18 +17,18 @@ namespace Vixen.IO.Xml {
 		public XElement WriteObject(IOutputDevice value) {
 			OutputController controller = (OutputController)value;
 
-			XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
-			XElement dataSetElement = null;
-			if(controller.ModuleDataSet != null) {
-				dataSetElement = dataSetSerializer.WriteObject(controller.ModuleDataSet);
-			}
+			//XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
+			//XElement dataSetElement = null;
+			//if(controller.ModuleDataSet != null) {
+			//    dataSetElement = dataSetSerializer.WriteObject(controller.ModuleDataSet);
+			//}
 
 			XElement element = new XElement(ELEMENT_CONTROLLER,
 				new XAttribute(ATTR_NAME, controller.Name),
 				new XAttribute(ATTR_HARDWARE_ID, controller.ModuleId),
 				new XAttribute(ATTR_OUTPUT_COUNT, controller.OutputCount),
 				new XAttribute(ATTR_ID, controller.Id),
-				dataSetElement,
+				//dataSetElement,
 				_WriteOutputs(controller));
 
 			return element;
@@ -50,8 +48,8 @@ namespace Vixen.IO.Xml {
 
 			OutputController controller = new OutputController(id.Value, name, outputCount.GetValueOrDefault(), moduleId.Value);
 
-			XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
-			controller.ModuleDataSet = dataSetSerializer.ReadObject(element);
+			//XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
+			//controller.ModuleDataSet = dataSetSerializer.ReadObject(element);
 
 			_ReadOutputs(controller, element);
 
@@ -59,12 +57,11 @@ namespace Vixen.IO.Xml {
 		}
 
 		private XElement _WriteOutputs(OutputController controller) {
-			XmlOutputFilterCollectionSerializer filterCollectionSerializer = new XmlOutputFilterCollectionSerializer();
 			return new XElement(ELEMENT_OUTPUTS,
 					controller.Outputs.Select((x, index) =>
 						new XElement(ELEMENT_OUTPUT,
 							new XAttribute(ATTR_NAME, x.Name),
-							filterCollectionSerializer.WriteObject(x.OutputFilters))));
+							new XAttribute(ATTR_ID, x.Id))));
 		}
 
 		private void _ReadOutputs(OutputController controller, XElement element) {
@@ -80,13 +77,7 @@ namespace Vixen.IO.Xml {
 					CommandOutput output = controller.Outputs[outputIndex];
 
 					output.Name = XmlHelper.GetAttribute(outputElement, ATTR_NAME) ?? "Unnamed output";
-
-					XmlOutputFilterCollectionSerializer filterCollectionSerializer = new XmlOutputFilterCollectionSerializer();
-					IEnumerable<IOutputFilterModuleInstance> filters = filterCollectionSerializer.ReadObject(outputElement);
-					controller.ClearOutputFilters(outputIndex);
-					foreach(IOutputFilterModuleInstance filter in filters) {
-						controller.AddOutputFilter(outputIndex, filter);
-					}
+					output.Id = XmlHelper.GetGuidAttribute(outputElement, ATTR_ID).Value;
 
 					outputIndex++;
 				}

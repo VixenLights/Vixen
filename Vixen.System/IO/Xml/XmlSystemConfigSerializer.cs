@@ -13,7 +13,6 @@ namespace Vixen.IO.Xml {
 
 		public int FileVersion {
 			get { return _serializerBehaviorTemplate.FileVersion; }
-			//set { _serializerBehaviorTemplate.FileVersion = value; }
 		}
 
 		public int ClassVersion {

@@ -73,12 +73,6 @@ namespace Vixen.IO.Xml.Policy {
 			_content.Add(element);
 		}
 
-		protected override void WriteChannelPatching() {
-			XmlChannelPatchingSerializer serializer = new XmlChannelPatchingSerializer();
-			XElement element = serializer.WriteObject(_systemConfig.ChannelPatching);
-			_content.Add(element);
-		}
-
 		protected override void WriteDisabledControllers() {
 			XmlDisabledControllerCollectionSerializer serializer = new XmlDisabledControllerCollectionSerializer();
 			XElement element = serializer.WriteObject(_systemConfig.DisabledControllers.Select(x => x.Id));
@@ -88,6 +82,18 @@ namespace Vixen.IO.Xml.Policy {
 		protected override void WritePreviews() {
 			XmlPreviewCollectionSerializer serializer = new XmlPreviewCollectionSerializer();
 			XElement element = serializer.WriteObject(_systemConfig.Previews);
+			_content.Add(element);
+		}
+
+		protected override void WriteFilters() {
+			XmlOutputFilterCollectionSerializer serializer = new XmlOutputFilterCollectionSerializer();
+			XElement element = serializer.WriteObject(_systemConfig.Filters);
+			_content.Add(element);
+		}
+
+		protected override void WriteDataFlowPatching() {
+			XmlDataFlowPatchCollectionSerializer serializer = new XmlDataFlowPatchCollectionSerializer();
+			XElement element = serializer.WriteObject(_systemConfig.DataFlow);
 			_content.Add(element);
 		}
 
@@ -139,11 +145,6 @@ namespace Vixen.IO.Xml.Policy {
 			_systemConfig.SmartControllers = serializer.ReadObject(_content);
 		}
 
-		protected override void ReadChannelPatching() {
-			XmlChannelPatchingSerializer serializer = new XmlChannelPatchingSerializer();
-			_systemConfig.ChannelPatching = serializer.ReadObject(_content);
-		}
-
 		protected override void ReadDisabledControllers() {
 			XmlDisabledControllerCollectionSerializer serializer = new XmlDisabledControllerCollectionSerializer();
 			_systemConfig.DisabledControllers = serializer.ReadObject(_content).Select(x => _systemConfig.Controllers.FirstOrDefault(y => x == y.Id)).NotNull();
@@ -152,6 +153,16 @@ namespace Vixen.IO.Xml.Policy {
 		protected override void ReadPreviews() {
 			XmlPreviewCollectionSerializer serializer = new XmlPreviewCollectionSerializer();
 			_systemConfig.Previews = serializer.ReadObject(_content);
+		}
+
+		protected override void ReadFilters() {
+			XmlOutputFilterCollectionSerializer serializer = new XmlOutputFilterCollectionSerializer();
+			_systemConfig.Filters = serializer.ReadObject(_content);
+		}
+
+		protected override void ReadDataFlowPatching() {
+			XmlDataFlowPatchCollectionSerializer serializer = new XmlDataFlowPatchCollectionSerializer();
+			_systemConfig.DataFlow = serializer.ReadObject(_content);
 		}
 	}
 }

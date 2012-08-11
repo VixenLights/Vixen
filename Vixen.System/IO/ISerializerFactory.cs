@@ -6,6 +6,5 @@
 		IVersionedFileSerializer CreateSystemContextSerializer();
 		IVersionedFileSerializer CreateProgramSerializer();
 		IVersionedFileSerializer CreateChannelNodeTemplateSerializer();
-		IVersionedFileSerializer CreateOutputFilterTemplateSerializer();
 	}
 }

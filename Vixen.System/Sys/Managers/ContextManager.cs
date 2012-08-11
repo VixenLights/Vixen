@@ -55,21 +55,6 @@ namespace Vixen.Sys.Managers {
 			return context;
 		}
 
-		private IContext _CreateContext(ContextTargetType contextTargetType, ContextFeatures contextFeatures) {
-			if(contextFeatures == null) throw new ArgumentNullException("contextFeatures");
-			Type contextType = _FindContextWithFeatures(contextTargetType, contextFeatures);
-			if(contextType == null) {
-				VixenSystem.Logging.Error("Could not find a context for target type " + contextTargetType + " with features " + contextFeatures);
-				return null;
-			}
-			return (ContextBase)Activator.CreateInstance(contextType);
-		}
-
-		private Type _FindContextWithFeatures(ContextTargetType contextTargetType, ContextFeatures contextFeatures) {
-			IEnumerable<Type> contextTypes = Assembly.GetExecutingAssembly().GetAttributedTypes(typeof(ContextAttribute));
-			return contextTypes.FirstOrDefault(x => x.GetCustomAttributes(typeof(ContextAttribute), false).Cast<ContextAttribute>().Any(y => y.TargetType == contextTargetType && y.Caching == contextFeatures.Caching));
-		}
-
 		public void ReleaseContext(IContext context) {
 			if(_instances.ContainsKey(context.Id)) {
 				_ReleaseContext(context);
@@ -101,27 +86,30 @@ namespace Vixen.Sys.Managers {
 		}
 
 		public IEnumerator<IContext> GetEnumerator() {
-			IContext[] contexts;
+			List<IContext> contexts;
 			lock(_instances) {
-				contexts = _instances.Values.ToArray();
+				contexts = _instances.Values.ToList();
 			}
-			return contexts.Cast<IContext>().GetEnumerator();
+			return contexts.GetEnumerator();
 		}
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
 			return GetEnumerator();
 		}
 
-		protected virtual void OnContextCreated(ContextEventArgs e) {
-			if(ContextCreated != null) {
-				ContextCreated(this, e);
+		private IContext _CreateContext(ContextTargetType contextTargetType, ContextFeatures contextFeatures) {
+			if(contextFeatures == null) throw new ArgumentNullException("contextFeatures");
+			Type contextType = _FindContextWithFeatures(contextTargetType, contextFeatures);
+			if(contextType == null) {
+				VixenSystem.Logging.Error("Could not find a context for target type " + contextTargetType + " with features " + contextFeatures);
+				return null;
 			}
+			return (ContextBase)Activator.CreateInstance(contextType);
 		}
 
-		protected virtual void OnContextReleased(ContextEventArgs e) {
-			if(ContextReleased != null) {
-				ContextReleased(this, e);
-			}
+		private Type _FindContextWithFeatures(ContextTargetType contextTargetType, ContextFeatures contextFeatures) {
+			IEnumerable<Type> contextTypes = Assembly.GetExecutingAssembly().GetAttributedTypes(typeof(ContextAttribute));
+			return contextTypes.FirstOrDefault(x => x.GetCustomAttributes(typeof(ContextAttribute), false).Cast<ContextAttribute>().Any(y => y.TargetType == contextTargetType && y.Caching == contextFeatures.Caching));
 		}
 
 		private void _SetupInstrumentation() {
@@ -144,6 +132,18 @@ namespace Vixen.Sys.Managers {
 			}
 			context.Dispose();
 			OnContextReleased(new ContextEventArgs(context));
+		}
+
+		protected virtual void OnContextCreated(ContextEventArgs e) {
+			if(ContextCreated != null) {
+				ContextCreated(this, e);
+			}
+		}
+
+		protected virtual void OnContextReleased(ContextEventArgs e) {
+			if(ContextReleased != null) {
+				ContextReleased(this, e);
+			}
 		}
 	}
 }

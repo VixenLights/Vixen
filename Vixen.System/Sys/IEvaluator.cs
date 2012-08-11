@@ -7,7 +7,7 @@ namespace Vixen.Sys {
 	/// </summary>
 	public interface IEvaluator : IDispatchable {
 		void Evaluate(IIntentState intentState);
-		object EvaluatorValue { get; }
+		ICommand EvaluatorValue { get; }
 	}
 
 	/// <summary>

@@ -15,9 +15,15 @@ namespace Vixen.Sys.Output {
 
 		protected ModuleBasedController(Guid id, string name, int outputCount, Guid moduleId)
 			: base(id, name, moduleId) {
-			_outputs = new OutputCollection<U>(Id);
+			_outputs = new OutputCollection<U>();
+			_outputs.OutputAdded += OutputAdded;
+			_outputs.OutputRemoved += OutputRemoved;
 			OutputCount = outputCount;
 		}
+
+		protected virtual void OutputRemoved(object sender, OutputCollectionEventArgs<U> e) { }
+
+		protected virtual void OutputAdded(object sender, OutputCollectionEventArgs<U> e) { }
 
 		protected override T GetModule(Guid moduleId) {
 			T module = GetControllerModule(moduleId);
@@ -61,24 +67,24 @@ namespace Vixen.Sys.Output {
 			}
 		}
 
-		public void AddSources(IOutputSourceCollection sources) {
-			_outputs.AddSources(sources);
-		}
+		//public void AddSources(IOutputSourceCollection sources) {
+		//    _outputs.AddSources(sources);
+		//}
 
-		public void RemoveSources(IOutputSourceCollection sources) {
-			_outputs.RemoveSources(sources);
-		}
+		//public void RemoveSources(IOutputSourceCollection sources) {
+		//    _outputs.RemoveSources(sources);
+		//}
 
-		public void ReloadSources() {
-			_outputs.ReloadSources();
-		}
+		//public void ReloadSources() {
+		//    _outputs.ReloadSources();
+		//}
 
-		public void ReloadOutputSources(int outputIndex) {
-			_outputs.ReloadOutputSources(outputIndex);
-		}
+		//public void ReloadOutputSources(int outputIndex) {
+		//    _outputs.ReloadOutputSources(outputIndex);
+		//}
 
-		public void ClearSources(int outputIndex) {
-			_outputs.ClearSources(outputIndex);
-		}
+		//public void ClearSources(int outputIndex) {
+		//    _outputs.ClearSources(outputIndex);
+		//}
 	}
 }

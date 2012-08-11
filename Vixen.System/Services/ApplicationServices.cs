@@ -5,7 +5,6 @@ using System.Reflection;
 using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Module.EffectEditor;
-using Vixen.Module.SequenceType;
 using Vixen.Rule;
 using Vixen.Sys;
 using Vixen.Sys.Output;
@@ -104,10 +103,6 @@ namespace Vixen.Services {
 
 		static public INamingRule[] GetAllNamingRules() {
 			return typeof(INamingRule).FindConcreteImplementationsWithin(Assembly.GetExecutingAssembly()).Select(Activator.CreateInstance).Cast<INamingRule>().ToArray();
-		}
-
-		static public IPatchingRule[] GetAllPatchingRules() {
-			return typeof(IPatchingRule).FindConcreteImplementationsWithin(Assembly.GetExecutingAssembly()).Select(Activator.CreateInstance).Cast<IPatchingRule>().ToArray();
 		}
 
 		static public bool AreAllEffectRequiredPropertiesPresent(IEffectModuleInstance effectModule) {

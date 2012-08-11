@@ -1,6 +1,5 @@
 ﻿using System.Xml.Linq;
 using Vixen.IO.Policy;
-//using Vixen.IO.Xml.Migrator;
 using Vixen.IO.Xml.Policy;
 using Vixen.Sys;
 
@@ -22,13 +21,8 @@ namespace Vixen.IO.Xml.Template {
 			return filePath;
 		}
 
-
 		public ModuleStore CreateNewObjectFor(string filePath) {
 			return new ModuleStore();
 		}
-
-		//public IMigrator GetMigrator(XElement content) {
-		//    return new XmlModuleStoreMigrator(content);
-		//}
 	}
 }

@@ -35,13 +35,13 @@ namespace Vixen.IO.Xml {
 
 			XmlPropertyCollectionSerializer propertyCollectionSerializer = new XmlPropertyCollectionSerializer();
 			XElement propertyCollectionElement = propertyCollectionSerializer.WriteObject(value.Properties.Select(x => x.Descriptor.TypeId));
-			XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
-			XElement propertyDataElement = dataSetSerializer.WriteObject(value.Properties.PropertyData);
+			//XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
+			//XElement propertyDataElement = dataSetSerializer.WriteObject(value.Properties.PropertyData);
 			return new XElement(ELEMENT_NODE,
 				new XAttribute(ATTR_NAME, value.Name),
 				new XAttribute(ATTR_ID, value.Id),
 				propertyCollectionElement,
-				propertyDataElement,
+				//propertyDataElement,
 				channelElements);
 		}
 
@@ -78,11 +78,11 @@ namespace Vixen.IO.Xml {
 			}
 
 			if(node != null) {
-				// Property data
-				// It's not necessary to load the data before the properties, but it will
-				// save it from creating data for each module and then dumping it.
-				XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
-				node.Properties.PropertyData = dataSetSerializer.ReadObject(element);
+				//// Property data
+				//// It's not necessary to load the data before the properties, but it will
+				//// save it from creating data for each module and then dumping it.
+				//XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
+				//node.Properties.PropertyData = dataSetSerializer.ReadObject(element);
 
 				// Properties
 				XmlPropertyCollectionSerializer propertyCollectionSerializer = new XmlPropertyCollectionSerializer();

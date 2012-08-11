@@ -26,7 +26,6 @@ namespace Vixen.IO.Xml.Template {
 				return default(T);
 			}
 
-			//XElement content = _LoadFile(filePath, readTemplate);
 			XElement content = _LoadFile(filePath);
 
 			T obj = readTemplate.CreateNewObjectFor(filePath);
@@ -48,34 +47,14 @@ namespace Vixen.IO.Xml.Template {
 
 		public int FileVersion { get; private set; }
 
-		//public IEnumerable<IFileOperationResult> GetResults() {
-		//    return _results;
-		//}
-
-		//private XElement _LoadFile(string filePath, IXmlStandardFileReadTemplate<T> readTemplate) {
 		private XElement _LoadFile(string filePath) {
 			XmlFileLoader fileLoader = new XmlFileLoader();
 			XElement content = Helper.Load(filePath, fileLoader);
-			//IEnumerable<IFileOperationResult> results = _EnsureContentIsUpToDate(content, filePath, readTemplate);
-			//_AddFileOperationResults(result);
 
 			XmlVersionedContent versionedContent = new XmlVersionedContent(content);
 			FileVersion = versionedContent.Version;
 
 			return content;
 		}
-
-		//private IEnumerable<IFileOperationResult> _EnsureContentIsUpToDate(XElement content, string originalFilePath, IXmlStandardFileReadTemplate<T> readTemplate) {
-		//    IMigrator migrator = readTemplate.GetMigrator(content);
-		//    IFilePolicy filePolicy = readTemplate.GetEmptyFilePolicy();
-		//    XmlFileSerializationHelper serializationHelper = new XmlFileSerializationHelper();
-		//    IEnumerable<IFileOperationResult> results = serializationHelper.EnsureContentIsUpToDate(content, originalFilePath, filePolicy, migrator);
-
-		//    return results;
-		//}
-
-		//private void _AddFileOperationResults(IEnumerable<IFileOperationResult> results) {
-		//    _results.AddRange(results);
-		//}
 	}
 }

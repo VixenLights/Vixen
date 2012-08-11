@@ -10,9 +10,10 @@
 			WriteControllers();
 			WriteControllerLinks();
 			WriteSmartControllers();
-			WriteChannelPatching();
 			WriteDisabledControllers();
 			WritePreviews();
+			WriteFilters();
+			WriteDataFlowPatching();
 		}
 
 		protected abstract void WriteContextFlag();
@@ -24,9 +25,10 @@
 		protected abstract void WriteControllers();
 		protected abstract void WriteControllerLinks();
 		protected abstract void WriteSmartControllers();
-		protected abstract void WriteChannelPatching();
 		protected abstract void WriteDisabledControllers();
 		protected abstract void WritePreviews();
+		protected abstract void WriteFilters();
+		protected abstract void WriteDataFlowPatching();
 
 		public void Read() {
 			ReadContextFlag();
@@ -38,9 +40,10 @@
 			ReadControllers();
 			ReadControllerLinks();
 			ReadSmartControllers();
-			ReadChannelPatching();
 			ReadDisabledControllers();
 			ReadPreviews();
+			ReadFilters();
+			ReadDataFlowPatching();
 		}
 
 		protected abstract void ReadContextFlag();
@@ -52,9 +55,10 @@
 		protected abstract void ReadControllers();
 		protected abstract void ReadControllerLinks();
 		protected abstract void ReadSmartControllers();
-		protected abstract void ReadChannelPatching();
 		protected abstract void ReadDisabledControllers();
 		protected abstract void ReadPreviews();
+		protected abstract void ReadFilters();
+		protected abstract void ReadDataFlowPatching();
 
 		public int Version {
 			get { return 11; }

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
 using Vixen.Commands;
 using Vixen.Sys;
 using Vixen.Sys.Dispatch;
@@ -7,7 +6,7 @@ using Vixen.Sys.Dispatch;
 namespace Vixen.Data.Combinator {
 	abstract public class Combinator<T, ResultType> : Dispatchable<T>, ICombinator<ResultType>, IAnyEvaluatorHandler
 		where T : Combinator<T, ResultType>  {
-		public void Combine(IEnumerable<IEvaluator> evaluators) {
+		public void Combine(IEnumerable<ICommand> evaluators) {
 			CombinatorValue = null;
 
 			foreach(IEvaluator evaluator in evaluators) {
@@ -27,7 +26,7 @@ namespace Vixen.Data.Combinator {
 
 		virtual public void Handle(IEvaluator<ulong> obj) { }
 
-		virtual public void Handle(IEvaluator<Color> obj) { }
+		virtual public void Handle(IEvaluator<System.Drawing.Color> obj) { }
 
 		public ICommand<ResultType> CombinatorValue { get; protected set; }
 

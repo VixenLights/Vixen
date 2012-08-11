@@ -77,14 +77,14 @@ namespace Vixen.Sys.Output {
 
 				// Then we update ourselves from that.
 				_stopwatch.Restart();
-				_UpdateState();
+				UpdateState();
 				_updateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 			} else {
 				_refreshRateValue.Clear();
 			}
 		}
 
-		abstract protected void _UpdateState();
+		abstract protected void UpdateState();
 
 		virtual public IOutputDeviceUpdateSignaler UpdateSignaler {
 			// Let the system assign a default object.

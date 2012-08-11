@@ -4,12 +4,10 @@ using System.Reflection;
 using System.IO;
 using System.Xml.Linq;
 using Vixen.IO.Factory;
-using Vixen.IO.Result;
 using Vixen.Module;
 using Vixen.IO;
 using Vixen.IO.Xml;
 using Vixen.Instrumentation;
-using Vixen.Module.OutputFilter;
 using Vixen.Services;
 using Vixen.Sys.Managers;
 using Vixen.Sys.Output;
@@ -74,10 +72,6 @@ namespace Vixen.Sys {
 						Execution.OpenExecution();
 					}
 
-					//****
-					//_AddPostFiltersToControllers();
-					//****
-
 					_state = RunState.Started;
 					Logging.Info("Vixen System successfully started.");
 				} catch(Exception ex) {
@@ -89,20 +83,6 @@ namespace Vixen.Sys {
 				}
 			}
         }
-
-		private static void _AddPostFiltersToControllers() {
-			Guid grayscaleFilterId = new Guid("{DAC271B0-0743-45ef-B4E0-D5957AF7F019}");
-			Guid colorFilterId = new Guid("{B3C06A83-CE75-4e78-853D-B95B4E69CEAC}");
-
-			foreach(OutputController outputController in Controllers) {
-				for(int outputIndex = 0; outputIndex < outputController.OutputCount; outputIndex++) {
-					IOutputFilterModuleInstance outputFilter = Modules.ModuleManagement.GetOutputFilter(colorFilterId);
-					if(outputFilter != null) {
-						outputController.AddOutputFilter(outputIndex, outputFilter);
-					}
-				}
-			}
-		}
 
         static public void Stop() {
 			if(_state == RunState.Starting || _state == RunState.Started) {
@@ -132,34 +112,30 @@ namespace Vixen.Sys {
 				SystemConfig.Previews = Previews;
 				SystemConfig.Channels = Channels;
 				SystemConfig.Nodes = Nodes.GetRootNodes();
-				SystemConfig.ChannelPatching = ChannelPatching;
 				SystemConfig.ControllerLinking = ControllerLinking;
+				SystemConfig.Filters = Filters;
+				SystemConfig.DataFlow = DataFlow;
 				SystemConfig.Save();
 			}
 		}
 
 		static public void LoadSystemConfig()
 		{
+			DataFlow = new DataFlowManager();
 			Channels = new ChannelManager();
 			Nodes = new NodeManager();
 			Controllers = new ControllerManager();
 			Previews = new PreviewManager();
 			Contexts = new ContextManager();
-			ChannelPatching = new ChannelOutputPatchManager();
+			Filters = new FilterManager(DataFlow);
 			ControllerLinking = new ControllerLinker();
 
 			// Load system data in order of dependency.
 			// The system data generally resides in the data branch, but it
 			// may not be in the case of an alternate context.
 			string systemDataPath = _GetSystemDataPath();
-			ModuleStore = _LoadModuleStore(systemDataPath);
-			SystemConfig = _LoadSystemConfig(systemDataPath);
-
-			if(SystemConfig == null)
-				SystemConfig = new SystemConfig();
-
-			if(ModuleStore == null)
-				ModuleStore = new ModuleStore();
+			ModuleStore = _LoadModuleStore(systemDataPath) ?? new ModuleStore();
+			SystemConfig = _LoadSystemConfig(systemDataPath) ?? new SystemConfig();
 
 			Channels.AddChannels(SystemConfig.Channels);
 			Nodes.AddNodes(SystemConfig.Nodes);
@@ -168,8 +144,11 @@ namespace Vixen.Sys {
 			Controllers.AddRange(SystemConfig.Controllers);
 			Controllers.AddRange(SystemConfig.SmartControllers);
 			Previews.AddRange(SystemConfig.Previews);
-			ChannelPatching.AddPatches(SystemConfig.ChannelPatching);
 			ControllerLinking.AddRange(SystemConfig.ControllerLinking);
+			//Filters.AddRange(SystemConfig.Filters);
+			//DataFlow.AddParticipantRelationships(SystemConfig.DataFlow);
+			DataFlowInitializer dataFlowInitializer = new DataFlowInitializer(SystemConfig);
+			dataFlowInitializer.Run();
 		}
 
     	static public void ReloadSystemConfig()
@@ -222,9 +201,10 @@ namespace Vixen.Sys {
 		static public ControllerManager Controllers { get; private set; }
     	static public PreviewManager Previews { get; private set; }
 		static public ContextManager Contexts { get; private set; }
+		static public FilterManager Filters { get; private set; }
     	static public IInstrumentation Instrumentation { get; private set; }
-		static public ChannelOutputPatchManager ChannelPatching { get; private set; }
 		static public ControllerLinker ControllerLinking { get; private set; }
+    	public static DataFlowManager DataFlow { get; private set; }
 
     	public static Guid Identity {
     		get { return SystemConfig.Identity; }

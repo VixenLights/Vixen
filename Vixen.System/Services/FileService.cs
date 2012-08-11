@@ -46,12 +46,6 @@ namespace Vixen.Services {
 			return _CreateVersionedFileSerializer(migrator, serializer);
 		}
 
-		public VersionedFileSerializer CreateOutputFilterTemplateSerializer() {
-			IVersionedFileSerializer serializer = SerializerFactory.Instance.CreateOutputFilterTemplateSerializer();
-			IMigrator migrator = MigratorFactory.Instance.CreateOutputFilterTemplateMigrator();
-			return _CreateVersionedFileSerializer(migrator, serializer);
-		}
-
 		private static VersionedFileSerializer _CreateVersionedFileSerializer(IMigrator migrator, IVersionedFileSerializer serializer) {
 			return new VersionedFileSerializer(serializer, migrator);
 		}

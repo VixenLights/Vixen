@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Vixen.Commands;
+using Vixen.Data.Flow;
 using Vixen.Module.Preview;
 
 namespace Vixen.Sys.Output {
@@ -19,9 +20,9 @@ namespace Vixen.Sys.Output {
 			return module;
 		}
 
-		protected override void _UpdateState() {
+		protected override void UpdateState() {
 			if(Module != null && DataPolicy != null) {
-				ChannelCommands channelCommands = new ChannelCommands(VixenSystem.Channels.ToDictionary(x => x.Id, x => DataPolicy.GenerateCommand(x.State)));
+				ChannelCommands channelCommands = new ChannelCommands(VixenSystem.Channels.ToDictionary(x => x.Id, x => DataPolicy.GenerateCommand(new IntentsDataFlowData(x.State))));
 				Module.UpdateState(channelCommands);
 			}
 		}

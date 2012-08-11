@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Vixen.Rule;
 using Vixen.Sys;
@@ -55,31 +54,6 @@ namespace Vixen.Services {
 
 			for(int i=0; i<channelNodeArray.Length; i++) {
 				Rename(channelNodeArray[i], names[i]);
-			}
-		}
-
-		public void Patch(ChannelNode channelNode, IPatchingRule patchingRule, bool clearExisting = false) {
-			Patch(channelNode.AsEnumerable(), patchingRule, clearExisting);
-		}
-
-		public void Patch(IEnumerable<ChannelNode> channelNodes, IPatchingRule patchingRule, bool clearExisting = false) {
-			// If this were instead a part of an ongoing operation involving multiple calls to a method
-			// like this, the change set would have to be outside this method and passed in with the
-			// caller being responsible for its commitment.
-			ChannelPatchingChangeSet channelPatchingChangeSet = new ChannelPatchingChangeSet();
-
-			_PatchUsingChangeset(channelNodes, patchingRule, channelPatchingChangeSet);
-	
-			channelPatchingChangeSet.Commit(clearExisting);
-		}
-
-		private void _PatchUsingChangeset(IEnumerable<ChannelNode> channelNodes, IPatchingRule patchingRule, ChannelPatchingChangeSet channelPatchingChangeSet) {
-			Channel[] channelArray = channelNodes.Select(x => x.Channel).NotNull().ToArray();
-			ControllerReferenceCollection[] destinations = patchingRule.GenerateControllerReferenceCollections(channelArray.Length).ToArray();
-
-			int patchesToAdd = Math.Min(channelArray.Length, destinations.Length);
-			for(int i = 0; i < patchesToAdd; i++) {
-				channelPatchingChangeSet.AddChannelPatches(channelArray[i].Id, destinations[i]);
 			}
 		}
 

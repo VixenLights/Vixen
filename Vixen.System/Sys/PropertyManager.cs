@@ -6,12 +6,12 @@ using Vixen.Module.Property;
 namespace Vixen.Sys {
 	public class PropertyManager : IEnumerable<IPropertyModuleInstance> {
 		private Dictionary<Guid, IPropertyModuleInstance> _items = new Dictionary<Guid, IPropertyModuleInstance>();
-		private ModuleLocalDataSet _propertyData;
+		//private ModuleLocalDataSet _propertyData;
 		private ChannelNode _owner;
 
 		public PropertyManager(ChannelNode owner) {
 			_owner = owner;
-			PropertyData = new ModuleLocalDataSet();
+			//PropertyData = new ModuleLocalDataSet();
 		}
 
 		public IPropertyModuleInstance Add(Guid id) {
@@ -50,21 +50,23 @@ namespace Vixen.Sys {
 			return instance;
 		}
 
-		public bool Contains(Guid propertyTypeId)
-		{
+		public bool Contains(Guid propertyTypeId) {
 			return _items.ContainsKey(propertyTypeId);
 		}
 
 		public ModuleLocalDataSet PropertyData {
-			get { return _propertyData; }
-			set {
-				_propertyData = value;
-				// Update any properties we already have.
-				foreach(IPropertyModuleInstance propertyModule in _items.Values) {
-					_propertyData.AssignModuleTypeData(propertyModule);
-				}
-			}
+			get { return VixenSystem.ModuleStore.InstanceData; }
 		}
+		//public ModuleLocalDataSet PropertyData {
+		//    get { return _propertyData; }
+		//    set {
+		//        _propertyData = value;
+		//        // Update any properties we already have.
+		//        foreach(IPropertyModuleInstance propertyModule in _items.Values) {
+		//            _propertyData.AssignModuleTypeData(propertyModule);
+		//        }
+		//    }
+		//}
 
 		public IEnumerator<IPropertyModuleInstance> GetEnumerator() {
 			return _items.Values.GetEnumerator();

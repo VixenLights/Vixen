@@ -17,19 +17,19 @@ namespace Vixen.IO.Xml {
 		public XElement WriteObject(IOutputDevice value) {
 			SmartOutputController controller = (SmartOutputController)value;
 
-			XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
-			XElement dataSetElement = null;
-			if(controller.ModuleDataSet != null) {
-				dataSetElement = dataSetSerializer.WriteObject(controller.ModuleDataSet);
-			}
+			//XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
+			//XElement dataSetElement = null;
+			//if(controller.ModuleDataSet != null) {
+			//    dataSetElement = dataSetSerializer.WriteObject(controller.ModuleDataSet);
+			//}
 
 			XElement element = new XElement(ELEMENT_SMART_CONTROLLER,
 				new XAttribute(ATTR_NAME, controller.Name),
 				new XAttribute(ATTR_HARDWARE_ID, controller.ModuleId),
 				new XAttribute(ATTR_OUTPUT_COUNT, controller.OutputCount),
 				new XAttribute(ATTR_ID, controller.Id),
-				dataSetElement,
-				_WriteOutputNames(controller));
+				//dataSetElement,
+				_WriteOutputs(controller));
 
 			return element;
 		}
@@ -48,22 +48,23 @@ namespace Vixen.IO.Xml {
 
 			SmartOutputController controller = new SmartOutputController(id.Value, name, outputCount.GetValueOrDefault(), moduleId.Value);
 
-			XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
-			controller.ModuleDataSet = dataSetSerializer.ReadObject(element);
+			//XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
+			//controller.ModuleDataSet = dataSetSerializer.ReadObject(element);
 
-			_ReadOutputNames(controller, element);
+			_ReadOutputs(controller, element);
 
 			return controller;
 		}
 
-		private XElement _WriteOutputNames(SmartOutputController controller) {
+		private XElement _WriteOutputs(SmartOutputController controller) {
 			return new XElement(ELEMENT_OUTPUTS,
 					controller.Outputs.Select((x, index) =>
 						new XElement(ELEMENT_OUTPUT,
-							new XAttribute(ATTR_NAME, x.Name))));
+							new XAttribute(ATTR_NAME, x.Name),
+							new XAttribute(ATTR_ID, x.Id))));
 		}
 
-		private void _ReadOutputNames(SmartOutputController controller, XElement element) {
+		private void _ReadOutputs(SmartOutputController controller, XElement element) {
 			XElement outputsElement = element.Element(ELEMENT_OUTPUTS);
 			if(outputsElement != null) {
 				int outputIndex = 0;
@@ -76,6 +77,7 @@ namespace Vixen.IO.Xml {
 					IntentOutput output = controller.Outputs[outputIndex];
 
 					output.Name = XmlHelper.GetAttribute(outputElement, ATTR_NAME) ?? "Unnamed output";
+					output.Id = XmlHelper.GetGuidAttribute(outputElement, ATTR_ID).Value;
 
 					outputIndex++;
 				}

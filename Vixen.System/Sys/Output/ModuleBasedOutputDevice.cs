@@ -6,7 +6,7 @@ namespace Vixen.Sys.Output {
 		where T : class, IOutputModule, IHardwareModule {
 		private Guid _moduleId;
 		private T _module;
-		private ModuleLocalDataSet _dataSet = new ModuleLocalDataSet();
+		//private ModuleLocalDataSet _dataSet = new ModuleLocalDataSet();
 
 		protected ModuleBasedOutputDevice(string name, Guid moduleId)
 			: this(Guid.NewGuid(), name, moduleId) {
@@ -73,12 +73,15 @@ namespace Vixen.Sys.Output {
 		}
 
 		public ModuleLocalDataSet ModuleDataSet {
-			get { return _dataSet; }
-			set {
-				_dataSet = value;
-				_SetModuleData();
-			}
+			get { return VixenSystem.ModuleStore.InstanceData; }
 		}
+		//public ModuleLocalDataSet ModuleDataSet {
+		//    get { return _dataSet; }
+		//    set {
+		//        _dataSet = value;
+		//        _SetModuleData();
+		//    }
+		//}
 
 		override public bool HasSetup {
 			get { return _module.HasSetup; }

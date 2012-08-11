@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using Vixen.Data.Value;
+using Vixen.Commands;
+using Vixen.Data.Flow;
 using Vixen.Sys;
 using Vixen.Sys.Dispatch;
 
 namespace Vixen.Module.OutputFilter {
-	abstract public class OutputFilterModuleInstanceBase : ModuleInstanceBase, IAnyIntentStateHandler, IOutputFilterModuleInstance, IEqualityComparer<IOutputFilterModuleInstance>, IEquatable<IOutputFilterModuleInstance>, IEqualityComparer<OutputFilterModuleInstanceBase>, IEquatable<OutputFilterModuleInstanceBase> {
+	abstract public class OutputFilterModuleInstanceBase : ModuleInstanceBase, IAnyDataFlowDataHandler, IOutputFilterModuleInstance, IEqualityComparer<IOutputFilterModuleInstance>, IEquatable<IOutputFilterModuleInstance>, IEqualityComparer<OutputFilterModuleInstanceBase>, IEquatable<OutputFilterModuleInstanceBase> {
 		virtual public bool HasSetup {
 			get { return false; }
 		}
 
 		virtual public bool Setup() { return false; }
 
-		abstract public IIntentState Affect(IIntentState intentValue);
-
+		#region Equality
 		public bool Equals(IOutputFilterModuleInstance x, IOutputFilterModuleInstance y) {
 			return base.Equals(x, y);
 		}
@@ -37,21 +37,32 @@ namespace Vixen.Module.OutputFilter {
 		public bool Equals(OutputFilterModuleInstanceBase other) {
 			return Equals(other as IOutputFilterModuleInstance);
 		}
+		#endregion
 
-		public void Handle(IIntentState<ColorValue> obj) {
-			Affect(obj);
+		public void Update(IDataFlowData data) {
+			data.Dispatch(this);
 		}
 
-		public void Handle(IIntentState<LightingValue> obj) {
-			Affect(obj);
+		#region Data Flow data handlers
+		virtual public void Handle(IDataFlowData<ICommand> obj) { }
+
+		virtual public void Handle(IDataFlowData<IEnumerable<ICommand>> obj) { }
+
+		virtual public void Handle(IDataFlowData<IEnumerable<IIntentState>> obj) { }
+		#endregion
+
+		#region IDataFlowComponent
+		public Guid DataFlowComponentId {
+			get { return InstanceId; }
 		}
 
-		public void Handle(IIntentState<PositionValue> obj) {
-			Affect(obj);
-		}
+		abstract public DataFlowType InputDataType { get; }
 
-		public void Handle(IIntentState<CommandValue> obj) {
-			Affect(obj);
-		}
+		abstract public DataFlowType OutputDataType { get; }
+
+		abstract public IDataFlowOutput[] Outputs { get; }
+
+		public IDataFlowComponentReference Source { get; set; }
+		#endregion
 	}
 }

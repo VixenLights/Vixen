@@ -99,18 +99,16 @@ namespace Vixen.Module {
 		/// <summary>
 		/// Retrieves the module data without assigning it to a module instance.
 		/// </summary>
-		/// <param name="instance"></param>
-		/// <returns></returns>
 		public IModuleDataModel GetInstanceData(IModuleInstance module) {
 			return _GetOrCreateAsInstanceData(module);
 		}
 
 		private bool _ContainsTypeData(Guid moduleTypeId) {
-			return _dataModels.FirstOrDefault(x => x.ModuleTypeId.Equals(moduleTypeId)) != null;
+			return _dataModels.Any(x => x.ModuleTypeId.Equals(moduleTypeId));
 		}
 
 		private bool _ContainsInstanceData(Guid moduleTypeId, Guid instanceId) {
-			return _dataModels.FirstOrDefault(x => x.ModuleTypeId.Equals(moduleTypeId) && x.ModuleInstanceId.Equals(instanceId)) != null;
+			return _dataModels.Any(x => x.ModuleTypeId.Equals(moduleTypeId) && x.ModuleInstanceId.Equals(instanceId));
 		}
 
 		private IModuleDataModel _GetAsTypeData(IModuleInstance module) {

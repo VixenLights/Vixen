@@ -97,27 +97,27 @@ namespace Vixen.Sys {
 			}
 		}
 
-		public ChannelNode Clone() {
-			ChannelNode node = null;
+		//public ChannelNode Clone() {
+		//    ChannelNode node = null;
 
-			if(IsLeaf) {
-				// We're cloning a node, not the channel.
-				// Multiple nodes referencing a channel need to reference that same channel instance.
-				node = new ChannelNode(Guid.NewGuid(), Name, this.Channel);
-			} else {
-				node = new ChannelNode(Guid.NewGuid(), Name, this.Channel, this.Children.Select(x => x.Clone()));
-			}
+		//    if(IsLeaf) {
+		//        // We're cloning a node, not the channel.
+		//        // Multiple nodes referencing a channel need to reference that same channel instance.
+		//        node = new ChannelNode(Guid.NewGuid(), Name, this.Channel);
+		//    } else {
+		//        node = new ChannelNode(Guid.NewGuid(), Name, this.Channel, this.Children.Select(x => x.Clone()));
+		//    }
 
-			// Property data.
-			node.Properties.PropertyData.Clone(this.Properties.PropertyData);
+		//    // Property data.
+		//    node.Properties.PropertyData.Clone(this.Properties.PropertyData);
 
-			// Properties
-			foreach(IPropertyModuleInstance property in this.Properties) {
-				node.Properties.Add(property.Descriptor.TypeId);
-			}
+		//    // Properties
+		//    foreach(IPropertyModuleInstance property in this.Properties) {
+		//        node.Properties.Add(property.Descriptor.TypeId);
+		//    }
 
-			return node;
-		}
+		//    return node;
+		//}
 
 		public bool IsLeaf {
 			get { return !base.Children.Any(); }

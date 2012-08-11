@@ -13,8 +13,10 @@ namespace Vixen.Services {
 		}
 
 		public void ProjectTemplateInto(IModuleInstance target) {
-			ModuleTemplateModuleManagement manager = Modules.GetManager<IModuleTemplateModuleInstance, ModuleTemplateModuleManagement>();
-			manager.ProjectTemplateInto(target);
+			if(target != null) {
+				ModuleTemplateModuleManagement manager = Modules.GetManager<IModuleTemplateModuleInstance, ModuleTemplateModuleManagement>();
+				manager.ProjectTemplateInto(target);
+			}
 		}
 	}
 }

@@ -6,19 +6,10 @@ using Vixen.Sys.Output;
 namespace Vixen.Sys {
 	public class ControllerLinker : IEnumerable<ControllerLink> {
 		private HashSet<ControllerLink> _links;
-		//private Dictionary<Guid, int> _chainIndexes;
 
 		public ControllerLinker() {
 			_links = new HashSet<ControllerLink>();
-			//_chainIndexes = new Dictionary<Guid, int>();
 		}
-
-		//*** can this method be removed so it doesn't have to be told when controllers are added?
-		//-> If it gets linked or linked to, it gets added.  If it's not in here, it's not linked.
-		//public void AddController(Guid controllerId, Guid? priorId = null) {
-		//    ControllerLink link = new ControllerLink(controllerId, priorId);
-		//    _links.Add(link);
-		//}
 
 		public void AddRange(IEnumerable<ControllerLink> links) {
 			_links.AddRange(links);

@@ -17,7 +17,6 @@ namespace Vixen.IO.Xml {
 			element = element.Element(ELEMENT_PROPERTIES);
 			if(element != null) {
 				return element.Elements(ELEMENT_PROPERTY).Select(x => Guid.Parse(x.Value));
-				//node.Properties.Add(new Guid(propertyElement.Value));
 			}
 			return Enumerable.Empty<Guid>();
 		}

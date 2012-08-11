@@ -5,7 +5,7 @@ namespace Vixen.IO.Xml {
 	/// 
 	/// </summary>
 	/// <typeparam name="T">Type of object being serialized.</typeparam>
-	interface IXmlSerializer<T> : ISerializer<T, XElement>
-		where T : class {
+	interface IXmlSerializer<T> : ISerializer<T, XElement> {
+		//where T : class {
 	}
 }

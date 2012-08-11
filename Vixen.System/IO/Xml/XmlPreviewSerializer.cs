@@ -13,17 +13,17 @@ namespace Vixen.IO.Xml {
 		public XElement WriteObject(IOutputDevice value) {
 			OutputPreview preview = (OutputPreview)value;
 
-			XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
-			XElement dataSetElement = null;
-			if(preview.ModuleDataSet != null) {
-				dataSetElement = dataSetSerializer.WriteObject(preview.ModuleDataSet);
-			}
+			//XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
+			//XElement dataSetElement = null;
+			//if(preview.ModuleDataSet != null) {
+			//    dataSetElement = dataSetSerializer.WriteObject(preview.ModuleDataSet);
+			//}
 
 			XElement element = new XElement(ELEMENT_PREVIEW,
 				new XAttribute(ATTR_NAME, preview.Name),
 				new XAttribute(ATTR_HARDWARE_ID, preview.ModuleId),
-				new XAttribute(ATTR_ID, preview.Id),
-				dataSetElement);
+				new XAttribute(ATTR_ID, preview.Id));
+				//dataSetElement);
 
 			return element;
 		}
@@ -46,8 +46,8 @@ namespace Vixen.IO.Xml {
 		}
 
 		private void _Populate(OutputPreview preview, XElement element) {
-			XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
-			preview.ModuleDataSet = dataSetSerializer.ReadObject(element);
+			//XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
+			//preview.ModuleDataSet = dataSetSerializer.ReadObject(element);
 		}
 	}
 }

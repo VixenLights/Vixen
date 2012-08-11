@@ -280,11 +280,13 @@ namespace Vixen.Sys {
 			if(_activators.TryGetValue(moduleTypeId, out instanceType)) {
 				instance = (IModuleInstance)Activator.CreateInstance(instanceType);
 				instance.Descriptor = GetDescriptorById(moduleTypeId);
+
 				try {
 					instance.StaticModuleData = _GetModuleStaticData(instance);
 				} catch(Exception ex) {
 					VixenSystem.Logging.Error("Error when assigning module static data.", ex);
 				}
+
 				try {
 					instance.ModuleData = _GetModuleData(instance);
 				} catch(Exception ex) {
@@ -463,19 +465,17 @@ namespace Vixen.Sys {
 		static private IModuleDataModel _GetModuleStaticData(IModuleInstance instance) {
 			// All instances of a given module type will share a single instance of that type's
 			// static data.  A change in one is reflected in all.
-
-			return VixenSystem.ModuleStore.Data.GetTypeData(instance);
-			
-			//IModuleDataModel data = null;
-
-			//if(!_moduleStaticDataRepository.TryGetValue(instance.Descriptor.TypeId, out data)) {
-			//    if(instance.Descriptor.ModuleStaticDataClass != null) {
-			//        VixenSystem.ModuleStore.Data.GetModuleTypeData(instance);
-			//        _moduleStaticDataRepository[instance.Descriptor.TypeId] = data;
-			//    }
-			//}
-
-			//return data;
+			return VixenSystem.ModuleStore.TypeData.GetTypeData(instance);
+			//*** This is what forces the data in the system data store to be used as type data.
+			//    It's possible to get instance data into the module data store, but what will read/write
+			//    it and when?
+			//-> The other difficulty is that since it's a static dataset, it assumes to use the
+			//   static data class of the module.  The workflow doesn't make sense -- specifying the
+			//   static data class for an output filter -- they want it to be per-instance where
+			//   static data is assumed to be the same for any instance (and, hence, stored as type data).
+			//-> It would be up to the objects that use the modules as system-level to store/retrieve
+			//   as instance data, but that doesn't change the fact that the static dataset is going to
+			//   use the static data class.
 		}
 	}
 }

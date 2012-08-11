@@ -121,6 +121,7 @@ namespace Vixen.Sys {
 			if(allowUpdate) {
 				VixenSystem.Contexts.Update();
 				VixenSystem.Channels.Update();
+				VixenSystem.Filters.Update();
 			}
 			return allowUpdate;
 		}

@@ -15,14 +15,22 @@ namespace Vixen.IO.Xml.Policy {
 			_content = content;
 		}
 
-		protected override void WriteModuleDataSet() {
+		protected override void WriteModuleTypeDataSet() {
 			XmlModuleStaticDataSetSerializer dataSetSerializer = new XmlModuleStaticDataSetSerializer();
-			_content.Add(dataSetSerializer.WriteObject(_moduleStore.Data));
+			_content.Add(dataSetSerializer.WriteObject(_moduleStore.TypeData));
 		}
 
-		protected override void ReadModuleDataSet() {
-			XmlModuleStaticDataSetSerializer dataSetSerializer = new XmlModuleStaticDataSetSerializer();
-			_moduleStore.Data = dataSetSerializer.ReadObject(_content);
+		protected override void WriteModuleInstanceDataSet() {
+			XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
+			_content.Add(dataSetSerializer.WriteObject(_moduleStore.InstanceData));
+		}
+
+		protected override void ReadModuleTypeDataSet() {
+			XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
+			_moduleStore.InstanceData = dataSetSerializer.ReadObject(_content);
+		}
+
+		protected override void ReadModuleInstanceDataSet() {
 		}
 	}
 }

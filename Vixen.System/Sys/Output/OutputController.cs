@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Vixen.Module.Controller;
 using Vixen.Commands;
-using Vixen.Module.OutputFilter;
 
 namespace Vixen.Sys.Output {
 	public class OutputController : ModuleBasedController<IControllerModuleInstance, CommandOutput>, IEnumerable<OutputController> {
+		//Because of bad design, this needs to be created before the base class is instantiated.
+		private CommandOutputDataFlowAdapterFactory _adapterFactory = new CommandOutputDataFlowAdapterFactory();
+
 		public OutputController(string name, int outputCount, Guid moduleId)
 			: this(Guid.NewGuid(), name, outputCount, moduleId) {
 		}
@@ -23,16 +25,18 @@ namespace Vixen.Sys.Output {
 
 		public IDataPolicy DataPolicy { get; set; }
 
-		override protected void _UpdateState() {
+		override protected void UpdateState() {
 			if(VixenSystem.ControllerLinking.IsRootController(this) && _ControllerChainModule != null) {
 				BeginOutputChange();
 				try {
 					foreach(OutputController controller in this) {
 						controller.Outputs.AsParallel().ForAll(x => {
-							x.UpdateState();
-							x.LogicalFiltering();
+							//x.UpdateState();
+							//x.LogicalFiltering();
+							//x.Command = _GenerateOutputCommand(x);
+							//x.PhysicalFiltering();
+							x.Update();
 							x.Command = _GenerateOutputCommand(x);
-							x.PhysicalFiltering();
 						});
 					}
 
@@ -63,48 +67,56 @@ namespace Vixen.Sys.Output {
 			}
 		}
 
-		public IEnumerable<IOutputFilterModuleInstance> GetAllOutputFilters(int outputIndex) {
-			if(outputIndex < OutputCount) {
-				return Outputs[outputIndex].GetAllOutputFilters();
-			}
-			return Enumerable.Empty<IOutputFilterModuleInstance>();
-		}
+		//public IEnumerable<IOutputFilterModuleInstance> GetAllOutputFilters(int outputIndex) {
+		//    if(outputIndex < OutputCount) {
+		//        return Outputs[outputIndex].GetAllOutputFilters();
+		//    }
+		//    return Enumerable.Empty<IOutputFilterModuleInstance>();
+		//}
 
-		public void AddOutputFilter(int outputIndex, IOutputFilterModuleInstance filter) {
-			if(filter != null && outputIndex < OutputCount) {
-				// Must be the controller store, and not the system store, because the system store
-				// deals only with static data and there may be multiple instances of a type of filter.
-				ModuleDataSet.AssignModuleInstanceData(filter);
-				Outputs[outputIndex].AddOutputFilter(filter);
-			}
-		}
+		//public void AddOutputFilter(int outputIndex, IOutputFilterModuleInstance filter) {
+		//    if(filter != null && outputIndex < OutputCount) {
+		//        // Must be the controller store, and not the system store, because the system store
+		//        // deals only with static data and there may be multiple instances of a type of filter.
+		//        ModuleDataSet.AssignModuleInstanceData(filter);
+		//        Outputs[outputIndex].AddOutputFilter(filter);
+		//    }
+		//}
 
-		public void InsertOutputFilter(int outputIndex, int index, IOutputFilterModuleInstance filter) {
-			if(filter != null && outputIndex < OutputCount) {
-				ModuleDataSet.AssignModuleInstanceData(filter);
-				Outputs[outputIndex].InsertOutputFilter(index, filter);
-			}
-		}
+		//public void InsertOutputFilter(int outputIndex, int index, IOutputFilterModuleInstance filter) {
+		//    if(filter != null && outputIndex < OutputCount) {
+		//        ModuleDataSet.AssignModuleInstanceData(filter);
+		//        Outputs[outputIndex].InsertOutputFilter(index, filter);
+		//    }
+		//}
 
-		public void RemoveOutputFilter(int outputIndex, IOutputFilterModuleInstance filter) {
-			if(filter != null && outputIndex < OutputCount) {
-				ModuleDataSet.RemoveModuleInstanceData(filter);
-				Outputs[outputIndex].RemoveOutputFilter(filter);
-			}
-		}
+		//public void RemoveOutputFilter(int outputIndex, IOutputFilterModuleInstance filter) {
+		//    if(filter != null && outputIndex < OutputCount) {
+		//        ModuleDataSet.RemoveModuleInstanceData(filter);
+		//        Outputs[outputIndex].RemoveOutputFilter(filter);
+		//    }
+		//}
 
-		public void ClearOutputFilters(int outputIndex) {
-			if(outputIndex < OutputCount) {
-				foreach(IOutputFilterModuleInstance filter in Outputs[outputIndex].GetAllOutputFilters().ToArray()) {
-					RemoveOutputFilter(outputIndex, filter);
-				}
-			}
-		}
+		//public void ClearOutputFilters(int outputIndex) {
+		//    if(outputIndex < OutputCount) {
+		//        foreach(IOutputFilterModuleInstance filter in Outputs[outputIndex].GetAllOutputFilters().ToArray()) {
+		//            RemoveOutputFilter(outputIndex, filter);
+		//        }
+		//    }
+		//}
 
 		public void ResetDataPolicy(IControllerModuleInstance module) {
 			if(module != null) {
 				DataPolicy = module.DataPolicy;
 			}
+		}
+
+		protected override void OutputAdded(object sender, OutputCollectionEventArgs<CommandOutput> e) {
+			VixenSystem.DataFlow.AddComponent(_adapterFactory.GetAdapter(e.Output));
+		}
+
+		protected override void OutputRemoved(object sender, OutputCollectionEventArgs<CommandOutput> e) {
+			VixenSystem.DataFlow.RemoveComponent(_adapterFactory.GetAdapter(e.Output));
 		}
 
 		private ICommand _GenerateOutputCommand(CommandOutput output) {

@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using Vixen.Data.Flow;
 using Vixen.IO;
 using Vixen.IO.Result;
+using Vixen.Module.OutputFilter;
 using Vixen.Services;
 using Vixen.Sys.Attribute;
 using Vixen.Sys.Output;
@@ -16,8 +18,9 @@ namespace Vixen.Sys {
 		private IEnumerable<IOutputDevice> _controllers;
 		private IEnumerable<IOutputDevice> _previews;
 		private IEnumerable<IOutputDevice> _smartControllers;
-		private IEnumerable<ChannelOutputPatch> _channelPatching;
 		private IEnumerable<ControllerLink> _controllerLinking;
+		private IEnumerable<IOutputFilterModuleInstance> _filters;
+		private IEnumerable<DataFlowPatch> _dataFlow;
 		private List<Guid> _disabledControllers;
 
 		[DataPath]
@@ -87,14 +90,15 @@ namespace Vixen.Sys {
 			set { _smartControllers = value; }
 		}
 
-		public IEnumerable<ChannelOutputPatch> ChannelPatching {
+		//*** classes to handle each of these responsibilities?
+		public IEnumerable<IOutputFilterModuleInstance> Filters {
 			get {
-				if(_channelPatching == null) {
-					_channelPatching = new ChannelOutputPatch[0];
+				if(_filters == null) {
+					_filters = new IOutputFilterModuleInstance[0];
 				}
-				return _channelPatching;
+				return _filters;
 			}
-			set { _channelPatching = value; }
+			set { _filters = value; }
 		}
 
 		public IEnumerable<ControllerLink> ControllerLinking {
@@ -105,6 +109,16 @@ namespace Vixen.Sys {
 				return _controllerLinking;
 			}
 			set { _controllerLinking = value; }
+		}
+
+		public IEnumerable<DataFlowPatch> DataFlow {
+			get {
+				if(_dataFlow == null) {
+					_dataFlow = new DataFlowPatch[0];
+				}
+				return _dataFlow;
+			}
+			set { _dataFlow = value; }
 		}
 
 		public IEnumerable<IOutputDevice> DisabledControllers {

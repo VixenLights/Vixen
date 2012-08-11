@@ -1,19 +1,23 @@
 ﻿namespace Vixen.IO.Policy {
 	abstract class ModuleStoreFilePolicy : IFilePolicy {
 		public void Write() {
-			WriteModuleDataSet();
+			WriteModuleTypeDataSet();
+			WriteModuleInstanceDataSet();
 		}
 
-		abstract protected void WriteModuleDataSet();
+		abstract protected void WriteModuleTypeDataSet();
+		abstract protected void WriteModuleInstanceDataSet();
 
 		public void Read() {
-			ReadModuleDataSet();
+			ReadModuleTypeDataSet();
+			ReadModuleInstanceDataSet();
 		}
 
-		abstract protected void ReadModuleDataSet();
+		abstract protected void ReadModuleTypeDataSet();
+		abstract protected void ReadModuleInstanceDataSet();
 
 		public int Version {
-			get { return 1; }
+			get { return 2; }
 		}
 	}
 }

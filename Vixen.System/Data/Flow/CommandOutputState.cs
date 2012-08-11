@@ -1,0 +1,16 @@
+﻿using Vixen.Commands;
+using Vixen.Sys;
+
+namespace Vixen.Data.Flow {
+	class CommandDataFlowData : Dispatchable<CommandDataFlowData>, IDataFlowData<ICommand> {
+		public CommandDataFlowData(ICommand command) {
+			Value = command;
+		}
+
+		public ICommand Value { get; private set; }
+
+		object IDataFlowData.Value {
+			get { return Value; }
+		}
+	}
+}

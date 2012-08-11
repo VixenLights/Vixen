@@ -23,7 +23,7 @@ namespace Vixen.Data.Evaluator {
 
 		public ICommand<ResultType> EvaluatorValue { get; protected set; }
 
-		object IEvaluator.EvaluatorValue {
+		ICommand IEvaluator.EvaluatorValue {
 			get { return EvaluatorValue; }
 		}
 	}
