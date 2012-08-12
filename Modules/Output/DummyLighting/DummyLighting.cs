@@ -5,6 +5,7 @@ using Vixen.Module;
 using Vixen.Sys;
 using System.Diagnostics;
 using System.Windows.Forms;
+using VixenModules.Controller.DummyLighting;
 
 namespace VixenModules.Output.DummyLighting {
 	public class DummyLighting : ControllerModuleInstanceBase {
@@ -18,7 +19,6 @@ namespace VixenModules.Output.DummyLighting {
 		public DummyLighting() {
 			_form = new DummyLightingOutputForm();
 			_sw = new Stopwatch();
-			_dataPolicy = new DataPolicy();
 		}
 
 		public override IModuleDataModel ModuleData {
@@ -26,6 +26,7 @@ namespace VixenModules.Output.DummyLighting {
 			set {
 				_data = (DummyLightingData)value;
 				_form.renderingStyle = _data.RenderStyle;
+				_SetDataPolicy();
 			}
 		}
 
@@ -43,24 +44,11 @@ namespace VixenModules.Output.DummyLighting {
 		}
 
 		public override void Start() {
-			//_formThread = new UIThread(() => {
-			//    _form = new DummyLightingOutputForm();
-			//    _form.renderingStyle = _data.RenderStyle;
-			//    _form.OutputCount = outputCount;
-			//    return _form;
-			//});
-			//_formThread.Start();
 			_form.Show();
 			_updateCount = 0;
 		}
-		//override public void Start() {
-		//    //_formThread.Start();
-		//    //_form.Show();
-		//    //_updateCount = 0;
-		//}
 
 		override public void Stop() {
-			//_formThread.Stop();
 			_form.Hide();
 			_sw.Stop();
 		}
@@ -78,6 +66,7 @@ namespace VixenModules.Output.DummyLighting {
 			if(result == DialogResult.OK) {
 				_data.RenderStyle = setup.RenderStyle;
 				_form.renderingStyle = setup.RenderStyle;
+				_SetDataPolicy();
 				return true;
 			}
 			return false;
@@ -89,6 +78,22 @@ namespace VixenModules.Output.DummyLighting {
 
 		override public IDataPolicy DataPolicy {
 			get { return _dataPolicy; }
+		}
+
+		private void _SetDataPolicy() {
+			switch(_data.RenderStyle) {
+				case RenderStyle.Monochrome:
+					_dataPolicy = new MonochromeDataPolicy();
+					break;
+				case RenderStyle.RGBSingleChannel:
+					_dataPolicy = new OneChannelColorDataPolicy();
+					break;
+				case RenderStyle.RGBMultiChannel:
+					_dataPolicy = new ThreeChannelColorDataPolicy();
+					break;
+				default:
+					throw new InvalidOperationException("Unknown render style: " + _data.RenderStyle);
+			}
 		}
 
 		override public void Dispose() {

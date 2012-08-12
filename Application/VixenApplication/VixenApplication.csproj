@@ -143,43 +143,6 @@
       <DependentUpon>GridEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\IHasNameRule.cs" />
-    <Compile Include="PatchChannels.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PatchChannels.Designer.cs">
-      <DependentUpon>PatchChannels.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\IHasPatchRule.cs" />
-    <Compile Include="Controls\ToNOutputsAtOutputEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\ToNOutputsAtOutputEditor.Designer.cs">
-      <DependentUpon>ToNOutputsAtOutputEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ToNOutputsAtOutputsEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\ToNOutputsAtOutputsEditor.Designer.cs">
-      <DependentUpon>ToNOutputsAtOutputsEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ToNOutputsOverControllersEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\ToNOutputsOverControllersEditor.Designer.cs">
-      <DependentUpon>ToNOutputsOverControllersEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\OutputFilterTemplateControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\OutputFilterTemplateControl.Designer.cs">
-      <DependentUpon>OutputFilterTemplateControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PostFilterTemplateForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PostFilterTemplateForm.Designer.cs">
-      <DependentUpon>PostFilterTemplateForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="RuleEditorContainer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -229,24 +192,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\GridEditor.resx">
       <DependentUpon>GridEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PatchChannels.resx">
-      <DependentUpon>PatchChannels.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ToNOutputsAtOutputEditor.resx">
-      <DependentUpon>ToNOutputsAtOutputEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ToNOutputsAtOutputsEditor.resx">
-      <DependentUpon>ToNOutputsAtOutputsEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ToNOutputsOverControllersEditor.resx">
-      <DependentUpon>ToNOutputsOverControllersEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\OutputFilterTemplateControl.resx">
-      <DependentUpon>OutputFilterTemplateControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PostFilterTemplateForm.resx">
-      <DependentUpon>PostFilterTemplateForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="RuleEditorContainer.resx">
       <DependentUpon>RuleEditorContainer.cs</DependentUpon>

@@ -43,11 +43,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ColorOutput.cs" />
+    <Compile Include="Filter\BlueFilter.cs" />
+    <Compile Include="ColorComponentFilter.cs" />
     <Compile Include="ColorData.cs" />
     <Compile Include="ColorDescriptor.cs" />
     <Compile Include="ColorFilter.cs" />
     <Compile Include="ColorModule.cs" />
-    <Compile Include="CommandDispatch.cs" />
+    <Compile Include="Filter\GreenFilter.cs" />
+    <Compile Include="Filter\NoFilter.cs" />
+    <Compile Include="Filter\WhiteFilter.cs" />
+    <Compile Include="Filter\YellowFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ColorSetupForm.cs">
       <SubType>Form</SubType>
@@ -55,6 +61,7 @@
     <Compile Include="ColorSetupForm.Designer.cs">
       <DependentUpon>ColorSetupForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Filter\RedFilter.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ColorSetupForm.resx">

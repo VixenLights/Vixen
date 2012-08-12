@@ -44,7 +44,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandHandler.cs" />
-    <Compile Include="DataPolicy.cs" />
     <Compile Include="DummyLighting.cs" />
     <Compile Include="DummyLightingData.cs" />
     <Compile Include="DummyLightingDescriptor.cs" />
@@ -60,7 +59,10 @@
     <Compile Include="DummyLightingSetup.Designer.cs">
       <DependentUpon>DummyLightingSetup.cs</DependentUpon>
     </Compile>
+    <Compile Include="MonochromeDataPolicy.cs" />
+    <Compile Include="OneChannelColorDataPolicy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ThreeChannelColorDataPolicy.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DummyLightingOutputForm.resx">

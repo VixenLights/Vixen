@@ -27,7 +27,7 @@ namespace VixenModules.OutputFilter.Color {
 				if(radioButtonWhite.Checked) {
 					return ColorFilter.White;
 				}
-				return ColorFilter.None;
+				return ColorFilter.Unfiltered;
 			}
 			set {
 				switch(value) {
@@ -53,7 +53,7 @@ namespace VixenModules.OutputFilter.Color {
 		private void buttonOK_Click(object sender, EventArgs e) {
 			SelectedColorFilter = _SelectedFilter;
 
-			if(SelectedColorFilter == ColorFilter.None) {
+			if(SelectedColorFilter == ColorFilter.Unfiltered) {
 				DialogResult = DialogResult.None;
 				MessageBox.Show("You have not selected a color.");
 			}

@@ -81,13 +81,11 @@
 			this.renameNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			this.createAndNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.patchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.patchAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.createAndNameInToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStripDragging = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.moveHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.buttonCancel = new System.Windows.Forms.Button();
-			this.createAndNameInToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBoxSelectedNode.SuspendLayout();
 			this.groupBoxAddPatch.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPatchOutputSelect)).BeginInit();
@@ -133,6 +131,7 @@
 			this.groupBoxAddPatch.Controls.Add(this.label1);
 			this.groupBoxAddPatch.Controls.Add(this.numericUpDownPatchOutputSelect);
 			this.groupBoxAddPatch.Controls.Add(this.comboBoxPatchControllerSelect);
+			this.groupBoxAddPatch.Enabled = false;
 			this.groupBoxAddPatch.Location = new System.Drawing.Point(6, 253);
 			this.groupBoxAddPatch.Name = "groupBoxAddPatch";
 			this.groupBoxAddPatch.Size = new System.Drawing.Size(269, 87);
@@ -191,6 +190,7 @@
 			this.groupBoxPatches.Controls.Add(this.checkBoxDisableOutputs);
 			this.groupBoxPatches.Controls.Add(this.buttonRemovePatch);
 			this.groupBoxPatches.Controls.Add(this.listViewPatches);
+			this.groupBoxPatches.Enabled = false;
 			this.groupBoxPatches.Location = new System.Drawing.Point(6, 81);
 			this.groupBoxPatches.Name = "groupBoxPatches";
 			this.groupBoxPatches.Size = new System.Drawing.Size(269, 166);
@@ -468,11 +468,9 @@
             this.renameNodesToolStripMenuItem,
             this.toolStripMenuItem1,
             this.createAndNameToolStripMenuItem,
-            this.createAndNameInToolStripMenuItem,
-            this.patchToolStripMenuItem,
-            this.patchAllToolStripMenuItem});
+            this.createAndNameInToolStripMenuItem});
 			this.contextMenuStripTreeView.Name = "contextMenuStripTreeView";
-			this.contextMenuStripTreeView.Size = new System.Drawing.Size(205, 308);
+			this.contextMenuStripTreeView.Size = new System.Drawing.Size(205, 264);
 			this.contextMenuStripTreeView.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripTreeView_Opening);
 			// 
 			// cutNodesToolStripMenuItem
@@ -569,19 +567,12 @@
 			this.createAndNameToolStripMenuItem.Text = "Create and name";
 			this.createAndNameToolStripMenuItem.Click += new System.EventHandler(this.createAndNameToolStripMenuItem_Click);
 			// 
-			// patchToolStripMenuItem
+			// createAndNameInToolStripMenuItem
 			// 
-			this.patchToolStripMenuItem.Name = "patchToolStripMenuItem";
-			this.patchToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
-			this.patchToolStripMenuItem.Text = "Patch";
-			this.patchToolStripMenuItem.Click += new System.EventHandler(this.patchToolStripMenuItem_Click);
-			// 
-			// patchAllToolStripMenuItem
-			// 
-			this.patchAllToolStripMenuItem.Name = "patchAllToolStripMenuItem";
-			this.patchAllToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
-			this.patchAllToolStripMenuItem.Text = "Patch all";
-			this.patchAllToolStripMenuItem.Click += new System.EventHandler(this.patchAllToolStripMenuItem_Click);
+			this.createAndNameInToolStripMenuItem.Name = "createAndNameInToolStripMenuItem";
+			this.createAndNameInToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+			this.createAndNameInToolStripMenuItem.Text = "Create and name in";
+			this.createAndNameInToolStripMenuItem.Click += new System.EventHandler(this.createAndNameInToolStripMenuItem_Click);
 			// 
 			// contextMenuStripDragging
 			// 
@@ -613,13 +604,6 @@
 			this.buttonCancel.TabIndex = 26;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			// 
-			// createAndNameInToolStripMenuItem
-			// 
-			this.createAndNameInToolStripMenuItem.Name = "createAndNameInToolStripMenuItem";
-			this.createAndNameInToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
-			this.createAndNameInToolStripMenuItem.Text = "Create and name in";
-			this.createAndNameInToolStripMenuItem.Click += new System.EventHandler(this.createAndNameInToolStripMenuItem_Click);
 			// 
 			// ConfigChannels
 			// 
@@ -707,8 +691,6 @@
 		private System.Windows.Forms.Button buttonCancel;
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem createAndNameToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem patchToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem patchAllToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem createAndNameInToolStripMenuItem;
 	}
 }

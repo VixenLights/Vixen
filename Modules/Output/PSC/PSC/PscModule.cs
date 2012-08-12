@@ -6,7 +6,7 @@ using Vixen.Module;
 using Vixen.Module.Controller;
 using Vixen.Sys;
 
-namespace PSC {
+namespace VixenModules.Controller.PSC {
 	public class PscModule : ControllerModuleInstanceBase {
 		private SerialPort _port;
 		private PscData _data;

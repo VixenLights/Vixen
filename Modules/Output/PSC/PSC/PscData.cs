@@ -6,7 +6,7 @@ using System.Text;
 using System.Runtime.Serialization;
 using Vixen.Module;
 
-namespace PSC {
+namespace VixenModules.Controller.PSC {
 	[DataContract]
 	public class PscData : ModuleDataModelBase {
 		public PscData() {

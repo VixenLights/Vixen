@@ -42,11 +42,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandHandler.cs" />
     <Compile Include="FadeOutData.cs" />
     <Compile Include="FadeOutDescriptor.cs" />
     <Compile Include="FadeOutModule.cs" />
     <Compile Include="IntentHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reducer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Vixen.System\Vixen.csproj">

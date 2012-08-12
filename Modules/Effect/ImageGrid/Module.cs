@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Linq;
+using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Module;
 using Vixen.Module.Effect;

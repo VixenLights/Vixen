@@ -178,17 +178,19 @@ namespace VixenApplication
 			addedNode.Text = channelNode.Name;
 			addedNode.Tag = channelNode;
 
-			if (!channelNode.Children.Any()) {
-				if (channelNode.Channel != null && VixenSystem.ChannelPatching.GetChannelPatches(channelNode.Channel.Id).Any()) {
-					if (channelNode.Channel.Masked)
-						addedNode.ImageKey = addedNode.SelectedImageKey = "RedBall";
-					else
-						addedNode.ImageKey = addedNode.SelectedImageKey = "GreenBall";
-				} else
-					addedNode.ImageKey = addedNode.SelectedImageKey = "WhiteBall";
-			} else {
-				addedNode.ImageKey = addedNode.SelectedImageKey = "Group";
-			}
+			//TODO: Accommodate the lack of patching
+			addedNode.ImageKey = addedNode.SelectedImageKey = "WhiteBall";
+			//if(!channelNode.Children.Any()) {
+			//    if (channelNode.Channel != null && VixenSystem.ChannelPatching.GetChannelPatches(channelNode.Channel.Id).Any()) {
+			//        if (channelNode.Channel.Masked)
+			//            addedNode.ImageKey = addedNode.SelectedImageKey = "RedBall";
+			//        else
+			//            addedNode.ImageKey = addedNode.SelectedImageKey = "GreenBall";
+			//    } else
+			//        addedNode.ImageKey = addedNode.SelectedImageKey = "WhiteBall";
+			//} else {
+			//    addedNode.ImageKey = addedNode.SelectedImageKey = "Group";
+			//}
 
 			collection.Add(addedNode);
 
@@ -275,30 +277,31 @@ namespace VixenApplication
 			buttonRemoveProperty.Enabled = (listViewProperties.SelectedItems.Count > 0);
 		}
 
+		//TODO: Accommodate the lack of patching
 		private void PopulateCurrentPatchesArea(ChannelNode node)
 		{
-			listViewPatches.BeginUpdate();
-			listViewPatches.Items.Clear();
+			//listViewPatches.BeginUpdate();
+			//listViewPatches.Items.Clear();
 
-			if (node != null && node.Channel != null) {
-				var channelPatch = VixenSystem.ChannelPatching.GetChannelPatches(node.Channel.Id);
-				foreach (ControllerReference patch in channelPatch) {
-					ListViewItem item = new ListViewItem();
-					item.Text = patch.ToString();
-					item.Tag = patch;
-					listViewPatches.Items.Add(item);
-				}
-				buttonRemovePatch.Enabled = (listViewPatches.SelectedItems.Count > 0);
+			//if (node != null && node.Channel != null) {
+			//    var channelPatch = VixenSystem.ChannelPatching.GetChannelPatches(node.Channel.Id);
+			//    foreach (ControllerReference patch in channelPatch) {
+			//        ListViewItem item = new ListViewItem();
+			//        item.Text = patch.ToString();
+			//        item.Tag = patch;
+			//        listViewPatches.Items.Add(item);
+			//    }
+			//    buttonRemovePatch.Enabled = (listViewPatches.SelectedItems.Count > 0);
 
-				if (checkBoxDisableOutputs.Checked != node.Channel.Masked)
-					checkBoxDisableOutputs.Checked = node.Channel.Masked;
-			} else {
-				checkBoxDisableOutputs.Checked = false;
-			}
+			//    if (checkBoxDisableOutputs.Checked != node.Channel.Masked)
+			//        checkBoxDisableOutputs.Checked = node.Channel.Masked;
+			//} else {
+			//    checkBoxDisableOutputs.Checked = false;
+			//}
 
-			listViewPatches.EndUpdate();
+			//listViewPatches.EndUpdate();
 
-			groupBoxPatches.Enabled = (node != null && node.Children.Count() == 0);
+			//groupBoxPatches.Enabled = (node != null && node.Children.Count() == 0);
 		}
 
 		private void PopulateAddPatchArea(ChannelNode node)
@@ -394,47 +397,49 @@ namespace VixenApplication
 			}
 		}
 
+		//TODO: Accommodate the lack of patching
 		private void buttonRemovePatch_Click(object sender, EventArgs e)
 		{
-			if (listViewPatches.SelectedItems.Count > 0) {
-				string message, title;
-				if (listViewPatches.SelectedItems.Count == 1) {
-					message = "Are you sure you want to remove the selected patch?";
-					title = "Remove Patch?";
-				} else {
-					message = "Are you sure you want to remove the selected patches?";
-					title = "Remove Patches?";
-				}
-				if (MessageBox.Show(message, title, MessageBoxButtons.OKCancel) == DialogResult.OK) {
-					foreach (ListViewItem item in listViewPatches.SelectedItems) {
-						if (item.Tag is ControllerReference) {
-							VixenSystem.ChannelPatching.RemovePatch(_displayedNode.Channel.Id, (ControllerReference)item.Tag);
-						} else {
-							VixenSystem.Logging.Error("ConfigChannels: Trying to remove patch, but it's not a ControllerReference");
-						}
-					}
-					PopulateCurrentPatchesArea(_displayedNode);
-					PopulateNodeTree();
-				}
-			}
+			//if (listViewPatches.SelectedItems.Count > 0) {
+			//    string message, title;
+			//    if (listViewPatches.SelectedItems.Count == 1) {
+			//        message = "Are you sure you want to remove the selected patch?";
+			//        title = "Remove Patch?";
+			//    } else {
+			//        message = "Are you sure you want to remove the selected patches?";
+			//        title = "Remove Patches?";
+			//    }
+			//    if (MessageBox.Show(message, title, MessageBoxButtons.OKCancel) == DialogResult.OK) {
+			//        foreach (ListViewItem item in listViewPatches.SelectedItems) {
+			//            if (item.Tag is ControllerReference) {
+			//                VixenSystem.ChannelPatching.RemovePatch(_displayedNode.Channel.Id, (ControllerReference)item.Tag);
+			//            } else {
+			//                VixenSystem.Logging.Error("ConfigChannels: Trying to remove patch, but it's not a ControllerReference");
+			//            }
+			//        }
+			//        PopulateCurrentPatchesArea(_displayedNode);
+			//        PopulateNodeTree();
+			//    }
+			//}
 		}
 
+		//TODO: Accommodate the lack of patching
 		private void buttonAddPatch_Click(object sender, EventArgs e)
 		{
-			if (comboBoxPatchControllerSelect.SelectedIndex < 0 || numericUpDownPatchOutputSelect.Value <= 0)
-				return;
+			//if (comboBoxPatchControllerSelect.SelectedIndex < 0 || numericUpDownPatchOutputSelect.Value <= 0)
+			//    return;
 
-			OutputController controller = VixenSystem.Controllers.GetController((Guid)comboBoxPatchControllerSelect.SelectedValue);
-			if (controller == null || controller.OutputCount < numericUpDownPatchOutputSelect.Value)
-				return;
+			//OutputController controller = VixenSystem.Controllers.GetController((Guid)comboBoxPatchControllerSelect.SelectedValue);
+			//if (controller == null || controller.OutputCount < numericUpDownPatchOutputSelect.Value)
+			//    return;
 
-			if (_displayedNode.Channel == null) {
-				_displayedNode.Channel = VixenSystem.Channels.AddChannel(_displayedNode.Name);
-			}
-			VixenSystem.ChannelPatching.AddPatch(_displayedNode.Channel.Id, new ControllerReference((Guid)comboBoxPatchControllerSelect.SelectedValue, ((int)numericUpDownPatchOutputSelect.Value) - 1));
+			//if (_displayedNode.Channel == null) {
+			//    _displayedNode.Channel = VixenSystem.Channels.AddChannel(_displayedNode.Name);
+			//}
+			//VixenSystem.ChannelPatching.AddPatch(_displayedNode.Channel.Id, new ControllerReference((Guid)comboBoxPatchControllerSelect.SelectedValue, ((int)numericUpDownPatchOutputSelect.Value) - 1));
 
-			PopulateCurrentPatchesArea(_displayedNode);
-			PopulateNodeTree();
+			//PopulateCurrentPatchesArea(_displayedNode);
+			//PopulateNodeTree();
 		}
 
 		private void buttonAddProperty_Click(object sender, EventArgs e)
@@ -713,7 +718,7 @@ namespace VixenApplication
 					else
 						newName = textDialog.Response;
 
-					ChannelNode newNode = Vixen.Services.ChannelNodeService.Instance.CreateSingle(parent, newName, index: index);
+					ChannelNode newNode = Vixen.Services.ChannelNodeService.Instance.CreateSingle(parent, newName, true, index: index);
 					//ChannelNode newNode = new ChannelNode(newName);
 					//VixenSystem.Nodes.AddChildToParent(newNode, parent, index);
 					PopulateNodeTree();
@@ -735,17 +740,18 @@ namespace VixenApplication
 			PopulateNodeTree();
 		}
 
+		//TODO: Accommodate the lack of patching
 		private bool CheckIfNodeWillLosePatches(ChannelNode node)
 		{
-			if (node != null && node.Channel != null && VixenSystem.ChannelPatching.GetChannelPatches(node.Channel.Id).Any()) {
-				string message = "Adding nodes to this Channel will convert it into a Group, which will remove any " +
-					"patches to outputs it may have. Are you sure you want to continue?";
-				string title = "Convert Channel to Group?";
-				DialogResult result = MessageBox.Show(message, title, MessageBoxButtons.YesNoCancel);
-				if (result != System.Windows.Forms.DialogResult.Yes) {
-					return true;
-				}
-			}
+			//if (node != null && node.Channel != null && VixenSystem.ChannelPatching.GetChannelPatches(node.Channel.Id).Any()) {
+			//    string message = "Adding nodes to this Channel will convert it into a Group, which will remove any " +
+			//        "patches to outputs it may have. Are you sure you want to continue?";
+			//    string title = "Convert Channel to Group?";
+			//    DialogResult result = MessageBox.Show(message, title, MessageBoxButtons.YesNoCancel);
+			//    if (result != System.Windows.Forms.DialogResult.Yes) {
+			//        return true;
+			//    }
+			//}
 
 			return false;
 		}
@@ -968,23 +974,6 @@ namespace VixenApplication
 			using(CreateAndNameChannels form = new CreateAndNameChannels((ChannelNode)multiSelectTreeviewChannelsGroups.SelectedNode.Tag)) {
 				form.ShowDialog();
 				PopulateNodeTree();
-			}
-		}
-
-		private void patchToolStripMenuItem_Click(object sender, EventArgs e) {
-			IEnumerable<ChannelNode> channelNodes = multiSelectTreeviewChannelsGroups.SelectedNodes.Select(x => x.Tag).Cast<ChannelNode>();
-			_PatchAndName(channelNodes);
-		}
-
-		private void patchAllToolStripMenuItem_Click(object sender, EventArgs e) {
-			IEnumerable<ChannelNode> channelNodes = multiSelectTreeviewChannelsGroups.Nodes.Cast<TreeNode>().Select(x => x.Tag as ChannelNode);
-			_PatchAndName(channelNodes);
-		}
-
-		private void _PatchAndName(IEnumerable<ChannelNode> channelNodes) {
-			using(PatchChannels form = new PatchChannels(channelNodes)) {
-				form.ShowDialog();
-				PopulateFormWithNode(null, true);
 			}
 		}
 	}

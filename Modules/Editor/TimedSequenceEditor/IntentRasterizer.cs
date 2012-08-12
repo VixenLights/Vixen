@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using Vixen.Data.Value;
 using Vixen.Sys;
 using Vixen.Sys.Dispatch;
 

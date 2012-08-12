@@ -9,14 +9,12 @@ namespace VixenModules.Output.DummyLighting {
 			ColorValue = Color.Transparent;
 		}
 
-		public override void Handle(LightingValueCommand obj) {
-			ByteValue = (byte)(obj.CommandValue.Intensity * byte.MaxValue);
-			ColorValue = obj.GetIntensityAffectedValue();
+		public override void Handle(_8BitCommand obj) {
+			ByteValue = obj.CommandValue;
 		}
 
-		public override void Handle(ByteValueCommand obj) {
-			ByteValue = obj.CommandValue;
-			ColorValue = Color.White;
+		public override void Handle(ColorCommand obj) {
+			ColorValue = obj.CommandValue;
 		}
 
 		public byte ByteValue;
