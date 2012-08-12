@@ -212,56 +212,20 @@ namespace VixenApplication
 
 		private void button7_Click(object sender, EventArgs e)
 		{
-			Debugger.Break();
+//			ControllerShape controllerShape = _MakeControllerShape(Guid.NewGuid(), 1);
+//			ControllerShapes.Add(controllerShape);
 		}
 
-
-
-
-
-
-
-		/*
-		private void _ResizeAndPositionChannelShapes()
-		{
-			int y = SHAPE_CHANNELS_Y_TOP;
-			foreach (ChannelNodeShape channelShape in ChannelShapes) {
-				_ResizeAndPositionChannelShape(channelShape, SHAPE_CHANNELS_WIDTH, y, true);
-				y += channelShape.Height + SHAPE_CHANNELS_SPACING;
-			}
-		}
-
-		private void _ResizeAndPositionChannelShape(ChannelNodeShape shape, int width, int y, bool visible)
-		{
-			if (visible) {
-				_ShowShape(shape);
-			} else {
-				_HideShape(shape);
-			}
-
-			if (visible && shape.Expanded && shape.ChildFilterShapes.Count > 0) {
-				int curY = y + SHAPE_CHANNELS_GROUP_HEADER_HEIGHT;
-				foreach (ChannelNodeShape childShape in shape.ChildFilterShapes) {
-					_ResizeAndPositionChannelShape(childShape, width - SHAPE_CHILD_WIDTH_REDUCTION, curY, true);
-					curY += childShape.Height + SHAPE_CHANNELS_SPACING;
-				}
-				shape.Width = width;
-				shape.Height = (curY - SHAPE_CHANNELS_SPACING + SHAPE_CHANNELS_GROUP_FOOTER_HEIGHT) - y;
-			} else {
-				shape.Width = width;
-				shape.Height = SHAPE_CHANNELS_HEIGHT;
-				foreach (ChannelNodeShape childShape in shape.ChildFilterShapes) {
-					_ResizeAndPositionChannelShape(childShape, width, y, false);
-				}
-			}
-			shape.X = SHAPE_CHANNELS_X_LOCATION;
-			shape.Y = y + shape.Height / 2;
-		}
-		*/
 
 
 		private void _CreateShapesFromChannels()
 		{
+			if (ChannelShapes != null) {
+				foreach (ChannelNodeShape channelShape in ChannelShapes) {
+					_RemoveShape(channelShape);
+				}
+			}
+
 			ChannelShapes = new List<ChannelNodeShape>();
 			foreach (ChannelNode node in VixenSystem.Nodes.GetRootNodes()) {
 				ChannelNodeShape channelShape = _MakeChannelNodeShape(node, 1);
@@ -271,6 +235,12 @@ namespace VixenApplication
 
 		private void _CreateShapesFromControllers()
 		{
+			if (ControllerShapes != null) {
+				foreach (ControllerShape controllerShape in ControllerShapes) {
+					_RemoveShape(controllerShape);
+				}
+			}
+
 			ControllerShapes = new List<ControllerShape>();
 			foreach (IOutputDevice controller in VixenSystem.Controllers) {
 				ControllerShape controllerShape = _MakeControllerShape(controller.Id, 1);
@@ -349,6 +319,16 @@ namespace VixenApplication
 			return shape;
 		}
 
+		private void _RemoveShape(FilterSetupShapeBase shape)
+		{
+			diagramDisplay.Diagram.Shapes.Remove(shape);
+			diagramDisplay.Diagram.RemoveShapeFromLayers(shape, _visibleLayer.Id | _hiddenLayer.Id);
+			if (shape is NestingSetupShape) {
+				foreach (FilterSetupShapeBase child in (shape as NestingSetupShape).ChildFilterShapes) {
+					_RemoveShape(child);
+				}
+			}
+		}
 
 		private ControllerShape _MakeControllerShape(Guid controllerId, int zOrder)
 		{
