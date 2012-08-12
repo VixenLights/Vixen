@@ -142,7 +142,7 @@
     <Compile Include="Data\Flow\IntentsDataFlowData.cs" />
     <Compile Include="Data\Flow\IDataFlowData.cs" />
     <Compile Include="Data\Policy\OutputDataPolicy.cs" />
-    <Compile Include="Data\Policy\OutputStateDispatchingDataPolicy.cs" />
+    <Compile Include="Data\Policy\DataFlowDataDispatchingDataPolicy.cs" />
     <Compile Include="Data\Policy\SmartControllerDataPolicy.cs" />
     <Compile Include="Execution\ContextCurrentEffectsFull.cs" />
     <Compile Include="Execution\ContextFeatures.cs" />

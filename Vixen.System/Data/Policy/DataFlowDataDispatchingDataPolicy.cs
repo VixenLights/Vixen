@@ -6,19 +6,20 @@ using Vixen.Sys;
 using Vixen.Sys.Dispatch;
 
 namespace Vixen.Data.Policy {
-	abstract public class OutputStateDispatchingDataPolicy : DataFlowDataDispatch, IDataPolicy {
+	
+	// It used to be that a controller took in a single form of data -- commands.
+	// This adds the behavior of allowing three kinds of data -- single command,
+	// multiple commands, multiple intents -- and dispatching it to the correct
+	// point in the output pipeline (for lack of a better term):
+	//
+	// Single command - You may pass.
+	// Multiple commands - Combine them into one command which may then pass through.
+	// Multiple intents - Evaluate them to commands, then combine.
+
+	abstract public class DataFlowDataDispatchingDataPolicy : DataFlowDataDispatch, IDataPolicy {
 		private ICommand _commandResult;
 		private IEvaluator _evaluator;
 		private ICombinator _combinator;
-
-		//virtual public ICommand GenerateCommand(IEnumerable<IIntentState> intentStates) {
-		//    // Stage 1: Evaluate into a single type of data (possibly transforming).
-		//    IEnumerable<IEvaluator> evaluators = EvaluateIntentStates(intentStates);
-		//    // Stage 2: Combine values of that type.
-		//    ICombinator combinator = CombineEvaluations(evaluators);
-
-		//    return combinator.CombinatorValue;
-		//}
 
 		public ICommand GenerateCommand(IDataFlowData dataFlowData) {
 			if(dataFlowData != null) {
@@ -46,31 +47,11 @@ namespace Vixen.Data.Policy {
 			}
 		}
 
-		//protected internal virtual IEnumerable<IEvaluator> EvaluateIntentStates(IEnumerable<IIntentState> intentStates) {
-		//    foreach(IIntentState intentState in intentStates) {
-		//        IEvaluator evaluator = _GetEvaluator();
-		//        evaluator.Evaluate(intentState);
-		//        yield return evaluator;
-		//    }
-		//}
 		protected internal virtual IEnumerable<ICommand> EvaluateIntentStates(IEnumerable<IIntentState> intentStates) {
-			//foreach(IIntentState intentState in intentStates) {
-			//    IEvaluator evaluator = _GetEvaluator();
-			//    evaluator.Evaluate(intentState);
-			//    yield return evaluator.EvaluatorValue;
-			//}
 			return intentStates.Select(_GetEvaluator().Evaluate);
 		}
 
-		//protected internal virtual ICombinator CombineEvaluations(IEnumerable<IEvaluator> evaluators) {
-		//    ICombinator combinator = _GetCombinator();
-		//    combinator.Combine(evaluators);
-		//    return combinator;
-		//}
 		protected internal virtual ICommand CombineCommands(IEnumerable<ICommand> commands) {
-			//ICombinator combinator = _GetCombinator();
-			//combinator.Combine(commands);
-			//return combinator.CombinatorValue;
 			return _GetCombinator().Combine(commands);
 		}
 
