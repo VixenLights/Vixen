@@ -1,15 +1,14 @@
 ﻿using System;
 using Vixen.Commands;
-using Vixen.Sys;
 
 namespace Vixen.Data.Combinator.Color {
 	public class NaiveColorCombinator : Combinator<NaiveColorCombinator, System.Drawing.Color> {
-		public override void Handle(IEvaluator<System.Drawing.Color> obj) {
+		public override void Handle(ColorCommand obj) {
 			if(CombinatorValue == null) {
-				CombinatorValue = obj.EvaluatorValue;
+				CombinatorValue = obj;
 			} else {
 				System.Drawing.Color value1 = CombinatorValue.CommandValue;
-				System.Drawing.Color value2 = obj.EvaluatorValue.CommandValue;
+				System.Drawing.Color value2 = obj.CommandValue;
 				CombinatorValue = _MergeColorNaively(value1, value2);
 			}
 		}

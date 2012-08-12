@@ -4,34 +4,34 @@ using Vixen.Sys;
 using Vixen.Sys.Dispatch;
 
 namespace Vixen.Data.Combinator {
-	abstract public class Combinator<T, ResultType> : Dispatchable<T>, ICombinator<ResultType>, IAnyEvaluatorHandler
-		where T : Combinator<T, ResultType>  {
-		public void Combine(IEnumerable<ICommand> evaluators) {
+	abstract public class Combinator<T, ResultType> : Dispatchable<T>, ICombinator<ResultType>, IAnyCommandHandler
+	    where T : Combinator<T, ResultType>  {
+		public ICommand<ResultType> Combine(IEnumerable<ICommand> commands) {
 			CombinatorValue = null;
 
-			foreach(IEvaluator evaluator in evaluators) {
-				evaluator.Dispatch(this);
+			foreach(ICommand command in commands) {
+				command.Dispatch(this);
 			}
+
+			return CombinatorValue;
 		}
 
-		//Can't be a float, must be discrete, digital as it's the type going to the controller.
-		//The types need to match the types wrapped by the commands.
-		//virtual public void Handle(IEvaluator<float> obj) { }
-
-		virtual public void Handle(IEvaluator<byte> obj) { }
-
-		virtual public void Handle(IEvaluator<ushort> obj) { }
-
-		virtual public void Handle(IEvaluator<uint> obj) { }
-
-		virtual public void Handle(IEvaluator<ulong> obj) { }
-
-		virtual public void Handle(IEvaluator<System.Drawing.Color> obj) { }
-
-		public ICommand<ResultType> CombinatorValue { get; protected set; }
-
-		ICommand ICombinator.CombinatorValue {
-			get { return CombinatorValue; }
+		ICommand ICombinator.Combine(IEnumerable<ICommand> commands) {
+			return Combine(commands);
 		}
+
+		virtual public void Handle(_8BitCommand obj) { }
+
+		virtual public void Handle(_16BitCommand obj) { }
+
+		virtual public void Handle(_32BitCommand obj) { }
+
+		virtual public void Handle(_64BitCommand obj) { }
+
+		virtual public void Handle(ColorCommand obj) { }
+
+		// ResultType generic parameter is used by the combinators so the value wrapped
+		// by the command can be known.
+		protected ICommand<ResultType> CombinatorValue { get; set; }
 	}
 }

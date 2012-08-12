@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Vixen.Commands;
 using Vixen.Data.Flow;
 using Vixen.Sys;
 using Vixen.Sys.Dispatch;
@@ -9,7 +8,7 @@ namespace Vixen.Data.Policy {
 	class SmartControllerDataPolicy : DataFlowDataDispatch {
 		public IIntent[] OutputCurrentState;
 
-		public override void Handle(IDataFlowData<IEnumerable<IIntentState>> obj) {
+		public override void Handle(IntentsDataFlowData obj) {
 			IntentChangeCollection intentChanges = null;
 			IIntent[] newState = obj.Value.Select(x => x.Intent).ToArray();
 
@@ -27,12 +26,12 @@ namespace Vixen.Data.Policy {
 			Result = intentChanges;
 		}
 
-		public override void Handle(IDataFlowData<ICommand> obj) {
+		public override void Handle(CommandDataFlowData obj) {
 			OutputCurrentState = null;
 			Result = null;
 		}
 
-		public override void Handle(IDataFlowData<IEnumerable<ICommand>> obj) {
+		public override void Handle(CommandsDataFlowData obj) {
 			OutputCurrentState = null;
 			Result = null;
 		}

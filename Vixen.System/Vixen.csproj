@@ -136,10 +136,10 @@
     <Compile Include="Data\Flow\IDataFlowOutput.cs" />
     <Compile Include="Data\Flow\CommandOutputDataFlowAdapter.cs" />
     <Compile Include="Data\Flow\IntentOutputDataFlowAdapter.cs" />
-    <Compile Include="Data\Flow\CommandOutputState.cs" />
-    <Compile Include="Data\Flow\CommandsOutputState.cs" />
+    <Compile Include="Data\Flow\CommandDataFlowData.cs" />
+    <Compile Include="Data\Flow\CommandsDataFlowData.cs" />
     <Compile Include="Data\Policy\ControllerDataPolicy.cs" />
-    <Compile Include="Data\Flow\IntentsOutputState.cs" />
+    <Compile Include="Data\Flow\IntentsDataFlowData.cs" />
     <Compile Include="Data\Flow\IDataFlowData.cs" />
     <Compile Include="Data\Policy\OutputDataPolicy.cs" />
     <Compile Include="Data\Policy\OutputStateDispatchingDataPolicy.cs" />

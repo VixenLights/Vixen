@@ -4,10 +4,10 @@ using Vixen.Sys;
 using Vixen.Sys.Dispatch;
 
 namespace Vixen.Data.Evaluator {
-	public abstract class Evaluator<T, ResultType> : Dispatchable<T>, IEvaluator<ResultType>, IAnyIntentStateHandler
-		where T : Evaluator<T, ResultType> {
-		public void Evaluate(IIntentState intentState) {
+	public abstract class Evaluator : Dispatchable<Evaluator>, IEvaluator, IAnyIntentStateHandler {
+		public ICommand Evaluate(IIntentState intentState) {
 			intentState.Dispatch(this);
+			return EvaluatorValue;
 		}
 
 		// Opt-in, not opt-out.  Default handlers will not be called
@@ -21,10 +21,6 @@ namespace Vixen.Data.Evaluator {
 
 		virtual public void Handle(IIntentState<CommandValue> obj) { }
 
-		public ICommand<ResultType> EvaluatorValue { get; protected set; }
-
-		ICommand IEvaluator.EvaluatorValue {
-			get { return EvaluatorValue; }
-		}
+		protected ICommand EvaluatorValue { get; set; }
 	}
 }

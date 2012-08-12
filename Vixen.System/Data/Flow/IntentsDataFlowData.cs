@@ -2,7 +2,7 @@
 using Vixen.Sys;
 
 namespace Vixen.Data.Flow {
-	class IntentsDataFlowData : Dispatchable<IntentsDataFlowData>, IDataFlowData<IEnumerable<IIntentState>>  {
+	public class IntentsDataFlowData : Dispatchable<IntentsDataFlowData>, IDataFlowData<IEnumerable<IIntentState>>  {
 		public IntentsDataFlowData(IEnumerable<IIntentState> intentStates) {
 			Value = intentStates;
 		}

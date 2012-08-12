@@ -4,7 +4,8 @@ using Vixen.Sys;
 using Vixen.Sys.Dispatch;
 
 namespace Vixen.Data.Evaluator {
-	public class _8BitEvaluator : Evaluator<_8BitEvaluator, byte>, IAnyCommandHandler {
+	//public class _8BitEvaluator : Evaluator<_8BitEvaluator, byte>, IAnyCommandHandler {
+	public class _8BitEvaluator : Evaluator, IAnyCommandHandler {
 		public override void Handle(IIntentState<ColorValue> obj) {
 			byte byteLevel = ColorValue.GetGrayscaleLevel(obj.GetValue().Color);
 			EvaluatorValue = new _8BitCommand(byteLevel);

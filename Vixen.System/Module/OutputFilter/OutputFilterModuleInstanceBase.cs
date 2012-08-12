@@ -13,6 +13,10 @@ namespace Vixen.Module.OutputFilter {
 
 		virtual public bool Setup() { return false; }
 
+		public void Update(IDataFlowData data) {
+			data.Dispatch(this);
+		}
+
 		#region Equality
 		public bool Equals(IOutputFilterModuleInstance x, IOutputFilterModuleInstance y) {
 			return base.Equals(x, y);
@@ -39,16 +43,12 @@ namespace Vixen.Module.OutputFilter {
 		}
 		#endregion
 
-		public void Update(IDataFlowData data) {
-			data.Dispatch(this);
-		}
-
 		#region Data Flow data handlers
-		virtual public void Handle(IDataFlowData<ICommand> obj) { }
+		virtual public void Handle(CommandDataFlowData obj) { }
 
-		virtual public void Handle(IDataFlowData<IEnumerable<ICommand>> obj) { }
+		virtual public void Handle(CommandsDataFlowData obj) { }
 
-		virtual public void Handle(IDataFlowData<IEnumerable<IIntentState>> obj) { }
+		virtual public void Handle(IntentsDataFlowData obj) { }
 		#endregion
 
 		#region IDataFlowComponent

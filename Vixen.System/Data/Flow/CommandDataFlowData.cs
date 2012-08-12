@@ -2,7 +2,7 @@
 using Vixen.Sys;
 
 namespace Vixen.Data.Flow {
-	class CommandDataFlowData : Dispatchable<CommandDataFlowData>, IDataFlowData<ICommand> {
+	public class CommandDataFlowData : Dispatchable<CommandDataFlowData>, IDataFlowData<ICommand> {
 		public CommandDataFlowData(ICommand command) {
 			Value = command;
 		}

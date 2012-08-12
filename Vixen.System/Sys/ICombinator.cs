@@ -3,11 +3,10 @@ using Vixen.Commands;
 
 namespace Vixen.Sys {
 	public interface ICombinator : IDispatchable {
-		void Combine(IEnumerable<ICommand> commands);
-		ICommand CombinatorValue { get; }
+		ICommand Combine(IEnumerable<ICommand> commands);
 	}
 
 	public interface ICombinator<T> : ICombinator {
-		ICommand<T> CombinatorValue { get; }
+		ICommand<T> Combine(IEnumerable<ICommand> commands);
 	}
 }

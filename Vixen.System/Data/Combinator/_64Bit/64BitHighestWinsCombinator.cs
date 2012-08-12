@@ -1,56 +1,55 @@
 ﻿using System;
 using Vixen.Commands;
 using Vixen.Data.Value;
-using Vixen.Sys;
 
 namespace Vixen.Data.Combinator._64Bit {
 	public class _64BitHighestWinsCombinator : Combinator<_64BitHighestWinsCombinator, ulong> {
-		public override void Handle(IEvaluator<byte> obj) {
+		public override void Handle(_8BitCommand obj) {
 			if(CombinatorValue == null) {
-				CombinatorValue = new _64BitCommand(obj.EvaluatorValue.CommandValue);
+				CombinatorValue = new _64BitCommand(obj.CommandValue);
 			} else {
 				ulong value1 = CombinatorValue.CommandValue;
-				ulong value2 = obj.EvaluatorValue.CommandValue;
+				ulong value2 = obj.CommandValue;
 				CombinatorValue = new _64BitCommand(Math.Max(value1, value2));
 			}
 		}
 
-		public override void Handle(IEvaluator<System.Drawing.Color> obj) {
+		public override void Handle(ColorCommand obj) {
 			if(CombinatorValue == null) {
-				CombinatorValue = new _64BitCommand(ColorValue.GetGrayscaleLevel(obj.EvaluatorValue.CommandValue));
+				CombinatorValue = new _64BitCommand(ColorValue.GetGrayscaleLevel(obj.CommandValue));
 			} else {
 				ulong value1 = CombinatorValue.CommandValue;
-				ulong value2 = ColorValue.GetGrayscaleLevel(obj.EvaluatorValue.CommandValue);
+				ulong value2 = ColorValue.GetGrayscaleLevel(obj.CommandValue);
 				CombinatorValue = new _64BitCommand(Math.Max(value1, value2));
 			}
 		}
 
-		public override void Handle(IEvaluator<uint> obj) {
+		public override void Handle(_32BitCommand obj) {
 			if(CombinatorValue == null) {
-				CombinatorValue = new _64BitCommand(obj.EvaluatorValue.CommandValue);
+				CombinatorValue = new _64BitCommand(obj.CommandValue);
 			} else {
 				ulong value1 = CombinatorValue.CommandValue;
-				ulong value2 = (byte)obj.EvaluatorValue.CommandValue;
+				ulong value2 = (byte)obj.CommandValue;
 				CombinatorValue = new _64BitCommand(Math.Max(value1, value2));
 			}
 		}
 
-		public override void Handle(IEvaluator<ulong> obj) {
+		public override void Handle(_64BitCommand obj) {
 			if(CombinatorValue == null) {
-				CombinatorValue = obj.EvaluatorValue;
+				CombinatorValue = obj;
 			} else {
 				ulong value1 = CombinatorValue.CommandValue;
-				ulong value2 = (byte)obj.EvaluatorValue.CommandValue;
+				ulong value2 = (byte)obj.CommandValue;
 				CombinatorValue = new _64BitCommand(Math.Max(value1, value2));
 			}
 		}
 
-		public override void Handle(IEvaluator<ushort> obj) {
+		public override void Handle(_16BitCommand obj) {
 			if(CombinatorValue == null) {
-				CombinatorValue = new _64BitCommand(obj.EvaluatorValue.CommandValue);
+				CombinatorValue = new _64BitCommand(obj.CommandValue);
 			} else {
 				ulong value1 = CombinatorValue.CommandValue;
-				ulong value2 = (byte)obj.EvaluatorValue.CommandValue;
+				ulong value2 = (byte)obj.CommandValue;
 				CombinatorValue = new _64BitCommand(Math.Max(value1, value2));
 			}
 		}

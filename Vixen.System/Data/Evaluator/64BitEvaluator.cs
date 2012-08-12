@@ -3,7 +3,8 @@ using Vixen.Data.Value;
 using Vixen.Sys;
 
 namespace Vixen.Data.Evaluator {
-	public class _64BitEvaluator : Evaluator<_64BitEvaluator, ulong> {
+	//public class _64BitEvaluator : Evaluator<_64BitEvaluator, ulong> {
+	public class _64BitEvaluator : Evaluator {
 		public override void Handle(IIntentState<ColorValue> obj) {
 			byte byteLevel = ColorValue.GetGrayscaleLevel(obj.GetValue().Color);
 			EvaluatorValue = new _64BitCommand(byteLevel);
