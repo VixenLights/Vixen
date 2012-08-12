@@ -9,24 +9,6 @@ namespace VixenModules.OutputFilter.Color {
 			return newInstance;
 		}
 
-		//[DataMember]
-		//public ColorFilter ColorFilter { get; set; }
-
-		//[DataMember]
-		//public bool RedSelected { get; set; }
-
-		//[DataMember]
-		//public bool GreenSelected { get; set; }
-
-		//[DataMember]
-		//public bool BlueSelected { get; set; }
-
-		//[DataMember]
-		//public bool YellowSelected { get; set; }
-
-		//[DataMember]
-		//public bool WhiteSelected { get; set; }
-
 		[DataMember]
 		public ColorFilter[] FilterOrder { get; set; }
 	}

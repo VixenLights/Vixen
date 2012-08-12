@@ -2,6 +2,10 @@
 
 namespace VixenModules.OutputFilter.Color.Filter {
 	class BlueFilter : ColorComponentFilter {
+		override public string FilterName {
+			get { return "Blue"; }
+		}
+
 		protected override ColorValue FilterColorValue(ColorValue colorValue) {
 			int blue = _GetBlueValue(colorValue.Color);
 			colorValue.Color = _CreateBlueColor(blue);
