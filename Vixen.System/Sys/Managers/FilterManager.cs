@@ -23,6 +23,16 @@ namespace Vixen.Sys.Managers {
 			dataFlowManager.ComponentSourceChanged += DataFlowManagerOnComponentSourceChanged;
 		}
 
+		public void AddFilter(IOutputFilterModuleInstance filter) {
+			VixenSystem.DataFlow.AddComponent(filter);
+		}
+
+		public void AddRange(IEnumerable<IOutputFilterModuleInstance> filters) {
+			foreach(IOutputFilterModuleInstance filter in filters) {
+				AddFilter(filter);
+			}
+		}
+
 		private void DataFlowManagerOnComponentAdded(object sender, DataFlowComponentEventArgs e) {
 			IOutputFilterModuleInstance filter = e.Component as IOutputFilterModuleInstance;
 			if(filter == null) return;
@@ -58,50 +68,15 @@ namespace Vixen.Sys.Managers {
 			_filterChildren.SetParent(filter, filterParent);
 		}
 
-		//public void Add(IOutputFilterModuleInstance filter, Channel source) {
-		//    if(filter == null) throw new ArgumentNullException("filter");
-		//    if(source == null) throw new ArgumentNullException("source");
-
-		//    _AddFilterInstance(filter);
-		//    _AddRootNode(filter);
-		//}
-
-		//public void Add(IOutputFilterModuleInstance filter, IOutputFilterModuleInstance source) {
-		//    if(filter == null) throw new ArgumentNullException("filter");
-		//    if(source == null) throw new ArgumentNullException("source");
-
-		//    _AddFilterInstance(filter);
-		//}
-
-		//public void AddRange(IEnumerable<IOutputFilterModuleInstance> filters) {
-		//    foreach(IOutputFilterModuleInstance filter in filters) {
-		//        Add(filter);
-		//    }
-		//}
-
-		//public void Remove(IOutputFilterModuleInstance filter) {
-		//    if(filter == null) throw new ArgumentNullException("filter");
-
-		//    _RemoveFromFlow(filter);
-		//    _RemoveFromRoots(filter);
-		//    _RemoveInstanceReference(filter);
-		//}
-
 		public void Update() {
 			lock(_updateLock) {
 				_rootFilters.AsParallel().ForAll(_UpdateFilterBranch);
 			}
 		}
 
-		//private bool _AddToParent(IOutputFilterModuleInstance filter, IDataFlowComponentReference source) {
-		//    VixenSystem.DataFlow.Add(filter, source);
-		//    return !VixenSystem.DataFlow.IsRoot(filter);
-		//}
-
 		private void _AddFilterInstance(IOutputFilterModuleInstance filter) {
 			_AddInstanceReference(filter);
 			_filterChildren.AddFilter(filter);
-			//VixenSystem.DataFlow.AddParticipant(filter);
 		}
 
 		private void _AddInstanceReference(IOutputFilterModuleInstance filter) {
@@ -141,10 +116,6 @@ namespace Vixen.Sys.Managers {
 			VixenSystem.ModuleStore.InstanceData.RemoveModuleInstanceData(filter);
 		}
 
-		//private void _RemoveFromFlow(IOutputFilterModuleInstance filter) {
-		//    //VixenSystem.DataFlow.Remove(filter);
-		//}
-
 		private void _UpdateFilterBranch(IOutputFilterModuleInstance filter) {
 			_UpdateFromSource(filter);
 
@@ -158,17 +129,6 @@ namespace Vixen.Sys.Managers {
 			IDataFlowData data = filter.Source.GetOutputState();
 			filter.Update(data);
 		}
-
-		//private IOutputFilterModuleInstance _GetFilter(Guid id) {
-		//    IOutputFilterModuleInstance filter;
-		//    _instances.TryGetValue(id, out filter);
-		//    return filter;
-		//}
-
-		//private void _ParentNotSetGuard(IOutputFilterModuleInstance filter) {
-		//    if(filter == null) throw new ArgumentNullException("filter");
-		//    if(filter.Source != null) throw new InvalidOperationException("Filter already has a source set.  Remove it from that parent before adding it to another.");
-		//}
 
 		public IEnumerator<IOutputFilterModuleInstance> GetEnumerator() {
 			return _instances.Values.GetEnumerator();

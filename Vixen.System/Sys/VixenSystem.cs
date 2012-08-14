@@ -78,7 +78,6 @@ namespace Vixen.Sys {
 					// The client is expected to have subscribed to the logging event
 					// so that it knows that an exception occurred during loading.
 					Logging.Error("Error during system startup; the system has been stopped.", ex);
-					//Logging.Debug(ex);
 					Stop();
 				}
 			}
@@ -145,10 +144,7 @@ namespace Vixen.Sys {
 			Controllers.AddRange(SystemConfig.SmartControllers);
 			Previews.AddRange(SystemConfig.Previews);
 			ControllerLinking.AddRange(SystemConfig.ControllerLinking);
-			//Filters.AddRange(SystemConfig.Filters);
-			//DataFlow.AddParticipantRelationships(SystemConfig.DataFlow);
-			DataFlowInitializer dataFlowInitializer = new DataFlowInitializer(SystemConfig);
-			dataFlowInitializer.Run();
+			Filters.AddRange(SystemConfig.Filters);
 		}
 
     	static public void ReloadSystemConfig()

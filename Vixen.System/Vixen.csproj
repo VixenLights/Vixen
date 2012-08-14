@@ -216,7 +216,6 @@
     <Compile Include="Data\Value\ColorValue.cs" />
     <Compile Include="Data\Value\CommandValue.cs" />
     <Compile Include="Sys\ChannelDataFlowAdapterFactory.cs" />
-    <Compile Include="Sys\DataFlowInitializer.cs" />
     <Compile Include="Sys\DataNodeCollection.cs" />
     <Compile Include="Data\Value\IIntentDataType.cs" />
     <Compile Include="Sys\Dispatch\IAnyDataFlowDataHandler.cs" />
