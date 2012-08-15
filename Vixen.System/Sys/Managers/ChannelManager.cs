@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Vixen.Data.Flow;
 using Vixen.Sys.Instrumentation;
 
 namespace Vixen.Sys.Managers {
@@ -109,6 +110,10 @@ namespace Vixen.Sys.Managers {
 
 		private void _RemoveDataFlowParticipant(Channel channel) {
 			VixenSystem.DataFlow.RemoveComponent(_dataFlowAdapters.GetAdapter(channel));
+		}
+
+		public IDataFlowComponent GetDataFlowComponentForChannel(Channel channel) {
+			return _dataFlowAdapters.GetAdapter(channel);
 		}
 
 		private string _Uniquify(string name) {

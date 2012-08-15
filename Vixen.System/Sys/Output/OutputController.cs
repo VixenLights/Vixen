@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Vixen.Factory;
+using Vixen.Data.Flow;
 using Vixen.Module.Controller;
 using Vixen.Commands;
 
@@ -37,6 +38,10 @@ namespace Vixen.Sys.Output {
 
 		private void DataPolicyFactoryChanged(object sender, EventArgs eventArgs) {
 			_dataPolicyProvider.UseFactory(_ControllerModule.DataPolicyFactory);
+		}
+
+		public IDataFlowComponent GetDataFlowComponentForOutput(CommandOutput output) {
+			return _adapterFactory.GetAdapter(output);
 		}
 
 		#region IEnumerable<OutputController>
