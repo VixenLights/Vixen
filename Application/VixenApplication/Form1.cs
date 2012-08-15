@@ -12,6 +12,7 @@ using Dataweb.NShape;
 using Dataweb.NShape.Advanced;
 using Dataweb.NShape.Controllers;
 using Dataweb.NShape.GeneralShapes;
+using Vixen.Data.Flow;
 using Vixen.Sys;
 using Vixen.Sys.Output;
 
@@ -77,14 +78,39 @@ namespace VixenApplication
 
 			// A: fixed shapes with no connection points: nothing
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
-				'A', StandardRole.Operator, Permission.None);
+				SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS, StandardRole.Operator, Permission.None);
 			// B: fixed shapes with connection points: connect only
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
-				'B', StandardRole.Operator, Permission.Connect);
+				SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS, StandardRole.Operator, Permission.Connect);
 			// C: movable shapes (filters): connect, layout (movable)
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
-				'C', StandardRole.Operator, Permission.Connect | Permission.Layout);
+				SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS, StandardRole.Operator, Permission.Connect | Permission.Layout);
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).CurrentRole = StandardRole.Operator;
+
+			ControllerShapes = new List<ControllerShape>();
+			ChannelShapes = new List<ChannelNodeShape>();
+
+			FillStyle styleChannelGroup = new FillStyle("ChannelGroup",
+				new ColorStyle("", Color.FromArgb(120, 160, 240)), new ColorStyle("", Color.FromArgb(90, 120, 180)));
+			styleChannelGroup.FillMode = FillMode.Gradient;
+			FillStyle styleChannelLeaf = new FillStyle("ChannelLeaf",
+				new ColorStyle("", Color.FromArgb(200, 220, 255)), new ColorStyle("", Color.FromArgb(140, 160, 200)));
+			styleChannelLeaf.FillMode = FillMode.Gradient;
+			FillStyle styleFilter = new FillStyle("Filter",
+				new ColorStyle("", Color.FromArgb(255, 220, 150)), new ColorStyle("", Color.FromArgb(230, 200, 100)));
+			styleFilter.FillMode = FillMode.Gradient;
+			FillStyle styleController = new FillStyle("Controller",
+				new ColorStyle("", Color.FromArgb(200, 255, 200)), new ColorStyle("", Color.FromArgb(180, 255, 180)));
+			styleController.FillMode = FillMode.Gradient;
+			FillStyle styleOutput = new FillStyle("Output",
+				new ColorStyle("", Color.FromArgb(220, 255, 220)), new ColorStyle("", Color.FromArgb(200, 255, 200)));
+			styleOutput.FillMode = FillMode.Gradient;
+
+			myproject.Design.FillStyles.Add(styleChannelGroup, styleChannelGroup);
+			myproject.Design.FillStyles.Add(styleChannelLeaf, styleChannelLeaf);
+			myproject.Design.FillStyles.Add(styleFilter, styleFilter);
+			myproject.Design.FillStyles.Add(styleController, styleController);
+			myproject.Design.FillStyles.Add(styleOutput, styleOutput);
 		}
 
 		private void button2_Click(object sender, EventArgs e)
@@ -229,7 +255,8 @@ namespace VixenApplication
 			ChannelShapes = new List<ChannelNodeShape>();
 			foreach (ChannelNode node in VixenSystem.Nodes.GetRootNodes()) {
 				ChannelNodeShape channelShape = _MakeChannelNodeShape(node, 1);
-				ChannelShapes.Add(channelShape);
+				if (channelShape != null)
+					ChannelShapes.Add(channelShape);
 			}
 		}
 
@@ -243,8 +270,9 @@ namespace VixenApplication
 
 			ControllerShapes = new List<ControllerShape>();
 			foreach (IOutputDevice controller in VixenSystem.Controllers) {
-				ControllerShape controllerShape = _MakeControllerShape(controller.Id, 1);
-				ControllerShapes.Add(controllerShape);
+				ControllerShape controllerShape = _MakeControllerShape(controller);
+				if (controllerShape != null)
+					ControllerShapes.Add(controllerShape);
 			}
 		}
 
@@ -312,9 +340,11 @@ namespace VixenApplication
 					FilterSetupShapeBase childSetupShapeBase = _MakeChannelNodeShape(child, zOrder + 1);
 					shape.ChildFilterShapes.Add(childSetupShapeBase);
 				}
-				shape.SecurityDomainName = 'A';
+				shape.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS;
+				shape.FillStyle = myproject.Design.FillStyles["ChannelGroup"];
 			} else {
-				shape.SecurityDomainName = 'B';
+				shape.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS;
+				shape.FillStyle = myproject.Design.FillStyles["ChannelLeaf"];
 			}
 			return shape;
 		}
@@ -330,30 +360,35 @@ namespace VixenApplication
 			}
 		}
 
-		private ControllerShape _MakeControllerShape(Guid controllerId, int zOrder)
+		private ControllerShape _MakeControllerShape(IOutputDevice controller)
 		{
-			OutputController controller = VixenSystem.Controllers.GetController(controllerId);
+			OutputController outputController = controller as OutputController;
+			if (outputController == null)
+				return null;
 
 			ControllerShape controllerShape = (ControllerShape)myproject.ShapeTypes["ControllerShape"].CreateInstance();
-			controllerShape.ControllerId = controllerId;
 			controllerShape.Title = controller.Name;
-			controllerShape.SecurityDomainName = 'A';
+			controllerShape.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS;
+			controllerShape.FillStyle = myproject.Design.FillStyles["Controller"];
 
-			diagramDisplay.Diagram.Shapes.Add(controllerShape, zOrder);
+			diagramDisplay.Diagram.Shapes.Add(controllerShape, 1);
 			diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape)controllerShape, diagramDisplay.Diagram);
 			diagramDisplay.Diagram.AddShapeToLayers(controllerShape, _visibleLayer.Id);
 
-			for (int i = 0; i < controller.OutputCount; i++ )
-			{
+			for (int i = 0; i < outputController.OutputCount; i++) {
+				CommandOutput output = outputController.Outputs[i];
 				OutputShape outputShape = (OutputShape)myproject.ShapeTypes["OutputShape"].CreateInstance();
-				outputShape.ControllerReference = new ControllerReference(controllerId, i);
-				if (controller.Outputs[i].Name.Length <= 0)
-					outputShape.Title = outputShape.ControllerReference.ToString();
+				outputShape.Controller = outputController;
+				outputShape.Output = output;
+				outputShape.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS;
+				outputShape.FillStyle = myproject.Design.FillStyles["Output"];
+
+				if (output.Name.Length <= 0)
+					outputShape.Title = outputController.Name + " [" + (i+1) + "]";
 				else
-					outputShape.Title = controller.Outputs[i].Name;
-				outputShape.SecurityDomainName = 'B';
-				
-				diagramDisplay.Diagram.Shapes.Add(outputShape, zOrder + 1);
+					outputShape.Title = output.Name;
+
+				diagramDisplay.Diagram.Shapes.Add(outputShape, 2);
 				diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape)outputShape, diagramDisplay.Diagram);
 				diagramDisplay.Diagram.AddShapeToLayers(outputShape, _visibleLayer.Id);
 
@@ -426,6 +461,11 @@ namespace VixenApplication
 		// how much of a parent shape should be reserved/kept for the wrapping above/below
 		internal const int SHAPE_GROUP_HEADER_HEIGHT = 32;
 		internal const int SHAPE_GROUP_FOOTER_HEIGHT = 8;
+
+		// security domains for different shape types
+		internal const char SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS = 'A';
+		internal const char SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS = 'B';
+		internal const char SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS = 'C';
 	}
 
 
@@ -448,8 +488,7 @@ namespace VixenApplication
 	{
 		protected virtual void _init()
 		{
-			_inputCount = 0;
-			_outputCount = 0;
+			_recalcControlPoints();
 		}
 
 		protected FilterSetupShapeBase(ShapeType shapeType, Template template) : base(shapeType, template)
@@ -466,8 +505,7 @@ namespace VixenApplication
 			if (source is FilterSetupShapeBase)
 			{
 				FilterSetupShapeBase src = (FilterSetupShapeBase)source;
-				InputCount = src.InputCount;
-				OutputCount = src.OutputCount;
+				//DataFlowComponent = src.DataFlowComponent;
 			}
 		}
 
@@ -477,19 +515,24 @@ namespace VixenApplication
 			CalcControlPoints();			
 		}
 
-		private int _inputCount;
 		public virtual int InputCount
 		{
-			get { return _inputCount; }
-			set { _inputCount = value; _recalcControlPoints(); }
+			get { return (DataFlowComponent != null) ? 1 : 0; }
 		}
 
-		private int _outputCount;
 		public virtual int OutputCount
 		{
-			get { return _outputCount; }
-			set { _outputCount = value; _recalcControlPoints(); }
+			get
+			{
+				if ((DataFlowComponent == null) || (DataFlowComponent.Outputs == null))
+					return 0;
+				return DataFlowComponent.Outputs.Length;
+			}
 		}
+
+		public abstract IDataFlowComponent DataFlowComponent { get; }
+
+		public virtual string Title { get; set; }
 
 		private Font _customFont = null;
 		private static readonly Font _defaultFont = new Font("Arial", 14, GraphicsUnit.Pixel);
@@ -518,8 +561,6 @@ namespace VixenApplication
 			}
 			set { _customTextBrush = value; }
 		}
-
-		public virtual string Title { get; set; }
 
 		public override void Draw(Graphics graphics)
 		{
@@ -673,28 +714,7 @@ namespace VixenApplication
 	}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	
 
 
 
@@ -703,12 +723,6 @@ namespace VixenApplication
 
 	public class ChannelNodeShape : NestingSetupShape
 	{
-		protected override void _init()
-		{
-			base._init();
-			_recalcControlPoints();
-		}
-
 		public ChannelNodeShape(ShapeType shapeType, Template template)
 			: base(shapeType, template)
 		{
@@ -742,23 +756,26 @@ namespace VixenApplication
 			return new ChannelNodeShape(shapeType, template);
 		}
 
-		public ChannelNode Node { get; set; }
+		private ChannelNode _node;
+		public ChannelNode Node
+		{
+			get { return _node; }
+			set { _node = value; _recalcControlPoints(); }
+		}
+
+		public override IDataFlowComponent DataFlowComponent
+		{
+			get
+			{
+				if (Node == null || Node.Channel == null)
+					return null;
+				return VixenSystem.Channels.GetDataFlowComponentForChannel(Node.Channel);
+			}
+		}
 
 		public override int InputCount
 		{
 			get { return 0; }
-			set { }
-		}
-
-		public override int OutputCount
-		{
-			get { return (ChildFilterShapes != null && ChildFilterShapes.Count > 0) ? 0 : 1; }
-			set { }
-		}
-
-		public override void DrawCustom(Graphics graphics)
-		{
-			base.DrawCustom(graphics);
 		}
 
 		protected override bool ReferenceControlPointHasCapability(ControlPointCapabilities controlPointCapability)
@@ -778,11 +795,6 @@ namespace VixenApplication
 
 	public class ControllerShape : NestingSetupShape
 	{
-		protected override void _init()
-		{
-			base._init();
-		}
-
 		public ControllerShape(ShapeType shapeType, Template template)
 			: base(shapeType, template)
 		{
@@ -800,7 +812,6 @@ namespace VixenApplication
 			base.CopyFrom(source);
 			if (source is ControllerShape) {
 				ControllerShape src = (ControllerShape)source;
-				ControllerId = src.ControllerId;
 			}
 		}
 
@@ -816,25 +827,9 @@ namespace VixenApplication
 			return new ControllerShape(shapeType, template);
 		}
 
-		public Guid ControllerId;
-
-		
-		public override int InputCount
+		public override IDataFlowComponent DataFlowComponent
 		{
-			get { return 0; }
-			set { }
-		}
-
-		public override int OutputCount
-		{
-			get { return 0; }
-			set { }
-		}
-
-
-		public override void DrawCustom(Graphics graphics)
-		{
-			base.DrawCustom(graphics);
+			get { return null; }
 		}
 	}
 
@@ -848,11 +843,6 @@ namespace VixenApplication
 
 	public class OutputShape : FilterSetupShapeBase
 	{
-		protected override void _init()
-		{
-			base._init();
-		}
-
 		public OutputShape(ShapeType shapeType, Template template)
 			: base(shapeType, template)
 		{
@@ -870,7 +860,6 @@ namespace VixenApplication
 			base.CopyFrom(source);
 			if (source is OutputShape) {
 				OutputShape src = (OutputShape)source;
-				ControllerReference = src.ControllerReference;
 			}
 		}
 
@@ -886,23 +875,28 @@ namespace VixenApplication
 			return new OutputShape(shapeType, template);
 		}
 
-		public ControllerReference ControllerReference;
-
-		public override int InputCount
+		private CommandOutput _output;
+		public CommandOutput Output
 		{
-			get { return 1; }
-			set { }
+			get { return _output; }
+			set { _output = value; _recalcControlPoints(); }
 		}
 
-		public override int OutputCount
+		private OutputController _controller;
+		public OutputController Controller
 		{
-			get { return 0; }
-			set { }
+			get { return _controller; }
+			set { _controller = value; _recalcControlPoints(); }
 		}
 
-		public override void DrawCustom(Graphics graphics)
+		public override IDataFlowComponent DataFlowComponent
 		{
-			base.DrawCustom(graphics);
+			get
+			{
+				if (Output == null || Controller == null)
+					return null;
+				return Controller.GetDataFlowComponentForOutput(Output);
+			}
 		}
 
 		protected override bool ReferenceControlPointHasCapability(ControlPointCapabilities controlPointCapability)
@@ -912,27 +906,6 @@ namespace VixenApplication
 		}
 
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
