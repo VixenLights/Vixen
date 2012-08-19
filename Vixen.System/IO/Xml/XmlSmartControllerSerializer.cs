@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Xml.Linq;
+using Vixen.Factory;
 using Vixen.Sys;
 using Vixen.Sys.Output;
 
@@ -11,24 +12,15 @@ namespace Vixen.IO.Xml {
 		private const string ELEMENT_OUTPUT = "Output";
 		private const string ATTR_NAME = "name";
 		private const string ATTR_HARDWARE_ID = "hardwareId";
-		private const string ATTR_OUTPUT_COUNT = "outputCount";
 		private const string ATTR_ID = "id";
 
 		public XElement WriteObject(IOutputDevice value) {
 			SmartOutputController controller = (SmartOutputController)value;
 
-			//XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
-			//XElement dataSetElement = null;
-			//if(controller.ModuleDataSet != null) {
-			//    dataSetElement = dataSetSerializer.WriteObject(controller.ModuleDataSet);
-			//}
-
 			XElement element = new XElement(ELEMENT_SMART_CONTROLLER,
 				new XAttribute(ATTR_NAME, controller.Name),
 				new XAttribute(ATTR_HARDWARE_ID, controller.ModuleId),
-				new XAttribute(ATTR_OUTPUT_COUNT, controller.OutputCount),
 				new XAttribute(ATTR_ID, controller.Id),
-				//dataSetElement,
 				_WriteOutputs(controller));
 
 			return element;
@@ -41,15 +33,11 @@ namespace Vixen.IO.Xml {
 			Guid? moduleId = XmlHelper.GetGuidAttribute(element, ATTR_HARDWARE_ID);
 			if(moduleId == null) return null;
 
-			int? outputCount = XmlHelper.GetIntAttribute(element, ATTR_OUTPUT_COUNT);
-
 			Guid? id = XmlHelper.GetGuidAttribute(element, ATTR_ID);
 			if(id == null) return null;
 
-			SmartOutputController controller = new SmartOutputController(id.Value, name, outputCount.GetValueOrDefault(), moduleId.Value);
-
-			//XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
-			//controller.ModuleDataSet = dataSetSerializer.ReadObject(element);
+			SmartControllerFactory smartControllerFactory = new SmartControllerFactory();
+			SmartOutputController controller = (SmartOutputController)smartControllerFactory.CreateDevice(id.Value, moduleId.Value, name);
 
 			_ReadOutputs(controller, element);
 
@@ -67,19 +55,14 @@ namespace Vixen.IO.Xml {
 		private void _ReadOutputs(SmartOutputController controller, XElement element) {
 			XElement outputsElement = element.Element(ELEMENT_OUTPUTS);
 			if(outputsElement != null) {
-				int outputIndex = 0;
 				foreach(XElement outputElement in outputsElement.Elements(ELEMENT_OUTPUT)) {
-					// Data persisted in the controller instance may exceed the
-					// output count.
-					if(outputIndex >= controller.OutputCount) break;
+					Guid? id = XmlHelper.GetGuidAttribute(outputElement, ATTR_ID);
+					string name = XmlHelper.GetAttribute(outputElement, ATTR_NAME) ?? "Unnamed output";
 
-					// The outputs were created when the output count was set.
-					IntentOutput output = controller.Outputs[outputIndex];
+					IntentOutputFactory outputFactory = new IntentOutputFactory();
+					IntentOutput output = (IntentOutput)outputFactory.CreateOutput(id.GetValueOrDefault(), name);
 
-					output.Name = XmlHelper.GetAttribute(outputElement, ATTR_NAME) ?? "Unnamed output";
-					output.Id = XmlHelper.GetGuidAttribute(outputElement, ATTR_ID).Value;
-
-					outputIndex++;
+					controller.AddOutput(output);
 				}
 			}
 		}

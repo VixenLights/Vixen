@@ -5,20 +5,9 @@ using Vixen.Sys.Output;
 
 namespace Vixen.Module.SmartController {
 	abstract public class SmartControllerModuleInstanceBase : OutputModuleInstanceBase, ISmartControllerModuleInstance, IEqualityComparer<ISmartControllerModuleInstance>, IEquatable<ISmartControllerModuleInstance>, IEqualityComparer<SmartControllerModuleInstanceBase>, IEquatable<SmartControllerModuleInstanceBase> {
-		private int _outputCount;
-
-		public int OutputCount {
-			get { return _outputCount; }
-			set {
-				_outputCount = value;
-				_SetOutputCount(value);
-			}
-		}
-
-		abstract protected void _SetOutputCount(int outputCount);
-
 		abstract public void UpdateState(IntentChangeCollection[] outputStates);
 
+		#region Equality
 		public bool Equals(ISmartControllerModuleInstance x, ISmartControllerModuleInstance y) {
 			return base.Equals(x, y);
 		}
@@ -42,5 +31,6 @@ namespace Vixen.Module.SmartController {
 		public bool Equals(SmartControllerModuleInstanceBase other) {
 			return Equals(other as ISmartControllerModuleInstance);
 		}
+		#endregion
 	}
 }

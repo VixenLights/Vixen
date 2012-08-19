@@ -1,131 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Vixen.Factory;
 using Vixen.Module.Controller;
 using Vixen.Commands;
 
 namespace Vixen.Sys.Output {
-	public class OutputController : ModuleBasedController<IControllerModuleInstance, CommandOutput>, IEnumerable<OutputController> {
+	/// <summary>
+	/// In-memory controller device.
+	/// </summary>
+	public class OutputController : IControllerDevice, IEnumerable<OutputController> {
 		//Because of bad design, this needs to be created before the base class is instantiated.
 		private CommandOutputDataFlowAdapterFactory _adapterFactory = new CommandOutputDataFlowAdapterFactory();
+		private IOutputMediator<CommandOutput> _outputMediator;
+		private IHardware _executionControl;
+		private IOutputModuleConsumer _outputModuleConsumer;
+		private int? _updateInterval;
 
-		public OutputController(string name, int outputCount, Guid moduleId)
-			: this(Guid.NewGuid(), name, outputCount, moduleId) {
+		internal OutputController(Guid id, string name, IOutputMediator<CommandOutput> outputMediator, IHardware executionControl, IOutputModuleConsumer outputModuleConsumer) {
+			if(outputMediator == null) throw new ArgumentNullException("outputMediator");
+			if(executionControl == null) throw new ArgumentNullException("executionControl");
+			if(outputModuleConsumer == null) throw new ArgumentNullException("outputModuleConsumer");
+
+			Id = id;
+			Name = name;
+			_outputMediator = outputMediator;
+			_executionControl = executionControl;
+			_outputModuleConsumer = outputModuleConsumer;
 		}
 
-		public OutputController(Guid id, string name, int outputCount, Guid moduleId)
-			: base(id, name, outputCount, moduleId) {
-		}
-
-		protected override IControllerModuleInstance GetControllerModule(Guid moduleId) {
-			IControllerModuleInstance module = Modules.ModuleManagement.GetController(moduleId);
-			ResetDataPolicy(module);
-			return module;
-		}
-
-		public IDataPolicy DataPolicy { get; set; }
-
-		override protected void UpdateState() {
-			if(VixenSystem.ControllerLinking.IsRootController(this) && _ControllerChainModule != null) {
-				BeginOutputChange();
-				try {
-					foreach(OutputController controller in this) {
-						controller.Outputs.AsParallel().ForAll(x => {
-							//x.UpdateState();
-							//x.LogicalFiltering();
-							//x.Command = _GenerateOutputCommand(x);
-							//x.PhysicalFiltering();
-							x.Update();
-							x.Command = _GenerateOutputCommand(x);
-						});
-					}
-
-					// Latch out the new state.
-					// This must be done in order of the chain links so that data
-					// goes out the port in the correct order.
-					foreach(OutputController controller in this) {
-						// A single port may be used to service multiple physical controllers,
-						// such as daisy-chained Renard controllers.  Tell the module where
-						// it is in that chain.
-						controller._ControllerChainModule.ChainIndex = VixenSystem.ControllerLinking.GetChainIndex(controller.Id);
-						ICommand[] outputStates = controller.ExtractFromOutputs(x => x.Command).ToArray();
-						controller._ControllerChainModule.UpdateState(outputStates);
-					}
-				} finally {
-					EndOutputChange();
-				}
-			}
-		}
-
-		private IControllerModuleInstance _ControllerChainModule {
-			get {
-				// When output controllers are linked, only the root controller will be
-				// connected to the port, therefore only it will have the output module
-				// used during execution.
-				OutputController priorController = VixenSystem.Controllers.GetPrior(this);
-				return (priorController != null) ? priorController._ControllerChainModule : Module;
-			}
-		}
-
-		//public IEnumerable<IOutputFilterModuleInstance> GetAllOutputFilters(int outputIndex) {
-		//    if(outputIndex < OutputCount) {
-		//        return Outputs[outputIndex].GetAllOutputFilters();
-		//    }
-		//    return Enumerable.Empty<IOutputFilterModuleInstance>();
-		//}
-
-		//public void AddOutputFilter(int outputIndex, IOutputFilterModuleInstance filter) {
-		//    if(filter != null && outputIndex < OutputCount) {
-		//        // Must be the controller store, and not the system store, because the system store
-		//        // deals only with static data and there may be multiple instances of a type of filter.
-		//        ModuleDataSet.AssignModuleInstanceData(filter);
-		//        Outputs[outputIndex].AddOutputFilter(filter);
-		//    }
-		//}
-
-		//public void InsertOutputFilter(int outputIndex, int index, IOutputFilterModuleInstance filter) {
-		//    if(filter != null && outputIndex < OutputCount) {
-		//        ModuleDataSet.AssignModuleInstanceData(filter);
-		//        Outputs[outputIndex].InsertOutputFilter(index, filter);
-		//    }
-		//}
-
-		//public void RemoveOutputFilter(int outputIndex, IOutputFilterModuleInstance filter) {
-		//    if(filter != null && outputIndex < OutputCount) {
-		//        ModuleDataSet.RemoveModuleInstanceData(filter);
-		//        Outputs[outputIndex].RemoveOutputFilter(filter);
-		//    }
-		//}
-
-		//public void ClearOutputFilters(int outputIndex) {
-		//    if(outputIndex < OutputCount) {
-		//        foreach(IOutputFilterModuleInstance filter in Outputs[outputIndex].GetAllOutputFilters().ToArray()) {
-		//            RemoveOutputFilter(outputIndex, filter);
-		//        }
-		//    }
-		//}
-
-		public void ResetDataPolicy(IControllerModuleInstance module) {
-			if(module != null) {
-				DataPolicy = module.DataPolicy;
-			}
-		}
-
-		protected override void OutputAdded(object sender, OutputCollectionEventArgs<CommandOutput> e) {
-			VixenSystem.DataFlow.AddComponent(_adapterFactory.GetAdapter(e.Output));
-		}
-
-		protected override void OutputRemoved(object sender, OutputCollectionEventArgs<CommandOutput> e) {
-			VixenSystem.DataFlow.RemoveComponent(_adapterFactory.GetAdapter(e.Output));
-		}
-
-		private ICommand _GenerateOutputCommand(CommandOutput output) {
-			IDataPolicy effectiveDataPolicy = _GetOutputEffectiveDataPolicy(output);
-			return effectiveDataPolicy.GenerateCommand(output.State);
-		}
-
-		private IDataPolicy _GetOutputEffectiveDataPolicy(CommandOutput output) {
-			return output.DataPolicy ?? DataPolicy;
+		public IDataPolicy DataPolicy {
+			get { return _ControllerModule.DataPolicy; }
 		}
 
 		#region IEnumerable<OutputController>
@@ -178,5 +83,149 @@ namespace Vixen.Sys.Output {
 			}
 		}
 		#endregion
+
+		public Guid Id { get; private set; }
+
+		public string Name { get; set; }
+
+		public Guid ModuleId {
+			get { return _outputModuleConsumer.ModuleId; }
+		}
+
+		public int UpdateInterval {
+			get { return (_updateInterval.HasValue) ? _updateInterval.Value : _outputModuleConsumer.UpdateInterval; }
+			set { _updateInterval = value; }
+		}
+
+		public void Update() {
+			if(VixenSystem.ControllerLinking.IsRootController(this) && _ControllerChainModule != null) {
+				_outputMediator.LockOutputs();
+				try {
+					foreach(OutputController controller in this) {
+						controller.Outputs.AsParallel().ForAll(x => {
+						    x.Update();
+						    x.Command = _GenerateOutputCommand(x);
+						});
+					}
+
+					// Latch out the new state.
+					// This must be done in order of the chain links so that data
+					// goes out the port in the correct order.
+					foreach(OutputController controller in this) {
+						// A single port may be used to service multiple physical controllers,
+						// such as daisy-chained Renard controllers.  Tell the module where
+						// it is in that chain.
+						int chainIndex = VixenSystem.ControllerLinking.GetChainIndex(controller.Id);
+						ICommand[] outputStates = _ExtractCommandsFromOutputs(controller).ToArray();
+						controller._ControllerChainModule.UpdateState(chainIndex, outputStates);
+					}
+				} finally {
+					_outputMediator.UnlockOutputs();
+				}
+			}
+		}
+
+		public IOutputDeviceUpdateSignaler UpdateSignaler {
+			get { return _outputModuleConsumer.UpdateSignaler; }
+		}
+
+		public void Start() {
+			_executionControl.Start();
+		}
+
+		public void Stop() {
+			_executionControl.Stop();
+		}
+
+		public void Pause() {
+			_executionControl.Pause();
+		}
+
+		public void Resume() {
+			_executionControl.Resume();
+		}
+
+		public bool IsRunning {
+			get { return _executionControl.IsRunning; }
+		}
+
+		public bool IsPaused {
+			get { return _executionControl.IsPaused; }
+		}
+
+		public bool HasSetup {
+			get { return _outputModuleConsumer.HasSetup; }
+		}
+
+		public bool Setup() {
+			return _outputModuleConsumer.Setup();
+		}
+
+		public int OutputCount {
+			get { return _outputMediator.OutputCount; }
+			// A nicety not enforced by the interface.
+			set {
+				CommandOutputFactory outputFactory = new CommandOutputFactory();
+				while(OutputCount < value) {
+					AddOutput(outputFactory.CreateOutput("Unnamed Output"));
+				}
+				while(OutputCount > value) {
+					RemoveOutput(Outputs[OutputCount - 1]);
+				}
+			}
+		}
+
+		public void AddOutput(CommandOutput output) {
+			_outputMediator.AddOutput(output);
+			VixenSystem.DataFlow.AddComponent(_adapterFactory.GetAdapter(output));
+		}
+
+		public void AddOutput(Output output) {
+			AddOutput((CommandOutput)output);
+		}
+
+		public void RemoveOutput(CommandOutput output) {
+			_outputMediator.RemoveOutput(output);
+			VixenSystem.DataFlow.RemoveComponent(_adapterFactory.GetAdapter(output));
+		}
+
+		public void RemoveOutput(Output output) {
+			RemoveOutput((CommandOutput)output);
+		}
+
+		public CommandOutput[] Outputs {
+			get { return _outputMediator.Outputs; }
+		}
+
+		Output[] IHasOutputs.Outputs {
+			get { return Outputs; }
+		}
+
+		private IEnumerable<ICommand> _ExtractCommandsFromOutputs(OutputController controller) {
+			return controller.Outputs.Select(x => x.Command);
+		}
+
+		private ICommand _GenerateOutputCommand(CommandOutput output) {
+			IDataPolicy effectiveDataPolicy = _GetOutputEffectiveDataPolicy(output);
+			return effectiveDataPolicy.GenerateCommand(output.State);
+		}
+
+		private IDataPolicy _GetOutputEffectiveDataPolicy(CommandOutput output) {
+			return output.DataPolicy ?? DataPolicy;
+		}
+
+		private IControllerModuleInstance _ControllerModule {
+			get { return (IControllerModuleInstance)_outputModuleConsumer.Module; }
+		}
+
+		private IControllerModuleInstance _ControllerChainModule {
+			get {
+				// When output controllers are linked, only the root controller will be
+				// connected to the port, therefore only it will have the output module
+				// used during execution.
+				OutputController priorController = VixenSystem.Controllers.GetPrior(this);
+				return (priorController != null) ? priorController._ControllerChainModule : _ControllerModule;
+			}
+		}
 	}
 }

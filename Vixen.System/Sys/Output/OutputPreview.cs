@@ -5,34 +5,88 @@ using Vixen.Data.Flow;
 using Vixen.Module.Preview;
 
 namespace Vixen.Sys.Output {
-	public class OutputPreview : ModuleBasedOutputDevice<IPreviewModuleInstance> {
-		public OutputPreview(string name, Guid moduleId)
-			: this(Guid.NewGuid(), name, moduleId) {
+	/// <summary>
+	/// In-memory preview device.
+	/// </summary>
+	public class OutputPreview : IPreviewDevice {
+		private IHardware _executionControl;
+		private IOutputModuleConsumer _outputModuleConsumer;
+		private int? _updateInterval;
+
+		internal OutputPreview(Guid id, string name, IHardware executionControl, IOutputModuleConsumer outputModuleConsumer) {
+			if(executionControl == null) throw new ArgumentNullException("executionControl");
+			if(outputModuleConsumer == null) throw new ArgumentNullException("outputModuleConsumer");
+
+			Id = id;
+			Name = name;
+			_executionControl = executionControl;
+			_outputModuleConsumer = outputModuleConsumer;
 		}
 
-		public OutputPreview(Guid id, string name, Guid moduleId)
-			: base(id, name, moduleId) {
+		public void Update() {
+			ChannelCommands channelCommands = new ChannelCommands(VixenSystem.Channels.ToDictionary(x => x.Id, x => DataPolicy.GenerateCommand(new IntentsDataFlowData(x.State))));
+			_UpdateModuleState(channelCommands);
 		}
 
-		protected override IPreviewModuleInstance GetModule(Guid moduleId) {
-			IPreviewModuleInstance module = Modules.ModuleManagement.GetPreview(moduleId);
-			ResetDataPolicy(module);
-			return module;
+		public IDataPolicy DataPolicy {
+			get { return _PreviewModule.DataPolicy; }
 		}
 
-		protected override void UpdateState() {
-			if(Module != null && DataPolicy != null) {
-				ChannelCommands channelCommands = new ChannelCommands(VixenSystem.Channels.ToDictionary(x => x.Id, x => DataPolicy.GenerateCommand(new IntentsDataFlowData(x.State))));
-				Module.UpdateState(channelCommands);
-			}
+		public Guid Id { get; private set; }
+
+		public string Name { get; set; }
+
+		public Guid ModuleId {
+			get { return _outputModuleConsumer.ModuleId; }
 		}
 
-		public IDataPolicy DataPolicy { get; set; }
+		public int UpdateInterval {
+			get { return (_updateInterval.HasValue) ? _updateInterval.Value : _outputModuleConsumer.UpdateInterval; }
+			set { _updateInterval = value; }
+		}
 
-		public void ResetDataPolicy(IPreviewModuleInstance module) {
-			if(module != null) {
-				DataPolicy = module.DataPolicy;
-			}
+		public IOutputDeviceUpdateSignaler UpdateSignaler {
+			get { return _outputModuleConsumer.UpdateSignaler; }
+		}
+
+		public void Start() {
+			_executionControl.Start();
+		}
+
+		public void Stop() {
+			_executionControl.Stop();
+		}
+
+		public void Pause() {
+			_executionControl.Pause();
+		}
+
+		public void Resume() {
+			_executionControl.Resume();
+		}
+
+		public bool IsRunning {
+			get { return _executionControl.IsRunning; }
+		}
+
+		public bool IsPaused {
+			get { return _executionControl.IsPaused; }
+		}
+
+		public bool HasSetup {
+			get { return _outputModuleConsumer.HasSetup; }
+		}
+
+		public bool Setup() {
+			return _outputModuleConsumer.Setup();
+		}
+
+		private IPreview _PreviewModule {
+			get { return (IPreview)_outputModuleConsumer.Module; }
+		}
+
+		private void _UpdateModuleState(ChannelCommands channelCommands) {
+			_PreviewModule.UpdateState(channelCommands);
 		}
 	}
 }

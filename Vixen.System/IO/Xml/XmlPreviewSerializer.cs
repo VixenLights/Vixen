@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Xml.Linq;
+using Vixen.Factory;
 using Vixen.Sys;
 using Vixen.Sys.Output;
 
@@ -13,17 +14,10 @@ namespace Vixen.IO.Xml {
 		public XElement WriteObject(IOutputDevice value) {
 			OutputPreview preview = (OutputPreview)value;
 
-			//XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
-			//XElement dataSetElement = null;
-			//if(preview.ModuleDataSet != null) {
-			//    dataSetElement = dataSetSerializer.WriteObject(preview.ModuleDataSet);
-			//}
-
 			XElement element = new XElement(ELEMENT_PREVIEW,
 				new XAttribute(ATTR_NAME, preview.Name),
 				new XAttribute(ATTR_HARDWARE_ID, preview.ModuleId),
 				new XAttribute(ATTR_ID, preview.Id));
-				//dataSetElement);
 
 			return element;
 		}
@@ -38,7 +32,8 @@ namespace Vixen.IO.Xml {
 			Guid? id = XmlHelper.GetGuidAttribute(element, ATTR_ID);
 			if(id == null) return null;
 
-			OutputPreview preview = new OutputPreview(id.Value, name, moduleId.Value);
+			PreviewFactory previewFactory = new PreviewFactory();
+			OutputPreview preview = (OutputPreview)previewFactory.CreateDevice(id.Value, moduleId.Value, name);
 
 			_Populate(preview, element);
 

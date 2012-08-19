@@ -1,8 +1,10 @@
 ﻿using Vixen.Sys;
-using Vixen.Sys.Output;
 
 namespace Vixen.Module.SmartController {
-	public interface ISmartController : IOutputModule, IHardwareModule, IHasOutputs {
+	/// <summary>
+	/// Core abstraction for the smart controller module.
+	/// </summary>
+	public interface ISmartController {
 		void UpdateState(IntentChangeCollection[] outputStates);
 	}
 }

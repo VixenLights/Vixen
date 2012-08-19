@@ -24,6 +24,7 @@ namespace Vixen.Module.Preview {
 
 		abstract public void UpdateState(ChannelCommands channelCommands);
 
+		#region Equality
 		public bool Equals(IPreviewModuleInstance x, IPreviewModuleInstance y) {
 			return base.Equals(x, y);
 		}
@@ -47,5 +48,6 @@ namespace Vixen.Module.Preview {
 		public bool Equals(PreviewModuleInstanceBase other) {
 			return Equals(other as IPreviewModuleInstance);
 		}
+		#endregion
 	}
 }

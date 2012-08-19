@@ -145,6 +145,9 @@ namespace Vixen.Sys {
 			Previews.AddRange(SystemConfig.Previews);
 			ControllerLinking.AddRange(SystemConfig.ControllerLinking);
 			Filters.AddRange(SystemConfig.Filters);
+			//*** need to ADD relationships!
+			
+			DataFlow.Initialize(SystemConfig.DataFlow);
 		}
 
     	static public void ReloadSystemConfig()

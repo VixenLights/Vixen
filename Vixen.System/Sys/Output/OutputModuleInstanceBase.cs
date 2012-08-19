@@ -1,7 +1,8 @@
 ﻿using Vixen.Module;
 
 namespace Vixen.Sys.Output {
-	abstract public class OutputModuleInstanceBase : ModuleInstanceBase, IOutputModule, IHasSetup, IHardware {
+	//abstract public class OutputModuleInstanceBase : ModuleInstanceBase, IOutputModule, IHasSetup, IHardware {
+	abstract public class OutputModuleInstanceBase : ModuleInstanceBase, IOutputModule {
 		/// <summary>
 		/// If overriding this, please also override Start and Stop.
 		/// </summary>
@@ -51,5 +52,11 @@ namespace Vixen.Sys.Output {
 		virtual public int UpdateInterval {
 			get { return ((IOutputModuleDescriptor)Descriptor).UpdateInterval; }
 		}
+
+		virtual public IOutputDeviceUpdateSignaler UpdateSignaler {
+			get { return null; }
+		}
+
+		abstract public int OutputCount { get; set; }
 	}
 }

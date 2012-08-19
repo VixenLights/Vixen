@@ -5,25 +5,27 @@ using Vixen.Sys;
 using Vixen.Sys.Output;
 
 namespace Vixen.Module.Controller {
+	//*** need folders in Output for the different output devices
 	abstract public class ControllerModuleInstanceBase : OutputModuleInstanceBase, IControllerModuleInstance, IEqualityComparer<IControllerModuleInstance>, IEquatable<IControllerModuleInstance>, IEqualityComparer<ControllerModuleInstanceBase>, IEquatable<ControllerModuleInstanceBase> {
-		private int _outputCount;
+		//private int _outputCount;
 
-		public int OutputCount {
-			get { return _outputCount; }
-			set {
-				_outputCount = value;
-				_SetOutputCount(value);
-			}
-		}
+		//public int OutputCount {
+		//    get { return _outputCount; }
+		//    set {
+		//        _outputCount = value;
+		//        _SetOutputCount(value);
+		//    }
+		//}
 
-		abstract protected void _SetOutputCount(int outputCount);
+		//abstract protected void _SetOutputCount(int outputCount);
 
-		public virtual int ChainIndex { get; set; }
+		//public virtual int ChainIndex { get; set; }
 
 		abstract public IDataPolicy DataPolicy { get; }
 
-		abstract public void UpdateState(ICommand[] outputStates);
+		abstract public void UpdateState(int chainIndex, ICommand[] outputStates);
 
+		#region Equality
 		public bool Equals(IControllerModuleInstance x, IControllerModuleInstance y) {
 			return base.Equals(x, y);
 		}
@@ -47,5 +49,6 @@ namespace Vixen.Module.Controller {
 		public bool Equals(ControllerModuleInstanceBase other) {
 			return Equals(other as IControllerModuleInstance);
 		}
+		#endregion
 	}
 }

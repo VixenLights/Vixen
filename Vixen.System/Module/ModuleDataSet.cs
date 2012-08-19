@@ -17,7 +17,7 @@ namespace Vixen.Module {
 
 		/// <summary>
 		/// Instantiates the data model for the module from the data in this data set.
-		/// Does not account for the module's instance id, therefore only instance of a module
+		/// Does not account for the module's instance id, therefore only one instance of a module
 		/// type can be in the dataset.
 		/// </summary>
 		/// <param name="module"></param>

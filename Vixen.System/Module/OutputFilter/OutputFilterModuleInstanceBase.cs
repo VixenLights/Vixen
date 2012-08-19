@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Vixen.Commands;
 using Vixen.Data.Flow;
-using Vixen.Sys;
 using Vixen.Sys.Dispatch;
 
 namespace Vixen.Module.OutputFilter {

@@ -6,7 +6,7 @@ using Vixen.Sys;
 namespace Vixen.IO.Xml {
 	class XmlDataFlowPatchSerializer : IXmlSerializer<DataFlowPatch> {
 		private const string ELEMENT_PATCH = "Patch";
-		private const string ATTR_COMPONENT_ID = "id";
+		private const string ATTR_COMPONENT_ID = "componentId";
 		private const string ATTR_SOURCE_COMPONENT_ID = "sourceId";
 		private const string ATTR_SOURCE_OUTPUT_INDEX = "output";
 

@@ -1,9 +1,14 @@
-﻿using Vixen.Commands;
+﻿using System;
+using Vixen.Commands;
 using Vixen.Data.Policy;
 
 namespace Vixen.Sys.Output {
 	public class CommandOutput : Output {
 		private ICommand _command;
+
+		internal CommandOutput(Guid id, string name)
+			: base(id, name) {
+		}
 
 		public ICommand Command {
 			get { return _command; }

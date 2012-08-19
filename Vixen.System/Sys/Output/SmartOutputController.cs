@@ -1,66 +1,133 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Vixen.Data.Policy;
 using Vixen.Module.SmartController;
 
 namespace Vixen.Sys.Output {
-	public class SmartOutputController : ModuleBasedController<ISmartControllerModuleInstance, IntentOutput> {
+	/// <summary>
+	/// In-memory smart controller device.
+	/// </summary>
+	public class SmartOutputController : ISmartControllerDevice {
 		private IntentOutputStates _outputCurrentStates;
 		private SmartControllerDataPolicy _dataPolicy;
 		private IntentOutputDataFlowAdapterFactory _adapterFactory;
 
-		public SmartOutputController(string name, int outputCount, Guid moduleId)
-			: this(Guid.NewGuid(), name, outputCount, moduleId) {
-		}
+		private IOutputMediator<IntentOutput> _outputMediator;
+		private IHardware _executionControl;
+		private IOutputModuleConsumer _outputModuleConsumer;
+		private int? _updateInterval;
 
-		public SmartOutputController(Guid id, string name, int outputCount, Guid moduleId)
-			: base(id, name, outputCount, moduleId) {
+		internal SmartOutputController(Guid id, string name, IOutputMediator<IntentOutput> outputMediator, IHardware executionControl, IOutputModuleConsumer outputModuleConsumer) {
+			if(outputMediator == null) throw new ArgumentNullException("outputMediator");
+			if(executionControl == null) throw new ArgumentNullException("executionControl");
+			if(outputModuleConsumer == null) throw new ArgumentNullException("outputModuleConsumer");
+
+			Id = id;
+			Name = name;
+			_outputMediator = outputMediator;
+			_executionControl = executionControl;
+			_outputModuleConsumer = outputModuleConsumer;
+
 			_outputCurrentStates = new IntentOutputStates();
 			_dataPolicy = new SmartControllerDataPolicy();
 			_adapterFactory = new IntentOutputDataFlowAdapterFactory();
 		}
 
-		protected override ISmartControllerModuleInstance GetControllerModule(Guid moduleId) {
-			return Modules.ModuleManagement.GetSmartController(moduleId);
+		public Guid Id { get; private set; }
+
+		public string Name { get; set; }
+
+		public Guid ModuleId {
+			get { return _outputModuleConsumer.ModuleId; }
 		}
 
-		protected override void UpdateState() {
-			if(Module != null) {
-				BeginOutputChange();
-				try {
-					Outputs.AsParallel().ForAll(x => {
-						x.Update();
-						x.IntentChangeCollection = _GenerateChangeCollection(x);
+		public int UpdateInterval {
+			get { return (_updateInterval.HasValue) ? _updateInterval.Value : _outputModuleConsumer.UpdateInterval; }
+			set { _updateInterval = value; }
+		}
 
-					//    x.UpdateState();
-
-					////UpdateOutputStates(x => {
-					//    IntentChangeCollection intentChanges = null;
-					//    IIntent[] currentState = x.LastSetState;
-					//    IIntent[] newState = x.State.Select(y => y.Intent).ToArray();
-					//    if(!currentState.SequenceEqual(newState)) { //*** test the effectiveness of this
-					//        IEnumerable<IIntent> addedIntents = newState.Except(currentState);
-					//        IEnumerable<IIntent> removedIntents = currentState.Except(newState);
-					//        intentChanges = new IntentChangeCollection(addedIntents, removedIntents);
-					//    }
-					//    x.IntentChangeCollection = intentChanges;
-					//    x.LastSetState = newState.ToArray();
-					
-						//x.LogicalFiltering();
-					});
-					Module.UpdateState(ExtractFromOutputs(x => x.IntentChangeCollection).ToArray());
-				} finally {
-					EndOutputChange();
-				}
+		public void Update() {
+			_outputMediator.LockOutputs();
+			try {
+				Outputs.AsParallel().ForAll(x => {
+					x.Update();
+					x.IntentChangeCollection = _GenerateChangeCollection(x);
+				});
+				_UpdateModuleState(_ExtractIntentChangesFromOutputs().ToArray());
+			} finally {
+				_outputMediator.UnlockOutputs();
 			}
 		}
 
-		protected override void OutputAdded(object sender, OutputCollectionEventArgs<IntentOutput> e) {
-			VixenSystem.DataFlow.AddComponent(_adapterFactory.GetAdapter(e.Output));
+		public IOutputDeviceUpdateSignaler UpdateSignaler {
+			get { return _outputModuleConsumer.UpdateSignaler; }
 		}
 
-		protected override void OutputRemoved(object sender, OutputCollectionEventArgs<IntentOutput> e) {
-			VixenSystem.DataFlow.RemoveComponent(_adapterFactory.GetAdapter(e.Output));
+		public void Start() {
+			_executionControl.Start();
+		}
+
+		public void Stop() {
+			_executionControl.Stop();
+		}
+
+		public void Pause() {
+			_executionControl.Pause();
+		}
+
+		public void Resume() {
+			_executionControl.Resume();
+		}
+
+		public bool IsRunning {
+			get { return _executionControl.IsRunning; }
+		}
+
+		public bool IsPaused {
+			get { return _executionControl.IsPaused; }
+		}
+
+		public bool HasSetup {
+			get { return _outputModuleConsumer.HasSetup; }
+		}
+
+		public bool Setup() {
+			return _outputModuleConsumer.Setup();
+		}
+
+		public void AddOutput(IntentOutput output) {
+			_outputMediator.AddOutput(output);
+			VixenSystem.DataFlow.AddComponent(_adapterFactory.GetAdapter(output));
+		}
+
+		public void AddOutput(Output output) {
+			AddOutput((IntentOutput)output);
+		}
+
+		public void RemoveOutput(IntentOutput output) {
+			_outputMediator.RemoveOutput(output);
+			VixenSystem.DataFlow.RemoveComponent(_adapterFactory.GetAdapter(output));
+		}
+
+		public void RemoveOutput(Output output) {
+			RemoveOutput((IntentOutput)output);
+		}
+
+		public IntentOutput[] Outputs {
+			get { return _outputMediator.Outputs; }
+		}
+
+		Output[] IHasOutputs.Outputs {
+			get { return Outputs; }
+		}
+
+		public int OutputCount {
+			get { return _outputMediator.OutputCount; }
+		}
+
+		private IEnumerable<IntentChangeCollection> _ExtractIntentChangesFromOutputs() {
+			return Outputs.Select(x => x.IntentChangeCollection);
 		}
 
 		private IntentChangeCollection _GenerateChangeCollection(IntentOutput output) {
@@ -68,6 +135,14 @@ namespace Vixen.Sys.Output {
 			output.State.Dispatch(_dataPolicy);
 			_outputCurrentStates.SetOutputCurrentState(output, _dataPolicy.OutputCurrentState);
 			return _dataPolicy.Result;
+		}
+
+		private ISmartController _SmartControllerModule {
+			get { return (ISmartController)_outputModuleConsumer.Module; }
+		}
+
+		private void _UpdateModuleState(IntentChangeCollection[] outputStates) {
+			_SmartControllerModule.UpdateState(outputStates);
 		}
 	}
 }
