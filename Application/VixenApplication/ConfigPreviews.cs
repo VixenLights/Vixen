@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Vixen.Factory;
 using Vixen.Module;
 using Vixen.Module.Preview;
 using Vixen.Services;
@@ -44,8 +45,9 @@ namespace VixenApplication {
 			if(addForm.ShowDialog() == DialogResult.OK) {
 				IModuleDescriptor moduleDescriptor = ApplicationServices.GetModuleDescriptor((Guid)addForm.SelectedItem);
 				string name = moduleDescriptor.TypeName;
-				OutputPreview oc = new OutputPreview(name, (Guid)addForm.SelectedItem);
-				VixenSystem.Previews.Add(oc);
+				PreviewFactory previewFactory = new PreviewFactory();
+				OutputPreview preview = (OutputPreview)previewFactory.CreateDevice((Guid)addForm.SelectedItem, name);
+				VixenSystem.Previews.Add(preview);
 				// In the case of a controller that has a form, the form will not be shown
 				// until this event handler completes.  To make sure it's in a visible state
 				// before evaluating if it's running or not, we're calling DoEvents.
@@ -54,7 +56,7 @@ namespace VixenApplication {
 
 				// select the new controller, and then repopulate the list -- it will make sure the currently
 				// displayed controller is selected.
-				_PopulateFormWithController(oc);
+				_PopulateFormWithController(preview);
 				_PopulateControllerList();
 			}
 		}

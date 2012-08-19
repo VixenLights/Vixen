@@ -30,11 +30,12 @@ namespace VixenModules.Output.DummyLighting {
 			}
 		}
 
-		override protected void _SetOutputCount(int outputCount) {
-			_form.OutputCount = outputCount;
+		public override int OutputCount {
+			get { return _form.OutputCount; }
+			set { _form.OutputCount = value; }
 		}
 
-		override public void UpdateState(ICommand[] outputStates) {
+		override public void UpdateState(int chainIndex, ICommand[] outputStates) {
 			if(_updateCount++ == 0) {
 				_sw.Reset();
 				_sw.Start();

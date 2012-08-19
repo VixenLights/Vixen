@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Vixen.Factory;
 using Vixen.Module;
 using Vixen.Module.Controller;
 using Vixen.Services;
@@ -84,7 +85,8 @@ namespace VixenApplication
 			if (addForm.ShowDialog() == DialogResult.OK) {
 				IModuleDescriptor moduleDescriptor = ApplicationServices.GetModuleDescriptor((Guid)addForm.SelectedItem);
 				string name = moduleDescriptor.TypeName;
-				OutputController oc = new OutputController(name, 0, (Guid)addForm.SelectedItem);
+				ControllerFactory controllerFactory = new ControllerFactory();
+				OutputController oc = (OutputController)controllerFactory.CreateDevice((Guid)addForm.SelectedItem, name);
 				VixenSystem.Controllers.Add(oc);
 				// In the case of a controller that has a form, the form will not be shown
 				// until this event handler completes.  To make sure it's in a visible state
