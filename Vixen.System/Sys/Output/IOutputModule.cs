@@ -5,7 +5,5 @@ namespace Vixen.Sys.Output {
 	/// The module used by an IOutputDevice and the basis for any output module.
 	/// </summary>
 	public interface IOutputModule : IModuleInstance, IOutputter {
-		//int UpdateInterval { get; }
-		//int OutputCount { get; set; }
 	}
 }

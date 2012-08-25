@@ -4,9 +4,9 @@ namespace Vixen.Sys.Output {
 	class OutputMediator<T> : IOutputMediator<T>
 		where T : Output {
 		private IHasOutputs<T> _outputCollection;
-		private IOutputModule _outputModule;
+		private IUpdatableOutputCount _outputModule;
 
-		public OutputMediator(IHasOutputs<T> outputCollection, IOutputModule outputModule) {
+		public OutputMediator(IHasOutputs<T> outputCollection, IUpdatableOutputCount outputModule) {
 			_outputCollection = outputCollection;
 			_outputModule = outputModule;
 		}

@@ -454,6 +454,7 @@
     <Compile Include="Sys\Output\IOutputter.cs" />
     <Compile Include="Sys\Output\IPreviewDevice.cs" />
     <Compile Include="Sys\Output\ISmartControllerDevice.cs" />
+    <Compile Include="Sys\Output\IUpdatableOutputCount.cs" />
     <Compile Include="Sys\Output\Output.cs" />
     <Compile Include="Sys\Output\OutputCollection.cs" />
     <Compile Include="Sys\Output\OutputCollectionEventArgs.cs" />

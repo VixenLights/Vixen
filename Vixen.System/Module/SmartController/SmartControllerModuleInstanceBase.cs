@@ -7,6 +7,8 @@ namespace Vixen.Module.SmartController {
 	abstract public class SmartControllerModuleInstanceBase : OutputModuleInstanceBase, ISmartControllerModuleInstance, IEqualityComparer<ISmartControllerModuleInstance>, IEquatable<ISmartControllerModuleInstance>, IEqualityComparer<SmartControllerModuleInstanceBase>, IEquatable<SmartControllerModuleInstanceBase> {
 		abstract public void UpdateState(IntentChangeCollection[] outputStates);
 
+		abstract public int OutputCount { get; set; }
+
 		#region Equality
 		public bool Equals(ISmartControllerModuleInstance x, ISmartControllerModuleInstance y) {
 			return base.Equals(x, y);
