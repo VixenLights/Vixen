@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using Vixen.Commands;
 using Vixen.Sys;
 using Vixen.Sys.Output;
 
 namespace Vixen.Module.Preview {
 	abstract public class PreviewModuleInstanceBase : OutputModuleInstanceBase, IPreviewModuleInstance, IEqualityComparer<IPreviewModuleInstance>, IEquatable<IPreviewModuleInstance>, IEqualityComparer<PreviewModuleInstanceBase>, IEquatable<PreviewModuleInstanceBase> {
 		protected abstract IThreadBehavior ThreadBehavior { get; }
+
+		protected ChannelIntentStates ChannelStates { get; private set; }
 
 		public override void Start() {
 			ThreadBehavior.Start();
@@ -20,9 +21,13 @@ namespace Vixen.Module.Preview {
 			get { return ThreadBehavior.IsRunning; }
 		}
 
-		abstract public IDataPolicy DataPolicy { get; }
+		public void UpdateState(ChannelIntentStates channelIntentStates) {
+			// Get the data referenced locally so we can get off this thread if need be.
+			ChannelStates = channelIntentStates;
+			ThreadBehavior.BeginInvoke(Update);
+		}
 
-		abstract public void UpdateState(ChannelCommands channelCommands);
+		protected abstract void Update();
 
 		#region Equality
 		public bool Equals(IPreviewModuleInstance x, IPreviewModuleInstance y) {

@@ -5,9 +5,6 @@ using Vixen.Data.Flow;
 
 namespace Vixen.Sys.Managers {
 	public class DataFlowManager : IEnumerable<DataFlowPatch> {
-		//*** The output adapter's key changes after it's been entered into here, which is very bad.
-		//    The id changes because the output is created, apparently added to this, then the id is reset
-		//    to what's in the sys conf.
 		private Dictionary<Guid, IDataFlowComponent> _componentLookup;
 
 		public event EventHandler<DataFlowComponentEventArgs> ComponentSourceChanged;
@@ -123,8 +120,6 @@ namespace Vixen.Sys.Managers {
 		}
 
 		public IEnumerator<DataFlowPatch> GetEnumerator() {
-			var a = _componentLookup.Values.SelectMany(GetChildren);
-			var b = _componentLookup.Values.SelectMany(GetChildren).Select(x => new DataFlowPatch(x));
 			return _componentLookup.Values.SelectMany(GetChildren).Select(x => new DataFlowPatch(x)).GetEnumerator();
 		}
 

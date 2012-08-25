@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Vixen.Commands;
-using Vixen.Data.Flow;
 using Vixen.Module.Preview;
 
 namespace Vixen.Sys.Output {
@@ -24,12 +22,8 @@ namespace Vixen.Sys.Output {
 		}
 
 		public void Update() {
-			ChannelCommands channelCommands = new ChannelCommands(VixenSystem.Channels.ToDictionary(x => x.Id, x => DataPolicy.GenerateCommand(new IntentsDataFlowData(x.State))));
-			_UpdateModuleState(channelCommands);
-		}
-
-		public IDataPolicy DataPolicy {
-			get { return _PreviewModule.DataPolicy; }
+			ChannelIntentStates channelIntentStates = new ChannelIntentStates(VixenSystem.Channels.ToDictionary(x => x.Id, x => x.State));
+			_UpdateModuleState(channelIntentStates);
 		}
 
 		public Guid Id { get; private set; }
@@ -85,8 +79,8 @@ namespace Vixen.Sys.Output {
 			get { return (IPreview)_outputModuleConsumer.Module; }
 		}
 
-		private void _UpdateModuleState(ChannelCommands channelCommands) {
-			_PreviewModule.UpdateState(channelCommands);
+		private void _UpdateModuleState(ChannelIntentStates channelIntentStates) {
+			_PreviewModule.UpdateState(channelIntentStates);
 		}
 	}
 }

@@ -16,6 +16,7 @@ namespace Vixen.Sys.Output {
 		private IHardware _executionControl;
 		private IOutputModuleConsumer _outputModuleConsumer;
 		private int? _updateInterval;
+		private IOutputDataPolicyProvider _dataPolicyProvider;
 
 		internal OutputController(Guid id, string name, IOutputMediator<CommandOutput> outputMediator, IHardware executionControl, IOutputModuleConsumer outputModuleConsumer) {
 			if(outputMediator == null) throw new ArgumentNullException("outputMediator");
@@ -27,10 +28,15 @@ namespace Vixen.Sys.Output {
 			_outputMediator = outputMediator;
 			_executionControl = executionControl;
 			_outputModuleConsumer = outputModuleConsumer;
+
+			_dataPolicyProvider = new OutputDataPolicyCache();
+			_dataPolicyProvider.UseFactory(_ControllerModule.DataPolicyFactory);
+
+			_ControllerModule.DataPolicyFactoryChanged += DataPolicyFactoryChanged;
 		}
 
-		public IDataPolicy DataPolicy {
-			get { return _ControllerModule.DataPolicy; }
+		private void DataPolicyFactoryChanged(object sender, EventArgs eventArgs) {
+			_dataPolicyProvider.UseFactory(_ControllerModule.DataPolicyFactory);
 		}
 
 		#region IEnumerable<OutputController>
@@ -206,12 +212,8 @@ namespace Vixen.Sys.Output {
 		}
 
 		private ICommand _GenerateOutputCommand(CommandOutput output) {
-			IDataPolicy effectiveDataPolicy = _GetOutputEffectiveDataPolicy(output);
+			IDataPolicy effectiveDataPolicy = _dataPolicyProvider.GetDataPolicyForOutput(output);
 			return effectiveDataPolicy.GenerateCommand(output.State);
-		}
-
-		private IDataPolicy _GetOutputEffectiveDataPolicy(CommandOutput output) {
-			return output.DataPolicy ?? DataPolicy;
 		}
 
 		private IControllerModuleInstance _ControllerModule {

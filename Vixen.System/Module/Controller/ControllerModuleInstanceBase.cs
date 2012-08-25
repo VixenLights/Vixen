@@ -5,23 +5,26 @@ using Vixen.Sys;
 using Vixen.Sys.Output;
 
 namespace Vixen.Module.Controller {
-	//*** need folders in Output for the different output devices
 	abstract public class ControllerModuleInstanceBase : OutputModuleInstanceBase, IControllerModuleInstance, IEqualityComparer<IControllerModuleInstance>, IEquatable<IControllerModuleInstance>, IEqualityComparer<ControllerModuleInstanceBase>, IEquatable<ControllerModuleInstanceBase> {
-		//private int _outputCount;
+		private IDataPolicyFactory _dataPolicyFactory;
 
-		//public int OutputCount {
-		//    get { return _outputCount; }
-		//    set {
-		//        _outputCount = value;
-		//        _SetOutputCount(value);
-		//    }
-		//}
+		public event EventHandler DataPolicyFactoryChanged;
 
-		//abstract protected void _SetOutputCount(int outputCount);
+		public IDataPolicyFactory DataPolicyFactory {
+			get { return _dataPolicyFactory; }
+			protected set {
+				if(_dataPolicyFactory != value) {
+					_dataPolicyFactory = value;
+					OnDataPolicyFactoryChanged();
+				}
+			}
+		}
 
-		//public virtual int ChainIndex { get; set; }
-
-		abstract public IDataPolicy DataPolicy { get; }
+		virtual protected void OnDataPolicyFactoryChanged() {
+			if(DataPolicyFactoryChanged != null) {
+				DataPolicyFactoryChanged(this, EventArgs.Empty);
+			}
+		}
 
 		abstract public void UpdateState(int chainIndex, ICommand[] outputStates);
 

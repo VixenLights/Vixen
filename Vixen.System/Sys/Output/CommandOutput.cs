@@ -1,6 +1,5 @@
 ﻿using System;
 using Vixen.Commands;
-using Vixen.Data.Policy;
 
 namespace Vixen.Sys.Output {
 	public class CommandOutput : Output {
@@ -18,9 +17,5 @@ namespace Vixen.Sys.Output {
 				}
 			}
 		}
-
-		//*** Not yet any way to set this for an output.
-		//    It is intended to allow an output to override the controller's data policy.
-		public OutputDataPolicy DataPolicy { get; set; }
 	}
 }

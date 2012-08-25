@@ -25,5 +25,9 @@ namespace Vixen.Module.Preview {
 		public bool IsRunning {
 			get { return _form != null && !_form.IsDisposed && _form.Visible; }
 		}
+
+		public void BeginInvoke(Action methodToInvoke) {
+			_form.BeginInvoke(methodToInvoke);
+		}
 	}
 }

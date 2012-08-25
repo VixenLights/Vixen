@@ -16,6 +16,7 @@ namespace Vixen.Sys {
 				state = new ChannelStateSource();
 				_states[key] = state;
 			}
+
 			state.State = value;
 		}
 

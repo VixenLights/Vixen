@@ -9,7 +9,8 @@ namespace Vixen.Sys {
 		private ApplicationContext _applicationContext;
 		private Action _exitAction;
 		private Func<Form> _formThreadInit;
-		private Func<ApplicationContext> _applicationContextThreadInit; 
+		private Func<ApplicationContext> _applicationContextThreadInit;
+		private WindowsFormsSynchronizationContext _synchronizationContext;
 
 		public UIThread(Func<ApplicationContext> threadInit) {
 			if(threadInit == null) throw new ArgumentNullException();
@@ -47,10 +48,15 @@ namespace Vixen.Sys {
 			get { return _thread.ThreadState; }
 		}
 
+		public void BeginInvoke(Action methodToInvoke) {
+			_synchronizationContext.Post(o => methodToInvoke(), null); 
+		}
+
 		private void _FormThread() {
 			_form = _formThreadInit();
 			if(_form == null) throw new InvalidOperationException();
 
+			_synchronizationContext = new WindowsFormsSynchronizationContext();
 			_applicationContext = new ApplicationContext(_form);
 			Application.Run(_applicationContext);
 		}
@@ -59,6 +65,7 @@ namespace Vixen.Sys {
 			_applicationContext = _applicationContextThreadInit();
 			if(_applicationContext == null) throw new InvalidOperationException();
 
+			_synchronizationContext = new WindowsFormsSynchronizationContext();
 			Application.Run(_applicationContext);
 		}
 

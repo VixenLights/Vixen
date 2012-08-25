@@ -5,7 +5,6 @@ using System.Text;
 using System.Reflection;
 using System.IO;
 using Vixen.Module;
-using Vixen.Module.ModuleTemplate;
 using Vixen.Services;
 using Vixen.Sys.Attribute;
 
@@ -17,8 +16,6 @@ namespace Vixen.Sys {
 		static private Dictionary<Guid, IModuleDescriptor> _moduleDescriptors = new Dictionary<Guid, IModuleDescriptor>();
 		// ModuleImplementation : descriptors for modules of that type
 		static private Dictionary<ModuleImplementation, HashSet<IModuleDescriptor>> _moduleImplementationDescriptors = new Dictionary<ModuleImplementation, HashSet<IModuleDescriptor>>();
-		//// Module type id : module type's static data singleton
-		//static private Dictionary<Guid, IModuleDataModel> _moduleStaticDataRepository = new Dictionary<Guid, IModuleDataModel>();
 
 		static public dynamic ModuleManagement { get; private set; }
 		static public dynamic ModuleRepository { get; private set; }
@@ -105,9 +102,8 @@ namespace Vixen.Sys {
 			// If there are duplicates, remove them from the loading descriptors, not the ones
 			// already loaded.
 			IEnumerable<IModuleDescriptor> allDescriptors = loadingDescriptors.Concat(_moduleDescriptors.Values);
-			//IEnumerable<IGrouping<Guid, IModuleDescriptor>> duplicateTypes = loadingDescriptors.GroupBy(x => x.TypeId).Where(x => x.Count() > 1);
 			IEnumerable<IGrouping<Guid, IModuleDescriptor>> duplicateTypes = allDescriptors.GroupBy(x => x.TypeId).Where(x => x.Count() > 1);
-			if(duplicateTypes.Count() > 0) {
+			if(duplicateTypes.Any()) {
 				StringBuilder sb = new StringBuilder();
 				sb.AppendLine("The following modules were not loaded because they have duplicate type ids:");
 				foreach(var duplicateType in duplicateTypes) {
@@ -123,14 +119,12 @@ namespace Vixen.Sys {
 		}
 
 		static private IEnumerable<IModuleDescriptor> _ResolveAgainstDependencies(IEnumerable<IModuleDescriptor> loadingDescriptors) {
-			//List<IModuleDescriptor> allDescriptors = descriptors.ToList();
 			List<IModuleDescriptor> allDescriptors = loadingDescriptors.Concat(_moduleDescriptors.Values).ToList();
 
 			// Check the dependencies of all modules.
 			// Keep checking until there are no missing dependencies.
 			while(true) {
 				// Need a static collection to enumerate, but only of the loading descriptors.
-				//IModuleDescriptor[] remainingDescriptors = allDescriptors.ToArray();
 				IModuleDescriptor[] remainingDescriptors = loadingDescriptors.ToArray();
 				// Remove any descriptors that have missing dependencies.
 				foreach(IModuleDescriptor descriptor in remainingDescriptors) {
@@ -142,7 +136,6 @@ namespace Vixen.Sys {
 					}
 				}
 				// If nothing was removed, we are done.
-				//if(allDescriptors.Count == remainingDescriptors.Length) break;
 				if(loadingDescriptors.Count() == remainingDescriptors.Length) break;
 			};
 
@@ -156,34 +149,8 @@ namespace Vixen.Sys {
 			return moduleTypeDirectory;
 		}
 
-		//static private IEnumerable<IModuleDescriptor> _LoadModuleDescriptors(ModuleImplementation moduleImplementation) {
-		//    string moduleTypeDirectory = _GetModuleTypeDirectory(moduleImplementation);
-		//    moduleImplementation.Path = moduleTypeDirectory;
-		//    IEnumerable<IModuleDescriptor> descriptors = System.IO.Directory.GetFiles(moduleTypeDirectory, "*.dll").SelectMany(_LoadModuleDescriptors);
-		//    return descriptors;
-		//    //string moduleTypeDirectory = _GetModuleTypeDirectory(moduleImplementation);
-		//    //List<IModuleDescriptor> descriptors = new List<IModuleDescriptor>();
-
-		//    //// For all files in the module type's directory...
-		//    //foreach(string filePath in System.IO.Directory.GetFiles(moduleTypeDirectory, "*.dll")) {
-		//    //    try {
-		//    //        // Try to get descriptors.
-		//    //        descriptors.AddRange(_LoadModuleDescriptors(filePath));
-		//    //    } catch(BadImageFormatException) {
-		//    //        VixenSystem.Logging.Warning("File " + filePath + " was not loaded due to BadImageFormatException.");
-		//    //    }
-		//    //}
-
-		//    //// Add the module types to the module implementation's descriptor list.
-		//    //List<IModuleDescriptor> implementationDescriptors = _moduleImplementationDescriptors[moduleImplementation];
-		//    //implementationDescriptors.AddRange(descriptors);
-
-		//    //return descriptors;
-		//}
-
 		static private IEnumerable<IModuleDescriptor> _LoadModuleDescriptors(IEnumerable<string> filePaths) {
 			List<IModuleDescriptor> descriptors = new List<IModuleDescriptor>();
-			//Dictionary<IModuleDescriptor, ModuleImplementation> descriptors = new Dictionary<IModuleDescriptor, ModuleImplementation>();
 
 			foreach(string filePath in filePaths) {
 				try {
@@ -195,16 +162,13 @@ namespace Vixen.Sys {
 						continue;
 					}
 					// Try to get descriptors.
-					//foreach(IModuleDescriptor descriptor in _LoadModuleDescriptors(filePath)) {
-					//    descriptors[descriptor] = moduleImplementation;
-					//}
 					IEnumerable<IModuleDescriptor> descriptorsFound = _LoadModuleDescriptors(filePath);
 					descriptors.AddRange(descriptorsFound);
 					_moduleImplementationDescriptors[moduleImplementation].AddRange(descriptorsFound);
 				} catch(BadImageFormatException) {
 				} catch(ReflectionTypeLoadException ex) {
 					foreach(Exception loaderException in ex.LoaderExceptions) {
-						VixenSystem.Logging.Error("Loader exception:" + Environment.NewLine + loaderException.Message + Environment.NewLine + Environment.NewLine + "The system has been stopped.", loaderException);
+						VixenSystem.Logging.Error("Loader exception:" + Environment.NewLine + loaderException.Message, loaderException);
 					}
 				} catch(Exception ex) {
 					VixenSystem.Logging.Error("Error loading modules from " + filePath, ex);
@@ -466,16 +430,6 @@ namespace Vixen.Sys {
 			// All instances of a given module type will share a single instance of that type's
 			// static data.  A change in one is reflected in all.
 			return VixenSystem.ModuleStore.TypeData.GetTypeData(instance);
-			//*** This is what forces the data in the system data store to be used as type data.
-			//    It's possible to get instance data into the module data store, but what will read/write
-			//    it and when?
-			//-> The other difficulty is that since it's a static dataset, it assumes to use the
-			//   static data class of the module.  The workflow doesn't make sense -- specifying the
-			//   static data class for an output filter -- they want it to be per-instance where
-			//   static data is assumed to be the same for any instance (and, hence, stored as type data).
-			//-> It would be up to the objects that use the modules as system-level to store/retrieve
-			//   as instance data, but that doesn't change the fact that the static dataset is going to
-			//   use the static data class.
 		}
 	}
 }

@@ -17,7 +17,6 @@ namespace Vixen.Sys {
 			remove { NodeManager.NodesChanged -= value; }
 		}
 		
-		//static public event Action<ExecutionStateValues> ValuesChanged;
 		static public event EventHandler ExecutionStateChanged {
 			add { _State.StateChanged += value; }
 			remove { _State.StateChanged -= value; }
@@ -96,7 +95,6 @@ namespace Vixen.Sys {
 				// The context must be created and managed since the user is not doing it.
 				context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.SequenceLevelCaching), sequence);
 				// When the program ends, release the context.
-				//*** Make sure this fires when a single-sequence context ends!!
 				context.ContextEnded += (sender, e) => VixenSystem.Contexts.ReleaseContext(context);
 				context.Start();
 				// It is the sequence playing now.

@@ -31,6 +31,7 @@ namespace Vixen.Sys {
 		public SystemConfig() {
 			Identity = Guid.NewGuid();
 			_disabledControllers = new List<Guid>();
+			//*** is not in the data
 			IsPreviewThreaded = true; // opt-out
 			AllowFilterEvaluation = true; // opt-out
 		}
@@ -90,7 +91,7 @@ namespace Vixen.Sys {
 			set { _smartControllers = value; }
 		}
 
-		//*** classes to handle each of these responsibilities?
+		//classes to handle each of these responsibilities?
 		public IEnumerable<IOutputFilterModuleInstance> Filters {
 			get {
 				if(_filters == null) {

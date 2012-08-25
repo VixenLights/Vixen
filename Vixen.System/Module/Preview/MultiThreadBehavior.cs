@@ -39,6 +39,10 @@ namespace Vixen.Module.Preview {
 			get { return _thread != null && _thread.ThreadState == ThreadState.Running; }
 		}
 
+		public void BeginInvoke(Action methodToInvoke) {
+			_thread.BeginInvoke(methodToInvoke);
+		}
+
 		private UIThread _GetFormThread() {
 			return new UIThread(_formInit);
 		}

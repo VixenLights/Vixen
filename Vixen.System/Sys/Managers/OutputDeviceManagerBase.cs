@@ -127,11 +127,6 @@ namespace Vixen.Sys.Managers {
 						_Pause(outputDevice);
 						break;
 				}
-				//if(_stateAll == ExecutionState.Started) {
-				//    _Start(outputDevice);
-				//} else {
-				//    _Stop(outputDevice);
-				//}
 
 				_AddedDevice(outputDevice);
 			}
@@ -189,15 +184,9 @@ namespace Vixen.Sys.Managers {
 			if(_CanStart(outputDevice)) {
 				try {
 					_StartingDevice(outputDevice);
+					_StartDevice(outputDevice);
+					_StartedDevice(outputDevice);
 
-					outputDevice.Start();
-
-					if(outputDevice.IsRunning) {
-						_StartNewUpdateThread(outputDevice);
-						_StartedDevice(outputDevice);
-					} else {
-						VixenSystem.Logging.Error("Tried to start device " + outputDevice.Name + ", but it did not start.");
-					}
 				} catch(Exception ex) {
 					VixenSystem.Logging.Error("Error starting device " + outputDevice.Name, ex);
 				}
@@ -208,11 +197,7 @@ namespace Vixen.Sys.Managers {
 			if(_CanStop(outputDevice)) {
 				try {
 					_StoppingDevice(outputDevice);
-
-					_StopUpdateThread(outputDevice);
-
-					outputDevice.Stop();
-
+					_StopDevice(outputDevice);
 					_StoppedDevice(outputDevice);
 				} catch(Exception ex) {
 					VixenSystem.Logging.Error("Error trying to stop device " + outputDevice.Name, ex);
@@ -223,7 +208,7 @@ namespace Vixen.Sys.Managers {
 		virtual protected void _Pause(IOutputDevice outputDevice) {
 			if(_CanPause(outputDevice)) {
 				try {
-					outputDevice.Pause();
+					_PauseDevice(outputDevice);
 				} catch(Exception ex) {
 					VixenSystem.Logging.Error("Error trying to pause device " + outputDevice.Name, ex);
 				}
@@ -233,7 +218,7 @@ namespace Vixen.Sys.Managers {
 		virtual protected void _Resume(IOutputDevice outputDevice) {
 			if(_CanResume(outputDevice)) {
 				try {
-					outputDevice.Resume();
+					_ResumeDevice(outputDevice);
 				} catch(Exception ex) {
 					VixenSystem.Logging.Error("Error trying to resume device " + outputDevice.Name, ex);
 				}
@@ -269,7 +254,7 @@ namespace Vixen.Sys.Managers {
 			get { return _stateAll == ExecutionState.Starting || _stateAll == ExecutionState.Started || _stateAll == ExecutionState.Paused; }
 		}
 
-		private void _StartNewUpdateThread(IOutputDevice outputDevice) {
+		private void _StartDevice(IOutputDevice outputDevice) {
 			HardwareUpdateThread thread = new HardwareUpdateThread(outputDevice);
 			thread.Error += _HardwareError;
 			lock(_updateThreads) {
@@ -278,7 +263,21 @@ namespace Vixen.Sys.Managers {
 			thread.Start();
 		}
 
-		private void _StopUpdateThread(IOutputDevice outputDevice) {
+		private void _PauseDevice(IOutputDevice outputDevice) {
+			HardwareUpdateThread thread;
+			if(_updateThreads.TryGetValue(outputDevice.Id, out thread)) {
+				thread.Pause();
+			}
+		}
+
+		private void _ResumeDevice(IOutputDevice outputDevice) {
+			HardwareUpdateThread thread;
+			if(_updateThreads.TryGetValue(outputDevice.Id, out thread)) {
+				thread.Resume();
+			}
+		}
+
+		private void _StopDevice(IOutputDevice outputDevice) {
 			HardwareUpdateThread thread;
 			if(_updateThreads.TryGetValue(outputDevice.Id, out thread)) {
 				lock(_updateThreads) {
@@ -311,9 +310,13 @@ namespace Vixen.Sys.Managers {
 			private Thread _thread;
 			private ExecutionState _threadState = ExecutionState.Stopped;
 			private EventWaitHandle _finished;
-			private OutputDeviceSleepTimeActualValue _outputDeviceSleepTimeActualValue;
 			private AutoResetEvent _updateSignalerSync;
+			private ManualResetEvent _pauseSignal;
 			private Stopwatch _localTime;
+
+			private OutputDeviceSleepTimeActualValue _sleepTimeActualValue;
+			private OutputDeviceRefreshRateValue _refreshRateValue;
+			private OutputDeviceUpdateTimeValue _updateTimeValue;
 
 			private const int STOP_TIMEOUT = 4000;   // Four seconds should be plenty of time for a thread to stop.
 
@@ -324,6 +327,7 @@ namespace Vixen.Sys.Managers {
 				_thread = new Thread(_ThreadFunc) { Name = outputDevice.Name + " update", IsBackground = true };
 				_finished = new EventWaitHandle(false, EventResetMode.ManualReset);
 				_updateSignalerSync = new AutoResetEvent(false);
+				_pauseSignal = new ManualResetEvent(true);
 				_localTime = new Stopwatch();
 			}
 
@@ -332,8 +336,10 @@ namespace Vixen.Sys.Managers {
 			public void Start() {
 				if(_threadState == ExecutionState.Stopped) {
 					_threadState = ExecutionState.Started;
+					OutputDevice.Start();
 					_finished.Reset();
 					_localTime.Start();
+					_CreatePerformanceValues();
 					_thread.Start();
 				}
 			}
@@ -342,8 +348,21 @@ namespace Vixen.Sys.Managers {
 				if(_threadState == ExecutionState.Started) {
 					_threadState = ExecutionState.Stopping;
 					_updateSignalerSync.Set();
+					Resume();
 					_localTime.Stop();
+					_RemovePerformanceValues();
+					OutputDevice.Stop();
 				}
+			}
+
+			public void Pause() {
+				OutputDevice.Pause();
+				_pauseSignal.Reset();
+			}
+
+			public void Resume() {
+				OutputDevice.Resume();
+				_pauseSignal.Set();
 			}
 
 			public void WaitForFinish() {
@@ -355,18 +374,19 @@ namespace Vixen.Sys.Managers {
 			}
 
 			private void _ThreadFunc() {
-				_outputDeviceSleepTimeActualValue = new OutputDeviceSleepTimeActualValue(OutputDevice);
-				VixenSystem.Instrumentation.AddValue(_outputDeviceSleepTimeActualValue);
-
 				// Thread main loop
 				try {
-					IOutputDeviceUpdateSignaler signaler = OutputDevice.UpdateSignaler ?? new IntervalUpdateSignaler();
-					signaler.OutputDevice = OutputDevice;
-					signaler.UpdateSignal = _updateSignalerSync;
+					IOutputDeviceUpdateSignaler signaler = _CreateOutputDeviceUpdateSignaler();
 
 					while(_threadState != ExecutionState.Stopping) {
-						OutputDevice.Update();
+						if(Execution.UpdateState()) {
+							long timeBeforeUpdate = _localTime.ElapsedMilliseconds;
+							OutputDevice.Update();
+							_updateTimeValue.Set(_localTime.ElapsedMilliseconds - timeBeforeUpdate);
+						}
+
 						_WaitOnSignal(signaler);
+						_WaitOnPause();
 					}
 
 					_threadState = ExecutionState.Stopped;
@@ -379,11 +399,16 @@ namespace Vixen.Sys.Managers {
 					_finished.Set();
 
 					VixenSystem.Logging.Error("Controller " + OutputDevice.Name + " error", ex);
-					//VixenSystem.Logging.Debug("Controller error:" + Environment.NewLine + ex.StackTrace);
 					OnError();
-				} finally {
-					VixenSystem.Instrumentation.RemoveValue(_outputDeviceSleepTimeActualValue);
 				}
+			}
+
+			private IOutputDeviceUpdateSignaler _CreateOutputDeviceUpdateSignaler() {
+				IOutputDeviceUpdateSignaler signaler = OutputDevice.UpdateSignaler ?? new IntervalUpdateSignaler();
+				signaler.OutputDevice = OutputDevice;
+				signaler.UpdateSignal = _updateSignalerSync;
+
+				return signaler;
 			}
 
 			private void _WaitOnSignal(IOutputDeviceUpdateSignaler signaler) {
@@ -396,8 +421,33 @@ namespace Vixen.Sys.Managers {
 				_SubmitActualSleepTime(timeAfterSignal - timeBeforeSignal);
 			}
 
+			private void _WaitOnPause() {
+				_pauseSignal.WaitOne();
+			}
+
 			private void _SubmitActualSleepTime(long timeInMs) {
-				_outputDeviceSleepTimeActualValue.Set(timeInMs);
+				_sleepTimeActualValue.Set(timeInMs);
+			}
+
+			private void _CreatePerformanceValues() {
+				_sleepTimeActualValue = new OutputDeviceSleepTimeActualValue(OutputDevice);
+				VixenSystem.Instrumentation.AddValue(_sleepTimeActualValue);
+				_refreshRateValue = new OutputDeviceRefreshRateValue(OutputDevice);
+				VixenSystem.Instrumentation.AddValue(_refreshRateValue);
+				_updateTimeValue = new OutputDeviceUpdateTimeValue(OutputDevice);
+				VixenSystem.Instrumentation.AddValue(_updateTimeValue);
+			}
+
+			private void _RemovePerformanceValues() {
+				if(_refreshRateValue != null) {
+					VixenSystem.Instrumentation.RemoveValue(_refreshRateValue);
+				}
+				if(_updateTimeValue != null) {
+					VixenSystem.Instrumentation.RemoveValue(_updateTimeValue);
+				}
+				if(_sleepTimeActualValue != null) {
+					VixenSystem.Instrumentation.RemoveValue(_sleepTimeActualValue);
+				}
 			}
 
 			protected virtual void OnError() {
@@ -418,6 +468,7 @@ namespace Vixen.Sys.Managers {
 			private void _Dispose() {
 				_finished.Dispose();
 				_updateSignalerSync.Dispose();
+				_pauseSignal.Dispose();
 			}
 		}
 		#endregion

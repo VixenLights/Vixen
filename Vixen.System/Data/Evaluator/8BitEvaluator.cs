@@ -4,15 +4,15 @@ using Vixen.Sys;
 using Vixen.Sys.Dispatch;
 
 namespace Vixen.Data.Evaluator {
-	//public class _8BitEvaluator : Evaluator<_8BitEvaluator, byte>, IAnyCommandHandler {
 	public class _8BitEvaluator : Evaluator, IAnyCommandHandler {
+		// Handling intents as an evaluator.
 		public override void Handle(IIntentState<ColorValue> obj) {
 			byte byteLevel = ColorValue.GetGrayscaleLevel(obj.GetValue().Color);
 			EvaluatorValue = new _8BitCommand(byteLevel);
 		}
 
 		public override void Handle(IIntentState<LightingValue> obj) {
-			EvaluatorValue = new _8BitCommand(obj.GetValue().Intensity);
+			EvaluatorValue = new _8BitCommand(obj.GetValue().Intensity * byte.MaxValue);
 		}
 
 		public override void Handle(IIntentState<PositionValue> obj) {
@@ -23,6 +23,7 @@ namespace Vixen.Data.Evaluator {
 			obj.GetValue().Command.Dispatch(this);
 		}
 
+		// Additionally dispatching command intents and handling the command they wrap.
 		public void Handle(_8BitCommand obj) {
 			EvaluatorValue = obj;
 		}

@@ -141,7 +141,6 @@
     <Compile Include="Data\Policy\ControllerDataPolicy.cs" />
     <Compile Include="Data\Flow\IntentsDataFlowData.cs" />
     <Compile Include="Data\Flow\IDataFlowData.cs" />
-    <Compile Include="Data\Policy\OutputDataPolicy.cs" />
     <Compile Include="Data\Policy\DataFlowDataDispatchingDataPolicy.cs" />
     <Compile Include="Data\Policy\SmartControllerDataPolicy.cs" />
     <Compile Include="Execution\ContextCurrentEffectsFull.cs" />
@@ -222,6 +221,8 @@
     <Compile Include="Module\Service\ServiceModuleInstanceBase.cs" />
     <Compile Include="Module\Service\ServiceModuleManagement.cs" />
     <Compile Include="Module\Service\ServiceModuleRepository.cs" />
+    <Compile Include="Sys\ChannelIntentStates.cs" />
+    <Compile Include="Sys\IDataPolicyFactory.cs" />
     <Compile Include="Sys\Output\BasicOutputModuleExecutionControl.cs" />
     <Compile Include="Services\EditorService.cs" />
     <Compile Include="Services\ModuleTemplateService.cs" />
@@ -444,6 +445,7 @@
     <Compile Include="Sys\Output\IntentOutput.cs" />
     <Compile Include="Sys\Output\IntentOutputStates.cs" />
     <Compile Include="Sys\Output\IntervalUpdateSignaler.cs" />
+    <Compile Include="Sys\Output\IOutputDataPolicyProvider.cs" />
     <Compile Include="Sys\Output\IOutputDeviceUpdateSignaler.cs" />
     <Compile Include="Sys\Output\IOutputMediator.cs" />
     <Compile Include="Sys\Output\IOutputModule.cs" />
@@ -455,6 +457,7 @@
     <Compile Include="Sys\Output\Output.cs" />
     <Compile Include="Sys\Output\OutputCollection.cs" />
     <Compile Include="Sys\Output\OutputCollectionEventArgs.cs" />
+    <Compile Include="Sys\Output\OutputDataPolicyCache.cs" />
     <Compile Include="Sys\Output\OutputMediator.cs" />
     <Compile Include="Sys\Output\OutputModuleConsumer.cs" />
     <Compile Include="Sys\Output\OutputModuleInstanceBase.cs" />

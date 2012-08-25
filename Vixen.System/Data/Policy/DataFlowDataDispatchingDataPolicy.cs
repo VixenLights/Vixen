@@ -25,6 +25,7 @@ namespace Vixen.Data.Policy {
 			if(dataFlowData != null) {
 				dataFlowData.Dispatch(this);
 			}
+
 			return _commandResult;
 		}
 
