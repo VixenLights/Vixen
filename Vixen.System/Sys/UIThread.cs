@@ -49,6 +49,8 @@ namespace Vixen.Sys {
 		}
 
 		public void BeginInvoke(Action methodToInvoke) {
+			if(_synchronizationContext == null) return;
+
 			_synchronizationContext.Post(o => methodToInvoke(), null); 
 		}
 

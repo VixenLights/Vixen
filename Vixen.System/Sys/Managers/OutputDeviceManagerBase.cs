@@ -380,9 +380,7 @@ namespace Vixen.Sys.Managers {
 
 					while(_threadState != ExecutionState.Stopping) {
 						if(Execution.UpdateState()) {
-							long timeBeforeUpdate = _localTime.ElapsedMilliseconds;
-							OutputDevice.Update();
-							_updateTimeValue.Set(_localTime.ElapsedMilliseconds - timeBeforeUpdate);
+							_UpdateOutputDevice();
 						}
 
 						_WaitOnSignal(signaler);
@@ -411,6 +409,16 @@ namespace Vixen.Sys.Managers {
 				return signaler;
 			}
 
+			private void _UpdateOutputDevice() {
+				_refreshRateValue.Increment();
+
+				long timeBeforeUpdate = _localTime.ElapsedMilliseconds;
+
+				OutputDevice.Update();
+	
+				_updateTimeValue.Set(_localTime.ElapsedMilliseconds - timeBeforeUpdate);
+			}
+
 			private void _WaitOnSignal(IOutputDeviceUpdateSignaler signaler) {
 				long timeBeforeSignal = _localTime.ElapsedMilliseconds;
 
@@ -418,15 +426,11 @@ namespace Vixen.Sys.Managers {
 				_updateSignalerSync.WaitOne();
 
 				long timeAfterSignal = _localTime.ElapsedMilliseconds;
-				_SubmitActualSleepTime(timeAfterSignal - timeBeforeSignal);
+				_sleepTimeActualValue.Set(timeAfterSignal - timeBeforeSignal);
 			}
 
 			private void _WaitOnPause() {
 				_pauseSignal.WaitOne();
-			}
-
-			private void _SubmitActualSleepTime(long timeInMs) {
-				_sleepTimeActualValue.Set(timeInMs);
 			}
 
 			private void _CreatePerformanceValues() {
