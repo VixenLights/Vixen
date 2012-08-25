@@ -2,19 +2,16 @@
 using Vixen.Commands;
 using Vixen.Module.Controller;
 using Vixen.Module;
-using Vixen.Sys;
 using System.Diagnostics;
 using System.Windows.Forms;
 using VixenModules.Controller.DummyLighting;
 
 namespace VixenModules.Output.DummyLighting {
 	public class DummyLighting : ControllerModuleInstanceBase {
-		//private List<string> _output = new List<string>();
 		private DummyLightingOutputForm _form;
 		private Stopwatch _sw;
 		private int _updateCount;
 		private DummyLightingData _data;
-		private IDataPolicy _dataPolicy;
 
 		public DummyLighting() {
 			_form = new DummyLightingOutputForm();
@@ -55,9 +52,7 @@ namespace VixenModules.Output.DummyLighting {
 		}
 
 		override public bool HasSetup {
-			get {
-				return true;
-			}
+			get { return true; }
 		}
 
 		override public bool Setup() {
@@ -77,20 +72,16 @@ namespace VixenModules.Output.DummyLighting {
 			get { return _form != null && (_form.Visible || _form.IsDisposed); }
 		}
 
-		override public IDataPolicy DataPolicy {
-			get { return _dataPolicy; }
-		}
-
 		private void _SetDataPolicy() {
 			switch(_data.RenderStyle) {
 				case RenderStyle.Monochrome:
-					_dataPolicy = new MonochromeDataPolicy();
+					DataPolicyFactory = new MonochromeDataPolicyFactory();
 					break;
 				case RenderStyle.RGBSingleChannel:
-					_dataPolicy = new OneChannelColorDataPolicy();
+					DataPolicyFactory = new OneChannelColorDataPolicyFactory();
 					break;
 				case RenderStyle.RGBMultiChannel:
-					_dataPolicy = new ThreeChannelColorDataPolicy();
+					DataPolicyFactory = new ThreeChannelColorDataPolicyFactory();
 					break;
 				default:
 					throw new InvalidOperationException("Unknown render style: " + _data.RenderStyle);
