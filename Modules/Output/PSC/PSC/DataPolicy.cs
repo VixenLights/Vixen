@@ -1,14 +1,15 @@
-﻿using Vixen.Data.Policy;
+﻿using Vixen.Data.Combinator._16Bit;
+using Vixen.Data.Policy;
 using Vixen.Sys;
 
 namespace VixenModules.Controller.PSC {
 	class DataPolicy : ControllerDataPolicy {
 		protected override IEvaluator GetEvaluator() {
-			return new Evaluator();
+			return new PositionEvaluator();
 		}
 
 		protected override ICombinator GetCombinator() {
-			return new Combinator();
+			return new _16BitAverageCombinator();
 		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿using Vixen.Data.Combinator;
+﻿using Vixen.Data.Combinator._8Bit;
 using Vixen.Data.Evaluator;
 using Vixen.Data.Policy;
 using Vixen.Sys;
@@ -6,11 +6,11 @@ using Vixen.Sys;
 namespace VixenModules.Output.Olsen595 {
 	class DataPolicy : ControllerDataPolicy {
 		protected override IEvaluator GetEvaluator() {
-			return new LightingEvaluator();
+			return new _8BitEvaluator();
 		}
 
 		protected override ICombinator GetCombinator() {
-			return new LightingCombinator();
+			return new _8BitHighestWinsCombinator();
 		}
 	}
 }

@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Vixen.Module.Preview;
 
-namespace TestPreview {
+namespace VixenModules.Preview.TestPreview {
 	public class TestPreviewDescriptor : PreviewModuleDescriptorBase {
 		private Guid _typeId = new Guid("{07A5BCCB-0646-405a-B583-F604D58D91E2}");
 

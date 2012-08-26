@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataPolicy.cs" />
+    <Compile Include="DataPolicyFactory.cs" />
     <Compile Include="E131DeviceManagementProtocol.cs" />
     <Compile Include="E131Framing.cs" />
     <Compile Include="E131ModuleDataModel.cs" />

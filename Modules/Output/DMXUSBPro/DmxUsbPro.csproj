@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Data.cs" />
     <Compile Include="DataPolicy.cs" />
+    <Compile Include="DataPolicyFactory.cs" />
     <Compile Include="Descriptor.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="Message.cs" />

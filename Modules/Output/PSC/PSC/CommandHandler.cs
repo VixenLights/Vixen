@@ -9,7 +9,7 @@ namespace VixenModules.Controller.PSC {
 			Value = PSC.RangeMid;
 		}
 
-		public override void Handle(UnsignedShortValueCommand obj) {
+		public override void Handle(_16BitCommand obj) {
 			Value = obj.CommandValue;
 		}
 	}

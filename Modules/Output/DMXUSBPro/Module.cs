@@ -17,10 +17,8 @@ namespace VixenModules.Output.DmxUsbPro
 
         private DmxUsbProSender _dmxUsbProSender;
 
-		private IDataPolicy _dataPolicy;
-
 		public Module() {
-			_dataPolicy = new DataPolicy();
+			DataPolicyFactory = new DataPolicyFactory();
 		}
 
     	public override bool HasSetup
@@ -101,11 +99,7 @@ namespace VixenModules.Output.DmxUsbPro
             base.Stop();
         }
 
-        protected override void _SetOutputCount(int outputCount)
-        {            
-        }
-       
-		public override void UpdateState(ICommand[] outputStates)
+		public override void UpdateState(int chainIndex, ICommand[] outputStates)
         {
             this._dmxUsbProSender.SendDmxPacket(outputStates);
         }
@@ -132,9 +126,5 @@ namespace VixenModules.Output.DmxUsbPro
 				                   };
 			}
         }
-
-		public override IDataPolicy DataPolicy {
-			get { return _dataPolicy; }
-		}
 	}
 }

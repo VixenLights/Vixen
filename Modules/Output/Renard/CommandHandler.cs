@@ -9,8 +9,8 @@ namespace VixenModules.Output.Renard {
 			Value = 0;
 		}
 
-		public override void Handle(LightingValueCommand obj) {
-			Value = (byte)(byte.MaxValue * obj.CommandValue.Intensity);
+		public override void Handle(_8BitCommand obj) {
+			Value = obj.CommandValue;
 		}
 	}
 }

@@ -23,15 +23,15 @@ namespace VixenModules.Output.Hill320 {
 			}
 		}
 	}
+
 	public class Module : ControllerModuleInstanceBase {
 		private Data _moduleData;
 		private ushort _portAddress;
-		private IDataPolicy _dataPolicy;
 		private CommandHandler _commandHandler;
 
 		public Module() {
-			_dataPolicy = new DataPolicy();
 			_commandHandler = new CommandHandler();
+			DataPolicyFactory = new DataPolicyFactory();
 		}
 
 		public override bool Setup() {
@@ -52,9 +52,9 @@ namespace VixenModules.Output.Hill320 {
 			set { _moduleData = value as Data; }
 		}
 
-		protected override void _SetOutputCount(int outputCount) { }
+		public override int OutputCount { get; set; }
 
-		public override void UpdateState(ICommand[] outputStates) {
+		public override void UpdateState(int chainIndex, ICommand[] outputStates) {
 			int valueIndex = 0;
 			int bitCount;
 			byte value;
@@ -122,10 +122,6 @@ namespace VixenModules.Output.Hill320 {
 				//this box needs to	be modified.
 				LoadInpOutDLL.outputData(_moduleData.ControlPort, 1);
 			}
-		}
-
-		public override IDataPolicy DataPolicy {
-			get { return _dataPolicy; }
 		}
 	}
 }

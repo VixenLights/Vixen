@@ -13,8 +13,8 @@ namespace VixenModules.Output.Hill320 {
 			Value = 0;
 		}
 
-		public override void Handle(LightingValueCommand obj) {
-			Value = obj.CommandValue.Intensity > 0 ? (byte)1 : (byte)0;
+		public override void Handle(_8BitCommand obj) {
+			Value = obj.CommandValue;
 		}
 	}
 }

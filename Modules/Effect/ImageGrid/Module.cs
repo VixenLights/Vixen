@@ -56,7 +56,7 @@ namespace VixenModules.Effect.ImageGrid {
 								Color pixelColor = Color.FromArgb(argbValue);
 								LightingValue startValue = new LightingValue(pixelColor, 1);
 								LightingValue endValue = new LightingValue(pixelColor, 1);
-								IIntent intent = new LightingLinearIntent(startValue, endValue, TimeSpan);
+								IIntent intent = new LightingIntent(startValue, endValue, TimeSpan);
 								_effectIntents.AddIntentForChannel(channels[pixelIndex].Id, intent, TimeSpan.Zero);
 							}
 						}

@@ -38,7 +38,7 @@ namespace VixenModules.Output.DmxUsbPro
             var channelValues = new byte[outputStates.Length];
             for (int index = 0; index < outputStates.Length; index++)
             {
-                ICommand command = outputStates[index];
+                _8BitCommand command = outputStates[index] as _8BitCommand;
                 if (command == null)
                 {
                     // State reset
@@ -46,14 +46,7 @@ namespace VixenModules.Output.DmxUsbPro
                     continue;
                 }
 
-                // Casting is fasting than comparing strings.
-                var lightingCommand = command as LightingValueCommand;
-                if (lightingCommand != null)
-                {
-                    // Good command
-                    var level = (byte)(0xFF * lightingCommand.CommandValue.Intensity);
-                    channelValues[index] = level;
-                }                
+				channelValues[index] = command.CommandValue;
             }
 
             if (!this._serialPort.IsOpen)

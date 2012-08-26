@@ -70,6 +70,7 @@
     <Compile Include="ProtocolFormatterService.cs" />
     <Compile Include="ProtocolVersionAttribute.cs" />
     <Compile Include="RenardDataPolicy.cs" />
+    <Compile Include="RenardDataPolicyFactory.cs" />
     <Compile Include="SetupDialog.cs">
       <SubType>Form</SubType>
     </Compile>

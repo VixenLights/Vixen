@@ -100,10 +100,8 @@ namespace VixenModules.Controller.E131
 
         private bool _warningsOption;
 
-		private IDataPolicy _dataPolicy;
-
 		public E131OutputPlugin() {
-			_dataPolicy = new DataPolicy();
+			DataPolicyFactory = new DataPolicyFactory();
 		}
 
     	public void Initialize()
@@ -531,11 +529,7 @@ namespace VixenModules.Controller.E131
             return (E131ModuleDataModel)this.ModuleData;
         }
 
-        protected override void _SetOutputCount(int outputCount)
-        {
-        }
-
-		public override void UpdateState(ICommand[] outputStates) {
+		public override void UpdateState(int chainIndex, ICommand[] outputStates) {
             Stopwatch stopWatch = Stopwatch.StartNew();
             var channelValues = outputStates.ToChannelValuesAsBytes();
             this._eventCnt++;
@@ -694,9 +688,5 @@ namespace VixenModules.Controller.E131
                 this._guid = Guid.NewGuid();
             }
         }
-
-		public override IDataPolicy DataPolicy {
-			get { return _dataPolicy; }
-		}
 	}
 }

@@ -53,6 +53,7 @@
       <DependentUpon>BlinkyLinkySetup.cs</DependentUpon>
     </Compile>
     <Compile Include="DataPolicy.cs" />
+    <Compile Include="DataPolicyFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

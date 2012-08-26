@@ -40,6 +40,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="TestPreview, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChannelColorStateControl.cs">
@@ -48,9 +49,31 @@
     <Compile Include="ChannelColorStateControl.Designer.cs">
       <DependentUpon>ChannelColorStateControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="CommandHandler.cs" />
+    <Compile Include="ColorValueControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ColorValueControl.Designer.cs">
+      <DependentUpon>ColorValueControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CommandValueControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CommandValueControl.Designer.cs">
+      <DependentUpon>CommandValueControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LightingValueControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LightingValueControl.Designer.cs">
+      <DependentUpon>LightingValueControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PositionValueControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PositionValueControl.Designer.cs">
+      <DependentUpon>PositionValueControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestPreviewDataPolicy.cs" />
     <Compile Include="TestPreviewDescriptor.cs" />
     <Compile Include="TestPreviewForm.cs">
       <SubType>Form</SubType>
@@ -63,6 +86,18 @@
   <ItemGroup>
     <EmbeddedResource Include="ChannelColorStateControl.resx">
       <DependentUpon>ChannelColorStateControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ColorValueControl.resx">
+      <DependentUpon>ColorValueControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CommandValueControl.resx">
+      <DependentUpon>CommandValueControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LightingValueControl.resx">
+      <DependentUpon>LightingValueControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PositionValueControl.resx">
+      <DependentUpon>PositionValueControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TestPreviewForm.resx">
       <DependentUpon>TestPreviewForm.cs</DependentUpon>

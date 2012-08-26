@@ -43,7 +43,7 @@ namespace VixenModules.Effect.SetLevel
 		}
 
 		[Value]
-		public double IntensityLevel
+		public float IntensityLevel
 		{
 			get { return _data.level; }
 			set { _data.level = value; IsDirty = true; }
@@ -62,7 +62,7 @@ namespace VixenModules.Effect.SetLevel
 		{
 			foreach(Channel channel in node) {
 				LightingValue lightingValue = new LightingValue(Color, IntensityLevel);
-				IIntent intent = new LightingLinearIntent(lightingValue, lightingValue, TimeSpan);
+				IIntent intent = new LightingIntent(lightingValue, lightingValue, TimeSpan);
 				_channelData.AddIntentForChannel(channel.Id, intent, TimeSpan.Zero);
 			}
 			//// if this node is an RGB node, then it will know what to do with it (might render directly,

@@ -21,7 +21,7 @@ namespace VixenModules.Output.BlinkyLinky
 		private TcpClient _tcpClient;
 		private NetworkStream _networkStream;
 		private Stopwatch _timeoutStopwatch;
-		private IDataPolicy _dataPolicy;
+		private int _outputCount;
 
 		public static byte HEADER_1 = 0xDE;
 		public static byte HEADER_2 = 0xAD;
@@ -37,7 +37,7 @@ namespace VixenModules.Output.BlinkyLinky
 			_nullCommands = new Dictionary<int, int>();
 			_data = new BlinkyLinkyData();
 			_timeoutStopwatch = new Stopwatch();
-			_dataPolicy = new DataPolicy();
+			DataPolicyFactory = new DataPolicyFactory();
 		}
 
 		private void _setupDataBuffers()
@@ -50,9 +50,12 @@ namespace VixenModules.Output.BlinkyLinky
 			}
 		}
 
-		protected override void _SetOutputCount(int outputCount)
-		{
-			_setupDataBuffers();
+		public override int OutputCount {
+			get { return _outputCount; }
+			set {
+				_outputCount = value;
+				_setupDataBuffers(); 
+			}
 		}
 
 		public override IModuleDataModel ModuleData
@@ -140,7 +143,7 @@ namespace VixenModules.Output.BlinkyLinky
 		}
 
 
-		public override void UpdateState(ICommand[] outputStates) {
+		public override void UpdateState(int chainIndex, ICommand[] outputStates) {
 			if(_networkStream == null) {
 				bool success = OpenConnection();
 				if (!success) {
@@ -176,10 +179,10 @@ namespace VixenModules.Output.BlinkyLinky
 				byte newValue = 0;
 
 				if (outputStates[i] != null) {
-					LightingValueCommand lightingCommand = outputStates[i] as LightingValueCommand;
-					if (lightingCommand == null)
+					_8BitCommand command = outputStates[i] as _8BitCommand;
+					if (command == null)
 						continue;
-					newValue = (byte)(lightingCommand.CommandValue.Intensity * Byte.MaxValue);
+					newValue = command.CommandValue;
 					_nullCommands[i] = 0;
 				} else {
 					// it was a null command. We should turn it off; however, to avoid some potentially nasty flickering,
@@ -216,10 +219,6 @@ namespace VixenModules.Output.BlinkyLinky
 					CloseConnection();
 				}
 			}
-		}
-
-		public override IDataPolicy DataPolicy {
-			get { return _dataPolicy; }
 		}
 	}
 }
