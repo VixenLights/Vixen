@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace Vixen.Data.Flow {
-	class DataFlowComponentReference : IDataFlowComponentReference, IEquatable<DataFlowComponentReference> {
+	public class DataFlowComponentReference : IDataFlowComponentReference, IEquatable<DataFlowComponentReference> {
 		public DataFlowComponentReference(IDataFlowComponent component, int outputIndex) {
 			if(component == null) throw new ArgumentNullException("component");
 
