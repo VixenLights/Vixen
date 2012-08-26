@@ -28,7 +28,7 @@ namespace Vixen.Module.Controller {
 
 		abstract public void UpdateState(int chainIndex, ICommand[] outputStates);
 
-		abstract public int OutputCount { get; set; }
+		virtual public int OutputCount { get; set; }
 
 		#region Equality
 		public bool Equals(IControllerModuleInstance x, IControllerModuleInstance y) {
