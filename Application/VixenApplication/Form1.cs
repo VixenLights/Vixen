@@ -21,11 +21,11 @@ namespace VixenApplication
 {
 	public partial class Form1 : Form
 	{
-		private Project myproject;
-		private DiagramSetController dsc;
+		private readonly Project _project;
+		private readonly DiagramSetController _diagramSetController;
 
-		private List<ChannelNodeShape> ChannelShapes;
-		private List<ControllerShape> ControllerShapes;
+		private List<ChannelNodeShape> _channelShapes;
+		private List<ControllerShape> _controllerShapes;
 
 		private readonly Layer _visibleLayer;
 		private readonly Layer _hiddenLayer;
@@ -34,43 +34,37 @@ namespace VixenApplication
 		{
 			InitializeComponent();
 
-			dsc = new DiagramSetController();
-			myproject = new Project();
-			//repository = new CachedRepository();
-			//store = new XmlStore();
+			_diagramSetController = new DiagramSetController();
+			_project = new Project();
 
-			//repository.Store = store;
-			//myproject.Repository = repository;
-			dsc.Project = myproject;
-			diagramDisplay.DiagramSetController = dsc;
+			_diagramSetController.Project = _project;
+			diagramDisplay.DiagramSetController = _diagramSetController;
 
-			myproject.LibrarySearchPaths.Add(@"Common\");
-			myproject.AutoLoadLibraries = true;	
-			myproject.AddLibraryByName("Dataweb.NShape.GeneralShapes", false);
-			myproject.AddLibraryByName("Dataweb.NShape.FlowChartShapes", false);
-			myproject.AddLibraryByName("Dataweb.NShape.GeneralModelObjects", false);
-			myproject.AddLibraryByName("Dataweb.NShape.SoftwareArchitectureShapes", false);
-			myproject.AddLibraryByName("VixenApplication", false);
+			_project.LibrarySearchPaths.Add(@"Common\");
+			_project.AutoLoadLibraries = true;	
+			_project.AddLibraryByName("VixenApplication", false);
 			
-			myproject.Name = "temp";
-			myproject.Create();
+			_project.Name = "temp";
+			_project.Create();
 
-			diagramDisplay.Diagram = dsc.CreateDiagram("qwer");
+			_visibleLayer = new Layer("Visible");
+			_hiddenLayer = new Layer("Hidden");
+			_controllerShapes = new List<ControllerShape>();
+			_channelShapes = new List<ChannelNodeShape>();
+		}
+
+		private void Form1_Load(object sender, EventArgs e)
+		{
+			diagramDisplay.Diagram = _diagramSetController.CreateDiagram("qwer");
 			diagramDisplay.Diagram.Size = new Size(600, 600);
 			//diagramDisplay.AutoScrollPosition = new Point(0, 0);
 			//diagramDisplay.AutoScrollMinSize = diagramDisplay.Size; // Size(600, 800);
-
-			_visibleLayer = new Layer("Visible");
-			//_visibleLayer.Id = LayerIds.Layer01;
-			_hiddenLayer = new Layer("Hidden");
-			//_hiddenLayer.Id = LayerIds.Layer02;
 
 			diagramDisplay.Diagram.Layers.Add(_visibleLayer);
 			diagramDisplay.Diagram.Layers.Add(_hiddenLayer);
 			diagramDisplay.SetLayerVisibility(_visibleLayer.Id, true);
 			diagramDisplay.SetLayerVisibility(_hiddenLayer.Id, false);
 
-			diagramDisplay.CurrentTool = new SelectionTool();
 			diagramDisplay.ShowDefaultContextMenu = false;
 			diagramDisplay.ClicksOnlyAffectTopShape = true;
 
@@ -84,14 +78,8 @@ namespace VixenApplication
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
 				SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS, StandardRole.Operator, Permission.Connect | Permission.Insert | Permission.Layout);
 
-			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(StandardRole.Operator,
-				Permission.All);
-			//	Permission.Connect | Permission.Layout | Permission.Insert);
-
+			((RoleBasedSecurityManager) diagramDisplay.Project.SecurityManager).SetPermissions(StandardRole.Operator, Permission.All);
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).CurrentRole = StandardRole.Operator;
-
-			ControllerShapes = new List<ControllerShape>();
-			ChannelShapes = new List<ChannelNodeShape>();
 
 			FillStyle styleChannelGroup = new FillStyle("ChannelGroup",
 				new ColorStyle("", Color.FromArgb(120, 160, 240)), new ColorStyle("", Color.FromArgb(90, 120, 180)));
@@ -109,56 +97,35 @@ namespace VixenApplication
 				new ColorStyle("", Color.FromArgb(150, 220, 150)), new ColorStyle("", Color.FromArgb(80, 200, 80)));
 			styleOutput.FillMode = FillMode.Gradient;
 
-			myproject.Design.FillStyles.Add(styleChannelGroup, styleChannelGroup);
-			myproject.Design.FillStyles.Add(styleChannelLeaf, styleChannelLeaf);
-			myproject.Design.FillStyles.Add(styleFilter, styleFilter);
-			myproject.Design.FillStyles.Add(styleController, styleController);
-			myproject.Design.FillStyles.Add(styleOutput, styleOutput);
-		}
+			_project.Design.FillStyles.Add(styleChannelGroup, styleChannelGroup);
+			_project.Design.FillStyles.Add(styleChannelLeaf, styleChannelLeaf);
+			_project.Design.FillStyles.Add(styleFilter, styleFilter);
+			_project.Design.FillStyles.Add(styleController, styleController);
+			_project.Design.FillStyles.Add(styleOutput, styleOutput);
 
-		private void button2_Click(object sender, EventArgs e)
-		{
-			//Template template = new Template("connector", myproject.ShapeTypes["Polyline"].CreateInstance());
-			//diagramDisplay.CurrentTool = new LinearShapeCreationTool(template);
+			_CreateShapesFromChannels();
+			_CreateShapesFromControllers();
+			_ResizeAndPositionShapes();
+
 			diagramDisplay.CurrentTool = new ConnectionTool();
-
 		}
 
-		private void button3_Click(object sender, EventArgs e)
+		private void displayDiagram_ShapeDoubleClick(object sender, DiagramPresenterShapeClickEventArgs e)
 		{
-
-		}
-
-		private void button4_Click(object sender, EventArgs e)
-		{
-
-		}
-
-		private void display1_ShapeClick(object sender, DiagramPresenterShapeClickEventArgs e)
-		{
-			log("shape click: " + e.Shape.Type);
-		}
-
-		private void display1_ShapeDoubleClick(object sender, DiagramPresenterShapeClickEventArgs e)
-		{
-			log("shape doubleclick: " + e.Shape.Type);
 			var shape = (FilterSetupShapeBase)e.Shape;
 
 			// workaround: only modify the shape if it's currently selected. The diagram likes to
 			// send click events to all shapes under the mouse, even if they're not active.
 			if (!diagramDisplay.SelectedShapes.Contains(shape)) {
-				log("shape doubleclick: NOT acting on shape " + shape.Title + ", as it's not selected");
 				return;
 			}
 
 			if (shape is NestingSetupShape) {
 				NestingSetupShape s = (shape as NestingSetupShape);
 				if (s.Expanded) {
-					log("closing shape: " + shape.Title);
 					s.Expanded = false;
 				}
 				else {
-					log("opening shape: " + shape.Title);
 					s.Expanded = true;
 				}
 			}
@@ -166,86 +133,36 @@ namespace VixenApplication
 			_ResizeAndPositionShapes();
 		}
 
-		private void display1_ShapesInserted(object sender, DiagramPresenterShapesEventArgs e)
-		{
-			log("shapes inserted: " + e.Shapes.Count);
-		}
-
-		private void display1_ShapesSelected(object sender, EventArgs e)
-		{
-			log("shapes selected");
-		}
-
-		private void display1_ShapesRemoved(object sender, DiagramPresenterShapesEventArgs e)
-		{
-			log("shapes removed: " + e.Shapes.Count);
-		}
-
-		private void display1_DiagramChanged(object sender, EventArgs e)
-		{
-			log("diagram changed");
-		}
-
-		private void display1_DiagramChanging(object sender, EventArgs e)
-		{
-			log("diagram changing");
-		}
-
-		public void log(string text)
-		{
-			richTextBox1.AppendText("\n" + text);
-			richTextBox1.SelectionStart = richTextBox1.Text.Length;
-			richTextBox1.ScrollToCaret();
-		}
-
-		private void button5_Click(object sender, EventArgs e)
-		{
-			_CreateShapesFromChannels();
-			_CreateShapesFromControllers();
-		}
-
-		private void button6_Click(object sender, EventArgs e)
-		{
-			_ResizeAndPositionShapes();
-		}
-
-		private void button7_Click(object sender, EventArgs e)
-		{
-//			ControllerShape controllerShape = _MakeControllerShape(Guid.NewGuid(), 1);
-//			ControllerShapes.Add(controllerShape);
-		}
-
-
 
 		private void _CreateShapesFromChannels()
 		{
-			if (ChannelShapes != null) {
-				foreach (ChannelNodeShape channelShape in ChannelShapes) {
+			if (_channelShapes != null) {
+				foreach (ChannelNodeShape channelShape in _channelShapes) {
 					_RemoveShape(channelShape);
 				}
 			}
 
-			ChannelShapes = new List<ChannelNodeShape>();
+			_channelShapes = new List<ChannelNodeShape>();
 			foreach (ChannelNode node in VixenSystem.Nodes.GetRootNodes()) {
 				ChannelNodeShape channelShape = _MakeChannelNodeShape(node, 1);
 				if (channelShape != null)
-					ChannelShapes.Add(channelShape);
+					_channelShapes.Add(channelShape);
 			}
 		}
 
 		private void _CreateShapesFromControllers()
 		{
-			if (ControllerShapes != null) {
-				foreach (ControllerShape controllerShape in ControllerShapes) {
+			if (_controllerShapes != null) {
+				foreach (ControllerShape controllerShape in _controllerShapes) {
 					_RemoveShape(controllerShape);
 				}
 			}
 
-			ControllerShapes = new List<ControllerShape>();
+			_controllerShapes = new List<ControllerShape>();
 			foreach (IOutputDevice controller in VixenSystem.Controllers) {
 				ControllerShape controllerShape = _MakeControllerShape(controller);
 				if (controllerShape != null)
-					ControllerShapes.Add(controllerShape);
+					_controllerShapes.Add(controllerShape);
 			}
 		}
 
@@ -253,12 +170,12 @@ namespace VixenApplication
 		private void _ResizeAndPositionShapes()
 		{
 			int y = SHAPE_Y_TOP;
-			foreach (ChannelNodeShape channelShape in ChannelShapes) {
+			foreach (ChannelNodeShape channelShape in _channelShapes) {
 				_ResizeAndPositionShape(channelShape, SHAPE_CHANNELS_WIDTH, SHAPE_CHANNELS_X_LOCATION, y, true);
 				y += channelShape.Height + SHAPE_VERTICAL_SPACING;
 			}
 			y = SHAPE_Y_TOP;
-			foreach (ControllerShape controllerShape in ControllerShapes) {
+			foreach (ControllerShape controllerShape in _controllerShapes) {
 				_ResizeAndPositionShape(controllerShape, SHAPE_CONTROLLERS_WIDTH, SHAPE_CONTROLLERS_X_LOCATION, y, true);
 				y += controllerShape.Height + SHAPE_VERTICAL_SPACING;
 			}
@@ -296,12 +213,9 @@ namespace VixenApplication
 		}
 
 
-
-
-
 		private ChannelNodeShape _MakeChannelNodeShape(ChannelNode node, int zOrder)
 		{
-			ChannelNodeShape shape = (ChannelNodeShape)myproject.ShapeTypes["ChannelNodeShape"].CreateInstance();
+			ChannelNodeShape shape = (ChannelNodeShape)_project.ShapeTypes["ChannelNodeShape"].CreateInstance();
 			shape.Node = node;
 			shape.Title = node.Name;
 			diagramDisplay.Diagram.Shapes.Add(shape, zOrder);
@@ -314,10 +228,10 @@ namespace VixenApplication
 					shape.ChildFilterShapes.Add(childSetupShapeBase);
 				}
 				shape.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS;
-				shape.FillStyle = myproject.Design.FillStyles["ChannelGroup"];
+				shape.FillStyle = _project.Design.FillStyles["ChannelGroup"];
 			} else {
 				shape.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS;
-				shape.FillStyle = myproject.Design.FillStyles["ChannelLeaf"];
+				shape.FillStyle = _project.Design.FillStyles["ChannelLeaf"];
 			}
 			return shape;
 		}
@@ -339,10 +253,10 @@ namespace VixenApplication
 			if (outputController == null)
 				return null;
 
-			ControllerShape controllerShape = (ControllerShape)myproject.ShapeTypes["ControllerShape"].CreateInstance();
+			ControllerShape controllerShape = (ControllerShape)_project.ShapeTypes["ControllerShape"].CreateInstance();
 			controllerShape.Title = controller.Name;
 			controllerShape.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS;
-			controllerShape.FillStyle = myproject.Design.FillStyles["Controller"];
+			controllerShape.FillStyle = _project.Design.FillStyles["Controller"];
 
 			diagramDisplay.Diagram.Shapes.Add(controllerShape, 1);
 			diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape)controllerShape, diagramDisplay.Diagram);
@@ -350,11 +264,11 @@ namespace VixenApplication
 
 			for (int i = 0; i < outputController.OutputCount; i++) {
 				CommandOutput output = outputController.Outputs[i];
-				OutputShape outputShape = (OutputShape)myproject.ShapeTypes["OutputShape"].CreateInstance();
+				OutputShape outputShape = (OutputShape)_project.ShapeTypes["OutputShape"].CreateInstance();
 				outputShape.Controller = outputController;
 				outputShape.Output = output;
 				outputShape.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS;
-				outputShape.FillStyle = myproject.Design.FillStyles["Output"];
+				outputShape.FillStyle = _project.Design.FillStyles["Output"];
 
 				if (output.Name.Length <= 0)
 					outputShape.Title = outputController.Name + " [" + (i+1) + "]";
@@ -439,6 +353,7 @@ namespace VixenApplication
 		internal const char SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS = 'A';
 		internal const char SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS = 'B';
 		internal const char SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS = 'C';
+
 	}
 
 
