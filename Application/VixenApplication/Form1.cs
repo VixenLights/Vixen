@@ -1462,8 +1462,13 @@ namespace VixenApplication
 					break;
 
 				case Action.ConnectShapes:
-					ShapeAtCursorInfo shapeAtCursorInfo = FindShapeAtCursor(ActionDiagramPresenter, mouseState.X, mouseState.Y, ControlPointCapabilities.None, 0, false);
-					UpdateConnection(diagramPresenter, mouseState, shapeAtCursorInfo);
+					FilterSetupShapeBase filterShape = null;
+					foreach (var shape in FindShapesSortedByZOrder(ActionDiagramPresenter, mouseState.X, mouseState.Y, ControlPointCapabilities.None, 0)) {
+						filterShape = shape as FilterSetupShapeBase;
+						if (filterShape != null)
+							break;
+					}
+					UpdateConnection(mouseState, filterShape);
 					break;
 
 				default:
@@ -1773,27 +1778,24 @@ namespace VixenApplication
 			currentConnectionLine = line;
 		}
 
-		private void UpdateConnection(IDiagramPresenter diagramPresenter, MouseState mouseState, ShapeAtCursorInfo shapeAtCursorInfo)
+		private void UpdateConnection(MouseState mouseState, FilterSetupShapeBase filterShape)
 		{
 			if (currentConnectionLine == null)
 				throw new Exception("expecting to have a connection line when in CONNECT mode on drag!");
 
-VixenSystem.Logging.Info("UpdateConnection: given shape info was: " + shapeAtCursorInfo.Shape + ". (Is Empty: " + shapeAtCursorInfo.IsEmpty + ")");
+VixenSystem.Logging.Info("UpdateConnection: given shape info was: " + filterShape + ". (Is Empty: " + (filterShape == null) + ")");
 			bool connectionLineTargetConnected = false;
-			FilterSetupShapeBase filtershape = null;
-			if (!shapeAtCursorInfo.IsEmpty)
-				filtershape = shapeAtCursorInfo.Shape as FilterSetupShapeBase;
 
-			if (filtershape != null) {
-				ControlPointId point = filtershape.HitTest(mouseState.X, mouseState.Y, ControlPointCapabilities.Connect, 10);
+			if (filterShape != null) {
+				ControlPointId point = filterShape.HitTest(mouseState.X, mouseState.Y, ControlPointCapabilities.Connect, 10);
 
 				if (point != ControlPointId.Any && point != ControlPointId.None) {
 					bool skipConnection = false;
 
-					if (filtershape.GetTypeForControlPoint(point) != FilterSetupShapeBase.FilterShapeControlPointType.Input) {
+					if (filterShape.GetTypeForControlPoint(point) != FilterSetupShapeBase.FilterShapeControlPointType.Input) {
 						// TODO: find an appropriate input connection point for the shape; don't just assume it's the first
-						if (filtershape.InputCount > 0) {
-							point = filtershape.GetControlPointIdForInput(0);
+						if (filterShape.InputCount > 0) {
+							point = filterShape.GetControlPointIdForInput(0);
 						}
 						else {
 							skipConnection = true;
@@ -1801,12 +1803,12 @@ VixenSystem.Logging.Info("UpdateConnection: given shape info was: " + shapeAtCur
 					}
 
 					if (!skipConnection) {
-VixenSystem.Logging.Info("UpdateConnection: connecting to shape " + filtershape.Title + ". point " + point.ToString());
+VixenSystem.Logging.Info("UpdateConnection: connecting to shape " + filterShape.Title + ". point " + point.ToString());
 						// TODO: check the input of the shape it's connecting to; ensure there's only a single connection. (can't have more than one, currently)
 						if (currentConnectionLine.GetConnectionInfo(ControlPointId.LastVertex, null).OtherPointId != point) {
 							currentConnectionLine.Disconnect(ControlPointId.LastVertex);
-							currentConnectionLine.Connect(ControlPointId.LastVertex, filtershape, point);
-							currentConnectionLine.DestinationDataComponent = filtershape.DataFlowComponent;
+							currentConnectionLine.Connect(ControlPointId.LastVertex, filterShape, point);
+							currentConnectionLine.DestinationDataComponent = filterShape.DataFlowComponent;
 						}
 
 						connectionLineTargetConnected = true;
@@ -2458,6 +2460,13 @@ Console.WriteLine("IsDragActionFeasible: dx is " + dx + " and dy is " + dy);
 			return true;
 		}
 
+		public IEnumerable<Shape> FindShapesSortedByZOrder(IDiagramPresenter diagramPresenter, int x, int y, ControlPointCapabilities pointCapabilities, int distance)
+		{
+			return FindVisibleShapes(diagramPresenter, x, y, pointCapabilities, distance).OrderByDescending(s => s.ZOrder);
+		}
+
+
+
 		#endregion
 
 
@@ -2515,39 +2524,6 @@ Console.WriteLine("IsDragActionFeasible: dx is " + dx + " and dy is " + dy);
 			Connect,
 		}
 
-
-		// connection handling stuff
-		private struct ConnectionInfoBuffer : IEquatable<ConnectionInfoBuffer>
-		{
-
-			public static readonly ConnectionInfoBuffer Empty;
-
-			public static bool operator ==(ConnectionInfoBuffer x, ConnectionInfoBuffer y) { return (x.connectionInfo == y.connectionInfo && x.shape == y.shape); }
-
-			public static bool operator !=(ConnectionInfoBuffer x, ConnectionInfoBuffer y) { return !(x == y); }
-
-			public Shape shape;
-
-			public ShapeConnectionInfo connectionInfo;
-
-			/// <override></override>
-			public override bool Equals(object obj) { return obj is ConnectionInfoBuffer && this == (ConnectionInfoBuffer)obj; }
-
-			/// <ToBeCompleted></ToBeCompleted>
-			public bool Equals(ConnectionInfoBuffer other)
-			{
-				return other == this;
-			}
-
-			/// <override></override>
-			public override int GetHashCode() { return base.GetHashCode(); }
-
-			static ConnectionInfoBuffer()
-			{
-				Empty.shape = null;
-				Empty.connectionInfo = ShapeConnectionInfo.Empty;
-			}
-		}
 
 		#endregion
 

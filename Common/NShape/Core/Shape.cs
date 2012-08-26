@@ -500,7 +500,7 @@ namespace Dataweb.NShape {
 		// These members must not be accessed but by the diagram.
 		[Browsable(false)]
 		[RequiredPermission(Permission.Layout)]
-		internal int ZOrder {
+		public int ZOrder {
 			get { return zOrder; }
 			set { zOrder = value; }
 		}
