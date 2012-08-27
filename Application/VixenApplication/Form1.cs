@@ -1194,7 +1194,6 @@ namespace VixenApplication
 		{
 			frameRect = Rectangle.Empty;
 
-			//currentToolAction = ToolAction.None;
 			selectedShapeAtCursorInfo.Clear();
 		}
 
@@ -1215,7 +1214,6 @@ namespace VixenApplication
 		protected override void EndToolAction()
 		{
 			base.EndToolAction();
-			//currentToolAction = ToolAction.None;
 			if (!IsToolActionPending)
 				ClearPreviews();
 		}
@@ -1243,8 +1241,6 @@ namespace VixenApplication
 
 		private bool ProcessMouseDown(IDiagramPresenter diagramPresenter, MouseState mouseState)
 		{
-			bool result = false;
-
 			// Check if the selected shape at cursor is still valid
 			if (!selectedShapeAtCursorInfo.IsEmpty
 			    && (!diagramPresenter.SelectedShapes.Contains(selectedShapeAtCursorInfo.Shape)
@@ -1257,49 +1253,11 @@ namespace VixenApplication
 				// Get suitable action (depending on the currently selected shape under the mouse cursor)
 				Action newAction = DetermineMouseDownAction(diagramPresenter, mouseState);
 				if (newAction != Action.None) {
-					//currentToolAction = newAction;
-					bool wantAutoScroll;
-					switch (newAction) {
-						case Action.SelectWithFrame:
-						case Action.MoveHandle:
-						case Action.MoveShape:
-						case Action.ConnectShapes:
-							// do we ever get here?! shouldn't a click always start with a select?!
-							wantAutoScroll = true;
-							result = true;
-							break;
-
-						default:
-							wantAutoScroll = false;
-							break;
-					}
-					StartToolAction(diagramPresenter, (int)newAction, mouseState, wantAutoScroll);
-
-					// If the action requires preview shapes, create them now...
-					switch (CurrentAction) {
-						case Action.None:
-						case Action.Select:
-						case Action.SelectWithFrame:
-							break;
-
-						case Action.MoveHandle:
-						case Action.MoveShape:
-							CreatePreviewShapes(diagramPresenter);
-							result = true;
-							break;
-
-						case Action.ConnectShapes:
-							// I don't think we should ever get here?!
-							break;
-
-						default:
-							throw new NShapeUnsupportedValueException(CurrentAction);
-					}
-
+					StartToolAction(diagramPresenter, (int)newAction, mouseState, false);
 					Invalidate(ActionDiagramPresenter);
 				}
 			}
-			return result;
+			return false;
 		}
 
 
@@ -1607,8 +1565,7 @@ namespace VixenApplication
 						&& diagramPresenter.SelectedShapes.TopMost.Children.Count > 0) {
 						childShape = diagramPresenter.SelectedShapes.TopMost.Children.FindShape(mouseState.X, mouseState.Y, ControlPointCapabilities.None, 0, null);
 					}
-					if (childShape != null) diagramPresenter.SelectShape(childShape, false);
-					else diagramPresenter.SelectShape(shapeToSelect, false);
+					diagramPresenter.SelectShape(childShape ?? shapeToSelect, false);
 					result = true;
 				}
 
@@ -1628,10 +1585,8 @@ namespace VixenApplication
 						result = true;
 					}
 				}
-			} else {
-				// if there was no other shape to select and a selected shape is under the cursor,
-				// do nothing
 			}
+
 			return result;
 		}
 
@@ -1698,7 +1653,6 @@ namespace VixenApplication
 			if (currentConnectionLine == null)
 				throw new Exception("expecting to have a connection line when in CONNECT mode on drag!");
 
-VixenSystem.Logging.Info("UpdateConnection: given shape info was: " + filterShape + ". (Is Empty: " + (filterShape == null) + ")");
 			bool connectionLineTargetConnected = false;
 
 			if (filterShape != null) {
@@ -1718,7 +1672,6 @@ VixenSystem.Logging.Info("UpdateConnection: given shape info was: " + filterShap
 					}
 
 					if (!skipConnection) {
-VixenSystem.Logging.Info("UpdateConnection: connecting to shape " + filterShape.Title + ". point " + point.ToString());
 						// TODO: check the input of the shape it's connecting to; ensure there's only a single connection. (can't have more than one, currently)
 						if (currentConnectionLine.GetConnectionInfo(ControlPointId.LastVertex, null).OtherPointId != point) {
 							currentConnectionLine.Disconnect(ControlPointId.LastVertex);
@@ -1732,7 +1685,6 @@ VixenSystem.Logging.Info("UpdateConnection: connecting to shape " + filterShape.
 			}
 
 			if (!connectionLineTargetConnected) {
-VixenSystem.Logging.Info("UpdateConnection: connecting to no shape.");
 				currentConnectionLine.Disconnect(ControlPointId.LastVertex);
 				currentConnectionLine.MoveControlPointTo(ControlPointId.LastVertex, mouseState.X, mouseState.Y, ResizeModifiers.None);
 				currentConnectionLine.DestinationDataComponent = null;
