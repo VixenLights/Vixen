@@ -176,11 +176,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				throw new NotImplementedException("Cannot use sequence type with a Timed Sequence Editor");
 			}
 
-			// default the sequence to 1 minute if it's not set
+            // default the sequence to 1 minute if it's not set
 			if (_sequence.Length == TimeSpan.Zero)
 				_sequence.Length = _defaultSequenceTime;
 
-			SequenceLength = _sequence.Length;
+            SequenceLength = _sequence.Length;
 
 			// update our program context with this sequence
 			OpenSequenceContext(sequence);
@@ -195,8 +195,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			populateGridWithMarks();
-
-			sequenceModified();
+           
+            //Original code set modified to always be true upon loading a sequence.
+            //sequenceModified();
+            //This path is followed for new and existing sequences so we need to determine which we have and set modified accordingly.
+            //Added logic to determine if the sequence has a filepath to set modified JU 8/1/2012. 
+             
+            if(String.IsNullOrEmpty(_sequence.FilePath))
+            {
+                sequenceModified();
+            }
+		    else
+            {
+                sequenceNotModified();    
+            }
+            
+			
 		}
 
 		/// <summary>
@@ -212,25 +226,39 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			if (filePath == null | forcePrompt) {
-				if (_sequence.FilePath.Trim() == "" || forcePrompt) {
-					Common.Controls.TextDialog prompt = new Common.Controls.TextDialog("Please enter a sequence name:");
-					prompt.ShowDialog();
-					string extension = Path.GetExtension(prompt.Response);
-					string name = Path.GetFileNameWithoutExtension(prompt.Response);
+				if (_sequence.FilePath.Trim() == "" || forcePrompt)
+				{
+                    // Updated to use the OS SaveFileDialog functionality 8/1/2012 JU
+				    TimedSequenceEditorDescriptor descriptor = ((OwnerModule.Descriptor) as TimedSequenceEditorDescriptor);
+					saveFileDialog.InitialDirectory = SequenceService.SequenceDirectory;
+                    string filter = descriptor.TypeName + " (*" + string.Join(", *",descriptor.FileExtensions) + ")|*" + string.Join("; *",descriptor.FileExtensions);    
+				    saveFileDialog.DefaultExt = descriptor.FileExtensions.First();
+                    saveFileDialog.Filter = filter;
+				    DialogResult result = saveFileDialog.ShowDialog();
+                    if(result == DialogResult.OK)
+                    {
+                        string name = saveFileDialog.FileName;
+                        string extension = Path.GetExtension(saveFileDialog.FileName);
 
-					if (name.Trim() != "") {
-						// if the given extension isn't valid for this type, then keep the name intact and add an extension
-						// TODO: should we pick one type? Should an editor even be able to edit multiple file types? etc...
-						if (!((OwnerModule.Descriptor) as TimedSequenceEditorDescriptor).FileExtensions.Contains(extension)) {
-							name = name + extension;
-							extension = ((OwnerModule.Descriptor) as TimedSequenceEditorDescriptor).FileExtensions.First();
-						}
+                        // if the given extension isn't valid for this type, then keep the name intact and add an extension
+                        // TODO: should we pick one type? Should an editor even be able to edit multiple file types? etc...
+                        if (!descriptor.FileExtensions.Contains(extension))
+                        {
+                            //Use the first possible extension. Currently there is only one anyway.
+                            extension = descriptor.FileExtensions.First();
+                            name = name + extension;
+                            VixenSystem.Logging.Info("Incorrect extension provided for timed sequence, appending one.");    
+                        }
+                        _sequence.Save(name);
+                    }else
+                    {
+                        //user canceled save
+                        return;
+                    }
 
-						_sequence.Save(name + extension);
-					} else {
-						VixenSystem.Logging.Info("No name given for sequence on save, not saving.");
-						return;
-					}
+				    
+
+					
 				} else {
 					_sequence.Save();
 				}
@@ -239,6 +267,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			sequenceNotModified();
+            
 		}
 
 		#endregion
@@ -262,10 +291,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+        /// <summary>
+        /// Called to update the title bar with the filename and saved / unsaved status
+        /// </summary>
+        private void setTitleBarText()
+        {
+            //Set sequence name in title bar based on the module name and current sequence name JU 8/1/2012
+            Text = String.Format("{0} - [{1}{2}]",((OwnerModule.Descriptor) as TimedSequenceEditorDescriptor).TypeName, 
+                _sequence.Name, IsModified?" *":"");
+        }
+
 		/// <summary>Called when the sequence is modified.</summary>
 		private void sequenceModified()
 		{
 			m_modified = true;
+            setTitleBarText();
 			// TODO: Other things, like enable save button, etc.
 		}
 
@@ -273,6 +313,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void sequenceNotModified()
 		{
 			m_modified = false;
+            setTitleBarText();
 			// TODO: Other things, like disable save button, etc.
 		}
 
@@ -883,7 +924,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				FirstVisibleRow = -1,
 				EarliestStartTime = TimeSpan.MaxValue,
 			};
-			
+            
 			int rownum = 0;
 			foreach (Row row in timelineControl.VisibleRows) {
 				// Since removals may happen during enumeration, make a copy with ToArray().
@@ -896,10 +937,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					if (result.Elements.ContainsKey(elem))
 						continue;
 					result.Elements.Add(elem, relativeVisibleRow);
-
+				    
 					if (elem.StartTime < result.EarliestStartTime)
 						result.EarliestStartTime = elem.StartTime;
-
+                    
 					if (cutElements) {
 						row.RemoveElement(elem);
 						_sequence.RemoveData(((TimedSequenceElement)elem).EffectNode);
@@ -910,7 +951,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			_clipboard = result;
 
-			// screw the clipboard. Can't get this shit working.
+           // screw the clipboard. Can't get this shit working.
 			//DataFormats.Format format = DataFormats.GetFormat(typeof(TimelineElementsClipboardData).FullName);
 			//IDataObject dataObject = new DataObject();
 			//dataObject.SetData(format.Name, false, result);
@@ -931,41 +972,43 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void ClipboardPaste()
 		{
+		    
+                // screw the clipboard. Can't get this shit working.
+                //IDataObject dataObject = Clipboard.GetDataObject();
+                //string format = typeof(TimelineElementsClipboardData).FullName;
 
-			TimelineElementsClipboardData data = _clipboard;
+                //if (dataObject.GetDataPresent(format)) {
+                //    data = dataObject.GetData(format) as TimelineElementsClipboardData;
+                //}
+                ////TimelineElementsClipboardData data = Clipboard.GetData("TimedSequenceEditorElements") as TimelineElementsClipboardData;
+            TimelineElementsClipboardData data = _clipboard;
+            if (data == null)
+                return;
 
-			// screw the clipboard. Can't get this shit working.
-			//IDataObject dataObject = Clipboard.GetDataObject();
-			//string format = typeof(TimelineElementsClipboardData).FullName;
+            Row targetRow = timelineControl.SelectedRow ?? timelineControl.TopVisibleRow;
+            TimeSpan cursorTime = timelineControl.CursorPosition;
 
-			//if (dataObject.GetDataPresent(format)) {
-			//    data = dataObject.GetData(format) as TimelineElementsClipboardData;
-			//}
-			////TimelineElementsClipboardData data = Clipboard.GetData("TimedSequenceEditorElements") as TimelineElementsClipboardData;
+            List<Row> visibleRows = new List<Row>(timelineControl.VisibleRows);
+            int topTargetRoxIndex = visibleRows.IndexOf(targetRow);
 
-			if (data == null)
-				return;
+            foreach (KeyValuePair<Element, int> kvp in data.Elements)
+            {
+                TimedSequenceElement elem = kvp.Key as TimedSequenceElement;
+                int relativeRow = kvp.Value;
 
-			Row targetRow = timelineControl.SelectedRow ?? timelineControl.TopVisibleRow;
-			TimeSpan cursorTime = timelineControl.CursorPosition;
+                int targetRowIndex = topTargetRoxIndex + relativeRow;
+                TimeSpan targetTime = elem.StartTime - data.EarliestStartTime + cursorTime;
 
-			List<Row> visibleRows = new List<Row>(timelineControl.VisibleRows);
-			int topTargetRoxIndex = visibleRows.IndexOf(targetRow);
+                if (targetRowIndex >= visibleRows.Count)
+                    continue;
 
-			foreach (KeyValuePair<Element, int> kvp in data.Elements) {
-				TimedSequenceElement elem = kvp.Key as TimedSequenceElement;
-				int relativeRow = kvp.Value;
+                // clone the effect, and make a new effect node for it
+                IEffectModuleInstance newEffect = (IEffectModuleInstance)elem.EffectNode.Effect.Clone();
+                addEffectInstance(newEffect, visibleRows[targetRowIndex], targetTime, elem.Duration);
+            }
+            //}
 
-				int targetRowIndex = topTargetRoxIndex + relativeRow;
-				TimeSpan targetTime = elem.StartTime - data.EarliestStartTime + cursorTime;
-
-				if (targetRowIndex >= visibleRows.Count)
-					continue;
-
-				// clone the effect, and make a new effect node for it
-				IEffectModuleInstance newEffect = (IEffectModuleInstance)elem.EffectNode.Effect.Clone();
-				addEffectInstance(newEffect, visibleRows[targetRowIndex], targetTime, elem.Duration);
-			}
+            
 		}
 
 		#endregion
@@ -1086,12 +1129,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			HashSet<IMediaModuleInstance> modulesToRemove = new HashSet<IMediaModuleInstance>();
 			foreach (IMediaModuleInstance module in _sequence.GetAllMedia())
 			{
-				if (module is VixenModules.Media.Audio.Audio)
+                if (module is VixenModules.Media.Audio.Audio)
 				{
 					modulesToRemove.Add(module);
 				}
 			}
-
+           
 			if (modulesToRemove.Count > 0)
 			{
 				DialogResult result = MessageBox.Show("Only one audio file can be associated with a sequence at a time. If you choose another, " +
@@ -1369,7 +1412,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 	}
 
-	[Serializable]
+    [Serializable]
 	public class TimelineElementsClipboardData
 	{
 		public TimelineElementsClipboardData()
