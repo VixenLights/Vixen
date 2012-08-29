@@ -6,3 +6,4 @@ _ReSharper*
 *.exe.*
 *.user
 *.suo
+Output/
