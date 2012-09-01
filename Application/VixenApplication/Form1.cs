@@ -21,7 +21,6 @@ using Vixen.Sys.Output;
 
 // TODO:
 // add deleting of filters and patches/links
-// add buttons for zooming
 // add buttons for deleting
 // add labels for help/quick descriptions
 // (maybe) add some way to resize the filter shapes, in case they have a lot of outputs?
@@ -203,6 +202,43 @@ namespace VixenApplication
 			diagramDisplay.ZoomLevel = (int)((float)diagramDisplay.ZoomLevel * 0.92);
 		}
 
+		private void diagramDisplay_KeyDown(object sender, KeyEventArgs e)
+		{
+			// if Delete was pressed, iterate through all selected shapes, and remove them, unlinking components as necessary
+			if (e.KeyCode == Keys.Delete) {
+				foreach (var selectedShape in diagramDisplay.SelectedShapes) {
+					DataFlowConnectionLine line = selectedShape as DataFlowConnectionLine;
+					if (line != null) {
+						VixenSystem.DataFlow.ResetComponentSource(line.DestinationDataComponent);
+						_RemoveShape(line);
+					}
+
+					FilterShape filterShape = selectedShape as FilterShape;
+					if (filterShape != null) {
+						// go through all outputs for the filter, and check for connections to other shapes.
+						// For any that we find, remove them (ie. set the other shape source to null).
+						for (int i = 0; i < filterShape.OutputCount; i++) {
+							ControlPointId pointId = filterShape.GetControlPointIdForOutput(i);
+							ShapeConnectionInfo ci = filterShape.GetConnectionInfo(pointId, null);
+							if (ci.OtherShape == null)
+								continue;
+
+							line = ci.OtherShape as DataFlowConnectionLine;
+							if (line == null)
+								throw new Exception("a filterShape was connected to something other than a DataFlowLine!");
+
+							if (line.DestinationDataComponent == null)
+								throw new Exception("Can't remove a link to a  shape that doesn't exist!");
+
+							VixenSystem.DataFlow.ResetComponentSource(line.DestinationDataComponent);
+							_RemoveShape(line);
+						}
+						_RemoveShape(filterShape);
+					}
+				}
+			}
+		}
+
 
 
 		private void displayDiagram_ShapeDoubleClick(object sender, DiagramPresenterShapeClickEventArgs e)
@@ -218,6 +254,10 @@ namespace VixenApplication
 			if (shape is NestingSetupShape) {
 				NestingSetupShape s = (shape as NestingSetupShape);
 				s.Expanded = !s.Expanded;
+			} else if (shape is FilterShape) {
+				IOutputFilterModuleInstance filter = (shape as FilterShape).FilterInstance;
+				if (filter.HasSetup)
+					filter.Setup();
 			}
 
 			if (shape is ChannelNodeShape)
@@ -498,7 +538,7 @@ namespace VixenApplication
 
 
 
-		private void _RemoveShape(FilterSetupShapeBase shape)
+		private void _RemoveShape(Shape shape)
 		{
 			diagramDisplay.Diagram.Shapes.Remove(shape);
 			diagramDisplay.Diagram.RemoveShapeFromLayers(shape, _visibleLayer.Id | _hiddenLayer.Id);
