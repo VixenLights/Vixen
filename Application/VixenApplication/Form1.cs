@@ -19,6 +19,21 @@ using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Output;
 
+// TODO:
+// add deleting of filters and patches/links
+// add buttons for zooming
+// add buttons for deleting
+// add labels for help/quick descriptions
+// (maybe) add some way to resize the filter shapes, in case they have a lot of outputs?
+// add labels for filter shapes (so outputs can be labelled)
+
+
+// TODO (HARD):
+// figure out some way to auto-arrange filters nicely; or, save their old position so it keeps the user arrangement
+// figure out a nice way to auto-patch large amounts of connections; eg. 20 channels to 20 outputs (or filters)
+
+
+
 namespace VixenApplication
 {
 	public partial class ConfigFiltersAndPatching : Form
@@ -112,7 +127,7 @@ namespace VixenApplication
 				new ColorStyle("", Color.FromArgb(100, 200, 100)), new ColorStyle("", Color.FromArgb(50, 200, 50)));
 			styleController.FillMode = FillMode.Gradient;
 			FillStyle styleOutput = new FillStyle("Output",
-				new ColorStyle("", Color.FromArgb(150, 220, 150)), new ColorStyle("", Color.FromArgb(80, 200, 80)));
+				new ColorStyle("", Color.FromArgb(180, 230, 180)), new ColorStyle("", Color.FromArgb(120, 210, 120)));
 			styleOutput.FillMode = FillMode.Gradient;
 
 			_project.Design.FillStyles.Add(styleChannelGroup, styleChannelGroup);
@@ -176,6 +191,18 @@ namespace VixenApplication
 			shape.X = SHAPE_FILTERS_X_LOCATION;
 			shape.Y = diagramDisplay.GetDiagramOffset().Y + (diagramDisplay.Height / 2);
 		}
+
+
+		private void buttonZoomIn_Click(object sender, EventArgs e)
+		{
+			diagramDisplay.ZoomLevel = (int)((float)diagramDisplay.ZoomLevel * 1.08);
+		}
+
+		private void buttonZoomOut_Click(object sender, EventArgs e)
+		{
+			diagramDisplay.ZoomLevel = (int)((float)diagramDisplay.ZoomLevel * 0.92);
+		}
+
 
 
 		private void displayDiagram_ShapeDoubleClick(object sender, DiagramPresenterShapeClickEventArgs e)
@@ -299,8 +326,6 @@ namespace VixenApplication
 			line.Connect(ControlPointId.LastVertex, destination, destination.GetControlPointIdForInput(0));
 		}
 
-
-
 		private void _ResizeAndPositionChannelShapes()
 		{
 			int y = SHAPE_Y_TOP;
@@ -322,9 +347,6 @@ namespace VixenApplication
 		private void _ResizeAndPositionFilterShapes()
 		{
 			int y = SHAPE_Y_TOP;
-			// TODO: arrange these nicely, somehow. No idea how. Was going to try and line them
-			// up against the channelNode they sourced from, but that looks crap, and doesn't work
-			// for multiple items, multiple layers of filtering, etc.
 			foreach (FilterShape filterShape in _filterShapes) {
 				filterShape.Width = SHAPE_FILTERS_WIDTH;
 				filterShape.Height = SHAPE_FILTERS_HEIGHT;
@@ -488,10 +510,6 @@ namespace VixenApplication
 		}
 
 
-
-
-
-
 		private void _HideShape(FilterSetupShapeBase setupShapeBase)
 		{
 			diagramDisplay.Diagram.AddShapeToLayers(setupShapeBase, _hiddenLayer.Id);
@@ -566,23 +584,7 @@ namespace VixenApplication
 		internal const char SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS = 'A';
 		internal const char SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS = 'B';
 		internal const char SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS = 'C';
-
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 	public abstract class FilterSetupShapeBase : RoundedBox
@@ -857,17 +859,6 @@ namespace VixenApplication
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 	public abstract class NestingSetupShape : FilterSetupShapeBase
 	{
 		protected override void _init()
@@ -916,12 +907,6 @@ namespace VixenApplication
 			graphics.DrawString(Title, _font, _textBrush, x, y);
 		}
 	}
-
-
-	
-
-
-
 
 
 
@@ -996,10 +981,6 @@ namespace VixenApplication
 
 
 
-
-
-
-
 	public class ControllerShape : NestingSetupShape
 	{
 		public ControllerShape(ShapeType shapeType, Template template)
@@ -1031,12 +1012,6 @@ namespace VixenApplication
 			get { return null; }
 		}
 	}
-
-
-
-
-
-
 
 
 
@@ -1116,9 +1091,6 @@ namespace VixenApplication
 
 
 
-
-
-
 	public class FilterShape : FilterSetupShapeBase
 	{
 		public FilterShape(ShapeType shapeType, Template template) : base(shapeType, template)
@@ -1180,11 +1152,6 @@ namespace VixenApplication
 	}
 
 
-
-
-
-
-
 	public class DataFlowConnectionLine : Polyline
 	{
 		protected internal DataFlowConnectionLine(ShapeType shapeType, Template template) : base(shapeType, template)
@@ -1221,15 +1188,6 @@ namespace VixenApplication
 
 		public IDataFlowComponent DestinationDataComponent { get; set; }
 	}
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1278,7 +1236,6 @@ namespace VixenApplication
 		{
 			Construct();
 		}
-
 
 
 		#region [Public] Tool Members

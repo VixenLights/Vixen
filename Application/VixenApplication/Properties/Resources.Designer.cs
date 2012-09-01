@@ -80,5 +80,33 @@ namespace VixenApplication.Properties {
                 return ((byte[])(obj));
             }
         }
+        
+        internal static System.Drawing.Bitmap ZoomIn32 {
+            get {
+                object obj = ResourceManager.GetObject("ZoomIn32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap ZoomIn48 {
+            get {
+                object obj = ResourceManager.GetObject("ZoomIn48", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap ZoomOut32 {
+            get {
+                object obj = ResourceManager.GetObject("ZoomOut32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap ZoomOut48 {
+            get {
+                object obj = ResourceManager.GetObject("ZoomOut48", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }
