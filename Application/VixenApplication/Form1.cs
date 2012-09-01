@@ -58,7 +58,7 @@ namespace VixenApplication
 			_project.AutoLoadLibraries = true;	
 			_project.AddLibraryByName("VixenApplication", false);
 			
-			_project.Name = "temp";
+			_project.Name = "filterProject";
 			_project.Create();
 
 			_visibleLayer = new Layer("Visible");
@@ -74,10 +74,9 @@ namespace VixenApplication
 
 		private void ConfigFiltersAndPatching_Load(object sender, EventArgs e)
 		{
-			diagramDisplay.Diagram = _diagramSetController.CreateDiagram("qwer");
-			diagramDisplay.Diagram.Size = new Size(600, 600);
-			//diagramDisplay.AutoScrollPosition = new Point(0, 0);
-			//diagramDisplay.AutoScrollMinSize = diagramDisplay.Size; // Size(600, 800);
+			diagramDisplay.Diagram = _diagramSetController.CreateDiagram("filterDiagram");
+			diagramDisplay.Diagram.Size = new Size(0, 0);
+			diagramDisplay.BackColor = Color.FromArgb(250, 250, 250);
 
 			diagramDisplay.Diagram.Layers.Add(_visibleLayer);
 			diagramDisplay.Diagram.Layers.Add(_hiddenLayer);
@@ -146,8 +145,8 @@ namespace VixenApplication
 				Description = description;
 			}
 
-			public Guid Guid { get; set; }
-			public string Description { get; set; }
+			public Guid Guid { get; private set; }
+			private string Description { get; set; }
 
 			public override string ToString()
 			{
@@ -175,6 +174,7 @@ namespace VixenApplication
 			shape.Width = SHAPE_FILTERS_WIDTH;
 			shape.Height = SHAPE_FILTERS_HEIGHT;
 			shape.X = SHAPE_FILTERS_X_LOCATION;
+			shape.Y = diagramDisplay.GetDiagramOffset().Y + (diagramDisplay.Height / 2);
 		}
 
 
@@ -203,12 +203,6 @@ namespace VixenApplication
 
 		private void _InitializeShapesFromChannels()
 		{
-			//if (_channelNodeToChannelShapes != null) {
-			//    foreach (ChannelNodeShape channelShape in _channelShapes) {
-			//        _RemoveShape(channelShape);
-			//    }
-			//}
-
 			_channelShapes = new List<ChannelNodeShape>();
 
 			foreach (ChannelNode node in VixenSystem.Nodes.GetRootNodes()) {
@@ -226,12 +220,6 @@ namespace VixenApplication
 
 		private void _InitializeShapesFromControllers()
 		{
-			//if (_controllerToControllerShape != null) {
-			//    foreach (ControllerShape controllerShape in _controllerShapes) {
-			//        _RemoveShape(controllerShape);
-			//    }
-			//}
-
 			_controllerShapes = new List<ControllerShape>();
 
 			foreach (IOutputDevice controller in VixenSystem.Controllers) {
@@ -249,12 +237,6 @@ namespace VixenApplication
 
 		private void _InitializeShapesFromFilters()
 		{
-			//if (_filterToFilterShape != null) {
-			//    foreach (FilterShape filterShape in _filterShapes) {
-			//        _RemoveShape(filterShape);
-			//    }
-			//}
-
 			_filterShapes = new List<FilterShape>();
 			foreach (IOutputFilterModuleInstance filter in VixenSystem.Filters) {
 				_CreateShapeFromFilter(filter);
@@ -475,7 +457,7 @@ namespace VixenApplication
 			filterShape.FillStyle = _project.Design.FillStyles["Filter"];
 			filterShape.SetFilterInstance(filter);
 
-			diagramDisplay.Diagram.Shapes.Add(filterShape, 1);
+			diagramDisplay.Diagram.Shapes.Add(filterShape, 10);		// Z Order of 10; should be above other channels/outputs, but under lines
 			diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape)filterShape, diagramDisplay.Diagram);
 			diagramDisplay.Diagram.AddShapeToLayers(filterShape, _visibleLayer.Id);
 
@@ -540,18 +522,30 @@ namespace VixenApplication
 			}
 		}
 
-		// the central X point of shapes
-		internal const int SHAPE_CHANNELS_X_LOCATION = 100;
-		internal const int SHAPE_FILTERS_X_LOCATION = 300;
-		internal const int SHAPE_CONTROLLERS_X_LOCATION = 500;
+		// with size, we're aiming for a 'default' of 800 pixels, total. To get that, we have (from left to right):
+		//
+		//  1:  20 pixels (-20 ->   0): forced display border
+		//  2: 160 pixels (  0 -> 160): channel shapes (centered on 80)
+		//  3:  10 pixels (160 -> 170): spacing between channels and filters
+		//  4: 420 pixels (170 -> 590): filters (aiming for 2x shape widths, if possible)
+		//  5:  10 pixels (590 -> 610): spacing between filters and outputs
+		//  6: 160 pixels (610 -> 770): output shapes (centered on 680)
+		//  7:  20 pixels (770 -> 780): forced display border
+		//
+		// (there's 20 pixels forced bordering by the diagram display control, as a const (scrollAreaMargin) inside it.)
 
-		// the starting top of all shapes
-		internal const int SHAPE_Y_TOP = 30;
+		// the central X point of shapes
+		internal const int SHAPE_CHANNELS_X_LOCATION = 80;
+		internal const int SHAPE_FILTERS_X_LOCATION = 380;
+		internal const int SHAPE_CONTROLLERS_X_LOCATION = 680;
 
 		// the (base) width of all shapes (inner children will be smaller)
 		internal const int SHAPE_CHANNELS_WIDTH = 160;
-		internal const int SHAPE_CONTROLLERS_WIDTH = 200;
-		internal const int SHAPE_FILTERS_WIDTH = 160;
+		internal const int SHAPE_CONTROLLERS_WIDTH = 160;
+		internal const int SHAPE_FILTERS_WIDTH = 180;
+
+		// the starting top of all shapes
+		internal const int SHAPE_Y_TOP = 10;
 
 		// the default height of all shapes
 		internal const int SHAPE_CHANNELS_HEIGHT = 32;
@@ -1269,28 +1263,6 @@ namespace VixenApplication
 		private const string namespaceName = "VixenFilterShapes";
 		private const int preferredRepositoryVersion = 3;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

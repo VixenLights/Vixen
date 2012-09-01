@@ -2031,6 +2031,11 @@ namespace Dataweb.NShape.WinFormsUI {
 			}
 		}
 
+		public Point GetDiagramOffset()
+		{
+			return new Point(scrollBarH.Value - scrollBarH.Minimum, scrollBarV.Value - scrollBarV.Minimum);
+		}
+
 		#endregion
 
 
@@ -5545,8 +5550,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		#region Constants
 
 		private const int shadowSize = 20;
-		private const int scrollAreaMargin = 40;	// The distance between the diagram 'sheet' and the end of the scrollable area
-		private const int autoScrollMargin = 40;
+		private const int scrollAreaMargin = 20;	// The distance between the diagram 'sheet' and the end of the scrollable area
+		private const int autoScrollMargin = 20;
 		private const byte inlaceTextBoxBackAlpha = 128;
 
 		private const double mmToInchFactor = 0.039370078740157477;
