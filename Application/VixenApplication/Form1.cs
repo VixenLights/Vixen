@@ -1168,8 +1168,6 @@ namespace VixenApplication
 			_recalcControlPoints();
 		}
 
-
-
 		public override IDataFlowComponent DataFlowComponent
 		{
 			get
@@ -1180,6 +1178,11 @@ namespace VixenApplication
 			}
 		}
 
+		protected override bool ReferenceControlPointHasCapability(ControlPointCapabilities controlPointCapability)
+		{
+			return (controlPointCapability & ControlPointCapabilities.Reference) > 0 ||
+				(controlPointCapability & ControlPointCapabilities.Connect) > 0;
+		}
 	}
 
 
