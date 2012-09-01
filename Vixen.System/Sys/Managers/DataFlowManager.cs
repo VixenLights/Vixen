@@ -41,14 +41,19 @@ namespace Vixen.Sys.Managers {
 			return component;
 		}
 
-		public void SetComponentSource(IDataFlowComponent component, IDataFlowComponent sourceComponent, int sourceOutputIndex = 0) {
-			if(component == null) throw new ArgumentNullException("component");
-
-			_RemoveComponentSource(component);
-			_SetComponentSource(component, new DataFlowComponentReference(sourceComponent, sourceOutputIndex));
+		public void SetComponentSource(IDataFlowComponent component, IDataFlowComponent sourceComponent, int sourceOutputIndex) {
+			SetComponentSource(component, new DataFlowComponentReference(sourceComponent, sourceOutputIndex));
 		}
 
-		public void ResetComponentSource(IDataFlowComponent component) {
+		public void SetComponentSource(IDataFlowComponent component, IDataFlowComponentReference source) {
+			if (component == null) throw new ArgumentNullException("component");
+
+			_RemoveComponentSource(component);
+			_SetComponentSource(component, source);
+		}
+
+		public void ResetComponentSource(IDataFlowComponent component)
+		{
 			if(component == null) throw new ArgumentNullException("component");
 
 			_RemoveComponentSource(component);
