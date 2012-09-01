@@ -459,7 +459,7 @@ namespace VixenApplication
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			Form1 form = new Form1();
+			ConfigFiltersAndPatching form = new ConfigFiltersAndPatching();
 			form.ShowDialog();
 		}
 

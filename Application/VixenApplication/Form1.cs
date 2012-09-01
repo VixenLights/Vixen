@@ -14,23 +14,37 @@ using Dataweb.NShape.Commands;
 using Dataweb.NShape.Controllers;
 using Dataweb.NShape.GeneralShapes;
 using Vixen.Data.Flow;
+using Vixen.Module.OutputFilter;
+using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Output;
 
 namespace VixenApplication
 {
-	public partial class Form1 : Form
+	public partial class ConfigFiltersAndPatching : Form
 	{
 		private readonly Project _project;
 		private readonly DiagramSetController _diagramSetController;
 
+		// map of data types, to the shape(s) that represent them. There should only be (potentially) multiple
+		// shapes to represent a given channel node; this is because a node can be in multiple groups, and may
+		// be displayed multiple times.
+		private readonly Dictionary<ChannelNode, List<ChannelNodeShape>> _channelNodeToChannelShapes;
+		// TODO: might need to make this reference OutputShapes as well/instead?
+		private readonly Dictionary<IOutputDevice, ControllerShape> _controllerToControllerShape;
+		private readonly Dictionary<IOutputFilterModuleInstance, FilterShape> _filterToFilterShape;
+		private readonly Dictionary<IDataFlowComponent, List<FilterSetupShapeBase>> _dataFlowComponentToShapes;
+
+		// list of all (root) shapes, in the order they should appear. (Child shapes for channels and
+		// controllers are not in the list; they are of type NestingShape and handle their own bits.)
 		private List<ChannelNodeShape> _channelShapes;
 		private List<ControllerShape> _controllerShapes;
+		private List<FilterShape> _filterShapes;
 
 		private readonly Layer _visibleLayer;
 		private readonly Layer _hiddenLayer;
 
-		public Form1()
+		public ConfigFiltersAndPatching()
 		{
 			InitializeComponent();
 
@@ -49,11 +63,16 @@ namespace VixenApplication
 
 			_visibleLayer = new Layer("Visible");
 			_hiddenLayer = new Layer("Hidden");
-			_controllerShapes = new List<ControllerShape>();
+			_controllerToControllerShape = new Dictionary<IOutputDevice, ControllerShape>();
+			_channelNodeToChannelShapes = new Dictionary<ChannelNode, List<ChannelNodeShape>>();
+			_filterToFilterShape = new Dictionary<IOutputFilterModuleInstance, FilterShape>();
+			_dataFlowComponentToShapes = new Dictionary<IDataFlowComponent, List<FilterSetupShapeBase>>();
 			_channelShapes = new List<ChannelNodeShape>();
+			_controllerShapes = new List<ControllerShape>();
+			_filterShapes = new List<FilterShape>();
 		}
 
-		private void Form1_Load(object sender, EventArgs e)
+		private void ConfigFiltersAndPatching_Load(object sender, EventArgs e)
 		{
 			diagramDisplay.Diagram = _diagramSetController.CreateDiagram("qwer");
 			diagramDisplay.Diagram.Size = new Size(600, 600);
@@ -103,12 +122,61 @@ namespace VixenApplication
 			_project.Design.FillStyles.Add(styleController, styleController);
 			_project.Design.FillStyles.Add(styleOutput, styleOutput);
 
-			_CreateShapesFromChannels();
-			_CreateShapesFromControllers();
-			_ResizeAndPositionShapes();
+			_InitializeShapesFromChannels();
+			_InitializeShapesFromFilters();
+			_InitializeShapesFromControllers();
+			_ResizeAndPositionChannelShapes();
+			_ResizeAndPositionControllerShapes();
+			_ResizeAndPositionFilterShapes();
+			_CreateConnectionsFromExistingLinks();
 
 			diagramDisplay.CurrentTool = new ConnectionTool();
+
+			comboBoxNewFilterTypes.Items.Clear();
+			foreach (KeyValuePair<Guid, string> kvp in ApplicationServices.GetAvailableModules<IOutputFilterModuleInstance>()) {
+				comboBoxNewFilterTypes.Items.Add(new ComboBoxMapping(kvp.Key, kvp.Value));
+			}
 		}
+
+		private class ComboBoxMapping
+		{
+			public ComboBoxMapping(Guid guid, string description)
+			{
+				Guid = guid;
+				Description = description;
+			}
+
+			public Guid Guid { get; set; }
+			public string Description { get; set; }
+
+			public override string ToString()
+			{
+				if (Description.Length <= 0)
+					return "Unnamed Filter";
+
+				return Description;
+			}
+		}
+
+
+		private void buttonAddFilter_Click(object sender, EventArgs e)
+		{
+			ComboBoxMapping item = comboBoxNewFilterTypes.SelectedItem as ComboBoxMapping;
+			if (item == null) {
+				MessageBox.Show("Please select a filter type first.", "Select filter type");
+				return;
+			}
+
+			IOutputFilterModuleInstance moduleInstance = ApplicationServices.Get<IOutputFilterModuleInstance>(item.Guid);
+			VixenSystem.Filters.AddFilter(moduleInstance);
+
+			FilterShape shape = _CreateShapeFromFilter(moduleInstance);
+
+			shape.Width = SHAPE_FILTERS_WIDTH;
+			shape.Height = SHAPE_FILTERS_HEIGHT;
+			shape.X = SHAPE_FILTERS_X_LOCATION;
+		}
+
 
 		private void displayDiagram_ShapeDoubleClick(object sender, DiagramPresenterShapeClickEventArgs e)
 		{
@@ -122,66 +190,170 @@ namespace VixenApplication
 
 			if (shape is NestingSetupShape) {
 				NestingSetupShape s = (shape as NestingSetupShape);
-				if (s.Expanded) {
-					s.Expanded = false;
-				}
-				else {
-					s.Expanded = true;
-				}
+				s.Expanded = !s.Expanded;
 			}
 
-			_ResizeAndPositionShapes();
+			if (shape is ChannelNodeShape)
+				_ResizeAndPositionChannelShapes();
+
+			if (shape is ControllerShape)
+				_ResizeAndPositionControllerShapes();
 		}
 
 
-		private void _CreateShapesFromChannels()
+		private void _InitializeShapesFromChannels()
 		{
-			if (_channelShapes != null) {
-				foreach (ChannelNodeShape channelShape in _channelShapes) {
-					_RemoveShape(channelShape);
-				}
-			}
+			//if (_channelNodeToChannelShapes != null) {
+			//    foreach (ChannelNodeShape channelShape in _channelShapes) {
+			//        _RemoveShape(channelShape);
+			//    }
+			//}
 
 			_channelShapes = new List<ChannelNodeShape>();
+
 			foreach (ChannelNode node in VixenSystem.Nodes.GetRootNodes()) {
-				ChannelNodeShape channelShape = _MakeChannelNodeShape(node, 1);
-				if (channelShape != null)
-					_channelShapes.Add(channelShape);
+				_CreateShapeFromChannel(node);
 			}
 		}
 
-		private void _CreateShapesFromControllers()
+		private ChannelNodeShape _CreateShapeFromChannel(ChannelNode node)
 		{
-			if (_controllerShapes != null) {
-				foreach (ControllerShape controllerShape in _controllerShapes) {
-					_RemoveShape(controllerShape);
-				}
-			}
+			ChannelNodeShape channelShape = _MakeChannelNodeShape(node, 1);
+			if (channelShape != null)
+				_channelShapes.Add(channelShape);
+			return channelShape;
+		}
+
+		private void _InitializeShapesFromControllers()
+		{
+			//if (_controllerToControllerShape != null) {
+			//    foreach (ControllerShape controllerShape in _controllerShapes) {
+			//        _RemoveShape(controllerShape);
+			//    }
+			//}
 
 			_controllerShapes = new List<ControllerShape>();
+
 			foreach (IOutputDevice controller in VixenSystem.Controllers) {
-				ControllerShape controllerShape = _MakeControllerShape(controller);
-				if (controllerShape != null)
-					_controllerShapes.Add(controllerShape);
+				_CreateShapeFromController(controller);
 			}
 		}
 
+		private ControllerShape _CreateShapeFromController(IOutputDevice controller)
+		{
+			ControllerShape controllerShape = _MakeControllerShape(controller);
+			if (controllerShape != null)
+				_controllerShapes.Add(controllerShape);
+			return controllerShape;
+		}
 
-		private void _ResizeAndPositionShapes()
+		private void _InitializeShapesFromFilters()
+		{
+			//if (_filterToFilterShape != null) {
+			//    foreach (FilterShape filterShape in _filterShapes) {
+			//        _RemoveShape(filterShape);
+			//    }
+			//}
+
+			_filterShapes = new List<FilterShape>();
+			foreach (IOutputFilterModuleInstance filter in VixenSystem.Filters) {
+				_CreateShapeFromFilter(filter);
+			}
+		}
+
+		private FilterShape _CreateShapeFromFilter(IOutputFilterModuleInstance filter)
+		{
+			FilterShape filterShape = _MakeFilterShape(filter);
+			if (filterShape != null)
+				_filterShapes.Add(filterShape);
+			return filterShape;
+		}
+
+		private void _CreateConnectionsFromExistingLinks()
+		{
+			// go through the existing system-side patches (DataFlow sources) and make connections for them all
+			// TODO: instead of iterating through the list of shapes that we've created, should we iterate through
+			// the system-side collections of DataFlowComponents? eg. the filters, outputs, channels, etc.?
+
+			// nothing to do for channel shapes; they don't have sources
+
+			// go through the filter shapes and build up links
+			foreach (FilterShape filterShape in _filterShapes) {
+				_LookupAndConnectShapeToSource(filterShape);
+			}
+
+			// go through the output shapes and build up links
+			foreach (ControllerShape controllerShape in _controllerShapes) {
+				foreach (OutputShape outputShape in controllerShape.ChildFilterShapes) {
+					_LookupAndConnectShapeToSource(outputShape);
+				}
+			}
+		}
+
+		private void _LookupAndConnectShapeToSource(FilterSetupShapeBase shape)
+		{
+			if (shape.DataFlowComponent != null && shape.DataFlowComponent.Source != null) {
+				IDataFlowComponentReference source = shape.DataFlowComponent.Source;
+				if (!_dataFlowComponentToShapes.ContainsKey(source.Component)) {
+					VixenSystem.Logging.Error("CreateConnectionsFromExistingLinks: can't find shape for source " + source.Component + source.OutputIndex);
+					return;
+				}
+				List<FilterSetupShapeBase> sourceShapes = _dataFlowComponentToShapes[source.Component];
+				// TODO: deal with multiple instances of the source data flow component: eg. a channel existing as
+				// multiple shapes (currently, we'll assume it's the first shape in the list)
+				_ConnectShapes(sourceShapes.First(), source.OutputIndex, shape);
+			}
+		}
+
+		private void _ConnectShapes(FilterSetupShapeBase source, int sourceOutputIndex, FilterSetupShapeBase destination)
+		{
+			DataFlowConnectionLine line = (DataFlowConnectionLine)_project.ShapeTypes["DataFlowConnectionLine"].CreateInstance();
+			diagramDisplay.Diagram.Shapes.Add(line, 100);
+			line.EndCapStyle = _project.Design.CapStyles.ClosedArrow;
+
+			line.SourceDataFlowComponentReference = new DataFlowComponentReference(source.DataFlowComponent, sourceOutputIndex);
+			line.DestinationDataComponent = destination.DataFlowComponent;
+			line.Connect(ControlPointId.FirstVertex, source, source.GetControlPointIdForOutput(sourceOutputIndex));
+			line.Connect(ControlPointId.LastVertex, destination, destination.GetControlPointIdForInput(0));
+		}
+
+
+
+		private void _ResizeAndPositionChannelShapes()
 		{
 			int y = SHAPE_Y_TOP;
 			foreach (ChannelNodeShape channelShape in _channelShapes) {
-				_ResizeAndPositionShape(channelShape, SHAPE_CHANNELS_WIDTH, SHAPE_CHANNELS_X_LOCATION, y, true);
+				_ResizeAndPositionNestingShape(channelShape, SHAPE_CHANNELS_WIDTH, SHAPE_CHANNELS_X_LOCATION, y, true);
 				y += channelShape.Height + SHAPE_VERTICAL_SPACING;
 			}
-			y = SHAPE_Y_TOP;
+		}
+
+		private void _ResizeAndPositionControllerShapes()
+		{
+			int y = SHAPE_Y_TOP;
 			foreach (ControllerShape controllerShape in _controllerShapes) {
-				_ResizeAndPositionShape(controllerShape, SHAPE_CONTROLLERS_WIDTH, SHAPE_CONTROLLERS_X_LOCATION, y, true);
+				_ResizeAndPositionNestingShape(controllerShape, SHAPE_CONTROLLERS_WIDTH, SHAPE_CONTROLLERS_X_LOCATION, y, true);
 				y += controllerShape.Height + SHAPE_VERTICAL_SPACING;
 			}
 		}
 
-		private void _ResizeAndPositionShape(FilterSetupShapeBase shape, int width, int x, int y, bool visible)
+		private void _ResizeAndPositionFilterShapes()
+		{
+			int y = SHAPE_Y_TOP;
+			// TODO: arrange these nicely, somehow. No idea how. Was going to try and line them
+			// up against the channelNode they sourced from, but that looks crap, and doesn't work
+			// for multiple items, multiple layers of filtering, etc.
+			foreach (FilterShape filterShape in _filterShapes) {
+				filterShape.Width = SHAPE_FILTERS_WIDTH;
+				filterShape.Height = SHAPE_FILTERS_HEIGHT;
+				filterShape.X = SHAPE_FILTERS_X_LOCATION;
+				filterShape.Y = y + filterShape.Height;
+
+				y += filterShape.Height + SHAPE_VERTICAL_SPACING;
+			}
+		}
+
+		private void _ResizeAndPositionNestingShape(FilterSetupShapeBase shape, int width, int x, int y, bool visible)
 		{
 			if (visible) {
 				_ShowShape(shape);
@@ -194,7 +366,7 @@ namespace VixenApplication
 			{
 				int curY = y + SHAPE_GROUP_HEADER_HEIGHT;
 				foreach (FilterSetupShapeBase childShape in (shape as NestingSetupShape).ChildFilterShapes) {
-					_ResizeAndPositionShape(childShape, width - SHAPE_CHILD_WIDTH_REDUCTION, x, curY, true);
+					_ResizeAndPositionNestingShape(childShape, width - SHAPE_CHILD_WIDTH_REDUCTION, x, curY, true);
 					curY += childShape.Height + SHAPE_VERTICAL_SPACING;
 				}
 				shape.Width = width;
@@ -204,7 +376,7 @@ namespace VixenApplication
 				shape.Height = SHAPE_CHANNELS_HEIGHT;
 				if (shape is NestingSetupShape) {
 					foreach (FilterSetupShapeBase childShape in (shape as NestingSetupShape).ChildFilterShapes) {
-						_ResizeAndPositionShape(childShape, width, x, y, false);
+						_ResizeAndPositionNestingShape(childShape, width, x, y, false);
 					}
 				}
 			}
@@ -215,12 +387,22 @@ namespace VixenApplication
 
 		private ChannelNodeShape _MakeChannelNodeShape(ChannelNode node, int zOrder)
 		{
-			ChannelNodeShape shape = (ChannelNodeShape)_project.ShapeTypes["ChannelNodeShape"].CreateInstance();
-			shape.Node = node;
+			ChannelNodeShape shape = (ChannelNodeShape) _project.ShapeTypes["ChannelNodeShape"].CreateInstance();
+			shape.SetChannelNode(node);
 			shape.Title = node.Name;
 			diagramDisplay.Diagram.Shapes.Add(shape, zOrder);
-			diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape)shape, diagramDisplay.Diagram);
+			diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape) shape, diagramDisplay.Diagram);
 			diagramDisplay.Diagram.AddShapeToLayers(shape, _visibleLayer.Id);
+
+			if (!_channelNodeToChannelShapes.ContainsKey(node))
+				_channelNodeToChannelShapes[node] = new List<ChannelNodeShape>();
+			_channelNodeToChannelShapes[node].Add(shape);
+
+			if (shape.DataFlowComponent != null) {
+				if (!_dataFlowComponentToShapes.ContainsKey(shape.DataFlowComponent))
+					_dataFlowComponentToShapes[shape.DataFlowComponent] = new List<FilterSetupShapeBase>();
+				_dataFlowComponentToShapes[shape.DataFlowComponent].Add(shape);
+			}
 
 			if (node.Children.Count() > 0) {
 				foreach (var child in node.Children) {
@@ -236,19 +418,9 @@ namespace VixenApplication
 			return shape;
 		}
 
-		private void _RemoveShape(FilterSetupShapeBase shape)
-		{
-			diagramDisplay.Diagram.Shapes.Remove(shape);
-			diagramDisplay.Diagram.RemoveShapeFromLayers(shape, _visibleLayer.Id | _hiddenLayer.Id);
-			if (shape is NestingSetupShape) {
-				foreach (FilterSetupShapeBase child in (shape as NestingSetupShape).ChildFilterShapes) {
-					_RemoveShape(child);
-				}
-			}
-		}
-
 		private ControllerShape _MakeControllerShape(IOutputDevice controller)
 		{
+			// TODO: deal with other controller types (smart controllers)
 			OutputController outputController = controller as OutputController;
 			if (outputController == null)
 				return null;
@@ -262,16 +434,26 @@ namespace VixenApplication
 			diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape)controllerShape, diagramDisplay.Diagram);
 			diagramDisplay.Diagram.AddShapeToLayers(controllerShape, _visibleLayer.Id);
 
+			if (controllerShape.DataFlowComponent != null) {
+				if (!_dataFlowComponentToShapes.ContainsKey(controllerShape.DataFlowComponent))
+					_dataFlowComponentToShapes[controllerShape.DataFlowComponent] = new List<FilterSetupShapeBase>();
+				_dataFlowComponentToShapes[controllerShape.DataFlowComponent].Add(controllerShape);
+			}
+
+			if (_controllerToControllerShape.ContainsKey(outputController))
+				throw new Exception("controller->shape map already has an entry when it shouldn't");
+			_controllerToControllerShape[outputController] = controllerShape;
+
 			for (int i = 0; i < outputController.OutputCount; i++) {
 				CommandOutput output = outputController.Outputs[i];
 				OutputShape outputShape = (OutputShape)_project.ShapeTypes["OutputShape"].CreateInstance();
-				outputShape.Controller = outputController;
-				outputShape.Output = output;
+				outputShape.SetController(outputController);
+				outputShape.SetOutput(output);
 				outputShape.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS;
 				outputShape.FillStyle = _project.Design.FillStyles["Output"];
 
 				if (output.Name.Length <= 0)
-					outputShape.Title = outputController.Name + " [" + (i+1) + "]";
+					outputShape.Title = outputController.Name + " [" + (i + 1) + "]";
 				else
 					outputShape.Title = output.Name;
 
@@ -285,7 +467,43 @@ namespace VixenApplication
 			return controllerShape;
 		}
 
+		private FilterShape _MakeFilterShape(IOutputFilterModuleInstance filter)
+		{
+			FilterShape filterShape = (FilterShape)_project.ShapeTypes["FilterShape"].CreateInstance();
+			filterShape.Title = filter.Descriptor.TypeName;
+			filterShape.SecurityDomainName = SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS;
+			filterShape.FillStyle = _project.Design.FillStyles["Filter"];
+			filterShape.SetFilterInstance(filter);
 
+			diagramDisplay.Diagram.Shapes.Add(filterShape, 1);
+			diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape)filterShape, diagramDisplay.Diagram);
+			diagramDisplay.Diagram.AddShapeToLayers(filterShape, _visibleLayer.Id);
+
+			if (filterShape.DataFlowComponent != null) {
+				if (!_dataFlowComponentToShapes.ContainsKey(filterShape.DataFlowComponent))
+					_dataFlowComponentToShapes[filterShape.DataFlowComponent] = new List<FilterSetupShapeBase>();
+				_dataFlowComponentToShapes[filterShape.DataFlowComponent].Add(filterShape);
+			}
+
+			if (_filterToFilterShape.ContainsKey(filter))
+				throw new Exception("filter->shape map already has an entry when it shouldn't");
+			_filterToFilterShape[filter] = filterShape;
+
+			return filterShape;
+		}
+
+
+
+		private void _RemoveShape(FilterSetupShapeBase shape)
+		{
+			diagramDisplay.Diagram.Shapes.Remove(shape);
+			diagramDisplay.Diagram.RemoveShapeFromLayers(shape, _visibleLayer.Id | _hiddenLayer.Id);
+			if (shape is NestingSetupShape) {
+				foreach (FilterSetupShapeBase child in (shape as NestingSetupShape).ChildFilterShapes) {
+					_RemoveShape(child);
+				}
+			}
+		}
 
 
 
@@ -324,6 +542,7 @@ namespace VixenApplication
 
 		// the central X point of shapes
 		internal const int SHAPE_CHANNELS_X_LOCATION = 100;
+		internal const int SHAPE_FILTERS_X_LOCATION = 300;
 		internal const int SHAPE_CONTROLLERS_X_LOCATION = 500;
 
 		// the starting top of all shapes
@@ -337,7 +556,7 @@ namespace VixenApplication
 		// the default height of all shapes
 		internal const int SHAPE_CHANNELS_HEIGHT = 32;
 		internal const int SHAPE_CONTROLLERS_HEIGHT = 32;
-		internal const int SHAPE_FILTERS_HEIGHT = 60;
+		internal const int SHAPE_FILTERS_HEIGHT = 40;
 
 		// the vertical spacing between channels
 		internal const int SHAPE_VERTICAL_SPACING = 10;
@@ -393,7 +612,27 @@ namespace VixenApplication
 			if (source is FilterSetupShapeBase)
 			{
 				FilterSetupShapeBase src = (FilterSetupShapeBase)source;
-				//DataFlowComponent = src.DataFlowComponent;
+			}
+		}
+
+		// This is a horrible abomination of a function and purpose. When a shape is duplicated, the control
+		// point positions aren't properly copied by the base classes. When we copy the type specific data
+		// which gives the DataFlowComponent (in subclasses), the control points are regenerated. However,
+		// the problem is that they are generated at a 0-offset, rather than the position-relative offset.
+		// So, the easiest way to fix it is just to copy the correct positions from the source shape to update
+		// them correctly. Nasty.
+		//
+		// (Ideally, we would have the NShape system properly transform the points when it's used; but I can't
+		// figure out at what point the generated points get transformed from shape-relative points into the
+		// absolute position points).
+		//
+		// (Because these points are (incorrectly) generated when copying the DataFlowComponent in subclasses,
+		// this needs to be called AFTER all the other copying is done, so will need to be called in each CopyFrom.
+		protected void _CopyControlPointsFrom(FilterSetupShapeBase source)
+		{
+			controlPoints = new Point[ControlPointCount];
+			for (int i = 0; i < source.ControlPoints.Length; i++) {
+				controlPoints[i] = source.ControlPoints[i];
 			}
 		}
 
@@ -678,7 +917,7 @@ namespace VixenApplication
 			SizeF stringSize = graphics.MeasureString(Title, _font);
 			float x = X - (stringSize.Width / 2f);
 			float y = Y - (Height / 2f);
-			y += (Form1.SHAPE_GROUP_HEADER_HEIGHT - stringSize.Height) / 2f;
+			y += (ConfigFiltersAndPatching.SHAPE_GROUP_HEADER_HEIGHT - stringSize.Height) / 2f;
 
 			graphics.DrawString(Title, _font, _textBrush, x, y);
 		}
@@ -711,7 +950,8 @@ namespace VixenApplication
 			base.CopyFrom(source);
 			if (source is ChannelNodeShape) {
 				ChannelNodeShape src = (ChannelNodeShape)source;
-				Node = src.Node;
+				_node = src.Node;
+				_CopyControlPointsFrom(src);
 			}
 		}
 
@@ -728,10 +968,12 @@ namespace VixenApplication
 		}
 
 		private ChannelNode _node;
-		public ChannelNode Node
+		public ChannelNode Node { get { return _node; } }
+
+		public void SetChannelNode(ChannelNode node)
 		{
-			get { return _node; }
-			set { _node = value; _recalcControlPoints(); }
+			_node = node;
+			_recalcControlPoints();
 		}
 
 		public override IDataFlowComponent DataFlowComponent
@@ -776,14 +1018,6 @@ namespace VixenApplication
 			: base(shapeType, styleSet)
 		{
 			_init();
-		}
-
-		public override void CopyFrom(Shape source)
-		{
-			base.CopyFrom(source);
-			if (source is ControllerShape) {
-				ControllerShape src = (ControllerShape)source;
-			}
 		}
 
 		public override Shape Clone()
@@ -831,6 +1065,9 @@ namespace VixenApplication
 			base.CopyFrom(source);
 			if (source is OutputShape) {
 				OutputShape src = (OutputShape)source;
+				_controller = src.Controller;
+				_output = src.Output;
+				_CopyControlPointsFrom(src);
 			}
 		}
 
@@ -847,18 +1084,23 @@ namespace VixenApplication
 		}
 
 		private CommandOutput _output;
-		public CommandOutput Output
+		public CommandOutput Output { get { return _output; } }
+
+		public void SetOutput(CommandOutput output)
 		{
-			get { return _output; }
-			set { _output = value; _recalcControlPoints(); }
+			_output = output;
+			_recalcControlPoints();
 		}
 
 		private OutputController _controller;
-		public OutputController Controller
+		public OutputController Controller { get { return _controller; } }
+
+		public void SetController(OutputController controller)
 		{
-			get { return _controller; }
-			set { _controller = value; _recalcControlPoints(); }
+			_controller = controller;
+			_recalcControlPoints();
 		}
+
 
 		public override IDataFlowComponent DataFlowComponent
 		{
@@ -877,6 +1119,72 @@ namespace VixenApplication
 		}
 
 	}
+
+
+
+
+
+
+	public class FilterShape : FilterSetupShapeBase
+	{
+		public FilterShape(ShapeType shapeType, Template template) : base(shapeType, template)
+		{
+			_init();
+		}
+
+		public FilterShape(ShapeType shapeType, IStyleSet styleSet) : base(shapeType, styleSet)
+		{
+			_init();
+		}
+
+		public override void CopyFrom(Shape source)
+		{
+			base.CopyFrom(source);
+			if (source is FilterShape) {
+				FilterShape src = (FilterShape)source;
+				_filterInstance = src.FilterInstance;
+				_CopyControlPointsFrom(src);
+			}
+		}
+
+		public override Shape Clone()
+		{
+			FilterShape result = new FilterShape(Type, (Template)null);
+			result.CopyFrom(this);
+			return result;
+		}
+
+		static public FilterShape CreateInstance(ShapeType shapeType, Template template)
+		{
+			return new FilterShape(shapeType, template);
+		}
+
+		private IOutputFilterModuleInstance _filterInstance;
+		public IOutputFilterModuleInstance FilterInstance { get { return _filterInstance; } }
+
+		public void SetFilterInstance(IOutputFilterModuleInstance filterInstance)
+		{
+			_filterInstance = filterInstance;
+			_recalcControlPoints();
+		}
+
+
+
+		public override IDataFlowComponent DataFlowComponent
+		{
+			get
+			{
+				if (FilterInstance == null)
+					return null;
+				return FilterInstance;
+			}
+		}
+
+	}
+
+
+
+
 
 
 
@@ -944,6 +1252,10 @@ namespace VixenApplication
 			registrar.RegisterShapeType(
 				new ShapeType("OutputShape", namespaceName, namespaceName,
 					OutputShape.CreateInstance, OutputShape.GetPropertyDefinitions)
+				);
+			registrar.RegisterShapeType(
+				new ShapeType("FilterShape", namespaceName, namespaceName,
+					FilterShape.CreateInstance, FilterShape.GetPropertyDefinitions)
 				);
 			registrar.RegisterShapeType(
 				new ShapeType("DataFlowConnectionLine", namespaceName, namespaceName,
@@ -1139,8 +1451,6 @@ namespace VixenApplication
 					break;
 
 				case Action.ConnectShapes:
-					// is there anything to do for this?
-
 					// TODO: highlight hovered connection points, shapes, etc.
 					break;
 
@@ -1307,8 +1617,9 @@ namespace VixenApplication
 								break;
 
 							case Action.ConnectShapes:
-								PrepareConnection(diagramPresenter, mouseState, shapeAtActionStartInfo, newAction);
-								StartToolAction(diagramPresenter, (int)newAction, ActionStartMouseState, true);
+								bool connectionStarted = PrepareConnection(diagramPresenter, mouseState, shapeAtActionStartInfo, newAction);
+								if (connectionStarted)
+									StartToolAction(diagramPresenter, (int)newAction, ActionStartMouseState, true);
 								break;
 
 							case Action.None:
@@ -1336,7 +1647,7 @@ namespace VixenApplication
 
 				case Action.ConnectShapes:
 					FilterSetupShapeBase filterShape = null;
-					foreach (var shape in FindShapesSortedByZOrder(ActionDiagramPresenter, mouseState.X, mouseState.Y, ControlPointCapabilities.None, 0)) {
+					foreach (var shape in FindShapesSortedByZOrder(ActionDiagramPresenter, mouseState.X, mouseState.Y, ControlPointCapabilities.None, 5)) {
 						filterShape = shape as FilterSetupShapeBase;
 						if (filterShape != null)
 							break;
@@ -1359,8 +1670,6 @@ namespace VixenApplication
 		private bool ProcessMouseUp(IDiagramPresenter diagramPresenter, MouseState mouseState)
 		{
 			bool result = false;
-
-			Console.WriteLine("Processing mouse UP event. Current action is " + CurrentAction.ToString());
 
 			if (!selectedShapeAtCursorInfo.IsEmpty &&
 				!diagramPresenter.SelectedShapes.Contains(selectedShapeAtCursorInfo.Shape))
@@ -1618,14 +1927,15 @@ namespace VixenApplication
 
 		#region Connecting / Disconnecting Shapes
 
-		private void PrepareConnection(IDiagramPresenter diagramPresenter, MouseState mouseState, ShapeAtCursorInfo shapeAtCursorInfo, Action action)
+		private bool PrepareConnection(IDiagramPresenter diagramPresenter, MouseState mouseState, ShapeAtCursorInfo shapeAtCursorInfo, Action action)
 		{
 			// if we're not dealing with filter shapes... well, what the fuck?! get out of here!
 			FilterSetupShapeBase shape = shapeAtCursorInfo.Shape as FilterSetupShapeBase;
 			if (shape == null)
 				throw new Exception("Can't connect a shape that isn't a FilterSetup shape!");
 
-			StartToolAction(diagramPresenter, (int)action, ActionStartMouseState, true);
+			if (shape.OutputCount <= 0)
+				return false;
 
 			DataFlowConnectionLine line = (DataFlowConnectionLine)diagramPresenter.Project.ShapeTypes["DataFlowConnectionLine"].CreateInstance();
 			diagramPresenter.Diagram.Shapes.Add(line, 100);		// yaaay, arbitrarily high Z order to draw above everything else
@@ -1641,11 +1951,15 @@ namespace VixenApplication
 			if (shapeAtCursorInfo.IsCursorAtConnectionPoint) {
 				if (shape.GetTypeForControlPoint(shapeAtCursorInfo.ControlPointId) == FilterSetupShapeBase.FilterShapeControlPointType.Output)
 					connectionPoint = shapeAtCursorInfo.ControlPointId;
+					line.SourceDataFlowComponentReference = new DataFlowComponentReference(shape.DataFlowComponent, shape.GetOutputNumberForControlPoint(connectionPoint));
 			}
 			line.Connect(ControlPointId.FirstVertex, shape, connectionPoint);
 			line.Disconnect(ControlPointId.LastVertex);
 			line.MoveControlPointTo(ControlPointId.LastVertex, mouseState.X, mouseState.Y, ResizeModifiers.None);
 			currentConnectionLine = line;
+
+			StartToolAction(diagramPresenter, (int)action, ActionStartMouseState, true);
+			return true;
 		}
 
 		private void UpdateConnection(MouseState mouseState, FilterSetupShapeBase filterShape)
@@ -1655,6 +1969,8 @@ namespace VixenApplication
 
 			bool connectionLineTargetConnected = false;
 
+			// TODO: somewhere in here, check the types of data from source->destination; eg. intents->intents, commands->commands, etc.
+			
 			if (filterShape != null) {
 				ControlPointId point = filterShape.HitTest(mouseState.X, mouseState.Y, ControlPointCapabilities.Connect, 10);
 
@@ -1673,7 +1989,9 @@ namespace VixenApplication
 
 					if (!skipConnection) {
 						// TODO: check the input of the shape it's connecting to; ensure there's only a single connection. (can't have more than one, currently)
-						if (currentConnectionLine.GetConnectionInfo(ControlPointId.LastVertex, null).OtherPointId != point) {
+						if (currentConnectionLine.GetConnectionInfo(ControlPointId.LastVertex, null).OtherPointId != point ||
+							currentConnectionLine.GetConnectionInfo(ControlPointId.LastVertex, null).OtherShape != filterShape)
+						{
 							currentConnectionLine.Disconnect(ControlPointId.LastVertex);
 							currentConnectionLine.Connect(ControlPointId.LastVertex, filterShape, point);
 							currentConnectionLine.DestinationDataComponent = filterShape.DataFlowComponent;
@@ -1712,7 +2030,12 @@ namespace VixenApplication
 				//destShape.DataFlowComponent.Source = new DataFlowComponentReference(sourceShape.DataFlowComponent, outputIndex);
 
 
-				currentConnectionLine.DestinationDataComponent.Source = currentConnectionLine.SourceDataFlowComponentReference;
+
+				//currentConnectionLine.DestinationDataComponent.Source = currentConnectionLine.SourceDataFlowComponentReference;
+
+
+				VixenSystem.DataFlow.SetComponentSource(currentConnectionLine.DestinationDataComponent, currentConnectionLine.SourceDataFlowComponentReference);
+
 
 				result = true;
 			} else {
@@ -2233,9 +2556,7 @@ namespace VixenApplication
 				// Check the minimum drag distance before switching to a drag action
 				dx = Math.Abs(mouseState.X - ActionStartMouseState.X);
 				dy = Math.Abs(mouseState.Y - ActionStartMouseState.Y);
-Console.WriteLine("IsDragActionFeasible: tool action is pending");
 			}
-Console.WriteLine("IsDragActionFeasible: dx is " + dx + " and dy is " + dy);
 			return (dx >= MinimumDragDistance.Width || dy >= MinimumDragDistance.Height);
 		}
 

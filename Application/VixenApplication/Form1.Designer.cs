@@ -1,6 +1,6 @@
 ﻿namespace VixenApplication
 {
-	partial class Form1
+	partial class ConfigFiltersAndPatching
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -29,6 +29,8 @@
 		{
 			this.diagramDisplay = new Dataweb.NShape.WinFormsUI.Display();
 			this.buttonOK = new System.Windows.Forms.Button();
+			this.buttonAddFilter = new System.Windows.Forms.Button();
+			this.comboBoxNewFilterTypes = new System.Windows.Forms.ComboBox();
 			this.SuspendLayout();
 			// 
 			// diagramDisplay
@@ -67,16 +69,39 @@
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			// 
-			// Form1
+			// buttonAddFilter
+			// 
+			this.buttonAddFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonAddFilter.Location = new System.Drawing.Point(522, 676);
+			this.buttonAddFilter.Name = "buttonAddFilter";
+			this.buttonAddFilter.Size = new System.Drawing.Size(75, 23);
+			this.buttonAddFilter.TabIndex = 7;
+			this.buttonAddFilter.Text = "Add Filter";
+			this.buttonAddFilter.UseVisualStyleBackColor = true;
+			this.buttonAddFilter.Click += new System.EventHandler(this.buttonAddFilter_Click);
+			// 
+			// comboBoxNewFilterTypes
+			// 
+			this.comboBoxNewFilterTypes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.comboBoxNewFilterTypes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxNewFilterTypes.FormattingEnabled = true;
+			this.comboBoxNewFilterTypes.Location = new System.Drawing.Point(333, 678);
+			this.comboBoxNewFilterTypes.Name = "comboBoxNewFilterTypes";
+			this.comboBoxNewFilterTypes.Size = new System.Drawing.Size(183, 21);
+			this.comboBoxNewFilterTypes.TabIndex = 6;
+			// 
+			// ConfigFiltersAndPatching
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(990, 713);
+			this.Controls.Add(this.buttonAddFilter);
+			this.Controls.Add(this.comboBoxNewFilterTypes);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.diagramDisplay);
-			this.Name = "Form1";
-			this.Text = "Output Filter Setup";
-			this.Load += new System.EventHandler(this.Form1_Load);
+			this.Name = "ConfigFiltersAndPatching";
+			this.Text = "Output Filters & Patching Setup";
+			this.Load += new System.EventHandler(this.ConfigFiltersAndPatching_Load);
 			this.ResumeLayout(false);
 
 		}
@@ -85,6 +110,8 @@
 
 		private Dataweb.NShape.WinFormsUI.Display diagramDisplay;
 		private System.Windows.Forms.Button buttonOK;
+		private System.Windows.Forms.Button buttonAddFilter;
+		private System.Windows.Forms.ComboBox comboBoxNewFilterTypes;
 
 	}
 }
