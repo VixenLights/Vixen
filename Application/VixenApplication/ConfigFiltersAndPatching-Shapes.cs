@@ -63,7 +63,9 @@ namespace VixenApplication
 		protected void _recalcControlPoints()
 		{
 			controlPoints = new Point[ControlPointCount];
-			CalcControlPoints();
+			// updating the draw cache will call CalcControlPoints, and also translate them appropriately for the shape position.
+			InvalidateDrawCache();
+			UpdateDrawCache();
 		}
 
 		public virtual int InputCount
@@ -567,6 +569,17 @@ namespace VixenApplication
 		{
 			return (controlPointCapability & ControlPointCapabilities.Reference) > 0 ||
 				(controlPointCapability & ControlPointCapabilities.Connect) > 0;
+		}
+
+		public bool RunSetup()
+		{
+			bool result = false;
+			if (FilterInstance.HasSetup) {
+				result = FilterInstance.Setup();
+				if (result)
+					_recalcControlPoints();
+			}
+			return result;
 		}
 	}
 

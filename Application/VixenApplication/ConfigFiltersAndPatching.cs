@@ -87,13 +87,13 @@ namespace VixenApplication
 			diagramDisplay.ShowDefaultContextMenu = false;
 			diagramDisplay.ClicksOnlyAffectTopShape = true;
 
-			// A: fixed shapes with no connection points: nothing
+			// A: fixed shapes with no connection points: nothing (parent nested shapes: node groups, controllers)
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
-				SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS, StandardRole.Operator, Permission.Insert | Permission.Delete);
-			// B: fixed shapes with connection points: connect only
+				SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS, StandardRole.Operator, Permission.Insert);
+			// B: fixed shapes with connection points: connect only (channel nodes (leaf), output shapes)
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
-				SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS, StandardRole.Operator, Permission.Connect | Permission.Insert | Permission.Delete);
-			// C: movable shapes (filters): connect, layout (movable)
+				SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS, StandardRole.Operator, Permission.Connect | Permission.Insert);
+			// C: movable shapes (filters): connect, layout (movable), and deleteable (filters)
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
 				SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS, StandardRole.Operator, Permission.Connect | Permission.Insert | Permission.Layout | Permission.Delete);
 
@@ -201,12 +201,13 @@ namespace VixenApplication
 			// if Delete was pressed, iterate through all selected shapes, and remove them, unlinking components as necessary
 			if (e.KeyCode == Keys.Delete) {
 				_DeleteShapes(diagramDisplay.SelectedShapes);
+				e.Handled = true;
 			}
 		}
 
 		private void displayDiagram_ShapeDoubleClick(object sender, DiagramPresenterShapeClickEventArgs e)
 		{
-			var shape = (FilterSetupShapeBase)e.Shape;
+			var shape = (FilterSetupShapeBase) e.Shape;
 
 			// workaround: only modify the shape if it's currently selected. The diagram likes to
 			// send click events to all shapes under the mouse, even if they're not active.
@@ -217,10 +218,10 @@ namespace VixenApplication
 			if (shape is NestingSetupShape) {
 				NestingSetupShape s = (shape as NestingSetupShape);
 				s.Expanded = !s.Expanded;
-			} else if (shape is FilterShape) {
-				IOutputFilterModuleInstance filter = (shape as FilterShape).FilterInstance;
-				if (filter.HasSetup)
-					filter.Setup();
+			}
+			else if (shape is FilterShape) {
+				FilterShape filterShape = shape as FilterShape;
+				filterShape.RunSetup();
 			}
 
 			if (shape is ChannelNodeShape)
@@ -384,6 +385,7 @@ namespace VixenApplication
 			diagramDisplay.InsertShape(line);
 			diagramDisplay.Diagram.Shapes.SetZOrder(line, 100);
 			line.EndCapStyle = project.Design.CapStyles.ClosedArrow;
+			line.SecurityDomainName = SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS;
 
 			line.SourceDataFlowComponentReference = new DataFlowComponentReference(source.DataFlowComponent, sourceOutputIndex);
 			line.DestinationDataComponent = destination.DataFlowComponent;

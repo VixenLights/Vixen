@@ -654,7 +654,9 @@ namespace VixenApplication
 				return false;
 
 			DataFlowConnectionLine line = (DataFlowConnectionLine)diagramPresenter.Project.ShapeTypes["DataFlowConnectionLine"].CreateInstance();
-			diagramPresenter.Diagram.Shapes.Add(line, 100);		// yaaay, arbitrarily high Z order to draw above everything else
+			diagramPresenter.InsertShape(line);
+			diagramPresenter.Diagram.Shapes.SetZOrder(line, 100);
+			line.SecurityDomainName = ConfigFiltersAndPatching.SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS;
 			line.EndCapStyle = diagramPresenter.Project.Design.CapStyles.ClosedArrow;
 
 			// get the starting control point for the line; ie. the first output for the shape, or the selected control point.
@@ -685,8 +687,6 @@ namespace VixenApplication
 
 			bool connectionLineTargetConnected = false;
 
-			// TODO: somewhere in here, check the types of data from source->destination; eg. intents->intents, commands->commands, etc.
-
 			if (filterShape != null) {
 				ControlPointId point = filterShape.HitTest(mouseState.X, mouseState.Y, ControlPointCapabilities.Connect, 10);
 
@@ -694,7 +694,7 @@ namespace VixenApplication
 					bool skipConnection = false;
 
 					if (filterShape.GetTypeForControlPoint(point) != FilterSetupShapeBase.FilterShapeControlPointType.Input) {
-						// TODO: find an appropriate input connection point for the shape; don't just assume it's the first
+						// Later on, if/when we support multiple inputs, we'll need to get an appropriate input. For now, there's only 1 option.
 						if (filterShape.InputCount > 0) {
 							point = filterShape.GetControlPointIdForInput(0);
 						} else {
@@ -703,9 +703,9 @@ namespace VixenApplication
 					}
 
 					if (!skipConnection) {
-						// TODO: check the input of the shape it's connecting to; ensure there's only a single connection. (can't have more than one, currently)
 						if (currentConnectionLine.GetConnectionInfo(ControlPointId.LastVertex, null).OtherPointId != point ||
-							currentConnectionLine.GetConnectionInfo(ControlPointId.LastVertex, null).OtherShape != filterShape) {
+							currentConnectionLine.GetConnectionInfo(ControlPointId.LastVertex, null).OtherShape != filterShape)
+						{
 							currentConnectionLine.Disconnect(ControlPointId.LastVertex);
 							currentConnectionLine.Connect(ControlPointId.LastVertex, filterShape, point);
 							currentConnectionLine.DestinationDataComponent = filterShape.DataFlowComponent;
@@ -728,34 +728,26 @@ namespace VixenApplication
 		{
 			bool result = false;
 			if (currentConnectionLine.DestinationDataComponent != null && currentConnectionLine.SourceDataFlowComponentReference != null) {
-				// TODO: split this out properly, removing all the Vixen and Filter specific stuff (events, or somesuch?)
-
-				//ShapeConnectionInfo sourceConnectionInfo = currentConnectionLine.GetConnectionInfo(ControlPointId.FirstVertex, null);
-				//ShapeConnectionInfo destConnectionInfo = currentConnectionLine.GetConnectionInfo(ControlPointId.LastVertex, null);
-				//FilterSetupShapeBase sourceShape = sourceConnectionInfo.OtherShape as FilterSetupShapeBase;
-				//FilterSetupShapeBase destShape = destConnectionInfo.OtherShape as FilterSetupShapeBase;
-
-				//if (sourceShape == null || destShape == null)
-				//    throw new Exception("Expecting a filter shape when making a connection");
-
-				//int outputIndex = sourceShape.GetOutputNumberForControlPoint(sourceConnectionInfo.OtherPointId);
-
-				//// TODO: check that everything is OK first before making connections -- index is OK, data flow is OK, etc.
-				//destShape.DataFlowComponent.Source = new DataFlowComponentReference(sourceShape.DataFlowComponent, outputIndex);
-
-
-
-				//currentConnectionLine.DestinationDataComponent.Source = currentConnectionLine.SourceDataFlowComponentReference;
-
+				// check to see if what we're connecting it to is already connected to something (else): if so, remove that line.
+				// (we don't need to remove the dataflow component as source; since a component can only have a single source, it
+				// will be updated/overwritten by the 'SetComponentSource' below.)
+				FilterSetupShapeBase otherShape = currentConnectionLine.GetConnectionInfo(ControlPointId.LastVertex, null).OtherShape as FilterSetupShapeBase;
+				ControlPointId pointId = currentConnectionLine.GetConnectionInfo(ControlPointId.LastVertex, null).OtherPointId;
+				if (otherShape != null) {
+					foreach (ShapeConnectionInfo ci in otherShape.GetConnectionInfos(pointId, null)) {
+						if (ci.OtherShape == currentConnectionLine)
+							continue;
+						diagramPresenter.DeleteShape(ci.OtherShape, false);
+					}
+				}
 
 				VixenSystem.DataFlow.SetComponentSource(currentConnectionLine.DestinationDataComponent, currentConnectionLine.SourceDataFlowComponentReference);
-
 
 				result = true;
 			} else {
 				currentConnectionLine.Disconnect(ControlPointId.FirstVertex);
 				currentConnectionLine.Disconnect(ControlPointId.LastVertex);
-				diagramPresenter.Diagram.Shapes.Remove(currentConnectionLine);
+				diagramPresenter.DeleteShape(currentConnectionLine, false);
 			}
 
 			return result;
