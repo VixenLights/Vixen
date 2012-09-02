@@ -27,6 +27,9 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigFiltersAndPatching));
+			Dataweb.NShape.RoleBasedSecurityManager roleBasedSecurityManager1 = new Dataweb.NShape.RoleBasedSecurityManager();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.buttonAddFilter = new System.Windows.Forms.Button();
 			this.comboBoxNewFilterTypes = new System.Windows.Forms.ComboBox();
@@ -35,6 +38,10 @@
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonZoomOut = new System.Windows.Forms.Button();
 			this.buttonZoomIn = new System.Windows.Forms.Button();
+			this.buttonDelete = new System.Windows.Forms.Button();
+			this.diagramSetController = new Dataweb.NShape.Controllers.DiagramSetController();
+			this.project = new Dataweb.NShape.Project(this.components);
+			this.cachedRepository = new Dataweb.NShape.Advanced.CachedRepository();
 			this.SuspendLayout();
 			// 
 			// buttonCancel
@@ -53,7 +60,7 @@
 			this.buttonAddFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.buttonAddFilter.Location = new System.Drawing.Point(434, 478);
 			this.buttonAddFilter.Name = "buttonAddFilter";
-			this.buttonAddFilter.Size = new System.Drawing.Size(90, 25);
+			this.buttonAddFilter.Size = new System.Drawing.Size(100, 25);
 			this.buttonAddFilter.TabIndex = 7;
 			this.buttonAddFilter.Text = "Add Filter";
 			this.buttonAddFilter.UseVisualStyleBackColor = true;
@@ -77,7 +84,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.diagramDisplay.BackColorGradient = System.Drawing.SystemColors.Control;
 			this.diagramDisplay.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.diagramDisplay.DiagramSetController = null;
+			this.diagramDisplay.DiagramSetController = this.diagramSetController;
 			this.diagramDisplay.GridColor = System.Drawing.Color.Gainsboro;
 			this.diagramDisplay.GridSize = 19;
 			this.diagramDisplay.ImeMode = System.Windows.Forms.ImeMode.NoControl;
@@ -140,11 +147,43 @@
 			this.buttonZoomIn.UseVisualStyleBackColor = true;
 			this.buttonZoomIn.Click += new System.EventHandler(this.buttonZoomIn_Click);
 			// 
+			// buttonDelete
+			// 
+			this.buttonDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonDelete.Location = new System.Drawing.Point(540, 478);
+			this.buttonDelete.Name = "buttonDelete";
+			this.buttonDelete.Size = new System.Drawing.Size(100, 25);
+			this.buttonDelete.TabIndex = 12;
+			this.buttonDelete.Text = "Delete Selected";
+			this.buttonDelete.UseVisualStyleBackColor = true;
+			this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
+			// 
+			// diagramSetController
+			// 
+			this.diagramSetController.ActiveTool = null;
+			this.diagramSetController.Project = this.project;
+			// 
+			// project
+			// 
+			this.project.LibrarySearchPaths = ((System.Collections.Generic.IList<string>)(resources.GetObject("project.LibrarySearchPaths")));
+			this.project.Name = null;
+			this.project.Repository = this.cachedRepository;
+			roleBasedSecurityManager1.CurrentRole = Dataweb.NShape.StandardRole.Administrator;
+			roleBasedSecurityManager1.CurrentRoleName = "Administrator";
+			this.project.SecurityManager = roleBasedSecurityManager1;
+			// 
+			// cachedRepository
+			// 
+			this.cachedRepository.ProjectName = null;
+			this.cachedRepository.Store = null;
+			this.cachedRepository.Version = 0;
+			// 
 			// ConfigFiltersAndPatching
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(854, 562);
+			this.Controls.Add(this.buttonDelete);
 			this.Controls.Add(this.buttonZoomIn);
 			this.Controls.Add(this.buttonZoomOut);
 			this.Controls.Add(this.buttonOK);
@@ -171,6 +210,10 @@
 		private System.Windows.Forms.Button buttonOK;
 		private System.Windows.Forms.Button buttonZoomOut;
 		private System.Windows.Forms.Button buttonZoomIn;
+		private System.Windows.Forms.Button buttonDelete;
+		private Dataweb.NShape.Controllers.DiagramSetController diagramSetController;
+		private Dataweb.NShape.Project project;
+		private Dataweb.NShape.Advanced.CachedRepository cachedRepository;
 
 	}
 }

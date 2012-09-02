@@ -37,9 +37,6 @@ namespace VixenApplication
 {
 	public partial class ConfigFiltersAndPatching : Form
 	{
-		private readonly Project _project;
-		private readonly DiagramSetController _diagramSetController;
-
 		// map of data types, to the shape(s) that represent them. There should only be (potentially) multiple
 		// shapes to represent a given channel node; this is because a node can be in multiple groups, and may
 		// be displayed multiple times.
@@ -62,18 +59,12 @@ namespace VixenApplication
 		{
 			InitializeComponent();
 
-			_diagramSetController = new DiagramSetController();
-			_project = new Project();
-
-			_diagramSetController.Project = _project;
-			diagramDisplay.DiagramSetController = _diagramSetController;
-
-			_project.LibrarySearchPaths.Add(@"Common\");
-			_project.AutoLoadLibraries = true;	
-			_project.AddLibraryByName("VixenApplication", false);
+			project.LibrarySearchPaths.Add(@"Common\");
+			project.AutoLoadLibraries = true;
+			project.AddLibraryByName("VixenApplication", false);
 			
-			_project.Name = "filterProject";
-			_project.Create();
+			project.Name = "filterProject";
+			project.Create();
 
 			_visibleLayer = new Layer("Visible");
 			_hiddenLayer = new Layer("Hidden");
@@ -88,7 +79,7 @@ namespace VixenApplication
 
 		private void ConfigFiltersAndPatching_Load(object sender, EventArgs e)
 		{
-			diagramDisplay.Diagram = _diagramSetController.CreateDiagram("filterDiagram");
+			diagramDisplay.Diagram = diagramSetController.CreateDiagram("filterDiagram");
 			diagramDisplay.Diagram.Size = new Size(0, 0);
 			diagramDisplay.BackColor = Color.FromArgb(250, 250, 250);
 
@@ -102,13 +93,13 @@ namespace VixenApplication
 
 			// A: fixed shapes with no connection points: nothing
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
-				SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS, StandardRole.Operator, Permission.Insert);
+				SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS, StandardRole.Operator, Permission.Insert | Permission.Delete);
 			// B: fixed shapes with connection points: connect only
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
-				SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS, StandardRole.Operator, Permission.Connect | Permission.Insert);
+				SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS, StandardRole.Operator, Permission.Connect | Permission.Insert | Permission.Delete);
 			// C: movable shapes (filters): connect, layout (movable)
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
-				SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS, StandardRole.Operator, Permission.Connect | Permission.Insert | Permission.Layout);
+				SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS, StandardRole.Operator, Permission.Connect | Permission.Insert | Permission.Layout | Permission.Delete);
 
 			((RoleBasedSecurityManager) diagramDisplay.Project.SecurityManager).SetPermissions(StandardRole.Operator, Permission.All);
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).CurrentRole = StandardRole.Operator;
@@ -129,11 +120,11 @@ namespace VixenApplication
 				new ColorStyle("", Color.FromArgb(180, 230, 180)), new ColorStyle("", Color.FromArgb(120, 210, 120)));
 			styleOutput.FillMode = FillMode.Gradient;
 
-			_project.Design.FillStyles.Add(styleChannelGroup, styleChannelGroup);
-			_project.Design.FillStyles.Add(styleChannelLeaf, styleChannelLeaf);
-			_project.Design.FillStyles.Add(styleFilter, styleFilter);
-			_project.Design.FillStyles.Add(styleController, styleController);
-			_project.Design.FillStyles.Add(styleOutput, styleOutput);
+			project.Design.FillStyles.Add(styleChannelGroup, styleChannelGroup);
+			project.Design.FillStyles.Add(styleChannelLeaf, styleChannelLeaf);
+			project.Design.FillStyles.Add(styleFilter, styleFilter);
+			project.Design.FillStyles.Add(styleController, styleController);
+			project.Design.FillStyles.Add(styleOutput, styleOutput);
 
 			_InitializeShapesFromChannels();
 			_InitializeShapesFromFilters();
@@ -202,44 +193,18 @@ namespace VixenApplication
 			diagramDisplay.ZoomLevel = (int)((float)diagramDisplay.ZoomLevel * 0.92);
 		}
 
+		private void buttonDelete_Click(object sender, EventArgs e)
+		{
+			_DeleteShapes(diagramDisplay.SelectedShapes);
+		}
+
 		private void diagramDisplay_KeyDown(object sender, KeyEventArgs e)
 		{
 			// if Delete was pressed, iterate through all selected shapes, and remove them, unlinking components as necessary
 			if (e.KeyCode == Keys.Delete) {
-				foreach (var selectedShape in diagramDisplay.SelectedShapes) {
-					DataFlowConnectionLine line = selectedShape as DataFlowConnectionLine;
-					if (line != null) {
-						VixenSystem.DataFlow.ResetComponentSource(line.DestinationDataComponent);
-						_RemoveShape(line);
-					}
-
-					FilterShape filterShape = selectedShape as FilterShape;
-					if (filterShape != null) {
-						// go through all outputs for the filter, and check for connections to other shapes.
-						// For any that we find, remove them (ie. set the other shape source to null).
-						for (int i = 0; i < filterShape.OutputCount; i++) {
-							ControlPointId pointId = filterShape.GetControlPointIdForOutput(i);
-							ShapeConnectionInfo ci = filterShape.GetConnectionInfo(pointId, null);
-							if (ci.OtherShape == null)
-								continue;
-
-							line = ci.OtherShape as DataFlowConnectionLine;
-							if (line == null)
-								throw new Exception("a filterShape was connected to something other than a DataFlowLine!");
-
-							if (line.DestinationDataComponent == null)
-								throw new Exception("Can't remove a link to a  shape that doesn't exist!");
-
-							VixenSystem.DataFlow.ResetComponentSource(line.DestinationDataComponent);
-							_RemoveShape(line);
-						}
-						_RemoveShape(filterShape);
-					}
-				}
+				_DeleteShapes(diagramDisplay.SelectedShapes);
 			}
 		}
-
-
 
 		private void displayDiagram_ShapeDoubleClick(object sender, DiagramPresenterShapeClickEventArgs e)
 		{
@@ -266,6 +231,70 @@ namespace VixenApplication
 			if (shape is ControllerShape)
 				_ResizeAndPositionControllerShapes();
 		}
+
+		private void _DeleteShapes(IEnumerable<Shape> shapes)
+		{
+			foreach (var shape in shapes) {
+				DataFlowConnectionLine line = shape as DataFlowConnectionLine;
+				if (line != null) {
+					VixenSystem.DataFlow.ResetComponentSource(line.DestinationDataComponent);
+					_RemoveShape(line);
+				}
+
+				// we COULD use FilterSetupShapeBase, as all the operations below are generic.... but, we only want
+				// to be able to delete filter shapes. We want to enforce all channels and outputs to be kept.
+				FilterShape filterShape = shape as FilterShape;
+				if (filterShape != null) {
+					ControlPointId pointId;
+
+					// go through all outputs for the filter, and check for connections to other shapes.
+					// For any that we find, remove them (ie. set the other shape source to null).
+					for (int i = 0; i < filterShape.OutputCount; i++) {
+						pointId = filterShape.GetControlPointIdForOutput(i);
+						_RemoveDataFlowLinksFromShapePoint(filterShape, pointId);
+					}
+
+					// now check the source of the filter; if it's connected to anything, remove the connecting shape.
+					// (don't really need to reset the source for the filter, since we're removing it, but may as well
+					// anyway, just in case there's something else that's paying attention...)
+					pointId = filterShape.GetControlPointIdForInput(0);
+					_RemoveDataFlowLinksFromShapePoint(filterShape, pointId);
+
+					VixenSystem.Filters.RemoveFilter(filterShape.FilterInstance);
+					_RemoveShape(filterShape);
+				}
+			}
+		}
+
+		private void _RemoveDataFlowLinksFromShapePoint(FilterSetupShapeBase shape, ControlPointId controlPoint)
+		{
+			foreach (ShapeConnectionInfo ci in shape.GetConnectionInfos(controlPoint, null)) {
+				if (ci.OtherShape == null)
+					continue;
+
+				DataFlowConnectionLine line = ci.OtherShape as DataFlowConnectionLine;
+				if (line == null)
+					throw new Exception("a shape was connected to something other than a DataFlowLine!");
+
+				if (line.DestinationDataComponent == null || line.SourceDataFlowComponentReference == null)
+					throw new Exception("Can't remove a link that isn't fully connected!");
+
+				// if the line is connected with the given shape as the SOURCE, remove the unknown DESTINATION's
+				// source (on the other end of the line). Otherwise, it (should) be that the given shape is the
+				// destination; so reset it's source. If neither of these are true, freak out.
+				if (line.GetConnectionInfo(ControlPointId.FirstVertex, null).OtherShape == shape) {
+					VixenSystem.DataFlow.ResetComponentSource(line.DestinationDataComponent);
+				} else if (line.GetConnectionInfo(ControlPointId.LastVertex, null).OtherShape == shape) {
+					VixenSystem.DataFlow.ResetComponentSource(shape.DataFlowComponent);
+				} else {
+					throw new Exception("Can't reset a link that has neither the source or destination for the given shape!");
+				}
+
+				_RemoveShape(line);
+			}
+		}
+
+
 
 
 		private void _InitializeShapesFromChannels()
@@ -320,11 +349,8 @@ namespace VixenApplication
 
 		private void _CreateConnectionsFromExistingLinks()
 		{
-			// go through the existing system-side patches (DataFlow sources) and make connections for them all
-			// TODO: instead of iterating through the list of shapes that we've created, should we iterate through
-			// the system-side collections of DataFlowComponents? eg. the filters, outputs, channels, etc.?
-
-			// nothing to do for channel shapes; they don't have sources
+			// go through the existing system-side patches (DataFlow sources) and make connections for them all.
+			// There's nothing to do for channel shapes; they don't have sources; only do filters and outputs
 
 			// go through the filter shapes and build up links
 			foreach (FilterShape filterShape in _filterShapes) {
@@ -356,9 +382,12 @@ namespace VixenApplication
 
 		private void _ConnectShapes(FilterSetupShapeBase source, int sourceOutputIndex, FilterSetupShapeBase destination)
 		{
-			DataFlowConnectionLine line = (DataFlowConnectionLine)_project.ShapeTypes["DataFlowConnectionLine"].CreateInstance();
-			diagramDisplay.Diagram.Shapes.Add(line, 100);
-			line.EndCapStyle = _project.Design.CapStyles.ClosedArrow;
+			DataFlowConnectionLine line = (DataFlowConnectionLine)project.ShapeTypes["DataFlowConnectionLine"].CreateInstance();
+			diagramDisplay.InsertShape(line);
+			diagramDisplay.Diagram.Shapes.SetZOrder(line, 100);
+			//line.ZOrder = 100;
+			//diagramDisplay.Diagram.Shapes.Add(line, 100);
+			line.EndCapStyle = project.Design.CapStyles.ClosedArrow;
 
 			line.SourceDataFlowComponentReference = new DataFlowComponentReference(source.DataFlowComponent, sourceOutputIndex);
 			line.DestinationDataComponent = destination.DataFlowComponent;
@@ -431,11 +460,14 @@ namespace VixenApplication
 
 		private ChannelNodeShape _MakeChannelNodeShape(ChannelNode node, int zOrder)
 		{
-			ChannelNodeShape shape = (ChannelNodeShape) _project.ShapeTypes["ChannelNodeShape"].CreateInstance();
+			ChannelNodeShape shape = (ChannelNodeShape) project.ShapeTypes["ChannelNodeShape"].CreateInstance();
 			shape.SetChannelNode(node);
 			shape.Title = node.Name;
-			diagramDisplay.Diagram.Shapes.Add(shape, zOrder);
-			diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape) shape, diagramDisplay.Diagram);
+			//shape.ZOrder = zOrder;
+			diagramDisplay.InsertShape(shape);
+			diagramDisplay.Diagram.Shapes.SetZOrder(shape, zOrder);
+			//diagramDisplay.Diagram.Shapes.Add(shape, zOrder);
+			//diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape) shape, diagramDisplay.Diagram);
 			diagramDisplay.Diagram.AddShapeToLayers(shape, _visibleLayer.Id);
 
 			if (!_channelNodeToChannelShapes.ContainsKey(node))
@@ -454,10 +486,10 @@ namespace VixenApplication
 					shape.ChildFilterShapes.Add(childSetupShapeBase);
 				}
 				shape.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS;
-				shape.FillStyle = _project.Design.FillStyles["ChannelGroup"];
+				shape.FillStyle = project.Design.FillStyles["ChannelGroup"];
 			} else {
 				shape.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS;
-				shape.FillStyle = _project.Design.FillStyles["ChannelLeaf"];
+				shape.FillStyle = project.Design.FillStyles["ChannelLeaf"];
 			}
 			return shape;
 		}
@@ -469,13 +501,16 @@ namespace VixenApplication
 			if (outputController == null)
 				return null;
 
-			ControllerShape controllerShape = (ControllerShape)_project.ShapeTypes["ControllerShape"].CreateInstance();
+			ControllerShape controllerShape = (ControllerShape)project.ShapeTypes["ControllerShape"].CreateInstance();
 			controllerShape.Title = controller.Name;
 			controllerShape.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS;
-			controllerShape.FillStyle = _project.Design.FillStyles["Controller"];
+			controllerShape.FillStyle = project.Design.FillStyles["Controller"];
 
-			diagramDisplay.Diagram.Shapes.Add(controllerShape, 1);
-			diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape)controllerShape, diagramDisplay.Diagram);
+			//controllerShape.ZOrder = 1;
+			diagramDisplay.InsertShape(controllerShape);
+			diagramDisplay.Diagram.Shapes.SetZOrder(controllerShape, 1);
+			//diagramDisplay.Diagram.Shapes.Add(controllerShape, 1);
+			//diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape)controllerShape, diagramDisplay.Diagram);
 			diagramDisplay.Diagram.AddShapeToLayers(controllerShape, _visibleLayer.Id);
 
 			if (controllerShape.DataFlowComponent != null) {
@@ -490,19 +525,22 @@ namespace VixenApplication
 
 			for (int i = 0; i < outputController.OutputCount; i++) {
 				CommandOutput output = outputController.Outputs[i];
-				OutputShape outputShape = (OutputShape)_project.ShapeTypes["OutputShape"].CreateInstance();
+				OutputShape outputShape = (OutputShape)project.ShapeTypes["OutputShape"].CreateInstance();
 				outputShape.SetController(outputController);
 				outputShape.SetOutput(output);
 				outputShape.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS;
-				outputShape.FillStyle = _project.Design.FillStyles["Output"];
+				outputShape.FillStyle = project.Design.FillStyles["Output"];
 
 				if (output.Name.Length <= 0)
 					outputShape.Title = outputController.Name + " [" + (i + 1) + "]";
 				else
 					outputShape.Title = output.Name;
 
-				diagramDisplay.Diagram.Shapes.Add(outputShape, 2);
-				diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape)outputShape, diagramDisplay.Diagram);
+				//outputShape.ZOrder = 2;
+				diagramDisplay.InsertShape(outputShape);
+				diagramDisplay.Diagram.Shapes.SetZOrder(outputShape, 2);
+				//diagramDisplay.Diagram.Shapes.Add(outputShape, 2);
+				//diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape)outputShape, diagramDisplay.Diagram);
 				diagramDisplay.Diagram.AddShapeToLayers(outputShape, _visibleLayer.Id);
 
 				controllerShape.ChildFilterShapes.Add(outputShape);
@@ -513,14 +551,17 @@ namespace VixenApplication
 
 		private FilterShape _MakeFilterShape(IOutputFilterModuleInstance filter)
 		{
-			FilterShape filterShape = (FilterShape)_project.ShapeTypes["FilterShape"].CreateInstance();
+			FilterShape filterShape = (FilterShape)project.ShapeTypes["FilterShape"].CreateInstance();
 			filterShape.Title = filter.Descriptor.TypeName;
 			filterShape.SecurityDomainName = SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS;
-			filterShape.FillStyle = _project.Design.FillStyles["Filter"];
+			filterShape.FillStyle = project.Design.FillStyles["Filter"];
 			filterShape.SetFilterInstance(filter);
 
-			diagramDisplay.Diagram.Shapes.Add(filterShape, 10);		// Z Order of 10; should be above other channels/outputs, but under lines
-			diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape)filterShape, diagramDisplay.Diagram);
+			//filterShape.ZOrder = 10;
+			diagramDisplay.InsertShape(filterShape);
+			diagramDisplay.Diagram.Shapes.SetZOrder(filterShape, 10);
+			//diagramDisplay.Diagram.Shapes.Add(filterShape, 10);		// Z Order of 10; should be above other channels/outputs, but under lines
+			//diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape)filterShape, diagramDisplay.Diagram);
 			diagramDisplay.Diagram.AddShapeToLayers(filterShape, _visibleLayer.Id);
 
 			if (filterShape.DataFlowComponent != null) {
@@ -540,8 +581,10 @@ namespace VixenApplication
 
 		private void _RemoveShape(Shape shape)
 		{
-			diagramDisplay.Diagram.Shapes.Remove(shape);
-			diagramDisplay.Diagram.RemoveShapeFromLayers(shape, _visibleLayer.Id | _hiddenLayer.Id);
+			diagramDisplay.DeleteShape(shape);
+			//diagramDisplay.Diagram.Shapes.Remove(shape);
+			//diagramDisplay.DiagramSetController.Project.Repository.DeleteAll(shape);
+			//diagramDisplay.Diagram.RemoveShapeFromLayers(shape, _visibleLayer.Id | _hiddenLayer.Id);
 			if (shape is NestingSetupShape) {
 				foreach (FilterSetupShapeBase child in (shape as NestingSetupShape).ChildFilterShapes) {
 					_RemoveShape(child);
