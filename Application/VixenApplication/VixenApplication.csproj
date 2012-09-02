@@ -276,34 +276,9 @@
       <Name>NShape %28VixenModules\Common\NShape\NShape%29</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\Common\NShape\ElectricalModelObjects\NShapeElectricalModelObjects.csproj">
-      <Project>{98D7199F-0A57-429A-94B0-C7585A924302}</Project>
-      <Name>NShapeElectricalModelObjects</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Common\NShape\ElectricalShapes\NShapeElectricalShapes.csproj">
-      <Project>{D8A7182E-BE69-4B4D-B20D-851FE1800C3C}</Project>
-      <Name>NShapeElectricalShapes</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Common\NShape\FlowChartShapes\NShapeFlowChartShapes.csproj">
-      <Project>{DB90D9B2-D4F8-4D09-92C5-A7C1AC57FA4E}</Project>
-      <Name>NShapeFlowChartShapes</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Common\NShape\GeneralModelObjects\NShapeGeneralModelObjects.csproj">
-      <Project>{5FDD54E9-BE12-4C3D-8051-0F90A4EA27D4}</Project>
-      <Name>NShapeGeneralModelObjects</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\Common\NShape\GeneralShapes\NShapeGeneralShapes.csproj">
       <Project>{1272F77E-D926-4310-AE8B-858909B10F0C}</Project>
       <Name>NShapeGeneralShapes</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Common\NShape\SoftwareArchitectureShapes\NShapeSoftwareArchitectureShapes.csproj">
-      <Project>{FFC46D3E-DA4E-4214-84C9-53A49C75BA77}</Project>
-      <Name>NShapeSoftwareArchitectureShapes</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Common\NShape\WinFormsUI\NShapeWinFormsUI.csproj">
