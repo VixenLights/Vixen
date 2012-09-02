@@ -9,16 +9,10 @@ namespace Vixen.Sys.State.Execution.Behavior {
 			WindowsMultimedia wm = new WindowsMultimedia();
 			wm.BeginEnhancedResolution();
 
-			//// Have the outputs draw their data from the channels.
-			//IOutputSourceCollection channelSources = VixenSystem.Channels.GetSources();
-			//VixenSystem.Controllers.AddSources(channelSources);
-
-			// Enabled/disabled list is going to be an opt-in list of disabled controllers
-			// so that new controllers don't need to be added to it in order to be enabled.
-			IEnumerable<IOutputDevice> enabledControllers = VixenSystem.SystemConfig.Controllers.Except(VixenSystem.SystemConfig.DisabledControllers);
-			VixenSystem.Controllers.StartAll(enabledControllers);
-
-			VixenSystem.Previews.StartAll();
+			// Enabled/disabled list is going to be an opt-in list of disabled devices
+			// so that new devices don't need to be added to it in order to be enabled.
+			IEnumerable<IOutputDevice> enabledDevices = VixenSystem.OutputDeviceManagement.Devices.Except(VixenSystem.SystemConfig.DisabledDevices);
+			VixenSystem.OutputDeviceManagement.StartOnly(enabledDevices);
 
 			Sys.Execution.Startup();
 		}

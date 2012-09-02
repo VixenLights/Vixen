@@ -57,7 +57,7 @@ namespace Vixen.IO.Xml.Policy {
 
 		protected override void WriteControllers() {
 			XmlControllerCollectionSerializer serializer = new XmlControllerCollectionSerializer();
-			XElement element = serializer.WriteObject(_systemConfig.Controllers);
+			XElement element = serializer.WriteObject(_systemConfig.OutputControllers);
 			_content.Add(element);
 		}
 
@@ -69,13 +69,13 @@ namespace Vixen.IO.Xml.Policy {
 
 		protected override void WriteSmartControllers() {
 			XmlSmartControllerCollectionSerializer serializer = new XmlSmartControllerCollectionSerializer();
-			XElement element = serializer.WriteObject(_systemConfig.SmartControllers);
+			XElement element = serializer.WriteObject(_systemConfig.SmartOutputControllers);
 			_content.Add(element);
 		}
 
 		protected override void WriteDisabledControllers() {
 			XmlDisabledControllerCollectionSerializer serializer = new XmlDisabledControllerCollectionSerializer();
-			XElement element = serializer.WriteObject(_systemConfig.DisabledControllers.Select(x => x.Id));
+			XElement element = serializer.WriteObject(_systemConfig.DisabledDevices.Select(x => x.Id));
 			_content.Add(element);
 		}
 
@@ -132,7 +132,7 @@ namespace Vixen.IO.Xml.Policy {
 
 		protected override void ReadControllers() {
 			XmlControllerCollectionSerializer serializer = new XmlControllerCollectionSerializer();
-			_systemConfig.Controllers = serializer.ReadObject(_content);
+			_systemConfig.OutputControllers = serializer.ReadObject(_content);
 		}
 
 		protected override void ReadControllerLinks() {
@@ -142,12 +142,12 @@ namespace Vixen.IO.Xml.Policy {
 
 		protected override void ReadSmartControllers() {
 			XmlSmartControllerCollectionSerializer serializer = new XmlSmartControllerCollectionSerializer();
-			_systemConfig.SmartControllers = serializer.ReadObject(_content);
+			_systemConfig.SmartOutputControllers = serializer.ReadObject(_content);
 		}
 
 		protected override void ReadDisabledControllers() {
 			XmlDisabledControllerCollectionSerializer serializer = new XmlDisabledControllerCollectionSerializer();
-			_systemConfig.DisabledControllers = serializer.ReadObject(_content).Select(x => _systemConfig.Controllers.FirstOrDefault(y => x == y.Id)).NotNull();
+			_systemConfig.DisabledDevices = serializer.ReadObject(_content).Select(x => _systemConfig.OutputControllers.FirstOrDefault(y => x == y.Id)).NotNull();
 		}
 
 		protected override void ReadPreviews() {

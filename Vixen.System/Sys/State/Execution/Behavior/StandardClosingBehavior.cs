@@ -9,18 +9,8 @@
 			// Release all contexts.
 			VixenSystem.Contexts.ReleaseContexts();
 
-			// Stop the controllers.
-			VixenSystem.Controllers.StopAll();
-
-			// Stop the previews.
-			VixenSystem.Previews.StopAll();
-
-			//// Close the channels.
-			//VixenSystem.Channels.CloseChannels();
-
-			//// Remove the sources.
-			//IOutputSourceCollection channelSources = VixenSystem.Channels.GetSources();
-			//VixenSystem.Controllers.RemoveSources(channelSources);
+			// Stop all output devices.
+			VixenSystem.OutputDeviceManagement.StopAll();
 		}
 	}
 }

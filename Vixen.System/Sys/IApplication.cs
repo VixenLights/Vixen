@@ -15,10 +15,10 @@ namespace Vixen.Sys {
 		IEditorUserInterface ActiveEditor { get; }
 		IEditorUserInterface[] AllEditors { get; }
         AppCommand AppCommands { get; }
-        /// <summary>
-        /// Notifies the application that it needs to be refreshed.
-        /// </summary>
-        void Refresh();
+		///// <summary>
+		///// Notifies the application that it needs to be refreshed.
+		///// </summary>
+		//void Refresh();
 		//event KeyEventHandler KeyDown;
 		//event KeyEventHandler KeyUp;
 		//event MouseEventHandler MouseDown;

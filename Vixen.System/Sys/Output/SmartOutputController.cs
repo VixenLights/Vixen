@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Vixen.Data.Flow;
 using Vixen.Data.Policy;
 using Vixen.Module.SmartController;
 
@@ -124,6 +125,10 @@ namespace Vixen.Sys.Output {
 
 		public int OutputCount {
 			get { return _outputMediator.OutputCount; }
+		}
+
+		public IDataFlowComponent GetDataFlowComponentForOutput(IntentOutput output) {
+			return _adapterFactory.GetAdapter(output);
 		}
 
 		private IEnumerable<IntentChangeCollection> _ExtractIntentChangesFromOutputs() {

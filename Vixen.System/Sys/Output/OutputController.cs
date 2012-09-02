@@ -81,8 +81,7 @@ namespace Vixen.Sys.Output {
 			public bool MoveNext() {
 				if(_next != null) {
 					_current = _next;
-					//_next = _current.Next;
-					_next = VixenSystem.Controllers.GetNext(_current);
+					_next = VixenSystem.OutputControllers.GetNext(_current);
 					return true;
 				}
 				return false;
@@ -230,7 +229,7 @@ namespace Vixen.Sys.Output {
 				// When output controllers are linked, only the root controller will be
 				// connected to the port, therefore only it will have the output module
 				// used during execution.
-				OutputController priorController = VixenSystem.Controllers.GetPrior(this);
+				OutputController priorController = VixenSystem.OutputControllers.GetPrior(this);
 				return (priorController != null) ? priorController._ControllerChainModule : _ControllerModule;
 			}
 		}

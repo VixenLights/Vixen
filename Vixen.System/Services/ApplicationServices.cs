@@ -97,10 +97,6 @@ namespace Vixen.Services {
 			return manager.GetEffectEditors(effectId);
 		}
 
-		static public OutputController[] GetControllers() {
-			return VixenSystem.Controllers.Cast<OutputController>().ToArray();
-		}
-
 		static public INamingRule[] GetAllNamingRules() {
 			return typeof(INamingRule).FindConcreteImplementationsWithin(Assembly.GetExecutingAssembly()).Select(Activator.CreateInstance).Cast<INamingRule>().ToArray();
 		}

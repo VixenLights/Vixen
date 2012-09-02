@@ -21,7 +21,7 @@ namespace Vixen.Sys {
 		private IEnumerable<ControllerLink> _controllerLinking;
 		private IEnumerable<IOutputFilterModuleInstance> _filters;
 		private IEnumerable<DataFlowPatch> _dataFlow;
-		private List<Guid> _disabledControllers;
+		private List<Guid> _disabledDevicesIds;
 
 		[DataPath]
 		static public readonly string Directory = Path.Combine(Paths.DataRootPath, "SystemData");
@@ -30,7 +30,7 @@ namespace Vixen.Sys {
 
 		public SystemConfig() {
 			Identity = Guid.NewGuid();
-			_disabledControllers = new List<Guid>();
+			_disabledDevicesIds = new List<Guid>();
 			//*** is not in the data
 			IsPreviewThreaded = true; // opt-out
 			AllowFilterEvaluation = true; // opt-out
@@ -61,7 +61,7 @@ namespace Vixen.Sys {
 			set { _nodes = value; }
 		}
 
-		public IEnumerable<IOutputDevice> Controllers {
+		public IEnumerable<IOutputDevice> OutputControllers {
 			get {
 				if(_controllers == null) {
 					_controllers = new IOutputDevice[0];
@@ -81,7 +81,7 @@ namespace Vixen.Sys {
 			set { _previews = value; }
 		}
 
-		public IEnumerable<IOutputDevice> SmartControllers {
+		public IEnumerable<IOutputDevice> SmartOutputControllers {
 			get {
 				if(_smartControllers == null) {
 					_smartControllers = new IOutputDevice[0];
@@ -122,9 +122,9 @@ namespace Vixen.Sys {
 			set { _dataFlow = value; }
 		}
 
-		public IEnumerable<IOutputDevice> DisabledControllers {
-			get { return _disabledControllers.Select(x => _controllers.FirstOrDefault(y => y.Id == x)).NotNull(); }
-			set { _disabledControllers = new List<Guid>(value.Select(x => x.Id)); }
+		public IEnumerable<IOutputDevice> DisabledDevices {
+			get { return _GetDisabledDevices(_disabledDevicesIds); }
+			set { _disabledDevicesIds = new List<Guid>(value.Select(x => x.Id)); }
 		}
 
 		public bool IsContext { get; set; }
@@ -158,6 +158,13 @@ namespace Vixen.Sys {
 		public void Save(string filePath) {
 			VersionedFileSerializer serializer = FileService.Instance.CreateSystemConfigSerializer();
 			serializer.Write(this, filePath);
+		}
+
+		private IEnumerable<IOutputDevice> _GetDisabledDevices(IEnumerable<Guid> deviceIds) {
+			return deviceIds.Select(x =>
+				_controllers.FirstOrDefault(y => y.Id == x) ??
+				_smartControllers.FirstOrDefault(y => y.Id == x) ??
+				_previews.FirstOrDefault(y => y.Id == x)).NotNull();
 		}
 	}
 }

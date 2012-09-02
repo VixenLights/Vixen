@@ -27,7 +27,7 @@ namespace Vixen.Sys {
 			MigratorFactory.Factory = new XmlMigratorFactory();
 		}
 
-    	static public void Start(IApplication clientApplication, bool openExecution = true, bool disableControllers = false) {
+    	static public void Start(IApplication clientApplication, bool openExecution = true, bool disableDevices = false) {
 			if(_state == RunState.Stopped) {
 				try {
 					_state = RunState.Starting;
@@ -65,8 +65,8 @@ namespace Vixen.Sys {
 					// Add modules to repositories.
 					Modules.PopulateRepositories();
 
-					if(disableControllers) {
-						SystemConfig.DisabledControllers = Controllers;
+					if(disableDevices) {
+						SystemConfig.DisabledDevices = OutputDeviceManagement.Devices;
 					}
 					if(openExecution) {
 						Execution.OpenExecution();
@@ -88,8 +88,8 @@ namespace Vixen.Sys {
 				_state = RunState.Stopping;
 				Logging.Info("Vixen System stopping...");
 				ApplicationServices.ClientApplication = null;
-				// Need to get the disabled controllers before stopping them all.
-				SystemConfig.DisabledControllers = Controllers.Where(x => !x.IsRunning);
+				// Need to get the disabled devices before stopping them all.
+				SystemConfig.DisabledDevices = OutputDeviceManagement.Devices.Where(x => !x.IsRunning);
 				Execution.CloseExecution();
 				Modules.ClearRepositories();
 				if(ModuleStore != null) {
@@ -106,8 +106,8 @@ namespace Vixen.Sys {
 			if (SystemConfig != null) {
 				// 'copy' the current details (nodes/channels/controllers) from the executing state
 				// to the SystemConfig, so they're there for writing when we save
-				SystemConfig.Controllers = Controllers.OfType<OutputController>();
-				SystemConfig.SmartControllers = Controllers.OfType<SmartOutputController>();
+				SystemConfig.OutputControllers = OutputControllers;
+				SystemConfig.SmartOutputControllers = SmartOutputControllers;
 				SystemConfig.Previews = Previews;
 				SystemConfig.Channels = Channels;
 				SystemConfig.Nodes = Nodes.GetRootNodes();
@@ -123,11 +123,27 @@ namespace Vixen.Sys {
 			DataFlow = new DataFlowManager();
 			Channels = new ChannelManager();
 			Nodes = new NodeManager();
-			Controllers = new ControllerManager();
-			Previews = new PreviewManager();
+			OutputControllers = new OutputControllerManager(
+				new ControllerLinkingManagement<OutputController>(),
+				new OutputDeviceCollection<OutputController>(),
+				new OutputDeviceExecution<OutputController>());
+			SmartOutputControllers = new SmartOutputControllerManager(
+				new ControllerLinkingManagement<SmartOutputController>(),
+				new OutputDeviceCollection<SmartOutputController>(),
+				new OutputDeviceExecution<SmartOutputController>());
+			Previews = new PreviewManager(
+				new OutputDeviceCollection<OutputPreview>(),
+				new OutputDeviceExecution<OutputPreview>());
 			Contexts = new ContextManager();
 			Filters = new FilterManager(DataFlow);
 			ControllerLinking = new ControllerLinker();
+			ControllerManagement = new ControllerFacade();
+			ControllerManagement.AddParticipant(OutputControllers);
+			ControllerManagement.AddParticipant(SmartOutputControllers);
+			OutputDeviceManagement = new OutputDeviceFacade();
+			OutputDeviceManagement.AddParticipant(OutputControllers);
+			OutputDeviceManagement.AddParticipant(SmartOutputControllers);
+			OutputDeviceManagement.AddParticipant(Previews);
 
 			// Load system data in order of dependency.
 			// The system data generally resides in the data branch, but it
@@ -138,14 +154,11 @@ namespace Vixen.Sys {
 
 			Channels.AddChannels(SystemConfig.Channels);
 			Nodes.AddNodes(SystemConfig.Nodes);
-			// Putting both types of controllers into a single controller manager
-			// class so that all can be managed at once.
-			Controllers.AddRange(SystemConfig.Controllers);
-			Controllers.AddRange(SystemConfig.SmartControllers);
-			Previews.AddRange(SystemConfig.Previews);
+			OutputControllers.AddRange(SystemConfig.OutputControllers.Cast<OutputController>());
+			SmartOutputControllers.AddRange(SystemConfig.SmartOutputControllers.Cast<SmartOutputController>());
+			Previews.AddRange(SystemConfig.Previews.Cast<OutputPreview>());
 			ControllerLinking.AddRange(SystemConfig.ControllerLinking);
 			Filters.AddRange(SystemConfig.Filters);
-			//*** need to ADD relationships!
 			
 			DataFlow.Initialize(SystemConfig.DataFlow);
 		}
@@ -162,10 +175,13 @@ namespace Vixen.Sys {
 				Channels.RemoveChannel(c);
 			foreach (ChannelNode cn in Nodes.ToArray())
 				Nodes.RemoveNode(cn, null, true);
-			foreach (OutputController oc in Controllers.ToArray())
-				Controllers.Remove(oc);
-			foreach (IOutputDevice outputDevice in Previews.ToArray())
-				Previews.Remove(outputDevice);
+			foreach (OutputController oc in OutputControllers.ToArray())
+				OutputControllers.Remove(oc);
+    		foreach(SmartOutputController smartOutputController in SmartOutputControllers.ToArray()) {
+				SmartOutputControllers.Remove(smartOutputController);
+    		}
+			foreach (OutputPreview outputPreview in Previews.ToArray())
+				Previews.Remove(outputPreview);
 
 			LoadSystemConfig();
 
@@ -197,13 +213,16 @@ namespace Vixen.Sys {
 
     	static public ChannelManager Channels { get; private set; }
 		static public NodeManager Nodes { get; private set; }
-		static public ControllerManager Controllers { get; private set; }
+		static public OutputControllerManager OutputControllers { get; private set; }
+		static public SmartOutputControllerManager SmartOutputControllers { get; private set; }
     	static public PreviewManager Previews { get; private set; }
 		static public ContextManager Contexts { get; private set; }
 		static public FilterManager Filters { get; private set; }
     	static public IInstrumentation Instrumentation { get; private set; }
 		static public ControllerLinker ControllerLinking { get; private set; }
-    	public static DataFlowManager DataFlow { get; private set; }
+		static public DataFlowManager DataFlow { get; private set; }
+		static public ControllerFacade ControllerManagement { get; private set; }
+		static public OutputDeviceFacade OutputDeviceManagement { get; private set; }
 
     	public static Guid Identity {
     		get { return SystemConfig.Identity; }

@@ -222,8 +222,25 @@
     <Compile Include="Module\Service\ServiceModuleInstanceBase.cs" />
     <Compile Include="Module\Service\ServiceModuleManagement.cs" />
     <Compile Include="Module\Service\ServiceModuleRepository.cs" />
+    <Compile Include="Rule\IPatchingRule.cs" />
+    <Compile Include="Rule\Patch\ChannelsToSingleController.cs" />
     <Compile Include="Sys\ChannelIntentStates.cs" />
     <Compile Include="Sys\IDataPolicyFactory.cs" />
+    <Compile Include="Sys\Managers\ControllerFacade.cs" />
+    <Compile Include="Sys\Managers\ControllerLinkingManagement.cs" />
+    <Compile Include="Sys\Managers\ExecutionState.cs" />
+    <Compile Include="Sys\Managers\HardwareUpdateThread.cs" />
+    <Compile Include="Sys\Managers\IControllerFacadeParticipant.cs" />
+    <Compile Include="Sys\Managers\IControllerLinkManager.cs" />
+    <Compile Include="Sys\Managers\IControllerManager.cs" />
+    <Compile Include="Sys\Managers\IOutputDeviceCollection.cs" />
+    <Compile Include="Sys\Managers\IOutputDeviceExecution.cs" />
+    <Compile Include="Sys\Managers\IOutputDeviceFacadeParticipant.cs" />
+    <Compile Include="Sys\Managers\OutputDeviceCollection.cs" />
+    <Compile Include="Sys\Managers\OutputDeviceCollectionExecutionMediator.cs" />
+    <Compile Include="Sys\Managers\OutputDeviceExecution.cs" />
+    <Compile Include="Sys\Managers\OutputDeviceFacade.cs" />
+    <Compile Include="Sys\Managers\SmartOutputControllerManager.cs" />
     <Compile Include="Sys\Output\BasicOutputModuleExecutionControl.cs" />
     <Compile Include="Services\EditorService.cs" />
     <Compile Include="Services\ModuleTemplateService.cs" />
@@ -475,8 +492,6 @@
     <Compile Include="Sys\Managers\IOutputDeviceManager.cs" />
     <Compile Include="Sys\IHasSetup.cs" />
     <Compile Include="Sys\Output\IOutputDevice.cs" />
-    <Compile Include="Sys\Managers\OutputDeviceManager.cs" />
-    <Compile Include="Sys\Managers\OutputDeviceManagerBase.cs" />
     <Compile Include="Sys\SequenceFilterNode.cs" />
     <Compile Include="Sys\Attribute\ValueAttribute.cs" />
     <Compile Include="Sys\EffectIntents.cs" />
@@ -502,7 +517,7 @@
     <Compile Include="Sys\Managers\ChannelManager.cs" />
     <Compile Include="Sys\ContextEventArgs.cs" />
     <Compile Include="Sys\Managers\ContextManager.cs" />
-    <Compile Include="Sys\Managers\ControllerManager.cs" />
+    <Compile Include="Sys\Managers\OutputControllerManager.cs" />
     <Compile Include="ImageResource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -15,6 +15,8 @@ namespace Vixen.IO.Xml {
 				new XAttribute(ATTR_COMPONENT_ID, value.ComponentId),
 				value.SourceComponentId.HasValue ? new XAttribute(ATTR_SOURCE_COMPONENT_ID, value.SourceComponentId.Value) : null,
 				value.SourceComponentId.HasValue ? new XAttribute(ATTR_SOURCE_OUTPUT_INDEX, value.SourceComponentOutputIndex) : null);
+				//value.Source != null ? new XAttribute(ATTR_SOURCE_COMPONENT_ID, value.Source.Component.DataFlowComponentId) : null,
+				//value.Source != null ? new XAttribute(ATTR_SOURCE_OUTPUT_INDEX, value.Source.OutputIndex) : null);
 			return element;
 		}
 
