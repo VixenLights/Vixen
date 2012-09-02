@@ -86,7 +86,7 @@ namespace Vixen.Sys.Managers {
 		}
 
 		private void _RemoveAsSource(IDataFlowComponent component) {
-			IEnumerable<IDataFlowComponent> childComponents = _componentLookup.Values.Where(x => Equals(x.Source.Component, component));
+			IEnumerable<IDataFlowComponent> childComponents = _componentLookup.Values.Where(x => x.Source != null && Equals(x.Source.Component, component));
 			foreach(IDataFlowComponent childComponent in childComponents) {
 				_RemoveComponentSource(childComponent);
 			}

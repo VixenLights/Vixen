@@ -27,6 +27,10 @@ namespace Vixen.Sys.Managers {
 			VixenSystem.DataFlow.AddComponent(filter);
 		}
 
+		public void RemoveFilter(IOutputFilterModuleInstance filter) {
+			VixenSystem.DataFlow.RemoveComponent(filter);
+		}
+
 		public void AddRange(IEnumerable<IOutputFilterModuleInstance> filters) {
 			foreach(IOutputFilterModuleInstance filter in filters) {
 				AddFilter(filter);
