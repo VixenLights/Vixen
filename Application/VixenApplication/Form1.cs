@@ -20,11 +20,9 @@ using Vixen.Sys;
 using Vixen.Sys.Output;
 
 // TODO:
-// add deleting of filters and patches/links
-// add buttons for deleting
-// add labels for help/quick descriptions
 // (maybe) add some way to resize the filter shapes, in case they have a lot of outputs?
 // add labels for filter shapes (so outputs can be labelled)
+// add auto-resizing (horizontally) of shapes, when resizing the window. ie. make it bigger than 800 wide.
 
 
 // TODO (HARD):
@@ -385,8 +383,6 @@ namespace VixenApplication
 			DataFlowConnectionLine line = (DataFlowConnectionLine)project.ShapeTypes["DataFlowConnectionLine"].CreateInstance();
 			diagramDisplay.InsertShape(line);
 			diagramDisplay.Diagram.Shapes.SetZOrder(line, 100);
-			//line.ZOrder = 100;
-			//diagramDisplay.Diagram.Shapes.Add(line, 100);
 			line.EndCapStyle = project.Design.CapStyles.ClosedArrow;
 
 			line.SourceDataFlowComponentReference = new DataFlowComponentReference(source.DataFlowComponent, sourceOutputIndex);
@@ -463,11 +459,8 @@ namespace VixenApplication
 			ChannelNodeShape shape = (ChannelNodeShape) project.ShapeTypes["ChannelNodeShape"].CreateInstance();
 			shape.SetChannelNode(node);
 			shape.Title = node.Name;
-			//shape.ZOrder = zOrder;
 			diagramDisplay.InsertShape(shape);
 			diagramDisplay.Diagram.Shapes.SetZOrder(shape, zOrder);
-			//diagramDisplay.Diagram.Shapes.Add(shape, zOrder);
-			//diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape) shape, diagramDisplay.Diagram);
 			diagramDisplay.Diagram.AddShapeToLayers(shape, _visibleLayer.Id);
 
 			if (!_channelNodeToChannelShapes.ContainsKey(node))
@@ -506,11 +499,8 @@ namespace VixenApplication
 			controllerShape.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS;
 			controllerShape.FillStyle = project.Design.FillStyles["Controller"];
 
-			//controllerShape.ZOrder = 1;
 			diagramDisplay.InsertShape(controllerShape);
 			diagramDisplay.Diagram.Shapes.SetZOrder(controllerShape, 1);
-			//diagramDisplay.Diagram.Shapes.Add(controllerShape, 1);
-			//diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape)controllerShape, diagramDisplay.Diagram);
 			diagramDisplay.Diagram.AddShapeToLayers(controllerShape, _visibleLayer.Id);
 
 			if (controllerShape.DataFlowComponent != null) {
@@ -536,11 +526,8 @@ namespace VixenApplication
 				else
 					outputShape.Title = output.Name;
 
-				//outputShape.ZOrder = 2;
 				diagramDisplay.InsertShape(outputShape);
 				diagramDisplay.Diagram.Shapes.SetZOrder(outputShape, 2);
-				//diagramDisplay.Diagram.Shapes.Add(outputShape, 2);
-				//diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape)outputShape, diagramDisplay.Diagram);
 				diagramDisplay.Diagram.AddShapeToLayers(outputShape, _visibleLayer.Id);
 
 				controllerShape.ChildFilterShapes.Add(outputShape);
@@ -557,11 +544,8 @@ namespace VixenApplication
 			filterShape.FillStyle = project.Design.FillStyles["Filter"];
 			filterShape.SetFilterInstance(filter);
 
-			//filterShape.ZOrder = 10;
 			diagramDisplay.InsertShape(filterShape);
-			diagramDisplay.Diagram.Shapes.SetZOrder(filterShape, 10);
-			//diagramDisplay.Diagram.Shapes.Add(filterShape, 10);		// Z Order of 10; should be above other channels/outputs, but under lines
-			//diagramDisplay.DiagramSetController.Project.Repository.InsertAll((Shape)filterShape, diagramDisplay.Diagram);
+			diagramDisplay.Diagram.Shapes.SetZOrder(filterShape, 10);  // Z Order of 10; should be above other channels/outputs, but under lines
 			diagramDisplay.Diagram.AddShapeToLayers(filterShape, _visibleLayer.Id);
 
 			if (filterShape.DataFlowComponent != null) {
@@ -582,9 +566,6 @@ namespace VixenApplication
 		private void _RemoveShape(Shape shape)
 		{
 			diagramDisplay.DeleteShape(shape);
-			//diagramDisplay.Diagram.Shapes.Remove(shape);
-			//diagramDisplay.DiagramSetController.Project.Repository.DeleteAll(shape);
-			//diagramDisplay.Diagram.RemoveShapeFromLayers(shape, _visibleLayer.Id | _hiddenLayer.Id);
 			if (shape is NestingSetupShape) {
 				foreach (FilterSetupShapeBase child in (shape as NestingSetupShape).ChildFilterShapes) {
 					_RemoveShape(child);
