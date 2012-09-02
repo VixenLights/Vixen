@@ -136,6 +136,8 @@ namespace VixenApplication
 			foreach (KeyValuePair<Guid, string> kvp in ApplicationServices.GetAvailableModules<IOutputFilterModuleInstance>()) {
 				comboBoxNewFilterTypes.Items.Add(new ComboBoxMapping(kvp.Key, kvp.Value));
 			}
+
+			diagramDisplay.SelectedShapes.Clear();
 		}
 
 		private class ComboBoxMapping
