@@ -30,7 +30,7 @@ namespace Vixen.Sys.Managers {
 		}
 
 		public IEnumerable<IDataFlowComponent> GetChildren(IDataFlowComponent component) {
-			return _componentLookup.Values.Where(x => x.Source != null && x.Source.Component.Equals(component));
+			return _componentLookup.Values.Where(x => x.Source != null && Equals(x.Source.Component, component));
 		}
 
 		public IDataFlowComponent GetComponent(Guid? id) {
@@ -86,7 +86,7 @@ namespace Vixen.Sys.Managers {
 		}
 
 		private void _RemoveAsSource(IDataFlowComponent component) {
-			IEnumerable<IDataFlowComponent> childComponents = _componentLookup.Values.Where(x => x.Source.Component.Equals(component));
+			IEnumerable<IDataFlowComponent> childComponents = _componentLookup.Values.Where(x => Equals(x.Source.Component, component));
 			foreach(IDataFlowComponent childComponent in childComponents) {
 				_RemoveComponentSource(childComponent);
 			}
@@ -99,7 +99,7 @@ namespace Vixen.Sys.Managers {
 		}
 
 		private void _SetComponentSource(IDataFlowComponent component, IDataFlowComponentReference source) {
-			if(source.Equals(component.Source)) return;
+			if(Equals(source, component.Source)) return;
 
 			component.Source = source;
 
