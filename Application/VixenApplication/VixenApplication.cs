@@ -457,12 +457,11 @@ namespace VixenApplication
 
 		#endregion
 
-		private void button1_Click(object sender, EventArgs e)
+		private void buttonSetupFiltersAndPatching_Click(object sender, EventArgs e)
 		{
 			ConfigFiltersAndPatching form = new ConfigFiltersAndPatching();
 			form.ShowDialog();
 		}
-
 	}
 
 	public class RecentSequences : List<string>
