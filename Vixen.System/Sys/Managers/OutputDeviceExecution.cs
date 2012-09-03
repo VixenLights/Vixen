@@ -203,7 +203,7 @@ namespace Vixen.Sys.Managers {
 		}
 
 		private void _DeviceAction(IEnumerable<T> outputDevices, Action<T> action) {
-			foreach(T outputDevice in outputDevices) {
+			foreach(T outputDevice in outputDevices.ToArray()) {
 				action(outputDevice);
 			}
 		}

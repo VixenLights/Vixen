@@ -53,7 +53,7 @@ namespace Vixen.Sys.Managers {
 		}
 
 		public void StartOnly(IEnumerable<IOutputDevice> outputDevices) {
-			StartAll(outputDevices.Cast<OutputPreview>());
+			StartAll(outputDevices.OfType<OutputPreview>());
 		}
 
 		public void StartAll(IEnumerable<OutputPreview> outputDevices) {

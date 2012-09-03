@@ -32,7 +32,7 @@ namespace Vixen.Sys.Managers {
 		}
 
 		public IDataFlowComponent GetDataFlowComponentForOutput(IOutputDevice controller, int outputIndex) {
-			return GetDataFlowComponentForOutput((OutputController)controller, outputIndex);
+			return GetDataFlowComponentForOutput(controller as OutputController, outputIndex);
 		}
 
 		public IDataFlowComponent GetDataFlowComponentForOutput(OutputController controller, int outputIndex) {
@@ -63,7 +63,7 @@ namespace Vixen.Sys.Managers {
 		}
 
 		public void StartOnly(IEnumerable<IOutputDevice> outputDevices) {
-			StartAll(outputDevices.Cast<OutputController>());
+			StartAll(outputDevices.OfType<OutputController>());
 		}
 
 		public void StartAll() {
