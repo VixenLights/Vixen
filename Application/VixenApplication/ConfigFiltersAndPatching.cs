@@ -317,7 +317,7 @@ namespace VixenApplication
 		{
 			_controllerShapes = new List<ControllerShape>();
 
-			foreach (IOutputDevice controller in VixenSystem.Controllers) {
+			foreach (IOutputDevice controller in VixenSystem.ControllerManagement.Devices) {
 				_CreateShapeFromController(controller);
 			}
 		}
