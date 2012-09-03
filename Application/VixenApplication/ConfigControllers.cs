@@ -31,7 +31,7 @@ namespace VixenApplication
 			listViewControllers.BeginUpdate();
 			listViewControllers.Items.Clear();
 
-			foreach(OutputController oc in VixenSystem.Controllers) {
+			foreach(OutputController oc in VixenSystem.OutputControllers) {
 				ListViewItem item = new ListViewItem();
 				item.Text = oc.Name;
 				item.Checked = oc.IsRunning;
@@ -87,7 +87,7 @@ namespace VixenApplication
 				string name = moduleDescriptor.TypeName;
 				ControllerFactory controllerFactory = new ControllerFactory();
 				OutputController oc = (OutputController)controllerFactory.CreateDevice((Guid)addForm.SelectedItem, name);
-				VixenSystem.Controllers.Add(oc);
+				VixenSystem.OutputControllers.Add(oc);
 				// In the case of a controller that has a form, the form will not be shown
 				// until this event handler completes.  To make sure it's in a visible state
 				// before evaluating if it's running or not, we're calling DoEvents.
@@ -116,7 +116,7 @@ namespace VixenApplication
 				if (MessageBox.Show(message, title, MessageBoxButtons.OKCancel) == DialogResult.OK) {
 					foreach (ListViewItem item in listViewControllers.SelectedItems) {
 						OutputController oc = item.Tag as OutputController;
-						VixenSystem.Controllers.Remove(oc);
+						VixenSystem.OutputControllers.Remove(oc);
 					}
 					_PopulateControllerList();
 				}
@@ -244,9 +244,9 @@ namespace VixenApplication
 			if(!_internal) {
 				OutputController controller = e.Item.Tag as OutputController;
 				if(e.Item.Checked) {
-					VixenSystem.Controllers.Start(controller);
+					VixenSystem.OutputControllers.Start(controller);
 				} else {
-					VixenSystem.Controllers.Stop(controller);
+					VixenSystem.OutputControllers.Stop(controller);
 				}
 			}
 		}

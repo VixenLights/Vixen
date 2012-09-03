@@ -310,7 +310,7 @@ namespace VixenApplication
 			buttonAddPatch.Enabled = (comboBoxPatchControllerSelect.SelectedIndex >= 0);
 
 			if (comboBoxPatchControllerSelect.SelectedIndex >= 0) {
-				OutputController oc = VixenSystem.Controllers.GetController((Guid)comboBoxPatchControllerSelect.SelectedValue);
+				OutputController oc = VixenSystem.OutputControllers.GetController((Guid)comboBoxPatchControllerSelect.SelectedValue);
 				numericUpDownPatchOutputSelect.Maximum = oc.OutputCount;
 				if (oc.OutputCount == 0)
 					numericUpDownPatchOutputSelect.Minimum = oc.OutputCount;
@@ -332,7 +332,7 @@ namespace VixenApplication
 			comboBoxPatchControllerSelect.Items.Clear();
 
 			List<ComboBoxControllerItem> controllerEntries = new List<ComboBoxControllerItem>();
-			foreach (OutputController oc in VixenSystem.Controllers) {
+			foreach (OutputController oc in VixenSystem.OutputControllers) {
 				ComboBoxControllerItem item = new ComboBoxControllerItem { Name = oc.Name, Id = oc.Id };
 				controllerEntries.Add(item);
 			}

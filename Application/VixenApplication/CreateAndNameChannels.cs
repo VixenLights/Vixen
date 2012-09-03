@@ -60,7 +60,7 @@ namespace VixenApplication {
 
 			using(RuleEditorContainer ruleEditorContainer = new RuleEditorContainer(editorControl)) {
 				if(ruleEditorContainer.ShowDialog() == DialogResult.OK) {
-					_namingRule = ((IHasNameRule)editorControl).Rule;
+					_namingRule = ((IHasNameRule)editorControl).NamingRule;
 				}
 			}
 		}

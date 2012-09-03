@@ -10,7 +10,7 @@ namespace VixenApplication.Controls {
 			textBoxFormat.Text = "Channel (" + GridTemplate.RowValuePlaceholder + ", " + GridTemplate.ColumnValuePlaceholder + ")";
 		}
 
-		public INamingRule Rule {
+		public INamingRule NamingRule {
 			get {
 				return new GridTemplate(_Width, _Height, _Format, _RowStart, _ColStart);
 			}

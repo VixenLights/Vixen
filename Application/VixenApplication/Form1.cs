@@ -15,9 +15,11 @@ using Dataweb.NShape.Controllers;
 using Dataweb.NShape.GeneralShapes;
 using Vixen.Data.Flow;
 using Vixen.Module.OutputFilter;
+using Vixen.Rule;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Output;
+using VixenApplication.Controls;
 
 // TODO:
 // add deleting of filters and patches/links
@@ -289,7 +291,7 @@ namespace VixenApplication
 		{
 			_controllerShapes = new List<ControllerShape>();
 
-			foreach (IOutputDevice controller in VixenSystem.Controllers) {
+			foreach (IOutputDevice controller in VixenSystem.ControllerManagement.Devices) {
 				_CreateShapeFromController(controller);
 			}
 		}
@@ -624,6 +626,28 @@ namespace VixenApplication
 		internal const char SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS = 'A';
 		internal const char SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS = 'B';
 		internal const char SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS = 'C';
+
+		private void button1_Click(object sender, EventArgs e) {
+			ChannelsToControllerRuleEditor editorControl = new ChannelsToControllerRuleEditor();
+			using(RuleEditorContainer ruleEditorContainer = new RuleEditorContainer(editorControl)) {
+				if(ruleEditorContainer.ShowDialog() == DialogResult.OK) {
+					IPatchingRule patchingRule = ((IHasPatchRule)editorControl).PatchingRule;
+					if(patchingRule != null) {
+						Cursor = Cursors.WaitCursor;
+						try {
+							foreach(DataFlowPatch dataFlowPatch in patchingRule.GeneratePatches()) {
+								VixenSystem.DataFlow.ApplyPatch(dataFlowPatch);
+							}
+							//refresh?
+						} catch(Exception ex) {
+							MessageBox.Show(ex.Message);
+						} finally {
+							Cursor = Cursors.Default;
+						}
+					}
+				}
+			}
+		}
 	}
 
 

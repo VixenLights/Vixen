@@ -1,7 +1,7 @@
 ﻿using Vixen.Rule;
 
 namespace VixenApplication.Controls {
-	interface IHasNameRule {
-		INamingRule NamingRule { get; }
+	interface IHasPatchRule {
+		IPatchingRule PatchingRule { get; }
 	}
 }

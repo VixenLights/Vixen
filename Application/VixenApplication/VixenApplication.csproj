@@ -107,6 +107,13 @@
     <Compile Include="ConfigPreviews.Designer.cs">
       <DependentUpon>ConfigPreviews.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ChannelsToControllerRuleEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ChannelsToControllerRuleEditor.Designer.cs">
+      <DependentUpon>ChannelsToControllerRuleEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\IHasPatchRule.cs" />
     <Compile Include="CreateAndNameChannels.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -181,6 +188,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ConfigPreviews.resx">
       <DependentUpon>ConfigPreviews.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ChannelsToControllerRuleEditor.resx">
+      <DependentUpon>ChannelsToControllerRuleEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CreateAndNameChannels.resx">
       <DependentUpon>CreateAndNameChannels.cs</DependentUpon>
@@ -330,6 +340,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\ZoomOut32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ZoomIn48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ZoomOut48.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
