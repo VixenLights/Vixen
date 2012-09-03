@@ -177,7 +177,7 @@ namespace Vixen.Sys.Output {
 			set {
 				CommandOutputFactory outputFactory = new CommandOutputFactory();
 				while(OutputCount < value) {
-					AddOutput(outputFactory.CreateOutput("Unnamed Output"));
+					AddOutput(outputFactory.CreateOutput("Unnamed Output", OutputCount));
 				}
 				while(OutputCount > value) {
 					RemoveOutput(Outputs[OutputCount - 1]);
@@ -209,6 +209,10 @@ namespace Vixen.Sys.Output {
 
 		Output[] IHasOutputs.Outputs {
 			get { return Outputs; }
+		}
+
+		public override string ToString() {
+			return Name;
 		}
 
 		private IEnumerable<ICommand> _ExtractCommandsFromOutputs(OutputController controller) {

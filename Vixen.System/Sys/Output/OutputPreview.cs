@@ -75,6 +75,10 @@ namespace Vixen.Sys.Output {
 			return _outputModuleConsumer.Setup();
 		}
 
+		public override string ToString() {
+			return Name;
+		}
+
 		private IPreview _PreviewModule {
 			get { return (IPreview)_outputModuleConsumer.Module; }
 		}

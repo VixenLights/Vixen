@@ -10,6 +10,7 @@ namespace Vixen.Data.Flow {
 
 		public CommandOutputDataFlowAdapter(CommandOutput output) {
 			_output = output;
+			Name = (_output.Index + 1).ToString();
 		}
 
 		public IDataFlowOutput[] Outputs {
@@ -32,5 +33,7 @@ namespace Vixen.Data.Flow {
 			get { return _output.Source; }
 			set { _output.Source = value; }
 		}
+
+		public string Name { get; private set; }
 	}
 }

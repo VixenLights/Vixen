@@ -50,5 +50,9 @@ namespace Vixen.Data.Flow {
 		public Guid DataFlowComponentId {
 			get { return _channel.Id; }
 		}
+
+		public string Name {
+			get { return _channel.Name; }
+		}
 	}
 }

@@ -55,12 +55,13 @@ namespace Vixen.IO.Xml {
 		private void _ReadOutputs(OutputController controller, XElement element) {
 			XElement outputsElement = element.Element(ELEMENT_OUTPUTS);
 			if(outputsElement != null) {
+				int index = 0;
 				foreach(XElement outputElement in outputsElement.Elements(ELEMENT_OUTPUT)) {
 					Guid? id = XmlHelper.GetGuidAttribute(outputElement, ATTR_ID);
 					string name = XmlHelper.GetAttribute(outputElement, ATTR_NAME) ?? "Unnamed output";
 
 					CommandOutputFactory outputFactory = new CommandOutputFactory();
-					CommandOutput output = (CommandOutput)outputFactory.CreateOutput(id.GetValueOrDefault(), name);
+					CommandOutput output = (CommandOutput)outputFactory.CreateOutput(id.GetValueOrDefault(), name, index++);
 
 					controller.AddOutput(output);
 				}

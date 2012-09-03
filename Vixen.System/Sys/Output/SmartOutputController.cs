@@ -131,6 +131,10 @@ namespace Vixen.Sys.Output {
 			return _adapterFactory.GetAdapter(output);
 		}
 
+		public override string ToString() {
+			return Name;
+		}
+
 		private IEnumerable<IntentChangeCollection> _ExtractIntentChangesFromOutputs() {
 			return Outputs.Select(x => x.IntentChangeCollection);
 		}

@@ -5,8 +5,8 @@ namespace Vixen.Sys.Output {
 	public class CommandOutput : Output {
 		private ICommand _command;
 
-		internal CommandOutput(Guid id, string name)
-			: base(id, name) {
+		internal CommandOutput(Guid id, string name, int index)
+			: base(id, name, index) {
 		}
 
 		public ICommand Command {

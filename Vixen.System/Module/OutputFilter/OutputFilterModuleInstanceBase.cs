@@ -61,6 +61,10 @@ namespace Vixen.Module.OutputFilter {
 		abstract public IDataFlowOutput[] Outputs { get; }
 
 		public IDataFlowComponentReference Source { get; set; }
+
+		virtual public string Name {
+			get { return Descriptor.TypeName; }
+		}
 		#endregion
 	}
 }

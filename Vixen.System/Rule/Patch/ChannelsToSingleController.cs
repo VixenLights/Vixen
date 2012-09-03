@@ -20,6 +20,10 @@ namespace Vixen.Rule.Patch {
 			: this(channels, controllerDevice, controllerDevice.OutputCount, startingOutputIndex, outputsPerChannel) {
 		}
 
+		public ChannelsToSingleController(IEnumerable<Channel> channels, IOutputDevice controllerDevice, int startingOutputIndex = 0, int outputsPerChannel = 1)
+			: this(channels, controllerDevice, ((IHasOutputs)controllerDevice).OutputCount, startingOutputIndex, outputsPerChannel) {
+		}
+
 		private ChannelsToSingleController(IEnumerable<Channel> channels, IOutputDevice controllerDevice, int controllerOutputCount, int startingOutputIndex, int outputsPerChannel) {
 			if(channels == null) throw new ArgumentNullException("channels");
 			if(controllerDevice == null) throw new ArgumentNullException("controllerDevice");
@@ -27,10 +31,10 @@ namespace Vixen.Rule.Patch {
 			if(outputsPerChannel < 1 || outputsPerChannel > controllerOutputCount) throw new InvalidOperationException("Invalid output count.");
 			//if(outputsPerChannel >= (controllerOutputCount - startingOutputIndex)) throw new InvalidOperationException("Not enough outputs to patch.");
 
-			_channelComponents = channels.Select(VixenSystem.Channels.GetDataFlowComponentForChannel).ToArray();
-			_controllerOutputComponents = Enumerable.Range(_startingOutputIndex, controllerOutputCount - _startingOutputIndex).Select(x => VixenSystem.ControllerManagement.GetDataFlowComponentForOutput(controllerDevice, x)).ToArray();
 			_startingOutputIndex = startingOutputIndex;
 			_outputsPerChannel = outputsPerChannel;
+			_channelComponents = channels.Select(VixenSystem.Channels.GetDataFlowComponentForChannel).ToArray();
+			_controllerOutputComponents = Enumerable.Range(_startingOutputIndex, controllerOutputCount - _startingOutputIndex).Select(x => VixenSystem.ControllerManagement.GetDataFlowComponentForOutput(controllerDevice, x)).ToArray();
 		}
 
 		public string Description {

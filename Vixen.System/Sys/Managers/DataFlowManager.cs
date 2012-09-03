@@ -71,6 +71,14 @@ namespace Vixen.Sys.Managers {
 			_RemoveComponent(component);
 		}
 
+		public void ApplyPatch(DataFlowPatch dataFlowPatch) {
+			IDataFlowComponent component = GetComponent(dataFlowPatch.ComponentId);
+			IDataFlowComponent sourceComponent = GetComponent(dataFlowPatch.SourceComponentId);
+			if(component != null) {
+				SetComponentSource(component, sourceComponent, dataFlowPatch.SourceComponentOutputIndex);
+			}
+		}
+
 		private void _AddComponent(IDataFlowComponent component) {
 			_componentLookup[component.DataFlowComponentId] = component;
 
