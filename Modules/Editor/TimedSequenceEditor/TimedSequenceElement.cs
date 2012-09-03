@@ -34,8 +34,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			EffectNode = other.EffectNode;
 		}
 
-
-		public EffectNode EffectNode { get; set; }
+		[NonSerializedAttribute]
+		private EffectNode _effectNode;
+		public EffectNode EffectNode
+		{
+			get { return _effectNode; }
+			set { _effectNode = value; }
+		}
 
 		public Color TextColor { get; set; }
 

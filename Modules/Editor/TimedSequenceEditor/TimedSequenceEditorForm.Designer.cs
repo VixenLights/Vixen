@@ -89,6 +89,7 @@
 			this.timelineControl = new Common.Controls.Timeline.TimelineControl();
 			this.toolStripEffects = new Common.Controls.ToolStripEx();
 			this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+			this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
 			this.toolStripOperations.SuspendLayout();
 			this.menuStrip.SuspendLayout();
 			this.statusStrip.SuspendLayout();
@@ -655,6 +656,10 @@
 			this.toolStripLabel1.Size = new System.Drawing.Size(102, 22);
 			this.toolStripLabel1.Text = "Available Effects:";
 			// 
+			// saveFileDialog
+			// 
+			this.saveFileDialog.Title = "Save timed sequence";
+			// 
 			// TimedSequenceEditorForm
 			// 
 			this.AllowDrop = true;
@@ -751,5 +756,6 @@
 		private System.Windows.Forms.ToolStripButton toolStripButton_ZoomTimeOut;
 		private System.Windows.Forms.ToolStripLabel toolStripLabel1;
 		private System.Windows.Forms.ToolStripMenuItem modifySequenceLengthToolStripMenuItem;
+		private System.Windows.Forms.SaveFileDialog saveFileDialog;
 	}
 }
