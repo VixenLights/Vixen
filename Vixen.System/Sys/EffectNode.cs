@@ -5,6 +5,7 @@ namespace Vixen.Sys {
 	/// <summary>
 	/// Qualifies a Command with a start time and length.
 	/// </summary>
+	[Serializable]
 	public class EffectNode : IEffectNode {//, IEquatable<IEffectNode>, IEquatable<EffectNode> {
 		public EffectNode()
 			: this(null, TimeSpan.Zero) {
