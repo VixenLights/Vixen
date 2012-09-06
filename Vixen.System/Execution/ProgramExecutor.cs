@@ -6,7 +6,7 @@ using Vixen.Module.Timing;
 using Vixen.Sys;
 
 namespace Vixen.Execution {
-    class ProgramExecutor : IProgramExecutor {
+    public class ProgramExecutor : IProgramExecutor {
         private QueuingSequenceEnumerator _sequenceEnumerator;
         private ISequenceExecutor _sequenceExecutor;
 		private RunState _state;
