@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Timers;
+using Vixen.Execution;
+using Vixen.Execution.Context;
 using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.App;
-using Vixen.Execution;
 using Timer = System.Timers.Timer;
 
 namespace VixenModules.App.Scheduler {
@@ -15,14 +16,14 @@ namespace VixenModules.App.Scheduler {
 		private SchedulerData _data;
 		private Timer _scheduleCheckTimer;
 		private ScheduleService _scheduleService;
-		private Dictionary<ProgramContext, ScheduleItem> _contexts;
+		private Dictionary<IProgramContext, ScheduleItem> _contexts;
 		private SynchronizationContext _synchronizationContext;
 
 		private const string ID_ROOT = "SchedulerRoot";
 
 		public SchedulerModule() {
 			_scheduleService = new ScheduleService();
-			_contexts = new Dictionary<ProgramContext, ScheduleItem>();
+			_contexts = new Dictionary<IProgramContext, ScheduleItem>();
 		}
 
 		public override void Loading() {
@@ -75,14 +76,18 @@ namespace VixenModules.App.Scheduler {
 				_SetEnableState(false);
 
 				Program program = Program.Load(item.FilePath);
-				ProgramContext context = Execution.CreateContext(program);
+
+				// No idea if any of this actually works. Needs KC's magical eyes and figures to look over it.
+				ProgramExecutor programExecutor = new ProgramExecutor();
+				programExecutor.Program = program;
+				IProgramContext context = VixenSystem.Contexts.CreateProgramContext(new ContextFeatures(ContextCaching.NoCaching), program, programExecutor);
 				context.ProgramEnded += context_ProgramEnded;
 	
 				_contexts[context] = item;
 				item.IsExecuting = true;
 				item.LastExecutedAt = DateTime.Now;
 
-				context.Play();
+				context.Start();
 
 				_SetEnableState(true);
 			} catch(Exception ex) {
@@ -93,7 +98,7 @@ namespace VixenModules.App.Scheduler {
 		void context_ProgramEnded(object sender, ProgramEventArgs e) {
 			ProgramContext context = sender as ProgramContext;
 			context.ProgramEnded -= context_ProgramEnded;
-			Execution.ReleaseContext(context);
+			VixenSystem.Contexts.ReleaseContext(context);
 			ScheduleItem item;
 			if(_contexts.TryGetValue(context, out item)) {
 				item.IsExecuting = false;
