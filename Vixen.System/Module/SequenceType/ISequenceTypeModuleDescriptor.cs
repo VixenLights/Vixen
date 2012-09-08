@@ -10,6 +10,5 @@ namespace Vixen.Module.SequenceType {
 		bool CanCreateNew { get; }
 
 		int ClassVersion { get; }
-		//Type SequenceDataType { get; }
 	}
 }

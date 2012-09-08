@@ -21,11 +21,6 @@ namespace Vixen.Module.SequenceType {
 
 		abstract public int ClassVersion { get; }
 
-		///// <summary>
-		///// Must implement ISequenceTypeDataModel.
-		///// </summary>
-		//abstract public Type SequenceDataType { get; }
-
 		// Default to true unless overridden in derived class
 		virtual public bool CanCreateNew { get { return true; }	}
 

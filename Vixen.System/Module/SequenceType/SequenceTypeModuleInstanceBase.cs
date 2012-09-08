@@ -6,17 +6,6 @@ using Vixen.Sys;
 
 namespace Vixen.Module.SequenceType {
 	abstract public class SequenceTypeModuleInstanceBase : ModuleInstanceBase, ISequenceTypeModuleInstance, IEqualityComparer<ISequenceTypeModuleInstance>, IEquatable<ISequenceTypeModuleInstance>, IEqualityComparer<SequenceTypeModuleInstanceBase>, IEquatable<SequenceTypeModuleInstanceBase> {
-
-		//protected SequenceTypeModuleInstanceBase() {
-		//}
-
-		//protected SequenceTypeModuleInstanceBase(SequenceTypeModuleInstanceBase original) {
-		//    InstanceId = Guid.NewGuid();
-		//    ModuleData = original.ModuleData.Clone();
-		//    StaticModuleData = original.StaticModuleData;
-		//    Descriptor = original.Descriptor;
-		//}
-
 		public string FileExtension {
 			get { return ((ISequenceTypeModuleDescriptor)Descriptor).FileExtension; }
 		}
@@ -24,10 +13,6 @@ namespace Vixen.Module.SequenceType {
 		public int ClassVersion {
 			get { return ((ISequenceTypeModuleDescriptor)Descriptor).ClassVersion; }
 		}
-
-		//public Type SequenceDataType {
-		//    get { return ((ISequenceTypeModuleDescriptor)Descriptor).SequenceDataType; }
-		//}
 
 		abstract public ISequence CreateSequence();
 
@@ -39,18 +24,6 @@ namespace Vixen.Module.SequenceType {
 			// Singleton
 			throw new NotSupportedException();
 		}
-
-		//public Guid InstanceId { get; set; }
-
-		//virtual public IModuleDataModel ModuleData { get; set; }
-
-		//virtual public IModuleDataModel StaticModuleData { get; set; }
-
-		//virtual public IModuleDescriptor Descriptor { get; set; }
-
-		//virtual public void Dispose() { }
-
-		//abstract public IModuleInstance Clone();
 
 		public bool Equals(ISequenceTypeModuleInstance x, ISequenceTypeModuleInstance y) {
 			return x.InstanceId == y.InstanceId;

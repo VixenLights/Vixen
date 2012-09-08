@@ -1,11 +1,14 @@
 ﻿using System.Drawing;
+using System.Runtime.Serialization;
 
 namespace Vixen.Data.Value {
+	[DataContract]
 	public struct ColorValue : IIntentDataType {
 		public ColorValue(Color color) {
 			Color = color;
 		}
 
+		[DataMember]
 		public Color Color;
 
 		static public Color ConvertToGrayscale(Color color) {

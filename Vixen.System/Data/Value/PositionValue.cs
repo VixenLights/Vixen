@@ -1,7 +1,8 @@
 ﻿using System;
-using Vixen.Sys;
+using System.Runtime.Serialization;
 
 namespace Vixen.Data.Value {
+	[DataContract]
 	public struct PositionValue : IIntentDataType {
 		public PositionValue(float percentage) {
 			if(percentage < 0 || percentage > 1) throw new ArgumentOutOfRangeException("percentage");
@@ -12,6 +13,7 @@ namespace Vixen.Data.Value {
 		/// <summary>
 		/// Percentage value between 0 and 1.
 		/// </summary>
+		[DataMember]
 		public float Position;
 	}
 }

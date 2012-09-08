@@ -11,8 +11,6 @@ namespace Vixen.Sys {
 		SelectedTimingProvider SelectedTimingProvider { get; set; }
 		ModuleLocalDataSet LocalDataSet { get; set; }
 		List<IMediaModuleInstance> Media { get; set; }
-		//List<IEffectNode> EffectData { get; set; }
-		//List<ISequenceFilterNode> SequenceFilterData { get; set; }
 		DataStream EffectData { get; set; }
 		DataStream SequenceFilterData { get; set; }
 		DataStreams DataStreams { get; }
