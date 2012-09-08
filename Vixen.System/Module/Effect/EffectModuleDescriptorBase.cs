@@ -7,7 +7,6 @@ using Vixen.Sys;
 namespace Vixen.Module.Effect {
 	abstract public class EffectModuleDescriptorBase : ModuleDescriptorBase, IEffectModuleDescriptor, IEqualityComparer<IEffectModuleDescriptor>, IEquatable<IEffectModuleDescriptor>, IEqualityComparer<EffectModuleDescriptorBase>, IEquatable<EffectModuleDescriptorBase> {
 		protected EffectModuleDescriptorBase() {
-			Parameters = new ParameterSignature();
 			PropertyDependencies = new Guid[0];
 		}
 
@@ -25,7 +24,7 @@ namespace Vixen.Module.Effect {
 
 		abstract public string EffectName { get; }
 
-		virtual public ParameterSignature Parameters { get; private set; }
+		abstract public ParameterSignature Parameters { get; }
 
 		virtual public Guid[] PropertyDependencies { get; private set; }
 
