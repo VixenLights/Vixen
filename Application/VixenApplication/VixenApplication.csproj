@@ -48,6 +48,18 @@
   </PropertyGroup>
   <Import Project="$(SolutionDir)\commonProject.props" />
   <ItemGroup>
+    <Reference Include="Dataweb.NShape">
+      <HintPath>..\..\..\Output\Common\Dataweb.NShape.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Dataweb.NShape.GeneralShapes">
+      <HintPath>..\..\..\Output\Common\Dataweb.NShape.GeneralShapes.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Dataweb.NShape.WinFormsUI">
+      <HintPath>..\..\..\Output\Common\Dataweb.NShape.WinFormsUI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
@@ -240,21 +252,6 @@
     <ProjectReference Include="..\..\Common\Controls\Controls.csproj">
       <Project>{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}</Project>
       <Name>Controls</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Common\NShape\Core\NShape.csproj">
-      <Project>{9EFE1059-E2DC-4576-B9E3-4AE3F998CB28}</Project>
-      <Name>NShape %28VixenModules\Common\NShape\NShape%29</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Common\NShape\GeneralShapes\NShapeGeneralShapes.csproj">
-      <Project>{1272F77E-D926-4310-AE8B-858909B10F0C}</Project>
-      <Name>NShapeGeneralShapes</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Common\NShape\WinFormsUI\NShapeWinFormsUI.csproj">
-      <Project>{5EAB131C-1C93-4C3F-A1D8-D711053DE33C}</Project>
-      <Name>NShapeWinFormsUI</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
