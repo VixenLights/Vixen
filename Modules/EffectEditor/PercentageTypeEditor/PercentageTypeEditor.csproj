@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\Output\Modules\EffectEditor\</OutputPath>
+    <OutputPath>$(SolutionDir)\Output\Modules\EffectEditor\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,11 +25,12 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\..\Release\Modules\EffectEditor\</OutputPath>
+    <OutputPath>$(SolutionDir)\Release\Modules\EffectEditor\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)\commonProject.props" />
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -40,9 +41,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Vixen">
-      <HintPath>..\..\..\Vixen.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PercentageTypeEditorControl.cs">
