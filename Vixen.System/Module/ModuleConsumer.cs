@@ -2,7 +2,8 @@
 using Vixen.Sys;
 
 namespace Vixen.Module {
-	class ModuleConsumer : IModuleConsumer {
+	class ModuleConsumer<T> : IModuleConsumer<T>
+		where T : class, IModuleInstance {
 		private IModuleDataRetriever _moduleDataRetriever;
 		private IModuleInstance _module;
 
@@ -15,15 +16,16 @@ namespace Vixen.Module {
 
 		public Guid ModuleId { get; private set; }
 
-		virtual public IModuleInstance Module {
+		virtual public T Module {
 			get {
 				if(_module == null) {
-					_module = Modules.GetById(ModuleId);
+					IModuleManagement moduleTypeManager = Modules.GetManager<T>();
+					_module = (T)moduleTypeManager.Get(ModuleId);
 					if(_module != null) {
 						_moduleDataRetriever.AssignModuleData(_module);
 					}
 				}
-				return _module;
+				return (T)_module;
 			}
 		}
 	}

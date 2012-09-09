@@ -15,11 +15,11 @@ namespace Vixen.Sys.Output {
 		private CommandOutputDataFlowAdapterFactory _adapterFactory = new CommandOutputDataFlowAdapterFactory();
 		private IOutputMediator<CommandOutput> _outputMediator;
 		private IHardware _executionControl;
-		private IOutputModuleConsumer _outputModuleConsumer;
+		private IOutputModuleConsumer<IControllerModuleInstance> _outputModuleConsumer;
 		private int? _updateInterval;
 		private IOutputDataPolicyProvider _dataPolicyProvider;
 
-		internal OutputController(Guid id, string name, IOutputMediator<CommandOutput> outputMediator, IHardware executionControl, IOutputModuleConsumer outputModuleConsumer) {
+		internal OutputController(Guid id, string name, IOutputMediator<CommandOutput> outputMediator, IHardware executionControl, IOutputModuleConsumer<IControllerModuleInstance> outputModuleConsumer) {
 			if(outputMediator == null) throw new ArgumentNullException("outputMediator");
 			if(executionControl == null) throw new ArgumentNullException("executionControl");
 			if(outputModuleConsumer == null) throw new ArgumentNullException("outputModuleConsumer");
@@ -225,7 +225,7 @@ namespace Vixen.Sys.Output {
 		}
 
 		private IControllerModuleInstance _ControllerModule {
-			get { return (IControllerModuleInstance)_outputModuleConsumer.Module; }
+			get { return _outputModuleConsumer.Module; }
 		}
 
 		private IControllerModuleInstance _ControllerChainModule {

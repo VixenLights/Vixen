@@ -2,17 +2,17 @@
 using Vixen.Module;
 
 namespace Vixen.Sys.Output {
-	class OutputModuleConsumer : ModuleConsumer, IOutputModuleConsumer {
-		private IOutputModule _outputModule;
+	class OutputModuleConsumer<T> : ModuleConsumer<T>, IOutputModuleConsumer<T>
+		where T : class, IOutputModule {
+		private T _outputModule;
 
 		public OutputModuleConsumer(Guid moduleId, IModuleDataRetriever moduleDataRetriever)
 			: base(moduleId, moduleDataRetriever) {
 		}
 
-		public override IModuleInstance Module {
+		public override T Module {
 			get {
-				//*** will this go through the appropriate manager?
-				_outputModule = (IOutputModule)base.Module;
+				_outputModule = base.Module;
 				return _outputModule;
 			}
 		}
@@ -27,39 +27,53 @@ namespace Vixen.Sys.Output {
 		}
 
 		public void Start() {
-			throw new NotImplementedException();
+			if(_outputModule != null) _outputModule.Start();
 		}
 
 		public void Stop() {
-			throw new NotImplementedException();
+			if(_outputModule != null) _outputModule.Stop();
 		}
 
 		public void Pause() {
-			throw new NotImplementedException();
+			if(_outputModule != null) _outputModule.Pause();
 		}
 
 		public void Resume() {
-			throw new NotImplementedException();
+			if(_outputModule != null) _outputModule.Resume();
 		}
 
 		public bool IsRunning {
-			get { throw new NotImplementedException(); }
+			get {
+				return _outputModule != null && _outputModule.IsRunning;
+			}
 		}
 
 		public bool IsPaused {
-			get { throw new NotImplementedException(); }
+			get {
+				return _outputModule != null && _outputModule.IsPaused;
+			}
 		}
 
 		public bool HasSetup {
-			get { throw new NotImplementedException(); }
+			get {
+				return _outputModule != null && _outputModule.HasSetup;
+			}
 		}
 
 		public bool Setup() {
-			throw new NotImplementedException();
+			if(_outputModule != null) {
+				return _outputModule.Setup();
+			}
+			return false;
 		}
 
 		public IOutputDeviceUpdateSignaler UpdateSignaler {
-			get { return _outputModule.UpdateSignaler; }
+			get {
+				if(_outputModule != null) {
+					return _outputModule.UpdateSignaler;
+				}
+				return null;
+			}
 		}
 	}
 }

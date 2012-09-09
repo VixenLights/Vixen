@@ -8,10 +8,10 @@ namespace Vixen.Sys.Output {
 	/// </summary>
 	public class OutputPreview : IPreviewDevice {
 		private IHardware _executionControl;
-		private IOutputModuleConsumer _outputModuleConsumer;
+		private IOutputModuleConsumer<IPreviewModuleInstance> _outputModuleConsumer;
 		private int? _updateInterval;
 
-		internal OutputPreview(Guid id, string name, IHardware executionControl, IOutputModuleConsumer outputModuleConsumer) {
+		internal OutputPreview(Guid id, string name, IHardware executionControl, IOutputModuleConsumer<IPreviewModuleInstance> outputModuleConsumer) {
 			if(executionControl == null) throw new ArgumentNullException("executionControl");
 			if(outputModuleConsumer == null) throw new ArgumentNullException("outputModuleConsumer");
 
@@ -80,7 +80,7 @@ namespace Vixen.Sys.Output {
 		}
 
 		private IPreview _PreviewModule {
-			get { return (IPreview)_outputModuleConsumer.Module; }
+			get { return _outputModuleConsumer.Module; }
 		}
 
 		private void _UpdateModuleState(ChannelIntentStates channelIntentStates) {

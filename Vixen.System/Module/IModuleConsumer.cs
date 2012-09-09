@@ -1,8 +1,9 @@
 ﻿using System;
 
 namespace Vixen.Module {
-	interface IModuleConsumer {
+	interface IModuleConsumer<out T>
+		where T : class, IModuleInstance {
 		Guid ModuleId { get; }
-		IModuleInstance Module { get; }
+		T Module { get; }
 	}
 }

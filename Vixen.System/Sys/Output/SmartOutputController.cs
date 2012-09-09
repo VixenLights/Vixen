@@ -16,10 +16,10 @@ namespace Vixen.Sys.Output {
 
 		private IOutputMediator<IntentOutput> _outputMediator;
 		private IHardware _executionControl;
-		private IOutputModuleConsumer _outputModuleConsumer;
+		private IOutputModuleConsumer<ISmartControllerModuleInstance> _outputModuleConsumer;
 		private int? _updateInterval;
 
-		internal SmartOutputController(Guid id, string name, IOutputMediator<IntentOutput> outputMediator, IHardware executionControl, IOutputModuleConsumer outputModuleConsumer) {
+		internal SmartOutputController(Guid id, string name, IOutputMediator<IntentOutput> outputMediator, IHardware executionControl, IOutputModuleConsumer<ISmartControllerModuleInstance> outputModuleConsumer) {
 			if(outputMediator == null) throw new ArgumentNullException("outputMediator");
 			if(executionControl == null) throw new ArgumentNullException("executionControl");
 			if(outputModuleConsumer == null) throw new ArgumentNullException("outputModuleConsumer");
@@ -147,7 +147,7 @@ namespace Vixen.Sys.Output {
 		}
 
 		private ISmartController _SmartControllerModule {
-			get { return (ISmartController)_outputModuleConsumer.Module; }
+			get { return _outputModuleConsumer.Module; }
 		}
 
 		private void _UpdateModuleState(IntentChangeCollection[] outputStates) {
