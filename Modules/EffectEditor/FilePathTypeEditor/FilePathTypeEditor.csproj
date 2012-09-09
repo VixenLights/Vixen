@@ -55,9 +55,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Effect\ImageGrid\ImageGrid.csproj">
-      <Project>{7DDEE3CF-FD55-4C62-9E7A-9B68CB69F828}</Project>
-      <Name>ImageGrid</Name>
+    <ProjectReference Include="..\..\..\common\ValueTypes\ValueTypes.csproj">
+      <Project>{D9A7E8BC-5617-486D-9DA5-89C5861A0F88}</Project>
+      <Name>ValueTypes</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

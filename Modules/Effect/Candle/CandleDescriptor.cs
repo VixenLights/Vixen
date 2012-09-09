@@ -1,5 +1,5 @@
 ﻿using System;
-using Vixen.Data.Value;
+using Common.ValueTypes;
 using Vixen.Module.Effect;
 using Vixen.Sys;
 
@@ -8,11 +8,11 @@ namespace VixenModules.Effect.Candle {
 		private Guid _typeId = new Guid("{504582D2-43AC-472E-8885-EC4BCBF2B1F7}");
 		private ParameterSignature _parameterSignature = new ParameterSignature(
 			new ParameterSpecification("Flicker frequency (changes per second)", typeof(int)),
-			new ParameterSpecification("Change percentage (absolute)", typeof(PositionValue)),
-			new ParameterSpecification("Minimum level", typeof(PositionValue)),
-			new ParameterSpecification("Maximum level", typeof(PositionValue)),
-			new ParameterSpecification("Flicker frequency deviation cap", typeof(PositionValue)),
-			new ParameterSpecification("Change percentage deviation cap", typeof(PositionValue)));
+			new ParameterSpecification("Change percentage (absolute)", typeof(Percentage)),
+			new ParameterSpecification("Minimum level", typeof(Percentage)),
+			new ParameterSpecification("Maximum level", typeof(Percentage)),
+			new ParameterSpecification("Flicker frequency deviation cap", typeof(Percentage)),
+			new ParameterSpecification("Change percentage deviation cap", typeof(Percentage)));
 
 		public override string TypeName {
 			get { return "Candle"; }

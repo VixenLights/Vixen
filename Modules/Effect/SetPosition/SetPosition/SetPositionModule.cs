@@ -1,4 +1,5 @@
 ﻿using System;
+using Common.ValueTypes;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Module;
@@ -16,13 +17,8 @@ namespace VixenModules.Effect.SetPosition {
 			set { _data = (SetPositionData)value; }
 		}
 
-		// Using Vixen-defined PositionValue for two reasons:
-		// 1. It's defined to be limited to values between 0 and 1.
-		// 2. An editor can be defined against that type and work for other
-		//    effects that need a 0-1 value editor.
-
 		[Value]
-		public PositionValue StartPosition {
+		public Percentage StartPosition {
 			get { return _data.StartPosition; }
 			set {
 				_data.StartPosition = value;
@@ -31,7 +27,7 @@ namespace VixenModules.Effect.SetPosition {
 		}
 
 		[Value]
-		public PositionValue EndPosition {
+		public Percentage EndPosition {
 			get { return _data.EndPosition; }
 			set {
 				_data.EndPosition = value;
@@ -44,7 +40,9 @@ namespace VixenModules.Effect.SetPosition {
 
 			foreach(ChannelNode node in TargetNodes) {
 				foreach(Channel channel in node.GetChannelEnumerator()) {
-					IIntent intent = new PositionIntent(StartPosition, EndPosition, TimeSpan);
+					PositionValue startPosition = new PositionValue(StartPosition);
+					PositionValue endPosition = new PositionValue(EndPosition);
+					IIntent intent = new PositionIntent(startPosition, endPosition, TimeSpan);
 					_effectIntents.AddIntentForChannel(channel.Id, intent, TimeSpan.Zero);
 				}
 			}

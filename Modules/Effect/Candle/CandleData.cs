@@ -11,11 +11,11 @@ namespace VixenModules.Effect.Candle {
 	public class CandleData : ModuleDataModelBase {
 		public CandleData() {
 			FlickerFrequency = 20;
-			ChangePercentage = new PositionValue(0.2f);
-			MinLevel = new PositionValue(0.1f);
-			MaxLevel = new PositionValue(1);
-			FlickerFrequencyDeviationCap = new PositionValue(0.25f);
-			ChangePercentageDeviationCap = new PositionValue(0.5f);
+			ChangePercentage = 0.2f;
+			MinLevel = 0.1f;
+			MaxLevel = 1;
+			FlickerFrequencyDeviationCap = 0.25f;
+			ChangePercentageDeviationCap = 0.5f;
 		}
 
 		[DataMember]
@@ -23,19 +23,19 @@ namespace VixenModules.Effect.Candle {
 
 		// Absolute, not relative to anything.
 		[DataMember]
-		public PositionValue ChangePercentage { get; set; }
+		public float ChangePercentage { get; set; }
 
 		[DataMember]
-		public PositionValue MinLevel { get; set; }
+		public float MinLevel { get; set; }
 
 		[DataMember]
-		public PositionValue MaxLevel { get; set; }
+		public float MaxLevel { get; set; }
 
 		[DataMember]
-		public PositionValue FlickerFrequencyDeviationCap { get; set; }
+		public float FlickerFrequencyDeviationCap { get; set; }
 
 		[DataMember]
-		public PositionValue ChangePercentageDeviationCap { get; set; }
+		public float ChangePercentageDeviationCap { get; set; }
 
 		public override IModuleDataModel Clone() {
 			return (CandleData)MemberwiseClone();

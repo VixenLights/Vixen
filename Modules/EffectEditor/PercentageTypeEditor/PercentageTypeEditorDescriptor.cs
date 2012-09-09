@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Vixen.Data.Value;
+using Common.ValueTypes;
 using Vixen.Module.EffectEditor;
 
-namespace VixenModules.EffectEditor.PositionValueEditor {
-	public class PositionValueEditorDescriptor : EffectEditorModuleDescriptorBase {
-		private Guid _typeId = new Guid("{8B188AB2-E358-49D6-B276-4273F7D54D93}");
+namespace VixenModules.EffectEditor.PercentageTypeEditor {
+	public class PercentageTypeEditorDescriptor : EffectEditorModuleDescriptorBase {
+		private Guid _typeId = new Guid("{2547BAD1-F016-4DBA-B968-6677A76964DF}");
 
 		public override string TypeName {
-			get { return "PositionValue editor"; }
+			get { return "Percentage Editor"; }
 		}
 
 		public override Guid TypeId {
@@ -18,7 +15,7 @@ namespace VixenModules.EffectEditor.PositionValueEditor {
 		}
 
 		public override Type ModuleClass {
-			get { return typeof(PositionValueEditorModule); }
+			get { return typeof(PercentageTypeEditorModule); }
 		}
 
 		public override string Author {
@@ -38,7 +35,7 @@ namespace VixenModules.EffectEditor.PositionValueEditor {
 		}
 
 		public override Type[] ParameterSignature {
-			get { return new[] { typeof(PositionValue) }; }
+			get { return new[] { typeof(Percentage) }; }
 		}
 	}
 }

@@ -1,5 +1,4 @@
 ﻿using System.Runtime.Serialization;
-using Vixen.Data.Value;
 using Vixen.Module;
 
 namespace VixenModules.Effect.SetPosition {
@@ -10,9 +9,9 @@ namespace VixenModules.Effect.SetPosition {
 		}
 
 		[DataMember]
-		public PositionValue StartPosition { get; set; }
+		public float StartPosition { get; set; }
 
 		[DataMember]
-		public PositionValue EndPosition { get; set; }
+		public float EndPosition { get; set; }
 	}
 }

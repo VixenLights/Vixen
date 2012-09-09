@@ -1,4 +1,5 @@
 ﻿using System;
+using Common.ValueTypes;
 using Vixen.Module.EffectEditor;
 
 namespace VixenModules.EffectEditor.FilePathTypeEditor {
@@ -34,7 +35,7 @@ namespace VixenModules.EffectEditor.FilePathTypeEditor {
 		}
 
 		public override Type[] ParameterSignature {
-			get { return new[] { typeof(VixenModules.Effect.ImageGrid.FilePath) }; }
+			get { return new[] { typeof(FilePath) }; }
 		}
 	}
 }

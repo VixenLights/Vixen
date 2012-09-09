@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("PositionValueEditor")]
+[assembly: AssemblyTitle("PercentageTypeEditor")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("K.C. Oaks")]
-[assembly: AssemblyProduct("PositionValueEditor")]
+[assembly: AssemblyProduct("PercentageTypeEditor")]
 [assembly: AssemblyCopyright("Copyright © K.C. Oaks 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("6cc5751e-963f-43cb-962f-cac8fd94f820")]
+[assembly: Guid("1bfbf605-4e47-4b41-bb42-12a8514891e9")]
 
 // Version information for an assembly consists of the following four values:
 //
