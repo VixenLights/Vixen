@@ -64,8 +64,10 @@ namespace Vixen.Sys.Managers {
 
 			_RemoveDataFlowParticipant(channel);
 
-			// Remove any nodes that reference the channel.
-			VixenSystem.Nodes.RemoveChannelLeaf(channel);
+			// DON'T remove nodes that reference this channel: we might be turning a node from a leaf
+			// into a group, and just removing the channel it contains!
+			//// Remove any nodes that reference the channel.
+			//VixenSystem.Nodes.RemoveChannelLeaf(channel);
 		}
 
 		public Channel GetChannel(Guid id) {
