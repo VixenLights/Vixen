@@ -101,9 +101,7 @@ namespace Vixen.Sys.Managers {
 		private void _Start(T outputDevice) {
 			if(_CanStart(outputDevice)) {
 				try {
-					//_StartingDevice(outputDevice);
 					_StartDevice(outputDevice);
-					//_StartedDevice(outputDevice);
 
 				} catch(Exception ex) {
 					VixenSystem.Logging.Error("Error starting device " + outputDevice.Name, ex);
@@ -114,9 +112,7 @@ namespace Vixen.Sys.Managers {
 		private void _Stop(T outputDevice) {
 			if(_CanStop(outputDevice)) {
 				try {
-					//_StoppingDevice(outputDevice);
 					_StopDevice(outputDevice);
-					//_StoppedDevice(outputDevice);
 				} catch(Exception ex) {
 					VixenSystem.Logging.Error("Error trying to stop device " + outputDevice.Name, ex);
 				}

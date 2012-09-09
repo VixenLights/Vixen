@@ -78,9 +78,8 @@ namespace Vixen.Sys.Managers {
 				IOutputDeviceUpdateSignaler signaler = _CreateOutputDeviceUpdateSignaler();
 
 				while(_threadState != ExecutionState.Stopping) {
-					if(Execution.UpdateState()) {
-						_UpdateOutputDevice();
-					}
+					Execution.UpdateState();
+					_UpdateOutputDevice();
 
 					_WaitOnSignal(signaler);
 					_WaitOnPause();
