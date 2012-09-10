@@ -28,7 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
+			System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
 			this.listViewControllers = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -55,16 +55,19 @@
 			// 
 			// listViewControllers
 			// 
+			this.listViewControllers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.listViewControllers.CheckBoxes = true;
 			this.listViewControllers.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2,
             this.columnHeader3});
 			this.listViewControllers.FullRowSelect = true;
-			listViewGroup1.Header = "ListViewGroup";
-			listViewGroup1.Name = "listViewGroup1";
+			listViewGroup3.Header = "ListViewGroup";
+			listViewGroup3.Name = "listViewGroup1";
 			this.listViewControllers.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1});
+            listViewGroup3});
 			this.listViewControllers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
 			this.listViewControllers.HideSelection = false;
 			this.listViewControllers.Location = new System.Drawing.Point(12, 12);
@@ -94,6 +97,7 @@
 			// 
 			// buttonAddController
 			// 
+			this.buttonAddController.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
 			this.buttonAddController.Location = new System.Drawing.Point(62, 236);
 			this.buttonAddController.Name = "buttonAddController";
 			this.buttonAddController.Size = new System.Drawing.Size(120, 25);
@@ -104,6 +108,7 @@
 			// 
 			// buttonDeleteController
 			// 
+			this.buttonDeleteController.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
 			this.buttonDeleteController.Location = new System.Drawing.Point(237, 236);
 			this.buttonDeleteController.Name = "buttonDeleteController";
 			this.buttonDeleteController.Size = new System.Drawing.Size(120, 25);
@@ -125,6 +130,8 @@
 			// 
 			// groupBoxSelectedController
 			// 
+			this.groupBoxSelectedController.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBoxSelectedController.Controls.Add(this.label5);
 			this.groupBoxSelectedController.Controls.Add(this.label4);
 			this.groupBoxSelectedController.Controls.Add(this.label1);
@@ -270,6 +277,10 @@
 			this.Controls.Add(this.buttonAddController);
 			this.Controls.Add(this.listViewControllers);
 			this.DoubleBuffered = true;
+			this.MaximizeBox = false;
+			this.MaximumSize = new System.Drawing.Size(435, 2000);
+			this.MinimizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(435, 520);
 			this.Name = "ConfigControllers";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Controllers Configuration";
