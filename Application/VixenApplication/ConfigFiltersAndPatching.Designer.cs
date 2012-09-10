@@ -34,14 +34,14 @@
 			this.buttonAddFilter = new System.Windows.Forms.Button();
 			this.comboBoxNewFilterTypes = new System.Windows.Forms.ComboBox();
 			this.diagramDisplay = new Dataweb.NShape.WinFormsUI.Display();
+			this.diagramSetController = new Dataweb.NShape.Controllers.DiagramSetController();
+			this.project = new Dataweb.NShape.Project(this.components);
+			this.cachedRepository = new Dataweb.NShape.Advanced.CachedRepository();
 			this.label1 = new System.Windows.Forms.Label();
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonZoomOut = new System.Windows.Forms.Button();
 			this.buttonZoomIn = new System.Windows.Forms.Button();
 			this.buttonDelete = new System.Windows.Forms.Button();
-			this.diagramSetController = new Dataweb.NShape.Controllers.DiagramSetController();
-			this.project = new Dataweb.NShape.Project(this.components);
-			this.cachedRepository = new Dataweb.NShape.Advanced.CachedRepository();
 			this.SuspendLayout();
 			// 
 			// buttonCancel
@@ -103,6 +103,26 @@
 			this.diagramDisplay.ShapeDoubleClick += new System.EventHandler<Dataweb.NShape.Controllers.DiagramPresenterShapeClickEventArgs>(this.displayDiagram_ShapeDoubleClick);
 			this.diagramDisplay.KeyDown += new System.Windows.Forms.KeyEventHandler(this.diagramDisplay_KeyDown);
 			// 
+			// diagramSetController
+			// 
+			this.diagramSetController.ActiveTool = null;
+			this.diagramSetController.Project = this.project;
+			// 
+			// project
+			// 
+			this.project.LibrarySearchPaths = ((System.Collections.Generic.IList<string>)(resources.GetObject("project.LibrarySearchPaths")));
+			this.project.Name = null;
+			this.project.Repository = this.cachedRepository;
+			roleBasedSecurityManager1.CurrentRole = Dataweb.NShape.StandardRole.Administrator;
+			roleBasedSecurityManager1.CurrentRoleName = "Administrator";
+			this.project.SecurityManager = roleBasedSecurityManager1;
+			// 
+			// cachedRepository
+			// 
+			this.cachedRepository.ProjectName = null;
+			this.cachedRepository.Store = null;
+			this.cachedRepository.Version = 0;
+			// 
 			// label1
 			// 
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -158,26 +178,6 @@
 			this.buttonDelete.UseVisualStyleBackColor = true;
 			this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
 			// 
-			// diagramSetController
-			// 
-			this.diagramSetController.ActiveTool = null;
-			this.diagramSetController.Project = this.project;
-			// 
-			// project
-			// 
-			this.project.LibrarySearchPaths = ((System.Collections.Generic.IList<string>)(resources.GetObject("project.LibrarySearchPaths")));
-			this.project.Name = null;
-			this.project.Repository = this.cachedRepository;
-			roleBasedSecurityManager1.CurrentRole = Dataweb.NShape.StandardRole.Administrator;
-			roleBasedSecurityManager1.CurrentRoleName = "Administrator";
-			this.project.SecurityManager = roleBasedSecurityManager1;
-			// 
-			// cachedRepository
-			// 
-			this.cachedRepository.ProjectName = null;
-			this.cachedRepository.Store = null;
-			this.cachedRepository.Version = 0;
-			// 
 			// ConfigFiltersAndPatching
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -192,6 +192,7 @@
 			this.Controls.Add(this.comboBoxNewFilterTypes);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.diagramDisplay);
+			this.DoubleBuffered = true;
 			this.Name = "ConfigFiltersAndPatching";
 			this.Text = "Output Filters & Patching Setup";
 			this.Load += new System.EventHandler(this.ConfigFiltersAndPatching_Load);
