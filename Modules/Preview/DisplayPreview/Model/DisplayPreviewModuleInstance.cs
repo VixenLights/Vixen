@@ -6,7 +6,6 @@ namespace VixenModules.Preview.DisplayPreview.Model
     using Vixen.Execution.Context;
     using Vixen.Module.Preview;
     using Vixen.Sys;
-    using Vixen.Sys.Managers;
     using VixenModules.Preview.DisplayPreview.Views;
 
     public class DisplayPreviewModuleInstance : FormPreviewModuleInstanceBase
@@ -35,9 +34,8 @@ namespace VixenModules.Preview.DisplayPreview.Model
         public void Unloading()
         {
             Execution.NodesChanged -= ExecutionNodesChanged;
-//            Execution.ValuesChanged -= ExecutionValuesChanged;
-//            Execution.ProgramContextCreated -= ProgramContextCreated;
-//            Execution.ProgramContextReleased -= ProgramContextReleased;
+            VixenSystem.Contexts.ContextCreated -= ProgramContextCreated;
+            VixenSystem.Contexts.ContextReleased -= ProgramContextReleased;
 //            _application.AppCommands.Remove(DISPLAY_PREVIEW_MENU);
         }
 
@@ -49,11 +47,6 @@ namespace VixenModules.Preview.DisplayPreview.Model
         private static void ExecutionNodesChanged(object sender, EventArgs e)
         {
             // TODO: Remove any channels that are no longer valid.
-        }
-
-        private static void ExecutionValuesChanged(ExecutionState stateValues)
-        {
-            ViewManager.UpdatePreviewExecutionStateValues(stateValues);
         }
 
         private void EnabledCommandChecked(object sender, LatchedEventArgs e)
@@ -97,9 +90,9 @@ namespace VixenModules.Preview.DisplayPreview.Model
             //_application.AppCommands.Add(rootCommand);
         }
 
-        private void ProgramContextCreated(object sender, ProgramContextEventArgs e)
+        private void ProgramContextCreated(object sender, ContextEventArgs contextEventArgs)
         {
-            var programContext = e.ProgramContext;
+            var programContext = contextEventArgs.Context as IProgramContext;
             if (programContext != null)
             {
                 _programContexts.Add(programContext);
@@ -120,9 +113,9 @@ namespace VixenModules.Preview.DisplayPreview.Model
             Start();
         }
 
-        private void ProgramContextReleased(object sender, ProgramContextEventArgs e)
+        private void ProgramContextReleased(object sender, ContextEventArgs contextEventArgs)
         {
-            var programContext = e.ProgramContext;
+            var programContext = contextEventArgs.Context as IProgramContext;
             if (programContext != null)
             {
                 programContext.ProgramStarted -= ProgramContextProgramStarted;
@@ -140,7 +133,7 @@ namespace VixenModules.Preview.DisplayPreview.Model
             }
         }
 
-        private void Setup()
+        private void OldSetup()
         {
             ViewManager.DisplaySetupView(GetDisplayPreviewModuleDataModel());
         }
@@ -150,7 +143,7 @@ namespace VixenModules.Preview.DisplayPreview.Model
             Setup();
         }
 
-        private void Start()
+        private void OldStart()
         {
             var dataModel = GetDisplayPreviewModuleDataModel();
             if (dataModel.IsEnabled)
@@ -159,7 +152,7 @@ namespace VixenModules.Preview.DisplayPreview.Model
             }
         }
 
-        private void Stop()
+        private void OldStop()
         {
             if (!GetDisplayPreviewModuleDataModel().Preferences.KeepVisualizerWindowOpen)
             {
@@ -169,15 +162,14 @@ namespace VixenModules.Preview.DisplayPreview.Model
 
         protected override void Update()
         {
-            throw new NotImplementedException();
+            ViewManager.UpdatePreviewExecutionStateValues(ChannelStates);
         }
 
         protected override Form Initialize()
         {
-            //Execution.ValuesChanged += ExecutionValuesChanged;
             Execution.NodesChanged += ExecutionNodesChanged;
-            //Execution.ProgramContextCreated += ProgramContextCreated;
-            //Execution.ProgramContextReleased += ProgramContextReleased;
+            VixenSystem.Contexts.ContextCreated += ProgramContextCreated;
+            VixenSystem.Contexts.ContextReleased += ProgramContextReleased;
             Preferences.CurrentPreferences = GetDisplayPreviewModuleDataModel().Preferences;
             ResetColors(false);
             InjectAppCommands();

@@ -29,10 +29,10 @@ namespace VixenModules.Preview.DisplayPreview.ViewModels
             }
         }
 
-        public void UpdateExecutionStateValues(ExecutionState stateValues)
+        public void UpdateExecutionStateValues(ChannelIntentStates channelIntentStates)
         {
             // TODO: This was commented out to make it compile.
-            var colorsByChannel = new Dictionary<ChannelNode, Color>(); // RGBModule.MapChannelCommandsToColors(stateValues).ToMediaColor();
+            var colorsByChannel = new Dictionary<ChannelNode, Color>(); // RGBModule.MapChannelCommandsToColors(channelIntentStates).ToMediaColor();
             foreach (var displayItem in DataModel.DisplayItems)
             {
                 displayItem.UpdateChannelColors(colorsByChannel);

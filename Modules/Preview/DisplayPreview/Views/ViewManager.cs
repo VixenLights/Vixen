@@ -2,6 +2,7 @@ namespace VixenModules.Preview.DisplayPreview.Views
 {
     using System;
     using System.Windows.Threading;
+    using Vixen.Sys;
     using Vixen.Sys.Managers;
     using VixenModules.Preview.DisplayPreview.Model;
     using VixenModules.Preview.DisplayPreview.ViewModels;
@@ -49,11 +50,11 @@ namespace VixenModules.Preview.DisplayPreview.Views
             }
         }
 
-        public static void UpdatePreviewExecutionStateValues(ExecutionState stateValues)
+        public static void UpdatePreviewExecutionStateValues(ChannelIntentStates channelIntentStates)
         {
             if (_visualizerViewModel != null)
             {
-                _visualizerViewModel.UpdateExecutionStateValues(stateValues);
+                _visualizerViewModel.UpdateExecutionStateValues(channelIntentStates);
             }
         }
 
