@@ -219,7 +219,7 @@ namespace VixenApplication
 		{
 			ConfigChannels form = new ConfigChannels();
 			DialogResult result = form.ShowDialog();
-			if (result == System.Windows.Forms.DialogResult.OK) {
+			if (result == DialogResult.OK) {
 				VixenSystem.SaveSystemConfig();
 			} else {
 				VixenSystem.ReloadSystemConfig();
@@ -230,17 +230,29 @@ namespace VixenApplication
 		{
 			ConfigControllers form = new ConfigControllers();
 			DialogResult result = form.ShowDialog();
-			if (result == System.Windows.Forms.DialogResult.OK) {
+			if (result == DialogResult.OK) {
 				VixenSystem.SaveSystemConfig();
 			} else {
 				VixenSystem.ReloadSystemConfig();
 			}
 		}
 
-		private void buttonSetupOutputPreviews_Click(object sender, EventArgs e) {
+		private void buttonSetupFiltersAndPatching_Click(object sender, EventArgs e)
+		{
+			ConfigFiltersAndPatching form = new ConfigFiltersAndPatching();
+			DialogResult result = form.ShowDialog();
+			if (result == DialogResult.OK) {
+				VixenSystem.SaveSystemConfig();
+			} else {
+				VixenSystem.ReloadSystemConfig();
+			}
+		}
+
+		private void buttonSetupOutputPreviews_Click(object sender, EventArgs e)
+		{
 			ConfigPreviews form = new ConfigPreviews();
 			DialogResult result = form.ShowDialog();
-			if(result == System.Windows.Forms.DialogResult.OK) {
+			if(result == DialogResult.OK) {
 				VixenSystem.SaveSystemConfig();
 			} else {
 				VixenSystem.ReloadSystemConfig();
@@ -457,11 +469,6 @@ namespace VixenApplication
 
 		#endregion
 
-		private void buttonSetupFiltersAndPatching_Click(object sender, EventArgs e)
-		{
-			ConfigFiltersAndPatching form = new ConfigFiltersAndPatching();
-			form.ShowDialog();
-		}
 	}
 
 	public class RecentSequences : List<string>
