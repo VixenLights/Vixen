@@ -123,10 +123,34 @@ namespace VixenApplication
 
 		public virtual void DrawCustom(Graphics graphics)
 		{
+			_DrawTitle(graphics, 0, 0, true, true);
+		}
+
+		// x and y offsets are from the top left of the shape. Text will be centered on the X/Y offset. If center[xy] are true, the offsets are ignored.
+		protected void _DrawTitle(Graphics graphics, float xOffset, float yOffset, bool centerX, bool centerY)
+		{
+			// resize the font smaller until it fits in 90% of the shape width (or until it hits 6 pixels in size)
 			SizeF stringSize = graphics.MeasureString(Title, _font);
-			float x = X - (stringSize.Width / 2f);
-			float y = Y - (Height / 2f);
-			y += (Height - stringSize.Height) / 2f;
+
+			while (stringSize.Width > (Width * 0.9) && (_font.Size > 6)) {
+				float newSize = (float)(_font.Size * 0.9);
+				_font = new Font("Arial", newSize, GraphicsUnit.Pixel);
+				stringSize = graphics.MeasureString(Title, _font);
+			}
+
+			float x;
+			if (centerX) {
+				x = X - (stringSize.Width / 2f);
+			} else {
+				x = X - (Width / 2f) + xOffset - (stringSize.Width / 2f);
+			}
+
+			float y;
+			if (centerY) {
+				y = Y - (stringSize.Height / 2f);
+			} else {
+				y = Y - (Height / 2f) + yOffset - (stringSize.Height / 2f);
+			}
 
 			graphics.DrawString(Title, _font, _textBrush, x, y);
 		}
@@ -323,12 +347,8 @@ namespace VixenApplication
 				return;
 			}
 
-			SizeF stringSize = graphics.MeasureString(Title, _font);
-			float x = X - (stringSize.Width / 2f);
-			float y = Y - (Height / 2f);
-			y += (ConfigFiltersAndPatching.SHAPE_GROUP_HEADER_HEIGHT - stringSize.Height) / 2f;
-
-			graphics.DrawString(Title, _font, _textBrush, x, y);
+			float yoffset = (ConfigFiltersAndPatching.SHAPE_GROUP_HEADER_HEIGHT) / 2f;
+			_DrawTitle(graphics, 0, yoffset, true, false);
 		}
 	}
 
