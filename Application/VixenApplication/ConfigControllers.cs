@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Vixen.Data.Flow;
 using Vixen.Factory;
 using Vixen.Module;
 using Vixen.Module.Controller;
@@ -146,68 +147,50 @@ namespace VixenApplication
 			ConfigureSelectedController();
 		}
 
-		//TODO: Accommodate the lack of patching
 		private void buttonGenerateChannels_Click(object sender, EventArgs e)
 		{
-			//int controllerCount = 0;
-			//int outputCount = 0;
+			int controllerCount = 0;
+			int outputCount = 0;
 
-			//if (listViewControllers.SelectedItems.Count >= 1) {
-			//    foreach (ListViewItem item in (listViewControllers.SelectedItems)) {
-			//        int channelsAdded = 0;
-					
-			//        // for each selected output controller, build up the controller and its list of output references.
-			//        OutputController oc = (OutputController)item.Tag;
-			//        List<ControllerReference> refsToAdd = new List<ControllerReference>();
-			//        for (int i = 0; i < oc.OutputCount; i++) {
-			//            refsToAdd.Add(new ControllerReference(oc.Id, i));
-			//        }
+			// go through all selected controllers....
+			if (listViewControllers.SelectedItems.Count >= 1) {
+				foreach (ListViewItem item in (listViewControllers.SelectedItems)) {
+					int channelsAdded = 0;
+					OutputController oc = (OutputController)item.Tag;
 
-			//        // iterate through all nodes, trying to find any of the references we will need to add. If we
-			//        // find them, then remove them from the list as we don't need to add them anymore.
-			//        foreach(ChannelNode node in VixenSystem.Nodes) {
-			//            if (node.Channel != null) {
-			//                foreach (ControllerReference cr in VixenSystem.ChannelPatching.GetChannelPatches(node.Channel.Id)) {
-			//                    if (refsToAdd.Contains(cr)) {
-			//                        refsToAdd.Remove(cr);
-			//                    }
-			//                }
-			//                if (refsToAdd.Count == 0) {
-			//                    break;
-			//                }
-			//            }
-			//        }
+					// for each controller, go through its outputs, and if it doesn't have a source, make a new channel/node for it.
+					// setting the source of the given output to that particular channel/node.
+					foreach (var output in oc.Outputs) {
+						if (output.Source == null) {
+							string name = output.Name;
+							ChannelNode newNode = VixenSystem.Nodes.AddNode(name);
+							if (newNode.Channel == null) {
+								newNode.Channel = VixenSystem.Channels.AddChannel(name);
+							}
+							output.Source = new DataFlowComponentReference(VixenSystem.Channels.GetDataFlowComponentForChannel(newNode.Channel), 0);
 
-			//        // add any controller references we have left.
-			//        foreach (ControllerReference cr in refsToAdd) {
-			//            string name = VixenSystem.Controllers.GetController(cr.ControllerId).Outputs[cr.OutputIndex].Name;
+							channelsAdded++;
+						}
+					}
 
-			//            ChannelNode newNode = VixenSystem.Nodes.AddNode(name);
-			//            if (newNode.Channel == null) {
-			//                newNode.Channel = VixenSystem.Channels.AddChannel(name);
-			//            }
-			//            VixenSystem.ChannelPatching.AddPatch(newNode.Channel.Id, cr);
-			//            channelsAdded++;
-			//        }
+					if (channelsAdded > 0) {
+						controllerCount++;
+						outputCount += channelsAdded;
+					}
+				}
 
-			//        if (channelsAdded > 0) {
-			//            controllerCount++;
-			//            outputCount += channelsAdded;
-			//        }
-			//    }
-
-			//    if (outputCount > 0) {
-			//        string message = outputCount + " channels added";
-			//        if (listViewControllers.SelectedItems.Count > 1) {
-			//            message += " for outputs on " + controllerCount + " controller" + ((controllerCount > 1) ? "s." : ".");
-			//        } else {
-			//            message += ".";
-			//        }
-			//        MessageBox.Show(message, "Channels Addded");
-			//    } else {
-			//        MessageBox.Show("All outputs for this controller are referenced in channels already.", "No Channels Addded");
-			//    }
-			//}
+				if (outputCount > 0) {
+					string message = outputCount + " channels added";
+					if (listViewControllers.SelectedItems.Count > 1) {
+						message += " for outputs on " + controllerCount + " controller" + ((controllerCount > 1) ? "s." : ".");
+					} else {
+						message += ".";
+					}
+					MessageBox.Show(message, "Channels Addded");
+				} else {
+					MessageBox.Show("All outputs for this controller are referenced in channels already.", "No Channels Addded");
+				}
+			}
 		}
 
 		private void listViewControllers_SelectedIndexChanged(object sender, EventArgs e)
