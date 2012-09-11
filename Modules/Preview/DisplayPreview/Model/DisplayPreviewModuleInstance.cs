@@ -174,7 +174,7 @@ namespace VixenModules.Preview.DisplayPreview.Model
             ResetColors(false);
             InjectAppCommands();
 
-            return null;
+            return new PreviewForm();
         }
     }
 }

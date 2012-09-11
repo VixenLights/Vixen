@@ -38,7 +38,8 @@ namespace VixenApplication {
 
 		private void buttonAddController_Click(object sender, EventArgs e) {
 			List<KeyValuePair<string, object>> outputModules = new List<KeyValuePair<string, object>>();
-			foreach(KeyValuePair<Guid, string> kvp in ApplicationServices.GetAvailableModules<IPreviewModuleInstance>()) {
+		    var availableModules = ApplicationServices.GetAvailableModules<IPreviewModuleInstance>();
+		    foreach(KeyValuePair<Guid, string> kvp in availableModules) {
 				outputModules.Add(new KeyValuePair<string, object>(kvp.Value, kvp.Key));
 			}
 			Common.Controls.ListSelectDialog addForm = new Common.Controls.ListSelectDialog("Add Preview", (outputModules));
