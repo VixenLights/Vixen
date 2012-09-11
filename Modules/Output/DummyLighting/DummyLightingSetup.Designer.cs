@@ -38,7 +38,7 @@
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOK.Location = new System.Drawing.Point(197, 146);
+			this.buttonOK.Location = new System.Drawing.Point(116, 146);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(75, 23);
 			this.buttonOK.TabIndex = 0;
@@ -49,7 +49,7 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(116, 146);
+			this.buttonCancel.Location = new System.Drawing.Point(197, 146);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
 			this.buttonCancel.TabIndex = 1;
@@ -77,7 +77,7 @@
 			this.radioButtonMultiRGB.TabIndex = 3;
 			this.radioButtonMultiRGB.TabStop = true;
 			this.radioButtonMultiRGB.Text = "Set up as RGB channels, with every 3 inputs\r\nmapping to the R, G, B components of" +
-				" a single\r\nRGB output";
+    " a single\r\nRGB output";
 			this.radioButtonMultiRGB.UseVisualStyleBackColor = true;
 			this.radioButtonMultiRGB.CheckedChanged += new System.EventHandler(this.radioButton_CheckedChanged);
 			// 
