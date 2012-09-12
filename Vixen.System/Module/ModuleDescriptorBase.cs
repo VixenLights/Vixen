@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace Vixen.Module {
+	[Serializable]
 	public abstract class ModuleDescriptorBase : IModuleDescriptor, IEqualityComparer<IModuleDescriptor>, IEquatable<IModuleDescriptor>, IEqualityComparer<ModuleDescriptorBase>, IEquatable<ModuleDescriptorBase> {
 		abstract public string TypeName { get; }
 

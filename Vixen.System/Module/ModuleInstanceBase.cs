@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 namespace Vixen.Module {
+	[Serializable]
 	public abstract class ModuleInstanceBase : IModuleInstance, IEqualityComparer<IModuleInstance>, IEquatable<IModuleInstance>, IEqualityComparer<ModuleInstanceBase>, IEquatable<ModuleInstanceBase> {
 		protected ModuleInstanceBase() {
 			InstanceId = Guid.NewGuid();

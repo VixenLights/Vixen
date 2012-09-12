@@ -5,6 +5,7 @@ using System.Drawing;
 using Vixen.Sys;
 
 namespace Vixen.Module.Effect {
+	[Serializable]
 	abstract public class EffectModuleDescriptorBase : ModuleDescriptorBase, IEffectModuleDescriptor, IEqualityComparer<IEffectModuleDescriptor>, IEquatable<IEffectModuleDescriptor>, IEqualityComparer<EffectModuleDescriptorBase>, IEquatable<EffectModuleDescriptorBase> {
 		protected EffectModuleDescriptorBase() {
 			PropertyDependencies = new Guid[0];
