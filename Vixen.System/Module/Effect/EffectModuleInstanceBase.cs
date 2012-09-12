@@ -6,6 +6,7 @@ using Vixen.Services;
 using Vixen.Sys;
 
 namespace Vixen.Module.Effect {
+	[Serializable]
 	abstract public class EffectModuleInstanceBase : ModuleInstanceBase, IEffectModuleInstance, IEqualityComparer<IEffectModuleInstance>, IEquatable<IEffectModuleInstance>, IEqualityComparer<EffectModuleInstanceBase>, IEquatable<EffectModuleInstanceBase> {
 		private ChannelNode[] _targetNodes;
 		private TimeSpan _timeSpan;

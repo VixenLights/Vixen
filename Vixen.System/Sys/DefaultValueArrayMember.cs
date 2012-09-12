@@ -6,6 +6,7 @@ using System.Text;
 using Vixen.Sys.Attribute;
 
 namespace Vixen.Sys {
+	[Serializable]
 	class DefaultValueArrayMember {
 		private object _owner;
 		private PropertyInfo[] _valueProperties;

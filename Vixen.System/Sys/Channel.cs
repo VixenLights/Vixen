@@ -8,6 +8,7 @@ namespace Vixen.Sys {
 	/// <summary>
 	/// A logical channel of low-level CommandData that is intended to be executed by a controller.
 	/// </summary>
+	[Serializable]
 	public class Channel : IOutputStateSource, IEqualityComparer<Channel>, IEquatable<Channel> {
 		private ChannelContextSource _dataSource;
 		private IIntentStates _state;
