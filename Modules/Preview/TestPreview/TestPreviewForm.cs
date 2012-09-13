@@ -1,32 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using Vixen.Commands;
 using Vixen.Sys;
 
-namespace TestPreview {
+namespace VixenModules.Preview.TestPreview {
 	public partial class TestPreviewForm : Form {
-		private CommandHandler _commandHandler;
 		private Dictionary<Guid, ChannelColorStateControl> _channelControls;
 
 		public TestPreviewForm() {
 			InitializeComponent();
-			_commandHandler = new CommandHandler();
 			_channelControls = new Dictionary<Guid, ChannelColorStateControl>();
 			foreach(Channel channel in VixenSystem.Channels) {
 				_AddChannel(channel);
 			}
 		}
 
-		public void Update(ChannelCommands channelCommands) {
-			if(channelCommands != null) {
-				foreach(Guid channelId in channelCommands.Keys) {
-					ICommand command = channelCommands[channelId];
-					if(command != null) {
+		public void Update(ChannelIntentStates channelIntentStates) {
+			if(channelIntentStates != null) {
+				foreach(Guid channelId in channelIntentStates.Keys) {
+					IIntentStates intentStates = channelIntentStates[channelId];
+					if(intentStates != null) {
 						ChannelColorStateControl control = _GetControlForChannel(channelId);
 						if(control != null) {
-							command.Dispatch(_commandHandler);
-							control.ChannelColor = _commandHandler.Value;
+							control.ChannelState = intentStates;
 						}
 					}
 				}

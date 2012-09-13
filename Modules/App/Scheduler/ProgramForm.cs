@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using BaseSequence;
+using Vixen.Services;
 using Vixen.Sys;
 
 namespace VixenModules.App.Scheduler {
@@ -18,7 +20,7 @@ namespace VixenModules.App.Scheduler {
 			InitializeComponent();
 
 			_Program = program;
-			_SystemSequences = Sequence.GetAllFileNames().Select(System.IO.Path.GetFileName);
+			_SystemSequences = SequenceService.Instance.GetAllSequenceFileNames().Select(System.IO.Path.GetFileName);
 		}
 
 		private Program _Program {
@@ -161,7 +163,7 @@ namespace VixenModules.App.Scheduler {
 				Cursor = Cursors.WaitCursor;
 				try {
 					_originalProgram.Clear();
-					_originalProgram.Sequences.AddRange(_ProgramSequences.Select(Sequence.Load));
+					_originalProgram.Sequences.AddRange(_ProgramSequences.Select(SequenceService.Instance.Load));
 					_originalProgram.Save(_ProgramName);
 				} catch(Exception ex) {
 					MessageBox.Show(ex.Message, "Vixen Program", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);

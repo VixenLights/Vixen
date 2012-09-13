@@ -1,6 +1,6 @@
 ﻿using System;
-using Vixen.Commands;
-using Vixen.Commands.KnownDataTypes;
+using Common.ValueTypes;
+using Vixen.Data.Value;
 using Vixen.Module.Effect;
 using Vixen.Sys;
 
@@ -43,7 +43,8 @@ namespace VixenModules.Effect.SetPosition {
 		public override ParameterSignature Parameters {
 			get {
 				return new ParameterSignature(
-					new ParameterSpecification("Position", typeof(Position))
+					new ParameterSpecification("Start Position", typeof(Percentage)),
+					new ParameterSpecification("End Position", typeof(Percentage))
 					);
 			}
 		}

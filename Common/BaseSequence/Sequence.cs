@@ -128,10 +128,6 @@ namespace BaseSequence {
 			return timingProviders.GetTimingSource(SelectedTimingProvider);
 		}
 
-		//public IEnumerable<IEffectNode> GetData() {
-		//    return SequenceData.EffectData.Cast<IEffectNode>();
-		//}
-
 		public IEnumerable<ISequenceFilterNode> GetAllSequenceFilters() {
 			return SequenceData.SequenceFilterData.Cast<ISequenceFilterNode>();
 		}

@@ -13,9 +13,9 @@ using System.Drawing.Imaging;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-    public class TimedSequenceElement : Element
+	public class TimedSequenceElement : Element
 	{
-        public TimedSequenceElement(EffectNode effectNode)
+		public TimedSequenceElement(EffectNode effectNode)
 			: base()
 		{
 			StartTime = effectNode.StartTime;
@@ -34,15 +34,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			EffectNode = other.EffectNode;
 		}
 
-        [NonSerializedAttribute]
-        private EffectNode _effectNode;
-        public EffectNode EffectNode
-        {
-            get { return _effectNode; }
-            set { _effectNode = value; }
-        }
+		[NonSerializedAttribute]
+		private EffectNode _effectNode;
+		public EffectNode EffectNode
+		{
+			get { return _effectNode; }
+			set { _effectNode = value; }
+		}
 
-        public Color TextColor { get; set; }
+		public Color TextColor { get; set; }
 
 		private Bitmap RenderedInset { get; set; }
 

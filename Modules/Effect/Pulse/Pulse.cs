@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Sys;
 using Vixen.Module;
@@ -75,13 +76,13 @@ namespace VixenModules.Effect.Pulse
 				for(int i=1; i<allPointsTimeOrdered.Length; i++) {
 					double position = allPointsTimeOrdered[i];
 
-					LightingValue startValue = new LightingValue(ColorGradient.GetColorAt(lastPosition), LevelCurve.GetValue(lastPosition * 100) / 100);
-					LightingValue endValue = new LightingValue(ColorGradient.GetColorAt(position), LevelCurve.GetValue(position * 100) / 100);
+					LightingValue startValue = new LightingValue(ColorGradient.GetColorAt(lastPosition), (float)LevelCurve.GetValue(lastPosition * 100) / 100);
+					LightingValue endValue = new LightingValue(ColorGradient.GetColorAt(position), (float)LevelCurve.GetValue(position * 100) / 100);
 					
 					TimeSpan startTime = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds * lastPosition);
 					TimeSpan timeSpan = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds * (position - lastPosition));
 					
-					IIntent intent = new LightingLinearIntent(startValue, endValue, timeSpan);
+					IIntent intent = new LightingIntent(startValue, endValue, timeSpan);
 					
 					_channelData.AddIntentForChannel(channel.Id, intent, startTime);
 					

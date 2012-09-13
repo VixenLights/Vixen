@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Vixen.Data.Flow;
+using Vixen.Factory;
 using Vixen.Module;
 using Vixen.Module.Controller;
 using Vixen.Services;
@@ -30,7 +32,7 @@ namespace VixenApplication
 			listViewControllers.BeginUpdate();
 			listViewControllers.Items.Clear();
 
-			foreach(OutputController oc in VixenSystem.Controllers) {
+			foreach(OutputController oc in VixenSystem.OutputControllers) {
 				ListViewItem item = new ListViewItem();
 				item.Text = oc.Name;
 				item.Checked = oc.IsRunning;
@@ -84,8 +86,9 @@ namespace VixenApplication
 			if (addForm.ShowDialog() == DialogResult.OK) {
 				IModuleDescriptor moduleDescriptor = ApplicationServices.GetModuleDescriptor((Guid)addForm.SelectedItem);
 				string name = moduleDescriptor.TypeName;
-				OutputController oc = new OutputController(name, 0, (Guid)addForm.SelectedItem);
-				VixenSystem.Controllers.Add(oc);
+				ControllerFactory controllerFactory = new ControllerFactory();
+				OutputController oc = (OutputController)controllerFactory.CreateDevice((Guid)addForm.SelectedItem, name);
+				VixenSystem.OutputControllers.Add(oc);
 				// In the case of a controller that has a form, the form will not be shown
 				// until this event handler completes.  To make sure it's in a visible state
 				// before evaluating if it's running or not, we're calling DoEvents.
@@ -114,7 +117,7 @@ namespace VixenApplication
 				if (MessageBox.Show(message, title, MessageBoxButtons.OKCancel) == DialogResult.OK) {
 					foreach (ListViewItem item in listViewControllers.SelectedItems) {
 						OutputController oc = item.Tag as OutputController;
-						VixenSystem.Controllers.Remove(oc);
+						VixenSystem.OutputControllers.Remove(oc);
 					}
 					_PopulateControllerList();
 				}
@@ -149,42 +152,25 @@ namespace VixenApplication
 			int controllerCount = 0;
 			int outputCount = 0;
 
+			// go through all selected controllers....
 			if (listViewControllers.SelectedItems.Count >= 1) {
 				foreach (ListViewItem item in (listViewControllers.SelectedItems)) {
 					int channelsAdded = 0;
-					
-					// for each selected output controller, build up the controller and its list of output references.
 					OutputController oc = (OutputController)item.Tag;
-					List<ControllerReference> refsToAdd = new List<ControllerReference>();
-					for (int i = 0; i < oc.OutputCount; i++) {
-						refsToAdd.Add(new ControllerReference(oc.Id, i));
-					}
 
-					// iterate through all nodes, trying to find any of the references we will need to add. If we
-					// find them, then remove them from the list as we don't need to add them anymore.
-					foreach(ChannelNode node in VixenSystem.Nodes) {
-						if (node.Channel != null) {
-							foreach (ControllerReference cr in VixenSystem.ChannelPatching.GetChannelPatches(node.Channel.Id)) {
-								if (refsToAdd.Contains(cr)) {
-									refsToAdd.Remove(cr);
-								}
+					// for each controller, go through its outputs, and if it doesn't have a source, make a new channel/node for it.
+					// setting the source of the given output to that particular channel/node.
+					foreach (var output in oc.Outputs) {
+						if (output.Source == null) {
+							string name = output.Name;
+							ChannelNode newNode = VixenSystem.Nodes.AddNode(name);
+							if (newNode.Channel == null) {
+								newNode.Channel = VixenSystem.Channels.AddChannel(name);
 							}
-							if (refsToAdd.Count == 0) {
-								break;
-							}
-						}
-					}
+							output.Source = new DataFlowComponentReference(VixenSystem.Channels.GetDataFlowComponentForChannel(newNode.Channel), 0);
 
-					// add any controller references we have left.
-					foreach (ControllerReference cr in refsToAdd) {
-						string name = VixenSystem.Controllers.GetController(cr.ControllerId).Outputs[cr.OutputIndex].Name;
-
-						ChannelNode newNode = VixenSystem.Nodes.AddNode(name);
-						if (newNode.Channel == null) {
-							newNode.Channel = VixenSystem.Channels.AddChannel(name);
+							channelsAdded++;
 						}
-						VixenSystem.ChannelPatching.AddPatch(newNode.Channel.Id, cr);
-						channelsAdded++;
 					}
 
 					if (channelsAdded > 0) {
@@ -241,9 +227,9 @@ namespace VixenApplication
 			if(!_internal) {
 				OutputController controller = e.Item.Tag as OutputController;
 				if(e.Item.Checked) {
-					VixenSystem.Controllers.Start(controller);
+					VixenSystem.OutputControllers.Start(controller);
 				} else {
-					VixenSystem.Controllers.Stop(controller);
+					VixenSystem.OutputControllers.Stop(controller);
 				}
 			}
 		}

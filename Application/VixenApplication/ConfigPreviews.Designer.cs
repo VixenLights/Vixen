@@ -23,7 +23,7 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
+			System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
 			this.groupBoxSelectedController = new System.Windows.Forms.GroupBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.buttonUpdate = new System.Windows.Forms.Button();
@@ -42,6 +42,8 @@
 			// 
 			// groupBoxSelectedController
 			// 
+			this.groupBoxSelectedController.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBoxSelectedController.Controls.Add(this.label1);
 			this.groupBoxSelectedController.Controls.Add(this.buttonUpdate);
 			this.groupBoxSelectedController.Controls.Add(this.label2);
@@ -101,15 +103,18 @@
 			// 
 			// listViewControllers
 			// 
+			this.listViewControllers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.listViewControllers.CheckBoxes = true;
 			this.listViewControllers.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
 			this.listViewControllers.FullRowSelect = true;
-			listViewGroup1.Header = "ListViewGroup";
-			listViewGroup1.Name = "listViewGroup1";
+			listViewGroup2.Header = "ListViewGroup";
+			listViewGroup2.Name = "listViewGroup1";
 			this.listViewControllers.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1});
+            listViewGroup2});
 			this.listViewControllers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
 			this.listViewControllers.HideSelection = false;
 			this.listViewControllers.Location = new System.Drawing.Point(12, 12);
@@ -135,7 +140,7 @@
 			// 
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.Location = new System.Drawing.Point(220, 441);
+			this.buttonOk.Location = new System.Drawing.Point(221, 445);
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.Size = new System.Drawing.Size(90, 25);
 			this.buttonOk.TabIndex = 31;
@@ -144,6 +149,7 @@
 			// 
 			// buttonDeleteController
 			// 
+			this.buttonDeleteController.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
 			this.buttonDeleteController.Location = new System.Drawing.Point(237, 236);
 			this.buttonDeleteController.Name = "buttonDeleteController";
 			this.buttonDeleteController.Size = new System.Drawing.Size(120, 25);
@@ -154,6 +160,7 @@
 			// 
 			// buttonAddController
 			// 
+			this.buttonAddController.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
 			this.buttonAddController.Location = new System.Drawing.Point(62, 236);
 			this.buttonAddController.Name = "buttonAddController";
 			this.buttonAddController.Size = new System.Drawing.Size(120, 25);
@@ -166,7 +173,7 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(316, 441);
+			this.buttonCancel.Location = new System.Drawing.Point(317, 445);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(90, 25);
 			this.buttonCancel.TabIndex = 33;
@@ -177,13 +184,18 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(418, 478);
+			this.ClientSize = new System.Drawing.Size(419, 482);
 			this.Controls.Add(this.groupBoxSelectedController);
 			this.Controls.Add(this.listViewControllers);
 			this.Controls.Add(this.buttonOk);
 			this.Controls.Add(this.buttonDeleteController);
 			this.Controls.Add(this.buttonAddController);
 			this.Controls.Add(this.buttonCancel);
+			this.DoubleBuffered = true;
+			this.MaximizeBox = false;
+			this.MaximumSize = new System.Drawing.Size(435, 2000);
+			this.MinimizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(435, 520);
 			this.Name = "ConfigPreviews";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Previews Configuration";

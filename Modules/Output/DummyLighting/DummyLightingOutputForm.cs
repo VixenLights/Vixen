@@ -103,8 +103,6 @@ namespace VixenModules.Output.DummyLighting
 			for (int i = 0; i < outputStates.Length; i++) {
 				_commandHandler.Reset();
 
-				//Was: An object wrapping a possibly-default value type.
-				//Now: A possibly-default wrapping object.
 				ICommand command = outputStates[i];
 				if(command != null) {
 					command.Dispatch(_commandHandler);

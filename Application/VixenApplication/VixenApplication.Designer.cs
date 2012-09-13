@@ -58,6 +58,7 @@
 			this.labelVersion = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.groupBoxSystemConfig = new System.Windows.Forms.GroupBox();
+			this.buttonSetupOutputPreviews = new System.Windows.Forms.Button();
 			this.buttonSetupOutputControllers = new System.Windows.Forms.Button();
 			this.buttonSetupChannels = new System.Windows.Forms.Button();
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
@@ -65,7 +66,7 @@
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabelExecutionState = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabel_memory = new System.Windows.Forms.ToolStripStatusLabel();
-			this.buttonSetupOutputPreviews = new System.Windows.Forms.Button();
+			this.buttonSetupFiltersAndPatching = new System.Windows.Forms.Button();
 			this.menuStripMain.SuspendLayout();
 			this.groupBoxSequences.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -277,15 +278,26 @@
 			// 
 			// groupBoxSystemConfig
 			// 
+			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupFiltersAndPatching);
 			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupOutputPreviews);
 			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupOutputControllers);
 			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupChannels);
 			this.groupBoxSystemConfig.Location = new System.Drawing.Point(236, 133);
 			this.groupBoxSystemConfig.Name = "groupBoxSystemConfig";
-			this.groupBoxSystemConfig.Size = new System.Drawing.Size(204, 142);
+			this.groupBoxSystemConfig.Size = new System.Drawing.Size(204, 186);
 			this.groupBoxSystemConfig.TabIndex = 12;
 			this.groupBoxSystemConfig.TabStop = false;
 			this.groupBoxSystemConfig.Text = "System Configuration";
+			// 
+			// buttonSetupOutputPreviews
+			// 
+			this.buttonSetupOutputPreviews.Location = new System.Drawing.Point(12, 143);
+			this.buttonSetupOutputPreviews.Name = "buttonSetupOutputPreviews";
+			this.buttonSetupOutputPreviews.Size = new System.Drawing.Size(180, 30);
+			this.buttonSetupOutputPreviews.TabIndex = 7;
+			this.buttonSetupOutputPreviews.Text = "Configure Previews";
+			this.buttonSetupOutputPreviews.UseVisualStyleBackColor = true;
+			this.buttonSetupOutputPreviews.Click += new System.EventHandler(this.buttonSetupOutputPreviews_Click);
 			// 
 			// buttonSetupOutputControllers
 			// 
@@ -351,15 +363,15 @@
 			this.toolStripStatusLabel_memory.Text = "Resource Usage";
 			this.toolStripStatusLabel_memory.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
-			// buttonSetupOutputPreviews
+			// buttonSetupFiltersAndPatching
 			// 
-			this.buttonSetupOutputPreviews.Location = new System.Drawing.Point(12, 103);
-			this.buttonSetupOutputPreviews.Name = "buttonSetupOutputPreviews";
-			this.buttonSetupOutputPreviews.Size = new System.Drawing.Size(180, 30);
-			this.buttonSetupOutputPreviews.TabIndex = 7;
-			this.buttonSetupOutputPreviews.Text = "Configure Previews";
-			this.buttonSetupOutputPreviews.UseVisualStyleBackColor = true;
-			this.buttonSetupOutputPreviews.Click += new System.EventHandler(this.buttonSetupOutputPreviews_Click);
+			this.buttonSetupFiltersAndPatching.Location = new System.Drawing.Point(12, 103);
+			this.buttonSetupFiltersAndPatching.Name = "buttonSetupFiltersAndPatching";
+			this.buttonSetupFiltersAndPatching.Size = new System.Drawing.Size(180, 30);
+			this.buttonSetupFiltersAndPatching.TabIndex = 15;
+			this.buttonSetupFiltersAndPatching.Text = "Configure Filters and Patching";
+			this.buttonSetupFiltersAndPatching.UseVisualStyleBackColor = true;
+			this.buttonSetupFiltersAndPatching.Click += new System.EventHandler(this.buttonSetupFiltersAndPatching_Click);
 			// 
 			// VixenApplication
 			// 
@@ -428,6 +440,7 @@
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel_memory;
 		private System.Windows.Forms.Button buttonSetupOutputPreviews;
+		private System.Windows.Forms.Button buttonSetupFiltersAndPatching;
 	}
 }
 

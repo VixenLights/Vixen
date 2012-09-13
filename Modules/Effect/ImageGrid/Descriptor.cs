@@ -1,4 +1,5 @@
 ﻿using System;
+using Common.ValueTypes;
 using Vixen.Module.Effect;
 using Vixen.Sys;
 

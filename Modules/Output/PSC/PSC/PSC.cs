@@ -2,14 +2,15 @@
 using System.IO.Ports;
 using System.Threading;
 
-namespace PSC {
+namespace VixenModules.Controller.PSC {
 	class PSC {
 		private byte[] _packet;
 
-		private const int RANGE_LOW = 250;
-		private const int RANGE_HIGH = 1250;
-		private const int RANGE_HALF = (RANGE_HIGH - RANGE_LOW) >> 1;
-		private const int RANGE_MID = RANGE_LOW + RANGE_HALF;
+		public const ushort RangeLow = 250;
+		public const ushort RangeHigh = 1250;
+		public const ushort RangeWidth = RangeHigh - RangeLow;
+		public const ushort RangeHalf = RangeWidth >> 1;
+		public const ushort RangeMid = RangeLow + RangeHalf;
 
 		public PSC() {
 			_packet = new byte[] { (byte)'!', (byte)'S', (byte)'C', 0, 0, 0, 0, 0x0D };
@@ -73,10 +74,7 @@ namespace PSC {
 			}
 		}
 
-		public void SetPosition(byte index, double percentPosition) {
-			// PSC channel range = 250-1250
-			ushort position = (ushort)(RANGE_MID + RANGE_HALF * (percentPosition / 100));
-
+		public void SetPosition(byte index, ushort position) {
 			_packet[3] = index;
 			_packet[4] = 0;
 			_packet[5] = (byte)position;

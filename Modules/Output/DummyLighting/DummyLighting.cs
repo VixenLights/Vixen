@@ -2,23 +2,20 @@
 using Vixen.Commands;
 using Vixen.Module.Controller;
 using Vixen.Module;
-using Vixen.Sys;
 using System.Diagnostics;
 using System.Windows.Forms;
+using VixenModules.Controller.DummyLighting;
 
 namespace VixenModules.Output.DummyLighting {
 	public class DummyLighting : ControllerModuleInstanceBase {
-		//private List<string> _output = new List<string>();
 		private DummyLightingOutputForm _form;
 		private Stopwatch _sw;
 		private int _updateCount;
 		private DummyLightingData _data;
-		private IDataPolicy _dataPolicy;
 
 		public DummyLighting() {
 			_form = new DummyLightingOutputForm();
 			_sw = new Stopwatch();
-			_dataPolicy = new DataPolicy();
 		}
 
 		public override IModuleDataModel ModuleData {
@@ -26,14 +23,16 @@ namespace VixenModules.Output.DummyLighting {
 			set {
 				_data = (DummyLightingData)value;
 				_form.renderingStyle = _data.RenderStyle;
+				_SetDataPolicy();
 			}
 		}
 
-		override protected void _SetOutputCount(int outputCount) {
-			_form.OutputCount = outputCount;
+		public override int OutputCount {
+			get { return _form.OutputCount; }
+			set { _form.OutputCount = value; }
 		}
 
-		override public void UpdateState(ICommand[] outputStates) {
+		override public void UpdateState(int chainIndex, ICommand[] outputStates) {
 			if(_updateCount++ == 0) {
 				_sw.Reset();
 				_sw.Start();
@@ -43,32 +42,17 @@ namespace VixenModules.Output.DummyLighting {
 		}
 
 		public override void Start() {
-			//_formThread = new UIThread(() => {
-			//    _form = new DummyLightingOutputForm();
-			//    _form.renderingStyle = _data.RenderStyle;
-			//    _form.OutputCount = outputCount;
-			//    return _form;
-			//});
-			//_formThread.Start();
 			_form.Show();
 			_updateCount = 0;
 		}
-		//override public void Start() {
-		//    //_formThread.Start();
-		//    //_form.Show();
-		//    //_updateCount = 0;
-		//}
 
 		override public void Stop() {
-			//_formThread.Stop();
 			_form.Hide();
 			_sw.Stop();
 		}
 
 		override public bool HasSetup {
-			get {
-				return true;
-			}
+			get { return true; }
 		}
 
 		override public bool Setup() {
@@ -78,6 +62,7 @@ namespace VixenModules.Output.DummyLighting {
 			if(result == DialogResult.OK) {
 				_data.RenderStyle = setup.RenderStyle;
 				_form.renderingStyle = setup.RenderStyle;
+				_SetDataPolicy();
 				return true;
 			}
 			return false;
@@ -87,8 +72,20 @@ namespace VixenModules.Output.DummyLighting {
 			get { return _form != null && (_form.Visible || _form.IsDisposed); }
 		}
 
-		override public IDataPolicy DataPolicy {
-			get { return _dataPolicy; }
+		private void _SetDataPolicy() {
+			switch(_data.RenderStyle) {
+				case RenderStyle.Monochrome:
+					DataPolicyFactory = new MonochromeDataPolicyFactory();
+					break;
+				case RenderStyle.RGBSingleChannel:
+					DataPolicyFactory = new OneChannelColorDataPolicyFactory();
+					break;
+				case RenderStyle.RGBMultiChannel:
+					DataPolicyFactory = new ThreeChannelColorDataPolicyFactory();
+					break;
+				default:
+					throw new InvalidOperationException("Unknown render style: " + _data.RenderStyle);
+			}
 		}
 
 		override public void Dispose() {

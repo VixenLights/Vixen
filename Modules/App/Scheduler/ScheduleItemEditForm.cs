@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using BaseSequence;
+using Vixen.Services;
 using Vixen.Sys;
 
 namespace VixenModules.App.Scheduler {
@@ -181,10 +183,10 @@ namespace VixenModules.App.Scheduler {
 			}
 		}
 
-		private Sequence _LoadSequence(string filePath) {
+		private ISequence _LoadSequence(string filePath) {
 			Cursor = Cursors.WaitCursor;
 			try {
-				return Sequence.Load(filePath);
+				return SequenceService.Instance.Load(filePath);
 			} catch(Exception ex) {
 				MessageBox.Show(ex.Message, CAPTION, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 				return null;

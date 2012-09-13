@@ -176,11 +176,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				throw new NotImplementedException("Cannot use sequence type with a Timed Sequence Editor");
 			}
 
-            // default the sequence to 1 minute if it's not set
+			// default the sequence to 1 minute if it's not set
 			if (_sequence.Length == TimeSpan.Zero)
 				_sequence.Length = _defaultSequenceTime;
 
-            SequenceLength = _sequence.Length;
+			SequenceLength = _sequence.Length;
 
 			// update our program context with this sequence
 			OpenSequenceContext(sequence);
@@ -924,7 +924,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				FirstVisibleRow = -1,
 				EarliestStartTime = TimeSpan.MaxValue,
 			};
-            
+			
 			int rownum = 0;
 			foreach (Row row in timelineControl.VisibleRows) {
 				// Since removals may happen during enumeration, make a copy with ToArray().
@@ -937,10 +937,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					if (result.Elements.ContainsKey(elem))
 						continue;
 					result.Elements.Add(elem, relativeVisibleRow);
-				    
+
 					if (elem.StartTime < result.EarliestStartTime)
 						result.EarliestStartTime = elem.StartTime;
-                    
+
 					if (cutElements) {
 						row.RemoveElement(elem);
 						_sequence.RemoveData(((TimedSequenceElement)elem).EffectNode);
@@ -951,7 +951,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			_clipboard = result;
 
-           // screw the clipboard. Can't get this shit working.
+			// screw the clipboard. Can't get this shit working.
 			//DataFormats.Format format = DataFormats.GetFormat(typeof(TimelineElementsClipboardData).FullName);
 			//IDataObject dataObject = new DataObject();
 			//dataObject.SetData(format.Name, false, result);

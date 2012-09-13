@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Runtime.InteropServices;
-using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Controller;
 using Vixen.Commands;
@@ -12,12 +11,11 @@ namespace VixenModules.Output.Olsen595
 		private static extern void Out(ushort port, short data);
 
 		private Data _moduleData;
-		private IDataPolicy _dataPolicy;
 		private CommandHandler _commandHandler;
 
 		public Module() {
-			_dataPolicy = new DataPolicy();
 			_commandHandler = new CommandHandler();
+			DataPolicyFactory = new DataPolicyFactory();
 		}
 
 		public override bool Setup() {
@@ -32,10 +30,7 @@ namespace VixenModules.Output.Olsen595
 			set { _moduleData = value as Data; }
 		}
 
-		protected override void _SetOutputCount(int outputCount) {
-		}
-
-		public override void UpdateState(ICommand[] outputStates) {
+		public override void UpdateState(int chainIndex, ICommand[] outputStates) {
 			if(_moduleData.Port != 0) {
 				// The first bit clocked will end up on the last channel, so the channels 
 				// need to be traversed backwards, from high to low.
@@ -56,10 +51,6 @@ namespace VixenModules.Output.Olsen595
 				Out(controlPort, 1);
 				Out(controlPort, 3);
 			}
-		}
-
-		public override IDataPolicy DataPolicy {
-			get { return _dataPolicy; }
 		}
 	}
 }

@@ -4,22 +4,20 @@ using System.Windows.Forms;
 using Vixen.Module;
 using Vixen.Module.Controller;
 using Vixen.Commands;
-using Vixen.Sys;
 
 namespace VixenModules.Output.Renard
 {
 	public class Module : ControllerModuleInstanceBase {
 		private Data _moduleData;
 		private SerialPort _port;
-		private IDataPolicy _dataPolicy;
 		private CommandHandler _commandHandler;
 		private IRenardProtocolFormatter _protocolFormatter;
 
 		private const int DEFAULT_WRITE_TIMEOUT = 500;
 
 		public Module() {
-			_dataPolicy = new RenardDataPolicy();
 			_commandHandler = new CommandHandler();
+			DataPolicyFactory = new RenardDataPolicyFactory();
 		}
 
 		public override bool HasSetup {
@@ -68,12 +66,9 @@ namespace VixenModules.Output.Renard
 			base.Stop();
 		}
 
-		protected override void _SetOutputCount(int outputCount) { 
-		}
-
-		public override void UpdateState(ICommand[] outputStates) {
+		public override void UpdateState(int chainIndex, ICommand[] outputStates) {
 			if(_port != null && _port.IsOpen) {
-				_protocolFormatter.StartPacket(OutputCount, ChainIndex);
+				_protocolFormatter.StartPacket(OutputCount, chainIndex);
 
 				for(int i = 0; i < outputStates.Length && IsRunning; i++) {
 					_commandHandler.Reset();
@@ -130,10 +125,6 @@ namespace VixenModules.Output.Renard
 
 		private int _PacketSize {
 			get { return _protocolFormatter.PacketSize; }
-		}
-
-		public override IDataPolicy DataPolicy {
-			get { return _dataPolicy; }
 		}
 	}
 }

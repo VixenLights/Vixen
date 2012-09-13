@@ -2,6 +2,6 @@
 
 namespace VixenApplication.Controls {
 	interface IHasPatchRule {
-		IPatchingRule Rule { get; }
+		IPatchingRule PatchingRule { get; }
 	}
 }

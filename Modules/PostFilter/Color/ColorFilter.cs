@@ -1,6 +1,6 @@
 ﻿namespace VixenModules.OutputFilter.Color {
 	public enum ColorFilter {
-		None,
+		Unfiltered,
 		Red,
 		Green,
 		Blue,

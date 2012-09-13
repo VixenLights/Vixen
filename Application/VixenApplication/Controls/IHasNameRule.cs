@@ -2,6 +2,6 @@
 
 namespace VixenApplication.Controls {
 	interface IHasNameRule {
-		INamingRule Rule { get; }
+		INamingRule NamingRule { get; }
 	}
 }

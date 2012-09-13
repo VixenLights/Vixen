@@ -1,7 +1,7 @@
 ﻿using System.Windows.Forms;
+using Common.ValueTypes;
 using Vixen.Module.Effect;
 using Vixen.Module.EffectEditor;
-using VixenModules.Effect.ImageGrid;
 
 namespace VixenModules.EffectEditor.FilePathTypeEditor {
 	public partial class FilePathEditorControl : UserControl, IEffectEditorControl {
@@ -10,7 +10,7 @@ namespace VixenModules.EffectEditor.FilePathTypeEditor {
 		}
 
 		public object[] EffectParameterValues {
-			get { return new[] { new FilePath(textBoxFilePath.Text) }; }
+			get { return new object[] { new FilePath(textBoxFilePath.Text) }; }
 			set { textBoxFilePath.Text = ((FilePath)value[0]).Value; }
 		}
 

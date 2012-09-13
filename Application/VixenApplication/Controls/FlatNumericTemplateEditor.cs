@@ -10,7 +10,7 @@ namespace VixenApplication.Controls {
 			textBoxFormat.Text = "Channel-" + FlatNumericTemplate.NumericValuePlaceholder;
 		}
 
-		public INamingRule Rule {
+		public INamingRule NamingRule {
 			get {
 				return new FlatNumericTemplate(_StartNumber, _Increment, _Format);
 			}

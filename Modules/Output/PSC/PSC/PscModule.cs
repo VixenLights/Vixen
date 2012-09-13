@@ -4,26 +4,21 @@ using Common.Controls;
 using Vixen.Commands;
 using Vixen.Module;
 using Vixen.Module.Controller;
-using Vixen.Sys;
 
-namespace PSC {
+namespace VixenModules.Controller.PSC {
 	public class PscModule : ControllerModuleInstanceBase {
 		private SerialPort _port;
 		private PscData _data;
 		private PSC _psc;
-		private IDataPolicy _dataPolicy;
 		private CommandHandler _commandHandler;
 
 		public PscModule() {
 			_psc = new PSC();
-			_dataPolicy = new DataPolicy();
 			_commandHandler = new CommandHandler();
+			DataPolicyFactory = new DataPolicyFactory();
 		}
 
-		protected override void _SetOutputCount(int outputCount) {
-		}
-
-		public override void UpdateState(ICommand[] outputStates) {
+		public override void UpdateState(int chainIndex, ICommand[] outputStates) {
 			byte index = 0;
 			foreach(ICommand command in outputStates) {
 				_commandHandler.Reset();
@@ -67,9 +62,6 @@ namespace PSC {
 				}
 
 				int pscBaudRate = _psc.BaudRate;
-				//if(pscBaudRate == 0) {
-				//    throw new Exception("Could not determine the baud rate for the PSC unit.");
-				//}
 
 				if(pscBaudRate != 38400) {
 					_psc.BaudRate = 38400;
@@ -117,10 +109,6 @@ namespace PSC {
 			} else {
 				_port = null;
 			}
-		}
-
-		public override IDataPolicy DataPolicy {
-			get { return _dataPolicy; }
 		}
 	}
 }
