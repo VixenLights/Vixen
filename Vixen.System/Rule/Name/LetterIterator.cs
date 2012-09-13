@@ -6,8 +6,13 @@ using System.Text.RegularExpressions;
 
 namespace Vixen.Rule.Name
 {
-	class LetterIterator : INamingGenerator
+	public class LetterIterator : INamingGenerator
 	{
+		public LetterIterator()
+		{
+			Letters = "ABCDE";
+		}
+
 		public string Name
 		{
 			get { return "Letter Iterator"; }

@@ -5,8 +5,16 @@ using System.Text;
 
 namespace Vixen.Rule.Name
 {
-	class NumericCounter : INamingGenerator
+	public class NumericCounter : INamingGenerator
 	{
+		public NumericCounter()
+		{
+			StartNumber = 1;
+			EndNumber = 10;
+			Step = 1;
+			Endless = false;
+		}
+
 		public string Name
 		{
 			get { return "Numeric Counter"; }
@@ -41,15 +49,14 @@ namespace Vixen.Rule.Name
 
 		public string[] GenerateNames()
 		{
+			if (EndlessCycle)
+				return new string[0];
+
 			return GenerateNames(IterationsInCycle);
 		}
 
 		public string GenerateName(int cyclePosition)
 		{
-			if (!EndlessCycle && cyclePosition >= IterationsInCycle) {
-				throw new ArgumentOutOfRangeException("cyclePosition");
-			}
-
 			return (StartNumber + (Step * cyclePosition)).ToString();
 		}
 

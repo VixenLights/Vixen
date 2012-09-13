@@ -5,8 +5,14 @@ using System.Text;
 
 namespace Vixen.Rule.Name
 {
-	class LetterCounter : INamingGenerator
+	public class LetterCounter : INamingGenerator
 	{
+		public LetterCounter()
+		{
+			StartLetter = 'A';
+			Count = 10;
+		}
+
 		public string Name
 		{
 			get { return "Letter Counter"; }

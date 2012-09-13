@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Vixen.Rule.Name
 {
-	class WordIterator : INamingGenerator
+	public class WordIterator : INamingGenerator
 	{
 		public WordIterator()
 		{
