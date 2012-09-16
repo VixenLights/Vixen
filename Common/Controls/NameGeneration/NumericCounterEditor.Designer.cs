@@ -30,12 +30,12 @@
 			this.numericUpDownStartNumber = new System.Windows.Forms.NumericUpDown();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
-			this.numericUpDownSteps = new System.Windows.Forms.NumericUpDown();
+			this.numericUpDownEndNumber = new System.Windows.Forms.NumericUpDown();
 			this.checkBoxEndless = new System.Windows.Forms.CheckBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.numericUpDownStep = new System.Windows.Forms.NumericUpDown();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownStartNumber)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDownSteps)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDownEndNumber)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownStep)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -77,21 +77,21 @@
 			// 
 			// numericUpDownEndNumber
 			// 
-			this.numericUpDownSteps.Location = new System.Drawing.Point(85, 31);
-			this.numericUpDownSteps.Maximum = new decimal(new int[] {
+			this.numericUpDownEndNumber.Location = new System.Drawing.Point(85, 31);
+			this.numericUpDownEndNumber.Maximum = new decimal(new int[] {
             1000000,
             0,
             0,
             0});
-			this.numericUpDownSteps.Minimum = new decimal(new int[] {
+			this.numericUpDownEndNumber.Minimum = new decimal(new int[] {
             1000000,
             0,
             0,
             -2147483648});
-			this.numericUpDownSteps.Name = "numericUpDownEndNumber";
-			this.numericUpDownSteps.Size = new System.Drawing.Size(58, 20);
-			this.numericUpDownSteps.TabIndex = 2;
-			this.numericUpDownSteps.ValueChanged += new System.EventHandler(this.numericUpDownEndNumber_ValueChanged);
+			this.numericUpDownEndNumber.Name = "numericUpDownEndNumber";
+			this.numericUpDownEndNumber.Size = new System.Drawing.Size(58, 20);
+			this.numericUpDownEndNumber.TabIndex = 2;
+			this.numericUpDownEndNumber.ValueChanged += new System.EventHandler(this.numericUpDownEndNumber_ValueChanged);
 			// 
 			// checkBoxEndless
 			// 
@@ -139,14 +139,14 @@
 			this.Controls.Add(this.numericUpDownStep);
 			this.Controls.Add(this.checkBoxEndless);
 			this.Controls.Add(this.label2);
-			this.Controls.Add(this.numericUpDownSteps);
+			this.Controls.Add(this.numericUpDownEndNumber);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.numericUpDownStartNumber);
 			this.Name = "NumericCounterEditor";
 			this.Size = new System.Drawing.Size(221, 88);
 			this.Load += new System.EventHandler(this.NumericCounterEditor_Load);
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownStartNumber)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDownSteps)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDownEndNumber)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownStep)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
