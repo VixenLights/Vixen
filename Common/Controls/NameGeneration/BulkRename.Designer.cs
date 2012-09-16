@@ -32,7 +32,7 @@ namespace Common.Controls
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.buttonOk = new System.Windows.Forms.Button();
-			this.listBox1 = new System.Windows.Forms.ListBox();
+			this.listBoxGenerators = new System.Windows.Forms.ListBox();
 			this.groupBoxSelectedNamingRule = new System.Windows.Forms.GroupBox();
 			this.buttonMoveRuleDown = new System.Windows.Forms.Button();
 			this.buttonMoveRuleUp = new System.Windows.Forms.Button();
@@ -44,6 +44,8 @@ namespace Common.Controls
 			this.label1 = new System.Windows.Forms.Label();
 			this.comboBox1 = new System.Windows.Forms.ComboBox();
 			this.label2 = new System.Windows.Forms.Label();
+			this.textBoxNameFormat = new System.Windows.Forms.TextBox();
+			this.label3 = new System.Windows.Forms.Label();
 			this.groupBoxSelectedNamingRule.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownItemCount)).BeginInit();
 			this.SuspendLayout();
@@ -60,7 +62,7 @@ namespace Common.Controls
 			this.listViewNames.GridLines = true;
 			this.listViewNames.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
 			this.listViewNames.HideSelection = false;
-			this.listViewNames.Location = new System.Drawing.Point(3, 343);
+			this.listViewNames.Location = new System.Drawing.Point(3, 292);
 			this.listViewNames.MultiSelect = false;
 			this.listViewNames.Name = "listViewNames";
 			this.listViewNames.ShowGroups = false;
@@ -102,13 +104,14 @@ namespace Common.Controls
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
 			// 
-			// listBox1
+			// listBoxGenerators
 			// 
-			this.listBox1.FormattingEnabled = true;
-			this.listBox1.Location = new System.Drawing.Point(89, 663);
-			this.listBox1.Name = "listBox1";
-			this.listBox1.Size = new System.Drawing.Size(120, 199);
-			this.listBox1.TabIndex = 30;
+			this.listBoxGenerators.FormattingEnabled = true;
+			this.listBoxGenerators.Location = new System.Drawing.Point(89, 663);
+			this.listBoxGenerators.Name = "listBoxGenerators";
+			this.listBoxGenerators.Size = new System.Drawing.Size(120, 199);
+			this.listBoxGenerators.TabIndex = 30;
+			this.listBoxGenerators.SelectedIndexChanged += new System.EventHandler(this.listBoxGenerators_SelectedIndexChanged);
 			// 
 			// groupBoxSelectedNamingRule
 			// 
@@ -132,6 +135,7 @@ namespace Common.Controls
 			this.buttonMoveRuleDown.TabIndex = 36;
 			this.buttonMoveRuleDown.Text = "MoveDown";
 			this.buttonMoveRuleDown.UseVisualStyleBackColor = true;
+			this.buttonMoveRuleDown.Click += new System.EventHandler(this.buttonMoveRuleDown_Click);
 			// 
 			// buttonMoveRuleUp
 			// 
@@ -142,6 +146,7 @@ namespace Common.Controls
 			this.buttonMoveRuleUp.TabIndex = 35;
 			this.buttonMoveRuleUp.Text = "MoveUp";
 			this.buttonMoveRuleUp.UseVisualStyleBackColor = true;
+			this.buttonMoveRuleUp.Click += new System.EventHandler(this.buttonMoveRuleUp_Click);
 			// 
 			// buttonDeleteRule
 			// 
@@ -152,6 +157,7 @@ namespace Common.Controls
 			this.buttonDeleteRule.TabIndex = 34;
 			this.buttonDeleteRule.Text = "Delete";
 			this.buttonDeleteRule.UseVisualStyleBackColor = true;
+			this.buttonDeleteRule.Click += new System.EventHandler(this.buttonDeleteRule_Click);
 			// 
 			// panelRuleConfig
 			// 
@@ -170,6 +176,7 @@ namespace Common.Controls
 			this.comboBoxRuleTypes.Name = "comboBoxRuleTypes";
 			this.comboBoxRuleTypes.Size = new System.Drawing.Size(202, 21);
 			this.comboBoxRuleTypes.TabIndex = 32;
+			this.comboBoxRuleTypes.SelectedIndexChanged += new System.EventHandler(this.comboBoxRuleTypes_SelectedIndexChanged);
 			// 
 			// buttonAddNewRule
 			// 
@@ -180,6 +187,7 @@ namespace Common.Controls
 			this.buttonAddNewRule.TabIndex = 33;
 			this.buttonAddNewRule.Text = "Add Rule";
 			this.buttonAddNewRule.UseVisualStyleBackColor = true;
+			this.buttonAddNewRule.Click += new System.EventHandler(this.buttonAddNewRule_Click);
 			// 
 			// numericUpDownItemCount
 			// 
@@ -224,11 +232,29 @@ namespace Common.Controls
 			this.label2.TabIndex = 37;
 			this.label2.Text = "Use a pre-defined naming template:";
 			// 
+			// textBoxNameFormat
+			// 
+			this.textBoxNameFormat.Location = new System.Drawing.Point(254, 610);
+			this.textBoxNameFormat.Name = "textBoxNameFormat";
+			this.textBoxNameFormat.Size = new System.Drawing.Size(219, 20);
+			this.textBoxNameFormat.TabIndex = 38;
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(178, 613);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(70, 13);
+			this.label3.TabIndex = 39;
+			this.label3.Text = "Name format:";
+			// 
 			// BulkRename
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(725, 962);
+			this.Controls.Add(this.label3);
+			this.Controls.Add(this.textBoxNameFormat);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.comboBox1);
 			this.Controls.Add(this.label1);
@@ -236,7 +262,7 @@ namespace Common.Controls
 			this.Controls.Add(this.buttonAddNewRule);
 			this.Controls.Add(this.comboBoxRuleTypes);
 			this.Controls.Add(this.groupBoxSelectedNamingRule);
-			this.Controls.Add(this.listBox1);
+			this.Controls.Add(this.listBoxGenerators);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOk);
 			this.Controls.Add(this.listViewNames);
@@ -245,6 +271,7 @@ namespace Common.Controls
 			this.Name = "BulkRename";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Bulk Rename";
+			this.Load += new System.EventHandler(this.BulkRename_Load);
 			this.groupBoxSelectedNamingRule.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownItemCount)).EndInit();
 			this.ResumeLayout(false);
@@ -259,7 +286,7 @@ namespace Common.Controls
 		private System.Windows.Forms.ColumnHeader columnHeader2;
 		private System.Windows.Forms.Button buttonCancel;
 		private System.Windows.Forms.Button buttonOk;
-		private System.Windows.Forms.ListBox listBox1;
+		private System.Windows.Forms.ListBox listBoxGenerators;
 		private System.Windows.Forms.GroupBox groupBoxSelectedNamingRule;
 		private System.Windows.Forms.Button buttonMoveRuleDown;
 		private System.Windows.Forms.Button buttonMoveRuleUp;
@@ -271,5 +298,7 @@ namespace Common.Controls
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.ComboBox comboBox1;
 		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.TextBox textBoxNameFormat;
+		private System.Windows.Forms.Label label3;
 	}
 }

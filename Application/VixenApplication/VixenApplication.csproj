@@ -87,19 +87,6 @@
     <Compile Include="ConfigPreviews.Designer.cs">
       <DependentUpon>ConfigPreviews.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ChannelsToControllerRuleEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\ChannelsToControllerRuleEditor.Designer.cs">
-      <DependentUpon>ChannelsToControllerRuleEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\IHasPatchRule.cs" />
-    <Compile Include="CreateAndNameChannels.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CreateAndNameChannels.Designer.cs">
-      <DependentUpon>CreateAndNameChannels.cs</DependentUpon>
-    </Compile>
     <Compile Include="EffectParametersForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -118,25 +105,6 @@
     <Compile Include="InstalledModules.Designer.cs">
       <DependentUpon>InstalledModules.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\FlatNumericTemplateEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\FlatNumericTemplateEditor.Designer.cs">
-      <DependentUpon>FlatNumericTemplateEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\FlatStringTemplateEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\FlatStringTemplateEditor.Designer.cs">
-      <DependentUpon>FlatStringTemplateEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\GridEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\GridEditor.Designer.cs">
-      <DependentUpon>GridEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\IHasNameRule.cs" />
     <Compile Include="RuleEditorContainer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -169,12 +137,6 @@
     <EmbeddedResource Include="ConfigPreviews.resx">
       <DependentUpon>ConfigPreviews.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ChannelsToControllerRuleEditor.resx">
-      <DependentUpon>ChannelsToControllerRuleEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CreateAndNameChannels.resx">
-      <DependentUpon>CreateAndNameChannels.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="EffectParametersForm.resx">
       <DependentUpon>EffectParametersForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -183,15 +145,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="InstalledModules.resx">
       <DependentUpon>InstalledModules.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\FlatNumericTemplateEditor.resx">
-      <DependentUpon>FlatNumericTemplateEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\FlatStringTemplateEditor.resx">
-      <DependentUpon>FlatStringTemplateEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\GridEditor.resx">
-      <DependentUpon>GridEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="RuleEditorContainer.resx">
       <DependentUpon>RuleEditorContainer.cs</DependentUpon>

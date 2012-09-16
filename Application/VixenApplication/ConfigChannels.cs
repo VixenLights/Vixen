@@ -608,11 +608,11 @@ namespace VixenApplication
 				BulkRename renamer = new BulkRename(oldNames.ToArray());
 				if (renamer.ShowDialog() == DialogResult.OK) {
 					for (int i = 0; i < multiSelectTreeviewChannelsGroups.SelectedNodes.Count; i++) {
-						if (i >= renamer.NewNames.Length) {
+						if (i >= renamer.Names.Count) {
 							VixenSystem.Logging.Warn("ConfigChannels: bulk renaming channels, and ran out of new names!");
 							break;
 						}
-						(multiSelectTreeviewChannelsGroups.SelectedNodes[i].Tag as ChannelNode).Name = renamer.NewNames[i];
+						(multiSelectTreeviewChannelsGroups.SelectedNodes[i].Tag as ChannelNode).Name = renamer.Names[i];
 					}
 
 					PopulateNodeTree();
@@ -809,17 +809,17 @@ namespace VixenApplication
 		#endregion
 
 		private void createAndNameToolStripMenuItem_Click(object sender, EventArgs e) {
-			using(CreateAndNameChannels form = new CreateAndNameChannels()) {
-				form.ShowDialog();
-				PopulateNodeTree();
-			}
+			//using(CreateAndNameChannels form = new CreateAndNameChannels()) {
+			//    form.ShowDialog();
+			//    PopulateNodeTree();
+			//}
 		}
 
 		private void createAndNameInToolStripMenuItem_Click(object sender, EventArgs e) {
-			using(CreateAndNameChannels form = new CreateAndNameChannels((ChannelNode)multiSelectTreeviewChannelsGroups.SelectedNode.Tag)) {
-				form.ShowDialog();
-				PopulateNodeTree();
-			}
+			//using(CreateAndNameChannels form = new CreateAndNameChannels((ChannelNode)multiSelectTreeviewChannelsGroups.SelectedNode.Tag)) {
+			//    form.ShowDialog();
+			//    PopulateNodeTree();
+			//}
 		}
 			
 		private void textBoxName_KeyDown(object sender, KeyEventArgs e)

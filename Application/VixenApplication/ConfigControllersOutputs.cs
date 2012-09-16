@@ -105,21 +105,21 @@ namespace VixenApplication
 				oldNames.Add(selectedItem.SubItems[1].Text);
 			}
 
-			BulkRename renameForm = new BulkRename(oldNames.ToArray());
+			//BulkRename renameForm = new BulkRename(oldNames.ToArray());
 
-			if (renameForm.ShowDialog() == DialogResult.OK) {
-				for (int i = 0; i < listViewOutputs.SelectedItems.Count; i++) {
-					if (i >= renameForm.NewNames.Length) {
-						VixenSystem.Logging.Warn("ConfigControllersOutputs: bulk renaming outputs, and ran out of new names!");
-						break;
-					}
-					int outputIndex = int.Parse(listViewOutputs.SelectedItems[i].Text) - 1;
-					_controller.Outputs[outputIndex].Name = renameForm.NewNames[i];
-				}
+			//if (renameForm.ShowDialog() == DialogResult.OK) {
+			//    for (int i = 0; i < listViewOutputs.SelectedItems.Count; i++) {
+			//        if (i >= renameForm.NewNames.Length) {
+			//            VixenSystem.Logging.Warn("ConfigControllersOutputs: bulk renaming outputs, and ran out of new names!");
+			//            break;
+			//        }
+			//        int outputIndex = int.Parse(listViewOutputs.SelectedItems[i].Text) - 1;
+			//        _controller.Outputs[outputIndex].Name = renameForm.NewNames[i];
+			//    }
 
-				_populateOutputsList();
-				_populateFormWithOutput(_selectedOutputIndex, true);
-			}
+			//    _populateOutputsList();
+			//    _populateFormWithOutput(_selectedOutputIndex, true);
+			//}
 		}
 	}
 }
