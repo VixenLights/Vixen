@@ -62,10 +62,7 @@ namespace Common.Controls
 			comboBoxRuleTypes.ValueMember = "";
 			comboBoxRuleTypes.DataSource = namingGenerators;
 
-			// display a 'none' or 'custom' option as the first naming template.
-			List<INamingTemplate> namingTemplates = new List<INamingTemplate>();
-			namingTemplates.Add(new NoNamingTemplate());
-			namingTemplates.AddRange(Vixen.Services.ApplicationServices.GetAllNamingTemplates());
+			INamingTemplate[] namingTemplates = Vixen.Services.ApplicationServices.GetAllNamingTemplates();
 			comboBoxTemplates.DisplayMember = "Name";
 			comboBoxTemplates.ValueMember = "";
 			comboBoxTemplates.DataSource = namingTemplates;
@@ -335,32 +332,7 @@ namespace Common.Controls
 		private void comboBoxTemplates_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			INamingTemplate template = (INamingTemplate)comboBoxTemplates.SelectedItem;
-
-			if (template is NoNamingTemplate) {
-				return;
-			}
-
 			LoadNamingTemplate(template);
-		}
-
-
-	}
-
-	public class NoNamingTemplate : INamingTemplate
-	{
-		public IEnumerable<INamingGenerator> Generators
-		{
-			get { throw new NotImplementedException(); }
-		}
-
-		public string Format
-		{
-			get { throw new NotImplementedException(); }
-		}
-
-		public string Name
-		{
-			get { return "Custom"; }
 		}
 	}
 }
