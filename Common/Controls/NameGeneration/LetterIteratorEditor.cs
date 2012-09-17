@@ -10,7 +10,7 @@ using Vixen.Rule.Name;
 
 namespace Common.Controls.NameGeneration
 {
-	public partial class LetterIteratorEditor : UserControl
+	public partial class LetterIteratorEditor : NameGeneratorEditor
 	{
 		private LetterIterator _counter;
 
@@ -30,6 +30,7 @@ namespace Common.Controls.NameGeneration
 			string text = textBoxLetters.Text.Trim();
 			if (text.Length > 0)
 				_counter.Letters = text;
+			OnDataChanged();
 		}
 	}
 }

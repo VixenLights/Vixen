@@ -55,6 +55,9 @@
     <Compile Include="NameGeneration\BulkRename.Designer.cs">
       <DependentUpon>BulkRename.cs</DependentUpon>
     </Compile>
+    <Compile Include="NameGeneration\NameGeneratorEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="NameGeneration\WordIteratorEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
