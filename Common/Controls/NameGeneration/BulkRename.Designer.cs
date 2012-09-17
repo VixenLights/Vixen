@@ -41,7 +41,7 @@ namespace Common.Controls
 			this.buttonAddNewRule = new System.Windows.Forms.Button();
 			this.numericUpDownItemCount = new System.Windows.Forms.NumericUpDown();
 			this.label1 = new System.Windows.Forms.Label();
-			this.comboBox1 = new System.Windows.Forms.ComboBox();
+			this.comboBoxTemplates = new System.Windows.Forms.ComboBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.textBoxNameFormat = new System.Windows.Forms.TextBox();
 			this.label3 = new System.Windows.Forms.Label();
@@ -207,13 +207,14 @@ namespace Common.Controls
 			this.label1.TabIndex = 35;
 			this.label1.Text = "Number of names to generate:";
 			// 
-			// comboBox1
+			// comboBoxTemplates
 			// 
-			this.comboBox1.FormattingEnabled = true;
-			this.comboBox1.Location = new System.Drawing.Point(308, 54);
-			this.comboBox1.Name = "comboBox1";
-			this.comboBox1.Size = new System.Drawing.Size(165, 21);
-			this.comboBox1.TabIndex = 36;
+			this.comboBoxTemplates.FormattingEnabled = true;
+			this.comboBoxTemplates.Location = new System.Drawing.Point(308, 54);
+			this.comboBoxTemplates.Name = "comboBoxTemplates";
+			this.comboBoxTemplates.Size = new System.Drawing.Size(165, 21);
+			this.comboBoxTemplates.TabIndex = 36;
+			this.comboBoxTemplates.SelectedIndexChanged += new System.EventHandler(this.comboBoxTemplates_SelectedIndexChanged);
 			// 
 			// label2
 			// 
@@ -268,7 +269,7 @@ namespace Common.Controls
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.textBoxNameFormat);
 			this.Controls.Add(this.label2);
-			this.Controls.Add(this.comboBox1);
+			this.Controls.Add(this.comboBoxTemplates);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.numericUpDownItemCount);
 			this.Controls.Add(this.buttonAddNewRule);
@@ -306,7 +307,7 @@ namespace Common.Controls
 		private System.Windows.Forms.Button buttonAddNewRule;
 		private System.Windows.Forms.NumericUpDown numericUpDownItemCount;
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.ComboBox comboBox1;
+		private System.Windows.Forms.ComboBox comboBoxTemplates;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.TextBox textBoxNameFormat;
 		private System.Windows.Forms.Label label3;

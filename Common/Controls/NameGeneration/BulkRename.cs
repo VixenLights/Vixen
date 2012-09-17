@@ -61,6 +61,15 @@ namespace Common.Controls
 			comboBoxRuleTypes.DisplayMember = "Name";
 			comboBoxRuleTypes.ValueMember = "";
 			comboBoxRuleTypes.DataSource = namingGenerators;
+
+			// display a 'none' or 'custom' option as the first naming template.
+			List<INamingTemplate> namingTemplates = new List<INamingTemplate>();
+			namingTemplates.Add(new NoNamingTemplate());
+			namingTemplates.AddRange(Vixen.Services.ApplicationServices.GetAllNamingTemplates());
+			comboBoxTemplates.DisplayMember = "Name";
+			comboBoxTemplates.ValueMember = "";
+			comboBoxTemplates.DataSource = namingTemplates;
+
 			ResizeListviewColumns();
 			PopulateNames();
 		}
@@ -71,7 +80,7 @@ namespace Common.Controls
 
 		private void ResizeListviewColumns()
 		{
-			int width = (listViewNames.Width - SystemInformation.VerticalScrollBarWidth) / listViewNames.Columns.Count;
+			int width = (listViewNames.Width - SystemInformation.VerticalScrollBarWidth - 6) / listViewNames.Columns.Count;
 			foreach (ColumnHeader column in listViewNames.Columns) {
 				column.Width = width;
 			}
@@ -100,9 +109,9 @@ namespace Common.Controls
 			SyncGeneratorsToListView();
 		}
 
-		private void RemoveNamingGenerator(INamingGenerator generator)
+		private void RemoveNamingGenerator(int index)
 		{
-			Generators.Remove(generator);
+			Generators.RemoveAt(index);
 			SyncGeneratorsToListView();
 		}
 
@@ -125,6 +134,23 @@ namespace Common.Controls
 				newControl.DataChanged += new EventHandler(NameGeneratorEditor_DataChanged);
 				panelRuleConfig.Controls.Add(newControl);
 			}
+
+			buttonMoveRuleUp.Enabled = (newControl != null);
+			buttonMoveRuleDown.Enabled = (newControl != null);
+			buttonDeleteRule.Enabled = (newControl != null);
+		}
+
+		private void LoadNamingTemplate(INamingTemplate template)
+		{
+			textBoxNameFormat.Text = template.Format;
+
+			Generators.Clear();
+			foreach (INamingGenerator generator in template.Generators) {
+				AddNewNamingGenerator(generator);
+			}
+
+			PopulateNames();
+			DisplayNamingGenerator(null);
 		}
 
 		void NameGeneratorEditor_DataChanged(object sender, EventArgs e)
@@ -249,9 +275,8 @@ namespace Common.Controls
 			if (listViewGenerators.SelectedIndices.Count <= 0)
 				return;
 
-			Generators.RemoveAt(listViewGenerators.SelectedIndices[0]);
+			RemoveNamingGenerator(listViewGenerators.SelectedIndices[0]);
 			DisplayNamingGenerator(null);
-			SyncGeneratorsToListView();
 			PopulateNames();
 		}
 
@@ -307,12 +332,35 @@ namespace Common.Controls
 			PopulateNames();
 		}
 
+		private void comboBoxTemplates_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			INamingTemplate template = (INamingTemplate)comboBoxTemplates.SelectedItem;
+
+			if (template is NoNamingTemplate) {
+				return;
+			}
+
+			LoadNamingTemplate(template);
+		}
 
 
+	}
 
+	public class NoNamingTemplate : INamingTemplate
+	{
+		public IEnumerable<INamingGenerator> Generators
+		{
+			get { throw new NotImplementedException(); }
+		}
 
+		public string Format
+		{
+			get { throw new NotImplementedException(); }
+		}
 
-
-
+		public string Name
+		{
+			get { return "Custom"; }
+		}
 	}
 }
