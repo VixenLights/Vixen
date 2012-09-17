@@ -32,7 +32,6 @@ namespace Common.Controls
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.buttonOk = new System.Windows.Forms.Button();
-			this.listBoxGenerators = new System.Windows.Forms.ListBox();
 			this.groupBoxSelectedNamingRule = new System.Windows.Forms.GroupBox();
 			this.buttonMoveRuleDown = new System.Windows.Forms.Button();
 			this.buttonMoveRuleUp = new System.Windows.Forms.Button();
@@ -46,6 +45,8 @@ namespace Common.Controls
 			this.label2 = new System.Windows.Forms.Label();
 			this.textBoxNameFormat = new System.Windows.Forms.TextBox();
 			this.label3 = new System.Windows.Forms.Label();
+			this.listViewGenerators = new System.Windows.Forms.ListView();
+			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.groupBoxSelectedNamingRule.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownItemCount)).BeginInit();
 			this.SuspendLayout();
@@ -104,15 +105,6 @@ namespace Common.Controls
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
 			// 
-			// listBoxGenerators
-			// 
-			this.listBoxGenerators.FormattingEnabled = true;
-			this.listBoxGenerators.Location = new System.Drawing.Point(89, 663);
-			this.listBoxGenerators.Name = "listBoxGenerators";
-			this.listBoxGenerators.Size = new System.Drawing.Size(120, 199);
-			this.listBoxGenerators.TabIndex = 30;
-			this.listBoxGenerators.SelectedIndexChanged += new System.EventHandler(this.listBoxGenerators_SelectedIndexChanged);
-			// 
 			// groupBoxSelectedNamingRule
 			// 
 			this.groupBoxSelectedNamingRule.Controls.Add(this.buttonMoveRuleDown);
@@ -133,7 +125,7 @@ namespace Common.Controls
 			this.buttonMoveRuleDown.Name = "buttonMoveRuleDown";
 			this.buttonMoveRuleDown.Size = new System.Drawing.Size(90, 25);
 			this.buttonMoveRuleDown.TabIndex = 36;
-			this.buttonMoveRuleDown.Text = "MoveDown";
+			this.buttonMoveRuleDown.Text = "Move Down";
 			this.buttonMoveRuleDown.UseVisualStyleBackColor = true;
 			this.buttonMoveRuleDown.Click += new System.EventHandler(this.buttonMoveRuleDown_Click);
 			// 
@@ -144,7 +136,7 @@ namespace Common.Controls
 			this.buttonMoveRuleUp.Name = "buttonMoveRuleUp";
 			this.buttonMoveRuleUp.Size = new System.Drawing.Size(90, 25);
 			this.buttonMoveRuleUp.TabIndex = 35;
-			this.buttonMoveRuleUp.Text = "MoveUp";
+			this.buttonMoveRuleUp.Text = "Move Up";
 			this.buttonMoveRuleUp.UseVisualStyleBackColor = true;
 			this.buttonMoveRuleUp.Click += new System.EventHandler(this.buttonMoveRuleUp_Click);
 			// 
@@ -238,6 +230,7 @@ namespace Common.Controls
 			this.textBoxNameFormat.Name = "textBoxNameFormat";
 			this.textBoxNameFormat.Size = new System.Drawing.Size(219, 20);
 			this.textBoxNameFormat.TabIndex = 38;
+			this.textBoxNameFormat.TextChanged += new System.EventHandler(this.textBoxNameFormat_TextChanged);
 			// 
 			// label3
 			// 
@@ -248,11 +241,30 @@ namespace Common.Controls
 			this.label3.TabIndex = 39;
 			this.label3.Text = "Name format:";
 			// 
+			// listViewGenerators
+			// 
+			this.listViewGenerators.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader3});
+			this.listViewGenerators.HideSelection = false;
+			this.listViewGenerators.Location = new System.Drawing.Point(74, 649);
+			this.listViewGenerators.MultiSelect = false;
+			this.listViewGenerators.Name = "listViewGenerators";
+			this.listViewGenerators.Size = new System.Drawing.Size(110, 216);
+			this.listViewGenerators.TabIndex = 40;
+			this.listViewGenerators.UseCompatibleStateImageBehavior = false;
+			this.listViewGenerators.View = System.Windows.Forms.View.List;
+			this.listViewGenerators.SelectedIndexChanged += new System.EventHandler(this.listViewGenerators_SelectedIndexChanged);
+			// 
+			// columnHeader3
+			// 
+			this.columnHeader3.Width = 120;
+			// 
 			// BulkRename
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(725, 962);
+			this.Controls.Add(this.listViewGenerators);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.textBoxNameFormat);
 			this.Controls.Add(this.label2);
@@ -262,7 +274,6 @@ namespace Common.Controls
 			this.Controls.Add(this.buttonAddNewRule);
 			this.Controls.Add(this.comboBoxRuleTypes);
 			this.Controls.Add(this.groupBoxSelectedNamingRule);
-			this.Controls.Add(this.listBoxGenerators);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOk);
 			this.Controls.Add(this.listViewNames);
@@ -286,7 +297,6 @@ namespace Common.Controls
 		private System.Windows.Forms.ColumnHeader columnHeader2;
 		private System.Windows.Forms.Button buttonCancel;
 		private System.Windows.Forms.Button buttonOk;
-		private System.Windows.Forms.ListBox listBoxGenerators;
 		private System.Windows.Forms.GroupBox groupBoxSelectedNamingRule;
 		private System.Windows.Forms.Button buttonMoveRuleDown;
 		private System.Windows.Forms.Button buttonMoveRuleUp;
@@ -300,5 +310,7 @@ namespace Common.Controls
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.TextBox textBoxNameFormat;
 		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.ListView listViewGenerators;
+		private System.Windows.Forms.ColumnHeader columnHeader3;
 	}
 }

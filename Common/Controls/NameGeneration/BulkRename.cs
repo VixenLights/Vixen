@@ -11,7 +11,22 @@ namespace Common.Controls
 	public partial class BulkRename : Form
 	{
 		private List<string> OldNames { get; set; }
-		private int FixedCount { get; set; }
+
+		private int _fixedCount;
+		private int FixedCount {
+			get { return _fixedCount; }
+			set
+			{
+				_fixedCount = value;
+				if (_fixedCount > 0) {
+					numericUpDownItemCount.Value = _fixedCount;
+					numericUpDownItemCount.Enabled = false;
+				} else {
+					numericUpDownItemCount.Value = 1;
+					numericUpDownItemCount.Enabled = true;
+				}
+			}
+		}
 
 		private List<INamingGenerator> Generators;
 
@@ -19,9 +34,6 @@ namespace Common.Controls
 		{
 			InitializeComponent();
 			Generators = new List<INamingGenerator>();
-			listBoxGenerators.DisplayMember = "Name";
-			listBoxGenerators.ValueMember = "";
-			listBoxGenerators.DataSource = Generators;
 
 			listViewNames.Columns.Clear();
 			listViewNames.Columns.Add(new ColumnHeader {Text = "Name"});
@@ -65,24 +77,59 @@ namespace Common.Controls
 			}
 		}
 
+		private void SyncGeneratorsToListView()
+		{
+			listViewGenerators.BeginUpdate();
+			listViewGenerators.Items.Clear();
+
+			int i = 1;
+			foreach (INamingGenerator namingGenerator in Generators) {
+				ListViewItem item = new ListViewItem();
+				item.Text = "{" + i + "}: " + namingGenerator.Name;
+				item.Tag = namingGenerator;
+				listViewGenerators.Items.Add(item);
+				i++;
+			}
+
+			listViewGenerators.EndUpdate();
+		}
+
 		private void AddNewNamingGenerator(INamingGenerator generator)
 		{
 			Generators.Add(generator);
+			SyncGeneratorsToListView();
+		}
+
+		private void RemoveNamingGenerator(INamingGenerator generator)
+		{
+			Generators.Remove(generator);
+			SyncGeneratorsToListView();
 		}
 
 		private void DisplayNamingGenerator(INamingGenerator generator)
 		{
 			panelRuleConfig.Controls.Clear();
 
+			NameGeneratorEditor newControl = null;
 			if (generator is NumericCounter) {
-				panelRuleConfig.Controls.Add(new NumericCounterEditor(generator as NumericCounter));
+				newControl = new NumericCounterEditor(generator as NumericCounter);
 			} else if (generator is LetterCounter) {
-				panelRuleConfig.Controls.Add(new LetterCounterEditor(generator as LetterCounter));
+				newControl = new LetterCounterEditor(generator as LetterCounter);
 			} else if (generator is LetterIterator) {
-				panelRuleConfig.Controls.Add(new LetterIteratorEditor(generator as LetterIterator));
+				newControl = new LetterIteratorEditor(generator as LetterIterator);
 			} else if (generator is WordIterator) {
-				panelRuleConfig.Controls.Add(new WordIteratorEditor(generator as WordIterator));
+				newControl = new WordIteratorEditor(generator as WordIterator);
 			}
+
+			if (newControl != null) {
+				newControl.DataChanged += new EventHandler(NameGeneratorEditor_DataChanged);
+				panelRuleConfig.Controls.Add(newControl);
+			}
+		}
+
+		void NameGeneratorEditor_DataChanged(object sender, EventArgs e)
+		{
+			PopulateNames();
 		}
 
 		private int GetRepCount()
@@ -146,8 +193,7 @@ namespace Common.Controls
 				string substitution;
 				if (generator.EndlessCycle) {
 					substitution = generator.GenerateName(i);
-				}
-				else {
+				} else {
 					substitution = names[i];
 				}
 
@@ -159,7 +205,12 @@ namespace Common.Controls
 					result.Add(newFormat);
 				}
 				else {
-					result.AddRange(GenerateNames(depth + 1, newFormat, currentNumber + result.Count, maxNumber));
+					// if the sub-generator didn't make anything, add the name directly and treat this one as the final.
+					IEnumerable<string> subResult = GenerateNames(depth + 1, newFormat, currentNumber + result.Count, maxNumber);
+					if (subResult.Count() > 0)
+						result.AddRange(subResult);
+					else
+						result.Add(newFormat);
 				}
 
 				if (currentNumber + result.Count >= maxNumber)
@@ -189,43 +240,50 @@ namespace Common.Controls
 			INamingGenerator newGenerator = (INamingGenerator)Activator.CreateInstance(ng.GetType());
 
 			AddNewNamingGenerator(newGenerator);
-			listBoxGenerators.SelectedItem = newGenerator;
+			listViewGenerators.Items[listViewGenerators.Items.Count - 1].Selected = true;
 			PopulateNames();
 		}
 
 		private void buttonDeleteRule_Click(object sender, EventArgs e)
 		{
-			if (listBoxGenerators.SelectedIndex < 0)
+			if (listViewGenerators.SelectedIndices.Count <= 0)
 				return;
 
-			Generators.RemoveAt(listBoxGenerators.SelectedIndex);
+			Generators.RemoveAt(listViewGenerators.SelectedIndices[0]);
 			DisplayNamingGenerator(null);
+			SyncGeneratorsToListView();
 			PopulateNames();
 		}
 
 		private void buttonMoveRuleUp_Click(object sender, EventArgs e)
 		{
-			int index = listBoxGenerators.SelectedIndex;
+			if (listViewGenerators.SelectedIndices.Count <= 0)
+				return;
 
+			int index = listViewGenerators.SelectedIndices[0];
 			if (index <= 0)
 				return;
 
 			INamingGenerator ng = Generators[index - 1];
 			Generators[index - 1] = Generators[index];
 			Generators[index] = ng;
+			SyncGeneratorsToListView();
 			PopulateNames();
 		}
 
 		private void buttonMoveRuleDown_Click(object sender, EventArgs e)
 		{
-			int index = listBoxGenerators.SelectedIndex;
+			if (listViewGenerators.SelectedIndices.Count <= 0)
+				return;
 
-			if (index < 0 || index >= Generators.Count - 1)
+			int index = listViewGenerators.SelectedIndices[0];
+			if (index >= Generators.Count - 1)
 				return;
 
 			INamingGenerator ng = Generators[index + 1];
 			Generators[index + 1] = Generators[index];
 			Generators[index] = ng;
+			SyncGeneratorsToListView();
 			PopulateNames();
 		}
 
@@ -234,15 +292,21 @@ namespace Common.Controls
 			ResizeListviewColumns();
 		}
 
-		private void listBoxGenerators_SelectedIndexChanged(object sender, EventArgs e)
+		private void listViewGenerators_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (listBoxGenerators.SelectedIndex < 0) {
+			if (listViewGenerators.SelectedIndices.Count <= 0) {
 				DisplayNamingGenerator(null);
 				return;
 			}
 
-			DisplayNamingGenerator((INamingGenerator)listBoxGenerators.SelectedItem);
+			DisplayNamingGenerator((INamingGenerator)listViewGenerators.SelectedItems[0].Tag);
 		}
+
+		private void textBoxNameFormat_TextChanged(object sender, EventArgs e)
+		{
+			PopulateNames();
+		}
+
 
 
 
