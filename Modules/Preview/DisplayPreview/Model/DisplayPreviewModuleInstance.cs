@@ -25,18 +25,44 @@ namespace VixenModules.Preview.DisplayPreview.Model
             _programContexts = new List<IProgramContext>();
         }
 
+        public override bool HasSetup
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        public override bool Setup()
+        {
+            ViewManager.DisplaySetupView(GetDisplayPreviewModuleDataModel());
+            return base.Setup();
+        }
+
         public override void Dispose()
         {
             EnsureVisualizerIsClosed();
-            base.Dispose();
-        }
-        
-        public void Unloading()
-        {
             Execution.NodesChanged -= ExecutionNodesChanged;
             VixenSystem.Contexts.ContextCreated -= ProgramContextCreated;
             VixenSystem.Contexts.ContextReleased -= ProgramContextReleased;
-//            _application.AppCommands.Remove(DISPLAY_PREVIEW_MENU);
+            base.Dispose();
+        }
+
+        protected override Form Initialize()
+        {
+            Execution.NodesChanged += ExecutionNodesChanged;
+            VixenSystem.Contexts.ContextCreated += ProgramContextCreated;
+            VixenSystem.Contexts.ContextReleased += ProgramContextReleased;
+            Preferences.CurrentPreferences = GetDisplayPreviewModuleDataModel().Preferences;
+            ResetColors(false);
+            InjectAppCommands();
+
+            return new PreviewForm();
+        }
+
+        protected override void Update()
+        {
+            ViewManager.UpdatePreviewExecutionStateValues(ChannelStates);
         }
 
         private static void EnsureVisualizerIsClosed()
@@ -66,11 +92,11 @@ namespace VixenModules.Preview.DisplayPreview.Model
 
         private void InjectAppCommands()
         {
-//            if (_application == null
-//                || _application.AppCommands == null)
-//            {
-//                return;
-//            }
+            //            if (_application == null
+            //                || _application.AppCommands == null)
+            //            {
+            //                return;
+            //            }
 
             var isEnabled = GetDisplayPreviewModuleDataModel().IsEnabled;
             var rootCommand = new AppCommand(DISPLAY_PREVIEW_MENU, "Display Preview")
@@ -88,6 +114,26 @@ namespace VixenModules.Preview.DisplayPreview.Model
             enabledCommand.IsChecked = isEnabled;
             rootCommand.Add(enabledCommand);
             //_application.AppCommands.Add(rootCommand);
+        }
+
+        public override void Start()
+        {
+            var dataModel = GetDisplayPreviewModuleDataModel();
+            if (dataModel.IsEnabled)
+            {
+                ViewManager.StartVisualizer(dataModel);
+            }
+            base.Start();
+        }
+
+        public override void Stop()
+        {
+            if (!GetDisplayPreviewModuleDataModel().Preferences.KeepVisualizerWindowOpen)
+            {
+                EnsureVisualizerIsClosed();
+            }
+
+            base.Stop();
         }
 
         private void ProgramContextCreated(object sender, ContextEventArgs contextEventArgs)
@@ -133,48 +179,9 @@ namespace VixenModules.Preview.DisplayPreview.Model
             }
         }
 
-        private void OldSetup()
-        {
-            ViewManager.DisplaySetupView(GetDisplayPreviewModuleDataModel());
-        }
-
         private void SetupAppCommandClick(object sender, EventArgs e)
         {
             Setup();
-        }
-
-        private void OldStart()
-        {
-            var dataModel = GetDisplayPreviewModuleDataModel();
-            if (dataModel.IsEnabled)
-            {
-                ViewManager.StartVisualizer(dataModel);
-            }
-        }
-
-        private void OldStop()
-        {
-            if (!GetDisplayPreviewModuleDataModel().Preferences.KeepVisualizerWindowOpen)
-            {
-                EnsureVisualizerIsClosed();
-            }
-        }
-
-        protected override void Update()
-        {
-            ViewManager.UpdatePreviewExecutionStateValues(ChannelStates);
-        }
-
-        protected override Form Initialize()
-        {
-            Execution.NodesChanged += ExecutionNodesChanged;
-            VixenSystem.Contexts.ContextCreated += ProgramContextCreated;
-            VixenSystem.Contexts.ContextReleased += ProgramContextReleased;
-            Preferences.CurrentPreferences = GetDisplayPreviewModuleDataModel().Preferences;
-            ResetColors(false);
-            InjectAppCommands();
-
-            return new PreviewForm();
         }
     }
 }
