@@ -218,22 +218,10 @@
     <EmbeddedResource Include="Resources\HandCursor.cur" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\2391_ZoomOut.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\2392_ZoomIn_48x48.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\ZoomIn32.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\ZoomOut32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ZoomIn48.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ZoomOut48.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
