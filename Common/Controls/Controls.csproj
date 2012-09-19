@@ -49,11 +49,11 @@
     <Compile Include="MenuStripEx.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="NameGeneration\BulkRename.cs">
+    <Compile Include="NameGeneration\NameGenerator.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NameGeneration\BulkRename.Designer.cs">
-      <DependentUpon>BulkRename.cs</DependentUpon>
+    <Compile Include="NameGeneration\NameGenerator.Designer.cs">
+      <DependentUpon>NameGenerator.cs</DependentUpon>
     </Compile>
     <Compile Include="NameGeneration\NameGeneratorEditor.cs">
       <SubType>UserControl</SubType>
@@ -252,8 +252,8 @@
     <EmbeddedResource Include="ListSelectDialog.resx">
       <DependentUpon>ListSelectDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NameGeneration\BulkRename.resx">
-      <DependentUpon>BulkRename.cs</DependentUpon>
+    <EmbeddedResource Include="NameGeneration\NameGenerator.resx">
+      <DependentUpon>NameGenerator.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NameGeneration\WordIteratorEditor.resx">
       <DependentUpon>WordIteratorEditor.cs</DependentUpon>

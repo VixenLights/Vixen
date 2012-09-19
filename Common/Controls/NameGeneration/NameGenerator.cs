@@ -8,7 +8,7 @@ using Vixen.Rule.Name;
 
 namespace Common.Controls
 {
-	public partial class BulkRename : Form
+	public partial class NameGenerator : Form
 	{
 		private List<string> OldNames { get; set; }
 
@@ -30,7 +30,7 @@ namespace Common.Controls
 
 		private List<INamingGenerator> Generators;
 
-		public BulkRename()
+		public NameGenerator()
 		{
 			InitializeComponent();
 			Generators = new List<INamingGenerator>();
@@ -39,7 +39,7 @@ namespace Common.Controls
 			listViewNames.Columns.Add(new ColumnHeader {Text = "Name"});
 		}
 
-		public BulkRename(IEnumerable<string> oldNames)
+		public NameGenerator(IEnumerable<string> oldNames)
 			: this()
 		{
 			OldNames = new List<string>(oldNames);
@@ -49,7 +49,7 @@ namespace Common.Controls
 			listViewNames.Columns.Add(new ColumnHeader { Text = "New Name" });
 		}
 
-		public BulkRename(int fixedCount)
+		public NameGenerator(int fixedCount)
 			: this()
 		{
 			FixedCount = fixedCount;

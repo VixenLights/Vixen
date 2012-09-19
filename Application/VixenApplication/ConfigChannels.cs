@@ -605,11 +605,11 @@ namespace VixenApplication
 		{
 			if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0) {
 				List<string> oldNames = new List<string>(multiSelectTreeviewChannelsGroups.SelectedNodes.Select(x => x.Tag as ChannelNode).Select(x => x.Name).ToArray());
-				BulkRename renamer = new BulkRename(oldNames.ToArray());
+				NameGenerator renamer = new NameGenerator(oldNames.ToArray());
 				if (renamer.ShowDialog() == DialogResult.OK) {
 					for (int i = 0; i < multiSelectTreeviewChannelsGroups.SelectedNodes.Count; i++) {
 						if (i >= renamer.Names.Count) {
-							VixenSystem.Logging.Warn("ConfigChannels: bulk renaming channels, and ran out of new names!");
+							VixenSystem.Logging.Warning("ConfigChannels: bulk renaming channels, and ran out of new names!");
 							break;
 						}
 						(multiSelectTreeviewChannelsGroups.SelectedNodes[i].Tag as ChannelNode).Name = renamer.Names[i];

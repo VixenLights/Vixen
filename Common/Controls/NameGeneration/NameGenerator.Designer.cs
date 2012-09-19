@@ -1,6 +1,6 @@
 namespace Common.Controls
 {
-	partial class BulkRename
+	partial class NameGenerator
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -275,7 +275,7 @@ namespace Common.Controls
 			this.label3.TabIndex = 39;
 			this.label3.Text = "Name format:";
 			// 
-			// BulkRename
+			// NameGenerator
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -292,9 +292,9 @@ namespace Common.Controls
 			this.Controls.Add(this.listViewNames);
 			this.DoubleBuffered = true;
 			this.MinimumSize = new System.Drawing.Size(500, 500);
-			this.Name = "BulkRename";
+			this.Name = "NameGenerator";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Bulk Rename";
+			this.Text = "Name Generation";
 			this.Load += new System.EventHandler(this.BulkRename_Load);
 			this.groupBoxSelectedNamingRule.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownItemCount)).EndInit();
