@@ -88,10 +88,10 @@
     <Compile Include="ParallelPortConfig.Designer.cs">
       <DependentUpon>ParallelPortConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="Resources.Designer.cs">
+    <Compile Include="Icons.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
+      <DependentUpon>Icons.resx</DependentUpon>
     </Compile>
     <Compile Include="ToolStripEx.cs">
       <SubType>Component</SubType>
@@ -270,9 +270,9 @@
     <EmbeddedResource Include="ParallelPortConfig.resx">
       <DependentUpon>ParallelPortConfig.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources.resx">
+    <EmbeddedResource Include="Icons.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <LastGenOutput>Icons.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="SerialPortConfig.resx">
       <DependentUpon>SerialPortConfig.cs</DependentUpon>
@@ -291,6 +291,14 @@
     <Content Include="ColorPicker\ColorPicker.cur" />
     <Content Include="ControlsEx\std_zoomin.png" />
     <Content Include="ControlsEx\std_zoomout.png" />
+    <None Include="Resources\UpArrowShort_Blue_48x48.png" />
+    <None Include="Resources\UpArrowShort_Blue_32x32.png" />
+    <None Include="Resources\UpArrowShort_Blue_24x24.png" />
+    <None Include="Resources\UpArrowShort_Blue_16x16.png" />
+    <None Include="Resources\DownArrowShort_Blue_48x48.png" />
+    <None Include="Resources\DownArrowShort_Blue_32x32.png" />
+    <None Include="Resources\DownArrowShort_Blue_24x24.png" />
+    <None Include="Resources\DownArrowShort_Blue_16x16.png" />
     <None Include="Resources\Edit_RedoHS.png" />
     <None Include="Resources\Edit_UndoHS.png" />
   </ItemGroup>
