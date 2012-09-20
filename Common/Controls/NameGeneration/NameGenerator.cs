@@ -244,9 +244,6 @@ namespace Common.Controls
 		}
 
 
-
-
-
 		private void comboBoxRuleTypes_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			buttonAddNewRule.Enabled = comboBoxRuleTypes.SelectedIndex >= 0;
@@ -333,6 +330,11 @@ namespace Common.Controls
 		{
 			INamingTemplate template = (INamingTemplate)comboBoxTemplates.SelectedItem;
 			LoadNamingTemplate(template);
+		}
+
+		private void numericUpDownItemCount_ValueChanged(object sender, EventArgs e)
+		{
+			PopulateNames();
 		}
 	}
 }

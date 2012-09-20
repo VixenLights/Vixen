@@ -224,6 +224,7 @@ namespace Common.Controls
             0,
             0,
             0});
+			this.numericUpDownItemCount.ValueChanged += new System.EventHandler(this.numericUpDownItemCount_ValueChanged);
 			// 
 			// label1
 			// 
