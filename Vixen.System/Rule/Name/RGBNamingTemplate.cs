@@ -35,7 +35,7 @@ namespace Vixen.Rule.Name
 
 		public string Name
 		{
-			get { return "RGB Named Items"; }
+			get { return "RGB Items"; }
 		}
 	}
 }

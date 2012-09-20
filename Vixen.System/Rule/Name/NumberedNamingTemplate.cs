@@ -31,7 +31,7 @@ namespace Vixen.Rule.Name
 
 		public string Name
 		{
-			get { return "Sequentially Numbered Items"; }
+			get { return "Numbered Items"; }
 		}
 	}
 }
