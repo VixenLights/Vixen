@@ -14,7 +14,7 @@ namespace Vixen.Rule.Name
 
 		public string Name
 		{
-			get { return "Word Iterator"; }
+			get { return "Words"; }
 		}
 
 		public int IterationsInCycle
