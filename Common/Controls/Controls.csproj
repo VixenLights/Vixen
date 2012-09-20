@@ -82,6 +82,12 @@
     <Compile Include="NameGeneration\NumericCounterEditor.Designer.cs">
       <DependentUpon>NumericCounterEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="NumberDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NumberDialog.Designer.cs">
+      <DependentUpon>NumberDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="ParallelPortConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -266,6 +272,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NameGeneration\NumericCounterEditor.resx">
       <DependentUpon>NumericCounterEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NumberDialog.resx">
+      <DependentUpon>NumberDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ParallelPortConfig.resx">
       <DependentUpon>ParallelPortConfig.cs</DependentUpon>
