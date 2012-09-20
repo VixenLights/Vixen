@@ -10,7 +10,7 @@ namespace VixenApplication
 {
 	public partial class ConfigControllersOutputs : Form
 	{
-		private OutputController _controller;
+		private readonly OutputController _controller;
 		private int _selectedOutputIndex;
 
 		public ConfigControllersOutputs(OutputController controller)
@@ -86,7 +86,7 @@ namespace VixenApplication
 			else
 				_populateFormWithOutput(listViewOutputs.SelectedIndices[0]);
 
-			buttonBulkRename.Enabled = (listViewOutputs.SelectedIndices.Count > 1);
+			buttonRenameMultiple.Enabled = (listViewOutputs.SelectedIndices.Count > 1);
 		}
 
 		private void buttonUpdate_Click(object sender, EventArgs e)
@@ -95,7 +95,7 @@ namespace VixenApplication
 			_redrawOutputList();
 		}
 
-		private void buttonBulkRename_Click(object sender, EventArgs e)
+		private void buttonRenameMultiple_Click(object sender, EventArgs e)
 		{
 			if (listViewOutputs.SelectedItems.Count <= 1)
 				return;
@@ -105,21 +105,21 @@ namespace VixenApplication
 				oldNames.Add(selectedItem.SubItems[1].Text);
 			}
 
-			//BulkRename renameForm = new BulkRename(oldNames.ToArray());
+			using (NameGenerator nameGenerator = new NameGenerator(oldNames)) {
+				if (nameGenerator.ShowDialog() == DialogResult.OK) {
+					for (int i = 0; i < listViewOutputs.SelectedItems.Count; i++) {
+						if (i >= nameGenerator.Names.Count) {
+							VixenSystem.Logging.Warning("ConfigControllersOutputs: renaming outputs, and ran out of new names!");
+							break;
+						}
+						int outputIndex = int.Parse(listViewOutputs.SelectedItems[i].Text) - 1;
+						_controller.Outputs[outputIndex].Name = nameGenerator.Names[i];
+					}
 
-			//if (renameForm.ShowDialog() == DialogResult.OK) {
-			//    for (int i = 0; i < listViewOutputs.SelectedItems.Count; i++) {
-			//        if (i >= renameForm.NewNames.Length) {
-			//            VixenSystem.Logging.Warn("ConfigControllersOutputs: bulk renaming outputs, and ran out of new names!");
-			//            break;
-			//        }
-			//        int outputIndex = int.Parse(listViewOutputs.SelectedItems[i].Text) - 1;
-			//        _controller.Outputs[outputIndex].Name = renameForm.NewNames[i];
-			//    }
-
-			//    _populateOutputsList();
-			//    _populateFormWithOutput(_selectedOutputIndex, true);
-			//}
+					_populateOutputsList();
+					_populateFormWithOutput(_selectedOutputIndex, true);
+				}
+			}
 		}
 	}
 }

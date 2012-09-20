@@ -35,7 +35,7 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.textBoxName = new System.Windows.Forms.TextBox();
 			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonBulkRename = new System.Windows.Forms.Button();
+			this.buttonRenameMultiple = new System.Windows.Forms.Button();
 			this.groupBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -121,24 +121,24 @@
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			// 
-			// buttonBulkRename
+			// buttonRenameMultiple
 			// 
-			this.buttonBulkRename.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-			this.buttonBulkRename.Enabled = false;
-			this.buttonBulkRename.Location = new System.Drawing.Point(6, 377);
-			this.buttonBulkRename.Name = "buttonBulkRename";
-			this.buttonBulkRename.Size = new System.Drawing.Size(123, 25);
-			this.buttonBulkRename.TabIndex = 13;
-			this.buttonBulkRename.Text = "Bulk Rename Outputs";
-			this.buttonBulkRename.UseVisualStyleBackColor = true;
-			this.buttonBulkRename.Click += new System.EventHandler(this.buttonBulkRename_Click);
+			this.buttonRenameMultiple.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+			this.buttonRenameMultiple.Enabled = false;
+			this.buttonRenameMultiple.Location = new System.Drawing.Point(6, 377);
+			this.buttonRenameMultiple.Name = "buttonRenameMultiple";
+			this.buttonRenameMultiple.Size = new System.Drawing.Size(123, 25);
+			this.buttonRenameMultiple.TabIndex = 13;
+			this.buttonRenameMultiple.Text = "Rename Multiple";
+			this.buttonRenameMultiple.UseVisualStyleBackColor = true;
+			this.buttonRenameMultiple.Click += new System.EventHandler(this.buttonRenameMultiple_Click);
 			// 
 			// ConfigControllersOutputs
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(344, 412);
-			this.Controls.Add(this.buttonBulkRename);
+			this.Controls.Add(this.buttonRenameMultiple);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.groupBox);
 			this.Controls.Add(this.listViewOutputs);
@@ -165,6 +165,6 @@
 		private System.Windows.Forms.TextBox textBoxName;
 		private System.Windows.Forms.Button buttonOK;
 		private System.Windows.Forms.Button buttonUpdate;
-		private System.Windows.Forms.Button buttonBulkRename;
+		private System.Windows.Forms.Button buttonRenameMultiple;
 	}
 }

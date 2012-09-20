@@ -96,7 +96,7 @@ namespace VixenApplication
 					try {
 						multiSelectTreeviewChannelsGroups.TopNode = resultNode;
 					} catch (Exception) {
-						VixenSystem.Logging.Warn("ConfigChannels: exception caught trying to set TopNode.");
+						VixenSystem.Logging.Warning("ConfigChannels: exception caught trying to set TopNode.");
 					}
 					break;
 				}
@@ -448,7 +448,7 @@ namespace VixenApplication
 						VixenSystem.Nodes.AddChildToParent(sourceNode, newParentNode);
 					}
 				} else {
-					VixenSystem.Logging.Warn("ConfigChannels: Trying to deal with a drag that is an unknown type!");
+					VixenSystem.Logging.Warning("ConfigChannels: Trying to deal with a drag that is an unknown type!");
 				}
 			}
 
