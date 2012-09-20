@@ -41,7 +41,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>$(SolutionDir)\Output\Common\</OutputPath>
+    <OutputPath>..\..\..\Output\Common\</OutputPath>
     <DefineConstants>TRACE;DEBUG;DEBUG_UI;REPOSITORY_CHECK</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
