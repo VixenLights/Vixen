@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Windows.Forms;
+using System.Xml;
 using Common.Controls.Timeline;
 using Vixen.Execution;
 using Vixen.Execution.Context;
+using Vixen.Module;
 using Vixen.Module.Editor;
 using Vixen.Module.Effect;
 using Vixen.Module.Media;
@@ -43,9 +46,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		// the default time for a sequence if one is loaded with 0 time
 		private static TimeSpan _defaultSequenceTime = TimeSpan.FromMinutes(1);
 
-		// our fake, dodgy clipboard. TODO: fix using the real one, it doesn't seem to work.
-		private TimelineElementsClipboardData _clipboard;
-
 		// Undo manager
         private Common.Controls.UndoManager _undoMgr;
 
@@ -53,6 +53,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private TimeSpan? m_prevPlaybackEnd = null;
 
 		private bool m_modified = false;
+
+		private static readonly DataFormats.Format _clipboardFormatName = DataFormats.GetFormat(typeof(TimelineElementsClipboardData).FullName);
 
 		#endregion
 
@@ -76,6 +78,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			timelineControl.RulerClicked += timelineControl_RulerClicked;
 			timelineControl.RulerBeginDragTimeRange += timelineControl_RulerBeginDragTimeRange;
 			timelineControl.RulerTimeRangeDragged += timelineControl_TimeRangeDragged;
+
+			timelineControl.SelectionChanged += TimelineControlOnSelectionChanged;
+			TimeLineSequenceClipboardContentsChanged += TimelineSequenceTimeLineSequenceClipboardContentsChanged;
 
 			LoadAvailableEffects();
             InitUndo();
@@ -322,6 +327,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Event Handlers
 
+		private void TimelineSequenceTimeLineSequenceClipboardContentsChanged(object sender, EventArgs eventArgs)
+		{
+			UpdatePasteMenuStates();
+		}
+
+		private void TimelineControlOnSelectionChanged(object sender, EventArgs eventArgs)
+		{
+			toolStripButton_Copy.Enabled = toolStripButton_Cut.Enabled = timelineControl.SelectedElements.Any();
+			toolStripMenuItem_Copy.Enabled = toolStripMenuItem_Cut.Enabled = timelineControl.SelectedElements.Any();
+		}
+
 		protected void ElementContentChangedHandler(object sender, EventArgs e)
 		{
 			TimedSequenceElement element = sender as TimedSequenceElement;
@@ -472,6 +488,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#endregion
 
+		#region Events
+
+		//Create internal event for data being placed on clipboard as there is no outside data relevant
+		//and monitoring the system clipboard gets into a bunch of not so pretty user32 api calls
+		//So we will just deal with our own data. If other editors crop up that we can import data 
+		//from via the clipboard, then this can be readdressed. This is mainly adding polish so we 
+		//can set the enabled state of the paste menu items. JU 9/18/2012
+		private static event EventHandler TimeLineSequenceClipboardContentsChanged;
+
+		private void _TimeLineSequenceClipboardContentsChanged(EventArgs e)
+		{
+			if (TimeLineSequenceClipboardContentsChanged != null) { TimeLineSequenceClipboardContentsChanged(this, null); }
+		}
+
+		#endregion
 
 		#region Sequence actions (play, pause, etc.)
 
@@ -584,6 +615,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				toolStripStatusLabel_currentTime.Text = timelineControl.PlaybackCurrentTime.Value.ToString("m\\:ss\\.fff");
 			else
 				toolStripStatusLabel_currentTime.Text = String.Empty;
+		}
+
+		private void UpdatePasteMenuStates()
+		{
+			IDataObject dataObject = Clipboard.GetDataObject();
+			if (dataObject != null)
+			{
+				toolStripButton_Paste.Enabled = toolStripMenuItem_Paste.Enabled = dataObject.GetDataPresent(_clipboardFormatName.Name);
+			}
+
 		}
 
 		private void updateButtonStates()
@@ -916,7 +957,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void ClipboardAddData(bool cutElements)
 		{
-			if (timelineControl.SelectedElements.Count() <= 0)
+			if (!timelineControl.SelectedElements.Any())
 				return;
 
 			TimelineElementsClipboardData result = new TimelineElementsClipboardData()
@@ -924,45 +965,51 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				FirstVisibleRow = -1,
 				EarliestStartTime = TimeSpan.MaxValue,
 			};
-			
+
 			int rownum = 0;
-			foreach (Row row in timelineControl.VisibleRows) {
+			foreach (Row row in timelineControl.VisibleRows)
+			{
 				// Since removals may happen during enumeration, make a copy with ToArray().
-				foreach (Element elem in row.SelectedElements.ToArray()) {
+				foreach (Element elem in row.SelectedElements.ToArray())
+				{
 					if (result.FirstVisibleRow == -1)
 						result.FirstVisibleRow = rownum;
 
 					int relativeVisibleRow = rownum - result.FirstVisibleRow;
-					
-					if (result.Elements.ContainsKey(elem))
-						continue;
-					result.Elements.Add(elem, relativeVisibleRow);
+
+					TimelineElementsClipboardData.EffectModelCandidate modelCandidate =
+						new TimelineElementsClipboardData.EffectModelCandidate(((TimedSequenceElement)elem).EffectNode.Effect)
+						{
+							Duration = elem.Duration,
+							StartTime = elem.StartTime
+						};
+					result.EffectModelCandidates.Add(modelCandidate, relativeVisibleRow);
 
 					if (elem.StartTime < result.EarliestStartTime)
 						result.EarliestStartTime = elem.StartTime;
 
-					if (cutElements) {
+					if (cutElements)
+					{
 						row.RemoveElement(elem);
 						_sequence.RemoveData(((TimedSequenceElement)elem).EffectNode);
+						sequenceModified();
 					}
+
 				}
 				rownum++;
 			}
 
-			_clipboard = result;
+			IDataObject dataObject = new DataObject(_clipboardFormatName);
+			dataObject.SetData(result);
+			Clipboard.SetDataObject(dataObject, false);
+			_TimeLineSequenceClipboardContentsChanged(EventArgs.Empty);
 
-			// screw the clipboard. Can't get this shit working.
-			//DataFormats.Format format = DataFormats.GetFormat(typeof(TimelineElementsClipboardData).FullName);
-			//IDataObject dataObject = new DataObject();
-			//dataObject.SetData(format.Name, false, result);
-			//Clipboard.SetDataObject(dataObject, false);
-			//Clipboard.SetData("TimedSequenceEditorElements", result);
 		}
 
 		private void ClipboardCut()
 		{
 			ClipboardAddData(true);
-			sequenceModified();
+			
 		}
 
 		private void ClipboardCopy()
@@ -972,43 +1019,42 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void ClipboardPaste()
 		{
-		    
-                // screw the clipboard. Can't get this shit working.
-                //IDataObject dataObject = Clipboard.GetDataObject();
-                //string format = typeof(TimelineElementsClipboardData).FullName;
+			TimelineElementsClipboardData data = null;
+			IDataObject dataObject = Clipboard.GetDataObject();
 
-                //if (dataObject.GetDataPresent(format)) {
-                //    data = dataObject.GetData(format) as TimelineElementsClipboardData;
-                //}
-                ////TimelineElementsClipboardData data = Clipboard.GetData("TimedSequenceEditorElements") as TimelineElementsClipboardData;
-            TimelineElementsClipboardData data = _clipboard;
-            if (data == null)
-                return;
+			if (dataObject.GetDataPresent(_clipboardFormatName.Name))
+			{
+				data = dataObject.GetData(_clipboardFormatName.Name) as TimelineElementsClipboardData;
+			}
 
-            Row targetRow = timelineControl.SelectedRow ?? timelineControl.TopVisibleRow;
-            TimeSpan cursorTime = timelineControl.CursorPosition;
+			if (data == null)
+				return;
 
-            List<Row> visibleRows = new List<Row>(timelineControl.VisibleRows);
-            int topTargetRoxIndex = visibleRows.IndexOf(targetRow);
+			Row targetRow = timelineControl.SelectedRow ?? timelineControl.TopVisibleRow;
+			TimeSpan cursorTime = timelineControl.CursorPosition;
 
-            foreach (KeyValuePair<Element, int> kvp in data.Elements)
-            {
-                TimedSequenceElement elem = kvp.Key as TimedSequenceElement;
-                int relativeRow = kvp.Value;
+			List<Row> visibleRows = new List<Row>(timelineControl.VisibleRows);
+			int topTargetRoxIndex = visibleRows.IndexOf(targetRow);
 
-                int targetRowIndex = topTargetRoxIndex + relativeRow;
-                TimeSpan targetTime = elem.StartTime - data.EarliestStartTime + cursorTime;
+			foreach (KeyValuePair<TimelineElementsClipboardData.EffectModelCandidate, int> kvp in data.EffectModelCandidates)
+			{
+				TimelineElementsClipboardData.EffectModelCandidate effectModelCandidate = kvp.Key as TimelineElementsClipboardData.EffectModelCandidate;
+				int relativeRow = kvp.Value;
 
-                if (targetRowIndex >= visibleRows.Count)
-                    continue;
+				int targetRowIndex = topTargetRoxIndex + relativeRow;
+				TimeSpan targetTime = effectModelCandidate.StartTime - data.EarliestStartTime + cursorTime;
 
-                // clone the effect, and make a new effect node for it
-                IEffectModuleInstance newEffect = (IEffectModuleInstance)elem.EffectNode.Effect.Clone();
-                addEffectInstance(newEffect, visibleRows[targetRowIndex], targetTime, elem.Duration);
-            }
-            //}
+				if (targetRowIndex >= visibleRows.Count)
+					continue;
 
-            
+				//Make a new effect and populate it with the detail data from the clipboard
+				IEffectModuleInstance newEffect = ApplicationServices.Get<IEffectModuleInstance>(effectModelCandidate.TypeId);
+				newEffect.ModuleData = effectModelCandidate.GetEffectData();
+				addEffectInstance(newEffect, visibleRows[targetRowIndex], targetTime, effectModelCandidate.Duration);
+			}
+			//}
+
+
 		}
 
 		#endregion
@@ -1412,21 +1458,60 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 	}
 
-    [Serializable]
-	public class TimelineElementsClipboardData
+	[Serializable]
+	internal class TimelineElementsClipboardData
 	{
 		public TimelineElementsClipboardData()
 		{
-			Elements = new Dictionary<Element, int>();
+			EffectModelCandidates = new Dictionary<EffectModelCandidate, int>();
 		}
 
 		// a collection of elements and the number of rows they were below the top visible element when
 		// this data was generated and placed on the clipboard.
-		public Dictionary<Element, int> Elements;
-		
-		public int FirstVisibleRow;
+		public Dictionary<EffectModelCandidate, int> EffectModelCandidates { get; set; }
 
-		public TimeSpan EarliestStartTime;
+		public int FirstVisibleRow
+		{
+			get;
+			set;
+		}
+
+		public TimeSpan EarliestStartTime { get; set; }
+
+		/// <summary>
+		/// Class to hold effect data to allow it to be placed on the clipboard and be reconstructed when later pasted
+		/// </summary>
+		[Serializable]
+		public class EffectModelCandidate
+		{
+			private readonly Type _moduleDataClass;
+			private readonly MemoryStream _effectData;
+
+			public EffectModelCandidate(IEffectModuleInstance effect)
+			{
+				_moduleDataClass = effect.Descriptor.ModuleDataClass;
+				DataContractSerializer ds = new DataContractSerializer(_moduleDataClass);
+
+				TypeId = effect.Descriptor.TypeId;
+				_effectData = new MemoryStream();
+				using (XmlDictionaryWriter w = XmlDictionaryWriter.CreateBinaryWriter(_effectData))
+					ds.WriteObject(w, effect.ModuleData);
+			}
+
+			public TimeSpan StartTime { get; set; }
+			public TimeSpan Duration { get; set; }
+			public Guid TypeId { get; private set; }
+
+			public IModuleDataModel GetEffectData()
+			{
+				DataContractSerializer ds = new DataContractSerializer(_moduleDataClass);
+				MemoryStream effectDataIn = new MemoryStream(_effectData.ToArray());
+				using (XmlDictionaryReader r = XmlDictionaryReader.CreateBinaryReader(effectDataIn, XmlDictionaryReaderQuotas.Max))
+					return (IModuleDataModel)ds.ReadObject(r);
+
+			}
+
+		}
 	}
 
 	public class TimeFormats

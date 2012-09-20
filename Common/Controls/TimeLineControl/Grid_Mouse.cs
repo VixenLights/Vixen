@@ -59,6 +59,7 @@ namespace Common.Controls.Timeline
                         // unselect
                         if (CtrlPressed)
                             m_mouseDownElement.Selected = false;
+							_SelectionChanged(EventArgs.Empty);
                     }
                     else
                     {
@@ -69,6 +70,7 @@ namespace Common.Controls.Timeline
                             ClearSelectedRows();
                         }
                         m_mouseDownElement.Selected = true;
+						_SelectionChanged(EventArgs.Empty);
                     }
 
                     if (m_mouseResizeZone == ResizeZone.None)
@@ -116,6 +118,7 @@ namespace Common.Controls.Timeline
                         {
                             ClearSelectedElements();
                             m_mouseDownElement.Selected = true;
+							_SelectionChanged(EventArgs.Empty);
                         }
                         break;
                 }

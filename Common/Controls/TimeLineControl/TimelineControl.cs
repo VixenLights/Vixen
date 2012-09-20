@@ -370,6 +370,12 @@ namespace Common.Controls.Timeline
 
 		#region Events exposed from sub-controls (Grid, Ruler, etc)
 
+		public event EventHandler SelectionChanged
+		{
+			add { grid.SelectionChanged += value; }
+			remove { grid.SelectionChanged -= value; }
+		}
+
 		public event EventHandler<ElementEventArgs> ElementDoubleClicked
 		{
 			add { grid.ElementDoubleClicked += value; }
