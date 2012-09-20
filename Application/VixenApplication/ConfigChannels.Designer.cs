@@ -43,8 +43,9 @@
 			this.textBoxName = new System.Windows.Forms.TextBox();
 			this.treeIconsImageList = new System.Windows.Forms.ImageList(this.components);
 			this.groupBoxOperations = new System.Windows.Forms.GroupBox();
+			this.buttonAddMultipleChannels = new System.Windows.Forms.Button();
 			this.buttonDeleteChannel = new System.Windows.Forms.Button();
-			this.buttonBulkRename = new System.Windows.Forms.Button();
+			this.buttonRename = new System.Windows.Forms.Button();
 			this.buttonCreateGroup = new System.Windows.Forms.Button();
 			this.buttonAddChannel = new System.Windows.Forms.Button();
 			this.label4 = new System.Windows.Forms.Label();
@@ -63,13 +64,12 @@
 			this.createGroupWithNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.renameNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
-			this.createAndNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.createAndNameInToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStripDragging = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.moveHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.multiSelectTreeviewChannelsGroups = new Common.Controls.MultiSelectTreeview();
+			this.addMultipleNewNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBoxSelectedNode.SuspendLayout();
 			this.groupBoxOperations.SuspendLayout();
 			this.contextMenuStripTreeView.SuspendLayout();
@@ -98,7 +98,7 @@
 			this.groupBoxSelectedNode.Controls.Add(this.labelParents);
 			this.groupBoxSelectedNode.Controls.Add(this.label2);
 			this.groupBoxSelectedNode.Controls.Add(this.textBoxName);
-			this.groupBoxSelectedNode.Location = new System.Drawing.Point(310, 208);
+			this.groupBoxSelectedNode.Location = new System.Drawing.Point(310, 219);
 			this.groupBoxSelectedNode.Name = "groupBoxSelectedNode";
 			this.groupBoxSelectedNode.Size = new System.Drawing.Size(212, 242);
 			this.groupBoxSelectedNode.TabIndex = 11;
@@ -205,56 +205,67 @@
 			// groupBoxOperations
 			// 
 			this.groupBoxOperations.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBoxOperations.Controls.Add(this.buttonAddMultipleChannels);
 			this.groupBoxOperations.Controls.Add(this.buttonDeleteChannel);
-			this.groupBoxOperations.Controls.Add(this.buttonBulkRename);
+			this.groupBoxOperations.Controls.Add(this.buttonRename);
 			this.groupBoxOperations.Controls.Add(this.buttonCreateGroup);
 			this.groupBoxOperations.Controls.Add(this.buttonAddChannel);
 			this.groupBoxOperations.Location = new System.Drawing.Point(310, 12);
 			this.groupBoxOperations.Name = "groupBoxOperations";
-			this.groupBoxOperations.Size = new System.Drawing.Size(212, 182);
+			this.groupBoxOperations.Size = new System.Drawing.Size(212, 201);
 			this.groupBoxOperations.TabIndex = 23;
 			this.groupBoxOperations.TabStop = false;
 			this.groupBoxOperations.Text = "Operations";
 			// 
+			// buttonAddMultipleChannels
+			// 
+			this.buttonAddMultipleChannels.Location = new System.Drawing.Point(35, 59);
+			this.buttonAddMultipleChannels.Name = "buttonAddMultipleChannels";
+			this.buttonAddMultipleChannels.Size = new System.Drawing.Size(140, 25);
+			this.buttonAddMultipleChannels.TabIndex = 27;
+			this.buttonAddMultipleChannels.Text = "Add Multiple";
+			this.buttonAddMultipleChannels.UseVisualStyleBackColor = true;
+			this.buttonAddMultipleChannels.Click += new System.EventHandler(this.buttonAddMultipleChannels_Click);
+			// 
 			// buttonDeleteChannel
 			// 
-			this.buttonDeleteChannel.Location = new System.Drawing.Point(35, 64);
+			this.buttonDeleteChannel.Location = new System.Drawing.Point(35, 93);
 			this.buttonDeleteChannel.Name = "buttonDeleteChannel";
 			this.buttonDeleteChannel.Size = new System.Drawing.Size(140, 25);
-			this.buttonDeleteChannel.TabIndex = 26;
+			this.buttonDeleteChannel.TabIndex = 24;
 			this.buttonDeleteChannel.Text = "Delete";
 			this.buttonDeleteChannel.UseVisualStyleBackColor = true;
-			this.buttonDeleteChannel.Click += new System.EventHandler(this.buttonDeleteNode_Click);
+			this.buttonDeleteChannel.Click += new System.EventHandler(this.buttonDeleteChannel_Click);
 			// 
-			// buttonBulkRename
+			// buttonRename
 			// 
-			this.buttonBulkRename.Location = new System.Drawing.Point(35, 136);
-			this.buttonBulkRename.Name = "buttonBulkRename";
-			this.buttonBulkRename.Size = new System.Drawing.Size(140, 25);
-			this.buttonBulkRename.TabIndex = 25;
-			this.buttonBulkRename.Text = "Rename";
-			this.buttonBulkRename.UseVisualStyleBackColor = true;
-			this.buttonBulkRename.Click += new System.EventHandler(this.buttonBulkRename_Click);
+			this.buttonRename.Location = new System.Drawing.Point(35, 161);
+			this.buttonRename.Name = "buttonRename";
+			this.buttonRename.Size = new System.Drawing.Size(140, 25);
+			this.buttonRename.TabIndex = 26;
+			this.buttonRename.Text = "Rename";
+			this.buttonRename.UseVisualStyleBackColor = true;
+			this.buttonRename.Click += new System.EventHandler(this.buttonRename_Click);
 			// 
 			// buttonCreateGroup
 			// 
-			this.buttonCreateGroup.Location = new System.Drawing.Point(35, 100);
+			this.buttonCreateGroup.Location = new System.Drawing.Point(35, 127);
 			this.buttonCreateGroup.Name = "buttonCreateGroup";
 			this.buttonCreateGroup.Size = new System.Drawing.Size(140, 25);
-			this.buttonCreateGroup.TabIndex = 24;
+			this.buttonCreateGroup.TabIndex = 25;
 			this.buttonCreateGroup.Text = "Create Group";
 			this.buttonCreateGroup.UseVisualStyleBackColor = true;
 			this.buttonCreateGroup.Click += new System.EventHandler(this.buttonCreateGroup_Click);
 			// 
 			// buttonAddChannel
 			// 
-			this.buttonAddChannel.Location = new System.Drawing.Point(35, 28);
+			this.buttonAddChannel.Location = new System.Drawing.Point(35, 25);
 			this.buttonAddChannel.Name = "buttonAddChannel";
 			this.buttonAddChannel.Size = new System.Drawing.Size(140, 25);
 			this.buttonAddChannel.TabIndex = 23;
 			this.buttonAddChannel.Text = "Add";
 			this.buttonAddChannel.UseVisualStyleBackColor = true;
-			this.buttonAddChannel.Click += new System.EventHandler(this.buttonAddNode_Click);
+			this.buttonAddChannel.Click += new System.EventHandler(this.buttonAddChannel_Click);
 			// 
 			// label4
 			// 
@@ -286,41 +297,40 @@
             this.nodePropertiesToolStripMenuItem,
             this.toolStripSeparator2,
             this.addNewNodeToolStripMenuItem,
+            this.addMultipleNewNodesToolStripMenuItem,
             this.deleteNodesToolStripMenuItem,
             this.createGroupWithNodesToolStripMenuItem,
             this.renameNodesToolStripMenuItem,
-            this.toolStripMenuItem1,
-            this.createAndNameToolStripMenuItem,
-            this.createAndNameInToolStripMenuItem});
+            this.toolStripMenuItem1});
 			this.contextMenuStripTreeView.Name = "contextMenuStripTreeView";
-			this.contextMenuStripTreeView.Size = new System.Drawing.Size(178, 264);
+			this.contextMenuStripTreeView.Size = new System.Drawing.Size(155, 242);
 			this.contextMenuStripTreeView.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripTreeView_Opening);
 			// 
 			// cutNodesToolStripMenuItem
 			// 
 			this.cutNodesToolStripMenuItem.Name = "cutNodesToolStripMenuItem";
-			this.cutNodesToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+			this.cutNodesToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
 			this.cutNodesToolStripMenuItem.Text = "Cut";
 			this.cutNodesToolStripMenuItem.Click += new System.EventHandler(this.cutNodesToolStripMenuItem_Click);
 			// 
 			// copyNodesToolStripMenuItem
 			// 
 			this.copyNodesToolStripMenuItem.Name = "copyNodesToolStripMenuItem";
-			this.copyNodesToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+			this.copyNodesToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
 			this.copyNodesToolStripMenuItem.Text = "Copy";
 			this.copyNodesToolStripMenuItem.Click += new System.EventHandler(this.copyNodesToolStripMenuItem_Click);
 			// 
 			// pasteNodesToolStripMenuItem
 			// 
 			this.pasteNodesToolStripMenuItem.Name = "pasteNodesToolStripMenuItem";
-			this.pasteNodesToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+			this.pasteNodesToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
 			this.pasteNodesToolStripMenuItem.Text = "Paste";
 			this.pasteNodesToolStripMenuItem.Click += new System.EventHandler(this.pasteNodesToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(174, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(151, 6);
 			// 
 			// nodePropertiesToolStripMenuItem
 			// 
@@ -328,7 +338,7 @@
             this.copyPropertiesToolStripMenuItem,
             this.pastePropertiesToolStripMenuItem});
 			this.nodePropertiesToolStripMenuItem.Name = "nodePropertiesToolStripMenuItem";
-			this.nodePropertiesToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+			this.nodePropertiesToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
 			this.nodePropertiesToolStripMenuItem.Text = "Item properties";
 			// 
 			// copyPropertiesToolStripMenuItem
@@ -348,54 +358,40 @@
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(174, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(151, 6);
 			// 
 			// addNewNodeToolStripMenuItem
 			// 
 			this.addNewNodeToolStripMenuItem.Name = "addNewNodeToolStripMenuItem";
-			this.addNewNodeToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+			this.addNewNodeToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
 			this.addNewNodeToolStripMenuItem.Text = "Add";
 			this.addNewNodeToolStripMenuItem.Click += new System.EventHandler(this.addNewNodeToolStripMenuItem_Click);
 			// 
 			// deleteNodesToolStripMenuItem
 			// 
 			this.deleteNodesToolStripMenuItem.Name = "deleteNodesToolStripMenuItem";
-			this.deleteNodesToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+			this.deleteNodesToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
 			this.deleteNodesToolStripMenuItem.Text = "Delete";
 			this.deleteNodesToolStripMenuItem.Click += new System.EventHandler(this.deleteNodesToolStripMenuItem_Click);
 			// 
 			// createGroupWithNodesToolStripMenuItem
 			// 
 			this.createGroupWithNodesToolStripMenuItem.Name = "createGroupWithNodesToolStripMenuItem";
-			this.createGroupWithNodesToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+			this.createGroupWithNodesToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
 			this.createGroupWithNodesToolStripMenuItem.Text = "Create group";
 			this.createGroupWithNodesToolStripMenuItem.Click += new System.EventHandler(this.createGroupWithNodesToolStripMenuItem_Click);
 			// 
 			// renameNodesToolStripMenuItem
 			// 
 			this.renameNodesToolStripMenuItem.Name = "renameNodesToolStripMenuItem";
-			this.renameNodesToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+			this.renameNodesToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
 			this.renameNodesToolStripMenuItem.Text = "Rename";
 			this.renameNodesToolStripMenuItem.Click += new System.EventHandler(this.renameNodesToolStripMenuItem_Click);
 			// 
 			// toolStripMenuItem1
 			// 
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(174, 6);
-			// 
-			// createAndNameToolStripMenuItem
-			// 
-			this.createAndNameToolStripMenuItem.Name = "createAndNameToolStripMenuItem";
-			this.createAndNameToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
-			this.createAndNameToolStripMenuItem.Text = "Create and name";
-			this.createAndNameToolStripMenuItem.Click += new System.EventHandler(this.createAndNameToolStripMenuItem_Click);
-			// 
-			// createAndNameInToolStripMenuItem
-			// 
-			this.createAndNameInToolStripMenuItem.Name = "createAndNameInToolStripMenuItem";
-			this.createAndNameInToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
-			this.createAndNameInToolStripMenuItem.Text = "Create and name in";
-			this.createAndNameInToolStripMenuItem.Click += new System.EventHandler(this.createAndNameInToolStripMenuItem_Click);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(151, 6);
 			// 
 			// contextMenuStripDragging
 			// 
@@ -454,6 +450,13 @@
 			this.multiSelectTreeviewChannelsGroups.UsingCustomDragCursor = false;
 			this.multiSelectTreeviewChannelsGroups.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.multiSelectTreeviewChannelsGroups_AfterSelect);
 			// 
+			// addMultipleNewNodesToolStripMenuItem
+			// 
+			this.addMultipleNewNodesToolStripMenuItem.Name = "addMultipleNewNodesToolStripMenuItem";
+			this.addMultipleNewNodesToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+			this.addMultipleNewNodesToolStripMenuItem.Text = "Add Multiple";
+			this.addMultipleNewNodesToolStripMenuItem.Click += new System.EventHandler(this.addMultipleNewNodesToolStripMenuItem_Click);
+			// 
 			// ConfigChannels
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -493,7 +496,7 @@
 		private System.Windows.Forms.ImageList treeIconsImageList;
 		private System.Windows.Forms.GroupBox groupBoxOperations;
 		private System.Windows.Forms.Button buttonDeleteChannel;
-		private System.Windows.Forms.Button buttonBulkRename;
+		private System.Windows.Forms.Button buttonRename;
 		private System.Windows.Forms.Button buttonCreateGroup;
 		private System.Windows.Forms.Button buttonAddChannel;
 		private System.Windows.Forms.Label label4;
@@ -516,13 +519,13 @@
 		private System.Windows.Forms.ToolStripMenuItem copyHereToolStripMenuItem;
 		private System.Windows.Forms.Button buttonCancel;
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
-		private System.Windows.Forms.ToolStripMenuItem createAndNameToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem createAndNameInToolStripMenuItem;
 		private System.Windows.Forms.Label labelProperties;
 		private System.Windows.Forms.Button buttonConfigureProperty;
 		private System.Windows.Forms.Button buttonDeleteProperty;
 		private System.Windows.Forms.Button buttonAddProperty;
 		private System.Windows.Forms.ListView listViewProperties;
 		private System.Windows.Forms.ColumnHeader columnHeader2;
+		private System.Windows.Forms.Button buttonAddMultipleChannels;
+		private System.Windows.Forms.ToolStripMenuItem addMultipleNewNodesToolStripMenuItem;
 	}
 }
