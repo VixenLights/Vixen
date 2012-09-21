@@ -42,7 +42,7 @@ namespace BaseSequence {
 			get { return Path.GetFileNameWithoutExtension(FilePath); }
 		}
 
-		public TimeSpan Length { get; set; }
+		public virtual TimeSpan Length { get; set; }
 
 		public string FilePath { get; set; }
 
