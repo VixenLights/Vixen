@@ -19,6 +19,7 @@ namespace VixenApplication
 		private bool stopping;
 		private bool _openExecution = true;
 		private bool _disableControllers = false;
+		private CpuUsage _cpuUsage;
 
 		public VixenApplication()
 		{
@@ -437,11 +438,11 @@ namespace VixenApplication
 		private const int StatsUpdateInterval = 1000;	// ms
 		private Timer _statsTimer;
 		private Process _thisProc;
-		private TimeSpan _lastTotalCpuTime = TimeSpan.MinValue;
 
 		private void InitStats()
 		{
 			_thisProc = Process.GetCurrentProcess();
+			_cpuUsage = new CpuUsage();
 
 			_statsTimer = new Timer();
 			_statsTimer.Interval = StatsUpdateInterval;
@@ -454,17 +455,8 @@ namespace VixenApplication
 		{
 			long memUsage = _thisProc.PrivateMemorySize64 / 1024 / 1024;
 
-			TimeSpan thisCpuDt;
-			TimeSpan thisTotalCpuTime = _thisProc.TotalProcessorTime;	// Currently reported total cpu time
-			if (_lastTotalCpuTime == TimeSpan.MinValue)
-				thisCpuDt = TimeSpan.Zero;								// First update - just show zero
-			else
-				thisCpuDt = thisTotalCpuTime - _lastTotalCpuTime;		// CPU time over this interval
-			_lastTotalCpuTime = thisTotalCpuTime;						// Update the total cpu for next time
-			double cpuPcnt = (thisCpuDt.TotalMilliseconds / _statsTimer.Interval) * 100.0;
-
-			toolStripStatusLabel_memory.Text = String.Format("Mem: {0} MB   CPU: {1:0.0}%",
-				memUsage, cpuPcnt);
+			toolStripStatusLabel_memory.Text = String.Format("Mem: {0} MB   CPU: {1}%",
+				memUsage, _cpuUsage.GetUsage());
 		}
 
 		#endregion
