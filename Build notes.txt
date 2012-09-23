@@ -75,10 +75,42 @@ Like we said, it may be weeks between updates because of large-granular changes 
 Changes for sequence and language modules.
 
 
-******************** Modules have been split from the core source repository at this point. ********************
+********************
+******************** Modules have been split from the core source repository at this point.
+********************
 
 
 == 3.0.1.8 ============================
 
 Handling BadImageFormatException explicitly to allow non-assembly DLLs to reside in the module directories.
 Moved some non-assembly libraries to the application root directory because that's where they have to be to work.
+
+
+== 3.0.2.0 ============================
+
+Data handling changes.  HUGE!
+See http://doityourselfchristmas.com/forums/showthread.php?22100-September-2012-3-0-2-0
+
+New configuration dialog in the admin app to accommodate filters and data flow.
+
+Output device refactoring.  They are mostly internal, but there are some external changes.  All modules in the git repo have been updated.
+
+Added a ValueTypes common assembly for commonly-used types of data, such as percentages and file paths.  This is to prevent modules from redefining similar kinds of data in different ways and having to create editors specifically for themselves.  An editor for any of these common types (there are only two so far) can be used for any effect that uses that type.
+
+Added an Index member to outputs.  This is set when the output is instantiated and is not modifiable.
+
+Added VixenSystem.Filters for the new filter layer.
+
+Added VixenSystem.DataFlow for managing the data flow from channel to output through the filter layer.
+
+Added VixenSystem.OutputControllers, VixenSystem.SmartOutputControllers, and VixenSystem.Previews for specific handling of those device types.
+
+Added VixenSystem.ControllerManagement and VixenSystem.OutputDeviceManagement for generalized handling of those device types.  This allows for operations such as VixenSystem.ControllerManagement.StartAll() which affects both OutputControllers and SmartOutputControllers.
+
+Previews now receive intent states instead of commands.
+
+Added non-static data store to ModuleStore.xml.
+
+System-level module data (such as for controllers) has been pulled out of SystemConfig.xml and put into ModuleStore.xml.
+
+Fixed CPU usage statistic in the admin app.
