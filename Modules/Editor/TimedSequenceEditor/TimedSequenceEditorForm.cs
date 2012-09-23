@@ -10,6 +10,7 @@ using Common.Controls.Timeline;
 using Vixen.Execution;
 using Vixen.Execution.Context;
 using Vixen.Module;
+using VixenModules.Media.Audio;
 using Vixen.Module.Editor;
 using Vixen.Module.Effect;
 using Vixen.Module.Media;
@@ -81,6 +82,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			timelineControl.SelectionChanged += TimelineControlOnSelectionChanged;
 			TimeLineSequenceClipboardContentsChanged += TimelineSequenceTimeLineSequenceClipboardContentsChanged;
+			timelineControl.CursorMoved += CursorMovedHandler;
 
 			LoadAvailableEffects();
             InitUndo();
@@ -200,6 +202,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			populateGridWithMarks();
+
+			populateWaveformAudio();
            
             //Original code set modified to always be true upon loading a sequence.
             //sequenceModified();
@@ -293,6 +297,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						timelineControl.AddSnapTime(time, mc.Level, mc.MarkColor);
 					}
 				}
+			}
+		}
+
+		private void populateWaveformAudio()
+		{
+			if (_sequence.GetAllMedia().Any())
+			{
+				IMediaModuleInstance media = _sequence.GetAllMedia().First();
+				Audio audio = media as Audio;
+				timelineControl.Audio=audio;
 			}
 		}
 
@@ -615,6 +629,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				toolStripStatusLabel_currentTime.Text = timelineControl.PlaybackCurrentTime.Value.ToString("m\\:ss\\.fff");
 			else
 				toolStripStatusLabel_currentTime.Text = String.Empty;
+		}
+
+		private void CursorMovedHandler(object sender, EventArgs e)
+		{
+			toolStripStatusLabel_currentTime.Text = (e as TimeSpanEventArgs).Time.ToString("m\\:ss\\.fff");
 		}
 
 		private void UpdatePasteMenuStates()
@@ -1206,11 +1225,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					_sequence.RemoveMedia(module);
 				}
+				//Remove any associated audio from the timeline.
+				timelineControl.Audio = null;
 
 				TimeSpan length = TimeSpan.Zero;
 				if (newInstance is VixenModules.Media.Audio.Audio)
 				{
 					length = (newInstance as VixenModules.Media.Audio.Audio).MediaDuration;
+					timelineControl.Audio=newInstance as VixenModules.Media.Audio.Audio;
 				}
 
 				if (length != TimeSpan.Zero)
