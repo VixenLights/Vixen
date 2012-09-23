@@ -578,7 +578,7 @@ namespace VixenApplication
 			ChannelNode newGroup = AddNewNode();
 
 			foreach (TreeNode tn in multiSelectTreeviewChannelsGroups.SelectedNodes) {
-				newGroup.AddChild(tn.Tag as ChannelNode);
+				VixenSystem.Nodes.AddChildToParent(tn.Tag as ChannelNode, newGroup);
 			}
 
 			PopulateNodeTree();

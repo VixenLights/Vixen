@@ -82,6 +82,7 @@
       <DependentUpon>ChannelsToControllerRuleEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\IHasPatchRule.cs" />
+    <Compile Include="CpuUsage.cs" />
     <Compile Include="CreateAndNameChannels.cs">
       <SubType>Form</SubType>
     </Compile>

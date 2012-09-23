@@ -161,7 +161,7 @@ namespace VixenApplication
 					// for each controller, go through its outputs, and if it doesn't have a source, make a new channel/node for it.
 					// setting the source of the given output to that particular channel/node.
 					foreach (var output in oc.Outputs) {
-						if (output.Source == null) {
+						if (output.Source == null || output.Source.Component == null) {
 							string name = output.Name;
 							ChannelNode newNode = VixenSystem.Nodes.AddNode(name);
 							if (newNode.Channel == null) {
