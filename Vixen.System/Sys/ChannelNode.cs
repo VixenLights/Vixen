@@ -58,9 +58,15 @@ namespace Vixen.Sys {
 			get { return _channel; }
 			set
 			{
+				if (_channel != null) {
+					VixenSystem.Channels.RemoveChannel(_channel);
+				}
+
 				_channel = value;
-				if (value != null)
-					VixenSystem.Channels.SetChannelNodeForChannel(value, this);
+
+				if (_channel != null) {
+					VixenSystem.Channels.SetChannelNodeForChannel(_channel, this);
+				}
 			}
 		}
 
@@ -159,8 +165,15 @@ namespace Vixen.Sys {
 			OnChanged(this);
 		}
 
-		public override bool RemoveFromParent(GroupNode<Channel> parent, bool removeChildrenIfFloating) {
-			bool result = base.RemoveFromParent(parent, removeChildrenIfFloating);
+		public override bool RemoveFromParent(GroupNode<Channel> parent, bool cleanupIfFloating) {
+			bool result = base.RemoveFromParent(parent, cleanupIfFloating);
+
+			// if we're cleaning up if we're a floating node (eg. being deleted), and we're actually
+			// floating, then remove the associated channel (if any)
+			if (cleanupIfFloating && Parents.Count() == 0) {
+				Channel = null;
+			}
+
 			OnChanged(this);
 			return result;
 		}

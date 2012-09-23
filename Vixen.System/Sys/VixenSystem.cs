@@ -171,8 +171,6 @@ namespace Vixen.Sys {
 			// purge all existing channels, nodes, and controllers (to try and clean up a bit).
 			// might not actually matter, since we're going to make new Managers for them all
 			// in a tick, but better safe than sorry.
-			foreach (Channel c in Channels.ToArray())
-				Channels.RemoveChannel(c);
 			foreach (ChannelNode cn in Nodes.ToArray())
 				Nodes.RemoveNode(cn, null, true);
 			foreach (OutputController oc in OutputControllers.ToArray())

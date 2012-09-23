@@ -103,13 +103,13 @@ namespace Vixen.Sys.Managers {
 			return newNode;
 		}
 
-		public void RemoveNode(ChannelNode node, ChannelNode parent, bool removeChildrenIfFloating) {
+		public void RemoveNode(ChannelNode node, ChannelNode parent, bool cleanupIfFloating) {
 			// if the given parent is null, it's most likely a root node (ie. with
 			// a parent of our private RootNode). Try to remove it from that instead.
 			if (parent == null) {
-				node.RemoveFromParent(RootNode, removeChildrenIfFloating);
+				node.RemoveFromParent(RootNode, cleanupIfFloating);
 			} else {
-				node.RemoveFromParent(parent, removeChildrenIfFloating);
+				node.RemoveFromParent(parent, cleanupIfFloating);
 			}
 		}
 
@@ -126,10 +126,7 @@ namespace Vixen.Sys.Managers {
 
 			// if an item is a group (or is becoming one), it can't have an output
 			// channel anymore. Remove it.
-			if (parent.Channel != null) {
-				VixenSystem.Channels.RemoveChannel(parent.Channel);
-				parent.Channel = null;
-			}
+			parent.Channel = null;
 
 			// if an index was specified, insert it in that position, otherwise just add it at the end
 			if (index < 0)

@@ -44,7 +44,7 @@ namespace Vixen.Sys {
 			}
 		}
 
-		virtual public bool RemoveFromParent(GroupNode<T> parent, bool removeChildrenIfFloating) {
+		virtual public bool RemoveFromParent(GroupNode<T> parent, bool cleanupIfFloating) {
 			// try to remove this node from the given parent.
 			if (!parent.RemoveChild(this)) {
 				return false;
@@ -53,9 +53,9 @@ namespace Vixen.Sys {
 			// if we don't have any parents left, we're floating free: recurse down, and
 			// remove all children from this node. (This retains children that are also
 			// children of other nodes, not just this one).
-			if (removeChildrenIfFloating && Parents.Count() == 0) {
+			if (cleanupIfFloating && Parents.Count() == 0) {
 				foreach (GroupNode<T> child in _children.ToList()) {
-					child.RemoveFromParent(this, removeChildrenIfFloating);
+					child.RemoveFromParent(this, cleanupIfFloating);
 				}
 			}
 
