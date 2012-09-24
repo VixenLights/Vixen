@@ -11,9 +11,11 @@ namespace VixenModules.Output.DummyLighting
 {
 	public partial class DummyLightingSetup : Form
 	{
-		public DummyLightingSetup()
+		public DummyLightingSetup(RenderStyle renderStyle, string formTitle)
 		{
 			InitializeComponent();
+			RenderStyle = renderStyle;
+			FormTitle = formTitle;
 		}
 
 		RenderStyle _style;
@@ -30,6 +32,12 @@ namespace VixenModules.Output.DummyLighting
 				else if (_style == RenderStyle.RGBSingleChannel)
 					radioButtonSingleRGB.Checked = true;
 			}	
+		}
+
+		public string FormTitle
+		{
+			get { return textBoxWindowTitle.Text; }
+			set { textBoxWindowTitle.Text = value; }
 		}
 
 		private void radioButton_CheckedChanged(object sender, EventArgs e)
