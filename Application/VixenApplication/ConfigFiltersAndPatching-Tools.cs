@@ -750,6 +750,8 @@ namespace VixenApplication
 					}
 				}
 
+				currentConnectionLine.SecurityDomainName = ConfigFiltersAndPatching.SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS_DELETABLE;
+
 				VixenSystem.DataFlow.SetComponentSource(currentConnectionLine.DestinationDataComponent, currentConnectionLine.SourceDataFlowComponentReference);
 
 				result = true;
