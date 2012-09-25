@@ -711,6 +711,10 @@ namespace VixenApplication
 						}
 					}
 
+					if (currentConnectionLine.GetConnectionInfo(ControlPointId.FirstVertex, null).OtherShape == filterShape) {
+						skipConnection = true;
+					}
+
 					if (!skipConnection) {
 						if (currentConnectionLine.GetConnectionInfo(ControlPointId.LastVertex, null).OtherPointId != point ||
 							currentConnectionLine.GetConnectionInfo(ControlPointId.LastVertex, null).OtherShape != filterShape)
