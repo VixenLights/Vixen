@@ -130,6 +130,27 @@ namespace VixenApplication
 		public override void Draw(IDiagramPresenter diagramPresenter)
 		{
 			if (diagramPresenter == null) throw new ArgumentNullException("diagramPresenter");
+
+			// always draw all the connection points on all shapes
+			diagramPresenter.ResetTransformation();
+			try {
+				foreach (Shape shape in diagramPresenter.Diagram.Shapes) {
+					if (shape is FilterSetupShapeBase) {
+						FilterSetupShapeBase filterShape = shape as FilterSetupShapeBase;
+
+						for (int i = 0; i < filterShape.InputCount; i++) {
+							diagramPresenter.DrawConnectionPoint(IndicatorDrawMode.Normal, shape, filterShape.GetControlPointIdForInput(i));
+						}
+						for (int i = 0; i < filterShape.OutputCount; i++) {
+							diagramPresenter.DrawConnectionPoint(IndicatorDrawMode.Normal, shape, filterShape.GetControlPointIdForOutput(i));
+						}
+					}
+				}
+			} finally {
+				diagramPresenter.RestoreTransformation();
+			}
+
+			// conditionally take extra action, based on what we're currently doing
 			switch (CurrentAction) {
 				case Action.Select:
 					// nothing to do
@@ -167,7 +188,18 @@ namespace VixenApplication
 					break;
 
 				case Action.ConnectShapes:
-					// TODO: highlight hovered connection points, shapes, etc.
+					ShapeConnectionInfo connectionInfo = currentConnectionLine.GetConnectionInfo(ControlPointId.LastVertex, null);
+					if (!connectionInfo.IsEmpty) {
+						FilterSetupShapeBase shape = connectionInfo.OtherShape as FilterSetupShapeBase;
+						if (shape != null) {
+							FilterSetupShapeBase.FilterShapeControlPointType type = shape.GetTypeForControlPoint(connectionInfo.OtherPointId);
+							if (type == FilterSetupShapeBase.FilterShapeControlPointType.Input || type == FilterSetupShapeBase.FilterShapeControlPointType.Output) {
+								diagramPresenter.ResetTransformation();
+								diagramPresenter.DrawConnectionPoint(IndicatorDrawMode.Highlighted, shape, connectionInfo.OtherPointId);
+								diagramPresenter.RestoreTransformation();
+							}
+						}
+					}
 					break;
 
 				default:
