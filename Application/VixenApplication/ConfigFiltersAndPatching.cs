@@ -86,6 +86,7 @@ namespace VixenApplication
 
 			diagramDisplay.ShowDefaultContextMenu = false;
 			diagramDisplay.ClicksOnlyAffectTopShape = true;
+			diagramDisplay.HighQualityRendering = true;
 
 			// A: fixed shapes with no connection points: nothing (parent nested shapes: node groups, controllers)
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
@@ -93,9 +94,12 @@ namespace VixenApplication
 			// B: fixed shapes with connection points: connect only (channel nodes (leaf), output shapes)
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
 				SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS, StandardRole.Operator, Permission.Connect | Permission.Insert);
-			// C: movable shapes (filters): connect, layout (movable), and deleteable (filters)
+			// C: movable shapes: connect, layout (movable), and deleteable (filters, patch lines)
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
 				SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS, StandardRole.Operator, Permission.Connect | Permission.Insert | Permission.Layout | Permission.Delete);
+			// D: fixed shapes with no connection points, but deletable: only for established patch lines (so the user can't move them again, but an still delete them)
+			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
+				SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS_DELETABLE, StandardRole.Operator, Permission.Insert | Permission.Delete);
 
 			((RoleBasedSecurityManager) diagramDisplay.Project.SecurityManager).SetPermissions(StandardRole.Operator, Permission.All);
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).CurrentRole = StandardRole.Operator;
@@ -385,7 +389,7 @@ namespace VixenApplication
 			diagramDisplay.InsertShape(line);
 			diagramDisplay.Diagram.Shapes.SetZOrder(line, 100);
 			line.EndCapStyle = project.Design.CapStyles.ClosedArrow;
-			line.SecurityDomainName = SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS;
+			line.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS_DELETABLE;
 
 			line.SourceDataFlowComponentReference = new DataFlowComponentReference(source.DataFlowComponent, sourceOutputIndex);
 			line.DestinationDataComponent = destination.DataFlowComponent;
@@ -650,5 +654,6 @@ namespace VixenApplication
 		internal const char SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS = 'A';
 		internal const char SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS = 'B';
 		internal const char SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS = 'C';
+		internal const char SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS_DELETABLE = 'D';
 	}
 }

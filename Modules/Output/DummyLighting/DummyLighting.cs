@@ -23,6 +23,7 @@ namespace VixenModules.Output.DummyLighting {
 			set {
 				_data = (DummyLightingData)value;
 				_form.renderingStyle = _data.RenderStyle;
+				_form.Text = _data.FormTitle;
 				_SetDataPolicy();
 			}
 		}
@@ -56,12 +57,13 @@ namespace VixenModules.Output.DummyLighting {
 		}
 
 		override public bool Setup() {
-			DummyLightingSetup setup = new DummyLightingSetup();
-			setup.RenderStyle = _form.renderingStyle;
+			DummyLightingSetup setup = new DummyLightingSetup(_form.renderingStyle, _form.Text);
 			DialogResult result = setup.ShowDialog();
 			if(result == DialogResult.OK) {
 				_data.RenderStyle = setup.RenderStyle;
 				_form.renderingStyle = setup.RenderStyle;
+				_data.FormTitle = setup.FormTitle;
+				_form.Text = setup.FormTitle;
 				_SetDataPolicy();
 				return true;
 			}

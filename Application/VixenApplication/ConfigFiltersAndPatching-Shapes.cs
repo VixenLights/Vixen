@@ -160,6 +160,10 @@ namespace VixenApplication
 			if (controlPointId == ControlPointId.None || controlPointId == ControlPointId.Any)
 				return false;
 
+			// all control points have at least the 'none' capability. Hopefully, they might even have more...
+			if (controlPointCapability == ControlPointCapabilities.None)
+				return true;
+
 			int index = GetControlPointIndex(controlPointId);
 			if (index > 0 && index <= InputCount + OutputCount) {
 				return ((controlPointCapability & ControlPointCapabilities.Connect) > 0 ||
