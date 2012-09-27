@@ -738,12 +738,21 @@ namespace VixenApplication
 						// Later on, if/when we support multiple inputs, we'll need to get an appropriate input. For now, there's only 1 option.
 						if (filterShape.InputCount > 0) {
 							point = filterShape.GetControlPointIdForInput(0);
-						} else {
+						}
+						else {
 							skipConnection = true;
 						}
 					}
 
-					if (currentConnectionLine.GetConnectionInfo(ControlPointId.FirstVertex, null).OtherShape == filterShape) {
+					FilterSetupShapeBase sourceShape = currentConnectionLine.GetConnectionInfo(ControlPointId.FirstVertex, null).OtherShape as FilterSetupShapeBase;
+
+					// check to see if it's pointing at itself
+					if (sourceShape == filterShape) {
+						skipConnection = true;
+					}
+
+					// check to see if targeting this shape would create a circular dependency
+					if (sourceShape != null && VixenSystem.DataFlow.CheckComponentSourceForCircularDependency(filterShape.DataFlowComponent, sourceShape.DataFlowComponent)) {
 						skipConnection = true;
 					}
 
