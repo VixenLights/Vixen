@@ -96,7 +96,7 @@ namespace VixenApplication
 					try {
 						multiSelectTreeviewChannelsGroups.TopNode = resultNode;
 					} catch (Exception) {
-						VixenSystem.Logging.Warn("ConfigChannels: exception caught trying to set TopNode.");
+						VixenSystem.Logging.Warning("ConfigChannels: exception caught trying to set TopNode.");
 					}
 					break;
 				}
@@ -214,7 +214,7 @@ namespace VixenApplication
 
 			buttonDeleteChannel.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0) && (node != null);
 			buttonCreateGroup.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0) && (node != null);
-			buttonBulkRename.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0) && (node != null);
+			buttonRename.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0) && (node != null);
 		}
 
 		private void PopulateGeneralNodeInfo(ChannelNode node)
@@ -276,12 +276,17 @@ namespace VixenApplication
 
 		#region Form buttons
 
-		private void buttonAddNode_Click(object sender, EventArgs e)
+		private void buttonAddChannel_Click(object sender, EventArgs e)
 		{
-			AddNewNode();
+			AddSingleNodeWithPrompt();
 		}
 
-		private void buttonDeleteNode_Click(object sender, EventArgs e)
+		private void buttonAddMultipleChannels_Click(object sender, EventArgs e)
+		{
+			AddMultipleNodesWithPrompt();
+		}
+
+		private void buttonDeleteChannel_Click(object sender, EventArgs e)
 		{
 			if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0)
 			{
@@ -309,9 +314,9 @@ namespace VixenApplication
 			CreateGroupFromSelectedNodes();
 		}
 
-		private void buttonBulkRename_Click(object sender, EventArgs e)
+		private void buttonRename_Click(object sender, EventArgs e)
 		{
-			BulkRenameSelectedChannels();
+			RenameSelectedChannels();
 		}
 
 		private void buttonAddProperty_Click(object sender, EventArgs e)
@@ -443,7 +448,7 @@ namespace VixenApplication
 						VixenSystem.Nodes.AddChildToParent(sourceNode, newParentNode);
 					}
 				} else {
-					VixenSystem.Logging.Warn("ConfigChannels: Trying to deal with a drag that is an unknown type!");
+					VixenSystem.Logging.Warning("ConfigChannels: Trying to deal with a drag that is an unknown type!");
 				}
 			}
 
@@ -551,11 +556,25 @@ namespace VixenApplication
 			}
 		}
 
-		private ChannelNode AddNewNode(ChannelNode parent = null, int index = -1)
-		{
-			if (CheckIfNodeWillLosePatches(parent))
-				return null;
 
+		private IEnumerable<ChannelNode> AddMultipleNodesWithPrompt(ChannelNode parent = null)
+		{
+			List<ChannelNode> result = new List<ChannelNode>();
+
+			// since we're adding multiple nodes, prompt with the name generation form (which also includes a counter on there).
+			using (NameGenerator nameGenerator = new NameGenerator()) {
+				if (nameGenerator.ShowDialog() == DialogResult.OK) {
+					result.AddRange(nameGenerator.Names.Where(name => !string.IsNullOrEmpty(name)).Select(name => AddNewNode(name, false, parent, true)));
+					PopulateNodeTree();
+				}
+			}
+
+			return result;
+		}
+
+		private ChannelNode AddSingleNodeWithPrompt(ChannelNode parent = null)
+		{
+			// since we're only adding a single node, prompt with a single text dialog.
 			using (TextDialog textDialog = new TextDialog("Node Name?")) {
 				if (textDialog.ShowDialog() == DialogResult.OK) {
 					string newName;
@@ -564,18 +583,29 @@ namespace VixenApplication
 					else
 						newName = textDialog.Response;
 
-					ChannelNode newNode = ChannelNodeService.Instance.CreateSingle(parent, newName, true, index: index);
-					PopulateNodeTree();
-					return newNode;
+					return AddNewNode(newName, true, parent);
 				}
 			}
 
 			return null;
 		}
 
+
+		private ChannelNode AddNewNode(string nodeName, bool repopulateNodeTree = true, ChannelNode parent = null, bool skipPatchCheck = false)
+		{
+			// prompt the user if it's going to make a patched leaf a group; if they abandon it, return null
+			if (!skipPatchCheck && CheckIfNodeWillLosePatches(parent))
+				return null;
+
+			ChannelNode newNode = ChannelNodeService.Instance.CreateSingle(parent, nodeName, true);
+			if (repopulateNodeTree)
+				PopulateNodeTree();
+			return newNode;
+		}
+
 		private void CreateGroupFromSelectedNodes()
 		{
-			ChannelNode newGroup = AddNewNode();
+			ChannelNode newGroup = AddSingleNodeWithPrompt();
 
 			foreach (TreeNode tn in multiSelectTreeviewChannelsGroups.SelectedNodes) {
 				VixenSystem.Nodes.AddChildToParent(tn.Tag as ChannelNode, newGroup);
@@ -601,18 +631,18 @@ namespace VixenApplication
 			return false;
 		}
 
-		private void BulkRenameSelectedChannels()
+		private void RenameSelectedChannels()
 		{
 			if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0) {
 				List<string> oldNames = new List<string>(multiSelectTreeviewChannelsGroups.SelectedNodes.Select(x => x.Tag as ChannelNode).Select(x => x.Name).ToArray());
-				BulkRename renamer = new BulkRename(oldNames.ToArray());
+				NameGenerator renamer = new NameGenerator(oldNames.ToArray());
 				if (renamer.ShowDialog() == DialogResult.OK) {
 					for (int i = 0; i < multiSelectTreeviewChannelsGroups.SelectedNodes.Count; i++) {
-						if (i >= renamer.NewNames.Length) {
-							VixenSystem.Logging.Warn("ConfigChannels: bulk renaming channels, and ran out of new names!");
+						if (i >= renamer.Names.Count) {
+							VixenSystem.Logging.Warning("ConfigChannels: bulk renaming channels, and ran out of new names!");
 							break;
 						}
-						(multiSelectTreeviewChannelsGroups.SelectedNodes[i].Tag as ChannelNode).Name = renamer.NewNames[i];
+						(multiSelectTreeviewChannelsGroups.SelectedNodes[i].Tag as ChannelNode).Name = renamer.Names[i];
 					}
 
 					PopulateNodeTree();
@@ -638,12 +668,6 @@ namespace VixenApplication
 			createGroupWithNodesToolStripMenuItem.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0);
 			deleteNodesToolStripMenuItem.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0);
 			renameNodesToolStripMenuItem.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0);
-			createAndNameToolStripMenuItem.Enabled = multiSelectTreeviewChannelsGroups.SelectedNode != null;
-			createAndNameInToolStripMenuItem.Enabled = multiSelectTreeviewChannelsGroups.SelectedNode != null;
-			createAndNameInToolStripMenuItem.Text = "Create and name in ";
-			if(createAndNameInToolStripMenuItem.Enabled) {
-				createAndNameInToolStripMenuItem.Text += multiSelectTreeviewChannelsGroups.SelectedNode.Text;
-			}
 		}
 
 		// TODO: use the system clipboard properly; I couldn't get it working in the sequencer, so I'm not
@@ -761,9 +785,20 @@ namespace VixenApplication
 		{
 			TreeNode selectedTreeNode = multiSelectTreeviewChannelsGroups.SelectedNode;
 			if (selectedTreeNode == null)
-				AddNewNode();
+				AddSingleNodeWithPrompt();
 			else
-				AddNewNode(selectedTreeNode.Tag as ChannelNode);
+				AddSingleNodeWithPrompt(selectedTreeNode.Tag as ChannelNode);
+
+			PopulateFormWithNode(_displayedNode, true);
+		}
+
+		private void addMultipleNewNodesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			TreeNode selectedTreeNode = multiSelectTreeviewChannelsGroups.SelectedNode;
+			if (selectedTreeNode == null)
+				AddMultipleNodesWithPrompt();
+			else
+				AddMultipleNodesWithPrompt(selectedTreeNode.Tag as ChannelNode);
 
 			PopulateFormWithNode(_displayedNode, true);
 		}
@@ -794,12 +829,12 @@ namespace VixenApplication
 			else if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count == 1) {
 				ChannelNode cn = multiSelectTreeviewChannelsGroups.SelectedNode.Tag as ChannelNode;
 				TextDialog dialog = new TextDialog("Node name?", "Rename node", (cn).Name, true);
-				if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+				if (dialog.ShowDialog() == DialogResult.OK) {
 					if (dialog.Response != "" && dialog.Response != cn.Name)
 						VixenSystem.Nodes.RenameNode(cn, dialog.Response);
 				}
 			} else if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 1) {
-				BulkRenameSelectedChannels();
+				RenameSelectedChannels();
 			}
 
 			PopulateNodeTree();
@@ -808,20 +843,6 @@ namespace VixenApplication
 
 		#endregion
 
-		private void createAndNameToolStripMenuItem_Click(object sender, EventArgs e) {
-			using(CreateAndNameChannels form = new CreateAndNameChannels()) {
-				form.ShowDialog();
-				PopulateNodeTree();
-			}
-		}
-
-		private void createAndNameInToolStripMenuItem_Click(object sender, EventArgs e) {
-			using(CreateAndNameChannels form = new CreateAndNameChannels((ChannelNode)multiSelectTreeviewChannelsGroups.SelectedNode.Tag)) {
-				form.ShowDialog();
-				PopulateNodeTree();
-			}
-		}
-			
 		private void textBoxName_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Enter) {
