@@ -41,15 +41,29 @@ namespace Vixen.Sys.Managers {
 			return component;
 		}
 
-		public void SetComponentSource(IDataFlowComponent component, IDataFlowComponent sourceComponent, int sourceOutputIndex) {
-			SetComponentSource(component, new DataFlowComponentReference(sourceComponent, sourceOutputIndex));
+		public bool SetComponentSource(IDataFlowComponent component, IDataFlowComponent sourceComponent, int sourceOutputIndex) {
+			return SetComponentSource(component, new DataFlowComponentReference(sourceComponent, sourceOutputIndex));
 		}
 
-		public void SetComponentSource(IDataFlowComponent component, IDataFlowComponentReference source) {
+		public bool SetComponentSource(IDataFlowComponent component, IDataFlowComponentReference source) {
 			if (component == null) throw new ArgumentNullException("component");
+
+			if (_CheckComponentSourceForCircularDependency(component, source))
+				return false;
 
 			_RemoveComponentSource(component);
 			_SetComponentSource(component, source);
+			return true;
+		}
+
+		public bool CheckComponentSourceForCircularDependency(IDataFlowComponent component, IDataFlowComponent source)
+		{
+			return _CheckComponentSourceForCircularDependency(component, source);
+		}
+
+		public bool CheckComponentSourceForCircularDependency(IDataFlowComponent component, IDataFlowComponentReference source)
+		{
+			return _CheckComponentSourceForCircularDependency(component, source);
 		}
 
 		public void ResetComponentSource(IDataFlowComponent component)
@@ -104,6 +118,25 @@ namespace Vixen.Sys.Managers {
 			if(component.Source == null) return;
 
 			_SetComponentSource(component, null);
+		}
+
+		private bool _CheckComponentSourceForCircularDependency(IDataFlowComponent component, IDataFlowComponentReference source)
+		{
+			if (source == null)
+				return false;
+
+			return _CheckComponentSourceForCircularDependency(component, source.Component);
+		}
+
+		private bool _CheckComponentSourceForCircularDependency(IDataFlowComponent component, IDataFlowComponent source)
+		{
+			if (component == null || source == null)
+				return false;
+
+			if (source == component)
+				return true;
+
+			return _CheckComponentSourceForCircularDependency(component, source.Source);
 		}
 
 		private void _SetComponentSource(IDataFlowComponent component, IDataFlowComponentReference source) {
