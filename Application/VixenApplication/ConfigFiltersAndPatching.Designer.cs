@@ -193,9 +193,12 @@
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.diagramDisplay);
 			this.DoubleBuffered = true;
+			this.MinimumSize = new System.Drawing.Size(750, 500);
 			this.Name = "ConfigFiltersAndPatching";
 			this.Text = "Output Filters & Patching Setup";
 			this.Load += new System.EventHandler(this.ConfigFiltersAndPatching_Load);
+			this.ResizeEnd += new System.EventHandler(this.ConfigFiltersAndPatching_ResizeEnd);
+			this.Resize += new System.EventHandler(this.ConfigFiltersAndPatching_Resize);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

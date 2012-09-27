@@ -51,6 +51,12 @@ namespace VixenApplication
 		private readonly Layer _visibleLayer;
 		private readonly Layer _hiddenLayer;
 
+		private int _channelsXPosition;
+		private int _filtersXPosition;
+		private int _controllersXPosition;
+
+		private Timer _relayoutOnResizeTimer;
+
 		public ConfigFiltersAndPatching()
 		{
 			InitializeComponent();
@@ -129,9 +135,7 @@ namespace VixenApplication
 			_InitializeShapesFromChannels();
 			_InitializeShapesFromFilters();
 			_InitializeShapesFromControllers();
-			_ResizeAndPositionChannelShapes();
-			_ResizeAndPositionControllerShapes();
-			_ResizeAndPositionFilterShapes();
+			_RelayoutAllShapes();
 			_CreateConnectionsFromExistingLinks();
 
 			diagramDisplay.CurrentTool = new ConnectionTool();
@@ -229,11 +233,38 @@ namespace VixenApplication
 			}
 
 			if (shape is ChannelNodeShape)
-				_ResizeAndPositionChannelShapes();
+				_ResizeAndPositionChannelShapes(_channelsXPosition);
 
 			if (shape is ControllerShape)
-				_ResizeAndPositionControllerShapes();
+				_ResizeAndPositionControllerShapes(_controllersXPosition);
 		}
+
+		private void ConfigFiltersAndPatching_ResizeEnd(object sender, EventArgs e)
+		{
+			_RelayoutAllShapes();
+		}
+
+		private void ConfigFiltersAndPatching_Resize(object sender, EventArgs e)
+		{
+			if (_relayoutOnResizeTimer == null) {
+				_relayoutOnResizeTimer = new Timer();
+				_relayoutOnResizeTimer.Interval = 250;
+				_relayoutOnResizeTimer.Tick += new EventHandler(_relayoutOnResizeTimer_Tick);
+				_relayoutOnResizeTimer.Start();
+			} else {
+				_relayoutOnResizeTimer.Stop();
+				_relayoutOnResizeTimer.Start();
+			}
+		}
+
+		void _relayoutOnResizeTimer_Tick(object sender, EventArgs e)
+		{
+			_relayoutOnResizeTimer.Stop();
+			_relayoutOnResizeTimer = null;
+			_RelayoutAllShapes();
+		}
+
+
 
 		private void _DeleteShapes(IEnumerable<Shape> shapes)
 		{
@@ -397,31 +428,45 @@ namespace VixenApplication
 			line.Connect(ControlPointId.LastVertex, destination, destination.GetControlPointIdForInput(0));
 		}
 
-		private void _ResizeAndPositionChannelShapes()
+		private void _RelayoutAllShapes()
+		{
+			// take off some pixels for natural spacing and widths of the shapes (since their X/Y coords are centred)
+			int width = diagramDisplay.Width - 300;
+
+			_channelsXPosition = 0;
+			_filtersXPosition = width / 2;
+			_controllersXPosition = width;
+
+			_ResizeAndPositionChannelShapes(_channelsXPosition);
+			_ResizeAndPositionFilterShapes(_filtersXPosition);
+			_ResizeAndPositionControllerShapes(_controllersXPosition);
+		}
+
+		private void _ResizeAndPositionChannelShapes(int xLocation)
 		{
 			int y = SHAPE_Y_TOP;
 			foreach (ChannelNodeShape channelShape in _channelShapes) {
-				_ResizeAndPositionNestingShape(channelShape, SHAPE_CHANNELS_WIDTH, SHAPE_CHANNELS_X_LOCATION, y, true);
+				_ResizeAndPositionNestingShape(channelShape, SHAPE_CHANNELS_WIDTH, xLocation, y, true);
 				y += channelShape.Height + SHAPE_VERTICAL_SPACING;
 			}
 		}
 
-		private void _ResizeAndPositionControllerShapes()
+		private void _ResizeAndPositionControllerShapes(int xLocation)
 		{
 			int y = SHAPE_Y_TOP;
 			foreach (ControllerShape controllerShape in _controllerShapes) {
-				_ResizeAndPositionNestingShape(controllerShape, SHAPE_CONTROLLERS_WIDTH, SHAPE_CONTROLLERS_X_LOCATION, y, true);
+				_ResizeAndPositionNestingShape(controllerShape, SHAPE_CONTROLLERS_WIDTH, xLocation, y, true);
 				y += controllerShape.Height + SHAPE_VERTICAL_SPACING;
 			}
 		}
 
-		private void _ResizeAndPositionFilterShapes()
+		private void _ResizeAndPositionFilterShapes(int xLocation)
 		{
 			int y = SHAPE_Y_TOP;
 			foreach (FilterShape filterShape in _filterShapes) {
 				filterShape.Width = SHAPE_FILTERS_WIDTH;
 				filterShape.Height = SHAPE_FILTERS_HEIGHT;
-				filterShape.X = SHAPE_FILTERS_X_LOCATION;
+				filterShape.X = xLocation;
 				filterShape.Y = y + filterShape.Height;
 
 				y += filterShape.Height + SHAPE_VERTICAL_SPACING;
@@ -655,5 +700,6 @@ namespace VixenApplication
 		internal const char SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS = 'B';
 		internal const char SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS = 'C';
 		internal const char SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS_DELETABLE = 'D';
+
 	}
 }
