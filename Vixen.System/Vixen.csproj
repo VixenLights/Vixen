@@ -190,7 +190,15 @@
     <Compile Include="Module\Service\ServiceModuleInstanceBase.cs" />
     <Compile Include="Module\Service\ServiceModuleManagement.cs" />
     <Compile Include="Module\Service\ServiceModuleRepository.cs" />
+    <Compile Include="Rule\INamingTemplate.cs" />
     <Compile Include="Rule\IPatchingRule.cs" />
+    <Compile Include="Rule\Name\GridNamingTemplate.cs" />
+    <Compile Include="Rule\Name\LetterCounter.cs" />
+    <Compile Include="Rule\Name\LetterIterator.cs" />
+    <Compile Include="Rule\Name\NumberedNamingTemplate.cs" />
+    <Compile Include="Rule\Name\NumericCounter.cs" />
+    <Compile Include="Rule\Name\RGBNamingTemplate.cs" />
+    <Compile Include="Rule\Name\WordIterator.cs" />
     <Compile Include="Rule\Patch\ChannelsToSingleController.cs" />
     <Compile Include="Sys\ChannelIntentStates.cs" />
     <Compile Include="Sys\IDataPolicyFactory.cs" />
@@ -300,10 +308,7 @@
     <Compile Include="Module\Preview\PreviewModuleManagement.cs" />
     <Compile Include="Module\Preview\PreviewModuleRepository.cs" />
     <Compile Include="Module\Preview\SingleThreadBehavior.cs" />
-    <Compile Include="Rule\Name\GridTemplate.cs" />
-    <Compile Include="Rule\INamingRule.cs" />
-    <Compile Include="Rule\Name\FlatNumericTemplate.cs" />
-    <Compile Include="Rule\Name\FlatLetterTemplate.cs" />
+    <Compile Include="Rule\INamingGenerator.cs" />
     <Compile Include="Services\ChannelNodeService.cs" />
     <Compile Include="Services\OutputFilterService.cs" />
     <Compile Include="Services\SequenceFilterService.cs" />

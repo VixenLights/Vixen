@@ -97,8 +97,14 @@ namespace Vixen.Services {
 			return manager.GetEffectEditors(effectId);
 		}
 
-		static public INamingRule[] GetAllNamingRules() {
-			return typeof(INamingRule).FindConcreteImplementationsWithin(Assembly.GetExecutingAssembly()).Select(Activator.CreateInstance).Cast<INamingRule>().ToArray();
+		static public INamingGenerator[] GetAllNamingGenerators()
+		{
+			return typeof(INamingGenerator).FindConcreteImplementationsWithin(Assembly.GetExecutingAssembly()).Select(Activator.CreateInstance).Cast<INamingGenerator>().ToArray();
+		}
+
+		static public INamingTemplate[] GetAllNamingTemplates()
+		{
+			return typeof(INamingTemplate).FindConcreteImplementationsWithin(Assembly.GetExecutingAssembly()).Select(Activator.CreateInstance).Cast<INamingTemplate>().ToArray();
 		}
 
 		static public bool AreAllEffectRequiredPropertiesPresent(IEffectModuleInstance effectModule) {

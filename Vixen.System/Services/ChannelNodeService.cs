@@ -48,15 +48,6 @@ namespace Vixen.Services {
 			channelNode.Name = name;
 		}
 
-		public void Rename(IEnumerable<ChannelNode> channelNodes, INamingRule namingRule) {
-			ChannelNode[] channelNodeArray = channelNodes.ToArray();
-			string[] names = namingRule.GenerateNames(channelNodeArray.Length);
-
-			for(int i=0; i<channelNodeArray.Length; i++) {
-				Rename(channelNodeArray[i], names[i]);
-			}
-		}
-
 		private Channel _CreateChannel(string name) {
 			return new Channel(name);
 		}
