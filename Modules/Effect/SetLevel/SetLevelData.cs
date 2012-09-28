@@ -13,7 +13,7 @@ namespace VixenModules.Effect.SetLevel
 	class SetLevelData : ModuleDataModelBase
 	{
 		[DataMember]
-		public float level { get; set; }
+		public double level { get; set; }
 
 		[DataMember]
 		public RGB color { get; set; }

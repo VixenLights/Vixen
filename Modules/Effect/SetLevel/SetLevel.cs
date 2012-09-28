@@ -43,7 +43,7 @@ namespace VixenModules.Effect.SetLevel
 		}
 
 		[Value]
-		public float IntensityLevel
+		public double IntensityLevel
 		{
 			get { return _data.level; }
 			set { _data.level = value; IsDirty = true; }
@@ -61,7 +61,7 @@ namespace VixenModules.Effect.SetLevel
 		private void RenderNode(ChannelNode node)
 		{
 			foreach(Channel channel in node) {
-				LightingValue lightingValue = new LightingValue(Color, IntensityLevel);
+				LightingValue lightingValue = new LightingValue(Color, (float)IntensityLevel);
 				IIntent intent = new LightingIntent(lightingValue, lightingValue, TimeSpan);
 				_channelData.AddIntentForChannel(channel.Id, intent, TimeSpan.Zero);
 			}
