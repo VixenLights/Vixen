@@ -347,7 +347,7 @@ namespace VixenApplication
 		private void AddSequenceToRecentList(string filename)
 		{
 			// remove the item from the list if it exists, then insert it in the front
-			foreach (string filepath in _applicationData.RecentSequences) {
+			foreach (string filepath in _applicationData.RecentSequences.ToArray()) {
 				if (filepath == filename) {
 					_applicationData.RecentSequences.Remove(filepath);
 				}

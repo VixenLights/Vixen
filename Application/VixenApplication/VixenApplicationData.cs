@@ -14,7 +14,7 @@ namespace VixenApplication
 	// This is a class to handle persisting data for the VixenApplication. It does this by serializing out
 	// data to the Vixen Data directory and reading it back from the same file. In future, it may need to
 	// also handle migration of data if data formats change, etc., but for now it's probably not an issue.
-	class VixenApplicationData
+	public class VixenApplicationData
 	{
 		private const string _DataFilename = "VixenApplicationData.xml";
 
@@ -46,11 +46,6 @@ namespace VixenApplication
 			try {
 				stream = new FileStream(DataFilepath, FileMode.Open);
 
-				// get the data format from the file; If it's not up-to-date, use the migrator to load in
-				// data as appropriate. Otherwise, just read it straight in.
-				// TODO: just a thought, we can probably do ALL the reading in the migration function (call it something like
-				// 'readData' or something), and selectively do things based on the data format version in the file...?
-
 				XElement root = XElement.Load(stream);
 
 				XElement versionElement = root.Element("DataFormatVersion");
@@ -60,18 +55,8 @@ namespace VixenApplication
 				}
 				int dataFormatVersion = int.Parse(versionElement.Value);
 
-				if (dataFormatVersion < DATA_FORMAT_VERSION_NUMBER) {
-					MigrateData(dataFormatVersion, root);
-				} else {
-					// recent sequences
-					XElement recentSequences = root.Element("RecentSequences");
-					if (recentSequences != null) {
-						RecentSequences = new List<string>();
-						foreach (XElement element in recentSequences.Elements("SequenceFile")) {
-							RecentSequences.Add(element.Value);
-						}
-					}
-				}
+				ReadData(dataFormatVersion, root);
+
 			} catch(FileNotFoundException ex) {
 				VixenSystem.Logging.Warning("VixenApplication: loading application data, but couldn't find file", ex);
 			} catch (Exception ex) {
@@ -106,14 +91,23 @@ namespace VixenApplication
 			}
 		}
 
-		public void MigrateData(int oldDataVersion, XElement rootElement)
+		public void ReadData(int dataVersion, XElement rootElement)
 		{
-			if (oldDataVersion > DATA_FORMAT_VERSION_NUMBER) {
-				VixenSystem.Logging.Error("VixenApplication: error migrating application data; given data version was too high" + oldDataVersion);
+			if (dataVersion > DATA_FORMAT_VERSION_NUMBER) {
+				VixenSystem.Logging.Error("VixenApplication: error reading application data; given data version was too high: " + dataVersion);
 				return;
 			}
 
-			// do any migration needed here
+			// recent sequences: in all data formats
+			XElement recentSequences = rootElement.Element("RecentSequences");
+			if (recentSequences != null) {
+				RecentSequences = new List<string>();
+				foreach (XElement element in recentSequences.Elements("SequenceFile")) {
+					RecentSequences.Add(element.Value);
+				}
+			}
+
+
 		}
 	}
 }
