@@ -52,14 +52,19 @@ namespace VixenApplication
 		private readonly Layer _hiddenLayer;
 
 		private int _channelsXPosition;
-		private int _filtersXPosition;
 		private int _controllersXPosition;
+		private int _previousDiagramWidth;		// used when resizing; what the width was BEFORE resize,
+												// so we know how to layout filter shapes (proportionally)
+
+		private VixenApplicationData _applicationData;
 
 		private Timer _relayoutOnResizeTimer;
 
-		public ConfigFiltersAndPatching()
+		public ConfigFiltersAndPatching(VixenApplicationData applicationData)
 		{
 			InitializeComponent();
+
+			_applicationData = applicationData;
 
 			project.LibrarySearchPaths.Add(@"Common\");
 			project.AutoLoadLibraries = true;
@@ -77,6 +82,7 @@ namespace VixenApplication
 			_channelShapes = new List<ChannelNodeShape>();
 			_controllerShapes = new List<ControllerShape>();
 			_filterShapes = new List<FilterShape>();
+			_previousDiagramWidth = 0;
 		}
 
 		private void ConfigFiltersAndPatching_Load(object sender, EventArgs e)
@@ -184,7 +190,7 @@ namespace VixenApplication
 
 			shape.Width = SHAPE_FILTERS_WIDTH;
 			shape.Height = SHAPE_FILTERS_HEIGHT;
-			shape.X = SHAPE_FILTERS_X_LOCATION;
+			shape.X = diagramDisplay.Width / 2;
 			shape.Y = diagramDisplay.GetDiagramOffset().Y + (diagramDisplay.Height / 2);
 		}
 
@@ -434,11 +440,10 @@ namespace VixenApplication
 			int width = diagramDisplay.Width - 300;
 
 			_channelsXPosition = 0;
-			_filtersXPosition = width / 2;
 			_controllersXPosition = width;
 
 			_ResizeAndPositionChannelShapes(_channelsXPosition);
-			_ResizeAndPositionFilterShapes(_filtersXPosition);
+			_ResizeAndPositionFilterShapes(_previousDiagramWidth, width);
 			_ResizeAndPositionControllerShapes(_controllersXPosition);
 		}
 
@@ -460,17 +465,47 @@ namespace VixenApplication
 			}
 		}
 
-		private void _ResizeAndPositionFilterShapes(int xLocation)
+		private void _ResizeAndPositionFilterShapes(int oldDiagramWidth, int newDiagramWidth)
 		{
+			double defaultXPositionProportion = 0.5;
 			int y = SHAPE_Y_TOP;
+
 			foreach (FilterShape filterShape in _filterShapes) {
 				filterShape.Width = SHAPE_FILTERS_WIDTH;
 				filterShape.Height = SHAPE_FILTERS_HEIGHT;
-				filterShape.X = xLocation;
-				filterShape.Y = y + filterShape.Height;
 
-				y += filterShape.Height + SHAPE_VERTICAL_SPACING;
+				FilterSetupFormShapePosition position = null;
+				bool updatePosition = true;
+
+				// if the filtershape is unpositioned, it's either first load (nothing positioned yet), or maybe new?
+				// look it up in the application data for a position, otherwise default it.
+				// (same if there's no old diagram width given; we'd have nothing to proportion from!)
+				if ((filterShape.X <= 0 && filterShape.Y <= 0) || oldDiagramWidth <= 0) {
+					if (_applicationData.FilterSetupFormShapePositions.TryGetValue(filterShape.FilterInstance.InstanceId, out position)) {
+						updatePosition = false;
+					} else {
+						position = new FilterSetupFormShapePosition();
+						position.xPositionProportion = defaultXPositionProportion;
+						position.yPosition = y;
+
+						// because we've used a default position, increment the default Y position
+						y += filterShape.Height + SHAPE_VERTICAL_SPACING;
+					}
+				} else {
+					position = new FilterSetupFormShapePosition();
+					position.xPositionProportion = (double)filterShape.X / oldDiagramWidth;
+					position.yPosition = filterShape.Y;
+				}
+
+				filterShape.X = (int)(newDiagramWidth * position.xPositionProportion);
+				filterShape.Y = position.yPosition;
+
+				if (updatePosition) {
+					_applicationData.FilterSetupFormShapePositions[filterShape.FilterInstance.InstanceId] = position;
+				}
 			}
+
+			_previousDiagramWidth = newDiagramWidth;
 		}
 
 		private void _ResizeAndPositionNestingShape(FilterSetupShapeBase shape, int width, int x, int y, bool visible)
@@ -666,11 +701,6 @@ namespace VixenApplication
 		//  7:  20 pixels (770 -> 780): forced display border
 		//
 		// (there's 20 pixels forced bordering by the diagram display control, as a const (scrollAreaMargin) inside it.)
-
-		// the central X point of shapes
-		internal const int SHAPE_CHANNELS_X_LOCATION = 80;
-		internal const int SHAPE_FILTERS_X_LOCATION = 380;
-		internal const int SHAPE_CONTROLLERS_X_LOCATION = 680;
 
 		// the (base) width of all shapes (inner children will be smaller)
 		internal const int SHAPE_CHANNELS_WIDTH = 160;

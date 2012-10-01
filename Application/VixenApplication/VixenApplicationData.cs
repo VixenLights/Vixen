@@ -18,10 +18,12 @@ namespace VixenApplication
 	{
 		private const string _DataFilename = "VixenApplicationData.xml";
 
-		private const int DATA_FORMAT_VERSION_NUMBER = 1;
+		private const int DATA_FORMAT_VERSION_NUMBER = 2;
 
 
 		public List<string> RecentSequences { get; set; }
+
+		public Dictionary<Guid, FilterSetupFormShapePosition> FilterSetupFormShapePositions { get; set; }
 
 
 		private string DataFilepath
@@ -32,6 +34,7 @@ namespace VixenApplication
 		public VixenApplicationData()
 		{
 			RecentSequences = new List<string>();
+			FilterSetupFormShapePositions = new Dictionary<Guid, FilterSetupFormShapePosition>();
 			LoadData();
 		}
 
@@ -81,6 +84,18 @@ namespace VixenApplication
 				RecentSequences.ForEach(s => recentSequencesElement.Add(new XElement("SequenceFile", s)));
 				root.Add(recentSequencesElement);
 
+				XElement filterShapePositionsElement = new XElement("FilterShapePositions");
+				foreach (KeyValuePair<Guid, FilterSetupFormShapePosition> pair in FilterSetupFormShapePositions) {
+					filterShapePositionsElement.Add(
+						new XElement("FilterPosition",
+				             new XAttribute("FilterId", pair.Key),
+				             new XElement("xPositionProportion", pair.Value.xPositionProportion),
+				             new XElement("yPosition", pair.Value.yPosition)
+						)
+					);
+				}
+				root.Add(filterShapePositionsElement);
+
 				root.Save(stream);
 
 			} catch (Exception ex) {
@@ -107,7 +122,27 @@ namespace VixenApplication
 				}
 			}
 
+			// filter shape positions: in data versions 2+
+			if (dataVersion >= 2) {
+				XElement filterShapePositionsElement = rootElement.Element("FilterShapePositions");
+				if (filterShapePositionsElement != null) {
+					FilterSetupFormShapePositions = new Dictionary<Guid, FilterSetupFormShapePosition>();
+					foreach (XElement element in filterShapePositionsElement.Elements("FilterPosition")) {
+						FilterSetupFormShapePosition position = new FilterSetupFormShapePosition();
+						position.xPositionProportion = double.Parse(element.Element("xPositionProportion").Value);
+						position.yPosition = int.Parse(element.Element("yPosition").Value);
+						FilterSetupFormShapePositions.Add((Guid)element.Attribute("FilterId"), position);
+					}
+				}
+			}
+
 
 		}
+	}
+
+	public class FilterSetupFormShapePosition
+	{
+		public double xPositionProportion { get; set; }
+		public int yPosition { get; set; }
 	}
 }

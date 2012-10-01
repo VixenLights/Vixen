@@ -245,7 +245,7 @@ namespace VixenApplication
 
 		private void buttonSetupFiltersAndPatching_Click(object sender, EventArgs e)
 		{
-			ConfigFiltersAndPatching form = new ConfigFiltersAndPatching();
+			ConfigFiltersAndPatching form = new ConfigFiltersAndPatching(_applicationData);
 			DialogResult result = form.ShowDialog();
 			if (result == DialogResult.OK) {
 				VixenSystem.SaveSystemConfig();
