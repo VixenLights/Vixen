@@ -3,7 +3,6 @@ namespace VixenModules.Preview.DisplayPreview.Views
     using System;
     using System.Windows.Threading;
     using Vixen.Sys;
-    using Vixen.Sys.Managers;
     using VixenModules.Preview.DisplayPreview.Model;
     using VixenModules.Preview.DisplayPreview.ViewModels;
 

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
+using VixenModules.Media.Audio;
 
 namespace Common.Controls.Timeline
 {
@@ -25,6 +26,7 @@ namespace Common.Controls.Timeline
         // Right side (Panel 2)
 		private Ruler ruler;
 		private Grid grid;
+    	private Waveform waveform;
 
         #endregion
 
@@ -116,7 +118,7 @@ namespace Common.Controls.Timeline
 			splitContainer.Panel2.Controls.Add(grid);	// gets added first - to fill the remains
             grid.Scroll += GridScrolledHandler;
             grid.VerticalOffsetChanged += GridScrollVerticalHandler;
-
+			
 			// Ruler
 			ruler = new Ruler(TimeInfo)
 			{
@@ -124,6 +126,17 @@ namespace Common.Controls.Timeline
 				Height = 40,
 			};
 			splitContainer.Panel2.Controls.Add(ruler);
+
+			//WaveForm
+			//TODO deal with positioning, can we dock two controls to the top
+			//Looks like the last one wins.
+			waveform = new Waveform(TimeInfo)
+			{
+				Dock = DockStyle.Top,
+				Height = 50	
+			};
+
+			splitContainer.Panel2.Controls.Add(waveform);
 
 			splitContainer.Panel2.ResumeLayout(false);
 			splitContainer.Panel2.PerformLayout();
@@ -292,6 +305,11 @@ namespace Common.Controls.Timeline
 			return row;
 		}
 
+		public Audio Audio
+		{
+			get { return waveform.Audio; }
+			set { waveform.Audio = value; }
+		}
 
 		public void AddSnapTime(TimeSpan time, int level, Color color)
 		{
@@ -369,6 +387,12 @@ namespace Common.Controls.Timeline
 		#endregion
 
 		#region Events exposed from sub-controls (Grid, Ruler, etc)
+
+		public event EventHandler SelectionChanged
+		{
+			add { grid.SelectionChanged += value; }
+			remove { grid.SelectionChanged -= value; }
+		}
 
 		public event EventHandler<ElementEventArgs> ElementDoubleClicked
 		{

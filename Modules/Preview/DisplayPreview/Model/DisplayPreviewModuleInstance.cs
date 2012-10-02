@@ -10,15 +10,7 @@ namespace VixenModules.Preview.DisplayPreview.Model
 
     public class DisplayPreviewModuleInstance : FormPreviewModuleInstanceBase
     {
-        private const string DISPLAY_PREVIEW_MENU = "DisplayPreview.Menu";
-
-        private const string EDIT_PREVIEW_SETUP_MENU = "Edit Preview Setup";
-
-        private const string ENABLE_DISPLAY_PREVIEW_MENU = "Preferences window";
-
         private readonly List<IProgramContext> _programContexts;
-
-        private AppCommand _setupCommand;
 
         public DisplayPreviewModuleInstance()
         {
@@ -33,12 +25,6 @@ namespace VixenModules.Preview.DisplayPreview.Model
             }
         }
 
-        public override bool Setup()
-        {
-            ViewManager.DisplaySetupView(GetDisplayPreviewModuleDataModel());
-            return base.Setup();
-        }
-
         public override void Dispose()
         {
             EnsureVisualizerIsClosed();
@@ -46,6 +32,32 @@ namespace VixenModules.Preview.DisplayPreview.Model
             VixenSystem.Contexts.ContextCreated -= ProgramContextCreated;
             VixenSystem.Contexts.ContextReleased -= ProgramContextReleased;
             base.Dispose();
+        }
+
+        public override bool Setup()
+        {
+            ViewManager.DisplaySetupView(GetDisplayPreviewModuleDataModel());
+            return base.Setup();
+        }
+
+        public override void Start()
+        {
+            var dataModel = GetDisplayPreviewModuleDataModel();
+            if (dataModel.IsEnabled)
+            {
+                ViewManager.StartVisualizer(dataModel);
+            }
+            base.Start();
+        }
+
+        public override void Stop()
+        {
+            if (!GetDisplayPreviewModuleDataModel().Preferences.KeepVisualizerWindowOpen)
+            {
+                EnsureVisualizerIsClosed();
+            }
+
+            base.Stop();
         }
 
         protected override Form Initialize()
@@ -74,17 +86,7 @@ namespace VixenModules.Preview.DisplayPreview.Model
         {
             // TODO: Remove any channels that are no longer valid.
         }
-
-        private void EnabledCommandChecked(object sender, LatchedEventArgs e)
-        {
-            var isEnabled = e.CheckedState;
-            GetDisplayPreviewModuleDataModel().IsEnabled = isEnabled;
-            if (_setupCommand != null)
-            {
-                _setupCommand.Enabled = isEnabled;
-            }
-        }
-
+        
         private DisplayPreviewModuleDataModel GetDisplayPreviewModuleDataModel()
         {
             return (DisplayPreviewModuleDataModel)StaticModuleData;
@@ -92,48 +94,27 @@ namespace VixenModules.Preview.DisplayPreview.Model
 
         private void InjectAppCommands()
         {
-            //            if (_application == null
-            //                || _application.AppCommands == null)
-            //            {
-            //                return;
-            //            }
-
-            var isEnabled = GetDisplayPreviewModuleDataModel().IsEnabled;
-            var rootCommand = new AppCommand(DISPLAY_PREVIEW_MENU, "Display Preview")
-                              { Enabled = true, Visible = true, Style = AppCommand.AppCommandStyle.Menu };
-            _setupCommand = new AppCommand(EDIT_PREVIEW_SETUP_MENU, "Edit Preview Setup");
-            _setupCommand.Click += SetupAppCommandClick;
-            _setupCommand.Enabled = isEnabled;
-            _setupCommand.Visible = true;
-            rootCommand.Add(_setupCommand);
-
-            var enabledCommand = new LatchedAppCommand(ENABLE_DISPLAY_PREVIEW_MENU, "Preview Enabled");
-            enabledCommand.Checked += EnabledCommandChecked;
-            enabledCommand.Enabled = true;
-            enabledCommand.Visible = true;
-            enabledCommand.IsChecked = isEnabled;
-            rootCommand.Add(enabledCommand);
+            // TODO: This needs to be moved to the form contruction
+            //        private const string DISPLAY_PREVIEW_MENU = "DisplayPreview.Menu";
+            //        private const string EDIT_PREVIEW_SETUP_MENU = "Edit Preview Setup";
+            //        private const string ENABLE_DISPLAY_PREVIEW_MENU = "Preferences window";
+            //        private AppCommand _setupCommand;
+            //            var isEnabled = GetDisplayPreviewModuleDataModel().IsEnabled;
+            //            var rootCommand = new AppCommand(DISPLAY_PREVIEW_MENU, "Display Preview")
+            //                              { Enabled = true, Visible = true, Style = AppCommand.AppCommandStyle.Menu };
+            //            _setupCommand = new AppCommand(EDIT_PREVIEW_SETUP_MENU, "Edit Preview Setup");
+            //            _setupCommand.Click += SetupAppCommandClick;
+            //            _setupCommand.Enabled = isEnabled;
+            //            _setupCommand.Visible = true;
+            //            rootCommand.Add(_setupCommand);
+            //
+            //            var enabledCommand = new LatchedAppCommand(ENABLE_DISPLAY_PREVIEW_MENU, "Preview Enabled");
+            //            enabledCommand.Checked += EnabledCommandChecked;
+            //            enabledCommand.Enabled = true;
+            //            enabledCommand.Visible = true;
+            //            enabledCommand.IsChecked = isEnabled;
+            //            rootCommand.Add(enabledCommand);
             //_application.AppCommands.Add(rootCommand);
-        }
-
-        public override void Start()
-        {
-            var dataModel = GetDisplayPreviewModuleDataModel();
-            if (dataModel.IsEnabled)
-            {
-                ViewManager.StartVisualizer(dataModel);
-            }
-            base.Start();
-        }
-
-        public override void Stop()
-        {
-            if (!GetDisplayPreviewModuleDataModel().Preferences.KeepVisualizerWindowOpen)
-            {
-                EnsureVisualizerIsClosed();
-            }
-
-            base.Stop();
         }
 
         private void ProgramContextCreated(object sender, ContextEventArgs contextEventArgs)
@@ -177,11 +158,6 @@ namespace VixenModules.Preview.DisplayPreview.Model
             {
                 displayItem.ResetColor(isRunning);
             }
-        }
-
-        private void SetupAppCommandClick(object sender, EventArgs e)
-        {
-            Setup();
         }
     }
 }

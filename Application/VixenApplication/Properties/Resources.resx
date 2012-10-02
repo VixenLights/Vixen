@@ -130,13 +130,7 @@
   <data name="ZoomIn32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ZoomIn32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ZoomIn48" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\2392_ZoomIn_48x48.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="ZoomOut32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ZoomOut32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ZoomOut48" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\2391_ZoomOut.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

@@ -24,7 +24,7 @@ namespace VixenModules.EffectEditor.LevelTypeEditor
 		public object[] EffectParameterValues
 		{
 			get { return new object[] { LevelValue }; }
-			set { LevelValue = (double)value[0]; }
+			set { LevelValue = Convert.ToDouble(value[0]); }
 		}
 
 		public double LevelValue

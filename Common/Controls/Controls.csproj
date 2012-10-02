@@ -32,6 +32,7 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)\commonProject.props" />
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -46,14 +47,47 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BulkRename.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="BulkRename.Designer.cs">
-      <DependentUpon>BulkRename.cs</DependentUpon>
-    </Compile>
     <Compile Include="MenuStripEx.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="NameGeneration\NameGenerator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NameGeneration\NameGenerator.Designer.cs">
+      <DependentUpon>NameGenerator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NameGeneration\NameGeneratorEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NameGeneration\WordIteratorEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NameGeneration\WordIteratorEditor.Designer.cs">
+      <DependentUpon>WordIteratorEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NameGeneration\LetterIteratorEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NameGeneration\LetterIteratorEditor.Designer.cs">
+      <DependentUpon>LetterIteratorEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NameGeneration\LetterCounterEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NameGeneration\LetterCounterEditor.Designer.cs">
+      <DependentUpon>LetterCounterEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NameGeneration\NumericCounterEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NameGeneration\NumericCounterEditor.Designer.cs">
+      <DependentUpon>NumericCounterEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NumberDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NumberDialog.Designer.cs">
+      <DependentUpon>NumberDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="ParallelPortConfig.cs">
       <SubType>Form</SubType>
@@ -61,11 +95,12 @@
     <Compile Include="ParallelPortConfig.Designer.cs">
       <DependentUpon>ParallelPortConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="Resources.Designer.cs">
+    <Compile Include="Icons.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
+      <DependentUpon>Icons.resx</DependentUpon>
     </Compile>
+    <Compile Include="TimelineControl\Waveform.cs" />
     <Compile Include="ToolStripEx.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -188,9 +223,6 @@
     <Compile Include="Undo\GenericUndoActions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="BulkRename.resx">
-      <DependentUpon>BulkRename.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="ColorPicker\ColorLabel.resx">
       <DependentUpon>ColorLabel.cs</DependentUpon>
     </EmbeddedResource>
@@ -228,12 +260,30 @@
     <EmbeddedResource Include="ListSelectDialog.resx">
       <DependentUpon>ListSelectDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="NameGeneration\NameGenerator.resx">
+      <DependentUpon>NameGenerator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NameGeneration\WordIteratorEditor.resx">
+      <DependentUpon>WordIteratorEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NameGeneration\LetterIteratorEditor.resx">
+      <DependentUpon>LetterIteratorEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NameGeneration\LetterCounterEditor.resx">
+      <DependentUpon>LetterCounterEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NameGeneration\NumericCounterEditor.resx">
+      <DependentUpon>NumericCounterEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NumberDialog.resx">
+      <DependentUpon>NumberDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ParallelPortConfig.resx">
       <DependentUpon>ParallelPortConfig.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources.resx">
+    <EmbeddedResource Include="Icons.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <LastGenOutput>Icons.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="SerialPortConfig.resx">
       <DependentUpon>SerialPortConfig.cs</DependentUpon>
@@ -252,10 +302,24 @@
     <Content Include="ColorPicker\ColorPicker.cur" />
     <Content Include="ControlsEx\std_zoomin.png" />
     <Content Include="ControlsEx\std_zoomout.png" />
+    <None Include="Resources\UpArrowShort_Blue_48x48.png" />
+    <None Include="Resources\UpArrowShort_Blue_32x32.png" />
+    <None Include="Resources\UpArrowShort_Blue_24x24.png" />
+    <None Include="Resources\UpArrowShort_Blue_16x16.png" />
+    <None Include="Resources\DownArrowShort_Blue_48x48.png" />
+    <None Include="Resources\DownArrowShort_Blue_32x32.png" />
+    <None Include="Resources\DownArrowShort_Blue_24x24.png" />
+    <None Include="Resources\DownArrowShort_Blue_16x16.png" />
     <None Include="Resources\Edit_RedoHS.png" />
     <None Include="Resources\Edit_UndoHS.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\Modules\Media\Audio\Audio.csproj">
+      <Project>{4243BA4C-6371-4DD1-8A1D-675BED5322AF}</Project>
+      <Name>Audio</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -48,18 +48,6 @@
   </PropertyGroup>
   <Import Project="$(SolutionDir)\commonProject.props" />
   <ItemGroup>
-    <Reference Include="Dataweb.NShape">
-      <HintPath>..\..\..\Output\Common\Dataweb.NShape.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Dataweb.NShape.GeneralShapes">
-      <HintPath>..\..\..\Output\Common\Dataweb.NShape.GeneralShapes.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Dataweb.NShape.WinFormsUI">
-      <HintPath>..\..\..\Output\Common\Dataweb.NShape.WinFormsUI.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
@@ -87,19 +75,7 @@
     <Compile Include="ConfigPreviews.Designer.cs">
       <DependentUpon>ConfigPreviews.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ChannelsToControllerRuleEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\ChannelsToControllerRuleEditor.Designer.cs">
-      <DependentUpon>ChannelsToControllerRuleEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\IHasPatchRule.cs" />
-    <Compile Include="CreateAndNameChannels.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CreateAndNameChannels.Designer.cs">
-      <DependentUpon>CreateAndNameChannels.cs</DependentUpon>
-    </Compile>
+    <Compile Include="CpuUsage.cs" />
     <Compile Include="EffectParametersForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -118,25 +94,6 @@
     <Compile Include="InstalledModules.Designer.cs">
       <DependentUpon>InstalledModules.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\FlatNumericTemplateEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\FlatNumericTemplateEditor.Designer.cs">
-      <DependentUpon>FlatNumericTemplateEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\FlatStringTemplateEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\FlatStringTemplateEditor.Designer.cs">
-      <DependentUpon>FlatStringTemplateEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\GridEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\GridEditor.Designer.cs">
-      <DependentUpon>GridEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\IHasNameRule.cs" />
     <Compile Include="RuleEditorContainer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -163,17 +120,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VixenApplicationData.cs" />
     <EmbeddedResource Include="ConfigControllersOutputs.resx">
       <DependentUpon>ConfigControllersOutputs.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ConfigPreviews.resx">
       <DependentUpon>ConfigPreviews.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ChannelsToControllerRuleEditor.resx">
-      <DependentUpon>ChannelsToControllerRuleEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CreateAndNameChannels.resx">
-      <DependentUpon>CreateAndNameChannels.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EffectParametersForm.resx">
       <DependentUpon>EffectParametersForm.cs</DependentUpon>
@@ -183,15 +135,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="InstalledModules.resx">
       <DependentUpon>InstalledModules.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\FlatNumericTemplateEditor.resx">
-      <DependentUpon>FlatNumericTemplateEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\FlatStringTemplateEditor.resx">
-      <DependentUpon>FlatStringTemplateEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\GridEditor.resx">
-      <DependentUpon>GridEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="RuleEditorContainer.resx">
       <DependentUpon>RuleEditorContainer.cs</DependentUpon>
@@ -254,6 +197,21 @@
       <Name>Controls</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Common\NShape\Core\NShape.csproj">
+      <Project>{9EFE1059-E2DC-4576-B9E3-4AE3F998CB28}</Project>
+      <Name>NShape</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\NShape\GeneralShapes\NShapeGeneralShapes.csproj">
+      <Project>{1272F77E-D926-4310-AE8B-858909B10F0C}</Project>
+      <Name>NShapeGeneralShapes</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\NShape\WinFormsUI\NShapeWinFormsUI.csproj">
+      <Project>{5EAB131C-1C93-4C3F-A1D8-D711053DE33C}</Project>
+      <Name>NShapeWinFormsUI</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\MoveShapeCursor.cur" />
@@ -265,22 +223,10 @@
     <EmbeddedResource Include="Resources\HandCursor.cur" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\2391_ZoomOut.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\2392_ZoomIn_48x48.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\ZoomIn32.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\ZoomOut32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ZoomIn48.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ZoomOut48.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

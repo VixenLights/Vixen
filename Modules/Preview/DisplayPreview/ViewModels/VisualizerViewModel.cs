@@ -3,7 +3,6 @@ namespace VixenModules.Preview.DisplayPreview.ViewModels
     using System.Collections.Generic;
     using System.Windows.Media;
     using Vixen.Sys;
-    using Vixen.Sys.Managers;
     using VixenModules.Preview.DisplayPreview.Model;
 
     public class VisualizerViewModel : ViewModelBase

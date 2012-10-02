@@ -56,11 +56,11 @@ namespace Common.Controls
                 m_dropControl.ButtonType = value;
                 switch (value) {
                     case UndoButtonType.UndoButton:
-                        this.Image = Resources.Edit_UndoHS;
+                        this.Image = Icons.Edit_UndoHS;
                         break;
 
                     case UndoButtonType.RedoButton:
-                        this.Image = Resources.Edit_RedoHS;
+						this.Image = Icons.Edit_RedoHS;
                         break;
                 }
             }

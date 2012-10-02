@@ -130,6 +130,27 @@ namespace VixenApplication
 		public override void Draw(IDiagramPresenter diagramPresenter)
 		{
 			if (diagramPresenter == null) throw new ArgumentNullException("diagramPresenter");
+
+			// always draw all the connection points on all shapes
+			diagramPresenter.ResetTransformation();
+			try {
+				foreach (Shape shape in diagramPresenter.Diagram.Shapes) {
+					if (shape is FilterSetupShapeBase) {
+						FilterSetupShapeBase filterShape = shape as FilterSetupShapeBase;
+
+						for (int i = 0; i < filterShape.InputCount; i++) {
+							diagramPresenter.DrawConnectionPoint(IndicatorDrawMode.Normal, shape, filterShape.GetControlPointIdForInput(i));
+						}
+						for (int i = 0; i < filterShape.OutputCount; i++) {
+							diagramPresenter.DrawConnectionPoint(IndicatorDrawMode.Normal, shape, filterShape.GetControlPointIdForOutput(i));
+						}
+					}
+				}
+			} finally {
+				diagramPresenter.RestoreTransformation();
+			}
+
+			// conditionally take extra action, based on what we're currently doing
 			switch (CurrentAction) {
 				case Action.Select:
 					// nothing to do
@@ -167,7 +188,18 @@ namespace VixenApplication
 					break;
 
 				case Action.ConnectShapes:
-					// TODO: highlight hovered connection points, shapes, etc.
+					ShapeConnectionInfo connectionInfo = currentConnectionLine.GetConnectionInfo(ControlPointId.LastVertex, null);
+					if (!connectionInfo.IsEmpty) {
+						FilterSetupShapeBase shape = connectionInfo.OtherShape as FilterSetupShapeBase;
+						if (shape != null) {
+							FilterSetupShapeBase.FilterShapeControlPointType type = shape.GetTypeForControlPoint(connectionInfo.OtherPointId);
+							if (type == FilterSetupShapeBase.FilterShapeControlPointType.Input || type == FilterSetupShapeBase.FilterShapeControlPointType.Output) {
+								diagramPresenter.ResetTransformation();
+								diagramPresenter.DrawConnectionPoint(IndicatorDrawMode.Highlighted, shape, connectionInfo.OtherPointId);
+								diagramPresenter.RestoreTransformation();
+							}
+						}
+					}
 					break;
 
 				default:
@@ -305,7 +337,7 @@ namespace VixenApplication
 				case Action.Select:
 
 					ShapeAtCursorInfo shapeAtActionStartInfo =
-						FindShapeAtCursor(ActionDiagramPresenter, ActionStartMouseState.X, ActionStartMouseState.Y, ControlPointCapabilities.None, 0, false);
+						FindShapeAtCursor(ActionDiagramPresenter, ActionStartMouseState.X, ActionStartMouseState.Y, ControlPointCapabilities.Connect, 3, false);
 
 					Action newAction = DetermineMouseMoveAction(ActionDiagramPresenter, mouseState, shapeAtActionStartInfo);
 
@@ -653,24 +685,33 @@ namespace VixenApplication
 			if (shape.OutputCount <= 0)
 				return false;
 
+			// get the starting control point for the line; ie. the first unused output for the shape, or the selected control point (if the mouse is over an output)
+			ControlPointId connectionPoint = ControlPointId.None;
+
+			if (shapeAtCursorInfo.IsCursorAtConnectionPoint && shape.GetTypeForControlPoint(shapeAtCursorInfo.ControlPointId) == FilterSetupShapeBase.FilterShapeControlPointType.Output) {
+				connectionPoint = shapeAtCursorInfo.ControlPointId;
+			} else {
+				// try and find the first unconnected output if the mouse isn't over a specific control point
+				for (int i = 0; i < shape.OutputCount; i++) {
+					ControlPointId currentPoint = shape.GetControlPointIdForOutput(i);
+					if (shape.GetConnectionInfos(currentPoint, null).Count() == 0) {
+						connectionPoint = currentPoint;
+						break;
+					}
+				}
+
+				if (connectionPoint == ControlPointId.None)
+					return false;
+			}
+
 			DataFlowConnectionLine line = (DataFlowConnectionLine)diagramPresenter.Project.ShapeTypes["DataFlowConnectionLine"].CreateInstance();
 			diagramPresenter.InsertShape(line);
 			diagramPresenter.Diagram.Shapes.SetZOrder(line, 100);
 			line.SecurityDomainName = ConfigFiltersAndPatching.SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS;
 			line.EndCapStyle = diagramPresenter.Project.Design.CapStyles.ClosedArrow;
-
-			// get the starting control point for the line; ie. the first output for the shape, or the selected control point.
-			// TODO: filter out already-connected control points, and pick the first unused one (for a generic shape-click
-			//       only: dragging from a specific point will select that point below)
-			ControlPointId connectionPoint = shape.GetControlPointIdForOutput(0);
-			line.SourceDataFlowComponentReference = new DataFlowComponentReference(shape.DataFlowComponent, 0);
+			line.SourceDataFlowComponentReference = new DataFlowComponentReference(shape.DataFlowComponent, shape.GetOutputNumberForControlPoint(connectionPoint));
 			line.DestinationDataComponent = null;
 
-			if (shapeAtCursorInfo.IsCursorAtConnectionPoint) {
-				if (shape.GetTypeForControlPoint(shapeAtCursorInfo.ControlPointId) == FilterSetupShapeBase.FilterShapeControlPointType.Output)
-					connectionPoint = shapeAtCursorInfo.ControlPointId;
-				line.SourceDataFlowComponentReference = new DataFlowComponentReference(shape.DataFlowComponent, shape.GetOutputNumberForControlPoint(connectionPoint));
-			}
 			line.Connect(ControlPointId.FirstVertex, shape, connectionPoint);
 			line.Disconnect(ControlPointId.LastVertex);
 			line.MoveControlPointTo(ControlPointId.LastVertex, mouseState.X, mouseState.Y, ResizeModifiers.None);
@@ -697,9 +738,22 @@ namespace VixenApplication
 						// Later on, if/when we support multiple inputs, we'll need to get an appropriate input. For now, there's only 1 option.
 						if (filterShape.InputCount > 0) {
 							point = filterShape.GetControlPointIdForInput(0);
-						} else {
+						}
+						else {
 							skipConnection = true;
 						}
+					}
+
+					FilterSetupShapeBase sourceShape = currentConnectionLine.GetConnectionInfo(ControlPointId.FirstVertex, null).OtherShape as FilterSetupShapeBase;
+
+					// check to see if it's pointing at itself
+					if (sourceShape == filterShape) {
+						skipConnection = true;
+					}
+
+					// check to see if targeting this shape would create a circular dependency
+					if (sourceShape != null && VixenSystem.DataFlow.CheckComponentSourceForCircularDependency(filterShape.DataFlowComponent, sourceShape.DataFlowComponent)) {
+						skipConnection = true;
 					}
 
 					if (!skipConnection) {
@@ -740,6 +794,8 @@ namespace VixenApplication
 						diagramPresenter.DeleteShape(ci.OtherShape, false);
 					}
 				}
+
+				currentConnectionLine.SecurityDomainName = ConfigFiltersAndPatching.SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS_DELETABLE;
 
 				VixenSystem.DataFlow.SetComponentSource(currentConnectionLine.DestinationDataComponent, currentConnectionLine.SourceDataFlowComponentReference);
 

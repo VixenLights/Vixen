@@ -218,12 +218,17 @@ namespace Common.Controls.Timeline
 
 		#region Events
 
+		public event EventHandler SelectionChanged;
 		public event EventHandler<ElementEventArgs> ElementDoubleClicked;
 		public event EventHandler<MultiElementEventArgs> ElementsFinishedMoving;
 		public event EventHandler<TimeSpanEventArgs> CursorMoved;
 		public event EventHandler VerticalOffsetChanged;
 		public event EventHandler<ElementRowChangeEventArgs> ElementChangedRows;
 
+		private void _SelectionChanged(EventArgs e)
+		{
+			if(SelectionChanged!=null){SelectionChanged(this, null);}
+		}
 		private void _ElementDoubleClicked(Element te) { if (ElementDoubleClicked != null) ElementDoubleClicked(this, new ElementEventArgs(te)); }
 		private void _ElementsFinishedMoving(MultiElementEventArgs args) { if (ElementsFinishedMoving != null) ElementsFinishedMoving(this, args); }
 		private void _CursorMoved(TimeSpan t) { if (CursorMoved != null) CursorMoved(this, new TimeSpanEventArgs(t)); }
@@ -252,6 +257,7 @@ namespace Common.Controls.Timeline
 				ClearSelectedRows();
 				selectedRow.Selected = true;
 				selectedRow.SelectAllElements();
+				_SelectionChanged(EventArgs.Empty);
 			}
 		}
 
@@ -336,6 +342,7 @@ namespace Common.Controls.Timeline
 			foreach (Element te in SelectedElements.ToArray())
 				te.Selected = false;
             Invalidate();
+			_SelectionChanged(EventArgs.Empty);
 		}
 
 		public void ClearSelectedRows(Row leaveRowSelected = null)
@@ -345,6 +352,7 @@ namespace Common.Controls.Timeline
 					row.Selected = false;
 			}
             Invalidate();
+			_SelectionChanged(EventArgs.Empty);
 		}
 
 		public void AddRow(Row row)
@@ -526,6 +534,8 @@ namespace Common.Controls.Timeline
 				}
 
 			} // end foreach
+
+			_SelectionChanged(EventArgs.Empty);
 		}
 
 		/// <summary>

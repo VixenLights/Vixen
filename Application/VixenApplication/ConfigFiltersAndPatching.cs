@@ -51,9 +51,20 @@ namespace VixenApplication
 		private readonly Layer _visibleLayer;
 		private readonly Layer _hiddenLayer;
 
-		public ConfigFiltersAndPatching()
+		private int _channelsXPosition;
+		private int _controllersXPosition;
+		private int _previousDiagramWidth;		// used when resizing; what the width was BEFORE resize,
+												// so we know how to layout filter shapes (proportionally)
+
+		private VixenApplicationData _applicationData;
+
+		private Timer _relayoutOnResizeTimer;
+
+		public ConfigFiltersAndPatching(VixenApplicationData applicationData)
 		{
 			InitializeComponent();
+
+			_applicationData = applicationData;
 
 			project.LibrarySearchPaths.Add(@"Common\");
 			project.AutoLoadLibraries = true;
@@ -71,6 +82,7 @@ namespace VixenApplication
 			_channelShapes = new List<ChannelNodeShape>();
 			_controllerShapes = new List<ControllerShape>();
 			_filterShapes = new List<FilterShape>();
+			_previousDiagramWidth = 0;
 		}
 
 		private void ConfigFiltersAndPatching_Load(object sender, EventArgs e)
@@ -86,6 +98,7 @@ namespace VixenApplication
 
 			diagramDisplay.ShowDefaultContextMenu = false;
 			diagramDisplay.ClicksOnlyAffectTopShape = true;
+			diagramDisplay.HighQualityRendering = true;
 
 			// A: fixed shapes with no connection points: nothing (parent nested shapes: node groups, controllers)
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
@@ -93,9 +106,12 @@ namespace VixenApplication
 			// B: fixed shapes with connection points: connect only (channel nodes (leaf), output shapes)
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
 				SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS, StandardRole.Operator, Permission.Connect | Permission.Insert);
-			// C: movable shapes (filters): connect, layout (movable), and deleteable (filters)
+			// C: movable shapes: connect, layout (movable), and deleteable (filters, patch lines)
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
 				SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS, StandardRole.Operator, Permission.Connect | Permission.Insert | Permission.Layout | Permission.Delete);
+			// D: fixed shapes with no connection points, but deletable: only for established patch lines (so the user can't move them again, but an still delete them)
+			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
+				SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS_DELETABLE, StandardRole.Operator, Permission.Insert | Permission.Delete);
 
 			((RoleBasedSecurityManager) diagramDisplay.Project.SecurityManager).SetPermissions(StandardRole.Operator, Permission.All);
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).CurrentRole = StandardRole.Operator;
@@ -125,9 +141,7 @@ namespace VixenApplication
 			_InitializeShapesFromChannels();
 			_InitializeShapesFromFilters();
 			_InitializeShapesFromControllers();
-			_ResizeAndPositionChannelShapes();
-			_ResizeAndPositionControllerShapes();
-			_ResizeAndPositionFilterShapes();
+			_RelayoutAllShapes();
 			_CreateConnectionsFromExistingLinks();
 
 			diagramDisplay.CurrentTool = new ConnectionTool();
@@ -176,7 +190,7 @@ namespace VixenApplication
 
 			shape.Width = SHAPE_FILTERS_WIDTH;
 			shape.Height = SHAPE_FILTERS_HEIGHT;
-			shape.X = SHAPE_FILTERS_X_LOCATION;
+			shape.X = diagramDisplay.Width / 2;
 			shape.Y = diagramDisplay.GetDiagramOffset().Y + (diagramDisplay.Height / 2);
 		}
 
@@ -225,11 +239,38 @@ namespace VixenApplication
 			}
 
 			if (shape is ChannelNodeShape)
-				_ResizeAndPositionChannelShapes();
+				_ResizeAndPositionChannelShapes(_channelsXPosition);
 
 			if (shape is ControllerShape)
-				_ResizeAndPositionControllerShapes();
+				_ResizeAndPositionControllerShapes(_controllersXPosition);
 		}
+
+		private void ConfigFiltersAndPatching_ResizeEnd(object sender, EventArgs e)
+		{
+			_RelayoutAllShapes();
+		}
+
+		private void ConfigFiltersAndPatching_Resize(object sender, EventArgs e)
+		{
+			if (_relayoutOnResizeTimer == null) {
+				_relayoutOnResizeTimer = new Timer();
+				_relayoutOnResizeTimer.Interval = 250;
+				_relayoutOnResizeTimer.Tick += new EventHandler(_relayoutOnResizeTimer_Tick);
+				_relayoutOnResizeTimer.Start();
+			} else {
+				_relayoutOnResizeTimer.Stop();
+				_relayoutOnResizeTimer.Start();
+			}
+		}
+
+		void _relayoutOnResizeTimer_Tick(object sender, EventArgs e)
+		{
+			_relayoutOnResizeTimer.Stop();
+			_relayoutOnResizeTimer = null;
+			_RelayoutAllShapes();
+		}
+
+
 
 		private void _DeleteShapes(IEnumerable<Shape> shapes)
 		{
@@ -385,7 +426,7 @@ namespace VixenApplication
 			diagramDisplay.InsertShape(line);
 			diagramDisplay.Diagram.Shapes.SetZOrder(line, 100);
 			line.EndCapStyle = project.Design.CapStyles.ClosedArrow;
-			line.SecurityDomainName = SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS;
+			line.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS_DELETABLE;
 
 			line.SourceDataFlowComponentReference = new DataFlowComponentReference(source.DataFlowComponent, sourceOutputIndex);
 			line.DestinationDataComponent = destination.DataFlowComponent;
@@ -393,35 +434,78 @@ namespace VixenApplication
 			line.Connect(ControlPointId.LastVertex, destination, destination.GetControlPointIdForInput(0));
 		}
 
-		private void _ResizeAndPositionChannelShapes()
+		private void _RelayoutAllShapes()
+		{
+			// take off some pixels for natural spacing and widths of the shapes (since their X/Y coords are centred)
+			int width = diagramDisplay.Width - 300;
+
+			_channelsXPosition = 0;
+			_controllersXPosition = width;
+
+			_ResizeAndPositionChannelShapes(_channelsXPosition);
+			_ResizeAndPositionFilterShapes(_previousDiagramWidth, width);
+			_ResizeAndPositionControllerShapes(_controllersXPosition);
+		}
+
+		private void _ResizeAndPositionChannelShapes(int xLocation)
 		{
 			int y = SHAPE_Y_TOP;
 			foreach (ChannelNodeShape channelShape in _channelShapes) {
-				_ResizeAndPositionNestingShape(channelShape, SHAPE_CHANNELS_WIDTH, SHAPE_CHANNELS_X_LOCATION, y, true);
+				_ResizeAndPositionNestingShape(channelShape, SHAPE_CHANNELS_WIDTH, xLocation, y, true);
 				y += channelShape.Height + SHAPE_VERTICAL_SPACING;
 			}
 		}
 
-		private void _ResizeAndPositionControllerShapes()
+		private void _ResizeAndPositionControllerShapes(int xLocation)
 		{
 			int y = SHAPE_Y_TOP;
 			foreach (ControllerShape controllerShape in _controllerShapes) {
-				_ResizeAndPositionNestingShape(controllerShape, SHAPE_CONTROLLERS_WIDTH, SHAPE_CONTROLLERS_X_LOCATION, y, true);
+				_ResizeAndPositionNestingShape(controllerShape, SHAPE_CONTROLLERS_WIDTH, xLocation, y, true);
 				y += controllerShape.Height + SHAPE_VERTICAL_SPACING;
 			}
 		}
 
-		private void _ResizeAndPositionFilterShapes()
+		private void _ResizeAndPositionFilterShapes(int oldDiagramWidth, int newDiagramWidth)
 		{
+			double defaultXPositionProportion = 0.5;
 			int y = SHAPE_Y_TOP;
+
 			foreach (FilterShape filterShape in _filterShapes) {
 				filterShape.Width = SHAPE_FILTERS_WIDTH;
 				filterShape.Height = SHAPE_FILTERS_HEIGHT;
-				filterShape.X = SHAPE_FILTERS_X_LOCATION;
-				filterShape.Y = y + filterShape.Height;
 
-				y += filterShape.Height + SHAPE_VERTICAL_SPACING;
+				FilterSetupFormShapePosition position = null;
+				bool updatePosition = true;
+
+				// if the filtershape is unpositioned, it's either first load (nothing positioned yet), or maybe new?
+				// look it up in the application data for a position, otherwise default it.
+				// (same if there's no old diagram width given; we'd have nothing to proportion from!)
+				if ((filterShape.X <= 0 && filterShape.Y <= 0) || oldDiagramWidth <= 0) {
+					if (_applicationData.FilterSetupFormShapePositions.TryGetValue(filterShape.FilterInstance.InstanceId, out position)) {
+						updatePosition = false;
+					} else {
+						position = new FilterSetupFormShapePosition();
+						position.xPositionProportion = defaultXPositionProportion;
+						position.yPosition = y;
+
+						// because we've used a default position, increment the default Y position
+						y += filterShape.Height + SHAPE_VERTICAL_SPACING;
+					}
+				} else {
+					position = new FilterSetupFormShapePosition();
+					position.xPositionProportion = (double)filterShape.X / oldDiagramWidth;
+					position.yPosition = filterShape.Y;
+				}
+
+				filterShape.X = (int)(newDiagramWidth * position.xPositionProportion);
+				filterShape.Y = position.yPosition;
+
+				if (updatePosition) {
+					_applicationData.FilterSetupFormShapePositions[filterShape.FilterInstance.InstanceId] = position;
+				}
 			}
+
+			_previousDiagramWidth = newDiagramWidth;
 		}
 
 		private void _ResizeAndPositionNestingShape(FilterSetupShapeBase shape, int width, int x, int y, bool visible)
@@ -618,11 +702,6 @@ namespace VixenApplication
 		//
 		// (there's 20 pixels forced bordering by the diagram display control, as a const (scrollAreaMargin) inside it.)
 
-		// the central X point of shapes
-		internal const int SHAPE_CHANNELS_X_LOCATION = 80;
-		internal const int SHAPE_FILTERS_X_LOCATION = 380;
-		internal const int SHAPE_CONTROLLERS_X_LOCATION = 680;
-
 		// the (base) width of all shapes (inner children will be smaller)
 		internal const int SHAPE_CHANNELS_WIDTH = 160;
 		internal const int SHAPE_CONTROLLERS_WIDTH = 160;
@@ -650,5 +729,7 @@ namespace VixenApplication
 		internal const char SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS = 'A';
 		internal const char SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS = 'B';
 		internal const char SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS = 'C';
+		internal const char SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS_DELETABLE = 'D';
+
 	}
 }

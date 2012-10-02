@@ -3,14 +3,18 @@ using System.Linq;
 using System.Windows.Forms;
 
 namespace VixenModules.OutputFilter.Color {
-	public partial class ColorSetupForm : Form {
+	public partial class ColorSetupForm : Form
+	{
+		private ColorData _data;
+
 		public ColorSetupForm(ColorData data) {
 			InitializeComponent();
-			_SelectedFilters = data.FilterOrder;
+			_data = data;
 		}
 
 		private void ColorSetupForm_Load(object sender, EventArgs e) {
 			checkedListBox.Items.AddRange(Enum.GetValues(typeof(ColorFilter)).Cast<object>().ToArray());
+			_SelectedFilters = _data.FilterOrder;
 		}
 
 		public ColorFilter[] SelectedFilters { get; private set; }

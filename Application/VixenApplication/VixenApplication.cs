@@ -19,6 +19,9 @@ namespace VixenApplication
 		private bool stopping;
 		private bool _openExecution = true;
 		private bool _disableControllers = false;
+		private CpuUsage _cpuUsage;
+
+		private VixenApplicationData _applicationData;
 
 		public VixenApplication()
 		{
@@ -35,14 +38,17 @@ namespace VixenApplication
 			VixenSystem.Start(this, _openExecution, _disableControllers);
 
 			InitStats();
-		}
 
+			_applicationData = new VixenApplicationData();
+		}
 
 
 		private void VixenApp_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			stopping = true;
 			VixenSystem.Stop();
+
+			_applicationData.SaveData();
 		}
 
 		private void VixenApplication_Load(object sender, EventArgs e)
@@ -239,7 +245,7 @@ namespace VixenApplication
 
 		private void buttonSetupFiltersAndPatching_Click(object sender, EventArgs e)
 		{
-			ConfigFiltersAndPatching form = new ConfigFiltersAndPatching();
+			ConfigFiltersAndPatching form = new ConfigFiltersAndPatching(_applicationData);
 			DialogResult result = form.ShowDialog();
 			if (result == DialogResult.OK) {
 				VixenSystem.SaveSystemConfig();
@@ -322,13 +328,7 @@ namespace VixenApplication
 
 		#region Recent Sequences list
 
-		private static string _recentSequencesFilename = "RecentSequences.xml";
-		private static int _maxRecentSequences = 7;
-
-		private string RecentSequencesFilepath
-		{
-			get { return Path.Combine(Vixen.Sys.Paths.DataRootPath, _recentSequencesFilename); }
-		}
+		private const int _maxRecentSequences = 10;
 
 		private void listViewRecentSequences_DoubleClick(object sender, EventArgs e)
 		{
@@ -346,77 +346,37 @@ namespace VixenApplication
 
 		private void AddSequenceToRecentList(string filename)
 		{
-			RecentSequences rs = new RecentSequences();
-			foreach (ListViewItem item in listViewRecentSequences.Items) {
-				string seq = item.Tag as string;
-				if (seq != filename)
-					rs.Add(seq);
+			// remove the item from the list if it exists, then insert it in the front
+			foreach (string filepath in _applicationData.RecentSequences.ToArray()) {
+				if (filepath == filename) {
+					_applicationData.RecentSequences.Remove(filepath);
+				}
 			}
 
-			rs.Insert(0, filename);
-			if (rs.Count > _maxRecentSequences)
-				rs.RemoveRange(_maxRecentSequences, rs.Count - _maxRecentSequences);
+			_applicationData.RecentSequences.Insert(0, filename);
 
-			SaveRecentSequences(rs);
+			if (_applicationData.RecentSequences.Count > _maxRecentSequences)
+				_applicationData.RecentSequences.RemoveRange(_maxRecentSequences, _applicationData.RecentSequences.Count - _maxRecentSequences);
+
+			_applicationData.SaveData();
 			PopulateRecentSequencesList();
 		}
 
 		private void PopulateRecentSequencesList()
 		{
-			RecentSequences rs = LoadRecentSequences();
-
 			listViewRecentSequences.BeginUpdate();
 			listViewRecentSequences.Items.Clear();
 
-			foreach (string sequence in rs) {
-				if (!File.Exists(sequence))
+			foreach (string filepath in _applicationData.RecentSequences) {
+				if (!File.Exists(filepath))
 					continue;
 
-				ListViewItem item = new ListViewItem(Path.GetFileName(sequence));
-				item.Tag = sequence;
+				ListViewItem item = new ListViewItem(Path.GetFileName(filepath));
+				item.Tag = filepath;
 				listViewRecentSequences.Items.Add(item);
 			}
 
 			listViewRecentSequences.EndUpdate();
-		}
-
-		private RecentSequences LoadRecentSequences()
-		{
-			XmlSerializer serializer = null;
-			FileStream stream = null;
-			RecentSequences result = new RecentSequences();
-
-			if (!File.Exists(RecentSequencesFilepath))
-				return result;
-
-			try {
-				serializer = new XmlSerializer(typeof(RecentSequences));
-				stream = new FileStream(RecentSequencesFilepath, FileMode.Open);
-				result = (RecentSequences)serializer.Deserialize(stream);
-			} catch (Exception ex) {
-				VixenSystem.Logging.Error("VixenApplication: error loading recent sequences list", ex);
-			} finally {
-				if (stream != null)
-					stream.Close();
-			}
-
-			return result;
-		}
-
-		private void SaveRecentSequences(RecentSequences sequences)
-		{
-			StreamWriter writer = null;
-			XmlSerializer serializer;
-			try {
-				serializer = new XmlSerializer(typeof(RecentSequences));
-				writer = new StreamWriter(RecentSequencesFilepath, false);
-				serializer.Serialize(writer, sequences);
-			} catch (Exception ex) {
-				VixenSystem.Logging.Error("VixenApplication: error saving recent sequences list", ex);
-			} finally {
-				if (writer != null)
-					writer.Close();
-			}
 		}
 
 		#endregion
@@ -437,11 +397,11 @@ namespace VixenApplication
 		private const int StatsUpdateInterval = 1000;	// ms
 		private Timer _statsTimer;
 		private Process _thisProc;
-		private TimeSpan _lastTotalCpuTime = TimeSpan.MinValue;
 
 		private void InitStats()
 		{
 			_thisProc = Process.GetCurrentProcess();
+			_cpuUsage = new CpuUsage();
 
 			_statsTimer = new Timer();
 			_statsTimer.Interval = StatsUpdateInterval;
@@ -454,24 +414,11 @@ namespace VixenApplication
 		{
 			long memUsage = _thisProc.PrivateMemorySize64 / 1024 / 1024;
 
-			TimeSpan thisCpuDt;
-			TimeSpan thisTotalCpuTime = _thisProc.TotalProcessorTime;	// Currently reported total cpu time
-			if (_lastTotalCpuTime == TimeSpan.MinValue)
-				thisCpuDt = TimeSpan.Zero;								// First update - just show zero
-			else
-				thisCpuDt = thisTotalCpuTime - _lastTotalCpuTime;		// CPU time over this interval
-			_lastTotalCpuTime = thisTotalCpuTime;						// Update the total cpu for next time
-			double cpuPcnt = (thisCpuDt.TotalMilliseconds / _statsTimer.Interval) * 100.0;
-
-			toolStripStatusLabel_memory.Text = String.Format("Mem: {0} MB   CPU: {1:0.0}%",
-				memUsage, cpuPcnt);
+			toolStripStatusLabel_memory.Text = String.Format("Mem: {0} MB   CPU: {1}%",
+				memUsage, _cpuUsage.GetUsage());
 		}
 
 		#endregion
 
-	}
-
-	public class RecentSequences : List<string>
-	{
 	}
 }
