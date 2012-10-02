@@ -122,6 +122,7 @@
 			this.cachedRepository.ProjectName = null;
 			this.cachedRepository.Store = null;
 			this.cachedRepository.Version = 0;
+			this.cachedRepository.ShapesUpdated += new System.EventHandler<Dataweb.NShape.RepositoryShapesEventArgs>(this.cachedRepository_ShapesUpdated);
 			// 
 			// label1
 			// 

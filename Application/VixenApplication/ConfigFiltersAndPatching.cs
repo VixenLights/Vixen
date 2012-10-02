@@ -270,6 +270,17 @@ namespace VixenApplication
 			_RelayoutAllShapes();
 		}
 
+		private void cachedRepository_ShapesUpdated(object sender, RepositoryShapesEventArgs e)
+		{
+			foreach (Shape shape in e.Shapes) {
+				FilterShape filterShape = shape as FilterShape;
+				if (filterShape != null) {
+					_UpdateFilterPositionDataForFilter(filterShape);
+				}
+			}
+		}
+
+
 
 
 		private void _DeleteShapes(IEnumerable<Shape> shapes)
@@ -463,6 +474,15 @@ namespace VixenApplication
 				_ResizeAndPositionNestingShape(controllerShape, SHAPE_CONTROLLERS_WIDTH, xLocation, y, true);
 				y += controllerShape.Height + SHAPE_VERTICAL_SPACING;
 			}
+		}
+
+		private void _UpdateFilterPositionDataForFilter(FilterShape filterShape)
+		{
+			FilterSetupFormShapePosition position = new FilterSetupFormShapePosition();
+			position.xPositionProportion = (double)filterShape.X / _previousDiagramWidth;
+			position.yPosition = filterShape.Y;
+
+			_applicationData.FilterSetupFormShapePositions[filterShape.FilterInstance.InstanceId] = position;
 		}
 
 		private void _ResizeAndPositionFilterShapes(int oldDiagramWidth, int newDiagramWidth)
@@ -730,6 +750,5 @@ namespace VixenApplication
 		internal const char SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS = 'B';
 		internal const char SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS = 'C';
 		internal const char SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS_DELETABLE = 'D';
-
 	}
 }
