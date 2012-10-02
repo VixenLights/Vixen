@@ -8,20 +8,38 @@ using Vixen.Sys;
 
 namespace VixenModules.Sequence.Vixen2x
 {
-	public class Vixen2xSequence : SequenceTypeModuleInstanceBase
+    using Vixen.Execution;
+    using Vixen.IO;
+
+    public class Vixen2xSequence : SequenceTypeModuleInstanceBase
 	{
 		public Vixen2xSequence()
 		{
 		}
 
-		public Vixen2xSequence(Vixen2xSequence original)
-			: base(original)
-		{
-		}
+//		public Vixen2xSequence(Vixen2xSequence original)
+//			: base(original)
+//		{
+//		}
 
-		public override IModuleInstance Clone()
+	    public override ISequence CreateSequence()
+	    {
+	        throw new NotImplementedException();
+	    }
+
+        public override IMigrator CreateMigrator()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override ISequenceExecutor CreateExecutor()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IModuleInstance Clone()
 		{
-			return new Vixen2xSequence(this);
+			return new Vixen2xSequence();
 		}
 	}
 }

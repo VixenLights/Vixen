@@ -16,7 +16,15 @@ namespace VixenModules.Sequence.Vixen2x
 			get { return ".vix"; }
 		}
 
-		override public Guid TypeId
+	    public override int ClassVersion
+	    {
+	        get
+	        {
+	            throw new NotImplementedException();
+	        }
+	    }
+
+	    override public Guid TypeId
 		{
 			get { return _typeId; }
 		}
