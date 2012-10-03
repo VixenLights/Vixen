@@ -164,8 +164,13 @@ namespace VixenModules.Media.Audio
 		override public void LoadMedia(TimeSpan startTime)
 		{
 			_DisposeAudio();
-			_audioSystem = new FmodInstance(MediaFilePath);
-			_audioSystem.SetStartTime(startTime);
+			if(File.Exists(MediaFilePath)){ 
+				_audioSystem = new FmodInstance(MediaFilePath);
+				_audioSystem.SetStartTime(startTime);
+			}else{
+				throw new FileNotFoundException("Media file doe not exist: " + MediaFilePath);
+			}
+			
 		}
 
 		public TimeSpan Position
