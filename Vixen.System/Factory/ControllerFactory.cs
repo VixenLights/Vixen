@@ -13,7 +13,7 @@ namespace Vixen.Factory {
 		public IOutputDevice CreateDevice(Guid id, Guid moduleId, string name) {
 			IHasOutputs<CommandOutput> outputs = new OutputCollection<CommandOutput>();
 			IModuleDataRetriever dataRetriever = new ModuleInstanceDataRetriever(VixenSystem.ModuleStore.InstanceData);
-			IOutputModuleConsumer<IControllerModuleInstance> outputModuleConsumer = new OutputModuleConsumer<IControllerModuleInstance>(moduleId, dataRetriever);
+			IOutputModuleConsumer<IControllerModuleInstance> outputModuleConsumer = new OutputModuleConsumer<IControllerModuleInstance>(moduleId, id, dataRetriever);
 			IOutputMediator<CommandOutput> outputMediator = new OutputMediator<CommandOutput>(outputs, outputModuleConsumer.Module);
 			IHardware executionControl = new BasicOutputModuleExecutionControl(outputModuleConsumer.Module);
 			return new OutputController(id, name, outputMediator, executionControl, outputModuleConsumer);
