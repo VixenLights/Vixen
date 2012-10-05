@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using Vixen.IO;
-using Vixen.IO.Result;
 using Vixen.Services;
 using Vixen.Sys.Attribute;
 
@@ -21,13 +19,7 @@ namespace Vixen.Sys {
 		}
 
 		static public IEnumerable<Program> GetAll() {
-			return Directory.GetFiles(ProgramDirectory, "*" + Extension).Select(Load);
-		}
-
-		static public Program Load(string filePath) {
-			VersionedFileSerializer serializer = FileService.Instance.CreateProgramSerializer();
-			ISerializationResult result = serializer.Read(filePath);
-			return (Program)result.Object;
+			return Directory.GetFiles(ProgramDirectory, "*" + Extension).Select(FileService.Instance.LoadProgramFile);
 		}
 
 		public Program() {
@@ -66,8 +58,7 @@ namespace Vixen.Sys {
 		}
 
 		public void Save(string filePath) {
-			VersionedFileSerializer serializer = FileService.Instance.CreateProgramSerializer();
-			serializer.Write(this, filePath);
+			FileService.Instance.SaveProgramFile(this, filePath);
 		}
 
 		public void Save() {

@@ -23,9 +23,5 @@
 		protected abstract void ReadContextName();
 		protected abstract void ReadContextDescription();
 		protected abstract void ReadFiles();
-
-		public int Version {
-			get { return 1; }
-		}
 	}
 }

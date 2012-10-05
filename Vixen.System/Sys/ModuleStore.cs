@@ -1,7 +1,5 @@
 ﻿using System.IO;
-using Vixen.IO.Result;
 using Vixen.Module;
-using Vixen.IO;
 using Vixen.Services;
 
 namespace Vixen.Sys {
@@ -22,15 +20,7 @@ namespace Vixen.Sys {
 		public ModuleLocalDataSet InstanceData { get; set; }
 
 		public void Save() {
-			VersionedFileSerializer serializer = FileService.Instance.CreateModuleStoreSerializer();
-			string filePath = LoadedFilePath ?? DefaultFilePath;
-			serializer.Write(this, filePath);
-		}
-
-		static public ModuleStore Load(string filePath) {
-			VersionedFileSerializer serializer = FileService.Instance.CreateModuleStoreSerializer();
-			ISerializationResult result = serializer.Read(filePath);
-			return (ModuleStore)result.Object;
+			FileService.Instance.SaveModuleStoreFile(this);
 		}
 	}
 }

@@ -102,6 +102,10 @@ namespace Vixen.Sys.Output {
 			get { return _outputModuleConsumer.ModuleId; }
 		}
 
+		public Guid ModuleInstanceId {
+			get { return _outputModuleConsumer.ModuleInstanceId; }
+		}
+
 		public int UpdateInterval {
 			get { return (_updateInterval.HasValue) ? _updateInterval.Value : _outputModuleConsumer.UpdateInterval; }
 			set { _updateInterval = value; }

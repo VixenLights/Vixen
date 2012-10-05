@@ -16,7 +16,7 @@ namespace Vixen.Module.SequenceType {
 
 		abstract public ISequence CreateSequence();
 
-		abstract public IMigrator CreateMigrator();
+		abstract public IContentMigrator CreateMigrator();
 		
 		abstract public ISequenceExecutor CreateExecutor();
 

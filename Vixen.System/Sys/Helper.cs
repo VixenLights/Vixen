@@ -23,11 +23,6 @@ namespace Vixen.Sys {
 			return true;
 		}
 
-		static public T Load<T>(string filePath, IFileLoader<T> loader)
-			where T : class {
-			return File.Exists(filePath) ? loader.Load(filePath) : null;
-		}
-
 		//In case we ever change how times are stored again, we only have to change it in one place.
 		static public TimeSpan? GetXmlTimeValue(XElement element, string attributeName) {
 			return XmlHelper.GetTimeSpanAttribute(element, attributeName);

@@ -9,7 +9,7 @@ namespace Vixen.Module.SequenceType {
 		/// </summary>
 		string FileExtension { get; }
 		ISequence CreateSequence();
-		IMigrator CreateMigrator();
+		IContentMigrator CreateMigrator();
 		ISequenceExecutor CreateExecutor();
 		int ClassVersion { get; }
 	}

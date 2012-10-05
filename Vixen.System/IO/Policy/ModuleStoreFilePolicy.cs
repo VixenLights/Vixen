@@ -15,9 +15,5 @@
 
 		abstract protected void ReadModuleTypeDataSet();
 		abstract protected void ReadModuleInstanceDataSet();
-
-		public int Version {
-			get { return 2; }
-		}
 	}
 }

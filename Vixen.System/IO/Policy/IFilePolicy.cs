@@ -1,7 +1,5 @@
-﻿using Vixen.Sys;
-
-namespace Vixen.IO.Policy {
-	public interface IFilePolicy : IVersioned {
+﻿namespace Vixen.IO.Policy {
+	public interface IFilePolicy {
 		void Write();
 		void Read();
 	}

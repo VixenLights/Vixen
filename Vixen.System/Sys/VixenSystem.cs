@@ -2,11 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using System.IO;
-using System.Xml.Linq;
-using Vixen.IO.Factory;
 using Vixen.Module;
-using Vixen.IO;
-using Vixen.IO.Xml;
 using Vixen.Instrumentation;
 using Vixen.Services;
 using Vixen.Sys.Managers;
@@ -14,18 +10,10 @@ using Vixen.Sys.Output;
 
 namespace Vixen.Sys {
     public class VixenSystem {
-		private const string ELEMENT_DATA_DIRECTORY = "DataDirectory";
-		private const string ATTRIBUTE_IS_CONTEXT = "isContext";
-
 		static private Logging _logging;
 
 		public enum RunState { Stopped, Starting, Started, Stopping };
 		static private RunState _state = RunState.Stopped;
-
-		static VixenSystem() {
-			SerializerFactory.Factory = new XmlSerializerFactory();
-			MigratorFactory.Factory = new XmlMigratorFactory();
-		}
 
     	static public void Start(IApplication clientApplication, bool openExecution = true, bool disableDevices = false) {
 			if(_state == RunState.Stopped) {
@@ -149,6 +137,8 @@ namespace Vixen.Sys {
 			// The system data generally resides in the data branch, but it
 			// may not be in the case of an alternate context.
 			string systemDataPath = _GetSystemDataPath();
+			// Load module data before system config.
+			// System config creates objects that use modules that have data in the store.
 			ModuleStore = _LoadModuleStore(systemDataPath) ?? new ModuleStore();
 			SystemConfig = _LoadSystemConfig(systemDataPath) ?? new SystemConfig();
 
@@ -231,12 +221,12 @@ namespace Vixen.Sys {
 
 		private static ModuleStore _LoadModuleStore(string systemDataPath) {
 			string moduleStoreFilePath = Path.Combine(systemDataPath, ModuleStore.FileName);
-			return ModuleStore.Load(moduleStoreFilePath);
+			return FileService.Instance.LoadModuleStoreFile(moduleStoreFilePath);
 		}
 
 		private static SystemConfig _LoadSystemConfig(string systemDataPath) {
 			string systemConfigFilePath = Path.Combine(systemDataPath, SystemConfig.FileName);
-			return SystemConfig.Load(systemConfigFilePath);
+			return FileService.Instance.LoadSystemConfigFile(systemConfigFilePath);
 		}
 
 		static private void _InitializeLogging() {
@@ -261,26 +251,18 @@ namespace Vixen.Sys {
 		}
 
 		static private bool _OperatingWithinContext(string systemConfigFilePath) {
-			XElement element = Helper.Load(systemConfigFilePath, new XmlFileLoader());
-			return element != null && element.Attribute(ATTRIBUTE_IS_CONTEXT) != null;
+			SystemConfig systemConfig = FileService.Instance.LoadSystemConfigFile(systemConfigFilePath);
+			return systemConfig != null && systemConfig.IsContext;
 		}
 
     	static private string _GetUserDataPath() {
 			// Look for a user data file in the binary directory.
-			XElement element = Helper.Load(SystemConfig.DefaultFilePath, new XmlFileLoader());
-			if(element != null) {
-				// Does it specify an alternate data path?
-				XElement dataDirectory = element.Element(ELEMENT_DATA_DIRECTORY);
-				if(dataDirectory != null) {
-					if(Directory.Exists(dataDirectory.Value)) {
-						// We have an alternate path and it does exist.
-						return dataDirectory.Value;
-					}
-				}
-			}
-
-			// Use the default path.
-			return Paths.DataRootPath;
+			string filePath = Path.Combine(Paths.BinaryRootPath, SystemConfig.FileName);
+			SystemConfig systemConfig = FileService.Instance.LoadSystemConfigFile(filePath);
+			if(systemConfig != null && Directory.Exists(systemConfig.AlternateDataPath)) return systemConfig.AlternateDataPath;
+			
+			// Use the default data path.
+			return Paths.DefaultDataRootPath;
 		}
 	}
 }

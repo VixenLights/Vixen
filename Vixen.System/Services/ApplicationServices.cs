@@ -7,7 +7,6 @@ using Vixen.Module.Effect;
 using Vixen.Module.EffectEditor;
 using Vixen.Rule;
 using Vixen.Sys;
-using Vixen.Sys.Output;
 
 namespace Vixen.Services {
     public class ApplicationServices {
@@ -117,5 +116,9 @@ namespace Vixen.Services {
 			}
 			return true;
 		}
-	}
+
+		static public Program LoadProgram(string filePath) {
+			return FileService.Instance.LoadProgramFile(filePath);
+		}
+    }
 }

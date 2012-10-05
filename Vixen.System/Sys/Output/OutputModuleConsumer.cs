@@ -6,8 +6,8 @@ namespace Vixen.Sys.Output {
 		where T : class, IOutputModule {
 		private T _outputModule;
 
-		public OutputModuleConsumer(Guid moduleId, Guid instanceId, IModuleDataRetriever moduleDataRetriever)
-			: base(moduleId, instanceId, moduleDataRetriever) {
+		public OutputModuleConsumer(Guid moduleId, Guid moduleInstanceId, IModuleDataRetriever moduleDataRetriever)
+			: base(moduleId, moduleInstanceId, moduleDataRetriever) {
 		}
 
 		public override T Module {

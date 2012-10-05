@@ -33,7 +33,7 @@
 		public void Read() {
 			ReadContextFlag();
 			ReadIdentity();
-			//ReadAlternateDataDirectory();
+			ReadAlternateDataDirectory();
 			ReadFilterEvaluationAllowance();
 			ReadChannels();
 			ReadNodes();
@@ -48,7 +48,7 @@
 
 		protected abstract void ReadContextFlag();
 		protected abstract void ReadIdentity();
-		//protected abstract void ReadAlternateDataDirectory();
+		protected abstract void ReadAlternateDataDirectory();
 		protected abstract void ReadFilterEvaluationAllowance();
 		protected abstract void ReadChannels();
 		protected abstract void ReadNodes();
@@ -59,9 +59,5 @@
 		protected abstract void ReadPreviews();
 		protected abstract void ReadFilters();
 		protected abstract void ReadDataFlowPatching();
-
-		public int Version {
-			get { return 11; }
-		}
 	}
 }

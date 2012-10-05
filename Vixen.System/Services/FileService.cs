@@ -1,53 +1,113 @@
-﻿using Vixen.IO;
+﻿using System;
+using System.IO;
+using Vixen.IO;
+using Vixen.IO.Factory;
+using Vixen.Sys;
 
 namespace Vixen.Services {
-	class FileService {
+	class FileService : IFileService {
 		static private FileService _instance;
 
-		private FileService() { }
+		private FileService() {
+		}
 
-		public static FileService Instance {
+		static public FileService Instance {
 			get { return _instance ?? (_instance = new FileService()); }
 		}
 
-		public VersionedFileSerializer CreateSequenceSerializer(string fileType) {
-			IVersionedFileSerializer serializer = SerializerFactory.Instance.CreateSequenceSerializer(fileType);
-			IMigrator migrator = MigratorFactory.Instance.CreateSequenceMigrator(fileType);
-			return _CreateVersionedFileSerializer(migrator, serializer);
+		 public SystemConfig LoadSystemConfigFile(string filePath) {
+			IObjectLoader<SystemConfig> loader = LoaderFactory.Instance.CreateSystemConfigLoader();
+			return loader.LoadFromFile(filePath);
 		}
 
-		public VersionedFileSerializer CreateSystemConfigSerializer() {
-			IVersionedFileSerializer serializer = SerializerFactory.Instance.CreateSystemConfigSerializer();
-			IMigrator migrator = MigratorFactory.Instance.CreateSystemConfigMigrator();
-			return _CreateVersionedFileSerializer(migrator, serializer);
+		 public void SaveSystemConfigFile(SystemConfig systemConfig) {
+			string filePath = systemConfig.LoadedFilePath ?? SystemConfig.DefaultFilePath;
+			SaveSystemConfigFile(systemConfig, filePath);
 		}
 
-		public VersionedFileSerializer CreateModuleStoreSerializer() {
-			IVersionedFileSerializer serializer = SerializerFactory.Instance.CreateModuleStoreSerializer();
-			IMigrator migrator = MigratorFactory.Instance.CreateModuleStoreMigrator();
-			return _CreateVersionedFileSerializer(migrator, serializer);
+		 public void SaveSystemConfigFile(SystemConfig systemConfig, string filePath) {
+			IObjectPersistor<SystemConfig> persistor = PersistorFactory.Instance.CreateSystemConfigPersistor();
+			persistor.SaveToFile(systemConfig, filePath);
 		}
 
-		public VersionedFileSerializer CreateSystemContextSerializer() {
-			IVersionedFileSerializer serializer = SerializerFactory.Instance.CreateSystemContextSerializer();
-			IMigrator migrator = MigratorFactory.Instance.CreateSystemContextMigrator();
-			return _CreateVersionedFileSerializer(migrator, serializer);
+		 public ModuleStore LoadModuleStoreFile(string filePath) {
+			IObjectLoader<ModuleStore> loader = LoaderFactory.Instance.CreateModuleStoreLoader();
+			return loader.LoadFromFile(filePath);
 		}
 
-		public VersionedFileSerializer CreateProgramSerializer() {
-			IVersionedFileSerializer serializer = SerializerFactory.Instance.CreateProgramSerializer();
-			IMigrator migrator = MigratorFactory.Instance.CreateProgramMigrator();
-			return _CreateVersionedFileSerializer(migrator, serializer);
+		 public void SaveModuleStoreFile(ModuleStore moduleStore) {
+			SaveModuleStoreFile(moduleStore, ModuleStore.DefaultFilePath);
 		}
 
-		public VersionedFileSerializer CreateChannelNodeTemplateSerializer() {
-			IVersionedFileSerializer serializer = SerializerFactory.Instance.CreateChannelNodeTemplateSerializer();
-			IMigrator migrator = MigratorFactory.Instance.CreateChannelNodeTemplateMigrator();
-			return _CreateVersionedFileSerializer(migrator, serializer);
+		 public void SaveModuleStoreFile(ModuleStore moduleStore, string filePath) {
+			IObjectPersistor<ModuleStore> persistor = PersistorFactory.Instance.CreateModuleStorePersistor();
+			persistor.SaveToFile(moduleStore, filePath);
 		}
 
-		private static VersionedFileSerializer _CreateVersionedFileSerializer(IMigrator migrator, IVersionedFileSerializer serializer) {
-			return new VersionedFileSerializer(serializer, migrator);
+		 public SystemContext LoadSystemContextFile(string filePath) {
+			IObjectLoader<SystemContext> loader = LoaderFactory.Instance.CreateSystemContextLoader();
+			return loader.LoadFromFile(filePath);
+		}
+
+		 public void SaveSystemContextFile(SystemContext systemContext, string filePath) {
+			IObjectPersistor<SystemContext> persistor = PersistorFactory.Instance.CreateSystemContextPersistor();
+			persistor.SaveToFile(systemContext, filePath);
+		}
+
+		 public Program LoadProgramFile(string filePath) {
+			IObjectLoader<Program> loader = LoaderFactory.Instance.CreateProgramLoader();
+			return loader.LoadFromFile(filePath);
+		}
+
+		 public void SaveProgramFile(Program program, string filePath) {
+			filePath = _GetRootedPath(filePath, Program.ProgramDirectory);
+			filePath = Path.ChangeExtension(filePath, Program.Extension);
+
+			IObjectPersistor<Program> persistor = PersistorFactory.Instance.CreateProgramPersistor();
+			persistor.SaveToFile(program, filePath);
+		}
+
+		 public ChannelNodeTemplate LoadChannelNodeTemplateFile(string filePath) {
+			IObjectLoader<ChannelNodeTemplate> loader = LoaderFactory.Instance.CreateChannelNodeTemplateLoader();
+			return loader.LoadFromFile(filePath);
+		}
+
+		 public void SaveChannelNodeTemplateFile(ChannelNodeTemplate channelNodeTemplate, string filePath) {
+			filePath = _GetRootedPath(filePath, ChannelNodeTemplate.Directory);
+			filePath = Path.ChangeExtension(filePath, ChannelNodeTemplate.Extension);
+
+			IObjectPersistor<ChannelNodeTemplate> persistor = PersistorFactory.Instance.CreateChannelNodeTemplatePersistor();
+			persistor.SaveToFile(channelNodeTemplate, filePath);
+		}
+
+		// Sequences are not system-level files that we maintain, they are essentially nothing more than module
+		// data for the sequence-type module.
+		// However, it differs in that the data store is a file unto itself and that it's a user file that the system
+		// needs to be able to load and save.
+		 public ISequence LoadSequenceFile(string filePath) {
+			IObjectLoader loader = LoaderFactory.Instance.CreateSequenceLoader();
+			return (ISequence)loader.LoadFromFile(filePath);
+		}
+
+		 public void SaveSequenceFile(ISequence sequence, string filePath) {
+			filePath = _GetRootedPath(filePath, SequenceService.SequenceDirectory);
+
+			IObjectPersistor persistor = PersistorFactory.Instance.CreateSequencePersistor();
+			persistor.SaveToFile(sequence, filePath);
+		}
+
+		 public string GetFileType(string filePath) {
+			return Path.GetExtension(filePath);
+		}
+
+		 private string _GetRootedPath(string filePath, string defaultDirectory) {
+			 if(filePath == null) throw new ArgumentNullException("filePath");
+
+			if(!Path.IsPathRooted(filePath)) {
+				filePath = Path.Combine(defaultDirectory, Path.GetFileName(filePath));
+			}
+
+			return filePath;
 		}
 	}
 }

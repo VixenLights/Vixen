@@ -156,5 +156,17 @@ namespace Vixen.Sys
 		static public string GetFilePath(this Assembly assembly) {
 			return assembly.Location;
 		}
+
+		static public XElement AddElement(this XElement parentElement, string newElementName) {
+			XElement newElement = new XElement(newElementName);
+			parentElement.Add(newElement);
+			return newElement;
+		}
+
+		static public void MoveTo(this XElement elementToMove, XElement destinationElement) {
+			string content = elementToMove.InnerXml();
+			elementToMove.Remove();
+			destinationElement.Add(XElement.Parse(content));
+		}
 	}
 }

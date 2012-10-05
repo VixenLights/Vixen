@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Vixen.Rule;
+﻿using System.Linq;
 using Vixen.Sys;
 
 namespace Vixen.Services {
@@ -32,7 +30,7 @@ namespace Vixen.Services {
 		}
 
 		public ChannelNode ImportTemplateOnce(string templateFileName, ChannelNode parentNode) {
-			ChannelNodeTemplate channelNodeTemplate = ChannelNodeTemplate.Load(templateFileName);
+			ChannelNodeTemplate channelNodeTemplate = FileService.Instance.LoadChannelNodeTemplateFile(templateFileName);
 			if(channelNodeTemplate == null) return null;
 
 			VixenSystem.Nodes.AddChildToParent(channelNodeTemplate.ChannelNode, parentNode);

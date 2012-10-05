@@ -7,16 +7,16 @@ using Vixen.Sys.Output;
 namespace Vixen.Factory {
 	public class SmartControllerFactory : IOutputDeviceFactory {
 		public IOutputDevice CreateDevice(Guid moduleId, string name) {
-			return CreateDevice(Guid.NewGuid(), moduleId, name);
+			return CreateDevice(Guid.NewGuid(), moduleId, Guid.NewGuid(), name);
 		}
 
-		public IOutputDevice CreateDevice(Guid id, Guid moduleId, string name) {
+		public IOutputDevice CreateDevice(Guid deviceId, Guid moduleId, Guid moduleInstanceId, string name) {
 			IHasOutputs<IntentOutput> outputs = new OutputCollection<IntentOutput>();
 			IModuleDataRetriever dataRetriever = new ModuleInstanceDataRetriever(VixenSystem.ModuleStore.InstanceData);
-			IOutputModuleConsumer<ISmartControllerModuleInstance> outputModuleConsumer = new OutputModuleConsumer<ISmartControllerModuleInstance>(moduleId, id, dataRetriever);
+			IOutputModuleConsumer<ISmartControllerModuleInstance> outputModuleConsumer = new OutputModuleConsumer<ISmartControllerModuleInstance>(moduleId, moduleInstanceId, dataRetriever);
 			IOutputMediator<IntentOutput> outputMediator = new OutputMediator<IntentOutput>(outputs, outputModuleConsumer.Module);
 			IHardware executionControl = new BasicOutputModuleExecutionControl(outputModuleConsumer.Module);
-			return new SmartOutputController(id, name, outputMediator, executionControl, outputModuleConsumer);
+			return new SmartOutputController(deviceId, name, outputMediator, executionControl, outputModuleConsumer);
 		}
 	}
 }

@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
 using Vixen.Execution;
 using Vixen.Module.SequenceType;
 using Vixen.Sys;
@@ -27,6 +30,18 @@ namespace Vixen.Services {
 				return sequenceExecutor;
 			}
 			return null;
+		}
+
+		static internal DataContractSerializer GetSequenceTypeDataSerializer(ISequenceTypeModuleInstance sequenceTypeModule) {
+			if(sequenceTypeModule == null) return null;
+			if(sequenceTypeModule.Descriptor == null) return null;
+			if(sequenceTypeModule.Descriptor.ModuleDataClass == null) return null;
+
+			return new DataContractSerializer(sequenceTypeModule.Descriptor.ModuleDataClass, _GetAllModuleDataTypes());
+		}
+
+		static private IEnumerable<Type> _GetAllModuleDataTypes() {
+			return ApplicationServices.GetTypesOfModules().SelectMany(Modules.GetDescriptors).Select(x => x.ModuleDataClass).NotNull();
 		}
 	}
 }

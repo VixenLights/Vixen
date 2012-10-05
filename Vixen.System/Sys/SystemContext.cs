@@ -1,12 +1,9 @@
 ﻿using System;
 using System.IO;
-using Vixen.IO;
-using Vixen.IO.Result;
 using Vixen.Services;
 
 namespace Vixen.Sys {
 	public class SystemContext : FilePackage {
-		private const int VERSION = 1;
 		private const string TEMP_DIRECTORY_NAME = "VixenContext";
 
 		public SystemContext()
@@ -38,8 +35,7 @@ namespace Vixen.Sys {
 		}
 
 		public void Save(string targetFilePath) {
-			VersionedFileSerializer serializer = FileService.Instance.CreateSystemContextSerializer();
-			serializer.Write(this, targetFilePath);
+			FileService.Instance.SaveSystemContextFile(this, targetFilePath);
 		}
 
 		/// <summary>
@@ -77,10 +73,6 @@ namespace Vixen.Sys {
 			return contextRoot;
 		}
 
-		public int Version {
-			get { return VERSION; }
-		}
-
 		static public SystemContext PackageSystemContext(string targetFilePath) {
 			SystemContext context = new SystemContext();
 
@@ -98,28 +90,22 @@ namespace Vixen.Sys {
 			return context;
 		}
 
-		static public SystemContext Load(string contextFilePath) {
-			VersionedFileSerializer serializer = FileService.Instance.CreateSystemContextSerializer();
-			ISerializationResult result = serializer.Read(contextFilePath);
-			return (SystemContext)result.Object;
-		}
-
 		static private string _PrepSystemConfig() {
 			// The user data needs a flag set to state that it's a context copy and
 			// therefore should be the one used, not the one in the user's data branch.
 
 			// Flush the system data.
-			VixenSystem.SystemConfig.Save();
+			FileService.Instance.SaveSystemConfigFile(VixenSystem.SystemConfig);
 			
 			// Load the system config into a new instance.
-			SystemConfig contextSysConfig = SystemConfig.Load(VixenSystem.SystemConfig.LoadedFilePath);
+			SystemConfig contextSysConfig = FileService.Instance.LoadSystemConfigFile(VixenSystem.SystemConfig.LoadedFilePath);
 
 			// Set the context flag.
 			contextSysConfig.IsContext = true;
 			
 			// Save it to a temp file.
 			string tempFilePath = Path.GetTempFileName();
-			contextSysConfig.Save(tempFilePath);
+			FileService.Instance.SaveSystemConfigFile(contextSysConfig, tempFilePath);
 
 			return tempFilePath;
 		}

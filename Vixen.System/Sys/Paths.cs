@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
 using System.Reflection;
 using Vixen.Sys.Attribute;
@@ -9,7 +7,7 @@ using Vixen.Sys.Attribute;
 namespace Vixen.Sys {
     static public class Paths {
         // System- or user-defined parent directory of "Vixen" directory.
-        static private string _dataRootPath = null;
+		static private string _dataRootPath;
 
         private const string VIXEN_DATA_DIR = "Vixen 3";
 
@@ -29,11 +27,13 @@ namespace Vixen.Sys {
         static public string DataRootPath {
             get {
                 if(_dataRootPath == null) {
-                    _dataRootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), VIXEN_DATA_DIR);
+                    _dataRootPath = DefaultDataRootPath;
                 }
                 return _dataRootPath;
             }
             set {
+				if(value == null) value = DefaultDataRootPath;
+
                 if(!value.EndsWith(Path.DirectorySeparatorChar + VIXEN_DATA_DIR)) {
                     value += Path.DirectorySeparatorChar + VIXEN_DATA_DIR;
                 }
@@ -46,7 +46,11 @@ namespace Vixen.Sys {
             }
         }
 
-		static public string ModuleDataFilesPath {
+    	public static string DefaultDataRootPath {
+			get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), VIXEN_DATA_DIR); }
+    	}
+
+    	static public string ModuleDataFilesPath {
 			get { return Path.Combine(DataRootPath, "Module Data Files"); }
 		}
 

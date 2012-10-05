@@ -11,9 +11,5 @@
 		}
 
 		abstract protected void ReadSequences();
-
-		public int Version {
-			get { return 1; }
-		}
 	}
 }
