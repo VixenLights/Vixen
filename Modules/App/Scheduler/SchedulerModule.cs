@@ -75,7 +75,7 @@ namespace VixenModules.App.Scheduler {
 			try {
 				_SetEnableState(false);
 
-				Program program = Program.Load(item.FilePath);
+				Program program = Vixen.Services.ApplicationServices.LoadProgram(item.FilePath);
 
 				// No idea if any of this actually works. Needs KC's magical eyes and figures to look over it.
 				ProgramExecutor programExecutor = new ProgramExecutor();

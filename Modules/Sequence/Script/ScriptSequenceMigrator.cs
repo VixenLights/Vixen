@@ -1,6 +1,6 @@
 ﻿using Vixen.IO;
 
-namespace Script {
-	public class ScriptSequenceMigrator : EmptyMigrator {
+namespace VixenModules.SequenceType.Script {
+	public class ScriptSequenceMigrator : EmptyMigrator<ScriptSequenceType> {
 	}
 }

@@ -1,5 +1,4 @@
 ﻿using Common.ScriptSequence;
-using Script;
 using Vixen.Execution;
 using Vixen.IO;
 using Vixen.Module.SequenceType;
@@ -11,7 +10,7 @@ namespace VixenModules.SequenceType.Script {
 			return new ScriptSequenceType();
 		}
 
-		public override IMigrator CreateMigrator() {
+		public override IContentMigrator CreateMigrator() {
 			return new ScriptSequenceMigrator();
 		}
 

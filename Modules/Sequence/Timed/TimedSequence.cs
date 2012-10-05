@@ -9,18 +9,5 @@ namespace VixenModules.Sequence.Timed {
 			get { return ((TimedSequenceData)SequenceData).MarkCollections; }
 			set { ((TimedSequenceData)SequenceData).MarkCollections = value; }
 		}
-
-		public override TimeSpan Length
-		{
-			get
-			{
-				return SequenceData.Length;
-			}
-			set
-			{
-				SequenceData.Length = value;
-			}
-		}
-		
 	}
 }

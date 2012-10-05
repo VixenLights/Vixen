@@ -176,7 +176,7 @@ namespace VixenModules.App.Scheduler {
 				}
 
 				try {
-					_Program = Program.Load(value.FilePath);
+					_Program = ApplicationServices.LoadProgram(value.FilePath);
 				} catch(Exception ex) {
 					MessageBox.Show(ex.Message, CAPTION, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 				}
@@ -198,7 +198,7 @@ namespace VixenModules.App.Scheduler {
 		private Program _LoadProgram(string filePath) {
 			Cursor = Cursors.WaitCursor;
 			try {
-				return Program.Load(filePath);
+				return ApplicationServices.LoadProgram(filePath);
 			} catch(Exception ex) {
 				MessageBox.Show(ex.Message, CAPTION, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 				return null;

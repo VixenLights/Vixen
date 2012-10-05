@@ -1,5 +1,4 @@
 ﻿using System;
-using Script;
 using Vixen.Module.SequenceType;
 using Vixen.Sys.Attribute;
 
