@@ -21,14 +21,7 @@ namespace BaseSequence {
 			InsertDataListener += _DataListener;
 		}
 
-		public ISequenceTypeDataModel SequenceData { get; set; }
-
-		private bool _DataListener(IEffectNode effectNode) {
-			SequenceData.EffectData.AddData(effectNode);
-			SequenceData.LocalDataSet.AssignModuleInstanceData(effectNode.Effect);
-			// Do not cancel the event.
-			return false;
-		}
+		virtual public ISequenceTypeDataModel SequenceData { get; set; }
 
 		public void Save(string filePath) {
 			SequenceService.Instance.Save(this, filePath);
@@ -47,7 +40,7 @@ namespace BaseSequence {
 			set { SequenceData.Length = value; }
 		}
 
-		public string FilePath { get; set; }
+		virtual public string FilePath { get; set; }
 
 		public InsertDataListenerStack InsertDataListener { get; set; }
 
@@ -137,6 +130,13 @@ namespace BaseSequence {
 
 		public override string ToString() {
 			return Name;
+		}
+
+		private bool _DataListener(IEffectNode effectNode) {
+			SequenceData.EffectData.AddData(effectNode);
+			SequenceData.LocalDataSet.AssignModuleInstanceData(effectNode.Effect);
+			// Do not cancel the event.
+			return false;
 		}
 	}
 }

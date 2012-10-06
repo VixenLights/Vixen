@@ -5,11 +5,18 @@ using System.Linq;
 using BaseSequence;
 using Common.ScriptSequence.Script;
 using Vixen.Module.Script;
+using Vixen.Sys;
 
 namespace Common.ScriptSequence {
 	public class ScriptSequence : Sequence {
-		public ScriptSequence() {
-			Length = Forever;
+		private IScriptModuleInstance _language;
+
+		public override ISequenceTypeDataModel SequenceData {
+			get { return base.SequenceData; }
+			set {
+				base.SequenceData = value;
+				Length = Forever;
+			}
 		}
 
 		public void AddSourceFile(SourceFile sourceFile) {
@@ -38,8 +45,6 @@ namespace Common.ScriptSequence {
 			get { return _ScriptSequenceData.SourceFileDirectory; }
 			set { _ScriptSequenceData.SourceFileDirectory = value; }
 		}
-
-		private IScriptModuleInstance _language;
 
 		public IScriptModuleInstance Language {
 			get { return _language; }
