@@ -429,10 +429,14 @@ namespace VixenApplication
 					break;
 
 				case Action.Select:
-					// Perform selection
-					ShapeAtCursorInfo shapeAtCursorInfo = FindShapeAtCursor(diagramPresenter, mouseState.X, mouseState.Y, ControlPointCapabilities.None, 0, false);
-					result = PerformSelection(ActionDiagramPresenter, mouseState, shapeAtCursorInfo);
-					SetSelectedShapeAtCursor(ActionDiagramPresenter, mouseState.X, mouseState.Y, ActionDiagramPresenter.ZoomedGripSize, ControlPointCapabilities.All);
+					// Perform selection, but only if it was with the left mouse button. If it was right mouse, ignore it. (Select is only
+					// initiated on right mouse earlier (in ProcessMouseDown) to allow it to 'refine' into other drag actions. If it's
+					// still a select by MouseUp, then we can ignore it.)
+					if (!mouseState.IsButtonDown(MouseButtonsDg.Right)) {
+						ShapeAtCursorInfo shapeAtCursorInfo = FindShapeAtCursor(diagramPresenter, mouseState.X, mouseState.Y, ControlPointCapabilities.None, 0, false);
+						result = PerformSelection(ActionDiagramPresenter, mouseState, shapeAtCursorInfo);
+						SetSelectedShapeAtCursor(ActionDiagramPresenter, mouseState.X, mouseState.Y, ActionDiagramPresenter.ZoomedGripSize, ControlPointCapabilities.All);
+					}
 					EndToolAction();
 					break;
 

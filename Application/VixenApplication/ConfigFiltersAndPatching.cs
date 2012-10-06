@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Dataweb.NShape;
 using Dataweb.NShape.Advanced;
 using Dataweb.NShape.Controllers;
@@ -20,11 +21,9 @@ using Vixen.Sys.Output;
 // TODO:
 // (maybe) add some way to resize the filter shapes, in case they have a lot of outputs?
 // add labels for filter shapes (so outputs can be labelled)
-// add auto-resizing (horizontally) of shapes, when resizing the window. ie. make it bigger than 800 wide.
 
 
 // TODO (HARD):
-// figure out some way to auto-arrange filters nicely; or, save their old position so it keeps the user arrangement
 // figure out a nice way to auto-patch large amounts of connections; eg. 20 channels to 20 outputs (or filters)
 
 
@@ -37,7 +36,6 @@ namespace VixenApplication
 		// shapes to represent a given channel node; this is because a node can be in multiple groups, and may
 		// be displayed multiple times.
 		private readonly Dictionary<ChannelNode, List<ChannelNodeShape>> _channelNodeToChannelShapes;
-		// TODO: might need to make this reference OutputShapes as well/instead?
 		private readonly Dictionary<IOutputDevice, ControllerShape> _controllerToControllerShape;
 		private readonly Dictionary<IOutputFilterModuleInstance, FilterShape> _filterToFilterShape;
 		private readonly Dictionary<IDataFlowComponent, List<FilterSetupShapeBase>> _dataFlowComponentToShapes;
@@ -57,6 +55,8 @@ namespace VixenApplication
 												// so we know how to layout filter shapes (proportionally)
 
 		private VixenApplicationData _applicationData;
+
+		private List<FilterShape> _filterShapeClipboard;
 
 		private Timer _relayoutOnResizeTimer;
 
@@ -183,15 +183,7 @@ namespace VixenApplication
 				return;
 			}
 
-			IOutputFilterModuleInstance moduleInstance = ApplicationServices.Get<IOutputFilterModuleInstance>(item.Guid);
-			VixenSystem.Filters.AddFilter(moduleInstance);
-
-			FilterShape shape = _CreateShapeFromFilter(moduleInstance);
-
-			shape.Width = SHAPE_FILTERS_WIDTH;
-			shape.Height = SHAPE_FILTERS_HEIGHT;
-			shape.X = diagramDisplay.Width / 2;
-			shape.Y = diagramDisplay.GetDiagramOffset().Y + (diagramDisplay.Height / 2);
+			_CreateNewFilterInstanceAndShape(item.Guid, true);
 		}
 
 
@@ -280,6 +272,71 @@ namespace VixenApplication
 			}
 		}
 
+		private void diagramContextMenuStrip_Opening(object sender, CancelEventArgs e)
+		{
+			copyFilterToolStripMenuItem.Enabled = diagramDisplay.SelectedShapes.Any(x => (x is FilterShape));
+			pasteFilterToolStripMenuItem.Enabled = _filterShapeClipboard != null && _filterShapeClipboard.Count > 0;
+			pasteFilterMultipleToolStripMenuItem.Enabled = _filterShapeClipboard != null && _filterShapeClipboard.Count > 0;
+		}
+
+		private void copyFilterToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			_filterShapeClipboard = new List<FilterShape>();
+			foreach (Shape selectedShape in diagramDisplay.SelectedShapes) {
+				if (selectedShape is FilterShape) {
+					_filterShapeClipboard.Add(selectedShape as FilterShape);
+				}
+			}
+		}
+
+		private void pasteFilterToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			PasteClipboardItems(Cursor.Position);
+		}
+
+		private void pasteFilterMultipleToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Point cursor = Cursor.Position;
+			using (NumberDialog numberDialog = new NumberDialog("Number of Copies", "How many copies of the given filter(s)?", 1, 1, 1000)) {
+				if (numberDialog.ShowDialog() == DialogResult.OK) {
+					PasteClipboardItems(cursor, numberDialog.Value);
+				}
+			}
+		}
+
+		private void PasteClipboardItems(Point cursorPosition, int numberOfCopies = 1)
+		{
+			if (_filterShapeClipboard == null || _filterShapeClipboard.Count <= 0)
+				return;
+
+			Point newPosition = diagramDisplay.PointToClient(cursorPosition);
+			newPosition.X -= diagramDisplay.GetDiagramPosition().X;
+			newPosition.Y += diagramDisplay.GetDiagramOffset().Y - (SHAPE_FILTERS_HEIGHT / 2);
+	
+			for (int i = 0; i < numberOfCopies; i++) {
+				foreach (FilterShape filterShape in _filterShapeClipboard) {
+					FilterShape newShape = _CreateNewFilterInstanceAndShape(filterShape.FilterInstance.TypeId, false);
+					newShape.FilterInstance.ModuleData = filterShape.FilterInstance.ModuleData.Clone();
+
+					newShape.X = newPosition.X;
+					newShape.Y = newPosition.Y;
+
+					newPosition.Y += newShape.Height + SHAPE_VERTICAL_SPACING;
+
+					// save the new shape position in the application data references
+					FilterSetupFormShapePosition position = new FilterSetupFormShapePosition();
+					position.xPositionProportion = (double)newShape.X / _previousDiagramWidth;
+					position.yPosition = newShape.Y;
+					_applicationData.FilterSetupFormShapePositions[newShape.FilterInstance.InstanceId] = position;
+				}
+			}
+		}
+
+
+
+
+
+
 
 
 
@@ -344,9 +401,6 @@ namespace VixenApplication
 				_RemoveShape(line);
 			}
 		}
-
-
-
 
 		private void _InitializeShapesFromChannels()
 		{
@@ -667,6 +721,23 @@ namespace VixenApplication
 			return filterShape;
 		}
 
+		private FilterShape _CreateNewFilterInstanceAndShape(Guid filterTypeId, bool defaultLayout)
+		{
+			IOutputFilterModuleInstance moduleInstance = ApplicationServices.Get<IOutputFilterModuleInstance>(filterTypeId);
+			VixenSystem.Filters.AddFilter(moduleInstance);
+			FilterShape shape = _CreateShapeFromFilter(moduleInstance);
+
+			shape.Width = SHAPE_FILTERS_WIDTH;
+			shape.Height = SHAPE_FILTERS_HEIGHT;
+
+			if (defaultLayout) {
+				shape.X = diagramDisplay.Width/2;
+				shape.Y = diagramDisplay.GetDiagramOffset().Y + (diagramDisplay.Height/2);
+			}
+
+			return shape;
+		}
+
 
 
 		private void _RemoveShape(Shape shape)
@@ -750,5 +821,6 @@ namespace VixenApplication
 		internal const char SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS = 'B';
 		internal const char SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS = 'C';
 		internal const char SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS_DELETABLE = 'D';
+
 	}
 }

@@ -34,6 +34,10 @@
 			this.buttonAddFilter = new System.Windows.Forms.Button();
 			this.comboBoxNewFilterTypes = new System.Windows.Forms.ComboBox();
 			this.diagramDisplay = new Dataweb.NShape.WinFormsUI.Display();
+			this.diagramContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.copyFilterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.pasteFilterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.pasteFilterMultipleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.diagramSetController = new Dataweb.NShape.Controllers.DiagramSetController();
 			this.project = new Dataweb.NShape.Project(this.components);
 			this.cachedRepository = new Dataweb.NShape.Advanced.CachedRepository();
@@ -42,6 +46,7 @@
 			this.buttonZoomOut = new System.Windows.Forms.Button();
 			this.buttonZoomIn = new System.Windows.Forms.Button();
 			this.buttonDelete = new System.Windows.Forms.Button();
+			this.diagramContextMenuStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// buttonCancel
@@ -84,6 +89,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.diagramDisplay.BackColorGradient = System.Drawing.SystemColors.Control;
 			this.diagramDisplay.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.diagramDisplay.ContextMenuStrip = this.diagramContextMenuStrip;
 			this.diagramDisplay.DiagramSetController = this.diagramSetController;
 			this.diagramDisplay.GridColor = System.Drawing.Color.Gainsboro;
 			this.diagramDisplay.GridSize = 19;
@@ -102,6 +108,37 @@
 			this.diagramDisplay.ToolPreviewColor = System.Drawing.Color.FromArgb(((int)(((byte)(96)))), ((int)(((byte)(70)))), ((int)(((byte)(130)))), ((int)(((byte)(180)))));
 			this.diagramDisplay.ShapeDoubleClick += new System.EventHandler<Dataweb.NShape.Controllers.DiagramPresenterShapeClickEventArgs>(this.displayDiagram_ShapeDoubleClick);
 			this.diagramDisplay.KeyDown += new System.Windows.Forms.KeyEventHandler(this.diagramDisplay_KeyDown);
+			// 
+			// diagramContextMenuStrip
+			// 
+			this.diagramContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyFilterToolStripMenuItem,
+            this.pasteFilterToolStripMenuItem,
+            this.pasteFilterMultipleToolStripMenuItem});
+			this.diagramContextMenuStrip.Name = "diagramContextMenuStrip";
+			this.diagramContextMenuStrip.Size = new System.Drawing.Size(187, 98);
+			this.diagramContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.diagramContextMenuStrip_Opening);
+			// 
+			// copyFilterToolStripMenuItem
+			// 
+			this.copyFilterToolStripMenuItem.Name = "copyFilterToolStripMenuItem";
+			this.copyFilterToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+			this.copyFilterToolStripMenuItem.Text = "Copy Filter";
+			this.copyFilterToolStripMenuItem.Click += new System.EventHandler(this.copyFilterToolStripMenuItem_Click);
+			// 
+			// pasteFilterToolStripMenuItem
+			// 
+			this.pasteFilterToolStripMenuItem.Name = "pasteFilterToolStripMenuItem";
+			this.pasteFilterToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+			this.pasteFilterToolStripMenuItem.Text = "Paste Filter";
+			this.pasteFilterToolStripMenuItem.Click += new System.EventHandler(this.pasteFilterToolStripMenuItem_Click);
+			// 
+			// pasteFilterMultipleToolStripMenuItem
+			// 
+			this.pasteFilterMultipleToolStripMenuItem.Name = "pasteFilterMultipleToolStripMenuItem";
+			this.pasteFilterMultipleToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+			this.pasteFilterMultipleToolStripMenuItem.Text = "Paste Filter (Multiple)";
+			this.pasteFilterMultipleToolStripMenuItem.Click += new System.EventHandler(this.pasteFilterMultipleToolStripMenuItem_Click);
 			// 
 			// diagramSetController
 			// 
@@ -200,6 +237,7 @@
 			this.Load += new System.EventHandler(this.ConfigFiltersAndPatching_Load);
 			this.ResizeEnd += new System.EventHandler(this.ConfigFiltersAndPatching_ResizeEnd);
 			this.Resize += new System.EventHandler(this.ConfigFiltersAndPatching_Resize);
+			this.diagramContextMenuStrip.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -219,6 +257,10 @@
 		private Dataweb.NShape.Controllers.DiagramSetController diagramSetController;
 		private Dataweb.NShape.Project project;
 		private Dataweb.NShape.Advanced.CachedRepository cachedRepository;
+		private System.Windows.Forms.ContextMenuStrip diagramContextMenuStrip;
+		private System.Windows.Forms.ToolStripMenuItem copyFilterToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem pasteFilterToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem pasteFilterMultipleToolStripMenuItem;
 
 	}
 }

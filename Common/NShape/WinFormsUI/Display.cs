@@ -2036,6 +2036,11 @@ namespace Dataweb.NShape.WinFormsUI {
 			return new Point(scrollBarH.Value - scrollBarH.Minimum, scrollBarV.Value - scrollBarV.Minimum);
 		}
 
+		public Point GetDiagramPosition()
+		{
+			return new Point(diagramPosX, diagramPosY);
+		}
+
 		#endregion
 
 
