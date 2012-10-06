@@ -49,7 +49,11 @@ namespace Vixen.IO {
 			MigrationPath migrationPath = _BuildMigrationPath(migrator, contentVersion, targetVersion);
 
 			foreach(IMigrationSegment migrationSegment in migrationPath) {
-				content = migrator.MigrateContent(content, migrationSegment.FromVersion, migrationSegment.ToVersion);
+				try {
+					content = migrator.MigrateContent(content, migrationSegment.FromVersion, migrationSegment.ToVersion);
+				} catch(Exception ex) {
+					throw new Exception("Error when migrating from version " + contentVersion + " to version " + targetVersion, ex);
+				}
 			}
 			
 			return content;

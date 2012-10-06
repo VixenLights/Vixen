@@ -1,4 +1,7 @@
-﻿namespace Vixen.IO {
+﻿using System;
+using Vixen.Sys;
+
+namespace Vixen.IO {
 	class MigratingObjectLoaderService : IMigratingObjectLoaderService {
 		static private MigratingObjectLoaderService _instance;
 
@@ -19,8 +22,12 @@
 			object content = fileReader.ReadFile(filePath);
 			if(content == null) return null;
 
-			content = ObjectMigratorService.Instance.MigrateObject(content, contentMigrator, contentWriter.GetContentVersion(content), currentObjectVersion, filePath);
-			contentWriter.WriteContentToObject(content, objectToPopulate);
+			try {
+				content = ObjectMigratorService.Instance.MigrateObject(content, contentMigrator, contentWriter.GetContentVersion(content), currentObjectVersion, filePath);
+				contentWriter.WriteContentToObject(content, objectToPopulate);
+			} catch(Exception ex) {
+				VixenSystem.Logging.Error("Error when migrating file " + filePath + " to the current version.", ex);
+			}
 
 			return objectToPopulate;
 		}

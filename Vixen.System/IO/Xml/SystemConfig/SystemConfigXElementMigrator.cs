@@ -171,17 +171,23 @@ namespace Vixen.IO.Xml.SystemConfig {
 		}
 
 		private Guid[] _GetModuleInstanceIds(IEnumerable<Guid> moduleTypeIds) {
-			return moduleTypeIds.Select(x => VixenSystem.ModuleStore.InstanceData.DataModels.First(y => y.ModuleTypeId.Equals(x))).Select(x => x.ModuleInstanceId).ToArray();
+			return moduleTypeIds.SelectMany(x => VixenSystem.ModuleStore.InstanceData.DataModels.Where(y => y.ModuleTypeId.Equals(x)).Select(z => z.ModuleInstanceId)).ToArray();
 		}
 
 		private XElement _AddInstanceIdsToDevices(XElement systemConfigContent, Guid[] moduleTypeIds, Guid[] moduleInstanceIds, Func<XElement, IEnumerable<XElement>> deviceElementSelector) {
-			IEnumerable<XElement> deviceElements = deviceElementSelector(systemConfigContent);
-			if(deviceElements == null) return null;
+			XElement[] deviceElements = deviceElementSelector(systemConfigContent).ToArray();
+
+			// There may be duplicate data in the module data store due to the bug that this is fixing, so we can't
+			// assume that the number of devices will match the number of data elements for the devices.
+			//if(moduleTypeIds.Length != moduleInstanceIds.Length || moduleInstanceIds.Length != deviceElements.Length) {
+			//    throw new Exception("Module type id count: " + moduleTypeIds.Length + ", module instance id count: " + moduleInstanceIds.Length + ", device element count: " + deviceElements.Length);
+			//}
 
 			for(int i = 0; i < moduleTypeIds.Length; i++) {
-				Guid moduleTypeId = moduleTypeIds[i];
-				XElement deviceElement = deviceElements.First(x => Guid.Parse(x.Attribute("hardwareId").Value).Equals(moduleTypeId));
-				deviceElement.Add(new XAttribute("hardwareInstanceId", moduleInstanceIds[i]));
+				if(moduleTypeIds[i] != Guid.Parse(deviceElements[i].Attribute("hardwareId").Value)) {
+					throw new Exception("Expected device type to match, but it did not.");
+				}
+				deviceElements[i].Add(new XAttribute("hardwareInstanceId", moduleInstanceIds[i]));
 			}
 
 			return systemConfigContent;
