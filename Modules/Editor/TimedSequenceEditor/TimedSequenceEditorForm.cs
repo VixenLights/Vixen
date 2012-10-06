@@ -759,9 +759,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_undoMgr.AddUndoAction(act);
 
 			} catch (Exception ex) {
-				string msg = "TimedSequenceEditor: error adding effect of type " + effectInstance.Descriptor.TypeId + " to row " + row.Name;
+				string msg = "TimedSequenceEditor: error adding effect of type " + effectInstance.Descriptor.TypeId + " to row " + ((row == null) ? "<null>" : row.Name);
 				VixenSystem.Logging.Error(msg, ex);
-				MessageBox.Show(msg + ":\n" + ex.Message);
 			}
 		}
 
