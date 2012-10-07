@@ -337,6 +337,7 @@ namespace VixenApplication
 				foreach (FilterShape filterShape in sourceShapes) {
 					FilterShape newShape = _CreateNewFilterInstanceAndShape(filterShape.FilterInstance.TypeId, false);
 					newShape.FilterInstance.ModuleData = filterShape.FilterInstance.ModuleData.Clone();
+					newShape.ModuleDataUpdated();
 
 					newShape.X = pos.X;
 					newShape.Y = pos.Y;

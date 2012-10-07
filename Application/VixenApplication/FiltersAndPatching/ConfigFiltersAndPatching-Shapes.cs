@@ -68,6 +68,11 @@ namespace VixenApplication
 			UpdateDrawCache();
 		}
 
+		public void ModuleDataUpdated()
+		{
+			_recalcControlPoints();
+		}
+
 		public virtual int InputCount
 		{
 			get { return (DataFlowComponent != null) ? 1 : 0; }
