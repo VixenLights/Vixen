@@ -29,14 +29,14 @@ namespace VixenApplication.FiltersAndPatching
 			listViewSources.BeginUpdate();
 			listViewSources.Items.Clear();
 			
-			foreach (Shape selectedShape in _data.FilterSetupForm.SelectedShapes) {
+			foreach (Shape selectedShape in _data.FilterSetupForm.SelectedShapes.Reverse()) {
 				FilterSetupShapeBase shape = selectedShape as FilterSetupShapeBase;
 				if (shape != null && shape.OutputCount > 0 && shape.DataFlowComponent != null) {
 					string title = shape.Title;
 
 					for (int i = 0; i < shape.OutputCount; i++) {
 						_data.Sources.Add(new Tuple<FilterSetupShapeBase, int>(shape, i));
-						listViewSources.Items.Add(shape.OutputCount == 1 ? title : (title + " (Output " + i + ")"));
+						listViewSources.Items.Add(shape.OutputCount == 1 ? title : (title + " [Output " + i + "]"));
 					}
 				}
 			}

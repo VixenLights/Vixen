@@ -2358,6 +2358,10 @@ namespace Dataweb.NShape.WinFormsUI {
 		/// <override></override>
 		protected override void OnKeyDown(KeyEventArgs e) {
 			base.OnKeyDown(e);
+
+			if (e.Handled)
+				return;
+
 			if (CurrentTool != null) {
 				try {
 					e.Handled = CurrentTool.ProcessKeyEvent(this, WinFormHelpers.GetKeyEventArgs(KeyEventType.KeyDown, e));

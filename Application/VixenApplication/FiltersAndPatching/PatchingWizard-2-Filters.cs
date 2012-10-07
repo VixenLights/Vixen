@@ -29,7 +29,7 @@ namespace VixenApplication.FiltersAndPatching
 			listViewFilters.BeginUpdate();
 			listViewFilters.Items.Clear();
 			
-			foreach (Shape selectedShape in _data.FilterSetupForm.SelectedShapes) {
+			foreach (Shape selectedShape in _data.FilterSetupForm.SelectedShapes.Reverse()) {
 				FilterShape shape = selectedShape as FilterShape;
 				if (shape != null && shape.OutputCount > 0) {
 					_data.Filters.Add(shape);

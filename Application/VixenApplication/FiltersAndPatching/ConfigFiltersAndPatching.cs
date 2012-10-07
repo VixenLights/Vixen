@@ -210,6 +210,17 @@ namespace VixenApplication
 				_DeleteShapes(diagramDisplay.SelectedShapes);
 				e.Handled = true;
 			}
+
+			// CTRL-C and CTRL-V are copy/paste for filters, respectively
+			if (e.KeyCode == Keys.C && e.Modifiers == Keys.Control) {
+				CopySelectedFiltersToClipboard();
+				e.Handled = true;
+			}
+
+			if (e.KeyCode == Keys.V && e.Modifiers == Keys.Control) {
+				PasteClipboardFilters(Cursor.Position);
+				e.Handled = true;
+			}
 		}
 
 		private void displayDiagram_ShapeDoubleClick(object sender, DiagramPresenterShapeClickEventArgs e)
@@ -282,6 +293,14 @@ namespace VixenApplication
 
 		private void copyFilterToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			CopySelectedFiltersToClipboard();
+		}
+
+		private void CopySelectedFiltersToClipboard()
+		{
+			if (!diagramDisplay.SelectedShapes.Any(x => (x is FilterShape)))
+				return;
+
 			_filterShapeClipboard = new List<FilterShape>();
 			foreach (Shape selectedShape in diagramDisplay.SelectedShapes) {
 				if (selectedShape is FilterShape) {
@@ -292,20 +311,27 @@ namespace VixenApplication
 
 		private void pasteFilterToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			PasteClipboardItems(Cursor.Position);
+			PasteClipboardFilters(Cursor.Position);
 		}
 
 		private void pasteFilterMultipleToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			PasteClipboardFiltersMultipleTimes();
+		}
+
+		private void PasteClipboardFiltersMultipleTimes()
+		{
 			Point cursor = Cursor.Position;
-			using (NumberDialog numberDialog = new NumberDialog("Number of Copies", "How many copies of the given filter(s)?", 1, 1, 1000)) {
+			using (
+				NumberDialog numberDialog = new NumberDialog("Number of Copies", "How many copies of the given filter(s)?", 1, 1, 1000)
+				) {
 				if (numberDialog.ShowDialog() == DialogResult.OK) {
-					PasteClipboardItems(cursor, numberDialog.Value);
+					PasteClipboardFilters(cursor, numberDialog.Value);
 				}
 			}
 		}
 
-		private void PasteClipboardItems(Point cursorPosition, int numberOfCopies = 1)
+		private void PasteClipboardFilters(Point cursorPosition, int numberOfCopies = 1)
 		{
 			if (_filterShapeClipboard == null || _filterShapeClipboard.Count <= 0)
 				return;
@@ -314,10 +340,10 @@ namespace VixenApplication
 			newPosition.X -= diagramDisplay.GetDiagramPosition().X;
 			newPosition.Y += diagramDisplay.GetDiagramOffset().Y - (SHAPE_FILTERS_HEIGHT / 2);
 
-			CopyFilterShapes(_filterShapeClipboard, numberOfCopies, newPosition);
+			DuplicateFilterShapes(_filterShapeClipboard, numberOfCopies, newPosition);
 		}
 
-		public IEnumerable<FilterShape> CopyFilterShapes(IEnumerable<FilterShape> sourceShapes, int numberOfCopies, Point? startPosition = null)
+		public IEnumerable<FilterShape> DuplicateFilterShapes(IEnumerable<FilterShape> sourceShapes, int numberOfCopies, Point? startPosition = null)
 		{
 			if (sourceShapes == null)
 				return null;

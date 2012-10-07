@@ -43,16 +43,17 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.listViewFilters.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
+			this.listViewFilters.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewFilters.Location = new System.Drawing.Point(22, 170);
 			this.listViewFilters.Name = "listViewFilters";
 			this.listViewFilters.Size = new System.Drawing.Size(180, 180);
 			this.listViewFilters.TabIndex = 9;
 			this.listViewFilters.UseCompatibleStateImageBehavior = false;
-			this.listViewFilters.View = System.Windows.Forms.View.List;
+			this.listViewFilters.View = System.Windows.Forms.View.Details;
 			// 
 			// columnHeader1
 			// 
-			this.columnHeader1.Width = 300;
+			this.columnHeader1.Width = 160;
 			// 
 			// label4
 			// 

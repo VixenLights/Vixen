@@ -53,16 +53,17 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.listViewDestinations.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
+			this.listViewDestinations.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewDestinations.Location = new System.Drawing.Point(22, 170);
 			this.listViewDestinations.Name = "listViewDestinations";
 			this.listViewDestinations.Size = new System.Drawing.Size(180, 180);
 			this.listViewDestinations.TabIndex = 15;
 			this.listViewDestinations.UseCompatibleStateImageBehavior = false;
-			this.listViewDestinations.View = System.Windows.Forms.View.List;
+			this.listViewDestinations.View = System.Windows.Forms.View.Details;
 			// 
 			// columnHeader1
 			// 
-			this.columnHeader1.Width = 300;
+			this.columnHeader1.Width = 160;
 			// 
 			// label4
 			// 

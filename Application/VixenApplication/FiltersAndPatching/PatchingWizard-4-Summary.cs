@@ -112,7 +112,7 @@ namespace VixenApplication.FiltersAndPatching
 				// filters are being used in the patching process; duplicate the given filters as many times as needed,
 				// then link up the sources to the filters. After that, link up the filters to destinations.
 
-				List<FilterShape> clonedFilters = new List<FilterShape>(_data.FilterSetupForm.CopyFilterShapes(_data.Filters, _filterLoops));
+				List<FilterShape> clonedFilters = new List<FilterShape>(_data.FilterSetupForm.DuplicateFilterShapes(_data.Filters, _filterLoops));
 				for (int i = 0; i < _sourceCount; i++) {
 					success = success && VixenSystem.DataFlow.SetComponentSource(clonedFilters[i].FilterInstance, _data.Sources[i].Item1.DataFlowComponent, _data.Sources[i].Item2);
 					_data.FilterSetupForm.ConnectShapes(_data.Sources[i].Item1, _data.Sources[i].Item2, clonedFilters[i]);

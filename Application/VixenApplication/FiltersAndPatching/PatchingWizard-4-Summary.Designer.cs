@@ -49,16 +49,17 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.listViewSources.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
+			this.listViewSources.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewSources.Location = new System.Drawing.Point(16, 170);
 			this.listViewSources.Name = "listViewSources";
 			this.listViewSources.Size = new System.Drawing.Size(150, 190);
 			this.listViewSources.TabIndex = 21;
 			this.listViewSources.UseCompatibleStateImageBehavior = false;
-			this.listViewSources.View = System.Windows.Forms.View.List;
+			this.listViewSources.View = System.Windows.Forms.View.Details;
 			// 
 			// columnHeader1
 			// 
-			this.columnHeader1.Width = 300;
+			this.columnHeader1.Width = 130;
 			// 
 			// labelWarning2
 			// 
@@ -125,16 +126,17 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.listViewDestinations.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader2});
+			this.listViewDestinations.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewDestinations.Location = new System.Drawing.Point(174, 170);
 			this.listViewDestinations.Name = "listViewDestinations";
 			this.listViewDestinations.Size = new System.Drawing.Size(150, 190);
 			this.listViewDestinations.TabIndex = 23;
 			this.listViewDestinations.UseCompatibleStateImageBehavior = false;
-			this.listViewDestinations.View = System.Windows.Forms.View.List;
+			this.listViewDestinations.View = System.Windows.Forms.View.Details;
 			// 
 			// columnHeader2
 			// 
-			this.columnHeader2.Width = 300;
+			this.columnHeader2.Width = 130;
 			// 
 			// labelFilters
 			// 
@@ -152,16 +154,17 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.listViewFilters.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader3});
+			this.listViewFilters.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewFilters.Location = new System.Drawing.Point(332, 170);
 			this.listViewFilters.Name = "listViewFilters";
 			this.listViewFilters.Size = new System.Drawing.Size(150, 190);
 			this.listViewFilters.TabIndex = 25;
 			this.listViewFilters.UseCompatibleStateImageBehavior = false;
-			this.listViewFilters.View = System.Windows.Forms.View.List;
+			this.listViewFilters.View = System.Windows.Forms.View.Details;
 			// 
 			// columnHeader3
 			// 
-			this.columnHeader3.Width = 300;
+			this.columnHeader3.Width = 130;
 			// 
 			// PatchingWizard_4_Summary
 			// 

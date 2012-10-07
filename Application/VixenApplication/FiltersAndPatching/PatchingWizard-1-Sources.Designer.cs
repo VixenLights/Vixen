@@ -82,16 +82,17 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.listViewSources.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
+			this.listViewSources.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewSources.Location = new System.Drawing.Point(22, 170);
 			this.listViewSources.Name = "listViewSources";
 			this.listViewSources.Size = new System.Drawing.Size(180, 180);
 			this.listViewSources.TabIndex = 4;
 			this.listViewSources.UseCompatibleStateImageBehavior = false;
-			this.listViewSources.View = System.Windows.Forms.View.List;
+			this.listViewSources.View = System.Windows.Forms.View.Details;
 			// 
 			// columnHeader1
 			// 
-			this.columnHeader1.Width = 300;
+			this.columnHeader1.Width = 160;
 			// 
 			// PatchingWizard_1_Sources
 			// 
