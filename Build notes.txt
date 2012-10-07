@@ -114,3 +114,23 @@ Added non-static data store to ModuleStore.xml.
 System-level module data (such as for controllers) has been pulled out of SystemConfig.xml and put into ModuleStore.xml.
 
 Fixed CPU usage statistic in the admin app.
+
+== 3.0.2.1 ============================
+
+Added dataflow component circular dependency checking.
+
+Added naming templates and generators.
+
+Module store serialization fixes.
+
+Refactoring of system file migration.
+
+A plethora of patching UI fixes.
+
+Fixes for SetLevel effect.
+
+Timed sequence-type fixes.
+
+Timed sequence serialization fixes.
+
+The beginning of a patching wizard...feel free to provide feedback.

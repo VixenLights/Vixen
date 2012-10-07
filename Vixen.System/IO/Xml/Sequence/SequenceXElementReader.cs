@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using Vixen.Module.SequenceType;
@@ -27,10 +28,12 @@ namespace Vixen.IO.Xml.Sequence {
 
 		private XElement _GenerateSequenceDataContent(ISequence sequence) {
 			using(MemoryStream stream = new MemoryStream()) {
-				using(XmlWriter xmlWriter = XmlWriter.Create(stream)) {
+				XmlWriterSettings settings = new XmlWriterSettings { Encoding = Encoding.ASCII, Indent = true, NamespaceHandling = NamespaceHandling.OmitDuplicates };
+				using(XmlWriter xmlWriter = XmlWriter.Create(stream, settings)) {
 					_WriteSequenceDataToXmlWriter(sequence, xmlWriter);
+					xmlWriter.Flush();
 				}
-				return XElement.Load(stream);
+				return XElement.Parse(Encoding.ASCII.GetString(stream.ToArray()));
 			}
 		}
 

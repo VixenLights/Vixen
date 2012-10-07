@@ -71,6 +71,10 @@ namespace Vixen.Services {
 				if(sequenceTypeData != null && !(sequenceTypeData is ISequenceTypeDataModel)) {
 					VixenSystem.Logging.Warning("Could not create appropriate sequence data for new sequence due to the object type.  File type: " + fileType);
 				} else {
+					if(sequenceTypeData != null) {
+						sequenceTypeData.ModuleTypeId = sequenceFactory.TypeId;
+						sequenceTypeData.ModuleInstanceId = sequenceFactory.InstanceId;
+					}
 					return (ISequenceTypeDataModel)sequenceTypeData;
 				}
 			}
