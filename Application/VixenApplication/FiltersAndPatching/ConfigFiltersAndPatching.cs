@@ -371,7 +371,6 @@ namespace VixenApplication
 		void wizard_WizardFinished(object sender, EventArgs e)
 		{
 			PatchingWizard wizard = sender as PatchingWizard;
-			MessageBox.Show(wizard.WizardDialogResult.ToString());
 			_patchingWizardRunning = false;
 		}
 
