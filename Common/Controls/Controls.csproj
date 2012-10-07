@@ -47,6 +47,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Wizard\Wizard.cs" />
+    <Compile Include="Wizard\WizardForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Wizard\WizardForm.Designer.cs">
+      <DependentUpon>WizardForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="MenuStripEx.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -221,6 +228,9 @@
     </Compile>
     <Compile Include="Undo\UndoManager.cs" />
     <Compile Include="Undo\GenericUndoActions.cs" />
+    <Compile Include="Wizard\WizardStage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ColorPicker\ColorLabel.resx">
@@ -234,6 +244,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ColorPicker\ColorSelectionPlane.resx">
       <DependentUpon>ColorSelectionPlane.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Wizard\WizardForm.resx">
+      <DependentUpon>WizardForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ControlsEx\BorderedControl.resx">
       <DependentUpon>BorderedControl.cs</DependentUpon>
