@@ -17,6 +17,7 @@ using Vixen.Module.OutputFilter;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Output;
+using VixenApplication.FiltersAndPatching;
 
 // TODO:
 // (maybe) add some way to resize the filter shapes, in case they have a lot of outputs?
@@ -312,30 +313,77 @@ namespace VixenApplication
 			Point newPosition = diagramDisplay.PointToClient(cursorPosition);
 			newPosition.X -= diagramDisplay.GetDiagramPosition().X;
 			newPosition.Y += diagramDisplay.GetDiagramOffset().Y - (SHAPE_FILTERS_HEIGHT / 2);
-	
+
+			CopyFilterShapes(_filterShapeClipboard, numberOfCopies, newPosition);
+		}
+
+		public IEnumerable<FilterShape> CopyFilterShapes(IEnumerable<FilterShape> sourceShapes, int numberOfCopies, Point? startPosition = null)
+		{
+			if (sourceShapes == null)
+				return null;
+
+			Point pos;
+			if (startPosition == null) {
+				pos = new Point();
+				pos.X = diagramDisplay.Width / 2;
+				pos.Y = diagramDisplay.GetDiagramOffset().Y + (diagramDisplay.Height / 2);
+			} else {
+				pos = (Point)startPosition;
+			}
+
+			List<FilterShape> result = new List<FilterShape>();
+
 			for (int i = 0; i < numberOfCopies; i++) {
-				foreach (FilterShape filterShape in _filterShapeClipboard) {
+				foreach (FilterShape filterShape in sourceShapes) {
 					FilterShape newShape = _CreateNewFilterInstanceAndShape(filterShape.FilterInstance.TypeId, false);
 					newShape.FilterInstance.ModuleData = filterShape.FilterInstance.ModuleData.Clone();
 
-					newShape.X = newPosition.X;
-					newShape.Y = newPosition.Y;
+					newShape.X = pos.X;
+					newShape.Y = pos.Y;
 
-					newPosition.Y += newShape.Height + SHAPE_VERTICAL_SPACING;
+					pos.Y += newShape.Height + SHAPE_VERTICAL_SPACING;
 
 					// save the new shape position in the application data references
 					FilterSetupFormShapePosition position = new FilterSetupFormShapePosition();
 					position.xPositionProportion = (double)newShape.X / _previousDiagramWidth;
 					position.yPosition = newShape.Y;
 					_applicationData.FilterSetupFormShapePositions[newShape.FilterInstance.InstanceId] = position;
+
+					result.Add(newShape);
 				}
+			}
+
+			return result;
+		}
+
+		private bool _patchingWizardRunning;
+		private void buttonPatchWizard_Click(object sender, EventArgs e)
+		{
+			if (!_patchingWizardRunning) {
+				PatchingWizard wizard = new PatchingWizard(this);
+				wizard.WizardFinished += wizard_WizardFinished;
+				_patchingWizardRunning = true;
+				wizard.Start(false);
 			}
 		}
 
+		void wizard_WizardFinished(object sender, EventArgs e)
+		{
+			PatchingWizard wizard = sender as PatchingWizard;
+			MessageBox.Show(wizard.WizardDialogResult.ToString());
+			_patchingWizardRunning = false;
+		}
 
+		public event EventHandler DiagramShapesSelected
+		{
+			add { diagramDisplay.ShapesSelected += value; }
+			remove { diagramDisplay.ShapesSelected -= value; }
+		}
 
-
-
+		public IShapeCollection SelectedShapes
+		{
+			get { return diagramDisplay.SelectedShapes; }
+		}
 
 
 
@@ -481,11 +529,11 @@ namespace VixenApplication
 				List<FilterSetupShapeBase> sourceShapes = _dataFlowComponentToShapes[source.Component];
 				// TODO: deal with multiple instances of the source data flow component: eg. a channel existing as
 				// multiple shapes (currently, we'll assume it's the first shape in the list)
-				_ConnectShapes(sourceShapes.First(), source.OutputIndex, shape);
+				ConnectShapes(sourceShapes.First(), source.OutputIndex, shape);
 			}
 		}
 
-		private void _ConnectShapes(FilterSetupShapeBase source, int sourceOutputIndex, FilterSetupShapeBase destination)
+		public void ConnectShapes(FilterSetupShapeBase source, int sourceOutputIndex, FilterSetupShapeBase destination)
 		{
 			DataFlowConnectionLine line = (DataFlowConnectionLine)project.ShapeTypes["DataFlowConnectionLine"].CreateInstance();
 			diagramDisplay.InsertShape(line);
@@ -731,8 +779,8 @@ namespace VixenApplication
 			shape.Height = SHAPE_FILTERS_HEIGHT;
 
 			if (defaultLayout) {
-				shape.X = diagramDisplay.Width/2;
-				shape.Y = diagramDisplay.GetDiagramOffset().Y + (diagramDisplay.Height/2);
+				shape.X = diagramDisplay.Width / 2;
+				shape.Y = diagramDisplay.GetDiagramOffset().Y + (diagramDisplay.Height / 2);
 			}
 
 			return shape;

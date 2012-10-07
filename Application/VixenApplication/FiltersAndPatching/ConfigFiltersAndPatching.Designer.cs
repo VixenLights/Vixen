@@ -46,6 +46,7 @@
 			this.buttonZoomOut = new System.Windows.Forms.Button();
 			this.buttonZoomIn = new System.Windows.Forms.Button();
 			this.buttonDelete = new System.Windows.Forms.Button();
+			this.buttonPatchWizard = new System.Windows.Forms.Button();
 			this.diagramContextMenuStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -116,7 +117,7 @@
             this.pasteFilterToolStripMenuItem,
             this.pasteFilterMultipleToolStripMenuItem});
 			this.diagramContextMenuStrip.Name = "diagramContextMenuStrip";
-			this.diagramContextMenuStrip.Size = new System.Drawing.Size(187, 98);
+			this.diagramContextMenuStrip.Size = new System.Drawing.Size(187, 70);
 			this.diagramContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.diagramContextMenuStrip_Opening);
 			// 
 			// copyFilterToolStripMenuItem
@@ -216,11 +217,23 @@
 			this.buttonDelete.UseVisualStyleBackColor = true;
 			this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
 			// 
+			// buttonPatchWizard
+			// 
+			this.buttonPatchWizard.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonPatchWizard.Location = new System.Drawing.Point(485, 525);
+			this.buttonPatchWizard.Name = "buttonPatchWizard";
+			this.buttonPatchWizard.Size = new System.Drawing.Size(100, 25);
+			this.buttonPatchWizard.TabIndex = 13;
+			this.buttonPatchWizard.Text = "Patching Wizard";
+			this.buttonPatchWizard.UseVisualStyleBackColor = true;
+			this.buttonPatchWizard.Click += new System.EventHandler(this.buttonPatchWizard_Click);
+			// 
 			// ConfigFiltersAndPatching
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(854, 562);
+			this.Controls.Add(this.buttonPatchWizard);
 			this.Controls.Add(this.buttonDelete);
 			this.Controls.Add(this.buttonZoomIn);
 			this.Controls.Add(this.buttonZoomOut);
@@ -261,6 +274,7 @@
 		private System.Windows.Forms.ToolStripMenuItem copyFilterToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem pasteFilterToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem pasteFilterMultipleToolStripMenuItem;
+		private System.Windows.Forms.Button buttonPatchWizard;
 
 	}
 }
