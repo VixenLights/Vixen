@@ -81,7 +81,8 @@ namespace VixenApplication.FiltersAndPatching
 			listViewFilters.Items.Clear();
 
 			foreach (Tuple<FilterSetupShapeBase, int> source in _data.Sources) {
-				listViewSources.Items.Add(source.Item1.Title + " [" + source.Item2 + "]");
+				// offset the index by 1 to be human-readable
+				listViewSources.Items.Add(source.Item1.Title + " [" + (source.Item2 + 1) + "]");
 			}
 
 			foreach (FilterShape filterShape in _data.Filters) {

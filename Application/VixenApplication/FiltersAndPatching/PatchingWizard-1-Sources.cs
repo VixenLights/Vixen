@@ -36,7 +36,8 @@ namespace VixenApplication.FiltersAndPatching
 
 					for (int i = 0; i < shape.OutputCount; i++) {
 						_data.Sources.Add(new Tuple<FilterSetupShapeBase, int>(shape, i));
-						listViewSources.Items.Add(shape.OutputCount == 1 ? title : (title + " [Output " + i + "]"));
+						// offset the index by 1 to be human-readable
+						listViewSources.Items.Add(shape.OutputCount == 1 ? title : (title + " [Output " + (i + 1) + "]"));
 					}
 				}
 			}
