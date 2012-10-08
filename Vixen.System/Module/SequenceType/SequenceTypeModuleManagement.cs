@@ -12,13 +12,21 @@ namespace Vixen.Module.SequenceType {
 		/// <param name="sequenceFileType"></param>
 		/// <returns></returns>
 		public ISequenceTypeModuleInstance Get(string sequenceFileType) {
-			string fileType = Path.GetExtension(sequenceFileType);
+			string fileType = _GetFileType(sequenceFileType);
 			ISequenceTypeModuleInstance sequenceType = Modules.GetRepository<ISequenceTypeModuleInstance>().GetAll().Cast<ISequenceTypeModuleInstance>().FirstOrDefault(x => x.FileExtension.Equals(fileType, StringComparison.OrdinalIgnoreCase));
 			return sequenceType;
 		}
 
 		public ISequenceTypeModuleInstance GetFactory(ISequence sequence) {
 			return Modules.GetRepository<ISequenceTypeModuleInstance>().GetAll().Cast<ISequenceTypeModuleInstance>().FirstOrDefault(x => x.CreateSequence().GetType() == sequence.GetType());
+		}
+
+		public bool IsValidSequenceFileType(string sequenceFileType) {
+			return Get(sequenceFileType) != null;
+		}
+
+		private string _GetFileType(string value) {
+			return Path.GetExtension(value);
 		}
 	}
 }

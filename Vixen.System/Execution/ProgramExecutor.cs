@@ -24,6 +24,11 @@ namespace Vixen.Execution {
             _state = RunState.Stopped;
 		}
 
+        public ProgramExecutor(IProgram program)
+			: this() {
+            Program = program;
+		}
+
     	public string Name {
 			get { return Program.Name; }
     	}

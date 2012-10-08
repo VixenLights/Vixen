@@ -32,6 +32,11 @@ namespace Vixen.Services {
 			return null;
 		}
 
+		public bool IsValidSequenceFileType(string fileType) {
+			SequenceTypeModuleManagement manager = Modules.GetManager<ISequenceTypeModuleInstance, SequenceTypeModuleManagement>();
+			return manager.IsValidSequenceFileType(fileType);
+		}
+
 		static internal DataContractSerializer GetSequenceTypeDataSerializer(ISequenceTypeModuleInstance sequenceTypeModule) {
 			if(sequenceTypeModule == null) return null;
 			if(sequenceTypeModule.Descriptor == null) return null;

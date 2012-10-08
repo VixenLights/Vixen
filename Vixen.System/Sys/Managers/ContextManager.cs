@@ -31,6 +31,10 @@ namespace Vixen.Sys.Managers {
 			return _systemLiveContext;
 		}
 
+		public IProgramContext CreateProgramContext(ContextFeatures contextFeatures, IProgram program) {
+			return CreateProgramContext(contextFeatures, program, new ProgramExecutor(program));
+		}
+
 		public IProgramContext CreateProgramContext(ContextFeatures contextFeatures, IProgram program, IExecutor executor) {
 			if(contextFeatures == null) throw new ArgumentNullException("contextFeatures");
 			if(executor == null) throw new ArgumentNullException("executor");
