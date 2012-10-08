@@ -117,6 +117,7 @@
 			this.Controls.Add(this.label5);
 			this.Name = "PatchingWizard_3_Destinations";
 			this.Size = new System.Drawing.Size(500, 400);
+			this.Load += new System.EventHandler(this.PatchingWizard_3_Destinations_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

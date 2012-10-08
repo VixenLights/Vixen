@@ -24,11 +24,21 @@ namespace VixenApplication.FiltersAndPatching
 
 		void FilterSetupForm_DiagramShapesSelected(object sender, EventArgs e)
 		{
+			_searchAndPopulateShapes();
+		}
+
+		private void PatchingWizard_1_Sources_Load(object sender, EventArgs e)
+		{
+			_searchAndPopulateShapes();
+		}
+
+		private void _searchAndPopulateShapes()
+		{
 			_data.Sources = new List<Tuple<FilterSetupShapeBase, int>>();
 
 			listViewSources.BeginUpdate();
 			listViewSources.Items.Clear();
-			
+
 			foreach (Shape selectedShape in _data.FilterSetupForm.SelectedShapes.Reverse()) {
 				FilterSetupShapeBase shape = selectedShape as FilterSetupShapeBase;
 				if (shape != null && shape.OutputCount > 0 && shape.DataFlowComponent != null) {

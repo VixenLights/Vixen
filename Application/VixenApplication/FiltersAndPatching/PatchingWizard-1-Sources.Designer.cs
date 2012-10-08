@@ -105,6 +105,7 @@
 			this.Controls.Add(this.label1);
 			this.Name = "PatchingWizard_1_Sources";
 			this.Size = new System.Drawing.Size(500, 400);
+			this.Load += new System.EventHandler(this.PatchingWizard_1_Sources_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
