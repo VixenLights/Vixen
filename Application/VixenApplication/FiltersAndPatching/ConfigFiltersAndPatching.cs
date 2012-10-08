@@ -554,13 +554,22 @@ namespace VixenApplication
 			}
 		}
 
-		public void ConnectShapes(FilterSetupShapeBase source, int sourceOutputIndex, FilterSetupShapeBase destination)
+		public void ConnectShapes(FilterSetupShapeBase source, int sourceOutputIndex, FilterSetupShapeBase destination, bool removeExistingSource = true)
 		{
 			DataFlowConnectionLine line = (DataFlowConnectionLine)project.ShapeTypes["DataFlowConnectionLine"].CreateInstance();
 			diagramDisplay.InsertShape(line);
 			diagramDisplay.Diagram.Shapes.SetZOrder(line, 100);
 			line.EndCapStyle = project.Design.CapStyles.ClosedArrow;
 			line.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS_DELETABLE;
+
+			if (removeExistingSource) {
+				IEnumerable<ShapeConnectionInfo> connectionInfos = destination.GetConnectionInfos(destination.GetControlPointIdForInput(0), null);
+				foreach (ShapeConnectionInfo ci in connectionInfos) {
+					if (!ci.IsEmpty && ci.OtherShape is DataFlowConnectionLine) {
+						diagramDisplay.DeleteShape(ci.OtherShape, false);
+					}
+				}
+			}
 
 			line.SourceDataFlowComponentReference = new DataFlowComponentReference(source.DataFlowComponent, sourceOutputIndex);
 			line.DestinationDataComponent = destination.DataFlowComponent;
