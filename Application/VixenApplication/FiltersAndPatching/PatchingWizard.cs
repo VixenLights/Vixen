@@ -44,14 +44,14 @@ namespace VixenApplication.FiltersAndPatching
 
 		public List<FilterSetupShapeBase> Destinations { get; set; }
 
-		public List<FilterShape> Filters { get; set; }
+		public List<IOutputFilterModuleInstance> Filters { get; set; }
 
 		public PatchingWizardData(ConfigFiltersAndPatching filterSetupForm)
 		{
 			FilterSetupForm = filterSetupForm;
 			Sources = new List<Tuple<FilterSetupShapeBase, int>>();
 			Destinations = new List<FilterSetupShapeBase>();
-			Filters = new List<FilterShape>();
+			Filters = new List<IOutputFilterModuleInstance>();
 		}
 	}
 }

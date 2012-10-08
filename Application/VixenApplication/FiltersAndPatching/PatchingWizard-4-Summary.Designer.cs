@@ -52,7 +52,7 @@
 			this.listViewSources.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewSources.Location = new System.Drawing.Point(16, 170);
 			this.listViewSources.Name = "listViewSources";
-			this.listViewSources.Size = new System.Drawing.Size(150, 190);
+			this.listViewSources.Size = new System.Drawing.Size(150, 200);
 			this.listViewSources.TabIndex = 21;
 			this.listViewSources.UseCompatibleStateImageBehavior = false;
 			this.listViewSources.View = System.Windows.Forms.View.Details;
@@ -65,6 +65,7 @@
 			// 
 			this.labelWarning2.AutoSize = true;
 			this.labelWarning2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelWarning2.ForeColor = System.Drawing.SystemColors.Highlight;
 			this.labelWarning2.Location = new System.Drawing.Point(18, 99);
 			this.labelWarning2.Name = "labelWarning2";
 			this.labelWarning2.Size = new System.Drawing.Size(80, 16);
@@ -75,6 +76,7 @@
 			// 
 			this.labelWarning1.AutoSize = true;
 			this.labelWarning1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelWarning1.ForeColor = System.Drawing.SystemColors.Highlight;
 			this.labelWarning1.Location = new System.Drawing.Point(18, 75);
 			this.labelWarning1.Name = "labelWarning1";
 			this.labelWarning1.Size = new System.Drawing.Size(80, 16);
@@ -129,7 +131,7 @@
 			this.listViewDestinations.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewDestinations.Location = new System.Drawing.Point(174, 170);
 			this.listViewDestinations.Name = "listViewDestinations";
-			this.listViewDestinations.Size = new System.Drawing.Size(150, 190);
+			this.listViewDestinations.Size = new System.Drawing.Size(150, 200);
 			this.listViewDestinations.TabIndex = 23;
 			this.listViewDestinations.UseCompatibleStateImageBehavior = false;
 			this.listViewDestinations.View = System.Windows.Forms.View.Details;
@@ -157,7 +159,7 @@
 			this.listViewFilters.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewFilters.Location = new System.Drawing.Point(332, 170);
 			this.listViewFilters.Name = "listViewFilters";
-			this.listViewFilters.Size = new System.Drawing.Size(150, 190);
+			this.listViewFilters.Size = new System.Drawing.Size(150, 200);
 			this.listViewFilters.TabIndex = 25;
 			this.listViewFilters.UseCompatibleStateImageBehavior = false;
 			this.listViewFilters.View = System.Windows.Forms.View.Details;

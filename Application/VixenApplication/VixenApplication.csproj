@@ -265,6 +265,15 @@
   <ItemGroup>
     <None Include="Resources\ZoomOut32.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DownArrowShort_Blue_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\UpArrowShort_Blue_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Delete.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

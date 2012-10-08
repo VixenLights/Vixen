@@ -85,7 +85,7 @@
 			this.listViewSources.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewSources.Location = new System.Drawing.Point(22, 170);
 			this.listViewSources.Name = "listViewSources";
-			this.listViewSources.Size = new System.Drawing.Size(180, 180);
+			this.listViewSources.Size = new System.Drawing.Size(180, 200);
 			this.listViewSources.TabIndex = 4;
 			this.listViewSources.UseCompatibleStateImageBehavior = false;
 			this.listViewSources.View = System.Windows.Forms.View.Details;

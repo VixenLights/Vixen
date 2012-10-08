@@ -142,17 +142,25 @@ namespace VixenApplication
 
 			diagramDisplay.CurrentTool = new ConnectionTool();
 
-			comboBoxNewFilterTypes.Items.Clear();
-			foreach (KeyValuePair<Guid, string> kvp in ApplicationServices.GetAvailableModules<IOutputFilterModuleInstance>()) {
-				comboBoxNewFilterTypes.Items.Add(new ComboBoxMapping(kvp.Key, kvp.Value));
-			}
+			_populateComboBox();
 
 			diagramDisplay.SelectedShapes.Clear();
 		}
 
-		private class ComboBoxMapping
+		private void _populateComboBox()
 		{
-			public ComboBoxMapping(Guid guid, string description)
+			comboBoxNewFilterTypes.Items.Clear();
+			foreach (KeyValuePair<Guid, string> kvp in ApplicationServices.GetAvailableModules<IOutputFilterModuleInstance>()) {
+				comboBoxNewFilterTypes.Items.Add(new FilterTypeComboBoxEntry(kvp.Key, kvp.Value));
+			}
+			if (comboBoxNewFilterTypes.Items.Count > 0) {
+				comboBoxNewFilterTypes.SelectedIndex = 0;
+			}
+		}
+
+		public class FilterTypeComboBoxEntry
+		{
+			public FilterTypeComboBoxEntry(Guid guid, string description)
 			{
 				Guid = guid;
 				Description = description;
@@ -173,7 +181,7 @@ namespace VixenApplication
 
 		private void buttonAddFilter_Click(object sender, EventArgs e)
 		{
-			ComboBoxMapping item = comboBoxNewFilterTypes.SelectedItem as ComboBoxMapping;
+			FilterTypeComboBoxEntry item = comboBoxNewFilterTypes.SelectedItem as FilterTypeComboBoxEntry;
 			if (item == null) {
 				MessageBox.Show("Please select a filter type first.", "Select filter type");
 				return;
@@ -338,16 +346,32 @@ namespace VixenApplication
 			DuplicateFilterShapes(_filterShapeClipboard, numberOfCopies, newPosition);
 		}
 
-		public IEnumerable<FilterShape> DuplicateFilterShapes(IEnumerable<FilterShape> sourceShapes, int numberOfCopies, Point? startPosition = null)
+		public IEnumerable<FilterShape> DuplicateFilterShapes(
+			IEnumerable<FilterShape> sourceShapes,
+			int numberOfCopies,
+			Point? startPosition = null,
+			double horizontalPositionProportion = 0.5
+			)
 		{
-			if (sourceShapes == null)
+			return DuplicateFilterInstancesToShapes(sourceShapes.Select(x => x.FilterInstance), numberOfCopies, startPosition, horizontalPositionProportion);
+		}
+
+		public IEnumerable<FilterShape> DuplicateFilterInstancesToShapes(
+			IEnumerable<IOutputFilterModuleInstance> sourceInstances,
+			int numberOfCopies,
+			Point? startPosition = null,
+			double horizontalPositionProportion = 0.5
+			)
+		{
+			if (sourceInstances == null)
 				return null;
 
 			Point pos;
 			if (startPosition == null) {
 				pos = new Point();
-				pos.X = diagramDisplay.Width / 2;
-				pos.Y = diagramDisplay.GetDiagramOffset().Y + (diagramDisplay.Height / 2);
+				int shapesWidth = diagramDisplay.Width - (2 * diagramDisplay.GetDiagramPosition().X);
+				pos.X = (int)(shapesWidth * horizontalPositionProportion);
+				pos.Y = diagramDisplay.GetDiagramOffset().Y + (diagramDisplay.Height / 4);
 			} else {
 				pos = (Point)startPosition;
 			}
@@ -355,9 +379,9 @@ namespace VixenApplication
 			List<FilterShape> result = new List<FilterShape>();
 
 			for (int i = 0; i < numberOfCopies; i++) {
-				foreach (FilterShape filterShape in sourceShapes) {
-					FilterShape newShape = _CreateNewFilterInstanceAndShape(filterShape.FilterInstance.TypeId, false);
-					newShape.FilterInstance.ModuleData = filterShape.FilterInstance.ModuleData.Clone();
+				foreach (IOutputFilterModuleInstance instance in sourceInstances) {
+					FilterShape newShape = _CreateNewFilterInstanceAndShape(instance.TypeId, false);
+					newShape.FilterInstance.ModuleData = instance.ModuleData.Clone();
 					newShape.ModuleDataUpdated();
 
 					newShape.X = pos.X;

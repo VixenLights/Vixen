@@ -60,6 +60,20 @@ namespace VixenApplication.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Delete {
+            get {
+                object obj = ResourceManager.GetObject("Delete", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap DownArrowShort_Blue_16x16 {
+            get {
+                object obj = ResourceManager.GetObject("DownArrowShort_Blue_16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static byte[] HandCursor {
             get {
                 object obj = ResourceManager.GetObject("HandCursor", resourceCulture);
@@ -78,6 +92,13 @@ namespace VixenApplication.Properties {
             get {
                 object obj = ResourceManager.GetObject("MoveShapeCursor", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap UpArrowShort_Blue_16x16 {
+            get {
+                object obj = ResourceManager.GetObject("UpArrowShort_Blue_16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

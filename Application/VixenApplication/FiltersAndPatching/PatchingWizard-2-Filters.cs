@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using Common.Controls.Wizard;
 using Dataweb.NShape;
 using Vixen.Data.Flow;
+using Vixen.Module.OutputFilter;
+using Vixen.Services;
 
 namespace VixenApplication.FiltersAndPatching
 {
@@ -22,36 +24,133 @@ namespace VixenApplication.FiltersAndPatching
 			InitializeComponent();
 		}
 
-		void FilterSetupForm_DiagramShapesSelected(object sender, EventArgs e)
+		private void PatchingWizard_2_Filters_Load(object sender, EventArgs e)
 		{
-			_data.Filters = new List<FilterShape>();
+			_populateComboBox();
+			_updateButtonStatuses();
+		}
 
-			listViewFilters.BeginUpdate();
-			listViewFilters.Items.Clear();
-			
-			foreach (Shape selectedShape in _data.FilterSetupForm.SelectedShapes.Reverse()) {
-				FilterShape shape = selectedShape as FilterShape;
-				if (shape != null && shape.OutputCount > 0) {
-					_data.Filters.Add(shape);
-					string title = shape.Title;
-					listViewFilters.Items.Add(title);
-				}
+		private void _populateComboBox()
+		{
+			comboBoxNewFilterTypes.Items.Clear();
+			foreach (KeyValuePair<Guid, string> kvp in ApplicationServices.GetAvailableModules<IOutputFilterModuleInstance>()) {
+				comboBoxNewFilterTypes.Items.Add(new ConfigFiltersAndPatching.FilterTypeComboBoxEntry(kvp.Key, kvp.Value));
+			}
+			if (comboBoxNewFilterTypes.Items.Count > 0) {
+				comboBoxNewFilterTypes.SelectedIndex = 0;
+			}
+		}
+
+		private void buttonAddFilter_Click(object sender, EventArgs e)
+		{
+			ConfigFiltersAndPatching.FilterTypeComboBoxEntry item = comboBoxNewFilterTypes.SelectedItem as ConfigFiltersAndPatching.FilterTypeComboBoxEntry;
+			if (item == null) {
+				MessageBox.Show("Please select a filter type first.", "Select filter type");
+				return;
 			}
 
-			listViewFilters.EndUpdate();
+			IOutputFilterModuleInstance moduleInstance = ApplicationServices.Get<IOutputFilterModuleInstance>(item.Guid);
+			_data.Filters.Add(moduleInstance);
+
+			listViewFilters.Items.Add(new ListViewItem {Text = moduleInstance.Name, Tag = moduleInstance});
 
 			_WizardStageChanged();
 		}
 
-		public override void StageStart()
+		private void buttonDeleteSelected_Click(object sender, EventArgs e)
 		{
-			_data.FilterSetupForm.DiagramShapesSelected += FilterSetupForm_DiagramShapesSelected;
+			if (listViewFilters.SelectedIndices.Count != 1)
+				return;
+
+			int index = listViewFilters.SelectedIndices[0];
+			listViewFilters.Items.RemoveAt(index);
+			_data.Filters.RemoveAt(index);
+			_updateButtonStatuses();
+			_WizardStageChanged();
 		}
 
-		public override void StageEnd()
+		private void buttonMoveUp_Click(object sender, EventArgs e)
 		{
-			_data.FilterSetupForm.DiagramShapesSelected -= FilterSetupForm_DiagramShapesSelected;
+			if (listViewFilters.SelectedIndices.Count != 1 || listViewFilters.SelectedIndices[0] <= 0)
+				return;
+
+			int index = listViewFilters.SelectedIndices[0];
+
+			ListViewItem item = listViewFilters.Items[index];
+			listViewFilters.Items.RemoveAt(index);
+			listViewFilters.Items.Insert(index - 1, item);
+
+			IOutputFilterModuleInstance instance = _data.Filters[index];
+			_data.Filters.RemoveAt(index);
+			_data.Filters.Insert(index - 1, instance);
+
+			_updateButtonStatuses();
+			_WizardStageChanged();
 		}
 
+		private void buttonMoveDown_Click(object sender, EventArgs e)
+		{
+			if (listViewFilters.SelectedIndices.Count != 1 || listViewFilters.SelectedIndices[0] >= (listViewFilters.Items.Count - 1))
+				return;
+
+			int index = listViewFilters.SelectedIndices[0];
+
+			ListViewItem item = listViewFilters.Items[index];
+			listViewFilters.Items.RemoveAt(index);
+			listViewFilters.Items.Insert(index + 1, item);
+
+			IOutputFilterModuleInstance instance = _data.Filters[index];
+			_data.Filters.RemoveAt(index);
+			_data.Filters.Insert(index + 1, instance);
+
+			_updateButtonStatuses();
+			_WizardStageChanged();
+		}
+
+		private void _updateButtonStatuses()
+		{
+			if (listViewFilters.SelectedIndices.Count != 1) {
+				groupBoxSelectedFilter.Enabled = false;
+				buttonMoveDown.Enabled = false;
+				buttonMoveUp.Enabled = false;
+				buttonDeleteSelected.Enabled = false;
+				buttonSetupFilter.Enabled = false;
+			} else {
+				groupBoxSelectedFilter.Enabled = true;
+				buttonMoveDown.Enabled = listViewFilters.SelectedIndices[0] < (listViewFilters.Items.Count - 1);
+				buttonMoveUp.Enabled = listViewFilters.SelectedIndices[0] > 0;
+				buttonDeleteSelected.Enabled = true;
+				buttonSetupFilter.Enabled = true;
+			}
+
+			buttonAddFilter.Enabled = comboBoxNewFilterTypes.Items.Count > 0 && comboBoxNewFilterTypes.SelectedIndex >= 0;
+		}
+
+		private void buttonSetupFilter_Click(object sender, EventArgs e)
+		{
+			IOutputFilterModuleInstance instance = listViewFilters.SelectedItems[0].Tag as IOutputFilterModuleInstance;
+			if (instance != null)
+				instance.Setup();
+		}
+
+		private void listViewFilters_DoubleClick(object sender, EventArgs e)
+		{
+			if (listViewFilters.SelectedItems.Count <= 0)
+				return;
+
+			IOutputFilterModuleInstance instance = listViewFilters.SelectedItems[0].Tag as IOutputFilterModuleInstance;
+			if (instance != null)
+				instance.Setup();
+		}
+
+		private void listViewFilters_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			_updateButtonStatuses();
+		}
+
+		private void comboBoxNewFilterTypes_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			_updateButtonStatuses();
+		}
 	}
 }
