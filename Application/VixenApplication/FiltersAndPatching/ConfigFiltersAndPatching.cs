@@ -24,11 +24,6 @@ using VixenApplication.FiltersAndPatching;
 // add labels for filter shapes (so outputs can be labelled)
 
 
-// TODO (HARD):
-// figure out a nice way to auto-patch large amounts of connections; eg. 20 channels to 20 outputs (or filters)
-
-
-
 namespace VixenApplication
 {
 	public partial class ConfigFiltersAndPatching : Form
