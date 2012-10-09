@@ -20,7 +20,8 @@ namespace VixenModules.App.Scheduler {
 			InitializeComponent();
 
 			_Program = program;
-			_SystemSequences = SequenceService.Instance.GetAllSequenceFileNames().Select(System.IO.Path.GetFileName);
+			_SystemSequences = SequenceService.Instance.GetAllSequenceFileNames().Select(x => new ItemData(x));
+
 		}
 
 		private Program _Program {
@@ -29,23 +30,25 @@ namespace VixenModules.App.Scheduler {
 				_originalProgram = value;
 				_editingProgram = new Program(_originalProgram);
 				_ProgramName = _editingProgram.Name;
-				_ProgramSequences = _editingProgram.Select(x => System.IO.Path.GetFileName(x.FilePath));
+				_ProgramSequences = _editingProgram.Select(x => new ItemData(x.FilePath));
 			}
 		}
 
-		private IEnumerable<string> _SystemSequences {
-			get { return listBoxSequences.Items.Cast<string>(); }
+		private IEnumerable<ItemData> _SystemSequences
+		{
+			get { return listBoxSequences.Items.Cast<ItemData>(); }
 			set {
 				listBoxSequences.Items.Clear();
-				listBoxSequences.Items.AddRange(value.ToArray());
+				listBoxSequences.Items.AddRange(value.Cast<Object>().ToArray());
 			}
 		}
 
-		private IEnumerable<string> _ProgramSequences {
-			get { return listBoxProgram.Items.Cast<string>(); }
+		private IEnumerable<ItemData> _ProgramSequences
+		{
+			get { return listBoxProgram.Items.Cast<ItemData>(); }
 			set {
 				listBoxProgram.Items.Clear();
-				listBoxProgram.Items.AddRange(value.ToArray());
+				listBoxProgram.Items.AddRange(value.Cast<Object>().ToArray());
 			}
 		}
 
@@ -163,13 +166,31 @@ namespace VixenModules.App.Scheduler {
 				Cursor = Cursors.WaitCursor;
 				try {
 					_originalProgram.Clear();
-					_originalProgram.Sequences.AddRange(_ProgramSequences.Select(SequenceService.Instance.Load));
+					_originalProgram.Sequences.AddRange(_ProgramSequences.Select(x => SequenceService.Instance.Load(x.Path)));
 					_originalProgram.Save(_ProgramName);
 				} catch(Exception ex) {
 					MessageBox.Show(ex.Message, "Vixen Program", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 				} finally {
 					Cursor = Cursors.Default;
 				}
+			}
+		}
+
+		internal struct ItemData
+		{
+			private readonly string Name;
+			public string Path;
+
+			public ItemData(string path)
+			{
+				Name = System.IO.Path.GetFileName(path);
+				Path = path;
+				
+			}
+
+			public override string ToString()
+			{
+				return Name;
 			}
 		}
 	}

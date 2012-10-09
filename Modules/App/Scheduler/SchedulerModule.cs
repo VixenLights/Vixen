@@ -76,11 +76,8 @@ namespace VixenModules.App.Scheduler {
 				_SetEnableState(false);
 
 				Program program = Vixen.Services.ApplicationServices.LoadProgram(item.FilePath);
-
-				// No idea if any of this actually works. Needs KC's magical eyes and figures to look over it.
-				ProgramExecutor programExecutor = new ProgramExecutor();
-				programExecutor.Program = program;
-				IProgramContext context = VixenSystem.Contexts.CreateProgramContext(new ContextFeatures(ContextCaching.NoCaching), program, programExecutor);
+				IProgramContext context = VixenSystem.Contexts.CreateProgramContext(new ContextFeatures(ContextCaching.ContextLevelCaching), program);
+				
 				context.ProgramEnded += context_ProgramEnded;
 	
 				_contexts[context] = item;
