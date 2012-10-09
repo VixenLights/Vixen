@@ -85,7 +85,9 @@ namespace Vixen.Services {
 		// However, it differs in that the data store is a file unto itself and that it's a user file that the system
 		// needs to be able to load and save.
 		 public ISequence LoadSequenceFile(string filePath) {
-			IObjectLoader loader = LoaderFactory.Instance.CreateSequenceLoader();
+			 filePath = _GetRootedPath(filePath, SequenceService.SequenceDirectory);
+			 
+			 IObjectLoader loader = LoaderFactory.Instance.CreateSequenceLoader();
 			return (ISequence)loader.LoadFromFile(filePath);
 		}
 
