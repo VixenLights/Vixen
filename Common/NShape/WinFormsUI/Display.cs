@@ -5434,6 +5434,11 @@ namespace Dataweb.NShape.WinFormsUI {
 
 
 		private void displayContextMenuStrip_Opening(object sender, CancelEventArgs e) {
+			if (onlyShowContextMenuWhenNoToolAction && CurrentTool.IsToolActionPending) {
+				e.Cancel = true;
+				return;
+			}
+
 			if (showDefaultContextMenu && Project != null) {
 				// Remove DummyItem
 				if (ContextMenuStrip.Items.Contains(dummyItem))
@@ -5617,6 +5622,8 @@ namespace Dataweb.NShape.WinFormsUI {
 		private bool showDefaultContextMenu = DefaultValueShowDefaultContextMenu;
 		private ControlPointShape resizePointShape = DefaultValueResizePointShape;
 		private ControlPointShape connectionPointShape = DefaultValueConnectionPointShape;
+
+		private bool onlyShowContextMenuWhenNoToolAction = true;
 
 		// Graphics and Graphics Settings
 		private Graphics infoGraphics;

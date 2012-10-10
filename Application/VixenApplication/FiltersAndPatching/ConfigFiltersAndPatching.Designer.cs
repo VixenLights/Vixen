@@ -29,11 +29,10 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigFiltersAndPatching));
-			Dataweb.NShape.RoleBasedSecurityManager roleBasedSecurityManager1 = new Dataweb.NShape.RoleBasedSecurityManager();
+			Dataweb.NShape.RoleBasedSecurityManager roleBasedSecurityManager2 = new Dataweb.NShape.RoleBasedSecurityManager();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.buttonAddFilter = new System.Windows.Forms.Button();
 			this.comboBoxNewFilterTypes = new System.Windows.Forms.ComboBox();
-			this.diagramDisplay = new Dataweb.NShape.WinFormsUI.Display();
 			this.diagramContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.copyFilterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pasteFilterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,6 +46,7 @@
 			this.buttonZoomIn = new System.Windows.Forms.Button();
 			this.buttonDelete = new System.Windows.Forms.Button();
 			this.buttonPatchWizard = new System.Windows.Forms.Button();
+			this.diagramDisplay = new Dataweb.NShape.WinFormsUI.Display();
 			this.diagramContextMenuStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -81,34 +81,6 @@
 			this.comboBoxNewFilterTypes.Name = "comboBoxNewFilterTypes";
 			this.comboBoxNewFilterTypes.Size = new System.Drawing.Size(160, 21);
 			this.comboBoxNewFilterTypes.TabIndex = 6;
-			// 
-			// diagramDisplay
-			// 
-			this.diagramDisplay.AllowDrop = true;
-			this.diagramDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.diagramDisplay.BackColorGradient = System.Drawing.SystemColors.Control;
-			this.diagramDisplay.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.diagramDisplay.ContextMenuStrip = this.diagramContextMenuStrip;
-			this.diagramDisplay.DiagramSetController = this.diagramSetController;
-			this.diagramDisplay.GridColor = System.Drawing.Color.Gainsboro;
-			this.diagramDisplay.GridSize = 19;
-			this.diagramDisplay.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-			this.diagramDisplay.Location = new System.Drawing.Point(12, 12);
-			this.diagramDisplay.Name = "diagramDisplay";
-			this.diagramDisplay.PropertyController = null;
-			this.diagramDisplay.SelectionHilightColor = System.Drawing.Color.Firebrick;
-			this.diagramDisplay.SelectionInactiveColor = System.Drawing.Color.Gray;
-			this.diagramDisplay.SelectionInteriorColor = System.Drawing.Color.WhiteSmoke;
-			this.diagramDisplay.SelectionNormalColor = System.Drawing.Color.DarkGreen;
-			this.diagramDisplay.Size = new System.Drawing.Size(830, 450);
-			this.diagramDisplay.SnapToGrid = false;
-			this.diagramDisplay.TabIndex = 0;
-			this.diagramDisplay.ToolPreviewBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(119)))), ((int)(((byte)(136)))), ((int)(((byte)(153)))));
-			this.diagramDisplay.ToolPreviewColor = System.Drawing.Color.FromArgb(((int)(((byte)(96)))), ((int)(((byte)(70)))), ((int)(((byte)(130)))), ((int)(((byte)(180)))));
-			this.diagramDisplay.ShapeDoubleClick += new System.EventHandler<Dataweb.NShape.Controllers.DiagramPresenterShapeClickEventArgs>(this.displayDiagram_ShapeDoubleClick);
-			this.diagramDisplay.KeyDown += new System.Windows.Forms.KeyEventHandler(this.diagramDisplay_KeyDown);
 			// 
 			// diagramContextMenuStrip
 			// 
@@ -151,9 +123,9 @@
 			this.project.LibrarySearchPaths = ((System.Collections.Generic.IList<string>)(resources.GetObject("project.LibrarySearchPaths")));
 			this.project.Name = null;
 			this.project.Repository = this.cachedRepository;
-			roleBasedSecurityManager1.CurrentRole = Dataweb.NShape.StandardRole.Administrator;
-			roleBasedSecurityManager1.CurrentRoleName = "Administrator";
-			this.project.SecurityManager = roleBasedSecurityManager1;
+			roleBasedSecurityManager2.CurrentRole = Dataweb.NShape.StandardRole.Administrator;
+			roleBasedSecurityManager2.CurrentRoleName = "Administrator";
+			this.project.SecurityManager = roleBasedSecurityManager2;
 			// 
 			// cachedRepository
 			// 
@@ -227,6 +199,35 @@
 			this.buttonPatchWizard.Text = "Patching Wizard";
 			this.buttonPatchWizard.UseVisualStyleBackColor = true;
 			this.buttonPatchWizard.Click += new System.EventHandler(this.buttonPatchWizard_Click);
+			// 
+			// diagramDisplay
+			// 
+			this.diagramDisplay.AllowDrop = true;
+			this.diagramDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.diagramDisplay.BackColorGradient = System.Drawing.SystemColors.Control;
+			this.diagramDisplay.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.diagramDisplay.ContextMenuStrip = this.diagramContextMenuStrip;
+			this.diagramDisplay.DiagramSetController = this.diagramSetController;
+			this.diagramDisplay.GridColor = System.Drawing.Color.Gainsboro;
+			this.diagramDisplay.GridSize = 19;
+			this.diagramDisplay.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+			this.diagramDisplay.Location = new System.Drawing.Point(12, 12);
+			this.diagramDisplay.Name = "diagramDisplay";
+			this.diagramDisplay.PropertyController = null;
+			this.diagramDisplay.SelectionHilightColor = System.Drawing.Color.Firebrick;
+			this.diagramDisplay.SelectionInactiveColor = System.Drawing.Color.Gray;
+			this.diagramDisplay.SelectionInteriorColor = System.Drawing.Color.WhiteSmoke;
+			this.diagramDisplay.SelectionNormalColor = System.Drawing.Color.DarkGreen;
+			this.diagramDisplay.ShowDefaultContextMenu = false;
+			this.diagramDisplay.Size = new System.Drawing.Size(830, 450);
+			this.diagramDisplay.SnapToGrid = false;
+			this.diagramDisplay.TabIndex = 0;
+			this.diagramDisplay.ToolPreviewBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(119)))), ((int)(((byte)(136)))), ((int)(((byte)(153)))));
+			this.diagramDisplay.ToolPreviewColor = System.Drawing.Color.FromArgb(((int)(((byte)(96)))), ((int)(((byte)(70)))), ((int)(((byte)(130)))), ((int)(((byte)(180)))));
+			this.diagramDisplay.ShapeDoubleClick += new System.EventHandler<Dataweb.NShape.Controllers.DiagramPresenterShapeClickEventArgs>(this.displayDiagram_ShapeDoubleClick);
+			this.diagramDisplay.KeyDown += new System.Windows.Forms.KeyEventHandler(this.diagramDisplay_KeyDown);
 			// 
 			// ConfigFiltersAndPatching
 			// 

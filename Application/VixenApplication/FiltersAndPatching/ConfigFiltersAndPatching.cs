@@ -833,7 +833,7 @@ namespace VixenApplication
 			shape.Height = SHAPE_FILTERS_HEIGHT;
 
 			if (defaultLayout) {
-				shape.X = diagramDisplay.Width / 2;
+				shape.X = (diagramDisplay.Width / 2) - diagramDisplay.GetDiagramPosition().X;
 				shape.Y = diagramDisplay.GetDiagramOffset().Y + (diagramDisplay.Height / 2);
 			}
 
