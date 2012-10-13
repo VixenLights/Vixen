@@ -34,23 +34,41 @@ namespace <#=Namespace#> {
 <# } #>		
 		}
 
-		override public ISequence Sequence { 
-			get { return base.Sequence; }
-			set {
-				base.Sequence = value;
+		public void PreRenderEffect(EffectNode effectNode) {
+			if(effectNode != null) {
+				effectNode.Effect.PreRender();
 			}
 		}
 
-		protected void _InvokeEffect(string effectName, IEnumerable<UserScriptNode> targetNodes, TimeSpan timeSpan, params object[] args) {
+		public void PreRenderEffects(IEnumerable<EffectNode> effectNodes) {
+			if(effectNodes != null) {
+				effectNodes.AsParallel().ForAll(x => x.Effect.PreRender());
+			}
+		}
+
+		public void Execute(EffectNode effectNode) {
+			if(effectNode != null) {
+				Sequence.InsertData(effectNode);
+			}
+		}
+
+		public void Execute(IEnumerable<EffectNode> effectNodes) {
+			if(effectNodes != null) {
+				Sequence.InsertData(effectNodes);
+			}
+		}
+
+		public EffectNode CreateEffectNode(string effectName, IEnumerable<UserScriptNode> targetNodes, TimeSpan timeSpan, params object[] args) {
 			Guid effectId;
 			if(_effects.TryGetValue(effectName, out effectId)) {
 				IEffectModuleInstance effect = Vixen.Services.ApplicationServices.Get<IEffectModuleInstance>(effectId);
 				effect.TimeSpan = timeSpan;
 				effect.TargetNodes = targetNodes.Select(x => x.Node).ToArray();
 				effect.ParameterValues = args;
-				EffectNode effectNode = new EffectNode(effect, TimeSpan.Zero);
-				Sequence.InsertData(effectNode);
+				return new EffectNode(effect, TimeSpan.Zero);
 			}
+
+			return null;
 		}
 		
 // == Effects ==
@@ -86,5 +104,13 @@ namespace <#=Namespace#> {
 			get { return _nodes[<#= i #>]; }
 		}
 <# } #>
+
+		public UserScriptNode[] Nodes {
+			get { return _nodes; }
+		}
+
+		private void _InvokeEffect(string effectName, IEnumerable<UserScriptNode> targetNodes, TimeSpan timeSpan, params object[] args) {
+			Execute(CreateEffectNode(effectName, targetNodes, timeSpan, args));
+		}
 	}
 }
