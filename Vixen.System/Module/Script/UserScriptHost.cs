@@ -15,9 +15,16 @@ namespace Vixen.Module.Script {
 
 		public void Start() {
 			if(_thread == null) {
+				// User Startup procedure.
+				// Call here, outside the thread, so that the start of the thread is the true
+				// start of the execution.
+				Startup();
+	
 				_thread = new Thread(_PlayThread) { Name = Sequence.Name + " script host" };
+				
 				// Do NOT.
 				//_thread.IsBackground = true;
+
 				_thread.Start();
 			}
 		}
@@ -55,8 +62,6 @@ namespace Vixen.Module.Script {
 
 		private void _PlayThread() {
 			try {
-				// User Startup procedure.
-				Startup();
 				// User Play procedure.
 				Play();
 				// User script has finished executing, but that means nothing about the
