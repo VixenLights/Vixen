@@ -2,7 +2,9 @@
 using Vixen.Execution;
 
 namespace VixenModules.App.SimpleSchedule {
-	interface IScheduledItemStateObject {
+	interface IScheduledItemStateObject : IEquatable<IScheduledItemStateObject> {
+		Guid Id { get; }
+
 		DateTime Start { get; }
 		DateTime End { get; }
 

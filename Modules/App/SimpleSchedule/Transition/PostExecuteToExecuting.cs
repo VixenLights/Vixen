@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Common.StateMach;
 using VixenModules.App.SimpleSchedule.Service;
 
@@ -16,7 +13,7 @@ namespace VixenModules.App.SimpleSchedule.Transition {
 		}
 
 		private bool _TransitionCondition(IScheduledItemStateObject item) {
-			return ScheduledItemService.ScheduledItemQualifiesForExecution(item);
+			return ScheduledItemService.Instance.ScheduledItemQualifiesForExecution(item);
 		}
 	}
 }

@@ -13,7 +13,7 @@ namespace VixenModules.App.SimpleSchedule.Transition {
 		}
 
 		private bool _TransitionCondition(IScheduledItemStateObject item) {
-			return !ScheduledItemService.ScheduledItemQualifiesForExecution(item);
+			return !ScheduledItemService.Instance.ScheduledItemQualifiesForExecution(item);
 		}
 	}
 }

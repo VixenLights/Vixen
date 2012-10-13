@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Common.StateMach {
 	public class Machine<T>
-		where T : class {
+		where T : class, IEquatable<T> {
 		private HashSet<IState<T>> _states;
 		private Dictionary<T, IState<T>> _objectStates;
 
@@ -23,7 +23,36 @@ namespace Common.StateMach {
 			if(obj == null) throw new ArgumentNullException("obj");
 			if(startState == null) throw new ArgumentNullException("startState");
 
-			_EnterState(obj, startState);
+			SetState(obj, startState);
+		}
+
+		public void RemoveStatedObject(T obj) {
+			if(obj == null) throw new ArgumentNullException("obj");
+
+			_objectStates.Remove(obj);
+		}
+
+		public void ReplaceStatedObject(T oldObj, T newObj) {
+			if(oldObj == null) throw new ArgumentNullException("oldObj");
+			if(newObj == null) throw new ArgumentNullException("newObj");
+
+			if(_objectStates.ContainsKey(oldObj)) {
+				lock(_objectStates) {
+					_objectStates[newObj] = _objectStates[oldObj];
+					_objectStates.Remove(oldObj);
+				}
+			}
+		}
+
+		public IEnumerable<T> GetStatedObjects() {
+			return _objectStates.Keys;
+		}
+
+		public void SetState(T obj, IState<T> state) {
+			if(obj == null) throw new ArgumentNullException("obj");
+			if(state == null) throw new ArgumentNullException("state");
+
+			_EnterState(obj, state);
 		}
 
 		public void Update() {
