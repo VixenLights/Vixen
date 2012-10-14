@@ -18,6 +18,8 @@ namespace VixenModules.Editor.ScriptEditor {
 			comboBoxLanguage.DataSource = scriptModuleDescriptors;
 		}
 
+		public string SelectedProjectName { get; private set; }
+
 		public string SelectedFileName { get; private set; }
 
 		public IScriptModuleInstance SelectedLanguage { get; private set; }
@@ -29,8 +31,13 @@ namespace VixenModules.Editor.ScriptEditor {
 		private bool _Validate() {
 			textBoxFileName.Text = Path.GetFileName(textBoxFileName.Text);
 
+			if(!_IsValidFileName(textBoxProjectName.Text)) {
+				MessageBox.Show(this, "Project name is not a valid file name.");
+				return false;
+			}
+
 			if(!_IsValidFileName(textBoxFileName.Text)) {
-				MessageBox.Show(this, "File name is not valid.");
+				MessageBox.Show(this, "Initial file name is not a valid file name.");
 				return false;
 			}
 
@@ -57,6 +64,7 @@ namespace VixenModules.Editor.ScriptEditor {
 			if(!_Validate()) {
 				DialogResult = DialogResult.None;
 			} else {
+				SelectedProjectName = textBoxProjectName.Text;
 				SelectedFileName = textBoxFileName.Text;
 				SelectedLanguage = Vixen.Services.ApplicationServices.Get<IScriptModuleInstance>(_SelectedLanguageDescriptor.TypeId);
 			}

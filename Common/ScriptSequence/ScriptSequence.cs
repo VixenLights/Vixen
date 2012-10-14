@@ -47,7 +47,9 @@ namespace Common.ScriptSequence {
 		}
 
 		public IScriptModuleInstance Language {
-			get { return _language; }
+			get {
+				return _language ?? (_language = Vixen.Services.ApplicationServices.Get<IScriptModuleInstance>(_ScriptSequenceData.ScriptLanguageModuleId));
+			}
 			set {
 				_language = value;
 				_ScriptSequenceData.ScriptLanguageModuleId = value.Descriptor.TypeId;
@@ -68,7 +70,8 @@ namespace Common.ScriptSequence {
 		}
 
 		public SourceFile CreateNewFile(string fileName) {
-			if(string.IsNullOrWhiteSpace(FilePath)) throw new Exception("Sequence FilePath must be set.");
+			if(string.IsNullOrWhiteSpace(Name)) throw new Exception("Sequence name must be set before the initial file can be created.");
+			if(string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException("fileName");
 			if(_FileExists(fileName)) throw new InvalidOperationException("File already exists with that name.");
 
 			if(Language == null) return null;

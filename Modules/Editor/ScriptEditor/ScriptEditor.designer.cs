@@ -36,6 +36,7 @@
 			this.listBoxRuntimeErrors = new System.Windows.Forms.ListBox();
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
 			this.labelCaretLocation = new System.Windows.Forms.ToolStripStatusLabel();
+			this.buttonSave = new System.Windows.Forms.Button();
 			this.panel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
 			this.splitContainer.Panel1.SuspendLayout();
@@ -58,6 +59,7 @@
 			// 
 			// panel1
 			// 
+			this.panel1.Controls.Add(this.buttonSave);
 			this.panel1.Controls.Add(this.buttonCompile);
 			this.panel1.Controls.Add(this.buttonStop);
 			this.panel1.Controls.Add(this.buttonRun);
@@ -185,6 +187,16 @@
 			this.labelCaretLocation.Size = new System.Drawing.Size(25, 17);
 			this.labelCaretLocation.Text = "0, 0";
 			// 
+			// buttonSave
+			// 
+			this.buttonSave.Location = new System.Drawing.Point(369, 9);
+			this.buttonSave.Name = "buttonSave";
+			this.buttonSave.Size = new System.Drawing.Size(75, 23);
+			this.buttonSave.TabIndex = 3;
+			this.buttonSave.Text = "Save";
+			this.buttonSave.UseVisualStyleBackColor = true;
+			this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
+			// 
 			// ScriptEditor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -224,5 +236,6 @@
 		private System.Windows.Forms.ListBox listBoxRuntimeErrors;
 		private System.Windows.Forms.StatusStrip statusStrip;
 		private System.Windows.Forms.ToolStripStatusLabel labelCaretLocation;
+		private System.Windows.Forms.Button buttonSave;
 	}
 }

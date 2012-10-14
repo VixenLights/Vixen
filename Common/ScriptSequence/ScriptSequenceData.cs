@@ -37,16 +37,28 @@ namespace Common.ScriptSequence {
 
 		private void _WriteSourceFileContent() {
 			foreach(SourceFile sourceFile in SourceFiles) {
-				string filePath = Path.Combine(SourceFileDirectory, sourceFile.Name);
+				string filePath = _GetSourceFilePath(sourceFile);
+				_EnsureSourceFileDirectoryExists(filePath);
 				File.WriteAllText(filePath, sourceFile.Contents);
+			}
+		}
+
+		private void _EnsureSourceFileDirectoryExists(string filePath) {
+			string directoryName = Path.GetDirectoryName(filePath);
+			if(!Directory.Exists(directoryName)) {
+				Directory.CreateDirectory(directoryName);
 			}
 		}
 
 		private void _ReadSourceFileContent() {
 			foreach(SourceFile sourceFile in SourceFiles) {
-				string filePath = Path.Combine(SourceFileDirectory, sourceFile.Name);
+				string filePath = _GetSourceFilePath(sourceFile);
 				sourceFile.Contents = File.ReadAllText(filePath);
 			}
+		}
+
+		private string _GetSourceFilePath(SourceFile sourceFile) {
+			return Path.Combine(SourceFileDirectory, sourceFile.Name);
 		}
 
 		[OnSerializing]

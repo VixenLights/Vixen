@@ -28,6 +28,7 @@ namespace VixenModules.Editor.ScriptEditor {
 
 		public void Save(string filePath = null) {
 			_CommitChanges();
+
 			if(string.IsNullOrWhiteSpace(filePath)) {
 				_sequence.Save();
 			} else {
@@ -73,7 +74,7 @@ namespace VixenModules.Editor.ScriptEditor {
 
 			using(ProjectConfigForm projectConfigForm = new ProjectConfigForm()) {
 				if(projectConfigForm.ShowDialog() == DialogResult.OK) {
-					_sequence.FilePath = projectConfigForm.SelectedFileName;
+					_sequence.FilePath = projectConfigForm.SelectedProjectName + ((IEditorModuleDescriptor)OwnerModule.Descriptor).FileExtensions[0];
 					_sequence.Language = projectConfigForm.SelectedLanguage;
 					// Add the initial file.
 					SourceFile file = _sequence.CreateNewFile(projectConfigForm.SelectedFileName);
@@ -183,6 +184,15 @@ namespace VixenModules.Editor.ScriptEditor {
 			// If more special cases pop up, something can be added to the execution
 			// context and the base executor for communicating things beyond execution.
 			_Execute(TimeSpan.FromMilliseconds(1), TimeSpan.Zero);
+		}
+
+		private void buttonSave_Click(object sender, EventArgs e) {
+			try {
+				Save();
+				MessageBox.Show("Project saved.");
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
 		}
 	}
 }
