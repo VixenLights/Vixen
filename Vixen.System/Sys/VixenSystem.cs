@@ -65,7 +65,7 @@ namespace Vixen.Sys {
 				} catch(Exception ex) {
 					// The client is expected to have subscribed to the logging event
 					// so that it knows that an exception occurred during loading.
-					Logging.Error("Error during system startup; the system has been stopped.", ex);
+					Logging.Error("Error during system startup; the system has been stopped", ex);
 					Stop();
 				}
 			}
@@ -77,7 +77,7 @@ namespace Vixen.Sys {
 				Logging.Info("Vixen System stopping...");
 				ApplicationServices.ClientApplication = null;
 				// Need to get the disabled devices before stopping them all.
-				SystemConfig.DisabledDevices = OutputDeviceManagement.Devices.Where(x => !x.IsRunning);
+				SystemConfig.DisabledDevices = OutputDeviceManagement.Devices.Where(x => (x != null) && !x.IsRunning);
 				Execution.CloseExecution();
 				Modules.ClearRepositories();
 				if(ModuleStore != null) {
