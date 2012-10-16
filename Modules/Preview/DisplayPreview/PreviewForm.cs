@@ -14,6 +14,8 @@ namespace VixenModules.Preview.DisplayPreview
         public PreviewForm()
         {
             InitializeComponent();
+			Size=new Size(0,0);
+
         }
     }
 }

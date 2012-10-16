@@ -1,3 +1,5 @@
+using Vixen.Data.Value;
+
 namespace VixenModules.Preview.DisplayPreview.Model
 {
     using System;
@@ -19,7 +21,7 @@ namespace VixenModules.Preview.DisplayPreview.Model
     [KnownType(typeof(SolidTriangle))]
     [KnownType(typeof(OutlinedTriangle))]
     [KnownType(typeof(Arc))]
-    public class NodeLayout : INotifyPropertyChanged
+	public class NodeLayout : INotifyPropertyChanged, IHandler<IIntentState<LightingValue>>, IHandler<IIntentState<CommandValue>>
     {
         private int _height;
 
@@ -210,5 +212,34 @@ namespace VixenModules.Preview.DisplayPreview.Model
         {
             Initialize();
         }
+
+		public IIntentStates ChannelState
+		{
+			set
+			{
+				foreach (IIntentState intentState in value)
+				{
+					intentState.Dispatch(this);
+				}
+
+			}
+		}
+
+    	public void Handle(IIntentState<LightingValue> state)
+    	{
+			System.Drawing.Color color = state.GetValue().GetIntensityAffectedColor() == System.Drawing.Color.Black ? System.Drawing.Color.Transparent : state.GetValue().GetIntensityAffectedColor();
+			SolidColorBrush brush = new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B));
+			brush.Freeze();
+			SetNodeBrush(brush);
+    	}
+
+    	#region Implementation of IHandler<in IIntentState<CommandValue>>
+
+    	public void Handle(IIntentState<CommandValue> state)
+    	{
+			
+    	}
+
+    	#endregion
     }
 }

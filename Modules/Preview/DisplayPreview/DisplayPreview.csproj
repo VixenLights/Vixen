@@ -71,7 +71,7 @@
     <Compile Include="PreviewForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PreviewForm.Designer.cs">
+    <Compile Include="PreviewForm.designer.cs">
       <DependentUpon>PreviewForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\DisplayItemEditorViewModel.cs" />

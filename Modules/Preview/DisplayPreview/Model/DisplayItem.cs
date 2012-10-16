@@ -1,3 +1,7 @@
+using System;
+using System.Drawing;
+using Vixen.Data.Value;
+
 namespace VixenModules.Preview.DisplayPreview.Model
 {
     using System.Collections.Generic;
@@ -182,18 +186,26 @@ namespace VixenModules.Preview.DisplayPreview.Model
             }
         }
 
-        public void UpdateChannelColors(Dictionary<ChannelNode, Color> colorsByChannel)
-        {
-            foreach (var colorByChannel in colorsByChannel)
+		public void UpdateChannelColors(ChannelIntentStates channelIntentStates)
+		{
+			
+			foreach (var channelIntentState in channelIntentStates)
             {
-                var channelId = colorByChannel.Key.Id;
-                var nodeLayout = NodeLayouts.FirstOrDefault(x => x.NodeId == channelId);
-                if (nodeLayout != null)
-                {
-                    var color = colorByChannel.Value;
-                    color = color == Colors.Black ? Colors.Transparent : color;
-                    nodeLayout.SetNodeBrush(color.AsBrush());
-                }
+				
+				var channelId = channelIntentState.Key;
+				ChannelNode node = VixenSystem.Nodes.GetAllNodes().FirstOrDefault(x => x.Channel!=null && x.Channel.Id == channelId);
+				
+				if(node!= null)
+				{
+					var nodeLayout = NodeLayouts.FirstOrDefault(x => x.NodeId == node.Id);
+					if (nodeLayout != null)
+					{
+						nodeLayout.ChannelState = channelIntentState.Value;
+					}	
+				}
+				
+
+            	
             }
         }
 

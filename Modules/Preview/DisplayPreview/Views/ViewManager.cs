@@ -24,7 +24,8 @@ namespace VixenModules.Preview.DisplayPreview.Views
             var setupViewModel = new SetupViewModel(dataModel);
             var setupView = new SetupView { DataContext = setupViewModel };
             setupView.ShowDialog();
-        }
+			StartVisualizer(dataModel);
+		}
 
         public static void EnsureVisualizerIsClosed()
         {

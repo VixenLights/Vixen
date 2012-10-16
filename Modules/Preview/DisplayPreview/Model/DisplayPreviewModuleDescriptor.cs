@@ -1,10 +1,10 @@
-﻿namespace VixenModules.Preview.DisplayPreview.Model
-{
-    using System;
-    using Vixen.Module.App;
-    using Vixen.Sys.Attribute;
+﻿using Vixen.Module.Preview;
+using System;
+using Vixen.Sys.Attribute;
 
-    public class DisplayPreviewModuleDescriptor : AppModuleDescriptorBase
+namespace VixenModules.Preview.DisplayPreview.Model
+{
+    public class DisplayPreviewModuleDescriptor : PreviewModuleDescriptorBase
     {
         static DisplayPreviewModuleDescriptor()
         {

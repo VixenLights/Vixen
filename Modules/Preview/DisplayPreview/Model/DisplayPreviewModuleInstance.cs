@@ -68,8 +68,8 @@ namespace VixenModules.Preview.DisplayPreview.Model
             Preferences.CurrentPreferences = GetDisplayPreviewModuleDataModel().Preferences;
             ResetColors(false);
             InjectAppCommands();
-
-            return new PreviewForm();
+			//A dummy form to satisfy the contract. Need to do something with this.
+			return new PreviewForm();
         }
 
         protected override void Update()
