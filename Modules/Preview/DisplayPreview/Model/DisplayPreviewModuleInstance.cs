@@ -89,7 +89,7 @@ namespace VixenModules.Preview.DisplayPreview.Model
         
         private DisplayPreviewModuleDataModel GetDisplayPreviewModuleDataModel()
         {
-            return (DisplayPreviewModuleDataModel)StaticModuleData;
+            return (DisplayPreviewModuleDataModel)ModuleData;
         }
 
         private void InjectAppCommands()

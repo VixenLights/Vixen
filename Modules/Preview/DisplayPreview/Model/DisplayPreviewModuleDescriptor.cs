@@ -38,7 +38,7 @@ namespace VixenModules.Preview.DisplayPreview.Model
             }
         }
 
-        public override Type ModuleStaticDataClass
+        public override Type  ModuleDataClass
         {
             get
             {
