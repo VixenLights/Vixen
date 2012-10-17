@@ -29,6 +29,7 @@
 
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <WPF:BooleanToCollapsedConverter x:Key="BooleanToCollapsedConverter" />
+			<WPF:ImageBrushConverter x:Key="ImageBrushConverter" />
 
             <DataTemplate DataType="{x:Type Model:NodeLayout}">
                 <ContentControl Content="{Binding Shape}"
@@ -259,7 +260,7 @@
                                             Width="{Binding DisplayWidth}"
                                             Height="{Binding DisplayHeight}">
                                         <Canvas.Background>
-                                            <ImageBrush ImageSource="{Binding BackgroundImage}"
+											<ImageBrush ImageSource="{Binding BackgroundImage,Converter={StaticResource ImageBrushConverter}}"
                                                         Opacity="{Binding Opacity}"
                                                         Stretch="Fill" />
                                         </Canvas.Background>

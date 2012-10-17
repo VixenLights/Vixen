@@ -24,7 +24,7 @@ namespace VixenModules.Preview.DisplayPreview.Views
             var setupViewModel = new SetupViewModel(dataModel);
             var setupView = new SetupView { DataContext = setupViewModel };
             setupView.ShowDialog();
-			StartVisualizer(dataModel);
+			StartVisualizer(dataModel); //Refresh the visualizer
 		}
 
         public static void EnsureVisualizerIsClosed()
@@ -39,11 +39,14 @@ namespace VixenModules.Preview.DisplayPreview.Views
         {
             if (_view != null)
             {
+				//Ensure current view is using this datamodel
+				_visualizerViewModel = new VisualizerViewModel(dataModel.Clone() as DisplayPreviewModuleDataModel);
+				_view.DataContext = _visualizerViewModel;
                 _view.Focus();
             }
             else
             {
-                _visualizerViewModel = new VisualizerViewModel(dataModel);
+				_visualizerViewModel = new VisualizerViewModel(dataModel.Clone() as DisplayPreviewModuleDataModel);
                 _view = new VisualizerView { DataContext = _visualizerViewModel };
                 _view.Closed += VisualizerViewClosed;
                 _view.Show();

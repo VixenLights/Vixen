@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:WPF="clr-namespace:VixenModules.Preview.DisplayPreview.WPF"
         xmlns:Model1="clr-namespace:VixenModules.Preview.DisplayPreview.Model"
         xmlns:ViewModels="clr-namespace:VixenModules.Preview.DisplayPreview.ViewModels"
         mc:Ignorable="d"
@@ -14,6 +15,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Shapes.xaml" />
             </ResourceDictionary.MergedDictionaries>
+			<WPF:ImageBrushConverter x:Key="ImageBrushConverter" />
             <DataTemplate DataType="{x:Type Model1:NodeLayout}">
                 <ContentControl Content="{Binding Shape}"
                                 Width="{Binding Width}"
@@ -92,7 +94,7 @@
                                         MaxHeight="{Binding DisplayHeight}"
                                         ScrollViewer.CanContentScroll="True">
                                     <Canvas.Background>
-                                        <ImageBrush ImageSource="{Binding BackgroundImage}"
+										<ImageBrush ImageSource="{Binding BackgroundImage,Converter={StaticResource ImageBrushConverter}}"
                                                     Opacity="{Binding Opacity}"
                                                     Stretch="Fill" />
                                     </Canvas.Background>

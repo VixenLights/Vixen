@@ -15,7 +15,7 @@ namespace VixenModules.Preview.DisplayPreview
         {
             InitializeComponent();
 			Size=new Size(0,0);
-
+			Visible = false;
         }
     }
 }

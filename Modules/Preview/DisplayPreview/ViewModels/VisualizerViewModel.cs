@@ -85,13 +85,6 @@ namespace VixenModules.Preview.DisplayPreview.ViewModels
 
 				return _backgroundImage;
 			}
-
-			//set
-			//{
-			//    _backgroundImage = value;
-			//    _dataModel.BackgroundImage = value == null ? null : value.UriSource.AbsoluteUri;
-			//    OnPropertyChanged("BackgroundImage");
-			//}
 		}
 
         public void UpdateExecutionStateValues(ChannelIntentStates channelIntentStates)
@@ -99,9 +92,6 @@ namespace VixenModules.Preview.DisplayPreview.ViewModels
             
 			foreach (var displayItem in DataModel.DisplayItems)
 			{
-				//How to tell if we are running as ResetColor acts different running or not.
-				//Need to reset as we do not get off values, so reset all to off before next set of 
-				//states
 				displayItem.ResetColor(true);  
 				displayItem.UpdateChannelColors(channelIntentStates);
 			}

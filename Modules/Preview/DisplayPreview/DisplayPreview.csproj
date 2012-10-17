@@ -99,6 +99,7 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WPF\HalfDoubleConverter.cs" />
+    <Compile Include="WPF\ImageBrushConverter.cs" />
     <Compile Include="WPF\MoveThumb.cs" />
     <Compile Include="WPF\RelayCommand.cs" />
     <Compile Include="Views\SetupView.xaml.cs">
