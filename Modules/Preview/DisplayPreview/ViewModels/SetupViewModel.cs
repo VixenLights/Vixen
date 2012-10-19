@@ -263,10 +263,11 @@ namespace VixenModules.Preview.DisplayPreview.ViewModels
                 {
                     File.Copy(sourceFileName, destFileName, true);
                 }
-                var image = new BitmapImage();
+				var image = new BitmapImage();
                 image.BeginInit();
                 image.CacheOption = BitmapCacheOption.OnLoad;
                 image.UriSource = new Uri(destFileName, UriKind.Absolute);
+				image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
                 image.EndInit();
 
                 var imageWidth = image.PixelWidth;
