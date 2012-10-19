@@ -29,7 +29,7 @@ namespace VixenModules.Preview.DisplayPreview.Model.Shapes
 			}
 			(_strokes as INotifyCollectionChanged).CollectionChanged += delegate
 			{
-				//changed
+				NotifyPropertyChanged("Strokes");
 			};
 
 		}
