@@ -94,7 +94,7 @@
                                         MaxHeight="{Binding DisplayHeight}"
                                         ScrollViewer.CanContentScroll="True">
                                     <Canvas.Background>
-										<ImageBrush ImageSource="{Binding BackgroundImage,Converter={StaticResource ImageBrushConverter}}"
+										<ImageBrush ImageSource="{Binding BackgroundImage}"
                                                     Opacity="{Binding Opacity}"
                                                     Stretch="Fill" />
                                     </Canvas.Background>
