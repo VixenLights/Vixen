@@ -4,7 +4,9 @@
                     xmlns:Shapes1="clr-namespace:VixenModules.Preview.DisplayPreview.Model.Shapes">
 
 	<WPF:HalfDoubleConverter x:Key="HalfDoubleConverter" />
-
+	<WPF:BrushToDrawingAttributesConverter x:Key="BrushToDrawingAttributesConverter"/>
+	<WPF:StrokesToGeometryCollection x:Key="StrokesToGeometryConverter"/>
+	
 	<DataTemplate DataType="{x:Type Shapes1:OutlinedCircle}">
 		<Ellipse Stroke="{Binding Brush}"
 		         StrokeThickness="{Binding StrokeThickness}"
@@ -75,6 +77,16 @@
 				</Ellipse.Clip>
 			</Ellipse>
 		</Viewbox>
+	</DataTemplate>
+	
+	<DataTemplate DataType="{x:Type Shapes1:UserDefinedShape}">
+		<Viewbox Stretch="Fill">
+			<Path x:Name="UserDefinedGeometry" Stroke="{Binding Brush}" StrokeThickness="{Binding StrokeThickness}">
+				<Path.Data>
+					<GeometryGroup Children="{Binding Strokes, Converter={StaticResource StrokesToGeometryConverter},Mode=OneWay}"/>	
+				</Path.Data>
+			</Path>
+		</Viewbox>	
 	</DataTemplate>
 
 	<DataTemplate DataType="{x:Type Shapes1:Line}">

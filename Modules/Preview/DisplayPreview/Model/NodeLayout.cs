@@ -21,6 +21,7 @@ namespace VixenModules.Preview.DisplayPreview.Model
     [KnownType(typeof(SolidTriangle))]
     [KnownType(typeof(OutlinedTriangle))]
     [KnownType(typeof(Arc))]
+	[KnownType(typeof(UserDefinedShape))]
 	public class NodeLayout : INotifyPropertyChanged, IHandler<IIntentState<LightingValue>>, IHandler<IIntentState<CommandValue>>
     {
         private int _height;

@@ -48,6 +48,8 @@ namespace VixenModules.Preview.DisplayPreview.WPF
                         return new SolidStar();
                     case ShapeType.Arc:
                         return new Arc();
+					case ShapeType.UserDefinedShape:
+						return new UserDefinedShape();
                     default:
                         throw new ArgumentOutOfRangeException();
                 }

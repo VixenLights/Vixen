@@ -68,6 +68,7 @@
     <Compile Include="Model\Shapes\OutlinedStar.cs" />
     <Compile Include="Model\Shapes\SolidTriangle.cs" />
     <Compile Include="Model\Shapes\OutlinedTriangle.cs" />
+    <Compile Include="Model\Shapes\UserDefinedShape.cs" />
     <Compile Include="PreviewForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -95,6 +96,7 @@
     <Compile Include="Model\DisplayPreviewModuleDataModel.cs" />
     <Compile Include="Model\DisplayPreviewModuleDescriptor.cs" />
     <Compile Include="Model\DisplayPreviewModuleInstance.cs" />
+    <Compile Include="WPF\BrushToDrawingAttributesConverter.cs" />
     <Compile Include="WPF\DragCanvas.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -111,6 +113,7 @@
     </Compile>
     <Compile Include="WPF\ResizeThumb.cs" />
     <Compile Include="WPF\ShapeToShapeTypeConverter.cs" />
+    <Compile Include="WPF\StrokesToGeometryCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\DisplayItemEditorView.xaml">

@@ -35,5 +35,15 @@ namespace VixenModules.Preview.DisplayPreview.Model.Shapes
         {
             this.PropertyChanged.NotifyPropertyChanged(propertyName, this);
         }
+
+		protected void OnPropertyChanged(string propertyName)
+		{
+			var handler = PropertyChanged;
+
+			if (handler != null)
+			{
+				handler(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
     }
 }

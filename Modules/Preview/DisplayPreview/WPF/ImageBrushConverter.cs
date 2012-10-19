@@ -6,10 +6,11 @@ using System.Windows.Media.Imaging;
 
 namespace VixenModules.Preview.DisplayPreview.WPF
 {
+	[ValueConversion(typeof(BitmapImage), typeof(ImageBrush))]
 	public class ImageBrushConverter : IValueConverter
 	{
 		#region IValueConverter Members
-
+		
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			BitmapImage image = (BitmapImage)value;

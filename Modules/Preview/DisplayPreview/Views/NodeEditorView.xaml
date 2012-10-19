@@ -23,7 +23,15 @@
             </ObjectDataProvider>
 
             <WPF1:ShapeToShapeTypeConverter x:Key="ShapeToShapeTypeConverter" />
-
+			<!--Define an array containing some DrawingAttributes.-->
+			<x:Array x:Key="MyDrawingAttributes" x:Type="{x:Type DrawingAttributes}">
+				<DrawingAttributes Color="White" FitToCurve="true" Width="6" Height="6"/>
+				<DrawingAttributes Color="White" FitToCurve="true" Width="8" Height="8"/>
+				<DrawingAttributes Color="White" FitToCurve="true" Width="10" Height="10"/>
+				<DrawingAttributes Color="White" FitToCurve="true" Width="12" Height="12"/>
+			</x:Array>
+			
+			
             <DataTemplate DataType="{x:Type Shapes1:OutlinedCircle}">
                 <GroupBox Header="Stroke Thickness">
                     <TextBox Text="{Binding StrokeThickness, Mode=TwoWay}"
@@ -97,8 +105,37 @@
                     </GroupBox>
                 </StackPanel>
             </DataTemplate>
+			<DataTemplate DataType="{x:Type Shapes1:UserDefinedShape}">
 
-        </ResourceDictionary>
+				<StackPanel>
+					<GroupBox Header="Stroke Thickness">
+						<ComboBox Name="cboStrokeThickness" SelectedIndex="0" ItemsSource="{StaticResource MyDrawingAttributes}">
+							<ComboBox.ItemTemplate>
+								<DataTemplate DataType="x:Type DrawingAttributes">
+									<TextBlock Text="{Binding Width, Mode=OneTime}"/>
+								</DataTemplate>
+							</ComboBox.ItemTemplate>
+						</ComboBox>
+					</GroupBox>
+					<GroupBox Header="Edit Mode">
+						<StackPanel>
+							<RadioButton IsChecked="True" Name="radioBtnWrite" Click="radioBtnWrite_Click">Write</RadioButton>
+							<RadioButton Name="radioBtnErase" Click="radioBtnErase_Click">Erase</RadioButton>	
+						</StackPanel>
+						
+					</GroupBox>
+					<Viewbox Stretch="None">
+						<InkCanvas Name="inkCanvas" Strokes="{Binding Strokes}"  
+								   Background="Black" 
+								   Width="200" 
+								   Height="200"
+								   DefaultDrawingAttributes="{Binding ElementName=cboStrokeThickness, Path=SelectedItem}">
+
+						</InkCanvas>
+					</Viewbox>
+				</StackPanel>
+			</DataTemplate>
+		</ResourceDictionary>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
