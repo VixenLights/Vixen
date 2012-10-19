@@ -39,7 +39,6 @@ namespace Vixen.Execution.DataSource {
 			if(!IsRunning) {
 				if(_effectNodeSource == null) throw new InvalidOperationException("Effect node source has not been provided.");
 
-				_CreateBuffer();
 				_AddInstrumentationValues();
 				_StartThread();
 			}
@@ -47,9 +46,8 @@ namespace Vixen.Execution.DataSource {
 
 		public void Stop() {
 			if(IsRunning) {
-				_ReleaseBuffer();
-				_RemoveInstrumentationValues();
 				_StopThread();
+				_RemoveInstrumentationValues();
 			}
 		}
 
@@ -57,6 +55,8 @@ namespace Vixen.Execution.DataSource {
 
 		private void _CreateBuffer() {
 			_effectNodeQueue = new EffectNodeQueue();
+			_LastBufferWritePoint = TimeSpan.Zero;
+			_LastBufferReadPoint = TimeSpan.Zero;
 		}
 
 		private void _ReleaseBuffer() {
@@ -74,6 +74,7 @@ namespace Vixen.Execution.DataSource {
 
 		private void _StartThread() {
 			_bufferReadSignal = _CreateAutoResetEvent();
+			_CreateBuffer();
 			_bufferPopulationThread = _CreatePopulationThread();
 			_bufferPopulationThread.Start();
 		}
@@ -86,6 +87,7 @@ namespace Vixen.Execution.DataSource {
 			_bufferPopulationThread.Join(1000);
 			_bufferPopulationThread = null;
 			_CloseAutoResetEvent();
+			_ReleaseBuffer();
 		}
 
 		private AutoResetEvent _CreateAutoResetEvent() {
