@@ -16,8 +16,11 @@ namespace Vixen.Sys {
 		public Guid Id { get; private set; }
 
 		public IEnumerator<IDataNode> GetEnumerator() {
-			// We need an enumerator that is live and does not operate upon a snapshot
-			// of the data.
+			// We need an enumerator that is live and does not operate upon a snapshot of the data.
+			// temporary workaround: sort the list of data before using it. We need to ensure the
+			// data that is used is in order of start time, however the IDataNodes may have been
+			// edited/moved, so resort them to ensure they're OK.
+			_data.Sort(DataNode.DefaultComparer);
 			return new LiveListEnumerator<IDataNode>(_data);
 		}
 
@@ -27,6 +30,7 @@ namespace Vixen.Sys {
 
 		public void AddData(IDataNode data) {
 			_data.Add(data);
+			_data.Sort(DataNode.DefaultComparer);
 		}
 
 		public bool RemoveData(IDataNode data)
@@ -36,6 +40,7 @@ namespace Vixen.Sys {
 
 		public void AddData(IEnumerable<IDataNode> data) {
 			_data.AddRange(data);
+			_data.Sort(DataNode.DefaultComparer);
 		}
 
 		public void Clear() {
