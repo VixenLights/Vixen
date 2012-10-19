@@ -24,6 +24,7 @@ namespace VixenModules.Preview.DisplayPreview.Views
             var setupViewModel = new SetupViewModel(dataModel);
             var setupView = new SetupView { DataContext = setupViewModel };
             setupView.ShowDialog();
+			dataModel.IsEnabled = true; //Set this after setup...Need to think more about why is should not be enabled.
 			StartVisualizer(dataModel); //Refresh the visualizer
 		}
 
