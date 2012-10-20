@@ -97,7 +97,17 @@ namespace Vixen.Sys {
 
 		private IntentSegmentNode<TypeOfValue> _GetSegmentIntersecting(TimeSpan intentRelativeTime) {
 			//Linear search. Just ugly.
-			return _segmentTimeIndex.Values.FirstOrDefault(x => TimeNode.IntersectsExclusively(x, intentRelativeTime));
+			//return _segmentTimeIndex.Values.FirstOrDefault(x => TimeNode.IntersectsExclusively(x, intentRelativeTime));
+			//Trying to squeak a little bit more out of this by using a for loop instead of LINQ
+			//since we have a concrete, non-deferred collection.
+			for(int i = 0; i < _segmentTimeIndex.Count; i++) {
+				IntentSegmentNode<TypeOfValue> segmentNode = _segmentTimeIndex[_segmentTimeIndex.Keys[i]];
+				if(TimeNode.IntersectsExclusively(segmentNode, intentRelativeTime)) {
+					return segmentNode;
+				}
+			}
+
+			return null;
 		}
 
 		private IntentSegmentNode<TypeOfValue> _GetSegmentAtIndex(int index) {

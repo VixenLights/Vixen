@@ -6,6 +6,7 @@ namespace Vixen.Sys {
 		public IntentNode(IIntent intent, TimeSpan startTime) {
 			Intent = intent;
 			StartTime = startTime;
+			EndTime = StartTime + TimeSpan;
 		}
 
 		public IIntent Intent { get; private set; }
@@ -16,9 +17,7 @@ namespace Vixen.Sys {
 			get { return Intent.TimeSpan; }
 		}
 
-		public TimeSpan EndTime {
-			get { return StartTime + TimeSpan; }
-		}
+		public TimeSpan EndTime { get; private set; }
 
 		//contextAbsoluteEffectStartTime = effectNode.StartTime
 		public void ApplyFilter(ISequenceFilterNode sequenceFilterNode, TimeSpan contextAbsoluteEffectStartTime) {
