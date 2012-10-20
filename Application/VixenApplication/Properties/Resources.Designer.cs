@@ -60,9 +60,23 @@ namespace VixenApplication.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap add_24 {
+            get {
+                object obj = ResourceManager.GetObject("add-24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Delete {
             get {
                 object obj = ResourceManager.GetObject("Delete", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap delete_24 {
+            get {
+                object obj = ResourceManager.GetObject("delete-24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
