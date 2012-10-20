@@ -115,6 +115,7 @@ System-level module data (such as for controllers) has been pulled out of System
 
 Fixed CPU usage statistic in the admin app.
 
+
 == 3.0.2.1 ============================
 
 Added dataflow component circular dependency checking.
@@ -134,3 +135,20 @@ Timed sequence-type fixes.
 Timed sequence serialization fixes.
 
 The beginning of a patching wizard...feel free to provide feedback.
+
+
+== 3.0.2.2 ============================
+
+Fix for loading a sequence from a non-qualified file path.
+
+Moved user script initialization outside of the script's execution thread so that execution is considered "started" when Play is actually called.
+
+Minor fixes to error handling and null-checking when stopping the system with a busted config.
+
+Fixed issue when loading Preview modules: was looking for the wrong attributes.
+
+When playing from an effect buffer, reset the last read/write counters when starting fresh.
+
+Fixed sequence data sort issue.
+
+Audio waveform visual in the timed sequence editor.
