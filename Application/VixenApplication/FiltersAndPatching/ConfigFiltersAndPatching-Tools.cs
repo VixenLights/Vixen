@@ -704,8 +704,10 @@ namespace VixenApplication
 					}
 				}
 
-				if (connectionPoint == ControlPointId.None)
-					return false;
+				// if we couldn't find an unconnected point, just default to the first
+				if (connectionPoint == ControlPointId.None) {
+					connectionPoint = shape.GetControlPointIdForOutput(0);
+				}
 			}
 
 			DataFlowConnectionLine line = (DataFlowConnectionLine)diagramPresenter.Project.ShapeTypes["DataFlowConnectionLine"].CreateInstance();
