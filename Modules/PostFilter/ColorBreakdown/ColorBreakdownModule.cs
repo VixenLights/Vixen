@@ -171,24 +171,26 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 			return _intentValue;
 		}
 
+		private float _getMaxProportion(Color inputColor)
+		{
+			float result = 1.0f;
+
+			if (_breakdownItem.Color.R > 0)
+				result = Math.Min(result, (float)inputColor.R / _breakdownItem.Color.R);
+
+			if (_breakdownItem.Color.G > 0)
+				result = Math.Min(result, (float)inputColor.G / _breakdownItem.Color.G);
+
+			if (_breakdownItem.Color.B > 0)
+				result = Math.Min(result, (float)inputColor.B / _breakdownItem.Color.B);
+
+			return result;
+		}
+
 		public override void Handle(IIntentState<ColorValue> obj)
 		{
 			ColorValue colorValue = obj.GetValue();
-
-			float maxProportion = 1.0f;
-
-			if (_breakdownItem.Color.R > 0) {
-				maxProportion = Math.Min(maxProportion, (float)colorValue.Color.R / _breakdownItem.Color.R);
-			}
-
-			if (_breakdownItem.Color.G > 0) {
-				maxProportion = Math.Min(maxProportion, (float)colorValue.Color.G / _breakdownItem.Color.G);
-			}
-
-			if (_breakdownItem.Color.B > 0) {
-				maxProportion = Math.Min(maxProportion, (float)colorValue.Color.B / _breakdownItem.Color.B);
-			}
-
+			float maxProportion = _getMaxProportion(colorValue.Color);
 			Color finalColor = Color.FromArgb((int)(_breakdownItem.Color.R * maxProportion), (int)(_breakdownItem.Color.G * maxProportion), (int)(_breakdownItem.Color.B * maxProportion));
 			_intentValue = new StaticIntentState<ColorValue>(obj, new ColorValue(finalColor));
 		}
@@ -196,40 +198,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		public override void Handle(IIntentState<LightingValue> obj)
 		{
 			LightingValue lightingValue = obj.GetValue();
-
-			float maxProportion = 1.0f;
-			float intensity;
-
-			// in a probably-misguided-attempt at shortcutting the most commonly used use-cases,
-			// we're going to special-case the cases of R/G/B only (eg. #FF0000, #00FF00, and #0000FF).
-			// this can potentially avoid some (maybe?) costly floating-point computation later on.
-			// (look at me, I sound like I'm coding for a 386 without a floating point co-pro....)
-			// if it's ever a case of more than 1 value, or the value isn't exactly a 100% filter,
-			// we'll have to do some scaling, so will need to check proportions.
-			bool doRed = _breakdownItem.Color.R > 0;
-			bool doGreen = _breakdownItem.Color.G > 0;
-			bool doBlue = _breakdownItem.Color.B > 0;
-
-			if (doRed && !doGreen && !doBlue && _breakdownItem.Color.R == byte.MaxValue) {
-				intensity = (float)lightingValue.Color.R / _breakdownItem.Color.R;
-			} else if (!doRed && doGreen && !doBlue && _breakdownItem.Color.G == byte.MaxValue) {
-				intensity = (float)lightingValue.Color.G / _breakdownItem.Color.G;
-			} else if (!doRed && !doGreen && doBlue && _breakdownItem.Color.B == byte.MaxValue) {
-				intensity = (float)lightingValue.Color.B / _breakdownItem.Color.B;
-			} else {
-				if (doRed)
-					maxProportion = Math.Min(maxProportion, (float) lightingValue.Color.R/_breakdownItem.Color.R);
-				if (doGreen)
-					maxProportion = Math.Min(maxProportion, (float) lightingValue.Color.G/_breakdownItem.Color.G);
-				if (doBlue)
-					maxProportion = Math.Min(maxProportion, (float) lightingValue.Color.B/_breakdownItem.Color.B);
-
-				intensity = lightingValue.Intensity * maxProportion;
-			}
-
-			LightingValue result = new LightingValue(_breakdownItem.Color, intensity);
-
-			_intentValue = new StaticIntentState<LightingValue>(obj, result);
+			_intentValue = new StaticIntentState<LightingValue>(obj, new LightingValue(_breakdownItem.Color, lightingValue.Intensity * _getMaxProportion(lightingValue.Color)));
 		}
 	}
 
