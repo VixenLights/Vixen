@@ -5,7 +5,7 @@ using Vixen.Sys;
 using Vixen.Sys.Output;
 
 namespace Vixen.Factory {
-	public class ControllerFactory : IOutputDeviceFactory {
+	public class ControllerFactory {
 		public IOutputDevice CreateDevice(Guid moduleId, string name) {
 			return CreateDevice(Guid.NewGuid(), moduleId, Guid.NewGuid(), name);
 		}

@@ -17,7 +17,7 @@ namespace Vixen.IO.Xml.Serializer {
 			XElement element = new XElement(ELEMENT_PREVIEW,
 				new XAttribute(ATTR_NAME, preview.Name),
 				new XAttribute(ATTR_TYPE_ID, preview.ModuleId),
-				new XAttribute(ATTR_INSTANCE_ID, preview.Id));
+				new XAttribute(ATTR_INSTANCE_ID, preview.ModuleInstanceId));
 
 			return element;
 		}
@@ -33,7 +33,7 @@ namespace Vixen.IO.Xml.Serializer {
 			if (instanceId == null) return null;
 
 			PreviewFactory previewFactory = new PreviewFactory();
-			OutputPreview preview = (OutputPreview)previewFactory.CreateDevice(instanceId.Value, typeId.Value, instanceId.Value, name);
+			OutputPreview preview = (OutputPreview)previewFactory.CreateDevice(typeId.Value, instanceId.Value, name);
 
 			_Populate(preview, element);
 

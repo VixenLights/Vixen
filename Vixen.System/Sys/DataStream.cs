@@ -30,7 +30,6 @@ namespace Vixen.Sys {
 
 		public void AddData(IDataNode data) {
 			_data.Add(data);
-			_data.Sort(DataNode.DefaultComparer);
 		}
 
 		public bool RemoveData(IDataNode data)
@@ -40,7 +39,6 @@ namespace Vixen.Sys {
 
 		public void AddData(IEnumerable<IDataNode> data) {
 			_data.AddRange(data);
-			_data.Sort(DataNode.DefaultComparer);
 		}
 
 		public void Clear() {

@@ -141,7 +141,6 @@
     <Compile Include="Factory\CommandOutputFactory.cs" />
     <Compile Include="Factory\ControllerFactory.cs" />
     <Compile Include="Factory\IntentOutputFactory.cs" />
-    <Compile Include="Factory\IOutputDeviceFactory.cs" />
     <Compile Include="Factory\IOutputFactory.cs" />
     <Compile Include="Factory\PreviewFactory.cs" />
     <Compile Include="Factory\SmartControllerFactory.cs" />
