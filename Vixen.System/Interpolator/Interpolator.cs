@@ -8,7 +8,7 @@ using Vixen.Sys.Attribute;
 namespace Vixen.Interpolator {
 	public abstract class Interpolator<T> {
 		public bool Interpolate(TimeSpan timeOffset, TimeSpan timeSpan, T startValue, T endValue, out T value) {
-			double percent = timeOffset.TotalMilliseconds / timeSpan.TotalMilliseconds;
+			double percent = (double) timeOffset.Ticks/timeSpan.Ticks;
 			return Interpolate(percent, startValue, endValue, out value);
 		}
 
