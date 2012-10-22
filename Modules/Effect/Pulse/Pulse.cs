@@ -69,7 +69,7 @@ namespace VixenModules.Effect.Pulse
 				if(channel == null)
 					continue;
 
-				double[] allPointsTimeOrdered = _CombineColorAndCurvePoints().ToArray();
+				double[] allPointsTimeOrdered = _GetAllSignificantDataPoints().ToArray();
 				Debug.Assert(allPointsTimeOrdered.Length > 1);
 
 				double lastPosition = allPointsTimeOrdered[0];
@@ -91,8 +91,10 @@ namespace VixenModules.Effect.Pulse
 			}
 		}
 
-		private IEnumerable<double> _CombineColorAndCurvePoints() {
+		private IEnumerable<double> _GetAllSignificantDataPoints() {
 			HashSet<double> allPoints = new HashSet<double>();
+
+			allPoints.Add(0.0);
 
 			foreach(PointPair point in LevelCurve.Points) {
 				allPoints.Add(point.X / 100);
@@ -100,6 +102,8 @@ namespace VixenModules.Effect.Pulse
 			foreach(ColorPoint point in ColorGradient.Colors) {
 				allPoints.Add(point.Position);
 			}
+
+			allPoints.Add(1.0);
 
 			return allPoints.OrderBy(x => x);
 		}
