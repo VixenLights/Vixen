@@ -40,12 +40,14 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 			// a simple pulse down (or up). The ends/starts of the effect flip to the color of the other end briefly,
 			// for a single pixel width. I'm guessing it's an issue in the gradient rendering for large shapes where
 			// the gradient rectangle is within the same integer range as the rendering rectangle.
+			float offset = _rect.X * 0.002F;
 			RectangleF gradientRectangle = new RectangleF(
-				(float)Math.Floor(_rect.X) - 0.1F,
+				(_rect.X) - offset,
 				_rect.Y,
-				(float)Math.Ceiling(_rect.Width) + 1.1F,
+				(_rect.Width) + (2 * offset),
 				_rect.Height
 				);
+			//(float)Math.Floor(_rect.X) - (_rect.X / 300),   _rect.Y,   (float)Math.Ceiling(_rect.Width) + (_rect.Right / 300) + 1.0F,  _rect.Height
 
 			using (LinearGradientBrush brush = new LinearGradientBrush(gradientRectangle, startValue.GetIntensityAffectedColor(), endValue.GetIntensityAffectedColor(), LinearGradientMode.Horizontal)) {
 				_graphics.FillRectangle(brush, _rect);

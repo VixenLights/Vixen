@@ -29,8 +29,8 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 
 						// these were options to try and get the rasterization to 'overlap' slightly to remove vertical splits between intents.
 						// However, with the change to doubles and more precision, the issue seems to have disappeared. Nevertheless, leave these here.
-						//startPixelX -= 0.1;
-						//widthPixelX += 0.1;
+						//startPixelX -= 0.2;
+						//widthPixelX += 0.4;
 						//startPixelX = Math.Floor(startPixelX);
 						//widthPixelX = Math.Ceiling(widthPixelX);
 
