@@ -15,7 +15,8 @@ namespace Vixen.Data.Value {
 		public float Intensity;
 
 		public Color GetIntensityAffectedColor() {
-			return Color.FromArgb(0xff, (int)(Color.R * Intensity), (int)(Color.G * Intensity), (int)(Color.B * Intensity));
+			// as this is a lighting value, the lower the intensity (brightness), the more transparent it should be.
+			return Color.FromArgb((byte)(Intensity * byte.MaxValue), (int)(Color.R * Intensity), (int)(Color.G * Intensity), (int)(Color.B * Intensity));
 		}
 	}
 }
