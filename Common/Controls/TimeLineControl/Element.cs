@@ -212,14 +212,19 @@ namespace Common.Controls.Timeline
 
 		#region Drawing
 
-		public virtual Bitmap Draw(Size imageSize)
+		protected virtual Bitmap SetupCanvas(Size imageSize)
 		{
 			Bitmap result = new Bitmap(imageSize.Width, imageSize.Height);
 			Graphics g = Graphics.FromImage(result);
-			using(Brush b = new SolidBrush(BackColor)) {
+			using (Brush b = new SolidBrush(BackColor)) {
 				g.FillRectangle(b, 0, 0, imageSize.Width, imageSize.Height);
 			}
 
+			return result;
+		}
+
+		protected virtual void AddSelectionOverlayToCanvas(Bitmap image)
+		{
 			// Width - bold if selected
 			int b_wd = Selected ? 3 : 1;
 
@@ -227,20 +232,33 @@ namespace Common.Controls.Timeline
 			Rectangle b_rect = new Rectangle(
 				(b_wd / 2),
 				(b_wd / 2),
-				imageSize.Width - b_wd,
-				imageSize.Height - b_wd
+				image.Width - b_wd,
+				image.Height - b_wd
 				);
-			
+
 			// Draw it!
-			using(Pen border = new Pen(BorderColor)) {
+			Graphics g = Graphics.FromImage(image);
+			using (Pen border = new Pen(BorderColor)) {
 				border.Width = b_wd;
 				//border.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
 				//graphics.DrawRectangle(border, rect);
 				g.DrawRectangle(border, b_rect);
 			}
+		}
 
+		protected virtual void DrawCanvasContent(Bitmap canvas)
+		{
+
+		}
+
+		public Bitmap Draw(Size imageSize)
+		{
+			Bitmap result = SetupCanvas(imageSize);
+			DrawCanvasContent(result);
+			AddSelectionOverlayToCanvas(result);
 			return result;
 		}
+
 		#endregion        
 	}
 
