@@ -13,7 +13,7 @@ namespace VixenModules.Preview.DisplayPreview.Model.Shapes
 
         public abstract string Name { get; }
 
-        public Brush Brush
+        public virtual Brush Brush
         {
             get
             {

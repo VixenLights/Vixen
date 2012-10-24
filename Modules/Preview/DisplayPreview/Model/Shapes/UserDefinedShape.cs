@@ -3,6 +3,7 @@ using System.Runtime.Serialization;
 using System.Windows.Ink;
 using System.Collections.Specialized;
 using System.Windows;
+using System.Windows.Media;
 
 
 namespace VixenModules.Preview.DisplayPreview.Model.Shapes
@@ -107,7 +108,13 @@ namespace VixenModules.Preview.DisplayPreview.Model.Shapes
 				NotifyPropertyChanged("StrokeThickness");
 			}
 		}
-
+		public override Brush Brush{
+			set
+			{
+				base.Brush = value;
+				UpdateStrokesBrush();
+			}
+		}
 		private void UpdateStrokeThickness()
 		{
 			if (Strokes == null) return;
@@ -118,7 +125,17 @@ namespace VixenModules.Preview.DisplayPreview.Model.Shapes
 			}
 			NotifyPropertyChanged("Strokes");
 		}
-
+		private void UpdateStrokesBrush()
+		{
+			if (Strokes == null) return;
+			SolidColorBrush newBrush = (SolidColorBrush)Brush;
+			
+			foreach (Stroke stroke in Strokes)
+			{
+				stroke.DrawingAttributes.Color=newBrush.Color;	
+			}
+			NotifyPropertyChanged("Strokes");
+		}
 		public override IShape Clone()
 		{
 			return new UserDefinedShape { StrokeThickness = StrokeThickness,

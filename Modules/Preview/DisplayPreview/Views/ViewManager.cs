@@ -2,6 +2,7 @@ namespace VixenModules.Preview.DisplayPreview.Views
 {
     using System;
     using System.Windows.Threading;
+	using System.Threading;
     using Vixen.Sys;
     using VixenModules.Preview.DisplayPreview.Model;
     using VixenModules.Preview.DisplayPreview.ViewModels;
@@ -55,9 +56,10 @@ namespace VixenModules.Preview.DisplayPreview.Views
 
         public static void UpdatePreviewExecutionStateValues(ChannelIntentStates channelIntentStates)
         {
+		
             if (_visualizerViewModel != null)
             {
-                _visualizerViewModel.UpdateExecutionStateValues(channelIntentStates);
+				_view.Dispatcher.BeginInvoke(DispatcherPriority.DataBind, new ParameterizedThreadStart(o => _visualizerViewModel.UpdateExecutionStateValues(channelIntentStates)), channelIntentStates);
             }
         }
 

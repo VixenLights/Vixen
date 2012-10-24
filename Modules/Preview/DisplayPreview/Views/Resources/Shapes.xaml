@@ -80,12 +80,21 @@
 	
 	<DataTemplate DataType="{x:Type Shapes1:UserDefinedShape}">
 		<Viewbox Stretch="Fill">
+			<!--
 			<Path x:Name="UserDefinedGeometry" Stroke="{Binding Brush}" StrokeThickness="{Binding StrokeThickness}">
 				<Path.Data>
 					<GeometryGroup Children="{Binding Strokes, Converter={StaticResource StrokesToGeometryConverter},Mode=OneWay}"/>	
 				</Path.Data>
 			</Path>
-		</Viewbox>	
+			-->
+				<InkCanvas Name="inkCanvas" Strokes="{Binding Strokes}"  
+								   Background="Transparent" 
+								   Width="200" 
+								   Height="200"
+								   EditingMode="None">
+
+				</InkCanvas>
+			</Viewbox>	
 	</DataTemplate>
 
 	<DataTemplate DataType="{x:Type Shapes1:Line}">
