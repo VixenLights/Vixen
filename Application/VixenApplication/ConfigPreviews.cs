@@ -139,5 +139,20 @@ namespace VixenApplication {
 				(listViewControllers.SelectedItems[0].Tag as OutputPreview).Setup();
 			}
 		}
+
+		private void listViewControllers_ItemCheck(object sender, ItemCheckEventArgs e)
+		{
+			if(e.NewValue==CheckState.Unchecked)
+			{
+				(listViewControllers.Items[e.Index].Tag as OutputPreview).Stop();		
+			}
+			else if(e.NewValue==CheckState.Checked)
+			{
+				(listViewControllers.Items[e.Index].Tag as OutputPreview).Start();	
+			}
+
+		}
+
+		
 	}
 }

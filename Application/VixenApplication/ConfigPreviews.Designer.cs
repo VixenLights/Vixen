@@ -23,7 +23,7 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
+			System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
 			this.groupBoxSelectedController = new System.Windows.Forms.GroupBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.buttonUpdate = new System.Windows.Forms.Button();
@@ -111,10 +111,10 @@
             this.columnHeader1,
             this.columnHeader2});
 			this.listViewControllers.FullRowSelect = true;
-			listViewGroup2.Header = "ListViewGroup";
-			listViewGroup2.Name = "listViewGroup1";
+			listViewGroup1.Header = "ListViewGroup";
+			listViewGroup1.Name = "listViewGroup1";
 			this.listViewControllers.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup2});
+            listViewGroup1});
 			this.listViewControllers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
 			this.listViewControllers.HideSelection = false;
 			this.listViewControllers.Location = new System.Drawing.Point(12, 12);
@@ -124,6 +124,7 @@
 			this.listViewControllers.TabIndex = 28;
 			this.listViewControllers.UseCompatibleStateImageBehavior = false;
 			this.listViewControllers.View = System.Windows.Forms.View.Details;
+			this.listViewControllers.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listViewControllers_ItemCheck);
 			this.listViewControllers.SelectedIndexChanged += new System.EventHandler(this.listViewControllers_SelectedIndexChanged);
 			// 
 			// columnHeader1
@@ -184,7 +185,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(419, 482);
+			this.ClientSize = new System.Drawing.Size(427, 493);
 			this.Controls.Add(this.groupBoxSelectedController);
 			this.Controls.Add(this.listViewControllers);
 			this.Controls.Add(this.buttonOk);
