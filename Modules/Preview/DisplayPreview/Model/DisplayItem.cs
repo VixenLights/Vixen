@@ -193,8 +193,8 @@ namespace VixenModules.Preview.DisplayPreview.Model
             {
 				
 				var channelId = channelIntentState.Key;
-				ChannelNode node = VixenSystem.Nodes.GetAllNodes().FirstOrDefault(x => x.Channel!=null && x.Channel.Id == channelId);
-				
+				ChannelNode node = VixenSystem.Channels.GetChannelNodeForChannel(VixenSystem.Channels.GetChannel(channelId));
+
 				if(node!= null)
 				{
 					var nodeLayout = NodeLayouts.FirstOrDefault(x => x.NodeId == node.Id);
@@ -203,9 +203,6 @@ namespace VixenModules.Preview.DisplayPreview.Model
 						nodeLayout.ChannelState = channelIntentState.Value;
 					}	
 				}
-				
-
-            	
             }
         }
 
