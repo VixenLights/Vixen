@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Data.Value;
 
 namespace VixenModules.Preview.DisplayPreview.Model
@@ -29,6 +31,7 @@ namespace VixenModules.Preview.DisplayPreview.Model
         private double _leftOffset;
 
         private Brush _nodeBrush;
+    	private List<Color> _nodeColors;
 
         private Guid _nodeId;
 
@@ -192,6 +195,7 @@ namespace VixenModules.Preview.DisplayPreview.Model
 
         public void ResetColor(bool isRunning)
         {
+			_nodeColors = new List<Color>();
             var brush = isRunning ? Colors.Transparent.AsBrush() : Colors.White.AsBrush();
             SetNodeBrush(brush);
         }
@@ -201,6 +205,28 @@ namespace VixenModules.Preview.DisplayPreview.Model
             _nodeBrush = brush;
             _shape.Brush = brush;
         }
+
+		public void AddColorToNode(Color color)
+		{
+			// this was written to use a list of colors that it interates through whenever a new color gets added,
+			// as I thought we needed the total number of colors for the calculations. Turns out we don't -- using
+			// max values is fine -- so we can rewrite this without the list if needed.
+			_nodeColors.Add(color);
+
+			RGB result = new RGB(0, 0, 0);
+
+			foreach (Color nodeColor in _nodeColors) {
+				result.R = Math.Max((double)nodeColor.R / byte.MaxValue, result.R);
+				result.G = Math.Max((double)nodeColor.G / byte.MaxValue, result.G);
+				result.B = Math.Max((double)nodeColor.B / byte.MaxValue, result.B);
+			}
+
+			double intensity = HSV.FromRGB(result).V;
+
+			SolidColorBrush brush = new SolidColorBrush(Color.FromArgb((byte)(intensity * byte.MaxValue), result.ToArgb().R, result.ToArgb().G, result.ToArgb().B));
+			brush.Freeze();
+			SetNodeBrush(brush);
+		}
 
         private void Initialize()
         {
@@ -228,10 +254,8 @@ namespace VixenModules.Preview.DisplayPreview.Model
 
     	public void Handle(IIntentState<LightingValue> state)
     	{
-			System.Drawing.Color color = state.GetValue().GetIntensityAffectedColor() == System.Drawing.Color.Black ? System.Drawing.Color.Transparent : state.GetValue().GetIntensityAffectedColor();
-			SolidColorBrush brush = new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B));
-			brush.Freeze();
-			SetNodeBrush(brush);
+			System.Drawing.Color color = state.GetValue().GetIntensityAffectedColor();
+			AddColorToNode(Color.FromArgb(color.A, color.R, color.G, color.B));
     	}
 
     	#region Implementation of IHandler<in IIntentState<CommandValue>>
