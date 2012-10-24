@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Data;
 using System.Globalization;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Shapes;
-using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows.Ink;
 
@@ -40,7 +35,7 @@ namespace VixenModules.Preview.DisplayPreview.WPF
 
 		#endregion
 
-		private System.Windows.Shapes.Path StrokeToPath(Stroke oStroke)
+		private Path StrokeToPath(Stroke oStroke)
 		{
 			PathFigure myPathFigure = null;
 			LineSegment myLineSegment = null;
@@ -82,7 +77,7 @@ namespace VixenModules.Preview.DisplayPreview.WPF
 			PathGeometry myPathGeometry = new PathGeometry();
 			myPathGeometry.Figures = myPathFigureCollection;
 
-			System.Windows.Shapes.Path oPath = new System.Windows.Shapes.Path();
+			Path oPath = new Path();
 
 			// Add the data to the Path.
 			oPath.Data = myPathGeometry;                    // <-|

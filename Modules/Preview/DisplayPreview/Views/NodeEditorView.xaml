@@ -23,6 +23,7 @@
             </ObjectDataProvider>
 
             <WPF1:ShapeToShapeTypeConverter x:Key="ShapeToShapeTypeConverter" />
+			<WPF1:StrokeThicknessToDrawingAttributesConverter x:Key="StrokeThicknessToDrawingAttributesConverter"/>
 			<!--Define an array containing some DrawingAttributes.-->
 			<x:Array x:Key="MyDrawingAttributes" x:Type="{x:Type DrawingAttributes}">
 				<DrawingAttributes Color="White" FitToCurve="true" Width="6" Height="6"/>
@@ -109,12 +110,9 @@
 
 				<StackPanel>
 					<GroupBox Header="Stroke Thickness">
-						<ComboBox Name="cboStrokeThickness" SelectedIndex="0" ItemsSource="{StaticResource MyDrawingAttributes}">
-							<ComboBox.ItemTemplate>
-								<DataTemplate DataType="x:Type DrawingAttributes">
-									<TextBlock Text="{Binding Width, Mode=OneTime}"/>
-								</DataTemplate>
-							</ComboBox.ItemTemplate>
+						<ComboBox Name="cboStrokeThickness" 
+								  ItemsSource="{Binding StrokeThicknesses}"
+								  SelectedValue="{Binding StrokeThickness}">
 						</ComboBox>
 					</GroupBox>
 					<GroupBox Header="Edit Mode">
@@ -129,7 +127,7 @@
 								   Background="Black" 
 								   Width="200" 
 								   Height="200"
-								   DefaultDrawingAttributes="{Binding ElementName=cboStrokeThickness, Path=SelectedItem}">
+								   DefaultDrawingAttributes="{Binding StrokeThickness, Converter={StaticResource StrokeThicknessToDrawingAttributesConverter}}">
 
 						</InkCanvas>
 					</Viewbox>

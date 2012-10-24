@@ -37,17 +37,19 @@ namespace VixenModules.Preview.DisplayPreview.Model
         public override bool Setup()
         {
             ViewManager.DisplaySetupView(GetDisplayPreviewModuleDataModel());
-            return base.Setup();
+			GetDisplayPreviewModuleDataModel().IsEnabled = true;
+			return base.Setup();
         }
 
         public override void Start()
         {
             var dataModel = GetDisplayPreviewModuleDataModel();
-            if (dataModel.IsEnabled)
-            {
-                ViewManager.StartVisualizer(dataModel);
-            }
-            base.Start();
+        	if(dataModel.IsEnabled)
+        	{
+            ViewManager.StartVisualizer(dataModel);
+        			
+        	}
+			base.Start();
         }
 
         public override void Stop()
@@ -56,7 +58,6 @@ namespace VixenModules.Preview.DisplayPreview.Model
             {
                 EnsureVisualizerIsClosed();
             }
-
             base.Stop();
         }
 
@@ -77,7 +78,7 @@ namespace VixenModules.Preview.DisplayPreview.Model
             ViewManager.UpdatePreviewExecutionStateValues(ChannelStates);
         }
 
-        private static void EnsureVisualizerIsClosed()
+    	private static void EnsureVisualizerIsClosed()
         {
             ViewManager.EnsureVisualizerIsClosed();
         }
@@ -94,6 +95,7 @@ namespace VixenModules.Preview.DisplayPreview.Model
 
         private void InjectAppCommands()
         {
+			
             // TODO: This needs to be moved to the form contruction
             //        private const string DISPLAY_PREVIEW_MENU = "DisplayPreview.Menu";
             //        private const string EDIT_PREVIEW_SETUP_MENU = "Edit Preview Setup";

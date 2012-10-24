@@ -28,9 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Text = "PreviewForm";
+			this.SuspendLayout();
+			// 
+			// PreviewForm
+			// 
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.ClientSize = new System.Drawing.Size(292, 273);
+			this.Name = "PreviewForm";
+			this.Text = "PreviewForm";
+			this.VisibleChanged += new System.EventHandler(this.PreviewFormVisibleChanged);
+			this.ResumeLayout(false);
+
         }
 
         #endregion

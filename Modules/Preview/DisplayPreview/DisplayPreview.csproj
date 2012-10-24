@@ -114,6 +114,7 @@
     <Compile Include="WPF\ResizeThumb.cs" />
     <Compile Include="WPF\ShapeToShapeTypeConverter.cs" />
     <Compile Include="WPF\StrokesToGeometryCollection.cs" />
+    <Compile Include="WPF\StrokeThicknessToDrawingAttributesConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\DisplayItemEditorView.xaml">
@@ -152,6 +153,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PreviewForm.resx">
+      <DependentUpon>PreviewForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">

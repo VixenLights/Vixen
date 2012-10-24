@@ -1,15 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.Serialization;
 using System.Windows.Ink;
-using System.Windows.Input;
 using System.Collections.Specialized;
-using System.Collections;
 using System.Windows;
-using System.Windows.Shapes;
-using System.Windows.Media;
 
 
 namespace VixenModules.Preview.DisplayPreview.Model.Shapes
@@ -27,10 +20,7 @@ namespace VixenModules.Preview.DisplayPreview.Model.Shapes
 			{
 				_strokes = new StrokeCollection();
 			}
-			(_strokes as INotifyCollectionChanged).CollectionChanged += delegate
-			{
-				NotifyPropertyChanged("Strokes");
-			};
+			(_strokes as INotifyCollectionChanged).CollectionChanged += StrokesChangedEventHandler;
 
 		}
 		[DataMember]
@@ -50,7 +40,7 @@ namespace VixenModules.Preview.DisplayPreview.Model.Shapes
 		{
 			get
 			{
-				return new double[]{1,2,3,4,5,6,7,8,9};
+				return new double[]{1,2,3,4,6,8,10,12};
 			}
 		}
 
@@ -58,7 +48,7 @@ namespace VixenModules.Preview.DisplayPreview.Model.Shapes
 		{
 			get
 			{
-				return "Line";
+				return "User Defined";
 			}
 		}
 
@@ -81,21 +71,20 @@ namespace VixenModules.Preview.DisplayPreview.Model.Shapes
 			{
 				if (_strokes != null)
 				{
-					(_strokes as INotifyCollectionChanged).CollectionChanged -= delegate
-					{
-						//changed
-						NotifyPropertyChanged("Strokes");
-					};
+					(_strokes as INotifyCollectionChanged).CollectionChanged -= StrokesChangedEventHandler;
+					
 				}
 				
 				_strokes = value;
-				(_strokes as INotifyCollectionChanged).CollectionChanged += delegate
-				{
-					//changed
-					NotifyPropertyChanged("Strokes");
-				};
+				(_strokes as INotifyCollectionChanged).CollectionChanged += StrokesChangedEventHandler;
+				
 				NotifyPropertyChanged("Strokes");
 			}
+		}
+
+		private void StrokesChangedEventHandler(object sender, EventArgs e)
+		{
+			NotifyPropertyChanged("Strokes");	
 		}
 
 		[DataMember]
@@ -114,8 +103,20 @@ namespace VixenModules.Preview.DisplayPreview.Model.Shapes
 			set
 			{
 				_strokeThickness = value;
+				UpdateStrokeThickness();
 				NotifyPropertyChanged("StrokeThickness");
 			}
+		}
+
+		private void UpdateStrokeThickness()
+		{
+			if (Strokes == null) return;
+			foreach (Stroke stroke in Strokes)
+			{
+				stroke.DrawingAttributes.Width=StrokeThickness;
+				stroke.DrawingAttributes.Height = StrokeThickness;
+			}
+			NotifyPropertyChanged("Strokes");
 		}
 
 		public override IShape Clone()
@@ -126,7 +127,7 @@ namespace VixenModules.Preview.DisplayPreview.Model.Shapes
 
 		private void Initialize()
 		{
-			_strokeThickness = 0;	
+			
 		}
 
 		[OnDeserializing]

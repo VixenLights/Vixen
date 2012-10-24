@@ -4,7 +4,6 @@
                     xmlns:Shapes1="clr-namespace:VixenModules.Preview.DisplayPreview.Model.Shapes">
 
 	<WPF:HalfDoubleConverter x:Key="HalfDoubleConverter" />
-	<WPF:BrushToDrawingAttributesConverter x:Key="BrushToDrawingAttributesConverter"/>
 	<WPF:StrokesToGeometryCollection x:Key="StrokesToGeometryConverter"/>
 	
 	<DataTemplate DataType="{x:Type Shapes1:OutlinedCircle}">
