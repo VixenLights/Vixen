@@ -70,8 +70,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			using (Font f = new Font("Arial", 7))
 			using (Brush b = new SolidBrush(TextColor)) {
 				graphics.DrawString(EffectNode.Effect.EffectName, f, b, new PointF(5, 3));
-				graphics.DrawString("Start: " + EffectNode.StartTime.ToString("g"), f, b, new PointF(60, 3));
-				graphics.DrawString("Length: " + EffectNode.TimeSpan.ToString("g"), f, b, new PointF(60, 16));
+				graphics.DrawString("Start: " + EffectNode.StartTime.ToString(@"m\:ss\.FFF"), f, b, new PointF(60, 3));
+				graphics.DrawString("Length: " + EffectNode.TimeSpan.ToString(@"m\:ss\.FFF"), f, b, new PointF(60, 16));
 			}
 
 			ElementTimeHasChangedSinceDraw = false;
