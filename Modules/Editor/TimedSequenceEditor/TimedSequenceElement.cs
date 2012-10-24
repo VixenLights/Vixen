@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Text;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -22,8 +23,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Duration = effectNode.TimeSpan;
 			EffectNode = effectNode;
 			BorderColor = Color.Black;
-			BackColor = Color.Transparent;
-			TextColor = Color.FromArgb(220, 220, 220);
+			//BackColor = Color.FromArgb(50, 255, 255, 255);
+			BackColor = Color.FromArgb(60, 0, 0, 0);
+			TextColor = Color.FromArgb(60, 60, 60);
 		}
 
 		// copy ctor
@@ -69,9 +71,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// add text describing the effect
 			using (Font f = new Font("Arial", 7))
 			using (Brush b = new SolidBrush(TextColor)) {
-				graphics.DrawString(EffectNode.Effect.EffectName, f, b, new PointF(5, 3));
-				graphics.DrawString("Start: " + EffectNode.StartTime.ToString(@"m\:ss\.FFF"), f, b, new PointF(60, 3));
-				graphics.DrawString("Length: " + EffectNode.TimeSpan.ToString(@"m\:ss\.FFF"), f, b, new PointF(60, 16));
+				graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+				graphics.DrawString(EffectNode.Effect.EffectName, f, b, new RectangleF(5, 3, 50, 12));
+
+				string millisecondsFormat = "";
+
+				if (EffectNode.StartTime.Milliseconds > 0)
+					millisecondsFormat = @"\.fff";
+				graphics.DrawString("Start: " + EffectNode.StartTime.ToString(@"m\:ss" + millisecondsFormat), f, b, new PointF(60, 3));
+
+				millisecondsFormat = "";
+				if (EffectNode.TimeSpan.Milliseconds > 0)
+					millisecondsFormat = @"\.fff";
+				graphics.DrawString("Length: " + EffectNode.TimeSpan.ToString(@"m\:ss" + millisecondsFormat), f, b, new PointF(60, 16));
 			}
 
 			ElementTimeHasChangedSinceDraw = false;
