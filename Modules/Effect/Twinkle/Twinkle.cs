@@ -149,7 +149,7 @@ namespace VixenModules.Effect.Twinkle
 			Pulse.Pulse pulse = new Pulse.Pulse();
 			pulse.TargetNodes = new ChannelNode[] { node };
 			pulse.TimeSpan = TimeSpan;
-			pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { MinimumLevel, MinimumLevel }));
+			pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { MinimumLevel * 100.0, MinimumLevel * 100.0 }));
 
 			// figure out what color gradient to use for the pulse
 			switch (ColorHandling) {

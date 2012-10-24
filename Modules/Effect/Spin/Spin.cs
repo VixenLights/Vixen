@@ -166,7 +166,7 @@ namespace VixenModules.Effect.Spin
 				pulse = new Pulse.Pulse();
 				pulse.TargetNodes = new ChannelNode[] { target };
 				pulse.TimeSpan = TimeSpan;
-				pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { DefaultLevel, DefaultLevel }));
+				pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { DefaultLevel * 100.0, DefaultLevel * 100.0 }));
 
 				// figure out what color gradient to use for the pulse
 				switch (ColorHandling) {
