@@ -73,9 +73,9 @@ namespace Vixen.IO.Xml.SystemConfig {
 			_content.Add(element);
 		}
 
-		protected override void WriteDisabledControllers() {
+		protected override void WriteDisabledDevices() {
 			XmlDisabledControllerCollectionSerializer serializer = new XmlDisabledControllerCollectionSerializer();
-			XElement element = serializer.WriteObject(_systemConfig.DisabledDevices.Select(x => x.Id));
+			XElement element = serializer.WriteObject(_systemConfig.DisabledDeviceIds);
 			_content.Add(element);
 		}
 
@@ -150,9 +150,9 @@ namespace Vixen.IO.Xml.SystemConfig {
 			_systemConfig.SmartOutputControllers = serializer.ReadObject(_content);
 		}
 
-		protected override void ReadDisabledControllers() {
+		protected override void ReadDisabledDevices() {
 			XmlDisabledControllerCollectionSerializer serializer = new XmlDisabledControllerCollectionSerializer();
-			_systemConfig.DisabledDevices = serializer.ReadObject(_content).Select(x => _systemConfig.OutputControllers.FirstOrDefault(y => x == y.Id)).NotNull();
+			_systemConfig.DisabledDeviceIds = serializer.ReadObject(_content);
 		}
 
 		protected override void ReadPreviews() {

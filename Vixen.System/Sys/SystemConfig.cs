@@ -125,6 +125,11 @@ namespace Vixen.Sys {
 			set { _disabledDevicesIds = new List<Guid>(value.Select(x => x.Id)); }
 		}
 
+		public IEnumerable<Guid> DisabledDeviceIds {
+			get { return _disabledDevicesIds.ToArray(); }
+			set { _disabledDevicesIds = new List<Guid>(value); }
+		}
+
 		public bool IsContext { get; set; }
 
 		public bool IsPreviewThreaded { get; set; }

@@ -10,10 +10,10 @@
 			WriteControllers();
 			WriteControllerLinks();
 			WriteSmartControllers();
-			WriteDisabledControllers();
 			WritePreviews();
 			WriteFilters();
 			WriteDataFlowPatching();
+			WriteDisabledDevices();
 		}
 
 		protected abstract void WriteContextFlag();
@@ -25,10 +25,10 @@
 		protected abstract void WriteControllers();
 		protected abstract void WriteControllerLinks();
 		protected abstract void WriteSmartControllers();
-		protected abstract void WriteDisabledControllers();
 		protected abstract void WritePreviews();
 		protected abstract void WriteFilters();
 		protected abstract void WriteDataFlowPatching();
+		protected abstract void WriteDisabledDevices();
 
 		public void Read() {
 			ReadContextFlag();
@@ -40,10 +40,10 @@
 			ReadControllers();
 			ReadControllerLinks();
 			ReadSmartControllers();
-			ReadDisabledControllers();
 			ReadPreviews();
 			ReadFilters();
 			ReadDataFlowPatching();
+			ReadDisabledDevices();
 		}
 
 		protected abstract void ReadContextFlag();
@@ -55,9 +55,9 @@
 		protected abstract void ReadControllers();
 		protected abstract void ReadControllerLinks();
 		protected abstract void ReadSmartControllers();
-		protected abstract void ReadDisabledControllers();
 		protected abstract void ReadPreviews();
 		protected abstract void ReadFilters();
 		protected abstract void ReadDataFlowPatching();
+		protected abstract void ReadDisabledDevices();
 	}
 }

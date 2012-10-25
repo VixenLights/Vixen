@@ -18,7 +18,8 @@ namespace Vixen.IO.Xml.SystemConfig {
 				new MigrationSegment<XElement>(8, 9, _Version_8_to_9),
 				new MigrationSegment<XElement>(9, 10, _Version_9_to_10),
 				new MigrationSegment<XElement>(10, 11, _Version_10_to_11),
-				new MigrationSegment<XElement>(11, 12, _Version_11_to_12)};
+				new MigrationSegment<XElement>(11, 12, _Version_11_to_12),
+				new MigrationSegment<XElement>(12, 13, _Version_12_to_13)};
 		}
 
 		public XElement MigrateContent(XElement content, int fromVersion, int toVersion) {
@@ -191,6 +192,24 @@ namespace Vixen.IO.Xml.SystemConfig {
 			}
 
 			return systemConfigContent;
+		}
+
+		// Version 13: Changed the disabled controllers element to reflect disabled devices
+		// (ie. controllers, smart controllers, and previews.) Changed name to suit.
+		private XElement _Version_12_to_13(XElement content)
+		{
+			XElement disabledControllers = content.Element("DisabledControllers");
+			XElement disabledDevices = new XElement("DisabledDevices");
+			if (disabledControllers != null) {
+				disabledDevices = new XElement(disabledControllers);
+				disabledDevices.Name = "DisabledDevices";
+				foreach (XElement disabledDevice in disabledDevices.Elements("Controller")) {
+					disabledDevice.Name = "Device";
+				}
+				disabledControllers.Remove();
+			}
+			content.Add(disabledDevices);
+			return content;
 		}
 	}
 }
