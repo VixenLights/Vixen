@@ -11,11 +11,25 @@ namespace VixenModules.Preview.DisplayPreview.Model
     public class DisplayPreviewModuleInstance : FormPreviewModuleInstanceBase
     {
         private readonly List<IProgramContext> _programContexts;
-
+    	private ViewManager _viewManager;
+    	
         public DisplayPreviewModuleInstance()
         {
             _programContexts = new List<IProgramContext>();
+			_viewManager=new ViewManager();
         }
+
+    	private ViewManager ViewManager
+    	{
+    		get
+    		{
+    			if(_viewManager==null)
+    			{
+    				_viewManager=new ViewManager();
+    			}
+    			return _viewManager;
+    		}
+    	}
 
         public override bool HasSetup
         {
@@ -28,6 +42,7 @@ namespace VixenModules.Preview.DisplayPreview.Model
         public override void Dispose()
         {
             EnsureVisualizerIsClosed();
+        	_viewManager = null;
             Execution.NodesChanged -= ExecutionNodesChanged;
             VixenSystem.Contexts.ContextCreated -= ProgramContextCreated;
             VixenSystem.Contexts.ContextReleased -= ProgramContextReleased;
@@ -43,20 +58,20 @@ namespace VixenModules.Preview.DisplayPreview.Model
 
         public override void Start()
         {
-            var dataModel = GetDisplayPreviewModuleDataModel();
+        	var dataModel = GetDisplayPreviewModuleDataModel();
         	if(dataModel.IsEnabled)
         	{
-            ViewManager.StartVisualizer(dataModel);
-        			
+				ViewManager.StartVisualizer(dataModel);
         	}
 			base.Start();
         }
 
         public override void Stop()
         {
-            if (!GetDisplayPreviewModuleDataModel().Preferences.KeepVisualizerWindowOpen)
+        	if (!GetDisplayPreviewModuleDataModel().Preferences.KeepVisualizerWindowOpen)
             {
                 EnsureVisualizerIsClosed();
+            	_viewManager = null;
             }
             base.Stop();
         }
@@ -75,12 +90,12 @@ namespace VixenModules.Preview.DisplayPreview.Model
 
         protected override void Update()
         {
-            ViewManager.UpdatePreviewExecutionStateValues(ChannelStates);
+			ViewManager.UpdateVisualizerExecutionStateValues(ChannelStates);		
         }
 
-    	private static void EnsureVisualizerIsClosed()
+    	private void EnsureVisualizerIsClosed()
         {
-            ViewManager.EnsureVisualizerIsClosed();
+			ViewManager.EnsureVisualizerIsClosed();
         }
 
         private static void ExecutionNodesChanged(object sender, EventArgs e)
