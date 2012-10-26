@@ -142,13 +142,21 @@ namespace VixenApplication {
 
 		private void listViewControllers_ItemCheck(object sender, ItemCheckEventArgs e)
 		{
+			OutputPreview preview = (listViewControllers.Items[e.Index].Tag as OutputPreview);
 			if(e.NewValue==CheckState.Unchecked)
 			{
-				(listViewControllers.Items[e.Index].Tag as OutputPreview).Stop();		
+				if (preview!=null && preview.IsRunning)
+				{
+					VixenSystem.Previews.Stop(preview);
+				}
 			}
 			else if(e.NewValue==CheckState.Checked)
 			{
-				(listViewControllers.Items[e.Index].Tag as OutputPreview).Start();	
+				if (preview != null && !preview.IsRunning)
+				{
+					VixenSystem.Previews.Start(preview);
+				}
+					
 			}
 
 		}
