@@ -13,9 +13,6 @@
         <ContentControl.ContentTemplate>
             <DataTemplate DataType="{x:Type Model1:Preferences}">
                 <StackPanel>
-                    <CheckBox IsChecked="{Binding KeepVisualizerWindowOpen, Mode=TwoWay}"
-                              Margin="2"
-                              Content="Keep Preview Window Open" />
                     <GroupBox Header="Display Item Defaults"
                               Padding="2">
 

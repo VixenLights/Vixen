@@ -68,11 +68,8 @@ namespace VixenModules.Preview.DisplayPreview.Model
 
         public override void Stop()
         {
-        	if (!GetDisplayPreviewModuleDataModel().Preferences.KeepVisualizerWindowOpen)
-            {
-                EnsureVisualizerIsClosed();
-            	_viewManager = null;
-            }
+			EnsureVisualizerIsClosed();
+            _viewManager = null;
             base.Stop();
         }
 

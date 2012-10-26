@@ -130,21 +130,6 @@ namespace VixenModules.Preview.DisplayPreview.Model
         }
 
         [DataMember]
-        public bool KeepVisualizerWindowOpen
-        {
-            get
-            {
-                return this._keepVisualizerWindowOpen;
-            }
-
-            set
-            {
-                this._keepVisualizerWindowOpen = value;
-                this.PropertyChanged.NotifyPropertyChanged("KeepVisualizerWindowOpen", this);
-            }
-        }
-
-        [DataMember]
         public double OpacityDefault
         {
             get
@@ -172,7 +157,6 @@ namespace VixenModules.Preview.DisplayPreview.Model
                         DisplayWidthDefault = 640, 
                         DisplayHeightDefault = 480, 
                         OpacityDefault = .75, 
-                        KeepVisualizerWindowOpen = false, 
                     };
                 return preferences;
             }
@@ -189,7 +173,6 @@ namespace VixenModules.Preview.DisplayPreview.Model
                     DisplayItemWidthDefault = this.DisplayItemWidthDefault, 
                     DisplayWidthDefault = this.DisplayWidthDefault, 
                     OpacityDefault = this.OpacityDefault, 
-                    KeepVisualizerWindowOpen = this.KeepVisualizerWindowOpen, 
                 };
             return preferences;
         }
