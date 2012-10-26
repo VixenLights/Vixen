@@ -11,7 +11,8 @@
         MaxHeight="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Height}"
         MaxWidth="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Width}"
         Title="Display Item and Channel Editor"
-        SizeToContent="WidthAndHeight"
+        SizeToContent="Width"
+		Height="480"
         d:DataContext="{d:DesignInstance ViewModels:DisplayItemEditorViewModel}">
     <Window.Resources>
         <ResourceDictionary>
@@ -38,19 +39,20 @@
         </Grid.ColumnDefinitions>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="15*"/>
+                <RowDefinition/>
             </Grid.RowDefinitions>
             <GroupBox Header="Available Nodes">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="8*"/>
+                        <RowDefinition/>
                     </Grid.RowDefinitions>
                     <TreeView ItemsSource="{Binding NodeSources}"
                               x:Name="treeview"
                               HorizontalContentAlignment="Stretch"
-                              VerticalContentAlignment="Stretch">
+                              VerticalContentAlignment="Stretch"
+							  ScrollViewer.VerticalScrollBarVisibility="Auto">
                         <TreeView.ItemContainerStyle>
                             <Style TargetType="{x:Type TreeViewItem}">
                                 <Setter Property="FontWeight"
@@ -83,14 +85,17 @@
                     </TreeView>
                     <TextBlock Grid.Row="1"
                                TextWrapping="WrapWithOverflow"
-                               Width="{Binding ElementName=treeview, Path=ActualWidth}">
+                               Width="{Binding ElementName=treeview, Path=ActualWidth}"
+							   VerticalAlignment="Bottom">
                         Drag a node to the Display Item Canvas
                     </TextBlock>
                 </Grid>
             </GroupBox>
             <Button Content="Close"
                     Click="CloseButtonClick"
-                    Grid.Row="1" />
+                    Grid.Row="1"
+					MinHeight="20"
+					VerticalAlignment="Bottom"/>
         </Grid>
         <GridSplitter Grid.Column="1"
                       ResizeBehavior="PreviousAndNext"
@@ -99,8 +104,8 @@
                       HorizontalAlignment="Right" />
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
+				<RowDefinition Height="Auto"/>
+				<RowDefinition/>
             </Grid.RowDefinitions>
             <StackPanel Orientation="Horizontal">
                 <ContentControl Content="{Binding DisplayItem}">
