@@ -278,7 +278,7 @@ namespace VixenModules.Preview.DisplayPreview.ViewModels
                     var answer =
                         MessageBox.Show(
                                         string.Format(
-                                                      "Do you want to resize you display to match the image resolution of {0}w x {1}h?", 
+                                                      "Do you want to resize your display to match the image resolution of {0}w x {1}h?", 
                                                       imageWidth, 
                                                       imageHeight), 
                                         "Resize the display?", 
