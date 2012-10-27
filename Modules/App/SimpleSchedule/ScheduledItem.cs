@@ -26,5 +26,8 @@ namespace VixenModules.App.SimpleSchedule {
 
 		[DataMember]
 		public TimeSpan RunLength { get; set; }
+
+        [DataMember]
+        public DateTime ScheduledItemStartDate { get; set; }
 	}
 }

@@ -37,6 +37,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.Calendar35">
+      <HintPath>..\..\..\Common\System.Windows.Forms.Calendar35.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -44,6 +47,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\ConfigureSchedule.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ConfigureSchedule.Designer.cs">
+      <DependentUpon>ConfigureSchedule.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ConfigureProgram.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ConfigureProgram.Designer.cs">
+      <DependentUpon>ConfigureProgram.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ConfigureScheduledItems.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ConfigureScheduledItems.Designer.cs">
+      <DependentUpon>ConfigureScheduledItems.cs</DependentUpon>
+    </Compile>
     <Compile Include="IItemScheduler.cs" />
     <Compile Include="IScheduledItem.cs" />
     <Compile Include="IScheduledItemStateObject.cs" />
@@ -76,7 +97,17 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Forms\ConfigureSchedule.resx">
+      <DependentUpon>ConfigureSchedule.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ConfigureProgram.resx">
+      <DependentUpon>ConfigureProgram.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ConfigureScheduledItems.resx">
+      <DependentUpon>ConfigureScheduledItems.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
