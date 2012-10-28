@@ -254,7 +254,7 @@ namespace VixenModules.Preview.DisplayPreview.Model
 
     	public void Handle(IIntentState<LightingValue> state)
     	{
-			System.Drawing.Color color = state.GetValue().GetIntensityAffectedColor();
+			System.Drawing.Color color = state.GetValue().GetOpaqueIntensityAffectedColor();
 			AddColorToNode(Color.FromArgb(color.A, color.R, color.G, color.B));
     	}
 

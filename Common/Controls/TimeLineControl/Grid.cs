@@ -50,7 +50,7 @@ namespace Common.Controls.Timeline
 			RowSeparatorColor = Color.Black;
 			MajorGridlineColor = Color.FromArgb(120, 120, 120);
 			GridlineInterval = TimeSpan.FromSeconds(1.0);
-			BackColor = Color.FromArgb(140, 140, 140);
+			BackColor = Color.FromArgb(60, 60, 60);
 			SelectionColor = Color.FromArgb(100, 40, 100, 160);
 			SelectionBorder = Color.Blue;
 			CursorColor = Color.FromArgb(150, 50, 50, 50);
@@ -1075,20 +1075,30 @@ namespace Common.Controls.Timeline
 							break;
 						}
 
-						// find how many bitmaps are going to be in this next segment, and also take note of the earliest time they finish
 						TimeSpan processingSegmentDuration = TimeSpan.MaxValue;
 						TimeSpan drawingSegmentDuration;
 						TimeSpan earliestStart = TimeSpan.MaxValue;
+
+						// these handle the fact that our pixels don't perfectly align with exact start times of elements, and are used to
+						// capture any timespan that's within the single pixel range of the 'current drawn to' point
+						TimeSpan currentlyDrawnMin = pixelsToTime((int)Math.Floor(timeToPixels(currentlyDrawnTo)));
+						TimeSpan currentlyDrawnMax = pixelsToTime((int)Math.Ceiling(timeToPixels(currentlyDrawnTo)));
+
+						// find how many bitmaps are going to be in this next segment, and also figure out the smallest whole section
+						// to draw before another element starts or until one of the current ones end
 						int bitmapLayers = 0;
 						foreach (BitmapDrawDetails drawDetails in bitmapsToDraw) {
 							TimeSpan start = drawDetails.startTime;
 							TimeSpan duration = drawDetails.duration;
-							TimeSpan currentlyDrawnMin = pixelsToTime((int)Math.Floor(timeToPixels(currentlyDrawnTo)));
-							TimeSpan currentlyDrawnMax = pixelsToTime((int)Math.Ceiling(timeToPixels(currentlyDrawnTo)));
+
+							// if this bitmap is within the single pixel range that is currently drawing, we'll be drawing it.
+							// check the duration to make sure we're drawing the smallest possible slice of elements.
 							if (start >= currentlyDrawnMin && start <= currentlyDrawnMax) {
 								bitmapLayers++;
 								if (duration < processingSegmentDuration)
 									processingSegmentDuration = duration;
+							// if this drawing bitmap isn't starting at the current point, it might be the next one; check if we can
+							// cut down the current drawing segment as another one will be starting soon
 							} else if (start - currentlyDrawnTo < processingSegmentDuration) {
 								processingSegmentDuration = start - currentlyDrawnTo;
 							}
@@ -1100,27 +1110,27 @@ namespace Common.Controls.Timeline
 						}
 
 						bool firstDraw = true;
+						Bitmap finalBitmap = null;
+						BitmapData finalBitmapData = null;
+						Point? finalDrawLocation = null;
+
 						foreach (BitmapDrawDetails drawDetails in bitmapsToDraw.ToArray()) {
 							Bitmap bmp = drawDetails.bmp;
 							TimeSpan start = drawDetails.startTime;
 							TimeSpan duration = drawDetails.duration;
-							bool overlapping = false;
+							bool bitmapContinuesPastCurrentDrawDuration = false;
 
 							// only draw elements that are at the point we are currently drawing from
-							TimeSpan currentlyDrawnMin = pixelsToTime((int)Math.Floor(timeToPixels(currentlyDrawnTo)));
-							TimeSpan currentlyDrawnMax = pixelsToTime((int)Math.Ceiling(timeToPixels(currentlyDrawnTo)));
 							if (start < currentlyDrawnMin || start > currentlyDrawnMax)
 								continue;
-
-							Point location = new Point((int)Math.Floor(timeToPixels(start)), top);
 
 							if (duration != processingSegmentDuration) {
 								// it must be longer; crop the bitmap into a smaller one
 								int croppedWidth = (int)Math.Ceiling(timeToPixels(processingSegmentDuration));
 								drawingSegmentDuration = pixelsToTime(croppedWidth);
 								if (croppedWidth > 0 && bmp.Width - croppedWidth > 0) {
-									overlapping = true;
-									Bitmap croppedBitmap = bmp.Clone(new Rectangle(0, 0, croppedWidth, bmp.Height), System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+									bitmapContinuesPastCurrentDrawDuration = true;
+									Bitmap croppedBitmap = bmp.Clone(new Rectangle(0, 0, croppedWidth, bmp.Height), PixelFormat.Format32bppArgb);
 									drawDetails.bmp = bmp.Clone(new Rectangle(croppedWidth, 0, bmp.Width - croppedWidth, bmp.Height), bmp.PixelFormat);
 									drawDetails.startTime = start + drawingSegmentDuration;
 									drawDetails.duration = duration - drawingSegmentDuration;
@@ -1128,31 +1138,66 @@ namespace Common.Controls.Timeline
 								}
 							}
 
+							// for the first time around, set up the final bitmap data item and lock it
 							if (firstDraw) {
-								g.DrawImage(bmp, location);
+								finalBitmap = new Bitmap((int)Math.Ceiling(timeToPixels(processingSegmentDuration)), bmp.Height);
+								finalDrawLocation = new Point((int)Math.Floor(timeToPixels(start)), top);
 								firstDraw = false;
-							} else {
-								// get the bitmap data in a nice, quick format
-								BitmapData bmpdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
-								IntPtr ptr = bmpdata.Scan0;
-								int bytes = bmpdata.Stride * bmp.Height;
-								byte[] argbValues = new byte[bytes];
-								System.Runtime.InteropServices.Marshal.Copy(ptr, argbValues, 0, bytes);
 
-								// set the alpha to 100/bitmapLayers percent
-								byte value = (byte)(255 / bitmapLayers);
-								for (int counter = 3; counter < argbValues.Length; counter += 4)
-									argbValues[counter] = value;
-
-								// put the bitmap data back
-								System.Runtime.InteropServices.Marshal.Copy(argbValues, 0, ptr, bytes);
-								bmp.UnlockBits(bmpdata);
-								g.DrawImage(bmp, location);
 							}
 
-							if (!overlapping) {
+							if (bitmapLayers == 1) {
+								Graphics.FromImage(finalBitmap).DrawImage(bmp, 0, 0);
+							} else {
+								if (finalBitmapData == null) {
+									finalBitmapData = finalBitmap.LockBits(new Rectangle(0, 0, finalBitmap.Width, finalBitmap.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+								}
+
+								unsafe {
+									// get the drawing bitmap data in a nice, quick format, and blat it onto the final bitmap
+									// (http://stackoverflow.com/questions/12170894/drawing-image-with-additive-blending/12210258#12210258)
+									BitmapData bmpdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+									byte* pbmp = (byte*) bmpdata.Scan0.ToPointer();
+									byte* pfinal = (byte*) finalBitmapData.Scan0.ToPointer();
+
+									int bmpBPP = bmpdata.Stride/bmpdata.Width;
+									int finalBPP = finalBitmapData.Stride/finalBitmapData.Width;
+
+									// we're going to assume that the final bitmap data is the same size as the bmpdata (they should be!)
+									// and iterate over them both at the same time
+									for (int j = 0; j < bmpdata.Height; j++) {
+										for (int k = 0; k < bmpdata.Width; k++) {
+											// get the scale of the alpha to apply to the other input components
+											double inputIntensityScale = (double) *(pbmp + 3)/byte.MaxValue;
+
+											// do alpha byte. It should be the max of any pixel at the position (ie. be as opaque as possible)
+											*(pfinal + 3) = Math.Max(*(pfinal + 3), *(pbmp + 3));
+
+											// do RGB components of the pixel. Scale any incoming data by the alpha of its channel (to dial the intensity back
+											// to what it would really be), then try and find the highest of any individual component to get the final color.
+											*(pfinal + 0) = Math.Max(*(pfinal + 0), (byte) (*(pbmp + 0)*inputIntensityScale));
+											*(pfinal + 1) = Math.Max(*(pfinal + 1), (byte) (*(pbmp + 1)*inputIntensityScale));
+											*(pfinal + 2) = Math.Max(*(pfinal + 2), (byte) (*(pbmp + 2)*inputIntensityScale));
+
+											pfinal += finalBPP;
+											pbmp += bmpBPP;
+										}
+									}
+
+									bmp.UnlockBits(bmpdata);
+								}
+							}
+
+							if (!bitmapContinuesPastCurrentDrawDuration) {
 								bitmapsToDraw.Remove(drawDetails);
 							}
+						}
+
+						if (finalBitmap != null) {
+							if (finalBitmapData != null) {
+								finalBitmap.UnlockBits(finalBitmapData);
+							}
+							g.DrawImage(finalBitmap, (Point)finalDrawLocation);
 						}
 
 						if (processingSegmentDuration < TimeSpan.MaxValue)
