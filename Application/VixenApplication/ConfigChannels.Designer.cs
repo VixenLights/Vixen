@@ -60,6 +60,7 @@
 			this.pastePropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.addNewNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.addMultipleNewNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.createGroupWithNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.renameNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,7 +70,6 @@
 			this.copyHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.multiSelectTreeviewChannelsGroups = new Common.Controls.MultiSelectTreeview();
-			this.addMultipleNewNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBoxSelectedNode.SuspendLayout();
 			this.groupBoxOperations.SuspendLayout();
 			this.contextMenuStripTreeView.SuspendLayout();
@@ -303,7 +303,7 @@
             this.renameNodesToolStripMenuItem,
             this.toolStripMenuItem1});
 			this.contextMenuStripTreeView.Name = "contextMenuStripTreeView";
-			this.contextMenuStripTreeView.Size = new System.Drawing.Size(155, 242);
+			this.contextMenuStripTreeView.Size = new System.Drawing.Size(155, 220);
 			this.contextMenuStripTreeView.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripTreeView_Opening);
 			// 
 			// cutNodesToolStripMenuItem
@@ -366,6 +366,13 @@
 			this.addNewNodeToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
 			this.addNewNodeToolStripMenuItem.Text = "Add";
 			this.addNewNodeToolStripMenuItem.Click += new System.EventHandler(this.addNewNodeToolStripMenuItem_Click);
+			// 
+			// addMultipleNewNodesToolStripMenuItem
+			// 
+			this.addMultipleNewNodesToolStripMenuItem.Name = "addMultipleNewNodesToolStripMenuItem";
+			this.addMultipleNewNodesToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+			this.addMultipleNewNodesToolStripMenuItem.Text = "Add Multiple";
+			this.addMultipleNewNodesToolStripMenuItem.Click += new System.EventHandler(this.addMultipleNewNodesToolStripMenuItem_Click);
 			// 
 			// deleteNodesToolStripMenuItem
 			// 
@@ -449,13 +456,7 @@
 			this.multiSelectTreeviewChannelsGroups.TabIndex = 12;
 			this.multiSelectTreeviewChannelsGroups.UsingCustomDragCursor = false;
 			this.multiSelectTreeviewChannelsGroups.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.multiSelectTreeviewChannelsGroups_AfterSelect);
-			// 
-			// addMultipleNewNodesToolStripMenuItem
-			// 
-			this.addMultipleNewNodesToolStripMenuItem.Name = "addMultipleNewNodesToolStripMenuItem";
-			this.addMultipleNewNodesToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
-			this.addMultipleNewNodesToolStripMenuItem.Text = "Add Multiple";
-			this.addMultipleNewNodesToolStripMenuItem.Click += new System.EventHandler(this.addMultipleNewNodesToolStripMenuItem_Click);
+			this.multiSelectTreeviewChannelsGroups.KeyDown += new System.Windows.Forms.KeyEventHandler(this.multiSelectTreeviewChannelsGroups_KeyDown);
 			// 
 			// ConfigChannels
 			// 

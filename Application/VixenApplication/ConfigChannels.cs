@@ -853,6 +853,23 @@ namespace VixenApplication
 				}
 			}
 		}
+
+		private void multiSelectTreeviewChannelsGroups_KeyDown(object sender, KeyEventArgs e)
+		{
+			// do our own deleting of items here
+			if (e.KeyCode == Keys.Delete) {
+				if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0) {
+					if (MessageBox.Show("Delete selected channels?", "Delete channels", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) == DialogResult.Yes) {
+						foreach (TreeNode tn in multiSelectTreeviewChannelsGroups.SelectedNodes) {
+							DeleteNode(tn);
+						}
+
+						PopulateNodeTree();
+						PopulateFormWithNode(_displayedNode, true);
+					}
+				}
+			}
+		}
 	}
 
 	public class ComboBoxControllerItem
