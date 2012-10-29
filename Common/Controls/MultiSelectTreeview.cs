@@ -281,6 +281,13 @@ namespace Common.Controls
 							SelectNode(node);
 						}
 					}
+					// due to a weird issue in the TreeNode GetNodeAt() call, if we click off to the right of the nodes,
+					// it still selects them. Detect that, and clear them if needed (only if no modifier keys are down).
+					if (e.Location.X > rightBound && ModifierKeys == Keys.None) {
+						ClearSelectedNodes();
+						if (Deselected != null)
+							Deselected(this, new EventArgs());
+					}
 				} else {
 					ClearSelectedNodes();
 					if (Deselected != null)
