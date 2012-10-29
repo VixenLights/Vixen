@@ -10,7 +10,7 @@ namespace VixenModules.App.SimpleSchedule.Forms
     {
         private SimpleSchedulerData _data;
         private List<CalendarItem> _calendarItems;
-        CalendarItem contextItem = null;
+        CalendarItem contextItem;
 
 
         public ConfigureSchedule(SimpleSchedulerData data)
@@ -22,8 +22,8 @@ namespace VixenModules.App.SimpleSchedule.Forms
             monthView1.DaySelectedBackgroundColor = CalendarColorTable.FromHex("#F4CC52");
             monthView1.DaySelectedTextColor = monthView1.ForeColor;
 
-           
-           _data = data;
+
+            _data = data;
         }
 
         private void PlaceItems()
@@ -32,11 +32,10 @@ namespace VixenModules.App.SimpleSchedule.Forms
             _calendarItems = new List<CalendarItem>();
             foreach (ScheduledItem item in _data.ScheduledItems)
             {
-                
+
                 string name = item.ItemFilePath.Substring(item.ItemFilePath.LastIndexOf("\\") + 1);
-                string finalname = name.Substring(0,name.LastIndexOf("."));
-                CalendarItem ci = new CalendarItem(calendar1, item.ScheduledItemStartDate, item.RunLength, finalname);
-                ci.Tag = item.Id;
+                string finalname = name.Substring(0, name.LastIndexOf("."));
+                CalendarItem ci = new CalendarItem(calendar1, item.ScheduledItemStartDate, item.RunLength, finalname) { Tag = item.Id };
                 _calendarItems.Add(ci);
                 calendar1.Items.Add(ci);
             }
@@ -81,11 +80,82 @@ namespace VixenModules.App.SimpleSchedule.Forms
                 _data.IsEnabled = false;
         }
 
-        private void calendar1_ItemDoubleClick(object sender, ref CalendarItemEventArgs e)
+         private void calendar1_LoadItems_1(object sender, CalendarLoadEventArgs e)
         {
-            //use this to create a new scheduled item
+            if (_data.ScheduledItems.Count > 0)
+            {
+                PlaceItems();
+            }
+
+            SetScrollValues();
+        }
+
+        private void calendar1_ItemDatesChanged(object sender, ref CalendarItemEventArgs e)
+        {
+            CalendarItem ci = e.Item;
+            //we have moved or modified this item so lets update the configuration information.
+            ScheduledItem item = _data.ScheduledItems.Find(x => x.Id == (Guid)ci.Tag);
+            item.RunLength = ci.Duration;
+            item.ScheduledItemStartDate = ci.StartDate;
+            item.StartTime = ci.StartDate.TimeOfDay;
+
+            //now update the item in the _data.scheduleditems list
+            _data.ScheduledItems.RemoveAll(x => x.Id == (Guid)ci.Tag);
+
+            //now add the new item back to the _data.scheduledItems
+            _data.ScheduledItems.Add(item);
+        }
+
+        private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            contextItem = calendar1.ItemAt(contextMenuStrip1.Bounds.Location);
+        }
+
+        private void addToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CalendarItem item = ReturnCalendarItem();
+
+            if (item != null)
+            {
+                MessageBox.Show("Item already exists.\r\n" + "If you wish to change date/time just drag and drop where you want the item to be.",
+                    "Item Exists", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                item = new CalendarItem(calendar1, calendar1.SelectedElementStart.Date, calendar1.SelectedElementEnd.Date, "New Item to Add");
+                using (ConfigureScheduledItems csi = new ConfigureScheduledItems(item))
+                {
+                    if (csi.ShowDialog() == DialogResult.OK)
+                    {
+                        _data.ScheduledItems.Add(csi._scheduledItem);
+                        PlaceItems();
+                    }
+                }
+            }
+        }
+
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             
-            using (ConfigureScheduledItems csi = new ConfigureScheduledItems(e.Item))
+            CalendarItem item = ReturnCalendarItem();
+            DialogResult result;
+            if (item != null)
+            {
+               result =  MessageBox.Show("Are you sure you want to delete item!!!", "Delete Item", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+               if (result == System.Windows.Forms.DialogResult.Yes)
+               {
+                   _data.ScheduledItems.RemoveAll(x => x.Id == (Guid)item.Tag);
+                   PlaceItems();
+               }
+            }
+        }
+
+        private void changeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CalendarItem item = ReturnCalendarItem();
+            ScheduledItem schitem = _data.ScheduledItems.Find(x => x.Id == (Guid)item.Tag);
+
+            using (ConfigureScheduledItems csi = new ConfigureScheduledItems(schitem))
             {
                 if (csi.ShowDialog() == DialogResult.OK)
                 {
@@ -93,24 +163,8 @@ namespace VixenModules.App.SimpleSchedule.Forms
                     PlaceItems();
                 }
             }
+
         }
-
-        private void calendar1_ItemClick(object sender, ref CalendarItemEventArgs e)
-        {
-            //get our item that we selected
-            //CalendarItem ci = e.Item;
-            //ScheduledItem item = _data.ScheduledItems.Find(x => x.Id == (Guid)ci.Tag);
-
-            //    using (ConfigureScheduledItems csi = new ConfigureScheduledItems(item))
-            //    {
-            //        if (csi.ShowDialog() == DialogResult.OK)
-            //        {
-            //            _data.ScheduledItems.Add(csi._scheduledItem);
-            //            PlaceItems();
-            //        }
-            //    }
-        }
-
         private void calendar1_TimeUnitsOffsetChanged(object sender, EventArgs e)
         {
             vScrollBar1.Value = Math.Abs(calendar1.TimeUnitsOffset);
@@ -136,56 +190,18 @@ namespace VixenModules.App.SimpleSchedule.Forms
             calendar1.TimeUnitsOffset = (-e.NewValue);
         }
 
-        private void calendar1_LoadItems_1(object sender, CalendarLoadEventArgs e)
-        {
-            if (_data.ScheduledItems.Count > 0)
-            {
-                PlaceItems();
-            }
-
-            SetScrollValues();
-        }
-
-        private void calendar1_ItemDatesChanged(object sender, ref CalendarItemEventArgs e)
-        {
-            CalendarItem ci = e.Item;
-            //we have moved or modified this item so lets update the configuration information.
-            ScheduledItem item = _data.ScheduledItems.Find(x => x.Id == (Guid)ci.Tag);
-            item.RunLength = ci.Duration;
-            item.ScheduledItemStartDate = ci.StartDate;
-            item.StartTime = ci.StartDate.TimeOfDay;
-            
-            //now update the item in the _data.scheduleditems list
-            _data.ScheduledItems.RemoveAll(x => x.Id == (Guid)ci.Tag);
-
-            //now add the new item back to the _data.scheduledItems
-            _data.ScheduledItems.Add(item);
-        }
-
-        private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            contextItem = calendar1.ItemAt(contextMenuStrip1.Bounds.Location);
-        }
-
-        private void addToolStripMenuItem_Click(object sender, EventArgs e)
+        private CalendarItem ReturnCalendarItem()
         {
             IEnumerable<CalendarItem> items = calendar1.GetSelectedItems();
-            int x = 0;
-        }
-
-        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void changeSequenceToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void changeProgramToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
+            if (items.Count() > 0)
+            {
+                CalendarItem item = items.ElementAt(0);
+                return item;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

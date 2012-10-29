@@ -40,13 +40,12 @@
             this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
             this.calendar1 = new System.Windows.Forms.Calendar.Calendar();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.monthView1 = new System.Windows.Forms.Calendar.MonthView();
-            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.changeSequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.changeProgramToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.changeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitter1 = new System.Windows.Forms.Splitter();
+            this.monthView1 = new System.Windows.Forms.Calendar.MonthView();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.calendar1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -132,8 +131,6 @@
             this.calendar1.TimeScale = System.Windows.Forms.Calendar.CalendarTimeScale.FifteenMinutes;
             this.calendar1.LoadItems += new System.Windows.Forms.Calendar.Calendar.CalendarLoadEventHandler(this.calendar1_LoadItems_1);
             this.calendar1.ItemDatesChanged += new System.Windows.Forms.Calendar.Calendar.CalendarItemEventHandler(this.calendar1_ItemDatesChanged);
-            this.calendar1.ItemClick += new System.Windows.Forms.Calendar.Calendar.CalendarItemEventHandler(this.calendar1_ItemClick);
-            this.calendar1.ItemDoubleClick += new System.Windows.Forms.Calendar.Calendar.CalendarItemEventHandler(this.calendar1_ItemDoubleClick);
             this.calendar1.TimeUnitsOffsetChanged += new System.EventHandler(this.calendar1_TimeUnitsOffsetChanged);
             // 
             // contextMenuStrip1
@@ -141,11 +138,39 @@
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addToolStripMenuItem,
             this.deleteToolStripMenuItem,
-            this.changeSequenceToolStripMenuItem,
-            this.changeProgramToolStripMenuItem});
+            this.changeToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(170, 114);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 92);
             this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
+            // 
+            // addToolStripMenuItem
+            // 
+            this.addToolStripMenuItem.Name = "addToolStripMenuItem";
+            this.addToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addToolStripMenuItem.Text = "Add";
+            this.addToolStripMenuItem.Click += new System.EventHandler(this.addToolStripMenuItem_Click);
+            // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.deleteToolStripMenuItem.Text = "Delete";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
+            // 
+            // changeToolStripMenuItem
+            // 
+            this.changeToolStripMenuItem.Name = "changeToolStripMenuItem";
+            this.changeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.changeToolStripMenuItem.Text = "Change";
+            this.changeToolStripMenuItem.Click += new System.EventHandler(this.changeToolStripMenuItem_Click);
+            // 
+            // splitter1
+            // 
+            this.splitter1.Location = new System.Drawing.Point(0, 0);
+            this.splitter1.Name = "splitter1";
+            this.splitter1.Size = new System.Drawing.Size(3, 470);
+            this.splitter1.TabIndex = 0;
+            this.splitter1.TabStop = false;
             // 
             // monthView1
             // 
@@ -169,42 +194,6 @@
             this.monthView1.Text = "monthView1";
             this.monthView1.TodayBorderColor = System.Drawing.Color.Maroon;
             this.monthView1.SelectionChanged += new System.EventHandler(this.monthView1_SelectionChanged);
-            // 
-            // addToolStripMenuItem
-            // 
-            this.addToolStripMenuItem.Name = "addToolStripMenuItem";
-            this.addToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
-            this.addToolStripMenuItem.Text = "Add";
-            this.addToolStripMenuItem.Click += new System.EventHandler(this.addToolStripMenuItem_Click);
-            // 
-            // deleteToolStripMenuItem
-            // 
-            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
-            this.deleteToolStripMenuItem.Text = "Delete";
-            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
-            // 
-            // changeSequenceToolStripMenuItem
-            // 
-            this.changeSequenceToolStripMenuItem.Name = "changeSequenceToolStripMenuItem";
-            this.changeSequenceToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
-            this.changeSequenceToolStripMenuItem.Text = "Change Sequence";
-            this.changeSequenceToolStripMenuItem.Click += new System.EventHandler(this.changeSequenceToolStripMenuItem_Click);
-            // 
-            // changeProgramToolStripMenuItem
-            // 
-            this.changeProgramToolStripMenuItem.Name = "changeProgramToolStripMenuItem";
-            this.changeProgramToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
-            this.changeProgramToolStripMenuItem.Text = "Change Program";
-            this.changeProgramToolStripMenuItem.Click += new System.EventHandler(this.changeProgramToolStripMenuItem_Click);
-            // 
-            // splitter1
-            // 
-            this.splitter1.Location = new System.Drawing.Point(0, 0);
-            this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(3, 470);
-            this.splitter1.TabIndex = 0;
-            this.splitter1.TabStop = false;
             // 
             // ConfigureSchedule
             // 
@@ -243,8 +232,7 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem changeSequenceToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem changeProgramToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem changeToolStripMenuItem;
         private System.Windows.Forms.Splitter splitter1;
     }
 }

@@ -25,14 +25,16 @@ namespace VixenModules.App.SimpleSchedule.Forms
             : this()
         {
             _scheduledItem = item;
+            _filePath = _scheduledItem.ItemFilePath;
 
             if (_scheduledItem.ItemFilePath.EndsWith(".pro"))
             {
                 _program = ApplicationServices.LoadProgram(_scheduledItem.ItemFilePath);
+                programLabel.Text = GetName();
             }
-
-            if (_program == null)
+            else
             {
+                sequenceLabel.Text = GetName();
                 _program = new Program();
             }
         }
