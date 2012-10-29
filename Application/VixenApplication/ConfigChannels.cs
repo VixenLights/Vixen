@@ -228,7 +228,7 @@ namespace VixenApplication
 				int parentCount = GetNodeParentGroupCount(node);
 				List<string> parents = GetNodeParentGroupNames(node);
 				string labelString = "", tooltipString = "";
-				labelString = "This node is in " + parentCount + " group" + ((parentCount != 1) ? "s" : "") + ((parentCount == 0) ? "." : ": ");
+				labelString = "This channel is in " + parentCount + " group" + ((parentCount != 1) ? "s" : "") + ((parentCount == 0) ? "." : ": ");
 				tooltipString = labelString + "\r\n\r\n";
 				foreach (string p in parents) {
 					labelString = labelString + p + ", ";
@@ -294,11 +294,11 @@ namespace VixenApplication
 			{
 				string message, title;
 				if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 1) {
-					message = "Are you sure you want to delete the selected nodes?";
-					title = "Delete Nodes?";
+					message = "Are you sure you want to delete the selected channels?";
+					title = "Delete Channels?";
 				} else {
-					message = "Are you sure you want to delete the selected node?";
-					title = "Delete Node?";
+					message = "Are you sure you want to delete the selected channel?";
+					title = "Delete Channel?";
 				}
 				if (MessageBox.Show(message, title, MessageBoxButtons.OKCancel) == DialogResult.OK) {
 					foreach (TreeNode tn in multiSelectTreeviewChannelsGroups.SelectedNodes) {
@@ -344,10 +344,10 @@ namespace VixenApplication
 			if (listViewProperties.SelectedItems.Count > 0) {
 				string message, title;
 				if (listViewProperties.SelectedItems.Count == 1) {
-					message = "Are you sure you want to remove the selected property from the group?";
+					message = "Are you sure you want to remove the selected property from the channel?";
 					title = "Remove Property?";
 				} else {
-					message = "Are you sure you want to remove the selected properties from the group?";
+					message = "Are you sure you want to remove the selected properties from the channel?";
 					title = "Remove Properties?";
 				}
 				if (MessageBox.Show(message, title, MessageBoxButtons.OKCancel) == DialogResult.OK) {
@@ -577,11 +577,11 @@ namespace VixenApplication
 		private ChannelNode AddSingleNodeWithPrompt(ChannelNode parent = null)
 		{
 			// since we're only adding a single node, prompt with a single text dialog.
-			using (TextDialog textDialog = new TextDialog("Node Name?")) {
+			using (TextDialog textDialog = new TextDialog("Channel Name?")) {
 				if (textDialog.ShowDialog() == DialogResult.OK) {
 					string newName;
 					if (textDialog.Response == "")
-						newName = "New Node";
+						newName = "New Channel";
 					else
 						newName = textDialog.Response;
 
@@ -830,7 +830,7 @@ namespace VixenApplication
 				return;
 			else if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count == 1) {
 				ChannelNode cn = multiSelectTreeviewChannelsGroups.SelectedNode.Tag as ChannelNode;
-				TextDialog dialog = new TextDialog("Node name?", "Rename node", (cn).Name, true);
+				TextDialog dialog = new TextDialog("Channel name?", "Rename channel", (cn).Name, true);
 				if (dialog.ShowDialog() == DialogResult.OK) {
 					if (dialog.Response != "" && dialog.Response != cn.Name)
 						VixenSystem.Nodes.RenameNode(cn, dialog.Response);
