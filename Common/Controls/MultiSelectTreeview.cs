@@ -490,7 +490,7 @@ namespace Common.Controls
 						{
 							// Select the last node visible node in the tree.
 							// Don't expand branches incase the tree is virtual
-							TreeNode ndLast = Nodes[0].LastNode;
+							TreeNode ndLast = Nodes[Nodes.Count - 1];
 							while (ndLast.IsExpanded && (ndLast.LastNode != null))
 							{
 								ndLast = ndLast.LastNode;
