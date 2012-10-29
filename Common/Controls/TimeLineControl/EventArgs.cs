@@ -111,4 +111,16 @@ namespace Common.Controls.Timeline
         public IEnumerable<Element> Elements { get { return PreviousTimes.Keys; } }
         public ElementMoveType Type { get; private set; }
     }
+
+	public class ElementsSelectedEventArgs : EventArgs
+	{
+		public ElementsSelectedEventArgs(IEnumerable<Element> elements)
+		{
+			ElementsUnderCursor = elements;
+			AutomaticallyHandleSelection = true;
+		}
+
+		public IEnumerable<Element> ElementsUnderCursor { get; private set; }
+		public bool AutomaticallyHandleSelection { get; set; }
+	}
 }

@@ -83,7 +83,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			timelineControl.SelectionChanged += TimelineControlOnSelectionChanged;
 			TimeLineSequenceClipboardContentsChanged += TimelineSequenceTimeLineSequenceClipboardContentsChanged;
 			timelineControl.CursorMoved += CursorMovedHandler;
-
+			timelineControl.ElementsSelected += timelineControl_ElementsSelected;
+			
 			LoadAvailableEffects();
             InitUndo();
 			updateButtonStates();
@@ -355,8 +356,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		protected void ElementContentChangedHandler(object sender, EventArgs e)
 		{
 			TimedSequenceElement element = sender as TimedSequenceElement;
-			// TODO: I'm not sure if we will need to do anything here; if we are updating effect details,
-			// will the EffectEditors configure the EffectNode object directly?
 			sequenceModified();
 		}
 
@@ -433,6 +432,40 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					sequenceModified();
 			}
 		}
+
+		void timelineControl_ElementsSelected(object sender, ElementsSelectedEventArgs e)
+		{
+			if (e.ElementsUnderCursor != null && e.ElementsUnderCursor.Count() > 1) {
+				contextMenuStripElementSelection.Items.Clear();
+
+				ToolStripMenuItem item;
+
+				foreach (Element element in e.ElementsUnderCursor) {
+					TimedSequenceElement tse = element as TimedSequenceElement;
+					if (tse == null)
+						continue;
+
+					string name = tse.EffectNode.Effect.Descriptor.TypeName;
+					name += " (" + tse.EffectNode.StartTime.ToString(@"m\:ss\.fff") + ")";
+					item = new ToolStripMenuItem(name);
+					item.Click += contextMenuStripElementSelectionItem_Click;
+					item.Tag = tse;
+					contextMenuStripElementSelection.Items.Add(item);
+				}
+
+				e.AutomaticallyHandleSelection = false;
+
+				contextMenuStripElementSelection.Show(MousePosition);
+			}
+		}
+
+		void contextMenuStripElementSelectionItem_Click(object sender, EventArgs e)
+		{
+			TimedSequenceElement tse = (sender as ToolStripMenuItem).Tag as TimedSequenceElement;
+			if (tse != null)
+				timelineControl.SelectElement(tse);
+		}
+
 
 		private void savePlaybackPositions()
 		{

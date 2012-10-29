@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.ComponentModel;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using Common.Controls.ColorManagement.ColorModels;
 
 
 namespace Common.Controls.Timeline
@@ -25,12 +26,9 @@ namespace Common.Controls.Timeline
 		private List<Row> m_rows;								// the rows in the grid
 		private DragState m_dragState = DragState.Normal;		// the current dragging state
 
-		//private Point m_lastMouseLocation;						// the location of the mouse at last draw; used to update the dragging.
-																// Relative to the control, not the grid canvas.
-
 		private Point m_selectionRectangleStart;				// the location (on the grid canvas) where the selection box starts.
 		private Rectangle m_ignoreDragArea;						// the area in which move movements should be ignored, before we start dragging
-		private Element m_mouseDownElement = null;				// the element under the cursor on a mouse click
+		private List<Element> m_mouseDownElements;				// the elements under the cursor on a mouse click
 		private Row m_mouseDownElementRow = null;				// the row that the clicked m_mouseDownElement belongs to (a single element may be in multiple rows)
 		private TimeSpan m_cursorPosition;						// the current grid 'cursor' position (line drawn vertically)
 
@@ -85,7 +83,7 @@ namespace Common.Controls.Timeline
 
 		
 
-		protected override void  OnVisibleTimeStartChanged(object sender, EventArgs e)
+		protected override void OnVisibleTimeStartChanged(object sender, EventArgs e)
 		{
 			AutoScrollPosition = new Point((int)timeToPixels(VisibleTimeStart), -AutoScrollPosition.Y);
 			base.OnVisibleTimeStartChanged(sender, e);
@@ -224,16 +222,58 @@ namespace Common.Controls.Timeline
 		public event EventHandler<TimeSpanEventArgs> CursorMoved;
 		public event EventHandler VerticalOffsetChanged;
 		public event EventHandler<ElementRowChangeEventArgs> ElementChangedRows;
+		public event EventHandler<ElementsSelectedEventArgs> ElementsSelected;
 
-		private void _SelectionChanged(EventArgs e)
+		private void _SelectionChanged()
 		{
-			if(SelectionChanged!=null){SelectionChanged(this, null);}
+			if(SelectionChanged != null)
+				SelectionChanged(this, EventArgs.Empty);
 		}
-		private void _ElementDoubleClicked(Element te) { if (ElementDoubleClicked != null) ElementDoubleClicked(this, new ElementEventArgs(te)); }
-		private void _ElementsFinishedMoving(MultiElementEventArgs args) { if (ElementsFinishedMoving != null) ElementsFinishedMoving(this, args); }
-		private void _CursorMoved(TimeSpan t) { if (CursorMoved != null) CursorMoved(this, new TimeSpanEventArgs(t)); }
-		private void _VerticalOffsetChanged() { if (VerticalOffsetChanged != null) VerticalOffsetChanged(this, EventArgs.Empty); }
-		private void _ElementChangedRows(Element element, Row oldRow, Row newRow) { if (ElementChangedRows != null) ElementChangedRows(this, new ElementRowChangeEventArgs(element, oldRow, newRow)); }
+
+		private void _ElementDoubleClicked(Element te)
+		{
+			if (ElementDoubleClicked != null)
+				ElementDoubleClicked(this, new ElementEventArgs(te));
+		}
+
+		private void _ElementsFinishedMoving(MultiElementEventArgs args)
+		{
+			if (ElementsFinishedMoving != null)
+				ElementsFinishedMoving(this, args);
+		}
+
+		private void _CursorMoved(TimeSpan t)
+		{
+			if (CursorMoved != null)
+				CursorMoved(this, new TimeSpanEventArgs(t));
+		}
+
+		private void _VerticalOffsetChanged()
+		{
+			if (VerticalOffsetChanged != null)
+				VerticalOffsetChanged(this, EventArgs.Empty);
+		}
+
+		private void _ElementChangedRows(Element element, Row oldRow, Row newRow)
+		{
+			if (ElementChangedRows != null)
+				ElementChangedRows(this, new ElementRowChangeEventArgs(element, oldRow, newRow));
+		}
+
+		// returns true if the selection should be automatically handled by the grid, or false if
+		// another event handler will handle the selection process
+		private bool _ElementsSelected(IEnumerable<Element> elements)
+		{
+			if (elements == null)
+				return true;
+
+			if (ElementsSelected != null) {
+				ElementsSelectedEventArgs args = new ElementsSelectedEventArgs(elements);
+				ElementsSelected(this, args);
+				return args.AutomaticallyHandleSelection;
+			}
+			return true;
+		}
 
 		#endregion
 
@@ -257,7 +297,7 @@ namespace Common.Controls.Timeline
 				ClearSelectedRows();
 				selectedRow.Selected = true;
 				selectedRow.SelectAllElements();
-				_SelectionChanged(EventArgs.Empty);
+				_SelectionChanged();
 			}
 		}
 
@@ -342,7 +382,7 @@ namespace Common.Controls.Timeline
 			foreach (Element te in SelectedElements.ToArray())
 				te.Selected = false;
             Invalidate();
-			_SelectionChanged(EventArgs.Empty);
+			_SelectionChanged();
 		}
 
 		public void ClearSelectedRows(Row leaveRowSelected = null)
@@ -352,7 +392,7 @@ namespace Common.Controls.Timeline
 					row.Selected = false;
 			}
             Invalidate();
-			_SelectionChanged(EventArgs.Empty);
+			_SelectionChanged();
 		}
 
 		public void AddRow(Row row)
@@ -437,7 +477,7 @@ namespace Common.Controls.Timeline
 		}
 
 		/// <summary>
-		/// Returns the element located at the current point in client coordinates
+		/// Returns the first element found that is located at the given point in client coordinates
 		/// </summary>
 		/// <param name="p">Client coordinates.</param>
 		/// <returns>Element at given point, or null if none exists.</returns>
@@ -458,6 +498,32 @@ namespace Common.Controls.Timeline
 			}
 
 			return null;
+		}
+
+		/// <summary>
+		/// Returns all elements located at the given point in client coordinates
+		/// </summary>
+		/// <param name="p">Client coordinates.</param>
+		/// <returns>Elements at given point, or null if none exists.</returns>
+		protected List<Element> elementsAt(Point p)
+		{
+			List<Element> result = new List<Element>();
+
+			// First figure out which row we are in
+			Row containingRow = rowAt(p);
+
+			if (containingRow == null)
+				return result;
+
+			// Now figure out which element we are on
+			foreach (Element elem in containingRow) {
+				Single elemX = timeToPixels(elem.StartTime);
+				Single elemW = timeToPixels(elem.Duration);
+				if (p.X >= elemX && p.X <= elemX + elemW)
+					result.Add(elem);
+			}
+
+			return result;
 		}
 
 		protected Row RowContainingElement(Element element)
@@ -535,7 +601,7 @@ namespace Common.Controls.Timeline
 
 			} // end foreach
 
-			_SelectionChanged(EventArgs.Empty);
+			_SelectionChanged();
 		}
 
 		/// <summary>
@@ -866,7 +932,7 @@ namespace Common.Controls.Timeline
 						_ElementChangedRows(element, visibleRows[i], visibleRows[i + visibleRowsToMove]);
 
 						// if this element was the mouse down element, update the mouse down element row that we're tracking
-						if (element == m_mouseDownElement)
+						if (m_mouseDownElements != null && element == m_mouseDownElements.FirstOrDefault())
 							newMouseDownRow = visibleRows[i + visibleRowsToMove];
 					}
 				}
@@ -951,6 +1017,24 @@ namespace Common.Controls.Timeline
 		{
 			AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), CalculateAllRowsHeight());
 			Invalidate();
+		}
+
+		public void SelectElement(Element element)
+		{
+			element.Selected = true;
+			_SelectionChanged();
+		}
+
+		public void DeselectElement(Element element)
+		{
+			element.Selected = false;
+			_SelectionChanged();
+		}
+
+		public void ToggleElementSelection(Element element)
+		{
+			element.Selected = !element.Selected;
+			_SelectionChanged();
 		}
 
 		#endregion
@@ -1167,17 +1251,38 @@ namespace Common.Controls.Timeline
 									// and iterate over them both at the same time
 									for (int j = 0; j < bmpdata.Height; j++) {
 										for (int k = 0; k < bmpdata.Width; k++) {
+
+											//double scaleB = (double)*(pbmp + 3) / byte.MaxValue;
+											//double scaleF = (double)*(pfinal + 3) / byte.MaxValue;
+
+											//Color c = Color.FromArgb(
+											//    Math.Max((byte)(*(pbmp + 2) * scaleB), (byte)(*(pfinal + 2) * scaleF)),
+											//    Math.Max((byte)(*(pbmp + 1) * scaleB), (byte)(*(pfinal + 1) * scaleF)),
+											//    Math.Max((byte)(*(pbmp + 0) * scaleB), (byte)(*(pfinal + 0) * scaleF))
+											//    );
+
+											//byte intensity = (byte)(HSV.FromRGB(c).V * byte.MaxValue);
+
+											//*(pfinal + 0) = c.B;
+											//*(pfinal + 1) = c.G;
+											//*(pfinal + 2) = c.R;
+											//*(pfinal + 3) = intensity;
+
+
+
 											// get the scale of the alpha to apply to the other input components
-											double inputIntensityScale = (double) *(pbmp + 3)/byte.MaxValue;
+											double inputIntensityScale = (double)*(pbmp + 3) / byte.MaxValue;
 
 											// do alpha byte. It should be the max of any pixel at the position (ie. be as opaque as possible)
 											*(pfinal + 3) = Math.Max(*(pfinal + 3), *(pbmp + 3));
 
 											// do RGB components of the pixel. Scale any incoming data by the alpha of its channel (to dial the intensity back
 											// to what it would really be), then try and find the highest of any individual component to get the final color.
-											*(pfinal + 0) = Math.Max(*(pfinal + 0), (byte) (*(pbmp + 0)*inputIntensityScale));
-											*(pfinal + 1) = Math.Max(*(pfinal + 1), (byte) (*(pbmp + 1)*inputIntensityScale));
-											*(pfinal + 2) = Math.Max(*(pfinal + 2), (byte) (*(pbmp + 2)*inputIntensityScale));
+											*(pfinal + 0) = Math.Max(*(pfinal + 0), (byte)(*(pbmp + 0) * inputIntensityScale));
+											*(pfinal + 1) = Math.Max(*(pfinal + 1), (byte)(*(pbmp + 1) * inputIntensityScale));
+											*(pfinal + 2) = Math.Max(*(pfinal + 2), (byte)(*(pbmp + 2) * inputIntensityScale));
+
+
 
 											pfinal += finalBPP;
 											pbmp += bmpBPP;

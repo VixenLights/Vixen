@@ -364,6 +364,21 @@ namespace Common.Controls.Timeline
 			}
 		}
 
+		public void SelectElement(Element element)
+		{
+			grid.SelectElement(element);
+		}
+
+		public void DeselectElement(Element element)
+		{
+			grid.DeselectElement(element);
+		}
+
+		public void ToggleElementSelection(Element element)
+		{
+			grid.ToggleElementSelection(element);
+		}
+
 		/// <summary>
 		/// Moves all selected elements by the given amount of time.
 		/// </summary>
@@ -435,6 +450,12 @@ namespace Common.Controls.Timeline
             add { grid.ElementsMovedNew += value; }
             remove { grid.ElementsMovedNew -= value; }
         }
+
+		public event EventHandler<ElementsSelectedEventArgs> ElementsSelected
+		{
+			add { grid.ElementsSelected += value; }
+			remove { grid.ElementsSelected -= value; }
+		}
 
 		public event EventHandler<RulerClickedEventArgs> RulerClicked
 		{
