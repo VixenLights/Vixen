@@ -278,11 +278,13 @@ namespace VixenApplication
 
 		private void buttonAddChannel_Click(object sender, EventArgs e)
 		{
+			multiSelectTreeviewChannelsGroups.ClearSelectedNodes();
 			AddSingleNodeWithPrompt();
 		}
 
 		private void buttonAddMultipleChannels_Click(object sender, EventArgs e)
 		{
+			multiSelectTreeviewChannelsGroups.ClearSelectedNodes();
 			AddMultipleNodesWithPrompt();
 		}
 

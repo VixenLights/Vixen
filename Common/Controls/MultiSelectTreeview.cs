@@ -1034,7 +1034,7 @@ namespace Common.Controls
 			}
 		}
 
-		private void ClearSelectedNodes()
+		public void ClearSelectedNodes()
 		{
 			try
 			{
