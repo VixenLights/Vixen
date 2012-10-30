@@ -160,13 +160,17 @@ namespace VixenModules.App.SimpleSchedule.Forms
 				Cursor = Cursors.WaitCursor;
 				try {
 					_originalProgram.Clear();
+
                     foreach (string item in _ProgramSequences)
                     {
                         string filepath = SequenceService.SequenceDirectory + "\\" + item;
+						ISequence seq =  SequenceService.Instance.Load(filepath);
                         _originalProgram.Sequences.Add(SequenceService.Instance.Load(filepath));
+
                     }
 					_originalProgram.Save(_ProgramName);
                     ProgramName = _originalProgram.FilePath;
+					ProgramDuration = _originalProgram.Length.Ticks;
 				} catch(Exception ex) {
 					MessageBox.Show(ex.Message, "Vixen Program", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 				} finally {
@@ -180,5 +184,10 @@ namespace VixenModules.App.SimpleSchedule.Forms
             get;
             set;
         }
+		public long ProgramDuration
+		{
+			get;
+			set;
+		}
 	}
 }

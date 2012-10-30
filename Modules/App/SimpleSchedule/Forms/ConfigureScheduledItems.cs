@@ -14,6 +14,7 @@ namespace VixenModules.App.SimpleSchedule.Forms
 
         private string _filePath;
         private readonly CalendarItem _calendarItem;
+		private long _runLength = 0;
 
 
         public ConfigureScheduledItems()
@@ -43,6 +44,7 @@ namespace VixenModules.App.SimpleSchedule.Forms
             : this()
         {
             _calendarItem = calendarItem;
+			_program = new Program();
         }
 
         private void BuildScheduledItem()
@@ -57,9 +59,15 @@ namespace VixenModules.App.SimpleSchedule.Forms
             }
             else
             {
+				if (_calendarItem.Duration.Ticks > 0)
+				{
+					_runLength = _calendarItem.Duration.Ticks;
+				}
+	
                 //since this is new create the whole enchilada
-                ScheduledItem item = new ScheduledItem(Guid.NewGuid(), _filePath, (int)_calendarItem.Date.DayOfWeek, _calendarItem.StartDate.TimeOfDay, _calendarItem.Duration) { ScheduledItemStartDate = _calendarItem.StartDate };
-                _scheduledItem = item;
+                ScheduledItem item = new ScheduledItem(Guid.NewGuid(), _filePath, (int)_calendarItem.Date.DayOfWeek, _calendarItem.StartDate.TimeOfDay, new TimeSpan(_runLength)) { ScheduledItemStartDate = _calendarItem.StartDate };
+				
+	            _scheduledItem = item;
             }
 
 
@@ -71,6 +79,7 @@ namespace VixenModules.App.SimpleSchedule.Forms
                 if (cp.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     _filePath = cp.ProgramName;
+					_runLength = cp.ProgramDuration;
                     programLabel.Text = GetName();
                 }
 
@@ -85,7 +94,11 @@ namespace VixenModules.App.SimpleSchedule.Forms
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 _filePath = openFileDialog.FileName;
-                sequenceLabel.Text = GetName();
+				ISequence seq = SequenceService.Instance.Load(_filePath);
+				
+                //sequenceLabel.Text = GetName();
+				sequenceLabel.Text = seq.Name;
+				_runLength = seq.Length.Ticks;
             }
         }
 
