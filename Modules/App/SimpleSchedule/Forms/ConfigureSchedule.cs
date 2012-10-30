@@ -139,7 +139,8 @@ namespace VixenModules.App.SimpleSchedule.Forms
             
             CalendarItem item = ReturnCalendarItem();
             DialogResult result;
-            if (item != null)
+
+            if (item != null && item.Tag != null)
             {
                result =  MessageBox.Show("Are you sure you want to delete item!!!", "Delete Item", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                if (result == System.Windows.Forms.DialogResult.Yes)
