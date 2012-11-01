@@ -84,22 +84,22 @@ namespace Vixen.Sys.Managers {
 			AddChildToParent(movingNode, newParent, index);
 		}
 
-		public void AddNode(ChannelNode node) {
-			AddChildToParent(node, null);
+		public void AddNode(ChannelNode node, ChannelNode parent = null) {
+			AddChildToParent(node, parent);
 		}
 
-		public void AddNodes(IEnumerable<ChannelNode> nodes) {
+		public void AddNodes(IEnumerable<ChannelNode> nodes, ChannelNode parent = null) {
 			foreach(ChannelNode node in nodes) {
-				AddNode(node);
+				AddNode(node, parent);
 			}
 		}
 
-		public ChannelNode AddNode(string name, bool uniquifyName = true) {
+		public ChannelNode AddNode(string name, ChannelNode parent = null, bool uniquifyName = true) {
 			if(uniquifyName) {
 				name = _Uniquify(name);
 			}
 			ChannelNode newNode = new ChannelNode(name);
-			AddNode(newNode);
+			AddNode(newNode, parent);
 			return newNode;
 		}
 

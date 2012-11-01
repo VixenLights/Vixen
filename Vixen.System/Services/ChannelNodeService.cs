@@ -15,8 +15,7 @@ namespace Vixen.Services {
 		public ChannelNode CreateSingle(ChannelNode parentNode, string name = null, bool createChannel = false, bool uniquifyName = true, int index = -1) {
 			name = name ?? "Unnamed";
 
-			ChannelNode channelNode = VixenSystem.Nodes.AddNode(name, uniquifyName);
-			VixenSystem.Nodes.AddChildToParent(channelNode, parentNode, index);
+			ChannelNode channelNode = VixenSystem.Nodes.AddNode(name, parentNode, uniquifyName);
 
 			Channel channel = createChannel ? _CreateChannel(name) : null;
 			channelNode.Channel = channel;
