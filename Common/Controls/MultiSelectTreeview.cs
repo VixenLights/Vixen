@@ -72,6 +72,9 @@ namespace Common.Controls
 		private Point _dragBetweenRowsDrawLineStart;
 		private Point _dragBetweenRowsDrawLineEnd;
 		private int _dragLastLineDrawnY;
+		// a bit hackey: tracks a 'state' marking if we should be sorting lists. Used for mass-selections, etc.,
+		// to avoid sorting the list every time.
+		private bool _delaySortingSelectedNodes = false;
 		#endregion
 
 
@@ -222,7 +225,13 @@ namespace Common.Controls
 		private void AddNodeToSelectedList(TreeNode node)
 		{
 			m_SelectedNodes.Add(node);
-			m_SelectedNodes.Sort(new TreeNodeSorter(this));
+			SortSelectedNodes();
+		}
+
+		private void SortSelectedNodes()
+		{
+			if (!_delaySortingSelectedNodes)
+				m_SelectedNodes.Sort(new TreeNodeSorter(this));
 		}
 
 		#endregion
@@ -915,6 +924,9 @@ namespace Common.Controls
 					TreeNode ndStart = m_SelectedNode;
 					TreeNode ndEnd = node;
 
+					// sort the selected nodes at the end
+					_delaySortingSelectedNodes = true;
+
 					if (ndStart.Parent == ndEnd.Parent)
 					{
 						// Selected node and clicked node have same parent, easy case.
@@ -1019,6 +1031,9 @@ namespace Common.Controls
 							}
 						}
 					}
+
+					_delaySortingSelectedNodes = false;
+					SortSelectedNodes();
 				}
 				else
 				{
