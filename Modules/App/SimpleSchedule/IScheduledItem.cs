@@ -7,5 +7,6 @@ namespace VixenModules.App.SimpleSchedule {
 		int DayOfWeek { get; }
 		TimeSpan StartTime { get; }
 		TimeSpan RunLength { get; }
+        DateTime ScheduledItemStartDate { get; }
 	}
 }
