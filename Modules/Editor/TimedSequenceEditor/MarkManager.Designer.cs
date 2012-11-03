@@ -45,6 +45,7 @@
 			this.textBoxCollectionName = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.groupBoxOperations = new System.Windows.Forms.GroupBox();
+			this.buttonPasteEffectsToMarks = new System.Windows.Forms.Button();
 			this.buttonOffsetMarks = new System.Windows.Forms.Button();
 			this.buttonGenerateSubmarks = new System.Windows.Forms.Button();
 			this.buttonEvenlySpaceMarks = new System.Windows.Forms.Button();
@@ -56,7 +57,7 @@
 			this.textBoxTime = new System.Windows.Forms.TextBox();
 			this.buttonSelectAllMarks = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
-			this.buttonPasteEffectsToMarks = new System.Windows.Forms.Button();
+			this.buttonCopyAndOffsetMarks = new System.Windows.Forms.Button();
 			this.groupBoxMarkCollections.SuspendLayout();
 			this.groupBoxSelectedMarkCollection.SuspendLayout();
 			this.groupBoxDetails.SuspendLayout();
@@ -250,6 +251,7 @@
 			// 
 			// groupBoxOperations
 			// 
+			this.groupBoxOperations.Controls.Add(this.buttonCopyAndOffsetMarks);
 			this.groupBoxOperations.Controls.Add(this.buttonPasteEffectsToMarks);
 			this.groupBoxOperations.Controls.Add(this.buttonOffsetMarks);
 			this.groupBoxOperations.Controls.Add(this.buttonGenerateSubmarks);
@@ -257,10 +259,20 @@
 			this.groupBoxOperations.Controls.Add(this.buttonTapNewMarks);
 			this.groupBoxOperations.Location = new System.Drawing.Point(301, 19);
 			this.groupBoxOperations.Name = "groupBoxOperations";
-			this.groupBoxOperations.Size = new System.Drawing.Size(164, 179);
+			this.groupBoxOperations.Size = new System.Drawing.Size(164, 207);
 			this.groupBoxOperations.TabIndex = 8;
 			this.groupBoxOperations.TabStop = false;
 			this.groupBoxOperations.Text = "Operations";
+			// 
+			// buttonPasteEffectsToMarks
+			// 
+			this.buttonPasteEffectsToMarks.Location = new System.Drawing.Point(6, 143);
+			this.buttonPasteEffectsToMarks.Name = "buttonPasteEffectsToMarks";
+			this.buttonPasteEffectsToMarks.Size = new System.Drawing.Size(151, 25);
+			this.buttonPasteEffectsToMarks.TabIndex = 9;
+			this.buttonPasteEffectsToMarks.Text = "Paste effect to marks";
+			this.buttonPasteEffectsToMarks.UseVisualStyleBackColor = true;
+			this.buttonPasteEffectsToMarks.Click += new System.EventHandler(this.buttonPasteEffectsToMarks_Click);
 			// 
 			// buttonOffsetMarks
 			// 
@@ -372,15 +384,15 @@
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			// 
-			// buttonPasteEffectsToMarks
+			// buttonCopyAndOffsetMarks
 			// 
-			this.buttonPasteEffectsToMarks.Location = new System.Drawing.Point(6, 143);
-			this.buttonPasteEffectsToMarks.Name = "buttonPasteEffectsToMarks";
-			this.buttonPasteEffectsToMarks.Size = new System.Drawing.Size(151, 25);
-			this.buttonPasteEffectsToMarks.TabIndex = 9;
-			this.buttonPasteEffectsToMarks.Text = "Paste effect to marks";
-			this.buttonPasteEffectsToMarks.UseVisualStyleBackColor = true;
-			this.buttonPasteEffectsToMarks.Click += new System.EventHandler(this.buttonPasteEffectsToMarks_Click);
+			this.buttonCopyAndOffsetMarks.Location = new System.Drawing.Point(6, 172);
+			this.buttonCopyAndOffsetMarks.Name = "buttonCopyAndOffsetMarks";
+			this.buttonCopyAndOffsetMarks.Size = new System.Drawing.Size(151, 25);
+			this.buttonCopyAndOffsetMarks.TabIndex = 10;
+			this.buttonCopyAndOffsetMarks.Text = "Copy && offset marks";
+			this.buttonCopyAndOffsetMarks.UseVisualStyleBackColor = true;
+			this.buttonCopyAndOffsetMarks.Click += new System.EventHandler(this.buttonCopyAndOffsetMarks_Click);
 			// 
 			// MarkManager
 			// 
@@ -444,6 +456,7 @@
 		private System.Windows.Forms.TextBox textBoxCollectionName;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Button buttonPasteEffectsToMarks;
+		private System.Windows.Forms.Button buttonCopyAndOffsetMarks;
 
 	}
 }

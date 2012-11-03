@@ -411,5 +411,40 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			MessageBox.Show(count + " effects pasted.");
 		}
+
+		private void buttonCopyAndOffsetMarks_Click(object sender, EventArgs e)
+		{
+			if (listViewMarks.SelectedItems.Count < 1) {
+				MessageBox.Show("Select at least one mark duplicate and offset.", "Need more marks");
+				return;
+			}
+
+			Common.Controls.TextDialog prompt = new Common.Controls.TextDialog("Start time for copied marks (in seconds):");
+			if (prompt.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+				TimeSpan offsetTime;
+
+				if (TimeSpan.TryParseExact(prompt.Response, TimeFormats.Formats, null, out offsetTime)) {
+					List<TimeSpan> newMarks = new List<TimeSpan>();
+					TimeSpan earliestTime = TimeSpan.MaxValue;
+					foreach (ListViewItem item in listViewMarks.SelectedItems) {
+						if ((TimeSpan)item.Tag < earliestTime)
+							earliestTime = (TimeSpan)item.Tag;
+					}
+
+					foreach (ListViewItem item in listViewMarks.SelectedItems) {
+						_displayedCollection.Marks.Add((TimeSpan)item.Tag + offsetTime - earliestTime);
+					}
+
+					_displayedCollection.Marks.Sort();
+					PopulateMarkListFromMarkCollection(_displayedCollection);
+					UpdateMarkCollectionInList(_displayedCollection);
+				} else {
+					MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'", "Error parsing time");
+				}
+			}
+
+
+
+		}
 	}
 }
