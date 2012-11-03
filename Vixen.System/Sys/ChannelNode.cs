@@ -65,6 +65,13 @@ namespace Vixen.Sys {
 				_channel = value;
 
 				if (_channel != null) {
+					// this Channel should be unique to this ChannelNode. If it already exists in the channel -> channelNode
+					// mapping in the Channel Manager, something Very Bad (tm) has happened.
+					if (VixenSystem.Channels.GetChannelNodeForChannel(value) != null) {
+						VixenSystem.Logging.Error("ChannelNode: assigning channel (id: " + value.Id + ") to this ChannelNode (id: " + Id +
+							"), but it already exists in another ChannelNode! (id: " + VixenSystem.Channels.GetChannelNodeForChannel(value).Id + ")");
+					}
+
 					VixenSystem.Channels.SetChannelNodeForChannel(_channel, this);
 				}
 			}
@@ -103,28 +110,6 @@ namespace Vixen.Sys {
 				}
 			}
 		}
-
-		//public ChannelNode Clone() {
-		//    ChannelNode node = null;
-
-		//    if(IsLeaf) {
-		//        // We're cloning a node, not the channel.
-		//        // Multiple nodes referencing a channel need to reference that same channel instance.
-		//        node = new ChannelNode(Guid.NewGuid(), Name, this.Channel);
-		//    } else {
-		//        node = new ChannelNode(Guid.NewGuid(), Name, this.Channel, this.Children.Select(x => x.Clone()));
-		//    }
-
-		//    // Property data.
-		//    node.Properties.PropertyData.Clone(this.Properties.PropertyData);
-
-		//    // Properties
-		//    foreach(IPropertyModuleInstance property in this.Properties) {
-		//        node.Properties.Add(property.Descriptor.TypeId);
-		//    }
-
-		//    return node;
-		//}
 
 		public bool IsLeaf {
 			get { return !base.Children.Any(); }

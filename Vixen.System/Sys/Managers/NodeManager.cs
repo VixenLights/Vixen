@@ -38,35 +38,6 @@ namespace Vixen.Sys.Managers {
 			}
 		}
 
-
-		/// <summary>
-		/// Creates a leaf node for a new channel.
-		/// </summary>
-		/// <param name="channel"></param>
-		public void AddChannelLeaf(Channel channel) {
-			RootNode.AddChild(new ChannelNode(channel.Name, channel));
-		}
-
-		public void RemoveChannelLeaf(Channel channel) {
-			// Find any leaf nodes that reference this channel.
-			ChannelNode[] leafNodes = _instances.Values.Where(x => x.Channel == channel).ToArray();
-			// Remove all instances.
-			foreach(ChannelNode leafNode in leafNodes) {
-				// since we're effectively trying to remove the channel, we'll be removing
-				// ALL nodes with this channel, which means they will be removed from all parents.
-				foreach (ChannelNode parent in leafNode.Parents.ToArray()) {
-					leafNode.RemoveFromParent(parent, true);
-				}
-			}
-		}
-
-		//public void CopyNode(ChannelNode node, ChannelNode target, int index = -1) {
-		//    target = target ?? RootNode;
-		//    ChannelNode NewNode = node.Clone();
-		//    NewNode.Name = Uniquify(NewNode.Name);
-		//    AddChildToParent(NewNode, target, index);
-		//}
-
 		public void MoveNode(ChannelNode movingNode, ChannelNode newParent, ChannelNode oldParent, int index = -1) {
 			// if null nodes, default to the root node.
 			newParent = newParent ?? RootNode;
