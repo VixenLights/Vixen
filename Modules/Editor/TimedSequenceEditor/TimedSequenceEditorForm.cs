@@ -1068,10 +1068,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ClipboardAddData(false);
 		}
 
-		private void ClipboardPaste()
+		public int ClipboardPaste(TimeSpan pasteTime)
 		{
+			int result = 0;
 			TimelineElementsClipboardData data = null;
 			IDataObject dataObject = Clipboard.GetDataObject();
+
+			if (dataObject == null)
+				return result;
 
 			if (dataObject.GetDataPresent(_clipboardFormatName.Name))
 			{
@@ -1079,10 +1083,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			if (data == null)
-				return;
+				return result;
 
 			Row targetRow = timelineControl.SelectedRow ?? timelineControl.TopVisibleRow;
-			TimeSpan cursorTime = timelineControl.CursorPosition;
 
 			List<Row> visibleRows = new List<Row>(timelineControl.VisibleRows);
 			int topTargetRoxIndex = visibleRows.IndexOf(targetRow);
@@ -1093,7 +1096,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				int relativeRow = kvp.Value;
 
 				int targetRowIndex = topTargetRoxIndex + relativeRow;
-				TimeSpan targetTime = effectModelCandidate.StartTime - data.EarliestStartTime + cursorTime;
+				TimeSpan targetTime = effectModelCandidate.StartTime - data.EarliestStartTime + pasteTime;
 
 				if (targetRowIndex >= visibleRows.Count)
 					continue;
@@ -1102,10 +1105,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				IEffectModuleInstance newEffect = ApplicationServices.Get<IEffectModuleInstance>(effectModelCandidate.TypeId);
 				newEffect.ModuleData = effectModelCandidate.GetEffectData();
 				addEffectInstance(newEffect, visibleRows[targetRowIndex], targetTime, effectModelCandidate.Duration);
+				result++;
 			}
-			//}
 
-
+			return result;
 		}
 
 		#endregion
@@ -1161,7 +1164,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripMenuItem_Paste_Click(object sender, EventArgs e)
 		{
-			ClipboardPaste();
+			ClipboardPaste(timelineControl.CursorPosition);
 		}
 
 		private void toolStripMenuItem_deleteElements_Click(object sender, EventArgs e)
@@ -1289,8 +1292,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripMenuItem_MarkManager_Click(object sender, EventArgs e)
 		{
-			MarkManager manager = new MarkManager(new List<MarkCollection>(_sequence.MarkCollections), this, this);
-			if (manager.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			MarkManager manager = new MarkManager(new List<MarkCollection>(_sequence.MarkCollections), this, this, this);
+			if (manager.ShowDialog() == DialogResult.OK)
 			{
 				_sequence.MarkCollections = manager.MarkCollections;
 				populateGridWithMarks();

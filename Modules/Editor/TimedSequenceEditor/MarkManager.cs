@@ -18,13 +18,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private bool _updatingListContents = false;
 		private IExecutionControl _executionControl;
 		private ITiming _timingSource;
+		private TimedSequenceEditorForm _timedSequenceEditorForm;
 
-		public MarkManager(List<MarkCollection> markCollections, IExecutionControl executionControl, ITiming timingSource)
+		public MarkManager(List<MarkCollection> markCollections, IExecutionControl executionControl, ITiming timingSource, TimedSequenceEditorForm timedSequenceEditorForm)
 		{
 			InitializeComponent();
 			MarkCollections = markCollections;
 			_executionControl = executionControl;
 			_timingSource = timingSource;
+			_timedSequenceEditorForm = timedSequenceEditorForm;
 		}
 
 		public List<MarkCollection> MarkCollections { get; set; }
@@ -388,6 +390,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				UpdateMarkCollectionInList(_displayedCollection);
 				break;
 			}
+		}
+
+		private void buttonPasteEffectsToMarks_Click(object sender, EventArgs e)
+		{
+			if (listViewMarks.SelectedItems.Count < 1) {
+				MessageBox.Show("Select at least one mark to paste effects to.", "Need more marks");
+				return;
+			}
+
+			int count = 0;
+			foreach (ListViewItem item in listViewMarks.SelectedItems) {
+				int totalPasted = _timedSequenceEditorForm.ClipboardPaste((TimeSpan)item.Tag);
+				if (totalPasted <= 0) {
+					MessageBox.Show("Copy an effect to paste to the clipboard in the sequence editor.", "Need an effect");
+					return;
+				}
+				count += totalPasted;
+			}
+
+			MessageBox.Show(count + " effects pasted.");
 		}
 	}
 }
