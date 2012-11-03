@@ -75,6 +75,7 @@ namespace Common.Controls
 		// a bit hackey: tracks a 'state' marking if we should be sorting lists. Used for mass-selections, etc.,
 		// to avoid sorting the list every time.
 		private bool _delaySortingSelectedNodes = false;
+		private bool _clickedNodeWasInBounds = false;
 		#endregion
 
 
@@ -272,8 +273,9 @@ namespace Common.Controls
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			// If the user clicks on a node that was not
-			// previously selected, select it now.
+			_clickedNodeWasInBounds = false;
+
+			// If the user clicks on a node that was not previously selected, select it now.
 			try
 			{
 				base.SelectedNode = null;
@@ -282,7 +284,12 @@ namespace Common.Controls
 				if (node != null) {
 					int leftBound = node.Bounds.X; // - 20; // Allow user to click on image
 					int rightBound = node.Bounds.Right + 10; // Give a little extra room
+
 					if (e.Location.X > leftBound && e.Location.X < rightBound) {
+						// mark the clicked node as being 'in bounds', so that we know later (for drag, mouseup, etc.) that
+						// the initial click was 'valid' (ie. wasn't subject to the dodgy treenode full-width issue)
+						_clickedNodeWasInBounds = true;
+
 						if (ModifierKeys == Keys.None && (m_SelectedNodes.Contains(node))) {
 							// Potential Drag Operation
 							// Let Mouse Up do select
@@ -292,7 +299,7 @@ namespace Common.Controls
 					}
 					// due to a weird issue in the TreeNode GetNodeAt() call, if we click off to the right of the nodes,
 					// it still selects them. Detect that, and clear them if needed (only if no modifier keys are down).
-					if (e.Location.X > rightBound && ModifierKeys == Keys.None) {
+					if ((e.Location.X < leftBound || e.Location.X > rightBound) && ModifierKeys == Keys.None) {
 						ClearSelectedNodes();
 						if (Deselected != null)
 							Deselected(this, new EventArgs());
@@ -323,15 +330,8 @@ namespace Common.Controls
 				TreeNode node = GetNodeAt(e.Location);
 				if (node != null)
 				{
-					if (ModifierKeys == Keys.None && m_SelectedNodes.Contains(node) && e.Button != System.Windows.Forms.MouseButtons.Right)
-					{
-						int leftBound = node.Bounds.X; // -20; // Allow user to click on image
-						int rightBound = node.Bounds.Right + 10; // Give a little extra room
-						if (e.Location.X > leftBound && e.Location.X < rightBound)
-						{
-							SelectNode(node);
-						}
-					}
+					if (ModifierKeys == Keys.None && m_SelectedNodes.Contains(node) && e.Button != MouseButtons.Right && _clickedNodeWasInBounds)
+						SelectNode(node);
 				}
 
 				base.OnMouseUp(e);
@@ -344,6 +344,10 @@ namespace Common.Controls
 
 		protected override void OnItemDrag(ItemDragEventArgs e)
 		{
+			// if the item wasn't even properly clicked on, don't start a drag
+			if (!_clickedNodeWasInBounds)
+				return;
+
 			base.OnItemDrag(e);
 
 			// Call dragstart event
