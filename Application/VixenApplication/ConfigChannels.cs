@@ -464,7 +464,7 @@ namespace VixenApplication
 				expandNode.Expand();
 			
 			PopulateNodeTree();
-			PopulateFormWithNode(multiSelectTreeviewChannelsGroups.SelectedNode.Tag as ChannelNode, true);
+			PopulateFormWithNode((multiSelectTreeviewChannelsGroups.SelectedNode == null) ? null : (multiSelectTreeviewChannelsGroups.SelectedNode.Tag as ChannelNode), true);
 		}
 
 		private void multiSelectTreeviewChannelsGroupsDragVerifyHandler(object sender, DragVerifyEventArgs e)
