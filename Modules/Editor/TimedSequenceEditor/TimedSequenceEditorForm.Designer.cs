@@ -348,24 +348,24 @@
 			// playToolStripMenuItem
 			// 
 			this.playToolStripMenuItem.Name = "playToolStripMenuItem";
-			this.playToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-			this.playToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+			this.playToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
+			this.playToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.playToolStripMenuItem.Text = "Play";
 			this.playToolStripMenuItem.Click += new System.EventHandler(this.playToolStripMenuItem_Click);
 			// 
 			// pauseToolStripMenuItem
 			// 
 			this.pauseToolStripMenuItem.Name = "pauseToolStripMenuItem";
-			this.pauseToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.U)));
-			this.pauseToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+			this.pauseToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F6;
+			this.pauseToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.pauseToolStripMenuItem.Text = "Pause";
 			this.pauseToolStripMenuItem.Click += new System.EventHandler(this.pauseToolStripMenuItem_Click);
 			// 
 			// stopToolStripMenuItem
 			// 
 			this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-			this.stopToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.stopToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+			this.stopToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F8;
+			this.stopToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.stopToolStripMenuItem.Text = "Stop";
 			this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
 			// 
@@ -671,7 +671,7 @@
 			// contextMenuStripElementSelection
 			// 
 			this.contextMenuStripElementSelection.Name = "contextMenuStripElementSelection";
-			this.contextMenuStripElementSelection.Size = new System.Drawing.Size(153, 26);
+			this.contextMenuStripElementSelection.Size = new System.Drawing.Size(61, 4);
 			// 
 			// TimedSequenceEditorForm
 			// 
