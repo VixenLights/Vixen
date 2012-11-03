@@ -273,9 +273,9 @@
 			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(12, 471);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(244, 13);
+			this.label4.Size = new System.Drawing.Size(239, 13);
 			this.label4.TabIndex = 24;
-			this.label4.Text = "Click and drag to move nodes in the configuration.";
+			this.label4.Text = "Click and drag to move items in the configuration.";
 			// 
 			// label5
 			// 
