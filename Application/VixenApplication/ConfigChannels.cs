@@ -424,7 +424,6 @@ namespace VixenApplication
 				}
 			}
 
-
 			// Check to see if the new parent node would be 'losing' the Channel (ie. becoming a
 			// group instead of a leaf node with a channel/patches). Prompt the user first.
 			if (CheckIfNodeWillLosePatches(newParentNode))
@@ -436,9 +435,16 @@ namespace VixenApplication
 			foreach (TreeNode treeNode in e.SourceNodes) {
 				ChannelNode sourceNode = treeNode.Tag as ChannelNode;
 				ChannelNode oldParentNode = (treeNode.Parent != null) ? treeNode.Parent.Tag as ChannelNode : null;
+				int currentIndex = treeNode.Index;
 				if (e.DragMode == DragDropEffects.Move) {
 					if (index >= 0) {
 						VixenSystem.Nodes.MoveNode(sourceNode, newParentNode, oldParentNode, index);
+
+						// if we're moving nodes within the same group, but earlier in the group, then increment the target position each time.
+						// This is because when the target is AFTER the current position, the shuffling offsets the nodes so that the target
+						// index can stay the same. This isn't the case for the reverse case.
+						if (newParentNode == oldParentNode && index < currentIndex)
+							index++;
 					} else {
 						VixenSystem.Nodes.MoveNode(sourceNode, newParentNode, oldParentNode);
 					}
