@@ -44,7 +44,7 @@ namespace Vixen.IO.Factory {
 		public IContentMigrator CreateSequenceContentMigrator(string filePath) {
 			ISequenceTypeModuleInstance sequenceTypeModule = SequenceTypeService.Instance.CreateSequenceFactory(filePath);
 			if(sequenceTypeModule == null) {
-				throw new Exception("Could not find a migrator for the sequence " + filePath);
+				return null;
 			}
 			return sequenceTypeModule.CreateMigrator();
 		}
