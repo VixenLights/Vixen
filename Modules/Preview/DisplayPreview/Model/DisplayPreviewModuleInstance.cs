@@ -53,6 +53,10 @@ namespace VixenModules.Preview.DisplayPreview.Model
         {
             ViewManager.DisplaySetupView(GetDisplayPreviewModuleDataModel());
 			GetDisplayPreviewModuleDataModel().IsEnabled = true;
+			if(IsRunning)
+			{
+				ViewManager.EnsureVisualizerIsOpen(GetDisplayPreviewModuleDataModel());	
+			}		
 			return base.Setup();
         }
 
