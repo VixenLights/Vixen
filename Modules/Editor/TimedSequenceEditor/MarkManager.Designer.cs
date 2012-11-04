@@ -58,6 +58,7 @@
 			this.buttonSelectAllMarks = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.buttonCopyAndOffsetMarks = new System.Windows.Forms.Button();
+			this.buttonGenerateBeatMarks = new System.Windows.Forms.Button();
 			this.groupBoxMarkCollections.SuspendLayout();
 			this.groupBoxSelectedMarkCollection.SuspendLayout();
 			this.groupBoxDetails.SuspendLayout();
@@ -251,6 +252,7 @@
 			// 
 			// groupBoxOperations
 			// 
+			this.groupBoxOperations.Controls.Add(this.buttonGenerateBeatMarks);
 			this.groupBoxOperations.Controls.Add(this.buttonCopyAndOffsetMarks);
 			this.groupBoxOperations.Controls.Add(this.buttonPasteEffectsToMarks);
 			this.groupBoxOperations.Controls.Add(this.buttonOffsetMarks);
@@ -259,7 +261,7 @@
 			this.groupBoxOperations.Controls.Add(this.buttonTapNewMarks);
 			this.groupBoxOperations.Location = new System.Drawing.Point(301, 19);
 			this.groupBoxOperations.Name = "groupBoxOperations";
-			this.groupBoxOperations.Size = new System.Drawing.Size(164, 207);
+			this.groupBoxOperations.Size = new System.Drawing.Size(164, 238);
 			this.groupBoxOperations.TabIndex = 8;
 			this.groupBoxOperations.TabStop = false;
 			this.groupBoxOperations.Text = "Operations";
@@ -394,6 +396,16 @@
 			this.buttonCopyAndOffsetMarks.UseVisualStyleBackColor = true;
 			this.buttonCopyAndOffsetMarks.Click += new System.EventHandler(this.buttonCopyAndOffsetMarks_Click);
 			// 
+			// buttonGenerateBeatMarks
+			// 
+			this.buttonGenerateBeatMarks.Location = new System.Drawing.Point(6, 203);
+			this.buttonGenerateBeatMarks.Name = "buttonGenerateBeatMarks";
+			this.buttonGenerateBeatMarks.Size = new System.Drawing.Size(151, 25);
+			this.buttonGenerateBeatMarks.TabIndex = 11;
+			this.buttonGenerateBeatMarks.Text = "Generate beat marks";
+			this.buttonGenerateBeatMarks.UseVisualStyleBackColor = true;
+			this.buttonGenerateBeatMarks.Click += new System.EventHandler(this.buttonGenerateBeatMarks_Click);
+			// 
 			// MarkManager
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -405,7 +417,9 @@
 			this.Controls.Add(this.groupBoxMarkCollections);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
+			this.MaximumSize = new System.Drawing.Size(746, 351);
 			this.MinimizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(746, 351);
 			this.Name = "MarkManager";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
@@ -457,6 +471,7 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Button buttonPasteEffectsToMarks;
 		private System.Windows.Forms.Button buttonCopyAndOffsetMarks;
+		private System.Windows.Forms.Button buttonGenerateBeatMarks;
 
 	}
 }

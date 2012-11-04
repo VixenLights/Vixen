@@ -424,7 +424,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				TimeSpan offsetTime;
 
 				if (TimeSpan.TryParseExact(prompt.Response, TimeFormats.Formats, null, out offsetTime)) {
-					List<TimeSpan> newMarks = new List<TimeSpan>();
 					TimeSpan earliestTime = TimeSpan.MaxValue;
 					foreach (ListViewItem item in listViewMarks.SelectedItems) {
 						if ((TimeSpan)item.Tag < earliestTime)
@@ -442,8 +441,72 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'", "Error parsing time");
 				}
 			}
+		}
 
+		private void buttonGenerateBeatMarks_Click(object sender, EventArgs e)
+		{
+			if (MessageBox.Show("This operation will determine the average beat from the selected marks, and apply them for the rest of the song. Do you want to continue?", "Information", MessageBoxButtons.YesNo) == DialogResult.No)
+				return;
 
+			if (listViewMarks.SelectedItems.Count < 2) {
+				MessageBox.Show("Select at least two marks to be able to determine an average time interval.", "Need more marks");
+				return;
+			}
+
+			Common.Controls.TextDialog prompt = new Common.Controls.TextDialog("How long should the beats be generated for, in seconds? Leave blank to go to the end.");
+			// the default prompt isn't enough to hold all the above text. Oops.
+			prompt.Size = new Size(550, prompt.Size.Height);
+			if (prompt.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+				TimeSpan duration;
+				bool conversionSuccess = TimeSpan.TryParseExact(prompt.Response, TimeFormats.Formats, null, out duration);
+				if (!conversionSuccess && prompt.Response.Length == 0) {
+					conversionSuccess = true;
+					duration = TimeSpan.MaxValue;
+				}
+
+				if (conversionSuccess) {
+					TimeSpan earlistMark = TimeSpan.MaxValue;
+					TimeSpan latestMark = TimeSpan.MinValue;
+
+					foreach (ListViewItem item in listViewMarks.SelectedItems) {
+						if ((TimeSpan)item.Tag < earlistMark) {
+							earlistMark = (TimeSpan)item.Tag;
+						}
+						if ((TimeSpan)item.Tag > latestMark) {
+							latestMark = (TimeSpan)item.Tag;
+						}
+					}
+
+					int sourcesCount = listViewMarks.SelectedItems.Count;
+					TimeSpan interval = TimeSpan.FromTicks((latestMark - earlistMark).Ticks / (sourcesCount - 1));
+					double bpm = 60 / interval.TotalSeconds;
+
+					TimeSpan maxPossibleDuration = _timedSequenceEditorForm.Sequence.Length - latestMark;
+					if (duration > maxPossibleDuration)
+						duration = maxPossibleDuration;
+
+					int generatedMarks = (int)(duration.Ticks / interval.Ticks) - 1;
+
+					if (MessageBox.Show("From the selected marks, a beat interval of " + interval.ToString(@"s\.ff") +
+						" seconds was detected (" + bpm.ToString(@"#####.##") + " bpm). This will generate " + generatedMarks + " marks. Do you " +
+						"want to continue?", "Confirmation", MessageBoxButtons.YesNo) != DialogResult.Yes) {
+						return;
+					}
+
+					TimeSpan currentTime = latestMark + interval;
+					TimeSpan endTime = latestMark + duration;
+					while (currentTime <= endTime) {
+						_displayedCollection.Marks.Add(currentTime);
+						currentTime += interval;
+					}
+
+					_displayedCollection.Marks.Sort();
+					PopulateMarkListFromMarkCollection(_displayedCollection);
+					UpdateMarkCollectionInList(_displayedCollection);
+				} else {
+					MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>', or leave empty", "Error parsing time");
+				}
+			}
 
 		}
 	}
