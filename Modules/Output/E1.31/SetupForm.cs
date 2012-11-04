@@ -104,6 +104,7 @@ namespace VixenModules.Output.E131
 
             // finally initialize the form
             this.InitializeComponent();
+            this.SetDestinations();
         }
 
         public int EventRepeatCount
@@ -277,7 +278,7 @@ namespace VixenModules.Output.E131
             return true;
         }
 
-        private static void UnivDgvnDefaultValuesNeeded(object sender, DataGridViewRowEventArgs e)
+        private void UnivDgvnDefaultValuesNeeded(object sender, DataGridViewRowEventArgs e)
         {
             e.Row.Cells[ACTIVE_COLUMN].Value = false;
             e.Row.Cells[UNIVERSE_COLUMN].Value = "1";
@@ -626,6 +627,7 @@ namespace VixenModules.Output.E131
         // -------------------------------------------------------------
         private void UnivDgvnCellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
+
             // if it's the headers - sort 'em
             if (e.RowIndex == -1)
             {
@@ -772,7 +774,7 @@ namespace VixenModules.Output.E131
 
         private void UnivDgvnEditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
-            var columnIndex = this.univDGVN.CurrentCell.ColumnIndex;
+            var columnIndex = univDGVN.CurrentCell.ColumnIndex;
 
             if (columnIndex == UNIVERSE_COLUMN || columnIndex == START_COLUMN || columnIndex == SIZE_COLUMN
                 || columnIndex == TTL_COLUMN)
@@ -855,6 +857,26 @@ namespace VixenModules.Output.E131
                     this.univDGVN.Rows.Insert(rowIndex - 1, row);
                 }
             }
+        }
+
+        private void UnivDgvnInsertRow(object sender, DataGridViewRowEventArgs e)
+        {
+
+        }
+
+        private void UnivDgvnDeleteRow(object sender, DataGridViewRowEventArgs e)
+        {
+
+        }
+
+        private void univDGVN_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void SetupForm_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

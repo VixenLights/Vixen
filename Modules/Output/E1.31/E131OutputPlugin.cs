@@ -66,6 +66,7 @@ namespace VixenModules.Controller.E131
     // OutputPlugin - the output plugin class for vixen
     // 
     // -----------------------------------------------------------------
+   
     public class E131OutputPlugin : ControllerModuleInstanceBase
     {
         // our option settings
@@ -83,15 +84,6 @@ namespace VixenModules.Controller.E131
         // a sorted list of NetworkInterface object to use for sockets
         private SortedList<string, NetworkInterface> _nicTable;
 
-        // plugin wide statistics
-
-        // plugin information supplied by vixen (by xml)
-        private int _pluginChannelsFrom;
-
-        private int _pluginChannelsTo;
-
-        private byte _seqNum; // should this be changed to per universe?
-
         private bool _statisticsOption;
 
         private long _totalTicks;
@@ -100,12 +92,22 @@ namespace VixenModules.Controller.E131
 
         private bool _warningsOption;
 
+        private XmlNode _setupNode;
+        private XmlDocument doc;
+        private XmlDeclaration doctype;
+
+        private bool isSetupOpen;
+        private bool hasStarted;
+
 		public E131OutputPlugin() {
 			DataPolicyFactory = new DataPolicyFactory();
+            isSetupOpen = false;
+            hasStarted = false;
 		}
 
     	public void Initialize()
         {
+
             // load all of our xml into working objects
             this.LoadSetupNodeInfo();
 
@@ -130,17 +132,25 @@ namespace VixenModules.Controller.E131
         // -------------------------------------------------------------
         public override bool Setup()
         {
+
+            //initialize setupNode
+
+
+
+            //Initialize();
+            isSetupOpen = true;
+
+
             // define/create objects
             XmlElement newChild;
             using (var setupForm = new SetupForm())
             {
                 this.LoadSetupNodeInfo();
 
-                // if our channels from/to are setup then tell the setupForm
-                if (this._pluginChannelsFrom != 0 && this._pluginChannelsTo != 0)
-                {
-                    setupForm.PluginChannelCount = this._pluginChannelsTo - this._pluginChannelsFrom + 1;
-                }
+ 
+
+                // Tell the setupForm our output count
+                setupForm.PluginChannelCount = this.OutputCount;
 
                 // for each universe add it to setup form
                 foreach (var uE in this._universeTable)
@@ -153,65 +163,76 @@ namespace VixenModules.Controller.E131
                 setupForm.StatisticsOption = this._statisticsOption;
                 setupForm.EventRepeatCount = this._eventRepeatCount;
 
+
                 if (setupForm.ShowDialog() == DialogResult.OK)
                 {
                     // first get rid of our old children
-//                    while (_setupNode.ChildNodes.Count > 0)
-//                    {
-//                        _setupNode.RemoveChild(_setupNode.ChildNodes[0]);
-//                    }
-//
+                    while (_setupNode.ChildNodes.Count > 0)
+                    {
+                        _setupNode.RemoveChild(_setupNode.ChildNodes[0]);
+                    }
+
                     // add the Guid child
-//                    newChild = _setupNode.OwnerDocument.CreateElement("Guid");
-//                    newChild.SetAttribute("id", this._guid.ToString());
-//                    _setupNode.AppendChild(newChild);
-//
+                    newChild = _setupNode.OwnerDocument.CreateElement("Guid");
+                    newChild.SetAttribute("id", this._guid.ToString());
+                    _setupNode.AppendChild(newChild);
+
                     // add the Options child
-//                    newChild = _setupNode.OwnerDocument.CreateElement("Options");
-//                    newChild.SetAttribute("warnings", setupForm.WarningsOption.ToString());
-//                    newChild.SetAttribute("statistics", setupForm.StatisticsOption.ToString());
-//                    newChild.SetAttribute("eventRepeatCount", setupForm.EventRepeatCount.ToString());
-//                    _setupNode.AppendChild(newChild);
-//
+                    newChild = _setupNode.OwnerDocument.CreateElement("Options");
+                    newChild.SetAttribute("warnings", setupForm.WarningsOption.ToString());
+                    newChild.SetAttribute("statistics", setupForm.StatisticsOption.ToString());
+                    newChild.SetAttribute("eventRepeatCount", setupForm.EventRepeatCount.ToString());
+                    _setupNode.AppendChild(newChild);
+
+                    
                     // add each of the universes as a child
-//                    for (int i = 0; i < setupForm.UniverseCount; i++)
-//                    {
-//                        bool active = true;
-//                        int universe = 0;
-//                        int start = 0;
-//                        int size = 0;
-//                        string unicast = string.Empty;
-//                        string multicast = string.Empty;
-//                        int ttl = 0;
-//
-//                        if (setupForm.UniverseGet(
-//                            i, ref active, ref universe, ref start, ref size, ref unicast, ref multicast, ref ttl))
-//                        {
-//                            newChild = _setupNode.OwnerDocument.CreateElement("Universe");
-//
-//                            newChild.SetAttribute("active", active.ToString());
-//                            newChild.SetAttribute("number", universe.ToString());
-//                            newChild.SetAttribute("start", start.ToString());
-//                            newChild.SetAttribute("size", size.ToString());
-//                            if (unicast != null)
-//                            {
-//                                newChild.SetAttribute("unicast", unicast);
-//                            }
-//                            else if (multicast != null)
-//                            {
-//                                newChild.SetAttribute("multicast", multicast);
-//                            }
-//
-//                            newChild.SetAttribute("ttl", ttl.ToString());
-//
-//                            _setupNode.AppendChild(newChild);
-//                        }
-//                    }
+                    for (int i = 0; i < setupForm.UniverseCount; i++)
+                    {
+                        bool active = true;
+                        int universe = 0;
+                        int start = 0;
+                        int size = 0;
+                        string unicast = string.Empty;
+                        string multicast = string.Empty;
+                        int ttl = 0;
+
+                        if (setupForm.UniverseGet(
+                            i, ref active, ref universe, ref start, ref size, ref unicast, ref multicast, ref ttl))
+                        {
+                            newChild = _setupNode.OwnerDocument.CreateElement("Universe");
+
+                            newChild.SetAttribute("active", active.ToString());
+                            newChild.SetAttribute("number", universe.ToString());
+                            newChild.SetAttribute("start", start.ToString());
+                            newChild.SetAttribute("size", size.ToString());
+                            if (unicast != null)
+                            {
+                                newChild.SetAttribute("unicast", unicast);
+                            }
+                            else if (multicast != null)
+                            {
+                                newChild.SetAttribute("multicast", multicast);
+                            }
+
+                            newChild.SetAttribute("ttl", ttl.ToString());
+
+                            _setupNode.AppendChild(newChild);
+                        }
+
+                    }
+
+                    doc.Save("Modules\\Controller\\E131settings.xml");
+
+                    hasStarted = false; //prevent updates
 
                     // update in memory table to match xml
-                    this.LoadSetupNodeInfo();
+                    this.Shutdown();
+                    this.Start();
+                    
                 }
             }
+
+            isSetupOpen = false;
 
             return true;
         }
@@ -264,7 +285,9 @@ namespace VixenModules.Controller.E131
                         }
                     }
                 }
+                
             }
+
 
             if (this._statisticsOption)
             {
@@ -294,11 +317,15 @@ namespace VixenModules.Controller.E131
                     MessageBoxButtons.OK, 
                     MessageBoxIcon.Information);
             }
+
+            this._universeTable.Clear();
+            this._nicTable.Clear();
+
         }
 
         // -------------------------------------------------------------
         // 
-        // 	Startup() - called when a sequence is executed
+        // 	Startup() - called when the plugin is loaded
         // 
         // 
         // 	todo:
@@ -307,10 +334,13 @@ namespace VixenModules.Controller.E131
         // 		and system calls
         // 
         // 		2) better error reporting and logging
+        //
+        //      3) Sequence # should be per universe
         // 	
         // -------------------------------------------------------------
-        public void Startup()
+        public override void Start()
         {
+
             // working copy of networkinterface object
             NetworkInterface networkInterface;
 
@@ -323,50 +353,20 @@ namespace VixenModules.Controller.E131
             // a sortedlist containing the multicast sockets we've already done
             var nicSockets = new SortedList<string, Socket>();
 
-            // reload all of our xml into working objects
-            this.LoadSetupNodeInfo();
+            // Load the NICs and XML file
+            this.Initialize();
 
             // initialize plugin wide stats
             this._eventCnt = 0;
             this._totalTicks = 0;
 
-            // initialize sequence # for E1.31 packet (should it be per universe?)
-            this._seqNum = 0;
-
             // initialize messageTexts stringbuilder to hold all warnings/errors
             this._messageTexts = new StringBuilder();
 
-            // check for configured from/to
-            if (this._pluginChannelsFrom == 0 && this._pluginChannelsTo == 0)
-            {
-                foreach (var uE in this._universeTable)
-                {
-                    uE.Active = false;
-                }
-
-                this._messageTexts.AppendLine("Plugin Channels From/To Configuration Error!!");
-            }
 
             // now we need to scan the universeTable
             foreach (var uE in this._universeTable)
             {
-                // active? - check universeentry start and size
-                if (uE.Active)
-                {
-                    // is start out of range?
-                    if (this._pluginChannelsFrom + uE.Start > this._pluginChannelsTo)
-                    {
-                        this._messageTexts.AppendLine("Start Error - " + uE.InfoToText);
-                        uE.Active = false;
-                    }
-
-                    // is size (end) out of range?
-                    if (this._pluginChannelsFrom + uE.Start + uE.Size - 1 > this._pluginChannelsTo)
-                    {
-                        this._messageTexts.AppendLine("Start/Size Error - " + uE.InfoToText);
-                        uE.Active = false;
-                    }
-                }
 
                 // if it's still active we'll look into making a socket for it
                 if (uE.Active)
@@ -432,7 +432,6 @@ namespace VixenModules.Controller.E131
                                 // setup destipendpoint based on multicast universe ip rules
                                 uE.DestIpEndPoint = multicastIpEndPoint;
                             }
-
                                 // is the interface up?
                             else if (networkInterface.OperationalStatus != OperationalStatus.Up)
                             {
@@ -451,6 +450,7 @@ namespace VixenModules.Controller.E131
 
                                 // get a working copy of all unicasts
                                 UnicastIPAddressInformationCollection unicasts = ipProperties.UnicastAddresses;
+
 
                                 ipAddress = null;
 
@@ -497,6 +497,7 @@ namespace VixenModules.Controller.E131
                         uE.PhyBuffer = e131Packet.PhyBuffer;
                     }
                 }
+                hasStarted = true;
             }
 
             // any warnings/errors recorded?
@@ -518,7 +519,7 @@ namespace VixenModules.Controller.E131
                 }
             }
 
-            // MessageBox.Show("Startup");
+
 #if VIXEN21
 			return new List<Form> {};
 #endif
@@ -531,7 +532,18 @@ namespace VixenModules.Controller.E131
 
 		public override void UpdateState(int chainIndex, ICommand[] outputStates) {
             Stopwatch stopWatch = Stopwatch.StartNew();
+
+            //Make sure the setup form is closed & the plugin has started
+            if (isSetupOpen && hasStarted)
+            {
+                return;
+            }
+
+            
             var channelValues = outputStates.ToChannelValuesAsBytes();
+
+            int universeSize = 0;
+
             this._eventCnt++;
 
             if (_universeTable == null)
@@ -541,25 +553,45 @@ namespace VixenModules.Controller.E131
 
             foreach (var uE in this._universeTable)
             {
-                if (uE.Active)
+                //Check if the universe is active and inside a valid channel range
+                if (uE.Active && (uE.Start+1) <= OutputCount)
                 {
-                    if (this._eventRepeatCount > 0)
+                    //Check the universe size boundary.
+                    if ((uE.Start + 1 + uE.Size) > OutputCount)
+                    {
+                        universeSize = OutputCount - uE.Start-1;
+                    }
+                    else
+                    {
+                        universeSize = uE.Size;
+                    }
+                        
+                        
+
+                    //Reduce duplicate packets
+                    //SeqNumbers are per universe so that they can run independently
+                   if (this._eventRepeatCount > 0)
                     {
                         if (uE.EventRepeatCount-- > 0)
                         {
-                            if (E131Packet.CompareSlots(uE.PhyBuffer, channelValues, uE.Start, uE.Size))
+                            if (E131Packet.CompareSlots(uE.PhyBuffer, channelValues, uE.Start, universeSize))
                             {
                                 continue;
                             }
                         }
                     }
 
-                    E131Packet.CopySeqNumSlots(uE.PhyBuffer, channelValues, uE.Start, uE.Size, this._seqNum++);
-                    uE.Socket.SendTo(uE.PhyBuffer, uE.DestIpEndPoint);
-                    uE.EventRepeatCount = this._eventRepeatCount;
 
-                    uE.PktCount++;
-                    uE.SlotCount += uE.Size;
+                    //Not sure why this is needed, but the plugin will crash after being reconfigured otherwise.
+                   if (uE.PhyBuffer != null)
+                   {
+                       E131Packet.CopySeqNumSlots(uE.PhyBuffer, channelValues, uE.Start, universeSize, uE.seqNum++);
+                       uE.Socket.SendTo(uE.PhyBuffer, uE.DestIpEndPoint);
+                       uE.EventRepeatCount = this._eventRepeatCount;
+
+                       uE.PktCount++;
+                       uE.SlotCount += uE.Size;
+                   }
                 }
             }
 
@@ -574,119 +606,137 @@ namespace VixenModules.Controller.E131
 
             this._universeTable = new List<UniverseEntry>();
 
-            // init from/to to indicate not setup
-            this._pluginChannelsFrom = 0;
-            this._pluginChannelsTo = 0;
+            //Setup the XML Document
+             doc = new XmlDocument();
+
+            //Try to load the settings file
+            try { doc.Load("Modules\\Controller\\E131settings.xml"); }
+
+            //Couldn't load the file, so create one
+            catch (System.IO.FileNotFoundException)
+            {
+
+                doctype = doc.CreateXmlDeclaration("1.0", null, "yes");
+                doc.AppendChild(doctype);
+                _setupNode = doc.CreateElement("Setup");
+                doc.AppendChild(_setupNode);
+
+            }
+
+            //Navigate to the correct part of the XML file
+            _setupNode = doc.ChildNodes.Item(1);
+
             this._warningsOption = true;
-            this._statisticsOption = true;
+            this._statisticsOption = false;
             this._eventRepeatCount = 0;
 
             this._guid = Guid.Empty;
 
-            //foreach (XmlNode child in _setupNode.ChildNodes)
-            //{
-            //    XmlAttributeCollection attributes = child.Attributes;
-            //    XmlNode attribute;
+            foreach (XmlNode child in _setupNode.ChildNodes)
+            {
+                XmlAttributeCollection attributes = child.Attributes;
+                XmlNode attribute;
 
-            //    if (child.Name == "Guid")
-            //    {
-            //        if ((attribute = attributes.GetNamedItem("id")) != null)
-            //        {
-            //            try
-            //            {
-            //                this._guid = new Guid(attribute.Value);
-            //            }
-            //            catch
-            //            {
-            //                this._guid = Guid.Empty;
-            //            }
-            //        }
-            //    }
+                if (child.Name == "Guid")
+                {
+                    if ((attribute = attributes.GetNamedItem("id")) != null)
+                    {
+                        try
+                        {
+                            this._guid = new Guid(attribute.Value);
+                        }
+                        catch
+                        {
+                            this._guid = Guid.Empty;
+                        }
+                    }
+                }
 
-            //    if (child.Name == "Options")
-            //    {
-            //        this._warningsOption = false;
-            //        if ((attribute = attributes.GetNamedItem("warnings")) != null)
-            //        {
-            //            if (attribute.Value == "True")
-            //            {
-            //                this._warningsOption = true;
-            //            }
-            //        }
+                if (child.Name == "Options")
+                {
+                    this._warningsOption = false;
+                    if ((attribute = attributes.GetNamedItem("warnings")) != null)
+                    {
+                        if (attribute.Value == "True")
+                        {
+                            this._warningsOption = true;
+                        }
+                    }
 
-            //        this._statisticsOption = false;
-            //        if ((attribute = attributes.GetNamedItem("statistics")) != null)
-            //        {
-            //            if (attribute.Value == "True")
-            //            {
-            //                this._statisticsOption = true;
-            //            }
-            //        }
+                    this._statisticsOption = false;
+                    if ((attribute = attributes.GetNamedItem("statistics")) != null)
+                    {
+                        if (attribute.Value == "True")
+                        {
+                            this._statisticsOption = true;
+                        }
+                    }
 
-            //        this._eventRepeatCount = 0;
-            //        if ((attribute = attributes.GetNamedItem("eventRepeatCount")) != null)
-            //        {
-            //            this._eventRepeatCount = attribute.Value.TryParseInt32(0);
-            //        }
-            //    }
+                    this._eventRepeatCount = 0;
+                    if ((attribute = attributes.GetNamedItem("eventRepeatCount")) != null)
+                    {
+                        this._eventRepeatCount = attribute.Value.TryParseInt32(0);
+                    }
+                }
 
-            //    if (child.Name == "Universe")
-            //    {
-            //        bool active = false;
-            //        int universe = 1;
-            //        int start = 1;
-            //        int size = 1;
-            //        string unicast = null;
-            //        string multicast = null;
-            //        int ttl = 1;
+                if (child.Name == "Universe")
+                {
+                    bool active = false;
+                    int universe = 1;
+                    int start = 1;
+                    int size = 1;
+                    string unicast = null;
+                    string multicast = null;
+                    int ttl = 1;
 
-            //        if ((attribute = attributes.GetNamedItem("active")) != null)
-            //        {
-            //            if (attribute.Value == "True")
-            //            {
-            //                active = true;
-            //            }
-            //        }
+                    if ((attribute = attributes.GetNamedItem("active")) != null)
+                    {
+                        if (attribute.Value == "True")
+                        {
+                            active = true;
+                        }
+                    }
 
-            //        if ((attribute = attributes.GetNamedItem("number")) != null)
-            //        {
-            //            universe = attribute.Value.TryParseInt32(1);
-            //        }
+                    if ((attribute = attributes.GetNamedItem("number")) != null)
+                    {
+                        universe = attribute.Value.TryParseInt32(1);
+                    }
 
-            //        if ((attribute = attributes.GetNamedItem("start")) != null)
-            //        {
-            //            start = attribute.Value.TryParseInt32(1);
-            //        }
+                    if ((attribute = attributes.GetNamedItem("start")) != null)
+                    {
+                        start = attribute.Value.TryParseInt32(1);
+                    }
 
-            //        if ((attribute = attributes.GetNamedItem("size")) != null)
-            //        {
-            //            size = attribute.Value.TryParseInt32(1);
-            //        }
+                    if ((attribute = attributes.GetNamedItem("size")) != null)
+                    {
+                        size = attribute.Value.TryParseInt32(1);
+                    }
 
-            //        if ((attribute = attributes.GetNamedItem("unicast")) != null)
-            //        {
-            //            unicast = attribute.Value;
-            //        }
+                    if ((attribute = attributes.GetNamedItem("unicast")) != null)
+                    {
+                        unicast = attribute.Value;
+                    }
 
-            //        if ((attribute = attributes.GetNamedItem("multicast")) != null)
-            //        {
-            //            multicast = attribute.Value;
-            //        }
+                    if ((attribute = attributes.GetNamedItem("multicast")) != null)
+                    {
+                        multicast = attribute.Value;
+                    }
 
-            //        if ((attribute = attributes.GetNamedItem("ttl")) != null)
-            //        {
-            //            ttl = attribute.Value.TryParseInt32(1);
-            //        }
+                    if ((attribute = attributes.GetNamedItem("ttl")) != null)
+                    {
+                        ttl = attribute.Value.TryParseInt32(1);
+                    }
 
-            //        this._universeTable.Add(
-            //            new UniverseEntry(rowNum++, active, universe, start - 1, size, unicast, multicast, ttl));
-            //    }
-            //}
+                    this._universeTable.Add(
+                        new UniverseEntry(rowNum++, active, universe, start - 1, size, unicast, multicast, ttl));
+                }
+            }
 
             if (this._guid == Guid.Empty)
             {
                 this._guid = Guid.NewGuid();
             }
         }
+
 	}
 }

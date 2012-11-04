@@ -49,11 +49,11 @@ namespace VixenModules.Output.E131
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             this.rowManipulationContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mIHelp = new System.Windows.Forms.MenuItem();
             this.mainMenu = new System.Windows.Forms.MainMenu(this.components);
@@ -143,7 +143,6 @@ namespace VixenModules.Output.E131
             // 
             // univDGVN
             // 
-            this.univDGVN.AllowUserToDeleteRows = false;
             this.univDGVN.BackgroundColor = this.BackColor;
             this.univDGVN.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.univDGVN.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -153,11 +152,22 @@ namespace VixenModules.Output.E131
             this.sizeColumn,
             this.destinationColumn,
             this.ttlColumn});
+            this.univDGVN.ContextMenuStrip = this.rowManipulationContextMenuStrip;
             this.univDGVN.Location = new System.Drawing.Point(1, 3);
             this.univDGVN.Name = "univDGVN";
-            this.univDGVN.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.univDGVN.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.univDGVN.Size = new System.Drawing.Size(578, 251);
             this.univDGVN.TabIndex = 1;
+            this.univDGVN.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.univDGVN_CellContentClick);
+            this.univDGVN.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.UnivDgvnCellEndEdit);
+            this.univDGVN.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.UnivDgvnCellEnter);
+            this.univDGVN.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.UnivDgvnCellMouseClick);
+            this.univDGVN.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.UnivDgvnCellMouseEnter);
+            this.univDGVN.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.UnivDgvnCellValidating);
+            this.univDGVN.DefaultValuesNeeded += new System.Windows.Forms.DataGridViewRowEventHandler(this.UnivDgvnDefaultValuesNeeded);
+            this.univDGVN.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.UnivDgvnEditingControlShowing);
+            this.univDGVN.UserAddedRow += new System.Windows.Forms.DataGridViewRowEventHandler(this.UnivDgvnInsertRow);
+            this.univDGVN.UserDeletedRow += new System.Windows.Forms.DataGridViewRowEventHandler(this.UnivDgvnDeleteRow);
             // 
             // activeColumn
             // 
@@ -170,8 +180,8 @@ namespace VixenModules.Output.E131
             // universeColumn
             // 
             this.universeColumn.ContextMenuStrip = this.rowManipulationContextMenuStrip;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.universeColumn.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.universeColumn.DefaultCellStyle = dataGridViewCellStyle1;
             this.universeColumn.HeaderText = "Universe";
             this.universeColumn.MaxInputLength = 5;
             this.universeColumn.Name = "universeColumn";
@@ -183,8 +193,8 @@ namespace VixenModules.Output.E131
             // startColumn
             // 
             this.startColumn.ContextMenuStrip = this.rowManipulationContextMenuStrip;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.startColumn.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.startColumn.DefaultCellStyle = dataGridViewCellStyle2;
             this.startColumn.HeaderText = "Start";
             this.startColumn.MaxInputLength = 5;
             this.startColumn.Name = "startColumn";
@@ -196,8 +206,8 @@ namespace VixenModules.Output.E131
             // sizeColumn
             // 
             this.sizeColumn.ContextMenuStrip = this.rowManipulationContextMenuStrip;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.sizeColumn.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.sizeColumn.DefaultCellStyle = dataGridViewCellStyle3;
             this.sizeColumn.HeaderText = "Size";
             this.sizeColumn.MaxInputLength = 3;
             this.sizeColumn.Name = "sizeColumn";
@@ -208,8 +218,8 @@ namespace VixenModules.Output.E131
             // 
             // destinationColumn
             // 
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.destinationColumn.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.destinationColumn.DefaultCellStyle = dataGridViewCellStyle4;
             this.destinationColumn.HeaderText = "Destination";
             this.destinationColumn.Name = "destinationColumn";
             this.destinationColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
@@ -219,8 +229,8 @@ namespace VixenModules.Output.E131
             // ttlColumn
             // 
             this.ttlColumn.ContextMenuStrip = this.rowManipulationContextMenuStrip;
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.ttlColumn.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.ttlColumn.DefaultCellStyle = dataGridViewCellStyle5;
             this.ttlColumn.HeaderText = "TTL";
             this.ttlColumn.MaxInputLength = 2;
             this.ttlColumn.Name = "ttlColumn";
@@ -245,6 +255,7 @@ namespace VixenModules.Output.E131
             this.Name = "SetupForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "J1Sys E1.31 Setup Form";
+            this.Load += new System.EventHandler(this.SetupForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.univDGVN)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

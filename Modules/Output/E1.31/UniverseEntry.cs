@@ -28,6 +28,8 @@ namespace VixenModules.Controller.E131
             this.PhyBuffer = null;
             this.EventRepeatCount = 0;
 
+            this.seqNum = 0;
+
             this.PktCount = 0;
             this.SlotCount = 0;
         }
@@ -76,6 +78,11 @@ namespace VixenModules.Controller.E131
                 return text.ToString();
             }
         }
+
+        /// <summary>
+        ///   Gets or sets the seqNum
+        /// </summary>
+        public byte seqNum { get; set; }
 
         /// <summary>
         ///   Gets the Multicast NIC ID (if not null)
