@@ -5,9 +5,9 @@ using Common.StateMach;
 namespace VixenModules.App.SimpleSchedule.State {
 	class CompletedState : IState<IScheduledItemStateObject> {
 		private ITransition<IScheduledItemStateObject>[] _transitions;
-		private IList<IScheduledItemStateObject> _executingCollection;
+		private HashSet<IScheduledItemStateObject> _executingCollection;
 
-		public CompletedState(IList<IScheduledItemStateObject> executingCollection) {
+		public CompletedState(HashSet<IScheduledItemStateObject> executingCollection) {
 			if(executingCollection == null) throw new ArgumentNullException("executingCollection");
 
 			_transitions = new ITransition<IScheduledItemStateObject>[0];

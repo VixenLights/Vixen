@@ -12,7 +12,12 @@ namespace VixenModules.App.SimpleSchedule.Transition {
 		}
 
 		private bool _TransitionCondition(IScheduledItemStateObject item) {
-			return item.Context != null;
+			if(item.Context != null) return true;
+
+			// The context was not available when entering the PreExecute state, so
+			// try to get it again in anticipation of the next schedule poll.
+			item.RequestContext();
+			return false;
 		}
 	}
 }

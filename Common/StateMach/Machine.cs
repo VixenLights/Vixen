@@ -56,7 +56,7 @@ namespace Common.StateMach {
 		}
 
 		public void Update() {
-			foreach(T obj in _objectStates.Keys) {
+			foreach(T obj in _objectStates.Keys.ToArray()) {
 				ITransition<T> transitionToTake = _FindTransitionWithTrueCondition(obj);
 				_TransitionStates(obj, _objectStates[obj], transitionToTake);
 			}

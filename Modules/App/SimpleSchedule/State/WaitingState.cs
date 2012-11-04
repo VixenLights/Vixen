@@ -6,9 +6,9 @@ using VixenModules.App.SimpleSchedule.Transition;
 namespace VixenModules.App.SimpleSchedule.State {
 	class WaitingState : IState<IScheduledItemStateObject> {
 		private ITransition<IScheduledItemStateObject>[] _transitions;
-		private IList<IScheduledItemStateObject> _waitingCollection;
+		private HashSet<IScheduledItemStateObject> _waitingCollection;
 
-		public WaitingState(IList<IScheduledItemStateObject> waitingCollection) {
+		public WaitingState(HashSet<IScheduledItemStateObject> waitingCollection) {
 			if(waitingCollection == null) throw new ArgumentNullException("waitingCollection");
 
 			_waitingCollection = waitingCollection;

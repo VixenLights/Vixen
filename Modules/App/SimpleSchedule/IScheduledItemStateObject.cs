@@ -8,8 +8,6 @@ namespace VixenModules.App.SimpleSchedule {
 		DateTime Start { get; }
 		DateTime End { get; }
 
-		bool ItemIsValid { get; }
-
 		void RequestContext();
 		IContext Context { get; set; }
 		void ReleaseContext();

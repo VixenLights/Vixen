@@ -94,15 +94,30 @@ namespace VixenModules.App.SimpleSchedule.Forms
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 _filePath = openFileDialog.FileName;
-				ISequence seq = SequenceService.Instance.Load(_filePath);
-				
-                //sequenceLabel.Text = GetName();
+				ISequence seq = _LoadSequence(_filePath);
+				if(seq == null) return;
+
+				//sequenceLabel.Text = GetName();
 				sequenceLabel.Text = seq.Name;
 				_runLength = seq.Length.Ticks;
             }
         }
 
-        private string GetName()
+		private ISequence _LoadSequence(string filePath) {
+			Cursor = Cursors.WaitCursor;
+
+			try {
+				return SequenceService.Instance.Load(filePath);
+			} catch(Exception ex) {
+				MessageBox.Show(ex.Message);
+			} finally {
+				Cursor = Cursors.Default;
+			}
+
+			return null;
+		}
+
+    	private string GetName()
         {
             if (!String.IsNullOrEmpty(_filePath))
             {

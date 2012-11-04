@@ -26,12 +26,8 @@ namespace VixenModules.App.SimpleSchedule.StateObject {
 
 		public DateTime End { get; private set; }
 
-		public bool ItemIsValid {
-			get { return _sequence != null; }
-		}
-
 		public void RequestContext() {
-			if(_sequence != null) {
+			if(_Sequence != null) {
 				Context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.ContextLevelCaching), _Sequence);
 			}
 		}

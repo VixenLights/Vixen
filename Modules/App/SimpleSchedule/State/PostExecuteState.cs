@@ -22,6 +22,8 @@ namespace VixenModules.App.SimpleSchedule.State {
 			get { return _transitions; }
 		}
 
+		// Not immediately transitioning out of this state.
+		// We're going to wait for the next schedule poll so there is a comfortable break between executions.
 		public void Entering(IScheduledItemStateObject obj) { }
 
 		public void Leaving(IScheduledItemStateObject obj) { }
