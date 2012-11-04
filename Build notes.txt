@@ -152,3 +152,21 @@ When playing from an effect buffer, reset the last read/write counters when star
 Fixed sequence data sort issue.
 
 Audio waveform visual in the timed sequence editor.
+
+
+== 3.0.3.0 ============================
+
+Preview improvements and fixes.
+
+E1.31 module included.  Untested, but claimed to work.
+
+"Simple" scheduler module included.  Sequence execution tested, program management and execution not tested.  Still subject to future changes.
+
+Lots of fixes to the timed sequence editor.
+
+Lots of fixes to the channel config form.
+
+Interpolator precision fix.
+
+LightingValue now makes use of the alpha channel.
+
