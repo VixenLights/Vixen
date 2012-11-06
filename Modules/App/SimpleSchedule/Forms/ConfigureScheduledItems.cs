@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Vixen.Sys;
 using Vixen.Services;
 using System.Windows.Forms.Calendar;
+using System.Text.RegularExpressions;
 
 namespace VixenModules.App.SimpleSchedule.Forms
 {
@@ -15,6 +16,7 @@ namespace VixenModules.App.SimpleSchedule.Forms
         private string _filePath;
         private readonly CalendarItem _calendarItem;
 		private long _runLength = 0;
+		private Regex _durationRegExPattern = new Regex("(^([0-9]+[.]+[0-9]+)$)");
 
 
         public ConfigureScheduledItems()
@@ -27,6 +29,7 @@ namespace VixenModules.App.SimpleSchedule.Forms
         {
             _scheduledItem = item;
             _filePath = _scheduledItem.ItemFilePath;
+			startTimePicker.Value = _scheduledItem.ScheduledItemStartDate;
 
             if (_scheduledItem.ItemFilePath.EndsWith(".pro"))
             {
@@ -44,6 +47,7 @@ namespace VixenModules.App.SimpleSchedule.Forms
             : this()
         {
             _calendarItem = calendarItem;
+			startTimePicker.Value = _calendarItem.StartDate;
 			_program = new Program();
         }
 
@@ -52,22 +56,19 @@ namespace VixenModules.App.SimpleSchedule.Forms
 
             if (_scheduledItem != null)
             {
-                //since you already have a scheduled item and you can control where and when on the
-                //calendar control
+                //since you already have a scheduled item and you can control where and when on the calendar control
                 //We only need to change the sequence or program here.
                 _scheduledItem.ItemFilePath = _filePath;
             }
             else
             {
-				if (_calendarItem.Duration.Ticks > 0)
+				TimeSpan t1 = GetRunLength();
+				if (t1.Ticks == 0.0)
 				{
-					_runLength = _calendarItem.Duration.Ticks;
+					t1 = new TimeSpan(_runLength);
 				}
-	
-                //since this is new create the whole enchilada
-                ScheduledItem item = new ScheduledItem(Guid.NewGuid(), _filePath, (int)_calendarItem.Date.DayOfWeek, _calendarItem.StartDate.TimeOfDay, new TimeSpan(_runLength)) { ScheduledItemStartDate = _calendarItem.StartDate };
-				
-	            _scheduledItem = item;
+					ScheduledItem item = new ScheduledItem(Guid.NewGuid(), _filePath, (int)_calendarItem.Date.DayOfWeek, _calendarItem.StartDate.TimeOfDay, t1) { ScheduledItemStartDate = _calendarItem.StartDate };
+					_scheduledItem = item;
             }
 
 
@@ -94,30 +95,22 @@ namespace VixenModules.App.SimpleSchedule.Forms
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 _filePath = openFileDialog.FileName;
-				ISequence seq = _LoadSequence(_filePath);
-				if(seq == null) return;
-
-				//sequenceLabel.Text = GetName();
-				sequenceLabel.Text = seq.Name;
+				ISequence seq = SequenceService.Instance.Load(_filePath);
 				_runLength = seq.Length.Ticks;
+				sequenceLabel.Text = seq.Name;
             }
+			
         }
 
-		private ISequence _LoadSequence(string filePath) {
-			Cursor = Cursors.WaitCursor;
+		private TimeSpan GetRunLength()
+		{
+				int hours = int.Parse(runLengthTextBox.Text.Substring(0, runLengthTextBox.Text.LastIndexOf(".")));
+				int minutes = int.Parse(runLengthTextBox.Text.Substring(runLengthTextBox.Text.LastIndexOf(".") + 1));
 
-			try {
-				return SequenceService.Instance.Load(filePath);
-			} catch(Exception ex) {
-				MessageBox.Show(ex.Message);
-			} finally {
-				Cursor = Cursors.Default;
-			}
-
-			return null;
+				return new TimeSpan(hours, minutes, 00);
 		}
 
-    	private string GetName()
+        private string GetName()
         {
             if (!String.IsNullOrEmpty(_filePath))
             {
@@ -132,13 +125,22 @@ namespace VixenModules.App.SimpleSchedule.Forms
         }
         private void okButton_Click(object sender, EventArgs e)
         {
-            BuildScheduledItem();
+			if (!string.IsNullOrEmpty(runLengthTextBox.Text) && _durationRegExPattern.IsMatch(runLengthTextBox.Text))
+			{
+				BuildScheduledItem();
+			}
+			else
+			{
+				MessageBox.Show("Please Enter Run Length", "Missing Data", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				DialogResult = DialogResult.None;
+			}
+
         }
 
         public ScheduledItem _scheduledItem
         {
             get;
             set;
-        }
+		}
     }
 }

@@ -34,7 +34,8 @@ namespace VixenModules.App.SimpleSchedule.Forms
             {
 
                 string name = item.ItemFilePath.Substring(item.ItemFilePath.LastIndexOf("\\") + 1);
-                string finalname = name.Substring(0, name.LastIndexOf("."));
+                string finalname = name.Substring(0, name.LastIndexOf(".")) + "\r\nDuration:  " + item.RunLength.ToString("c");
+			
                 CalendarItem ci = new CalendarItem(calendar1, item.ScheduledItemStartDate, item.RunLength, finalname) { Tag = item.Id };
                 _calendarItems.Add(ci);
                 calendar1.Items.Add(ci);
@@ -104,28 +105,44 @@ namespace VixenModules.App.SimpleSchedule.Forms
 
             //now add the new item back to the _data.scheduledItems
             _data.ScheduledItems.Add(item);
+			PlaceItems();
         }
 
         private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            //contextItem = calendar1.ItemAt(contextMenuStrip1.Bounds.Location);
-			contextItem = ReturnCalendarItem();
-			deleteToolStripMenuItem.Enabled = contextItem != null;
-			changeToolStripMenuItem.Enabled = contextItem != null;
+            contextItem = calendar1.ItemAt(contextMenuStrip1.Bounds.Location);
         }
 
         private void addToolStripMenuItem_Click(object sender, EventArgs e)
         {
-			_AddCalendarItem();
+            CalendarItem item = ReturnCalendarItem();
+
+			if (item != null && item.Tag != null)
+            {
+                MessageBox.Show("Item already exists.\r\n" + "If you wish to change date/time just drag and drop where you want the item to be.",
+                    "Item Exists", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                item = new CalendarItem(calendar1, calendar1.SelectedElementStart.Date, calendar1.SelectedElementEnd.Date, "New Item to Add");
+
+                using (ConfigureScheduledItems csi = new ConfigureScheduledItems(item))
+                {
+                    if (csi.ShowDialog() == DialogResult.OK)
+                    {
+                        _data.ScheduledItems.Add(csi._scheduledItem);
+                        PlaceItems();
+                    }
+                }
+            }
         }
 
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            
             CalendarItem item = ReturnCalendarItem();
-			if(item == null) return;
-
             DialogResult result;
-            if (item.Tag != null)
+            if (item != null && item.Tag != null)
             {
                result =  MessageBox.Show("Are you sure you want to delete item!!!", "Delete Item", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                if (result == System.Windows.Forms.DialogResult.Yes)
@@ -146,10 +163,26 @@ namespace VixenModules.App.SimpleSchedule.Forms
 
         private void changeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-			_ChangeCalendarItem();
-        }
+            CalendarItem item = ReturnCalendarItem();
+			if (item != null && item.Tag != null)
+			{
+				ScheduledItem schitem = _data.ScheduledItems.Find(x => x.Id == (Guid)item.Tag);
 
-		private void calendar1_TimeUnitsOffsetChanged(object sender, EventArgs e)
+				using (ConfigureScheduledItems csi = new ConfigureScheduledItems(schitem))
+				{
+					if (csi.ShowDialog() == DialogResult.OK)
+					{
+						_data.ScheduledItems.Add(csi._scheduledItem);
+						PlaceItems();
+					}
+				}
+			}
+			else
+			{
+				MessageBox.Show("No item selected to change...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			}
+        }
+        private void calendar1_TimeUnitsOffsetChanged(object sender, EventArgs e)
         {
             vScrollBar1.Value = Math.Abs(calendar1.TimeUnitsOffset);
         }
@@ -176,50 +209,16 @@ namespace VixenModules.App.SimpleSchedule.Forms
 
         private CalendarItem ReturnCalendarItem()
         {
-			return calendar1.GetSelectedItems().FirstOrDefault();
+            IEnumerable<CalendarItem> items = calendar1.GetSelectedItems();
+            if (items.Count() > 0)
+            {
+                CalendarItem item = items.ElementAt(0);
+                return item;
+            }
+            else
+            {
+                return null;
+            }
         }
-
-		private void calendar1_ItemDoubleClick(object sender, ref CalendarItemEventArgs e) {
-			if(ReturnCalendarItem() != null) {
-				_ChangeCalendarItem();
-			} else {
-				_AddCalendarItem();
-			}
-		}
-
-		private void _AddCalendarItem() {
-			CalendarItem item = ReturnCalendarItem();
-
-			if(item != null && item.Tag != null) {
-				MessageBox.Show("Item already exists.\r\n" + "If you wish to change date/time just drag and drop where you want the item to be.",
-					"Item Exists", MessageBoxButtons.OK, MessageBoxIcon.Information);
-			} else {
-				item = new CalendarItem(calendar1, calendar1.SelectedElementStart.Date, calendar1.SelectedElementEnd.Date, "New Item to Add");
-
-				using(ConfigureScheduledItems csi = new ConfigureScheduledItems(item)) {
-					if(csi.ShowDialog() == DialogResult.OK) {
-						_data.ScheduledItems.Add(csi._scheduledItem);
-						PlaceItems();
-					}
-				}
-			}
-		}
-
-		private void _ChangeCalendarItem() {
-			CalendarItem item = ReturnCalendarItem();
-			if(item != null && item.Tag != null) {
-				ScheduledItem schitem = _data.ScheduledItems.Find(x => x.Id == (Guid)item.Tag);
-
-				using(ConfigureScheduledItems csi = new ConfigureScheduledItems(schitem)) {
-					if(csi.ShowDialog() == DialogResult.OK) {
-						_data.ScheduledItems.Remove(schitem);
-						_data.ScheduledItems.Add(csi._scheduledItem);
-						PlaceItems();
-					}
-				}
-			} else {
-				MessageBox.Show("No item selected to change...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-			}
-		}
-	}
+    }
 }
