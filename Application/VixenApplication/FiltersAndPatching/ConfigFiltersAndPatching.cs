@@ -50,7 +50,7 @@ namespace VixenApplication
 		private int _previousDiagramWidth;		// used when resizing; what the width was BEFORE resize,
 												// so we know how to layout filter shapes (proportionally)
 
-		private VixenApplicationData _applicationData;
+		private readonly VixenApplicationData _applicationData;
 
 		private List<FilterShape> _filterShapeClipboard;
 
@@ -94,7 +94,8 @@ namespace VixenApplication
 
 			diagramDisplay.ShowDefaultContextMenu = false;
 			diagramDisplay.ClicksOnlyAffectTopShape = true;
-			diagramDisplay.HighQualityRendering = true;
+			checkBoxHighQualityRendering.Checked = _applicationData.FilterSetupFormHighQualityRendering;
+			diagramDisplay.HighQualityRendering = _applicationData.FilterSetupFormHighQualityRendering;
 
 			// A: fixed shapes with no connection points: nothing (parent nested shapes: node groups, controllers)
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
@@ -923,6 +924,12 @@ namespace VixenApplication
 		internal const char SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS = 'B';
 		internal const char SECURITY_DOMAIN_MOVABLE_SHAPE_WITH_CONNECTIONS = 'C';
 		internal const char SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS_DELETABLE = 'D';
+
+		private void checkBoxHighQualityRendering_CheckedChanged(object sender, EventArgs e)
+		{
+			diagramDisplay.HighQualityRendering = checkBoxHighQualityRendering.Checked;
+			_applicationData.FilterSetupFormHighQualityRendering = checkBoxHighQualityRendering.Checked;
+		}
 
 	}
 }

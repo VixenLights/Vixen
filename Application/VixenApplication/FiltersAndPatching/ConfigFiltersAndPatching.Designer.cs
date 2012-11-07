@@ -29,7 +29,7 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigFiltersAndPatching));
-			Dataweb.NShape.RoleBasedSecurityManager roleBasedSecurityManager4 = new Dataweb.NShape.RoleBasedSecurityManager();
+			Dataweb.NShape.RoleBasedSecurityManager roleBasedSecurityManager2 = new Dataweb.NShape.RoleBasedSecurityManager();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.diagramContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.copyFilterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -48,6 +48,7 @@
 			this.comboBoxNewFilterTypes = new System.Windows.Forms.ComboBox();
 			this.buttonAddFilter = new System.Windows.Forms.Button();
 			this.buttonDelete = new System.Windows.Forms.Button();
+			this.checkBoxHighQualityRendering = new System.Windows.Forms.CheckBox();
 			this.diagramContextMenuStrip.SuspendLayout();
 			this.groupBoxFilters.SuspendLayout();
 			this.SuspendLayout();
@@ -104,9 +105,9 @@
 			this.project.LibrarySearchPaths = ((System.Collections.Generic.IList<string>)(resources.GetObject("project.LibrarySearchPaths")));
 			this.project.Name = null;
 			this.project.Repository = this.cachedRepository;
-			roleBasedSecurityManager4.CurrentRole = Dataweb.NShape.StandardRole.Administrator;
-			roleBasedSecurityManager4.CurrentRoleName = "Administrator";
-			this.project.SecurityManager = roleBasedSecurityManager4;
+			roleBasedSecurityManager2.CurrentRole = Dataweb.NShape.StandardRole.Administrator;
+			roleBasedSecurityManager2.CurrentRoleName = "Administrator";
+			this.project.SecurityManager = roleBasedSecurityManager2;
 			// 
 			// cachedRepository
 			// 
@@ -163,6 +164,7 @@
 			this.diagramDisplay.Location = new System.Drawing.Point(12, 29);
 			this.diagramDisplay.Name = "diagramDisplay";
 			this.diagramDisplay.PropertyController = null;
+			this.diagramDisplay.RenderingQualityLowQuality = Dataweb.NShape.Advanced.RenderingQuality.LowQuality;
 			this.diagramDisplay.SelectionHilightColor = System.Drawing.Color.Firebrick;
 			this.diagramDisplay.SelectionInactiveColor = System.Drawing.Color.Gray;
 			this.diagramDisplay.SelectionInteriorColor = System.Drawing.Color.WhiteSmoke;
@@ -178,7 +180,7 @@
 			// 
 			// buttonZoomIn
 			// 
-			this.buttonZoomIn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonZoomIn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.buttonZoomIn.Image = global::VixenApplication.Properties.Resources.ZoomIn32;
 			this.buttonZoomIn.Location = new System.Drawing.Point(403, 401);
 			this.buttonZoomIn.Name = "buttonZoomIn";
@@ -189,7 +191,7 @@
 			// 
 			// buttonZoomOut
 			// 
-			this.buttonZoomOut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonZoomOut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.buttonZoomOut.Image = global::VixenApplication.Properties.Resources.ZoomOut32;
 			this.buttonZoomOut.Location = new System.Drawing.Point(453, 401);
 			this.buttonZoomOut.Name = "buttonZoomOut";
@@ -240,11 +242,24 @@
 			this.buttonDelete.UseVisualStyleBackColor = true;
 			this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
 			// 
+			// checkBoxHighQualityRendering
+			// 
+			this.checkBoxHighQualityRendering.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.checkBoxHighQualityRendering.AutoSize = true;
+			this.checkBoxHighQualityRendering.Location = new System.Drawing.Point(647, 391);
+			this.checkBoxHighQualityRendering.Name = "checkBoxHighQualityRendering";
+			this.checkBoxHighQualityRendering.Size = new System.Drawing.Size(125, 17);
+			this.checkBoxHighQualityRendering.TabIndex = 15;
+			this.checkBoxHighQualityRendering.Text = "High Quality Drawing";
+			this.checkBoxHighQualityRendering.UseVisualStyleBackColor = true;
+			this.checkBoxHighQualityRendering.CheckedChanged += new System.EventHandler(this.checkBoxHighQualityRendering_CheckedChanged);
+			// 
 			// ConfigFiltersAndPatching
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(784, 462);
+			this.Controls.Add(this.checkBoxHighQualityRendering);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.buttonZoomIn);
 			this.Controls.Add(this.buttonZoomOut);
@@ -287,6 +302,7 @@
 		private System.Windows.Forms.ComboBox comboBoxNewFilterTypes;
 		private System.Windows.Forms.Button buttonAddFilter;
 		private System.Windows.Forms.Button buttonDelete;
+		private System.Windows.Forms.CheckBox checkBoxHighQualityRendering;
 
 	}
 }

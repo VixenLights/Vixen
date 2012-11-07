@@ -18,13 +18,14 @@ namespace VixenApplication
 	{
 		private const string _DataFilename = "VixenApplicationData.xml";
 
-		private const int DATA_FORMAT_VERSION_NUMBER = 2;
+		private const int DATA_FORMAT_VERSION_NUMBER = 3;
 
 
 		public List<string> RecentSequences { get; set; }
 
 		public Dictionary<Guid, FilterSetupFormShapePosition> FilterSetupFormShapePositions { get; set; }
 
+		public bool FilterSetupFormHighQualityRendering { get; set; }
 
 		private string DataFilepath
 		{
@@ -35,6 +36,7 @@ namespace VixenApplication
 		{
 			RecentSequences = new List<string>();
 			FilterSetupFormShapePositions = new Dictionary<Guid, FilterSetupFormShapePosition>();
+			FilterSetupFormHighQualityRendering = false;
 			LoadData();
 		}
 
@@ -96,6 +98,10 @@ namespace VixenApplication
 				}
 				root.Add(filterShapePositionsElement);
 
+				XElement filterSetupFormHQRenderingElement = new XElement("FilterSetupFormHighQualityRendering");
+				filterSetupFormHQRenderingElement.Add(new XAttribute("value", FilterSetupFormHighQualityRendering));
+				root.Add(filterSetupFormHQRenderingElement);
+
 				root.Save(stream);
 
 			} catch (Exception ex) {
@@ -136,6 +142,13 @@ namespace VixenApplication
 				}
 			}
 
+			// filter setup form HQ rendering added in data v3
+			if (dataVersion >= 3) {
+				XElement element = rootElement.Element("FilterSetupFormHighQualityRendering");
+				if (element != null) {
+					FilterSetupFormHighQualityRendering = Boolean.Parse(element.Attribute("value").Value);
+				}
+			}
 
 		}
 	}
