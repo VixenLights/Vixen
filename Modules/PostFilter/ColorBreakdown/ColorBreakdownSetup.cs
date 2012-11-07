@@ -41,6 +41,8 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 			comboBoxTemplates.Items.Add("RGB");
 			comboBoxTemplates.Items.Add("RGBW");
 			comboBoxTemplates.Items.Add("RGBY");
+			comboBoxTemplates.Items.Add("RGxB");
+			comboBoxTemplates.Items.Add("GRBW");
 			comboBoxTemplates.SelectedIndex = 0;
 		}
 
@@ -99,6 +101,18 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 					addControl(new ColorBreakdownItemControl(Color.Lime, "Green"));
 					addControl(new ColorBreakdownItemControl(Color.Blue, "Blue"));
 					addControl(new ColorBreakdownItemControl(Color.Yellow, "Yellow"));
+					break;
+				case "RGxB":
+					addControl(new ColorBreakdownItemControl(Color.Red, "Red"));
+					addControl(new ColorBreakdownItemControl(Color.Lime, "Green"));
+					addControl(new ColorBreakdownItemControl(Color.Black, "[empty]"));
+					addControl(new ColorBreakdownItemControl(Color.Blue, "Blue"));
+					break;
+				case "GRBW":
+					addControl(new ColorBreakdownItemControl(Color.Lime, "Green"));
+					addControl(new ColorBreakdownItemControl(Color.Red, "Red"));
+					addControl(new ColorBreakdownItemControl(Color.Blue, "Blue"));
+					addControl(new ColorBreakdownItemControl(Color.White, "White"));
 					break;
 
 				default:
