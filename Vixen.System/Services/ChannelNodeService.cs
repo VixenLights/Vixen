@@ -12,7 +12,7 @@ namespace Vixen.Services {
 			get { return _instance ?? (_instance = new ChannelNodeService()); }
 		}
 
-		public ChannelNode CreateSingle(ChannelNode parentNode, string name = null, bool createChannel = false, bool uniquifyName = true, int index = -1) {
+		public ChannelNode CreateSingle(ChannelNode parentNode, string name = null, bool createChannel = true, bool uniquifyName = true, int index = -1) {
 			name = name ?? "Unnamed";
 
 			ChannelNode channelNode = VixenSystem.Nodes.AddNode(name, parentNode, uniquifyName);
@@ -24,7 +24,7 @@ namespace Vixen.Services {
 			return channelNode;
 		}
 
-		public ChannelNode[] CreateMultiple(ChannelNode parentNode, int count, bool createChannel = false, bool uniquifyNames = true) {
+		public ChannelNode[] CreateMultiple(ChannelNode parentNode, int count, bool createChannel = true, bool uniquifyNames = true) {
 			return Enumerable.Range(0, count).Select(x => CreateSingle(parentNode, null, createChannel, uniquifyNames)).ToArray();
 		}
 
