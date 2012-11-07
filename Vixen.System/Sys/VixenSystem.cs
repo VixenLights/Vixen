@@ -77,23 +77,32 @@ namespace Vixen.Sys {
 				Logging.Info("Vixen System stopping...");
 				ApplicationServices.ClientApplication = null;
 				// Need to get the disabled devices before stopping them all.
-				SystemConfig.DisabledDevices = OutputDeviceManagement.Devices.NotNull().Where(x => !x.IsRunning);
+				SaveDisabledDevices();
 				Execution.CloseExecution();
 				Modules.ClearRepositories();
-				if(ModuleStore != null) {
-					ModuleStore.Save();
-				}
 				SaveSystemConfig();
 				_state = RunState.Stopped;
 				Logging.Info("Vixen System successfully stopped.");
 			}
         }
 
+		static public void SaveDisabledDevices()
+		{
+			SystemConfig.DisabledDevices = OutputDeviceManagement.Devices.NotNull().Where(x => !x.IsRunning);
+		}
+
 		static public void SaveSystemConfig()
 		{
 			if (SystemConfig != null) {
 				// 'copy' the current details (nodes/channels/controllers) from the executing state
 				// to the SystemConfig, so they're there for writing when we save
+
+				// we may not want to always save the disabled devices to the config (ie. if the system is stopped at the
+				// moment) since the disabled devices are inferred from the running status of active devices
+				if (_state == RunState.Started) {
+					SaveDisabledDevices();
+				}
+
 				SystemConfig.OutputControllers = OutputControllers;
 				SystemConfig.SmartOutputControllers = SmartOutputControllers;
 				SystemConfig.Previews = Previews;
@@ -102,7 +111,12 @@ namespace Vixen.Sys {
 				SystemConfig.ControllerLinking = ControllerLinking;
 				SystemConfig.Filters = Filters;
 				SystemConfig.DataFlow = DataFlow;
+
 				SystemConfig.Save();
+			}
+
+			if (ModuleStore != null) {
+				ModuleStore.Save();
 			}
 		}
 
