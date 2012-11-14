@@ -69,7 +69,9 @@ namespace Vixen.Sys.Managers {
 			foreach(IContext context in _instances.Values.ToArray()) {
 				ReleaseContext(context);
 			}
-			_instances.Clear();
+			lock(_instances) {
+				_instances.Clear();
+			}
 		}
 
 		public void Update() {
@@ -90,11 +92,11 @@ namespace Vixen.Sys.Managers {
 		}
 
 		public IEnumerator<IContext> GetEnumerator() {
-			List<IContext> contexts;
+			IContext[] contexts;
 			lock(_instances) {
-				contexts = _instances.Values.ToList();
+				contexts = _instances.Values.ToArray();
 			}
-			return contexts.GetEnumerator();
+			return contexts.Cast<IContext>().GetEnumerator();
 		}
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
