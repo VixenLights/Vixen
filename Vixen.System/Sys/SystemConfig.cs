@@ -10,7 +10,6 @@ using Vixen.Sys.Output;
 
 namespace Vixen.Sys {
 	class SystemConfig {
-		private string _alternateDataPath;
 		private IEnumerable<Channel> _channels;
 		private IEnumerable<ChannelNode> _nodes;
 		private IEnumerable<IOutputDevice> _controllers;
@@ -133,18 +132,6 @@ namespace Vixen.Sys {
 		public bool IsContext { get; set; }
 
 		public bool IsPreviewThreaded { get; set; }
-
-		public string AlternateDataPath {
-			get { return _alternateDataPath; }
-			set {
-				Paths.DataRootPath = value;
-				if(Paths.DataRootPath == value) {
-					// Data root path is the path that we specified; the set
-					// did not fail.
-					_alternateDataPath = value;
-				}
-			}
-		}
 
 		public bool AllowFilterEvaluation { get; set; }
 

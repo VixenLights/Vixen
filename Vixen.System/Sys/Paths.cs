@@ -33,11 +33,9 @@ namespace Vixen.Sys {
             }
             set {
 				if(value == null) value = DefaultDataRootPath;
+				value = value.TrimEnd(Path.DirectorySeparatorChar);
 
-                if(!value.EndsWith(Path.DirectorySeparatorChar + VIXEN_DATA_DIR)) {
-                    value += Path.DirectorySeparatorChar + VIXEN_DATA_DIR;
-                }
-                // Want to be sure the directory can exist before making it the
+            	// Want to be sure the directory can exist before making it the
                 // data directory.
                 if(Helper.EnsureDirectory(value)) {
                     _dataRootPath = value;

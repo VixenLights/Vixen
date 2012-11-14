@@ -3,7 +3,6 @@
 		public void Write() {
 			WriteContextFlag();
 			WriteIdentity();
-			WriteAlternateDataDirectory();
 			WriteFilterEvaluationAllowance();
 			WriteChannels();
 			WriteNodes();
@@ -18,7 +17,6 @@
 
 		protected abstract void WriteContextFlag();
 		protected abstract void WriteIdentity();
-		protected abstract void WriteAlternateDataDirectory();
 		protected abstract void WriteFilterEvaluationAllowance();
 		protected abstract void WriteChannels();
 		protected abstract void WriteNodes();
@@ -33,7 +31,6 @@
 		public void Read() {
 			ReadContextFlag();
 			ReadIdentity();
-			ReadAlternateDataDirectory();
 			ReadFilterEvaluationAllowance();
 			ReadChannels();
 			ReadNodes();
@@ -48,7 +45,6 @@
 
 		protected abstract void ReadContextFlag();
 		protected abstract void ReadIdentity();
-		protected abstract void ReadAlternateDataDirectory();
 		protected abstract void ReadFilterEvaluationAllowance();
 		protected abstract void ReadChannels();
 		protected abstract void ReadNodes();

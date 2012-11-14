@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
 using System.Xml.Linq;
 using Vixen.IO.Policy;
 using Vixen.IO.Xml.Serializer;
@@ -12,7 +10,6 @@ namespace Vixen.IO.Xml.SystemConfig {
 		private SystemConfig _systemConfig;
 		private XElement _content;
 
-		private const string ELEMENT_DATA_DIRECTORY = "DataDirectory";
 		private const string ELEMENT_IDENTITY = "Identity";
 		private const string ELEMENT_EVAL_FILTERS = "AllowFilterEvaluation";
 		private const string ATTR_IS_CONTEXT = "isContext";
@@ -31,12 +28,6 @@ namespace Vixen.IO.Xml.SystemConfig {
 
 		protected override void WriteIdentity() {
 			_content.Add(new XElement(ELEMENT_IDENTITY, _systemConfig.Identity));
-		}
-
-		protected override void WriteAlternateDataDirectory() {
-			if(!string.IsNullOrWhiteSpace(_systemConfig.AlternateDataPath)) {
-				_content.Add(new XElement(ELEMENT_DATA_DIRECTORY, _systemConfig.AlternateDataPath));
-			}
 		}
 
 		protected override void WriteFilterEvaluationAllowance() {
@@ -108,15 +99,6 @@ namespace Vixen.IO.Xml.SystemConfig {
 				_systemConfig.Identity = Guid.Parse(identityElement.Value);
 			} else {
 				VixenSystem.Logging.Warning("System config does not have an identity value.");
-			}
-		}
-
-		protected override void ReadAlternateDataDirectory() {
-			XElement dataDirectoryElement = _content.Element(ELEMENT_DATA_DIRECTORY);
-			if(dataDirectoryElement != null && Directory.Exists(dataDirectoryElement.Value)) {
-				_systemConfig.AlternateDataPath = dataDirectoryElement.Value;
-			} else {
-				_systemConfig.AlternateDataPath = null;
 			}
 		}
 

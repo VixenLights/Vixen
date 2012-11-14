@@ -256,13 +256,8 @@ namespace Vixen.Sys {
 		}
 
     	static private string _GetUserDataPath() {
-			// Look for a user data file in the binary directory.
-			string filePath = Path.Combine(Paths.BinaryRootPath, SystemConfig.FileName);
-			SystemConfig systemConfig = FileService.Instance.LoadSystemConfigFile(filePath);
-			if(systemConfig != null && Directory.Exists(systemConfig.AlternateDataPath)) return systemConfig.AlternateDataPath;
-			
-			// Use the default data path.
-			return Paths.DefaultDataRootPath;
+			string dataPath = System.Configuration.ConfigurationManager.AppSettings["DataPath"];
+			return dataPath ?? Paths.DefaultDataRootPath;
 		}
 	}
 }
