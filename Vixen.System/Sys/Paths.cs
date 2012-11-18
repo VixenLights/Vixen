@@ -37,10 +37,12 @@ namespace Vixen.Sys {
 
             	// Want to be sure the directory can exist before making it the
                 // data directory.
-                if(Helper.EnsureDirectory(value)) {
-                    _dataRootPath = value;
-                    _BuildDataDirectories();
-                }
+				if(Helper.EnsureDirectory(value)) {
+					_dataRootPath = value;
+					_BuildDataDirectories();
+				} else {
+					throw new IOException("Specified data path does not exist and could not be created.");
+				}
             }
         }
 

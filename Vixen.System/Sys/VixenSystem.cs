@@ -15,7 +15,7 @@ namespace Vixen.Sys {
 		public enum RunState { Stopped, Starting, Started, Stopping };
 		static private RunState _state = RunState.Stopped;
 
-    	static public void Start(IApplication clientApplication, bool openExecution = true, bool disableDevices = false) {
+    	static public void Start(IApplication clientApplication, bool openExecution = true, bool disableDevices = false, string dataRootDirectory = null) {
 			if(_state == RunState.Stopped) {
 				try {
 					_state = RunState.Starting;
@@ -23,7 +23,7 @@ namespace Vixen.Sys {
 
 					// A user data file in the binary branch will give any alternate
 					// data branch to use.
-					Paths.DataRootPath = _GetUserDataPath();
+					Paths.DataRootPath = dataRootDirectory ?? _GetUserDataPath();
 
 					_InitializeLogging();
 					Logging.Info("Vixen System starting up...");
