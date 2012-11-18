@@ -38,7 +38,6 @@ namespace Common.Controls.Timeline
 				audio = value;
 				if (audio != null)
 				{
-					audio.LoadMedia(TimeSpan.MinValue);
 					CreateSamplesToScale();
 					Visible = true;// Make us visible if we have audio to display.
 				}

@@ -77,7 +77,7 @@ namespace FMOD {
                             system.setDSPBufferSize(1024, dspBufferCount);
                         }
 
-                        system.init(32, INITFLAGS.NORMAL, (IntPtr)null);
+                        system.init(32, INITFLAGS.NORMAL, IntPtr.Zero);
                         system.setStreamBufferSize(streamBufferSize, TIMEUNIT.RAWBYTES);
                     }
                 }

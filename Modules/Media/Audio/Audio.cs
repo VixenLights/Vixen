@@ -175,7 +175,12 @@ namespace VixenModules.Media.Audio
 
 		public TimeSpan Position
 		{
-			get { return TimeSpan.FromMilliseconds(_audioSystem.Position); }
+			get {
+				if(_audioSystem != null) {
+					return TimeSpan.FromMilliseconds(_audioSystem.Position);
+				}
+				return TimeSpan.Zero;
+			}
 			set { }
 		}
 
@@ -191,12 +196,12 @@ namespace VixenModules.Media.Audio
 		}
 
 		public bool SupportsVariableSpeeds {
-			get { return false; }
+			get { return true; }
 		}
 
 		public float Speed {
-			get { return 1; } // 1 = 100%
-			set { throw new NotSupportedException(); }
+			get { return _audioSystem.Speed; }
+			set { _audioSystem.Speed = value; }
 		}
 	}
 
@@ -407,6 +412,11 @@ namespace VixenModules.Media.Audio
 				else
 					return TimeSpan.Zero;
 			}
+		}
+
+		public float Speed {
+			get { return _channel.Frequency; }
+			set { _channel.Frequency = value; }
 		}
 	}
 }

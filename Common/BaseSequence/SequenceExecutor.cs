@@ -132,13 +132,13 @@ namespace BaseSequence {
 
 			_LoadMedia();
 
-			// Start the crazy train.
-			IsRunning = true;
-
 			_StartMedia();
 
 			TimingSource.Position = StartTime;
 			TimingSource.Start();
+
+			// Start the crazy train.
+			IsRunning = true;
 
 			// Fire the first event manually because it takes a while for the timer
 			// to elapse the first time.
