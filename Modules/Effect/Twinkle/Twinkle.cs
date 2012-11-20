@@ -35,7 +35,8 @@ namespace VixenModules.Effect.Twinkle
 				twinkles = GenerateTwinkleData();
 
 			foreach (ChannelNode node in targetNodes) {
-				_channelData.Add(node.Channel.Id, RenderChannel(node, twinkles));
+				if (!_channelData.ContainsKey(node.Channel.Id))
+					_channelData.Add(node.Channel.Id, RenderChannel(node, twinkles));
 			}
 		}
 
