@@ -94,6 +94,9 @@ namespace Vixen.Sys.Managers {
 
 		public ChannelNode GetChannelNodeForChannel(Channel channel)
 		{
+			if (channel == null)
+				return null;
+
 			if (_channelToChannelNode.ContainsKey(channel))
 				return _channelToChannelNode[channel];
 
