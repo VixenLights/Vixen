@@ -191,19 +191,18 @@ namespace VixenModules.Preview.DisplayPreview.Model
 			
 			foreach (var channelIntentState in channelIntentStates)
             {
-				
 				var channelId = channelIntentState.Key;
-				ChannelNode node = VixenSystem.Channels.GetChannelNodeForChannel(VixenSystem.Channels.GetChannel(channelId));
+				Channel channel = VixenSystem.Channels.GetChannel(channelId);
+				if (channel == null) continue;
+				ChannelNode node = VixenSystem.Channels.GetChannelNodeForChannel(channel);
+				if (node == null) continue;
 
-				if(node!= null)
+				var nodeLayout = NodeLayouts.FirstOrDefault(x => x.NodeId == node.Id);
+				if (nodeLayout != null)
 				{
-					var nodeLayout = NodeLayouts.FirstOrDefault(x => x.NodeId == node.Id);
-					if (nodeLayout != null)
-					{
-						nodeLayout.ChannelState = channelIntentState.Value;
-					}	
+					nodeLayout.ChannelState = channelIntentState.Value;
 				}
-            }
+			}
         }
 
         private static DragDropEffects GetDropEffects(ChannelNode channelNode)
