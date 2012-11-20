@@ -136,11 +136,20 @@ namespace VixenApplication
 			project.Design.FillStyles.Add(styleController, styleController);
 			project.Design.FillStyles.Add(styleOutput, styleOutput);
 
+			diagramDisplay.DoSuspendUpdate();
+//			DateTime start = DateTime.Now;
+//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: LOADING: start time:                      " + start);
 			_InitializeShapesFromChannels();
+//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _InitializeShapesFromChannels:       " + (DateTime.Now - start));
 			_InitializeShapesFromFilters();
+//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _InitializeShapesFromFilters:        " + (DateTime.Now - start));
 			_InitializeShapesFromControllers();
+//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _InitializeShapesFromControllers:    " + (DateTime.Now - start));
 			_RelayoutAllShapes();
+//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _RelayoutAllShapes:                  " + (DateTime.Now - start));
 			_CreateConnectionsFromExistingLinks();
+//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _CreateConnectionsFromExistingLinks: " + (DateTime.Now - start));
+			diagramDisplay.DoResumeUpdate();
 
 			diagramDisplay.CurrentTool = new ConnectionTool();
 
@@ -604,6 +613,8 @@ namespace VixenApplication
 
 		private void _RelayoutAllShapes()
 		{
+			diagramDisplay.DoSuspendUpdate();
+
 			// take off some pixels for natural spacing and widths of the shapes (since their X/Y coords are centred)
 			int width = diagramDisplay.Width - 300;
 
@@ -613,24 +624,34 @@ namespace VixenApplication
 			_ResizeAndPositionChannelShapes(_channelsXPosition);
 			_ResizeAndPositionFilterShapes(_previousDiagramWidth, width);
 			_ResizeAndPositionControllerShapes(_controllersXPosition);
+
+			diagramDisplay.DoResumeUpdate();
 		}
 
 		private void _ResizeAndPositionChannelShapes(int xLocation)
 		{
+			diagramDisplay.DoSuspendUpdate();
+
 			int y = SHAPE_Y_TOP;
 			foreach (ChannelNodeShape channelShape in _channelShapes) {
 				_ResizeAndPositionNestingShape(channelShape, SHAPE_CHANNELS_WIDTH, xLocation, y, true);
 				y += channelShape.Height + SHAPE_VERTICAL_SPACING;
 			}
+
+			diagramDisplay.DoResumeUpdate();
 		}
 
 		private void _ResizeAndPositionControllerShapes(int xLocation)
 		{
+			diagramDisplay.DoSuspendUpdate();
+
 			int y = SHAPE_Y_TOP;
 			foreach (ControllerShape controllerShape in _controllerShapes) {
 				_ResizeAndPositionNestingShape(controllerShape, SHAPE_CONTROLLERS_WIDTH, xLocation, y, true);
 				y += controllerShape.Height + SHAPE_VERTICAL_SPACING;
 			}
+
+			diagramDisplay.DoResumeUpdate();
 		}
 
 		private void _UpdateFilterPositionDataForFilter(FilterShape filterShape)
@@ -644,6 +665,8 @@ namespace VixenApplication
 
 		private void _ResizeAndPositionFilterShapes(int oldDiagramWidth, int newDiagramWidth)
 		{
+			diagramDisplay.DoSuspendUpdate();
+
 			double defaultXPositionProportion = 0.5;
 			int y = SHAPE_Y_TOP;
 
@@ -683,6 +706,8 @@ namespace VixenApplication
 			}
 
 			_previousDiagramWidth = newDiagramWidth;
+
+			diagramDisplay.DoResumeUpdate();
 		}
 
 		private void _ResizeAndPositionNestingShape(FilterSetupShapeBase shape, int width, int x, int y, bool visible)

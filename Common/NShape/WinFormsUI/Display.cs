@@ -3092,7 +3092,7 @@ namespace Dataweb.NShape.WinFormsUI {
 		#region [Private] Methods: Invalidating
 
 		/// <override></override>
-		private void DoSuspendUpdate() {
+		public void DoSuspendUpdate() {
 			if (suspendUpdateCounter == 0)
 				Debug.Assert(invalidatedAreaBuffer == Rectangle.Empty);
 			++suspendUpdateCounter;
@@ -3100,7 +3100,7 @@ namespace Dataweb.NShape.WinFormsUI {
 
 
 		/// <override></override>
-		private void DoResumeUpdate() {
+		public void DoResumeUpdate() {
 			if (suspendUpdateCounter <= 0) throw new InvalidOperationException("Missing subsequent call of method SuspendUpdate.");
 			--suspendUpdateCounter;
 			if (suspendUpdateCounter == 0) {
