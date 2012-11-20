@@ -131,7 +131,8 @@ namespace Vixen.Sys.Managers {
 		private void _UpdateFromSource(IOutputFilterModuleInstance filter) {
 			if(filter == null || filter.Source == null) return;
 			IDataFlowData data = filter.Source.GetOutputState();
-			filter.Update(data);
+			if (data != null)
+				filter.Update(data);
 		}
 
 		public IEnumerator<IOutputFilterModuleInstance> GetEnumerator() {
