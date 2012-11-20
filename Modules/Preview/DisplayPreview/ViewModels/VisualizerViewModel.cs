@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows.Media.Imaging;
 using Vixen.Data.Value;
 
@@ -73,14 +74,18 @@ namespace VixenModules.Preview.DisplayPreview.ViewModels
 				if (_backgroundImage == null
 					&& _dataModel.BackgroundImage != null)
 				{
-					var image = new BitmapImage();
-					image.BeginInit();
-					image.CacheOption = BitmapCacheOption.OnLoad;
-					image.UriSource = new Uri(_dataModel.BackgroundImage, UriKind.Absolute);
-					image.EndInit();
+					try {
+						var image = new BitmapImage();
+						image.BeginInit();
+						image.CacheOption = BitmapCacheOption.OnLoad;
+						image.UriSource = new Uri(_dataModel.BackgroundImage, UriKind.Absolute);
+						image.EndInit();
 
-					_backgroundImage = image;
-					
+						_backgroundImage = image;
+					}
+					catch (DirectoryNotFoundException dnfe) {
+						VixenSystem.Logging.Error("DisplayPreview: error loading background image. File not found: " + _dataModel.BackgroundImage);
+					}				
 				}
 
 				return _backgroundImage;
