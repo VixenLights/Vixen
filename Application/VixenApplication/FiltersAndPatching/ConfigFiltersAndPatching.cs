@@ -13,6 +13,7 @@ using Dataweb.NShape;
 using Dataweb.NShape.Advanced;
 using Dataweb.NShape.Controllers;
 using Vixen.Data.Flow;
+using Vixen.Module;
 using Vixen.Module.OutputFilter;
 using Vixen.Services;
 using Vixen.Sys;
@@ -381,8 +382,7 @@ namespace VixenApplication
 
 			for (int i = 0; i < numberOfCopies; i++) {
 				foreach (IOutputFilterModuleInstance instance in sourceInstances) {
-					FilterShape newShape = _CreateNewFilterInstanceAndShape(instance.TypeId, false);
-					newShape.FilterInstance.ModuleData = instance.ModuleData.Clone();
+					FilterShape newShape = _CreateNewFilterInstanceAndShape(instance.TypeId, false, instance.ModuleData);
 					newShape.ModuleDataUpdated();
 
 					newShape.X = pos.X;
@@ -824,11 +824,14 @@ namespace VixenApplication
 			return filterShape;
 		}
 
-		private FilterShape _CreateNewFilterInstanceAndShape(Guid filterTypeId, bool defaultLayout)
+		private FilterShape _CreateNewFilterInstanceAndShape(Guid filterTypeId, bool defaultLayout, IModuleDataModel dataModelToCopy = null)
 		{
 			IOutputFilterModuleInstance moduleInstance = ApplicationServices.Get<IOutputFilterModuleInstance>(filterTypeId);
-			VixenSystem.Filters.AddFilter(moduleInstance);
+			if (dataModelToCopy != null) {
+				moduleInstance.ModuleData = dataModelToCopy.Clone();
+			}
 			FilterShape shape = _CreateShapeFromFilter(moduleInstance);
+			VixenSystem.Filters.AddFilter(moduleInstance);
 
 			shape.Width = SHAPE_FILTERS_WIDTH;
 			shape.Height = SHAPE_FILTERS_HEIGHT;
