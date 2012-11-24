@@ -1165,26 +1165,34 @@ namespace Common.Controls.Timeline
 
 						// these handle the fact that our pixels don't perfectly align with exact start times of elements, and are used to
 						// capture any timespan that's within the single pixel range of the 'current drawn to' point
-						TimeSpan currentlyDrawnMin = pixelsToTime((int)Math.Floor(timeToPixels(currentlyDrawnTo)));
-						TimeSpan currentlyDrawnMax = pixelsToTime((int)Math.Ceiling(timeToPixels(currentlyDrawnTo)));
+						int lowerBoundPixels = (int) Math.Floor(timeToPixels(currentlyDrawnTo));
+						int upperBoundPixels = (int) Math.Ceiling(timeToPixels(currentlyDrawnTo));
+						if (upperBoundPixels <= lowerBoundPixels)
+							upperBoundPixels = lowerBoundPixels + 1;
+						TimeSpan currentlyDrawnMin = pixelsToTime(lowerBoundPixels);
+						TimeSpan currentlyDrawnMax = pixelsToTime(upperBoundPixels);
+
+
 
 						// find how many bitmaps are going to be in this next segment, and also figure out the smallest whole section
 						// to draw before another element starts or until one of the current ones end
 						int bitmapLayers = 0;
+						TimeSpan smallestDrawingDuration = TimeSpan.MaxValue;
 						foreach (BitmapDrawDetails drawDetails in bitmapsToDraw) {
 							TimeSpan start = drawDetails.startTime;
 							TimeSpan duration = drawDetails.duration;
+
+							// dodgy workaround: if the current element somehow has a start time BEFORE the currently drawn to time,
+							// something went wrong. Set it to the currently drawn time, and it shouldget picked up as part of the process.
+							if (start <= currentlyDrawnMin)
+								drawDetails.startTime = start = currentlyDrawnTo;
 
 							// if this bitmap is within the single pixel range that is currently drawing, we'll be drawing it.
 							// check the duration to make sure we're drawing the smallest possible slice of elements.
 							if (start >= currentlyDrawnMin && start <= currentlyDrawnMax) {
 								bitmapLayers++;
-								if (duration < processingSegmentDuration)
-									processingSegmentDuration = duration;
-							// if this drawing bitmap isn't starting at the current point, it might be the next one; check if we can
-							// cut down the current drawing segment as another one will be starting soon
-							} else if (start - currentlyDrawnTo < processingSegmentDuration) {
-								processingSegmentDuration = start - currentlyDrawnTo;
+								if (duration < smallestDrawingDuration)
+									smallestDrawingDuration = duration;
 							}
 
 							// record the earliest start time for drawable blocks we've found; if we
@@ -1192,6 +1200,69 @@ namespace Common.Controls.Timeline
 							if (start < earliestStart)
 								earliestStart = start;
 						}
+
+
+						TimeSpan earliestTimeToNextDrawing = TimeSpan.MaxValue;
+						foreach (BitmapDrawDetails drawDetails in bitmapsToDraw.ToArray()) {
+							TimeSpan start = drawDetails.startTime;
+
+							// check if the start for this one is out of range (too early); if it is, delete it
+							// workaround -- if the currently drawn one actually starts EARLIER than we're up to, something
+							// went wrong, don't draw it. I can't track the issue down...
+							// (for Future Me: I think the problem is down below, where it crops the bitmap into smaller ones.)
+							if (start < currentlyDrawnTo) {
+								//Debugger.Break();
+								bitmapsToDraw.Remove(drawDetails);
+								continue;
+							}
+
+							
+
+							// if this drawing bitmap isn't starting at the current point, it might be the next one; check if we can
+							// cut down the current drawing segment as another one will be starting soon
+							if (start > currentlyDrawnMax && start - currentlyDrawnTo < earliestTimeToNextDrawing) {
+								earliestTimeToNextDrawing = start - currentlyDrawnTo;
+							}
+						}
+
+						if (smallestDrawingDuration < earliestTimeToNextDrawing)
+							processingSegmentDuration = smallestDrawingDuration;
+						else
+							processingSegmentDuration = earliestTimeToNextDrawing;
+
+
+						//// find how many bitmaps are going to be in this next segment, and also figure out the smallest whole section
+						//// to draw before another element starts or until one of the current ones end
+						//int bitmapLayers = 0;
+						//foreach (BitmapDrawDetails drawDetails in bitmapsToDraw.ToArray()) {
+						//    TimeSpan start = drawDetails.startTime;
+						//    TimeSpan duration = drawDetails.duration;
+
+						//    // if this bitmap is within the single pixel range that is currently drawing, we'll be drawing it.
+						//    // check the duration to make sure we're drawing the smallest possible slice of elements.
+						//    if (start >= currentlyDrawnMin && start <= currentlyDrawnMax) {
+						//        bitmapLayers++;
+						//        if (duration < processingSegmentDuration)
+						//            processingSegmentDuration = duration;
+						//    // if this drawing bitmap isn't starting at the current point, it might be the next one; check if we can
+						//    // cut down the current drawing segment as another one will be starting soon
+						//    } else if (start - currentlyDrawnTo < processingSegmentDuration) {
+						//        // workaround -- if the currently drawn one actually starts EARLIER than we're up to, something
+						//        // went wrong, don't draw it. I can't track the issue down...
+						//        if (start - currentlyDrawnTo < TimeSpan.Zero) {
+						//            bitmapsToDraw.Remove(drawDetails);
+						//            continue;
+						//        }
+						//        processingSegmentDuration = start - currentlyDrawnTo;
+						//    }
+
+						//    // record the earliest start time for drawable blocks we've found; if we
+						//    // don't draw anything here, we just skip through to this time later
+						//    if (start < earliestStart)
+						//        earliestStart = start;
+						//}
+
+
 
 						bool firstDraw = true;
 						Bitmap finalBitmap = null;
@@ -1216,19 +1287,23 @@ namespace Common.Controls.Timeline
 									bitmapContinuesPastCurrentDrawDuration = true;
 									Bitmap croppedBitmap = bmp.Clone(new Rectangle(0, 0, croppedWidth, bmp.Height), PixelFormat.Format32bppArgb);
 									drawDetails.bmp = bmp.Clone(new Rectangle(croppedWidth, 0, bmp.Width - croppedWidth, bmp.Height), bmp.PixelFormat);
+									//if (start + drawingSegmentDuration < currentlyDrawnTo + processingSegmentDuration) Debugger.Break();
 									drawDetails.startTime = start + drawingSegmentDuration;
 									drawDetails.duration = duration - drawingSegmentDuration;
 									bmp = croppedBitmap;
 								}
 							}
 
-							// for the first time around, set up the final bitmap data item and lock it
-							if (firstDraw) {
-								finalBitmap = new Bitmap((int)Math.Ceiling(timeToPixels(processingSegmentDuration)), bmp.Height);
-								finalDrawLocation = new Point((int)Math.Floor(timeToPixels(start)), top);
-								firstDraw = false;
+							try {
+								// for the first time around, set up the final bitmap data item and lock it
+								if (firstDraw) {
+									finalBitmap = new Bitmap((int) Math.Ceiling(timeToPixels(processingSegmentDuration)), bmp.Height);
+									finalDrawLocation = new Point((int) Math.Floor(timeToPixels(start)), top);
+									firstDraw = false;
 
+								}
 							}
+							catch (Exception e) { Debugger.Break(); }
 
 							if (bitmapLayers == 1) {
 								Graphics.FromImage(finalBitmap).DrawImage(bmp, 0, 0);
