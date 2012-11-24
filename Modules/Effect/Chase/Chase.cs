@@ -221,6 +221,8 @@ namespace VixenModules.Effect.Chase
 				case ChaseColorHandling.GradientThroughWholeEffect:
 					double startPos = ((double)startTime.Ticks / (double)TimeSpan.Ticks);
 					double endPos = ((double)(startTime + duration).Ticks / (double)TimeSpan.Ticks);
+					if (startPos < 0.0) startPos = 0.0;
+					if (endPos > 1.0) endPos = 1.0;
 					pulse.ColorGradient = ColorGradient.GetSubGradient(startPos, endPos);
 					break;
 
