@@ -19,7 +19,7 @@ namespace VixenModules.App.SimpleSchedule {
 			_stateMachine = new Machine<IScheduledItemStateObject>();
 
 			States.WaitingState = new WaitingState(_waitingItems);
-			States.PreExecuteState = new PreExecuteState(_stateMachine, _waitingItems, _executingItems);
+			States.PreExecuteState = new PreExecuteState(_waitingItems, _executingItems);
 			States.ExecutingState = new ExecutingState();
 			States.PostExecuteState = new PostExecuteState();
 			States.CompletedState = new CompletedState(_executingItems);

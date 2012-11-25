@@ -56,10 +56,18 @@ namespace Common.StateMach {
 		}
 
 		public void Update() {
-			foreach(T obj in _objectStates.Keys.ToArray()) {
-				ITransition<T> transitionToTake = _FindTransitionWithTrueCondition(obj);
-				_TransitionStates(obj, _objectStates[obj], transitionToTake);
-			}
+			bool somethingChangedState;
+			do {
+				somethingChangedState = false;
+
+				foreach(T obj in _objectStates.Keys.ToArray()) {
+					ITransition<T> transitionToTake = _FindTransitionWithTrueCondition(obj);
+					if(transitionToTake != null) {
+						_TransitionStates(obj, _objectStates[obj], transitionToTake);
+						somethingChangedState = true;
+					}
+				}
+			} while(somethingChangedState); 
 		}
 
 		private ITransition<T> _FindTransitionWithTrueCondition(T obj) {
