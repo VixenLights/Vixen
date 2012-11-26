@@ -114,7 +114,7 @@ namespace VixenModules.Effect.Chase
 		private void DoRendering()
 		{
 			//TODO: get a better increment time. doing it every X ms is..... shitty at best.
-			TimeSpan increment = TimeSpan.FromMilliseconds(10);
+			TimeSpan increment = TimeSpan.FromMilliseconds(2);
 
 			List<ChannelNode> renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).ToList();
 			int targetNodeCount = renderNodes.Count;
