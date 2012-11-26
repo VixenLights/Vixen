@@ -59,6 +59,7 @@ namespace VixenModules.Effect.Twinkle
 	{
 		StaticColor,
 		GradientThroughWholeEffect,
-		GradientForEachPulse
+		GradientForEachPulse,
+		ColorAcrossItems
 	}
 }

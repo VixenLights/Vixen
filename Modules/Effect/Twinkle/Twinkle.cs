@@ -34,9 +34,12 @@ namespace VixenModules.Effect.Twinkle
 			if (!IndividualChannels)
 				twinkles = GenerateTwinkleData();
 
+			int totalNodes = targetNodes.Distinct().Count();
+			int i = 0;
+
 			foreach (ChannelNode node in targetNodes) {
 				if (!_channelData.ContainsKey(node.Channel.Id))
-					_channelData.Add(node.Channel.Id, RenderChannel(node, twinkles));
+					_channelData.Add(node.Channel.Id, RenderChannel(node, i++ / (double)totalNodes, twinkles));
 			}
 		}
 
@@ -136,7 +139,7 @@ namespace VixenModules.Effect.Twinkle
 			set { _data.ColorGradient = value; IsDirty = true; }
 		}
 
-		private IntentNodeCollection RenderChannel(ChannelNode node, List<IndividualTwinkleDetails> twinkles = null)
+		private IntentNodeCollection RenderChannel(ChannelNode node, double positionWithinGroup, List<IndividualTwinkleDetails> twinkles = null)
 		{
 			if (node == null)
 				return null;
@@ -164,6 +167,10 @@ namespace VixenModules.Effect.Twinkle
 
 				case TwinkleColorHandling.StaticColor:
 					pulse.ColorGradient = new ColorGradient(StaticColor);
+					break;
+
+				case TwinkleColorHandling.ColorAcrossItems:
+					pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup));
 					break;
 			}
 
@@ -193,6 +200,10 @@ namespace VixenModules.Effect.Twinkle
 
 						case TwinkleColorHandling.StaticColor:
 							pulse.ColorGradient = new ColorGradient(StaticColor);
+							break;
+
+						case TwinkleColorHandling.ColorAcrossItems:
+							pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup));
 							break;
 					}
 

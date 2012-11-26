@@ -54,6 +54,7 @@
 			this.groupBoxChannels = new System.Windows.Forms.GroupBox();
 			this.radioButtonSynchronizedChannels = new System.Windows.Forms.RadioButton();
 			this.radioButtonIndividualChannels = new System.Windows.Forms.RadioButton();
+			this.radioButtonGradientAcrossItems = new System.Windows.Forms.RadioButton();
 			this.groupBoxLevels.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownLevelVariation)).BeginInit();
 			this.groupBoxDetails.SuspendLayout();
@@ -72,7 +73,7 @@
 			this.groupBoxLevels.Controls.Add(this.label1);
 			this.groupBoxLevels.Controls.Add(this.levelTypeEditorControlMaxValue);
 			this.groupBoxLevels.Controls.Add(this.levelTypeEditorControlMinValue);
-			this.groupBoxLevels.Location = new System.Drawing.Point(3, 119);
+			this.groupBoxLevels.Location = new System.Drawing.Point(3, 147);
 			this.groupBoxLevels.Name = "groupBoxLevels";
 			this.groupBoxLevels.Size = new System.Drawing.Size(210, 145);
 			this.groupBoxLevels.TabIndex = 0;
@@ -82,7 +83,7 @@
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(13, 109);
+			this.label5.Location = new System.Drawing.Point(13, 110);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(96, 13);
 			this.label5.TabIndex = 5;
@@ -90,7 +91,7 @@
 			// 
 			// numericUpDownLevelVariation
 			// 
-			this.numericUpDownLevelVariation.Location = new System.Drawing.Point(121, 107);
+			this.numericUpDownLevelVariation.Location = new System.Drawing.Point(121, 108);
 			this.numericUpDownLevelVariation.Name = "numericUpDownLevelVariation";
 			this.numericUpDownLevelVariation.Size = new System.Drawing.Size(59, 20);
 			this.numericUpDownLevelVariation.TabIndex = 4;
@@ -103,7 +104,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(26, 75);
+			this.label2.Location = new System.Drawing.Point(26, 72);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(83, 13);
 			this.label2.TabIndex = 3;
@@ -120,17 +121,25 @@
 			// 
 			// levelTypeEditorControlMaxValue
 			// 
-			this.levelTypeEditorControlMaxValue.Location = new System.Drawing.Point(112, 62);
+			this.levelTypeEditorControlMaxValue.EffectParameterValues = new object[] {
+        ((object)(1D))};
+			this.levelTypeEditorControlMaxValue.LevelValue = 1D;
+			this.levelTypeEditorControlMaxValue.Location = new System.Drawing.Point(112, 59);
 			this.levelTypeEditorControlMaxValue.Name = "levelTypeEditorControlMaxValue";
 			this.levelTypeEditorControlMaxValue.Size = new System.Drawing.Size(90, 39);
 			this.levelTypeEditorControlMaxValue.TabIndex = 1;
+			this.levelTypeEditorControlMaxValue.TargetEffect = null;
 			// 
 			// levelTypeEditorControlMinValue
 			// 
+			this.levelTypeEditorControlMinValue.EffectParameterValues = new object[] {
+        ((object)(1D))};
+			this.levelTypeEditorControlMinValue.LevelValue = 1D;
 			this.levelTypeEditorControlMinValue.Location = new System.Drawing.Point(112, 17);
 			this.levelTypeEditorControlMinValue.Name = "levelTypeEditorControlMinValue";
 			this.levelTypeEditorControlMinValue.Size = new System.Drawing.Size(90, 39);
 			this.levelTypeEditorControlMinValue.TabIndex = 0;
+			this.levelTypeEditorControlMinValue.TargetEffect = null;
 			// 
 			// groupBoxDetails
 			// 
@@ -142,7 +151,7 @@
 			this.groupBoxDetails.Controls.Add(this.numericUpDownAveragePulseTime);
 			this.groupBoxDetails.Location = new System.Drawing.Point(3, 3);
 			this.groupBoxDetails.Name = "groupBoxDetails";
-			this.groupBoxDetails.Size = new System.Drawing.Size(210, 110);
+			this.groupBoxDetails.Size = new System.Drawing.Size(210, 138);
 			this.groupBoxDetails.TabIndex = 1;
 			this.groupBoxDetails.TabStop = false;
 			this.groupBoxDetails.Text = "Twinkle Details";
@@ -171,7 +180,7 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(18, 79);
+			this.label4.Location = new System.Drawing.Point(18, 99);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(118, 13);
 			this.label4.TabIndex = 3;
@@ -184,7 +193,7 @@
             0,
             0,
             0});
-			this.numericUpDownPulseTimeVariation.Location = new System.Drawing.Point(142, 76);
+			this.numericUpDownPulseTimeVariation.Location = new System.Drawing.Point(142, 96);
 			this.numericUpDownPulseTimeVariation.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -197,7 +206,7 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(14, 53);
+			this.label3.Location = new System.Drawing.Point(14, 63);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(122, 13);
 			this.label3.TabIndex = 1;
@@ -210,7 +219,7 @@
             0,
             0,
             0});
-			this.numericUpDownAveragePulseTime.Location = new System.Drawing.Point(142, 50);
+			this.numericUpDownAveragePulseTime.Location = new System.Drawing.Point(142, 60);
 			this.numericUpDownAveragePulseTime.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -232,6 +241,7 @@
 			// 
 			// groupBoxColor
 			// 
+			this.groupBoxColor.Controls.Add(this.radioButtonGradientAcrossItems);
 			this.groupBoxColor.Controls.Add(this.colorTypeEditorControlStaticColor);
 			this.groupBoxColor.Controls.Add(this.radioButtonStaticColor);
 			this.groupBoxColor.Controls.Add(this.label7);
@@ -240,7 +250,7 @@
 			this.groupBoxColor.Controls.Add(this.radioButtonGradientOverWhole);
 			this.groupBoxColor.Location = new System.Drawing.Point(219, 7);
 			this.groupBoxColor.Name = "groupBoxColor";
-			this.groupBoxColor.Size = new System.Drawing.Size(278, 181);
+			this.groupBoxColor.Size = new System.Drawing.Size(278, 209);
 			this.groupBoxColor.TabIndex = 2;
 			this.groupBoxColor.TabStop = false;
 			this.groupBoxColor.Text = "Color Handling";
@@ -254,6 +264,7 @@
 			this.colorTypeEditorControlStaticColor.Name = "colorTypeEditorControlStaticColor";
 			this.colorTypeEditorControlStaticColor.Size = new System.Drawing.Size(40, 40);
 			this.colorTypeEditorControlStaticColor.TabIndex = 8;
+			this.colorTypeEditorControlStaticColor.TargetEffect = null;
 			// 
 			// radioButtonStaticColor
 			// 
@@ -269,7 +280,7 @@
 			// label7
 			// 
 			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(23, 144);
+			this.label7.Location = new System.Drawing.Point(23, 170);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(50, 13);
 			this.label7.TabIndex = 6;
@@ -295,10 +306,11 @@
 			this.colorGradientTypeEditorControlGradient.ColorGradientValue = colorGradient2;
 			this.colorGradientTypeEditorControlGradient.EffectParameterValues = new object[] {
         ((object)(colorGradient2))};
-			this.colorGradientTypeEditorControlGradient.Location = new System.Drawing.Point(79, 130);
+			this.colorGradientTypeEditorControlGradient.Location = new System.Drawing.Point(79, 156);
 			this.colorGradientTypeEditorControlGradient.Name = "colorGradientTypeEditorControlGradient";
 			this.colorGradientTypeEditorControlGradient.Size = new System.Drawing.Size(100, 40);
 			this.colorGradientTypeEditorControlGradient.TabIndex = 1;
+			this.colorGradientTypeEditorControlGradient.TargetEffect = null;
 			// 
 			// radioButtonGradientOverWhole
 			// 
@@ -309,14 +321,14 @@
 			this.radioButtonGradientOverWhole.TabIndex = 0;
 			this.radioButtonGradientOverWhole.TabStop = true;
 			this.radioButtonGradientOverWhole.Text = "The gradient is shown over the whole effect.\r\nAll channels display the same color" +
-				" at a given time.";
+    " at a given time.";
 			this.radioButtonGradientOverWhole.UseVisualStyleBackColor = true;
 			// 
 			// groupBoxChannels
 			// 
 			this.groupBoxChannels.Controls.Add(this.radioButtonSynchronizedChannels);
 			this.groupBoxChannels.Controls.Add(this.radioButtonIndividualChannels);
-			this.groupBoxChannels.Location = new System.Drawing.Point(219, 194);
+			this.groupBoxChannels.Location = new System.Drawing.Point(219, 222);
 			this.groupBoxChannels.Name = "groupBoxChannels";
 			this.groupBoxChannels.Size = new System.Drawing.Size(278, 70);
 			this.groupBoxChannels.TabIndex = 3;
@@ -345,6 +357,17 @@
 			this.radioButtonIndividualChannels.Text = "Twinkle each channel independently.";
 			this.radioButtonIndividualChannels.UseVisualStyleBackColor = true;
 			// 
+			// radioButtonGradientAcrossItems
+			// 
+			this.radioButtonGradientAcrossItems.AutoSize = true;
+			this.radioButtonGradientAcrossItems.Location = new System.Drawing.Point(6, 126);
+			this.radioButtonGradientAcrossItems.Name = "radioButtonGradientAcrossItems";
+			this.radioButtonGradientAcrossItems.Size = new System.Drawing.Size(241, 17);
+			this.radioButtonGradientAcrossItems.TabIndex = 9;
+			this.radioButtonGradientAcrossItems.TabStop = true;
+			this.radioButtonGradientAcrossItems.Text = "The gradient is spread over the sub-channels.";
+			this.radioButtonGradientAcrossItems.UseVisualStyleBackColor = true;
+			// 
 			// TwinkleEffectEditorControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -354,7 +377,7 @@
 			this.Controls.Add(this.groupBoxDetails);
 			this.Controls.Add(this.groupBoxLevels);
 			this.Name = "TwinkleEffectEditorControl";
-			this.Size = new System.Drawing.Size(504, 270);
+			this.Size = new System.Drawing.Size(504, 300);
 			this.groupBoxLevels.ResumeLayout(false);
 			this.groupBoxLevels.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownLevelVariation)).EndInit();
@@ -397,5 +420,6 @@
 		private System.Windows.Forms.RadioButton radioButtonIndividualChannels;
 		private System.Windows.Forms.RadioButton radioButtonStaticColor;
 		private ColorTypeEditor.ColorTypeEditorControl colorTypeEditorControlStaticColor;
+		private System.Windows.Forms.RadioButton radioButtonGradientAcrossItems;
 	}
 }

@@ -114,7 +114,10 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 					return TwinkleColorHandling.StaticColor;
 				if (radioButtonGradientOverWhole.Checked)
 					return TwinkleColorHandling.GradientThroughWholeEffect;
-				return TwinkleColorHandling.GradientForEachPulse;
+				if (radioButtonGradientIndividual.Checked)
+					return TwinkleColorHandling.GradientForEachPulse;
+
+				return TwinkleColorHandling.ColorAcrossItems;
 			}
 			set
 			{
@@ -129,6 +132,10 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 
 					case TwinkleColorHandling.StaticColor:
 						radioButtonStaticColor.Checked = true;
+						break;
+
+					case TwinkleColorHandling.ColorAcrossItems:
+						radioButtonGradientAcrossItems.Checked = true;
 						break;
 				}
 			}
@@ -145,6 +152,5 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 			get { return colorGradientTypeEditorControlGradient.ColorGradientValue; }
 			set { colorGradientTypeEditorControlGradient.ColorGradientValue = value; }
 		}
-
 	}
 }
