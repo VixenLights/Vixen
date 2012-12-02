@@ -393,13 +393,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			EditElement(element);
 		}
 
-		private void EditElement(TimedSequenceElement element) {
-			if(element == null)
+		private void EditElement(TimedSequenceElement element)
+		{
+			EditElements(new TimedSequenceElement[] {element});
+		}
+
+		private void EditElements(IEnumerable<TimedSequenceElement> elements)
+		{
+			if (elements == null)
 				return;
 
-			using(TimedSequenceEditorEffectEditor editor = new TimedSequenceEditorEffectEditor(element.EffectNode)) {
+			using(TimedSequenceEditorEffectEditor editor = new TimedSequenceEditorEffectEditor(elements.Select(x => x.EffectNode))) {
 				DialogResult result = editor.ShowDialog();
-				if(result == System.Windows.Forms.DialogResult.OK)
+				if(result == DialogResult.OK)
 					sequenceModified();
 			}
 		}
@@ -1077,7 +1083,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripMenuItem_EditEffect_Click(object sender, EventArgs e) {
 			if(timelineControl.SelectedElements.Count() > 0) {
-				EditElement(timelineControl.SelectedElements.First() as TimedSequenceElement);
+				EditElements(timelineControl.SelectedElements.Cast<TimedSequenceElement>());
 			}
 		}
 

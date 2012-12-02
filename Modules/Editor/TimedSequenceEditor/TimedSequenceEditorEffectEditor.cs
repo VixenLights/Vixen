@@ -16,14 +16,38 @@ namespace VixenModules.Editor.TimedSequenceEditor
 	public partial class TimedSequenceEditorEffectEditor : Form
 	{
 		private EffectNode _effectNode;
+		private IEnumerable<EffectNode> _effectNodes; 
 		private List<IEffectEditorControl> _controls;
 		private bool _usedSingleControl;
+
+		public TimedSequenceEditorEffectEditor(IEnumerable<EffectNode> effectNodes)
+			: this(effectNodes.First())
+		{
+			if (effectNodes != null && effectNodes.Count() > 1) {
+				_effectNodes = effectNodes;
+				Text = "Edit Multiple Effects";
+
+				// show a warning if multiple effect types are selected
+				EffectNode displayedEffect = effectNodes.First();
+				if (displayedEffect != null) {
+					foreach (EffectNode node in effectNodes) {
+						if (node.Effect.TypeId != displayedEffect.Effect.TypeId) {
+							MessageBox.Show("The selected effects contain multiple types. Once you finish editing, these values will " +
+							                "only be applied to the effects of type '" + displayedEffect.Effect.Descriptor.TypeName + "'.",
+							                "Warning", MessageBoxButtons.OK);
+							break;
+						}
+					}
+				}
+			}
+		}
 
 		public TimedSequenceEditorEffectEditor(EffectNode effectNode)
 		{
 			InitializeComponent();
 
 			_effectNode = effectNode;
+			_effectNodes = null;
 			IEnumerable<IEffectEditorControl> controls = ApplicationServices.GetEffectEditorControls(_effectNode.Effect.Descriptor.TypeId);
 
 			if (controls == null) {
@@ -83,14 +107,27 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void TimedSequenceEditorEffectEditor_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			if (DialogResult == System.Windows.Forms.DialogResult.OK && _controls != null) {
-				if (_usedSingleControl) {
-					_effectNode.Effect.ParameterValues = _controls.First().EffectParameterValues;
-				} else {
-					object[] values = new object[_controls.Count];
-					for (int i = 0; i < _controls.Count; i++) {
-						values[i] = _controls[i].EffectParameterValues.First();
+				IEnumerable<EffectNode> nodes = _effectNodes ?? new EffectNode[] {_effectNode};
+
+				int changedEFfects = 0;
+				foreach (EffectNode node in nodes) {
+					if (node.Effect.TypeId != _effectNode.Effect.TypeId)
+						continue;
+
+					if (_usedSingleControl) {
+						node.Effect.ParameterValues = _controls.First().EffectParameterValues;
+					} else {
+						object[] values = new object[_controls.Count];
+						for (int i = 0; i < _controls.Count; i++) {
+							values[i] = _controls[i].EffectParameterValues.First();
+						}
+						node.Effect.ParameterValues = values;
 					}
-					_effectNode.Effect.ParameterValues = values;
+					changedEFfects++;
+				}
+
+				if (nodes.Count() > 1) {
+					MessageBox.Show(changedEFfects + " effects modified.", "", MessageBoxButtons.OK);
 				}
 			}
 		}
