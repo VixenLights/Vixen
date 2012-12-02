@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="Controls">
       <HintPath>..\..\..\..\Output\Common\Controls.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
