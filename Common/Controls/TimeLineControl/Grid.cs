@@ -1152,6 +1152,9 @@ namespace Common.Controls.Timeline
 					Bitmap elementImage = currentElement.Draw(size);
 					bitmapsToDraw.Add(new BitmapDrawDetails() { bmp = elementImage, startTime = currentElement.StartTime, duration = currentElement.Duration });
 
+					// oh god make it stop
+					int iterations = 0;
+
 					while (currentlyDrawnTo < desiredDrawTo) {
 						// if there's nothing left to draw, the rest of it is empty; skip to the desired draw point
 						if (bitmapsToDraw.Count == 0) {
@@ -1384,6 +1387,12 @@ namespace Common.Controls.Timeline
 							currentlyDrawnTo += processingSegmentDuration;
 						else
 							currentlyDrawnTo = earliestStart;
+
+						// dodgy, dodgy hack to avoid infinite loops and hangs: if we are looping too long, bail!
+						if (iterations > 10000)
+							currentlyDrawnTo = desiredDrawTo;
+						else
+							iterations++;
 					}
 
 				}
