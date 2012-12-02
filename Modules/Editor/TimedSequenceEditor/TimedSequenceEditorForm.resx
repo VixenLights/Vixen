@@ -124,8 +124,8 @@
   <data name="undoButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAALAgAA
-        CwIBm8luNgAAAexJREFUOE9j+P//PwMlGK/myVu+xUze/HXHvN1fHy0/+PXIyoNfp6w69FUK2UKcBvRt
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAALAAAA
+        CwAB5DetvwAAAexJREFUOE9j+P//PwMlGK/myVu+xUze/HXHvN1fHy0/+PXIyoNfp6w69FUK2UKcBvRt
         +LoDiP90r/v6vHHFl8f1S77cmbvz62OgAZ+QDYEb0L3q1f9lJ74agEwHalrWv/Hb79RJ7964FJz4bZ26
         /Y95wpbv7hV3P87c/vUN0ICbMFeADQAKcDYuefl/3oGvV+tXfG2YsOnbn7ie5/9cC47/t8vY/cs0ds1x
         l/ytDy3jl/8J63j3c+mBr/dRDABximc+/5816/P/wjlf/kf2fHxhlbzlr0Xihh+msSvzQfIBtdtVDCMW
@@ -139,8 +139,8 @@
   <data name="redoButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAALAgAA
-        CwIBm8luNgAAAd1JREFUOE9j+P//PwMlGK551aGvUisPfp2y/ODXI/N2f33Us/5LSuXCL5yEDAcbANIM
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAALAAAA
+        CwAB5DetvwAAAd1JREFUOE9j+P//PwMlGK551aGvUisPfp2y/ODXI/N2f33Us/5LSuXCL5yEDAcbANIM
         xJ/m7vz6uH7JlzuNK748bl315U7Foi+fKxd9ScVnCMyAmzO3f33jXvngvXnClu9WKdv+OOQe/5oy+fOL
         wjlfXhTO/RIGMmTZia8GDkXXgEyEt8EGLD3w9X5Yx7ufZtHzf7vkrb9pGrvmGBB/MYvf/Dt58ue/6TM/
         P8ue+yVy3oGvV60zj/8HuhbuNbABDUu/7HEtv/Ne3avnVkDtdhWQmGnsynzj6OVfdQJm/wrt/Pgc6JL/

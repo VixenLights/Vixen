@@ -1210,7 +1210,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					break;
 
 				TimeSpan time;
-				bool success = TimeSpan.TryParseExact(prompt.Response, TimeFormats.Formats, null, out time);
+				bool success = TimeSpan.TryParseExact(prompt.Response, TimeFormats.PositiveFormats, null, out time);
 				if(success) {
 					SequenceLength = time;
 					break;
@@ -1494,15 +1494,31 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 	public class TimeFormats
 	{
-		private static string[] _formats = new string[] {
+		private static readonly string[] _positiveFormats = new string[] {
 			@"m\:ss", @"m\:ss\.f", @"m\:ss\.ff", @"m\:ss\.fff", 
 			@"\:ss", @"\:ss\.f", @"\:ss\.ff", @"\:ss\.fff", 
 			@"%s", @"s\.f", @"s\.ff", @"s\.fff", 
 		};
 
-		public static string[] Formats
+		private static readonly string[] _negativeFormats = new string[] {
+			@"\-m\:ss", @"\-m\:ss\.f", @"\-m\:ss\.ff", @"\-m\:ss\.fff", 
+			@"\-\:ss", @"\-\:ss\.f", @"\-\:ss\.ff", @"\-\:ss\.fff", 
+			@"\-%s", @"\-s\.f", @"\-s\.ff", @"\-s\.fff", 
+		};
+
+		public static string[] AllFormats
 		{
-			get { return _formats; }
+			get { return _negativeFormats.Concat(_positiveFormats).ToArray(); }
+		}
+
+		public static string[] PositiveFormats
+		{
+			get { return _positiveFormats; }
+		}
+
+		public static string[] NegativeFormats
+		{
+			get { return _negativeFormats; }
 		}
 	}
 }

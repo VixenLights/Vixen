@@ -181,7 +181,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void buttonAddOrUpdateMark_Click(object sender, EventArgs e)
 		{
 			TimeSpan time;
-			bool success = TimeSpan.TryParseExact(textBoxTime.Text, TimeFormats.Formats, null, out time);
+			bool success = TimeSpan.TryParseExact(textBoxTime.Text, TimeFormats.PositiveFormats, null, out time);
 			if (success) {
 				if (buttonAddOrUpdateMark.Text == "Update") {
 					// updating an existing item, find it, remove it, and add the new one
@@ -231,7 +231,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (prompt.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 				TimeSpan time;
 
-				if (TimeSpan.TryParseExact(prompt.Response, TimeFormats.Formats, null, out time)) {
+				if (TimeSpan.TryParseExact(prompt.Response, TimeFormats.AllFormats, null, out time)) {
+					// this is hackey as shit.
+					if (prompt.Response.ToCharArray()[0] == '-')
+						time = -time;
+
 					List<TimeSpan> newMarks = new List<TimeSpan>();
 					foreach (ListViewItem item in listViewMarks.Items) {
 						if (item.Selected) {
@@ -423,7 +427,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (prompt.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 				TimeSpan offsetTime;
 
-				if (TimeSpan.TryParseExact(prompt.Response, TimeFormats.Formats, null, out offsetTime)) {
+				if (TimeSpan.TryParseExact(prompt.Response, TimeFormats.PositiveFormats, null, out offsetTime)) {
 					TimeSpan earliestTime = TimeSpan.MaxValue;
 					foreach (ListViewItem item in listViewMarks.SelectedItems) {
 						if ((TimeSpan)item.Tag < earliestTime)
@@ -458,7 +462,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			prompt.Size = new Size(550, prompt.Size.Height);
 			if (prompt.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 				TimeSpan duration;
-				bool conversionSuccess = TimeSpan.TryParseExact(prompt.Response, TimeFormats.Formats, null, out duration);
+				bool conversionSuccess = TimeSpan.TryParseExact(prompt.Response, TimeFormats.PositiveFormats, null, out duration);
 				if (!conversionSuccess && prompt.Response.Length == 0) {
 					conversionSuccess = true;
 					duration = TimeSpan.MaxValue;
