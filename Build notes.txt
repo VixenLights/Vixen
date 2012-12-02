@@ -170,3 +170,67 @@ Interpolator precision fix.
 
 LightingValue now makes use of the alpha channel.
 
+
+== 3.0.3.1 ============================
+
+VIX-135: Locking the instance collection in ReleaseContexts when clearing it.
+
+VIX-111, VIX-138: Making the data directory portable.
+
+VIX-133: Color Filter mapping now working and copy does not work.
+
+Fixed bug where updating chained filters may throw a null reference on startup.
+
+VIX-138: Better null handling in the channel manager for a lookup.
+
+Updated the audio media module to support variable speeds.
+
+Updated TimedSequenceEditor to support changing the speed of the timing source, when the timing source supports it.
+
+Changed where IsRunning is being set to true in SequenceExecutor.cs so that the media will have been started by that time.
+
+ColorBreakdown Filter: added extra template options from forum requests (RGxB, and GRBW).
+
+Filter & Patching setup form: Added a "high quality rendering" checkbox. Doesn't make much difference, but might help on high shape counts.
+
+VixenApplication: fixed issue when creating filters through the wizard where the module data wasn't being duplicated properly.
+
+Added DimmingCurve post filter.
+
+Added OpenDMX module, care of chilloutdocdoc and piense on the DIYC forums. (thanks guys)
+
+DisplayPreview: added error handling for missing background images.
+
+VixenApplication: improved load time for the filter setup form when there's *heaps* of shapes to draw.
+
+VIX-137: DisplayPreview: better null handling on channel updates.
+
+Twinkle: don't make data for channels that have already had data generated for.
+
+Chase: Fixed error with rendering, potentially throwing an exception.
+
+Timeline Control Grid: fixed a few rendering issues/hangs/etc. Pretty messy and hacky, but I think it's time for a control rewrite next year. This at least stops the hangs.
+
+Chase: render more finely, to pick up quick chases.
+
+Twinkle: added another color option to spread the color across the subchannels.
+
+TimedSequenceEditor: added negative time support in the mark manager.
+
+TimelineControl Grid: dodgy hack to avoid any unhandled hangs from the drawing problems. Temporary fix.
+
+ColorGradients & Curves: added extra shortcut keys to editors, and persist the library selector window size/position.
+
+TimedSequenceEditor: add support for editing multiple elements at once (only of the same type).
+
+Curves: add null library check, to avoid potential nasty bug on shutdown: if the curves library module is closed before another module that is using it (eg dimming curve), it can barf pretty hard.
+
+Added a "data_dir" command-line argument for overriding the root data directory and moved data loading to before the initialization of the framework.
+Use:
+  data_dir=c:\path\where\you\want\data
+  data_dir="c:\path where you want data"
+Notes:
+1. The VixenApplication app will default back to the default data directory if it cannot find its data file within this path.
+2. This path is *the* data path for both the application and the framework.  This means that if it's a new path for the framework, it's going to build out its directory hierarchy.
+3. Do not put spaces around the equals sign!  If the data directory path does have spaces, you can put quotes around the path, but around the path ONLY.  Example:  data_dir="c:\vixen data"
+
