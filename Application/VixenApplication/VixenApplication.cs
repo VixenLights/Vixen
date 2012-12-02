@@ -19,6 +19,7 @@ namespace VixenApplication
 		private bool stopping;
 		private bool _openExecution = true;
 		private bool _disableControllers = false;
+		private string _rootDataDirectory;
 		private CpuUsage _cpuUsage;
 
 		private VixenApplicationData _applicationData;
@@ -30,16 +31,16 @@ namespace VixenApplication
 				_ProcessArg(arg);
 			}
 
+			_applicationData = new VixenApplicationData(_rootDataDirectory);
+
 			stopping = false;
 			InitializeComponent();
 			labelVersion.Text = "[" + _GetVersionString(VixenSystem.AssemblyFileName) + "]";
 			AppCommands = new AppCommand(this);
 			Execution.ExecutionStateChanged += executionStateChangedHandler;
-			VixenSystem.Start(this, _openExecution, _disableControllers);
+			VixenSystem.Start(this, _openExecution, _disableControllers, _applicationData.DataFileDirectory);
 
 			InitStats();
-
-			_applicationData = new VixenApplicationData();
 		}
 
 
@@ -71,12 +72,20 @@ namespace VixenApplication
 		}
 
 		private void _ProcessArg(string arg) {
-			switch(arg) {
+			string[] argParts = arg.Split('=');
+			switch(argParts[0]) {
 				case "no_controllers":
 					_disableControllers = true;
 					break;
 				case "no_execution":
 					_openExecution = false;
+					break;
+				case "data_dir":
+					if(argParts.Length > 1) {
+						_rootDataDirectory = argParts[1];
+					} else {
+						_rootDataDirectory = null;
+					}
 					break;
 			}
 		}

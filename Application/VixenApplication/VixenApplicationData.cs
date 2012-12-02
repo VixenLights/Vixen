@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using System.Xml;
 using System.Xml.Linq;
-using System.Xml.Serialization;
 using Vixen.Sys;
 
 namespace VixenApplication
@@ -27,26 +22,41 @@ namespace VixenApplication
 
 		public bool FilterSetupFormHighQualityRendering { get; set; }
 
-		private string DataFilepath
-		{
-			get { return Path.Combine(Vixen.Sys.Paths.DataRootPath, _DataFilename); }
+		private string DefaultDataFileDirectory {
+			get { return Vixen.Sys.Paths.DataRootPath; }
 		}
 
-		public VixenApplicationData()
+		private string _dataFileDirectory;
+		public string DataFileDirectory {
+			get { return _dataFileDirectory ?? DefaultDataFileDirectory; }
+			set { _dataFileDirectory = value; }
+		}
+
+		private string DataFilepath
+		{
+			get { return Path.Combine(DataFileDirectory, _DataFilename); }
+		}
+
+		public VixenApplicationData(string rootDataDirectory = null)
 		{
 			RecentSequences = new List<string>();
 			FilterSetupFormShapePositions = new Dictionary<Guid, FilterSetupFormShapePosition>();
 			FilterSetupFormHighQualityRendering = false;
-			LoadData();
+			LoadData(rootDataDirectory);
 		}
 
 
-		public void LoadData()
+		public void LoadData(string rootDataDirectory)
 		{
 			FileStream stream = null;
 
-			if (!File.Exists(DataFilepath))
-				return;
+			DataFileDirectory = rootDataDirectory;
+			if(!File.Exists(DataFilepath)) {
+				DataFileDirectory = DefaultDataFileDirectory;
+				if(!File.Exists(DataFilepath)) {
+					return;
+				}
+			}
 
 			try {
 				stream = new FileStream(DataFilepath, FileMode.Open);
