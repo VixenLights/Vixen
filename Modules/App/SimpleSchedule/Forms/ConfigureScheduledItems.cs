@@ -16,7 +16,6 @@ namespace VixenModules.App.SimpleSchedule.Forms
         private string _filePath;
         private readonly CalendarItem _calendarItem;
 		private long _runLength = 0;
-		private Regex _durationRegExPattern = new Regex("(^([0-9]+[.]+[0-9]+)$)");
 
 
         public ConfigureScheduledItems()
@@ -132,7 +131,7 @@ namespace VixenModules.App.SimpleSchedule.Forms
         }
         private void okButton_Click(object sender, EventArgs e)
         {
-			if (!string.IsNullOrEmpty(runLengthTextBox.Text) && _durationRegExPattern.IsMatch(runLengthTextBox.Text))
+			if (!string.IsNullOrEmpty(runLengthTextBox.Text))
 			{
 				BuildScheduledItem();
 			}
