@@ -85,8 +85,10 @@
 			// 
 			resources.ApplyResources(this.edit, "edit");
 			this.edit.Name = "edit";
+			this.edit.ReadOnly = false;
 			this.edit.SelectionChanged += new System.EventHandler(this.edit_GradientChanged);
 			this.edit.GradientChanged += new System.EventHandler(this.edit_GradientChanged);
+			this.edit.KeyDown += new System.Windows.Forms.KeyEventHandler(this.edit_KeyDown);
 			// 
 			// GradientEditPanel
 			// 

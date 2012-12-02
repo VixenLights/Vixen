@@ -148,7 +148,7 @@
     <value>lblColorSelect</value>
   </data>
   <data name="&gt;&gt;lblColorSelect.Type" xml:space="preserve">
-    <value>Common.Controls.ColorManagement.ColorPicker.ColorLabel, Common.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+    <value>Common.Controls.ColorManagement.ColorPicker.ColorLabel, Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;lblColorSelect.Parent" xml:space="preserve">
     <value>grpStops</value>
@@ -178,7 +178,7 @@
     <value>vColorLoc</value>
   </data>
   <data name="&gt;&gt;vColorLoc.Type" xml:space="preserve">
-    <value>Common.Controls.ControlsEx.ValueControls.ValueUpDown, Common.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+    <value>Common.Controls.ControlsEx.ValueControls.ValueUpDown, Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;vColorLoc.Parent" xml:space="preserve">
     <value>grpStops</value>

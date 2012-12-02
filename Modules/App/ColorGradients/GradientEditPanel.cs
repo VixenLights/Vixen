@@ -136,6 +136,11 @@ namespace VixenModules.App.ColorGradients
 		//delete active color point
 		private void btnDeleteColor_Click(object sender, EventArgs e)
 		{
+			DeleteColor();
+		}
+
+		private void DeleteColor()
+		{
 			if (edit.Gradient == null || edit.FocusSelection || ReadOnly)
 				return;
 			int index = edit.SelectedColorIndex;
@@ -183,5 +188,11 @@ namespace VixenModules.App.ColorGradients
 		/// </summary>
 		[Description("triggered if gradient changed")]
 		public event EventHandler GradientChanged;
+
+		private void edit_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Delete)
+				DeleteColor();
+		}
 	}
 }

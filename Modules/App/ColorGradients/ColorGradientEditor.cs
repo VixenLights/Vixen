@@ -158,5 +158,13 @@ namespace VixenModules.App.ColorGradients
 			Library.EditLibraryItem(libraryName);
 			PopulateFormWithGradient(Gradient);
 		}
+
+		private void ColorGradientEditor_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Enter)
+				DialogResult = DialogResult.OK;
+			if (e.KeyCode == Keys.Escape)
+				DialogResult = DialogResult.Cancel;			
+		}
 	}
 }

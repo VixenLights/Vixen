@@ -63,9 +63,9 @@
 			// 
 			// gradientEditPanel
 			// 
-			this.gradientEditPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.gradientEditPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.gradientEditPanel.Location = new System.Drawing.Point(12, 12);
 			this.gradientEditPanel.LockColorEditorHSV_Value = true;
 			this.gradientEditPanel.MinimumSize = new System.Drawing.Size(357, 120);
@@ -76,8 +76,8 @@
 			// 
 			// groupBoxLibrary
 			// 
-			this.groupBoxLibrary.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBoxLibrary.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBoxLibrary.Controls.Add(this.buttonEditLibraryItem);
 			this.groupBoxLibrary.Controls.Add(this.buttonUnlink);
 			this.groupBoxLibrary.Controls.Add(this.labelCurve);
@@ -148,9 +148,11 @@
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.gradientEditPanel);
+			this.KeyPreview = true;
 			this.Name = "ColorGradientEditor";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Color Gradient Editor";
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ColorGradientEditor_KeyDown);
 			this.groupBoxLibrary.ResumeLayout(false);
 			this.groupBoxLibrary.PerformLayout();
 			this.ResumeLayout(false);

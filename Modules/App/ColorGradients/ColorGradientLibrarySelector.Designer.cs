@@ -58,9 +58,9 @@
 			// 
 			// listViewColorGradients
 			// 
-			this.listViewColorGradients.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.listViewColorGradients.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.listViewColorGradients.Location = new System.Drawing.Point(12, 12);
 			this.listViewColorGradients.Name = "listViewColorGradients";
 			this.listViewColorGradients.Size = new System.Drawing.Size(454, 249);
@@ -104,10 +104,14 @@
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);
 			this.DoubleBuffered = true;
+			this.KeyPreview = true;
+			this.MinimumSize = new System.Drawing.Size(400, 300);
 			this.Name = "ColorGradientLibrarySelector";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Color Gradient Library";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ColorGradientLibrarySelector_FormClosing);
 			this.Load += new System.EventHandler(this.ColorGradientLibrarySelector_Load);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ColorGradientLibrarySelector_KeyDown);
 			this.ResumeLayout(false);
 
 		}

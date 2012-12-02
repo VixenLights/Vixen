@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using Vixen.Module;
@@ -32,6 +33,9 @@ namespace VixenModules.App.ColorGradients
 				_library = value;
 			}
 		}
+
+		[DataMember]
+		public Rectangle SelectorWindowBounds { get; set; }
 
 		public override IModuleDataModel Clone()
 		{

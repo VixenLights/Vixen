@@ -58,9 +58,9 @@
 			// 
 			// listViewCurves
 			// 
-			this.listViewCurves.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.listViewCurves.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.listViewCurves.Location = new System.Drawing.Point(12, 12);
 			this.listViewCurves.Name = "listViewCurves";
 			this.listViewCurves.Size = new System.Drawing.Size(454, 249);
@@ -104,10 +104,14 @@
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);
 			this.DoubleBuffered = true;
+			this.KeyPreview = true;
+			this.MinimumSize = new System.Drawing.Size(400, 300);
 			this.Name = "CurveLibrarySelector";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Curve Library";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CurveLibrarySelector_FormClosing);
 			this.Load += new System.EventHandler(this.CurveLibrarySelector_Load);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CurveLibrarySelector_KeyDown);
 			this.ResumeLayout(false);
 
 		}
