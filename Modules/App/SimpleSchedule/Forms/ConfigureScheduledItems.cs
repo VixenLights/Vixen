@@ -104,10 +104,17 @@ namespace VixenModules.App.SimpleSchedule.Forms
 
 		private TimeSpan GetRunLength()
 		{
-				int hours = int.Parse(runLengthTextBox.Text.Substring(0, runLengthTextBox.Text.LastIndexOf(".")));
-				int minutes = int.Parse(runLengthTextBox.Text.Substring(runLengthTextBox.Text.LastIndexOf(".") + 1));
+			string[] hoursMins = runLengthTextBox.Text.Split(':');
 
-				return new TimeSpan(hours, minutes, 00);
+			int hours = 0, minutes = 0;
+			if(hoursMins.Length > 0) {
+				int.TryParse(hoursMins[0], out hours);
+			}
+			if(hoursMins.Length > 1) {
+				int.TryParse(hoursMins[1], out minutes);
+			}
+
+			return new TimeSpan(hours, minutes, 00);
 		}
 
         private string GetName()

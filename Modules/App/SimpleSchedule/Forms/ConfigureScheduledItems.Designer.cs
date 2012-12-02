@@ -37,10 +37,10 @@
 			this.cancelButton = new System.Windows.Forms.Button();
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.runLengthTextBox = new System.Windows.Forms.TextBox();
+			this.runLengthLabel = new System.Windows.Forms.Label();
 			this.startTimeLabel = new System.Windows.Forms.Label();
 			this.startTimePicker = new System.Windows.Forms.DateTimePicker();
-			this.runLengthLabel = new System.Windows.Forms.Label();
-			this.runLengthTextBox = new System.Windows.Forms.TextBox();
 			this.itemToExceuteGroupBox.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
@@ -132,6 +132,22 @@
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Execution Time";
 			// 
+			// runLengthTextBox
+			// 
+			this.runLengthTextBox.Location = new System.Drawing.Point(131, 37);
+			this.runLengthTextBox.Name = "runLengthTextBox";
+			this.runLengthTextBox.Size = new System.Drawing.Size(113, 20);
+			this.runLengthTextBox.TabIndex = 3;
+			// 
+			// runLengthLabel
+			// 
+			this.runLengthLabel.AutoSize = true;
+			this.runLengthLabel.Location = new System.Drawing.Point(128, 20);
+			this.runLengthLabel.Name = "runLengthLabel";
+			this.runLengthLabel.Size = new System.Drawing.Size(122, 13);
+			this.runLengthLabel.TabIndex = 2;
+			this.runLengthLabel.Text = "Run Length (hours:mins)";
+			// 
 			// startTimeLabel
 			// 
 			this.startTimeLabel.AutoSize = true;
@@ -149,22 +165,6 @@
 			this.startTimePicker.ShowUpDown = true;
 			this.startTimePicker.Size = new System.Drawing.Size(106, 20);
 			this.startTimePicker.TabIndex = 0;
-			// 
-			// runLengthLabel
-			// 
-			this.runLengthLabel.AutoSize = true;
-			this.runLengthLabel.Location = new System.Drawing.Point(128, 20);
-			this.runLengthLabel.Name = "runLengthLabel";
-			this.runLengthLabel.Size = new System.Drawing.Size(116, 13);
-			this.runLengthLabel.TabIndex = 2;
-			this.runLengthLabel.Text = "Run Length (0.0 hours)";
-			// 
-			// runLengthTextBox
-			// 
-			this.runLengthTextBox.Location = new System.Drawing.Point(131, 37);
-			this.runLengthTextBox.Name = "runLengthTextBox";
-			this.runLengthTextBox.Size = new System.Drawing.Size(113, 20);
-			this.runLengthTextBox.TabIndex = 3;
 			// 
 			// ConfigureScheduledItems
 			// 
