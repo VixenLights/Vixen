@@ -69,5 +69,13 @@ namespace VixenModules.Preview.DisplayPreview.Model
                 return "1.0";
             }
         }
+
+		public override int UpdateInterval
+		{
+			get
+			{
+				return 50;
+			}
+		}
     }
 }
