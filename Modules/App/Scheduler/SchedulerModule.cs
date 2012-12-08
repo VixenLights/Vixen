@@ -15,27 +15,32 @@ namespace VixenModules.App.Scheduler {
 		private IApplication _application;
 		private SchedulerData _data;
 		private Timer _scheduleCheckTimer;
-		private ScheduleService _scheduleService;
-		private Dictionary<IProgramContext, ScheduleItem> _contexts;
+		private readonly ScheduleService _scheduleService;
+		private readonly Dictionary<IProgramContext, ScheduleItem> _currentContexts;
+		private readonly Dictionary<string, IProgramContext> _cachedPrograms;
 		private SynchronizationContext _synchronizationContext;
 
 		private const string ID_ROOT = "SchedulerRoot";
 
 		public SchedulerModule() {
 			_scheduleService = new ScheduleService();
-			_contexts = new Dictionary<IProgramContext, ScheduleItem>();
+			_currentContexts = new Dictionary<IProgramContext, ScheduleItem>();
+			_cachedPrograms = new Dictionary<string, IProgramContext>();
 		}
 
 		public override void Loading() {
+			VixenSystem.Logs.AddLog(new SchedulerLog());
 			_AddApplicationMenu();
 			_SetEnableState(_data.IsEnabled);
 			_synchronizationContext = SynchronizationContext.Current;
-			VixenSystem.Logs.AddLog(new SchedulerLog());
+			VixenSystem.Logging.Schedule("Scheduler module loaded.");
 		}
 
 		public override void Unloading() {
 			_RemoveApplicationMenu();
 			_SetEnableState(false);
+			VixenSystem.Logging.Schedule("Scheduler module unloaded.");
+			VixenSystem.Logs.RemoveLog("Schedule");
 		}
 
 		public override IApplication Application {
@@ -75,15 +80,35 @@ namespace VixenModules.App.Scheduler {
 			try {
 				_SetEnableState(false);
 
-				Program program = Vixen.Services.ApplicationServices.LoadProgram(item.FilePath);
-				IProgramContext context = VixenSystem.Contexts.CreateProgramContext(new ContextFeatures(ContextCaching.ContextLevelCaching), program);
-				
+				string filepath = item.FilePath;
+				VixenSystem.Logging.Schedule("Executing scheduled item: " + filepath);
+				IProgramContext context;
+
+				if (_cachedPrograms.ContainsKey(filepath)) {
+					VixenSystem.Logging.Schedule("Item found in cached programs. Reusing.");
+					context = _cachedPrograms[filepath];
+				} else {
+					VixenSystem.Logging.Schedule("Item NOT found in cached programs. Generating...");
+					Program program = Vixen.Services.ApplicationServices.LoadProgram(filepath);
+					context = VixenSystem.Contexts.CreateProgramContext(new ContextFeatures(ContextCaching.ContextLevelCaching), program);
+
+					foreach (ISequence sequence in context.Program.Sequences) {
+						VixenSystem.Logging.Schedule("  - Prerendering effects for sequence: " + sequence.Name);
+						foreach (IEffectNode effectNode in sequence.SequenceData.EffectData.Cast<IEffectNode>()) {
+							effectNode.Effect.PreRender();
+						}
+					}
+
+					_cachedPrograms[filepath] = context;
+				}
+
 				context.ProgramEnded += context_ProgramEnded;
-	
-				_contexts[context] = item;
+
+				_currentContexts[context] = item;
 				item.IsExecuting = true;
 				item.LastExecutedAt = DateTime.Now;
 
+				VixenSystem.Logging.Schedule("Starting execution.");
 				context.Start();
 
 				_SetEnableState(true);
@@ -95,15 +120,21 @@ namespace VixenModules.App.Scheduler {
 		void context_ProgramEnded(object sender, ProgramEventArgs e) {
 			ProgramContext context = sender as ProgramContext;
 			context.ProgramEnded -= context_ProgramEnded;
-			VixenSystem.Contexts.ReleaseContext(context);
+			if (!_cachedPrograms.ContainsValue(context)) {
+				VixenSystem.Logging.Schedule("Context wasn't cached, so releasing and cleaning up context.");
+				VixenSystem.Contexts.ReleaseContext(context);
+			} else {
+				VixenSystem.Logging.Schedule("Context is cached, so not cleaning up; will potentially reuse.");
+			}
 			ScheduleItem item;
-			if(_contexts.TryGetValue(context, out item)) {
+			if (_currentContexts.TryGetValue(context, out item)) {
 				item.IsExecuting = false;
-				_contexts.Remove(context);
+				_currentContexts.Remove(context);
 			}
 		}
 
 		private void _SetEnableState(bool value) {
+			VixenSystem.Logging.Schedule("Turning scheduler " + (value ? "ON" : "OFF"));
 			Timer.Enabled = value;
 		}
 
