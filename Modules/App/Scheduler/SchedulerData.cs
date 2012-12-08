@@ -9,7 +9,7 @@ namespace VixenModules.App.Scheduler {
 	[DataContract]
 	[KnownType(typeof(ScheduleItem))]
 	public class SchedulerData : ModuleDataModelBase {
-		private int _interval = 10;
+		private int _interval = 2;
 
 		public SchedulerData() {
 			Initialize();
