@@ -65,17 +65,25 @@ namespace Vixen.Module.SequenceType {
 
 		[OnSerializing]
 		void SurrogateWrite(StreamingContext context) {
+			// while saving module instance data, load the instance IDs of the modules in the sequence into a set. Then, when saving the
+			// data set for all the modules, we can check if the module data is actually *being used* by anything; if not, we can remove it.
+			HashSet<Guid> activeInstances = new HashSet<Guid>();
+
 			_selectedTimingProviderSurrogate = new SelectedTimingProviderSurrogate(SelectedTimingProvider);
 			if(Media != null) {
 				_mediaSurrogates = Media.Select(x => new MediaSurrogate(x)).ToArray();
-			}
-			if(LocalDataSet != null) {
-				_dataModels = LocalDataSet.DataModels.ToArray();
+				Media.ForEach(x => activeInstances.Add(x.InstanceId));
 			}
 			if(EffectData != null) {
 				_effectNodeSurrogates = EffectData.Select(x => new EffectNodeSurrogate((IEffectNode)x)).ToArray();
+				foreach (IDataNode dataNode in EffectData) {
+					activeInstances.Add(((IEffectNode)dataNode).Effect.InstanceId);
+				}
 			}
-			if(SequenceFilterData != null) {
+			if (LocalDataSet != null) {
+				_dataModels = LocalDataSet.DataModels.Where(x => activeInstances.Contains(x.ModuleInstanceId)).ToArray();
+			}
+			if (SequenceFilterData != null) {
 				_filterNodeSurrogates = SequenceFilterData.Select(x => new FilterNodeSurrogate((ISequenceFilterNode)x)).ToArray();
 			}
 		}
