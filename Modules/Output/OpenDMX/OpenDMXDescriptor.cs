@@ -8,7 +8,7 @@ namespace VixenModules.Controller.OpenDMX
 
         public override string Author
         {
-            get { return "Joshua Moyerman (Chilloutdocdoc on DIYC)"; }
+            get { return "Joshua Moyerman (Chilloutdocdoc on DIYC) & piense"; }
         }
 
         public override string Description
@@ -41,7 +41,7 @@ namespace VixenModules.Controller.OpenDMX
 
         public override string Version
         {
-            get { return "1.1"; }
+            get { return "1.5"; }
         }
     }
 }

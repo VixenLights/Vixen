@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Threading;
+
+using Vixen.Commands;
+
 
 namespace VixenModules.Controller.OpenDMX
 {
@@ -7,11 +11,12 @@ namespace VixenModules.Controller.OpenDMX
     {
 
         public static byte[] buffer = new byte[513];
-        public static uint handle;
+        public static uint handle = 0;
         public static bool done = false;
         public static int bytesWritten = 0;
         public static FT_STATUS status;
-        IntPtr ptr = Marshal.AllocHGlobal(513);
+        
+        IntPtr transmitPtr = IntPtr.Zero;
 
         public const byte BITS_8 = 8;
         public const byte STOP_BITS_2 = 2;
@@ -19,9 +24,6 @@ namespace VixenModules.Controller.OpenDMX
         public const UInt16 FLOW_NONE = 0;
         public const byte PURGE_RX = 1;
         public const byte PURGE_TX = 2;
-
-        //Modifications
-        //private Thread thread = new Thread(new ThreadStart(writeData));
 
         [DllImport("FTD2XX.dll")]
         public static extern FT_STATUS FT_Open(UInt32 uiPort, ref uint ftHandle);
@@ -52,7 +54,7 @@ namespace VixenModules.Controller.OpenDMX
         [DllImport("FTD2XX.dll")]
         public static extern FT_STATUS FT_SetDivisor(uint ftHandle, char usDivisor);
 
-        //modified removing static
+
         public void start()
         {
             handle = 0;
@@ -66,38 +68,120 @@ namespace VixenModules.Controller.OpenDMX
             else
             {
                 //worked
-                setDmxValue(0, 0);  //Set DMX Start Code
+
+                //Configure the device for DMX data
+                initOpenDMX();
+
+                //Initialize the universe and start code to all 0s
+                for (int i = 0; i < 513; i++)
+                    setDmxValue(i, 0);
+
+                //Create and start the thread that sends the output data to the driver
+                Thread thread = new Thread(new ThreadStart(writeData));
+                thread.Start();
             }
 
         }
+
         //Added stop()
         public void stop()
         {
-            //this.thread.Abort();
+            done = true;
             status = FT_Close(handle);
         }
 
         public void setDmxValue(int channel, byte value)
         {
-            if (buffer != null)
+            //Lock the buffer for thread safing
+            lock (buffer)
             {
-                buffer[channel] = value;
+                if (buffer != null)
+                {
+                    buffer[channel] = value;
+                }
             }
         }
 
-        public void writeData(byte[] buf)
+        public void updateData(ICommand[] outputStates)
         {
-            initOpenDMX();
-            FT_SetBreakOn(handle);
-            FT_SetBreakOff(handle);
-            bytesWritten = write(handle, buf, buf.Length);
+            var channelValues = new byte[outputStates.Length];
+
+            //Make sure that editing the output buffer is thread safe
+            lock (buffer)
+            {
+
+                //copy the lighting commands to the DMX Buffer
+                for (int i = 0; i < outputStates.Length; i++)
+                {
+                    _8BitCommand command = outputStates[i] as _8BitCommand;
+
+                    //Reset the channel if the command is null
+                    if (command == null)
+                    {
+                        // State reset
+                        buffer[i + 1] = 0;
+                        continue;
+                    }
+
+                    //Copy the new intensity value to the output buffer
+                    buffer[i + 1] = command.CommandValue;
+
+                    
+                }
+            }
+
+        }
+
+        public void writeData()
+        {
+            UInt32 txBuf = 0, rxBuf = 0, status = 0;
+            while (!done)
+            {
+                //Check if all the data has been written yet.
+                FT_GetStatus(handle, ref rxBuf, ref txBuf, ref status);
+                while (txBuf != 0)
+                {
+                    //Not ready yet, wait for a bit
+                    Thread.Sleep(2);
+
+                    //Check the transmit buffer again
+                    FT_GetStatus(handle, ref rxBuf, ref txBuf, ref status);
+                }
+
+                //Keep buffer from channging while being copied to the output.
+                lock (buffer)
+                {
+                    //Create a break signal in the output before the DMX data.
+                    FT_SetBreakOn(handle);
+                    FT_SetBreakOff(handle);
+
+                    //Send the next frame to the driver
+                    bytesWritten = write(handle, buffer, buffer.Length);
+                }
+
+                //Goto sleep while data is transmitting
+                Thread.Sleep(25);
+            }
+
+            //Free any used memory from write()
+            Marshal.FreeHGlobal(transmitPtr);
         }
 
         public int write(uint handle, byte[] data, int length)
         {
-            Marshal.Copy(data, 0, ptr, (int)length);
+
+            //Free the memory from the last call to write()
+            Marshal.FreeHGlobal(transmitPtr);
+
+            //Copy the buffer to a stream of bytes
+            transmitPtr = Marshal.AllocHGlobal((int)length);
+            Marshal.Copy(data, 0, transmitPtr, (int)length);
+
             uint bytesWritten = 0;
-            status = FT_Write(handle, ptr, (uint)length, ref bytesWritten);
+            
+            //Write the data to the serial buffer
+            status = FT_Write(handle, transmitPtr, (uint)length, ref bytesWritten);
+            
             return (int)bytesWritten;
         }
 
