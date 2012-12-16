@@ -7,7 +7,6 @@ namespace VixenModules.Controller.OpenDMX
 {
     public class VixenOpenDMXInstance : ControllerModuleInstanceBase
     {
-        private byte[] _data;
         private FTDI _dmxPort = new FTDI();
         private int _outputCount;
 
@@ -29,29 +28,14 @@ namespace VixenModules.Controller.OpenDMX
                 else
                 {
                     _outputCount = value;
-                    this._data = new byte[value + 1];
-                    this._data[0] = 0;
                 }
             }
         }
 
         public override void UpdateState(int chainInex, ICommand[] outputStates)
         {
-
-            for (int i = 0; i < _outputCount; i++)
-                {
-                    if ((outputStates[i] as _8BitCommand) == null)
-                    {
-                        this._data[i + 1] = 0; // account for the null case representing 0
-                    }else{
-                        this._data[i+1] = (byte)((byte.MaxValue/100.0)*((outputStates[i] as _8BitCommand).CommandValue)); //convert to byte
-                    }
-                }
-
-
-             _dmxPort.writeData(_data);
-
-
+            //Pass the lighting data onto the hardware controller class
+            _dmxPort.updateData(outputStates);
         }
 
         public override bool HasSetup
@@ -78,6 +62,7 @@ namespace VixenModules.Controller.OpenDMX
         public override void Stop()
         {
             base.Stop();
+
             //Close FTDI interface
            _dmxPort.stop();
         }
