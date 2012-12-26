@@ -12,22 +12,12 @@ namespace VixenModules.Sequence.Vixen2x
     using Vixen.IO;
 
     public class Vixen2xSequence : SequenceTypeModuleInstanceBase
-	{
-		public Vixen2xSequence()
-		{
-		}
+    {
+        public Vixen2xSequence()
+        {
+        }
 
-//		public Vixen2xSequence(Vixen2xSequence original)
-//			: base(original)
-//		{
-//		}
-
-	    public override ISequence CreateSequence()
-	    {
-	        throw new NotImplementedException();
-	    }
-
-        public override IMigrator CreateMigrator()
+        public override ISequence CreateSequence()
         {
             throw new NotImplementedException();
         }
@@ -38,8 +28,8 @@ namespace VixenModules.Sequence.Vixen2x
         }
 
         public override IModuleInstance Clone()
-		{
-			return new Vixen2xSequence();
-		}
-	}
+        {
+            return new Vixen2xSequence();
+        }
+    }
 }
