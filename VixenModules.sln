@@ -1,5 +1,5 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{FFEF21BE-17BF-4C68-AE19-409AE444AC53}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App", "App", "{E301917B-FF08-4275-A4E0-830E2BEC0635}"
@@ -108,11 +108,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FadeOut", "Modules\PreFilte
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grayscale", "Modules\PostFilter\Grayscale\Grayscale.csproj", "{DC39338E-EAE0-4716-9557-C01E2C7E5096}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Color", "Modules\PostFilter\Color\Color.csproj", "{96C7D2AB-DBE9-4DA1-8EC5-2D37E083D3C0}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Preview", "Preview", "{741290E1-6A59-4AA2-90D0-CB39B7448BA7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestPreview", "Modules\Preview\TestPreview\TestPreview.csproj", "{36FDE8F1-D02F-4B8D-968E-B61309D4EB50}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SmartController", "SmartController", "{80441E64-01CE-4DA2-84A8-A51B8EFFF47E}"
 EndProject
