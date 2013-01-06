@@ -157,6 +157,8 @@ namespace VixenModules.Effect.Chase
 
 			// the total chase time
 			TimeSpan chaseTime = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds - PulseOverlap);
+			if (chaseTime.TotalMilliseconds <= 0)
+				chaseTime = TimeSpan.FromMilliseconds(1);
 
 			// we need to keep track of the channel that is 'under' the curve at a given time, to see if it changes,
 			// and when it does, we make the effect for it then (since it's a variable time pulse).
