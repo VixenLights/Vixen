@@ -224,7 +224,7 @@
 			// 
 			// buttonAddFilter
 			// 
-			this.buttonAddFilter.Image = global::VixenApplication.Properties.Resources.add_24;
+			this.buttonAddFilter.Image = global::VixenApplication.Properties.Resources.add24;
 			this.buttonAddFilter.Location = new System.Drawing.Point(144, 20);
 			this.buttonAddFilter.Name = "buttonAddFilter";
 			this.buttonAddFilter.Size = new System.Drawing.Size(32, 32);
@@ -234,7 +234,7 @@
 			// 
 			// buttonDelete
 			// 
-			this.buttonDelete.Image = global::VixenApplication.Properties.Resources.delete_24;
+			this.buttonDelete.Image = global::VixenApplication.Properties.Resources.delete24;
 			this.buttonDelete.Location = new System.Drawing.Point(186, 20);
 			this.buttonDelete.Name = "buttonDelete";
 			this.buttonDelete.Size = new System.Drawing.Size(32, 32);
