@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 Microsoft Visual Studio Solution File, Format Version 11.00
+=======
+Microsoft Visual Studio Solution File, Format Version 12.00
+>>>>>>> 77871bc94ec2726343bce21a9e1f712c6ec846ee
 # Visual Studio 2010
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{FFEF21BE-17BF-4C68-AE19-409AE444AC53}"
 EndProject
@@ -166,7 +170,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorBreakdown", "Modules\P
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenDMX", "Modules\Output\OpenDMX\OpenDMX.csproj", "{A9C0EA61-72C6-45DB-BCAC-1132DE113330}"
 EndProject
+<<<<<<< HEAD
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenericSerial", "Modules\Output\GenericSerial\GenericSerial.csproj", "{EAB3947D-202C-4C92-92EB-017580C581B3}"
+=======
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DimmingCurve", "Modules\PostFilter\DimmingCurve\DimmingCurve.csproj", "{C80B084A-064A-422C-B66E-58AB9ED7B32C}"
+>>>>>>> 77871bc94ec2726343bce21a9e1f712c6ec846ee
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -519,12 +527,21 @@ Global
 		{A9C0EA61-72C6-45DB-BCAC-1132DE113330}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9C0EA61-72C6-45DB-BCAC-1132DE113330}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A9C0EA61-72C6-45DB-BCAC-1132DE113330}.Release|x86.ActiveCfg = Release|Any CPU
+<<<<<<< HEAD
 		{EAB3947D-202C-4C92-92EB-017580C581B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EAB3947D-202C-4C92-92EB-017580C581B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EAB3947D-202C-4C92-92EB-017580C581B3}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{EAB3947D-202C-4C92-92EB-017580C581B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EAB3947D-202C-4C92-92EB-017580C581B3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EAB3947D-202C-4C92-92EB-017580C581B3}.Release|x86.ActiveCfg = Release|Any CPU
+=======
+		{C80B084A-064A-422C-B66E-58AB9ED7B32C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C80B084A-064A-422C-B66E-58AB9ED7B32C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C80B084A-064A-422C-B66E-58AB9ED7B32C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C80B084A-064A-422C-B66E-58AB9ED7B32C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C80B084A-064A-422C-B66E-58AB9ED7B32C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C80B084A-064A-422C-B66E-58AB9ED7B32C}.Release|x86.ActiveCfg = Release|Any CPU
+>>>>>>> 77871bc94ec2726343bce21a9e1f712c6ec846ee
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -609,6 +626,10 @@ Global
 		{76641C50-FFDA-4690-8DB5-84CCA417B29D} = {3503C3B1-AD83-405E-9776-2DE1D3B8075F}
 		{DC39338E-EAE0-4716-9557-C01E2C7E5096} = {EC3DEE21-95FE-46E0-B34D-86D86361517D}
 		{ED386F64-644A-439D-AB12-96E341F20EDF} = {EC3DEE21-95FE-46E0-B34D-86D86361517D}
+<<<<<<< HEAD
+=======
+		{C80B084A-064A-422C-B66E-58AB9ED7B32C} = {EC3DEE21-95FE-46E0-B34D-86D86361517D}
+>>>>>>> 77871bc94ec2726343bce21a9e1f712c6ec846ee
 		{13F15246-D19A-4E00-86F9-1F969919D617} = {741290E1-6A59-4AA2-90D0-CB39B7448BA7}
 		{2572F3DF-7CF2-4B6C-9FC2-8E11D0BC08D6} = {C64A0DA3-349F-4D36-A434-9F6DCC1410DB}
 	EndGlobalSection
