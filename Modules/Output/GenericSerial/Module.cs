@@ -1,10 +1,8 @@
 ﻿using System.IO.Ports;
-using System.Windows.Forms;
+using System.Text;
 using Vixen.Commands;
 using Vixen.Module;
 using Vixen.Module.Controller;
-using Vixen.Sys;
-using System.Text;
 
 namespace VixenModules.Output.GenericSerial
 {
@@ -16,6 +14,8 @@ namespace VixenModules.Output.GenericSerial
         private byte[] _packet;
         private byte[] _header;
         private byte[] _footer;
+        private int headerLen = 0;
+        private int footerLen = 0;
 
         public Module()
         {
@@ -25,11 +25,8 @@ namespace VixenModules.Output.GenericSerial
 
         public override void UpdateState(int chainIndex, ICommand[] outputStates)
         {
-            //if (serialPortIsValid && _SerialPort.IsOpen)
+            if (serialPortIsValid && _SerialPort.IsOpen)
             {
-                var headerLen = _header.Length;
-                var footerLen = _footer.Length;
-
                 _packet = new byte[headerLen + OutputCount + footerLen];
                 var packetLen = _packet.Length; 
                 
@@ -40,15 +37,17 @@ namespace VixenModules.Output.GenericSerial
                 {
                     _commandHandler.Reset();
                     ICommand command = outputStates[i];
-                    if (!command.Equals(null))
+                    if (command != null)
                     {
                         command.Dispatch(_commandHandler);
                     }
                     _packet[i + headerLen] = _commandHandler.Value;
                 }
 
-                _SerialPort.Write(_packet, 0, packetLen);
-                VixenSystem.Logging.Info(_packet.ToString());
+                if (outputStates.Length > headerLen + footerLen)
+                {
+                    _SerialPort.Write(_packet, 0, packetLen);
+                }
             }
 
         }
@@ -99,8 +98,10 @@ namespace VixenModules.Output.GenericSerial
         {
             dropExistingSerialPort();
             createSerialPortFromData();
-            _header = Encoding.ASCII.GetBytes(_Data.Header);
-            _footer = Encoding.ASCII.GetBytes(_Data.Footer);
+            _header = Encoding.ASCII.GetBytes(_Data.Header == null ? string.Empty : _Data.Header);
+            headerLen = _header.Length;
+            _footer = Encoding.ASCII.GetBytes(_Data.Footer == null ? string.Empty : _Data.Footer);
+            footerLen = _footer.Length;
 
             if (serialPortIsValid && IsRunning)
             {
@@ -135,7 +136,7 @@ namespace VixenModules.Output.GenericSerial
 
         private bool serialPortIsValid
         {
-            get { return !_SerialPort.Equals(null); }
+            get { return _SerialPort != null; }
         }
     }
 }
