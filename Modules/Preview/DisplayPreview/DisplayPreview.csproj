@@ -57,6 +57,7 @@
     <Compile Include="Model\NodeSource.cs" />
     <Compile Include="Model\Preferences.cs" />
     <Compile Include="Model\Shapes\Arc.cs" />
+    <Compile Include="Model\Shapes\CandyCane.cs" />
     <Compile Include="Model\Shapes\OutlinedCircle.cs" />
     <Compile Include="Model\Shapes\IShape.cs" />
     <Compile Include="Model\Shapes\Line.cs" />

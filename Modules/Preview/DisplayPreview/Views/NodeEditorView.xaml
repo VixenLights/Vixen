@@ -53,6 +53,10 @@
                 <TextBlock Text="Nothing to configure" />
             </DataTemplate>
 
+            <DataTemplate DataType="{x:Type Shapes1:CandyCane}">
+                <TextBlock Text="Nothing to configure" />
+            </DataTemplate>
+
             <DataTemplate DataType="{x:Type Shapes1:SolidTriangle}">
                 <TextBlock Text="Nothing to configure" />
             </DataTemplate>
