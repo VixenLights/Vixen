@@ -147,52 +147,6 @@ namespace VixenApplication
 			ConfigureSelectedController();
 		}
 
-		private void buttonGenerateChannels_Click(object sender, EventArgs e)
-		{
-			int controllerCount = 0;
-			int outputCount = 0;
-
-			// go through all selected controllers....
-			if (listViewControllers.SelectedItems.Count >= 1) {
-				foreach (ListViewItem item in (listViewControllers.SelectedItems)) {
-					int channelsAdded = 0;
-					OutputController oc = (OutputController)item.Tag;
-
-					// for each controller, go through its outputs, and if it doesn't have a source, make a new channel/node for it.
-					// setting the source of the given output to that particular channel/node.
-					foreach (var output in oc.Outputs) {
-						if (output.Source == null || output.Source.Component == null) {
-							string name = output.Name;
-							ChannelNode newNode = VixenSystem.Nodes.AddNode(name);
-							if (newNode.Channel == null) {
-								newNode.Channel = VixenSystem.Channels.AddChannel(name);
-							}
-							output.Source = new DataFlowComponentReference(VixenSystem.Channels.GetDataFlowComponentForChannel(newNode.Channel), 0);
-
-							channelsAdded++;
-						}
-					}
-
-					if (channelsAdded > 0) {
-						controllerCount++;
-						outputCount += channelsAdded;
-					}
-				}
-
-				if (outputCount > 0) {
-					string message = outputCount + " channels added";
-					if (listViewControllers.SelectedItems.Count > 1) {
-						message += " for outputs on " + controllerCount + " controller" + ((controllerCount > 1) ? "s." : ".");
-					} else {
-						message += ".";
-					}
-					MessageBox.Show(message, "Channels Addded");
-				} else {
-					MessageBox.Show("All outputs for this controller are referenced in channels already.", "No Channels Addded");
-				}
-			}
-		}
-
 		private void listViewControllers_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (listViewControllers.SelectedItems.Count > 1 || listViewControllers.SelectedItems.Count == 0) {
