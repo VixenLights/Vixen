@@ -234,3 +234,27 @@ Notes:
 2. This path is *the* data path for both the application and the framework.  This means that if it's a new path for the framework, it's going to build out its directory hierarchy.
 3. Do not put spaces around the equals sign!  If the data directory path does have spaces, you can put quotes around the path, but around the path ONLY.  Example:  data_dir="c:\vixen data"
 
+
+
+== 3.0.4 ============================
+
+(Versioning has now dropped the 4th digit.)
+
+- When serializing sequences, module data that is for non-existant modules is now discarded.
+- Display preview update increased to 50ms from 10ms. Not currently customizable.
+- Scheduler improvements to cache programs and prerender all sequences.
+- updated OpenDMX controller module.
+- Administrative cleanups of projects, namespaces, public repository, etc.
+- Fixed up a potential crash in the Chase effect.
+- Added Generic Serial controller module. (macebobo)
+- Added a Candy Cane shape to the display preview (alphageek)
+- Removed the "Generate Channels" button from the controller form; it encouraged bad configuration.
+
+
+
+
+
+
+
+
+
