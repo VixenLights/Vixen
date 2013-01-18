@@ -1,66 +1,47 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Vixen.Module;
 using Vixen.Module.SequenceType;
 
-namespace VixenModules.Sequence.Vixen2x
-{
-	public class Vixen2xSequenceModuleDescriptor : SequenceTypeModuleDescriptorBase
-	{
+namespace VixenModules.Sequence.Vixen2x {
+	public class Vixen2xSequenceModuleDescriptor : SequenceTypeModuleDescriptorBase {
 		private readonly Guid _typeId = new Guid("92BBD2CB-B750-437F-8A88-49864D569AB4");
 
-		override public string FileExtension
-		{
+		override public string FileExtension {
 			get { return ".vix"; }
 		}
 
-	    public override int ClassVersion
-	    {
-	        get
-	        {
-	            throw new NotImplementedException();
-	        }
-	    }
-
-	    override public Guid TypeId
-		{
+	    override public Guid TypeId	{
 			get { return _typeId; }
 		}
 
-		override public Type ModuleClass
-		{
+		override public Type ModuleClass {
 			get { return typeof(Vixen2xSequence); }
 		}
 
-		override public Type ModuleDataClass
-		{
+		override public Type ModuleDataClass {
 			get { return typeof(Vixen2xSequenceData); }
 		}
 
-		override public string Author
-		{
-			get { return "Vixen Team"; }
+		override public string Author {
+			get { return "John McAdams"; }
 		}
 
-		override public string TypeName
-		{
+		override public string TypeName	{
 			get { return "Vixen 2.x Sequence"; }
 		}
 
-		override public string Description
-		{
-			get { return "A sequence from Vixen 2.x, used for import."; }
+		override public string Description {
+			get { return "For importing sequences from Vixen 2.x."; }
 		}
 
-		override public string Version
-		{
+		override public string Version {
 			get { return "1.0"; }
 		}
 
-		public override bool CanCreateNew
-		{
+		override public int ClassVersion {
+			get { return 3;	}
+		}
+		
+		override public bool CanCreateNew {
 			// Override to prevent creation of new sequence
 			get { return false; }
 		}
