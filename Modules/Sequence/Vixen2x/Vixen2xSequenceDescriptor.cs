@@ -3,7 +3,7 @@ using Vixen.Module.SequenceType;
 
 namespace VixenModules.Sequence.Vixen2x {
 	public class Vixen2xSequenceModuleDescriptor : SequenceTypeModuleDescriptorBase {
-		private readonly Guid _typeId = new Guid("92BBD2CB-B750-437F-8A88-49864D569AB4");
+		private readonly Guid _typeId = new Guid("{92BBD2CB-B750-437F-8A88-49864D569AB4}");
 
 		override public string FileExtension {
 			get { return ".vix"; }
@@ -41,9 +41,9 @@ namespace VixenModules.Sequence.Vixen2x {
 			get { return 3;	}
 		}
 		
-		override public bool CanCreateNew {
-			// Override to prevent creation of new sequence
-			get { return false; }
+		//override public bool CanCreateNew {
+		//    // Override to prevent creation of new sequence
+		//    get { return false; }
 		}
 	}
 }
