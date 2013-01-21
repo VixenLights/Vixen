@@ -109,7 +109,7 @@ namespace Vixen.Sys {
 				foreach(var duplicateType in duplicateTypes) {
 					sb.AppendLine("Type Id: " + duplicateType.Key);
 					foreach(IModuleDescriptor descriptor in duplicateType) {
-						sb.AppendLine("  - " + descriptor.TypeName);
+						sb.AppendLine("  - " + descriptor.TypeName + " Loaded from " + descriptor.Assembly.GetFilePath());
 					}
 				}
 				VixenSystem.Logging.Error(sb.ToString());
