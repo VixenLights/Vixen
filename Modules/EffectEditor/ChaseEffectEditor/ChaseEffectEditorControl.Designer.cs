@@ -27,9 +27,9 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			VixenModules.App.Curves.Curve curve1 = new VixenModules.App.Curves.Curve();
-			VixenModules.App.Curves.Curve curve2 = new VixenModules.App.Curves.Curve();
-			VixenModules.App.ColorGradients.ColorGradient colorGradient1 = new VixenModules.App.ColorGradients.ColorGradient();
+			VixenModules.App.Curves.Curve curve7 = new VixenModules.App.Curves.Curve();
+			VixenModules.App.Curves.Curve curve8 = new VixenModules.App.Curves.Curve();
+			VixenModules.App.ColorGradients.ColorGradient colorGradient4 = new VixenModules.App.ColorGradients.ColorGradient();
 			this.label1 = new System.Windows.Forms.Label();
 			this.curveTypeEditorControlEachPulse = new VixenModules.EffectEditor.CurveTypeEditor.CurveTypeEditorControl();
 			this.label4 = new System.Windows.Forms.Label();
@@ -38,6 +38,7 @@
 			this.curveTypeEditorControlChaseMovement = new VixenModules.EffectEditor.CurveTypeEditor.CurveTypeEditorControl();
 			this.levelTypeEditorControlDefaultLevel = new VixenModules.EffectEditor.LevelTypeEditor.LevelTypeEditorControl();
 			this.groupBoxPulse = new System.Windows.Forms.GroupBox();
+			this.label3 = new System.Windows.Forms.Label();
 			this.radioButtonGradientAcrossItems = new System.Windows.Forms.RadioButton();
 			this.radioButtonStaticColor = new System.Windows.Forms.RadioButton();
 			this.colorTypeEditorControlStaticColor = new VixenModules.EffectEditor.ColorTypeEditor.ColorTypeEditorControl();
@@ -47,7 +48,8 @@
 			this.colorGradientTypeEditorControlGradient = new VixenModules.EffectEditor.ColorGradientTypeEditor.ColorGradientTypeEditorControl();
 			this.radioButtonGradientOverWhole = new System.Windows.Forms.RadioButton();
 			this.label5 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
+			this.comboBoxApplyToChildren = new System.Windows.Forms.ComboBox();
+			this.label6 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPulseTimeOverlap)).BeginInit();
 			this.groupBoxPulse.SuspendLayout();
 			this.groupBoxColor.SuspendLayout();
@@ -64,11 +66,11 @@
 			// 
 			// curveTypeEditorControlEachPulse
 			// 
-			curve1.IsCurrentLibraryCurve = false;
-			curve1.LibraryReferenceName = "";
-			this.curveTypeEditorControlEachPulse.CurveValue = curve1;
+			curve7.IsCurrentLibraryCurve = false;
+			curve7.LibraryReferenceName = "";
+			this.curveTypeEditorControlEachPulse.CurveValue = curve7;
 			this.curveTypeEditorControlEachPulse.EffectParameterValues = new object[] {
-        ((object)(curve1))};
+        ((object)(curve7))};
 			this.curveTypeEditorControlEachPulse.Location = new System.Drawing.Point(105, 23);
 			this.curveTypeEditorControlEachPulse.Name = "curveTypeEditorControlEachPulse";
 			this.curveTypeEditorControlEachPulse.Size = new System.Drawing.Size(150, 80);
@@ -122,11 +124,11 @@
 			// 
 			// curveTypeEditorControlChaseMovement
 			// 
-			curve2.IsCurrentLibraryCurve = false;
-			curve2.LibraryReferenceName = "";
-			this.curveTypeEditorControlChaseMovement.CurveValue = curve2;
+			curve8.IsCurrentLibraryCurve = false;
+			curve8.LibraryReferenceName = "";
+			this.curveTypeEditorControlChaseMovement.CurveValue = curve8;
 			this.curveTypeEditorControlChaseMovement.EffectParameterValues = new object[] {
-        ((object)(curve2))};
+        ((object)(curve8))};
 			this.curveTypeEditorControlChaseMovement.Location = new System.Drawing.Point(108, 3);
 			this.curveTypeEditorControlChaseMovement.Name = "curveTypeEditorControlChaseMovement";
 			this.curveTypeEditorControlChaseMovement.Size = new System.Drawing.Size(150, 80);
@@ -135,6 +137,9 @@
 			// 
 			// levelTypeEditorControlDefaultLevel
 			// 
+			this.levelTypeEditorControlDefaultLevel.EffectParameterValues = new object[] {
+        ((object)(1D))};
+			this.levelTypeEditorControlDefaultLevel.LevelValue = 1D;
 			this.levelTypeEditorControlDefaultLevel.Location = new System.Drawing.Point(399, 214);
 			this.levelTypeEditorControlDefaultLevel.Name = "levelTypeEditorControlDefaultLevel";
 			this.levelTypeEditorControlDefaultLevel.Size = new System.Drawing.Size(90, 39);
@@ -153,6 +158,15 @@
 			this.groupBoxPulse.TabIndex = 13;
 			this.groupBoxPulse.TabStop = false;
 			this.groupBoxPulse.Text = "Pulse";
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(10, 124);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(146, 13);
+			this.label3.TabIndex = 16;
+			this.label3.Text = "Overlap between pulses (ms):";
 			// 
 			// radioButtonGradientAcrossItems
 			// 
@@ -225,13 +239,13 @@
 			// 
 			// colorGradientTypeEditorControlGradient
 			// 
-			colorGradient1.Gammacorrected = false;
-			colorGradient1.IsCurrentLibraryGradient = false;
-			colorGradient1.LibraryReferenceName = "";
-			colorGradient1.Title = null;
-			this.colorGradientTypeEditorControlGradient.ColorGradientValue = colorGradient1;
+			colorGradient4.Gammacorrected = false;
+			colorGradient4.IsCurrentLibraryGradient = false;
+			colorGradient4.LibraryReferenceName = "";
+			colorGradient4.Title = null;
+			this.colorGradientTypeEditorControlGradient.ColorGradientValue = colorGradient4;
 			this.colorGradientTypeEditorControlGradient.EffectParameterValues = new object[] {
-        ((object)(colorGradient1))};
+        ((object)(colorGradient4))};
 			this.colorGradientTypeEditorControlGradient.Location = new System.Drawing.Point(94, 152);
 			this.colorGradientTypeEditorControlGradient.Name = "colorGradientTypeEditorControlGradient";
 			this.colorGradientTypeEditorControlGradient.Size = new System.Drawing.Size(100, 40);
@@ -247,7 +261,7 @@
 			this.radioButtonGradientOverWhole.TabIndex = 0;
 			this.radioButtonGradientOverWhole.TabStop = true;
 			this.radioButtonGradientOverWhole.Text = "The gradient is shown over the whole effect.\r\nAll channels display the same color" +
-				" at a given time.";
+    " at a given time.";
 			this.radioButtonGradientOverWhole.UseVisualStyleBackColor = true;
 			// 
 			// label5
@@ -259,19 +273,30 @@
 			this.label5.TabIndex = 21;
 			this.label5.Text = "(non-active channels)";
 			// 
-			// label3
+			// comboBoxApplyToChildren
 			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(10, 124);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(146, 13);
-			this.label3.TabIndex = 16;
-			this.label3.Text = "Overlap between pulses (ms):";
+			this.comboBoxApplyToChildren.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxApplyToChildren.FormattingEnabled = true;
+			this.comboBoxApplyToChildren.Location = new System.Drawing.Point(108, 259);
+			this.comboBoxApplyToChildren.Name = "comboBoxApplyToChildren";
+			this.comboBoxApplyToChildren.Size = new System.Drawing.Size(163, 21);
+			this.comboBoxApplyToChildren.TabIndex = 22;
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(22, 262);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(80, 13);
+			this.label6.TabIndex = 23;
+			this.label6.Text = "Apply chase to:";
 			// 
 			// ChaseEffectEditorControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.label6);
+			this.Controls.Add(this.comboBoxApplyToChildren);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.curveTypeEditorControlChaseMovement);
@@ -280,7 +305,7 @@
 			this.Controls.Add(this.groupBoxColor);
 			this.Controls.Add(this.label5);
 			this.Name = "ChaseEffectEditorControl";
-			this.Size = new System.Drawing.Size(579, 260);
+			this.Size = new System.Drawing.Size(579, 292);
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPulseTimeOverlap)).EndInit();
 			this.groupBoxPulse.ResumeLayout(false);
 			this.groupBoxPulse.PerformLayout();
@@ -311,5 +336,7 @@
 		private System.Windows.Forms.RadioButton radioButtonGradientOverWhole;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox comboBoxApplyToChildren;
+        private System.Windows.Forms.Label label6;
 	}
 }

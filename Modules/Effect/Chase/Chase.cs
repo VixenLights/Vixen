@@ -110,13 +110,41 @@ namespace VixenModules.Effect.Chase
 			set { _data.ChaseMovement = value; IsDirty = true; }
 		}
 
+		[Value]
+		public DepthOfEffect DepthOfEffect
+		{
+			get { return _data.DepthOfEffect; }
+			set { _data.DepthOfEffect = value; IsDirty = true; }
+		}
+
 
 		private void DoRendering()
 		{
 			//TODO: get a better increment time. doing it every X ms is..... shitty at best.
 			TimeSpan increment = TimeSpan.FromMilliseconds(2);
 
-			List<ChannelNode> renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).ToList();
+			List<ChannelNode> renderNodes = null;
+
+			switch (DepthOfEffect)
+			{
+				case Effect.Chase.DepthOfEffect.Children:
+					renderNodes = TargetNodes.SelectMany(x => x.Children).ToList();
+					break;
+
+				case Effect.Chase.DepthOfEffect.Grandchildren:
+					renderNodes = TargetNodes.SelectMany(x => x.Children.SelectMany(y => y.Children)).ToList();
+					break;
+
+				case Effect.Chase.DepthOfEffect.LeafElements:
+					renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).ToList();
+					break;
+			}
+			
+			// If the given DepthOfEffect results in 0 nodes (perhaps Children or Grandchildren go "too deep" and miss any nodes), 
+			// then we'll default to the LeafElements, which will at least return 1 element (the TargetNode)
+			if (renderNodes.Count == 0)
+				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).ToList();
+			
 			int targetNodeCount = renderNodes.Count;
 
 			Pulse.Pulse pulse;

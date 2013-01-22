@@ -140,5 +140,6 @@ namespace VixenModules.EffectEditor.ChaseEffectEditor
 			get { return curveTypeEditorControlChaseMovement.CurveValue; }
 			set { curveTypeEditorControlChaseMovement.CurveValue = value; }
 		}
+
 	}
 }
