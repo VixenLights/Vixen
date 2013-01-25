@@ -27,6 +27,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.groupBoxMarkCollections = new System.Windows.Forms.GroupBox();
 			this.buttonRemoveCollection = new System.Windows.Forms.Button();
 			this.buttonAddCollection = new System.Windows.Forms.Button();
@@ -45,6 +46,9 @@
 			this.textBoxCollectionName = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.groupBoxOperations = new System.Windows.Forms.GroupBox();
+			this.generatePeriodicMarks = new System.Windows.Forms.Button();
+			this.buttonGenerateBeatMarks = new System.Windows.Forms.Button();
+			this.buttonCopyAndOffsetMarks = new System.Windows.Forms.Button();
 			this.buttonPasteEffectsToMarks = new System.Windows.Forms.Button();
 			this.buttonOffsetMarks = new System.Windows.Forms.Button();
 			this.buttonGenerateSubmarks = new System.Windows.Forms.Button();
@@ -57,8 +61,7 @@
 			this.textBoxTime = new System.Windows.Forms.TextBox();
 			this.buttonSelectAllMarks = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
-			this.buttonCopyAndOffsetMarks = new System.Windows.Forms.Button();
-			this.buttonGenerateBeatMarks = new System.Windows.Forms.Button();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.groupBoxMarkCollections.SuspendLayout();
 			this.groupBoxSelectedMarkCollection.SuspendLayout();
 			this.groupBoxDetails.SuspendLayout();
@@ -137,7 +140,7 @@
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOK.Location = new System.Drawing.Point(563, 286);
+			this.buttonOK.Location = new System.Drawing.Point(563, 322);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(80, 25);
 			this.buttonOK.TabIndex = 2;
@@ -151,7 +154,7 @@
 			this.groupBoxSelectedMarkCollection.Controls.Add(this.groupBoxMarks);
 			this.groupBoxSelectedMarkCollection.Location = new System.Drawing.Point(256, 12);
 			this.groupBoxSelectedMarkCollection.Name = "groupBoxSelectedMarkCollection";
-			this.groupBoxSelectedMarkCollection.Size = new System.Drawing.Size(473, 263);
+			this.groupBoxSelectedMarkCollection.Size = new System.Drawing.Size(473, 304);
 			this.groupBoxSelectedMarkCollection.TabIndex = 3;
 			this.groupBoxSelectedMarkCollection.TabStop = false;
 			this.groupBoxSelectedMarkCollection.Text = "Selected Collection";
@@ -252,6 +255,7 @@
 			// 
 			// groupBoxOperations
 			// 
+			this.groupBoxOperations.Controls.Add(this.generatePeriodicMarks);
 			this.groupBoxOperations.Controls.Add(this.buttonGenerateBeatMarks);
 			this.groupBoxOperations.Controls.Add(this.buttonCopyAndOffsetMarks);
 			this.groupBoxOperations.Controls.Add(this.buttonPasteEffectsToMarks);
@@ -261,10 +265,43 @@
 			this.groupBoxOperations.Controls.Add(this.buttonTapNewMarks);
 			this.groupBoxOperations.Location = new System.Drawing.Point(301, 19);
 			this.groupBoxOperations.Name = "groupBoxOperations";
-			this.groupBoxOperations.Size = new System.Drawing.Size(164, 238);
+			this.groupBoxOperations.Size = new System.Drawing.Size(164, 269);
 			this.groupBoxOperations.TabIndex = 8;
 			this.groupBoxOperations.TabStop = false;
 			this.groupBoxOperations.Text = "Operations";
+			// 
+			// generatePeriodicMarks
+			// 
+			this.generatePeriodicMarks.Location = new System.Drawing.Point(7, 234);
+			this.generatePeriodicMarks.Name = "generatePeriodicMarks";
+			this.generatePeriodicMarks.Size = new System.Drawing.Size(151, 25);
+			this.generatePeriodicMarks.TabIndex = 12;
+			this.generatePeriodicMarks.Text = "Generate periodic marks";
+			this.toolTip1.SetToolTip(this.generatePeriodicMarks, "Generate a \'grid\' of equally space marks across the sequence.");
+			this.generatePeriodicMarks.UseVisualStyleBackColor = true;
+			this.generatePeriodicMarks.Click += new System.EventHandler(this.buttonGeneratePeriodicMarks_Click);
+			// 
+			// buttonGenerateBeatMarks
+			// 
+			this.buttonGenerateBeatMarks.Location = new System.Drawing.Point(6, 203);
+			this.buttonGenerateBeatMarks.Name = "buttonGenerateBeatMarks";
+			this.buttonGenerateBeatMarks.Size = new System.Drawing.Size(151, 25);
+			this.buttonGenerateBeatMarks.TabIndex = 11;
+			this.buttonGenerateBeatMarks.Text = "Generate beat marks";
+			this.toolTip1.SetToolTip(this.buttonGenerateBeatMarks, "Generate more marks based on the frequency of the selected marks.");
+			this.buttonGenerateBeatMarks.UseVisualStyleBackColor = true;
+			this.buttonGenerateBeatMarks.Click += new System.EventHandler(this.buttonGenerateBeatMarks_Click);
+			// 
+			// buttonCopyAndOffsetMarks
+			// 
+			this.buttonCopyAndOffsetMarks.Location = new System.Drawing.Point(6, 172);
+			this.buttonCopyAndOffsetMarks.Name = "buttonCopyAndOffsetMarks";
+			this.buttonCopyAndOffsetMarks.Size = new System.Drawing.Size(151, 25);
+			this.buttonCopyAndOffsetMarks.TabIndex = 10;
+			this.buttonCopyAndOffsetMarks.Text = "Copy && offset marks";
+			this.toolTip1.SetToolTip(this.buttonCopyAndOffsetMarks, "Duplicate the selected marks, offsetting the new ones by a fixed amount of time.");
+			this.buttonCopyAndOffsetMarks.UseVisualStyleBackColor = true;
+			this.buttonCopyAndOffsetMarks.Click += new System.EventHandler(this.buttonCopyAndOffsetMarks_Click);
 			// 
 			// buttonPasteEffectsToMarks
 			// 
@@ -273,6 +310,8 @@
 			this.buttonPasteEffectsToMarks.Size = new System.Drawing.Size(151, 25);
 			this.buttonPasteEffectsToMarks.TabIndex = 9;
 			this.buttonPasteEffectsToMarks.Text = "Paste effect to marks";
+			this.toolTip1.SetToolTip(this.buttonPasteEffectsToMarks, "Place a copy of the effect currently in the paste buffer to begin at each selecte" +
+					"d mark.");
 			this.buttonPasteEffectsToMarks.UseVisualStyleBackColor = true;
 			this.buttonPasteEffectsToMarks.Click += new System.EventHandler(this.buttonPasteEffectsToMarks_Click);
 			// 
@@ -281,8 +320,9 @@
 			this.buttonOffsetMarks.Location = new System.Drawing.Point(6, 50);
 			this.buttonOffsetMarks.Name = "buttonOffsetMarks";
 			this.buttonOffsetMarks.Size = new System.Drawing.Size(151, 25);
-			this.buttonOffsetMarks.TabIndex = 8;
+			this.buttonOffsetMarks.TabIndex = 6;
 			this.buttonOffsetMarks.Text = "Offset marks";
+			this.toolTip1.SetToolTip(this.buttonOffsetMarks, "Adjust selected marks left or right a fixed amount of time.");
 			this.buttonOffsetMarks.UseVisualStyleBackColor = true;
 			this.buttonOffsetMarks.Click += new System.EventHandler(this.buttonOffsetMarks_Click);
 			// 
@@ -291,8 +331,9 @@
 			this.buttonGenerateSubmarks.Location = new System.Drawing.Point(6, 112);
 			this.buttonGenerateSubmarks.Name = "buttonGenerateSubmarks";
 			this.buttonGenerateSubmarks.Size = new System.Drawing.Size(151, 25);
-			this.buttonGenerateSubmarks.TabIndex = 7;
+			this.buttonGenerateSubmarks.TabIndex = 8;
 			this.buttonGenerateSubmarks.Text = "Generate submarks";
+			this.toolTip1.SetToolTip(this.buttonGenerateSubmarks, "Create new marks by subdividing regions of other marks (select at least 2).");
 			this.buttonGenerateSubmarks.UseVisualStyleBackColor = true;
 			this.buttonGenerateSubmarks.Click += new System.EventHandler(this.buttonGenerateSubmarks_Click);
 			// 
@@ -301,8 +342,9 @@
 			this.buttonEvenlySpaceMarks.Location = new System.Drawing.Point(6, 81);
 			this.buttonEvenlySpaceMarks.Name = "buttonEvenlySpaceMarks";
 			this.buttonEvenlySpaceMarks.Size = new System.Drawing.Size(151, 25);
-			this.buttonEvenlySpaceMarks.TabIndex = 6;
+			this.buttonEvenlySpaceMarks.TabIndex = 7;
 			this.buttonEvenlySpaceMarks.Text = "Evenly space marks";
+			this.toolTip1.SetToolTip(this.buttonEvenlySpaceMarks, "Evenly space out the selected marks (choose at least 3 marks).");
 			this.buttonEvenlySpaceMarks.UseVisualStyleBackColor = true;
 			this.buttonEvenlySpaceMarks.Click += new System.EventHandler(this.buttonEvenlySpaceMarks_Click);
 			// 
@@ -313,6 +355,7 @@
 			this.buttonTapNewMarks.Size = new System.Drawing.Size(151, 25);
 			this.buttonTapNewMarks.TabIndex = 5;
 			this.buttonTapNewMarks.Text = "Tap new marks...";
+			this.toolTip1.SetToolTip(this.buttonTapNewMarks, "Use the spacebar or mouse to layout marks while listening to audio.");
 			this.buttonTapNewMarks.UseVisualStyleBackColor = true;
 			this.buttonTapNewMarks.Click += new System.EventHandler(this.buttonTapNewMarks_Click);
 			// 
@@ -324,7 +367,7 @@
 			this.groupBoxMarks.Controls.Add(this.buttonSelectAllMarks);
 			this.groupBoxMarks.Location = new System.Drawing.Point(166, 19);
 			this.groupBoxMarks.Name = "groupBoxMarks";
-			this.groupBoxMarks.Size = new System.Drawing.Size(129, 238);
+			this.groupBoxMarks.Size = new System.Drawing.Size(129, 269);
 			this.groupBoxMarks.TabIndex = 1;
 			this.groupBoxMarks.TabStop = false;
 			this.groupBoxMarks.Text = "Marks";
@@ -337,7 +380,7 @@
 			this.listViewMarks.HideSelection = false;
 			this.listViewMarks.Location = new System.Drawing.Point(6, 19);
 			this.listViewMarks.Name = "listViewMarks";
-			this.listViewMarks.Size = new System.Drawing.Size(116, 149);
+			this.listViewMarks.Size = new System.Drawing.Size(116, 178);
 			this.listViewMarks.TabIndex = 8;
 			this.listViewMarks.UseCompatibleStateImageBehavior = false;
 			this.listViewMarks.View = System.Windows.Forms.View.Details;
@@ -350,7 +393,7 @@
 			// 
 			// buttonAddOrUpdateMark
 			// 
-			this.buttonAddOrUpdateMark.Location = new System.Drawing.Point(73, 174);
+			this.buttonAddOrUpdateMark.Location = new System.Drawing.Point(73, 203);
 			this.buttonAddOrUpdateMark.Name = "buttonAddOrUpdateMark";
 			this.buttonAddOrUpdateMark.Size = new System.Drawing.Size(50, 25);
 			this.buttonAddOrUpdateMark.TabIndex = 7;
@@ -360,14 +403,14 @@
 			// 
 			// textBoxTime
 			// 
-			this.textBoxTime.Location = new System.Drawing.Point(6, 177);
+			this.textBoxTime.Location = new System.Drawing.Point(7, 206);
 			this.textBoxTime.Name = "textBoxTime";
 			this.textBoxTime.Size = new System.Drawing.Size(60, 20);
 			this.textBoxTime.TabIndex = 6;
 			// 
 			// buttonSelectAllMarks
 			// 
-			this.buttonSelectAllMarks.Location = new System.Drawing.Point(6, 205);
+			this.buttonSelectAllMarks.Location = new System.Drawing.Point(7, 234);
 			this.buttonSelectAllMarks.Name = "buttonSelectAllMarks";
 			this.buttonSelectAllMarks.Size = new System.Drawing.Size(116, 25);
 			this.buttonSelectAllMarks.TabIndex = 5;
@@ -379,45 +422,25 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(649, 286);
+			this.buttonCancel.Location = new System.Drawing.Point(649, 322);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(80, 25);
 			this.buttonCancel.TabIndex = 4;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			// 
-			// buttonCopyAndOffsetMarks
-			// 
-			this.buttonCopyAndOffsetMarks.Location = new System.Drawing.Point(6, 172);
-			this.buttonCopyAndOffsetMarks.Name = "buttonCopyAndOffsetMarks";
-			this.buttonCopyAndOffsetMarks.Size = new System.Drawing.Size(151, 25);
-			this.buttonCopyAndOffsetMarks.TabIndex = 10;
-			this.buttonCopyAndOffsetMarks.Text = "Copy && offset marks";
-			this.buttonCopyAndOffsetMarks.UseVisualStyleBackColor = true;
-			this.buttonCopyAndOffsetMarks.Click += new System.EventHandler(this.buttonCopyAndOffsetMarks_Click);
-			// 
-			// buttonGenerateBeatMarks
-			// 
-			this.buttonGenerateBeatMarks.Location = new System.Drawing.Point(6, 203);
-			this.buttonGenerateBeatMarks.Name = "buttonGenerateBeatMarks";
-			this.buttonGenerateBeatMarks.Size = new System.Drawing.Size(151, 25);
-			this.buttonGenerateBeatMarks.TabIndex = 11;
-			this.buttonGenerateBeatMarks.Text = "Generate beat marks";
-			this.buttonGenerateBeatMarks.UseVisualStyleBackColor = true;
-			this.buttonGenerateBeatMarks.Click += new System.EventHandler(this.buttonGenerateBeatMarks_Click);
-			// 
 			// MarkManager
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(740, 323);
+			this.ClientSize = new System.Drawing.Size(740, 361);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.groupBoxSelectedMarkCollection);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.groupBoxMarkCollections);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(746, 351);
+			this.MaximumSize = new System.Drawing.Size(746, 400);
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(746, 351);
 			this.Name = "MarkManager";
@@ -472,6 +495,8 @@
 		private System.Windows.Forms.Button buttonPasteEffectsToMarks;
 		private System.Windows.Forms.Button buttonCopyAndOffsetMarks;
 		private System.Windows.Forms.Button buttonGenerateBeatMarks;
+		private System.Windows.Forms.Button generatePeriodicMarks;
+		private System.Windows.Forms.ToolTip toolTip1;
 
 	}
 }
