@@ -49,7 +49,8 @@ namespace VixenModules.Effect.Spin
 					new ParameterSpecification("Static Color", typeof(Color)),
 					new ParameterSpecification("Color Gradient", typeof(ColorGradient)),
 					new ParameterSpecification("Individual Pulse Curve", typeof(Curve)),
-					new ParameterSpecification("Reverse Spin", typeof(bool))
+					new ParameterSpecification("Reverse Spin", typeof(bool)),
+					new ParameterSpecification("Depth of Effect", typeof(DepthOfEffect))
 					);
 			}
 		}

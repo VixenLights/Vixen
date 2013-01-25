@@ -12,6 +12,8 @@ using Vixen.Module.Effect;
 using VixenModules.Effect.Chase;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
+using System.Reflection;
+using Common.ValueTypes;
 
 namespace VixenModules.EffectEditor.ChaseEffectEditor
 {
@@ -20,7 +22,13 @@ namespace VixenModules.EffectEditor.ChaseEffectEditor
 		public ChaseEffectEditorControl()
 		{
 			InitializeComponent();
+
+			comboBoxApplyToChildren.DataSource = typeof(DepthOfEffect).ToKeyValuePairs();
+			comboBoxApplyToChildren.DisplayMember = "Value";
+			comboBoxApplyToChildren.ValueMember = "Key";
 		}
+
+
 
 				IEffect _targetEffect;
 		public IEffect TargetEffect
@@ -40,12 +48,13 @@ namespace VixenModules.EffectEditor.ChaseEffectEditor
 					StaticColor,
 					ColorGradient,
 					PulseCurve,
-					ChaseMovement
+					ChaseMovement,
+					DepthOfEffect
 				};
 			}
 			set
 			{
-				if (value.Length != 7) {
+				if (value.Length != 8) {
 					VixenSystem.Logging.Warning("Chase effect parameters set with " + value.Length + " parameters");
 					return;
 				}
@@ -57,6 +66,7 @@ namespace VixenModules.EffectEditor.ChaseEffectEditor
 				ColorGradient = (ColorGradient)value[4];
 				PulseCurve = (Curve)value[5];
 				ChaseMovement = (Curve)value[6];
+				DepthOfEffect = (DepthOfEffect)value[7];
 			}
 		}
 
@@ -139,6 +149,12 @@ namespace VixenModules.EffectEditor.ChaseEffectEditor
 		{
 			get { return curveTypeEditorControlChaseMovement.CurveValue; }
 			set { curveTypeEditorControlChaseMovement.CurveValue = value; }
+		}
+
+		public DepthOfEffect DepthOfEffect
+		{
+			get	{ return (DepthOfEffect)(comboBoxApplyToChildren.SelectedValue); }
+			set	{ comboBoxApplyToChildren.SelectedValue = value; }
 		}
 
 	}

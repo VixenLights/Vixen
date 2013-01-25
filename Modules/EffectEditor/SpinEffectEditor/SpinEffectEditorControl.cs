@@ -11,6 +11,7 @@ using Vixen.Module.Effect;
 using VixenModules.Effect.Spin;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
+using Common.ValueTypes;
 
 namespace VixenModules.EffectEditor.SpinEffectEditor
 {
@@ -19,6 +20,10 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 		public SpinEffectEditorControl()
 		{
 			InitializeComponent();
+
+			comboBoxApplyToChildren.DataSource = typeof(DepthOfEffect).ToKeyValuePairs();
+			comboBoxApplyToChildren.DisplayMember = "Value";
+			comboBoxApplyToChildren.ValueMember = "Key";
 		}
 
 		IEffect _targetEffect;
@@ -45,12 +50,13 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 					StaticColor,
 					ColorGradient,
 					PulseCurve,
-					ReverseSpin
+					ReverseSpin,
+					DepthOfEffect
 				};
 			}
 			set
 			{
-				if (value.Length != 13) {
+				if (value.Length != 14) {
 					VixenSystem.Logging.Warning("Spin effect parameters set with " + value.Length + " parameters");
 					return;
 				}
@@ -66,6 +72,7 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 				ColorGradient = (ColorGradient)value[10];
 				PulseCurve = (Curve)value[11];
 				ReverseSpin = (bool)value[12];
+				DepthOfEffect = (DepthOfEffect)value[13];
 
 				// set these last: setting them results in some of the other values being auto-calculated on the form.
 				SpeedFormat = (SpinSpeedFormat)value[0];
@@ -270,6 +277,12 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 		{
 			get { return checkBoxReverse.Checked; }
 			set { checkBoxReverse.Checked = value; }
+		}
+
+		public DepthOfEffect DepthOfEffect
+		{
+			get { return (DepthOfEffect)(comboBoxApplyToChildren.SelectedValue); }
+			set { comboBoxApplyToChildren.SelectedValue = value; }
 		}
 
 		private void radioButtonRevolutionItem_CheckedChanged(object sender, EventArgs e)

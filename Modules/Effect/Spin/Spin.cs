@@ -148,12 +148,19 @@ namespace VixenModules.Effect.Spin
 			set { _data.ReverseSpin = value; IsDirty = true; }
 		}
 
+		[Value]
+		public DepthOfEffect DepthOfEffect
+		{
+			get { return _data.DepthOfEffect; }
+			set { _data.DepthOfEffect = value; IsDirty = true; }
+		}
+
 		private void DoRendering()
 		{
 			//TODO: get a better increment time. doing it every X ms is..... shitty at best.
 			TimeSpan increment = TimeSpan.FromMilliseconds(10);
 
-			List<ChannelNode> renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).ToList();
+			List<ChannelNode> renderNodes = GetNodesToRenderOn();
 			int targetNodeCount = renderNodes.Count;
 			ChannelNode lastTargetedNode = null;
 
@@ -292,5 +299,33 @@ namespace VixenModules.Effect.Spin
 
 			_channelData = EffectIntents.Restrict(_channelData, TimeSpan.Zero, TimeSpan);
 		}
+
+		private List<ChannelNode> GetNodesToRenderOn()
+		{
+			List<ChannelNode> renderNodes = null;
+
+			switch (DepthOfEffect)
+			{
+				case Effect.Spin.DepthOfEffect.Children:
+					renderNodes = TargetNodes.SelectMany(x => x.Children).ToList();
+					break;
+
+				case Effect.Spin.DepthOfEffect.Grandchildren:
+					renderNodes = TargetNodes.SelectMany(x => x.Children.SelectMany(y => y.Children)).ToList();
+					break;
+
+				case Effect.Spin.DepthOfEffect.LeafElements:
+					renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).ToList();
+					break;
+			}
+
+			// If the given DepthOfEffect results in 0 nodes (perhaps Children or Grandchildren go "too deep" and miss all nodes), 
+			// then we'll default to the LeafElements, which will at least return 1 element (the TargetNode)
+			if (renderNodes.Count == 0)
+				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).ToList();
+
+			return renderNodes;
+		}
+
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using System.ComponentModel;
 using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
@@ -70,8 +71,13 @@ namespace VixenModules.Effect.Chase
 
 	public enum DepthOfEffect
 	{
+		// Since LeafElements comes first, it ends up being the default if it doesn't currently exist in the serialized data
+		//(If a different default is desired, see http://msdn.microsoft.com/en-us/library/ms733734.aspx)
+		[Description("Leaf Elements")]
 		LeafElements,
+		[Description("Children (1 level deep)")]
 		Children,
+		[Description("Grandchildren (2 levels deep)")]
 		Grandchildren
 	}
 }

@@ -123,28 +123,8 @@ namespace VixenModules.Effect.Chase
 			//TODO: get a better increment time. doing it every X ms is..... shitty at best.
 			TimeSpan increment = TimeSpan.FromMilliseconds(2);
 
-			List<ChannelNode> renderNodes = null;
-
-			switch (DepthOfEffect)
-			{
-				case Effect.Chase.DepthOfEffect.Children:
-					renderNodes = TargetNodes.SelectMany(x => x.Children).ToList();
-					break;
-
-				case Effect.Chase.DepthOfEffect.Grandchildren:
-					renderNodes = TargetNodes.SelectMany(x => x.Children.SelectMany(y => y.Children)).ToList();
-					break;
-
-				case Effect.Chase.DepthOfEffect.LeafElements:
-					renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).ToList();
-					break;
-			}
-			
-			// If the given DepthOfEffect results in 0 nodes (perhaps Children or Grandchildren go "too deep" and miss any nodes), 
-			// then we'll default to the LeafElements, which will at least return 1 element (the TargetNode)
-			if (renderNodes.Count == 0)
-				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).ToList();
-			
+			List<ChannelNode> renderNodes = GetNodesToRenderOn();
+						
 			int targetNodeCount = renderNodes.Count;
 
 			Pulse.Pulse pulse;
@@ -233,6 +213,34 @@ namespace VixenModules.Effect.Chase
 
 			_channelData = EffectIntents.Restrict(_channelData, TimeSpan.Zero, TimeSpan);
 		}
+
+		private List<ChannelNode> GetNodesToRenderOn()
+		{
+			List<ChannelNode> renderNodes = null;
+
+			switch (DepthOfEffect)
+			{
+				case Effect.Chase.DepthOfEffect.Children:
+					renderNodes = TargetNodes.SelectMany(x => x.Children).ToList();
+					break;
+
+				case Effect.Chase.DepthOfEffect.Grandchildren:
+					renderNodes = TargetNodes.SelectMany(x => x.Children.SelectMany(y => y.Children)).ToList();
+					break;
+
+				case Effect.Chase.DepthOfEffect.LeafElements:
+					renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).ToList();
+					break;
+			}
+
+			// If the given DepthOfEffect results in 0 nodes (perhaps Children or Grandchildren go "too deep" and miss all nodes), 
+			// then we'll default to the LeafElements, which will at least return 1 element (the TargetNode)
+			if (renderNodes.Count == 0)
+				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).ToList();
+
+			return renderNodes;
+		}
+
 
 		private void GeneratePulse(ChannelNode target, TimeSpan startTime, TimeSpan duration, double currentMovementPosition)
 		{
