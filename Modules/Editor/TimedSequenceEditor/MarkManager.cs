@@ -513,5 +513,36 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 		}
+
+		private void buttonGeneratePeriodicMarks_Click(object sender, EventArgs e)
+        {
+			Common.Controls.TextDialog prompt = new Common.Controls.TextDialog("What period should the marks be geneated at, in seconds?","Periodic(Grid) time","0:00.050");
+			// the default prompt isn't enough to hold all the above text. Oops.
+			//prompt.Size = new Size(550, prompt.Size.Height);
+			if (prompt.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
+				TimeSpan duration = TimeSpan.MaxValue;
+				TimeSpan interval;
+				bool conversionSuccess = TimeSpan.TryParseExact(prompt.Response, TimeFormats.PositiveFormats, null, out interval);
+				if (conversionSuccess)
+				{
+					TimeSpan currentTime = interval;
+					TimeSpan endTime = _timedSequenceEditorForm.Sequence.Length;
+					while (currentTime <= endTime)
+					{
+						_displayedCollection.Marks.Add(currentTime);
+						currentTime += interval;
+					}
+
+					_displayedCollection.Marks.Sort();
+					PopulateMarkListFromMarkCollection(_displayedCollection);
+					UpdateMarkCollectionInList(_displayedCollection);
+				}
+				else
+				{
+					MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'", "Error parsing time");
+				}
+			}
+        }
 	}
 }
