@@ -22,10 +22,6 @@ namespace VixenModules.EffectEditor.ChaseEffectEditor
 		public ChaseEffectEditorControl()
 		{
 			InitializeComponent();
-
-			comboBoxApplyToChildren.DataSource = typeof(DepthOfEffect).ToKeyValuePairs();
-			comboBoxApplyToChildren.DisplayMember = "Value";
-			comboBoxApplyToChildren.ValueMember = "Key";
 		}
 
 
@@ -66,7 +62,7 @@ namespace VixenModules.EffectEditor.ChaseEffectEditor
 				ColorGradient = (ColorGradient)value[4];
 				PulseCurve = (Curve)value[5];
 				ChaseMovement = (Curve)value[6];
-				DepthOfEffect = (DepthOfEffect)value[7];
+				DepthOfEffect = (int)value[7];
 			}
 		}
 
@@ -151,10 +147,28 @@ namespace VixenModules.EffectEditor.ChaseEffectEditor
 			set { curveTypeEditorControlChaseMovement.CurveValue = value; }
 		}
 
-		public DepthOfEffect DepthOfEffect
+		public int DepthOfEffect
 		{
-			get	{ return (DepthOfEffect)(comboBoxApplyToChildren.SelectedValue); }
-			set	{ comboBoxApplyToChildren.SelectedValue = value; }
+			get	{
+				if (radioButtonApplyToAllElements.Checked)
+					return 0;
+				else
+					return (int)numericUpDownDepthOfEffect.Value;
+			}
+			set	{
+				if (value == 0)
+					radioButtonApplyToAllElements.Checked = true;
+				else
+				{
+					radioButtonApplyToLevel.Checked = true;
+					numericUpDownDepthOfEffect.Value = value;
+				}
+			}
+		}
+
+		private void radioButtonEffectAppliesTo_CheckedChanged(object sender, EventArgs e)
+		{
+			numericUpDownDepthOfEffect.Enabled = radioButtonApplyToLevel.Checked;
 		}
 
 	}

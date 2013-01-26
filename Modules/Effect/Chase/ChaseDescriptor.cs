@@ -44,7 +44,7 @@ namespace VixenModules.Effect.Chase
 					new ParameterSpecification("Color Gradient", typeof(ColorGradient)),
 					new ParameterSpecification("Individual Pulse Curve", typeof(Curve)),
 					new ParameterSpecification("Chase Movement Curve", typeof(Curve)),
-					new ParameterSpecification("Depth of Effect", typeof(DepthOfEffect))
+					new ParameterSpecification("Depth of Effect", typeof(int))
 					);
 			}
 		}

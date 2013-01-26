@@ -27,32 +27,36 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			VixenModules.App.Curves.Curve curve7 = new VixenModules.App.Curves.Curve();
-			VixenModules.App.Curves.Curve curve8 = new VixenModules.App.Curves.Curve();
-			VixenModules.App.ColorGradients.ColorGradient colorGradient4 = new VixenModules.App.ColorGradients.ColorGradient();
+			VixenModules.App.Curves.Curve curve2 = new VixenModules.App.Curves.Curve();
+			VixenModules.App.Curves.Curve curve1 = new VixenModules.App.Curves.Curve();
+			VixenModules.App.ColorGradients.ColorGradient colorGradient1 = new VixenModules.App.ColorGradients.ColorGradient();
 			this.label1 = new System.Windows.Forms.Label();
-			this.curveTypeEditorControlEachPulse = new VixenModules.EffectEditor.CurveTypeEditor.CurveTypeEditorControl();
 			this.label4 = new System.Windows.Forms.Label();
 			this.numericUpDownPulseTimeOverlap = new System.Windows.Forms.NumericUpDown();
 			this.label2 = new System.Windows.Forms.Label();
-			this.curveTypeEditorControlChaseMovement = new VixenModules.EffectEditor.CurveTypeEditor.CurveTypeEditorControl();
-			this.levelTypeEditorControlDefaultLevel = new VixenModules.EffectEditor.LevelTypeEditor.LevelTypeEditorControl();
 			this.groupBoxPulse = new System.Windows.Forms.GroupBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.radioButtonGradientAcrossItems = new System.Windows.Forms.RadioButton();
 			this.radioButtonStaticColor = new System.Windows.Forms.RadioButton();
-			this.colorTypeEditorControlStaticColor = new VixenModules.EffectEditor.ColorTypeEditor.ColorTypeEditorControl();
 			this.groupBoxColor = new System.Windows.Forms.GroupBox();
 			this.label7 = new System.Windows.Forms.Label();
 			this.radioButtonGradientIndividual = new System.Windows.Forms.RadioButton();
-			this.colorGradientTypeEditorControlGradient = new VixenModules.EffectEditor.ColorGradientTypeEditor.ColorGradientTypeEditorControl();
 			this.radioButtonGradientOverWhole = new System.Windows.Forms.RadioButton();
 			this.label5 = new System.Windows.Forms.Label();
-			this.comboBoxApplyToChildren = new System.Windows.Forms.ComboBox();
-			this.label6 = new System.Windows.Forms.Label();
+			this.radioButtonApplyToAllElements = new System.Windows.Forms.RadioButton();
+			this.radioButtonApplyToLevel = new System.Windows.Forms.RadioButton();
+			this.groupByDepthOfEffect = new System.Windows.Forms.GroupBox();
+			this.curveTypeEditorControlChaseMovement = new VixenModules.EffectEditor.CurveTypeEditor.CurveTypeEditorControl();
+			this.levelTypeEditorControlDefaultLevel = new VixenModules.EffectEditor.LevelTypeEditor.LevelTypeEditorControl();
+			this.curveTypeEditorControlEachPulse = new VixenModules.EffectEditor.CurveTypeEditor.CurveTypeEditorControl();
+			this.colorTypeEditorControlStaticColor = new VixenModules.EffectEditor.ColorTypeEditor.ColorTypeEditorControl();
+			this.colorGradientTypeEditorControlGradient = new VixenModules.EffectEditor.ColorGradientTypeEditor.ColorGradientTypeEditorControl();
+			this.numericUpDownDepthOfEffect = new System.Windows.Forms.NumericUpDown();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPulseTimeOverlap)).BeginInit();
 			this.groupBoxPulse.SuspendLayout();
 			this.groupBoxColor.SuspendLayout();
+			this.groupByDepthOfEffect.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDownDepthOfEffect)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -63,19 +67,6 @@
 			this.label1.Size = new System.Drawing.Size(89, 13);
 			this.label1.TabIndex = 15;
 			this.label1.Text = "Individual Pulses:";
-			// 
-			// curveTypeEditorControlEachPulse
-			// 
-			curve7.IsCurrentLibraryCurve = false;
-			curve7.LibraryReferenceName = "";
-			this.curveTypeEditorControlEachPulse.CurveValue = curve7;
-			this.curveTypeEditorControlEachPulse.EffectParameterValues = new object[] {
-        ((object)(curve7))};
-			this.curveTypeEditorControlEachPulse.Location = new System.Drawing.Point(105, 23);
-			this.curveTypeEditorControlEachPulse.Name = "curveTypeEditorControlEachPulse";
-			this.curveTypeEditorControlEachPulse.Size = new System.Drawing.Size(150, 80);
-			this.curveTypeEditorControlEachPulse.TabIndex = 14;
-			this.curveTypeEditorControlEachPulse.TargetEffect = null;
 			// 
 			// label4
 			// 
@@ -122,30 +113,6 @@
 			this.label2.TabIndex = 18;
 			this.label2.Text = "Default level:";
 			// 
-			// curveTypeEditorControlChaseMovement
-			// 
-			curve8.IsCurrentLibraryCurve = false;
-			curve8.LibraryReferenceName = "";
-			this.curveTypeEditorControlChaseMovement.CurveValue = curve8;
-			this.curveTypeEditorControlChaseMovement.EffectParameterValues = new object[] {
-        ((object)(curve8))};
-			this.curveTypeEditorControlChaseMovement.Location = new System.Drawing.Point(108, 3);
-			this.curveTypeEditorControlChaseMovement.Name = "curveTypeEditorControlChaseMovement";
-			this.curveTypeEditorControlChaseMovement.Size = new System.Drawing.Size(150, 80);
-			this.curveTypeEditorControlChaseMovement.TabIndex = 17;
-			this.curveTypeEditorControlChaseMovement.TargetEffect = null;
-			// 
-			// levelTypeEditorControlDefaultLevel
-			// 
-			this.levelTypeEditorControlDefaultLevel.EffectParameterValues = new object[] {
-        ((object)(1D))};
-			this.levelTypeEditorControlDefaultLevel.LevelValue = 1D;
-			this.levelTypeEditorControlDefaultLevel.Location = new System.Drawing.Point(399, 214);
-			this.levelTypeEditorControlDefaultLevel.Name = "levelTypeEditorControlDefaultLevel";
-			this.levelTypeEditorControlDefaultLevel.Size = new System.Drawing.Size(90, 39);
-			this.levelTypeEditorControlDefaultLevel.TabIndex = 16;
-			this.levelTypeEditorControlDefaultLevel.TargetEffect = null;
-			// 
 			// groupBoxPulse
 			// 
 			this.groupBoxPulse.Controls.Add(this.label3);
@@ -190,17 +157,6 @@
 			this.radioButtonStaticColor.Text = "Static Color:";
 			this.radioButtonStaticColor.UseVisualStyleBackColor = true;
 			// 
-			// colorTypeEditorControlStaticColor
-			// 
-			this.colorTypeEditorControlStaticColor.ColorValue = System.Drawing.Color.Empty;
-			this.colorTypeEditorControlStaticColor.EffectParameterValues = new object[] {
-        ((object)(System.Drawing.Color.Empty))};
-			this.colorTypeEditorControlStaticColor.Location = new System.Drawing.Point(94, 20);
-			this.colorTypeEditorControlStaticColor.Name = "colorTypeEditorControlStaticColor";
-			this.colorTypeEditorControlStaticColor.Size = new System.Drawing.Size(40, 40);
-			this.colorTypeEditorControlStaticColor.TabIndex = 8;
-			this.colorTypeEditorControlStaticColor.TargetEffect = null;
-			// 
 			// groupBoxColor
 			// 
 			this.groupBoxColor.Controls.Add(this.radioButtonGradientAcrossItems);
@@ -237,21 +193,6 @@
 			this.radioButtonGradientIndividual.Text = "Each individual pulse uses the entire gradient.";
 			this.radioButtonGradientIndividual.UseVisualStyleBackColor = true;
 			// 
-			// colorGradientTypeEditorControlGradient
-			// 
-			colorGradient4.Gammacorrected = false;
-			colorGradient4.IsCurrentLibraryGradient = false;
-			colorGradient4.LibraryReferenceName = "";
-			colorGradient4.Title = null;
-			this.colorGradientTypeEditorControlGradient.ColorGradientValue = colorGradient4;
-			this.colorGradientTypeEditorControlGradient.EffectParameterValues = new object[] {
-        ((object)(colorGradient4))};
-			this.colorGradientTypeEditorControlGradient.Location = new System.Drawing.Point(94, 152);
-			this.colorGradientTypeEditorControlGradient.Name = "colorGradientTypeEditorControlGradient";
-			this.colorGradientTypeEditorControlGradient.Size = new System.Drawing.Size(100, 40);
-			this.colorGradientTypeEditorControlGradient.TabIndex = 1;
-			this.colorGradientTypeEditorControlGradient.TargetEffect = null;
-			// 
 			// radioButtonGradientOverWhole
 			// 
 			this.radioButtonGradientOverWhole.AutoSize = true;
@@ -273,30 +214,132 @@
 			this.label5.TabIndex = 21;
 			this.label5.Text = "(non-active channels)";
 			// 
-			// comboBoxApplyToChildren
+			// radioButtonApplyToAllElements
 			// 
-			this.comboBoxApplyToChildren.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxApplyToChildren.FormattingEnabled = true;
-			this.comboBoxApplyToChildren.Location = new System.Drawing.Point(108, 259);
-			this.comboBoxApplyToChildren.Name = "comboBoxApplyToChildren";
-			this.comboBoxApplyToChildren.Size = new System.Drawing.Size(163, 21);
-			this.comboBoxApplyToChildren.TabIndex = 22;
+			this.radioButtonApplyToAllElements.AutoSize = true;
+			this.radioButtonApplyToAllElements.Location = new System.Drawing.Point(6, 21);
+			this.radioButtonApplyToAllElements.Name = "radioButtonApplyToAllElements";
+			this.radioButtonApplyToAllElements.Size = new System.Drawing.Size(82, 17);
+			this.radioButtonApplyToAllElements.TabIndex = 24;
+			this.radioButtonApplyToAllElements.TabStop = true;
+			this.radioButtonApplyToAllElements.Text = "All Elements";
+			this.radioButtonApplyToAllElements.UseVisualStyleBackColor = true;
+			this.radioButtonApplyToAllElements.CheckedChanged += new System.EventHandler(this.radioButtonEffectAppliesTo_CheckedChanged);
 			// 
-			// label6
+			// radioButtonApplyToLevel
 			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(22, 262);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(80, 13);
-			this.label6.TabIndex = 23;
-			this.label6.Text = "Apply chase to:";
+			this.radioButtonApplyToLevel.AutoSize = true;
+			this.radioButtonApplyToLevel.Location = new System.Drawing.Point(6, 43);
+			this.radioButtonApplyToLevel.Name = "radioButtonApplyToLevel";
+			this.radioButtonApplyToLevel.Size = new System.Drawing.Size(218, 17);
+			this.radioButtonApplyToLevel.TabIndex = 25;
+			this.radioButtonApplyToLevel.TabStop = true;
+			this.radioButtonApplyToLevel.Text = "Only Groups/Elements nested this deep: ";
+			this.radioButtonApplyToLevel.UseVisualStyleBackColor = true;
+			this.radioButtonApplyToLevel.CheckedChanged += new System.EventHandler(this.radioButtonEffectAppliesTo_CheckedChanged);
+			// 
+			// groupByDepthOfEffect
+			// 
+			this.groupByDepthOfEffect.Controls.Add(this.numericUpDownDepthOfEffect);
+			this.groupByDepthOfEffect.Controls.Add(this.radioButtonApplyToAllElements);
+			this.groupByDepthOfEffect.Controls.Add(this.radioButtonApplyToLevel);
+			this.groupByDepthOfEffect.Location = new System.Drawing.Point(3, 262);
+			this.groupByDepthOfEffect.Name = "groupByDepthOfEffect";
+			this.groupByDepthOfEffect.Size = new System.Drawing.Size(268, 74);
+			this.groupByDepthOfEffect.TabIndex = 26;
+			this.groupByDepthOfEffect.TabStop = false;
+			this.groupByDepthOfEffect.Text = "Effect Applies To";
+			// 
+			// curveTypeEditorControlChaseMovement
+			// 
+			curve2.IsCurrentLibraryCurve = false;
+			curve2.LibraryReferenceName = "";
+			this.curveTypeEditorControlChaseMovement.CurveValue = curve2;
+			this.curveTypeEditorControlChaseMovement.EffectParameterValues = new object[] {
+        ((object)(curve2))};
+			this.curveTypeEditorControlChaseMovement.Location = new System.Drawing.Point(108, 3);
+			this.curveTypeEditorControlChaseMovement.Name = "curveTypeEditorControlChaseMovement";
+			this.curveTypeEditorControlChaseMovement.Size = new System.Drawing.Size(150, 80);
+			this.curveTypeEditorControlChaseMovement.TabIndex = 17;
+			this.curveTypeEditorControlChaseMovement.TargetEffect = null;
+			// 
+			// levelTypeEditorControlDefaultLevel
+			// 
+			this.levelTypeEditorControlDefaultLevel.EffectParameterValues = new object[] {
+        ((object)(1D))};
+			this.levelTypeEditorControlDefaultLevel.LevelValue = 1D;
+			this.levelTypeEditorControlDefaultLevel.Location = new System.Drawing.Point(399, 214);
+			this.levelTypeEditorControlDefaultLevel.Name = "levelTypeEditorControlDefaultLevel";
+			this.levelTypeEditorControlDefaultLevel.Size = new System.Drawing.Size(90, 39);
+			this.levelTypeEditorControlDefaultLevel.TabIndex = 16;
+			this.levelTypeEditorControlDefaultLevel.TargetEffect = null;
+			// 
+			// curveTypeEditorControlEachPulse
+			// 
+			curve1.IsCurrentLibraryCurve = false;
+			curve1.LibraryReferenceName = "";
+			this.curveTypeEditorControlEachPulse.CurveValue = curve1;
+			this.curveTypeEditorControlEachPulse.EffectParameterValues = new object[] {
+        ((object)(curve1))};
+			this.curveTypeEditorControlEachPulse.Location = new System.Drawing.Point(105, 23);
+			this.curveTypeEditorControlEachPulse.Name = "curveTypeEditorControlEachPulse";
+			this.curveTypeEditorControlEachPulse.Size = new System.Drawing.Size(150, 80);
+			this.curveTypeEditorControlEachPulse.TabIndex = 14;
+			this.curveTypeEditorControlEachPulse.TargetEffect = null;
+			// 
+			// colorTypeEditorControlStaticColor
+			// 
+			this.colorTypeEditorControlStaticColor.ColorValue = System.Drawing.Color.Empty;
+			this.colorTypeEditorControlStaticColor.EffectParameterValues = new object[] {
+        ((object)(System.Drawing.Color.Empty))};
+			this.colorTypeEditorControlStaticColor.Location = new System.Drawing.Point(94, 20);
+			this.colorTypeEditorControlStaticColor.Name = "colorTypeEditorControlStaticColor";
+			this.colorTypeEditorControlStaticColor.Size = new System.Drawing.Size(40, 40);
+			this.colorTypeEditorControlStaticColor.TabIndex = 8;
+			this.colorTypeEditorControlStaticColor.TargetEffect = null;
+			// 
+			// colorGradientTypeEditorControlGradient
+			// 
+			colorGradient1.Gammacorrected = false;
+			colorGradient1.IsCurrentLibraryGradient = false;
+			colorGradient1.LibraryReferenceName = "";
+			colorGradient1.Title = null;
+			this.colorGradientTypeEditorControlGradient.ColorGradientValue = colorGradient1;
+			this.colorGradientTypeEditorControlGradient.EffectParameterValues = new object[] {
+        ((object)(colorGradient1))};
+			this.colorGradientTypeEditorControlGradient.Location = new System.Drawing.Point(94, 152);
+			this.colorGradientTypeEditorControlGradient.Name = "colorGradientTypeEditorControlGradient";
+			this.colorGradientTypeEditorControlGradient.Size = new System.Drawing.Size(100, 40);
+			this.colorGradientTypeEditorControlGradient.TabIndex = 1;
+			this.colorGradientTypeEditorControlGradient.TargetEffect = null;
+			// 
+			// numericUpDownDepthOfEffect
+			// 
+			this.numericUpDownDepthOfEffect.Location = new System.Drawing.Point(220, 43);
+			this.numericUpDownDepthOfEffect.Maximum = new decimal(new int[] {
+            99,
+            0,
+            0,
+            0});
+			this.numericUpDownDepthOfEffect.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.numericUpDownDepthOfEffect.Name = "numericUpDownDepthOfEffect";
+			this.numericUpDownDepthOfEffect.Size = new System.Drawing.Size(42, 20);
+			this.numericUpDownDepthOfEffect.TabIndex = 26;
+			this.numericUpDownDepthOfEffect.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
 			// 
 			// ChaseEffectEditorControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.label6);
-			this.Controls.Add(this.comboBoxApplyToChildren);
+			this.Controls.Add(this.groupByDepthOfEffect);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.curveTypeEditorControlChaseMovement);
@@ -305,12 +348,15 @@
 			this.Controls.Add(this.groupBoxColor);
 			this.Controls.Add(this.label5);
 			this.Name = "ChaseEffectEditorControl";
-			this.Size = new System.Drawing.Size(579, 292);
+			this.Size = new System.Drawing.Size(579, 342);
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPulseTimeOverlap)).EndInit();
 			this.groupBoxPulse.ResumeLayout(false);
 			this.groupBoxPulse.PerformLayout();
 			this.groupBoxColor.ResumeLayout(false);
 			this.groupBoxColor.PerformLayout();
+			this.groupByDepthOfEffect.ResumeLayout(false);
+			this.groupByDepthOfEffect.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDownDepthOfEffect)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -336,7 +382,9 @@
 		private System.Windows.Forms.RadioButton radioButtonGradientOverWhole;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ComboBox comboBoxApplyToChildren;
-        private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.RadioButton radioButtonApplyToAllElements;
+		private System.Windows.Forms.RadioButton radioButtonApplyToLevel;
+		private System.Windows.Forms.GroupBox groupByDepthOfEffect;
+		private System.Windows.Forms.NumericUpDown numericUpDownDepthOfEffect;
 	}
 }

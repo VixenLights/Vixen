@@ -50,7 +50,7 @@ namespace VixenModules.Effect.Spin
 		public bool ReverseSpin { get; set; }
 
 		[DataMember]
-		public DepthOfEffect DepthOfEffect { get; set; }
+		public int DepthOfEffect { get; set; }
 
 		public SpinData()
 		{
@@ -67,7 +67,7 @@ namespace VixenModules.Effect.Spin
 			ColorGradient = new ColorGradient();
 			PulseCurve = new Curve();
 			ReverseSpin = false;
-			DepthOfEffect = Effect.Spin.DepthOfEffect.LeafElements;
+			DepthOfEffect = 0;
 		}
 
 		public override IModuleDataModel Clone()
@@ -111,17 +111,5 @@ namespace VixenModules.Effect.Spin
 		GradientThroughWholeEffect,
 		GradientForEachPulse,
 		ColorAcrossItems
-	}
-
-	public enum DepthOfEffect
-	{
-		// Since LeafElements comes first, it ends up being the default if it doesn't currently exist in the serialized data
-		//(If a different default is desired, see http://msdn.microsoft.com/en-us/library/ms733734.aspx)
-		[Description("Leaf Elements")]
-		LeafElements,
-		[Description("Children (1 level deep)")]
-		Children,
-		[Description("Grandchildren (2 levels deep)")]
-		Grandchildren
 	}
 }

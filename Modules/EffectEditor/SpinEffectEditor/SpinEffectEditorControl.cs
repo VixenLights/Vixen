@@ -20,10 +20,6 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 		public SpinEffectEditorControl()
 		{
 			InitializeComponent();
-
-			comboBoxApplyToChildren.DataSource = typeof(DepthOfEffect).ToKeyValuePairs();
-			comboBoxApplyToChildren.DisplayMember = "Value";
-			comboBoxApplyToChildren.ValueMember = "Key";
 		}
 
 		IEffect _targetEffect;
@@ -72,7 +68,7 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 				ColorGradient = (ColorGradient)value[10];
 				PulseCurve = (Curve)value[11];
 				ReverseSpin = (bool)value[12];
-				DepthOfEffect = (DepthOfEffect)value[13];
+				DepthOfEffect = (int)value[13];
 
 				// set these last: setting them results in some of the other values being auto-calculated on the form.
 				SpeedFormat = (SpinSpeedFormat)value[0];
@@ -279,10 +275,25 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 			set { checkBoxReverse.Checked = value; }
 		}
 
-		public DepthOfEffect DepthOfEffect
+		public int DepthOfEffect
 		{
-			get { return (DepthOfEffect)(comboBoxApplyToChildren.SelectedValue); }
-			set { comboBoxApplyToChildren.SelectedValue = value; }
+			get
+			{
+				if (radioButtonApplyToAllElements.Checked)
+					return 0;
+				else
+					return (int)numericUpDownDepthOfEffect.Value;
+			}
+			set
+			{
+				if (value == 0)
+					radioButtonApplyToAllElements.Checked = true;
+				else
+				{
+					radioButtonApplyToLevel.Checked = true;
+					numericUpDownDepthOfEffect.Value = value;
+				}
+			}
 		}
 
 		private void radioButtonRevolutionItem_CheckedChanged(object sender, EventArgs e)
@@ -388,6 +399,11 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 		private void SpinEffectEditorControl_Load(object sender, EventArgs e)
 		{
 			RecalculateValues();
+		}
+
+		private void radioButtonEffectAppliesTo_CheckedChanged(object sender, EventArgs e)
+		{
+			numericUpDownDepthOfEffect.Enabled = radioButtonApplyToLevel.Checked;
 		}
 	}
 }

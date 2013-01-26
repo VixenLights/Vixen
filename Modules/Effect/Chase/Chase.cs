@@ -111,7 +111,7 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		public DepthOfEffect DepthOfEffect
+		public int DepthOfEffect
 		{
 			get { return _data.DepthOfEffect; }
 			set { _data.DepthOfEffect = value; IsDirty = true; }
@@ -216,29 +216,28 @@ namespace VixenModules.Effect.Chase
 
 		private List<ChannelNode> GetNodesToRenderOn()
 		{
-			List<ChannelNode> renderNodes = null;
+			IEnumerable<ChannelNode> renderNodes = null;
 
-			switch (DepthOfEffect)
+			if (DepthOfEffect == 0)
 			{
-				case Effect.Chase.DepthOfEffect.Children:
-					renderNodes = TargetNodes.SelectMany(x => x.Children).ToList();
-					break;
+				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).ToList();
+			}
+			else
+			{
+				renderNodes = TargetNodes;
+				for (int i = 0; i < DepthOfEffect; i++)
+				{
+					renderNodes = renderNodes.SelectMany(x => x.Children);
+				}
 
-				case Effect.Chase.DepthOfEffect.Grandchildren:
-					renderNodes = TargetNodes.SelectMany(x => x.Children.SelectMany(y => y.Children)).ToList();
-					break;
-
-				case Effect.Chase.DepthOfEffect.LeafElements:
-					renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).ToList();
-					break;
 			}
 
-			// If the given DepthOfEffect results in 0 nodes (perhaps Children or Grandchildren go "too deep" and miss all nodes), 
+			// If the given DepthOfEffect results in no nodes (because it goes "too deep" and misses all nodes), 
 			// then we'll default to the LeafElements, which will at least return 1 element (the TargetNode)
-			if (renderNodes.Count == 0)
-				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).ToList();
+			if (!renderNodes.Any())
+				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator());
 
-			return renderNodes;
+			return renderNodes.ToList();
 		}
 
 
