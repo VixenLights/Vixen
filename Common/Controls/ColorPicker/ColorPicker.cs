@@ -44,6 +44,10 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		private System.Windows.Forms.MenuItem ctxPrevColor;
 		private System.Windows.Forms.MenuItem ctxCopy;
 		private ToolTip toolTip;
+		private GroupBox quickPickBox;
+		private Button blueButton;
+		private Button greenButton;
+		private Button redButton;
 		private IContainer components;
 
 		public ColorPicker():this(Mode.HSV_RGB,Fader.HSV_H){}
@@ -115,9 +119,14 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			this.lblSecond_2 = new System.Windows.Forms.Label();
 			this.lblSecond_3 = new System.Windows.Forms.Label();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+			this.quickPickBox = new System.Windows.Forms.GroupBox();
+			this.blueButton = new System.Windows.Forms.Button();
+			this.greenButton = new System.Windows.Forms.Button();
+			this.redButton = new System.Windows.Forms.Button();
 			this.lblColorOut = new Common.Controls.ColorManagement.ColorPicker.ColorLabel();
 			this.colorSelectionFader1 = new Common.Controls.ColorManagement.ColorPicker.ColorSelectionFader();
 			this.colorSelectionPlane1 = new Common.Controls.ColorManagement.ColorPicker.ColorSelectionPlane();
+			this.quickPickBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -296,6 +305,39 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			this.toolTip.InitialDelay = 1000;
 			this.toolTip.ReshowDelay = 200;
 			// 
+			// quickPickBox
+			// 
+			this.quickPickBox.Controls.Add(this.blueButton);
+			this.quickPickBox.Controls.Add(this.greenButton);
+			this.quickPickBox.Controls.Add(this.redButton);
+			resources.ApplyResources(this.quickPickBox, "quickPickBox");
+			this.quickPickBox.Name = "quickPickBox";
+			this.quickPickBox.TabStop = false;
+			// 
+			// blueButton
+			// 
+			this.blueButton.BackColor = System.Drawing.Color.Blue;
+			resources.ApplyResources(this.blueButton, "blueButton");
+			this.blueButton.Name = "blueButton";
+			this.blueButton.UseVisualStyleBackColor = false;
+			this.blueButton.Click += new System.EventHandler(this.blueButton_Click);
+			// 
+			// greenButton
+			// 
+			this.greenButton.BackColor = System.Drawing.Color.Green;
+			resources.ApplyResources(this.greenButton, "greenButton");
+			this.greenButton.Name = "greenButton";
+			this.greenButton.UseVisualStyleBackColor = false;
+			this.greenButton.Click += new System.EventHandler(this.greenButton_Click);
+			// 
+			// redButton
+			// 
+			this.redButton.BackColor = System.Drawing.Color.Red;
+			resources.ApplyResources(this.redButton, "redButton");
+			this.redButton.Name = "redButton";
+			this.redButton.UseVisualStyleBackColor = false;
+			this.redButton.Click += new System.EventHandler(this.redButton_Click);
+			// 
 			// lblColorOut
 			// 
 			resources.ApplyResources(this.lblColorOut, "lblColorOut");
@@ -325,6 +367,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			this.AcceptButton = this.btnOK;
 			resources.ApplyResources(this, "$this");
 			this.CancelButton = this.btnCancel;
+			this.Controls.Add(this.quickPickBox);
 			this.Controls.Add(this.lblColorOut);
 			this.Controls.Add(this.lblHSV_H);
 			this.Controls.Add(this.tbSecond_3);
@@ -354,6 +397,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			this.MinimizeBox = false;
 			this.Name = "ColorPicker";
 			this.ShowInTaskbar = false;
+			this.quickPickBox.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -775,6 +819,25 @@ namespace Common.Controls.ColorManagement.ColorPicker
 		{
 			colorSelectionPlane1.Refresh();
 			colorSelectionFader1.Refresh();
+		}
+
+		private void redButton_Click(object sender, EventArgs e)
+		{
+			InternalColor = XYZ.FromRGB(new RGB(255, 0, 0));
+			lblColorOut.Color = InternalColor.ToRGB();
+			UpdatetbValue(null);
+		}
+		private void greenButton_Click(object sender, EventArgs e)
+		{
+			InternalColor = XYZ.FromRGB(new RGB(0, 255, 0));
+			lblColorOut.Color = InternalColor.ToRGB();
+			UpdatetbValue(null);
+		}
+		private void blueButton_Click(object sender, EventArgs e)
+		{
+			InternalColor = XYZ.FromRGB(new RGB(0, 0, 255));
+			lblColorOut.Color = InternalColor.ToRGB();
+			UpdatetbValue(null);
 		}
 	}
 }
