@@ -27,8 +27,8 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			VixenModules.App.ColorGradients.ColorGradient colorGradient2 = new VixenModules.App.ColorGradients.ColorGradient();
-			VixenModules.App.Curves.Curve curve2 = new VixenModules.App.Curves.Curve();
+			VixenModules.App.ColorGradients.ColorGradient colorGradient5 = new VixenModules.App.ColorGradients.ColorGradient();
+			VixenModules.App.Curves.Curve curve5 = new VixenModules.App.Curves.Curve();
 			this.groupBoxColor = new System.Windows.Forms.GroupBox();
 			this.radioButtonGradientAcrossItems = new System.Windows.Forms.RadioButton();
 			this.colorTypeEditorControlStaticColor = new VixenModules.EffectEditor.ColorTypeEditor.ColorTypeEditorControl();
@@ -55,6 +55,10 @@
 			this.levelTypeEditorControlDefaultLevel = new VixenModules.EffectEditor.LevelTypeEditor.LevelTypeEditorControl();
 			this.label2 = new System.Windows.Forms.Label();
 			this.checkBoxReverse = new System.Windows.Forms.CheckBox();
+			this.groupByDepthOfEffect = new System.Windows.Forms.GroupBox();
+			this.numericUpDownDepthOfEffect = new System.Windows.Forms.NumericUpDown();
+			this.radioButtonApplyToAllElements = new System.Windows.Forms.RadioButton();
+			this.radioButtonApplyToLevel = new System.Windows.Forms.RadioButton();
 			this.groupBoxColor.SuspendLayout();
 			this.groupBoxSpeed.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownRevolutionCount)).BeginInit();
@@ -63,6 +67,8 @@
 			this.groupBoxPulse.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPulsePercentage)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPulseTime)).BeginInit();
+			this.groupByDepthOfEffect.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDownDepthOfEffect)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// groupBoxColor
@@ -136,13 +142,13 @@
 			// 
 			// colorGradientTypeEditorControlGradient
 			// 
-			colorGradient2.Gammacorrected = false;
-			colorGradient2.IsCurrentLibraryGradient = false;
-			colorGradient2.LibraryReferenceName = "";
-			colorGradient2.Title = null;
-			this.colorGradientTypeEditorControlGradient.ColorGradientValue = colorGradient2;
+			colorGradient5.Gammacorrected = false;
+			colorGradient5.IsCurrentLibraryGradient = false;
+			colorGradient5.LibraryReferenceName = "";
+			colorGradient5.Title = null;
+			this.colorGradientTypeEditorControlGradient.ColorGradientValue = colorGradient5;
 			this.colorGradientTypeEditorControlGradient.EffectParameterValues = new object[] {
-        ((object)(colorGradient2))};
+        ((object)(colorGradient5))};
 			this.colorGradientTypeEditorControlGradient.Location = new System.Drawing.Point(94, 152);
 			this.colorGradientTypeEditorControlGradient.Name = "colorGradientTypeEditorControlGradient";
 			this.colorGradientTypeEditorControlGradient.Size = new System.Drawing.Size(100, 40);
@@ -158,7 +164,7 @@
 			this.radioButtonGradientOverWhole.TabIndex = 0;
 			this.radioButtonGradientOverWhole.TabStop = true;
 			this.radioButtonGradientOverWhole.Text = "The gradient is shown over the whole effect.\r\nAll channels display the same color" +
-				" at a given time.";
+    " at a given time.";
 			this.radioButtonGradientOverWhole.UseVisualStyleBackColor = true;
 			// 
 			// groupBoxSpeed
@@ -315,11 +321,11 @@
 			// 
 			// curveTypeEditorControlEachPulse
 			// 
-			curve2.IsCurrentLibraryCurve = false;
-			curve2.LibraryReferenceName = "";
-			this.curveTypeEditorControlEachPulse.CurveValue = curve2;
+			curve5.IsCurrentLibraryCurve = false;
+			curve5.LibraryReferenceName = "";
+			this.curveTypeEditorControlEachPulse.CurveValue = curve5;
 			this.curveTypeEditorControlEachPulse.EffectParameterValues = new object[] {
-        ((object)(curve2))};
+        ((object)(curve5))};
 			this.curveTypeEditorControlEachPulse.Location = new System.Drawing.Point(118, 94);
 			this.curveTypeEditorControlEachPulse.Name = "curveTypeEditorControlEachPulse";
 			this.curveTypeEditorControlEachPulse.Size = new System.Drawing.Size(150, 80);
@@ -415,6 +421,9 @@
 			// 
 			// levelTypeEditorControlDefaultLevel
 			// 
+			this.levelTypeEditorControlDefaultLevel.EffectParameterValues = new object[] {
+        ((object)(1D))};
+			this.levelTypeEditorControlDefaultLevel.LevelValue = 1D;
 			this.levelTypeEditorControlDefaultLevel.Location = new System.Drawing.Point(477, 214);
 			this.levelTypeEditorControlDefaultLevel.Name = "levelTypeEditorControlDefaultLevel";
 			this.levelTypeEditorControlDefaultLevel.Size = new System.Drawing.Size(90, 39);
@@ -440,10 +449,69 @@
 			this.checkBoxReverse.Text = "Spin in reverse";
 			this.checkBoxReverse.UseVisualStyleBackColor = true;
 			// 
+			// groupByDepthOfEffect
+			// 
+			this.groupByDepthOfEffect.Controls.Add(this.numericUpDownDepthOfEffect);
+			this.groupByDepthOfEffect.Controls.Add(this.radioButtonApplyToAllElements);
+			this.groupByDepthOfEffect.Controls.Add(this.radioButtonApplyToLevel);
+			this.groupByDepthOfEffect.Location = new System.Drawing.Point(3, 311);
+			this.groupByDepthOfEffect.Name = "groupByDepthOfEffect";
+			this.groupByDepthOfEffect.Size = new System.Drawing.Size(298, 74);
+			this.groupByDepthOfEffect.TabIndex = 27;
+			this.groupByDepthOfEffect.TabStop = false;
+			this.groupByDepthOfEffect.Text = "Effect Applies To";
+			// 
+			// numericUpDownDepthOfEffect
+			// 
+			this.numericUpDownDepthOfEffect.Location = new System.Drawing.Point(230, 43);
+			this.numericUpDownDepthOfEffect.Maximum = new decimal(new int[] {
+            99,
+            0,
+            0,
+            0});
+			this.numericUpDownDepthOfEffect.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.numericUpDownDepthOfEffect.Name = "numericUpDownDepthOfEffect";
+			this.numericUpDownDepthOfEffect.Size = new System.Drawing.Size(42, 20);
+			this.numericUpDownDepthOfEffect.TabIndex = 26;
+			this.numericUpDownDepthOfEffect.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			// 
+			// radioButtonApplyToAllElements
+			// 
+			this.radioButtonApplyToAllElements.AutoSize = true;
+			this.radioButtonApplyToAllElements.Location = new System.Drawing.Point(16, 20);
+			this.radioButtonApplyToAllElements.Name = "radioButtonApplyToAllElements";
+			this.radioButtonApplyToAllElements.Size = new System.Drawing.Size(82, 17);
+			this.radioButtonApplyToAllElements.TabIndex = 24;
+			this.radioButtonApplyToAllElements.TabStop = true;
+			this.radioButtonApplyToAllElements.Text = "All Elements";
+			this.radioButtonApplyToAllElements.UseVisualStyleBackColor = true;
+			this.radioButtonApplyToAllElements.CheckedChanged += new System.EventHandler(this.radioButtonEffectAppliesTo_CheckedChanged);
+			// 
+			// radioButtonApplyToLevel
+			// 
+			this.radioButtonApplyToLevel.AutoSize = true;
+			this.radioButtonApplyToLevel.Location = new System.Drawing.Point(16, 43);
+			this.radioButtonApplyToLevel.Name = "radioButtonApplyToLevel";
+			this.radioButtonApplyToLevel.Size = new System.Drawing.Size(218, 17);
+			this.radioButtonApplyToLevel.TabIndex = 25;
+			this.radioButtonApplyToLevel.TabStop = true;
+			this.radioButtonApplyToLevel.Text = "Only Groups/Elements nested this deep: ";
+			this.radioButtonApplyToLevel.UseVisualStyleBackColor = true;
+			this.radioButtonApplyToLevel.CheckedChanged += new System.EventHandler(this.radioButtonEffectAppliesTo_CheckedChanged);
+			// 
 			// SpinEffectEditorControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.groupByDepthOfEffect);
 			this.Controls.Add(this.checkBoxReverse);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.levelTypeEditorControlDefaultLevel);
@@ -451,7 +519,7 @@
 			this.Controls.Add(this.groupBoxSpeed);
 			this.Controls.Add(this.groupBoxPulse);
 			this.Name = "SpinEffectEditorControl";
-			this.Size = new System.Drawing.Size(606, 310);
+			this.Size = new System.Drawing.Size(606, 392);
 			this.Load += new System.EventHandler(this.SpinEffectEditorControl_Load);
 			this.groupBoxColor.ResumeLayout(false);
 			this.groupBoxColor.PerformLayout();
@@ -464,6 +532,9 @@
 			this.groupBoxPulse.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPulsePercentage)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownPulseTime)).EndInit();
+			this.groupByDepthOfEffect.ResumeLayout(false);
+			this.groupByDepthOfEffect.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numericUpDownDepthOfEffect)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -497,5 +568,9 @@
 		private LevelTypeEditor.LevelTypeEditorControl levelTypeEditorControlDefaultLevel;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.CheckBox checkBoxReverse;
+		private System.Windows.Forms.GroupBox groupByDepthOfEffect;
+		private System.Windows.Forms.NumericUpDown numericUpDownDepthOfEffect;
+		private System.Windows.Forms.RadioButton radioButtonApplyToAllElements;
+		private System.Windows.Forms.RadioButton radioButtonApplyToLevel;
 	}
 }

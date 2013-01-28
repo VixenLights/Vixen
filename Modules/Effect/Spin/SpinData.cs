@@ -3,6 +3,7 @@ using System.Drawing;
 using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
+using System.ComponentModel;
 
 namespace VixenModules.Effect.Spin
 {
@@ -48,6 +49,8 @@ namespace VixenModules.Effect.Spin
 		[DataMember]
 		public bool ReverseSpin { get; set; }
 
+		[DataMember]
+		public int DepthOfEffect { get; set; }
 
 		public SpinData()
 		{
@@ -64,6 +67,7 @@ namespace VixenModules.Effect.Spin
 			ColorGradient = new ColorGradient();
 			PulseCurve = new Curve();
 			ReverseSpin = false;
+			DepthOfEffect = 0;
 		}
 
 		public override IModuleDataModel Clone()
@@ -82,6 +86,7 @@ namespace VixenModules.Effect.Spin
 			result.ColorGradient = new ColorGradient(ColorGradient);
 			result.PulseCurve = new Curve(PulseCurve);
 			result.ReverseSpin = ReverseSpin;
+			result.DepthOfEffect = DepthOfEffect;
 			return result;
 		}
 	}
