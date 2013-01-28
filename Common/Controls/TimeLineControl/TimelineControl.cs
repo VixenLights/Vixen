@@ -486,6 +486,7 @@ namespace Common.Controls.Timeline
 		private void GridScrollVerticalHandler(object sender, EventArgs e)
 		{
 			if (timelineRowList != null)
+				timelineRowList.Top = grid.Top;
 				timelineRowList.VerticalOffset = grid.VerticalOffset;
 
 			// I know it's bad to do this, but when we scroll we can get very nasty artifacts
