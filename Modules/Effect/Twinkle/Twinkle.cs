@@ -28,7 +28,7 @@ namespace VixenModules.Effect.Twinkle
 		{
 			_channelData = new EffectIntents();
 
-			IEnumerable<ChannelNode> targetNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator());
+			IEnumerable<ChannelNode> targetNodes = GetNodesToRenderOn();
 
 			List<IndividualTwinkleDetails> twinkles = null;
 			if (!IndividualChannels)
@@ -38,8 +38,7 @@ namespace VixenModules.Effect.Twinkle
 			int i = 0;
 
 			foreach (ChannelNode node in targetNodes) {
-				if (!_channelData.ContainsKey(node.Channel.Id))
-					_channelData.Add(node.Channel.Id, RenderChannel(node, i++ / (double)totalNodes, twinkles));
+				_channelData.Add(RenderChannel(node, i++ / (double)totalNodes, twinkles));
 			}
 		}
 
@@ -139,7 +138,14 @@ namespace VixenModules.Effect.Twinkle
 			set { _data.ColorGradient = value; IsDirty = true; }
 		}
 
-		private IntentNodeCollection RenderChannel(ChannelNode node, double positionWithinGroup, List<IndividualTwinkleDetails> twinkles = null)
+		[Value]
+		public int DepthOfEffect
+		{
+			get { return _data.DepthOfEffect; }
+			set { _data.DepthOfEffect = value; IsDirty = true; }
+		}
+
+		private EffectIntents RenderChannel(ChannelNode node, double positionWithinGroup, List<IndividualTwinkleDetails> twinkles = null)
 		{
 			if (node == null)
 				return null;
@@ -213,7 +219,7 @@ namespace VixenModules.Effect.Twinkle
 				}
 			}
 
-			return result.GetIntentNodesForChannel(node.Channel.Id);
+			return result;
 		}
 
 
@@ -271,6 +277,32 @@ namespace VixenModules.Effect.Twinkle
 			}
 
 			return result;
+		}
+
+		private List<ChannelNode> GetNodesToRenderOn()
+		{
+			IEnumerable<ChannelNode> renderNodes = null;
+
+			if (DepthOfEffect == 0 || !IndividualChannels)
+			{
+				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).ToList();
+			}
+			else
+			{
+				renderNodes = TargetNodes;
+				for (int i = 0; i < DepthOfEffect; i++)
+				{
+					renderNodes = renderNodes.SelectMany(x => x.Children);
+				}
+
+			}
+
+			// If the given DepthOfEffect results in no nodes (because it goes "too deep" and misses all nodes), 
+			// then we'll default to the LeafElements, which will at least return 1 element (the TargetNode)
+			if (!renderNodes.Any())
+				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator());
+
+			return renderNodes.ToList();
 		}
 
 		private class IndividualTwinkleDetails
