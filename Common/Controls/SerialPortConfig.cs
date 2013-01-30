@@ -48,6 +48,16 @@ namespace Common.Controls
 			comboBoxParity.Items.AddRange(Enum.GetValues(typeof(Parity)).Cast<object>().ToArray());
 			comboBoxStopBits.Items.AddRange(Enum.GetValues(typeof(StopBits)).Cast<object>().ToArray());
 
+			//set our text value
+			if (serialPort != null)
+			{
+				configuredPortValueLabel.Text = serialPort.PortName;
+			}
+			else
+			{
+				configuredPortValueLabel.Text = "None";
+			}
+			
 			if (serialPort == null && SerialPort.GetPortNames().Count() > 0)
 			{
 				serialPort = new SerialPort(SerialPort.GetPortNames().FirstOrDefault(), 57600, Parity.None, 8, StopBits.One);
