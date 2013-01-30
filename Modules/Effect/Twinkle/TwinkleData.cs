@@ -41,6 +41,9 @@ namespace VixenModules.Effect.Twinkle
 		[DataMember]
 		public ColorGradient ColorGradient { get; set; }
 
+		[DataMember]
+		public int DepthOfEffect { get; set; }
+
 		public TwinkleData()
 		{
 			IndividualChannels = true;
@@ -53,6 +56,7 @@ namespace VixenModules.Effect.Twinkle
 			ColorHandling = TwinkleColorHandling.GradientForEachPulse;
 			StaticColor = Color.White;
 			ColorGradient = new ColorGradient();
+			DepthOfEffect = 0;
 		}
 
 		public override IModuleDataModel Clone()
@@ -68,6 +72,7 @@ namespace VixenModules.Effect.Twinkle
 			result.ColorHandling = ColorHandling;
 			result.StaticColor = StaticColor;
 			result.ColorGradient = new ColorGradient(ColorGradient);
+			result.DepthOfEffect = DepthOfEffect;
 			return result;
 		}
 	}

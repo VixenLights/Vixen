@@ -49,7 +49,8 @@ namespace VixenModules.Effect.Twinkle
 					new ParameterSpecification("Average Coverage (%)", typeof(int)),
 					new ParameterSpecification("Color Handling", typeof(TwinkleColorHandling)),
 					new ParameterSpecification("Static Color", typeof(Color)),
-					new ParameterSpecification("Color Gradient", typeof(ColorGradient))
+					new ParameterSpecification("Color Gradient", typeof(ColorGradient)),
+					new ParameterSpecification("Depth of Effect", typeof(int))
 					);
 			}
 		}
