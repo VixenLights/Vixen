@@ -41,13 +41,14 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 					AverageCoverage,
 					ColorHandling,
 					StaticColor,
-					ColorGradient
+					ColorGradient,
+					DepthOfEffect
 				};
 			}
 			set
 			{
-				if (value.Length != 10) {
-					VixenSystem.Logging.Warning("TwinkleEffectEditorControl: param vales set without 10 params.");
+				if (value.Length != 11) {
+					VixenSystem.Logging.Warning("TwinkleEffectEditorControl: param vales set without 11 params.");
 					return;
 				}
 
@@ -61,13 +62,14 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 				ColorHandling = (TwinkleColorHandling)value[7];
 				StaticColor = (Color)value[8];
 				ColorGradient = (ColorGradient)value[9];
+				DepthOfEffect = (int)value[10];
 			}
 		}
 
 		public bool IndividualChannels
 		{
-			get { return radioButtonIndividualChannels.Checked; }
-			set { if (value) radioButtonIndividualChannels.Checked = true; else radioButtonSynchronizedChannels.Checked = true; }
+			get { return radioButtonIndividualChannels.Checked || radioButtonApplyToLevel.Checked; }
+			set { UpdateChannelHandlingGroupBox(DepthOfEffect, value);  }
 		}
 
 		public double MinimumLevel
@@ -151,6 +153,40 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 		{
 			get { return colorGradientTypeEditorControlGradient.ColorGradientValue; }
 			set { colorGradientTypeEditorControlGradient.ColorGradientValue = value; }
+		}
+
+		public int DepthOfEffect
+		{
+			get
+			{
+				if (this.radioButtonIndividualChannels.Checked)
+					return 0;
+				else
+					return (int)numericUpDownDepthOfEffect.Value;
+			}
+			set
+			{
+				UpdateChannelHandlingGroupBox(value, IndividualChannels);
+			}
+		}
+
+		private void UpdateChannelHandlingGroupBox(int depthOfEffect, bool individualChannels)
+		{
+			if (depthOfEffect == 0 && individualChannels)
+				radioButtonIndividualChannels.Checked = true;
+			else if (individualChannels)
+			{
+				radioButtonApplyToLevel.Checked = true;
+				numericUpDownDepthOfEffect.Value = depthOfEffect;
+			}
+			else
+				radioButtonSynchronizedChannels.Checked = true;
+		}
+
+
+		private void radioButtonEffectAppliesTo_CheckedChanged(object sender, EventArgs e)
+		{
+			numericUpDownDepthOfEffect.Enabled = radioButtonApplyToLevel.Checked;
 		}
 	}
 }
