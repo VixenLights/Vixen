@@ -6,21 +6,84 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using VixenModules.Media.Audio;
+using System.ComponentModel;
 
 namespace Common.Controls.Timeline
 {
+	/// <summary>
+	/// Waveform visualizer class
+	/// </summary>
 	[System.ComponentModel.DesignerCategory("")]    // Prevent this from showing up in designer.
 	public sealed class Waveform : TimelineControlBase
 	{
 		private double samplesPerPixel;
 		private SampleAggregator samples = new SampleAggregator();
 		private Audio audio;
-
+		private BackgroundWorker bw;
+		/// <summary>
+		/// Creates a waveform view of the <code>Audio</code> that is associated scaled to the timeinfo.
+		/// </summary>
+		/// <param name="timeinfo"></param>
 		public Waveform(TimeInfo timeinfo)
 			:base(timeinfo)
 		{
 			BackColor = Color.Gray;
 			Visible = false;
+			bw = new BackgroundWorker();
+			bw.WorkerSupportsCancellation = true;
+			bw.DoWork += new DoWorkEventHandler(bw_createScaleSamples);
+			bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_RunWorkerCompleted);
+		}
+
+		//Create samples to scale based on the current timeline ticks period.
+		//Runs in background to keep the ui free.
+		private void bw_createScaleSamples(object sender, DoWorkEventArgs args)
+		{
+			BackgroundWorker worker = sender as BackgroundWorker;
+			if (audio == null) { return; }
+			if (!audio.MediaLoaded)
+			{
+				audio.LoadMedia(TimeSpan.MinValue);
+			}
+			samplesPerPixel = (double)pixelsToTime(1).Ticks / TimeSpan.TicksPerMillisecond * audio.Frequency / 1000;
+			int step = audio.Channels;
+			samples.Clear();
+			double samplesRead = 0;
+			while (samplesRead < audio.NumberSamples)
+			{
+				if ((worker.CancellationPending == true))
+				{
+					args.Cancel = true;
+					break;
+				}
+				int low = 0;
+				int high = 0;
+				//Might need a better way to dither the partial samples out. Casting to int rounds it out while
+				//the counter tries to maintian some sanity. A few random samples might be off at some zoom levels,
+				//but we are doing a fair amount of averaging to begin with. The farther in the zoom the more chances 
+				//a artifact might be visible.
+				byte[] waveData = audio.GetSamples((int)samplesRead, (int)samplesPerPixel);
+				samplesRead += samplesPerPixel;
+				if (waveData == null)
+					break;
+
+				for (int n = 0; n < waveData.Length; n += step)
+				{
+					//Allow for 16 or 32 bit data. Should be 16 most of the time.
+					int sample = step == 2 ? BitConverter.ToInt16(waveData, n) : BitConverter.ToInt32(waveData, n);
+
+					if (sample < low) low = sample;
+					if (sample > high) high = sample;
+				}
+				samples.Add(new SampleAggregator.Sample { High = high, Low = low });
+
+			}
+		}
+
+		private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+		{
+			//invalidate the control after the samples are created
+			this.Invalidate();	
 		}
 
 		/// <summary>
@@ -38,7 +101,7 @@ namespace Common.Controls.Timeline
 				audio = value;
 				if (audio != null)
 				{
-					CreateSamplesToScale();
+					bw.RunWorkerAsync();
 					Visible = true;// Make us visible if we have audio to display.
 				}
 				else
@@ -59,65 +122,36 @@ namespace Common.Controls.Timeline
 
 		protected override void OnResize(EventArgs e)
 		{
-			CreateSamplesToScale();
 			base.OnResize(e);
 		}
 
 		protected override void OnTimePerPixelChanged(object sender, EventArgs e)
 		{
-			CreateSamplesToScale();
+			if (bw.IsBusy)
+			{
+				bw.CancelAsync();
+			}
 			base.OnTimePerPixelChanged(sender, e);
+			while (bw.IsBusy)
+			{
+				//wait for worker to free
+			}
+			bw.RunWorkerAsync();
+			
 		}
 
 		protected override void OnVisibleTimeStartChanged(object sender, EventArgs e)
 		{
-			Refresh();
-		}
-
-		private void CreateSamplesToScale()
-		{
-			if (audio == null){return;}
-			if (!audio.MediaLoaded)
-			{
-				audio.LoadMedia(TimeSpan.MinValue);
-			}
-			samplesPerPixel = (double)pixelsToTime(1).Ticks / TimeSpan.TicksPerMillisecond * audio.Frequency / 1000;
-			int step = audio.Channels;
-			samples.Clear();
-			double samplesRead = 0;
-			while (samplesRead < audio.NumberSamples)
-			{
-				int low = 0;
-				int high = 0;
-				//Might need a better way to dither the partial samples out. Casting to int rounds it out while
-				//the counter tries to maintian some sanity. A few random samples might be off at some zoom levels,
-				//but we are doing a fair amount of averaging to begin with. The farther in the zoom the more chances 
-				//a artifact might be visible.
-				byte[] waveData = audio.GetSamples((int)samplesRead, (int)samplesPerPixel);// new byte[samplesPerPixel * bytesPerSample];
-				samplesRead += samplesPerPixel;
-				if (waveData == null)
-					break;
-
-				for (int n = 0; n < waveData.Length; n += step)
-				{
-					//Allow for 16 or 32 bit data. Should be 16 most of the time.
-					int sample = step == 2 ? BitConverter.ToInt16(waveData, n) : BitConverter.ToInt32(waveData, n);
-
-					if (sample < low) low = sample;
-					if (sample > high) high = sample;
-				}
-				samples.Add(new SampleAggregator.Sample { High = high, Low = low });
-
-			}
+			this.Invalidate();
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			if (samples.Count > 0)
+			if (samples.Count > 0 && !bw.IsBusy)
 			{
 				e.Graphics.TranslateTransform(-timeToPixels(VisibleTimeStart), 0);
 				float maxSample = Math.Max(Math.Abs(samples.Low), samples.High);
-				int workingHeight = e.ClipRectangle.Height - (int)(e.ClipRectangle.Height * .1); //Leave a little margin
+				int workingHeight = Height - (int)(Height * .1); //Leave a little margin
 				float factor = (float)(workingHeight) / maxSample;
 
 				float maxValue = 2 * maxSample * factor;
