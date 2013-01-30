@@ -4,6 +4,8 @@ using System.Windows.Forms;
 using Vixen.Module;
 using Vixen.Module.Controller;
 using Vixen.Commands;
+using System;
+using System.Timers;
 
 namespace VixenModules.Output.Renard
 {
@@ -12,12 +14,19 @@ namespace VixenModules.Output.Renard
 		private SerialPort _port;
 		private CommandHandler _commandHandler;
 		private IRenardProtocolFormatter _protocolFormatter;
+		private System.Timers.Timer _retryTimer;
+		private int _retryCounter;
 
 		private const int DEFAULT_WRITE_TIMEOUT = 500;
 
 		public Module() {
 			_commandHandler = new CommandHandler();
 			DataPolicyFactory = new RenardDataPolicyFactory();
+			
+			//set 2 minute timer before retrying to access com port
+			_retryTimer = new System.Timers.Timer(120000);
+			_retryTimer.Elapsed += new ElapsedEventHandler(_retryTimer_Elapsed);
+			_retryCounter = 0;
 		}
 
 		public override bool HasSetup {
@@ -25,6 +34,7 @@ namespace VixenModules.Output.Renard
 		}
 
 		public override bool Setup() {
+
 			using(Common.Controls.SerialPortConfig serialPortConfig = new Common.Controls.SerialPortConfig(_port)) {
 				if(serialPortConfig.ShowDialog() == DialogResult.OK) {
 					SerialPort port = serialPortConfig.SelectedPort;
@@ -55,7 +65,7 @@ namespace VixenModules.Output.Renard
 		public override void Start() {
 			base.Start();
 			if(_port != null && !_port.IsOpen) {
-				_port.Open();
+				_OpenComPort();
 			}
 		}
 
@@ -109,9 +119,55 @@ namespace VixenModules.Output.Renard
 				_port.RtsEnable = true;
 				_port.DtrEnable = true;
 
-				if(IsRunning) _port.Open();
-			} else {
+				if (IsRunning)
+				{
+					_OpenComPort();
+				}
+			}
+			else
+			{
 				_port = null;
+			}
+		}
+
+		//use this to always open the port so it is in one place and we can 
+		//check if we have an access violation
+		private void _OpenComPort()
+		{
+			try
+			{
+				_port.Open();
+
+				//if successfull 
+				//stop the retry counter and log that we got this going
+				//start the controller back up
+
+				if (_port.IsOpen && _retryTimer.Enabled)
+				{
+					_retryCounter = 0;
+					_retryTimer.Stop();
+					
+					Vixen.Sys.VixenSystem.Logging.Info(String.Format("Serial Port conflict has been corrected, starting controller {0} on port {1}.", _moduleData.ModuleTypeId, _port.PortName));
+				}
+			}
+			catch (UnauthorizedAccessException uae)
+			{
+				Vixen.Sys.VixenSystem.Logging.Error(String.Format("{0} is in use.  Starting controller retry timer for {1}", _port.PortName, _moduleData.ModuleTypeId));
+				Stop();
+				//lets set our retry timer
+				if (_retryCounter < 3)
+				{
+					Vixen.Sys.VixenSystem.Logging.Info("Starting retry counter for com port access. Retry count is " + _retryCounter.ToString());
+					_retryCounter++;
+					_retryTimer.Start();
+
+				}
+				else
+				{
+					Vixen.Sys.VixenSystem.Logging.Info("Retry counter for com port access has exceeded max tries.  Controller has been stopped.");
+					_retryTimer.Stop();
+					_retryCounter = 0;
+				}
 			}
 		}
 
@@ -126,5 +182,12 @@ namespace VixenModules.Output.Renard
 		private int _PacketSize {
 			get { return _protocolFormatter.PacketSize; }
 		}
+
+		public void _retryTimer_Elapsed(object source, ElapsedEventArgs e)
+		{
+			Vixen.Sys.VixenSystem.Logging.Info("Attempting to start controller.");
+			Start();
+		}
+
 	}
 }
