@@ -77,7 +77,10 @@ namespace Common.Controls.Timeline
 		private void CreateSamplesToScale()
 		{
 			if (audio == null){return;}
-
+			if (!audio.MediaLoaded)
+			{
+				audio.LoadMedia(TimeSpan.MinValue);
+			}
 			samplesPerPixel = (double)pixelsToTime(1).Ticks / TimeSpan.TicksPerMillisecond * audio.Frequency / 1000;
 			int step = audio.Channels;
 			samples.Clear();
