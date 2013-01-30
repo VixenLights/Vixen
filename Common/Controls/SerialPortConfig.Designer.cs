@@ -36,6 +36,8 @@
 			this.comboBoxPortName = new System.Windows.Forms.ComboBox();
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
+			this.currentConfiguredPortLabel = new System.Windows.Forms.Label();
+			this.configuredPortValueLabel = new System.Windows.Forms.Label();
 			this.groupBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -54,9 +56,9 @@
 			this.groupBox.Controls.Add(this.textBoxDataBits);
 			this.groupBox.Controls.Add(this.label1);
 			this.groupBox.Controls.Add(this.comboBoxPortName);
-			this.groupBox.Location = new System.Drawing.Point(12, 12);
+			this.groupBox.Location = new System.Drawing.Point(12, 46);
 			this.groupBox.Name = "groupBox";
-			this.groupBox.Size = new System.Drawing.Size(243, 209);
+			this.groupBox.Size = new System.Drawing.Size(243, 175);
 			this.groupBox.TabIndex = 0;
 			this.groupBox.TabStop = false;
 			this.groupBox.Text = "Port Details";
@@ -73,7 +75,7 @@
             "38400",
             "57600",
             "115200"});
-			this.comboBoxBaudRate.Location = new System.Drawing.Point(104, 73);
+			this.comboBoxBaudRate.Location = new System.Drawing.Point(103, 54);
 			this.comboBoxBaudRate.Name = "comboBoxBaudRate";
 			this.comboBoxBaudRate.Size = new System.Drawing.Size(95, 21);
 			this.comboBoxBaudRate.TabIndex = 10;
@@ -82,7 +84,7 @@
 			// 
 			this.comboBoxStopBits.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxStopBits.FormattingEnabled = true;
-			this.comboBoxStopBits.Location = new System.Drawing.Point(104, 170);
+			this.comboBoxStopBits.Location = new System.Drawing.Point(103, 134);
 			this.comboBoxStopBits.Name = "comboBoxStopBits";
 			this.comboBoxStopBits.Size = new System.Drawing.Size(95, 21);
 			this.comboBoxStopBits.TabIndex = 16;
@@ -91,7 +93,7 @@
 			// 
 			this.comboBoxParity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxParity.FormattingEnabled = true;
-			this.comboBoxParity.Location = new System.Drawing.Point(104, 117);
+			this.comboBoxParity.Location = new System.Drawing.Point(103, 81);
 			this.comboBoxParity.Name = "comboBoxParity";
 			this.comboBoxParity.Size = new System.Drawing.Size(95, 21);
 			this.comboBoxParity.TabIndex = 12;
@@ -99,7 +101,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(40, 76);
+			this.label2.Location = new System.Drawing.Point(39, 62);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(53, 13);
 			this.label2.TabIndex = 9;
@@ -108,7 +110,7 @@
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(40, 120);
+			this.label5.Location = new System.Drawing.Point(39, 89);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(33, 13);
 			this.label5.TabIndex = 11;
@@ -117,7 +119,7 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(40, 147);
+			this.label3.Location = new System.Drawing.Point(39, 115);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(49, 13);
 			this.label3.TabIndex = 13;
@@ -126,7 +128,7 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(40, 173);
+			this.label4.Location = new System.Drawing.Point(39, 142);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(48, 13);
 			this.label4.TabIndex = 15;
@@ -134,7 +136,7 @@
 			// 
 			// textBoxDataBits
 			// 
-			this.textBoxDataBits.Location = new System.Drawing.Point(104, 144);
+			this.textBoxDataBits.Location = new System.Drawing.Point(103, 108);
 			this.textBoxDataBits.MaxLength = 1;
 			this.textBoxDataBits.Name = "textBoxDataBits";
 			this.textBoxDataBits.Size = new System.Drawing.Size(95, 20);
@@ -143,7 +145,7 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(40, 36);
+			this.label1.Location = new System.Drawing.Point(39, 35);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(55, 13);
 			this.label1.TabIndex = 1;
@@ -153,7 +155,7 @@
 			// 
 			this.comboBoxPortName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxPortName.FormattingEnabled = true;
-			this.comboBoxPortName.Location = new System.Drawing.Point(104, 33);
+			this.comboBoxPortName.Location = new System.Drawing.Point(103, 27);
 			this.comboBoxPortName.Name = "comboBoxPortName";
 			this.comboBoxPortName.Size = new System.Drawing.Size(95, 21);
 			this.comboBoxPortName.TabIndex = 0;
@@ -181,6 +183,24 @@
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			// 
+			// currentConfiguredPortLabel
+			// 
+			this.currentConfiguredPortLabel.AutoSize = true;
+			this.currentConfiguredPortLabel.Location = new System.Drawing.Point(12, 18);
+			this.currentConfiguredPortLabel.Name = "currentConfiguredPortLabel";
+			this.currentConfiguredPortLabel.Size = new System.Drawing.Size(120, 13);
+			this.currentConfiguredPortLabel.TabIndex = 3;
+			this.currentConfiguredPortLabel.Text = "Current Configured Port:";
+			// 
+			// configuredPortValueLabel
+			// 
+			this.configuredPortValueLabel.AutoSize = true;
+			this.configuredPortValueLabel.Location = new System.Drawing.Point(139, 18);
+			this.configuredPortValueLabel.Name = "configuredPortValueLabel";
+			this.configuredPortValueLabel.Size = new System.Drawing.Size(51, 13);
+			this.configuredPortValueLabel.TabIndex = 4;
+			this.configuredPortValueLabel.Text = "portname";
+			// 
 			// SerialPortConfig
 			// 
 			this.AcceptButton = this.buttonOK;
@@ -188,6 +208,8 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(267, 262);
+			this.Controls.Add(this.configuredPortValueLabel);
+			this.Controls.Add(this.currentConfiguredPortLabel);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.groupBox);
@@ -200,6 +222,7 @@
 			this.groupBox.ResumeLayout(false);
 			this.groupBox.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -218,5 +241,7 @@
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.TextBox textBoxDataBits;
+		private System.Windows.Forms.Label currentConfiguredPortLabel;
+		private System.Windows.Forms.Label configuredPortValueLabel;
 	}
 }
