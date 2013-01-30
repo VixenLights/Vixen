@@ -34,7 +34,7 @@ namespace VixenModules.Effect.Twinkle
 			if (!IndividualChannels)
 				twinkles = GenerateTwinkleData();
 
-			int totalNodes = targetNodes.Distinct().Count();
+			int totalNodes = targetNodes.Count();
 			int i = 0;
 
 			foreach (ChannelNode node in targetNodes) {
@@ -285,14 +285,14 @@ namespace VixenModules.Effect.Twinkle
 
 			if (DepthOfEffect == 0 || !IndividualChannels)
 			{
-				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).ToList();
+				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).Distinct();
 			}
 			else
 			{
 				renderNodes = TargetNodes;
 				for (int i = 0; i < DepthOfEffect; i++)
 				{
-					renderNodes = renderNodes.SelectMany(x => x.Children);
+					renderNodes = renderNodes.SelectMany(x => x.Children).Distinct();
 				}
 
 			}
@@ -300,7 +300,7 @@ namespace VixenModules.Effect.Twinkle
 			// If the given DepthOfEffect results in no nodes (because it goes "too deep" and misses all nodes), 
 			// then we'll default to the LeafElements, which will at least return 1 element (the TargetNode)
 			if (!renderNodes.Any())
-				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator());
+				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).Distinct();
 
 			return renderNodes.ToList();
 		}
