@@ -254,7 +254,7 @@
 			this.Controls.Add(this.panel2);
 			this.Controls.Add(this.panel1);
 			this.Name = "ProgramForm";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Program";
 			this.panel1.ResumeLayout(false);
 			this.tableLayoutPanel.ResumeLayout(false);

@@ -561,5 +561,18 @@ namespace VixenModules.Controller.E131.J1Sys
 
             this.DialogResult = DialogResult.None;
         }
+
+		private void InitializeComponent()
+		{
+			this.SuspendLayout();
+			// 
+			// J1MsgBox
+			// 
+			this.ClientSize = new System.Drawing.Size(284, 262);
+			this.Name = "J1MsgBox";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.ResumeLayout(false);
+
+		}
     }
 }

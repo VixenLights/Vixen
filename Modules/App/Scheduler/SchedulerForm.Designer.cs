@@ -182,6 +182,7 @@
 			// scheduleDayView
 			// 
 			this.scheduleDayView.AutoScroll = true;
+			this.scheduleDayView.CurrentDate = new System.DateTime(2013, 1, 31, 0, 0, 0, 0);
 			this.scheduleDayView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.scheduleDayView.Location = new System.Drawing.Point(0, 0);
 			this.scheduleDayView.Name = "scheduleDayView";
@@ -202,7 +203,7 @@
 			this.Controls.Add(this.toolStripView);
 			this.KeyPreview = true;
 			this.Name = "SchedulerForm";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Show Scheduler";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SchedulerForm_FormClosing);
 			this.Load += new System.EventHandler(this.SchedulerForm_Load);

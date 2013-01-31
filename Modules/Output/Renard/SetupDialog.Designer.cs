@@ -118,7 +118,7 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "SetupDialog";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Setup";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();

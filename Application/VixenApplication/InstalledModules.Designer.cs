@@ -123,7 +123,7 @@
 			this.Controls.Add(this.buttonClose);
 			this.Controls.Add(this.panel1);
 			this.Name = "InstalledModules";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Installed Modules";
 			this.Load += new System.EventHandler(this.InstalledModules_Load);
 			this.panel1.ResumeLayout(false);

@@ -185,7 +185,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(427, 493);
+			this.ClientSize = new System.Drawing.Size(419, 493);
 			this.Controls.Add(this.groupBoxSelectedController);
 			this.Controls.Add(this.listViewControllers);
 			this.Controls.Add(this.buttonOk);
@@ -198,7 +198,7 @@
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(435, 520);
 			this.Name = "ConfigPreviews";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Previews Configuration";
 			this.Load += new System.EventHandler(this.ConfigPreviews_Load);
 			this.groupBoxSelectedController.ResumeLayout(false);
