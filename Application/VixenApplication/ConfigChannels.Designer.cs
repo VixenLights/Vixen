@@ -474,7 +474,7 @@
 			this.MinimumSize = new System.Drawing.Size(550, 550);
 			this.Name = "ConfigChannels";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Channel & Group Configuration";
+			this.Text = "Display Elements & Group Configuration";
 			this.Load += new System.EventHandler(this.ConfigChannels_Load);
 			this.groupBoxSelectedNode.ResumeLayout(false);
 			this.groupBoxSelectedNode.PerformLayout();

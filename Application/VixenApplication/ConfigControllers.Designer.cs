@@ -151,9 +151,9 @@
 			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(129, 97);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(163, 13);
+			this.label4.Size = new System.Drawing.Size(171, 13);
 			this.label4.TabIndex = 34;
-			this.label4.Text = "Configure details for each output.";
+			this.label4.Text = "Configure details for each channel.";
 			// 
 			// label1
 			// 
@@ -170,18 +170,18 @@
 			this.buttonConfigureOutputs.Name = "buttonConfigureOutputs";
 			this.buttonConfigureOutputs.Size = new System.Drawing.Size(110, 25);
 			this.buttonConfigureOutputs.TabIndex = 32;
-			this.buttonConfigureOutputs.Text = "Configure Outputs";
+			this.buttonConfigureOutputs.Text = "Configure Channels";
 			this.buttonConfigureOutputs.UseVisualStyleBackColor = true;
 			this.buttonConfigureOutputs.Click += new System.EventHandler(this.buttonConfigureOutputs_Click);
 			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(202, 27);
+			this.label3.Location = new System.Drawing.Point(196, 27);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(47, 13);
+			this.label3.Size = new System.Drawing.Size(54, 13);
 			this.label3.TabIndex = 31;
-			this.label3.Text = "Outputs:";
+			this.label3.Text = "Channels:";
 			// 
 			// numericUpDownOutputCount
 			// 
@@ -208,7 +208,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(14, 27);
+			this.label2.Location = new System.Drawing.Point(10, 27);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(38, 13);
 			this.label2.TabIndex = 26;
@@ -216,7 +216,7 @@
 			// 
 			// textBoxName
 			// 
-			this.textBoxName.Location = new System.Drawing.Point(58, 24);
+			this.textBoxName.Location = new System.Drawing.Point(54, 24);
 			this.textBoxName.Name = "textBoxName";
 			this.textBoxName.Size = new System.Drawing.Size(136, 20);
 			this.textBoxName.TabIndex = 25;

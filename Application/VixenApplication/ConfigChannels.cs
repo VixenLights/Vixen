@@ -228,7 +228,7 @@ namespace VixenApplication
 				int parentCount = GetNodeParentGroupCount(node);
 				List<string> parents = GetNodeParentGroupNames(node);
 				string labelString = "", tooltipString = "";
-				labelString = "This item is in " + parentCount + " group" + ((parentCount != 1) ? "s" : "") + ((parentCount == 0) ? "." : ": ");
+				labelString = "This element is in " + parentCount + " group" + ((parentCount != 1) ? "s" : "") + ((parentCount == 0) ? "." : ": ");
 				tooltipString = labelString + "\r\n\r\n";
 				foreach (string p in parents) {
 					labelString = labelString + p + ", ";
@@ -294,10 +294,10 @@ namespace VixenApplication
 			{
 				string message, title;
 				if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 1) {
-					message = "Are you sure you want to delete the selected items?";
+					message = "Are you sure you want to delete the selected elements?";
 					title = "Delete Items?";
 				} else {
-					message = "Are you sure you want to delete the selected item?";
+					message = "Are you sure you want to delete the selected element?";
 					title = "Delete Item?";
 				}
 				if (MessageBox.Show(message, title, MessageBoxButtons.OKCancel) == DialogResult.OK) {
@@ -344,10 +344,10 @@ namespace VixenApplication
 			if (listViewProperties.SelectedItems.Count > 0) {
 				string message, title;
 				if (listViewProperties.SelectedItems.Count == 1) {
-					message = "Are you sure you want to remove the selected property from the channel?";
+					message = "Are you sure you want to remove the selected property from the element?";
 					title = "Remove Property?";
 				} else {
-					message = "Are you sure you want to remove the selected properties from the channel?";
+					message = "Are you sure you want to remove the selected properties from the element?";
 					title = "Remove Properties?";
 				}
 				if (MessageBox.Show(message, title, MessageBoxButtons.OKCancel) == DialogResult.OK) {
@@ -583,11 +583,11 @@ namespace VixenApplication
 		private ChannelNode AddSingleNodeWithPrompt(ChannelNode parent = null)
 		{
 			// since we're only adding a single node, prompt with a single text dialog.
-			using (TextDialog textDialog = new TextDialog("Item Name?")) {
+			using (TextDialog textDialog = new TextDialog("Element Name?")) {
 				if (textDialog.ShowDialog() == DialogResult.OK) {
 					string newName;
 					if (textDialog.Response == "")
-						newName = "New Channel";
+						newName = "New Element";
 					else
 						newName = textDialog.Response;
 
@@ -626,9 +626,9 @@ namespace VixenApplication
 		{
 			if (node != null && node.Channel != null) {
 				if (VixenSystem.DataFlow.GetChildren(VixenSystem.Channels.GetDataFlowComponentForChannel(node.Channel)).Any()) {
-					string message = "Adding items to this Channel will convert it into a Group, which will remove any " +
+					string message = "Adding items to this element will convert it into a Group, which will remove any " +
 						"patches it may have. Are you sure you want to continue?";
-					string title = "Convert Channel to Group?";
+					string title = "Convert Element to Group?";
 					DialogResult result = MessageBox.Show(message, title, MessageBoxButtons.YesNoCancel);
 					if (result != DialogResult.Yes) {
 						return true;
@@ -647,7 +647,7 @@ namespace VixenApplication
 				if (renamer.ShowDialog() == DialogResult.OK) {
 					for (int i = 0; i < multiSelectTreeviewChannelsGroups.SelectedNodes.Count; i++) {
 						if (i >= renamer.Names.Count) {
-							VixenSystem.Logging.Warning("ConfigChannels: bulk renaming channels, and ran out of new names!");
+							VixenSystem.Logging.Warning("ConfigChannels: bulk renaming elements, and ran out of new names!");
 							break;
 						}
 						(multiSelectTreeviewChannelsGroups.SelectedNodes[i].Tag as ChannelNode).Name = renamer.Names[i];
@@ -777,7 +777,7 @@ namespace VixenApplication
 					}
 
 					if (destinationProperty == null) {
-						VixenSystem.Logging.Error("ConfigChannels: pasting a property to a channel, but can't make or find the instance!");
+						VixenSystem.Logging.Error("ConfigChannels: pasting a property to a element, but can't make or find the instance!");
 						continue;
 					}
 

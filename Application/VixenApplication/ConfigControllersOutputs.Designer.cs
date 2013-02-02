@@ -61,14 +61,14 @@
 			// 
 			// columnHeader1
 			// 
-			this.columnHeader1.Text = "Output #";
-			this.columnHeader1.Width = 56;
+			this.columnHeader1.Text = "Channel #";
+			this.columnHeader1.Width = 68;
 			// 
 			// columnHeader2
 			// 
 			this.columnHeader2.Text = "Name";
 			this.columnHeader2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			this.columnHeader2.Width = 240;
+			this.columnHeader2.Width = 227;
 			// 
 			// groupBox
 			// 
@@ -82,7 +82,7 @@
 			this.groupBox.Size = new System.Drawing.Size(320, 64);
 			this.groupBox.TabIndex = 5;
 			this.groupBox.TabStop = false;
-			this.groupBox.Text = "Selected Output:";
+			this.groupBox.Text = "Selected Channel:";
 			// 
 			// buttonUpdate
 			// 
@@ -147,7 +147,7 @@
 			this.MinimumSize = new System.Drawing.Size(360, 300);
 			this.Name = "ConfigControllersOutputs";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Configure Controller Outputs";
+			this.Text = "Configure Controller Channels";
 			this.Load += new System.EventHandler(this.ConfigControllersOutputs_Load);
 			this.groupBox.ResumeLayout(false);
 			this.groupBox.PerformLayout();
