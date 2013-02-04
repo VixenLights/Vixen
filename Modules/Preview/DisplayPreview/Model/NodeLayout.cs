@@ -58,7 +58,7 @@ namespace VixenModules.Preview.DisplayPreview.Model
             {
                 if (_height <= 0)
                 {
-                    _height = Preferences.CurrentPreferences.ChannelHeightDefault;
+                    _height = Preferences.CurrentPreferences.ElementHeightDefault;
                 }
 
                 return _height;
@@ -97,7 +97,7 @@ namespace VixenModules.Preview.DisplayPreview.Model
             set
             {
                 _nodeId = value;
-                PropertyChanged.NotifyPropertyChanged("ChannelId", this);
+				PropertyChanged.NotifyPropertyChanged("NodeId", this);
             }
         }
 
@@ -107,10 +107,10 @@ namespace VixenModules.Preview.DisplayPreview.Model
             {
                 if (string.IsNullOrWhiteSpace(_nodeName))
                 {
-                    var channel = Node;
-                    if (channel != null)
+                    var element = Node;
+                    if (element != null)
                     {
-                        _nodeName = channel.Name;
+                        _nodeName = element.Name;
                     }
                 }
 
@@ -159,7 +159,7 @@ namespace VixenModules.Preview.DisplayPreview.Model
             {
                 if (_width <= 0)
                 {
-                    _width = Preferences.CurrentPreferences.ChannelWidthDefault;
+                    _width = Preferences.CurrentPreferences.ElementWidthDefault;
                 }
 
                 return _width;
@@ -172,7 +172,7 @@ namespace VixenModules.Preview.DisplayPreview.Model
             }
         }
 
-        private ChannelNode Node
+        private ElementNode Node
         {
             get
             {
@@ -241,7 +241,7 @@ namespace VixenModules.Preview.DisplayPreview.Model
             Initialize();
         }
 
-		public IIntentStates ChannelState
+		public IIntentStates ElementState
 		{
 			set
 			{

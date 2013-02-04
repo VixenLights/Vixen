@@ -16,9 +16,9 @@ using Vixen.Sys.Output;
 
 namespace VixenApplication
 {
-	public partial class ConfigChannels : Form
+	public partial class ConfigElements : Form
 	{
-		private ChannelNode _displayedNode;
+		private ElementNode _displayedNode;
 
 		// sets of data to keep track of which items in the treeview are open, selected, visible etc.
 		// so that when we reload the tree, we can keep it looking relatively consistent with what the
@@ -29,18 +29,18 @@ namespace VixenApplication
 													// need one, but will have multiple in case the top node is deleted.
 		private ToolTip _tooltip;
 
-		public ConfigChannels()
+		public ConfigElements()
 		{
 			InitializeComponent();
 			_displayedNode = null;
 			_tooltip = new ToolTip();
 
-			multiSelectTreeviewChannelsGroups.DragFinishing += multiSelectTreeviewChannelsGroupsDragFinishingHandler;
-			multiSelectTreeviewChannelsGroups.DragOverVerify += multiSelectTreeviewChannelsGroupsDragVerifyHandler;
-			multiSelectTreeviewChannelsGroups.Deselected += multiSelectTreeviewChannelsGroups_DeselectedHandler;
+			multiSelectTreeviewElementsGroups.DragFinishing += MultiSelectTreeviewElementsGroupsDragFinishingHandler;
+			multiSelectTreeviewElementsGroups.DragOverVerify += MultiSelectTreeviewElementsGroupsDragVerifyHandler;
+			multiSelectTreeviewElementsGroups.Deselected += MultiSelectTreeviewElementsGroupsDeselectedHandler;
 		}
 
-		private void ConfigChannels_Load(object sender, EventArgs e)
+		private void ConfigElements_Load(object sender, EventArgs e)
 		{
 			PopulateNodeTree();
 			PopulateFormWithNode(null, true);
@@ -55,22 +55,22 @@ namespace VixenApplication
 			_selectedNodes = new HashSet<string>();
 			_topDisplayedNodes = new List<string>();
 
-			SaveTreeNodeState(multiSelectTreeviewChannelsGroups.Nodes);
+			SaveTreeNodeState(multiSelectTreeviewElementsGroups.Nodes);
 			SaveTreeNodeTopVisible();
 
 			// clear the treeview, and repopulate it
-			multiSelectTreeviewChannelsGroups.BeginUpdate();
-			multiSelectTreeviewChannelsGroups.Nodes.Clear();
+			multiSelectTreeviewElementsGroups.BeginUpdate();
+			multiSelectTreeviewElementsGroups.Nodes.Clear();
 
-			foreach(ChannelNode channel in VixenSystem.Nodes.GetRootNodes()) {
-				AddNodeToTree(multiSelectTreeviewChannelsGroups.Nodes, channel);
+			foreach(ElementNode element in VixenSystem.Nodes.GetRootNodes()) {
+				AddNodeToTree(multiSelectTreeviewElementsGroups.Nodes, element);
 			}
 
 			// go through all the data we saved, and try to update the treeview to look
 			// like it used to (expanded nodes, selected nodes, node at the top)
 
 			foreach (string node in _expandedNodes) {
-				TreeNode resultNode = FindNodeInTreeAtPath(multiSelectTreeviewChannelsGroups, node);
+				TreeNode resultNode = FindNodeInTreeAtPath(multiSelectTreeviewElementsGroups, node);
 
 				if (resultNode != null) {
 					resultNode.Expand();
@@ -78,25 +78,25 @@ namespace VixenApplication
 			}
 
 			foreach (string node in _selectedNodes) {
-				TreeNode resultNode = FindNodeInTreeAtPath(multiSelectTreeviewChannelsGroups, node);
+				TreeNode resultNode = FindNodeInTreeAtPath(multiSelectTreeviewElementsGroups, node);
 
 				if (resultNode != null) {
-					multiSelectTreeviewChannelsGroups.AddSelectedNode(resultNode);
+					multiSelectTreeviewElementsGroups.AddSelectedNode(resultNode);
 				}
 			}
 
-			multiSelectTreeviewChannelsGroups.EndUpdate();
+			multiSelectTreeviewElementsGroups.EndUpdate();
 
 			// see stackoverflow.com/questions/626315/winforms-listview-remembering-scrolled-location-on-reload .
 			// we can only set the topNode after EndUpdate(). Also, it might throw an exception -- weird?
 			foreach (string node in _topDisplayedNodes) {
-				TreeNode resultNode = FindNodeInTreeAtPath(multiSelectTreeviewChannelsGroups, node);
+				TreeNode resultNode = FindNodeInTreeAtPath(multiSelectTreeviewElementsGroups, node);
 
 				if (resultNode != null) {
 					try {
-						multiSelectTreeviewChannelsGroups.TopNode = resultNode;
+						multiSelectTreeviewElementsGroups.TopNode = resultNode;
 					} catch (Exception) {
-						VixenSystem.Logging.Warning("ConfigChannels: exception caught trying to set TopNode.");
+						VixenSystem.Logging.Warning("ConfigElements: exception caught trying to set TopNode.");
 					}
 					break;
 				}
@@ -143,11 +143,11 @@ namespace VixenApplication
 		{
 			foreach (TreeNode tn in collection) {
 				if (tn.IsExpanded) {
-					_expandedNodes.Add(GenerateTreeNodeFullPath(tn, multiSelectTreeviewChannelsGroups.PathSeparator));
+					_expandedNodes.Add(GenerateTreeNodeFullPath(tn, multiSelectTreeviewElementsGroups.PathSeparator));
 				}
 
-				if (multiSelectTreeviewChannelsGroups.SelectedNodes.Contains(tn)) {
-					_selectedNodes.Add(GenerateTreeNodeFullPath(tn, multiSelectTreeviewChannelsGroups.PathSeparator));
+				if (multiSelectTreeviewElementsGroups.SelectedNodes.Contains(tn)) {
+					_selectedNodes.Add(GenerateTreeNodeFullPath(tn, multiSelectTreeviewElementsGroups.PathSeparator));
 				}
 
 				SaveTreeNodeState(tn.Nodes);
@@ -161,25 +161,25 @@ namespace VixenApplication
 			// we can try them in order to place at the top of the display. We should only
 			// need a single node, but in case the top node gets deleted (or the top few),
 			// we keep a list of 'preferred' nodes.
-			if (multiSelectTreeviewChannelsGroups.Nodes.Count > 0) {
-				TreeNode current = multiSelectTreeviewChannelsGroups.TopNode;
+			if (multiSelectTreeviewElementsGroups.Nodes.Count > 0) {
+				TreeNode current = multiSelectTreeviewElementsGroups.TopNode;
 				while (current != null) {
-					_topDisplayedNodes.Add(GenerateTreeNodeFullPath(current, multiSelectTreeviewChannelsGroups.PathSeparator));
+					_topDisplayedNodes.Add(GenerateTreeNodeFullPath(current, multiSelectTreeviewElementsGroups.PathSeparator));
 					current = current.NextNode;
 				}
 			}
 		}
 
-		private void AddNodeToTree(TreeNodeCollection collection, ChannelNode channelNode)
+		private void AddNodeToTree(TreeNodeCollection collection, ElementNode elementNode)
 		{
 			TreeNode addedNode = new TreeNode();
-			addedNode.Name = channelNode.Id.ToString();
-			addedNode.Text = channelNode.Name;
-			addedNode.Tag = channelNode;
+			addedNode.Name = elementNode.Id.ToString();
+			addedNode.Text = elementNode.Name;
+			addedNode.Tag = elementNode;
 
-			if (!channelNode.Children.Any()) {
-				if (channelNode.Channel != null && VixenSystem.DataFlow.GetChildren(VixenSystem.Channels.GetDataFlowComponentForChannel(channelNode.Channel)).Any()) {
-					if (channelNode.Channel.Masked)
+			if (!elementNode.Children.Any()) {
+				if (elementNode.Element != null && VixenSystem.DataFlow.GetChildren(VixenSystem.Elements.GetDataFlowComponentForElement(elementNode.Element)).Any()) {
+					if (elementNode.Element.Masked)
 						addedNode.ImageKey = addedNode.SelectedImageKey = "RedBall";
 					else
 						addedNode.ImageKey = addedNode.SelectedImageKey = "GreenBall";
@@ -191,7 +191,7 @@ namespace VixenApplication
 
 			collection.Add(addedNode);
 
-			foreach (ChannelNode childNode in channelNode.Children) {
+			foreach (ElementNode childNode in elementNode.Children) {
 				AddNodeToTree(addedNode.Nodes, childNode);
 			}
 		}
@@ -200,7 +200,7 @@ namespace VixenApplication
 
 		#region Form controls population & display
 
-		private void PopulateFormWithNode(ChannelNode node, bool forceUpdate)
+		private void PopulateFormWithNode(ElementNode node, bool forceUpdate)
 		{
 			if (node == _displayedNode && !forceUpdate)
 				return;
@@ -212,12 +212,12 @@ namespace VixenApplication
 
 			groupBoxSelectedNode.Enabled = (node != null);
 
-			buttonDeleteChannel.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0) && (node != null);
-			buttonCreateGroup.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0) && (node != null);
-			buttonRename.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0) && (node != null);
+			buttonDeleteElement.Enabled = (multiSelectTreeviewElementsGroups.SelectedNodes.Count > 0) && (node != null);
+			buttonCreateGroup.Enabled = (multiSelectTreeviewElementsGroups.SelectedNodes.Count > 0) && (node != null);
+			buttonRename.Enabled = (multiSelectTreeviewElementsGroups.SelectedNodes.Count > 0) && (node != null);
 		}
 
-		private void PopulateGeneralNodeInfo(ChannelNode node)
+		private void PopulateGeneralNodeInfo(ElementNode node)
 		{
 			if (node == null) {
 				labelParents.Text = "";
@@ -246,7 +246,7 @@ namespace VixenApplication
 			}
 		}
 
-		private void PopulatePropertiesArea(ChannelNode node)
+		private void PopulatePropertiesArea(ElementNode node)
 		{
 			listViewProperties.BeginUpdate();
 			listViewProperties.Items.Clear();
@@ -276,24 +276,24 @@ namespace VixenApplication
 
 		#region Form buttons
 
-		private void buttonAddChannel_Click(object sender, EventArgs e)
+		private void buttonAddElement_Click(object sender, EventArgs e)
 		{
-			multiSelectTreeviewChannelsGroups.ClearSelectedNodes();
+			multiSelectTreeviewElementsGroups.ClearSelectedNodes();
 			AddSingleNodeWithPrompt();
 		}
 
-		private void buttonAddMultipleChannels_Click(object sender, EventArgs e)
+		private void buttonAddMultipleElements_Click(object sender, EventArgs e)
 		{
-			multiSelectTreeviewChannelsGroups.ClearSelectedNodes();
+			multiSelectTreeviewElementsGroups.ClearSelectedNodes();
 			AddMultipleNodesWithPrompt();
 		}
 
-		private void buttonDeleteChannel_Click(object sender, EventArgs e)
+		private void buttonDeleteElement_Click(object sender, EventArgs e)
 		{
-			if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0)
+			if (multiSelectTreeviewElementsGroups.SelectedNodes.Count > 0)
 			{
 				string message, title;
-				if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 1) {
+				if (multiSelectTreeviewElementsGroups.SelectedNodes.Count > 1) {
 					message = "Are you sure you want to delete the selected elements?";
 					title = "Delete Items?";
 				} else {
@@ -301,7 +301,7 @@ namespace VixenApplication
 					title = "Delete Item?";
 				}
 				if (MessageBox.Show(message, title, MessageBoxButtons.OKCancel) == DialogResult.OK) {
-					foreach (TreeNode tn in multiSelectTreeviewChannelsGroups.SelectedNodes) {
+					foreach (TreeNode tn in multiSelectTreeviewElementsGroups.SelectedNodes) {
 						DeleteNode(tn);
 					}
 				}
@@ -318,7 +318,7 @@ namespace VixenApplication
 
 		private void buttonRename_Click(object sender, EventArgs e)
 		{
-			RenameSelectedChannels();
+			RenameSelectedElements();
 		}
 
 		private void buttonAddProperty_Click(object sender, EventArgs e)
@@ -365,9 +365,9 @@ namespace VixenApplication
 
 		#region Events
 
-		private void multiSelectTreeviewChannelsGroups_AfterSelect(object sender, TreeViewEventArgs e)
+		private void multiSelectTreeviewElementsGroups_AfterSelect(object sender, TreeViewEventArgs e)
 		{
-			PopulateFormWithNode(multiSelectTreeviewChannelsGroups.SelectedNode.Tag as ChannelNode, false);
+			PopulateFormWithNode(multiSelectTreeviewElementsGroups.SelectedNode.Tag as ElementNode, false);
 		}
 
 		private void listViewProperties_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -380,7 +380,7 @@ namespace VixenApplication
 			PopulatePropertiesButtons();
 		}
 
-		private void multiSelectTreeviewChannelsGroups_DeselectedHandler(object sender, EventArgs e)
+		private void MultiSelectTreeviewElementsGroupsDeselectedHandler(object sender, EventArgs e)
 		{
 			PopulateFormWithNode(null, false);
 		}
@@ -390,7 +390,7 @@ namespace VixenApplication
 
 		#region Drag 'n' Drop Handlers
 
-		private void multiSelectTreeviewChannelsGroupsDragFinishingHandler(object sender, DragFinishingEventArgs e)
+		private void MultiSelectTreeviewElementsGroupsDragFinishingHandler(object sender, DragFinishingEventArgs e)
 		{
 			// we want to finish off the drag ourselves, and not have the treeview control move the nodes around.
 			// (In fact, in a lame attempt at 'data binding', we're going to completely redraw the tree after
@@ -399,22 +399,22 @@ namespace VixenApplication
 
 			// first determine the node that they will be moved to. This will depend on if we are dragging onto a node
 			// directly, or above/below one to reorder.
-			ChannelNode newParentNode = null;						// the channelNode that the selected items will move to
+			ElementNode newParentNode = null;						// the ElementNode that the selected items will move to
 			TreeNode expandNode = null;								// if we need to expand a node once we've moved everything
 			int index = -1;
 
 			if (e.DragBetweenNodes == DragBetweenNodes.DragOnTargetNode) {
-				newParentNode = e.TargetNode.Tag as ChannelNode;
+				newParentNode = e.TargetNode.Tag as ElementNode;
 				expandNode = e.TargetNode;
 			} else if (e.DragBetweenNodes == DragBetweenNodes.DragBelowTargetNode && e.TargetNode.IsExpanded) {
-				newParentNode = e.TargetNode.Tag as ChannelNode;
+				newParentNode = e.TargetNode.Tag as ElementNode;
 				expandNode = e.TargetNode;
 				index = 0;
 			} else {
 				if (e.TargetNode.Parent == null) {
 					newParentNode = null;	// needs to go at the root level
 				} else {
-					newParentNode = e.TargetNode.Parent.Tag as ChannelNode;
+					newParentNode = e.TargetNode.Parent.Tag as ElementNode;
 				}
 
 				if (e.DragBetweenNodes == DragBetweenNodes.DragAboveTargetNode) {
@@ -424,17 +424,17 @@ namespace VixenApplication
 				}
 			}
 
-			// Check to see if the new parent node would be 'losing' the Channel (ie. becoming a
-			// group instead of a leaf node with a channel/patches). Prompt the user first.
+			// Check to see if the new parent node would be 'losing' the Element (ie. becoming a
+			// group instead of a leaf node with a element/patches). Prompt the user first.
 			if (CheckIfNodeWillLosePatches(newParentNode))
 				return;
 
-			// If moving channel nodes, we need to iterate through all selected treenodes, and remove them from
+			// If moving element nodes, we need to iterate through all selected treenodes, and remove them from
 			// the parent in which they are selected (which we can determine from the treenode parent), and add them
 			// to the target node. If copying, we need to just add them to the new parent node.
 			foreach (TreeNode treeNode in e.SourceNodes) {
-				ChannelNode sourceNode = treeNode.Tag as ChannelNode;
-				ChannelNode oldParentNode = (treeNode.Parent != null) ? treeNode.Parent.Tag as ChannelNode : null;
+				ElementNode sourceNode = treeNode.Tag as ElementNode;
+				ElementNode oldParentNode = (treeNode.Parent != null) ? treeNode.Parent.Tag as ElementNode : null;
 				int currentIndex = treeNode.Index;
 				if (e.DragMode == DragDropEffects.Move) {
 					if (index >= 0) {
@@ -456,7 +456,7 @@ namespace VixenApplication
 						VixenSystem.Nodes.AddChildToParent(sourceNode, newParentNode);
 					}
 				} else {
-					VixenSystem.Logging.Warning("ConfigChannels: Trying to deal with a drag that is an unknown type!");
+					VixenSystem.Logging.Warning("ConfigElements: Trying to deal with a drag that is an unknown type!");
 				}
 			}
 
@@ -464,16 +464,16 @@ namespace VixenApplication
 				expandNode.Expand();
 			
 			PopulateNodeTree();
-			PopulateFormWithNode((multiSelectTreeviewChannelsGroups.SelectedNode == null) ? null : (multiSelectTreeviewChannelsGroups.SelectedNode.Tag as ChannelNode), true);
+			PopulateFormWithNode((multiSelectTreeviewElementsGroups.SelectedNode == null) ? null : (multiSelectTreeviewElementsGroups.SelectedNode.Tag as ElementNode), true);
 		}
 
-		private void multiSelectTreeviewChannelsGroupsDragVerifyHandler(object sender, DragVerifyEventArgs e)
+		private void MultiSelectTreeviewElementsGroupsDragVerifyHandler(object sender, DragVerifyEventArgs e)
 		{
 			// we need to go through all nodes that would be moved (source nodes), and check if there's any
 			// problem moving any of them to the target node (circular references, etc.), since it's possible
-			// for a channel to exist multiple times in the treeview as different treenodes.
+			// for a element to exist multiple times in the treeview as different treenodes.
 
-			List<ChannelNode> nodes = new List<ChannelNode>(e.SourceNodes.Select(x => x.Tag as ChannelNode));
+			List<ElementNode> nodes = new List<ElementNode>(e.SourceNodes.Select(x => x.Tag as ElementNode));
 
 			// now get a list of invalid children for this target node, and check all the remaining nodes against it.
 			// If any of them fail, the entire operation should fail, as it would be an invalid move.
@@ -484,30 +484,30 @@ namespace VixenApplication
 			// of the new parent node are considered OK, as we might just be shuffling them around. Normally, this would
 			// be A Bad Thing, since it would seem like we're adding a child to the group it's already in. (This is only
 			// the case when moving; if copying, it should be disabled. That's checked later.)
-			IEnumerable<ChannelNode> invalidNodesForTarget = null;
-			IEnumerable<ChannelNode> permittedNodesForTarget = null;
+			IEnumerable<ElementNode> invalidNodesForTarget = null;
+			IEnumerable<ElementNode> permittedNodesForTarget = null;
 
 			if (e.DragBetweenNodes == DragBetweenNodes.DragOnTargetNode || e.DragBetweenNodes == DragBetweenNodes.DragBelowTargetNode && e.TargetNode.IsExpanded) {
-				invalidNodesForTarget = (e.TargetNode.Tag as ChannelNode).InvalidChildren();
-				permittedNodesForTarget = new HashSet<ChannelNode>();
+				invalidNodesForTarget = (e.TargetNode.Tag as ElementNode).InvalidChildren();
+				permittedNodesForTarget = new HashSet<ElementNode>();
 			} else {
 				if (e.TargetNode.Parent == null) {
 					invalidNodesForTarget = VixenSystem.Nodes.InvalidRootNodes;
 					permittedNodesForTarget = VixenSystem.Nodes.GetRootNodes();
 				} else {
-					invalidNodesForTarget = (e.TargetNode.Parent.Tag as ChannelNode).InvalidChildren();
-					permittedNodesForTarget = (e.TargetNode.Parent.Tag as ChannelNode).Children;
+					invalidNodesForTarget = (e.TargetNode.Parent.Tag as ElementNode).InvalidChildren();
+					permittedNodesForTarget = (e.TargetNode.Parent.Tag as ElementNode).Children;
 				}
 			}
 
 			if ((e.KeyState & 8) != 0) {		// the CTRL key
 				e.DragMode = DragDropEffects.Copy;
-				permittedNodesForTarget = new HashSet<ChannelNode>();
+				permittedNodesForTarget = new HashSet<ElementNode>();
 			} else {
 				e.DragMode = DragDropEffects.Move;
 			}
 
-			IEnumerable<ChannelNode> invalidSourceNodes = invalidNodesForTarget.Intersect(nodes);
+			IEnumerable<ElementNode> invalidSourceNodes = invalidNodesForTarget.Intersect(nodes);
 			if (invalidSourceNodes.Count() > 0) {
 				if (invalidSourceNodes.Intersect(permittedNodesForTarget).Count() == invalidSourceNodes.Count())
 					e.ValidDragTarget = true;
@@ -530,7 +530,7 @@ namespace VixenApplication
 			}
 		}
 
-		private int GetNodeParentGroupCount(ChannelNode node)
+		private int GetNodeParentGroupCount(ElementNode node)
 		{
 			int count = node.Parents.Count();
 			if(VixenSystem.Nodes.GetRootNodes().Contains(node))
@@ -538,10 +538,10 @@ namespace VixenApplication
 			return count;
 		}
 
-		private List<string> GetNodeParentGroupNames(ChannelNode node, int maxNames = Int32.MaxValue)
+		private List<string> GetNodeParentGroupNames(ElementNode node, int maxNames = Int32.MaxValue)
 		{
 			List<string> result = new List<string>();
-			foreach (ChannelNode parent in node.Parents) {
+			foreach (ElementNode parent in node.Parents) {
 				if (maxNames <= 0) {
 					break;
 				}
@@ -556,8 +556,8 @@ namespace VixenApplication
 
 		private void DeleteNode(TreeNode tn)
 		{
-			ChannelNode cn = tn.Tag as ChannelNode;
-			ChannelNode parent = (tn.Parent != null) ? tn.Parent.Tag as ChannelNode : null;
+			ElementNode cn = tn.Tag as ElementNode;
+			ElementNode parent = (tn.Parent != null) ? tn.Parent.Tag as ElementNode : null;
 			VixenSystem.Nodes.RemoveNode(cn, parent, true);
 			if (_displayedNode == cn) {
 				_displayedNode = null;
@@ -565,9 +565,9 @@ namespace VixenApplication
 		}
 
 
-		private IEnumerable<ChannelNode> AddMultipleNodesWithPrompt(ChannelNode parent = null)
+		private IEnumerable<ElementNode> AddMultipleNodesWithPrompt(ElementNode parent = null)
 		{
-			List<ChannelNode> result = new List<ChannelNode>();
+			List<ElementNode> result = new List<ElementNode>();
 
 			// since we're adding multiple nodes, prompt with the name generation form (which also includes a counter on there).
 			using (NameGenerator nameGenerator = new NameGenerator()) {
@@ -580,7 +580,7 @@ namespace VixenApplication
 			return result;
 		}
 
-		private ChannelNode AddSingleNodeWithPrompt(ChannelNode parent = null)
+		private ElementNode AddSingleNodeWithPrompt(ElementNode parent = null)
 		{
 			// since we're only adding a single node, prompt with a single text dialog.
 			using (TextDialog textDialog = new TextDialog("Element Name?")) {
@@ -599,13 +599,13 @@ namespace VixenApplication
 		}
 
 
-		private ChannelNode AddNewNode(string nodeName, bool repopulateNodeTree = true, ChannelNode parent = null, bool skipPatchCheck = false)
+		private ElementNode AddNewNode(string nodeName, bool repopulateNodeTree = true, ElementNode parent = null, bool skipPatchCheck = false)
 		{
 			// prompt the user if it's going to make a patched leaf a group; if they abandon it, return null
 			if (!skipPatchCheck && CheckIfNodeWillLosePatches(parent))
 				return null;
 
-			ChannelNode newNode = ChannelNodeService.Instance.CreateSingle(parent, nodeName, true);
+			ElementNode newNode = ElementNodeService.Instance.CreateSingle(parent, nodeName, true);
 			if (repopulateNodeTree)
 				PopulateNodeTree();
 			return newNode;
@@ -613,19 +613,19 @@ namespace VixenApplication
 
 		private void CreateGroupFromSelectedNodes()
 		{
-			ChannelNode newGroup = AddSingleNodeWithPrompt();
+			ElementNode newGroup = AddSingleNodeWithPrompt();
 
-			foreach (TreeNode tn in multiSelectTreeviewChannelsGroups.SelectedNodes) {
-				VixenSystem.Nodes.AddChildToParent(tn.Tag as ChannelNode, newGroup);
+			foreach (TreeNode tn in multiSelectTreeviewElementsGroups.SelectedNodes) {
+				VixenSystem.Nodes.AddChildToParent(tn.Tag as ElementNode, newGroup);
 			}
 
 			PopulateNodeTree();
 		}
 
-		private bool CheckIfNodeWillLosePatches(ChannelNode node)
+		private bool CheckIfNodeWillLosePatches(ElementNode node)
 		{
-			if (node != null && node.Channel != null) {
-				if (VixenSystem.DataFlow.GetChildren(VixenSystem.Channels.GetDataFlowComponentForChannel(node.Channel)).Any()) {
+			if (node != null && node.Element != null) {
+				if (VixenSystem.DataFlow.GetChildren(VixenSystem.Elements.GetDataFlowComponentForElement(node.Element)).Any()) {
 					string message = "Adding items to this element will convert it into a Group, which will remove any " +
 						"patches it may have. Are you sure you want to continue?";
 					string title = "Convert Element to Group?";
@@ -639,18 +639,18 @@ namespace VixenApplication
 			return false;
 		}
 
-		private void RenameSelectedChannels()
+		private void RenameSelectedElements()
 		{
-			if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0) {
-				List<string> oldNames = new List<string>(multiSelectTreeviewChannelsGroups.SelectedNodes.Select(x => x.Tag as ChannelNode).Select(x => x.Name).ToArray());
+			if (multiSelectTreeviewElementsGroups.SelectedNodes.Count > 0) {
+				List<string> oldNames = new List<string>(multiSelectTreeviewElementsGroups.SelectedNodes.Select(x => x.Tag as ElementNode).Select(x => x.Name).ToArray());
 				NameGenerator renamer = new NameGenerator(oldNames.ToArray());
 				if (renamer.ShowDialog() == DialogResult.OK) {
-					for (int i = 0; i < multiSelectTreeviewChannelsGroups.SelectedNodes.Count; i++) {
+					for (int i = 0; i < multiSelectTreeviewElementsGroups.SelectedNodes.Count; i++) {
 						if (i >= renamer.Names.Count) {
-							VixenSystem.Logging.Warning("ConfigChannels: bulk renaming elements, and ran out of new names!");
+							VixenSystem.Logging.Warning("ConfigElements: bulk renaming elements, and ran out of new names!");
 							break;
 						}
-						(multiSelectTreeviewChannelsGroups.SelectedNodes[i].Tag as ChannelNode).Name = renamer.Names[i];
+						(multiSelectTreeviewElementsGroups.SelectedNodes[i].Tag as ElementNode).Name = renamer.Names[i];
 					}
 
 					PopulateNodeTree();
@@ -666,30 +666,30 @@ namespace VixenApplication
 
 		private void contextMenuStripTreeView_Opening(object sender, CancelEventArgs e)
 		{
-			cutNodesToolStripMenuItem.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0);
-			copyNodesToolStripMenuItem.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0);
+			cutNodesToolStripMenuItem.Enabled = (multiSelectTreeviewElementsGroups.SelectedNodes.Count > 0);
+			copyNodesToolStripMenuItem.Enabled = (multiSelectTreeviewElementsGroups.SelectedNodes.Count > 0);
 			pasteNodesToolStripMenuItem.Enabled = (_clipboardNodes != null);
-			copyPropertiesToolStripMenuItem.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count == 1);
-			pastePropertiesToolStripMenuItem.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0) && (_clipboardProperties != null);
-			nodePropertiesToolStripMenuItem.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0);
+			copyPropertiesToolStripMenuItem.Enabled = (multiSelectTreeviewElementsGroups.SelectedNodes.Count == 1);
+			pastePropertiesToolStripMenuItem.Enabled = (multiSelectTreeviewElementsGroups.SelectedNodes.Count > 0) && (_clipboardProperties != null);
+			nodePropertiesToolStripMenuItem.Enabled = (multiSelectTreeviewElementsGroups.SelectedNodes.Count > 0);
 			addNewNodeToolStripMenuItem.Enabled = true;
-			createGroupWithNodesToolStripMenuItem.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0);
-			deleteNodesToolStripMenuItem.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0);
-			renameNodesToolStripMenuItem.Enabled = (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0);
+			createGroupWithNodesToolStripMenuItem.Enabled = (multiSelectTreeviewElementsGroups.SelectedNodes.Count > 0);
+			deleteNodesToolStripMenuItem.Enabled = (multiSelectTreeviewElementsGroups.SelectedNodes.Count > 0);
+			renameNodesToolStripMenuItem.Enabled = (multiSelectTreeviewElementsGroups.SelectedNodes.Count > 0);
 		}
 
 		// TODO: use the system clipboard properly; I couldn't get it working in the sequencer, so I'm not
 		// going to bother with it here. If someone feels like playing with it, go ahead. :-)
-		private List<ChannelNode> _clipboardNodes;
+		private List<ElementNode> _clipboardNodes;
 		private List<IPropertyModuleInstance> _clipboardProperties;
 
 
 		private void cutNodesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			List<ChannelNode> cutNodes = new List<ChannelNode>();
+			List<ElementNode> cutNodes = new List<ElementNode>();
 
-			foreach (TreeNode treenode in multiSelectTreeviewChannelsGroups.SelectedNodes) {
-				cutNodes.Add(treenode.Tag as ChannelNode);
+			foreach (TreeNode treenode in multiSelectTreeviewElementsGroups.SelectedNodes) {
+				cutNodes.Add(treenode.Tag as ElementNode);
 				DeleteNode(treenode);
 			}
 
@@ -700,10 +700,10 @@ namespace VixenApplication
 
 		private void copyNodesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			List<ChannelNode> copiedNodes = new List<ChannelNode>();
+			List<ElementNode> copiedNodes = new List<ElementNode>();
 
-			foreach (TreeNode treenode in multiSelectTreeviewChannelsGroups.SelectedNodes) {
-				copiedNodes.Add(treenode.Tag as ChannelNode);
+			foreach (TreeNode treenode in multiSelectTreeviewElementsGroups.SelectedNodes) {
+				copiedNodes.Add(treenode.Tag as ElementNode);
 			}
 
 			_clipboardNodes = copiedNodes;
@@ -714,28 +714,28 @@ namespace VixenApplication
 			if (_clipboardNodes == null)
 				return;
 
-			ChannelNode destinationNode = null;
-			TreeNode selectedTreeNode = multiSelectTreeviewChannelsGroups.SelectedNode;
+			ElementNode destinationNode = null;
+			TreeNode selectedTreeNode = multiSelectTreeviewElementsGroups.SelectedNode;
 
 			if (selectedTreeNode != null)
-				destinationNode = selectedTreeNode.Tag as ChannelNode;
+				destinationNode = selectedTreeNode.Tag as ElementNode;
 
-			IEnumerable<ChannelNode> invalidNodesForTarget;
+			IEnumerable<ElementNode> invalidNodesForTarget;
 			if (destinationNode == null)
 				invalidNodesForTarget = VixenSystem.Nodes.InvalidRootNodes;
 			else
 				invalidNodesForTarget = destinationNode.InvalidChildren();
 
-			IEnumerable<ChannelNode> invalidSourceNodes = invalidNodesForTarget.Intersect(_clipboardNodes);
+			IEnumerable<ElementNode> invalidSourceNodes = invalidNodesForTarget.Intersect(_clipboardNodes);
 			if (invalidSourceNodes.Count() > 0) {
 				SystemSounds.Asterisk.Play();
 			} else {
-				// Check to see if the new parent node would be 'losing' the Channel (ie. becoming a
-				// group instead of a leaf node with a channel/patches). Prompt the user first.
+				// Check to see if the new parent node would be 'losing' the Element (ie. becoming a
+				// group instead of a leaf node with a element/patches). Prompt the user first.
 				if (CheckIfNodeWillLosePatches(destinationNode))
 					return;
 
-				foreach (ChannelNode cn in _clipboardNodes) {
+				foreach (ElementNode cn in _clipboardNodes) {
 					VixenSystem.Nodes.AddChildToParent(cn, destinationNode);
 				}
 
@@ -749,10 +749,10 @@ namespace VixenApplication
 
 		private void copyPropertiesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count != 1)
+			if (multiSelectTreeviewElementsGroups.SelectedNodes.Count != 1)
 				return;
 
-			ChannelNode sourceNode = multiSelectTreeviewChannelsGroups.SelectedNode.Tag as ChannelNode;
+			ElementNode sourceNode = multiSelectTreeviewElementsGroups.SelectedNode.Tag as ElementNode;
 			_clipboardProperties = new List<IPropertyModuleInstance>();
 			foreach (IPropertyModuleInstance property in sourceNode.Properties) {
 				_clipboardProperties.Add(property);
@@ -764,20 +764,20 @@ namespace VixenApplication
 			if (_clipboardProperties == null)
 				return;
 
-			foreach (TreeNode tn in multiSelectTreeviewChannelsGroups.SelectedNodes) {
-				ChannelNode channel = tn.Tag as ChannelNode;
+			foreach (TreeNode tn in multiSelectTreeviewElementsGroups.SelectedNodes) {
+				ElementNode element = tn.Tag as ElementNode;
 
 				foreach (IPropertyModuleInstance sourceProperty in _clipboardProperties) {
 					IPropertyModuleInstance destinationProperty;
 
-					if (channel.Properties.Contains(sourceProperty.Descriptor.TypeId)) {
-						destinationProperty = channel.Properties.Get(sourceProperty.Descriptor.TypeId);
+					if (element.Properties.Contains(sourceProperty.Descriptor.TypeId)) {
+						destinationProperty = element.Properties.Get(sourceProperty.Descriptor.TypeId);
 					} else {
-						destinationProperty = channel.Properties.Add(sourceProperty.Descriptor.TypeId);
+						destinationProperty = element.Properties.Add(sourceProperty.Descriptor.TypeId);
 					}
 
 					if (destinationProperty == null) {
-						VixenSystem.Logging.Error("ConfigChannels: pasting a property to a element, but can't make or find the instance!");
+						VixenSystem.Logging.Error("ConfigElements: pasting a property to a element, but can't make or find the instance!");
 						continue;
 					}
 
@@ -791,32 +791,32 @@ namespace VixenApplication
 
 		private void addNewNodeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			TreeNode selectedTreeNode = multiSelectTreeviewChannelsGroups.SelectedNode;
+			TreeNode selectedTreeNode = multiSelectTreeviewElementsGroups.SelectedNode;
 			if (selectedTreeNode == null)
 				AddSingleNodeWithPrompt();
 			else
-				AddSingleNodeWithPrompt(selectedTreeNode.Tag as ChannelNode);
+				AddSingleNodeWithPrompt(selectedTreeNode.Tag as ElementNode);
 
 			PopulateFormWithNode(_displayedNode, true);
 		}
 
 		private void addMultipleNewNodesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			TreeNode selectedTreeNode = multiSelectTreeviewChannelsGroups.SelectedNode;
+			TreeNode selectedTreeNode = multiSelectTreeviewElementsGroups.SelectedNode;
 			if (selectedTreeNode == null)
 				AddMultipleNodesWithPrompt();
 			else
-				AddMultipleNodesWithPrompt(selectedTreeNode.Tag as ChannelNode);
+				AddMultipleNodesWithPrompt(selectedTreeNode.Tag as ElementNode);
 
 			PopulateFormWithNode(_displayedNode, true);
 		}
 
 		private void deleteNodesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count == 0)
+			if (multiSelectTreeviewElementsGroups.SelectedNodes.Count == 0)
 				return;
 
-			foreach (TreeNode tn in multiSelectTreeviewChannelsGroups.SelectedNodes) {
+			foreach (TreeNode tn in multiSelectTreeviewElementsGroups.SelectedNodes) {
 				DeleteNode(tn);
 			}
 
@@ -832,17 +832,17 @@ namespace VixenApplication
 
 		private void renameNodesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count == 0)
+			if (multiSelectTreeviewElementsGroups.SelectedNodes.Count == 0)
 				return;
-			else if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count == 1) {
-				ChannelNode cn = multiSelectTreeviewChannelsGroups.SelectedNode.Tag as ChannelNode;
+			else if (multiSelectTreeviewElementsGroups.SelectedNodes.Count == 1) {
+				ElementNode cn = multiSelectTreeviewElementsGroups.SelectedNode.Tag as ElementNode;
 				TextDialog dialog = new TextDialog("Item name?", "Rename item", (cn).Name, true);
 				if (dialog.ShowDialog() == DialogResult.OK) {
 					if (dialog.Response != "" && dialog.Response != cn.Name)
 						VixenSystem.Nodes.RenameNode(cn, dialog.Response);
 				}
-			} else if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 1) {
-				RenameSelectedChannels();
+			} else if (multiSelectTreeviewElementsGroups.SelectedNodes.Count > 1) {
+				RenameSelectedElements();
 			}
 
 			PopulateNodeTree();
@@ -862,13 +862,13 @@ namespace VixenApplication
 			}
 		}
 
-		private void multiSelectTreeviewChannelsGroups_KeyDown(object sender, KeyEventArgs e)
+		private void multiSelectTreeviewElementsGroups_KeyDown(object sender, KeyEventArgs e)
 		{
 			// do our own deleting of items here
 			if (e.KeyCode == Keys.Delete) {
-				if (multiSelectTreeviewChannelsGroups.SelectedNodes.Count > 0) {
+				if (multiSelectTreeviewElementsGroups.SelectedNodes.Count > 0) {
 					if (MessageBox.Show("Delete selected items?", "Delete items", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) == DialogResult.Yes) {
-						foreach (TreeNode tn in multiSelectTreeviewChannelsGroups.SelectedNodes) {
+						foreach (TreeNode tn in multiSelectTreeviewElementsGroups.SelectedNodes) {
 							DeleteNode(tn);
 						}
 

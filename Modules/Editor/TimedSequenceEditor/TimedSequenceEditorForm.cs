@@ -18,6 +18,7 @@ using Vixen.Module.Timing;
 using Vixen.Services;
 using Vixen.Sys;
 using VixenModules.Sequence.Timed;
+using Element = Common.Controls.Timeline.Element;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -36,8 +37,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		// a mapping of effects in the sequence to the element that represent them in the grid.
 		private Dictionary<EffectNode, Element> _effectNodeToElement;
 
-		// a mapping of system channels to the (possibly multiple) rows that represent them in the grid.
-		private Dictionary<ChannelNode, List<Row>> _channelNodeToRows;
+		// a mapping of system elements to the (possibly multiple) rows that represent them in the grid.
+		private Dictionary<ElementNode, List<Row>> _elementNodeToRows;
 
 		// the time that was originally marked with the cursor before playback started; this is so
 		// we can move the cursor to represent the current playing time, and still return to where it was.
@@ -69,7 +70,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			InitializeComponent();
 
 			_effectNodeToElement = new Dictionary<EffectNode, Element>();
-			_channelNodeToRows = new Dictionary<ChannelNode, List<Row>>();
+			_elementNodeToRows = new Dictionary<ElementNode, List<Row>>();
 
 			timelineControl.ElementChangedRows += ElementChangedRowsHandler;
 			timelineControl.ElementsMovedNew += timelineControl_ElementsMovedNew;
@@ -158,15 +159,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#region Saving / Loading Methods
 
 		/// <summary>
-		/// Loads all nodes (groups/channels) currently in the system as rows in the timeline control.
+		/// Loads all nodes (groups/elements) currently in the system as rows in the timeline control.
 		/// </summary>
 		private void loadSystemNodesToRows(bool clearCurrentRows = true) {
-			_channelNodeToRows = new Dictionary<ChannelNode, List<Row>>();
+			_elementNodeToRows = new Dictionary<ElementNode, List<Row>>();
 
 			if(clearCurrentRows)
 				timelineControl.ClearAllRows();
 
-			foreach(ChannelNode node in VixenSystem.Nodes.GetRootNodes()) {
+			foreach(ElementNode node in VixenSystem.Nodes.GetRootNodes()) {
 				addNodeAsRow(node, null);
 			}
 		}
@@ -349,33 +350,33 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		protected void ElementChangedRowsHandler(object sender, ElementRowChangeEventArgs e) {
-			ChannelNode oldChannel = e.OldRow.Tag as ChannelNode;
-			ChannelNode newChannel = e.NewRow.Tag as ChannelNode;
+			ElementNode oldElement = e.OldRow.Tag as ElementNode;
+			ElementNode newElement = e.NewRow.Tag as ElementNode;
 			TimedSequenceElement movedElement = e.Element as TimedSequenceElement;
 			//List<TimelineElement> targetElements = _effectNodeToElement[movedElement.EffectNode];
 
-			// retarget the selected element from the old channel it was in to the new channel it was dragged to
+			// retarget the selected element from the old element it was in to the new element it was dragged to
 			// TODO: there's *got* to be a better way of adding/removing a single item from an array...
-			List<ChannelNode> nodeList = new List<ChannelNode>(movedElement.EffectNode.Effect.TargetNodes);
-			if(nodeList.Contains(oldChannel)) {
-				nodeList.Remove(oldChannel);
+			List<ElementNode> nodeList = new List<ElementNode>(movedElement.EffectNode.Effect.TargetNodes);
+			if(nodeList.Contains(oldElement)) {
+				nodeList.Remove(oldElement);
 			} else {
 				VixenSystem.Logging.Debug("TimedSequenceEditor: moving an element from " + e.OldRow.Name +
-				                          " to " + e.NewRow.Name + "and the effect element wasn't in the old row channel!");
+				                          " to " + e.NewRow.Name + "and the effect element wasn't in the old row element!");
 			}
-			nodeList.Add(newChannel);
+			nodeList.Add(newElement);
 			movedElement.EffectNode.Effect.TargetNodes = nodeList.ToArray();
 
 			// now that the effect that this element has been updated to accurately reflect the change,
 			// move the actual element around. It's a single element in the grid, belonging to multiple rows:
-			// so find all rows that represent the old channel, remove the element from them, and also find
-			// all rows that represent the new channel and add it to them.
+			// so find all rows that represent the old element, remove the element from them, and also find
+			// all rows that represent the new element and add it to them.
 			foreach(Row row in timelineControl) {
-				ChannelNode rowChannel = row.Tag as ChannelNode;
+				ElementNode rowElement = row.Tag as ElementNode;
 
-				if(rowChannel == oldChannel && row != e.OldRow)
+				if(rowElement == oldElement && row != e.OldRow)
 					row.RemoveElement(movedElement);
-				if(rowChannel == newChannel && row != e.NewRow)
+				if(rowElement == newElement && row != e.NewRow)
 					row.AddElement(movedElement);
 			}
 
@@ -717,11 +718,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			try {
 				//Debug.WriteLine("{0}   addEffectInstance(InstanceId={1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, effectInstance.InstanceId);
 
-				// get the target channel
-				ChannelNode targetNode = (ChannelNode)row.Tag;
+				// get the target element
+				ElementNode targetNode = (ElementNode)row.Tag;
 
 				// populate the given effect instance with the appropriate target node and times, and wrap it in an effectNode
-				effectInstance.TargetNodes = new ChannelNode[] {targetNode};
+				effectInstance.TargetNodes = new ElementNode[] {targetNode};
 				effectInstance.TimeSpan = timeSpan;
 				EffectNode effectNode = new EffectNode(effectInstance, startTime);
 
@@ -741,7 +742,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		/// <summary>
 		/// Populates the TimelineControl grid with a new TimedSequenceElement for the given EffectNode.
-		/// Will add a single TimedSequenceElement to in each row that each targeted channel of
+		/// Will add a single TimedSequenceElement to in each row that each targeted element of
 		/// the EffectNode references. It will also add callbacks to event handlers for the element.
 		/// </summary>
 		/// <param name="node">The EffectNode to make element(s) in the grid for.</param>
@@ -750,11 +751,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			element.ContentChanged += ElementContentChangedHandler;
 			element.TimeChanged += ElementTimeChangedHandler;
 
-			// for the effect, make a single element and add it to every row that represents its target channels
-			foreach(ChannelNode target in node.Effect.TargetNodes) {
-				if(_channelNodeToRows.ContainsKey(target)) {
-					// Add the element to each row that represents the channel this command is in.
-					foreach(Row row in _channelNodeToRows[target]) {
+			// for the effect, make a single element and add it to every row that represents its target elements
+			foreach(ElementNode target in node.Effect.TargetNodes) {
+				if(_elementNodeToRows.ContainsKey(target)) {
+					// Add the element to each row that represents the element this command is in.
+					foreach(Row row in _elementNodeToRows[target]) {
 						if(!_effectNodeToElement.ContainsKey(node))
 							_effectNodeToElement[node] = element;
 						//else
@@ -763,10 +764,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						row.AddElement(element);
 					}
 				} else {
-					// we don't have a row for the channel this effect is referencing; most likely, the row has
+					// we don't have a row for the element this effect is referencing; most likely, the row has
 					// been deleted, or we're opening someone else's sequence, etc. Big fat TODO: here for that, then.
-					// dunno what we want to do: prompt to add new channels for them? map them to others? etc.
-					string message = "No Timeline.Row is associated with a target ChannelNode for this EffectNode. It now exists in the sequence, but not in the GUI.";
+					// dunno what we want to do: prompt to add new elements for them? map them to others? etc.
+					string message = "No Timeline.Row is associated with a target ElementNode for this EffectNode. It now exists in the sequence, but not in the GUI.";
 					MessageBox.Show(message);
 					VixenSystem.Logging.Error(message);
 				}
@@ -798,12 +799,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 
 		/// <summary>
-		/// Adds a single given channel node as a row in the timeline control. Recursively adds all
+		/// Adds a single given element node as a row in the timeline control. Recursively adds all
 		/// child nodes of the given node as children, if needed.
 		/// </summary>
 		/// <param name="node">The node to generate a row for.</param>
 		/// <param name="parentRow">The parent node the row should belong to, if any.</param>
-		private void addNodeAsRow(ChannelNode node, Row parentRow) {
+		private void addNodeAsRow(ElementNode node, Row parentRow) {
 			// made the new row from the given node and add it to the control.
 			TimedSequenceRowLabel label = new TimedSequenceRowLabel();
 			label.Name = node.Name;
@@ -811,15 +812,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			newRow.ElementRemoved += ElementRemovedFromRowHandler;
 			newRow.ElementAdded += ElementAddedToRowHandler;
 
-			// Tag it with the node it refers to, and take note of which row the given channel node will refer to.
+			// Tag it with the node it refers to, and take note of which row the given element node will refer to.
 			newRow.Tag = node;
-			if(_channelNodeToRows.ContainsKey(node))
-				_channelNodeToRows[node].Add(newRow);
+			if(_elementNodeToRows.ContainsKey(node))
+				_elementNodeToRows[node].Add(newRow);
 			else
-				_channelNodeToRows[node] = new List<Row> {newRow};
+				_elementNodeToRows[node] = new List<Row> {newRow};
 
 			// iterate through all if its children, adding them as needed
-			foreach(ChannelNode child in node.Children) {
+			foreach(ElementNode child in node.Children) {
 				addNodeAsRow(child, newRow);
 			}
 		}

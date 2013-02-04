@@ -340,7 +340,7 @@ namespace VixenModules.EffectEditor.SpinEffectEditor
 			if (TargetEffect == null)
 				return;
 
-			//List<ChannelNode> renderNodes = RGBModule.FindAllRenderableChildren(TargetEffect.TargetNodes);
+			//List<ElementNode> renderNodes = RGBModule.FindAllRenderableChildren(TargetEffect.TargetNodes);
 			//int targetNodeCount = renderNodes.Count;
 
 			double totalTime = TargetEffect.TimeSpan.TotalMilliseconds;

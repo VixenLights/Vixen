@@ -1,6 +1,6 @@
 ﻿namespace VixenApplication
 {
-	partial class ConfigChannels
+	partial class ConfigElements
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -29,7 +29,7 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigChannels));
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigElements));
 			this.buttonOk = new System.Windows.Forms.Button();
 			this.groupBoxSelectedNode = new System.Windows.Forms.GroupBox();
 			this.labelProperties = new System.Windows.Forms.Label();
@@ -43,11 +43,11 @@
 			this.textBoxName = new System.Windows.Forms.TextBox();
 			this.treeIconsImageList = new System.Windows.Forms.ImageList(this.components);
 			this.groupBoxOperations = new System.Windows.Forms.GroupBox();
-			this.buttonAddMultipleChannels = new System.Windows.Forms.Button();
-			this.buttonDeleteChannel = new System.Windows.Forms.Button();
+			this.buttonAddMultipleElements = new System.Windows.Forms.Button();
+			this.buttonDeleteElement = new System.Windows.Forms.Button();
 			this.buttonRename = new System.Windows.Forms.Button();
 			this.buttonCreateGroup = new System.Windows.Forms.Button();
-			this.buttonAddChannel = new System.Windows.Forms.Button();
+			this.buttonAddElement = new System.Windows.Forms.Button();
 			this.label4 = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
 			this.contextMenuStripTreeView = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -69,7 +69,7 @@
 			this.moveHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.buttonCancel = new System.Windows.Forms.Button();
-			this.multiSelectTreeviewChannelsGroups = new Common.Controls.MultiSelectTreeview();
+			this.multiSelectTreeviewElementsGroups = new Common.Controls.MultiSelectTreeview();
 			this.groupBoxSelectedNode.SuspendLayout();
 			this.groupBoxOperations.SuspendLayout();
 			this.contextMenuStripTreeView.SuspendLayout();
@@ -205,11 +205,11 @@
 			// groupBoxOperations
 			// 
 			this.groupBoxOperations.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.groupBoxOperations.Controls.Add(this.buttonAddMultipleChannels);
-			this.groupBoxOperations.Controls.Add(this.buttonDeleteChannel);
+			this.groupBoxOperations.Controls.Add(this.buttonAddMultipleElements);
+			this.groupBoxOperations.Controls.Add(this.buttonDeleteElement);
 			this.groupBoxOperations.Controls.Add(this.buttonRename);
 			this.groupBoxOperations.Controls.Add(this.buttonCreateGroup);
-			this.groupBoxOperations.Controls.Add(this.buttonAddChannel);
+			this.groupBoxOperations.Controls.Add(this.buttonAddElement);
 			this.groupBoxOperations.Location = new System.Drawing.Point(310, 12);
 			this.groupBoxOperations.Name = "groupBoxOperations";
 			this.groupBoxOperations.Size = new System.Drawing.Size(212, 201);
@@ -217,25 +217,25 @@
 			this.groupBoxOperations.TabStop = false;
 			this.groupBoxOperations.Text = "Operations";
 			// 
-			// buttonAddMultipleChannels
+			// buttonAddMultipleElements
 			// 
-			this.buttonAddMultipleChannels.Location = new System.Drawing.Point(35, 59);
-			this.buttonAddMultipleChannels.Name = "buttonAddMultipleChannels";
-			this.buttonAddMultipleChannels.Size = new System.Drawing.Size(140, 25);
-			this.buttonAddMultipleChannels.TabIndex = 27;
-			this.buttonAddMultipleChannels.Text = "Add Multiple";
-			this.buttonAddMultipleChannels.UseVisualStyleBackColor = true;
-			this.buttonAddMultipleChannels.Click += new System.EventHandler(this.buttonAddMultipleChannels_Click);
+			this.buttonAddMultipleElements.Location = new System.Drawing.Point(35, 59);
+			this.buttonAddMultipleElements.Name = "buttonAddMultipleElements";
+			this.buttonAddMultipleElements.Size = new System.Drawing.Size(140, 25);
+			this.buttonAddMultipleElements.TabIndex = 27;
+			this.buttonAddMultipleElements.Text = "Add Multiple";
+			this.buttonAddMultipleElements.UseVisualStyleBackColor = true;
+			this.buttonAddMultipleElements.Click += new System.EventHandler(this.buttonAddMultipleElements_Click);
 			// 
-			// buttonDeleteChannel
+			// buttonDeleteElement
 			// 
-			this.buttonDeleteChannel.Location = new System.Drawing.Point(35, 93);
-			this.buttonDeleteChannel.Name = "buttonDeleteChannel";
-			this.buttonDeleteChannel.Size = new System.Drawing.Size(140, 25);
-			this.buttonDeleteChannel.TabIndex = 24;
-			this.buttonDeleteChannel.Text = "Delete";
-			this.buttonDeleteChannel.UseVisualStyleBackColor = true;
-			this.buttonDeleteChannel.Click += new System.EventHandler(this.buttonDeleteChannel_Click);
+			this.buttonDeleteElement.Location = new System.Drawing.Point(35, 93);
+			this.buttonDeleteElement.Name = "buttonDeleteElement";
+			this.buttonDeleteElement.Size = new System.Drawing.Size(140, 25);
+			this.buttonDeleteElement.TabIndex = 24;
+			this.buttonDeleteElement.Text = "Delete";
+			this.buttonDeleteElement.UseVisualStyleBackColor = true;
+			this.buttonDeleteElement.Click += new System.EventHandler(this.buttonDeleteElement_Click);
 			// 
 			// buttonRename
 			// 
@@ -257,15 +257,15 @@
 			this.buttonCreateGroup.UseVisualStyleBackColor = true;
 			this.buttonCreateGroup.Click += new System.EventHandler(this.buttonCreateGroup_Click);
 			// 
-			// buttonAddChannel
+			// buttonAddElement
 			// 
-			this.buttonAddChannel.Location = new System.Drawing.Point(35, 25);
-			this.buttonAddChannel.Name = "buttonAddChannel";
-			this.buttonAddChannel.Size = new System.Drawing.Size(140, 25);
-			this.buttonAddChannel.TabIndex = 23;
-			this.buttonAddChannel.Text = "Add";
-			this.buttonAddChannel.UseVisualStyleBackColor = true;
-			this.buttonAddChannel.Click += new System.EventHandler(this.buttonAddChannel_Click);
+			this.buttonAddElement.Location = new System.Drawing.Point(35, 25);
+			this.buttonAddElement.Name = "buttonAddElement";
+			this.buttonAddElement.Size = new System.Drawing.Size(140, 25);
+			this.buttonAddElement.TabIndex = 23;
+			this.buttonAddElement.Text = "Add";
+			this.buttonAddElement.UseVisualStyleBackColor = true;
+			this.buttonAddElement.Click += new System.EventHandler(this.buttonAddElement_Click);
 			// 
 			// label4
 			// 
@@ -431,34 +431,34 @@
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			// 
-			// multiSelectTreeviewChannelsGroups
+			// multiSelectTreeviewElementsGroups
 			// 
-			this.multiSelectTreeviewChannelsGroups.AllowDrop = true;
-			this.multiSelectTreeviewChannelsGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.multiSelectTreeviewElementsGroups.AllowDrop = true;
+			this.multiSelectTreeviewElementsGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.multiSelectTreeviewChannelsGroups.ContextMenuStrip = this.contextMenuStripTreeView;
-			this.multiSelectTreeviewChannelsGroups.Cursor = System.Windows.Forms.Cursors.Default;
-			this.multiSelectTreeviewChannelsGroups.CustomDragCursor = null;
-			this.multiSelectTreeviewChannelsGroups.DragDefaultMode = System.Windows.Forms.DragDropEffects.Move;
-			this.multiSelectTreeviewChannelsGroups.DragDestinationNodeBackColor = System.Drawing.SystemColors.Highlight;
-			this.multiSelectTreeviewChannelsGroups.DragDestinationNodeForeColor = System.Drawing.SystemColors.HighlightText;
-			this.multiSelectTreeviewChannelsGroups.DragSourceNodeBackColor = System.Drawing.SystemColors.ControlLight;
-			this.multiSelectTreeviewChannelsGroups.DragSourceNodeForeColor = System.Drawing.SystemColors.ControlText;
-			this.multiSelectTreeviewChannelsGroups.HideSelection = false;
-			this.multiSelectTreeviewChannelsGroups.ImageIndex = 0;
-			this.multiSelectTreeviewChannelsGroups.ImageList = this.treeIconsImageList;
-			this.multiSelectTreeviewChannelsGroups.Location = new System.Drawing.Point(12, 12);
-			this.multiSelectTreeviewChannelsGroups.Name = "multiSelectTreeviewChannelsGroups";
-			this.multiSelectTreeviewChannelsGroups.SelectedImageIndex = 0;
-			this.multiSelectTreeviewChannelsGroups.SelectedNodes = ((System.Collections.Generic.List<System.Windows.Forms.TreeNode>)(resources.GetObject("multiSelectTreeviewChannelsGroups.SelectedNodes")));
-			this.multiSelectTreeviewChannelsGroups.Size = new System.Drawing.Size(285, 449);
-			this.multiSelectTreeviewChannelsGroups.TabIndex = 12;
-			this.multiSelectTreeviewChannelsGroups.UsingCustomDragCursor = false;
-			this.multiSelectTreeviewChannelsGroups.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.multiSelectTreeviewChannelsGroups_AfterSelect);
-			this.multiSelectTreeviewChannelsGroups.KeyDown += new System.Windows.Forms.KeyEventHandler(this.multiSelectTreeviewChannelsGroups_KeyDown);
+			this.multiSelectTreeviewElementsGroups.ContextMenuStrip = this.contextMenuStripTreeView;
+			this.multiSelectTreeviewElementsGroups.Cursor = System.Windows.Forms.Cursors.Default;
+			this.multiSelectTreeviewElementsGroups.CustomDragCursor = null;
+			this.multiSelectTreeviewElementsGroups.DragDefaultMode = System.Windows.Forms.DragDropEffects.Move;
+			this.multiSelectTreeviewElementsGroups.DragDestinationNodeBackColor = System.Drawing.SystemColors.Highlight;
+			this.multiSelectTreeviewElementsGroups.DragDestinationNodeForeColor = System.Drawing.SystemColors.HighlightText;
+			this.multiSelectTreeviewElementsGroups.DragSourceNodeBackColor = System.Drawing.SystemColors.ControlLight;
+			this.multiSelectTreeviewElementsGroups.DragSourceNodeForeColor = System.Drawing.SystemColors.ControlText;
+			this.multiSelectTreeviewElementsGroups.HideSelection = false;
+			this.multiSelectTreeviewElementsGroups.ImageIndex = 0;
+			this.multiSelectTreeviewElementsGroups.ImageList = this.treeIconsImageList;
+			this.multiSelectTreeviewElementsGroups.Location = new System.Drawing.Point(12, 12);
+			this.multiSelectTreeviewElementsGroups.Name = "multiSelectTreeviewElementsGroups";
+			this.multiSelectTreeviewElementsGroups.SelectedImageIndex = 0;
+			this.multiSelectTreeviewElementsGroups.SelectedNodes = ((System.Collections.Generic.List<System.Windows.Forms.TreeNode>)(resources.GetObject("multiSelectTreeviewElementsGroups.SelectedNodes")));
+			this.multiSelectTreeviewElementsGroups.Size = new System.Drawing.Size(285, 449);
+			this.multiSelectTreeviewElementsGroups.TabIndex = 12;
+			this.multiSelectTreeviewElementsGroups.UsingCustomDragCursor = false;
+			this.multiSelectTreeviewElementsGroups.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.multiSelectTreeviewElementsGroups_AfterSelect);
+			this.multiSelectTreeviewElementsGroups.KeyDown += new System.Windows.Forms.KeyEventHandler(this.multiSelectTreeviewElementsGroups_KeyDown);
 			// 
-			// ConfigChannels
+			// ConfigElements
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -466,16 +466,16 @@
 			this.Controls.Add(this.label5);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.buttonCancel);
-			this.Controls.Add(this.multiSelectTreeviewChannelsGroups);
+			this.Controls.Add(this.multiSelectTreeviewElementsGroups);
 			this.Controls.Add(this.buttonOk);
 			this.Controls.Add(this.groupBoxOperations);
 			this.Controls.Add(this.groupBoxSelectedNode);
 			this.DoubleBuffered = true;
 			this.MinimumSize = new System.Drawing.Size(550, 550);
-			this.Name = "ConfigChannels";
+			this.Name = "ConfigElements";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Display Elements & Group Configuration";
-			this.Load += new System.EventHandler(this.ConfigChannels_Load);
+			this.Load += new System.EventHandler(this.ConfigElements_Load);
 			this.groupBoxSelectedNode.ResumeLayout(false);
 			this.groupBoxSelectedNode.PerformLayout();
 			this.groupBoxOperations.ResumeLayout(false);
@@ -490,16 +490,16 @@
 
 		private System.Windows.Forms.Button buttonOk;
 		private System.Windows.Forms.GroupBox groupBoxSelectedNode;
-		private Common.Controls.MultiSelectTreeview multiSelectTreeviewChannelsGroups;
+		private Common.Controls.MultiSelectTreeview multiSelectTreeviewElementsGroups;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.TextBox textBoxName;
 		private System.Windows.Forms.Label labelParents;
 		private System.Windows.Forms.ImageList treeIconsImageList;
 		private System.Windows.Forms.GroupBox groupBoxOperations;
-		private System.Windows.Forms.Button buttonDeleteChannel;
+		private System.Windows.Forms.Button buttonDeleteElement;
 		private System.Windows.Forms.Button buttonRename;
 		private System.Windows.Forms.Button buttonCreateGroup;
-		private System.Windows.Forms.Button buttonAddChannel;
+		private System.Windows.Forms.Button buttonAddElement;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStripTreeView;
@@ -526,7 +526,7 @@
 		private System.Windows.Forms.Button buttonAddProperty;
 		private System.Windows.Forms.ListView listViewProperties;
 		private System.Windows.Forms.ColumnHeader columnHeader2;
-		private System.Windows.Forms.Button buttonAddMultipleChannels;
+		private System.Windows.Forms.Button buttonAddMultipleElements;
 		private System.Windows.Forms.ToolStripMenuItem addMultipleNewNodesToolStripMenuItem;
 	}
 }

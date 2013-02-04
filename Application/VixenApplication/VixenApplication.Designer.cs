@@ -60,7 +60,7 @@
 			this.buttonSetupFiltersAndPatching = new System.Windows.Forms.Button();
 			this.buttonSetupOutputPreviews = new System.Windows.Forms.Button();
 			this.buttonSetupOutputControllers = new System.Windows.Forms.Button();
-			this.buttonSetupChannels = new System.Windows.Forms.Button();
+			this.buttonSetupElements = new System.Windows.Forms.Button();
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabelExecutionLight = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -272,7 +272,7 @@
 			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupFiltersAndPatching);
 			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupOutputPreviews);
 			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupOutputControllers);
-			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupChannels);
+			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupElements);
 			this.groupBoxSystemConfig.Location = new System.Drawing.Point(236, 133);
 			this.groupBoxSystemConfig.Name = "groupBoxSystemConfig";
 			this.groupBoxSystemConfig.Size = new System.Drawing.Size(204, 186);
@@ -310,15 +310,15 @@
 			this.buttonSetupOutputControllers.UseVisualStyleBackColor = true;
 			this.buttonSetupOutputControllers.Click += new System.EventHandler(this.buttonSetupOutputControllers_Click);
 			// 
-			// buttonSetupChannels
+			// buttonSetupElements
 			// 
-			this.buttonSetupChannels.Location = new System.Drawing.Point(12, 23);
-			this.buttonSetupChannels.Name = "buttonSetupChannels";
-			this.buttonSetupChannels.Size = new System.Drawing.Size(180, 30);
-			this.buttonSetupChannels.TabIndex = 5;
-			this.buttonSetupChannels.Text = "Configure Elements && Groups";
-			this.buttonSetupChannels.UseVisualStyleBackColor = true;
-			this.buttonSetupChannels.Click += new System.EventHandler(this.buttonSetupChannels_Click);
+			this.buttonSetupElements.Location = new System.Drawing.Point(12, 23);
+			this.buttonSetupElements.Name = "buttonSetupElements";
+			this.buttonSetupElements.Size = new System.Drawing.Size(180, 30);
+			this.buttonSetupElements.TabIndex = 5;
+			this.buttonSetupElements.Text = "Configure Elements && Groups";
+			this.buttonSetupElements.UseVisualStyleBackColor = true;
+			this.buttonSetupElements.Click += new System.EventHandler(this.buttonSetupElements_Click);
 			// 
 			// statusStrip
 			// 
@@ -416,7 +416,7 @@
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.GroupBox groupBoxSystemConfig;
 		private System.Windows.Forms.Button buttonSetupOutputControllers;
-		private System.Windows.Forms.Button buttonSetupChannels;
+		private System.Windows.Forms.Button buttonSetupElements;
 		private System.Windows.Forms.StatusStrip statusStrip;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelExecutionState;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelExecutionLight;

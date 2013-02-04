@@ -17,7 +17,7 @@ namespace VixenModules.Effect.Twinkle
 		private static Random _random = new Random();
 
 		private TwinkleData _data;
-		private EffectIntents _channelData = null;
+		private EffectIntents _elementData = null;
 
 		public Twinkle()
 		{
@@ -26,25 +26,25 @@ namespace VixenModules.Effect.Twinkle
 
 		protected override void _PreRender()
 		{
-			_channelData = new EffectIntents();
+			_elementData = new EffectIntents();
 
-			IEnumerable<ChannelNode> targetNodes = GetNodesToRenderOn();
+			IEnumerable<ElementNode> targetNodes = GetNodesToRenderOn();
 
 			List<IndividualTwinkleDetails> twinkles = null;
-			if (!IndividualChannels)
+			if (!IndividualElements)
 				twinkles = GenerateTwinkleData();
 
 			int totalNodes = targetNodes.Count();
 			int i = 0;
 
-			foreach (ChannelNode node in targetNodes) {
-				_channelData.Add(RenderChannel(node, i++ / (double)totalNodes, twinkles));
+			foreach (ElementNode node in targetNodes) {
+				_elementData.Add(RenderElement(node, i++ / (double)totalNodes, twinkles));
 			}
 		}
 
 		protected override EffectIntents _Render()
 		{
-			return _channelData;
+			return _elementData;
 		}
 
 		public override IModuleDataModel ModuleData
@@ -69,7 +69,7 @@ namespace VixenModules.Effect.Twinkle
 		}
 
 		[Value]
-		public bool IndividualChannels
+		public bool IndividualElements
 		{
 			get { return _data.IndividualChannels; }
 			set { _data.IndividualChannels = value; IsDirty = true; }
@@ -145,7 +145,7 @@ namespace VixenModules.Effect.Twinkle
 			set { _data.DepthOfEffect = value; IsDirty = true; }
 		}
 
-		private EffectIntents RenderChannel(ChannelNode node, double positionWithinGroup, List<IndividualTwinkleDetails> twinkles = null)
+		private EffectIntents RenderElement(ElementNode node, double positionWithinGroup, List<IndividualTwinkleDetails> twinkles = null)
 		{
 			if (node == null)
 				return null;
@@ -157,7 +157,7 @@ namespace VixenModules.Effect.Twinkle
 
 			// render the flat 'minimum value' across the entire effect
 			Pulse.Pulse pulse = new Pulse.Pulse();
-			pulse.TargetNodes = new ChannelNode[] { node };
+			pulse.TargetNodes = new ElementNode[] { node };
 			pulse.TimeSpan = TimeSpan;
 			pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { MinimumLevel * 100.0, MinimumLevel * 100.0 }));
 
@@ -188,7 +188,7 @@ namespace VixenModules.Effect.Twinkle
 				{
 					// make a pulse for it
 					pulse = new Pulse.Pulse();
-					pulse.TargetNodes = new ChannelNode[] { node };
+					pulse.TargetNodes = new ElementNode[] { node };
 					pulse.TimeSpan = twinkle.Duration;
 					pulse.LevelCurve = twinkle.TwinkleCurve;
 
@@ -279,11 +279,11 @@ namespace VixenModules.Effect.Twinkle
 			return result;
 		}
 
-		private List<ChannelNode> GetNodesToRenderOn()
+		private List<ElementNode> GetNodesToRenderOn()
 		{
-			IEnumerable<ChannelNode> renderNodes = null;
+			IEnumerable<ElementNode> renderNodes = null;
 
-			if (DepthOfEffect == 0 || !IndividualChannels)
+			if (DepthOfEffect == 0 || !IndividualElements)
 			{
 				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).Distinct();
 			}

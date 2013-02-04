@@ -32,7 +32,7 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 			get
 			{
 				return new object[] {
-					IndividualChannels,
+					IndividualElements,
 					MinimumLevel,
 					MaximumLevel,
 					LevelVariation,
@@ -52,7 +52,7 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 					return;
 				}
 
-				IndividualChannels = (bool)value[0];
+				IndividualElements = (bool)value[0];
 				MinimumLevel = (double)value[1];
 				MaximumLevel = (double)value[2];
 				LevelVariation = (int)value[3];
@@ -66,10 +66,10 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 			}
 		}
 
-		public bool IndividualChannels
+		public bool IndividualElements
 		{
-			get { return radioButtonIndividualChannels.Checked || radioButtonApplyToLevel.Checked; }
-			set { UpdateChannelHandlingGroupBox(DepthOfEffect, value);  }
+			get { return radioButtonIndividualElements.Checked || radioButtonApplyToLevel.Checked; }
+			set { UpdateElementHandlingGroupBox(DepthOfEffect, value);  }
 		}
 
 		public double MinimumLevel
@@ -159,28 +159,28 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 		{
 			get
 			{
-				if (this.radioButtonIndividualChannels.Checked)
+				if (this.radioButtonIndividualElements.Checked)
 					return 0;
 				else
 					return (int)numericUpDownDepthOfEffect.Value;
 			}
 			set
 			{
-				UpdateChannelHandlingGroupBox(value, IndividualChannels);
+				UpdateElementHandlingGroupBox(value, IndividualElements);
 			}
 		}
 
-		private void UpdateChannelHandlingGroupBox(int depthOfEffect, bool individualChannels)
+		private void UpdateElementHandlingGroupBox(int depthOfEffect, bool individualElements)
 		{
-			if (depthOfEffect == 0 && individualChannels)
-				radioButtonIndividualChannels.Checked = true;
-			else if (individualChannels)
+			if (depthOfEffect == 0 && individualElements)
+				radioButtonIndividualElements.Checked = true;
+			else if (individualElements)
 			{
 				radioButtonApplyToLevel.Checked = true;
 				numericUpDownDepthOfEffect.Value = depthOfEffect;
 			}
 			else
-				radioButtonSynchronizedChannels.Checked = true;
+				radioButtonSynchronizedElements.Checked = true;
 		}
 
 

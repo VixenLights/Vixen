@@ -17,7 +17,7 @@ namespace VixenModules.Property.Position {
 			float start = 0;
 
 			// Make sure each child has a value.
-			foreach(ChannelNode node in Owner.Children) {
+			foreach(ElementNode node in Owner.Children) {
 				if(!_data.ChildrenPositions.ContainsKey(node.Id)) {
 					_data.ChildrenPositions[node.Id] = new PositionValue(start, spanPerChild);
 				}
@@ -50,44 +50,44 @@ namespace VixenModules.Property.Position {
 
 		public enum PositionBehavior { Spanning, Resetting };
 
-		public void BuildPositionMap(IEnumerable<ChannelNode> topLevelNodes) {
-			foreach(ChannelNode node in topLevelNodes) {
+		public void BuildPositionMap(IEnumerable<ElementNode> topLevelNodes) {
+			foreach(ElementNode node in topLevelNodes) {
 				if(!_HaveMap(node)) {
 					_ParseNode(node);
 				}
 			}
 		}
 
-		public PositionValue GetPositionValues(Guid channelNodeId) {
+		public PositionValue GetPositionValues(Guid elementNodeId) {
 			PositionValue childPosition;
-			_data.ChildrenPositions.TryGetValue(channelNodeId, out childPosition);
+			_data.ChildrenPositions.TryGetValue(elementNodeId, out childPosition);
 			return childPosition;
 		}
 
-		public PositionValue GetCalculatedPosition(Guid channelNodeId) {
+		public PositionValue GetCalculatedPosition(Guid elementNodeId) {
 			PositionValue childPosition;
-			_nodePositionMap.TryGetValue(channelNodeId, out childPosition);
+			_nodePositionMap.TryGetValue(elementNodeId, out childPosition);
 			return childPosition;
 		}
 
-		static private bool _HaveMap(ChannelNode node) {
+		static private bool _HaveMap(ElementNode node) {
 			return _nodePositionMap.ContainsKey(node.Id);
 		}
 
-		static private void _ParseNode(ChannelNode node) {
+		static private void _ParseNode(ElementNode node) {
 			PositionValue positionValue = new PositionValue(0, 1);
 			PositionMap positions = _ParseChildren(node, positionValue);
 			_nodePositionMap.AddRange(positions);
 		}
 
-		static private PositionMap _ParseChildren(ChannelNode parentNode, PositionValue parentPosition) {
+		static private PositionMap _ParseChildren(ElementNode parentNode, PositionValue parentPosition) {
 			// Traverse every node.  Nodes with the position property will affect the childrens'
 			// positions.
 			PositionMap childValues = new PositionMap();
 
 			PositionModule positionProperty = parentNode.Properties.Get(PositionDescriptor._typeId) as PositionModule;
 
-			foreach(ChannelNode childNode in parentNode.Children) {
+			foreach(ElementNode childNode in parentNode.Children) {
 				PositionValue childPosition = positionProperty.GetPositionValues(childNode.Id);
 				if(childPosition != null) {
 					// Parent has a modifying position for the child.

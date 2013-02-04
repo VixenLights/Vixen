@@ -97,13 +97,13 @@ namespace VixenModules.Preview.DisplayPreview.ViewModels
 			}
 		}
 
-        public void UpdateExecutionStateValues(ChannelIntentStates channelIntentStates)
+        public void UpdateExecutionStateValues(ElementIntentStates elementIntentStates)
         {
             
 			foreach (var displayItem in DataModel.DisplayItems)
 			{
 				displayItem.ResetColor(true);  
-				displayItem.UpdateChannelColors(channelIntentStates);
+				displayItem.UpdateElementColors(elementIntentStates);
 			}
         }
 

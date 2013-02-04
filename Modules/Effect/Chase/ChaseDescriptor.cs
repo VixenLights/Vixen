@@ -26,7 +26,7 @@ namespace VixenModules.Effect.Chase
 
 		public override string TypeName { get { return EffectName; } }
 
-		public override string Description { get { return "Applies a pulse on consecutive channels in the given group, chasing though each item in the group."; } }
+		public override string Description { get { return "Applies a pulse on consecutive elements in the given group, chasing though each item in the group."; } }
 
 		public override string Version { get { return "1.0"; } }
 
@@ -39,7 +39,7 @@ namespace VixenModules.Effect.Chase
 				return new ParameterSignature(
 					new ParameterSpecification("Color Handling", typeof(ChaseColorHandling)),
 					new ParameterSpecification("Pulse Overlap", typeof(int)),
-					new ParameterSpecification("Default channel level", typeof(double)),
+					new ParameterSpecification("Default element level", typeof(double)),
 					new ParameterSpecification("Static Color", typeof(Color)),
 					new ParameterSpecification("Color Gradient", typeof(ColorGradient)),
 					new ParameterSpecification("Individual Pulse Curve", typeof(Curve)),

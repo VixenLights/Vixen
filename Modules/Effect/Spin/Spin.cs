@@ -15,7 +15,7 @@ namespace VixenModules.Effect.Spin
 	public class Spin : EffectModuleInstanceBase
 	{
 		private SpinData _data;
-		private EffectIntents _channelData = null;
+		private EffectIntents _elementData = null;
 
 		public Spin()
 		{
@@ -24,13 +24,13 @@ namespace VixenModules.Effect.Spin
 
 		protected override void _PreRender()
 		{
-			_channelData = new EffectIntents();
+			_elementData = new EffectIntents();
 			DoRendering();
 		}
 
 		protected override EffectIntents _Render()
 		{
-			return _channelData;
+			return _elementData;
 		}
 
 		public override IModuleDataModel ModuleData
@@ -160,18 +160,18 @@ namespace VixenModules.Effect.Spin
 			//TODO: get a better increment time. doing it every X ms is..... shitty at best.
 			TimeSpan increment = TimeSpan.FromMilliseconds(10);
 
-			List<ChannelNode> renderNodes = GetNodesToRenderOn();
+			List<ElementNode> renderNodes = GetNodesToRenderOn();
 			int targetNodeCount = renderNodes.Count;
-			ChannelNode lastTargetedNode = null;
+			ElementNode lastTargetedNode = null;
 
 			Pulse.Pulse pulse;
 			EffectIntents pulseData;
 
 			// apply the 'background' values to all targets
 			int i = 0;
-			foreach (ChannelNode target in renderNodes) {
+			foreach (ElementNode target in renderNodes) {
 				pulse = new Pulse.Pulse();
-				pulse.TargetNodes = new ChannelNode[] { target };
+				pulse.TargetNodes = new ElementNode[] { target };
 				pulse.TimeSpan = TimeSpan;
 				pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { DefaultLevel * 100.0, DefaultLevel * 100.0 }));
 
@@ -195,7 +195,7 @@ namespace VixenModules.Effect.Spin
 				}
 
 				pulseData = pulse.Render();
-				_channelData.Add(pulseData);
+				_elementData.Add(pulseData);
 				i++;
 			}
 
@@ -232,7 +232,7 @@ namespace VixenModules.Effect.Spin
 			TimeSpan revTimeSpan = TimeSpan.FromMilliseconds(revTimeMs);
 			TimeSpan pulseTimeSpan = TimeSpan.FromMilliseconds(pulTimeMs);
 
-			// figure out which way we're moving through the channels
+			// figure out which way we're moving through the elements
 			Curve movement;
 			if (ReverseSpin)
 				movement = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { 100, 0 }));
@@ -245,8 +245,8 @@ namespace VixenModules.Effect.Spin
 			for (TimeSpan current = TimeSpan.Zero; current <= TimeSpan - pulseTimeSpan + increment; current += increment) {
 				double currentPercentageIntoSpin = ((double)(current.Ticks % revTimeSpan.Ticks) / (double)revTimeSpan.Ticks) * 100.0;
 
-				double targetChannelPosition = movement.GetValue(currentPercentageIntoSpin);
-				int currentNodeIndex = (int)((targetChannelPosition / 100.0) * targetNodeCount);
+				double targetElementPosition = movement.GetValue(currentPercentageIntoSpin);
+				int currentNodeIndex = (int)((targetElementPosition / 100.0) * targetNodeCount);
 
 				// on the off chance we hit the 100% mark *exactly*...
 				if (currentNodeIndex == targetNodeCount)
@@ -257,13 +257,13 @@ namespace VixenModules.Effect.Spin
 					continue;
 				}
 
-				ChannelNode currentNode = renderNodes[currentNodeIndex];
+				ElementNode currentNode = renderNodes[currentNodeIndex];
 				if (currentNode == lastTargetedNode)
 					continue;
 
 				// make a pulse for it
 				pulse = new Pulse.Pulse();
-				pulse.TargetNodes = new ChannelNode[] { currentNode };
+				pulse.TargetNodes = new ElementNode[] { currentNode };
 				pulse.TimeSpan = pulseTimeSpan;
 				pulse.LevelCurve = new Curve(PulseCurve);
 
@@ -286,23 +286,23 @@ namespace VixenModules.Effect.Spin
 						break;
 
 					case SpinColorHandling.ColorAcrossItems:
-						pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(targetChannelPosition / 100.0));
+						pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(targetElementPosition / 100.0));
 						break;
 				}
 
 				pulseData = pulse.Render();
 				pulseData.OffsetAllCommandsByTime(current);
-				_channelData.Add(pulseData);
+				_elementData.Add(pulseData);
 				
 				lastTargetedNode = currentNode;
 			}
 
-			_channelData = EffectIntents.Restrict(_channelData, TimeSpan.Zero, TimeSpan);
+			_elementData = EffectIntents.Restrict(_elementData, TimeSpan.Zero, TimeSpan);
 		}
 
-		private List<ChannelNode> GetNodesToRenderOn()
+		private List<ElementNode> GetNodesToRenderOn()
 		{
-			IEnumerable<ChannelNode> renderNodes = null;
+			IEnumerable<ElementNode> renderNodes = null;
 
 			if (DepthOfEffect == 0)
 			{

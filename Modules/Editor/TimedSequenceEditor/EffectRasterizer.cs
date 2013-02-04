@@ -12,20 +12,20 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 			// As recommended by R#
 			if (Math.Abs(width - 0) < double.Epsilon || Math.Abs(height - 0) < double.Epsilon) return;
 
-			Channel[] channels = effect.TargetNodes.GetChannels();
-			double heightPerChannel = height / channels.Length;
+			Element[] elements = effect.TargetNodes.GetElements();
+			double heightPerElement = height / elements.Length;
 
 			EffectIntents effectIntents = effect.Render();
 
 			IntentRasterizer intentRasterizer = new IntentRasterizer();
 			double y = 0;
-			foreach(Channel channel in channels) {
-				IntentNodeCollection channelIntents = effectIntents.GetIntentNodesForChannel(channel.Id);
-				if(channelIntents != null) {
-					foreach(IntentNode channelIntentNode in channelIntents) {
+			foreach(Element element in elements) {
+				IntentNodeCollection elementIntents = effectIntents.GetIntentNodesForElement(element.Id);
+				if(elementIntents != null) {
+					foreach(IntentNode elementIntentNode in elementIntents) {
 
-						double startPixelX = width * _GetPercentage(channelIntentNode.StartTime, effect.TimeSpan);
-						double widthPixelX = width * _GetPercentage(channelIntentNode.TimeSpan, effect.TimeSpan);
+						double startPixelX = width * _GetPercentage(elementIntentNode.StartTime, effect.TimeSpan);
+						double widthPixelX = width * _GetPercentage(elementIntentNode.TimeSpan, effect.TimeSpan);
 
 						// these were options to try and get the rasterization to 'overlap' slightly to remove vertical splits between intents.
 						// However, with the change to doubles and more precision, the issue seems to have disappeared. Nevertheless, leave these here.
@@ -34,10 +34,10 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 						//startPixelX = Math.Floor(startPixelX);
 						//widthPixelX = Math.Ceiling(widthPixelX);
 
-						intentRasterizer.Rasterize(channelIntentNode.Intent, new RectangleF((float)startPixelX, (float)y, (float)widthPixelX, (float)heightPerChannel), g);
+						intentRasterizer.Rasterize(elementIntentNode.Intent, new RectangleF((float)startPixelX, (float)y, (float)widthPixelX, (float)heightPerElement), g);
 					}
 				}
-				y += heightPerChannel;
+				y += heightPerElement;
 			}
 		}
 

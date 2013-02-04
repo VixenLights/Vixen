@@ -26,9 +26,9 @@ namespace VixenModules.Effect.ImageGrid {
 				return;
 			}
 
-			foreach(ChannelNode targetNode in TargetNodes) {
-				// Each channel represents a single pixel in the grid display.
-				// Therefore, the intent for the channel will represent the state of that
+			foreach(ElementNode targetNode in TargetNodes) {
+				// Each element represents a single pixel in the grid display.
+				// Therefore, the intent for the element will represent the state of that
 				// pixel over the lifetime of the effect.
 
 				// Get the grid dimensions from the node.
@@ -36,7 +36,7 @@ namespace VixenModules.Effect.ImageGrid {
 				VixenModules.Property.Grid.Data gridData = (VixenModules.Property.Grid.Data)gridProperty.ModuleData;
 
 				// For now, just scale it to the dimensions of the grid.
-				Channel[] channels = targetNode.ToArray();
+				Element[] elements = targetNode.ToArray();
 				byte[] pixelBuffer = new byte[] { 0, 0, 0, byte.MaxValue };
 				using(Bitmap bitmap = new Bitmap(gridData.Width, gridData.Height, image.PixelFormat)) {
 					using(Graphics g = Graphics.FromImage(bitmap)) {
@@ -58,7 +58,7 @@ namespace VixenModules.Effect.ImageGrid {
 								LightingValue startValue = new LightingValue(pixelColor, 1);
 								LightingValue endValue = new LightingValue(pixelColor, 1);
 								IIntent intent = new LightingIntent(startValue, endValue, TimeSpan);
-								_effectIntents.AddIntentForChannel(channels[pixelIndex].Id, intent, TimeSpan.Zero);
+								_effectIntents.AddIntentForElement(elements[pixelIndex].Id, intent, TimeSpan.Zero);
 							}
 						}
 

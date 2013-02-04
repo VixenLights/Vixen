@@ -95,7 +95,7 @@
 			this.radioButtonGradientAcrossItems.Size = new System.Drawing.Size(283, 17);
 			this.radioButtonGradientAcrossItems.TabIndex = 9;
 			this.radioButtonGradientAcrossItems.TabStop = true;
-			this.radioButtonGradientAcrossItems.Text = "The gradient is spread over the range of sub-channels.";
+			this.radioButtonGradientAcrossItems.Text = "The gradient is spread over the range of sub-elements.";
 			this.radioButtonGradientAcrossItems.UseVisualStyleBackColor = true;
 			// 
 			// colorTypeEditorControlStaticColor
@@ -163,7 +163,7 @@
 			this.radioButtonGradientOverWhole.Size = new System.Drawing.Size(264, 30);
 			this.radioButtonGradientOverWhole.TabIndex = 0;
 			this.radioButtonGradientOverWhole.TabStop = true;
-			this.radioButtonGradientOverWhole.Text = "The gradient is shown over the whole effect.\r\nAll channels display the same color" +
+			this.radioButtonGradientOverWhole.Text = "The gradient is shown over the whole effect.\r\nAll elements display the same color" +
     " at a given time.";
 			this.radioButtonGradientOverWhole.UseVisualStyleBackColor = true;
 			// 
@@ -437,7 +437,7 @@
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(143, 13);
 			this.label2.TabIndex = 9;
-			this.label2.Text = "Default level for all channels:";
+			this.label2.Text = "Default level for all elements:";
 			// 
 			// checkBoxReverse
 			// 

@@ -8,9 +8,9 @@ namespace VixenModules.Preview.DisplayPreview.Model
     {
         private static Preferences _currentPreferences;
 
-        private int _channelHeightDefault;
+        private int _elementHeightDefault;
 
-        private int _channelWidthDefault;
+        private int _elementWidthDefault;
 
         private int _displayHeightDefault;
 
@@ -40,32 +40,32 @@ namespace VixenModules.Preview.DisplayPreview.Model
         }
 
         [DataMember]
-        public int ChannelHeightDefault
+        public int ElementHeightDefault
         {
             get
             {
-                return this._channelHeightDefault;
+                return this._elementHeightDefault;
             }
 
             set
             {
-                this._channelHeightDefault = value <= 0 ? 1 : value;
-                this.PropertyChanged.NotifyPropertyChanged("MinChannelHeight", this);
+                this._elementHeightDefault = value <= 0 ? 1 : value;
+                this.PropertyChanged.NotifyPropertyChanged("MinElementHeight", this);
             }
         }
 
         [DataMember]
-        public int ChannelWidthDefault
+        public int ElementWidthDefault
         {
             get
             {
-                return this._channelWidthDefault;
+                return this._elementWidthDefault;
             }
 
             set
             {
-                this._channelWidthDefault = value <= 0 ? 1 : value;
-                this.PropertyChanged.NotifyPropertyChanged("MinChannelWidth", this);
+                this._elementWidthDefault = value <= 0 ? 1 : value;
+                this.PropertyChanged.NotifyPropertyChanged("MinElementWidth", this);
             }
         }
 
@@ -150,8 +150,8 @@ namespace VixenModules.Preview.DisplayPreview.Model
             {
                 var preferences = new Preferences
                     {
-                        ChannelHeightDefault = 20, 
-                        ChannelWidthDefault = 20, 
+                        ElementHeightDefault = 20, 
+                        ElementWidthDefault = 20, 
                         DisplayItemHeightDefault = 150, 
                         DisplayItemWidthDefault = 150, 
                         DisplayWidthDefault = 640, 
@@ -166,8 +166,8 @@ namespace VixenModules.Preview.DisplayPreview.Model
         {
             var preferences = new Preferences
                 {
-                    ChannelHeightDefault = this.ChannelHeightDefault, 
-                    ChannelWidthDefault = this.ChannelWidthDefault, 
+                    ElementHeightDefault = this.ElementHeightDefault, 
+                    ElementWidthDefault = this.ElementWidthDefault, 
                     DisplayHeightDefault = this.DisplayHeightDefault, 
                     DisplayItemHeightDefault = this.DisplayItemHeightDefault, 
                     DisplayItemWidthDefault = this.DisplayItemWidthDefault, 

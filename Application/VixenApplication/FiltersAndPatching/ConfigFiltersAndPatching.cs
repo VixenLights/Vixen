@@ -30,23 +30,23 @@ namespace VixenApplication
 	public partial class ConfigFiltersAndPatching : Form
 	{
 		// map of data types, to the shape(s) that represent them. There should only be (potentially) multiple
-		// shapes to represent a given channel node; this is because a node can be in multiple groups, and may
+		// shapes to represent a given element node; this is because a node can be in multiple groups, and may
 		// be displayed multiple times.
-		private readonly Dictionary<ChannelNode, List<ChannelNodeShape>> _channelNodeToChannelShapes;
+		private readonly Dictionary<ElementNode, List<ElementNodeShape>> _elementNodeToElementShapes;
 		private readonly Dictionary<IOutputDevice, ControllerShape> _controllerToControllerShape;
 		private readonly Dictionary<IOutputFilterModuleInstance, FilterShape> _filterToFilterShape;
 		private readonly Dictionary<IDataFlowComponent, List<FilterSetupShapeBase>> _dataFlowComponentToShapes;
 
-		// list of all (root) shapes, in the order they should appear. (Child shapes for channels and
+		// list of all (root) shapes, in the order they should appear. (Child shapes for elements and
 		// controllers are not in the list; they are of type NestingShape and handle their own bits.)
-		private List<ChannelNodeShape> _channelShapes;
+		private List<ElementNodeShape> _elementShapes;
 		private List<ControllerShape> _controllerShapes;
 		private List<FilterShape> _filterShapes;
 
 		private readonly Layer _visibleLayer;
 		private readonly Layer _hiddenLayer;
 
-		private int _channelsXPosition;
+		private int _elementsXPosition;
 		private int _controllersXPosition;
 		private int _previousDiagramWidth;		// used when resizing; what the width was BEFORE resize,
 												// so we know how to layout filter shapes (proportionally)
@@ -73,10 +73,10 @@ namespace VixenApplication
 			_visibleLayer = new Layer("Visible");
 			_hiddenLayer = new Layer("Hidden");
 			_controllerToControllerShape = new Dictionary<IOutputDevice, ControllerShape>();
-			_channelNodeToChannelShapes = new Dictionary<ChannelNode, List<ChannelNodeShape>>();
+			_elementNodeToElementShapes = new Dictionary<ElementNode, List<ElementNodeShape>>();
 			_filterToFilterShape = new Dictionary<IOutputFilterModuleInstance, FilterShape>();
 			_dataFlowComponentToShapes = new Dictionary<IDataFlowComponent, List<FilterSetupShapeBase>>();
-			_channelShapes = new List<ChannelNodeShape>();
+			_elementShapes = new List<ElementNodeShape>();
 			_controllerShapes = new List<ControllerShape>();
 			_filterShapes = new List<FilterShape>();
 			_previousDiagramWidth = 0;
@@ -101,7 +101,7 @@ namespace VixenApplication
 			// A: fixed shapes with no connection points: nothing (parent nested shapes: node groups, controllers)
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
 				SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS, StandardRole.Operator, Permission.Insert);
-			// B: fixed shapes with connection points: connect only (channel nodes (leaf), output shapes)
+			// B: fixed shapes with connection points: connect only (element nodes (leaf), output shapes)
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
 				SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS, StandardRole.Operator, Permission.Connect | Permission.Insert);
 			// C: movable shapes: connect, layout (movable), and deleteable (filters, patch lines)
@@ -114,12 +114,12 @@ namespace VixenApplication
 			((RoleBasedSecurityManager) diagramDisplay.Project.SecurityManager).SetPermissions(StandardRole.Operator, Permission.All);
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).CurrentRole = StandardRole.Operator;
 
-			FillStyle styleChannelGroup = new FillStyle("ChannelGroup",
+			FillStyle styleElementGroup = new FillStyle("ElementGroup",
 				new ColorStyle("", Color.FromArgb(120, 160, 240)), new ColorStyle("", Color.FromArgb(90, 120, 180)));
-			styleChannelGroup.FillMode = FillMode.Gradient;
-			FillStyle styleChannelLeaf = new FillStyle("ChannelLeaf",
+			styleElementGroup.FillMode = FillMode.Gradient;
+			FillStyle styleElementLeaf = new FillStyle("ElementLeaf",
 				new ColorStyle("", Color.FromArgb(200, 220, 255)), new ColorStyle("", Color.FromArgb(140, 160, 200)));
-			styleChannelLeaf.FillMode = FillMode.Gradient;
+			styleElementLeaf.FillMode = FillMode.Gradient;
 			FillStyle styleFilter = new FillStyle("Filter",
 				new ColorStyle("", Color.FromArgb(255, 220, 150)), new ColorStyle("", Color.FromArgb(230, 200, 100)));
 			styleFilter.FillMode = FillMode.Gradient;
@@ -130,8 +130,8 @@ namespace VixenApplication
 				new ColorStyle("", Color.FromArgb(180, 230, 180)), new ColorStyle("", Color.FromArgb(120, 210, 120)));
 			styleOutput.FillMode = FillMode.Gradient;
 
-			project.Design.FillStyles.Add(styleChannelGroup, styleChannelGroup);
-			project.Design.FillStyles.Add(styleChannelLeaf, styleChannelLeaf);
+			project.Design.FillStyles.Add(styleElementGroup, styleElementGroup);
+			project.Design.FillStyles.Add(styleElementLeaf, styleElementLeaf);
 			project.Design.FillStyles.Add(styleFilter, styleFilter);
 			project.Design.FillStyles.Add(styleController, styleController);
 			project.Design.FillStyles.Add(styleOutput, styleOutput);
@@ -139,8 +139,8 @@ namespace VixenApplication
 			diagramDisplay.DoSuspendUpdate();
 //			DateTime start = DateTime.Now;
 //			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: LOADING: start time:                      " + start);
-			_InitializeShapesFromChannels();
-//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _InitializeShapesFromChannels:       " + (DateTime.Now - start));
+			_InitializeShapesFromElements();
+//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _InitializeShapesFromElements:       " + (DateTime.Now - start));
 			_InitializeShapesFromFilters();
 //			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _InitializeShapesFromFilters:        " + (DateTime.Now - start));
 			_InitializeShapesFromControllers();
@@ -256,8 +256,8 @@ namespace VixenApplication
 				filterShape.RunSetup();
 			}
 
-			if (shape is ChannelNodeShape)
-				_ResizeAndPositionChannelShapes(_channelsXPosition);
+			if (shape is ElementNodeShape)
+				_ResizeAndPositionElementShapes(_elementsXPosition);
 
 			if (shape is ControllerShape)
 				_ResizeAndPositionControllerShapes(_controllersXPosition);
@@ -453,7 +453,7 @@ namespace VixenApplication
 				}
 
 				// we COULD use FilterSetupShapeBase, as all the operations below are generic.... but, we only want
-				// to be able to delete filter shapes. We want to enforce all channels and outputs to be kept.
+				// to be able to delete filter shapes. We want to enforce all elements and outputs to be kept.
 				FilterShape filterShape = shape as FilterShape;
 				if (filterShape != null) {
 					ControlPointId pointId;
@@ -505,21 +505,21 @@ namespace VixenApplication
 			}
 		}
 
-		private void _InitializeShapesFromChannels()
+		private void _InitializeShapesFromElements()
 		{
-			_channelShapes = new List<ChannelNodeShape>();
+			_elementShapes = new List<ElementNodeShape>();
 
-			foreach (ChannelNode node in VixenSystem.Nodes.GetRootNodes()) {
-				_CreateShapeFromChannel(node);
+			foreach (ElementNode node in VixenSystem.Nodes.GetRootNodes()) {
+				_CreateShapeFromElement(node);
 			}
 		}
 
-		private ChannelNodeShape _CreateShapeFromChannel(ChannelNode node)
+		private ElementNodeShape _CreateShapeFromElement(ElementNode node)
 		{
-			ChannelNodeShape channelShape = _MakeChannelNodeShape(node, 1);
-			if (channelShape != null)
-				_channelShapes.Add(channelShape);
-			return channelShape;
+			ElementNodeShape elementShape = _MakeElementNodeShape(node, 1);
+			if (elementShape != null)
+				_elementShapes.Add(elementShape);
+			return elementShape;
 		}
 
 		private void _InitializeShapesFromControllers()
@@ -558,7 +558,7 @@ namespace VixenApplication
 		private void _CreateConnectionsFromExistingLinks()
 		{
 			// go through the existing system-side patches (DataFlow sources) and make connections for them all.
-			// There's nothing to do for channel shapes; they don't have sources; only do filters and outputs
+			// There's nothing to do for element shapes; they don't have sources; only do filters and outputs
 
 			// go through the filter shapes and build up links
 			foreach (FilterShape filterShape in _filterShapes) {
@@ -582,7 +582,7 @@ namespace VixenApplication
 					return;
 				}
 				List<FilterSetupShapeBase> sourceShapes = _dataFlowComponentToShapes[source.Component];
-				// TODO: deal with multiple instances of the source data flow component: eg. a channel existing as
+				// TODO: deal with multiple instances of the source data flow component: eg. a element existing as
 				// multiple shapes (currently, we'll assume it's the first shape in the list)
 				ConnectShapes(sourceShapes.First(), source.OutputIndex, shape);
 			}
@@ -618,24 +618,24 @@ namespace VixenApplication
 			// take off some pixels for natural spacing and widths of the shapes (since their X/Y coords are centred)
 			int width = diagramDisplay.Width - 300;
 
-			_channelsXPosition = 0;
+			_elementsXPosition = 0;
 			_controllersXPosition = width;
 
-			_ResizeAndPositionChannelShapes(_channelsXPosition);
+			_ResizeAndPositionElementShapes(_elementsXPosition);
 			_ResizeAndPositionFilterShapes(_previousDiagramWidth, width);
 			_ResizeAndPositionControllerShapes(_controllersXPosition);
 
 			diagramDisplay.DoResumeUpdate();
 		}
 
-		private void _ResizeAndPositionChannelShapes(int xLocation)
+		private void _ResizeAndPositionElementShapes(int xLocation)
 		{
 			diagramDisplay.DoSuspendUpdate();
 
 			int y = SHAPE_Y_TOP;
-			foreach (ChannelNodeShape channelShape in _channelShapes) {
-				_ResizeAndPositionNestingShape(channelShape, SHAPE_CHANNELS_WIDTH, xLocation, y, true);
-				y += channelShape.Height + SHAPE_VERTICAL_SPACING;
+			foreach (ElementNodeShape elementShape in _elementShapes) {
+				_ResizeAndPositionNestingShape(elementShape, SHAPE_ELEMENTS_WIDTH, xLocation, y, true);
+				y += elementShape.Height + SHAPE_VERTICAL_SPACING;
 			}
 
 			diagramDisplay.DoResumeUpdate();
@@ -730,7 +730,7 @@ namespace VixenApplication
 				shape.Height = (curY - SHAPE_VERTICAL_SPACING + SHAPE_GROUP_FOOTER_HEIGHT) - y;
 			} else {
 				shape.Width = width;
-				shape.Height = SHAPE_CHANNELS_HEIGHT;
+				shape.Height = SHAPE_ELEMENTS_HEIGHT;
 				if (shape is NestingSetupShape) {
 					foreach (FilterSetupShapeBase childShape in (shape as NestingSetupShape).ChildFilterShapes) {
 						_ResizeAndPositionNestingShape(childShape, width, x, y, false);
@@ -742,18 +742,18 @@ namespace VixenApplication
 		}
 
 
-		private ChannelNodeShape _MakeChannelNodeShape(ChannelNode node, int zOrder)
+		private ElementNodeShape _MakeElementNodeShape(ElementNode node, int zOrder)
 		{
-			ChannelNodeShape shape = (ChannelNodeShape) project.ShapeTypes["ChannelNodeShape"].CreateInstance();
-			shape.SetChannelNode(node);
+			ElementNodeShape shape = (ElementNodeShape) project.ShapeTypes["ElementNodeShape"].CreateInstance();
+			shape.SetElementNode(node);
 			shape.Title = node.Name;
 			diagramDisplay.InsertShape(shape);
 			diagramDisplay.Diagram.Shapes.SetZOrder(shape, zOrder);
 			diagramDisplay.Diagram.AddShapeToLayers(shape, _visibleLayer.Id);
 
-			if (!_channelNodeToChannelShapes.ContainsKey(node))
-				_channelNodeToChannelShapes[node] = new List<ChannelNodeShape>();
-			_channelNodeToChannelShapes[node].Add(shape);
+			if (!_elementNodeToElementShapes.ContainsKey(node))
+				_elementNodeToElementShapes[node] = new List<ElementNodeShape>();
+			_elementNodeToElementShapes[node].Add(shape);
 
 			if (shape.DataFlowComponent != null) {
 				if (!_dataFlowComponentToShapes.ContainsKey(shape.DataFlowComponent))
@@ -763,14 +763,14 @@ namespace VixenApplication
 
 			if (node.Children.Count() > 0) {
 				foreach (var child in node.Children) {
-					FilterSetupShapeBase childSetupShapeBase = _MakeChannelNodeShape(child, zOrder + 1);
+					FilterSetupShapeBase childSetupShapeBase = _MakeElementNodeShape(child, zOrder + 1);
 					shape.ChildFilterShapes.Add(childSetupShapeBase);
 				}
 				shape.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS;
-				shape.FillStyle = project.Design.FillStyles["ChannelGroup"];
+				shape.FillStyle = project.Design.FillStyles["ElementGroup"];
 			} else {
 				shape.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS;
-				shape.FillStyle = project.Design.FillStyles["ChannelLeaf"];
+				shape.FillStyle = project.Design.FillStyles["ElementLeaf"];
 			}
 			return shape;
 		}
@@ -833,7 +833,7 @@ namespace VixenApplication
 			filterShape.SetFilterInstance(filter);
 
 			diagramDisplay.InsertShape(filterShape);
-			diagramDisplay.Diagram.Shapes.SetZOrder(filterShape, 10);  // Z Order of 10; should be above other channels/outputs, but under lines
+			diagramDisplay.Diagram.Shapes.SetZOrder(filterShape, 10);  // Z Order of 10; should be above other elements/outputs, but under lines
 			diagramDisplay.Diagram.AddShapeToLayers(filterShape, _visibleLayer.Id);
 
 			if (filterShape.DataFlowComponent != null) {
@@ -915,8 +915,8 @@ namespace VixenApplication
 		// with size, we're aiming for a 'default' of 800 pixels, total. To get that, we have (from left to right):
 		//
 		//  1:  20 pixels (-20 ->   0): forced display border
-		//  2: 160 pixels (  0 -> 160): channel shapes (centered on 80)
-		//  3:  10 pixels (160 -> 170): spacing between channels and filters
+		//  2: 160 pixels (  0 -> 160): element shapes (centered on 80)
+		//  3:  10 pixels (160 -> 170): spacing between elements and filters
 		//  4: 420 pixels (170 -> 590): filters (aiming for 2x shape widths, if possible)
 		//  5:  10 pixels (590 -> 610): spacing between filters and outputs
 		//  6: 160 pixels (610 -> 770): output shapes (centered on 680)
@@ -925,7 +925,7 @@ namespace VixenApplication
 		// (there's 20 pixels forced bordering by the diagram display control, as a const (scrollAreaMargin) inside it.)
 
 		// the (base) width of all shapes (inner children will be smaller)
-		internal const int SHAPE_CHANNELS_WIDTH = 160;
+		internal const int SHAPE_ELEMENTS_WIDTH = 160;
 		internal const int SHAPE_CONTROLLERS_WIDTH = 160;
 		internal const int SHAPE_FILTERS_WIDTH = 180;
 
@@ -933,11 +933,11 @@ namespace VixenApplication
 		internal const int SHAPE_Y_TOP = 10;
 
 		// the default height of all shapes
-		internal const int SHAPE_CHANNELS_HEIGHT = 32;
+		internal const int SHAPE_ELEMENTS_HEIGHT = 32;
 		internal const int SHAPE_CONTROLLERS_HEIGHT = 32;
 		internal const int SHAPE_FILTERS_HEIGHT = 40;
 
-		// the vertical spacing between channels
+		// the vertical spacing between elements
 		internal const int SHAPE_VERTICAL_SPACING = 10;
 
 		// how much the width of inner children is reduced

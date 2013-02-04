@@ -26,7 +26,7 @@ namespace VixenModules.Effect.Spin
 
 		public override string TypeName { get { return EffectName; } }
 
-		public override string Description { get { return "Generates pulses on consecutive channels in the given group to give the appearance of spinning."; } }
+		public override string Description { get { return "Generates pulses on consecutive elements in the given group to give the appearance of spinning."; } }
 
 		public override string Version { get { return "1.0"; } }
 
@@ -45,7 +45,7 @@ namespace VixenModules.Effect.Spin
 					new ParameterSpecification("Revolution Time (ms)", typeof(int)),
 					new ParameterSpecification("Pulse Time", typeof(int)),
 					new ParameterSpecification("Pulse Percentage (of revolution)", typeof(int)),
-					new ParameterSpecification("Default channel level", typeof(double)),
+					new ParameterSpecification("Default element level", typeof(double)),
 					new ParameterSpecification("Static Color", typeof(Color)),
 					new ParameterSpecification("Color Gradient", typeof(ColorGradient)),
 					new ParameterSpecification("Individual Pulse Curve", typeof(Curve)),
