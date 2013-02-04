@@ -51,7 +51,7 @@ namespace Vixen.Sys {
 		private void _RemoveFromParent(IOutputFilterModuleInstance filter) {
 			// Filter may not yet be connected.
 			if(filter.Source == null) return;
-			// Source may be a channel.
+			// Source may be a element.
 			IOutputFilterModuleInstance parentFilter = filter.Source as IOutputFilterModuleInstance;
 			if(parentFilter != null) {
 				_GetChildren(parentFilter).Remove(filter);

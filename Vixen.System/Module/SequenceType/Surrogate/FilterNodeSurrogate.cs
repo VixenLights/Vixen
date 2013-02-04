@@ -13,19 +13,19 @@ namespace Vixen.Module.SequenceType.Surrogate {
 			TypeId = filterNode.Filter.Descriptor.TypeId;
 			InstanceId = filterNode.Filter.InstanceId;
 			TimeSpan = filterNode.Filter.TimeSpan;
-			TargetNodes = filterNode.Filter.TargetNodes.Select(x => new ChannelNodeReferenceSurrogate(x)).ToArray();
+			TargetNodes = filterNode.Filter.TargetNodes.Select(x => new ElementNodeReferenceSurrogate(x)).ToArray();
 		}
 
 		public ISequenceFilterNode CreateFilterNode() {
-			var channelNodes = VixenSystem.Nodes.Distinct().ToDictionary(x => x.Id);
+			var elementNodes = VixenSystem.Nodes.Distinct().ToDictionary(x => x.Id);
 
 			IEnumerable<Guid> targetNodeIds = TargetNodes.Select(x => x.NodeId);
-			IEnumerable<Guid> validChannelIds = targetNodeIds.Intersect(channelNodes.Keys);
+			IEnumerable<Guid> validElementIds = targetNodeIds.Intersect(elementNodes.Keys);
 
 			ISequenceFilterModuleInstance filter = Modules.ModuleManagement.GetSequenceFilter(TypeId);
 			filter.InstanceId = InstanceId;
 			filter.TimeSpan = TimeSpan;
-			filter.TargetNodes = validChannelIds.Select(x => channelNodes[x]).ToArray();
+			filter.TargetNodes = validElementIds.Select(x => elementNodes[x]).ToArray();
 
 			return new SequenceFilterNode(filter, StartTime);
 		}

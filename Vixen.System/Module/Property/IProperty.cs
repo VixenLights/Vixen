@@ -6,7 +6,7 @@ using Vixen.Sys;
 
 namespace Vixen.Module.Property {
 	public interface IProperty : IHasSetup {
-		ChannelNode Owner { get; set; }
+		ElementNode Owner { get; set; }
 		/// <summary>
 		/// Set or reset the property's values to a property-specific default.
 		/// </summary>

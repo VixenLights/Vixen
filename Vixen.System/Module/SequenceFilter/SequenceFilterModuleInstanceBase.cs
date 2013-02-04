@@ -4,7 +4,7 @@ using Vixen.Sys;
 
 namespace Vixen.Module.SequenceFilter {
 	abstract public class SequenceFilterModuleInstanceBase : ModuleInstanceBase, ISequenceFilterModuleInstance, IEqualityComparer<ISequenceFilterModuleInstance>, IEquatable<ISequenceFilterModuleInstance>, IEqualityComparer<SequenceFilterModuleInstanceBase>, IEquatable<SequenceFilterModuleInstanceBase> {
-		private ChannelNode[] _targetNodes;
+		private ElementNode[] _targetNodes;
 		private TimeSpan _timeSpan;
 
 		public TimeSpan TimeSpan {
@@ -17,7 +17,7 @@ namespace Vixen.Module.SequenceFilter {
 			}
 		}
 
-		public ChannelNode[] TargetNodes {
+		public ElementNode[] TargetNodes {
 			get { return _targetNodes; }
 			set {
 				if(value != _targetNodes) {

@@ -10,8 +10,8 @@ using Vixen.Sys.Output;
 
 namespace Vixen.Sys {
 	class SystemConfig {
-		private IEnumerable<Channel> _channels;
-		private IEnumerable<ChannelNode> _nodes;
+		private IEnumerable<Element> _elements;
+		private IEnumerable<ElementNode> _nodes;
 		private IEnumerable<IOutputDevice> _controllers;
 		private IEnumerable<IOutputDevice> _previews;
 		private IEnumerable<IOutputDevice> _smartControllers;
@@ -37,21 +37,21 @@ namespace Vixen.Sys {
 
 		public Guid Identity { get; set; }
 
-		// Doing it this way means that Channels and Nodes will never be null.
-		public IEnumerable<Channel> Channels {
+		// Doing it this way means that Elements and Nodes will never be null.
+		public IEnumerable<Element> Elements {
 			get {
-				if(_channels == null) {
-					_channels = new Channel[0];
+				if(_elements == null) {
+					_elements = new Element[0];
 				}
-				return _channels;
+				return _elements;
 			}
-			set { _channels = value; }
+			set { _elements = value; }
 		}
 
-		public IEnumerable<ChannelNode> Nodes {
+		public IEnumerable<ElementNode> Nodes {
 			get {
 				if(_nodes == null) {
-					_nodes = new ChannelNode[0];
+					_nodes = new ElementNode[0];
 				}
 				return _nodes;
 			}

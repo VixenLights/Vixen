@@ -22,8 +22,8 @@ namespace Vixen.Sys.Output {
 		}
 
 		public void Update() {
-			ChannelIntentStates channelIntentStates = new ChannelIntentStates(VixenSystem.Channels.ToDictionary(x => x.Id, x => x.State));
-			_UpdateModuleState(channelIntentStates);
+			ElementIntentStates elementIntentStates = new ElementIntentStates(VixenSystem.Elements.ToDictionary(x => x.Id, x => x.State));
+			_UpdateModuleState(elementIntentStates);
 		}
 
 		public Guid Id { get; private set; }
@@ -87,8 +87,8 @@ namespace Vixen.Sys.Output {
 			get { return _outputModuleConsumer.Module; }
 		}
 
-		private void _UpdateModuleState(ChannelIntentStates channelIntentStates) {
-			_PreviewModule.UpdateState(channelIntentStates);
+		private void _UpdateModuleState(ElementIntentStates elementIntentStates) {
+			_PreviewModule.UpdateState(elementIntentStates);
 		}
 	}
 }

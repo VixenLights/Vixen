@@ -7,7 +7,7 @@ namespace Vixen.Module.Preview {
 	abstract public class PreviewModuleInstanceBase : OutputModuleInstanceBase, IPreviewModuleInstance, IEqualityComparer<IPreviewModuleInstance>, IEquatable<IPreviewModuleInstance>, IEqualityComparer<PreviewModuleInstanceBase>, IEquatable<PreviewModuleInstanceBase> {
 		protected abstract IThreadBehavior ThreadBehavior { get; }
 
-		protected ChannelIntentStates ChannelStates { get; private set; }
+		protected ElementIntentStates ElementStates { get; private set; }
 
 		public override void Start() {
 			ThreadBehavior.Start();
@@ -21,9 +21,9 @@ namespace Vixen.Module.Preview {
 			get { return ThreadBehavior.IsRunning; }
 		}
 
-		public void UpdateState(ChannelIntentStates channelIntentStates) {
+		public void UpdateState(ElementIntentStates elementIntentStates) {
 			// Get the data referenced locally so we can get off this thread if need be.
-			ChannelStates = channelIntentStates;
+			ElementStates = elementIntentStates;
 			ThreadBehavior.BeginInvoke(Update);
 		}
 

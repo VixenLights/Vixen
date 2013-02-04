@@ -67,17 +67,17 @@ namespace Vixen.Services {
 			persistor.SaveToFile(program, filePath);
 		}
 
-		public ChannelNodeTemplate LoadChannelNodeTemplateFile(string filePath) {
-			IObjectLoader<ChannelNodeTemplate> loader = LoaderFactory.Instance.CreateChannelNodeTemplateLoader();
+		public ElementNodeTemplate LoadElementNodeTemplateFile(string filePath) {
+			IObjectLoader<ElementNodeTemplate> loader = LoaderFactory.Instance.CreateElementNodeTemplateLoader();
 			return loader.LoadFromFile(filePath);
 		}
 
-		public void SaveChannelNodeTemplateFile(ChannelNodeTemplate channelNodeTemplate, string filePath) {
-			filePath = _GetRootedPath(filePath, ChannelNodeTemplate.Directory);
-			filePath = Path.ChangeExtension(filePath, ChannelNodeTemplate.Extension);
+		public void SaveElementNodeTemplateFile(ElementNodeTemplate elementNodeTemplate, string filePath) {
+			filePath = _GetRootedPath(filePath, ElementNodeTemplate.Directory);
+			filePath = Path.ChangeExtension(filePath, ElementNodeTemplate.Extension);
 
-			IObjectPersistor<ChannelNodeTemplate> persistor = PersistorFactory.Instance.CreateChannelNodeTemplatePersistor();
-			persistor.SaveToFile(channelNodeTemplate, filePath);
+			IObjectPersistor<ElementNodeTemplate> persistor = PersistorFactory.Instance.CreateElementNodeTemplatePersistor();
+			persistor.SaveToFile(elementNodeTemplate, filePath);
 		}
 
 		// Sequences are not system-level files that we maintain, they are essentially nothing more than module

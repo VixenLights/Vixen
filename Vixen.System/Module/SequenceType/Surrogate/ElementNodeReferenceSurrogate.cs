@@ -4,9 +4,9 @@ using Vixen.Sys;
 
 namespace Vixen.Module.SequenceType.Surrogate {
 	[DataContract(Namespace = "")]
-	class ChannelNodeReferenceSurrogate {
-		public ChannelNodeReferenceSurrogate(ChannelNode channelNode) {
-			NodeId = channelNode.Id;
+	class ElementNodeReferenceSurrogate {
+		public ElementNodeReferenceSurrogate(ElementNode elementNode) {
+			NodeId = elementNode.Id;
 		}
 
 		[DataMember]

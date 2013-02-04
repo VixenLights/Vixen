@@ -118,7 +118,7 @@ namespace Vixen.Sys {
 			bool allowUpdate = _UpdateAdjudicator.PetitionForUpdate();
 			if(allowUpdate) {
 				VixenSystem.Contexts.Update();
-				VixenSystem.Channels.Update();
+				VixenSystem.Elements.Update();
 				VixenSystem.Filters.Update();
 			}
 			return allowUpdate;

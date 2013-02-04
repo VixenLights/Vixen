@@ -3,20 +3,20 @@ using Vixen.Sys;
 
 namespace Vixen.Data.Flow {
 	/// <summary>
-	/// Facilitates allowing channels to participate in the data flow system.
+	/// Facilitates allowing elements to participate in the data flow system.
 	/// </summary>
-	class ChannelDataFlowAdapter : IDataFlowComponent<IntentsDataFlowData> {
-		private Channel _channel;
+	class ElementDataFlowAdapter : IDataFlowComponent<IntentsDataFlowData> {
+		private Element _element;
 		private IDataFlowOutput<IntentsDataFlowData>[] _outputs;
 
-		public ChannelDataFlowAdapter(Channel channel) {
-			_channel = channel;
+		public ElementDataFlowAdapter(Element element) {
+			_element = element;
 		}
 
 		public IDataFlowOutput<IntentsDataFlowData>[] Outputs {
 			get {
 				if(_outputs == null) {
-					_outputs = new[] { new ChannelDataFlowOutputAdapter(_channel) };
+					_outputs = new[] { new ElementDataFlowOutputAdapter(_element) };
 				}
 				return _outputs;
 			}
@@ -31,7 +31,7 @@ namespace Vixen.Data.Flow {
 				// No input data type, so this is meaningless.
 				return null;
 			}
-			set { /* Can't set this for a channel (in its role as a data flow participant) */ }
+			set { /* Can't set this for a element (in its role as a data flow participant) */ }
 		}
 
 		IDataFlowComponentReference IDataFlowComponent.Source {
@@ -48,11 +48,11 @@ namespace Vixen.Data.Flow {
 		}
 
 		public Guid DataFlowComponentId {
-			get { return _channel.Id; }
+			get { return _element.Id; }
 		}
 
 		public string Name {
-			get { return _channel.Name; }
+			get { return _element.Name; }
 		}
 	}
 }

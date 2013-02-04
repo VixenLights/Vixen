@@ -1,5 +1,5 @@
 ﻿namespace Vixen.Sys {
-	public class ChannelStateSource : IChannelStateSource {
+	public class ElementStateSource : IElementStateSource {
 		public IIntentStates State { get; set; }
 	}
 }

@@ -11,47 +11,47 @@ namespace Vixen.Sys {
 			: base(data) {
 		}
 
-		public IEnumerable<Guid> ChannelIds {
+		public IEnumerable<Guid> ElementIds {
 			get { return Keys; }
 		}
 
-		public IntentNodeCollection GetIntentNodesForChannel(Guid channelId) {
+		public IntentNodeCollection GetIntentNodesForElement(Guid elementId) {
 			IntentNodeCollection intentNodeCollection;
-			TryGetValue(channelId, out intentNodeCollection);
+			TryGetValue(elementId, out intentNodeCollection);
 			return intentNodeCollection;
 		}
 
-		public IIntentNode[] GetChannelIntentsAtTime(Guid channelId, TimeSpan effectRelativeTime) {
-			IntentNodeCollection channelIntents;
-			if(TryGetValue(channelId, out channelIntents)) {
-				return channelIntents.Where(x => TimeNode.IntersectsInclusively(x, effectRelativeTime)).ToArray();
+		public IIntentNode[] GetElementIntentsAtTime(Guid elementId, TimeSpan effectRelativeTime) {
+			IntentNodeCollection elementIntents;
+			if(TryGetValue(elementId, out elementIntents)) {
+				return elementIntents.Where(x => TimeNode.IntersectsInclusively(x, effectRelativeTime)).ToArray();
 			}
 			return null;
 		}
 
-		public void AddIntentForChannel(Guid channelId, IIntent intent, TimeSpan startTime) {
-			_AddIntentForChannel(channelId, new IntentNode(intent, startTime));
+		public void AddIntentForElement(Guid elementId, IIntent intent, TimeSpan startTime) {
+			_AddIntentForElement(elementId, new IntentNode(intent, startTime));
 		}
 
-		private void _AddIntentForChannel(Guid channelId, IIntentNode intentNode) {
-			if(ContainsKey(channelId)) {
-				this[channelId].Add(intentNode);
+		private void _AddIntentForElement(Guid elementId, IIntentNode intentNode) {
+			if(ContainsKey(elementId)) {
+				this[elementId].Add(intentNode);
 			} else {
-				this[channelId] = new IntentNodeCollection(new[] { intentNode });
+				this[elementId] = new IntentNodeCollection(new[] { intentNode });
 			}
 		}
 
-		private void _AddIntentsForChannel(Guid channelId, IEnumerable<IIntentNode> intentNodes) {
-			if(ContainsKey(channelId)) {
-				this[channelId].AddRange(intentNodes);
+		private void _AddIntentsForElement(Guid elementId, IEnumerable<IIntentNode> intentNodes) {
+			if(ContainsKey(elementId)) {
+				this[elementId].AddRange(intentNodes);
 			} else {
-				this[channelId] = new IntentNodeCollection(intentNodes);
+				this[elementId] = new IntentNodeCollection(intentNodes);
 			}
 		}
 
 		public void Add(EffectIntents other) {
-			foreach(Guid channelId in other.Keys) {
-				_AddIntentsForChannel(channelId, other[channelId]);
+			foreach(Guid elementId in other.Keys) {
+				_AddIntentsForElement(elementId, other[elementId]);
 			}
 		}
 

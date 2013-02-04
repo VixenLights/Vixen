@@ -12,8 +12,8 @@ namespace Vixen.Services {
 		void SaveSystemContextFile(SystemContext systemContext, string filePath);
 		Program LoadProgramFile(string filePath);
 		void SaveProgramFile(Program program, string filePath);
-		ChannelNodeTemplate LoadChannelNodeTemplateFile(string filePath);
-		void SaveChannelNodeTemplateFile(ChannelNodeTemplate channelNodeTemplate, string filePath);
+		ElementNodeTemplate LoadElementNodeTemplateFile(string filePath);
+		void SaveElementNodeTemplateFile(ElementNodeTemplate elementNodeTemplate, string filePath);
 		ISequence LoadSequenceFile(string filePath);
 		void SaveSequenceFile(ISequence sequence, string filePath);
 	}

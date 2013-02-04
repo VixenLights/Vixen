@@ -94,7 +94,7 @@ namespace Vixen.Sys {
 		static public void SaveSystemConfig()
 		{
 			if (SystemConfig != null) {
-				// 'copy' the current details (nodes/channels/controllers) from the executing state
+				// 'copy' the current details (nodes/elements/controllers) from the executing state
 				// to the SystemConfig, so they're there for writing when we save
 
 				// we may not want to always save the disabled devices to the config (ie. if the system is stopped at the
@@ -106,7 +106,7 @@ namespace Vixen.Sys {
 				SystemConfig.OutputControllers = OutputControllers;
 				SystemConfig.SmartOutputControllers = SmartOutputControllers;
 				SystemConfig.Previews = Previews;
-				SystemConfig.Channels = Channels;
+				SystemConfig.Elements = Elements;
 				SystemConfig.Nodes = Nodes.GetRootNodes();
 				SystemConfig.ControllerLinking = ControllerLinking;
 				SystemConfig.Filters = Filters;
@@ -123,7 +123,7 @@ namespace Vixen.Sys {
 		static public void LoadSystemConfig()
 		{
 			DataFlow = new DataFlowManager();
-			Channels = new ChannelManager();
+			Elements = new ElementManager();
 			Nodes = new NodeManager();
 			OutputControllers = new OutputControllerManager(
 				new ControllerLinkingManagement<OutputController>(),
@@ -156,7 +156,7 @@ namespace Vixen.Sys {
 			ModuleStore = _LoadModuleStore(systemDataPath) ?? new ModuleStore();
 			SystemConfig = _LoadSystemConfig(systemDataPath) ?? new SystemConfig();
 
-			Channels.AddChannels(SystemConfig.Channels);
+			Elements.AddElements(SystemConfig.Elements);
 			Nodes.AddNodes(SystemConfig.Nodes);
 			OutputControllers.AddRange(SystemConfig.OutputControllers.Cast<OutputController>());
 			SmartOutputControllers.AddRange(SystemConfig.SmartOutputControllers.Cast<SmartOutputController>());
@@ -172,10 +172,10 @@ namespace Vixen.Sys {
 			bool wasRunning = Execution.IsOpen;
 			Execution.CloseExecution();
 
-			// purge all existing channels, nodes, and controllers (to try and clean up a bit).
+			// purge all existing elements, nodes, and controllers (to try and clean up a bit).
 			// might not actually matter, since we're going to make new Managers for them all
 			// in a tick, but better safe than sorry.
-			foreach (ChannelNode cn in Nodes.ToArray())
+			foreach (ElementNode cn in Nodes.ToArray())
 				Nodes.RemoveNode(cn, null, true);
 			foreach (OutputController oc in OutputControllers.ToArray())
 				OutputControllers.Remove(oc);
@@ -213,7 +213,7 @@ namespace Vixen.Sys {
     		set { SystemConfig.AllowFilterEvaluation = value; }
     	}
 
-    	static public ChannelManager Channels { get; private set; }
+    	static public ElementManager Elements { get; private set; }
 		static public NodeManager Nodes { get; private set; }
 		static public OutputControllerManager OutputControllers { get; private set; }
 		static public SmartOutputControllerManager SmartOutputControllers { get; private set; }

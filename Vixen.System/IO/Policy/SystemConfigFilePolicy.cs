@@ -4,7 +4,7 @@
 			WriteContextFlag();
 			WriteIdentity();
 			WriteFilterEvaluationAllowance();
-			WriteChannels();
+			WriteElements();
 			WriteNodes();
 			WriteControllers();
 			WriteControllerLinks();
@@ -18,7 +18,7 @@
 		protected abstract void WriteContextFlag();
 		protected abstract void WriteIdentity();
 		protected abstract void WriteFilterEvaluationAllowance();
-		protected abstract void WriteChannels();
+		protected abstract void WriteElements();
 		protected abstract void WriteNodes();
 		protected abstract void WriteControllers();
 		protected abstract void WriteControllerLinks();
@@ -32,7 +32,7 @@
 			ReadContextFlag();
 			ReadIdentity();
 			ReadFilterEvaluationAllowance();
-			ReadChannels();
+			ReadElements();
 			ReadNodes();
 			ReadControllers();
 			ReadControllerLinks();
@@ -46,7 +46,7 @@
 		protected abstract void ReadContextFlag();
 		protected abstract void ReadIdentity();
 		protected abstract void ReadFilterEvaluationAllowance();
-		protected abstract void ReadChannels();
+		protected abstract void ReadElements();
 		protected abstract void ReadNodes();
 		protected abstract void ReadControllers();
 		protected abstract void ReadControllerLinks();

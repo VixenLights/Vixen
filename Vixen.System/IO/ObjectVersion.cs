@@ -4,6 +4,6 @@
 		static public int ModuleStore = 1;
 		static public int SystemContext = 1;
 		static public int Program = 1;
-		static public int ChannelNodeTemplate = 1;
+		static public int ElementNodeTemplate = 1;
 	}
 }

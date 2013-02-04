@@ -4,7 +4,7 @@
 		IObjectContentReader CreateModuleStoreContentReader();
 		IObjectContentReader CreateSystemContextContentReader();
 		IObjectContentReader CreateProgramContentReader();
-		IObjectContentReader CreateChannelNodeTemplateContentReader();
+		IObjectContentReader CreateElementNodeTemplateContentReader();
 		IObjectContentReader CreateSequenceContentReader(string fileType);
 	}
 }

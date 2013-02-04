@@ -6,7 +6,7 @@ namespace Vixen.IO.Factory {
 		IObjectPersistor<ModuleStore> CreateModuleStorePersistor();
 		IObjectPersistor<SystemContext> CreateSystemContextPersistor();
 		IObjectPersistor<Program> CreateProgramPersistor();
-		IObjectPersistor<ChannelNodeTemplate> CreateChannelNodeTemplatePersistor();
+		IObjectPersistor<ElementNodeTemplate> CreateElementNodeTemplatePersistor();
 		IObjectPersistor CreateSequencePersistor();
 	}
 }

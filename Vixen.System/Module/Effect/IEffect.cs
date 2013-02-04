@@ -12,7 +12,7 @@ namespace Vixen.Module.Effect {
 		/// <summary>
 		/// Nodes the effect is being applied to as a single collection.
 		/// </summary>
-		ChannelNode[] TargetNodes { get; set; }
+		ElementNode[] TargetNodes { get; set; }
 
 		/// <summary>
 		/// The length of the entire effect.
@@ -33,6 +33,6 @@ namespace Vixen.Module.Effect {
 		string EffectName { get; }
 		ParameterSignature Parameters { get; }
 		void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle);
-		ChannelIntents GetChannelIntents(TimeSpan currentTime);
+		ElementIntents GetElementIntents(TimeSpan currentTime);
     }
 }

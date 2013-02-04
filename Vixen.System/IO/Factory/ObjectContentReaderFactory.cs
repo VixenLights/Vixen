@@ -1,4 +1,4 @@
-﻿using Vixen.IO.Xml.ChannelNodeTemplate;
+﻿using Vixen.IO.Xml.ElementNodeTemplate;
 using Vixen.IO.Xml.ModuleStore;
 using Vixen.IO.Xml.Program;
 using Vixen.IO.Xml.Sequence;
@@ -32,8 +32,8 @@ namespace Vixen.IO.Factory {
 			return new ProgramXElementReader();
 		}
 
-		public IObjectContentReader CreateChannelNodeTemplateContentReader() {
-			return new ChannelNodeTemplateXElementReader();
+		public IObjectContentReader CreateElementNodeTemplateContentReader() {
+			return new ElementNodeTemplateXElementReader();
 		}
 
 		public IObjectContentReader CreateSequenceContentReader(string fileType) {

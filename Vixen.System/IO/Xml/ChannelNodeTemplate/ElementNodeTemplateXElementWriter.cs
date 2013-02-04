@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Xml.Linq;
 
-namespace Vixen.IO.Xml.ChannelNodeTemplate {
+namespace Vixen.IO.Xml.ElementNodeTemplate {
 	using Vixen.Sys;
 
-	class ChannelNodeTemplateXElementWriter : IObjectContentWriter<XElement, ChannelNodeTemplate> {
-		public void WriteContentToObject(XElement content, ChannelNodeTemplate obj) {
+	class ElementNodeTemplateXElementWriter : IObjectContentWriter<XElement, ElementNodeTemplate> {
+		public void WriteContentToObject(XElement content, ElementNodeTemplate obj) {
 			
-			XmlChannelNodeTemplateFilePolicy xmlFilePolicy = new XmlChannelNodeTemplateFilePolicy(obj, content);
+			XmlElementNodeTemplateFilePolicy xmlFilePolicy = new XmlElementNodeTemplateFilePolicy(obj, content);
 			xmlFilePolicy.Read();
 		}
 
@@ -19,9 +19,9 @@ namespace Vixen.IO.Xml.ChannelNodeTemplate {
 
 		void IObjectContentWriter.WriteContentToObject(object content, object obj) {
 			if(!(content is XElement)) throw new InvalidOperationException("Content must be an XElement.");
-			if(!(obj is ChannelNodeTemplate)) throw new InvalidOperationException("Object must be a ChannelNodeTemplate.");
+			if(!(obj is ElementNodeTemplate)) throw new InvalidOperationException("Object must be a ElementNodeTemplate.");
 
-			WriteContentToObject((XElement)content, (ChannelNodeTemplate)obj);
+			WriteContentToObject((XElement)content, (ElementNodeTemplate)obj);
 		}
 
 		int IObjectContentWriter.GetContentVersion(object content) {

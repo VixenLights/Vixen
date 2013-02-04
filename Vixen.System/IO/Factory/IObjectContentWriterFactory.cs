@@ -4,7 +4,7 @@
 		IObjectContentWriter CreateModuleStoreContentWriter();
 		IObjectContentWriter CreateSystemContextContentWriter();
 		IObjectContentWriter CreateProgramContentWriter();
-		IObjectContentWriter CreateChannelNodeTemplateContentWriter();
+		IObjectContentWriter CreateElementNodeTemplateContentWriter();
 		IObjectContentWriter CreateSequenceContentWriter(string filePath);
 	}
 }

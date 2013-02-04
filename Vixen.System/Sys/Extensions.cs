@@ -149,8 +149,8 @@ namespace Vixen.Sys
 				Math.Max(color.B, otherColor.B));
 		}
 
-		static public Channel[] GetChannels(this IEnumerable<ChannelNode> nodes) {
-			return nodes.SelectMany(x => x.GetChannelEnumerator()).ToArray();
+		static public Element[] GetElements(this IEnumerable<ElementNode> nodes) {
+			return nodes.SelectMany(x => x.GetElementEnumerator()).ToArray();
 		}
 
 		static public string GetFilePath(this Assembly assembly) {

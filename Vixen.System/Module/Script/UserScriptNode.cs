@@ -9,12 +9,12 @@ namespace Vixen.Module.Script {
 		// Node name : Node (branch or leaf)
 		private Dictionary<string, UserScriptNode> _children = new Dictionary<string, UserScriptNode>();
 
-		public UserScriptNode(ChannelNode node) {
+		public UserScriptNode(ElementNode node) {
 			Node = node;
 			_children = node.Children.ToDictionary(x => x.Name, x => new UserScriptNode(x));
 		}
 
-		public ChannelNode Node { get; private set; }
+		public ElementNode Node { get; private set; }
 
 		public IEnumerator<UserScriptNode> GetEnumerator() {
 			yield return this;

@@ -3,42 +3,42 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Vixen.Sys.Managers {
-	public class NodeManager : IEnumerable<ChannelNode> {
-		private ChannelNode _rootNode;
+	public class NodeManager : IEnumerable<ElementNode> {
+		private ElementNode _rootNode;
 
-		// a mapping of channel node GUIDs to channel node instances. Used for initial creation, to easily find nodes we have already created.
-		// once they've been created, they're in the dictionary. The only way to 'delete' channelnodes is to make a new NodeManager,
+		// a mapping of element node GUIDs to element node instances. Used for initial creation, to easily find nodes we have already created.
+		// once they've been created, they're in the dictionary. The only way to 'delete' elementNodes is to make a new NodeManager,
 		// which reinitializes this mapping and we can start fresh.
-		private Dictionary<Guid, ChannelNode> _instances;
+		private Dictionary<Guid, ElementNode> _instances;
 
 		static public event EventHandler NodesChanged;
 
 		public NodeManager() {
-			_instances = new Dictionary<Guid, ChannelNode>();
-			ChannelNode.Changed += ChannelNode_Changed;
+			_instances = new Dictionary<Guid, ElementNode>();
+			ElementNode.Changed += ElementNode_Changed;
 		}
 
-		public NodeManager(IEnumerable<ChannelNode> nodes)
+		public NodeManager(IEnumerable<ElementNode> nodes)
 			: this() {
 			AddNodes(nodes);
 		}
 
-		void ChannelNode_Changed(object sender, EventArgs e) {
+		void ElementNode_Changed(object sender, EventArgs e) {
 			OnNodesChanged();
 		}
 
-		private ChannelNode RootNode
+		private ElementNode RootNode
 		{
 			get
 			{
 				if (_rootNode == null)
-					_rootNode = new ChannelNode("Root");
+					_rootNode = new ElementNode("Root");
 
 				return _rootNode;
 			}
 		}
 
-		public void MoveNode(ChannelNode movingNode, ChannelNode newParent, ChannelNode oldParent, int index = -1) {
+		public void MoveNode(ElementNode movingNode, ElementNode newParent, ElementNode oldParent, int index = -1) {
 			// if null nodes, default to the root node.
 			newParent = newParent ?? RootNode;
 			oldParent = oldParent ?? RootNode;
@@ -55,26 +55,26 @@ namespace Vixen.Sys.Managers {
 			AddChildToParent(movingNode, newParent, index);
 		}
 
-		public void AddNode(ChannelNode node, ChannelNode parent = null) {
+		public void AddNode(ElementNode node, ElementNode parent = null) {
 			AddChildToParent(node, parent);
 		}
 
-		public void AddNodes(IEnumerable<ChannelNode> nodes, ChannelNode parent = null) {
-			foreach(ChannelNode node in nodes) {
+		public void AddNodes(IEnumerable<ElementNode> nodes, ElementNode parent = null) {
+			foreach(ElementNode node in nodes) {
 				AddNode(node, parent);
 			}
 		}
 
-		public ChannelNode AddNode(string name, ChannelNode parent = null, bool uniquifyName = true) {
+		public ElementNode AddNode(string name, ElementNode parent = null, bool uniquifyName = true) {
 			if(uniquifyName) {
 				name = _Uniquify(name);
 			}
-			ChannelNode newNode = new ChannelNode(name);
+			ElementNode newNode = new ElementNode(name);
 			AddNode(newNode, parent);
 			return newNode;
 		}
 
-		public void RemoveNode(ChannelNode node, ChannelNode parent, bool cleanupIfFloating) {
+		public void RemoveNode(ElementNode node, ElementNode parent, bool cleanupIfFloating) {
 			// if the given parent is null, it's most likely a root node (ie. with
 			// a parent of our private RootNode). Try to remove it from that instead.
 			if (parent == null) {
@@ -84,20 +84,20 @@ namespace Vixen.Sys.Managers {
 			}
 		}
 
-		public void RenameNode(ChannelNode node, string newName) {
+		public void RenameNode(ElementNode node, string newName) {
 			node.Name = _Uniquify(newName);
-			if (node.Channel != null)
-				node.Channel.Name = node.Name;
+			if (node.Element != null)
+				node.Element.Name = node.Name;
 		}
 
-		public void AddChildToParent(ChannelNode child, ChannelNode parent, int index = -1) {
+		public void AddChildToParent(ElementNode child, ElementNode parent, int index = -1) {
 			// if no parent was specified, add to the root node.
 			if (parent == null)
 				parent = RootNode;
 
 			// if an item is a group (or is becoming one), it can't have an output
-			// channel anymore. Remove it.
-			parent.Channel = null;
+			// element anymore. Remove it.
+			parent.Element = null;
 
 			// if an index was specified, insert it in that position, otherwise just add it at the end
 			if (index < 0)
@@ -119,11 +119,11 @@ namespace Vixen.Sys.Managers {
 			return name;
 		}
 
-		public IEnumerable<ChannelNode> InvalidRootNodes {
+		public IEnumerable<ElementNode> InvalidRootNodes {
 			get { return RootNode.InvalidChildren(); }
 		}
 
-		public bool SetChannelNode(Guid id, ChannelNode node)
+		public bool SetElementNode(Guid id, ElementNode node)
 		{
 			bool rv = _instances.ContainsKey(id);
 
@@ -131,14 +131,14 @@ namespace Vixen.Sys.Managers {
 			return rv;
 		}
 
-		public ChannelNode GetChannelNode(Guid id) {
+		public ElementNode GetElementNode(Guid id) {
 			if (_instances.ContainsKey(id)) {
 				return _instances[id];
 			}
 			return null;
 		}
 
-		public bool ChannelNodeExists(Guid id)
+		public bool ElementNodeExists(Guid id)
 		{
 			return _instances.ContainsKey(id);
 		}
@@ -150,28 +150,28 @@ namespace Vixen.Sys.Managers {
 			}
 		}
 
-		public IEnumerable<ChannelNode> GetLeafNodes() {
+		public IEnumerable<ElementNode> GetLeafNodes() {
 			// Don't want to return the root node.
 			// note: this may very well return duplicate nodes, if they are part of different groups.
 			return RootNode.Children.SelectMany(x => x.GetLeafEnumerator());
 		}
 
-		public IEnumerable<ChannelNode> GetNonLeafNodes() {
+		public IEnumerable<ElementNode> GetNonLeafNodes() {
 			// Don't want to return the root node.
 			// note: this may very well return duplicate nodes, if they are part of different groups.
 			return RootNode.Children.SelectMany(x => x.GetNonLeafEnumerator());
 		}
 
-		public IEnumerable<ChannelNode> GetRootNodes() {
+		public IEnumerable<ElementNode> GetRootNodes() {
 			return RootNode.Children;
 		}
 
-		public IEnumerable<ChannelNode> GetAllNodes() {
+		public IEnumerable<ElementNode> GetAllNodes() {
 			//return RootNode.Children.SelectMany(x => x.GetNodeEnumerator());
 			return _instances.Values;
 		}
 
-		public IEnumerator<ChannelNode> GetEnumerator()
+		public IEnumerator<ElementNode> GetEnumerator()
 		{
 			// Don't want to return the root node.
 			return GetAllNodes().GetEnumerator();

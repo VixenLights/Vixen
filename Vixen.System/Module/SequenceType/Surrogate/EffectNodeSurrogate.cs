@@ -13,20 +13,20 @@ namespace Vixen.Module.SequenceType.Surrogate {
 			TypeId = effectNode.Effect.Descriptor.TypeId;
 			InstanceId = effectNode.Effect.InstanceId;
 			TimeSpan = effectNode.Effect.TimeSpan;
-			TargetNodes = effectNode.Effect.TargetNodes.Select(x => new ChannelNodeReferenceSurrogate(x)).ToArray();
+			TargetNodes = effectNode.Effect.TargetNodes.Select(x => new ElementNodeReferenceSurrogate(x)).ToArray();
 		}
 
 		public IEffectNode CreateEffectNode() {
-			// Create a channel node lookup of channels that are currently valid.
-			var channelNodes = VixenSystem.Nodes.Distinct().ToDictionary(x => x.Id);
+			// Create a element node lookup of elements that are currently valid.
+			var elementNodes = VixenSystem.Nodes.Distinct().ToDictionary(x => x.Id);
 
 			IEnumerable<Guid> targetNodeIds = TargetNodes.Select(x => x.NodeId);
-			IEnumerable<Guid> validChannelIds = targetNodeIds.Intersect(channelNodes.Keys);
+			IEnumerable<Guid> validElementIds = targetNodeIds.Intersect(elementNodes.Keys);
 
 			IEffectModuleInstance effect = Modules.ModuleManagement.GetEffect(TypeId);
 			effect.InstanceId = InstanceId;
 			effect.TimeSpan = TimeSpan;
-			effect.TargetNodes = validChannelIds.Select(x => channelNodes[x]).ToArray();
+			effect.TargetNodes = validElementIds.Select(x => elementNodes[x]).ToArray();
 
 			return new EffectNode(effect, StartTime);
 		}
