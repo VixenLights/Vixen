@@ -290,7 +290,7 @@ namespace Common.Controls
 						// the initial click was 'valid' (ie. wasn't subject to the dodgy treenode full-width issue)
 						_clickedNodeWasInBounds = true;
 
-						if (ModifierKeys == Keys.None && (m_SelectedNodes.Contains(node))) {
+						if ((ModifierKeys == Keys.None || ModifierKeys == Keys.Control) && (m_SelectedNodes.Contains(node))) {
 							// Potential Drag Operation
 							// Let Mouse Up do select
 						} else {
