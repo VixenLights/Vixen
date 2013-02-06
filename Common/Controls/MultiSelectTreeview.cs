@@ -76,6 +76,7 @@ namespace Common.Controls
 		// to avoid sorting the list every time.
 		private bool _delaySortingSelectedNodes = false;
 		private bool _clickedNodeWasInBounds = false;
+		private bool _selectedNodeWithControlKey = false;
 		#endregion
 
 
@@ -294,6 +295,8 @@ namespace Common.Controls
 							// Potential Drag Operation
 							// Let Mouse Up do select
 						} else {
+							if (ModifierKeys == Keys.Control)
+								_selectedNodeWithControlKey = true;
 							SelectNode(node);
 						}
 					}
@@ -331,6 +334,8 @@ namespace Common.Controls
 				if (node != null)
 				{
 					if (ModifierKeys == Keys.None && m_SelectedNodes.Contains(node) && e.Button != MouseButtons.Right && _clickedNodeWasInBounds)
+						SelectNode(node);
+					if (ModifierKeys == Keys.Control && !_selectedNodeWithControlKey)
 						SelectNode(node);
 				}
 
