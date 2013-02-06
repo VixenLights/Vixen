@@ -76,6 +76,8 @@ namespace Common.Controls
 		// to avoid sorting the list every time.
 		private bool _delaySortingSelectedNodes = false;
 		private bool _clickedNodeWasInBounds = false;
+		private bool _selectedNodeWithControlKey = false;
+
 		#endregion
 
 
@@ -290,11 +292,14 @@ namespace Common.Controls
 						// the initial click was 'valid' (ie. wasn't subject to the dodgy treenode full-width issue)
 						_clickedNodeWasInBounds = true;
 
-						if ((ModifierKeys == Keys.None || ModifierKeys == Keys.Control) && (m_SelectedNodes.Contains(node))) {
+						if ((ModifierKeys == Keys.None || ModifierKeys == Keys.Control) && (m_SelectedNodes.Contains(node)))
+						{
 							// Potential Drag Operation
 							// Let Mouse Up do select
 						} else {
 							SelectNode(node);
+							if (ModifierKeys == Keys.Control)
+								_selectedNodeWithControlKey = true;
 						}
 					}
 					// due to a weird issue in the TreeNode GetNodeAt() call, if we click off to the right of the nodes,
@@ -332,8 +337,11 @@ namespace Common.Controls
 				{
 					if (ModifierKeys == Keys.None && m_SelectedNodes.Contains(node) && e.Button != MouseButtons.Right && _clickedNodeWasInBounds)
 						SelectNode(node);
+					if (ModifierKeys == Keys.Control && !_selectedNodeWithControlKey)
+						SelectNode(node);
 				}
 
+				_selectedNodeWithControlKey = false;
 				base.OnMouseUp(e);
 			}
 			catch (Exception ex)
