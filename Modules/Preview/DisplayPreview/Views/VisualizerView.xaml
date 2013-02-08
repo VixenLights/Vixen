@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         SizeToContent="WidthAndHeight"
         Title="Display Preview"
-        d:DataContext="{d:DesignInstance ViewModels:VisualizerViewModel}">
+        d:DataContext="{d:DesignInstance ViewModels:VisualizerViewModel}" Closing="DisplayPreview_Closing">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

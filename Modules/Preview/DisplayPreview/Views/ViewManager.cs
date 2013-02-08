@@ -46,6 +46,7 @@ namespace VixenModules.Preview.DisplayPreview.Views
         {
             if (_view != null)
             {
+				_view.SystemClosing = true;
             	_view.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => _view.Close()));
             }
         }
