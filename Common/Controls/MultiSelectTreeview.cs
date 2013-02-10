@@ -345,6 +345,7 @@ namespace Common.Controls
 			{
 				HandleException(ex);
 			}
+			_selectedNodeWithControlKey = false;
 		}
 
 		protected override void OnItemDrag(ItemDragEventArgs e)
