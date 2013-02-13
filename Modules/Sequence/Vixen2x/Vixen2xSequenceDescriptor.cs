@@ -1,5 +1,6 @@
 ﻿using System;
 using Vixen.Module.SequenceType;
+using VixenModules.Sequence.Timed;
 
 namespace VixenModules.Sequence.Vixen2x {
 	public class Vixen2xSequenceModuleDescriptor : SequenceTypeModuleDescriptorBase {
@@ -14,11 +15,11 @@ namespace VixenModules.Sequence.Vixen2x {
 		}
 
 		override public Type ModuleClass {
-			get { return typeof(Vixen2xSequence); }
+			get { return typeof(Vixen2xSequenceTypeModule); }
 		}
 
 		override public Type ModuleDataClass {
-			get { return typeof(Vixen2xSequenceData); }
+			get { return typeof(TimedSequenceData); }
 		}
 
 		override public string Author {
@@ -40,10 +41,10 @@ namespace VixenModules.Sequence.Vixen2x {
 		override public int ClassVersion {
 			get { return 3;	}
 		}
-		
-		//override public bool CanCreateNew {
-		//    // Override to prevent creation of new sequence
-		//    get { return false; }
+
+		override public bool CanCreateNew {
+			// Override to prevent creation of new sequence
+			get { return false; }
 		}
 	}
 }

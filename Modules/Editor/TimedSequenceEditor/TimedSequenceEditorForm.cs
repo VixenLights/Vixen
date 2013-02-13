@@ -231,9 +231,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if(filePath == null | forcePrompt) {
 				if(_sequence.FilePath.Trim() == "" || forcePrompt) {
 					// Updated to use the OS SaveFileDialog functionality 8/1/2012 JU
-					TimedSequenceEditorDescriptor descriptor = ((OwnerModule.Descriptor) as TimedSequenceEditorDescriptor);
+					// Edit this type to be the more generic type to support importing into timed sequnces 12 FEB 2013 - JEMA
+					EditorModuleDescriptorBase descriptor = ((OwnerModule.Descriptor) as EditorModuleDescriptorBase);
 					saveFileDialog.InitialDirectory = SequenceService.SequenceDirectory;
-					string filter = descriptor.TypeName + " (*" + string.Join(", *", descriptor.FileExtensions) + ")|*" + string.Join("; *", descriptor.FileExtensions);
+					string filter = descriptor.TypeName + " (*" + string.Join(", *", descriptor.FileExtensions[0]) + ")|*" + string.Join("; *", descriptor.FileExtensions[0]);
 					saveFileDialog.DefaultExt = descriptor.FileExtensions.First();
 					saveFileDialog.Filter = filter;
 					DialogResult result = saveFileDialog.ShowDialog();
@@ -299,7 +300,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// </summary>
 		private void setTitleBarText() {
 			//Set sequence name in title bar based on the module name and current sequence name JU 8/1/2012
-			Text = String.Format("{0} - [{1}{2}]", ((OwnerModule.Descriptor) as TimedSequenceEditorDescriptor).TypeName,
+			//Made this more generic to support importing 12 FEB 2013 - JEMA
+			Text = String.Format("{0} - [{1}{2}]", ((OwnerModule.Descriptor) as EditorModuleDescriptorBase).TypeName,
 			                     _sequence.Name, IsModified ? " *" : "");
 		}
 
