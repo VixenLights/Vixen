@@ -28,8 +28,8 @@ namespace Vixen.IO.Factory {
 			return new ProgramPersistor();
 		}
 
-		public IObjectPersistor<ChannelNodeTemplate> CreateChannelNodeTemplatePersistor() {
-			return new ChannelNodeTemplatePersistor();
+		public IObjectPersistor<ElementNodeTemplate> CreateElementNodeTemplatePersistor() {
+			return new ElementNodeTemplatePersistor();
 		}
 
 		public IObjectPersistor CreateSequencePersistor() {

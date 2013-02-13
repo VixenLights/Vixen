@@ -3,8 +3,8 @@ using Vixen.Services;
 using Vixen.Sys.Attribute;
 
 namespace Vixen.Sys {
-	class ChannelNodeTemplate {
-		private const string DIRECTORY_NAME = "Template\\Channel";
+	class ElementNodeTemplate {
+		private const string DIRECTORY_NAME = "Template\\Element";
 
 		[DataPath]
 		static public string Directory {
@@ -14,9 +14,9 @@ namespace Vixen.Sys {
 		public const string Extension = ".cha";
 
 		public void Save(string filePath) {
-			FileService.Instance.SaveChannelNodeTemplateFile(this, filePath);
+			FileService.Instance.SaveElementNodeTemplateFile(this, filePath);
 		}
 
-		public ChannelNode ChannelNode;
+		public ElementNode ElementNode;
 	}
 }

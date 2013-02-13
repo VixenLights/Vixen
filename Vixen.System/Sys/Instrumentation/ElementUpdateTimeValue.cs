@@ -1,9 +1,9 @@
 ﻿using Vixen.Instrumentation;
 
 namespace Vixen.Sys.Instrumentation {
-	class ChannelUpdateTimeValue : DoubleValue {
-		public ChannelUpdateTimeValue()
-			: base("Update time for all channels") {
+	class ElementUpdateTimeValue : DoubleValue {
+		public ElementUpdateTimeValue()
+			: base("Update time for all elements") {
 		}
 
 		protected override string _GetFormattedValue() {

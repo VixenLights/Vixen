@@ -5,32 +5,32 @@ using System.Xml.Linq;
 using Vixen.Sys;
 
 namespace Vixen.IO.Xml.Serializer {
-	class XmlChannelNodeSerializer : IXmlSerializer<ChannelNode> {
-		private IEnumerable<Channel> _underlyingChannels;
+	class XmlElementNodeSerializer : IXmlSerializer<ElementNode> {
+		private IEnumerable<Element> _underlyingElements;
 
 		private const string ELEMENT_NODE = "Node";
 		private const string ATTR_ID = "id";
 		private const string ATTR_NAME = "name";
-		private const string ATTR_CHANNEL_ID = "channelId";
+		private const string ATTR_ELEMENT_ID = "channelId";
 
-		public XmlChannelNodeSerializer(IEnumerable<Channel> underlyingChannelsForRead) {
-			// VixenSystem.Channels has not yet been populated because the file is in the
+		public XmlElementNodeSerializer(IEnumerable<Element> underlyingElementsForRead) {
+			// VixenSystem.Elements has not yet been populated because the file is in the
 			// middle of being read/written.  This serializer has a dependency on the
-			// newly read channel collection.
-			_underlyingChannels = underlyingChannelsForRead;
+			// newly read element collection.
+			_underlyingElements = underlyingElementsForRead;
 		}
 
-		public XElement WriteObject(ChannelNode value) {
-			object channelElements = null;
+		public XElement WriteObject(ElementNode value) {
+			object elementXmlElements = null;
 
 			if(value.IsLeaf) {
-				// Leaf - reference the single channel by id
-				if(value.Channel != null) {
-					channelElements = new XAttribute(ATTR_CHANNEL_ID, value.Channel.Id.ToString());
+				// Leaf - reference the single element by id
+				if(value.Element != null) {
+					elementXmlElements = new XAttribute(ATTR_ELEMENT_ID, value.Element.Id.ToString());
 				}
 			} else {
 				// Branch - include the child nodes inline
-				channelElements = value.Children.Select(WriteObject);
+				elementXmlElements = value.Children.Select(WriteObject);
 			}
 
 			XmlPropertyCollectionSerializer propertyCollectionSerializer = new XmlPropertyCollectionSerializer();
@@ -42,10 +42,10 @@ namespace Vixen.IO.Xml.Serializer {
 				new XAttribute(ATTR_ID, value.Id),
 				propertyCollectionElement,
 				//propertyDataElement,
-				channelElements);
+				elementXmlElements);
 		}
 
-		public ChannelNode ReadObject(XElement element) {
+		public ElementNode ReadObject(XElement element) {
 			string name = XmlHelper.GetAttribute(element, ATTR_NAME);
 			if(name == null) return null;
 
@@ -56,24 +56,24 @@ namespace Vixen.IO.Xml.Serializer {
 			// in different groups). If we have, return that node instead, and don't go any deeper into child nodes.
 			// (we'll just assume that the XML data for this one is identical to the earlier XML node that was written
 			// out. To be a bit more proper, we should probably change the WriteXML() to not fully write out repeat
-			// ChannelNodes, and instead do some sort of soft reference to the first one (ie. GUID only). )
-			ChannelNode existingNode = VixenSystem.Nodes.GetChannelNode(id.Value);
+			// ElementNodes, and instead do some sort of soft reference to the first one (ie. GUID only). )
+			ElementNode existingNode = VixenSystem.Nodes.GetElementNode(id.Value);
 			if(existingNode != null) {
 				return existingNode;
 			}
 
-			// Children or channel reference
-			ChannelNode node = null;
-			Guid? channelId = XmlHelper.GetGuidAttribute(element, ATTR_CHANNEL_ID);
-			if(channelId == null) {
+			// Children or element reference
+			ElementNode node = null;
+			Guid? elementId = XmlHelper.GetGuidAttribute(element, ATTR_ELEMENT_ID);
+			if(elementId == null) {
 				// Branch
-				IEnumerable<ChannelNode> childNodes = element.Elements(ELEMENT_NODE).Select(ReadObject).NotNull();
-				node = new ChannelNode(id.Value, name, null, childNodes);
+				IEnumerable<ElementNode> childNodes = element.Elements(ELEMENT_NODE).Select(ReadObject).NotNull();
+				node = new ElementNode(id.Value, name, null, childNodes);
 			} else {
 				// Leaf
-				Channel channel = _underlyingChannels.FirstOrDefault(x => x.Id == channelId);
-				if(channel != null) {
-					node = new ChannelNode(id.Value, name, channel, null);
+				Element elem = _underlyingElements.FirstOrDefault(x => x.Id == elementId);
+				if (elem != null) {
+					node = new ElementNode(id.Value, name, elem, null);
 				}
 			}
 

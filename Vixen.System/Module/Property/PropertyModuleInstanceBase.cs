@@ -6,7 +6,7 @@ using Vixen.Sys;
 
 namespace Vixen.Module.Property {
 	abstract public class PropertyModuleInstanceBase : ModuleInstanceBase, IPropertyModuleInstance, IEqualityComparer<IPropertyModuleInstance>, IEquatable<IPropertyModuleInstance>, IEqualityComparer<PropertyModuleInstanceBase>, IEquatable<PropertyModuleInstanceBase> {
-		virtual public ChannelNode Owner { get; set; }
+		virtual public ElementNode Owner { get; set; }
 
 		virtual public bool HasSetup {
 			get { return false; }

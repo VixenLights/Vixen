@@ -8,22 +8,22 @@ using Vixen.Sys;
 namespace Vixen.Module.Effect {
 	[Serializable]
 	abstract public class EffectModuleInstanceBase : ModuleInstanceBase, IEffectModuleInstance, IEqualityComparer<IEffectModuleInstance>, IEquatable<IEffectModuleInstance>, IEqualityComparer<EffectModuleInstanceBase>, IEquatable<EffectModuleInstanceBase> {
-		private ChannelNode[] _targetNodes;
+		private ElementNode[] _targetNodes;
 		private TimeSpan _timeSpan;
 		private DefaultValueArrayMember _parameterValues;
-		private ChannelIntents _channelIntents;
+		private ElementIntents _elementIntents;
 
 		protected EffectModuleInstanceBase() {
-			TargetNodes = new ChannelNode[0];
+			TargetNodes = new ElementNode[0];
 			TimeSpan = TimeSpan.Zero;
 			IsDirty = true;
 			_parameterValues = new DefaultValueArrayMember(this);
-			_channelIntents = new ChannelIntents();
+			_elementIntents = new ElementIntents();
 		}
 
 		virtual public bool IsDirty { get; protected set; }
 
-		public ChannelNode[] TargetNodes {
+		public ElementNode[] TargetNodes {
 			get { return _targetNodes; }
 			set {
 				if(value != _targetNodes) {
@@ -66,7 +66,7 @@ namespace Vixen.Module.Effect {
 
 		public EffectIntents Render(TimeSpan restrictingOffsetTime, TimeSpan restrictingTimeSpan) {
 			EffectIntents effectIntents = Render();
-			// NB: the ChannelData.Restrict method takes a start and end time, not a start and duration
+			// NB: the ElementData.Restrict method takes a start and end time, not a start and duration
 			effectIntents = EffectIntents.Restrict(effectIntents, restrictingOffsetTime, restrictingOffsetTime + restrictingTimeSpan);
 			return effectIntents;
 		}
@@ -92,19 +92,19 @@ namespace Vixen.Module.Effect {
 			g.DrawRectangle(Pens.Black, clipRectangle.X, clipRectangle.Y, clipRectangle.Width - 1, clipRectangle.Height - 1);
 		}
 
-		public ChannelIntents GetChannelIntents(TimeSpan effectRelativeTime) {
-			_channelIntents.Clear();
+		public ElementIntents GetElementIntents(TimeSpan effectRelativeTime) {
+			_elementIntents.Clear();
 
 			_AddLocalIntents(effectRelativeTime);
 
-			return _channelIntents;
+			return _elementIntents;
 		}
 
 		private void _AddLocalIntents(TimeSpan effectRelativeTime) {
 			EffectIntents effectIntents = Render();
-			foreach(Guid channelId in effectIntents.ChannelIds) {
-				IIntentNode[] channelIntents = effectIntents.GetChannelIntentsAtTime(channelId, effectRelativeTime);
-				_channelIntents.AddIntentNodeToChannel(channelId, channelIntents);
+			foreach(Guid elementId in effectIntents.ElementIds) {
+				IIntentNode[] elementIntents = effectIntents.GetElementIntentsAtTime(elementId, effectRelativeTime);
+				_elementIntents.AddIntentNodeToElement(elementId, elementIntents);
 			}
 		}
 
@@ -118,10 +118,10 @@ namespace Vixen.Module.Effect {
 				List<string> message = new List<string> {
 						"The \"" + effectDescriptor.TypeName + "\" effect has property requirements that are missing:", 
 						""};
-				foreach(ChannelNode channelNode in TargetNodes) {
-					Guid[] missingPropertyIds = effectDescriptor.PropertyDependencies.Except(channelNode.Properties.Select(x => x.Descriptor.TypeId)).ToArray();
+				foreach(ElementNode elementNode in TargetNodes) {
+					Guid[] missingPropertyIds = effectDescriptor.PropertyDependencies.Except(elementNode.Properties.Select(x => x.Descriptor.TypeId)).ToArray();
 					if(missingPropertyIds.Length > 0) {
-						message.Add((channelNode.Children.Any() ? "Group " : "Channel ") + channelNode.Name);
+						message.Add((elementNode.Children.Any() ? "Group " : "Element ") + elementNode.Name);
 						message.AddRange(missingPropertyIds.Select(x => " - Property " + Modules.GetDescriptorById(x).TypeName));
 					}
 				}

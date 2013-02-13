@@ -9,18 +9,18 @@ namespace Vixen.Sys {
 	/// A logical channel of low-level CommandData that is intended to be executed by a controller.
 	/// </summary>
 	[Serializable]
-	public class Channel : IOutputStateSource, IEqualityComparer<Channel>, IEquatable<Channel> {
-		private ChannelContextSource _dataSource;
+	public class Element : IOutputStateSource, IEqualityComparer<Element>, IEquatable<Element> {
+		private ElementContextSource _dataSource;
 		private IIntentStates _state;
 
-		internal Channel(string name)
+		internal Element(string name)
 			: this(Guid.NewGuid(), name) {
 		}
 
-		internal Channel(Guid id, string name) {
+		internal Element(Guid id, string name) {
 			Id = id;
 			Name = name;
-			_dataSource = new ChannelContextSource(Id);
+			_dataSource = new ElementContextSource(Id);
 			_state = new IntentStateList();
 		}
 
@@ -42,11 +42,11 @@ namespace Vixen.Sys {
 			return Name;
 		}
 
-		public bool Equals(Channel x, Channel y) {
+		public bool Equals(Element x, Element y) {
 			return x.Id == y.Id;
 		}
 
-		public int GetHashCode(Channel obj) {
+		public int GetHashCode(Element obj) {
 			return obj.Id.GetHashCode();
 		}
 
@@ -54,7 +54,7 @@ namespace Vixen.Sys {
 		// Equals(<type>) for IEquatable and GetHashCode() because that's needed anytime
 		// Equals(object) is overridden (which it really isn't, but this is what is said and
 		// it doesn't work otherwise).
-		public bool Equals(Channel other) {
+		public bool Equals(Element other) {
 			return Id == other.Id;
 		}
 
@@ -63,11 +63,11 @@ namespace Vixen.Sys {
 		}
 
 		private IIntentStates _AggregateStateFromContexts() {
-			//In reality, all this needs to do is call GetChannelState on each context
+			//In reality, all this needs to do is call GetElementState on each context
 			//and put them all into a single collection.
 			// NotNull() - filter out any null lists resulting from the context not yet having
-			// a state for the channel.  This versus creating a new list in
-			// ChannelStateSourceCollection.GetState (or maybe Context.GetState instead, may
+			// a state for the element.  This versus creating a new list in
+			// ElementStateSourceCollection.GetState (or maybe Context.GetState instead, may
 			// make more sense there) on a dictionary miss.
 			IEnumerable<IIntentState> intentStates = _dataSource.NotNull().SelectMany(x => x.State);
 			return new IntentStateList(intentStates);

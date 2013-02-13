@@ -34,14 +34,14 @@ namespace Vixen.IO.Xml.SystemConfig {
 			_content.Add(new XElement(ELEMENT_EVAL_FILTERS, _systemConfig.AllowFilterEvaluation));
 		}
 
-		protected override void WriteChannels() {
-			XmlChannelCollectionSerializer serializer = new XmlChannelCollectionSerializer();
-			XElement element = serializer.WriteObject(_systemConfig.Channels);
+		protected override void WriteElements() {
+			XmlElementCollectionSerializer serializer = new XmlElementCollectionSerializer();
+			XElement element = serializer.WriteObject(_systemConfig.Elements);
 			_content.Add(element);
 		}
 
 		protected override void WriteNodes() {
-			XmlChannelNodeCollectionSerializer serializer = new XmlChannelNodeCollectionSerializer(_systemConfig.Channels);
+			XmlElementNodeCollectionSerializer serializer = new XmlElementNodeCollectionSerializer(_systemConfig.Elements);
 			XElement element = serializer.WriteObject(_systemConfig.Nodes);
 			_content.Add(element);
 		}
@@ -107,13 +107,13 @@ namespace Vixen.IO.Xml.SystemConfig {
 			_systemConfig.AllowFilterEvaluation = XmlHelper.GetElementValue(_content, ELEMENT_EVAL_FILTERS, true);
 		}
 
-		protected override void ReadChannels() {
-			XmlChannelCollectionSerializer serializer = new XmlChannelCollectionSerializer();
-			_systemConfig.Channels = serializer.ReadObject(_content);
+		protected override void ReadElements() {
+			XmlElementCollectionSerializer serializer = new XmlElementCollectionSerializer();
+			_systemConfig.Elements = serializer.ReadObject(_content);
 		}
 
 		protected override void ReadNodes() {
-			XmlChannelNodeCollectionSerializer serializer = new XmlChannelNodeCollectionSerializer(_systemConfig.Channels);
+			XmlElementNodeCollectionSerializer serializer = new XmlElementNodeCollectionSerializer(_systemConfig.Elements);
 			_systemConfig.Nodes = serializer.ReadObject(_content);
 		}
 

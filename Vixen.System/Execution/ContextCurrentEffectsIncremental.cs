@@ -17,26 +17,26 @@ namespace Vixen.Execution {
 		}
 
 		/// <summary>
-		/// Updates the collection of current affects, returning the ids of the affected channels.
+		/// Updates the collection of current affects, returning the ids of the affected elements.
 		/// </summary>
-		/// <returns>Ids of the affected channels.</returns>
+		/// <returns>Ids of the affected elements.</returns>
 		public Guid[] UpdateCurrentEffects(IDataSource dataSource, TimeSpan currentTime) {
 			// Get the effects that are newly qualified.
 			IEnumerable<IEffectNode> newQualifiedEffects = dataSource.GetDataAt(currentTime);
 			// Add them to the current effect list.
 			_currentEffects.AddRange(newQualifiedEffects);
-			// Get the distinct list of all channels affected by all effects in the list.
+			// Get the distinct list of all elements affected by all effects in the list.
 			// List has current effects as well as effects that may be expiring.
 			// Current and expired effects affect state.
-			Guid[] affectedChannels = _GetChannelsAffected(_currentEffects);
+			Guid[] affectedElements = _GetElementsAffected(_currentEffects);
 			_RemoveExpiredEffects(currentTime);
 
-			return affectedChannels;
+			return affectedElements;
 		}
 
-		private Guid[] _GetChannelsAffected(IEnumerable<IEffectNode> effects) {
-			return effects.SelectMany(x => x.Effect.TargetNodes).SelectMany(y => y.GetChannelEnumerator()).Select(z => z.Id).Distinct().ToArray();
-			//return effects.SelectMany(x => x.Effect.TargetNodes.Select(y => y.Channel.Id)).Distinct().ToArray();
+		private Guid[] _GetElementsAffected(IEnumerable<IEffectNode> effects) {
+			return effects.SelectMany(x => x.Effect.TargetNodes).SelectMany(y => y.GetElementEnumerator()).Select(z => z.Id).Distinct().ToArray();
+			//return effects.SelectMany(x => x.Effect.TargetNodes.Select(y => y.Element.Id)).Distinct().ToArray();
 		}
 
 		private void _RemoveExpiredEffects(TimeSpan currentTime) {

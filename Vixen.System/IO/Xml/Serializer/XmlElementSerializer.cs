@@ -3,22 +3,22 @@ using System.Xml.Linq;
 using Vixen.Sys;
 
 namespace Vixen.IO.Xml.Serializer {
-	class XmlChannelSerializer : IXmlSerializer<Channel> {
-		private const string ELEMENT_CHANNEL = "Channel";
+	class XmlElementSerializer : IXmlSerializer<Element> {
+		private const string ELEMENT_ELEMENT = "Channel";
 		private const string ATTR_ID = "id";
 		private const string ATTR_NAME = "name";
 
-		public XElement WriteObject(Channel value) {
-			XElement element = new XElement(ELEMENT_CHANNEL,
+		public XElement WriteObject(Element value) {
+			XElement element = new XElement(ELEMENT_ELEMENT,
 				new XAttribute(ATTR_ID, value.Id),
 				new XAttribute(ATTR_NAME, value.Name));
 			return element;
 		}
 
-		public Channel ReadObject(XElement element) {
+		public Element ReadObject(XElement element) {
 			Guid id = XmlHelper.GetGuidAttribute(element, ATTR_ID).GetValueOrDefault();
 			string name = XmlHelper.GetAttribute(element, ATTR_NAME);
-			return new Channel(id, name);
+			return new Element(id, name);
 		}
 	}
 }

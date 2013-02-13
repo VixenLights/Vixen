@@ -7,9 +7,9 @@ namespace Vixen.Sys {
 	public class PropertyManager : IEnumerable<IPropertyModuleInstance> {
 		private Dictionary<Guid, IPropertyModuleInstance> _items = new Dictionary<Guid, IPropertyModuleInstance>();
 		//private ModuleLocalDataSet _propertyData;
-		private ChannelNode _owner;
+		private ElementNode _owner;
 
-		public PropertyManager(ChannelNode owner) {
+		public PropertyManager(ElementNode owner) {
 			_owner = owner;
 			//PropertyData = new ModuleLocalDataSet();
 		}

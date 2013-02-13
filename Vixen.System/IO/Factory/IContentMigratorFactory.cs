@@ -4,7 +4,7 @@
 		IContentMigrator CreateModuleStoreContentMigrator();
 		IContentMigrator CreateSystemContextContentMigrator();
 		IContentMigrator CreateProgramContentMigrator();
-		IContentMigrator CreateChannelNodeTemplateContentMigrator();
+		IContentMigrator CreateElementNodeTemplateContentMigrator();
 		IContentMigrator CreateSequenceContentMigrator(string filePath);
 	}
 }

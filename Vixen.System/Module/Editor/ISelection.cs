@@ -10,7 +10,7 @@ namespace Vixen.Module.Editor {
 
 	//Examples:
 	//ISelection<int[]> - text selections with (start, length) character positions
-	//ISelection<int[],Channel[]> - grid selections with (start, length) and (selected channels)
+	//ISelection<int[],Element[]> - grid selections with (start, length) and (selected elements)
 	//ISelection<int[],int[],int[]> - volume with (start, length) of all three dimensions
 	//ISelection<int[],int[],int[],int[]> - volume with (start, length) of all three dimensions and (start, length) of time
 	

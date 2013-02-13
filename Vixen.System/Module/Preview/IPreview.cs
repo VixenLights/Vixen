@@ -5,6 +5,6 @@ namespace Vixen.Module.Preview {
 	/// Core abstraction for the preview module.
 	/// </summary>
 	public interface IPreview {
-		void UpdateState(ChannelIntentStates channelIntentStates);
+		void UpdateState(ElementIntentStates elementIntentStates);
 	}
 }

@@ -98,15 +98,15 @@ namespace Vixen.Execution.DataSource {
 
 		private void _FilterEffectIntents(IEffectNode effectNode) {
 			EffectIntents effectIntents = effectNode.Effect.Render();
-			foreach(Guid channelId in effectIntents.ChannelIds) {
-				_ApplyFiltersForChannelToIntents(effectIntents, channelId, effectNode.StartTime);
+			foreach(Guid elementId in effectIntents.ElementIds) {
+				_ApplyFiltersForElementToIntents(effectIntents, elementId, effectNode.StartTime);
 			}
 		}
 
-		private void _ApplyFiltersForChannelToIntents(EffectIntents effectIntents, Guid channelId, TimeSpan effectStartTime) {
-			foreach(IntentNode intentNode in effectIntents.GetIntentNodesForChannel(channelId)) {
-				ISequenceFilterNode[] channelFilters = _filterLookup.GetFiltersForChannel(channelId, intentNode).ToArray();
-				foreach(var filter in channelFilters) {
+		private void _ApplyFiltersForElementToIntents(EffectIntents effectIntents, Guid elementId, TimeSpan effectStartTime) {
+			foreach(IntentNode intentNode in effectIntents.GetIntentNodesForElement(elementId)) {
+				ISequenceFilterNode[] elementFilters = _filterLookup.GetFiltersForElement(elementId, intentNode).ToArray();
+				foreach(var filter in elementFilters) {
 					intentNode.ApplyFilter(filter, effectStartTime);
 				}
 			}

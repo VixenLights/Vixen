@@ -6,7 +6,7 @@ namespace Vixen.IO.Factory {
 		IObjectLoader<ModuleStore> CreateModuleStoreLoader();
 		IObjectLoader<SystemContext> CreateSystemContextLoader();
 		IObjectLoader<Program> CreateProgramLoader();
-		IObjectLoader<ChannelNodeTemplate> CreateChannelNodeTemplateLoader();
+		IObjectLoader<ElementNodeTemplate> CreateElementNodeTemplateLoader();
 		IObjectLoader CreateSequenceLoader();
 	}
 }

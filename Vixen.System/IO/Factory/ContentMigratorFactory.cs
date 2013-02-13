@@ -1,5 +1,5 @@
 ﻿using System;
-using Vixen.IO.Xml.ChannelNodeTemplate;
+using Vixen.IO.Xml.ElementNodeTemplate;
 using Vixen.IO.Xml.ModuleStore;
 using Vixen.IO.Xml.Program;
 using Vixen.IO.Xml.SystemConfig;
@@ -37,8 +37,8 @@ namespace Vixen.IO.Factory {
 			return new ProgramXElementMigrator();
 		}
 
-		public IContentMigrator CreateChannelNodeTemplateContentMigrator() {
-			return new ChannelNodeTemplateXElementMigrator();
+		public IContentMigrator CreateElementNodeTemplateContentMigrator() {
+			return new ElementNodeTemplateXElementMigrator();
 		}
 
 		public IContentMigrator CreateSequenceContentMigrator(string filePath) {

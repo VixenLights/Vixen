@@ -78,7 +78,6 @@
     <Compile Include="Commands\32BitCommand.cs" />
     <Compile Include="Commands\64BitCommand.cs" />
     <Compile Include="Commands\8BitCommand.cs" />
-    <Compile Include="Commands\ChannelCommands.cs" />
     <Compile Include="Commands\ColorCommand.cs" />
     <Compile Include="Commands\UnknownValueCommand.cs" />
     <Compile Include="Data\Combinator\Color\NaiveColorCombinator.cs" />
@@ -95,8 +94,8 @@
     <Compile Include="Data\Evaluator\8BitEvaluator.cs" />
     <Compile Include="Data\Evaluator\ColorEvaluator.cs" />
     <Compile Include="Data\Evaluator\Evaluator.cs" />
-    <Compile Include="Data\Flow\ChannelDataFlowAdapter.cs" />
-    <Compile Include="Data\Flow\ChannelDataFlowOutputAdapter.cs" />
+    <Compile Include="Data\Flow\ElementDataFlowAdapter.cs" />
+    <Compile Include="Data\Flow\ElementDataFlowOutputAdapter.cs" />
     <Compile Include="Data\Flow\DataFlowComponentEventArgs.cs" />
     <Compile Include="Data\Flow\DataFlowComponentReference.cs" />
     <Compile Include="Data\Flow\DataFlowPatch.cs" />
@@ -119,7 +118,7 @@
     <Compile Include="Execution\ContextTargetType.cs" />
     <Compile Include="Execution\DataSource\IMutableDataSource.cs" />
     <Compile Include="Execution\DataSource\SequenceDataPump.cs" />
-    <Compile Include="Execution\IChannelStateBuilder.cs" />
+    <Compile Include="Execution\IElementStateBuilder.cs" />
     <Compile Include="Execution\IContext.cs" />
     <Compile Include="Execution\IContextCurrentEffects.cs" />
     <Compile Include="Execution\IExecutor.cs" />
@@ -177,7 +176,7 @@
     <Compile Include="IO\IObjectMigratorService.cs" />
     <Compile Include="IO\IObjectPersistor.cs" />
     <Compile Include="IO\IObjectPersistorService.cs" />
-    <Compile Include="IO\Loader\ChannelNodeTemplateLoader.cs" />
+    <Compile Include="IO\Loader\ElementNodeTemplateLoader.cs" />
     <Compile Include="IO\Loader\ModuleStoreLoader.cs" />
     <Compile Include="IO\Loader\ProgramLoader.cs" />
     <Compile Include="IO\Loader\SequenceLoader.cs" />
@@ -188,14 +187,14 @@
     <Compile Include="IO\ObjectVersion.cs" />
     <Compile Include="IO\EmptyMigrator.cs" />
     <Compile Include="IO\IMigrationSegment.cs" />
-    <Compile Include="IO\Persistor\ChannelNodeTemplatePersistor.cs" />
+    <Compile Include="IO\Persistor\ElementNodeTemplatePersistor.cs" />
     <Compile Include="IO\Persistor\ModuleStorePersistor.cs" />
     <Compile Include="IO\Persistor\ProgramPersistor.cs" />
     <Compile Include="IO\Persistor\SequencePersistor.cs" />
     <Compile Include="IO\Persistor\SystemContextPersistor.cs" />
-    <Compile Include="IO\Xml\ChannelNodeTemplate\ChannelNodeTemplateXElementMigrator.cs" />
-    <Compile Include="IO\Xml\ChannelNodeTemplate\ChannelNodeTemplateXElementReader.cs" />
-    <Compile Include="IO\Xml\ChannelNodeTemplate\ChannelNodeTemplateXElementWriter.cs" />
+    <Compile Include="IO\Xml\ChannelNodeTemplate\ElementNodeTemplateXElementMigrator.cs" />
+    <Compile Include="IO\Xml\ChannelNodeTemplate\ElementNodeTemplateXElementReader.cs" />
+    <Compile Include="IO\Xml\ChannelNodeTemplate\ElementNodeTemplateXElementWriter.cs" />
     <Compile Include="IO\Xml\ModuleStore\ModuleStoreXElementMigrator.cs" />
     <Compile Include="IO\Xml\ModuleStore\ModuleStoreXElementWriter.cs" />
     <Compile Include="IO\Xml\Serializer\XmlDataFlowPatchCollectionSerializer.cs" />
@@ -252,9 +251,9 @@
     <Compile Include="Rule\Name\NumericCounter.cs" />
     <Compile Include="Rule\Name\RGBNamingTemplate.cs" />
     <Compile Include="Rule\Name\WordIterator.cs" />
-    <Compile Include="Rule\Patch\ChannelsToSingleController.cs" />
+    <Compile Include="Rule\Patch\ElementsToSingleController.cs" />
     <Compile Include="Services\IFileService.cs" />
-    <Compile Include="Sys\ChannelIntentStates.cs" />
+    <Compile Include="Sys\ElementIntentStates.cs" />
     <Compile Include="Sys\IDataPolicyFactory.cs" />
     <Compile Include="Sys\Managers\ControllerFacade.cs" />
     <Compile Include="Sys\Managers\ControllerLinkingManagement.cs" />
@@ -277,7 +276,7 @@
     <Compile Include="Sys\Attribute\ContextAttribute.cs" />
     <Compile Include="Data\Value\ColorValue.cs" />
     <Compile Include="Data\Value\CommandValue.cs" />
-    <Compile Include="Sys\ChannelDataFlowAdapterFactory.cs" />
+    <Compile Include="Sys\ElementDataFlowAdapterFactory.cs" />
     <Compile Include="Sys\DataNodeCollection.cs" />
     <Compile Include="Data\Value\IIntentDataType.cs" />
     <Compile Include="Sys\Dispatch\IAnyDataFlowDataHandler.cs" />
@@ -294,7 +293,7 @@
     <Compile Include="Module\SequenceType\Surrogate\FilterNodeSurrogate.cs" />
     <Compile Include="Module\SequenceType\Surrogate\MediaSurrogate.cs" />
     <Compile Include="Module\SequenceType\SequenceTypeDataModelBase.cs" />
-    <Compile Include="Module\SequenceType\Surrogate\ChannelNodeReferenceSurrogate.cs" />
+    <Compile Include="Module\SequenceType\Surrogate\ElementNodeReferenceSurrogate.cs" />
     <Compile Include="Module\SequenceType\Surrogate\NodeSurrogate.cs" />
     <Compile Include="Module\SequenceType\Surrogate\SelectedTimingProviderSurrogate.cs" />
     <Compile Include="Module\SingletonRepository.cs" />
@@ -326,9 +325,9 @@
     <Compile Include="Interpolator\ColorValueInterpolator.cs" />
     <Compile Include="Interpolator\FloatInterpolator.cs" />
     <Compile Include="Interpolator\LightingValueInterpolator.cs" />
-    <Compile Include="IO\Policy\ChannelNodeTemplateFilePolicy.cs" />
+    <Compile Include="IO\Policy\ElementNodeTemplateFilePolicy.cs" />
     <Compile Include="IO\Policy\OutputFilterTemplatePolicy.cs" />
-    <Compile Include="IO\Xml\ChannelNodeTemplate\XmlChannelNodeTemplateFilePolicy.cs" />
+    <Compile Include="IO\Xml\ChannelNodeTemplate\XmlElementNodeTemplateFilePolicy.cs" />
     <Compile Include="IO\Xml\Serializer\XmlOutputFilterSerializer.cs" />
     <Compile Include="IO\Xml\Serializer\XmlPreviewCollectionSerializer.cs" />
     <Compile Include="IO\Xml\Serializer\XmlPreviewSerializer.cs" />
@@ -346,13 +345,13 @@
     <Compile Include="Module\Preview\PreviewModuleRepository.cs" />
     <Compile Include="Module\Preview\SingleThreadBehavior.cs" />
     <Compile Include="Rule\INamingGenerator.cs" />
-    <Compile Include="Services\ChannelNodeService.cs" />
+    <Compile Include="Services\ElementNodeService.cs" />
     <Compile Include="Services\OutputFilterService.cs" />
     <Compile Include="Services\SequenceFilterService.cs" />
-    <Compile Include="Sys\ChannelIntents.cs" />
-    <Compile Include="Sys\ChannelNodeTemplate.cs" />
-    <Compile Include="Sys\ChannelStateSource.cs" />
-    <Compile Include="Sys\ChannelStateSourceCollection.cs" />
+    <Compile Include="Sys\ElementIntents.cs" />
+    <Compile Include="Sys\ElementNodeTemplate.cs" />
+    <Compile Include="Sys\ElementStateSource.cs" />
+    <Compile Include="Sys\ElementStateSourceCollection.cs" />
     <Compile Include="Sys\Dispatch\CommandDispatch.cs" />
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Execution\Context\ContextBase.cs" />
@@ -376,7 +375,7 @@
     <Compile Include="Sys\GroupNode.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Sys\IChannelStateSource.cs" />
+    <Compile Include="Sys\IElementStateSource.cs" />
     <Compile Include="Sys\ICombinator.cs" />
     <Compile Include="Sys\IDataPolicy.cs" />
     <Compile Include="Sys\IEvaluator.cs" />
@@ -394,7 +393,7 @@
     <Compile Include="IO\Policy\ModuleStoreFilePolicy.cs" />
     <Compile Include="IO\Policy\ProgramFilePolicy.cs" />
     <Compile Include="IO\Policy\SystemConfigFilePolicy.cs" />
-    <Compile Include="IO\Xml\Serializer\XmlChannelSerializer.cs" />
+    <Compile Include="IO\Xml\Serializer\XmlElementSerializer.cs" />
     <Compile Include="IO\Xml\Serializer\XmlCompressedFileCollectionSerializer.cs" />
     <Compile Include="IO\Xml\Serializer\XmlCompressedFileSerializer.cs" />
     <Compile Include="IO\Xml\SystemContext\XmlSystemContextFilePolicy.cs" />
@@ -402,8 +401,8 @@
     <Compile Include="IO\Xml\Serializer\XmlControllerLinkCollectionSerializer.cs" />
     <Compile Include="IO\Xml\Serializer\XmlControllerSerializer.cs" />
     <Compile Include="IO\Xml\Serializer\XmlDisabledControllerCollectionSerializer.cs" />
-    <Compile Include="IO\Xml\Serializer\XmlChannelNodeCollectionSerializer.cs" />
-    <Compile Include="IO\Xml\Serializer\XmlChannelNodeSerializer.cs" />
+    <Compile Include="IO\Xml\Serializer\XmlElementNodeCollectionSerializer.cs" />
+    <Compile Include="IO\Xml\Serializer\XmlElementNodeSerializer.cs" />
     <Compile Include="IO\Xml\Serializer\XmlModuleDataModelCollectionSerializer.cs" />
     <Compile Include="IO\Xml\Serializer\XmlModuleDataModelSerializer.cs" />
     <Compile Include="IO\Xml\Serializer\XmlModuleDataSetSerializer.cs" />
@@ -415,7 +414,7 @@
     <Compile Include="IO\Xml\Serializer\XmlSequenceListSerializer.cs" />
     <Compile Include="IO\Xml\SystemConfig\XmlSystemConfigFilePolicy.cs" />
     <Compile Include="IO\Xml\Serializer\IXmlSerializer.cs" />
-    <Compile Include="IO\Xml\Serializer\XmlChannelCollectionSerializer.cs" />
+    <Compile Include="IO\Xml\Serializer\XmlElementCollectionSerializer.cs" />
     <Compile Include="IO\Xml\Serializer\XmlModuleLocalDataSetSerializer.cs" />
     <Compile Include="Sys\ControllerLink.cs" />
     <Compile Include="Sys\ControllerLinker.cs" />
@@ -425,7 +424,7 @@
     <Compile Include="Sys\IHasMedia.cs" />
     <Compile Include="Sys\IHasSequenceFilterNodes.cs" />
     <Compile Include="Sys\IIntentStates.cs" />
-    <Compile Include="Sys\Instrumentation\ChannelUpdateTimeValue.cs" />
+    <Compile Include="Sys\Instrumentation\ElementUpdateTimeValue.cs" />
     <Compile Include="Sys\Instrumentation\ContextUpdateTimeValue.cs" />
     <Compile Include="Sys\Instrumentation\OutputDeviceRefreshRateValue.cs" />
     <Compile Include="Sys\Instrumentation\OutputDeviceSleepTimeActualValue.cs" />
@@ -500,8 +499,8 @@
     <Compile Include="Module\SequenceFilter\SequenceFilterModuleInstanceBase.cs" />
     <Compile Include="Module\SequenceFilter\SequenceFilterModuleManagement.cs" />
     <Compile Include="Module\SequenceFilter\SequenceFilterModuleRepository.cs" />
-    <Compile Include="Sys\ChannelContextSource.cs" />
-    <Compile Include="Sys\Managers\ChannelManager.cs" />
+    <Compile Include="Sys\ElementContextSource.cs" />
+    <Compile Include="Sys\Managers\ElementManager.cs" />
     <Compile Include="Sys\ContextEventArgs.cs" />
     <Compile Include="Sys\Managers\ContextManager.cs" />
     <Compile Include="Sys\Managers\OutputControllerManager.cs" />
@@ -523,14 +522,14 @@
     <Compile Include="Module\ModuleStaticDataSet.cs" />
     <Compile Include="Sys\FilePackage.cs" />
     <Compile Include="Execution\DataSource\IDataSource.cs" />
-    <Compile Include="Sys\Instrumentation\ChannelCommandsPerSecondValue.cs" />
+    <Compile Include="Sys\Instrumentation\ElementCommandsPerSecondValue.cs" />
     <Compile Include="Sys\Instrumentation\CommandsExpiredCountValue.cs" />
     <Compile Include="Sys\Instrumentation\CommandsExpiredPercentValue.cs" />
     <Compile Include="Sys\Instrumentation\CommandsQualifiedCountValue.cs" />
     <Compile Include="Sys\Instrumentation\CommandsQualifiedPercentValue.cs" />
     <Compile Include="Sys\Instrumentation\EffectsPerSecondValue.cs" />
     <Compile Include="Sys\Instrumentation\Instrumentation.cs" />
-    <Compile Include="Sys\Instrumentation\TotalChannelCommandsValue.cs" />
+    <Compile Include="Sys\Instrumentation\TotalElementCommandsValue.cs" />
     <Compile Include="Sys\Instrumentation\TotalCommandsPulledValue.cs" />
     <Compile Include="Sys\Instrumentation\TotalEffectsValue.cs" />
     <Compile Include="Sys\IntentNode.cs" />
@@ -589,7 +588,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Module\Trigger\TriggerModuleDescriptorBase.cs" />
-    <Compile Include="Sys\ChannelNode.cs" />
+    <Compile Include="Sys\ElementNode.cs" />
     <Compile Include="Execution\IExecutionControl.cs" />
     <Compile Include="Execution\ITimingProvider.cs" />
     <Compile Include="Execution\MediaTimingProvider.cs" />
@@ -677,7 +676,7 @@
     <Compile Include="Sys\Logging.cs" />
     <Compile Include="Sys\LogItemEventArgs.cs" />
     <Compile Include="Sys\MediaCollection.cs" />
-    <Compile Include="Sys\Channel.cs" />
+    <Compile Include="Sys\Element.cs" />
     <Compile Include="Module\GenericModuleManagement.cs" />
     <Compile Include="Module\GenericModuleRepository.cs" />
     <Compile Include="Sys\Enumerator\ConcurrentQueueLiveEnumerator.cs" />

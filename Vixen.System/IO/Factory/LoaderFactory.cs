@@ -28,8 +28,8 @@ namespace Vixen.IO.Factory {
 			return new ProgramLoader();
 		}
 
-		public IObjectLoader<ChannelNodeTemplate> CreateChannelNodeTemplateLoader() {
-			return new ChannelNodeTemplateLoader();
+		public IObjectLoader<ElementNodeTemplate> CreateElementNodeTemplateLoader() {
+			return new ElementNodeTemplateLoader();
 		}
 
 		public IObjectLoader CreateSequenceLoader() {

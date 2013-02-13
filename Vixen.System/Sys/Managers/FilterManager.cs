@@ -7,7 +7,7 @@ using Vixen.Module.OutputFilter;
 namespace Vixen.Sys.Managers {
 	public class FilterManager : IEnumerable<IOutputFilterModuleInstance> {
 		private Dictionary<Guid, IOutputFilterModuleInstance> _instances;
-		// The data flow manager has data flow roots, but those are channels and are updated
+		// The data flow manager has data flow roots, but those are elements and are updated
 		// in a separate layer.  We need to track our own roots separately for updates.
 		private HashSet<IOutputFilterModuleInstance> _rootFilters;
 		private FilterChildren _filterChildren; 
