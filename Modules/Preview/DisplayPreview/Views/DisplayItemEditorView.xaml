@@ -10,7 +10,7 @@
         mc:Ignorable="d"
         MaxHeight="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Height}"
         MaxWidth="{Binding Source={x:Static SystemParameters.WorkArea}, Path=Width}"
-        Title="Display Item and Channel Editor"
+        Title="Display Item and Element Editor"
         SizeToContent="Width"
 		Height="480"
         d:DataContext="{d:DesignInstance ViewModels:DisplayItemEditorViewModel}">

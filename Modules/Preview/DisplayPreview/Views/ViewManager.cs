@@ -68,19 +68,19 @@ namespace VixenModules.Preview.DisplayPreview.Views
             }
         }
 
-        public void UpdateVisualizerExecutionStateValues(ChannelIntentStates channelIntentStates)
+        public void UpdateVisualizerExecutionStateValues(ElementIntentStates elementIntentStates)
         {
 			if(_view!=null)
 			{
-				_view.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() => UpdateModelExecutionStateValues(channelIntentStates)));	
+				_view.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() => UpdateModelExecutionStateValues(elementIntentStates)));	
 			}			
         }
 
-		private void UpdateModelExecutionStateValues(ChannelIntentStates channelIntentStates)
+		private void UpdateModelExecutionStateValues(ElementIntentStates elementIntentStates)
 		{
 			if(_visualizerViewModel!=null)
 			{
-				_visualizerViewModel.UpdateExecutionStateValues(channelIntentStates);
+				_visualizerViewModel.UpdateExecutionStateValues(elementIntentStates);
 			}
 		}
 

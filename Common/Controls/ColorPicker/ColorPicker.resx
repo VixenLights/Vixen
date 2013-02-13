@@ -126,7 +126,7 @@
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>8, 168</value>
+    <value>8, 199</value>
   </data>
   <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
     <value>296, 1</value>
@@ -145,7 +145,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
-    <value>10</value>
+    <value>11</value>
   </data>
   <data name="btnCancel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
@@ -157,7 +157,7 @@
     <value>NoControl</value>
   </data>
   <data name="btnCancel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>216, 176</value>
+    <value>216, 207</value>
   </data>
   <data name="btnCancel.Size" type="System.Drawing.Size, System.Drawing">
     <value>80, 24</value>
@@ -178,7 +178,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;btnCancel.ZOrder" xml:space="preserve">
-    <value>9</value>
+    <value>10</value>
   </data>
   <data name="btnOK.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
@@ -190,7 +190,7 @@
     <value>NoControl</value>
   </data>
   <data name="btnOK.Location" type="System.Drawing.Point, System.Drawing">
-    <value>128, 176</value>
+    <value>128, 207</value>
   </data>
   <data name="btnOK.Size" type="System.Drawing.Size, System.Drawing">
     <value>80, 24</value>
@@ -211,7 +211,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;btnOK.ZOrder" xml:space="preserve">
-    <value>13</value>
+    <value>14</value>
   </data>
   <metadata name="contextMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
@@ -259,7 +259,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;rdHSV_H.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>9</value>
   </data>
   <data name="rdHSV_S.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>System</value>
@@ -289,7 +289,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;rdHSV_S.ZOrder" xml:space="preserve">
-    <value>14</value>
+    <value>15</value>
   </data>
   <data name="rdHSV_V.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>System</value>
@@ -319,7 +319,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;rdHSV_V.ZOrder" xml:space="preserve">
-    <value>15</value>
+    <value>16</value>
   </data>
   <data name="rdSecond_1.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>System</value>
@@ -349,7 +349,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;rdSecond_1.ZOrder" xml:space="preserve">
-    <value>16</value>
+    <value>17</value>
   </data>
   <data name="rdSecond_2.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>System</value>
@@ -379,7 +379,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;rdSecond_2.ZOrder" xml:space="preserve">
-    <value>17</value>
+    <value>18</value>
   </data>
   <data name="rdSecond_3.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>System</value>
@@ -409,7 +409,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;rdSecond_3.ZOrder" xml:space="preserve">
-    <value>18</value>
+    <value>19</value>
   </data>
   <data name="tbHSV_H.Location" type="System.Drawing.Point, System.Drawing">
     <value>232, 8</value>
@@ -436,7 +436,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;tbHSV_H.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>8</value>
   </data>
   <data name="tbHSV_S.Location" type="System.Drawing.Point, System.Drawing">
     <value>232, 32</value>
@@ -463,7 +463,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;tbHSV_S.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>7</value>
   </data>
   <data name="tbHSV_V.Location" type="System.Drawing.Point, System.Drawing">
     <value>232, 56</value>
@@ -490,7 +490,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;tbHSV_V.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>6</value>
   </data>
   <data name="tbSecond_1.Location" type="System.Drawing.Point, System.Drawing">
     <value>232, 88</value>
@@ -517,7 +517,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;tbSecond_1.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>5</value>
   </data>
   <data name="tbSecond_2.Location" type="System.Drawing.Point, System.Drawing">
     <value>232, 112</value>
@@ -544,7 +544,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;tbSecond_2.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>4</value>
   </data>
   <data name="tbSecond_3.Location" type="System.Drawing.Point, System.Drawing">
     <value>232, 136</value>
@@ -571,7 +571,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;tbSecond_3.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
   </data>
   <data name="lblHSV_H.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -601,7 +601,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;lblHSV_H.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="lblHSV_S.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -631,7 +631,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;lblHSV_S.ZOrder" xml:space="preserve">
-    <value>19</value>
+    <value>20</value>
   </data>
   <data name="lblHSV_V.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -661,7 +661,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;lblHSV_V.ZOrder" xml:space="preserve">
-    <value>20</value>
+    <value>21</value>
   </data>
   <data name="lblSecond_1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -688,7 +688,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;lblSecond_1.ZOrder" xml:space="preserve">
-    <value>21</value>
+    <value>22</value>
   </data>
   <data name="lblSecond_2.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -715,7 +715,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;lblSecond_2.ZOrder" xml:space="preserve">
-    <value>22</value>
+    <value>23</value>
   </data>
   <data name="lblSecond_3.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -742,11 +742,116 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;lblSecond_3.ZOrder" xml:space="preserve">
-    <value>23</value>
+    <value>24</value>
   </data>
   <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>132, 17</value>
   </metadata>
+  <data name="blueButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="blueButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>187, 10</value>
+  </data>
+  <data name="blueButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>54, 23</value>
+  </data>
+  <data name="blueButton.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="blueButton.Text" xml:space="preserve">
+    <value>Blue</value>
+  </data>
+  <data name="&gt;&gt;blueButton.Name" xml:space="preserve">
+    <value>blueButton</value>
+  </data>
+  <data name="&gt;&gt;blueButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;blueButton.Parent" xml:space="preserve">
+    <value>quickPickBox</value>
+  </data>
+  <data name="&gt;&gt;blueButton.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="greenButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="greenButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>130, 10</value>
+  </data>
+  <data name="greenButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>49, 23</value>
+  </data>
+  <data name="greenButton.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="greenButton.Text" xml:space="preserve">
+    <value>Green</value>
+  </data>
+  <data name="&gt;&gt;greenButton.Name" xml:space="preserve">
+    <value>greenButton</value>
+  </data>
+  <data name="&gt;&gt;greenButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;greenButton.Parent" xml:space="preserve">
+    <value>quickPickBox</value>
+  </data>
+  <data name="&gt;&gt;greenButton.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="redButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="redButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>75, 10</value>
+  </data>
+  <data name="redButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>47, 23</value>
+  </data>
+  <data name="redButton.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="redButton.Text" xml:space="preserve">
+    <value>Red</value>
+  </data>
+  <data name="&gt;&gt;redButton.Name" xml:space="preserve">
+    <value>redButton</value>
+  </data>
+  <data name="&gt;&gt;redButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;redButton.Parent" xml:space="preserve">
+    <value>quickPickBox</value>
+  </data>
+  <data name="&gt;&gt;redButton.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="quickPickBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 163</value>
+  </data>
+  <data name="quickPickBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>284, 33</value>
+  </data>
+  <data name="quickPickBox.TabIndex" type="System.Int32, mscorlib">
+    <value>14</value>
+  </data>
+  <data name="quickPickBox.Text" xml:space="preserve">
+    <value>Quick Picks</value>
+  </data>
+  <data name="&gt;&gt;quickPickBox.Name" xml:space="preserve">
+    <value>quickPickBox</value>
+  </data>
+  <data name="&gt;&gt;quickPickBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;quickPickBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;quickPickBox.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="lblColorOut.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Left</value>
   </data>
@@ -754,7 +859,7 @@
     <value>Microsoft Sans Serif, 6.75pt</value>
   </data>
   <data name="lblColorOut.Location" type="System.Drawing.Point, System.Drawing">
-    <value>8, 176</value>
+    <value>8, 207</value>
   </data>
   <data name="lblColorOut.Size" type="System.Drawing.Size, System.Drawing">
     <value>72, 24</value>
@@ -770,13 +875,13 @@ Left Click and drag outside to pick a color from screen.</value>
     <value>lblColorOut</value>
   </data>
   <data name="&gt;&gt;lblColorOut.Type" xml:space="preserve">
-    <value>Common.Controls.ColorPicker.ColorLabel, Common.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+    <value>Common.Controls.ColorManagement.ColorPicker.ColorLabel, Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;lblColorOut.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
   <data name="&gt;&gt;lblColorOut.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>1</value>
   </data>
   <data name="colorSelectionFader1.Location" type="System.Drawing.Point, System.Drawing">
     <value>160, 3</value>
@@ -794,13 +899,13 @@ Left Click and drag outside to pick a color from screen.</value>
     <value>colorSelectionFader1</value>
   </data>
   <data name="&gt;&gt;colorSelectionFader1.Type" xml:space="preserve">
-    <value>Common.Controls.ColorPicker.ColorSelectionFader, Common.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+    <value>Common.Controls.ColorManagement.ColorPicker.ColorSelectionFader, Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;colorSelectionFader1.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
   <data name="&gt;&gt;colorSelectionFader1.ZOrder" xml:space="preserve">
-    <value>11</value>
+    <value>12</value>
   </data>
   <data name="colorSelectionPlane1.Location" type="System.Drawing.Point, System.Drawing">
     <value>8, 8</value>
@@ -818,13 +923,13 @@ Left Click and drag outside to pick a color from screen.</value>
     <value>colorSelectionPlane1</value>
   </data>
   <data name="&gt;&gt;colorSelectionPlane1.Type" xml:space="preserve">
-    <value>Common.Controls.ColorPicker.ColorSelectionPlane, Common.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+    <value>Common.Controls.ColorManagement.ColorPicker.ColorSelectionPlane, Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;colorSelectionPlane1.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
   <data name="&gt;&gt;colorSelectionPlane1.ZOrder" xml:space="preserve">
-    <value>12</value>
+    <value>13</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -833,7 +938,7 @@ Left Click and drag outside to pick a color from screen.</value>
     <value>5, 13</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>306, 208</value>
+    <value>306, 239</value>
   </data>
   <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>

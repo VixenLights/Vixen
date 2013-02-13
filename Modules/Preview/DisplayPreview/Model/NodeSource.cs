@@ -8,10 +8,10 @@ namespace VixenModules.Preview.DisplayPreview.Model
 
     public class NodeSource
     {
-        private readonly ChannelNode _node;
+        private readonly ElementNode _node;
         private IDragSource _source;
 
-        public NodeSource(ChannelNode node)
+        public NodeSource(ElementNode node)
         {
             _node = node;
             Children = _node.Children.Select(x => new NodeSource(x));

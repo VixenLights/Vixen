@@ -91,7 +91,7 @@ namespace VixenModules.Preview.DisplayPreview.Model
 
         protected override void Update()
         {
-			ViewManager.UpdateVisualizerExecutionStateValues(ChannelStates);		
+			ViewManager.UpdateVisualizerExecutionStateValues(ElementStates);		
         }
 
     	private void EnsureVisualizerIsClosed()
@@ -101,7 +101,7 @@ namespace VixenModules.Preview.DisplayPreview.Model
 
         private static void ExecutionNodesChanged(object sender, EventArgs e)
         {
-            // TODO: Remove any channels that are no longer valid.
+            // TODO: Remove any elements that are no longer valid.
         }
         
         private DisplayPreviewModuleDataModel GetDisplayPreviewModuleDataModel()

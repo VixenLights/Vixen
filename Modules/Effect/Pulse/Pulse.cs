@@ -17,7 +17,7 @@ namespace VixenModules.Effect.Pulse
 	public class Pulse : EffectModuleInstanceBase
 	{
 		private PulseData _data;
-		private EffectIntents _channelData = null;
+		private EffectIntents _elementData = null;
 
 		public Pulse()
 		{
@@ -26,16 +26,16 @@ namespace VixenModules.Effect.Pulse
 
 		protected override void _PreRender()
 		{
-			_channelData = new EffectIntents();
+			_elementData = new EffectIntents();
 
-			foreach (ChannelNode node in TargetNodes) {
+			foreach (ElementNode node in TargetNodes) {
 				RenderNode(node);
 			}
 		}
 
 		protected override EffectIntents _Render()
 		{
-			return _channelData;
+			return _elementData;
 		}
 
 		public override IModuleDataModel ModuleData
@@ -58,15 +58,15 @@ namespace VixenModules.Effect.Pulse
 			set { _data.ColorGradient = value; IsDirty = true; }
 		}
 
-		// renders the given node to the internal ChannelData dictionary. If the given node is
-		// not a channel, will recursively descend until we render its channels.
-		private void RenderNode(ChannelNode node)
+		// renders the given node to the internal ElementData dictionary. If the given node is
+		// not a element, will recursively descend until we render its elements.
+		private void RenderNode(ElementNode node)
 		{
-			foreach(Channel channel in node) {
-				// this is probably always going to be a single channel for the given node, as
+			foreach(Element element in node) {
+				// this is probably always going to be a single element for the given node, as
 				// we have iterated down to leaf nodes in RenderNode() above. May as well do
 				// it this way, though, in case something changes in future.
-				if(channel == null)
+				if (element == null)
 					continue;
 
 				double[] allPointsTimeOrdered = _GetAllSignificantDataPoints().ToArray();
@@ -83,8 +83,8 @@ namespace VixenModules.Effect.Pulse
 					TimeSpan timeSpan = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds * (position - lastPosition));
 					
 					IIntent intent = new LightingIntent(startValue, endValue, timeSpan);
-					
-					_channelData.AddIntentForChannel(channel.Id, intent, startTime);
+
+					_elementData.AddIntentForElement(element.Id, intent, startTime);
 					
 					lastPosition = position;
 				}

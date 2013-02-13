@@ -124,7 +124,7 @@ namespace VixenModules.Preview.DisplayPreview.Model
         {
             get
             {
-                return _target ?? (_target = new DropTarget<ChannelNode>(GetDropEffects, Drop));
+                return _target ?? (_target = new DropTarget<ElementNode>(GetDropEffects, Drop));
             }
         }
 
@@ -186,35 +186,35 @@ namespace VixenModules.Preview.DisplayPreview.Model
             }
         }
 
-		public void UpdateChannelColors(ChannelIntentStates channelIntentStates)
+		public void UpdateElementColors(ElementIntentStates elementIntentStates)
 		{
 			
-			foreach (var channelIntentState in channelIntentStates)
+			foreach (var elementIntentState in elementIntentStates)
             {
-				var channelId = channelIntentState.Key;
-				Channel channel = VixenSystem.Channels.GetChannel(channelId);
-				if (channel == null) continue;
-				ChannelNode node = VixenSystem.Channels.GetChannelNodeForChannel(channel);
+				var elementId = elementIntentState.Key;
+				Element element = VixenSystem.Elements.GetElement(elementId);
+				if (element == null) continue;
+				ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
 				if (node == null) continue;
 
 				var nodeLayout = NodeLayouts.FirstOrDefault(x => x.NodeId == node.Id);
 				if (nodeLayout != null)
 				{
-					nodeLayout.ChannelState = channelIntentState.Value;
+					nodeLayout.ElementState = elementIntentState.Value;
 				}
 			}
         }
 
-        private static DragDropEffects GetDropEffects(ChannelNode channelNode)
+        private static DragDropEffects GetDropEffects(ElementNode elementNode)
         {
-            return channelNode != null && (channelNode.IsLeaf) ? DragDropEffects.Move : DragDropEffects.None;
+            return elementNode != null && (elementNode.IsLeaf) ? DragDropEffects.Move : DragDropEffects.None;
         }
 
-        private void Drop(ChannelNode channelNode, Point point)
+        private void Drop(ElementNode elementNode, Point point)
         {
-            var channel = channelNode;
-            var channelLocation = new NodeLayout { LeftOffset = point.X, TopOffset = point.Y, NodeId = channel.Id };
-            NodeLayouts.Add(channelLocation);
+            var element = elementNode;
+            var elementLocation = new NodeLayout { LeftOffset = point.X, TopOffset = point.Y, NodeId = element.Id };
+            NodeLayouts.Add(elementLocation);
         }
     }
 }

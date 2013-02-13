@@ -32,7 +32,7 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 			get
 			{
 				return new object[] {
-					IndividualChannels,
+					IndividualElements,
 					MinimumLevel,
 					MaximumLevel,
 					LevelVariation,
@@ -41,17 +41,18 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 					AverageCoverage,
 					ColorHandling,
 					StaticColor,
-					ColorGradient
+					ColorGradient,
+					DepthOfEffect
 				};
 			}
 			set
 			{
-				if (value.Length != 10) {
-					VixenSystem.Logging.Warning("TwinkleEffectEditorControl: param vales set without 10 params.");
+				if (value.Length != 11) {
+					VixenSystem.Logging.Warning("TwinkleEffectEditorControl: param vales set without 11 params.");
 					return;
 				}
 
-				IndividualChannels = (bool)value[0];
+				IndividualElements = (bool)value[0];
 				MinimumLevel = (double)value[1];
 				MaximumLevel = (double)value[2];
 				LevelVariation = (int)value[3];
@@ -61,13 +62,14 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 				ColorHandling = (TwinkleColorHandling)value[7];
 				StaticColor = (Color)value[8];
 				ColorGradient = (ColorGradient)value[9];
+				DepthOfEffect = (int)value[10];
 			}
 		}
 
-		public bool IndividualChannels
+		public bool IndividualElements
 		{
-			get { return radioButtonIndividualChannels.Checked; }
-			set { if (value) radioButtonIndividualChannels.Checked = true; else radioButtonSynchronizedChannels.Checked = true; }
+			get { return radioButtonIndividualElements.Checked || radioButtonApplyToLevel.Checked; }
+			set { UpdateElementHandlingGroupBox(DepthOfEffect, value);  }
 		}
 
 		public double MinimumLevel
@@ -151,6 +153,40 @@ namespace VixenModules.EffectEditor.TwinkleEffectEditor
 		{
 			get { return colorGradientTypeEditorControlGradient.ColorGradientValue; }
 			set { colorGradientTypeEditorControlGradient.ColorGradientValue = value; }
+		}
+
+		public int DepthOfEffect
+		{
+			get
+			{
+				if (this.radioButtonIndividualElements.Checked)
+					return 0;
+				else
+					return (int)numericUpDownDepthOfEffect.Value;
+			}
+			set
+			{
+				UpdateElementHandlingGroupBox(value, IndividualElements);
+			}
+		}
+
+		private void UpdateElementHandlingGroupBox(int depthOfEffect, bool individualElements)
+		{
+			if (depthOfEffect == 0 && individualElements)
+				radioButtonIndividualElements.Checked = true;
+			else if (individualElements)
+			{
+				radioButtonApplyToLevel.Checked = true;
+				numericUpDownDepthOfEffect.Value = depthOfEffect;
+			}
+			else
+				radioButtonSynchronizedElements.Checked = true;
+		}
+
+
+		private void radioButtonEffectAppliesTo_CheckedChanged(object sender, EventArgs e)
+		{
+			numericUpDownDepthOfEffect.Enabled = radioButtonApplyToLevel.Checked;
 		}
 	}
 }

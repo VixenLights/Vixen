@@ -147,11 +147,11 @@ namespace Common.BasicInputManagement {
 		}
 
 		private Guid[] _AddEditNodes {
-			get { return checkedListBoxNodes.CheckedItems.Cast<ChannelNode>().Select(x => x.Id).ToArray(); }
+			get { return checkedListBoxNodes.CheckedItems.Cast<ElementNode>().Select(x => x.Id).ToArray(); }
 			set {
 				for(int i=0; i<checkedListBoxNodes.Items.Count; i++) {
-					ChannelNode channelNode = checkedListBoxNodes.Items[i] as ChannelNode;
-					checkedListBoxNodes.SetItemChecked(i, value.Contains(channelNode.Id));
+					ElementNode elementNode = checkedListBoxNodes.Items[i] as ElementNode;
+					checkedListBoxNodes.SetItemChecked(i, value.Contains(elementNode.Id));
 				}
 			}
 		}

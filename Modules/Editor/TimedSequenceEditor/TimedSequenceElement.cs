@@ -11,6 +11,7 @@ using Vixen.Sys;
 using Vixen.Commands;
 using System.Drawing;
 using System.Drawing.Imaging;
+using Element = Common.Controls.Timeline.Element;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {

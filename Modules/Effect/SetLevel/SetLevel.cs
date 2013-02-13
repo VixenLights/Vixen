@@ -15,7 +15,7 @@ namespace VixenModules.Effect.SetLevel
 	public class SetLevel : EffectModuleInstanceBase
 	{
 		private SetLevelData _data;
-		private EffectIntents _channelData = null;
+		private EffectIntents _elementData = null;
 
 		public SetLevel()
 		{
@@ -24,16 +24,16 @@ namespace VixenModules.Effect.SetLevel
 
 		protected override void _PreRender()
 		{
-			_channelData = new EffectIntents();
+			_elementData = new EffectIntents();
 
-			foreach (ChannelNode node in TargetNodes) {
+			foreach (ElementNode node in TargetNodes) {
 				RenderNode(node);
 			}
 		}
 
 		protected override EffectIntents _Render()
 		{
-			return _channelData;
+			return _elementData;
 		}
 
 		public override IModuleDataModel ModuleData
@@ -56,69 +56,69 @@ namespace VixenModules.Effect.SetLevel
 			set { _data.color = value; IsDirty = true; }
 		}
 
-		// renders the given node to the internal ChannelData dictionary. If the given node is
-		// not a channel, will recursively descend until we render its channels.
-		private void RenderNode(ChannelNode node)
+		// renders the given node to the internal ElementData dictionary. If the given node is
+		// not a element, will recursively descend until we render its elements.
+		private void RenderNode(ElementNode node)
 		{
-			foreach(Channel channel in node) {
+			foreach(Element element in node) {
 				LightingValue lightingValue = new LightingValue(Color, (float)IntensityLevel);
 				IIntent intent = new LightingIntent(lightingValue, lightingValue, TimeSpan);
-				_channelData.AddIntentForChannel(channel.Id, intent, TimeSpan.Zero);
+				_elementData.AddIntentForElement(element.Id, intent, TimeSpan.Zero);
 			}
 			//// if this node is an RGB node, then it will know what to do with it (might render directly,
-			//// might be broken down into sub-channels, etc.) So just pass it off to that instead.
+			//// might be broken down into sub-elements, etc.) So just pass it off to that instead.
 			//if (node.Properties.Contains(SetLevelDescriptor._RGBPropertyId)) {
 			//    RenderRGB(node);
 			//} else {
 			//    if (node.IsLeaf) {
 			//        RenderMonochrome(node);
 			//    } else {
-			//        foreach (ChannelNode child in node.Children)
+			//        foreach (ElementNode child in node.Children)
 			//            RenderNode(child);
 			//    }
 			//}
 		}
 
-		//// renders a single command for each channel in the given node with the specified monochrome level.
-		//private void RenderMonochrome(ChannelNode node)
+		//// renders a single command for each element in the given node with the specified monochrome level.
+		//private void RenderMonochrome(ElementNode node)
 		//{
-		//    // this is probably always going to be a single channel for the given node, as
+		//    // this is probably always going to be a single element for the given node, as
 		//    // we have iterated down to leaf nodes in RenderNode() above. May as well do
 		//    // it this way, though, in case something changes in future.
-		//    foreach (Channel channel in node.GetChannelEnumerator()) {
+		//    foreach (Element element in node.GetElementEnumerator()) {
 		//        //Command setLevelCommand = new Lighting.Monochrome.SetLevel(Level);
 		//        //CommandNode data = new CommandNode(setLevelCommand, TimeSpan.Zero, TimeSpan);
 
 		//        //IIntentModuleInstance intent = ApplicationServices.Get<IIntentModuleInstance>(_levelIntentId);
 		//        //intent.TimeSpan = TimeSpan;
 		//        //IntentNode data = new IntentNode(intent, TimeSpan.Zero);
-		//        if(channel != null) {
-		//            //_channelData[channel.Id] = new[] {data};
+		//        if(element != null) {
+		//            //_elementData[element.Id] = new[] {data};
 		//            LightingValue lightingValue = new LightingValue(Color.White, IntensityLevel);
 		//            IIntent intent = new LightingLinearIntent(lightingValue, lightingValue, TimeSpan);
-		//            _channelData.AddIntentForChannel(channel.Id, intent, TimeSpan.Zero);
+		//            _elementData.AddIntentForElement(element.Id, intent, TimeSpan.Zero);
 		//        }
 		//    }
 		//}
 
-		//private void RenderRGB(ChannelNode node)
+		//private void RenderRGB(ElementNode node)
 		//{
-		//    //// get the RGB property for the channel, and get it to render the data for us
+		//    //// get the RGB property for the element, and get it to render the data for us
 		//    //RGBModule rgbProperty = node.Properties.Get(SetLevelDescriptor._RGBPropertyId) as RGBModule;
-		//    //ChannelCommands rgbData = rgbProperty.RenderColorToCommands(Color, Level);
+		//    //ElementCommands rgbData = rgbProperty.RenderColorToCommands(Color, Level);
 
 		//    //// iterate through the rendered commands, adjust them to fit our times, and add them to our rendered data
 		//    //foreach (KeyValuePair<Guid, Command[]> kvp in rgbData) {
 		//    //    foreach (Command c in kvp.Value) {
 		//    //        //TODO
 		//    //        //CommandNode newCommandNode = new CommandNode(c, TimeSpan.Zero, TimeSpan);
-		//    //        //_channelData.AddCommandNodeForChannel(kvp.Key, newCommandNode);
+		//    //        //_elementData.AddCommandNodeForElement(kvp.Key, newCommandNode);
 		//    //    }
 		//    //}
-		//    foreach(Channel channel in node.GetChannelEnumerator()) {
+		//    foreach(Element element in node.GetElementEnumerator()) {
 		//        LightingValue lightingValue = new LightingValue(Color, IntensityLevel);
 		//        IIntent intent = new LightingLinearIntent(lightingValue, lightingValue, TimeSpan);
-		//        _channelData.AddIntentForChannel(channel.Id, intent, TimeSpan.Zero);
+		//        _elementData.AddIntentForElement(element.Id, intent, TimeSpan.Zero);
 		//    }
 		//}
 	}

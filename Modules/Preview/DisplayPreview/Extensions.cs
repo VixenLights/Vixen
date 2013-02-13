@@ -17,18 +17,18 @@ namespace VixenModules.Preview.DisplayPreview
             }
         }
 
-        public static Dictionary<ChannelNode, Color> ToMediaColor(
-            this Dictionary<ChannelNode, System.Drawing.Color> stateValues)
+        public static Dictionary<ElementNode, Color> ToMediaColor(
+            this Dictionary<ElementNode, System.Drawing.Color> stateValues)
         {
             if (stateValues == null)
             {
-                return new Dictionary<ChannelNode, Color>();
+                return new Dictionary<ElementNode, Color>();
             }
 
             var newValues =
                 stateValues.ToList().Select(
                     x =>
-                    new KeyValuePair<ChannelNode, Color>(
+                    new KeyValuePair<ElementNode, Color>(
                         x.Key, Color.FromArgb(x.Value.A, x.Value.R, x.Value.G, x.Value.B))).ToDictionary(
                             x => x.Key, x => x.Value);
             return newValues;

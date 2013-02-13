@@ -12,6 +12,8 @@ using Vixen.Module.Effect;
 using VixenModules.Effect.Chase;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
+using System.Reflection;
+using Common.ValueTypes;
 
 namespace VixenModules.EffectEditor.ChaseEffectEditor
 {
@@ -21,6 +23,8 @@ namespace VixenModules.EffectEditor.ChaseEffectEditor
 		{
 			InitializeComponent();
 		}
+
+
 
 				IEffect _targetEffect;
 		public IEffect TargetEffect
@@ -40,12 +44,13 @@ namespace VixenModules.EffectEditor.ChaseEffectEditor
 					StaticColor,
 					ColorGradient,
 					PulseCurve,
-					ChaseMovement
+					ChaseMovement,
+					DepthOfEffect
 				};
 			}
 			set
 			{
-				if (value.Length != 7) {
+				if (value.Length != 8) {
 					VixenSystem.Logging.Warning("Chase effect parameters set with " + value.Length + " parameters");
 					return;
 				}
@@ -57,6 +62,7 @@ namespace VixenModules.EffectEditor.ChaseEffectEditor
 				ColorGradient = (ColorGradient)value[4];
 				PulseCurve = (Curve)value[5];
 				ChaseMovement = (Curve)value[6];
+				DepthOfEffect = (int)value[7];
 			}
 		}
 
@@ -140,5 +146,30 @@ namespace VixenModules.EffectEditor.ChaseEffectEditor
 			get { return curveTypeEditorControlChaseMovement.CurveValue; }
 			set { curveTypeEditorControlChaseMovement.CurveValue = value; }
 		}
+
+		public int DepthOfEffect
+		{
+			get	{
+				if (radioButtonApplyToAllElements.Checked)
+					return 0;
+				else
+					return (int)numericUpDownDepthOfEffect.Value;
+			}
+			set	{
+				if (value == 0)
+					radioButtonApplyToAllElements.Checked = true;
+				else
+				{
+					radioButtonApplyToLevel.Checked = true;
+					numericUpDownDepthOfEffect.Value = value;
+				}
+			}
+		}
+
+		private void radioButtonEffectAppliesTo_CheckedChanged(object sender, EventArgs e)
+		{
+			numericUpDownDepthOfEffect.Enabled = radioButtonApplyToLevel.Checked;
+		}
+
 	}
 }

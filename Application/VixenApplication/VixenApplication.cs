@@ -230,9 +230,9 @@ namespace VixenApplication
 			}
 		}
 
-		private void buttonSetupChannels_Click(object sender, EventArgs e)
+		private void buttonSetupElements_Click(object sender, EventArgs e)
 		{
-			ConfigChannels form = new ConfigChannels();
+			ConfigElements form = new ConfigElements();
 			DialogResult result = form.ShowDialog();
 			if (result == DialogResult.OK) {
 				VixenSystem.SaveSystemConfig();
@@ -394,12 +394,6 @@ namespace VixenApplication
 			using(InstalledModules installedModules = new InstalledModules()) {
 				installedModules.ShowDialog();
 			}
-		}
-
-		private void channelGroupTestToolStripMenuItem_Click(object sender, EventArgs e) {
-			//using(TestForm testForm = new TestForm()) {
-			//    testForm.ShowDialog();
-			//}
 		}
 
 		#region Stats

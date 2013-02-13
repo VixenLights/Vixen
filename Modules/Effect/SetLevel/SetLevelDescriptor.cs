@@ -24,7 +24,7 @@ namespace VixenModules.Effect.SetLevel
 
 		public override string TypeName { get { return EffectName; } }
 
-		public override string Description { get { return "Sets the target channels to a static output level and/or color."; } }
+		public override string Description { get { return "Sets the target elements to a static output level and/or color."; } }
 
 		public override string Version { get { return "1.0"; } }
 

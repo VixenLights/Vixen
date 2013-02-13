@@ -36,7 +36,7 @@ namespace VixenModules.Editor.TimedSequenceEditor {
 			LightingValue endValue = obj.GetStateAt(obj.TimeSpan - _oneTick);
 
 			// Why we have to do this? I have no idea, but without it, the gradient rendering gives strange artefacts.
-			// (If you want to see what I mean, make a long spin (minutes) across a bunch of channels in a group with
+			// (If you want to see what I mean, make a long spin (minutes) across a bunch of elements in a group with
 			// a simple pulse down (or up). The ends/starts of the effect flip to the color of the other end briefly,
 			// for a single pixel width. I'm guessing it's an issue in the gradient rendering for large shapes where
 			// the gradient rectangle is within the same integer range as the rendering rectangle.

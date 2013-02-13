@@ -29,7 +29,7 @@ namespace VixenModules.Effect.Twinkle
 
 		public override string TypeName { get { return EffectName; } }
 
-		public override string Description { get { return "Randomly generates flickering pulses of light on the target channels."; } }
+		public override string Description { get { return "Randomly generates flickering pulses of light on the target elements."; } }
 
 		public override string Version { get { return "1.0"; } }
 
@@ -40,7 +40,7 @@ namespace VixenModules.Effect.Twinkle
 			get
 			{
 				return new ParameterSignature(
-					new ParameterSpecification("Individual Channels", typeof(bool)),
+					new ParameterSpecification("Individual Elements", typeof(bool)),
 					new ParameterSpecification("Minimum Level", typeof(double)),
 					new ParameterSpecification("Maximum Level", typeof(double)),
 					new ParameterSpecification("Level Variation (%)", typeof(int)),
@@ -49,7 +49,8 @@ namespace VixenModules.Effect.Twinkle
 					new ParameterSpecification("Average Coverage (%)", typeof(int)),
 					new ParameterSpecification("Color Handling", typeof(TwinkleColorHandling)),
 					new ParameterSpecification("Static Color", typeof(Color)),
-					new ParameterSpecification("Color Gradient", typeof(ColorGradient))
+					new ParameterSpecification("Color Gradient", typeof(ColorGradient)),
+					new ParameterSpecification("Depth of Effect", typeof(int))
 					);
 			}
 		}

@@ -27,7 +27,7 @@ namespace VixenModules.Effect.Pulse
 
 		public override string TypeName { get { return EffectName; } }
 
-		public override string Description { get { return "Applies a pulse with a variable level and/or color to the target channels."; } }
+		public override string Description { get { return "Applies a pulse with a variable level and/or color to the target elements."; } }
 
 		public override string Version { get { return "1.0"; } }
 

@@ -7,6 +7,7 @@ using Common.Controls;
 using Common.Controls.Timeline;
 using Vixen.Module.Effect;
 using Vixen.Sys;
+using Element = Common.Controls.Timeline.Element;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {

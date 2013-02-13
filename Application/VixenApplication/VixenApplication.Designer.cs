@@ -29,12 +29,12 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("asdfadsa");
-			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("rewqrewq");
-			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("vbcbxvxc");
-			System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("gfdsgfsd");
-			System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem("ytreyre");
-			System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem("xvcbxvcx");
+			System.Windows.Forms.ListViewItem listViewItem7 = new System.Windows.Forms.ListViewItem("asdfadsa");
+			System.Windows.Forms.ListViewItem listViewItem8 = new System.Windows.Forms.ListViewItem("rewqrewq");
+			System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem("vbcbxvxc");
+			System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem("gfdsgfsd");
+			System.Windows.Forms.ListViewItem listViewItem11 = new System.Windows.Forms.ListViewItem("ytreyre");
+			System.Windows.Forms.ListViewItem listViewItem12 = new System.Windows.Forms.ListViewItem("xvcbxvcx");
 			this.contextMenuStripNewSequence = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.menuStripMain = new System.Windows.Forms.MenuStrip();
@@ -44,7 +44,6 @@
 			this.executionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.channelGroupTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.label2 = new System.Windows.Forms.Label();
@@ -58,15 +57,15 @@
 			this.labelVersion = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.groupBoxSystemConfig = new System.Windows.Forms.GroupBox();
+			this.buttonSetupFiltersAndPatching = new System.Windows.Forms.Button();
 			this.buttonSetupOutputPreviews = new System.Windows.Forms.Button();
 			this.buttonSetupOutputControllers = new System.Windows.Forms.Button();
-			this.buttonSetupChannels = new System.Windows.Forms.Button();
+			this.buttonSetupElements = new System.Windows.Forms.Button();
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabelExecutionLight = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabelExecutionState = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabel_memory = new System.Windows.Forms.ToolStripStatusLabel();
-			this.buttonSetupFiltersAndPatching = new System.Windows.Forms.Button();
 			this.menuStripMain.SuspendLayout();
 			this.groupBoxSequences.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -100,7 +99,6 @@
             this.logsToolStripMenuItem,
             this.viewInstalledModulesToolStripMenuItem,
             this.executionToolStripMenuItem,
-            this.channelGroupTestToolStripMenuItem,
             this.toolStripSeparator1,
             this.exitToolStripMenuItem});
 			this.vixenToolStripMenuItem.Name = "vixenToolStripMenuItem";
@@ -142,13 +140,6 @@
 			this.stopToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
 			this.stopToolStripMenuItem.Text = "Stop";
 			this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
-			// 
-			// channelGroupTestToolStripMenuItem
-			// 
-			this.channelGroupTestToolStripMenuItem.Name = "channelGroupTestToolStripMenuItem";
-			this.channelGroupTestToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-			this.channelGroupTestToolStripMenuItem.Text = "Channel/Group Test";
-			this.channelGroupTestToolStripMenuItem.Click += new System.EventHandler(this.channelGroupTestToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
@@ -211,12 +202,12 @@
 			this.listViewRecentSequences.FullRowSelect = true;
 			this.listViewRecentSequences.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewRecentSequences.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2,
-            listViewItem3,
-            listViewItem4,
-            listViewItem5,
-            listViewItem6});
+            listViewItem7,
+            listViewItem8,
+            listViewItem9,
+            listViewItem10,
+            listViewItem11,
+            listViewItem12});
 			this.listViewRecentSequences.Location = new System.Drawing.Point(18, 116);
 			this.listViewRecentSequences.MultiSelect = false;
 			this.listViewRecentSequences.Name = "listViewRecentSequences";
@@ -281,13 +272,23 @@
 			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupFiltersAndPatching);
 			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupOutputPreviews);
 			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupOutputControllers);
-			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupChannels);
+			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupElements);
 			this.groupBoxSystemConfig.Location = new System.Drawing.Point(236, 133);
 			this.groupBoxSystemConfig.Name = "groupBoxSystemConfig";
 			this.groupBoxSystemConfig.Size = new System.Drawing.Size(204, 186);
 			this.groupBoxSystemConfig.TabIndex = 12;
 			this.groupBoxSystemConfig.TabStop = false;
 			this.groupBoxSystemConfig.Text = "System Configuration";
+			// 
+			// buttonSetupFiltersAndPatching
+			// 
+			this.buttonSetupFiltersAndPatching.Location = new System.Drawing.Point(12, 103);
+			this.buttonSetupFiltersAndPatching.Name = "buttonSetupFiltersAndPatching";
+			this.buttonSetupFiltersAndPatching.Size = new System.Drawing.Size(180, 30);
+			this.buttonSetupFiltersAndPatching.TabIndex = 15;
+			this.buttonSetupFiltersAndPatching.Text = "Configure Filters && Patching";
+			this.buttonSetupFiltersAndPatching.UseVisualStyleBackColor = true;
+			this.buttonSetupFiltersAndPatching.Click += new System.EventHandler(this.buttonSetupFiltersAndPatching_Click);
 			// 
 			// buttonSetupOutputPreviews
 			// 
@@ -305,19 +306,19 @@
 			this.buttonSetupOutputControllers.Name = "buttonSetupOutputControllers";
 			this.buttonSetupOutputControllers.Size = new System.Drawing.Size(180, 30);
 			this.buttonSetupOutputControllers.TabIndex = 6;
-			this.buttonSetupOutputControllers.Text = "Configure Output Controllers";
+			this.buttonSetupOutputControllers.Text = "Configure Controllers";
 			this.buttonSetupOutputControllers.UseVisualStyleBackColor = true;
 			this.buttonSetupOutputControllers.Click += new System.EventHandler(this.buttonSetupOutputControllers_Click);
 			// 
-			// buttonSetupChannels
+			// buttonSetupElements
 			// 
-			this.buttonSetupChannels.Location = new System.Drawing.Point(12, 23);
-			this.buttonSetupChannels.Name = "buttonSetupChannels";
-			this.buttonSetupChannels.Size = new System.Drawing.Size(180, 30);
-			this.buttonSetupChannels.TabIndex = 5;
-			this.buttonSetupChannels.Text = "Configure Channels && Groups";
-			this.buttonSetupChannels.UseVisualStyleBackColor = true;
-			this.buttonSetupChannels.Click += new System.EventHandler(this.buttonSetupChannels_Click);
+			this.buttonSetupElements.Location = new System.Drawing.Point(12, 23);
+			this.buttonSetupElements.Name = "buttonSetupElements";
+			this.buttonSetupElements.Size = new System.Drawing.Size(180, 30);
+			this.buttonSetupElements.TabIndex = 5;
+			this.buttonSetupElements.Text = "Configure Elements && Groups";
+			this.buttonSetupElements.UseVisualStyleBackColor = true;
+			this.buttonSetupElements.Click += new System.EventHandler(this.buttonSetupElements_Click);
 			// 
 			// statusStrip
 			// 
@@ -362,16 +363,6 @@
 			this.toolStripStatusLabel_memory.Spring = true;
 			this.toolStripStatusLabel_memory.Text = "Resource Usage";
 			this.toolStripStatusLabel_memory.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// buttonSetupFiltersAndPatching
-			// 
-			this.buttonSetupFiltersAndPatching.Location = new System.Drawing.Point(12, 103);
-			this.buttonSetupFiltersAndPatching.Name = "buttonSetupFiltersAndPatching";
-			this.buttonSetupFiltersAndPatching.Size = new System.Drawing.Size(180, 30);
-			this.buttonSetupFiltersAndPatching.TabIndex = 15;
-			this.buttonSetupFiltersAndPatching.Text = "Configure Filters and Patching";
-			this.buttonSetupFiltersAndPatching.UseVisualStyleBackColor = true;
-			this.buttonSetupFiltersAndPatching.Click += new System.EventHandler(this.buttonSetupFiltersAndPatching_Click);
 			// 
 			// VixenApplication
 			// 
@@ -425,7 +416,7 @@
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.GroupBox groupBoxSystemConfig;
 		private System.Windows.Forms.Button buttonSetupOutputControllers;
-		private System.Windows.Forms.Button buttonSetupChannels;
+		private System.Windows.Forms.Button buttonSetupElements;
 		private System.Windows.Forms.StatusStrip statusStrip;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelExecutionState;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelExecutionLight;
@@ -436,7 +427,6 @@
 		private System.Windows.Forms.Label labelVersion;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.ToolStripMenuItem channelGroupTestToolStripMenuItem;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel_memory;
 		private System.Windows.Forms.Button buttonSetupOutputPreviews;

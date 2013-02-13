@@ -15,7 +15,7 @@ namespace VixenModules.Effect.Chase
 	public class Chase : EffectModuleInstanceBase
 	{
 		private ChaseData _data;
-		private EffectIntents _channelData = null;
+		private EffectIntents _elementData = null;
 
 		public Chase()
 		{
@@ -24,13 +24,13 @@ namespace VixenModules.Effect.Chase
 
 		protected override void _PreRender()
 		{
-			_channelData = new EffectIntents();
+			_elementData = new EffectIntents();
 			DoRendering();
 		}
 
 		protected override EffectIntents _Render()
 		{
-			return _channelData;
+			return _elementData;
 		}
 
 		public override IModuleDataModel ModuleData
@@ -110,13 +110,21 @@ namespace VixenModules.Effect.Chase
 			set { _data.ChaseMovement = value; IsDirty = true; }
 		}
 
+		[Value]
+		public int DepthOfEffect
+		{
+			get { return _data.DepthOfEffect; }
+			set { _data.DepthOfEffect = value; IsDirty = true; }
+		}
+
 
 		private void DoRendering()
 		{
 			//TODO: get a better increment time. doing it every X ms is..... shitty at best.
 			TimeSpan increment = TimeSpan.FromMilliseconds(2);
 
-			List<ChannelNode> renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).ToList();
+			List<ElementNode> renderNodes = GetNodesToRenderOn();
+						
 			int targetNodeCount = renderNodes.Count;
 
 			Pulse.Pulse pulse;
@@ -124,9 +132,9 @@ namespace VixenModules.Effect.Chase
 
 			// apply the 'background' values to all targets
 			int i = 0;
-			foreach (ChannelNode target in renderNodes) {
+			foreach (ElementNode target in renderNodes) {
 				pulse = new Pulse.Pulse();
-				pulse.TargetNodes = new ChannelNode[] { target };
+				pulse.TargetNodes = new ElementNode[] { target };
 				pulse.TimeSpan = TimeSpan;
 				pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { DefaultLevel * 100, DefaultLevel * 100 }));
 
@@ -150,7 +158,7 @@ namespace VixenModules.Effect.Chase
 				}
 
 				pulseData = pulse.Render();
-				_channelData.Add(pulseData);
+				_elementData.Add(pulseData);
 				i++;
 			}
 
@@ -160,9 +168,9 @@ namespace VixenModules.Effect.Chase
 			if (chaseTime.TotalMilliseconds <= 0)
 				chaseTime = TimeSpan.FromMilliseconds(1);
 
-			// we need to keep track of the channel that is 'under' the curve at a given time, to see if it changes,
+			// we need to keep track of the element that is 'under' the curve at a given time, to see if it changes,
 			// and when it does, we make the effect for it then (since it's a variable time pulse).
-			ChannelNode lastTargetedNode = null;
+			ElementNode lastTargetedNode = null;
 			TimeSpan lastNodeStartTime = TimeSpan.Zero;
 			
 			// iterate up to and including the last pulse generated
@@ -181,7 +189,7 @@ namespace VixenModules.Effect.Chase
 					continue;
 				}
 
-				ChannelNode currentNode = renderNodes[currentNodeIndex];
+				ElementNode currentNode = renderNodes[currentNodeIndex];
 				if (currentNode == lastTargetedNode)
 					continue;
 
@@ -203,14 +211,41 @@ namespace VixenModules.Effect.Chase
 				GeneratePulse(lastTargetedNode, lastNodeStartTime, TimeSpan - lastNodeStartTime, 1.0);
 			}
 
-			_channelData = EffectIntents.Restrict(_channelData, TimeSpan.Zero, TimeSpan);
+			_elementData = EffectIntents.Restrict(_elementData, TimeSpan.Zero, TimeSpan);
 		}
 
-		private void GeneratePulse(ChannelNode target, TimeSpan startTime, TimeSpan duration, double currentMovementPosition)
+		private List<ElementNode> GetNodesToRenderOn()
+		{
+			IEnumerable<ElementNode> renderNodes = null;
+
+			if (DepthOfEffect == 0)
+			{
+				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).ToList();
+			}
+			else
+			{
+				renderNodes = TargetNodes;
+				for (int i = 0; i < DepthOfEffect; i++)
+				{
+					renderNodes = renderNodes.SelectMany(x => x.Children);
+				}
+
+			}
+
+			// If the given DepthOfEffect results in no nodes (because it goes "too deep" and misses all nodes), 
+			// then we'll default to the LeafElements, which will at least return 1 element (the TargetNode)
+			if (!renderNodes.Any())
+				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator());
+
+			return renderNodes.ToList();
+		}
+
+
+		private void GeneratePulse(ElementNode target, TimeSpan startTime, TimeSpan duration, double currentMovementPosition)
 		{
 			EffectIntents result;
 			Pulse.Pulse pulse = new Pulse.Pulse();
-			pulse.TargetNodes = new ChannelNode[] { target };
+			pulse.TargetNodes = new ElementNode[] { target };
 			pulse.TimeSpan = duration;
 			pulse.LevelCurve = new Curve(PulseCurve);
 
@@ -239,7 +274,7 @@ namespace VixenModules.Effect.Chase
 
 			result = pulse.Render();
 			result.OffsetAllCommandsByTime(startTime);
-			_channelData.Add(result);
+			_elementData.Add(result);
 		}
 	}
 }

@@ -38,12 +38,12 @@ namespace VixenModules.Effect.SetPosition {
 		protected override void _PreRender() {
 			_effectIntents = new EffectIntents();
 
-			foreach(ChannelNode node in TargetNodes) {
-				foreach(Channel channel in node.GetChannelEnumerator()) {
+			foreach(ElementNode node in TargetNodes) {
+				foreach(Element element in node.GetElementEnumerator()) {
 					PositionValue startPosition = new PositionValue(StartPosition);
 					PositionValue endPosition = new PositionValue(EndPosition);
 					IIntent intent = new PositionIntent(startPosition, endPosition, TimeSpan);
-					_effectIntents.AddIntentForChannel(channel.Id, intent, TimeSpan.Zero);
+					_effectIntents.AddIntentForElement(element.Id, intent, TimeSpan.Zero);
 				}
 			}
 		}

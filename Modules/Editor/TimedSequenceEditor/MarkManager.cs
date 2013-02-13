@@ -214,7 +214,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void buttonTapNewMarks_Click(object sender, EventArgs e)
 		{
 			using (MarkTapper tapper = new MarkTapper(_executionControl, _timingSource)) {
-				if (tapper.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+				if (tapper.ShowDialog() == DialogResult.OK) {
 					foreach (TimeSpan time in tapper.Results) {
 						if (!_displayedCollection.Marks.Contains(time))
 							_displayedCollection.Marks.Add(time);
@@ -228,7 +228,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void buttonOffsetMarks_Click(object sender, EventArgs e)
 		{
 			Common.Controls.TextDialog prompt = new Common.Controls.TextDialog("Time to offset (in seconds):");
-			if (prompt.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+			if (prompt.ShowDialog() == DialogResult.OK) {
 				TimeSpan time;
 
 				if (TimeSpan.TryParseExact(prompt.Response, TimeFormats.AllFormats, null, out time)) {
@@ -293,12 +293,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			Common.Controls.TextDialog prompt = new Common.Controls.TextDialog("Break each interval into how many equal segments?");
-			if (prompt.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+			if (prompt.ShowDialog() == DialogResult.OK) {
 				int divisions;
 				if (int.TryParse(prompt.Response, out divisions)) {
 
 					DialogResult newCollectionResult = MessageBox.Show("Do you want to put the new marks into a different collection?", "Add to new collection?", MessageBoxButtons.YesNoCancel);
-					if (newCollectionResult == System.Windows.Forms.DialogResult.Cancel) {
+					if (newCollectionResult == DialogResult.Cancel) {
 						return;
 					}
 
@@ -319,13 +319,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 					MarkCollection destination = _displayedCollection;
 
-					if (newCollectionResult == System.Windows.Forms.DialogResult.Yes) {
+					if (newCollectionResult == DialogResult.Yes) {
 						List<KeyValuePair<string, object>> options = new List<KeyValuePair<string, object>>();
 						foreach (MarkCollection mc in MarkCollections) {
 							options.Add(new KeyValuePair<string, object>(mc.Name, mc));
 						}
 						Common.Controls.ListSelectDialog selector = new Common.Controls.ListSelectDialog("Destination Mark Collection?", options);
-						if (selector.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+						if (selector.ShowDialog() == DialogResult.OK) {
 							destination = selector.SelectedItem as MarkCollection;
 						}
 					}
@@ -368,7 +368,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Common.Controls.ColorManagement.ColorPicker.ColorPicker picker = new Common.Controls.ColorManagement.ColorPicker.ColorPicker();
 
 			DialogResult result = picker.ShowDialog();
-			if (result == System.Windows.Forms.DialogResult.OK) {
+			if (result == DialogResult.OK) {
 				_displayedCollection.MarkColor = picker.Color.ToRGB().ToArgb();
 				panelColor.BackColor = _displayedCollection.MarkColor;
 				UpdateMarkCollectionInList(_displayedCollection);
@@ -424,7 +424,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			Common.Controls.TextDialog prompt = new Common.Controls.TextDialog("Start time for copied marks (in seconds):");
-			if (prompt.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+			if (prompt.ShowDialog() == DialogResult.OK) {
 				TimeSpan offsetTime;
 
 				if (TimeSpan.TryParseExact(prompt.Response, TimeFormats.PositiveFormats, null, out offsetTime)) {
@@ -460,7 +460,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Common.Controls.TextDialog prompt = new Common.Controls.TextDialog("How long should the beats be generated for, in seconds? Leave blank to go to the end.");
 			// the default prompt isn't enough to hold all the above text. Oops.
 			prompt.Size = new Size(550, prompt.Size.Height);
-			if (prompt.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+			if (prompt.ShowDialog() == DialogResult.OK) {
 				TimeSpan duration;
 				bool conversionSuccess = TimeSpan.TryParseExact(prompt.Response, TimeFormats.PositiveFormats, null, out duration);
 				if (!conversionSuccess && prompt.Response.Length == 0) {
@@ -513,5 +513,33 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 		}
+
+		private void buttonGeneratePeriodicMarks_Click(object sender, EventArgs e)
+        {
+			Common.Controls.TextDialog prompt = new Common.Controls.TextDialog("How often (in seconds) should the marks be generated?","Mark Period","0:00.050");
+			if (prompt.ShowDialog() == DialogResult.OK)
+			{
+				TimeSpan interval;
+				bool conversionSuccess = TimeSpan.TryParseExact(prompt.Response, TimeFormats.PositiveFormats, null, out interval);
+				if (conversionSuccess)
+				{
+					TimeSpan currentTime = interval;
+					TimeSpan endTime = _timedSequenceEditorForm.Sequence.Length;
+					while (currentTime <= endTime)
+					{
+						_displayedCollection.Marks.Add(currentTime);
+						currentTime += interval;
+					}
+
+					_displayedCollection.Marks.Sort();
+					PopulateMarkListFromMarkCollection(_displayedCollection);
+					UpdateMarkCollectionInList(_displayedCollection);
+				}
+				else
+				{
+					MessageBox.Show("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'", "Error parsing time");
+				}
+			}
+        }
 	}
 }

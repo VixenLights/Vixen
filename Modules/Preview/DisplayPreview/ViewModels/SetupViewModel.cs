@@ -48,8 +48,13 @@ namespace VixenModules.Preview.DisplayPreview.ViewModels
 						image.UriSource = new Uri(_dataModel.BackgroundImage, UriKind.Absolute);
 						image.EndInit();
 						_backgroundImage = image;
-					} catch (DirectoryNotFoundException dnfe) {
-						VixenSystem.Logging.Error("DisplayPreview: error loading background image. File not found: " + _dataModel.BackgroundImage);
+					} catch (Exception ex) {
+						if (ex is DirectoryNotFoundException || ex is FileNotFoundException) {
+							VixenSystem.Logging.Error("DisplayPreview: error loading background image. File not found: " +
+							                          _dataModel.BackgroundImage);
+						} else {
+							throw;
+						}
 					}
                 }
 

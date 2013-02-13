@@ -182,7 +182,7 @@ Namespace ");
             #line 85 "C:\Git\vixen\Public\Modules\Script\VB\VB_ScriptFramework.tt"
 
 	// This needs to match the node collection that the script created in its constructor.
-	ChannelNode[] nodes = VixenSystem.Nodes.ToArray();
+	ElementNode[] nodes = VixenSystem.Nodes.ToArray();
 	List<string> usedNames = new List<string>();
 	for(int i=0; i < nodes.Length; i++) { 
             

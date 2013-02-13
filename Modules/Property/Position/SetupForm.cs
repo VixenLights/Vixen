@@ -5,7 +5,7 @@ using Vixen.Sys;
 
 namespace VixenModules.Property.Position {
 	public partial class SetupForm : Form {
-		private ChannelNode[] _children;
+		private ElementNode[] _children;
 		private PositionValue[] _positions;
 		private PositionModule _positionProperty;
 
@@ -59,7 +59,7 @@ namespace VixenModules.Property.Position {
 		private void buttonOK_Click(object sender, EventArgs e) {
 			PositionData data = _positionProperty.StaticModuleData as PositionData;
 			for(int i=0; i<_positions.Length; i++) {
-				ChannelNode child = _children[i];
+				ElementNode child = _children[i];
 				PositionValue childPosition = _positions[i];
 				data.ChildrenPositions[child.Id] = childPosition;
 			}

@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using System.ComponentModel;
 using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
@@ -30,6 +31,8 @@ namespace VixenModules.Effect.Chase
 		[DataMember]
 		public Curve ChaseMovement { get; set; }
 
+		[DataMember]
+		public int DepthOfEffect { get; set; }
 
 		public ChaseData()
 		{
@@ -40,6 +43,7 @@ namespace VixenModules.Effect.Chase
 			ColorGradient = new ColorGradient();
 			PulseCurve = new Curve();
 			ChaseMovement = new Curve();
+			DepthOfEffect = 0;
 		}
 
 		public override IModuleDataModel Clone()
@@ -52,6 +56,7 @@ namespace VixenModules.Effect.Chase
 			result.ColorGradient = new ColorGradient(ColorGradient);
 			result.PulseCurve = new Curve(PulseCurve);
 			result.ChaseMovement = new Curve(ChaseMovement);
+			result.DepthOfEffect = DepthOfEffect;
 			return result;
 		}
 	}
@@ -63,4 +68,5 @@ namespace VixenModules.Effect.Chase
 		GradientForEachPulse,
 		ColorAcrossItems
 	}
+
 }

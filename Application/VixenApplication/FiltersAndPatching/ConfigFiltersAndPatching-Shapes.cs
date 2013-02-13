@@ -362,15 +362,15 @@ namespace VixenApplication
 	}
 
 
-	public class ChannelNodeShape : NestingSetupShape
+	public class ElementNodeShape : NestingSetupShape
 	{
-		public ChannelNodeShape(ShapeType shapeType, Template template)
+		public ElementNodeShape(ShapeType shapeType, Template template)
 			: base(shapeType, template)
 		{
 			_init();
 		}
 
-		public ChannelNodeShape(ShapeType shapeType, IStyleSet styleSet)
+		public ElementNodeShape(ShapeType shapeType, IStyleSet styleSet)
 			: base(shapeType, styleSet)
 		{
 			_init();
@@ -379,8 +379,8 @@ namespace VixenApplication
 		public override void CopyFrom(Shape source)
 		{
 			base.CopyFrom(source);
-			if (source is ChannelNodeShape) {
-				ChannelNodeShape src = (ChannelNodeShape)source;
+			if (source is ElementNodeShape) {
+				ElementNodeShape src = (ElementNodeShape)source;
 				_node = src.Node;
 				_CopyControlPointsFrom(src);
 			}
@@ -388,20 +388,20 @@ namespace VixenApplication
 
 		public override Shape Clone()
 		{
-			ChannelNodeShape result = new ChannelNodeShape(Type, (Template)null);
+			ElementNodeShape result = new ElementNodeShape(Type, (Template)null);
 			result.CopyFrom(this);
 			return result;
 		}
 
-		static public ChannelNodeShape CreateInstance(ShapeType shapeType, Template template)
+		static public ElementNodeShape CreateInstance(ShapeType shapeType, Template template)
 		{
-			return new ChannelNodeShape(shapeType, template);
+			return new ElementNodeShape(shapeType, template);
 		}
 
-		private ChannelNode _node;
-		public ChannelNode Node { get { return _node; } }
+		private ElementNode _node;
+		public ElementNode Node { get { return _node; } }
 
-		public void SetChannelNode(ChannelNode node)
+		public void SetElementNode(ElementNode node)
 		{
 			_node = node;
 			_recalcControlPoints();
@@ -411,9 +411,9 @@ namespace VixenApplication
 		{
 			get
 			{
-				if (Node == null || Node.Channel == null)
+				if (Node == null || Node.Element == null)
 					return null;
-				return VixenSystem.Channels.GetDataFlowComponentForChannel(Node.Channel);
+				return VixenSystem.Elements.GetDataFlowComponentForElement(Node.Element);
 			}
 		}
 
@@ -659,8 +659,8 @@ namespace VixenApplication
 		{
 			registrar.RegisterLibrary(namespaceName, preferredRepositoryVersion);
 			registrar.RegisterShapeType(
-				new ShapeType("ChannelNodeShape", namespaceName, namespaceName,
-					ChannelNodeShape.CreateInstance, ChannelNodeShape.GetPropertyDefinitions)
+				new ShapeType("ElementNodeShape", namespaceName, namespaceName,
+					ElementNodeShape.CreateInstance, ElementNodeShape.GetPropertyDefinitions)
 				);
 			registrar.RegisterShapeType(
 				new ShapeType("ControllerShape", namespaceName, namespaceName,

@@ -15,6 +15,14 @@ namespace VixenModules.Media.Audio
 		private FmodInstance _audioSystem;
 		private AudioData _data;
 
+		public bool MediaLoaded
+		{
+			get
+			{
+				return _audioSystem != null;
+			}
+		}
+
 		/// <summary>
 		/// Number of bytes of data each sample contains.
 		/// </summary>
