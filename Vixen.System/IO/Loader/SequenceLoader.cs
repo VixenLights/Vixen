@@ -34,7 +34,18 @@ namespace Vixen.IO.Loader {
 		}
 
 		object IObjectLoader.LoadFromFile(string filePath) {
-			return LoadFromFile(filePath);
+			ISequenceTypeModuleInstance sequenceTypeModule = SequenceTypeService.Instance.CreateSequenceFactory(filePath);
+
+			if (sequenceTypeModule == null) return null;  // this doesn't seem right TODO: Check
+
+			if (sequenceTypeModule.IsCustomSequenceLoader)
+			{
+
+				return sequenceTypeModule.LoadSequenceFromFile(filePath);
+
+			}
+
+			return LoadFromFile(filePath); 
 		}
 	}
 }
