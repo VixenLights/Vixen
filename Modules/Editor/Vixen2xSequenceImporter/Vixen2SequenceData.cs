@@ -19,9 +19,9 @@ namespace VixenModules.Editor.Vixen2xSequenceImporter {
 
 		protected internal int TotalEventsCount { get; private set; }
 
-		protected internal int ChannelCount { get; private set; }
+		protected internal int ElementCount { get; private set; }
 
-		protected internal int EventsPerChannel { get; private set; }
+		protected internal int EventsPerElement { get; private set; }
 
 		protected internal Vixen2SequenceData(string fileName) {
 			if (!File.Exists(fileName)) {
@@ -57,8 +57,8 @@ namespace VixenModules.Editor.Vixen2xSequenceImporter {
 			}
 			// These calculations could have been put in the properties, but then it gets confusing to debug because of all the jumping around.
 			TotalEventsCount = Convert.ToInt32(Math.Ceiling((double)(SeqLengthInMills / EventPeriod))); ;
-			ChannelCount = EventData.Length / TotalEventsCount;
-			EventsPerChannel = EventData.Length / ChannelCount;
+			ElementCount = EventData.Length / TotalEventsCount;
+			EventsPerElement = EventData.Length / ElementCount;
 		}
 	}
 }
