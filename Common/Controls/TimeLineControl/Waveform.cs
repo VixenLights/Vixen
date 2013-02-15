@@ -178,6 +178,13 @@ namespace Common.Controls.Timeline
 					e.Graphics.DrawLine(Pens.Black, x, workingHeight * lowPercent, x, workingHeight * highPercent);
 				}
 			}
+			else
+			{
+				using (Font f = new Font(this.Font.FontFamily, 10f, FontStyle.Regular))
+				{
+					e.Graphics.DrawString("Building waveform.....", f, Brushes.Black, new Point((int)timeToPixels(VisibleTimeStart) + 15, (int)(Height - f.GetHeight(e.Graphics)) / 2 ), new StringFormat { Alignment = StringAlignment.Near });
+				}
+			}
 
 			base.OnPaint(e);
 		}
