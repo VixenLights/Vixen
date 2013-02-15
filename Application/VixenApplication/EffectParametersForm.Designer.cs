@@ -74,7 +74,7 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "EffectParametersForm";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Effect Parameters";
 			this.ResumeLayout(false);
 

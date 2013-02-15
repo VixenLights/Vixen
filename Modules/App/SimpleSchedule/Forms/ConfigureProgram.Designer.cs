@@ -245,7 +245,7 @@
 			this.buttonOK.UseVisualStyleBackColor = true;
 			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
 			// 
-			// ProgramForm
+			// ConfigureProgram
 			// 
 			this.AcceptButton = this.buttonOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -254,8 +254,8 @@
 			this.ClientSize = new System.Drawing.Size(466, 333);
 			this.Controls.Add(this.panel2);
 			this.Controls.Add(this.panel1);
-			this.Name = "ProgramForm";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+			this.Name = "ConfigureProgram";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Program";
 			this.panel1.ResumeLayout(false);
 			this.tableLayoutPanel.ResumeLayout(false);

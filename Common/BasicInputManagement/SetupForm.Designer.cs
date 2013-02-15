@@ -322,7 +322,7 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "SetupForm";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Input Effect Router";
 			this.Load += new System.EventHandler(this.SetupForm_Load);
 			this.groupBoxInputDetail.ResumeLayout(false);

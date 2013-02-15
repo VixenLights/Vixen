@@ -181,7 +181,7 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ConfigureScheduledItems";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Schedule Item(s)";
 			this.itemToExceuteGroupBox.ResumeLayout(false);
 			this.itemToExceuteGroupBox.PerformLayout();

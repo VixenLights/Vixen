@@ -679,7 +679,7 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ScheduleItemEditForm";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Scheduled Item";
 			this.panelRecurrence.ResumeLayout(false);
 			this.panelRecurrence.PerformLayout();

@@ -52,7 +52,7 @@
 			this.ClientSize = new System.Drawing.Size(557, 343);
 			this.Controls.Add(this.textBox1);
 			this.Name = "InstrumentationForm";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Instrumentation";
 			this.Load += new System.EventHandler(this.InstrumentationForm_Load);
 			this.ResumeLayout(false);

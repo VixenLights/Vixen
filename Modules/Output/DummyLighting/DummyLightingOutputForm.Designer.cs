@@ -35,6 +35,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(284, 262);
 			this.Name = "DummyLightingOutputForm";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Dummy Lighting Output";
 			this.ResumeLayout(false);
 

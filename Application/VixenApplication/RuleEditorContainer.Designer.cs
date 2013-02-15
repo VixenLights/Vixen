@@ -70,6 +70,7 @@
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.panelContainer);
 			this.Name = "RuleEditorContainer";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "RuleEditorContainer";
 			this.ResumeLayout(false);
 

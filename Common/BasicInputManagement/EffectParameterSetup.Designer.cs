@@ -24,9 +24,9 @@
 		/// </summary>
 		private void InitializeComponent() {
 			this.panelContainer = new System.Windows.Forms.Panel();
+			this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
-			this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
 			this.panelContainer.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -41,6 +41,20 @@
 			this.panelContainer.Name = "panelContainer";
 			this.panelContainer.Size = new System.Drawing.Size(443, 218);
 			this.panelContainer.TabIndex = 0;
+			// 
+			// tableLayoutPanel
+			// 
+			this.tableLayoutPanel.AutoSize = true;
+			this.tableLayoutPanel.ColumnCount = 2;
+			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tableLayoutPanel.Location = new System.Drawing.Point(0, 0);
+			this.tableLayoutPanel.Name = "tableLayoutPanel";
+			this.tableLayoutPanel.RowCount = 1;
+			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel.Size = new System.Drawing.Size(443, 218);
+			this.tableLayoutPanel.TabIndex = 0;
 			// 
 			// buttonOK
 			// 
@@ -65,20 +79,6 @@
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			// 
-			// tableLayoutPanel
-			// 
-			this.tableLayoutPanel.AutoSize = true;
-			this.tableLayoutPanel.ColumnCount = 2;
-			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel.Location = new System.Drawing.Point(0, 0);
-			this.tableLayoutPanel.Name = "tableLayoutPanel";
-			this.tableLayoutPanel.RowCount = 1;
-			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel.Size = new System.Drawing.Size(443, 218);
-			this.tableLayoutPanel.TabIndex = 0;
-			// 
 			// EffectParameterSetup
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -89,7 +89,7 @@
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.panelContainer);
 			this.Name = "EffectParameterSetup";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Effect Setup";
 			this.panelContainer.ResumeLayout(false);
 			this.panelContainer.PerformLayout();
