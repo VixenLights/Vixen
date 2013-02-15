@@ -17,6 +17,6 @@ namespace Vixen.Module.SequenceType.Surrogate {
 		public TimeSpan TimeSpan { get; protected set; }
 
 		[DataMember]
-		public ElementNodeReferenceSurrogate[] TargetNodes { get; protected set; }
+		public ChannelNodeReferenceSurrogate[] TargetNodes { get; protected set; }
 	}
 }
