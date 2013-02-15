@@ -13,7 +13,7 @@ namespace Vixen.Module.SequenceType.Surrogate {
 			TypeId = effectNode.Effect.Descriptor.TypeId;
 			InstanceId = effectNode.Effect.InstanceId;
 			TimeSpan = effectNode.Effect.TimeSpan;
-			TargetNodes = effectNode.Effect.TargetNodes.Select(x => new ElementNodeReferenceSurrogate(x)).ToArray();
+			TargetNodes = effectNode.Effect.TargetNodes.Select(x => new ChannelNodeReferenceSurrogate(x)).ToArray();
 		}
 
 		public IEffectNode CreateEffectNode() {

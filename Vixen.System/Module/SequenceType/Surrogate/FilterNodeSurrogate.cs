@@ -13,7 +13,7 @@ namespace Vixen.Module.SequenceType.Surrogate {
 			TypeId = filterNode.Filter.Descriptor.TypeId;
 			InstanceId = filterNode.Filter.InstanceId;
 			TimeSpan = filterNode.Filter.TimeSpan;
-			TargetNodes = filterNode.Filter.TargetNodes.Select(x => new ElementNodeReferenceSurrogate(x)).ToArray();
+			TargetNodes = filterNode.Filter.TargetNodes.Select(x => new ChannelNodeReferenceSurrogate(x)).ToArray();
 		}
 
 		public ISequenceFilterNode CreateFilterNode() {

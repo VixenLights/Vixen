@@ -4,8 +4,8 @@ using Vixen.Sys;
 
 namespace Vixen.Module.SequenceType.Surrogate {
 	[DataContract(Namespace = "")]
-	class ElementNodeReferenceSurrogate {
-		public ElementNodeReferenceSurrogate(ElementNode elementNode) {
+	class ChannelNodeReferenceSurrogate {
+		public ChannelNodeReferenceSurrogate(ElementNode elementNode) {
 			NodeId = elementNode.Id;
 		}
 

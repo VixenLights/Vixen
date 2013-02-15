@@ -293,7 +293,7 @@
     <Compile Include="Module\SequenceType\Surrogate\FilterNodeSurrogate.cs" />
     <Compile Include="Module\SequenceType\Surrogate\MediaSurrogate.cs" />
     <Compile Include="Module\SequenceType\SequenceTypeDataModelBase.cs" />
-    <Compile Include="Module\SequenceType\Surrogate\ElementNodeReferenceSurrogate.cs" />
+    <Compile Include="Module\SequenceType\Surrogate\ChannelNodeReferenceSurrogate.cs" />
     <Compile Include="Module\SequenceType\Surrogate\NodeSurrogate.cs" />
     <Compile Include="Module\SequenceType\Surrogate\SelectedTimingProviderSurrogate.cs" />
     <Compile Include="Module\SingletonRepository.cs" />
