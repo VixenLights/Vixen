@@ -29,6 +29,16 @@ namespace Common.Controls.Timeline
 		{
 			BackColor = Color.Gray;
 			Visible = false;
+			
+		}
+
+		private void CreateWorker()
+		{
+			if (bw != null)
+			{
+				bw.DoWork -= new DoWorkEventHandler(bw_createScaleSamples);
+				bw.RunWorkerCompleted -= new RunWorkerCompletedEventHandler(bw_RunWorkerCompleted);
+			}
 			bw = new BackgroundWorker();
 			bw.WorkerSupportsCancellation = true;
 			bw.DoWork += new DoWorkEventHandler(bw_createScaleSamples);
@@ -101,6 +111,11 @@ namespace Common.Controls.Timeline
 				audio = value;
 				if (audio != null)
 				{
+					if (bw != null && bw.IsBusy)
+					{
+						bw.CancelAsync();
+					}
+					CreateWorker();
 					bw.RunWorkerAsync();
 					Visible = true;// Make us visible if we have audio to display.
 				}
@@ -127,17 +142,14 @@ namespace Common.Controls.Timeline
 
 		protected override void OnTimePerPixelChanged(object sender, EventArgs e)
 		{
-			if (bw.IsBusy)
+			if (bw != null && bw.IsBusy)
 			{
 				bw.CancelAsync();
 			}
 			base.OnTimePerPixelChanged(sender, e);
-			while (bw.IsBusy)
-			{
-				//wait for worker to free
-			}
-			bw.RunWorkerAsync();
 			
+			CreateWorker();
+			bw.RunWorkerAsync();
 		}
 
 		protected override void OnVisibleTimeStartChanged(object sender, EventArgs e)
