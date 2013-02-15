@@ -110,9 +110,9 @@ namespace VixenModules.Editor.Vixen2xSequenceImporter {
 					Sequence.AddMedia(MediaService.Instance.GetMedia(songFileName));
 				}
 				else {
-					var message = String.Format("Could not locate the song '{0}' please add it manually in the sequence editor " + 
+					var message = String.Format("Could not locate the audio file '{0}' please add it manually in the sequence editor " + 
 						"after the import completes.  Use the Tools menu, then select Associate Audio...", Path.GetFileName(songFileName));
-					MessageBox.Show(message);
+					MessageBox.Show(message, "Sorry, couldn't find audio");
 				}
 			}
 		}
