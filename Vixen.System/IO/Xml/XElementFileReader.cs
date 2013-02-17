@@ -7,8 +7,15 @@ namespace Vixen.IO.Xml {
 			if(!File.Exists(filePath)) return null;
 
 			using(FileStream fileStream = new FileStream(filePath, FileMode.Open)) {
-				using(StreamReader reader = new StreamReader(fileStream)) {
-					return XElement.Load(reader);
+				using (StreamReader reader = new StreamReader(fileStream)) {
+					try {
+						return XElement.Load(reader);
+					}
+					catch (System.Exception ex) {
+						Vixen.Sys.VixenSystem.Logging.Error("Error loading " + filePath + " at startup.", ex);
+					}
+
+					return null;
 				}
 			}
 		}
