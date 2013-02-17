@@ -40,10 +40,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		// a mapping of system elements to the (possibly multiple) rows that represent them in the grid.
 		private Dictionary<ElementNode, List<Row>> _elementNodeToRows;
 
-		// the time that was originally marked with the cursor before playback started; this is so
-		// we can move the cursor to represent the current playing time, and still return to where it was.
-		private TimeSpan _originalCursorPositionBeforePlayback;
-
 		// the default time for a sequence if one is loaded with 0 time
 		private static TimeSpan _defaultSequenceTime = TimeSpan.FromMinutes(1);
 
@@ -444,14 +440,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				timelineControl.SelectElement(tse);
 		}
 
-
-		private void savePlaybackPositions() {
-			_originalCursorPositionBeforePlayback = timelineControl.CursorPosition;
-			m_prevPlaybackStart = timelineControl.PlaybackStartTime;
-			m_prevPlaybackEnd = timelineControl.PlaybackEndTime;
-		}
-
-
 		private void timelineControl_RulerClicked(object sender, RulerClickedEventArgs e) {
 			if(_context == null) {
 				VixenSystem.Logging.Error("TimedSequenceEditor: StartPointClicked to Play with null context!");
@@ -460,10 +448,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			bool autoPlay = e.ModifierKeys.HasFlag(Keys.Control);
 
-			if(autoPlay) {
+			if (autoPlay) {
 				// Save the times for later restoration
 				m_prevPlaybackStart = timelineControl.PlaybackStartTime;
 				m_prevPlaybackEnd = timelineControl.PlaybackEndTime;
+			}
+			else {
+				m_prevPlaybackStart = e.Time;
+				m_prevPlaybackEnd = null;
 			}
 
 			// Set the timeline control
@@ -1237,11 +1229,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#region Toolbar buttons
 
 		private void toolStripButton_Start_Click(object sender, EventArgs e) {
+			//TODO: JEMA - Check to see if this is functioning properly.
 			timelineControl.PlaybackStartTime = TimeSpan.Zero;
 			timelineControl.VisibleTimeStart = TimeSpan.Zero;
 		}
 
 		private void toolStripButton_End_Click(object sender, EventArgs e) {
+			//TODO: JEMA - Check to see if this is functioning properly.
 			timelineControl.PlaybackStartTime = _sequence.Length;
 			timelineControl.VisibleTimeStart = timelineControl.TotalTime - timelineControl.VisibleTimeSpan;
 		}
@@ -1423,7 +1417,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		private void _PlaySequence(TimeSpan rangeStart, TimeSpan rangeEnd) {
-			_context.Play(rangeStart, rangeEnd);
+			if (_context.IsRunning && _context.IsPaused) {
+				_context.Resume();
+				updateButtonStates();
+			}
+			else {
+				_context.Play(rangeStart, rangeEnd);
+			}
+
 			//_SetTimingSpeed(_timingSpeed);
 		}
 

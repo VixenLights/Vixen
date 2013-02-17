@@ -102,6 +102,7 @@
     <ProjectReference Include="..\TimedSequenceEditor\TimedSequenceEditor.csproj">
       <Project>{47EA8E72-BEAB-44D0-893D-8F184FCFEF31}</Project>
       <Name>TimedSequenceEditor</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
