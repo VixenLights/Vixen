@@ -183,8 +183,10 @@
 			// 
 			// ConfigPreviews
 			// 
+			this.AcceptButton = this.buttonOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(419, 493);
 			this.Controls.Add(this.groupBoxSelectedController);
 			this.Controls.Add(this.listViewControllers);
@@ -200,6 +202,7 @@
 			this.Name = "ConfigPreviews";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Previews Configuration";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ConfigPreviews_FormClosing);
 			this.Load += new System.EventHandler(this.ConfigPreviews_Load);
 			this.groupBoxSelectedController.ResumeLayout(false);
 			this.groupBoxSelectedController.PerformLayout();

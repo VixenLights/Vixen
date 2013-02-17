@@ -959,5 +959,33 @@ namespace VixenApplication
 			_applicationData.FilterSetupFormHighQualityRendering = checkBoxHighQualityRendering.Checked;
 		}
 
+		private void ConfigFiltersAndPatching_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if (DialogResult == DialogResult.Cancel)
+			{
+				switch (MessageBox.Show(this, "All changes will be lost if you continue, do you wish to continue?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+				{
+					case DialogResult.No:
+						e.Cancel = true;
+						break;
+					default:
+						break;
+				}
+			}
+			else if (DialogResult == DialogResult.OK)
+			{
+				e.Cancel = false;
+			}
+			else
+			{
+				switch (e.CloseReason)
+				{
+					case CloseReason.UserClosing:
+						e.Cancel = true;
+						break;
+				}
+			}
+		}
+
 	}
 }

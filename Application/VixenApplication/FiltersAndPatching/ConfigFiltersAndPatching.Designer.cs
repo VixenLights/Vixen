@@ -29,7 +29,7 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigFiltersAndPatching));
-			Dataweb.NShape.RoleBasedSecurityManager roleBasedSecurityManager2 = new Dataweb.NShape.RoleBasedSecurityManager();
+			Dataweb.NShape.RoleBasedSecurityManager roleBasedSecurityManager1 = new Dataweb.NShape.RoleBasedSecurityManager();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.diagramContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.copyFilterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -105,9 +105,9 @@
 			this.project.LibrarySearchPaths = ((System.Collections.Generic.IList<string>)(resources.GetObject("project.LibrarySearchPaths")));
 			this.project.Name = null;
 			this.project.Repository = this.cachedRepository;
-			roleBasedSecurityManager2.CurrentRole = Dataweb.NShape.StandardRole.Administrator;
-			roleBasedSecurityManager2.CurrentRoleName = "Administrator";
-			this.project.SecurityManager = roleBasedSecurityManager2;
+			roleBasedSecurityManager1.CurrentRole = Dataweb.NShape.StandardRole.Administrator;
+			roleBasedSecurityManager1.CurrentRoleName = "Administrator";
+			this.project.SecurityManager = roleBasedSecurityManager1;
 			// 
 			// cachedRepository
 			// 
@@ -256,8 +256,10 @@
 			// 
 			// ConfigFiltersAndPatching
 			// 
+			this.AcceptButton = this.buttonOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(784, 462);
 			this.Controls.Add(this.checkBoxHighQualityRendering);
 			this.Controls.Add(this.buttonOK);
@@ -271,7 +273,9 @@
 			this.DoubleBuffered = true;
 			this.MinimumSize = new System.Drawing.Size(800, 500);
 			this.Name = "ConfigFiltersAndPatching";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Output Filters & Patching Setup";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ConfigFiltersAndPatching_FormClosing);
 			this.Load += new System.EventHandler(this.ConfigFiltersAndPatching_Load);
 			this.ResizeEnd += new System.EventHandler(this.ConfigFiltersAndPatching_ResizeEnd);
 			this.Resize += new System.EventHandler(this.ConfigFiltersAndPatching_Resize);

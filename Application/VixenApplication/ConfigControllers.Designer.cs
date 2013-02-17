@@ -179,7 +179,7 @@
 			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(196, 27);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(53, 13);
+			this.label3.Size = new System.Drawing.Size(54, 13);
 			this.label3.TabIndex = 31;
 			this.label3.Text = "Channels:";
 			// 
@@ -244,8 +244,10 @@
 			// 
 			// ConfigControllers
 			// 
+			this.AcceptButton = this.buttonOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(419, 482);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.groupBoxSelectedController);
@@ -261,6 +263,7 @@
 			this.Name = "ConfigControllers";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Controllers Configuration";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ConfigControllers_FormClosing);
 			this.Load += new System.EventHandler(this.ConfigControllers_Load);
 			this.groupBoxSelectedController.ResumeLayout(false);
 			this.groupBoxSelectedController.PerformLayout();

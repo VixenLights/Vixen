@@ -135,6 +135,7 @@
 			// 
 			// ConfigControllersOutputs
 			// 
+			this.AcceptButton = this.buttonOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(344, 412);
@@ -148,6 +149,7 @@
 			this.Name = "ConfigControllersOutputs";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Configure Controller Channels";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ConfigControllersOutputs_FormClosing);
 			this.Load += new System.EventHandler(this.ConfigControllersOutputs_Load);
 			this.groupBox.ResumeLayout(false);
 			this.groupBox.PerformLayout();
