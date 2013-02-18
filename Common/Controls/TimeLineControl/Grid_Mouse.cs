@@ -174,36 +174,38 @@ namespace Common.Controls.Timeline
         ///<summary>The last location on the grid the mouse was at.</summary>
         private Point m_lastGridLocation;
 
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            // Determine if we need to start auto-drag
-            switch (m_dragState)
-            {
-                case DragState.Moving:
-                case DragState.Selecting:
-                case DragState.HResizing:
+		protected override void OnMouseMove(MouseEventArgs e) {
+			// Determine if we need to start auto-drag
+			switch (m_dragState) {
+				case DragState.Moving:
+				case DragState.Selecting:
+				case DragState.HResizing:
 
-                    // How far outside viewport in X and Y direction.
-                    m_mouseOutside.X = (e.X < 0) ? e.X : ((e.X > ClientSize.Width) ? (e.X - ClientSize.Width) : 0);
-                    m_mouseOutside.Y = (e.Y < 0) ? e.Y : ((e.Y > ClientSize.Height) ? (e.Y - ClientSize.Height) : 0);
+					m_mouseOutside.X = (e.X <= AutoScrollMargin.Width)
+						? -(AutoScrollMargin.Width - e.X)
+						: (e.X > ClientSize.Width - AutoScrollMargin.Width)
+							? e.X - ClientSize.Width + AutoScrollMargin.Width : 0;
 
-                    if (m_mouseOutside.X != 0 || m_mouseOutside.Y != 0)
-                    {
-                        if (!m_autoScrollTimer.Enabled)
-                            m_autoScrollTimer.Start();  // Mouse is outside viewport - start auto scroll timer.
-                    }
-                    else
-                    {
-                        if (m_autoScrollTimer.Enabled)
-                            m_autoScrollTimer.Stop();   // Mouse is inside viewport - stop auto scroll timer.
-                    }
+					m_mouseOutside.Y = (e.Y <= AutoScrollMargin.Height)
+						? -(AutoScrollMargin.Height - e.Y)
+						: (e.Y > ClientSize.Height - AutoScrollMargin.Height)
+							? e.Y - ClientSize.Height + AutoScrollMargin.Height : 0;
 
-                    break;
-            }
+					if (m_mouseOutside.X != 0 || m_mouseOutside.Y != 0) {
+						if (!m_autoScrollTimer.Enabled)
+							m_autoScrollTimer.Start();  // Mouse is outside viewport - start auto scroll timer.
+					}
+					else {
+						if (m_autoScrollTimer.Enabled)
+							m_autoScrollTimer.Stop();   // Mouse is inside viewport - stop auto scroll timer.
+					}
 
-            m_lastMouseMove = e;
-            HandleMouseMove(e);
-        }
+					break;
+			}
+
+			m_lastMouseMove = e;
+			HandleMouseMove(e);
+		}
 
         ///<summary>Calls a different MouseMove_ function depending on the current drag state.</summary>
         private void HandleMouseMove(MouseEventArgs e)
@@ -698,7 +700,7 @@ namespace Common.Controls.Timeline
         ///<summary>The new auto-scroll timer.</summary>
         private Timer m_autoScrollTimer;
 
-        private const int AutoScrollPxScaleFactor = 8;
+        private const int AutoScrollPxScaleFactor = 4;
 
         private void InitAutoScrollTimer()
         {
