@@ -200,9 +200,13 @@ namespace Common.Controls
 					MessageBox.Show(String.Format("The following items need to be resolved:{0}{0}{1}", Environment.NewLine, sb), "Serial Port", MessageBoxButtons.OK, MessageBoxIcon.Stop);
 					return false;
 				}
+				else
+				{
+					return true;
+				}
 			}
 
-			return true;
+			return false;
 		}
 
 		private void buttonOK_Click(object sender, EventArgs e)
