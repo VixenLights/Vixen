@@ -5,14 +5,15 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{BD18AB57-1ABF-4C5B-A3F6-8B4AC6013C36}</ProjectGuid>
+    <ProjectGuid>{BE560309-8814-4623-B1B3-08D9F4FF81D9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VixenModules.SequenceType.Vixen2x</RootNamespace>
-    <AssemblyName>Vixen2x</AssemblyName>
+    <RootNamespace>VixenModules.Editor.Vixen2xSequenceImporter</RootNamespace>
+    <AssemblyName>Vixen2xSequenceImporter</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -32,7 +33,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>$(SolutionDir)\Output\Modules\SequenceType\</OutputPath>
+    <OutputPath>$(SolutionDir)\Output\Modules\Editor\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -40,31 +41,71 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>$(SolutionDir)\Release\Modules\SequenceType\</OutputPath>
+    <OutputPath>$(SolutionDir)\Release\Modules\Editor\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <Import Project="$(SolutionDir)\commonProject.props" />
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
-    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Vixen">
+      <HintPath>..\..\..\..\Output\Vixen.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Executor.cs" />
-    <Compile Include="SequenceMigrator.cs" />
-    <Compile Include="Vixen2xSequence.cs" />
+    <Compile Include="Vixen2SequenceData.cs" />
+    <Compile Include="Vixen2xSequenceImporter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Vixen2xSequenceDescriptor.cs" />
-    <Compile Include="Vixen2xSequenceTypeModule.cs" />
+    <Compile Include="Vixen2xSequenceImporterDescriptor.cs" />
+    <Compile Include="Vixen2xSequenceImporterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Vixen2xSequenceImporterForm.Designer.cs">
+      <DependentUpon>Vixen2xSequenceImporterForm.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
+    <ProjectReference Include="..\..\..\Common\BaseSequence\BaseSequence.csproj">
+      <Project>{8D6C81FD-5117-414A-8985-7BD5AA0F5135}</Project>
+      <Name>BaseSequence</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\App\ColorGradients\ColorGradients.csproj">
+      <Project>{1B189B36-02AF-4A57-9E1B-6DC833212725}</Project>
+      <Name>ColorGradients</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\App\Curves\Curves.csproj">
+      <Project>{F0BA7127-61B4-453A-802B-ABCB5A0D3D54}</Project>
+      <Name>Curves</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Media\Audio\Audio.csproj">
+      <Project>{4243BA4C-6371-4DD1-8A1D-675BED5322AF}</Project>
+      <Name>Audio</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Sequence\Timed\Timed.csproj">
+      <Project>{45E1228A-F714-41D5-BB9B-A776F2B23143}</Project>
+      <Name>Timed</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\TimedSequenceEditor\TimedSequenceEditor.csproj">
+      <Project>{47EA8E72-BEAB-44D0-893D-8F184FCFEF31}</Project>
+      <Name>TimedSequenceEditor</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
@@ -73,7 +114,7 @@
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
+      <Install>true</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
       <Visible>False</Visible>
@@ -82,20 +123,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Common\BaseSequence\BaseSequence.csproj">
-      <Project>{8D6C81FD-5117-414A-8985-7BD5AA0F5135}</Project>
-      <Name>BaseSequence</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Editor\Vixen2xSequenceImporter\Vixen2xSequenceImporter.csproj">
-      <Project>{BE560309-8814-4623-B1B3-08D9F4FF81D9}</Project>
-      <Name>Vixen2xSequenceImporter</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Timed\Timed.csproj">
-      <Project>{45E1228A-F714-41D5-BB9B-A776F2B23143}</Project>
-      <Name>Timed</Name>
-      <Private>False</Private>
-    </ProjectReference>
+    <EmbeddedResource Include="Vixen2xSequenceImporterForm.resx">
+      <DependentUpon>Vixen2xSequenceImporterForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

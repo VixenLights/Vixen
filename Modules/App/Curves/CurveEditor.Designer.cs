@@ -39,6 +39,10 @@ namespace VixenModules.App.Curves
 			this.buttonSaveCurveToLibrary = new System.Windows.Forms.Button();
 			this.buttonLoadCurveFromLibrary = new System.Windows.Forms.Button();
 			this.zedGraphControl = new ZedGraph.ZedGraphControl();
+			this.xLabel = new System.Windows.Forms.Label();
+			this.yLabel = new System.Windows.Forms.Label();
+			this.lblXValue = new System.Windows.Forms.Label();
+			this.lblYValue = new System.Windows.Forms.Label();
 			this.groupBoxLibrary.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -88,6 +92,10 @@ namespace VixenModules.App.Curves
 			// 
 			this.groupBoxLibrary.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBoxLibrary.Controls.Add(this.lblYValue);
+			this.groupBoxLibrary.Controls.Add(this.lblXValue);
+			this.groupBoxLibrary.Controls.Add(this.yLabel);
+			this.groupBoxLibrary.Controls.Add(this.xLabel);
 			this.groupBoxLibrary.Controls.Add(this.buttonEditLibraryCurve);
 			this.groupBoxLibrary.Controls.Add(this.buttonUnlinkCurve);
 			this.groupBoxLibrary.Controls.Add(this.labelCurve);
@@ -181,6 +189,42 @@ namespace VixenModules.App.Curves
 			this.zedGraphControl.PreMouseMoveEvent += new ZedGraph.ZedGraphControl.ZedMouseEventHandler(this.zedGraphControl_PreMouseMoveEvent);
 			this.zedGraphControl.PostMouseMoveEvent += new ZedGraph.ZedGraphControl.ZedMouseEventHandler(this.zedGraphControl_PostMouseMoveEvent);
 			// 
+			// xLabel
+			// 
+			this.xLabel.AutoSize = true;
+			this.xLabel.Location = new System.Drawing.Point(387, 24);
+			this.xLabel.Name = "xLabel";
+			this.xLabel.Size = new System.Drawing.Size(17, 13);
+			this.xLabel.TabIndex = 5;
+			this.xLabel.Text = "X:";
+			// 
+			// yLabel
+			// 
+			this.yLabel.AutoSize = true;
+			this.yLabel.Location = new System.Drawing.Point(387, 41);
+			this.yLabel.Name = "yLabel";
+			this.yLabel.Size = new System.Drawing.Size(17, 13);
+			this.yLabel.TabIndex = 6;
+			this.yLabel.Text = "Y:";
+			// 
+			// lblXValue
+			// 
+			this.lblXValue.AutoSize = true;
+			this.lblXValue.Location = new System.Drawing.Point(411, 24);
+			this.lblXValue.Name = "lblXValue";
+			this.lblXValue.Size = new System.Drawing.Size(13, 13);
+			this.lblXValue.TabIndex = 7;
+			this.lblXValue.Text = "?";
+			// 
+			// lblYValue
+			// 
+			this.lblYValue.AutoSize = true;
+			this.lblYValue.Location = new System.Drawing.Point(411, 41);
+			this.lblYValue.Name = "lblYValue";
+			this.lblYValue.Size = new System.Drawing.Size(13, 13);
+			this.lblYValue.TabIndex = 8;
+			this.lblYValue.Text = "?";
+			// 
 			// CurveEditor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -217,5 +261,9 @@ namespace VixenModules.App.Curves
 		private System.Windows.Forms.Button buttonSaveCurveToLibrary;
 		private System.Windows.Forms.Button buttonLoadCurveFromLibrary;
 		private System.Windows.Forms.Button buttonEditLibraryCurve;
+		private System.Windows.Forms.Label lblYValue;
+		private System.Windows.Forms.Label lblXValue;
+		private System.Windows.Forms.Label yLabel;
+		private System.Windows.Forms.Label xLabel;
 	}
 }

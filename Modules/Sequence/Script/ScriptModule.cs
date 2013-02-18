@@ -27,5 +27,15 @@ namespace VixenModules.SequenceType.Script {
 				((ScriptData)value).SourceFileDirectory = ScriptDescriptor.ScriptSourceDirectory;
 			}
 		}
+
+		public override bool IsCustomSequenceLoader
+		{
+			get { return false; }
+		}
+
+		public override ISequence LoadSequenceFromFile(string filePath)
+		{
+			throw new System.NotImplementedException();
+		}
 	}
 }

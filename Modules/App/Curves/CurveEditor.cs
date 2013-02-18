@@ -113,6 +113,8 @@ namespace VixenModules.App.Curves
 			if (sender.DragEditingPair.Y > 100)
 				sender.DragEditingPair.Y = 100;
 
+			lblXValue.Text = sender.DragEditingPair.X.ToString();
+			lblYValue.Text = sender.DragEditingPair.Y.ToString();
 			// actually does nothing, just haven't changed the event handler definition
 			return true;
 		}
