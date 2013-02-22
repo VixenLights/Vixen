@@ -49,6 +49,9 @@
   <PropertyGroup>
     <StartupObject>VixenApplication.Program</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>V3.ico</ApplicationIcon>
+  </PropertyGroup>
   <Import Project="$(SolutionDir)\commonProject.props" />
   <ItemGroup>
     <Reference Include="System" />
@@ -284,6 +287,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\delete-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="V3.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
