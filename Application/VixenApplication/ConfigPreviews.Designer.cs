@@ -24,6 +24,7 @@
 		/// </summary>
 		private void InitializeComponent() {
 			System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigPreviews));
 			this.groupBoxSelectedController = new System.Windows.Forms.GroupBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.buttonUpdate = new System.Windows.Forms.Button();
@@ -195,6 +196,7 @@
 			this.Controls.Add(this.buttonAddController);
 			this.Controls.Add(this.buttonCancel);
 			this.DoubleBuffered = true;
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.MaximumSize = new System.Drawing.Size(435, 2000);
 			this.MinimizeBox = false;

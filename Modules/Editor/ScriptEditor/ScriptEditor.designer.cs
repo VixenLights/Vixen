@@ -23,8 +23,10 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScriptEditor));
 			this.tabControl = new System.Windows.Forms.TabControl();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.buttonSave = new System.Windows.Forms.Button();
 			this.buttonCompile = new System.Windows.Forms.Button();
 			this.buttonStop = new System.Windows.Forms.Button();
 			this.buttonRun = new System.Windows.Forms.Button();
@@ -36,7 +38,6 @@
 			this.listBoxRuntimeErrors = new System.Windows.Forms.ListBox();
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
 			this.labelCaretLocation = new System.Windows.Forms.ToolStripStatusLabel();
-			this.buttonSave = new System.Windows.Forms.Button();
 			this.panel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
 			this.splitContainer.Panel1.SuspendLayout();
@@ -68,6 +69,16 @@
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(629, 38);
 			this.panel1.TabIndex = 1;
+			// 
+			// buttonSave
+			// 
+			this.buttonSave.Location = new System.Drawing.Point(369, 9);
+			this.buttonSave.Name = "buttonSave";
+			this.buttonSave.Size = new System.Drawing.Size(75, 23);
+			this.buttonSave.TabIndex = 3;
+			this.buttonSave.Text = "Save";
+			this.buttonSave.UseVisualStyleBackColor = true;
+			this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
 			// 
 			// buttonCompile
 			// 
@@ -187,16 +198,6 @@
 			this.labelCaretLocation.Size = new System.Drawing.Size(25, 17);
 			this.labelCaretLocation.Text = "0, 0";
 			// 
-			// buttonSave
-			// 
-			this.buttonSave.Location = new System.Drawing.Point(369, 9);
-			this.buttonSave.Name = "buttonSave";
-			this.buttonSave.Size = new System.Drawing.Size(75, 23);
-			this.buttonSave.TabIndex = 3;
-			this.buttonSave.Text = "Save";
-			this.buttonSave.UseVisualStyleBackColor = true;
-			this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
-			// 
 			// ScriptEditor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -204,6 +205,7 @@
 			this.ClientSize = new System.Drawing.Size(629, 505);
 			this.Controls.Add(this.splitContainer);
 			this.Controls.Add(this.panel1);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "ScriptEditor";
 			this.Text = "ScriptEditor";
 			this.panel1.ResumeLayout(false);

@@ -28,21 +28,22 @@ namespace VixenModules.App.Curves
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CurveEditor));
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.labelInstructions1 = new System.Windows.Forms.Label();
 			this.labelInstructions2 = new System.Windows.Forms.Label();
 			this.groupBoxLibrary = new System.Windows.Forms.GroupBox();
+			this.lblYValue = new System.Windows.Forms.Label();
+			this.lblXValue = new System.Windows.Forms.Label();
+			this.yLabel = new System.Windows.Forms.Label();
+			this.xLabel = new System.Windows.Forms.Label();
 			this.buttonEditLibraryCurve = new System.Windows.Forms.Button();
 			this.buttonUnlinkCurve = new System.Windows.Forms.Button();
 			this.labelCurve = new System.Windows.Forms.Label();
 			this.buttonSaveCurveToLibrary = new System.Windows.Forms.Button();
 			this.buttonLoadCurveFromLibrary = new System.Windows.Forms.Button();
 			this.zedGraphControl = new ZedGraph.ZedGraphControl();
-			this.xLabel = new System.Windows.Forms.Label();
-			this.yLabel = new System.Windows.Forms.Label();
-			this.lblXValue = new System.Windows.Forms.Label();
-			this.lblYValue = new System.Windows.Forms.Label();
 			this.groupBoxLibrary.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -90,8 +91,8 @@ namespace VixenModules.App.Curves
 			// 
 			// groupBoxLibrary
 			// 
-			this.groupBoxLibrary.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBoxLibrary.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBoxLibrary.Controls.Add(this.lblYValue);
 			this.groupBoxLibrary.Controls.Add(this.lblXValue);
 			this.groupBoxLibrary.Controls.Add(this.yLabel);
@@ -107,6 +108,42 @@ namespace VixenModules.App.Curves
 			this.groupBoxLibrary.TabIndex = 8;
 			this.groupBoxLibrary.TabStop = false;
 			this.groupBoxLibrary.Text = "Library";
+			// 
+			// lblYValue
+			// 
+			this.lblYValue.AutoSize = true;
+			this.lblYValue.Location = new System.Drawing.Point(411, 41);
+			this.lblYValue.Name = "lblYValue";
+			this.lblYValue.Size = new System.Drawing.Size(13, 13);
+			this.lblYValue.TabIndex = 8;
+			this.lblYValue.Text = "?";
+			// 
+			// lblXValue
+			// 
+			this.lblXValue.AutoSize = true;
+			this.lblXValue.Location = new System.Drawing.Point(411, 24);
+			this.lblXValue.Name = "lblXValue";
+			this.lblXValue.Size = new System.Drawing.Size(13, 13);
+			this.lblXValue.TabIndex = 7;
+			this.lblXValue.Text = "?";
+			// 
+			// yLabel
+			// 
+			this.yLabel.AutoSize = true;
+			this.yLabel.Location = new System.Drawing.Point(387, 41);
+			this.yLabel.Name = "yLabel";
+			this.yLabel.Size = new System.Drawing.Size(17, 13);
+			this.yLabel.TabIndex = 6;
+			this.yLabel.Text = "Y:";
+			// 
+			// xLabel
+			// 
+			this.xLabel.AutoSize = true;
+			this.xLabel.Location = new System.Drawing.Point(387, 24);
+			this.xLabel.Name = "xLabel";
+			this.xLabel.Size = new System.Drawing.Size(17, 13);
+			this.xLabel.TabIndex = 5;
+			this.xLabel.Text = "X:";
 			// 
 			// buttonEditLibraryCurve
 			// 
@@ -159,9 +196,9 @@ namespace VixenModules.App.Curves
 			// 
 			// zedGraphControl
 			// 
-			this.zedGraphControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.zedGraphControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.zedGraphControl.IsAntiAlias = true;
 			this.zedGraphControl.IsEnableHEdit = true;
 			this.zedGraphControl.IsEnableHPan = false;
@@ -189,42 +226,6 @@ namespace VixenModules.App.Curves
 			this.zedGraphControl.PreMouseMoveEvent += new ZedGraph.ZedGraphControl.ZedMouseEventHandler(this.zedGraphControl_PreMouseMoveEvent);
 			this.zedGraphControl.PostMouseMoveEvent += new ZedGraph.ZedGraphControl.ZedMouseEventHandler(this.zedGraphControl_PostMouseMoveEvent);
 			// 
-			// xLabel
-			// 
-			this.xLabel.AutoSize = true;
-			this.xLabel.Location = new System.Drawing.Point(387, 24);
-			this.xLabel.Name = "xLabel";
-			this.xLabel.Size = new System.Drawing.Size(17, 13);
-			this.xLabel.TabIndex = 5;
-			this.xLabel.Text = "X:";
-			// 
-			// yLabel
-			// 
-			this.yLabel.AutoSize = true;
-			this.yLabel.Location = new System.Drawing.Point(387, 41);
-			this.yLabel.Name = "yLabel";
-			this.yLabel.Size = new System.Drawing.Size(17, 13);
-			this.yLabel.TabIndex = 6;
-			this.yLabel.Text = "Y:";
-			// 
-			// lblXValue
-			// 
-			this.lblXValue.AutoSize = true;
-			this.lblXValue.Location = new System.Drawing.Point(411, 24);
-			this.lblXValue.Name = "lblXValue";
-			this.lblXValue.Size = new System.Drawing.Size(13, 13);
-			this.lblXValue.TabIndex = 7;
-			this.lblXValue.Text = "?";
-			// 
-			// lblYValue
-			// 
-			this.lblYValue.AutoSize = true;
-			this.lblYValue.Location = new System.Drawing.Point(411, 41);
-			this.lblYValue.Name = "lblYValue";
-			this.lblYValue.Size = new System.Drawing.Size(13, 13);
-			this.lblYValue.TabIndex = 8;
-			this.lblYValue.Text = "?";
-			// 
 			// CurveEditor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -237,6 +238,7 @@ namespace VixenModules.App.Curves
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.zedGraphControl);
 			this.DoubleBuffered = true;
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MinimumSize = new System.Drawing.Size(440, 440);
 			this.Name = "CurveEditor";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
