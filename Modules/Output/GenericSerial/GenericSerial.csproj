@@ -62,6 +62,7 @@
     <Compile Include="DataPolicy.cs" />
     <Compile Include="DataPolicyFactory.cs" />
     <Compile Include="Descriptor.cs" />
+    <Compile Include="GenericSerial.cs" />
     <Compile Include="SetupDialog.cs">
       <SubType>Form</SubType>
     </Compile>
