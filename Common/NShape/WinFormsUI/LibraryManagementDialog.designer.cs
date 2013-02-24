@@ -37,9 +37,10 @@ namespace Dataweb.NShape.WinFormsUI {
 			// addLibraryButton
 			// 
 			this.addLibraryButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.addLibraryButton.Location = new System.Drawing.Point(12, 216);
+			this.addLibraryButton.Location = new System.Drawing.Point(16, 266);
+			this.addLibraryButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.addLibraryButton.Name = "addLibraryButton";
-			this.addLibraryButton.Size = new System.Drawing.Size(115, 23);
+			this.addLibraryButton.Size = new System.Drawing.Size(153, 28);
 			this.addLibraryButton.TabIndex = 4;
 			this.addLibraryButton.Text = "Add Libraries...";
 			this.addLibraryButton.UseVisualStyleBackColor = true;
@@ -54,9 +55,10 @@ namespace Dataweb.NShape.WinFormsUI {
 			// 
 			this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.okButton.Location = new System.Drawing.Point(396, 216);
+			this.okButton.Location = new System.Drawing.Point(528, 266);
+			this.okButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.okButton.Name = "okButton";
-			this.okButton.Size = new System.Drawing.Size(75, 23);
+			this.okButton.Size = new System.Drawing.Size(100, 28);
 			this.okButton.TabIndex = 5;
 			this.okButton.Text = "OK";
 			this.okButton.UseVisualStyleBackColor = true;
@@ -71,9 +73,10 @@ namespace Dataweb.NShape.WinFormsUI {
             this.columnHeaderName,
             this.columnHeaderVersion,
             this.columnHeaderPath});
-			this.libraryListView.Location = new System.Drawing.Point(3, 2);
+			this.libraryListView.Location = new System.Drawing.Point(4, 2);
+			this.libraryListView.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.libraryListView.Name = "libraryListView";
-			this.libraryListView.Size = new System.Drawing.Size(557, 200);
+			this.libraryListView.Size = new System.Drawing.Size(741, 245);
 			this.libraryListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.libraryListView.TabIndex = 6;
 			this.libraryListView.UseCompatibleStateImageBehavior = false;
@@ -97,9 +100,10 @@ namespace Dataweb.NShape.WinFormsUI {
 			// removeLibraryButton
 			// 
 			this.removeLibraryButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.removeLibraryButton.Location = new System.Drawing.Point(133, 216);
+			this.removeLibraryButton.Location = new System.Drawing.Point(177, 266);
+			this.removeLibraryButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.removeLibraryButton.Name = "removeLibraryButton";
-			this.removeLibraryButton.Size = new System.Drawing.Size(115, 23);
+			this.removeLibraryButton.Size = new System.Drawing.Size(153, 28);
 			this.removeLibraryButton.TabIndex = 7;
 			this.removeLibraryButton.Text = "Remove Libraries";
 			this.removeLibraryButton.UseVisualStyleBackColor = true;
@@ -109,27 +113,29 @@ namespace Dataweb.NShape.WinFormsUI {
 			// 
 			this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancelButton.Location = new System.Drawing.Point(477, 216);
+			this.cancelButton.Location = new System.Drawing.Point(636, 266);
+			this.cancelButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.cancelButton.Name = "cancelButton";
-			this.cancelButton.Size = new System.Drawing.Size(75, 23);
+			this.cancelButton.Size = new System.Drawing.Size(100, 28);
 			this.cancelButton.TabIndex = 8;
 			this.cancelButton.Text = "Cancel";
 			this.cancelButton.UseVisualStyleBackColor = true;
 			// 
 			// LibraryManagementDialog
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.okButton;
-			this.ClientSize = new System.Drawing.Size(564, 249);
+			this.ClientSize = new System.Drawing.Size(752, 306);
 			this.Controls.Add(this.cancelButton);
 			this.Controls.Add(this.removeLibraryButton);
 			this.Controls.Add(this.libraryListView);
 			this.Controls.Add(this.okButton);
 			this.Controls.Add(this.addLibraryButton);
+			this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.Name = "LibraryManagementDialog";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Library Manager";
 			this.Load += new System.EventHandler(this.LibraryManagementDialog_Load);
 			this.Shown += new System.EventHandler(this.LibraryManagementDialog_Shown);

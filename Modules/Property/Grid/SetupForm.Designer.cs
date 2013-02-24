@@ -37,7 +37,8 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(26, 26);
+			this.label1.Location = new System.Drawing.Point(35, 32);
+			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(35, 13);
 			this.label1.TabIndex = 0;
@@ -45,7 +46,8 @@
 			// 
 			// nudWidth
 			// 
-			this.nudWidth.Location = new System.Drawing.Point(90, 24);
+			this.nudWidth.Location = new System.Drawing.Point(120, 30);
+			this.nudWidth.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.nudWidth.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -57,7 +59,7 @@
             0,
             0});
 			this.nudWidth.Name = "nudWidth";
-			this.nudWidth.Size = new System.Drawing.Size(83, 20);
+			this.nudWidth.Size = new System.Drawing.Size(111, 20);
 			this.nudWidth.TabIndex = 1;
 			this.nudWidth.Value = new decimal(new int[] {
             1,
@@ -69,7 +71,8 @@
 			// 
 			// nudHeight
 			// 
-			this.nudHeight.Location = new System.Drawing.Point(90, 50);
+			this.nudHeight.Location = new System.Drawing.Point(120, 62);
+			this.nudHeight.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.nudHeight.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -81,7 +84,7 @@
             0,
             0});
 			this.nudHeight.Name = "nudHeight";
-			this.nudHeight.Size = new System.Drawing.Size(83, 20);
+			this.nudHeight.Size = new System.Drawing.Size(111, 20);
 			this.nudHeight.TabIndex = 3;
 			this.nudHeight.Value = new decimal(new int[] {
             1,
@@ -94,7 +97,8 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(26, 50);
+			this.label2.Location = new System.Drawing.Point(35, 62);
+			this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(38, 13);
 			this.label2.TabIndex = 2;
@@ -105,9 +109,10 @@
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.buttonOK.Enabled = false;
-			this.buttonOK.Location = new System.Drawing.Point(44, 132);
+			this.buttonOK.Location = new System.Drawing.Point(59, 162);
+			this.buttonOK.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(75, 23);
+			this.buttonOK.Size = new System.Drawing.Size(100, 28);
 			this.buttonOK.TabIndex = 4;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
@@ -117,9 +122,10 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(125, 132);
+			this.buttonCancel.Location = new System.Drawing.Point(167, 162);
+			this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
+			this.buttonCancel.Size = new System.Drawing.Size(100, 28);
 			this.buttonCancel.TabIndex = 5;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
@@ -127,9 +133,10 @@
 			// labelProduct
 			// 
 			this.labelProduct.ForeColor = System.Drawing.Color.Red;
-			this.labelProduct.Location = new System.Drawing.Point(29, 82);
+			this.labelProduct.Location = new System.Drawing.Point(39, 101);
+			this.labelProduct.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.labelProduct.Name = "labelProduct";
-			this.labelProduct.Size = new System.Drawing.Size(144, 30);
+			this.labelProduct.Size = new System.Drawing.Size(192, 37);
 			this.labelProduct.TabIndex = 6;
 			this.labelProduct.Text = "label3";
 			this.labelProduct.Visible = false;
@@ -137,10 +144,10 @@
 			// SetupForm
 			// 
 			this.AcceptButton = this.buttonOK;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(212, 167);
+			this.ClientSize = new System.Drawing.Size(283, 206);
 			this.Controls.Add(this.labelProduct);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);
@@ -149,10 +156,11 @@
 			this.Controls.Add(this.nudWidth);
 			this.Controls.Add(this.label1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "SetupForm";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Grid Setup";
 			((System.ComponentModel.ISupportInitialize)(this.nudWidth)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudHeight)).EndInit();

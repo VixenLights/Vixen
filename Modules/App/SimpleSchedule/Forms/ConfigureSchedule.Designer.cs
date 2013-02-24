@@ -54,7 +54,8 @@
 			// 
 			this.enableScheduleCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.enableScheduleCheckBox.AutoSize = true;
-			this.enableScheduleCheckBox.Location = new System.Drawing.Point(12, 480);
+			this.enableScheduleCheckBox.Location = new System.Drawing.Point(16, 595);
+			this.enableScheduleCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.enableScheduleCheckBox.Name = "enableScheduleCheckBox";
 			this.enableScheduleCheckBox.Size = new System.Drawing.Size(125, 17);
 			this.enableScheduleCheckBox.TabIndex = 2;
@@ -66,9 +67,10 @@
 			// 
 			this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.okButton.Location = new System.Drawing.Point(733, 476);
+			this.okButton.Location = new System.Drawing.Point(977, 586);
+			this.okButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.okButton.Name = "okButton";
-			this.okButton.Size = new System.Drawing.Size(75, 23);
+			this.okButton.Size = new System.Drawing.Size(100, 28);
 			this.okButton.TabIndex = 3;
 			this.okButton.Text = "OK";
 			this.okButton.UseVisualStyleBackColor = true;
@@ -77,9 +79,10 @@
 			// 
 			this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancelButton.Location = new System.Drawing.Point(814, 476);
+			this.cancelButton.Location = new System.Drawing.Point(1085, 586);
+			this.cancelButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.cancelButton.Name = "cancelButton";
-			this.cancelButton.Size = new System.Drawing.Size(75, 23);
+			this.cancelButton.Size = new System.Drawing.Size(100, 28);
 			this.cancelButton.TabIndex = 4;
 			this.cancelButton.Text = "Cancel";
 			this.cancelButton.UseVisualStyleBackColor = true;
@@ -88,9 +91,9 @@
 			// 
 			this.vScrollBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.vScrollBar1.Location = new System.Drawing.Point(884, 0);
+			this.vScrollBar1.Location = new System.Drawing.Point(1179, 0);
 			this.vScrollBar1.Name = "vScrollBar1";
-			this.vScrollBar1.Size = new System.Drawing.Size(17, 470);
+			this.vScrollBar1.Size = new System.Drawing.Size(17, 578);
 			this.vScrollBar1.TabIndex = 6;
 			this.vScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScrollBar1_Scroll);
 			// 
@@ -123,9 +126,10 @@
         calendarHighlightRange3,
         calendarHighlightRange4,
         calendarHighlightRange5};
-			this.calendar1.Location = new System.Drawing.Point(214, 0);
+			this.calendar1.Location = new System.Drawing.Point(285, 0);
+			this.calendar1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.calendar1.Name = "calendar1";
-			this.calendar1.Size = new System.Drawing.Size(670, 470);
+			this.calendar1.Size = new System.Drawing.Size(893, 578);
 			this.calendar1.TabIndex = 5;
 			this.calendar1.Text = "calendar1";
 			this.calendar1.TimeScale = System.Windows.Forms.Calendar.CalendarTimeScale.FifteenMinutes;
@@ -167,8 +171,9 @@
 			// splitter1
 			// 
 			this.splitter1.Location = new System.Drawing.Point(0, 0);
+			this.splitter1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.splitter1.Name = "splitter1";
-			this.splitter1.Size = new System.Drawing.Size(3, 470);
+			this.splitter1.Size = new System.Drawing.Size(4, 578);
 			this.splitter1.TabIndex = 0;
 			this.splitter1.TabStop = false;
 			// 
@@ -184,12 +189,13 @@
 			this.monthView1.Dock = System.Windows.Forms.DockStyle.Left;
 			this.monthView1.ItemPadding = new System.Windows.Forms.Padding(2);
 			this.monthView1.Location = new System.Drawing.Point(0, 0);
+			this.monthView1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.monthView1.MonthTitleColor = System.Drawing.SystemColors.ActiveCaption;
 			this.monthView1.MonthTitleColorInactive = System.Drawing.SystemColors.InactiveCaption;
 			this.monthView1.MonthTitleTextColor = System.Drawing.SystemColors.ActiveCaptionText;
 			this.monthView1.MonthTitleTextColorInactive = System.Drawing.SystemColors.InactiveCaptionText;
 			this.monthView1.Name = "monthView1";
-			this.monthView1.Size = new System.Drawing.Size(208, 514);
+			this.monthView1.Size = new System.Drawing.Size(277, 633);
 			this.monthView1.TabIndex = 0;
 			this.monthView1.Text = "monthView1";
 			this.monthView1.TodayBorderColor = System.Drawing.Color.Maroon;
@@ -198,16 +204,17 @@
 			// ConfigureSchedule
 			// 
 			this.AcceptButton = this.okButton;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.cancelButton;
-			this.ClientSize = new System.Drawing.Size(901, 514);
+			this.ClientSize = new System.Drawing.Size(1201, 633);
 			this.Controls.Add(this.vScrollBar1);
 			this.Controls.Add(this.calendar1);
 			this.Controls.Add(this.cancelButton);
 			this.Controls.Add(this.okButton);
 			this.Controls.Add(this.enableScheduleCheckBox);
 			this.Controls.Add(this.monthView1);
+			this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.Name = "ConfigureSchedule";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "ConfigureSchedule";
