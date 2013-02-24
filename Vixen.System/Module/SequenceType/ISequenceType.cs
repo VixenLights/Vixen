@@ -12,5 +12,7 @@ namespace Vixen.Module.SequenceType {
 		IContentMigrator CreateMigrator();
 		ISequenceExecutor CreateExecutor();
 		int ClassVersion { get; }
+		bool IsCustomSequenceLoader { get; }
+		ISequence LoadSequenceFromFile(string filePath);
 	}
 }
