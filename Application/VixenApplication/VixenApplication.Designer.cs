@@ -29,12 +29,13 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.ListViewItem listViewItem7 = new System.Windows.Forms.ListViewItem("asdfadsa");
-			System.Windows.Forms.ListViewItem listViewItem8 = new System.Windows.Forms.ListViewItem("rewqrewq");
-			System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem("vbcbxvxc");
-			System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem("gfdsgfsd");
-			System.Windows.Forms.ListViewItem listViewItem11 = new System.Windows.Forms.ListViewItem("ytreyre");
-			System.Windows.Forms.ListViewItem listViewItem12 = new System.Windows.Forms.ListViewItem("xvcbxvcx");
+			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("asdfadsa");
+			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("rewqrewq");
+			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("vbcbxvxc");
+			System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("gfdsgfsd");
+			System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem("ytreyre");
+			System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem("xvcbxvcx");
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VixenApplication));
 			this.contextMenuStripNewSequence = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.menuStripMain = new System.Windows.Forms.MenuStrip();
@@ -52,10 +53,7 @@
 			this.groupBoxSequences = new System.Windows.Forms.GroupBox();
 			this.listViewRecentSequences = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.panel1 = new System.Windows.Forms.Panel();
-			this.label3 = new System.Windows.Forms.Label();
 			this.labelVersion = new System.Windows.Forms.Label();
-			this.label1 = new System.Windows.Forms.Label();
 			this.groupBoxSystemConfig = new System.Windows.Forms.GroupBox();
 			this.buttonSetupFiltersAndPatching = new System.Windows.Forms.Button();
 			this.buttonSetupOutputPreviews = new System.Windows.Forms.Button();
@@ -66,11 +64,13 @@
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabelExecutionState = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabel_memory = new System.Windows.Forms.ToolStripStatusLabel();
+			this.pictureBox1 = new System.Windows.Forms.PictureBox();
+			this.label1 = new System.Windows.Forms.Label();
 			this.menuStripMain.SuspendLayout();
 			this.groupBoxSequences.SuspendLayout();
-			this.panel1.SuspendLayout();
 			this.groupBoxSystemConfig.SuspendLayout();
 			this.statusStrip.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// contextMenuStripNewSequence
@@ -188,7 +188,7 @@
 			this.groupBoxSequences.Controls.Add(this.buttonNewSequence);
 			this.groupBoxSequences.Controls.Add(this.buttonOpenSequence);
 			this.groupBoxSequences.Controls.Add(this.label2);
-			this.groupBoxSequences.Location = new System.Drawing.Point(12, 133);
+			this.groupBoxSequences.Location = new System.Drawing.Point(12, 200);
 			this.groupBoxSequences.Name = "groupBoxSequences";
 			this.groupBoxSequences.Size = new System.Drawing.Size(218, 227);
 			this.groupBoxSequences.TabIndex = 10;
@@ -202,12 +202,12 @@
 			this.listViewRecentSequences.FullRowSelect = true;
 			this.listViewRecentSequences.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewRecentSequences.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem7,
-            listViewItem8,
-            listViewItem9,
-            listViewItem10,
-            listViewItem11,
-            listViewItem12});
+            listViewItem1,
+            listViewItem2,
+            listViewItem3,
+            listViewItem4,
+            listViewItem5,
+            listViewItem6});
 			this.listViewRecentSequences.Location = new System.Drawing.Point(18, 116);
 			this.listViewRecentSequences.MultiSelect = false;
 			this.listViewRecentSequences.Name = "listViewRecentSequences";
@@ -221,51 +221,16 @@
 			// 
 			this.columnHeader1.Width = 150;
 			// 
-			// panel1
-			// 
-			this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.panel1.BackColor = System.Drawing.Color.White;
-			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.panel1.Controls.Add(this.label3);
-			this.panel1.Controls.Add(this.labelVersion);
-			this.panel1.Controls.Add(this.label1);
-			this.panel1.Location = new System.Drawing.Point(0, 27);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(461, 100);
-			this.panel1.TabIndex = 11;
-			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.ForeColor = System.Drawing.Color.Gray;
-			this.label3.Location = new System.Drawing.Point(139, 78);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(173, 13);
-			this.label3.TabIndex = 2;
-			this.label3.Text = "(Help us come up with a new logo!)";
-			// 
 			// labelVersion
 			// 
-			this.labelVersion.AutoSize = true;
 			this.labelVersion.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.labelVersion.ForeColor = System.Drawing.Color.DarkGray;
-			this.labelVersion.Location = new System.Drawing.Point(326, 38);
+			this.labelVersion.ForeColor = System.Drawing.Color.Black;
+			this.labelVersion.Location = new System.Drawing.Point(262, 126);
 			this.labelVersion.Name = "labelVersion";
-			this.labelVersion.Size = new System.Drawing.Size(63, 22);
+			this.labelVersion.Size = new System.Drawing.Size(126, 22);
 			this.labelVersion.TabIndex = 1;
 			this.labelVersion.Text = "[0.0.0]";
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Font = new System.Drawing.Font("Arial", 36F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label1.ForeColor = System.Drawing.Color.Gray;
-			this.label1.Location = new System.Drawing.Point(12, 11);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(308, 55);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "Vixen 3 Beta";
+			this.labelVersion.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// groupBoxSystemConfig
 			// 
@@ -273,7 +238,7 @@
 			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupOutputPreviews);
 			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupOutputControllers);
 			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupElements);
-			this.groupBoxSystemConfig.Location = new System.Drawing.Point(236, 133);
+			this.groupBoxSystemConfig.Location = new System.Drawing.Point(245, 200);
 			this.groupBoxSystemConfig.Name = "groupBoxSystemConfig";
 			this.groupBoxSystemConfig.Size = new System.Drawing.Size(204, 186);
 			this.groupBoxSystemConfig.TabIndex = 12;
@@ -328,7 +293,7 @@
             this.toolStripStatusLabel1,
             this.toolStripStatusLabelExecutionState,
             this.toolStripStatusLabel_memory});
-			this.statusStrip.Location = new System.Drawing.Point(0, 380);
+			this.statusStrip.Location = new System.Drawing.Point(0, 438);
 			this.statusStrip.Name = "statusStrip";
 			this.statusStrip.Size = new System.Drawing.Size(461, 27);
 			this.statusStrip.SizingGrip = false;
@@ -364,18 +329,38 @@
 			this.toolStripStatusLabel_memory.Text = "Resource Usage";
 			this.toolStripStatusLabel_memory.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
+			// pictureBox1
+			// 
+			this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+			this.pictureBox1.Location = new System.Drawing.Point(33, 27);
+			this.pictureBox1.Name = "pictureBox1";
+			this.pictureBox1.Size = new System.Drawing.Size(385, 165);
+			this.pictureBox1.TabIndex = 14;
+			this.pictureBox1.TabStop = false;
+			// 
+			// label1
+			// 
+			this.label1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.label1.Location = new System.Drawing.Point(0, 193);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(461, 2);
+			this.label1.TabIndex = 15;
+			// 
 			// VixenApplication
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(461, 407);
+			this.ClientSize = new System.Drawing.Size(461, 465);
+			this.Controls.Add(this.label1);
 			this.Controls.Add(this.statusStrip);
+			this.Controls.Add(this.labelVersion);
 			this.Controls.Add(this.groupBoxSystemConfig);
-			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.groupBoxSequences);
 			this.Controls.Add(this.menuStripMain);
+			this.Controls.Add(this.pictureBox1);
 			this.DoubleBuffered = true;
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStripMain;
 			this.MaximizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(467, 434);
@@ -388,11 +373,10 @@
 			this.menuStripMain.PerformLayout();
 			this.groupBoxSequences.ResumeLayout(false);
 			this.groupBoxSequences.PerformLayout();
-			this.panel1.ResumeLayout(false);
-			this.panel1.PerformLayout();
 			this.groupBoxSystemConfig.ResumeLayout(false);
 			this.statusStrip.ResumeLayout(false);
 			this.statusStrip.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -413,7 +397,6 @@
 		private System.Windows.Forms.Button buttonOpenSequence;
 		private System.Windows.Forms.Button buttonNewSequence;
 		private System.Windows.Forms.GroupBox groupBoxSequences;
-		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.GroupBox groupBoxSystemConfig;
 		private System.Windows.Forms.Button buttonSetupOutputControllers;
 		private System.Windows.Forms.Button buttonSetupElements;
@@ -425,12 +408,12 @@
 		private System.Windows.Forms.ColumnHeader columnHeader1;
 		private System.Windows.Forms.ToolStripMenuItem viewInstalledModulesToolStripMenuItem;
 		private System.Windows.Forms.Label labelVersion;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel_memory;
 		private System.Windows.Forms.Button buttonSetupOutputPreviews;
 		private System.Windows.Forms.Button buttonSetupFiltersAndPatching;
+		private System.Windows.Forms.PictureBox pictureBox1;
+		private System.Windows.Forms.Label label1;
 	}
 }
 
