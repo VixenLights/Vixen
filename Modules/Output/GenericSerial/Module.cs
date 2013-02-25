@@ -3,6 +3,10 @@ using System.Text;
 using Vixen.Commands;
 using Vixen.Module;
 using Vixen.Module.Controller;
+using System.Timers;
+using System;
+using System.Windows.Forms;
+using System.IO;
 
 namespace VixenModules.Output.GenericSerial
 {
@@ -16,12 +20,19 @@ namespace VixenModules.Output.GenericSerial
         private byte[] _footer;
         private int headerLen = 0;
         private int footerLen = 0;
+		private System.Timers.Timer _retryTimer;
+		private int _retryCounter;
 
-        public Module()
-        {
-            _commandHandler = new CommandHandler();
-            DataPolicyFactory = new DataPolicyFactory();
-        }
+		public Module()
+		{
+			_commandHandler = new CommandHandler();
+			DataPolicyFactory = new DataPolicyFactory();
+
+			//set 2 minute timer before retrying to access com port
+			_retryTimer = new System.Timers.Timer(120000);
+			_retryTimer.Elapsed += new ElapsedEventHandler(_retryTimer_Elapsed);
+			_retryCounter = 0;
+		}
 
         public override void UpdateState(int chainIndex, ICommand[] outputStates)
         {
@@ -59,11 +70,20 @@ namespace VixenModules.Output.GenericSerial
 
         public override bool Setup()
         {
-            SetupDialog setup = new SetupDialog(_Data);
-            setup.ShowDialog();
-            setup.Close();
+			using (SetupDialog setup = new SetupDialog(_Data))
+			{
+				if (setup.ShowDialog() == DialogResult.OK)
+				{
+					SerialPort port = setup.Port;
+					if (port != null)
+					{
+						initModule();
+						return _Data.IsValid;
+					}
+				}
+			}
 
-            return _Data.IsValid;
+			return false;
         }
 
         public override IModuleDataModel ModuleData
@@ -81,7 +101,7 @@ namespace VixenModules.Output.GenericSerial
             base.Start();
             if (serialPortIsValid && !_SerialPort.IsOpen)
             {
-                _SerialPort.Open();
+				_OpenComPort();
             }
         }
 
@@ -102,16 +122,11 @@ namespace VixenModules.Output.GenericSerial
             headerLen = _header.Length;
             _footer = Encoding.ASCII.GetBytes(_Data.Footer == null ? string.Empty : _Data.Footer);
             footerLen = _footer.Length;
-
-            if (serialPortIsValid && IsRunning)
-            {
-                _SerialPort.Open();
-            }
         }
 
         private void dropExistingSerialPort()
         {
-            if (serialPortIsValid)
+            if (_SerialPort != null)
             {
                 _SerialPort.Dispose();
                 _SerialPort = null;
@@ -120,23 +135,84 @@ namespace VixenModules.Output.GenericSerial
     
         private void createSerialPortFromData()
         {
-            if (_Data.IsValid)
-            {
-                _SerialPort = new SerialPort(
-                    _Data.PortName,
-                    _Data.BaudRate,
-                    _Data.Parity,
-                    _Data.DataBits,
-                    _Data.StopBits);
+			if (_Data.IsValid)
+			{
+				_SerialPort = new SerialPort(
+					_Data.PortName,
+					_Data.BaudRate,
+					_Data.Parity,
+					_Data.DataBits,
+					_Data.StopBits);
 
-                _SerialPort.Handshake = Handshake.None;
-                _SerialPort.Encoding = Encoding.UTF8;
-            }
+				_SerialPort.Handshake = Handshake.None;
+				_SerialPort.Encoding = Encoding.UTF8;
+
+				if (IsRunning)
+				{
+					_OpenComPort();
+				}
+			}
+			else
+			{
+				_SerialPort = null;
+			}
         }
 
         private bool serialPortIsValid
         {
             get { return _SerialPort != null; }
         }
+
+		//use this to always open the port so it is in one place and we can 
+		//check if we have an access violation
+		private void _OpenComPort()
+		{
+			try
+			{
+				_SerialPort.Open();
+
+				//if successfull 
+				//stop the retry counter and log that we got this going
+				//start the controller back up
+
+				if (_SerialPort.IsOpen && _retryTimer.Enabled)
+				{
+					_retryCounter = 0;
+					_retryTimer.Stop();
+
+					Vixen.Sys.VixenSystem.Logging.Info(String.Format("Serial Port conflict has been corrected, starting controller {0} on port {1}.", _Data.ModuleTypeId, _SerialPort.PortName));
+				}
+			}
+			catch (Exception ex)
+			{
+
+				if (ex is UnauthorizedAccessException ||
+					ex is InvalidOperationException ||
+					ex is IOException)
+				{
+					Vixen.Sys.VixenSystem.Logging.Error(String.Format("{0} is in use.  Starting controller retry timer for {1}", _SerialPort.PortName, _Data.ModuleTypeId));
+					Stop();
+					//lets set our retry timer
+					if (_retryCounter < 3)
+					{
+						_retryCounter++;
+						_retryTimer.Start();
+						Vixen.Sys.VixenSystem.Logging.Info("Starting retry counter for com port access. Retry count is " + _retryCounter);
+					}
+					else
+					{
+						Vixen.Sys.VixenSystem.Logging.Info("Retry counter for com port access has exceeded max tries.  Controller has been stopped.");
+						_retryTimer.Stop();
+						_retryCounter = 0;
+					}
+				}
+			}
+		}
+
+		public void _retryTimer_Elapsed(object source, ElapsedEventArgs e)
+		{
+			Vixen.Sys.VixenSystem.Logging.Info("Attempting to start controller.");
+			Start();
+		}
     }
 }

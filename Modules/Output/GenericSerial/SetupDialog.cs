@@ -33,7 +33,7 @@ namespace VixenModules.Output.GenericSerial
 
             if (!string.IsNullOrEmpty(data.PortName))
             {
-                _serialPort = new SerialPort(data.PortName, data.BaudRate, data.Parity, data.DataBits, data.StopBits);
+                Port = new SerialPort(data.PortName, data.BaudRate, data.Parity, data.DataBits, data.StopBits);
                 updateSettingLabel();
                 btnOkay.Enabled = true;
             }
@@ -47,11 +47,11 @@ namespace VixenModules.Output.GenericSerial
 
         private void btnPortSetup_Click(object sender, EventArgs e)
         {
-            using (Common.Controls.SerialPortConfig serialPortConfig = new Common.Controls.SerialPortConfig(_serialPort))
+            using (Common.Controls.SerialPortConfig serialPortConfig = new Common.Controls.SerialPortConfig(Port))
             {
                 if (serialPortConfig.ShowDialog() == DialogResult.OK)
                 {
-                    _serialPort = serialPortConfig.SelectedPort;
+                    Port = serialPortConfig.SelectedPort;
                     btnOkay.Enabled = true;
                     updateSettingLabel();
                 }
@@ -91,5 +91,16 @@ namespace VixenModules.Output.GenericSerial
                 _serialPort.StopBits);
         }
 
+		public SerialPort Port
+		{
+			set
+            {
+            	_serialPort = value;
+            }
+			get
+			{
+				return _serialPort;
+			}
+		}
     }
 }

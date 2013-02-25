@@ -6,6 +6,7 @@ using Vixen.Module.Controller;
 using Vixen.Commands;
 using System;
 using System.Timers;
+using System.IO;
 
 namespace VixenModules.Output.Renard
 {
@@ -150,23 +151,29 @@ namespace VixenModules.Output.Renard
 					Vixen.Sys.VixenSystem.Logging.Info(String.Format("Serial Port conflict has been corrected, starting controller {0} on port {1}.", _moduleData.ModuleTypeId, _port.PortName));
 				}
 			}
-			catch (UnauthorizedAccessException uae)
+			catch (Exception ex)
 			{
-				Vixen.Sys.VixenSystem.Logging.Error(String.Format("{0} is in use.  Starting controller retry timer for {1}", _port.PortName, _moduleData.ModuleTypeId));
-				Stop();
-				//lets set our retry timer
-				if (_retryCounter < 3)
-				{
-					Vixen.Sys.VixenSystem.Logging.Info("Starting retry counter for com port access. Retry count is " + _retryCounter.ToString());
-					_retryCounter++;
-					_retryTimer.Start();
 
-				}
-				else
+				if (ex is UnauthorizedAccessException ||
+					ex is InvalidOperationException ||
+					ex is IOException)
 				{
-					Vixen.Sys.VixenSystem.Logging.Info("Retry counter for com port access has exceeded max tries.  Controller has been stopped.");
-					_retryTimer.Stop();
-					_retryCounter = 0;
+					Vixen.Sys.VixenSystem.Logging.Error(String.Format("{0} is in use.  Starting controller retry timer for {1}", _port.PortName, _moduleData.ModuleTypeId));
+					Stop();
+					//lets set our retry timer
+					if (_retryCounter < 3)
+					{
+						_retryCounter++;
+						_retryTimer.Start();
+						Vixen.Sys.VixenSystem.Logging.Info("Starting retry counter for com port access. Retry count is " + _retryCounter);
+
+					}
+					else
+					{
+						Vixen.Sys.VixenSystem.Logging.Info("Retry counter for com port access has exceeded max tries.  Controller has been stopped.");
+						_retryTimer.Stop();
+						_retryCounter = 0;
+					}
 				}
 			}
 		}
