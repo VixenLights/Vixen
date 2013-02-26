@@ -21,6 +21,8 @@ namespace VixenModules.Output.FGDimmer
             {
                 _serialPort = new SerialPort(_data.PortName, _data.BaudRate, _data.Parity,
                  _data.DataBits, _data.StopBits);
+
+				updateSettingLabel();
             }
             _modules = _data.Modules;
 
@@ -143,6 +145,7 @@ namespace VixenModules.Output.FGDimmer
                 if (serialSetupDialog.ShowDialog() == DialogResult.OK)
                 {
                     _serialPort = serialSetupDialog.SelectedPort;
+					updateSettingLabel();
                 }
             }
         }
@@ -173,6 +176,17 @@ namespace VixenModules.Output.FGDimmer
 
             _data.Modules = _modules;
         }
+
+		private void updateSettingLabel()
+		{
+			lblSettings.Text = string.Format(
+				"{0}: {1}, {2}, {3}, {4}",
+				_serialPort.PortName,
+				_serialPort.BaudRate,
+				_serialPort.Parity,
+				_serialPort.DataBits,
+				_serialPort.StopBits);
+		}
 
     }
 }
