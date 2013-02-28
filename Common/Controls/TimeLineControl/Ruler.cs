@@ -485,7 +485,8 @@ namespace Common.Controls.Timeline
 			switch (m_mouseState)
 			{
 				case MouseState.Normal:
-					throw new Exception("MouseUp in MouseState.Normal - WTF?");
+					break; // this is okay and will happen
+					//throw new Exception("MouseUp in MouseState.Normal - WTF?");
 
 				case MouseState.DragWait:
 					// Didn't move enough to be considered dragging. Just a click.

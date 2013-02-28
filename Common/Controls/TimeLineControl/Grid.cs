@@ -44,6 +44,7 @@ namespace Common.Controls.Timeline
 		{
 			this.AutoScroll = true;
 
+			AutoScrollMargin = new Size(24, 24);
 			TotalTime = TimeSpan.FromMinutes(1);
 			RowSeparatorColor = Color.Black;
 			MajorGridlineColor = Color.FromArgb(120, 120, 120);

@@ -24,6 +24,7 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SetupDialog));
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.textBoxPortAddress = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
@@ -40,25 +41,22 @@
 			this.panel1.Controls.Add(this.textBoxPortAddress);
 			this.panel1.Controls.Add(this.label1);
 			this.panel1.Location = new System.Drawing.Point(0, 0);
-			this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(400, 78);
+			this.panel1.Size = new System.Drawing.Size(300, 63);
 			this.panel1.TabIndex = 0;
 			// 
 			// textBoxPortAddress
 			// 
-			this.textBoxPortAddress.Location = new System.Drawing.Point(263, 20);
-			this.textBoxPortAddress.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.textBoxPortAddress.Location = new System.Drawing.Point(197, 16);
 			this.textBoxPortAddress.MaxLength = 4;
 			this.textBoxPortAddress.Name = "textBoxPortAddress";
-			this.textBoxPortAddress.Size = new System.Drawing.Size(83, 20);
+			this.textBoxPortAddress.Size = new System.Drawing.Size(63, 20);
 			this.textBoxPortAddress.TabIndex = 1;
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(32, 23);
-			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label1.Location = new System.Drawing.Point(24, 19);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(152, 13);
 			this.label1.TabIndex = 0;
@@ -68,10 +66,9 @@
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOK.Location = new System.Drawing.Point(175, 85);
-			this.buttonOK.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.buttonOK.Location = new System.Drawing.Point(131, 69);
 			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(100, 28);
+			this.buttonOK.Size = new System.Drawing.Size(75, 23);
 			this.buttonOK.TabIndex = 1;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
@@ -81,24 +78,23 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(283, 85);
-			this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.buttonCancel.Location = new System.Drawing.Point(212, 69);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(100, 28);
+			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
 			this.buttonCancel.TabIndex = 2;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			// 
 			// SetupDialog
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(399, 128);
+			this.ClientSize = new System.Drawing.Size(299, 104);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.panel1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "SetupDialog";

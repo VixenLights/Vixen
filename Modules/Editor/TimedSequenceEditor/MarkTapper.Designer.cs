@@ -27,7 +27,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MarkTapper));
 			this.groupBoxControls = new System.Windows.Forms.GroupBox();
 			this.buttonResume = new System.Windows.Forms.Button();
 			this.buttonStop = new System.Windows.Forms.Button();
@@ -35,7 +35,7 @@
 			this.buttonPlay = new System.Windows.Forms.Button();
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
-			this.timerTap = new System.Windows.Forms.Timer(this.components);
+			this.timerTap = new System.Windows.Forms.Timer();
 			this.panelTap = new System.Windows.Forms.Panel();
 			this.label1 = new System.Windows.Forms.Label();
 			this.groupBoxControls.SuspendLayout();
@@ -123,9 +123,9 @@
 			// 
 			// panelTap
 			// 
-			this.panelTap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.panelTap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.panelTap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panelTap.Location = new System.Drawing.Point(107, 63);
 			this.panelTap.Name = "panelTap";
@@ -154,6 +154,7 @@
 			this.Controls.Add(this.groupBoxControls);
 			this.DoubleBuffered = true;
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;

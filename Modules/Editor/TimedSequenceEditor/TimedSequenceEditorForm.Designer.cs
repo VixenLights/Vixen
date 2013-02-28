@@ -27,7 +27,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TimedSequenceEditorForm));
 			this.toolStripOperations = new Common.Controls.ToolStripEx();
 			this.toolStripButton_Start = new System.Windows.Forms.ToolStripButton();
@@ -78,7 +77,7 @@
 			this.toolStripMenuItem_associateAudio = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_MarkManager = new System.Windows.Forms.ToolStripMenuItem();
 			this.modifySequenceLengthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.timerPlaying = new System.Windows.Forms.Timer(this.components);
+			this.timerPlaying = new System.Windows.Forms.Timer();
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabel_currentTime = new System.Windows.Forms.ToolStripStatusLabel();
@@ -95,7 +94,7 @@
 			this.toolStripButton_IncreaseTimingSpeed = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton_DecreaseTimingSpeed = new System.Windows.Forms.ToolStripButton();
 			this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-			this.contextMenuStripElementSelection = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.contextMenuStripElementSelection = new System.Windows.Forms.ContextMenuStrip();
 			this.toolStripOperations.SuspendLayout();
 			this.menuStrip.SuspendLayout();
 			this.statusStrip.SuspendLayout();
@@ -301,8 +300,7 @@
             this.toolsToolStripMenuItem});
 			this.menuStrip.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip.Name = "menuStrip";
-			this.menuStrip.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
-			this.menuStrip.Size = new System.Drawing.Size(1181, 24);
+			this.menuStrip.Size = new System.Drawing.Size(886, 24);
 			this.menuStrip.TabIndex = 2;
 			this.menuStrip.Text = "Menu";
 			// 
@@ -572,10 +570,9 @@
             this.toolStripStatusLabel_currentTime,
             this.toolStripStatusLabel1,
             this.toolStripStatusLabel_sequenceLength});
-			this.statusStrip.Location = new System.Drawing.Point(0, 726);
+			this.statusStrip.Location = new System.Drawing.Point(0, 585);
 			this.statusStrip.Name = "statusStrip";
-			this.statusStrip.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
-			this.statusStrip.Size = new System.Drawing.Size(1181, 24);
+			this.statusStrip.Size = new System.Drawing.Size(886, 24);
 			this.statusStrip.TabIndex = 4;
 			this.statusStrip.Text = "statusStrip1";
 			// 
@@ -626,15 +623,13 @@
 			// toolStripContainer.ContentPanel
 			// 
 			this.toolStripContainer.ContentPanel.Controls.Add(this.timelineControl);
-			this.toolStripContainer.ContentPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(1181, 627);
+			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(886, 486);
 			this.toolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.toolStripContainer.LeftToolStripPanelVisible = false;
 			this.toolStripContainer.Location = new System.Drawing.Point(0, 24);
-			this.toolStripContainer.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.toolStripContainer.Name = "toolStripContainer";
 			this.toolStripContainer.RightToolStripPanelVisible = false;
-			this.toolStripContainer.Size = new System.Drawing.Size(1181, 702);
+			this.toolStripContainer.Size = new System.Drawing.Size(886, 561);
 			this.toolStripContainer.TabIndex = 5;
 			this.toolStripContainer.Text = "toolStripContainer1";
 			// 
@@ -653,7 +648,7 @@
 			this.timelineControl.Location = new System.Drawing.Point(0, 0);
 			this.timelineControl.Margin = new System.Windows.Forms.Padding(0);
 			this.timelineControl.Name = "timelineControl";
-			this.timelineControl.Size = new System.Drawing.Size(1181, 627);
+			this.timelineControl.Size = new System.Drawing.Size(886, 486);
 			this.timelineControl.TabIndex = 2;
 			// 
 			// toolStripEffects
@@ -732,16 +727,16 @@
 			// TimedSequenceEditorForm
 			// 
 			this.AllowDrop = true;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1181, 750);
+			this.ClientSize = new System.Drawing.Size(886, 609);
 			this.Controls.Add(this.toolStripContainer);
 			this.Controls.Add(this.statusStrip);
 			this.Controls.Add(this.menuStrip);
 			this.DoubleBuffered = true;
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip;
-			this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.Name = "TimedSequenceEditorForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Timed Sequence Editor";

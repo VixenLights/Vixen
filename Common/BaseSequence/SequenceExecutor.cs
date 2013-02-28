@@ -15,6 +15,7 @@ namespace BaseSequence {
 		private System.Timers.Timer _endCheckTimer;
 		private SynchronizationContext _syncContext;
 		private bool _isRunning;
+		private bool _isPaused;
 
 		public event EventHandler<SequenceStartedEventArgs> SequenceStarted;
 		public event EventHandler<SequenceEventArgs> SequenceEnded;
@@ -48,7 +49,12 @@ namespace BaseSequence {
 			}
 		}
 
-		public bool IsPaused { get; private set; }
+		public bool IsPaused {
+			get { return _isPaused; }
+			private set {
+				_isPaused = value;
+			}
+		}
 
 		public void Start() {
 			Play(TimeSpan.Zero, TimeSpan.MaxValue);
@@ -242,6 +248,7 @@ namespace BaseSequence {
 			_UnhookDataListener();
 
 			IsRunning = false;
+			IsPaused = false;
 
 			TimingSource.Stop();
 	

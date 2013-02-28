@@ -35,7 +35,7 @@ namespace VixenApplication
 
 			stopping = false;
 			InitializeComponent();
-			labelVersion.Text = "[" + _GetVersionString(VixenSystem.AssemblyFileName) + "]";
+			labelVersion.Text = _GetVersionString(VixenSystem.AssemblyFileName);
 			AppCommands = new AppCommand(this);
 			Execution.ExecutionStateChanged += executionStateChangedHandler;
 			VixenSystem.Start(this, _openExecution, _disableControllers, _applicationData.DataFileDirectory);

@@ -27,6 +27,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TimedSequenceEditorEffectEditor));
 			this.tableLayoutPanelAll = new System.Windows.Forms.TableLayoutPanel();
 			this.panelFormButtons = new System.Windows.Forms.Panel();
 			this.buttonCancel = new System.Windows.Forms.Button();
@@ -111,6 +112,7 @@
 			this.ClientSize = new System.Drawing.Size(175, 52);
 			this.Controls.Add(this.tableLayoutPanelAll);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "TimedSequenceEditorEffectEditor";

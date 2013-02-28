@@ -24,6 +24,7 @@
 		/// </summary>
 		private void InitializeComponent() {
 			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SetupForm));
 			this.groupBoxInputDetail = new System.Windows.Forms.GroupBox();
 			this.buttonRemoveInputEffectMap = new System.Windows.Forms.Button();
 			this.listViewInputEffectMap = new System.Windows.Forms.ListView();
@@ -319,6 +320,7 @@
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.panel2);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "SetupForm";
