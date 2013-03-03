@@ -10,6 +10,7 @@ namespace Vixen.Sys {
 		void Save();
 		void Save(string fileName);
 		TimeSpan Length { get; set; }
+		string FileExtension { get; }
 		string FilePath { get; set; }
 		void InsertData(IEffectNode effectNode);
 		void InsertData(IEnumerable<IEffectNode> effectNodes);

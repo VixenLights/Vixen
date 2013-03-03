@@ -12,7 +12,13 @@ namespace Vixen.Module.SequenceType {
 		IContentMigrator CreateMigrator();
 		ISequenceExecutor CreateExecutor();
 		int ClassVersion { get; }
+
+		// if this sequence type is a custom sequence loader; ie. generally implying that it's an
+		// importing module type (to load other sequences from other software)
 		bool IsCustomSequenceLoader { get; }
+
+		// if this is a custom sequence loader, it should define this function, as it will be called
+		// to load the sequence.
 		ISequence LoadSequenceFromFile(string filePath);
 	}
 }

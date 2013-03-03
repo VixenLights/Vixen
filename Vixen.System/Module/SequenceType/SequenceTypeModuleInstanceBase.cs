@@ -20,12 +20,15 @@ namespace Vixen.Module.SequenceType {
 		
 		abstract public ISequenceExecutor CreateExecutor();
 
-		abstract public bool IsCustomSequenceLoader
+		virtual public bool IsCustomSequenceLoader
 		{
-			get;
+			get { return false; }
 		}
 
-		abstract public ISequence LoadSequenceFromFile(string filePath);
+		virtual public ISequence LoadSequenceFromFile(string filePath)
+		{
+			throw new NotImplementedException();
+		}
 
 		public override IModuleInstance Clone() {
 			// Singleton

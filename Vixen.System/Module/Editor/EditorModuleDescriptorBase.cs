@@ -17,9 +17,9 @@ namespace Vixen.Module.Editor {
 
 		abstract public override string Version { get; }
 
-		abstract public string[] FileExtensions { get; }
-
 		abstract public Type EditorUserInterfaceClass { get; }
+
+		abstract public Type SequenceType { get; }
 
 		public bool Equals(IEditorModuleDescriptor x, IEditorModuleDescriptor y) {
 			return base.Equals(x, y);

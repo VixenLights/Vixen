@@ -6,14 +6,14 @@ using Vixen.Sys;
 
 namespace Vixen.Module.Editor {
 	class EditorModuleManagement : GenericModuleManagement<IEditorModuleInstance> {
-		public IEditorUserInterface Get(string filePath) {
-			string fileType = System.IO.Path.GetExtension(filePath);
-			IEditorModuleDescriptor descriptor = Modules.GetDescriptors<IEditorModuleInstance, IEditorModuleDescriptor>().FirstOrDefault(x => x.FileExtensions.Contains(fileType, StringComparer.OrdinalIgnoreCase));
+		public new IEditorUserInterface Get(Guid id) {
+			IEditorModuleDescriptor descriptor = Modules.GetDescriptorById(id) as IEditorModuleDescriptor;
 			return _GetEditorUI(descriptor);
 		}
 
-		public new IEditorUserInterface Get(Guid id) {
-			IEditorModuleDescriptor descriptor = Modules.GetDescriptorById(id) as IEditorModuleDescriptor;
+		public IEditorUserInterface Get(Type sequenceType)
+		{
+			IEditorModuleDescriptor descriptor = Modules.GetDescriptors<IEditorModuleInstance, IEditorModuleDescriptor>().FirstOrDefault(x => sequenceType.Equals(x.SequenceType));
 			return _GetEditorUI(descriptor);
 		}
 
