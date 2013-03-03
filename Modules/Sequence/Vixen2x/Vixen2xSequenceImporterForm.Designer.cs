@@ -1,4 +1,4 @@
-﻿namespace VixenModules.Editor.Vixen2xSequenceImporter
+﻿namespace VixenModules.SequenceType.Vixen2x
 {
 	partial class Vixen2xSequenceImporterForm
 	{

@@ -9,7 +9,7 @@ using Vixen.Services;
 using Vixen.Sys;
 
 namespace BaseSequence {
-	public class Sequence : ISequence {
+	public abstract class Sequence : ISequence {
 		/// <summary>
 		/// Use this to set the sequence's length when the sequence is untimed.
 		/// </summary>
@@ -41,6 +41,8 @@ namespace BaseSequence {
 		}
 
 		virtual public string FilePath { get; set; }
+
+		abstract public string FileExtension { get; }
 
 		public InsertDataListenerStack InsertDataListener { get; set; }
 

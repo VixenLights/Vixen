@@ -1,10 +1,10 @@
 ﻿using System;
 using Vixen.Module.Editor;
+using VixenModules.SequenceType.Script;
 
 namespace VixenModules.Editor.ScriptEditor {
 	public class ScriptEditor_Descriptor : EditorModuleDescriptorBase {
 		private Guid _typeId = new Guid("{CEFF9B1C-BB75-4f76-96C2-C0BBADB75035}");
-		private string[] _extensions = new[] { ".scr" };
 		private Guid[] _dependencies = new[] {
 			new Guid("{CD5CA8E5-10D8-4342-9A42-AED48209C7CC}") // ScriptSequence
 		};
@@ -33,12 +33,13 @@ namespace VixenModules.Editor.ScriptEditor {
 			get { return "1.0"; }
 		}
 
-		public override string[] FileExtensions {
-			get { return _extensions; }
-		}
-
 		public override Type EditorUserInterfaceClass {
 			get { return typeof(ScriptEditor); }
+		}
+
+		public override Type SequenceType
+		{
+			get { return typeof(ScriptSequenceType); }
 		}
 
 		public override Guid[] Dependencies {

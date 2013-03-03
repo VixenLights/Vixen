@@ -135,7 +135,10 @@ namespace VixenApplication
 						ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
 						string fileType = (string)menuItem.Tag;
 						IEditorUserInterface editor = EditorService.Instance.CreateEditor(fileType);
-						if (editor != null) {
+						if (editor == null) {
+							VixenSystem.Logging.Error("Can't find an appropriate editor to open file of type " + fileType);
+							MessageBox.Show("Can't find an editor to open this file type. (\"" + fileType + "\")", "Error opening file", MessageBoxButtons.OK);
+						} else {
 							_OpenEditor(editor);
 						}
 					};
@@ -222,9 +225,10 @@ namespace VixenApplication
 
 				if (editor == null) {
 					VixenSystem.Logging.Error("Can't find an appropriate editor to open file " + filename);
+					MessageBox.Show("Can't find an editor to open this file type. (\"" + Path.GetFileName(filename) + "\")", "Error opening file", MessageBoxButtons.OK);
+				} else {
+					_OpenEditor(editor);
 				}
-
-				_OpenEditor(editor);
 			} catch (Exception ex) {
 				VixenSystem.Logging.Error("Error trying to open file '" + filename + "': ", ex);
 			}

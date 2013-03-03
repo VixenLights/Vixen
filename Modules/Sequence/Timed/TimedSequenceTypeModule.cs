@@ -20,15 +20,5 @@ namespace VixenModules.Sequence.Timed {
 		public override ISequenceExecutor CreateExecutor() {
 			return new Executor();
 		}
-
-		public override bool IsCustomSequenceLoader
-		{
-			get { return false; }
-		}
-
-		public override ISequence LoadSequenceFromFile(string filePath)
-		{
-			throw new NotImplementedException();
-		}
 	}
 }

@@ -42,7 +42,7 @@ namespace VixenModules.SequenceType.Script {
 		}
 
 		public override string FileExtension {
-			get { return ".scr"; }
+			get { return ScriptSequenceType.Extension; }
 		}
 
 		public override int ClassVersion {

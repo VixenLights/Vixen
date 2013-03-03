@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 using System.IO;
 
-namespace VixenModules.Editor.Vixen2xSequenceImporter {
+namespace VixenModules.SequenceType.Vixen2x {
 	class Vixen2SequenceData {
 		protected internal string FileName { get; private set; }
 

@@ -11,5 +11,12 @@ namespace VixenModules.SequenceType.Script {
 				}
 			}
 		}
+
+		public static string Extension = ".scr";
+
+		public override string FileExtension
+		{
+			get { return Extension; }
+		}
 	}
 }

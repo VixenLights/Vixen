@@ -74,7 +74,7 @@ namespace VixenModules.Editor.ScriptEditor {
 
 			using(ProjectConfigForm projectConfigForm = new ProjectConfigForm()) {
 				if(projectConfigForm.ShowDialog() == DialogResult.OK) {
-					_sequence.FilePath = projectConfigForm.SelectedProjectName + ((IEditorModuleDescriptor)OwnerModule.Descriptor).FileExtensions[0];
+					_sequence.FilePath = projectConfigForm.SelectedProjectName + _sequence.FileExtension;
 					_sequence.Language = projectConfigForm.SelectedLanguage;
 					// Add the initial file.
 					SourceFile file = _sequence.CreateNewFile(projectConfigForm.SelectedFileName);

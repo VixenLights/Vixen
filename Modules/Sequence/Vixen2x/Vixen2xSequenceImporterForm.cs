@@ -4,21 +4,17 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
-using System.Xml.Linq;
-
 using Vixen.Module.Effect;
 using Vixen.Services;
 using Vixen.Sys;
-
-using VixenModules.App.ColorGradients;
-using VixenModules.App.Curves;
 using VixenModules.Sequence.Timed;
-
+using VixenModules.App.Curves;
 using ZedGraph;
+using VixenModules.App.ColorGradients;
 
-namespace VixenModules.Editor.Vixen2xSequenceImporter {
+
+namespace VixenModules.SequenceType.Vixen2x {
 	public partial class Vixen2xSequenceImporterForm : Form {
 		public ISequence Sequence { get; set; }
 
