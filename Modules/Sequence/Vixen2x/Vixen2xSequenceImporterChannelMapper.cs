@@ -29,7 +29,8 @@ namespace VixenModules.SequenceType.Vixen2x
 			
 			foreach (ChannelMapping mapping in _mappings) {
 				ListViewItem item = new ListViewItem(mapping.ChannelName);
-				item.SubItems.Add(mapping.ElementNode.Name);
+				if (mapping.ElementNode != null)
+					item.SubItems.Add(mapping.ElementNode.Name);
 				listViewMapping.Items.Add(item);
 			}
 
