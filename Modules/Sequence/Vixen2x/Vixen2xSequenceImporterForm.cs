@@ -19,8 +19,7 @@ namespace VixenModules.SequenceType.Vixen2x {
 		public ISequence Sequence { get; set; }
 
 		private Vixen2SequenceData parsedV2Sequence = null;
-		private IEnumerator<ElementNode> _elementlNodes = VixenSystem.Nodes.AsEnumerable<ElementNode>().GetEnumerator();
-		private ElementNode[] _currentElementNode = null;
+		private List<ChannelMapping> mappings;
 
 		private enum patternType {
 			[DescriptionAttribute("Groups of Similar Values")]
@@ -50,54 +49,52 @@ namespace VixenModules.SequenceType.Vixen2x {
 			
 			parsedV2Sequence = new Vixen2SequenceData(Vixen2File);
 
-			if (isValidLayout()) {
-				initializeProgressBar();
-				createTimedSequence();
-				importSequenceData();
-				result = true;
+			// make a channel mapping, and present that to the user. Not editable at the moment.
+			mappings = new List<ChannelMapping>();
+
+			foreach (ElementNode element in VixenSystem.Nodes.GetLeafNodes()) {
+				if (mappings.Count >= parsedV2Sequence.ElementCount)
+					break;
+
+				string newName = "Channel " + (mappings.Count + 1).ToString();
+				mappings.Add(new ChannelMapping(newName, element));
 			}
-			else {
-				var message = String.Format("With this version of the importer, you must have at least {0} elements defined to import {1}"
-					,parsedV2Sequence.ElementCount, parsedV2Sequence.FileName);
-				MessageBox.Show(message);
+
+			// pad out the mappings with null elements; we want to be able to not map some stuff (later on)
+			while (mappings.Count < parsedV2Sequence.ElementCount) {
+				string newName = "Channel " + (mappings.Count + 1).ToString();
+				mappings.Add(new ChannelMapping(newName, null));
 			}
-			this.Close();
+			
+			initializeProgressBar();
+
+			// show the user the mapping form
+			Vixen2xSequenceImporterChannelMapper mappingForm = new Vixen2xSequenceImporterChannelMapper(mappings);
+			mappingForm.ShowDialog();
+
+			createTimedSequence();
+			importSequenceData(mappings);
+	
+			result = true;
+
+			Close();
+
 			return result;
-		}
-
-		private bool isValidLayout() {
-			return elementLeafNodeCount() >= parsedV2Sequence.ElementCount;
-		}
-
-		private int elementLeafNodeCount() {
-			var i = 0;
-			try {
-				while (true) {
-					_elementlNodes.MoveNext();
-					while (!_elementlNodes.Current.IsLeaf) {
-						_elementlNodes.MoveNext();
-					}
-					i++;
-					System.Diagnostics.Debug.Print("" + i);
-				}
-			}
-			catch(NullReferenceException ex){
-				System.Diagnostics.Debug.Print(ex.ToString());
-				// ignore - just means we're done counting
-			}
-			return i;
 		}
 
 		private void initializeProgressBar() {
 			pbImport.Minimum = 0;
 			pbImport.Maximum = sizeof(patternType) * parsedV2Sequence.ElementCount;
 			pbImport.Value = 0;
+
+			lblStatusLine.Text = "";
 		}
 
 		private void createTimedSequence() {
 			Sequence = new TimedSequence();
 			Sequence.SequenceData = new TimedSequenceData();
-			VixenModules.Sequence.Timed.MarkCollection mc = new VixenModules.Sequence.Timed.MarkCollection();
+			// TODO: use this mark collection (maybe generate a grid?)
+			MarkCollection mc = new MarkCollection();
 			Sequence.Length = TimeSpan.FromMilliseconds(parsedV2Sequence.SeqLengthInMills);
 
 			var songFileName = parsedV2Sequence.SongFileName;
@@ -106,14 +103,15 @@ namespace VixenModules.SequenceType.Vixen2x {
 					Sequence.AddMedia(MediaService.Instance.GetMedia(songFileName));
 				}
 				else {
-					var message = String.Format("Could not locate the audio file '{0}' please add it manually in the sequence editor " + 
-						"after the import completes.  Use the Tools menu, then select Associate Audio...", Path.GetFileName(songFileName));
-					MessageBox.Show(message, "Sorry, couldn't find audio");
+					var message = String.Format("Could not locate the audio file '{0}'; please add it manually " + 
+						"after import (Under Tools -> Associate Audio).", Path.GetFileName(songFileName));
+					MessageBox.Show(message, "Couldn't find audio");
 				}
 			}
 		}
 
-		private void importSequenceData() {
+		private void importSequenceData(List<ChannelMapping> mappings)
+		{
 			int startEventPosition = resetEventPosition;
 			var endEventPosition = resetEventPosition;
 			var priorEventNum = resetEventPosition;
@@ -145,12 +143,9 @@ namespace VixenModules.SequenceType.Vixen2x {
 							.GetCustomAttributes(typeof(DescriptionAttribute), false)[0])).Description;
 
 				currentEventValue = zeroEventValue;
-				_elementlNodes.Reset();
 				for (var currentElementNum = 0; currentElementNum < parsedV2Sequence.ElementCount; currentElementNum++) {
 					lblStatusLine.Text = String.Format("Finding {0} on Element {1}", patternText, currentElementNum + 1);
 					pbImport.Value = ++pbImportValue;
-
-					setNextElementNodeLeaf();
 
 					patternFound = false;
 					priorEventValue = zeroEventValue;
@@ -224,36 +219,32 @@ namespace VixenModules.SequenceType.Vixen2x {
 			} // foreach patternType
 		}
 
-		private void setNextElementNodeLeaf() {
-			_elementlNodes.MoveNext();
-			while (!_elementlNodes.Current.IsLeaf) {
-				_elementlNodes.MoveNext();
-			}
-			_currentElementNode = new ElementNode[] { _elementlNodes.Current };
-		}
-
 		private void addEvent(patternType pattern, int chan, int startPos, int startValue, int endPos, int endValue = 0) {
 			//System.Diagnostics.Debug.Print("Pattern: {0}, SPos (Val): {1}({2}), EPos (Val): {3}({4}), Chan: {5}", pattern, startPos, startValue, endPos, endValue, chan);
-			EffectNode node = null;
-			switch (pattern) {
-				case patternType.SetLevelTrend:
-				case patternType.SingleSetLevel:
-					node = GenerateSetLevelEffect(startValue, startPos, endPos);
-					break;
-				case patternType.PulseFadeTrend:
-				case patternType.PulseRampTrend:
-					node = GeneratePulseEffect(startValue, endValue, startPos, endPos);
-					break;
-			}
-			if (node != null) {
-				Sequence.InsertData(node);
+			ElementNode targetNode = mappings[chan].ElementNode;
+
+			if (targetNode != null) {
+				EffectNode node = null;
+				switch (pattern) {
+					case patternType.SetLevelTrend:
+					case patternType.SingleSetLevel:
+						node = GenerateSetLevelEffect(startValue, startPos, endPos, targetNode);
+						break;
+					case patternType.PulseFadeTrend:
+					case patternType.PulseRampTrend:
+						node = GeneratePulseEffect(startValue, endValue, startPos, endPos, targetNode);
+						break;
+				}
+				if (node != null) {
+					Sequence.InsertData(node);
+				}
 			}
 			markEventsProcessed(chan * parsedV2Sequence.EventsPerElement + startPos, chan * parsedV2Sequence.EventsPerElement + endPos);
 		}
 
-		private EffectNode GenerateSetLevelEffect(int eventValue, int startEvent, int endEvent) {
+		private EffectNode GenerateSetLevelEffect(int eventValue, int startEvent, int endEvent, ElementNode targetNode) {
 			IEffectModuleInstance setLevelInstance = ApplicationServices.Get<IEffectModuleInstance>(Guid.Parse("32cff8e0-5b10-4466-a093-0d232c55aac0")); // Clone() Doesn't work! :(
-			setLevelInstance.TargetNodes = _currentElementNode;
+			setLevelInstance.TargetNodes = new ElementNode[]{targetNode};
 			setLevelInstance.TimeSpan = TimeSpan.FromMilliseconds(parsedV2Sequence.EventPeriod * (endEvent - startEvent + 1));
 
 			EffectNode effectNode = new EffectNode(setLevelInstance, TimeSpan.FromMilliseconds(parsedV2Sequence.EventPeriod * startEvent));
@@ -262,9 +253,9 @@ namespace VixenModules.SequenceType.Vixen2x {
 			return effectNode;
 		}
 
-		private EffectNode GeneratePulseEffect(int eventStartValue, int eventEndValue, int startEvent, int endEvent) {
+		private EffectNode GeneratePulseEffect(int eventStartValue, int eventEndValue, int startEvent, int endEvent, ElementNode targetNode) {
 			IEffectModuleInstance pulseInstance = ApplicationServices.Get<IEffectModuleInstance>(Guid.Parse("cbd76d3b-c924-40ff-bad6-d1437b3dbdc0")); // Clone() Doesn't work! :(
-			pulseInstance.TargetNodes = _currentElementNode;
+			pulseInstance.TargetNodes = new ElementNode[]{targetNode};
 			pulseInstance.TimeSpan = TimeSpan.FromMilliseconds(parsedV2Sequence.EventPeriod * (endEvent - startEvent + 1));
 
 			EffectNode effectNode = new EffectNode(pulseInstance, TimeSpan.FromMilliseconds(parsedV2Sequence.EventPeriod * startEvent));
@@ -284,10 +275,6 @@ namespace VixenModules.SequenceType.Vixen2x {
 			for (var i = StartEvent; i <= EndEvent; i++) {
 				parsedV2Sequence.EventData[i] = zeroEventValue;
 			}
-		}
-
-		private void btnExit_Click(object sender, EventArgs e) {
-			this.Close();
 		}
 	}
 }
