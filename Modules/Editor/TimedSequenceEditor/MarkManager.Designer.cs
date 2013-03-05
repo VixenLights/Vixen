@@ -27,6 +27,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MarkManager));
 			this.groupBoxMarkCollections = new System.Windows.Forms.GroupBox();
 			this.buttonRemoveCollection = new System.Windows.Forms.Button();
@@ -46,7 +47,7 @@
 			this.textBoxCollectionName = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.groupBoxOperations = new System.Windows.Forms.GroupBox();
-			this.generatePeriodicMarks = new System.Windows.Forms.Button();
+			this.generateGrid = new System.Windows.Forms.Button();
 			this.buttonGenerateBeatMarks = new System.Windows.Forms.Button();
 			this.buttonCopyAndOffsetMarks = new System.Windows.Forms.Button();
 			this.buttonPasteEffectsToMarks = new System.Windows.Forms.Button();
@@ -61,7 +62,7 @@
 			this.textBoxTime = new System.Windows.Forms.TextBox();
 			this.buttonSelectAllMarks = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
-			this.toolTip1 = new System.Windows.Forms.ToolTip();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.groupBoxMarkCollections.SuspendLayout();
 			this.groupBoxSelectedMarkCollection.SuspendLayout();
 			this.groupBoxDetails.SuspendLayout();
@@ -255,7 +256,7 @@
 			// 
 			// groupBoxOperations
 			// 
-			this.groupBoxOperations.Controls.Add(this.generatePeriodicMarks);
+			this.groupBoxOperations.Controls.Add(this.generateGrid);
 			this.groupBoxOperations.Controls.Add(this.buttonGenerateBeatMarks);
 			this.groupBoxOperations.Controls.Add(this.buttonCopyAndOffsetMarks);
 			this.groupBoxOperations.Controls.Add(this.buttonPasteEffectsToMarks);
@@ -270,16 +271,16 @@
 			this.groupBoxOperations.TabStop = false;
 			this.groupBoxOperations.Text = "Operations";
 			// 
-			// generatePeriodicMarks
+			// generateGrid
 			// 
-			this.generatePeriodicMarks.Location = new System.Drawing.Point(7, 234);
-			this.generatePeriodicMarks.Name = "generatePeriodicMarks";
-			this.generatePeriodicMarks.Size = new System.Drawing.Size(151, 25);
-			this.generatePeriodicMarks.TabIndex = 12;
-			this.generatePeriodicMarks.Text = "Generate periodic marks";
-			this.toolTip1.SetToolTip(this.generatePeriodicMarks, "Generate a \'grid\' of equally space marks across the sequence.");
-			this.generatePeriodicMarks.UseVisualStyleBackColor = true;
-			this.generatePeriodicMarks.Click += new System.EventHandler(this.buttonGeneratePeriodicMarks_Click);
+			this.generateGrid.Location = new System.Drawing.Point(7, 234);
+			this.generateGrid.Name = "generateGrid";
+			this.generateGrid.Size = new System.Drawing.Size(151, 25);
+			this.generateGrid.TabIndex = 12;
+			this.generateGrid.Text = "Generate Grid";
+			this.toolTip1.SetToolTip(this.generateGrid, "Generate a \'grid\' of equally space marks across the sequence.");
+			this.generateGrid.UseVisualStyleBackColor = true;
+			this.generateGrid.Click += new System.EventHandler(this.buttonGenerateGrid_Click);
 			// 
 			// buttonGenerateBeatMarks
 			// 
@@ -496,7 +497,7 @@
 		private System.Windows.Forms.Button buttonPasteEffectsToMarks;
 		private System.Windows.Forms.Button buttonCopyAndOffsetMarks;
 		private System.Windows.Forms.Button buttonGenerateBeatMarks;
-		private System.Windows.Forms.Button generatePeriodicMarks;
+		private System.Windows.Forms.Button generateGrid;
 		private System.Windows.Forms.ToolTip toolTip1;
 
 	}

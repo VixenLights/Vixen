@@ -514,7 +514,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		}
 
-		private void buttonGeneratePeriodicMarks_Click(object sender, EventArgs e)
+		private void buttonGenerateGrid_Click(object sender, EventArgs e)
         {
 			Common.Controls.TextDialog prompt = new Common.Controls.TextDialog("How often (in seconds) should the marks be generated?","Mark Period","0:00.050");
 			if (prompt.ShowDialog() == DialogResult.OK)
@@ -531,6 +531,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						currentTime += interval;
 					}
 
+					if (_displayedCollection.Level < 8) {
+						_displayedCollection.Level = 8;
+					}
+						
 					_displayedCollection.Marks.Sort();
 					PopulateMarkListFromMarkCollection(_displayedCollection);
 					UpdateMarkCollectionInList(_displayedCollection);
