@@ -29,7 +29,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			VixenModules.App.ColorGradients.ColorGradient colorGradient2 = new VixenModules.App.ColorGradients.ColorGradient();
+			VixenModules.App.ColorGradients.ColorGradient colorGradient1 = new VixenModules.App.ColorGradients.ColorGradient();
 			this.groupBoxLevels = new System.Windows.Forms.GroupBox();
 			this.label5 = new System.Windows.Forms.Label();
 			this.numericUpDownLevelVariation = new System.Windows.Forms.NumericUpDown();
@@ -54,9 +54,9 @@
 			this.radioButtonGradientOverWhole = new System.Windows.Forms.RadioButton();
 			this.groupBoxElements = new System.Windows.Forms.GroupBox();
 			this.numericUpDownDepthOfEffect = new System.Windows.Forms.NumericUpDown();
-			this.radioButtonApplyToLevel = new System.Windows.Forms.RadioButton();
 			this.radioButtonSynchronizedElements = new System.Windows.Forms.RadioButton();
 			this.radioButtonIndividualElements = new System.Windows.Forms.RadioButton();
+			this.radioButtonApplyToLevel = new System.Windows.Forms.RadioButton();
 			this.groupBoxLevels.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownLevelVariation)).BeginInit();
 			this.groupBoxDetails.SuspendLayout();
@@ -171,6 +171,11 @@
 			// numericUpDownCoverage
 			// 
 			this.numericUpDownCoverage.Location = new System.Drawing.Point(142, 24);
+			this.numericUpDownCoverage.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
 			this.numericUpDownCoverage.Name = "numericUpDownCoverage";
 			this.numericUpDownCoverage.Size = new System.Drawing.Size(48, 20);
 			this.numericUpDownCoverage.TabIndex = 4;
@@ -263,7 +268,7 @@
 			this.radioButtonGradientAcrossItems.AutoSize = true;
 			this.radioButtonGradientAcrossItems.Location = new System.Drawing.Point(6, 126);
 			this.radioButtonGradientAcrossItems.Name = "radioButtonGradientAcrossItems";
-			this.radioButtonGradientAcrossItems.Size = new System.Drawing.Size(241, 17);
+			this.radioButtonGradientAcrossItems.Size = new System.Drawing.Size(240, 17);
 			this.radioButtonGradientAcrossItems.TabIndex = 9;
 			this.radioButtonGradientAcrossItems.TabStop = true;
 			this.radioButtonGradientAcrossItems.Text = "The gradient is spread over the sub-elements.";
@@ -313,13 +318,13 @@
 			// 
 			// colorGradientTypeEditorControlGradient
 			// 
-			colorGradient2.Gammacorrected = false;
-			colorGradient2.IsCurrentLibraryGradient = false;
-			colorGradient2.LibraryReferenceName = "";
-			colorGradient2.Title = null;
-			this.colorGradientTypeEditorControlGradient.ColorGradientValue = colorGradient2;
+			colorGradient1.Gammacorrected = false;
+			colorGradient1.IsCurrentLibraryGradient = false;
+			colorGradient1.LibraryReferenceName = "";
+			colorGradient1.Title = null;
+			this.colorGradientTypeEditorControlGradient.ColorGradientValue = colorGradient1;
 			this.colorGradientTypeEditorControlGradient.EffectParameterValues = new object[] {
-        ((object)(colorGradient2))};
+        ((object)(colorGradient1))};
 			this.colorGradientTypeEditorControlGradient.Location = new System.Drawing.Point(79, 156);
 			this.colorGradientTypeEditorControlGradient.Name = "colorGradientTypeEditorControlGradient";
 			this.colorGradientTypeEditorControlGradient.Size = new System.Drawing.Size(100, 40);
@@ -331,7 +336,7 @@
 			this.radioButtonGradientOverWhole.AutoSize = true;
 			this.radioButtonGradientOverWhole.Location = new System.Drawing.Point(6, 67);
 			this.radioButtonGradientOverWhole.Name = "radioButtonGradientOverWhole";
-			this.radioButtonGradientOverWhole.Size = new System.Drawing.Size(264, 30);
+			this.radioButtonGradientOverWhole.Size = new System.Drawing.Size(263, 30);
 			this.radioButtonGradientOverWhole.TabIndex = 0;
 			this.radioButtonGradientOverWhole.TabStop = true;
 			this.radioButtonGradientOverWhole.Text = "The gradient is shown over the whole effect.\r\nAll elements display the same color" +
@@ -373,18 +378,6 @@
             0,
             0});
 			// 
-			// radioButtonApplyToLevel
-			// 
-			this.radioButtonApplyToLevel.AutoSize = true;
-			this.radioButtonApplyToLevel.Location = new System.Drawing.Point(6, 42);
-			this.radioButtonApplyToLevel.Name = "radioButtonApplyToLevel";
-			this.radioButtonApplyToLevel.Size = new System.Drawing.Size(232, 17);
-			this.radioButtonApplyToLevel.TabIndex = 25;
-			this.radioButtonApplyToLevel.TabStop = true;
-			this.radioButtonApplyToLevel.Text = "Twinke Groups/Elements nested this deep: ";
-			this.radioButtonApplyToLevel.UseVisualStyleBackColor = true;
-			this.radioButtonApplyToLevel.CheckedChanged += new System.EventHandler(this.radioButtonEffectAppliesTo_CheckedChanged);
-			// 
 			// radioButtonSynchronizedElements
 			// 
 			this.radioButtonSynchronizedElements.AutoSize = true;
@@ -408,6 +401,18 @@
 			this.radioButtonIndividualElements.Text = "Twinkle all Elements independently";
 			this.radioButtonIndividualElements.UseVisualStyleBackColor = true;
 			this.radioButtonIndividualElements.CheckedChanged += new System.EventHandler(this.radioButtonEffectAppliesTo_CheckedChanged);
+			// 
+			// radioButtonApplyToLevel
+			// 
+			this.radioButtonApplyToLevel.AutoSize = true;
+			this.radioButtonApplyToLevel.Location = new System.Drawing.Point(6, 42);
+			this.radioButtonApplyToLevel.Name = "radioButtonApplyToLevel";
+			this.radioButtonApplyToLevel.Size = new System.Drawing.Size(232, 17);
+			this.radioButtonApplyToLevel.TabIndex = 25;
+			this.radioButtonApplyToLevel.TabStop = true;
+			this.radioButtonApplyToLevel.Text = "Twinke Groups/Elements nested this deep: ";
+			this.radioButtonApplyToLevel.UseVisualStyleBackColor = true;
+			this.radioButtonApplyToLevel.CheckedChanged += new System.EventHandler(this.radioButtonEffectAppliesTo_CheckedChanged);
 			// 
 			// TwinkleEffectEditorControl
 			// 
