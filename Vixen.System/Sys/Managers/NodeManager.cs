@@ -131,7 +131,13 @@ namespace Vixen.Sys.Managers {
 			return rv;
 		}
 
-		public ElementNode GetElementNode(Guid id) {
+		public bool ClearElementNode(Guid id)
+		{
+			return _instances.Remove(id);
+		}
+
+		public ElementNode GetElementNode(Guid id)
+		{
 			if (_instances.ContainsKey(id)) {
 				return _instances[id];
 			}

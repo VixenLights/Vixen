@@ -157,6 +157,7 @@ namespace Vixen.Sys {
 			// floating, then remove the associated element (if any)
 			if (cleanupIfFloating && Parents.Count() == 0) {
 				Element = null;
+				VixenSystem.Nodes.ClearElementNode(Id);
 			}
 
 			OnChanged(this);
