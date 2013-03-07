@@ -1,4 +1,38 @@
 
+== 3.0.5 ============================
+
+
+- Importer: A Vixen 2.x sequence importer has been created and added; you can now open *.vix files. Improvements still need
+            to be made to the mapping to 3.x elements and colors, but the basic concepts are there.
+
+- General: A new Vixen 3 logo and application icons have been created!
+- General: the term "Channel" has been renamed to "Element" (to describe a logical part of a display, such as a
+           minitree, prop, etc.). The term "Channel" is now used for the outputs of a controller; ie. to bring it
+           in line with how the community uses the term.
+- General: Corrupt or empty system config files no longer cause errors on startup; they get moved aside, and a blank systemconfig loaded.
+
+- Controllers: A FireGod Dimmer control module has been added. Still needs user testing.
+- Controllers: All serial controllers (Renard, Generic, Firegod) have improved serial port handling
+               (retrying open serial ports, IN USE markers, etc.)
+
+- Display Preview: preview window can't be accidentally closed (the instance must be disabled in the Admin panel instead)
+
+- Sequencer: A pseudo-grid has been added. To add a grid to a sequence, go to the Mark Manager, add a new mark collection, and
+             use the "Generate Grid" button. It will ask for the time period (with 50ms as default), and generate regular
+             marks to correspond to that time period. Effects should snap to the new marks.
+- Sequencer: opening a saved sequence with audio properly draws the waveform on open
+- Sequencer: adding audio to a sequence that doesn't have it doesn't get the rows out of alignment
+- Sequencer: audio waveform doesn't block the UI while it's rendering, and is much more usable (especially while zooming)
+- Sequencer: Twinkle effect: can't set the coverage to 0% anymore (now a 1% minimum, as 0% causes errors)
+- Sequencer: Fixed a spurious error dialog (MouseUp in MouseState) that was accidentally getting called.
+- Sequencer: click-and-drag scrolling in the sequencer now works when the sequencer is hard on the right side of the monitor
+- Sequencer: The pause button now works properly, and doesn't cause errors when trying to resume
+- Sequencer: Effects: some effects have had a "depth" setting added, to control how many layers deep the effect should apply.
+
+- Admin: The setup dialogs will now warn if you cancel out of them (ie. losing changes).
+- Admin: Elements & Groups Form: Fixed an issue when when dragging to copy and paste with the mouse (last element didn't copy).
+
+
 
 == 3.0.4 ============================
 
