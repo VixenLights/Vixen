@@ -51,10 +51,15 @@ namespace VixenApplication
 			FileStream stream = null;
 
 			DataFileDirectory = rootDataDirectory;
-			if(!File.Exists(DataFilepath)) {
-				DataFileDirectory = DefaultDataFileDirectory;
-				if(!File.Exists(DataFilepath)) {
+			if (!File.Exists(DataFilepath)) {
+				if (Directory.Exists(DataFileDirectory)) {
 					return;
+				}
+				else {
+					DataFileDirectory = DefaultDataFileDirectory;
+					if (!File.Exists(DataFilepath)) {
+						return;
+					}
 				}
 			}
 
