@@ -559,6 +559,35 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_PlaySequence(start, end);
 		}
 
+        public void PlaySequenceFrom(TimeSpan StartTime)
+        {
+            if (_context == null)
+            {
+                VixenSystem.Logging.Error("TimedSequenceEditor: attempt to Play with null context!");
+                return;
+            }
+
+            TimeSpan start, end;
+
+            if (_context.IsPaused)
+            {
+                // continue execution from previous location.
+                start = _TimingSource.Position;
+                end = TimeSpan.MaxValue;
+                updateButtonStates(); // context provides no notification to/from pause state.
+            }
+            else
+            {
+                start = StartTime;
+                end = timelineControl.PlaybackEndTime.GetValueOrDefault(TimeSpan.MaxValue);
+                if (start >= end)
+                {
+                    start = timelineControl.PlaybackStartTime.GetValueOrDefault(TimeSpan.Zero);
+                }
+            }
+            _PlaySequence(start, end);
+        }
+
 		public void PauseSequence() {
 			if(_context == null) {
 				VixenSystem.Logging.Error("TimedSequenceEditor: attempt to Pause with null context!");
@@ -1376,9 +1405,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		public float Speed {
-			get { return 1; } // 1 = 100%
-			set { throw new NotSupportedException(); }
+            get { return _timingSpeed; }
+            set { _SetTimingSpeed(value); }
 		}
+
+        public bool isPlaying
+        {
+            get { return _context.IsRunning; }
+        }
 
 		#endregion
 

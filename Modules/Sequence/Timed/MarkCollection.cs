@@ -50,5 +50,10 @@ namespace VixenModules.Sequence.Timed
 		{
 			get { return Marks.Count; }
 		}
+
+        public int IndexOf(TimeSpan time)
+        {
+            return Marks.IndexOf(time);
+        }
 	}
 }
