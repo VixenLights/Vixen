@@ -1409,9 +1409,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
             set { _SetTimingSpeed(value); }
 		}
 
-        public bool isPlaying
+        public bool positionHasValue
         {
-            get { return _context.IsRunning; }
+            get { return timelineControl.PlaybackCurrentTime.HasValue; }
         }
 
 		#endregion

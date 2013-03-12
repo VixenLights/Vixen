@@ -22,8 +22,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
         private TimeSpan _currentPlayPosition = TimeSpan.Zero;
         private float _timingChangeDelta = .25f;
         private TimeSpan _lastMarkHit;
-        private bool _isPlaying = false;
+        private bool _playbackStarted = false;
+        private bool _sequencePlaySelected = false;
         private List<TimeSpan> _newTappedMarks = new List<TimeSpan>();
+        private int _counter = 0;
 
 		public MarkManager(List<MarkCollection> markCollections, IExecutionControl executionControl, ITiming timingSource, TimedSequenceEditorForm timedSequenceEditorForm)
 		{
@@ -576,7 +578,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
         {
 
             updateControlsforPlaying();
-            _isPlaying = true;
             if (radioButtonTapper.Checked)
             {
                 _newTappedMarks.Clear();
@@ -591,6 +592,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
         {
             timerPlayback.Stop();
             _executionControl.Stop();
+            _playbackStarted = false;
             if (radioButtonTapper.Checked && _newTappedMarks.Count > 0)
             {
                 if (MessageBox.Show("Accept the new marks?", "", MessageBoxButtons.OKCancel) == DialogResult.OK)
@@ -635,6 +637,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
         private void buttonPlay_Click(object sender, EventArgs e)
         {
             sequencePlay(TimeSpan.FromMilliseconds(trackBarPlayBack.Value));
+            _sequencePlaySelected = true;
         }
 
         private void buttonStop_Click(object sender, EventArgs e)
@@ -642,7 +645,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
             //_executionControl.Stop();
             //timerPlayback.Stop();
             sequenceStop();
-            _isPlaying = false;
+            _playbackStarted = false;
+            _sequencePlaySelected = false;
         }
 
         private void timerMarkHit_Tick(object sender, EventArgs e)
@@ -655,35 +659,47 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
         private void timerPlayback_Tick(object sender, EventArgs e)
         {
-            //detect if sequence reached the end
-            if (!_timedSequenceEditorForm.isPlaying)
+            //Handle delay until playback actually starts
+            if (!_playbackStarted)
             {
-                sequenceStop();
+                _playbackStarted = _timedSequenceEditorForm.positionHasValue;
+                textBox1.Text = "not playing";
             }
             else
             {
-                textBoxPosition.Text = _timingSource.Position.ToString();
-                updatePositionControls(_timingSource.Position);
-
-                //handle playback mode
-                if (_displayedCollection != null && radioButtonPlayback.Checked)
+                //detect if sequence reached the end
+                if (!_timedSequenceEditorForm.positionHasValue)
                 {
-                    //    if (_timingSource.Position.CompareTo(_currentPlayPosition) > 0)
-                    //    {
-                    //        //listBox1.Items.Add(_timingSource.Position.ToString() + ":" + _currentPlayPosition.ToString());
-                    //        int newMarkIndex = _displayedCollection.Marks.FindIndex(x => x <= _timingSource.Position && x > _currentPlayPosition);
-                    //        _currentPlayPosition = _timingSource.Position;
+                    _counter++;
+                    textBox1.Text = "false returned" + _counter.ToString();
+                    sequenceStop();
+                }
+                else
+                {
+                    textBox1.Text = "playing";
+                    textBoxPosition.Text = _timingSource.Position.ToString();
+                    updatePositionControls(_timingSource.Position);
 
-                    //        if (newMarkIndex != -1)
-                    //        {
-                    //            panelMarkView.BackColor = _displayedCollection.MarkColor;
-                    //            _lastMarkHit = _displayedCollection.Marks[newMarkIndex].Duration();
-                    //            textBoxCurrentMark.Text = _lastMarkHit.ToString(@"m\:ss\.fff");
-                    //            //listBox1.Items.Add(_displayedCollection.Marks[newMarkIndex].Duration().ToString());
-                    //            timerMarkHit.Start();
-                    //        }
-                    //    }
-                    handlePlaybackModeTick();
+                    //handle playback mode
+                    if (_displayedCollection != null && radioButtonPlayback.Checked)
+                    {
+                        //    if (_timingSource.Position.CompareTo(_currentPlayPosition) > 0)
+                        //    {
+                        //        //listBox1.Items.Add(_timingSource.Position.ToString() + ":" + _currentPlayPosition.ToString());
+                        //        int newMarkIndex = _displayedCollection.Marks.FindIndex(x => x <= _timingSource.Position && x > _currentPlayPosition);
+                        //        _currentPlayPosition = _timingSource.Position;
+
+                        //        if (newMarkIndex != -1)
+                        //        {
+                        //            panelMarkView.BackColor = _displayedCollection.MarkColor;
+                        //            _lastMarkHit = _displayedCollection.Marks[newMarkIndex].Duration();
+                        //            textBoxCurrentMark.Text = _lastMarkHit.ToString(@"m\:ss\.fff");
+                        //            //listBox1.Items.Add(_displayedCollection.Marks[newMarkIndex].Duration().ToString());
+                        //            timerMarkHit.Start();
+                        //        }
+                        //    }
+                        handlePlaybackModeTick();
+                    }
                 }
             }
         }
@@ -745,9 +761,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
         private void trackBarPlayBack_MouseUp(object sender, MouseEventArgs e)
         {
-            //_timedSequenceEditorForm.PlaySequenceFrom(TimeSpan.FromMilliseconds(trackBarPlayBack.Value));
-            //timerPlayback.Start();
-            if (_isPlaying)
+            //if sequence was previously playing resume
+            if (_sequencePlaySelected)
             {
                 sequencePlay(TimeSpan.FromMilliseconds(trackBarPlayBack.Value));
             }
@@ -761,7 +776,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
         private void _triggerResult()
         {
-            if (_isPlaying)
+            if (_playbackStarted)
             {
                 // round the tapped time to the nearest millisecond
                 _newTappedMarks.Add(TimeSpan.FromMilliseconds(Math.Round(_timingSource.Position.TotalMilliseconds)));
@@ -878,5 +893,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
         }
 
         #endregion
+
+        
 	}
 }
