@@ -69,7 +69,6 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.groupBoxPlayback = new System.Windows.Forms.GroupBox();
             this.labelTapperInstructions = new System.Windows.Forms.Label();
-            this.groupBoxTimingSpeed = new System.Windows.Forms.GroupBox();
             this.label6 = new System.Windows.Forms.Label();
             this.textBoxTimingSpeed = new System.Windows.Forms.TextBox();
             this.buttonIncreasePlaybackSpeed = new System.Windows.Forms.Button();
@@ -77,7 +76,6 @@
             this.panelMarkView = new System.Windows.Forms.Panel();
             this.label5 = new System.Windows.Forms.Label();
             this.textBoxPosition = new System.Windows.Forms.TextBox();
-            this.trackBarPlayBack = new System.Windows.Forms.TrackBar();
             this.label4 = new System.Windows.Forms.Label();
             this.textBoxCurrentMark = new System.Windows.Forms.TextBox();
             this.buttonStop = new System.Windows.Forms.Button();
@@ -87,7 +85,7 @@
             this.radioButtonTapper = new System.Windows.Forms.RadioButton();
             this.timerPlayback = new System.Windows.Forms.Timer(this.components);
             this.timerMarkHit = new System.Windows.Forms.Timer(this.components);
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.trackBarPlayBack = new System.Windows.Forms.TrackBar();
             this.groupBoxMarkCollections.SuspendLayout();
             this.groupBoxSelectedMarkCollection.SuspendLayout();
             this.groupBoxDetails.SuspendLayout();
@@ -96,9 +94,8 @@
             this.groupBoxSelectedMarks.SuspendLayout();
             this.groupBoxMarks.SuspendLayout();
             this.groupBoxPlayback.SuspendLayout();
-            this.groupBoxTimingSpeed.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarPlayBack)).BeginInit();
             this.groupBoxMode.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarPlayBack)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBoxMarkCollections
@@ -171,7 +168,7 @@
             // 
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOK.Location = new System.Drawing.Point(563, 562);
+            this.buttonOK.Location = new System.Drawing.Point(563, 593);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(80, 25);
             this.buttonOK.TabIndex = 2;
@@ -492,7 +489,7 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(649, 562);
+            this.buttonCancel.Location = new System.Drawing.Point(649, 593);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(80, 25);
             this.buttonCancel.TabIndex = 4;
@@ -501,20 +498,23 @@
             // 
             // groupBoxPlayback
             // 
-            this.groupBoxPlayback.Controls.Add(this.labelTapperInstructions);
-            this.groupBoxPlayback.Controls.Add(this.groupBoxTimingSpeed);
-            this.groupBoxPlayback.Controls.Add(this.panelMarkView);
-            this.groupBoxPlayback.Controls.Add(this.label5);
-            this.groupBoxPlayback.Controls.Add(this.textBoxPosition);
+            this.groupBoxPlayback.Controls.Add(this.label6);
             this.groupBoxPlayback.Controls.Add(this.trackBarPlayBack);
+            this.groupBoxPlayback.Controls.Add(this.textBoxTimingSpeed);
+            this.groupBoxPlayback.Controls.Add(this.labelTapperInstructions);
+            this.groupBoxPlayback.Controls.Add(this.buttonIncreasePlaybackSpeed);
+            this.groupBoxPlayback.Controls.Add(this.textBoxPosition);
+            this.groupBoxPlayback.Controls.Add(this.label5);
+            this.groupBoxPlayback.Controls.Add(this.panelMarkView);
+            this.groupBoxPlayback.Controls.Add(this.buttonDecreasePlaySpeed);
             this.groupBoxPlayback.Controls.Add(this.label4);
+            this.groupBoxPlayback.Controls.Add(this.buttonPlay);
             this.groupBoxPlayback.Controls.Add(this.textBoxCurrentMark);
             this.groupBoxPlayback.Controls.Add(this.buttonStop);
-            this.groupBoxPlayback.Controls.Add(this.buttonPlay);
             this.groupBoxPlayback.Controls.Add(this.groupBoxMode);
-            this.groupBoxPlayback.Location = new System.Drawing.Point(12, 333);
+            this.groupBoxPlayback.Location = new System.Drawing.Point(12, 346);
             this.groupBoxPlayback.Name = "groupBoxPlayback";
-            this.groupBoxPlayback.Size = new System.Drawing.Size(717, 210);
+            this.groupBoxPlayback.Size = new System.Drawing.Size(717, 229);
             this.groupBoxPlayback.TabIndex = 5;
             this.groupBoxPlayback.TabStop = false;
             this.groupBoxPlayback.Text = "Playback";
@@ -522,28 +522,16 @@
             // labelTapperInstructions
             // 
             this.labelTapperInstructions.AutoSize = true;
-            this.labelTapperInstructions.Location = new System.Drawing.Point(218, 191);
+            this.labelTapperInstructions.Location = new System.Drawing.Point(241, 213);
             this.labelTapperInstructions.Name = "labelTapperInstructions";
             this.labelTapperInstructions.Size = new System.Drawing.Size(248, 13);
             this.labelTapperInstructions.TabIndex = 14;
             this.labelTapperInstructions.Text = "Click the box or use the spacebar to create a mark.";
             // 
-            // groupBoxTimingSpeed
-            // 
-            this.groupBoxTimingSpeed.Controls.Add(this.label6);
-            this.groupBoxTimingSpeed.Controls.Add(this.textBoxTimingSpeed);
-            this.groupBoxTimingSpeed.Controls.Add(this.buttonIncreasePlaybackSpeed);
-            this.groupBoxTimingSpeed.Controls.Add(this.buttonDecreasePlaySpeed);
-            this.groupBoxTimingSpeed.Location = new System.Drawing.Point(126, 14);
-            this.groupBoxTimingSpeed.Name = "groupBoxTimingSpeed";
-            this.groupBoxTimingSpeed.Size = new System.Drawing.Size(228, 41);
-            this.groupBoxTimingSpeed.TabIndex = 13;
-            this.groupBoxTimingSpeed.TabStop = false;
-            // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 16);
+            this.label6.Location = new System.Drawing.Point(221, 30);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(75, 13);
             this.label6.TabIndex = 12;
@@ -551,7 +539,7 @@
             // 
             // textBoxTimingSpeed
             // 
-            this.textBoxTimingSpeed.Location = new System.Drawing.Point(95, 14);
+            this.textBoxTimingSpeed.Location = new System.Drawing.Point(310, 28);
             this.textBoxTimingSpeed.Name = "textBoxTimingSpeed";
             this.textBoxTimingSpeed.Size = new System.Drawing.Size(58, 20);
             this.textBoxTimingSpeed.TabIndex = 9;
@@ -559,7 +547,7 @@
             // buttonIncreasePlaybackSpeed
             // 
             this.buttonIncreasePlaybackSpeed.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.plus_white_icon;
-            this.buttonIncreasePlaybackSpeed.Location = new System.Drawing.Point(160, 12);
+            this.buttonIncreasePlaybackSpeed.Location = new System.Drawing.Point(375, 26);
             this.buttonIncreasePlaybackSpeed.Name = "buttonIncreasePlaybackSpeed";
             this.buttonIncreasePlaybackSpeed.Size = new System.Drawing.Size(23, 23);
             this.buttonIncreasePlaybackSpeed.TabIndex = 11;
@@ -569,7 +557,7 @@
             // buttonDecreasePlaySpeed
             // 
             this.buttonDecreasePlaySpeed.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.minus_white_icon;
-            this.buttonDecreasePlaySpeed.Location = new System.Drawing.Point(182, 12);
+            this.buttonDecreasePlaySpeed.Location = new System.Drawing.Point(397, 26);
             this.buttonDecreasePlaySpeed.Name = "buttonDecreasePlaySpeed";
             this.buttonDecreasePlaySpeed.Size = new System.Drawing.Size(23, 23);
             this.buttonDecreasePlaySpeed.TabIndex = 10;
@@ -579,16 +567,16 @@
             // panelMarkView
             // 
             this.panelMarkView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelMarkView.Location = new System.Drawing.Point(261, 110);
+            this.panelMarkView.Location = new System.Drawing.Point(286, 131);
             this.panelMarkView.Name = "panelMarkView";
-            this.panelMarkView.Size = new System.Drawing.Size(151, 73);
+            this.panelMarkView.Size = new System.Drawing.Size(147, 73);
             this.panelMarkView.TabIndex = 8;
             this.panelMarkView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelMarkView_MouseDown);
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(507, 42);
+            this.label5.Location = new System.Drawing.Point(507, 31);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(84, 13);
             this.label5.TabIndex = 7;
@@ -596,25 +584,16 @@
             // 
             // textBoxPosition
             // 
-            this.textBoxPosition.Location = new System.Drawing.Point(594, 39);
+            this.textBoxPosition.Location = new System.Drawing.Point(597, 28);
             this.textBoxPosition.Name = "textBoxPosition";
-            this.textBoxPosition.Size = new System.Drawing.Size(100, 20);
+            this.textBoxPosition.ReadOnly = true;
+            this.textBoxPosition.Size = new System.Drawing.Size(89, 20);
             this.textBoxPosition.TabIndex = 6;
-            // 
-            // trackBarPlayBack
-            // 
-            this.trackBarPlayBack.Location = new System.Drawing.Point(12, 71);
-            this.trackBarPlayBack.Name = "trackBarPlayBack";
-            this.trackBarPlayBack.Size = new System.Drawing.Size(692, 45);
-            this.trackBarPlayBack.TabIndex = 5;
-            this.trackBarPlayBack.Scroll += new System.EventHandler(this.trackBarPlayBack_Scroll);
-            this.trackBarPlayBack.MouseDown += new System.Windows.Forms.MouseEventHandler(this.trackBarPlayBack_MouseDown);
-            this.trackBarPlayBack.MouseUp += new System.Windows.Forms.MouseEventHandler(this.trackBarPlayBack_MouseUp);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(534, 180);
+            this.label4.Location = new System.Drawing.Point(518, 180);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(73, 13);
             this.label4.TabIndex = 4;
@@ -622,15 +601,16 @@
             // 
             // textBoxCurrentMark
             // 
-            this.textBoxCurrentMark.Location = new System.Drawing.Point(613, 177);
+            this.textBoxCurrentMark.Location = new System.Drawing.Point(597, 177);
             this.textBoxCurrentMark.Name = "textBoxCurrentMark";
+            this.textBoxCurrentMark.ReadOnly = true;
             this.textBoxCurrentMark.Size = new System.Drawing.Size(90, 20);
             this.textBoxCurrentMark.TabIndex = 3;
             // 
             // buttonStop
             // 
             this.buttonStop.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.StopHS;
-            this.buttonStop.Location = new System.Drawing.Point(64, 37);
+            this.buttonStop.Location = new System.Drawing.Point(62, 26);
             this.buttonStop.Name = "buttonStop";
             this.buttonStop.Size = new System.Drawing.Size(30, 23);
             this.buttonStop.TabIndex = 2;
@@ -640,7 +620,7 @@
             // buttonPlay
             // 
             this.buttonPlay.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.PlayHS;
-            this.buttonPlay.Location = new System.Drawing.Point(28, 37);
+            this.buttonPlay.Location = new System.Drawing.Point(26, 26);
             this.buttonPlay.Name = "buttonPlay";
             this.buttonPlay.Size = new System.Drawing.Size(30, 23);
             this.buttonPlay.TabIndex = 1;
@@ -651,7 +631,7 @@
             // 
             this.groupBoxMode.Controls.Add(this.radioButtonPlayback);
             this.groupBoxMode.Controls.Add(this.radioButtonTapper);
-            this.groupBoxMode.Location = new System.Drawing.Point(6, 136);
+            this.groupBoxMode.Location = new System.Drawing.Point(28, 136);
             this.groupBoxMode.Name = "groupBoxMode";
             this.groupBoxMode.Size = new System.Drawing.Size(88, 68);
             this.groupBoxMode.TabIndex = 0;
@@ -692,19 +672,21 @@
             this.timerMarkHit.Interval = 40;
             this.timerMarkHit.Tick += new System.EventHandler(this.timerMarkHit_Tick);
             // 
-            // textBox1
+            // trackBarPlayBack
             // 
-            this.textBox1.Location = new System.Drawing.Point(375, 559);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 20);
-            this.textBox1.TabIndex = 6;
+            this.trackBarPlayBack.Location = new System.Drawing.Point(6, 65);
+            this.trackBarPlayBack.Name = "trackBarPlayBack";
+            this.trackBarPlayBack.Size = new System.Drawing.Size(703, 45);
+            this.trackBarPlayBack.TabIndex = 5;
+            this.trackBarPlayBack.Scroll += new System.EventHandler(this.trackBarPlayBack_Scroll);
+            this.trackBarPlayBack.MouseDown += new System.Windows.Forms.MouseEventHandler(this.trackBarPlayBack_MouseDown);
+            this.trackBarPlayBack.MouseUp += new System.Windows.Forms.MouseEventHandler(this.trackBarPlayBack_MouseUp);
             // 
             // MarkManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(740, 601);
-            this.Controls.Add(this.textBox1);
+            this.ClientSize = new System.Drawing.Size(740, 632);
             this.Controls.Add(this.groupBoxPlayback);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.groupBoxSelectedMarkCollection);
@@ -712,8 +694,9 @@
             this.Controls.Add(this.groupBoxMarkCollections);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(746, 800);
+            this.MaximumSize = new System.Drawing.Size(750, 665);
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(746, 351);
             this.Name = "MarkManager";
@@ -723,6 +706,7 @@
             this.Text = "Mark Collections Manager";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MarkManager_FormClosing);
             this.Load += new System.EventHandler(this.MarkManager_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MarkManager_KeyDown);
             this.groupBoxMarkCollections.ResumeLayout(false);
             this.groupBoxSelectedMarkCollection.ResumeLayout(false);
             this.groupBoxDetails.ResumeLayout(false);
@@ -735,13 +719,10 @@
             this.groupBoxMarks.PerformLayout();
             this.groupBoxPlayback.ResumeLayout(false);
             this.groupBoxPlayback.PerformLayout();
-            this.groupBoxTimingSpeed.ResumeLayout(false);
-            this.groupBoxTimingSpeed.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarPlayBack)).EndInit();
             this.groupBoxMode.ResumeLayout(false);
             this.groupBoxMode.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarPlayBack)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
 		}
 
@@ -783,7 +764,6 @@
         private System.Windows.Forms.GroupBox groupBoxPlayback;
         private System.Windows.Forms.GroupBox groupBoxMode;
         private System.Windows.Forms.RadioButton radioButtonTapper;
-        private System.Windows.Forms.GroupBox groupBoxTimingSpeed;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox textBoxTimingSpeed;
         private System.Windows.Forms.Button buttonIncreasePlaybackSpeed;
@@ -791,7 +771,6 @@
         private System.Windows.Forms.Panel panelMarkView;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox textBoxPosition;
-        private System.Windows.Forms.TrackBar trackBarPlayBack;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox textBoxCurrentMark;
         private System.Windows.Forms.Button buttonStop;
@@ -805,7 +784,7 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox textBoxTimeIncrement;
         private System.Windows.Forms.Label labelTapperInstructions;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TrackBar trackBarPlayBack;
 
 	}
 }
