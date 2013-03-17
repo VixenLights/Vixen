@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Windows.Forms;
 using Common.Controls;
 using Dataweb.NShape;
@@ -49,13 +45,15 @@ namespace VixenApplication
 		private int _elementsXPosition;
 		private int _controllersXPosition;
 		private int _previousDiagramWidth;		// used when resizing; what the width was BEFORE resize,
-												// so we know how to layout filter shapes (proportionally)
+		// so we know how to layout filter shapes (proportionally)
 
 		private readonly VixenApplicationData _applicationData;
 
 		private List<FilterShape> _filterShapeClipboard;
 
 		private Timer _relayoutOnResizeTimer;
+
+		private bool _changesMade;
 
 		public ConfigFiltersAndPatching(VixenApplicationData applicationData)
 		{
@@ -66,7 +64,7 @@ namespace VixenApplication
 			project.LibrarySearchPaths.Add(@"Common\");
 			project.AutoLoadLibraries = true;
 			project.AddLibraryByName("VixenApplication", false);
-			
+
 			project.Name = "filterProject";
 			project.Create();
 
@@ -111,7 +109,7 @@ namespace VixenApplication
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(
 				SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS_DELETABLE, StandardRole.Operator, Permission.Insert | Permission.Delete);
 
-			((RoleBasedSecurityManager) diagramDisplay.Project.SecurityManager).SetPermissions(StandardRole.Operator, Permission.All);
+			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).SetPermissions(StandardRole.Operator, Permission.All);
 			((RoleBasedSecurityManager)diagramDisplay.Project.SecurityManager).CurrentRole = StandardRole.Operator;
 
 			FillStyle styleElementGroup = new FillStyle("ElementGroup",
@@ -137,18 +135,18 @@ namespace VixenApplication
 			project.Design.FillStyles.Add(styleOutput, styleOutput);
 
 			diagramDisplay.DoSuspendUpdate();
-//			DateTime start = DateTime.Now;
-//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: LOADING: start time:                      " + start);
+			//			DateTime start = DateTime.Now;
+			//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: LOADING: start time:                      " + start);
 			_InitializeShapesFromElements();
-//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _InitializeShapesFromElements:       " + (DateTime.Now - start));
+			//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _InitializeShapesFromElements:       " + (DateTime.Now - start));
 			_InitializeShapesFromFilters();
-//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _InitializeShapesFromFilters:        " + (DateTime.Now - start));
+			//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _InitializeShapesFromFilters:        " + (DateTime.Now - start));
 			_InitializeShapesFromControllers();
-//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _InitializeShapesFromControllers:    " + (DateTime.Now - start));
+			//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _InitializeShapesFromControllers:    " + (DateTime.Now - start));
 			_RelayoutAllShapes();
-//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _RelayoutAllShapes:                  " + (DateTime.Now - start));
+			//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _RelayoutAllShapes:                  " + (DateTime.Now - start));
 			_CreateConnectionsFromExistingLinks();
-//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _CreateConnectionsFromExistingLinks: " + (DateTime.Now - start));
+			//			VixenSystem.Logging.Debug("ConfigFiltersAndPatching: post _CreateConnectionsFromExistingLinks: " + (DateTime.Now - start));
 			diagramDisplay.DoResumeUpdate();
 
 			diagramDisplay.CurrentTool = new ConnectionTool();
@@ -161,10 +159,12 @@ namespace VixenApplication
 		private void _populateComboBox()
 		{
 			comboBoxNewFilterTypes.Items.Clear();
-			foreach (KeyValuePair<Guid, string> kvp in ApplicationServices.GetAvailableModules<IOutputFilterModuleInstance>()) {
+			foreach (KeyValuePair<Guid, string> kvp in ApplicationServices.GetAvailableModules<IOutputFilterModuleInstance>())
+			{
 				comboBoxNewFilterTypes.Items.Add(new FilterTypeComboBoxEntry(kvp.Key, kvp.Value));
 			}
-			if (comboBoxNewFilterTypes.Items.Count > 0) {
+			if (comboBoxNewFilterTypes.Items.Count > 0)
+			{
 				comboBoxNewFilterTypes.SelectedIndex = 0;
 			}
 		}
@@ -193,7 +193,8 @@ namespace VixenApplication
 		private void buttonAddFilter_Click(object sender, EventArgs e)
 		{
 			FilterTypeComboBoxEntry item = comboBoxNewFilterTypes.SelectedItem as FilterTypeComboBoxEntry;
-			if (item == null) {
+			if (item == null)
+			{
 				MessageBox.Show("Please select a filter type first.", "Select filter type");
 				return;
 			}
@@ -220,18 +221,21 @@ namespace VixenApplication
 		private void diagramDisplay_KeyDown(object sender, KeyEventArgs e)
 		{
 			// if Delete was pressed, iterate through all selected shapes, and remove them, unlinking components as necessary
-			if (e.KeyCode == Keys.Delete) {
+			if (e.KeyCode == Keys.Delete)
+			{
 				_DeleteShapes(diagramDisplay.SelectedShapes);
 				e.Handled = true;
 			}
 
 			// CTRL-C and CTRL-V are copy/paste for filters, respectively
-			if (e.KeyCode == Keys.C && e.Modifiers == Keys.Control) {
+			if (e.KeyCode == Keys.C && e.Modifiers == Keys.Control)
+			{
 				CopySelectedFiltersToClipboard();
 				e.Handled = true;
 			}
 
-			if (e.KeyCode == Keys.V && e.Modifiers == Keys.Control) {
+			if (e.KeyCode == Keys.V && e.Modifiers == Keys.Control)
+			{
 				PasteClipboardFilters(Cursor.Position);
 				e.Handled = true;
 			}
@@ -239,21 +243,28 @@ namespace VixenApplication
 
 		private void displayDiagram_ShapeDoubleClick(object sender, DiagramPresenterShapeClickEventArgs e)
 		{
-			var shape = (FilterSetupShapeBase) e.Shape;
+			var shape = (FilterSetupShapeBase)e.Shape;
 
 			// workaround: only modify the shape if it's currently selected. The diagram likes to
 			// send click events to all shapes under the mouse, even if they're not active.
-			if (!diagramDisplay.SelectedShapes.Contains(shape)) {
+			if (!diagramDisplay.SelectedShapes.Contains(shape))
+			{
 				return;
 			}
 
-			if (shape is NestingSetupShape) {
+			if (shape is NestingSetupShape)
+			{
 				NestingSetupShape s = (shape as NestingSetupShape);
 				s.Expanded = !s.Expanded;
 			}
-			else if (shape is FilterShape) {
+			else if (shape is FilterShape)
+			{
 				FilterShape filterShape = shape as FilterShape;
 				filterShape.RunSetup();
+			
+				//changes were made to the filter so set _changesMade
+				_changesMade = true;
+			
 			}
 
 			if (shape is ElementNodeShape)
@@ -261,6 +272,7 @@ namespace VixenApplication
 
 			if (shape is ControllerShape)
 				_ResizeAndPositionControllerShapes(_controllersXPosition);
+
 		}
 
 		private void ConfigFiltersAndPatching_ResizeEnd(object sender, EventArgs e)
@@ -270,12 +282,15 @@ namespace VixenApplication
 
 		private void ConfigFiltersAndPatching_Resize(object sender, EventArgs e)
 		{
-			if (_relayoutOnResizeTimer == null) {
+			if (_relayoutOnResizeTimer == null)
+			{
 				_relayoutOnResizeTimer = new Timer();
 				_relayoutOnResizeTimer.Interval = 250;
 				_relayoutOnResizeTimer.Tick += new EventHandler(_relayoutOnResizeTimer_Tick);
 				_relayoutOnResizeTimer.Start();
-			} else {
+			}
+			else
+			{
 				_relayoutOnResizeTimer.Stop();
 				_relayoutOnResizeTimer.Start();
 			}
@@ -290,9 +305,11 @@ namespace VixenApplication
 
 		private void cachedRepository_ShapesUpdated(object sender, RepositoryShapesEventArgs e)
 		{
-			foreach (Shape shape in e.Shapes) {
+			foreach (Shape shape in e.Shapes)
+			{
 				FilterShape filterShape = shape as FilterShape;
-				if (filterShape != null) {
+				if (filterShape != null)
+				{
 					_UpdateFilterPositionDataForFilter(filterShape);
 				}
 			}
@@ -316,8 +333,10 @@ namespace VixenApplication
 				return;
 
 			_filterShapeClipboard = new List<FilterShape>();
-			foreach (Shape selectedShape in diagramDisplay.SelectedShapes) {
-				if (selectedShape is FilterShape) {
+			foreach (Shape selectedShape in diagramDisplay.SelectedShapes)
+			{
+				if (selectedShape is FilterShape)
+				{
 					_filterShapeClipboard.Add(selectedShape as FilterShape);
 				}
 			}
@@ -326,11 +345,13 @@ namespace VixenApplication
 		private void pasteFilterToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			PasteClipboardFilters(Cursor.Position);
+			_changesMade = true;
 		}
 
 		private void pasteFilterMultipleToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			PasteClipboardFiltersMultipleTimes();
+			_changesMade = true;
 		}
 
 		private void PasteClipboardFiltersMultipleTimes()
@@ -338,8 +359,10 @@ namespace VixenApplication
 			Point cursor = Cursor.Position;
 			using (
 				NumberDialog numberDialog = new NumberDialog("Number of Copies", "How many copies of the given filter(s)?", 1, 1, 1000)
-				) {
-				if (numberDialog.ShowDialog() == DialogResult.OK) {
+				)
+			{
+				if (numberDialog.ShowDialog() == DialogResult.OK)
+				{
 					PasteClipboardFilters(cursor, numberDialog.Value);
 				}
 			}
@@ -355,6 +378,9 @@ namespace VixenApplication
 			newPosition.Y += diagramDisplay.GetDiagramOffset().Y - (SHAPE_FILTERS_HEIGHT / 2);
 
 			DuplicateFilterShapes(_filterShapeClipboard, numberOfCopies, newPosition);
+
+			//we made some changes since we pasted to the display
+			_changesMade = true;
 		}
 
 		public IEnumerable<FilterShape> DuplicateFilterShapes(
@@ -378,19 +404,24 @@ namespace VixenApplication
 				return null;
 
 			Point pos;
-			if (startPosition == null) {
+			if (startPosition == null)
+			{
 				pos = new Point();
 				int shapesWidth = diagramDisplay.Width - (2 * diagramDisplay.GetDiagramPosition().X);
 				pos.X = (int)(shapesWidth * horizontalPositionProportion);
 				pos.Y = diagramDisplay.GetDiagramOffset().Y + (diagramDisplay.Height / 4);
-			} else {
+			}
+			else
+			{
 				pos = (Point)startPosition;
 			}
 
 			List<FilterShape> result = new List<FilterShape>();
 
-			for (int i = 0; i < numberOfCopies; i++) {
-				foreach (IOutputFilterModuleInstance instance in sourceInstances) {
+			for (int i = 0; i < numberOfCopies; i++)
+			{
+				foreach (IOutputFilterModuleInstance instance in sourceInstances)
+				{
 					FilterShape newShape = _CreateNewFilterInstanceAndShape(instance.TypeId, false, instance.ModuleData);
 					newShape.ModuleDataUpdated();
 
@@ -409,13 +440,16 @@ namespace VixenApplication
 				}
 			}
 
+			//assume we made changes since we added shapes
+			_changesMade = true;
 			return result;
 		}
 
 		private bool _patchingWizardRunning;
 		private void buttonPatchWizard_Click(object sender, EventArgs e)
 		{
-			if (!_patchingWizardRunning) {
+			if (!_patchingWizardRunning)
+			{
 				PatchingWizard wizard = new PatchingWizard(this);
 				wizard.WizardFinished += wizard_WizardFinished;
 				_patchingWizardRunning = true;
@@ -427,6 +461,7 @@ namespace VixenApplication
 		{
 			PatchingWizard wizard = sender as PatchingWizard;
 			_patchingWizardRunning = false;
+			_changesMade = true;
 		}
 
 		public event EventHandler DiagramShapesSelected
@@ -445,9 +480,11 @@ namespace VixenApplication
 
 		private void _DeleteShapes(IEnumerable<Shape> shapes)
 		{
-			foreach (var shape in shapes) {
+			foreach (var shape in shapes)
+			{
 				DataFlowConnectionLine line = shape as DataFlowConnectionLine;
-				if (line != null) {
+				if (line != null)
+				{
 					VixenSystem.DataFlow.ResetComponentSource(line.DestinationDataComponent);
 					_RemoveShape(line);
 				}
@@ -455,12 +492,14 @@ namespace VixenApplication
 				// we COULD use FilterSetupShapeBase, as all the operations below are generic.... but, we only want
 				// to be able to delete filter shapes. We want to enforce all elements and outputs to be kept.
 				FilterShape filterShape = shape as FilterShape;
-				if (filterShape != null) {
+				if (filterShape != null)
+				{
 					ControlPointId pointId;
 
 					// go through all outputs for the filter, and check for connections to other shapes.
 					// For any that we find, remove them (ie. set the other shape source to null).
-					for (int i = 0; i < filterShape.OutputCount; i++) {
+					for (int i = 0; i < filterShape.OutputCount; i++)
+					{
 						pointId = filterShape.GetControlPointIdForOutput(i);
 						_RemoveDataFlowLinksFromShapePoint(filterShape, pointId);
 					}
@@ -475,11 +514,15 @@ namespace VixenApplication
 					_RemoveShape(filterShape);
 				}
 			}
+
+			//looks like we may have delted shapes so assume we made changes
+			_changesMade = true;
 		}
 
 		private void _RemoveDataFlowLinksFromShapePoint(FilterSetupShapeBase shape, ControlPointId controlPoint)
 		{
-			foreach (ShapeConnectionInfo ci in shape.GetConnectionInfos(controlPoint, null)) {
+			foreach (ShapeConnectionInfo ci in shape.GetConnectionInfos(controlPoint, null))
+			{
 				if (ci.OtherShape == null)
 					continue;
 
@@ -493,11 +536,16 @@ namespace VixenApplication
 				// if the line is connected with the given shape as the SOURCE, remove the unknown DESTINATION's
 				// source (on the other end of the line). Otherwise, it (should) be that the given shape is the
 				// destination; so reset it's source. If neither of these are true, freak out.
-				if (line.GetConnectionInfo(ControlPointId.FirstVertex, null).OtherShape == shape) {
+				if (line.GetConnectionInfo(ControlPointId.FirstVertex, null).OtherShape == shape)
+				{
 					VixenSystem.DataFlow.ResetComponentSource(line.DestinationDataComponent);
-				} else if (line.GetConnectionInfo(ControlPointId.LastVertex, null).OtherShape == shape) {
+				}
+				else if (line.GetConnectionInfo(ControlPointId.LastVertex, null).OtherShape == shape)
+				{
 					VixenSystem.DataFlow.ResetComponentSource(shape.DataFlowComponent);
-				} else {
+				}
+				else
+				{
 					throw new Exception("Can't reset a link that has neither the source or destination for the given shape!");
 				}
 
@@ -509,7 +557,8 @@ namespace VixenApplication
 		{
 			_elementShapes = new List<ElementNodeShape>();
 
-			foreach (ElementNode node in VixenSystem.Nodes.GetRootNodes()) {
+			foreach (ElementNode node in VixenSystem.Nodes.GetRootNodes())
+			{
 				_CreateShapeFromElement(node);
 			}
 		}
@@ -526,7 +575,8 @@ namespace VixenApplication
 		{
 			_controllerShapes = new List<ControllerShape>();
 
-			foreach (IOutputDevice controller in VixenSystem.ControllerManagement.Devices) {
+			foreach (IOutputDevice controller in VixenSystem.ControllerManagement.Devices)
+			{
 				_CreateShapeFromController(controller);
 			}
 		}
@@ -542,7 +592,8 @@ namespace VixenApplication
 		private void _InitializeShapesFromFilters()
 		{
 			_filterShapes = new List<FilterShape>();
-			foreach (IOutputFilterModuleInstance filter in VixenSystem.Filters) {
+			foreach (IOutputFilterModuleInstance filter in VixenSystem.Filters)
+			{
 				_CreateShapeFromFilter(filter);
 			}
 		}
@@ -561,13 +612,16 @@ namespace VixenApplication
 			// There's nothing to do for element shapes; they don't have sources; only do filters and outputs
 
 			// go through the filter shapes and build up links
-			foreach (FilterShape filterShape in _filterShapes) {
+			foreach (FilterShape filterShape in _filterShapes)
+			{
 				_LookupAndConnectShapeToSource(filterShape);
 			}
 
 			// go through the output shapes and build up links
-			foreach (ControllerShape controllerShape in _controllerShapes) {
-				foreach (OutputShape outputShape in controllerShape.ChildFilterShapes) {
+			foreach (ControllerShape controllerShape in _controllerShapes)
+			{
+				foreach (OutputShape outputShape in controllerShape.ChildFilterShapes)
+				{
 					_LookupAndConnectShapeToSource(outputShape);
 				}
 			}
@@ -575,10 +629,12 @@ namespace VixenApplication
 
 		private void _LookupAndConnectShapeToSource(FilterSetupShapeBase shape)
 		{
-			if (shape.DataFlowComponent != null && shape.DataFlowComponent.Source != null) {
+			if (shape.DataFlowComponent != null && shape.DataFlowComponent.Source != null)
+			{
 				IDataFlowComponentReference source = shape.DataFlowComponent.Source;
-				if (!_dataFlowComponentToShapes.ContainsKey(source.Component)) {
-					VixenSystem.Logging.Error("CreateConnectionsFromExistingLinks: can't find shape for source " + source.Component + source.OutputIndex);
+				if (!_dataFlowComponentToShapes.ContainsKey(source.Component))
+				{
+					VixenSystem.Logging.Error(String.Format("CreateConnectionsFromExistingLinks: can't find shape for source {0}{1}", source.Component, source.OutputIndex));
 					return;
 				}
 				List<FilterSetupShapeBase> sourceShapes = _dataFlowComponentToShapes[source.Component];
@@ -596,10 +652,13 @@ namespace VixenApplication
 			line.EndCapStyle = project.Design.CapStyles.ClosedArrow;
 			line.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS_DELETABLE;
 
-			if (removeExistingSource) {
+			if (removeExistingSource)
+			{
 				IEnumerable<ShapeConnectionInfo> connectionInfos = destination.GetConnectionInfos(destination.GetControlPointIdForInput(0), null);
-				foreach (ShapeConnectionInfo ci in connectionInfos) {
-					if (!ci.IsEmpty && ci.OtherShape is DataFlowConnectionLine) {
+				foreach (ShapeConnectionInfo ci in connectionInfos)
+				{
+					if (!ci.IsEmpty && ci.OtherShape is DataFlowConnectionLine)
+					{
 						diagramDisplay.DeleteShape(ci.OtherShape, false);
 					}
 				}
@@ -633,7 +692,8 @@ namespace VixenApplication
 			diagramDisplay.DoSuspendUpdate();
 
 			int y = SHAPE_Y_TOP;
-			foreach (ElementNodeShape elementShape in _elementShapes) {
+			foreach (ElementNodeShape elementShape in _elementShapes)
+			{
 				_ResizeAndPositionNestingShape(elementShape, SHAPE_ELEMENTS_WIDTH, xLocation, y, true);
 				y += elementShape.Height + SHAPE_VERTICAL_SPACING;
 			}
@@ -646,7 +706,8 @@ namespace VixenApplication
 			diagramDisplay.DoSuspendUpdate();
 
 			int y = SHAPE_Y_TOP;
-			foreach (ControllerShape controllerShape in _controllerShapes) {
+			foreach (ControllerShape controllerShape in _controllerShapes)
+			{
 				_ResizeAndPositionNestingShape(controllerShape, SHAPE_CONTROLLERS_WIDTH, xLocation, y, true);
 				y += controllerShape.Height + SHAPE_VERTICAL_SPACING;
 			}
@@ -670,7 +731,8 @@ namespace VixenApplication
 			double defaultXPositionProportion = 0.5;
 			int y = SHAPE_Y_TOP;
 
-			foreach (FilterShape filterShape in _filterShapes) {
+			foreach (FilterShape filterShape in _filterShapes)
+			{
 				filterShape.Width = SHAPE_FILTERS_WIDTH;
 				filterShape.Height = SHAPE_FILTERS_HEIGHT;
 
@@ -680,10 +742,14 @@ namespace VixenApplication
 				// if the filtershape is unpositioned, it's either first load (nothing positioned yet), or maybe new?
 				// look it up in the application data for a position, otherwise default it.
 				// (same if there's no old diagram width given; we'd have nothing to proportion from!)
-				if ((filterShape.X <= 0 && filterShape.Y <= 0) || oldDiagramWidth <= 0) {
-					if (_applicationData.FilterSetupFormShapePositions.TryGetValue(filterShape.FilterInstance.InstanceId, out position)) {
+				if ((filterShape.X <= 0 && filterShape.Y <= 0) || oldDiagramWidth <= 0)
+				{
+					if (_applicationData.FilterSetupFormShapePositions.TryGetValue(filterShape.FilterInstance.InstanceId, out position))
+					{
 						updatePosition = false;
-					} else {
+					}
+					else
+					{
 						position = new FilterSetupFormShapePosition();
 						position.xPositionProportion = defaultXPositionProportion;
 						position.yPosition = y;
@@ -691,7 +757,9 @@ namespace VixenApplication
 						// because we've used a default position, increment the default Y position
 						y += filterShape.Height + SHAPE_VERTICAL_SPACING;
 					}
-				} else {
+				}
+				else
+				{
 					position = new FilterSetupFormShapePosition();
 					position.xPositionProportion = (double)filterShape.X / oldDiagramWidth;
 					position.yPosition = filterShape.Y;
@@ -700,7 +768,8 @@ namespace VixenApplication
 				filterShape.X = (int)(newDiagramWidth * position.xPositionProportion);
 				filterShape.Y = position.yPosition;
 
-				if (updatePosition) {
+				if (updatePosition)
+				{
 					_applicationData.FilterSetupFormShapePositions[filterShape.FilterInstance.InstanceId] = position;
 				}
 			}
@@ -712,9 +781,12 @@ namespace VixenApplication
 
 		private void _ResizeAndPositionNestingShape(FilterSetupShapeBase shape, int width, int x, int y, bool visible)
 		{
-			if (visible) {
+			if (visible)
+			{
 				_ShowShape(shape);
-			} else {
+			}
+			else
+			{
 				_HideShape(shape);
 			}
 
@@ -722,17 +794,22 @@ namespace VixenApplication
 				(shape as NestingSetupShape).ChildFilterShapes.Count > 0)
 			{
 				int curY = y + SHAPE_GROUP_HEADER_HEIGHT;
-				foreach (FilterSetupShapeBase childShape in (shape as NestingSetupShape).ChildFilterShapes) {
+				foreach (FilterSetupShapeBase childShape in (shape as NestingSetupShape).ChildFilterShapes)
+				{
 					_ResizeAndPositionNestingShape(childShape, width - SHAPE_CHILD_WIDTH_REDUCTION, x, curY, true);
 					curY += childShape.Height + SHAPE_VERTICAL_SPACING;
 				}
 				shape.Width = width;
 				shape.Height = (curY - SHAPE_VERTICAL_SPACING + SHAPE_GROUP_FOOTER_HEIGHT) - y;
-			} else {
+			}
+			else
+			{
 				shape.Width = width;
 				shape.Height = SHAPE_ELEMENTS_HEIGHT;
-				if (shape is NestingSetupShape) {
-					foreach (FilterSetupShapeBase childShape in (shape as NestingSetupShape).ChildFilterShapes) {
+				if (shape is NestingSetupShape)
+				{
+					foreach (FilterSetupShapeBase childShape in (shape as NestingSetupShape).ChildFilterShapes)
+					{
 						_ResizeAndPositionNestingShape(childShape, width, x, y, false);
 					}
 				}
@@ -744,7 +821,7 @@ namespace VixenApplication
 
 		private ElementNodeShape _MakeElementNodeShape(ElementNode node, int zOrder)
 		{
-			ElementNodeShape shape = (ElementNodeShape) project.ShapeTypes["ElementNodeShape"].CreateInstance();
+			ElementNodeShape shape = (ElementNodeShape)project.ShapeTypes["ElementNodeShape"].CreateInstance();
 			shape.SetElementNode(node);
 			shape.Title = node.Name;
 			diagramDisplay.InsertShape(shape);
@@ -755,20 +832,25 @@ namespace VixenApplication
 				_elementNodeToElementShapes[node] = new List<ElementNodeShape>();
 			_elementNodeToElementShapes[node].Add(shape);
 
-			if (shape.DataFlowComponent != null) {
+			if (shape.DataFlowComponent != null)
+			{
 				if (!_dataFlowComponentToShapes.ContainsKey(shape.DataFlowComponent))
 					_dataFlowComponentToShapes[shape.DataFlowComponent] = new List<FilterSetupShapeBase>();
 				_dataFlowComponentToShapes[shape.DataFlowComponent].Add(shape);
 			}
 
-			if (node.Children.Count() > 0) {
-				foreach (var child in node.Children) {
+			if (node.Children.Count() > 0)
+			{
+				foreach (var child in node.Children)
+				{
 					FilterSetupShapeBase childSetupShapeBase = _MakeElementNodeShape(child, zOrder + 1);
 					shape.ChildFilterShapes.Add(childSetupShapeBase);
 				}
 				shape.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_NO_CONNECTIONS;
 				shape.FillStyle = project.Design.FillStyles["ElementGroup"];
-			} else {
+			}
+			else
+			{
 				shape.SecurityDomainName = SECURITY_DOMAIN_FIXED_SHAPE_WITH_CONNECTIONS;
 				shape.FillStyle = project.Design.FillStyles["ElementLeaf"];
 			}
@@ -791,7 +873,8 @@ namespace VixenApplication
 			diagramDisplay.Diagram.Shapes.SetZOrder(controllerShape, 1);
 			diagramDisplay.Diagram.AddShapeToLayers(controllerShape, _visibleLayer.Id);
 
-			if (controllerShape.DataFlowComponent != null) {
+			if (controllerShape.DataFlowComponent != null)
+			{
 				if (!_dataFlowComponentToShapes.ContainsKey(controllerShape.DataFlowComponent))
 					_dataFlowComponentToShapes[controllerShape.DataFlowComponent] = new List<FilterSetupShapeBase>();
 				_dataFlowComponentToShapes[controllerShape.DataFlowComponent].Add(controllerShape);
@@ -801,7 +884,8 @@ namespace VixenApplication
 				throw new Exception("controller->shape map already has an entry when it shouldn't");
 			_controllerToControllerShape[outputController] = controllerShape;
 
-			for (int i = 0; i < outputController.OutputCount; i++) {
+			for (int i = 0; i < outputController.OutputCount; i++)
+			{
 				CommandOutput output = outputController.Outputs[i];
 				OutputShape outputShape = (OutputShape)project.ShapeTypes["OutputShape"].CreateInstance();
 				outputShape.SetController(outputController);
@@ -810,7 +894,7 @@ namespace VixenApplication
 				outputShape.FillStyle = project.Design.FillStyles["Output"];
 
 				if (output.Name.Length <= 0)
-					outputShape.Title = outputController.Name + " [" + (i + 1) + "]";
+					outputShape.Title = String.Format("{0} [{1}]", outputController.Name, (i + 1));
 				else
 					outputShape.Title = output.Name;
 
@@ -836,7 +920,8 @@ namespace VixenApplication
 			diagramDisplay.Diagram.Shapes.SetZOrder(filterShape, 10);  // Z Order of 10; should be above other elements/outputs, but under lines
 			diagramDisplay.Diagram.AddShapeToLayers(filterShape, _visibleLayer.Id);
 
-			if (filterShape.DataFlowComponent != null) {
+			if (filterShape.DataFlowComponent != null)
+			{
 				if (!_dataFlowComponentToShapes.ContainsKey(filterShape.DataFlowComponent))
 					_dataFlowComponentToShapes[filterShape.DataFlowComponent] = new List<FilterSetupShapeBase>();
 				_dataFlowComponentToShapes[filterShape.DataFlowComponent].Add(filterShape);
@@ -852,7 +937,8 @@ namespace VixenApplication
 		private FilterShape _CreateNewFilterInstanceAndShape(Guid filterTypeId, bool defaultLayout, IModuleDataModel dataModelToCopy = null)
 		{
 			IOutputFilterModuleInstance moduleInstance = ApplicationServices.Get<IOutputFilterModuleInstance>(filterTypeId);
-			if (dataModelToCopy != null) {
+			if (dataModelToCopy != null)
+			{
 				moduleInstance.ModuleData = dataModelToCopy.Clone();
 			}
 			FilterShape shape = _CreateShapeFromFilter(moduleInstance);
@@ -861,7 +947,8 @@ namespace VixenApplication
 			shape.Width = SHAPE_FILTERS_WIDTH;
 			shape.Height = SHAPE_FILTERS_HEIGHT;
 
-			if (defaultLayout) {
+			if (defaultLayout)
+			{
 				shape.X = (diagramDisplay.Width / 2) - diagramDisplay.GetDiagramPosition().X;
 				shape.Y = diagramDisplay.GetDiagramOffset().Y + (diagramDisplay.Height / 2);
 			}
@@ -874,8 +961,10 @@ namespace VixenApplication
 		private void _RemoveShape(Shape shape)
 		{
 			diagramDisplay.DeleteShape(shape);
-			if (shape is NestingSetupShape) {
-				foreach (FilterSetupShapeBase child in (shape as NestingSetupShape).ChildFilterShapes) {
+			if (shape is NestingSetupShape)
+			{
+				foreach (FilterSetupShapeBase child in (shape as NestingSetupShape).ChildFilterShapes)
+				{
 					_RemoveShape(child);
 				}
 			}
@@ -897,7 +986,8 @@ namespace VixenApplication
 		private void _HideShapeAndChildren(NestingSetupShape nestingShape)
 		{
 			_HideShape(nestingShape);
-			foreach (var childFilterShape in nestingShape.ChildFilterShapes) {
+			foreach (var childFilterShape in nestingShape.ChildFilterShapes)
+			{
 				if (childFilterShape is NestingSetupShape)
 					_HideShapeAndChildren((NestingSetupShape)childFilterShape);
 			}
@@ -906,7 +996,8 @@ namespace VixenApplication
 		private void _ShowShapeAndChildren(NestingSetupShape nestingShape)
 		{
 			_ShowShape(nestingShape);
-			foreach (var childFilterShape in nestingShape.ChildFilterShapes) {
+			foreach (var childFilterShape in nestingShape.ChildFilterShapes)
+			{
 				if (childFilterShape is NestingSetupShape)
 					_ShowShapeAndChildren((NestingSetupShape)childFilterShape);
 			}
@@ -961,28 +1052,31 @@ namespace VixenApplication
 
 		private void ConfigFiltersAndPatching_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			if (DialogResult == DialogResult.Cancel)
+			if (_changesMade)
 			{
-				switch (MessageBox.Show(this, "All changes will be lost if you continue, do you wish to continue?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+				if (DialogResult == DialogResult.Cancel)
 				{
-					case DialogResult.No:
-						e.Cancel = true;
-						break;
-					default:
-						break;
+					switch (MessageBox.Show(this, "All changes will be lost if you continue, do you wish to continue?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+					{
+						case DialogResult.No:
+							e.Cancel = true;
+							break;
+						default:
+							break;
+					}
 				}
-			}
-			else if (DialogResult == DialogResult.OK)
-			{
-				e.Cancel = false;
-			}
-			else
-			{
-				switch (e.CloseReason)
+				else if (DialogResult == DialogResult.OK)
 				{
-					case CloseReason.UserClosing:
-						e.Cancel = true;
-						break;
+					e.Cancel = false;
+				}
+				else
+				{
+					switch (e.CloseReason)
+					{
+						case CloseReason.UserClosing:
+							e.Cancel = true;
+							break;
+					}
 				}
 			}
 		}

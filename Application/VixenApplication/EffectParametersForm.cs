@@ -3,7 +3,6 @@ using System.Linq;
 using System.Windows.Forms;
 using Vixen.Module.EffectEditor;
 using Vixen.Services;
-using Vixen.Sys;
 
 namespace VixenApplication {
 	public partial class EffectParametersForm : Form {
