@@ -19,6 +19,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private IExecutionControl _executionControl;
 		private ITiming _timingSource;
 		private TimedSequenceEditorForm _timedSequenceEditorForm;
+        private TimeSpan _currentPlayPosition = TimeSpan.Zero;
+        private float _timingChangeDelta = .25f;
+        private TimeSpan _lastMarkHit;
+        private bool _playbackStarted = false;
+        private bool _sequencePlaySelected = false;
+        private List<TimeSpan> _newTappedMarks = new List<TimeSpan>();
 
 		public MarkManager(List<MarkCollection> markCollections, IExecutionControl executionControl, ITiming timingSource, TimedSequenceEditorForm timedSequenceEditorForm)
 		{
@@ -35,6 +41,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			PopulateMarkCollectionsList();
 			PopulateFormWithMarkCollection(null, true);
+            updateTimingSpeedTextbox();
+            trackBarPlayBack.SetRange(0, (int)_timedSequenceEditorForm.Sequence.Length.TotalMilliseconds);
 		}
 
 		private double GetGrayValueForColor(Color c)
@@ -137,6 +145,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			buttonRemoveCollection.Enabled = (listViewMarkCollections.SelectedItems.Count > 0);
+            radioButtonTapper.Enabled = (listViewMarkCollections.SelectedItems.Count > 0);
+            radioButtonPlayback.Checked = true;
 		}
 
 		private void listViewMarks_SelectedIndexChanged(object sender, EventArgs e)
@@ -147,7 +157,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			} else {
 				textBoxTime.Text = "";
 				buttonAddOrUpdateMark.Text = "Add";
-			}
+			}          
 		}
 
 		private void buttonAddCollection_Click(object sender, EventArgs e)
@@ -393,6 +403,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				PopulateMarkListFromMarkCollection(_displayedCollection);
 				UpdateMarkCollectionInList(_displayedCollection);
 				break;
+
+                case Keys.Up:
+                if (listViewMarks.SelectedIndices.Count > 0)
+                    increaseSelectedMarks();
+                break;
+
+                case Keys.Down:
+                if (listViewMarks.SelectedIndices.Count > 0)
+                {
+                    decreaseSelectedMarks();
+                    e.Handled = true;
+                }
+                break;
 			}
 		}
 
@@ -514,7 +537,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		}
 
-		private void buttonGeneratePeriodicMarks_Click(object sender, EventArgs e)
+		private void buttonGenerateGrid_Click(object sender, EventArgs e)
         {
 			Common.Controls.TextDialog prompt = new Common.Controls.TextDialog("How often (in seconds) should the marks be generated?","Mark Period","0:00.050");
 			if (prompt.ShowDialog() == DialogResult.OK)
@@ -531,6 +554,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						currentTime += interval;
 					}
 
+					if (_displayedCollection.Level < 8) {
+						_displayedCollection.Level = 8;
+					}
+						
 					_displayedCollection.Marks.Sort();
 					PopulateMarkListFromMarkCollection(_displayedCollection);
 					UpdateMarkCollectionInList(_displayedCollection);
@@ -541,5 +568,306 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
         }
+
+        #region Playback/Tapper
+
+
+
+        private void sequencePlay(TimeSpan StartTime)
+        {
+            if (radioButtonTapper.Checked)
+            {
+                _newTappedMarks.Clear();
+            }
+            updatePositionControls(StartTime);
+            _currentPlayPosition = StartTime;
+            _timedSequenceEditorForm.PlaySequenceFrom(StartTime);
+            timerPlayback.Start();
+        }
+
+        private void sequenceStop()
+        {
+            timerPlayback.Stop();
+            _executionControl.Stop();
+            _playbackStarted = false;
+            if (radioButtonTapper.Checked && _newTappedMarks.Count > 0)
+            {
+                if (MessageBox.Show("Accept the new marks?", "", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                {
+                    foreach (TimeSpan time in _newTappedMarks)
+                    {
+                        if (!_displayedCollection.Marks.Contains(time))
+                            _displayedCollection.Marks.Add(time);
+                    }
+                    PopulateMarkListFromMarkCollection(_displayedCollection);
+                    UpdateMarkCollectionInList(_displayedCollection);
+                    _newTappedMarks.Clear();
+                }
+                else
+                {
+                    _newTappedMarks.Clear();
+                }
+            }
+        }
+
+        private void updateControlsforPlaying()
+        {
+            groupBoxSelectedMarkCollection.Enabled = false;
+            buttonPlay.Enabled = false;
+            buttonStop.Enabled = true;
+            groupBoxMode.Enabled = false;
+            textBoxCurrentMark.Text = "";
+            groupBoxMarkCollections.Enabled = false;
+        }
+
+        private void updateControlsForStopped()
+        {
+            groupBoxSelectedMarkCollection.Enabled = true;
+            buttonPlay.Enabled = true;
+            buttonStop.Enabled = false;
+            groupBoxMode.Enabled = true;
+            groupBoxMarkCollections.Enabled = true;
+        }
+
+        private void buttonPlay_Click(object sender, EventArgs e)
+        {
+            sequencePlay(TimeSpan.FromMilliseconds(trackBarPlayBack.Value));
+            _sequencePlaySelected = true;
+            updateControlsforPlaying();
+        }
+
+        private void buttonStop_Click(object sender, EventArgs e)
+        {
+            sequenceStop();
+            _playbackStarted = false;
+            _sequencePlaySelected = false;
+            updateControlsForStopped();
+        }
+
+        private void timerMarkHit_Tick(object sender, EventArgs e)
+        {
+            panelMarkView.BackColor = SystemColors.Control;
+            timerMarkHit.Stop();
+        }
+
+        private void timerPlayback_Tick(object sender, EventArgs e)
+        {
+            //Handle delay until playback actually starts
+            if (!_playbackStarted)
+            {
+                _playbackStarted = _timedSequenceEditorForm.positionHasValue;
+            }
+            else
+            {
+                //detect if sequence reached the end
+                if (!_timedSequenceEditorForm.positionHasValue)
+                {
+                    sequenceStop();
+                    updatePositionControls(TimeSpan.Zero); //reset to beginning
+                    updateControlsForStopped();
+                }
+                else
+                {
+                    textBoxPosition.Text = _timingSource.Position.ToString();
+                    updatePositionControls(_timingSource.Position);
+
+                    //handle playback mode
+                    if (_displayedCollection != null && radioButtonPlayback.Checked)
+                    {
+                        handlePlaybackModeTick();
+                    }
+                }
+            }
+        }
+
+        private void handlePlaybackModeTick()
+        {
+            if (_timingSource.Position.CompareTo(_currentPlayPosition) > 0)
+            {
+                int newMarkIndex = _displayedCollection.Marks.FindIndex(x => x <= _timingSource.Position && x > _currentPlayPosition);
+                _currentPlayPosition = _timingSource.Position;
+
+                if (newMarkIndex != -1)
+                {
+                    panelMarkView.BackColor = _displayedCollection.MarkColor;
+                    _lastMarkHit = _displayedCollection.Marks[newMarkIndex].Duration();
+                    textBoxCurrentMark.Text = _lastMarkHit.ToString(@"m\:ss\.fff");
+                    timerMarkHit.Start();
+                }
+            }
+        }
+
+        private void MarkManager_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _executionControl.Stop();
+            timerMarkHit.Dispose();
+            timerPlayback.Dispose();
+        }
+
+        private void buttonIncreasePlaySpeed_Click(object sender, EventArgs e)
+        {
+            _timingSource.Speed += _timingChangeDelta;
+            updateTimingSpeedTextbox();
+        }
+
+        private void buttonDecreasePlaySpeed_Click(object sender, EventArgs e)
+        {
+            _timingSource.Speed -= _timingChangeDelta;
+            updateTimingSpeedTextbox();
+        }
+
+        private void updateTimingSpeedTextbox()
+        {
+            textBoxTimingSpeed.Text = Math.Round((_timingSource.Speed * 100), 0).ToString() + "%";
+            buttonDecreasePlaySpeed.Enabled = _timingSource.Speed > _timingChangeDelta;
+        }
+
+        private void trackBarPlayBack_Scroll(object sender, EventArgs e)
+        {
+            //_executionControl.Stop();
+            textBoxPosition.Text = TimeSpan.FromMilliseconds(trackBarPlayBack.Value).ToString(@"m\:ss\.fff");
+        }
+
+        private void trackBarPlayBack_MouseDown(object sender, MouseEventArgs e)
+        {
+            sequenceStop();
+        }
+
+        private void trackBarPlayBack_MouseUp(object sender, MouseEventArgs e)
+        {
+            //if sequence was previously playing resume
+            if (_sequencePlaySelected)
+            {
+                sequencePlay(TimeSpan.FromMilliseconds(trackBarPlayBack.Value));
+            }
+        }
+
+        private void updatePositionControls(TimeSpan Position)
+        {
+            trackBarPlayBack.Value = (int)Position.TotalMilliseconds;
+            textBoxPosition.Text = Position.ToString(@"m\:ss\.fff");
+        }
+
+        private void _triggerResult()
+        {
+            if (_playbackStarted)
+            {
+                // round the tapped time to the nearest millisecond
+                _newTappedMarks.Add(TimeSpan.FromMilliseconds(Math.Round(_timingSource.Position.TotalMilliseconds)));
+                panelMarkView.BackColor = _displayedCollection.MarkColor;
+                timerMarkHit.Start();
+            }
+        }
+
+        private void panelMarkView_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (radioButtonTapper.Checked)
+                _triggerResult();
+        }
+
+        private void MarkManager_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (radioButtonTapper.Checked)
+            {
+                if (e.KeyCode == Keys.Space)
+                {
+                    _triggerResult();
+                    e.Handled = true;
+                }
+            }
+        }
+
+        private void radioButtonTapper_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButtonTapper.Checked)
+                labelTapperInstructions.Visible = true;
+            else
+                labelTapperInstructions.Visible = false;
+        }
+
+        #endregion
+
+        #region Increase/Decrease selected Marks
+
+        private void buttonIncreaseSelectedMarks_Click(object sender, EventArgs e)
+        {
+            increaseSelectedMarks();
+        }
+
+        private void buttonDecreaseSelectedMarks_Click(object sender, EventArgs e)
+        {
+            decreaseSelectedMarks();
+        }
+
+        private void increaseSelectedMarks()
+        {
+            int incrementValue = Convert.ToInt32(textBoxTimeIncrement.Text);
+            TimeSpan incrementSpan = TimeSpan.FromMilliseconds(incrementValue);
+            List<TimeSpan> selectedMarks = new List<TimeSpan>();
+            foreach (int itemIndex in listViewMarks.SelectedIndices)
+            {
+                TimeSpan newTimeSpan = _displayedCollection.Marks[itemIndex].Add(incrementSpan);
+                if (newTimeSpan > _timedSequenceEditorForm.Sequence.Length)
+                {
+                    newTimeSpan = _timedSequenceEditorForm.Sequence.Length;
+                }
+                updateMark(itemIndex, newTimeSpan);
+                selectedMarks.Add(newTimeSpan);     //save new time so we can reselect the list items at the end.
+            }
+            selectMarks(selectedMarks);
+        }
+
+        private void decreaseSelectedMarks()
+        {
+            int incrementValue = Convert.ToInt32(textBoxTimeIncrement.Text);
+            TimeSpan incrementSpan = TimeSpan.FromMilliseconds(incrementValue);
+            List<TimeSpan> selectedMarks = new List<TimeSpan>();
+            foreach (int itemIndex in listViewMarks.SelectedIndices)
+            {
+                TimeSpan newTimeSpan = _displayedCollection.Marks[itemIndex].Subtract(incrementSpan);
+                if (newTimeSpan.CompareTo(TimeSpan.Zero) < 0)   //Make sure theres never a negative timespan
+                {
+                    newTimeSpan = TimeSpan.Zero;
+                }
+                updateMark(itemIndex, newTimeSpan);
+                selectedMarks.Add(newTimeSpan);
+            }
+            selectMarks(selectedMarks);
+        }
+
+        private void selectMarks(List<TimeSpan> marks)
+        {
+            foreach (TimeSpan tSpan in marks)
+            {
+                int newIndex = _displayedCollection.IndexOf(tSpan);
+                if (newIndex != -1)
+                {
+                    listViewMarks.Items[newIndex].Selected = true;
+                }
+            }
+            listViewMarks.Focus();
+        }
+
+        private void updateMark(int index, TimeSpan ts)
+        {
+
+            //test if the new mark already exists, if not remove it and add the new one
+            if (_displayedCollection.Marks.Contains(ts))
+            {
+                System.Media.SystemSounds.Asterisk.Play();
+            }
+            else
+            {
+                _displayedCollection.Marks.RemoveAt(index);
+                _displayedCollection.Marks.Add(ts);
+                _displayedCollection.Marks.Sort();
+                PopulateMarkListFromMarkCollection(_displayedCollection);
+                UpdateMarkCollectionInList(_displayedCollection);
+            }
+        }
+
+        #endregion
+
+        
 	}
 }

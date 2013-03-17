@@ -9,7 +9,7 @@ namespace VixenModules.Sequence.Timed {
 		private Guid _typeId = new Guid("{296bdba2-9bf3-4bff-a9f2-13efac5c8ecb}");
 
 		override public string FileExtension {
-			get { return ".tim"; }
+			get { return TimedSequence.Extension; }
 		}
 
 		override public Guid TypeId {

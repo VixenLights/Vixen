@@ -84,10 +84,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_executionControl.Stop();
 		}
 
-		private void panelTap_Click(object sender, EventArgs e)
-		{
-			if (_playing)
-				_triggerResult();
-		}
+        private void panelTap_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (_playing)
+                _triggerResult();
+        }
 	}
 }

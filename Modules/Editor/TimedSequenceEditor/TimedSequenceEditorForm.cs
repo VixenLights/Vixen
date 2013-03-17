@@ -231,8 +231,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					// Edit this type to be the more generic type to support importing into timed sequnces 12 FEB 2013 - JEMA
 					EditorModuleDescriptorBase descriptor = ((OwnerModule.Descriptor) as EditorModuleDescriptorBase);
 					saveFileDialog.InitialDirectory = SequenceService.SequenceDirectory;
-					string filter = descriptor.TypeName + " (*" + string.Join(", *", descriptor.FileExtensions[0]) + ")|*" + string.Join("; *", descriptor.FileExtensions[0]);
-					saveFileDialog.DefaultExt = descriptor.FileExtensions.First();
+					string filter = descriptor.TypeName + " (*" + string.Join(", *", _sequence.FileExtension) + ")|*" + string.Join("; *", _sequence.FileExtension);
+					saveFileDialog.DefaultExt = _sequence.FileExtension;
 					saveFileDialog.Filter = filter;
 					DialogResult result = saveFileDialog.ShowDialog();
 					if(result == DialogResult.OK) {
@@ -240,11 +240,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						string extension = Path.GetExtension(saveFileDialog.FileName);
 
 						// if the given extension isn't valid for this type, then keep the name intact and add an extension
-						// TODO: should we pick one type? Should an editor even be able to edit multiple file types? etc...
-						if(!descriptor.FileExtensions.Contains(extension)) {
-							//Use the first possible extension. Currently there is only one anyway.
-							extension = descriptor.FileExtensions.First();
-							name = name + extension;
+						if (extension != _sequence.FileExtension) {
+							name = name + _sequence.FileExtension;
 							VixenSystem.Logging.Info("Incorrect extension provided for timed sequence, appending one.");
 						}
 						_sequence.Save(name);
@@ -561,6 +558,35 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			_PlaySequence(start, end);
 		}
+
+        public void PlaySequenceFrom(TimeSpan StartTime)
+        {
+            if (_context == null)
+            {
+                VixenSystem.Logging.Error("TimedSequenceEditor: attempt to Play with null context!");
+                return;
+            }
+
+            TimeSpan start, end;
+
+            if (_context.IsPaused)
+            {
+                // continue execution from previous location.
+                start = _TimingSource.Position;
+                end = TimeSpan.MaxValue;
+                updateButtonStates(); // context provides no notification to/from pause state.
+            }
+            else
+            {
+                start = StartTime;
+                end = timelineControl.PlaybackEndTime.GetValueOrDefault(TimeSpan.MaxValue);
+                if (start >= end)
+                {
+                    start = timelineControl.PlaybackStartTime.GetValueOrDefault(TimeSpan.Zero);
+                }
+            }
+            _PlaySequence(start, end);
+        }
 
 		public void PauseSequence() {
 			if(_context == null) {
@@ -1379,9 +1405,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		public float Speed {
-			get { return 1; } // 1 = 100%
-			set { throw new NotSupportedException(); }
+            get { return _timingSpeed; }
+            set { _SetTimingSpeed(value); }
 		}
+
+        public bool positionHasValue
+        {
+            get { return timelineControl.PlaybackCurrentTime.HasValue; }
+        }
 
 		#endregion
 

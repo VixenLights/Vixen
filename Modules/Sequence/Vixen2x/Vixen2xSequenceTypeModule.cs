@@ -2,13 +2,14 @@
 using Vixen.IO;
 using Vixen.Module.SequenceType;
 using Vixen.Sys;
-using VixenModules.Editor.Vixen2xSequenceImporter;
+using VixenModules.Sequence.Timed;
+using VixenModules.SequenceType.Vixen2x;
 
 namespace VixenModules.Sequence.Vixen2x {
 	public class Vixen2xSequenceTypeModule : SequenceTypeModuleInstanceBase {
 
 		public override ISequence CreateSequence() {
-			return new Vixen2xSequence();
+			return new TimedSequence();
 		}
 
 		public override IContentMigrator CreateMigrator() {

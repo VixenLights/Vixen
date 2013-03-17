@@ -8,7 +8,7 @@ using Vixen.Module.Script;
 using Vixen.Sys;
 
 namespace Common.ScriptSequence {
-	public class ScriptSequence : Sequence {
+	public abstract class ScriptSequence : Sequence {
 		private IScriptModuleInstance _language;
 
 		public override ISequenceTypeDataModel SequenceData {

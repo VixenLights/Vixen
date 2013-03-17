@@ -228,8 +228,10 @@ namespace VixenModules.Effect.Twinkle
 			List<IndividualTwinkleDetails> result = new List<IndividualTwinkleDetails>();
 
 			// the mean interval between individual flickers (used for random generation later)
-			double meanMillisecondsBetweenTwinkles = AveragePulseTime / (AverageCoverage / 100.0) / 2.0;
-			double maxMillisecondsBetweenTwinkles = AveragePulseTime / (AverageCoverage / 100.0);
+			// avoid any divide-by-zeros -- if it was <= 0, cap it to 1% at least
+			double averageCoverage = ((AverageCoverage <= 0) ? 1.0 : AverageCoverage) / 100.0;
+			double meanMillisecondsBetweenTwinkles = AveragePulseTime / averageCoverage / 2.0;
+			double maxMillisecondsBetweenTwinkles = AveragePulseTime / averageCoverage;
 
 			// the maximum amount of time an individual flicker/twinkle can vary off the average by
 			int maxDurationVariation = (int)((PulseTimeVariation / 100.0) * AveragePulseTime);
