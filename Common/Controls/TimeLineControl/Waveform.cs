@@ -56,7 +56,7 @@ namespace Common.Controls.Timeline
 				audio.LoadMedia(TimeSpan.MinValue);
 			}
 			samplesPerPixel = (double)pixelsToTime(1).Ticks / TimeSpan.TicksPerMillisecond * audio.Frequency / 1000;
-			int step = audio.Channels;
+			int step = audio.BytesPerSample;
 			samples.Clear();
 			double samplesRead = 0;
 			while (samplesRead < audio.NumberSamples)
