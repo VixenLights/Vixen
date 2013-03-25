@@ -9,9 +9,9 @@ namespace VixenModules.App.VirtualEffect
 	[DataContract]
 	public class VirtualEffect
 	{
-		//[DataMember]
+		[DataMember]
 		public Guid EffectGuid { get; set; }
-		//[DataMember]
+		[DataMember]
 		public String Name { get; set; }
 		//[DataMember]
 		private object[] _virtualParams;

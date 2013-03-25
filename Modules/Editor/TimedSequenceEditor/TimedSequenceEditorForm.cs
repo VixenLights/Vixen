@@ -19,6 +19,8 @@ using Vixen.Services;
 using Vixen.Sys;
 using VixenModules.Sequence.Timed;
 using Element = Common.Controls.Timeline.Element;
+using VixenModules.App.VirtualEffect;
+using Vixen.Module.App;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -57,6 +59,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private static readonly DataFormats.Format _clipboardFormatName = DataFormats.GetFormat(typeof(TimelineElementsClipboardData).FullName);
 
+		private VirtualEffectLibrary _virtualEffectLibrary;
+
 		#endregion
 
 
@@ -84,9 +88,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			timelineControl.CursorMoved += CursorMovedHandler;
 			timelineControl.ElementsSelected += timelineControl_ElementsSelected;
 
+			_virtualEffectLibrary = ApplicationServices.Get<IAppModuleInstance>(new Guid("{CEFA7ECE-B0CD-42F3-AD3F-42E38A6EEAD5}")) as VirtualEffectLibrary;
+
 			LoadAvailableEffects();
 			InitUndo();
 			updateButtonStates();
+			LoadVirtualEffects();
 
 #if DEBUG
 			ToolStripButton b = new ToolStripButton("[Debug Break]");
@@ -105,6 +112,36 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 #endif
 
+		private void LoadVirtualEffects()
+		{
+			//ToolStripMenuItem menuItem = new ToolStripMenuItem(ve.Name);
+			//menuItem.Tag = 0;
+			foreach (KeyValuePair<Guid, VirtualEffect> guid in _virtualEffectLibrary)
+			{
+				ToolStripMenuItem menuItem = new ToolStripMenuItem(guid.Value.Name);
+				menuItem.Tag = guid.Key;
+				menuItem.Click += (sender, e) =>
+				{
+					Row destination = timelineControl.SelectedRow;
+					if (destination != null)
+					{
+						addNewVirtualEffectById((Guid)menuItem.Tag, destination, timelineControl.CursorPosition, TimeSpan.FromSeconds(2)); // TODO: get a proper time
+					}
+				};
+				//addEffectToolStripMenuItem.DropDownItems.Add(menuItem);
+
+				// Add a button to the tool strip
+				ToolStripItem tsItem = new ToolStripButton(guid.Value.Name);
+				tsItem.Tag = guid.Key;
+				tsItem.MouseDown += toolStripEffects_Item_MouseDown;
+				tsItem.MouseMove += toolStripEffects_Item_MouseMove;
+				tsItem.Click += toolStripEffects_Item_Click;
+				toolStripEffects.Items.Add(tsItem);
+				toolStripExVirtualEffects.Items.Add(tsItem);
+			}
+
+
+		}
 
 		private void LoadAvailableEffects() {
 			foreach(IEffectModuleDescriptor effectDesriptor in ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>()) {
@@ -720,10 +757,30 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="row">The Common.Controls.Timeline.Row to add the effect to</param>
 		/// <param name="startTime">The start time of the effect</param>
 		/// <param name="timeSpan">The duration of the effect</param>
-		private void addNewEffectById(Guid effectId, Row row, TimeSpan startTime, TimeSpan timeSpan) {
+		private void addNewEffectById(Guid effectId, Row row, TimeSpan startTime, TimeSpan timeSpan)
+		{
 			//Debug.WriteLine("{0}   addNewEffectById({1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, effectId);
 			// get a new instance of this effect, populate it, and make a node for it
-			IEffectModuleInstance effect = ApplicationServices.Get<IEffectModuleInstance>(effectId);
+
+			//test if guid is in VirtualLibrary, otherwise proceed as normal
+			if (_virtualEffectLibrary.ContainsEffect(effectId))
+			{
+				addNewVirtualEffectById(effectId, row, startTime, timeSpan);
+			}
+			else
+			{
+				IEffectModuleInstance effect = ApplicationServices.Get<IEffectModuleInstance>(effectId);
+				addEffectInstance(effect, row, startTime, timeSpan);
+			}
+		}
+
+		private void addNewVirtualEffectById(Guid effectId, Row row, TimeSpan startTime, TimeSpan timeSpan)
+		{
+			//Debug.WriteLine("{0}   addNewEffectById({1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, effectId);
+			// get a new instance of this effect, populate it, and make a node for it
+			VirtualEffect virtualEffect = _virtualEffectLibrary.GetVirtualEffect(effectId);
+			IEffectModuleInstance effect = ApplicationServices.Get<IEffectModuleInstance>(virtualEffect.EffectGuid);
+			effect.ParameterValues = virtualEffect.VirtualParams;
 			addEffectInstance(effect, row, startTime, timeSpan);
 		}
 
@@ -1475,6 +1532,70 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 		}
+
+		private void toolStripButtonVirtualEffectsAdd_Click(object sender, EventArgs e)
+		{
+			IEnumerable<Element> selectedElements = timelineControl.SelectedElements;
+			switch (selectedElements.Count())
+			{
+				case 0:
+					MessageBox.Show("Please select an element to save.");
+					break;
+				case 1:
+					TimedSequenceElement tse = (TimedSequenceElement)selectedElements.ElementAt(0);
+					saveVirtualEffect(tse.EffectNode.Effect);
+					break;
+				default:
+					MessageBox.Show("Please select only 1 element to save.");
+					break;
+			}
+		}
+
+		private void toolStripButtonVirtualEffectsRemove_Click(object sender, EventArgs e)
+		{
+			VirtualEffectRemoveDialog dialog = new VirtualEffectRemoveDialog(_virtualEffectLibrary);
+
+			if (dialog.ShowDialog() == DialogResult.OK)
+			{
+				toolStripExVirtualEffects_Clear();
+				foreach (Guid g in dialog.virtualEffectsToRemove)
+				{
+					_virtualEffectLibrary.removeEffect(g);
+				}
+				LoadVirtualEffects();
+			}
+		}
+
+		private void toolStripExVirtualEffects_Clear()
+		{
+			List<ToolStripItem> addList = new List<ToolStripItem>();
+			List<ToolStripItem> removeList = new List<ToolStripItem>();
+			foreach (ToolStripItem tsItem in toolStripExVirtualEffects.Items)
+			{
+				if (tsItem.Tag != null && (_virtualEffectLibrary.ContainsEffect((Guid)tsItem.Tag)))
+				{
+					removeList.Add(tsItem);
+				}
+			}
+			foreach (ToolStripItem tsItem in removeList)
+			{
+				toolStripExVirtualEffects.Items.Remove(tsItem);
+			}
+		}
+
+		private void saveVirtualEffect(IEffectModuleInstance moduleInstance)
+		{
+			VirtualEffectNameDialog dialog = new VirtualEffectNameDialog();
+			if (dialog.ShowDialog() == DialogResult.OK)
+			{
+				_virtualEffectLibrary.addEffect(Guid.NewGuid(), dialog.effectName, moduleInstance.TypeId, moduleInstance.ParameterValues);
+				toolStripExVirtualEffects_Clear();
+				LoadVirtualEffects();
+			}
+
+		}
+
+		
 	}
 
 	[Serializable]

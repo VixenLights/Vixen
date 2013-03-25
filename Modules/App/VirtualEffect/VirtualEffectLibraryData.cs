@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 
 namespace VixenModules.App.VirtualEffect
 {
-	[DataContract]
+	//[DataContract]
 	public class VirtualEffectLibraryData:ModuleDataModelBase
 	{		
 		public VirtualEffectLibraryData()
