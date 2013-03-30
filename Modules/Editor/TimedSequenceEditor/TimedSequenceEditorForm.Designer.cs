@@ -27,6 +27,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TimedSequenceEditorForm));
 			this.toolStripOperations = new Common.Controls.ToolStripEx();
 			this.toolStripButton_Start = new System.Windows.Forms.ToolStripButton();
@@ -77,7 +78,7 @@
 			this.toolStripMenuItem_associateAudio = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_MarkManager = new System.Windows.Forms.ToolStripMenuItem();
 			this.modifySequenceLengthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.timerPlaying = new System.Windows.Forms.Timer();
+			this.timerPlaying = new System.Windows.Forms.Timer(this.components);
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabel_currentTime = new System.Windows.Forms.ToolStripStatusLabel();
@@ -93,8 +94,13 @@
 			this.toolStripLabel_TimingSpeed = new System.Windows.Forms.ToolStripLabel();
 			this.toolStripButton_IncreaseTimingSpeed = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton_DecreaseTimingSpeed = new System.Windows.Forms.ToolStripButton();
+			this.toolStripExVirtualEffects = new Common.Controls.ToolStripEx();
+			this.toolStripLabelVirtualEffects = new System.Windows.Forms.ToolStripLabel();
+			this.toolStripButtonVirtualEffectsAdd = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButtonVirtualEffectsRemove = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparatorBeginEffects = new System.Windows.Forms.ToolStripSeparator();
 			this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-			this.contextMenuStripElementSelection = new System.Windows.Forms.ContextMenuStrip();
+			this.contextMenuStripElementSelection = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.toolStripOperations.SuspendLayout();
 			this.menuStrip.SuspendLayout();
 			this.statusStrip.SuspendLayout();
@@ -103,6 +109,7 @@
 			this.toolStripContainer.SuspendLayout();
 			this.toolStripEffects.SuspendLayout();
 			this.toolStripTiming.SuspendLayout();
+			this.toolStripExVirtualEffects.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// toolStripOperations
@@ -623,7 +630,7 @@
 			// toolStripContainer.ContentPanel
 			// 
 			this.toolStripContainer.ContentPanel.Controls.Add(this.timelineControl);
-			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(886, 486);
+			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(886, 461);
 			this.toolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.toolStripContainer.LeftToolStripPanelVisible = false;
 			this.toolStripContainer.Location = new System.Drawing.Point(0, 24);
@@ -638,6 +645,7 @@
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripEffects);
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripOperations);
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripTiming);
+			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripExVirtualEffects);
 			// 
 			// timelineControl
 			// 
@@ -648,7 +656,7 @@
 			this.timelineControl.Location = new System.Drawing.Point(0, 0);
 			this.timelineControl.Margin = new System.Windows.Forms.Padding(0);
 			this.timelineControl.Name = "timelineControl";
-			this.timelineControl.Size = new System.Drawing.Size(886, 486);
+			this.timelineControl.Size = new System.Drawing.Size(886, 461);
 			this.timelineControl.TabIndex = 2;
 			// 
 			// toolStripEffects
@@ -657,7 +665,7 @@
 			this.toolStripEffects.Dock = System.Windows.Forms.DockStyle.None;
 			this.toolStripEffects.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripLabel1});
-			this.toolStripEffects.Location = new System.Drawing.Point(9, 0);
+			this.toolStripEffects.Location = new System.Drawing.Point(3, 0);
 			this.toolStripEffects.Name = "toolStripEffects";
 			this.toolStripEffects.Size = new System.Drawing.Size(128, 25);
 			this.toolStripEffects.TabIndex = 5;
@@ -715,6 +723,53 @@
 			this.toolStripButton_DecreaseTimingSpeed.Text = "Decrease speed";
 			this.toolStripButton_DecreaseTimingSpeed.Click += new System.EventHandler(this.toolStripButton_DecreaseTimingSpeed_Click);
 			// 
+			// toolStripExVirtualEffects
+			// 
+			this.toolStripExVirtualEffects.ClickThrough = true;
+			this.toolStripExVirtualEffects.Dock = System.Windows.Forms.DockStyle.None;
+			this.toolStripExVirtualEffects.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripLabelVirtualEffects,
+            this.toolStripButtonVirtualEffectsAdd,
+            this.toolStripButtonVirtualEffectsRemove,
+            this.toolStripSeparatorBeginEffects});
+			this.toolStripExVirtualEffects.Location = new System.Drawing.Point(3, 75);
+			this.toolStripExVirtualEffects.Name = "toolStripExVirtualEffects";
+			this.toolStripExVirtualEffects.Size = new System.Drawing.Size(187, 25);
+			this.toolStripExVirtualEffects.TabIndex = 7;
+			// 
+			// toolStripLabelVirtualEffects
+			// 
+			this.toolStripLabelVirtualEffects.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.toolStripLabelVirtualEffects.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.toolStripLabelVirtualEffects.Name = "toolStripLabelVirtualEffects";
+			this.toolStripLabelVirtualEffects.Size = new System.Drawing.Size(92, 22);
+			this.toolStripLabelVirtualEffects.Text = "Virtual Effects: ";
+			// 
+			// toolStripButtonVirtualEffectsAdd
+			// 
+			this.toolStripButtonVirtualEffectsAdd.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButtonVirtualEffectsAdd.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.plus_white_icon;
+			this.toolStripButtonVirtualEffectsAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonVirtualEffectsAdd.Name = "toolStripButtonVirtualEffectsAdd";
+			this.toolStripButtonVirtualEffectsAdd.Size = new System.Drawing.Size(23, 22);
+			this.toolStripButtonVirtualEffectsAdd.Text = "+";
+			this.toolStripButtonVirtualEffectsAdd.Click += new System.EventHandler(this.toolStripButtonVirtualEffectsAdd_Click);
+			// 
+			// toolStripButtonVirtualEffectsRemove
+			// 
+			this.toolStripButtonVirtualEffectsRemove.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButtonVirtualEffectsRemove.Image = global::VixenModules.Editor.TimedSequenceEditor.TimedSequenceEditorResources.minus_white_icon;
+			this.toolStripButtonVirtualEffectsRemove.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonVirtualEffectsRemove.Name = "toolStripButtonVirtualEffectsRemove";
+			this.toolStripButtonVirtualEffectsRemove.Size = new System.Drawing.Size(23, 22);
+			this.toolStripButtonVirtualEffectsRemove.Text = "-";
+			this.toolStripButtonVirtualEffectsRemove.Click += new System.EventHandler(this.toolStripButtonVirtualEffectsRemove_Click);
+			// 
+			// toolStripSeparatorBeginEffects
+			// 
+			this.toolStripSeparatorBeginEffects.Name = "toolStripSeparatorBeginEffects";
+			this.toolStripSeparatorBeginEffects.Size = new System.Drawing.Size(6, 25);
+			// 
 			// saveFileDialog
 			// 
 			this.saveFileDialog.Title = "Save timed sequence";
@@ -756,6 +811,8 @@
 			this.toolStripEffects.PerformLayout();
 			this.toolStripTiming.ResumeLayout(false);
 			this.toolStripTiming.PerformLayout();
+			this.toolStripExVirtualEffects.ResumeLayout(false);
+			this.toolStripExVirtualEffects.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -830,5 +887,10 @@
 		private System.Windows.Forms.ToolStripLabel toolStripLabel_TimingSpeed;
 		private System.Windows.Forms.ToolStripButton toolStripButton_IncreaseTimingSpeed;
 		private System.Windows.Forms.ToolStripButton toolStripButton_DecreaseTimingSpeed;
+		private Common.Controls.ToolStripEx toolStripExVirtualEffects;
+		private System.Windows.Forms.ToolStripLabel toolStripLabelVirtualEffects;
+		private System.Windows.Forms.ToolStripButton toolStripButtonVirtualEffectsAdd;
+		private System.Windows.Forms.ToolStripButton toolStripButtonVirtualEffectsRemove;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparatorBeginEffects;
 	}
 }

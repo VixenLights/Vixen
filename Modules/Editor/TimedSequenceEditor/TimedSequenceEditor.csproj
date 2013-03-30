@@ -196,6 +196,11 @@
       <Name>Controls</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\App\VirtualEffect\VirtualEffect.csproj">
+      <Project>{02072E53-7A01-423C-914E-BF785BA4F5CB}</Project>
+      <Name>VirtualEffect</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Media\Audio\Audio.csproj">
       <Project>{4243BA4C-6371-4DD1-8A1D-675BED5322AF}</Project>
       <Name>Audio</Name>
