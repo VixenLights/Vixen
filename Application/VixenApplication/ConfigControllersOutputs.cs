@@ -12,6 +12,7 @@ namespace VixenApplication
 	{
 		private readonly OutputController _controller;
 		private int _selectedOutputIndex;
+		private bool _changesMade;
 
 		public ConfigControllersOutputs(OutputController controller)
 		{
@@ -93,6 +94,9 @@ namespace VixenApplication
 		{
 			_controller.Outputs[_selectedOutputIndex].Name = textBoxName.Text;
 			_redrawOutputList();
+
+			//changes were made so set our _changesMade.
+			_changesMade = true;
 		}
 
 		private void buttonRenameMultiple_Click(object sender, EventArgs e)
@@ -105,10 +109,17 @@ namespace VixenApplication
 				oldNames.Add(selectedItem.SubItems[1].Text);
 			}
 
-			using (NameGenerator nameGenerator = new NameGenerator(oldNames)) {
-				if (nameGenerator.ShowDialog() == DialogResult.OK) {
-					for (int i = 0; i < listViewOutputs.SelectedItems.Count; i++) {
-						if (i >= nameGenerator.Names.Count) {
+			using (NameGenerator nameGenerator = new NameGenerator(oldNames))
+			{
+				if (nameGenerator.ShowDialog() == DialogResult.OK)
+				{
+					//changes were made so set our _changesMade to true;
+					_changesMade = true;
+
+					for (int i = 0; i < listViewOutputs.SelectedItems.Count; i++)
+					{
+						if (i >= nameGenerator.Names.Count)
+						{
 							VixenSystem.Logging.Warning("ConfigControllersOutputs: renaming outputs, and ran out of new names!");
 							break;
 						}
@@ -124,28 +135,33 @@ namespace VixenApplication
 
 		private void ConfigControllersOutputs_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			if (DialogResult == DialogResult.Cancel)
+			if (_changesMade)
 			{
-				switch (MessageBox.Show(this, "All changes will be lost if you continue, do you wish to continue?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+				if (DialogResult == DialogResult.Cancel)
 				{
-					case DialogResult.No:
-						e.Cancel = true;
-						break;
-					default:
-						break;
+					switch (MessageBox.Show(this, "All changes will be lost if you continue, do you wish to continue?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+					{
+						case DialogResult.No:
+							e.Cancel = true;
+							break;
+						default:
+							break;
+					}
 				}
-			}
-			else if (DialogResult == DialogResult.OK)
-			{
-				e.Cancel = false;
-			}
-			else
-			{
-				switch (e.CloseReason)
+				else if (DialogResult == DialogResult.OK)
 				{
-					case CloseReason.UserClosing:
-						e.Cancel = true;
-						break;
+					e.Cancel = false;
+				}
+				else
+				{
+					switch (e.CloseReason)
+					{
+						case CloseReason.UserClosing:
+							e.Cancel = true;
+							break;
+						default:
+							break;
+					}
 				}
 			}
 		}

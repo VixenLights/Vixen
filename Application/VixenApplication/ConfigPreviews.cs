@@ -17,6 +17,7 @@ namespace VixenApplication {
 	public partial class ConfigPreviews : Form {
 		private OutputPreview _displayedController;
 		private bool _internal;
+		private bool _changesMade;
 
 		public ConfigPreviews() {
 			InitializeComponent();
@@ -59,6 +60,8 @@ namespace VixenApplication {
 				// displayed controller is selected.
 				_PopulateFormWithController(preview);
 				_PopulateControllerList();
+
+				_changesMade = true;
 			}
 		}
 
@@ -79,6 +82,7 @@ namespace VixenApplication {
 						VixenSystem.Previews.Remove(oc);
 					}
 					_PopulateControllerList();
+					_changesMade = true;
 				}
 			}
 		}
@@ -90,10 +94,13 @@ namespace VixenApplication {
 			_displayedController.Name = textBoxName.Text;
 
 			_PopulateControllerList();
+
+			_changesMade = true;
 		}
 
 		private void buttonConfigureController_Click(object sender, EventArgs e) {
 			ConfigureSelectedController();
+			_changesMade = true;
 		}
 
 		private void _PopulateControllerList() {
@@ -143,14 +150,14 @@ namespace VixenApplication {
 		private void listViewControllers_ItemCheck(object sender, ItemCheckEventArgs e)
 		{
 			OutputPreview preview = (listViewControllers.Items[e.Index].Tag as OutputPreview);
-			if(e.NewValue==CheckState.Unchecked)
+			if (e.NewValue == CheckState.Unchecked)
 			{
-				if (preview!=null && preview.IsRunning)
+				if (preview != null && preview.IsRunning)
 				{
 					VixenSystem.Previews.Stop(preview);
 				}
 			}
-			else if(e.NewValue==CheckState.Checked)
+			else if (e.NewValue == CheckState.Checked)
 			{
 				if (preview != null && !preview.IsRunning)
 				{
@@ -163,28 +170,31 @@ namespace VixenApplication {
 
 		private void ConfigPreviews_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			if (DialogResult == DialogResult.Cancel)
+			if (_changesMade)
 			{
-				switch (MessageBox.Show(this, "All changes will be lost if you continue, do you wish to continue?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+				if (DialogResult == DialogResult.Cancel)
 				{
-					case DialogResult.No:
-						e.Cancel = true;
-						break;
-					default:
-						break;
+					switch (MessageBox.Show(this, "All changes will be lost if you continue, do you wish to continue?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+					{
+						case DialogResult.No:
+							e.Cancel = true;
+							break;
+						default:
+							break;
+					}
 				}
-			}
-			else if (DialogResult == DialogResult.OK)
-			{
-				e.Cancel = false;
-			}
-			else
-			{
-				switch (e.CloseReason)
+				else if (DialogResult == DialogResult.OK)
 				{
-					case CloseReason.UserClosing:
-						e.Cancel = true;
-						break;
+					e.Cancel = false;
+				}
+				else
+				{
+					switch (e.CloseReason)
+					{
+						case CloseReason.UserClosing:
+							e.Cancel = true;
+							break;
+					}
 				}
 			}
 		}

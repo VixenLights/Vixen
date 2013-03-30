@@ -57,6 +57,8 @@ namespace VixenApplication
 
 		private Timer _relayoutOnResizeTimer;
 
+		private bool _changesMade;
+
 		public ConfigFiltersAndPatching(VixenApplicationData applicationData)
 		{
 			InitializeComponent();
@@ -254,6 +256,10 @@ namespace VixenApplication
 			else if (shape is FilterShape) {
 				FilterShape filterShape = shape as FilterShape;
 				filterShape.RunSetup();
+			
+				//changes were made to the filter so set _changesMade
+				_changesMade = true;
+			
 			}
 
 			if (shape is ElementNodeShape)
@@ -326,11 +332,13 @@ namespace VixenApplication
 		private void pasteFilterToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			PasteClipboardFilters(Cursor.Position);
+			_changesMade = true;
 		}
 
 		private void pasteFilterMultipleToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			PasteClipboardFiltersMultipleTimes();
+			_changesMade = true;
 		}
 
 		private void PasteClipboardFiltersMultipleTimes()
@@ -355,6 +363,9 @@ namespace VixenApplication
 			newPosition.Y += diagramDisplay.GetDiagramOffset().Y - (SHAPE_FILTERS_HEIGHT / 2);
 
 			DuplicateFilterShapes(_filterShapeClipboard, numberOfCopies, newPosition);
+
+			//we made some changes since we pasted to the display
+			_changesMade = true;
 		}
 
 		public IEnumerable<FilterShape> DuplicateFilterShapes(
@@ -409,6 +420,8 @@ namespace VixenApplication
 				}
 			}
 
+			//assume we made changes since we added shapes
+			_changesMade = true;
 			return result;
 		}
 
@@ -427,6 +440,7 @@ namespace VixenApplication
 		{
 			PatchingWizard wizard = sender as PatchingWizard;
 			_patchingWizardRunning = false;
+			_changesMade = true;
 		}
 
 		public event EventHandler DiagramShapesSelected
@@ -475,6 +489,9 @@ namespace VixenApplication
 					_RemoveShape(filterShape);
 				}
 			}
+
+			//looks like we may have delted shapes so assume we made changes
+			_changesMade = true;
 		}
 
 		private void _RemoveDataFlowLinksFromShapePoint(FilterSetupShapeBase shape, ControlPointId controlPoint)
@@ -810,7 +827,7 @@ namespace VixenApplication
 				outputShape.FillStyle = project.Design.FillStyles["Output"];
 
 				if (output.Name.Length <= 0)
-					outputShape.Title = outputController.Name + " [" + (i + 1) + "]";
+					outputShape.Title = String.Format("{0} [{1}]", outputController.Name, (i + 1));
 				else
 					outputShape.Title = output.Name;
 
@@ -961,28 +978,31 @@ namespace VixenApplication
 
 		private void ConfigFiltersAndPatching_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			if (DialogResult == DialogResult.Cancel)
+			if (_changesMade)
 			{
-				switch (MessageBox.Show(this, "All changes will be lost if you continue, do you wish to continue?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+				if (DialogResult == DialogResult.Cancel)
 				{
-					case DialogResult.No:
-						e.Cancel = true;
-						break;
-					default:
-						break;
+					switch (MessageBox.Show(this, "All changes will be lost if you continue, do you wish to continue?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+					{
+						case DialogResult.No:
+							e.Cancel = true;
+							break;
+						default:
+							break;
+					}
 				}
-			}
-			else if (DialogResult == DialogResult.OK)
-			{
-				e.Cancel = false;
-			}
-			else
-			{
-				switch (e.CloseReason)
+				else if (DialogResult == DialogResult.OK)
 				{
-					case CloseReason.UserClosing:
-						e.Cancel = true;
-						break;
+					e.Cancel = false;
+				}
+				else
+				{
+					switch (e.CloseReason)
+					{
+						case CloseReason.UserClosing:
+							e.Cancel = true;
+							break;
+					}
 				}
 			}
 		}

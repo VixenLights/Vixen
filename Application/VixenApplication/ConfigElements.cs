@@ -19,6 +19,7 @@ namespace VixenApplication
 	public partial class ConfigElements : Form
 	{
 		private ElementNode _displayedNode;
+		private bool _changesMade;
 
 		// sets of data to keep track of which items in the treeview are open, selected, visible etc.
 		// so that when we reload the tree, we can keep it looking relatively consistent with what the
@@ -228,11 +229,12 @@ namespace VixenApplication
 				int parentCount = GetNodeParentGroupCount(node);
 				List<string> parents = GetNodeParentGroupNames(node);
 				string labelString = "", tooltipString = "";
-				labelString = "This element is in " + parentCount + " group" + ((parentCount != 1) ? "s" : "") + ((parentCount == 0) ? "." : ": ");
+				labelString = String.Format("This element is in {0} group{1}{2}", parentCount, ((parentCount != 1) ? "s" : ""), ((parentCount == 0) ? "." : ": "));
 				tooltipString = labelString + "\r\n\r\n";
-				foreach (string p in parents) {
-					labelString = labelString + p + ", ";
-					tooltipString = tooltipString + p + "\r\n";
+				foreach (string p in parents)
+				{
+					labelString = String.Format("{0}{1}, ", labelString, p);
+					tooltipString = String.Format("{0}{1}\r\n", tooltipString, p);
 				}
 				labelParents.Text = labelString.TrimEnd(new char[] { ' ', ',' });
 				tooltipString = tooltipString.TrimEnd(new char[] { '\r', '\n' });
@@ -280,12 +282,14 @@ namespace VixenApplication
 		{
 			multiSelectTreeviewElementsGroups.ClearSelectedNodes();
 			AddSingleNodeWithPrompt();
+			_changesMade = true;
 		}
 
 		private void buttonAddMultipleElements_Click(object sender, EventArgs e)
 		{
 			multiSelectTreeviewElementsGroups.ClearSelectedNodes();
 			AddMultipleNodesWithPrompt();
+			_changesMade = true;
 		}
 
 		private void buttonDeleteElement_Click(object sender, EventArgs e)
@@ -304,6 +308,7 @@ namespace VixenApplication
 					foreach (TreeNode tn in multiSelectTreeviewElementsGroups.SelectedNodes) {
 						DeleteNode(tn);
 					}
+					_changesMade = true;
 				}
 			}
 
@@ -314,11 +319,13 @@ namespace VixenApplication
 		private void buttonCreateGroup_Click(object sender, EventArgs e)
 		{
 			CreateGroupFromSelectedNodes();
+			_changesMade = true;
 		}
 
 		private void buttonRename_Click(object sender, EventArgs e)
 		{
 			RenameSelectedElements();
+			_changesMade = true;
 		}
 
 		private void buttonAddProperty_Click(object sender, EventArgs e)
@@ -327,16 +334,22 @@ namespace VixenApplication
 			foreach (KeyValuePair<Guid, string> kvp in ApplicationServices.GetAvailableModules<IPropertyModuleInstance>()) {
 				properties.Add(new KeyValuePair<string, object>(kvp.Value, kvp.Key));
 			}
-			ListSelectDialog addForm = new ListSelectDialog("Add Property", (properties));
-			if (addForm.ShowDialog() == DialogResult.OK) {
-				_displayedNode.Properties.Add((Guid)addForm.SelectedItem);
-				PopulatePropertiesArea(_displayedNode);
+			using (ListSelectDialog addForm = new ListSelectDialog("Add Property", (properties)))
+			{
+				if (addForm.ShowDialog() == DialogResult.OK)
+				{
+					_displayedNode.Properties.Add((Guid)addForm.SelectedItem);
+					PopulatePropertiesArea(_displayedNode);
+
+					_changesMade = true;
+				}
 			}
 		}
 
 		private void buttonConfigureProperty_Click(object sender, EventArgs e)
 		{
 			ConfigureSelectedProperty();
+			_changesMade = true;
 		}
 
 		private void buttonDeleteProperty_Click(object sender, EventArgs e)
@@ -356,6 +369,7 @@ namespace VixenApplication
 					}
 
 					PopulatePropertiesArea(_displayedNode);
+					_changesMade = true;
 				}
 			}
 		}
@@ -533,7 +547,7 @@ namespace VixenApplication
 		private int GetNodeParentGroupCount(ElementNode node)
 		{
 			int count = node.Parents.Count();
-			if(VixenSystem.Nodes.GetRootNodes().Contains(node))
+			if (VixenSystem.Nodes.GetRootNodes().Contains(node))
 				count--;
 			return count;
 		}
@@ -714,7 +728,7 @@ namespace VixenApplication
 			if (_clipboardNodes == null)
 				return;
 
-			ElementNode destinationNode = null;
+			ElementNode destinationNode;
 			TreeNode selectedTreeNode = multiSelectTreeviewElementsGroups.SelectedNode;
 
 			if (selectedTreeNode != null)
@@ -836,12 +850,17 @@ namespace VixenApplication
 				return;
 			else if (multiSelectTreeviewElementsGroups.SelectedNodes.Count == 1) {
 				ElementNode cn = multiSelectTreeviewElementsGroups.SelectedNode.Tag as ElementNode;
-				TextDialog dialog = new TextDialog("Item name?", "Rename item", (cn).Name, true);
-				if (dialog.ShowDialog() == DialogResult.OK) {
-					if (dialog.Response != "" && dialog.Response != cn.Name)
-						VixenSystem.Nodes.RenameNode(cn, dialog.Response);
+				using (TextDialog dialog = new TextDialog("Item name?", "Rename item", (cn).Name, true))
+				{
+					if (dialog.ShowDialog() == DialogResult.OK)
+					{
+						if (dialog.Response != "" && dialog.Response != cn.Name)
+							VixenSystem.Nodes.RenameNode(cn, dialog.Response);
+					}
 				}
-			} else if (multiSelectTreeviewElementsGroups.SelectedNodes.Count > 1) {
+			}
+			else if (multiSelectTreeviewElementsGroups.SelectedNodes.Count > 1)
+			{
 				RenameSelectedElements();
 			}
 
@@ -881,28 +900,31 @@ namespace VixenApplication
 
 		private void ConfigElements_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			if (DialogResult == DialogResult.Cancel)
+			if (_changesMade)
 			{
-				switch (MessageBox.Show(this, "All changes will be lost if you continue, do you wish to continue?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+				if (DialogResult == DialogResult.Cancel)
 				{
-					case DialogResult.No:
-						e.Cancel = true;
-						break;
-					default:
-						break;
+					switch (MessageBox.Show(this, "All changes will be lost if you continue, do you wish to continue?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+					{
+						case DialogResult.No:
+							e.Cancel = true;
+							break;
+						default:
+							break;
+					}
 				}
-			}
-			else if (DialogResult == DialogResult.OK)
-			{
-				e.Cancel = false;
-			}
-			else
-			{
-				switch (e.CloseReason)
+				else if (DialogResult == DialogResult.OK)
 				{
-					case CloseReason.UserClosing:
-						e.Cancel = true;
-						break;
+					e.Cancel = false;
+				}
+				else
+				{
+					switch (e.CloseReason)
+					{
+						case CloseReason.UserClosing:
+							e.Cancel = true;
+							break;
+					}
 				}
 			}
 		}

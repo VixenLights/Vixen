@@ -21,6 +21,8 @@ namespace VixenApplication
 	{
 		private OutputController _displayedController;
 		private bool _internal;
+		private bool _changesMade;
+
 		public ConfigControllers()
 		{
 			InitializeComponent();
@@ -99,6 +101,9 @@ namespace VixenApplication
 				// displayed controller is selected.
 				_PopulateFormWithController(oc);
 				_PopulateControllerList();
+
+				//We added a controller so set the _changesMade to true
+				_changesMade = true;
 			}
 		}
 
@@ -120,6 +125,9 @@ namespace VixenApplication
 						VixenSystem.OutputControllers.Remove(oc);
 					}
 					_PopulateControllerList();
+
+					//we deleted at least one controller so set changes made = true
+					_changesMade = true;
 				}
 			}
 		}
@@ -135,11 +143,15 @@ namespace VixenApplication
 			int oldCount = _displayedController.OutputCount;
 			int newCount = (int)numericUpDownOutputCount.Value;
 			_displayedController.OutputCount = newCount;
-			for (int i = oldCount; i < newCount; i++) {
-				_displayedController.Outputs[i].Name = _displayedController.Name + "-" + (i + 1);
+			for (int i = oldCount; i < newCount; i++)
+			{
+				_displayedController.Outputs[i].Name = String.Format("{0}-{1}", _displayedController.Name, (i + 1));
 			}
 
 			_PopulateControllerList();
+
+			//we added controller outputs so set changes made to true
+			_changesMade = true;
 		}
 
 		private void buttonConfigureController_Click(object sender, EventArgs e)
@@ -158,9 +170,16 @@ namespace VixenApplication
 
 		private void buttonConfigureOutputs_Click(object sender, EventArgs e)
 		{
-			if (listViewControllers.SelectedItems.Count > 0) {
-				ConfigControllersOutputs outputsForm = new ConfigControllersOutputs(listViewControllers.SelectedItems[0].Tag as OutputController);
-				outputsForm.ShowDialog();
+			if (listViewControllers.SelectedItems.Count > 0)
+			{
+				using (ConfigControllersOutputs outputsForm = new ConfigControllersOutputs(listViewControllers.SelectedItems[0].Tag as OutputController))
+				{
+					if(outputsForm.ShowDialog()==DialogResult.OK)
+					{
+						//make the assumption that changes were made in the Controller channel setup
+						_changesMade = true;
+					}
+				}
 			}
 		}
 
@@ -173,6 +192,9 @@ namespace VixenApplication
 		{
 			if (listViewControllers.SelectedItems.Count == 1) {
 				(listViewControllers.SelectedItems[0].Tag as OutputController).Setup();
+
+				//We made a change to the controller configuration so set our changes made to true
+				_changesMade = true;
 			}
 		}
 
@@ -190,31 +212,35 @@ namespace VixenApplication
 
 		private void ConfigControllers_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			if (DialogResult == DialogResult.Cancel)
+			if (_changesMade)
 			{
-				switch (MessageBox.Show(this, "All changes will be lost if you continue, do you wish to continue?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+				if (DialogResult == DialogResult.Cancel)
 				{
-					case DialogResult.No:
-						e.Cancel = true;
-						break;
-					default:
-						break;
+					switch (MessageBox.Show(this, "All changes will be lost if you continue, do you wish to continue?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+					{
+						case DialogResult.No:
+							e.Cancel = true;
+							break;
+						default:
+							break;
+					}
+				}
+				else if (DialogResult == DialogResult.OK)
+				{
+					e.Cancel = false;
+				}
+				else
+				{
+					switch (e.CloseReason)
+					{
+						case CloseReason.UserClosing:
+							e.Cancel = true;
+							break;
+						default:
+							break;
+					}
 				}
 			}
-			else if (DialogResult == DialogResult.OK)
-			{
-				e.Cancel = false;
-			}
-			else
-			{
-				switch (e.CloseReason)
-				{
-					case CloseReason.UserClosing:
-						e.Cancel = true;
-						break;
-				}
-			}
-
 		}
 	}
 }
