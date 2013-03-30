@@ -728,7 +728,7 @@ namespace VixenApplication
 			if (_clipboardNodes == null)
 				return;
 
-			ElementNode destinationNode;
+			ElementNode destinationNode = null;
 			TreeNode selectedTreeNode = multiSelectTreeviewElementsGroups.SelectedNode;
 
 			if (selectedTreeNode != null)

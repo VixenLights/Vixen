@@ -231,6 +231,7 @@ namespace VixenApplication
 				}
 			} catch (Exception ex) {
 				VixenSystem.Logging.Error("Error trying to open file '" + filename + "': ", ex);
+				MessageBox.Show("Error trying to open file '" + filename + "'.", "Error opening file", MessageBoxButtons.OK);
 			}
 		}
 
