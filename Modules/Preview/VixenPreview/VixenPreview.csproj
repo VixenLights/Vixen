@@ -1,0 +1,302 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F7975FD4-E1E1-4E96-88FD-6CA89A7DD77C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VixenModules.Preview.VixenPreview</RootNamespace>
+    <AssemblyName>VixenPreview</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(SolutionDir)\Output\Modules\Preview\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>$(SolutionDir)\Release\Modules\Preview\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>$(SolutionDir)\Output\Modules\Preview\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>$(SolutionDir)\Release\Modules\Preview\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <Import Project="$(SolutionDir)\commonProject.props" />
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Microsoft.VisualBasic.PowerPacks.Vs, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking">
+      <HintPath>..\..\..\Common\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DebugTimer.cs" />
+    <Compile Include="FastPixel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Shapes\DisplayItemBaseControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shapes\DisplayItemBaseControl.Designer.cs">
+      <DependentUpon>DisplayItemBaseControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shapes\PreviewArchSetupControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shapes\PreviewArchSetupControl.Designer.cs">
+      <DependentUpon>PreviewArchSetupControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shapes\PreviewEllipseSetupControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shapes\PreviewEllipseSetupControl.Designer.cs">
+      <DependentUpon>PreviewEllipseSetupControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shapes\PreviewLineSetupControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shapes\PreviewLineSetupControl.Designer.cs">
+      <DependentUpon>PreviewLineSetupControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shapes\PreviewMegaTree.cs" />
+    <Compile Include="Shapes\PreviewMegaTreeProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Shapes\PreviewMegaTreeProperties.Designer.cs">
+      <DependentUpon>PreviewMegaTreeProperties.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shapes\PreviewSetElements.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Shapes\PreviewSetElements.Designer.cs">
+      <DependentUpon>PreviewSetElements.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shapes\PreviewSetElementString.cs" />
+    <Compile Include="Shapes\PreviewSetElementsUIEditor.cs" />
+    <Compile Include="Shapes\PreviewSingleSetupControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shapes\PreviewSingleSetupControl.Designer.cs">
+      <DependentUpon>PreviewSingleSetupControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shapes\PreviewRectangleSetupControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shapes\PreviewRectangleSetupControl.Designer.cs">
+      <DependentUpon>PreviewRectangleSetupControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shapes\PreviewSingle.cs" />
+    <Compile Include="Shapes\PreviewRectangle.cs" />
+    <Compile Include="Shapes\PreviewEllipse.cs" />
+    <Compile Include="Shapes\PreviewArch.cs" />
+    <Compile Include="Shapes\DisplayItem.cs" />
+    <Compile Include="Shapes\PreviewLine.cs" />
+    <Compile Include="Shapes\PreviewLineProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Shapes\PreviewLineProperties.Designer.cs">
+      <DependentUpon>PreviewLineProperties.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shapes\PreviewPixel.cs" />
+    <Compile Include="Shapes\PreviewPoint.cs" />
+    <Compile Include="Shapes\PreviewBaseShape.cs" />
+    <Compile Include="Shapes\PreviewSingleProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Shapes\PreviewSingleProperties.Designer.cs">
+      <DependentUpon>PreviewSingleProperties.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shapes\PreviewTools.cs" />
+    <Compile Include="VixenPreviewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VixenPreviewControl.Designer.cs">
+      <DependentUpon>VixenPreviewControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VixenPreviewData.cs" />
+    <Compile Include="VixenPreviewDescriptor.cs" />
+    <Compile Include="VixenPreviewDisplay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VixenPreviewDisplay.Designer.cs">
+      <DependentUpon>VixenPreviewDisplay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VixenPreviewSetup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VixenPreviewSetup.Designer.cs">
+      <DependentUpon>VixenPreviewSetup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VixenPreviewModuleInstance.cs" />
+    <Compile Include="VixenPreviewModuleInstance.Designer.cs">
+      <DependentUpon>VixenPreviewModuleInstance.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VixenPreviewSetup2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VixenPreviewSetup2.Designer.cs">
+      <DependentUpon>VixenPreviewSetup2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VixenPreviewSetup3.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VixenPreviewSetup3.Designer.cs">
+      <DependentUpon>VixenPreviewSetup3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VixenPreviewSetupDocument.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VixenPreviewSetupDocument.Designer.cs">
+      <DependentUpon>VixenPreviewSetupDocument.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VixenPreviewSetupElementsDocument.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VixenPreviewSetupElementsDocument.Designer.cs">
+      <DependentUpon>VixenPreviewSetupElementsDocument.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VixenPreviewSetupPropertiesDocument.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VixenPreviewSetupPropertiesDocument.Designer.cs">
+      <DependentUpon>VixenPreviewSetupPropertiesDocument.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="Shapes\PreviewArchSetupControl.resx">
+      <DependentUpon>PreviewArchSetupControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shapes\PreviewEllipseSetupControl.resx">
+      <DependentUpon>PreviewEllipseSetupControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shapes\PreviewLineProperties.resx">
+      <DependentUpon>PreviewLineProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shapes\PreviewLineSetupControl.resx">
+      <DependentUpon>PreviewLineSetupControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shapes\PreviewMegaTreeProperties.resx">
+      <DependentUpon>PreviewMegaTreeProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shapes\PreviewRectangleSetupControl.resx">
+      <DependentUpon>PreviewRectangleSetupControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shapes\PreviewSetElements.resx">
+      <DependentUpon>PreviewSetElements.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shapes\PreviewSingleProperties.resx">
+      <DependentUpon>PreviewSingleProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shapes\PreviewSingleSetupControl.resx">
+      <DependentUpon>PreviewSingleSetupControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VixenPreviewControl.resx">
+      <DependentUpon>VixenPreviewControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VixenPreviewDisplay.resx">
+      <DependentUpon>VixenPreviewDisplay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VixenPreviewModuleInstance.resx">
+      <DependentUpon>VixenPreviewModuleInstance.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VixenPreviewSetup.resx">
+      <DependentUpon>VixenPreviewSetup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VixenPreviewSetup2.resx">
+      <DependentUpon>VixenPreviewSetup2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VixenPreviewSetup3.resx">
+      <DependentUpon>VixenPreviewSetup3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VixenPreviewSetupDocument.resx">
+      <DependentUpon>VixenPreviewSetupDocument.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VixenPreviewSetupElementsDocument.resx">
+      <DependentUpon>VixenPreviewSetupElementsDocument.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VixenPreviewSetupPropertiesDocument.resx">
+      <DependentUpon>VixenPreviewSetupPropertiesDocument.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
+      <Project>{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}</Project>
+      <Name>Controls</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
