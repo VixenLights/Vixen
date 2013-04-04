@@ -32,7 +32,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         //public static Hashtable IntentNodeToColor = new Hashtable();
         public static Dictionary<ElementNode, Color> IntentNodeToColor = new Dictionary<ElementNode, Color>();
-        public static Dictionary<Guid, IIntentStates> intentStates = new Dictionary<Guid, IIntentStates>();
+        //public static Dictionary<Guid, IIntentStates> intentStates = new Dictionary<Guid, IIntentStates>();
 
         public PreviewPixel(int xPosition, int yPositoin, int pixelSize)
         {
@@ -186,36 +186,36 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             if (newColor.A > 0)
             {
-                if (PixelSize == 1)
-                {
-                    fp.SetPixel(drawArea.Left, drawArea.Top, newColor);
-                }
-                else if (PixelSize == 2)
-                {
-                    // Row 1
-                    fp.SetPixel(drawArea.Left, drawArea.Top, newColor);
-                    //fp.SetPixel(drawArea.Left+1, drawArea.Top, newColor);
-                    // Row 2
-                    fp.SetPixel(drawArea.Left, drawArea.Top+1, newColor);
-                    //fp.SetPixel(drawArea.Left+1, drawArea.Top+1, newColor);
-                }
-                else if (PixelSize == 3)
-                {
-                    // Row 1
-                    //fp.SetPixel(drawArea.Left - 1, drawArea.Top - 1, newColor);
-                    fp.SetPixel(drawArea.Left, drawArea.Top - 1, newColor);
-                    //fp.SetPixel(drawArea.Left + 1, drawArea.Top - 1, newColor);
-                    // Row 2
-                    fp.SetPixel(drawArea.Left - 1, drawArea.Top, newColor);
-                    fp.SetPixel(drawArea.Left, drawArea.Top, newColor);
-                    fp.SetPixel(drawArea.Left + 1, drawArea.Top, newColor);
-                    // Row 1
-                    //fp.SetPixel(drawArea.Left - 1, drawArea.Top + 1, newColor);
-                    fp.SetPixel(drawArea.Left, drawArea.Top + 1, newColor);
-                    //fp.SetPixel(drawArea.Left + 1, drawArea.Top + 1, newColor);
-                }
-                else
-                {
+                //if (PixelSize == 1)
+                //{
+                //    fp.SetPixel(drawArea.Left, drawArea.Top, newColor);
+                //}
+                //else if (PixelSize == 2)
+                //{
+                //    // Row 1
+                //    fp.SetPixel(drawArea.Left, drawArea.Top, newColor);
+                //    //fp.SetPixel(drawArea.Left+1, drawArea.Top, newColor);
+                //    // Row 2
+                //    fp.SetPixel(drawArea.Left, drawArea.Top+1, newColor);
+                //    //fp.SetPixel(drawArea.Left+1, drawArea.Top+1, newColor);
+                //}
+                //else if (PixelSize == 3)
+                //{
+                //    // Row 1
+                //    //fp.SetPixel(drawArea.Left - 1, drawArea.Top - 1, newColor);
+                //    fp.SetPixel(drawArea.Left, drawArea.Top - 1, newColor);
+                //    //fp.SetPixel(drawArea.Left + 1, drawArea.Top - 1, newColor);
+                //    // Row 2
+                //    fp.SetPixel(drawArea.Left - 1, drawArea.Top, newColor);
+                //    fp.SetPixel(drawArea.Left, drawArea.Top, newColor);
+                //    fp.SetPixel(drawArea.Left + 1, drawArea.Top, newColor);
+                //    // Row 1
+                //    //fp.SetPixel(drawArea.Left - 1, drawArea.Top + 1, newColor);
+                //    fp.SetPixel(drawArea.Left, drawArea.Top + 1, newColor);
+                //    //fp.SetPixel(drawArea.Left + 1, drawArea.Top + 1, newColor);
+                //}
+                //else
+                //{
                     if (MaxAlpha != 255)
                     {
                         double newAlpha = ((double)newColor.A / 255) * (double)MaxAlpha;
@@ -226,7 +226,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     {
                         fp.DrawCircle(drawArea, newColor);
                     }
-                }
+                //}
             }
         }
     }

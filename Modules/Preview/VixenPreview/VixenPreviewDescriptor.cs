@@ -39,7 +39,7 @@ namespace VixenModules.Preview.VixenPreview
         {
             get
             {
-                return 25;
+                return 50;
             }
         }
 

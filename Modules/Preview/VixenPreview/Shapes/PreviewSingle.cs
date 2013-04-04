@@ -167,15 +167,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             _selectedPoint = p1;
         }
 
-        public override void PropertyDialog()
-        {
-            PreviewSingleProperties f = new PreviewSingleProperties(this);
-            if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-
-            }
-        }
-
-
+       
     }
 }

@@ -1,9 +1,16 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using Vixen.Sys;
 using System.Runtime.Serialization;
+using System.Diagnostics;
+using System.ComponentModel;
+using System.Windows.Forms;
+using System.Drawing.Design;
+using System.Windows.Forms.Design;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -45,7 +52,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             _topHeight = _topWidth/2;
             _baseHeight = 40;
             _lightsPerString = 50;
-            _degrees = 180;
+            _degrees = 360;
 
             _strings = new List<PreviewBaseShape>();
 
@@ -76,25 +83,41 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         public int TopHeight
         {
-            set { _topHeight = value; }
+            set 
+            { 
+                _topHeight = value;
+                Layout();
+            }
             get { return _topHeight; }
         }
 
         public int TopWidth
         {
-            set { _topWidth = value; }
+            set 
+            { 
+                _topWidth = value;
+                Layout();
+            }
             get { return _topWidth; }
         }
 
         public int BaseHeight
         {
-            set { _baseHeight = value; }
+            set 
+            { 
+                _baseHeight = value;
+                Layout();
+            }
             get { return _baseHeight; }
         }
 
         public int Degrees
         {
-            set { _degrees = value; }
+            set 
+            { 
+                _degrees = value;
+                Layout();
+            }
             get { return _degrees; }
         }
 
@@ -103,6 +126,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             set
             {
                 _lightsPerString = value;
+                foreach (PreviewLine line in _strings)
+                {
+                    line.PixelCount = _lightsPerString;
+                }
             }
             get { return _lightsPerString; }
         }
@@ -132,13 +159,60 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), _lightsPerString);
                     _strings.Add(line);
                 }
+                Layout();
             }
             get { return _stringCount; }
         }
 
         public int PixelCount
         {
+            set 
+            {
+                foreach (PreviewLine line in _strings)
+                {
+                    line.PixelCount = value;
+                }
+            }
             get { return Pixels.Count; }
+        }
+
+        [DataMember,
+        Browsable(false)]
+        public override List<PreviewPixel> Pixels
+        {
+            get
+            {
+                if (_strings != null && _strings.Count > 0)
+                {
+                    _stringsInDegrees = (double)_stringCount * ((double)_degrees / 360);
+                    List<PreviewPixel> outPixels = new List<PreviewPixel>();
+                    for (int i = 0; i < _stringsInDegrees; i++)
+                    {
+                        foreach (PreviewPixel pixel in _strings[i].Pixels)
+                        {
+                            outPixels.Add(pixel);
+                        }
+                    }
+
+                    //foreach (PreviewBaseShape line in _strings)
+                    //{
+                    //    foreach (PreviewPixel pixel in line.Pixels)
+                    //    {
+                    //        outPixels.Add(pixel);
+                    //    }
+                    //}
+                    return outPixels;
+                }
+                else
+                {
+                    return _pixels;
+                }            
+            }
+            set
+            {
+                _pixels = value;
+                ResetNodeToPixelDictionary();
+            }
         }
 
         public void Layout()
@@ -157,7 +231,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
             _stringsInDegrees = (double)_stringCount * ((double)_degrees / 360);
 
-            for (int stringNum = 0; stringNum < (int)_stringsInDegrees; stringNum++)
+            for (int stringNum = 0; stringNum < _stringCount; stringNum++)
             {
                 if (stringNum < _topEllipsePoints.Count)
                 {
@@ -264,52 +338,34 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             _selectedPoint = _bottomRight;
         }
 
-        public override void PropertyDialog()
-        {
-            PreviewMegaTree originalTree = (PreviewMegaTree)this.Clone();
-            PreviewMegaTreeProperties f = new PreviewMegaTreeProperties(originalTree);
-            if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                //SetTopLeft(f.Tree._topLeft.X, f.Tree._topRight.Y);
-                //SetBottomRight(f.Tree._bottomRight.X, f.Tree._bottomRight.Y);
-                StringCount = f.Tree.StringCount;
-                TopHeight = f.Tree.TopHeight;
-                TopWidth = f.Tree.TopWidth;
-                BaseHeight = f.Tree.BaseHeight;
-                LightsPerString = f.Tree.LightsPerString;
-                Degrees = f.Tree.Degrees;
-                SetStrings(_strings);
-                Deselect();
-                Select();
-                Layout();
-            }
-        }
-
-        public override void Draw(Graphics graphics, Color color)
-        {
-            if (_strings != null)
-            {
-                for (int stringNum = 0; stringNum < _stringCount; stringNum++)
-                {
-                    PreviewLine line = (PreviewLine)_strings[stringNum];
-                    if (stringNum < (int)_stringsInDegrees)
-                    {
-                        line.Draw(graphics, color);
-                    }
-                    else
-                    {
-                        line.Draw(graphics, Color.Transparent);
-                    }
-                }
-            }
-            base.Draw(graphics, color);
-        }
+        //public override void Draw(Graphics graphics, Color color)
+        //{
+        //    if (_strings != null)
+        //    {
+        //        for (int stringNum = 0; stringNum < _stringCount; stringNum++)
+        //        {
+        //            PreviewLine line = (PreviewLine)_strings[stringNum];
+        //            if (stringNum < (int)_stringsInDegrees)
+        //            {
+        //                line.Draw(graphics, color);
+        //            }
+        //            else
+        //            {
+        //                line.Draw(graphics, Color.Transparent);
+        //            }
+        //        }
+        //    }
+        //    base.Draw(graphics, color);
+        //}
 
         public override void Draw(FastPixel fp, Color color)
         {
             if (_strings != null) {
-                foreach (PreviewBaseShape line in _strings)
-                    line.Draw(fp, color);
+                _stringsInDegrees = (double)_stringCount * ((double)_degrees / 360);
+                for (int i = 0; i < _stringsInDegrees; i++)
+                {
+                    _strings[i].Draw(fp, color);
+                }
             }
             base.Draw(fp, color);
         }
@@ -317,8 +373,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         public override void Draw(FastPixel fp)
         {
             if (_strings != null) {
-                foreach (PreviewBaseShape line in _strings)
-                    line.Draw(fp);
+                //foreach (PreviewBaseShape line in _strings)
+                //    line.Draw(fp);
+                _stringsInDegrees = (double)_stringCount * ((double)_degrees / 360);
+                for (int i = 0; i < _stringsInDegrees; i++)
+                {
+                    _strings[i].Draw(fp);
+                }
             }
             base.Draw(fp);
         }
@@ -340,5 +401,39 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
             return newTree;
         }
+
+        [Editor(typeof(PreviewSetElementsUIEditor), typeof(UITypeEditor)),
+        CategoryAttribute("Settings"),
+        DisplayName("Linked Elements")]
+        public override List<PreviewBaseShape> Strings
+        {
+            get
+            {
+                Layout();
+                List<PreviewBaseShape> stringsResult;
+                if (_strings.Count != _stringsInDegrees)
+                {
+                    stringsResult = new List<PreviewBaseShape>();
+                    for (int i = 0; i < _stringsInDegrees; i++)
+                    {
+                        stringsResult.Add(_strings[i]);
+                        Console.WriteLine(i);
+                    }
+                }
+                else
+                {
+                    stringsResult = _strings;
+                    if (stringsResult == null)
+                    {
+                        stringsResult = new List<PreviewBaseShape>();
+                        stringsResult.Add(this);
+                    }
+                }
+                return stringsResult;
+            }
+            set { }
+        }
+
+
     }
 }

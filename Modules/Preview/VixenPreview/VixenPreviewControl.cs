@@ -1,21 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using VixenModules.Preview.VixenPreview.Shapes;
+using Vixen.Execution.Context;
+using Vixen.Module.Preview;
+using Vixen.Data.Value;
 using Vixen.Sys;
-using System.Runtime.Serialization;
-using Common.Controls.ColorManagement.ColorModels;
-using Vixen.Module;
-using System.Collections.ObjectModel;
-using System.Windows.Media.Imaging;
-using System.Threading;
-using System.Threading.Tasks;
+using VixenModules.Preview.VixenPreview.Shapes;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace VixenModules.Preview.VixenPreview
 {
@@ -33,7 +30,8 @@ namespace VixenModules.Preview.VixenPreview
     public partial class VixenPreviewControl : UserControl
     {
         #region "Variables"
-        private BackgroundWorker renderBackgroundWorker = new BackgroundWorker();
+        private bool _paused = false;
+        //private BackgroundWorker renderBackgroundWorker = new BackgroundWorker();
         private BufferedGraphicsContext context;
         private BufferedGraphics bufferedGraphics;
         public static double averageUpdateTime = 0;
@@ -51,6 +49,7 @@ namespace VixenModules.Preview.VixenPreview
             Rectangle,
             Ellipse,
             Single,
+            Triangle,
             MegaTree
         }
 
@@ -71,7 +70,9 @@ namespace VixenModules.Preview.VixenPreview
         private VixenPreviewData _data;
 
         Stopwatch renderTimer = new Stopwatch();
-        private System.Object renderLock = new System.Object();
+
+        public static Dictionary<ElementNode, List<PreviewPixel>> NodeToPixel = new Dictionary<ElementNode, List<PreviewPixel>>();
+
         #endregion
 
         #region "Events"
@@ -177,8 +178,8 @@ namespace VixenModules.Preview.VixenPreview
             context = BufferedGraphicsManager.Current;
             AllocateGraphicsBuffer();
 
-            renderBackgroundWorker.DoWork += new DoWorkEventHandler(DoRenderWork);
-            renderBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(RenderWorkCompleted);
+            //renderBackgroundWorker.DoWork += new DoWorkEventHandler(DoRenderWork);
+            //renderBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(RenderWorkCompleted);
         }
 
         private void VixenPreviewControl_Load(object sender, EventArgs e)
@@ -189,7 +190,7 @@ namespace VixenModules.Preview.VixenPreview
 
         public void LoadBackground(string fileName)
         {
-            lock (renderLock)
+            lock (PreviewTools.renderLock)
             {
                 if (System.IO.File.Exists(fileName))
                 {
@@ -217,7 +218,7 @@ namespace VixenModules.Preview.VixenPreview
         {
             if (_background != null)
             {
-                lock (renderLock)
+                lock (PreviewTools.renderLock)
                 {
                     _alphaBackground = new Bitmap(_background.Width, _background.Height);
                     using (Graphics gfx = Graphics.FromImage(_alphaBackground))
@@ -239,7 +240,7 @@ namespace VixenModules.Preview.VixenPreview
 
         private void AllocateGraphicsBuffer()
         {
-            lock (renderLock)
+            lock (PreviewTools.renderLock)
             {
 
                 if (context != null)
@@ -358,6 +359,11 @@ namespace VixenModules.Preview.VixenPreview
                         {
                             newDisplayItem = new DisplayItem();
                             newDisplayItem.Shape = new PreviewEllipse(new PreviewPoint(e.X, e.Y), 50);
+                        }
+                        else if (_currentTool == Tools.Triangle)
+                        {
+                            newDisplayItem = new DisplayItem();
+                            newDisplayItem.Shape = new PreviewTriangle(new PreviewPoint(e.X, e.Y));
                         }
                         else if (_currentTool == Tools.MegaTree)
                         {
@@ -520,7 +526,11 @@ namespace VixenModules.Preview.VixenPreview
             {
                 if (_selectedDisplayItem != null)
                 {
+                    OnDeSelectDisplayItem(this, _selectedDisplayItem);
+                    //_selectedDisplayItem.Shape.MouseUp(sender, e);
+                    _selectedDisplayItem.Shape.Deselect();
                     DisplayItems.Remove(_selectedDisplayItem);
+                    _selectedDisplayItem = null;
                 }
             }
         }
@@ -561,76 +571,77 @@ namespace VixenModules.Preview.VixenPreview
             }
         }
 
-        public void RenderInBackground()
-        {
-            if (!DesignMode)
-            {
-                if (renderBackgroundWorker.IsBusy != true)
-                {
-                    // Start the asynchronous operation.
-                    renderTimer.Reset();
-                    renderTimer.Start();
+        //public void RenderInBackground()
+        //{
+        //    if (!DesignMode)
+        //    {
+        //        if (renderBackgroundWorker.IsBusy != true)
+        //        {
+        //            // Start the asynchronous operation.
+        //            renderTimer.Reset();
+        //            renderTimer.Start();
 
-                    renderBackgroundWorker.RunWorkerAsync();
-                }
-            }
-        }
+        //            renderBackgroundWorker.RunWorkerAsync();
+        //        }
+        //    }
+        //}
 
-        private void DoRenderWork(object sender, DoWorkEventArgs e)
-        {
-            BackgroundWorker worker = sender as BackgroundWorker;
+        //private void DoRenderWork(object sender, DoWorkEventArgs e)
+        //{
+        //    BackgroundWorker worker = sender as BackgroundWorker;
 
-            if (_background != null)
-            {
-                FastPixel fp = new FastPixel(_background.Width, _background.Height);
-                fp.Lock();
-                foreach (DisplayItem displayItem in DisplayItems)
-                {
-                    if (_editMode)
-                        displayItem.Draw(fp, Color.White);
-                    else
-                        displayItem.Draw(fp);
-                }
-                fp.Unlock(true);
+        //    if (_background != null)
+        //    {
+        //        FastPixel fp = new FastPixel(_background.Width, _background.Height);
+        //        fp.Lock();
+        //        foreach (DisplayItem displayItem in DisplayItems)
+        //        {
+        //            if (_editMode)
+        //                displayItem.Draw(fp, Color.White);
+        //            else
+        //                displayItem.Draw(fp);
+        //        }
+        //        fp.Unlock(true);
 
-                lock (renderLock)
-                {
-                    // First, draw our background image opaque
-                    bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-                    //bufferedGraphics.Graphics.DrawImage(_background, 0, 0, _background.Width, _background.Height);
-                    bufferedGraphics.Graphics.DrawImage(_alphaBackground, 0, 0, fp.Width, fp.Height);
+        //        lock (PreviewTools.renderLock)
+        //        {
+        //            // First, draw our background image opaque
+        //            bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+        //            //bufferedGraphics.Graphics.DrawImage(_background, 0, 0, _background.Width, _background.Height);
+        //            bufferedGraphics.Graphics.DrawImage(_alphaBackground, 0, 0, fp.Width, fp.Height);
 
-                    bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
-                    // Now, draw our "pixel" image using alpha blending
-                    bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
-                }
-            }
-        }
+        //            bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
+        //            // Now, draw our "pixel" image using alpha blending
+        //            bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
+        //        }
+        //    }
+        //}
 
-        private void RenderWorkCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if ((e.Cancelled == true))
-            {
-            }
+        //private void RenderWorkCompleted(object sender, RunWorkerCompletedEventArgs e)
+        //{
+        //    if ((e.Cancelled == true))
+        //    {
+        //    }
 
-            else if (!(e.Error == null))
-            {
-            }
+        //    else if (!(e.Error == null))
+        //    {
+        //    }
 
-            else
-            {
-                if (bufferedGraphics != null && !this.Disposing)
-                    bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
-            }
+        //    else
+        //    {
+        //        if (bufferedGraphics != null && !this.Disposing)
+        //            bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
+        //    }
 
-            renderTimer.Stop();
-            lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
-        }
+        //    renderTimer.Stop();
+        //    lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
+        //}
 
         public void RenderInForeground()
         {
             renderTimer.Reset();
             renderTimer.Start();
+
             if (_background != null)
             {
                 FastPixel fp = new FastPixel(_background.Width, _background.Height);
@@ -655,11 +666,117 @@ namespace VixenModules.Preview.VixenPreview
                 // Now, draw our "pixel" image using alpha blending
                 bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
                 //}
+                lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
             }
 
             bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
             renderTimer.Stop();
-            lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
+        }
+
+        public void Reload()
+        {
+            NodeToPixel.Clear();
+            foreach (DisplayItem item in DisplayItems)
+            {
+                foreach (PreviewPixel pixel in item.Shape.Pixels)
+                {
+                    if (pixel.Node != null)
+                    {
+                        List<PreviewPixel> pixels;
+                        if (PreviewBaseShape.NodeToPixel.TryGetValue(pixel.Node, out pixels))
+                        {
+                            if (!pixels.Contains(pixel))
+                            {
+                                pixels.Add(pixel);
+                            }
+                        }
+                        else
+                        {
+                            pixels = new List<PreviewPixel>();
+                            pixels.Add(pixel);
+                            PreviewBaseShape.NodeToPixel.Add(pixel.Node, pixels);
+                        }
+                    }                    
+                }
+            }
+
+        }
+
+        public void ProcessUpdate(ElementIntentStates elementStates)
+        {
+            renderTimer.Reset();
+            renderTimer.Start();
+            if (!_paused)
+            {
+                if (NodeToPixel.Count == 0)
+                    Reload();
+
+                FastPixel fp = new FastPixel(_background.Width, _background.Height);
+                fp.Lock();
+
+                foreach (var channelIntentState in elementStates)
+                {
+                    var elementId = channelIntentState.Key;
+                    Element element = VixenSystem.Elements.GetElement(elementId);
+                    if (element == null) continue;
+                    ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
+                    if (node == null) continue;
+
+                    foreach (IIntentState<LightingValue> intentState in channelIntentState.Value)
+                    {
+
+                        if (_background != null)
+                        {
+                            //foreach (DisplayItem displayItem in DisplayItems)
+                            //{
+                            //    if (_editMode)
+                            //        displayItem.Draw(fp, Color.White);
+                            //    else
+                            //        displayItem.Draw(fp);
+                            //}
+                            List<PreviewPixel> pixels;
+                            if (PreviewBaseShape.NodeToPixel.TryGetValue(node, out pixels))
+                            {
+                                foreach (PreviewPixel pixel in pixels)
+                                {
+                                    pixel.Draw(fp, intentState.GetValue().GetAlphaChannelIntensityAffectedColor());
+                                }
+                            }
+                        }
+                    }
+                }
+                fp.Unlock(true);
+
+                // First, draw our background image opaque
+                bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+                //bufferedGraphics.Graphics.DrawImage(_background, 0, 0, _background.Width, _background.Height);
+                bufferedGraphics.Graphics.DrawImage(_alphaBackground, 0, 0, _alphaBackground.Width, _alphaBackground.Height);
+
+                bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
+                // Now, draw our "pixel" image using alpha blending
+                bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
+                //}
+                lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
+
+                if (!this.Disposing)
+                    bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
+            }
+            renderTimer.Stop();
+        }
+
+        public bool Paused
+        {
+            set
+            {
+                _paused = value;
+                if (_paused)
+                {
+                }
+                else
+                {
+                }
+            }
+            get { return _paused; }
         }
 
     }

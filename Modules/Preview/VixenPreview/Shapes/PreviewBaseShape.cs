@@ -30,8 +30,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //public Graphics g;
 
         private bool _selected = false;
-        private List<PreviewPoint> _selectPoints = null;
-        private List<PreviewPoint> _skewPoints = null;
+        public List<PreviewPoint> _selectPoints = null;
+        //private List<PreviewPoint> _skewPoints = null;
         public const int SelectPointSize = 6;
 
         private Color _pixelColor = Color.White;
@@ -45,7 +45,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 
         public PreviewPoint _selectedPoint;
-        public PreviewPoint _selectedSkewPoint;
+        //public PreviewPoint _selectedSkewPoint;
 
         //private int _skewX = 0;
         //private int _skewY = 0;
@@ -65,9 +65,27 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //        ,
         [DataMember,
         Browsable(false)]
-        public List<PreviewPixel> Pixels
+        public virtual List<PreviewPixel> Pixels
         {
-            get { return _pixels; }
+            get 
+            {
+                if (_strings != null && _strings.Count > 0)
+                {
+                    List<PreviewPixel> outPixels = new List<PreviewPixel>();
+                    foreach (PreviewBaseShape line in _strings)
+                    {
+                        foreach (PreviewPixel pixel in line.Pixels)
+                        {
+                            outPixels.Add(pixel);
+                        }
+                    }
+                    return outPixels;
+                }
+                else
+                {
+                    return _pixels;
+                }
+            }
             set
             {
                 _pixels = value;
@@ -78,7 +96,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         [Editor(typeof(PreviewSetElementsUIEditor), typeof(UITypeEditor)),
         CategoryAttribute("Settings"),
         DisplayName("Linked Elements")]
-        public List<PreviewBaseShape> Strings 
+        public virtual List<PreviewBaseShape> Strings 
         {
             get {
                 List<PreviewBaseShape> stringsResult = _strings;
@@ -144,7 +162,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         public Color PixelColor
         {
             get { return _pixelColor; }
-            set { _pixelColor = value; }
+            set { 
+                _pixelColor = value;
+                foreach (PreviewPixel pixel in _pixels)
+                {
+                    pixel.PixelColor = _pixelColor;
+                }
+            }
         }
 
         //public void SetGraphics(Graphics graphics) {
@@ -160,7 +184,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         public int PixelSize
         {
             get { return _pixelSize; }
-            set { 
+            set {
                 _pixelSize = value;
                 ResizePixel();
             }
@@ -199,17 +223,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             _selected = false;
             if (_selectPoints != null) 
                 _selectPoints.Clear();
-            if (_skewPoints != null)
-                _skewPoints.Clear();
+            //if (_skewPoints != null)
+            //    _skewPoints.Clear();
         }
 
         public void SetSelectPoints(List<PreviewPoint> selectPoints, List<PreviewPoint> skewPoints)
         {
             _selectPoints = selectPoints;
-            _skewPoints = skewPoints;
+            //_skewPoints = skewPoints;
 
             foreach (PreviewPoint p in _selectPoints)
-                p.PointType = PreviewPoint.PointTypes.Size;
+                if (p != null)
+                    p.PointType = PreviewPoint.PointTypes.Size;
         }
 
         // Add a pxiel at a specific location
@@ -224,12 +249,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         public void ResizePixel()
         {
-            if (Pixels != null)
+            if (_strings != null && _strings.Count > 0)
             {
-                foreach (PreviewPixel pixel in Pixels)
+                foreach (PreviewBaseShape shape in _strings)
                 {
-                    pixel.PixelSize = PixelSize;
-                    pixel.Resize();
+                    shape.PixelSize = PixelSize;
+                }
+            } 
+            else 
+            {
+                if (Pixels != null)
+                {
+                    foreach (PreviewPixel pixel in Pixels)
+                    {
+                        pixel.PixelSize = PixelSize;
+                        pixel.Resize();
+                    }
                 }
             }
         }
@@ -287,15 +322,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 foreach (PreviewPoint point in _selectPoints)
                 {
-                    fp.DrawRectangle(new Rectangle(point.X - (SelectPointSize / 2), point.Y - (SelectPointSize / 2), SelectPointSize, SelectPointSize), Color.White);
-                    //fp.SetPixel(new Point(point.X, point.Y), Color.White);
-                }
-            }
-            if (_skewPoints != null)
-            {
-                foreach (PreviewPoint point in _skewPoints)
-                {
-                    fp.DrawRectangle(new Rectangle(point.X - (SelectPointSize / 2), point.Y - (SelectPointSize / 2), SelectPointSize, SelectPointSize), Color.White);
+                    if (point != null)
+                    {
+                        if (point.PointType == PreviewPoint.PointTypes.Size)
+                        {
+                            fp.DrawRectangle(new Rectangle(point.X - (SelectPointSize / 2), point.Y - (SelectPointSize / 2), SelectPointSize, SelectPointSize), Color.White);
+                        }
+                    }
                 }
             }
         }
@@ -321,12 +354,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 foreach (PreviewPoint selectPoint in _selectPoints)
                 {
-                    if (point.X >= selectPoint.X - (SelectPointSize / 2) &&
-                        point.Y >= selectPoint.Y - (SelectPointSize / 2) &&
-                        point.X <= selectPoint.X + (SelectPointSize / 2) &&
-                        point.Y <= selectPoint.Y + (SelectPointSize / 2))
+                    if (selectPoint != null)
                     {
-                        return selectPoint;
+                        if (point.X >= selectPoint.X - (SelectPointSize / 2) &&
+                            point.Y >= selectPoint.Y - (SelectPointSize / 2) &&
+                            point.X <= selectPoint.X + (SelectPointSize / 2) &&
+                            point.Y <= selectPoint.Y + (SelectPointSize / 2))
+                        {
+                            return selectPoint;
+                        }
                     }
                 }
             }
@@ -335,27 +371,25 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         public PreviewPoint PointInSkewPoint(PreviewPoint point)
         {
-            if (_skewPoints != null)
-            {
-                foreach (PreviewPoint skewPoint in _skewPoints)
-                {
-                    if (point.X >= skewPoint.X - (SelectPointSize / 2) &&
-                        point.Y >= skewPoint.Y - (SelectPointSize / 2) &&
-                        point.X <= skewPoint.X + (SelectPointSize / 2) &&
-                        point.Y <= skewPoint.Y + (SelectPointSize / 2))
-                    {
-                        return skewPoint;
-                    }
-                }
-            }
+            //if (_skewPoints != null)
+            //{
+            //    foreach (PreviewPoint skewPoint in _skewPoints)
+            //    {
+            //        if (point.X >= skewPoint.X - (SelectPointSize / 2) &&
+            //            point.Y >= skewPoint.Y - (SelectPointSize / 2) &&
+            //            point.X <= skewPoint.X + (SelectPointSize / 2) &&
+            //            point.Y <= skewPoint.Y + (SelectPointSize / 2))
+            //        {
+            //            return skewPoint;
+            //        }
+            //    }
+            //}
             return null;
         }
 
         public abstract void SetSelectPoint(PreviewPoint point = null);
 
         public abstract void SelectDefaultSelectPoint();
-
-        public abstract void PropertyDialog();
 
         public void UpdateColors(ElementNode node, Color newColor)
         {

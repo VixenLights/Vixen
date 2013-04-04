@@ -344,15 +344,5 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             lockXY = true;
         }
 
-        public override void PropertyDialog()
-        {
-            //PreviewLineProperties f = new PreviewLineProperties(this);
-            //if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            //{
-
-            //}
-        }
-
-
     }
 }

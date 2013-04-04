@@ -16,6 +16,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
     [KnownType(typeof(PreviewRectangle))]
     [KnownType(typeof(PreviewSingle))]
     [KnownType(typeof(PreviewEllipse))]
+    [KnownType(typeof(PreviewTriangle))]
     [KnownType(typeof(PreviewMegaTree))]
     public class DisplayItem
     {

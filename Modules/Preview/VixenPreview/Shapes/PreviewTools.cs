@@ -33,6 +33,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
     class PreviewTools
     {
+        static public System.Object renderLock = new System.Object();
 
         static double Perimeter(PreviewPoint p1, PreviewPoint p2) 
         {
@@ -108,7 +109,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             //}
             List<Point> points = new List<Point>();
 
-
+            
             //double degrees = 360;
             double totalRadians = (degrees * Math.PI) / 180;
             double numPoints = (totalPoints / 2);

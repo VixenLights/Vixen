@@ -87,12 +87,6 @@ namespace VixenModules.Preview.VixenPreview
             toolStripStatusLastRenderTime.Text = "Render: " + Math.Round(preview.lastRenderUpdateTime).ToString() + "ms";
         }
 
-        private void timerRender_Tick(object sender, EventArgs e)
-        {
-            timerRender.Stop();
-            preview.RenderInForeground();
-            timerRender.Start();
-        }
 
     }
 }

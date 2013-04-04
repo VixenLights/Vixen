@@ -11,7 +11,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 {
     public partial class DisplayItemBaseControl : UserControl
     {
-        private DisplayItem _displayItem;
+        public  DisplayItem _displayItem;
         private string _title;
 
         public DisplayItemBaseControl()

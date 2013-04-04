@@ -24,14 +24,20 @@ namespace VixenModules.Preview.VixenPreview
 
         private void timerRender_Tick(object sender, EventArgs e)
         {
-            //timerRender.Stop();
+            timerRender.Stop();
             Preview.RenderInForeground();
-            //timerRender.Start();
+            timerRender.Start();
         }
 
         private void VixenPreviewSetupDocument_Load(object sender, EventArgs e)
         {
             previewControl.EditMode = true;
         }
+
+        private void VixenPreviewSetupDocument_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            timerRender.Stop();
+        }
+
     }
 }

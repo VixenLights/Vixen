@@ -150,7 +150,7 @@ namespace VixenModules.Preview.VixenPreview
             
             //Stopwatch timer = new Stopwatch();
             //timer.Start();
-            preview.RenderInBackground();
+            //preview.RenderInBackground();
             //timer.Stop();
             //lastRenderTime = timer.ElapsedMilliseconds;
             ////totalRenderCount += 1;
@@ -362,9 +362,9 @@ namespace VixenModules.Preview.VixenPreview
             SelectEditToolbarButton(preview.CurrentTool.ToString());
         }
 
-        public void RenderInBackground()
-        {
-            preview.RenderInBackground();
-        }
+        //public void RenderInBackground()
+        //{
+        //    preview.RenderInBackground();
+        //}
     }
 }

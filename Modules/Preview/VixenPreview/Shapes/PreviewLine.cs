@@ -168,9 +168,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         public override bool PointInShape(PreviewPoint point)
         {
-            foreach (PreviewPixel pixel in Pixels) 
+            foreach (PreviewPixel pixel in Pixels)
             {
-                Rectangle r = new Rectangle(pixel.X - (SelectPointSize / 2), pixel.Y - (SelectPointSize / 2), SelectPointSize, SelectPointSize);
+                Rectangle r = new Rectangle(pixel.X - (SelectPointSize / 2), pixel.Y - (SelectPointSize / 2), SelectPointSize + PixelSize, SelectPointSize + PixelSize);
                 if (point.X >= r.X && point.X <= r.X + r.Width && point.Y >= r.Y && point.Y <= r.Y + r.Height)
                 {
                     return true;
@@ -192,15 +192,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         public override void SelectDefaultSelectPoint()
         {
             _selectedPoint = _points[1];
-        }
-
-        public override void PropertyDialog()
-        {
-            PreviewLineProperties f = new PreviewLineProperties(this);
-            if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-
-            }
         }
 
         public override object Clone()

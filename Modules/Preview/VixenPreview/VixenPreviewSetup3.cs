@@ -97,23 +97,30 @@ namespace VixenModules.Preview.VixenPreview
             {
                 setupControl = new Shapes.PreviewArchSetupControl(displayItem);
             }
-            //else if (displayItem.Shape.GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewTriangle")
-            //{
-            //    setupControl = new Shapes.PreviewArchTriangleControl(displayItem);
-            //}
+            else if (displayItem.Shape.GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewMegaTree")
+            {
+                setupControl = new Shapes.PreviewMegaTreeSetupControl(displayItem);
+            }
+            else if (displayItem.Shape.GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewTriangle")
+            {
+                setupControl = new Shapes.PreviewTriangleSetupControl(displayItem);
+            }
 
             if (setupControl != null)
             {
                 propertiesForm.ShowSetupControl(setupControl);
             }
-            //splitContainerLeft.Panel2.Controls.Add(setupControl);
         }
 
         private void toolbarButton_Click(object sender, EventArgs e)
         {
             Button button = sender as Button;
             Console.WriteLine(button.Name);
-            if (button == buttonDrawPixel)
+            // Select Button
+            if (button == buttonSelect)
+                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Select;
+            // Standard Buttons
+            else if (button == buttonDrawPixel)
                 previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Single;
             else if (button == buttonLine)
                 previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.String;
@@ -123,8 +130,11 @@ namespace VixenModules.Preview.VixenPreview
                 previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Rectangle;
             else if (button == buttonEllipse)
                 previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Ellipse;
-            else if (button == buttonSelect)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Select;
+            else if (button == buttonTriangle)
+                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Triangle;
+            // Smart Shape Buttons
+            else if (button == buttonMegaTree)
+                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MegaTree;
         }
 
         private void trackBarBackgroundAlpha_ValueChanged(object sender, EventArgs e)
@@ -136,9 +146,10 @@ namespace VixenModules.Preview.VixenPreview
         {
             previewForm.Preview.LoadBackground(Data.BackgroundFileName);
 
-            //Top = Data.Top;
-
-            //Left = Data.Left;
+            Top = Data.SetupTop;
+            Left = Data.SetupLeft;
+            Width = Data.SetupWidth;
+            Height = Data.SetupHeight;
 
             //if (Data.Width > MinimumSize.Width)
             //    Width = Data.Width;
@@ -151,13 +162,18 @@ namespace VixenModules.Preview.VixenPreview
             //    Height = MinimumSize.Height;
         }
 
-        private void buttonCancel_Click(object sender, EventArgs e)
+        public void Save()
         {
-            Close();
+            Data.SetupTop = Top;
+            Data.SetupLeft = Left;
+            Data.SetupWidth = Width;
+            Data.SetupHeight = Height;
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
+            Save();
+            DialogResult = System.Windows.Forms.DialogResult.OK;
             Close();
         }
     }

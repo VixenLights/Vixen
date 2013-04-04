@@ -35,7 +35,6 @@
             this.toolStripStatusLastRenderTime = new System.Windows.Forms.ToolStripStatusLabel();
             this.timerStatus = new System.Windows.Forms.Timer(this.components);
             this.preview = new VixenModules.Preview.VixenPreview.VixenPreviewControl();
-            this.timerRender = new System.Windows.Forms.Timer(this.components);
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -89,12 +88,6 @@
             this.preview.TabIndex = 0;
             this.preview.Load += new System.EventHandler(this.preview_Load);
             // 
-            // timerRender
-            // 
-            this.timerRender.Enabled = true;
-            this.timerRender.Interval = 1;
-            this.timerRender.Tick += new System.EventHandler(this.timerRender_Tick);
-            // 
             // VixenPreviewDisplay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -121,6 +114,5 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusCurrentUpdate;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLastRenderTime;
         private System.Windows.Forms.Timer timerStatus;
-        private System.Windows.Forms.Timer timerRender;
     }
 }

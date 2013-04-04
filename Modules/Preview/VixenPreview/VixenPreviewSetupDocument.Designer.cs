@@ -36,6 +36,7 @@
             // timerRender
             // 
             this.timerRender.Enabled = true;
+            this.timerRender.Interval = 10;
             this.timerRender.Tick += new System.EventHandler(this.timerRender_Tick);
             // 
             // previewControl
@@ -58,6 +59,7 @@
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "VixenPreviewSetupDocument";
             this.Text = "Preview";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.VixenPreviewSetupDocument_FormClosing);
             this.Load += new System.EventHandler(this.VixenPreviewSetupDocument_Load);
             this.ResumeLayout(false);
 

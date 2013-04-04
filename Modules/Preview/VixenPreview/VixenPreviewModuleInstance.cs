@@ -111,7 +111,13 @@ namespace VixenModules.Preview.VixenPreview
         {
             setupForm = new VixenPreviewSetup3();
             setupForm.Data = GetDataModel();
+            displayForm.PreviewControl.Paused = true;
             setupForm.ShowDialog();
+            displayForm.PreviewControl.Paused = false;
+            if (setupForm.DialogResult == DialogResult.OK)
+            {
+                displayForm.PreviewControl.Reload();
+            }
             //return setupForm;
             return base.Setup();
         }
@@ -169,9 +175,6 @@ namespace VixenModules.Preview.VixenPreview
         //bool _updating = false;
         protected override void Update()
         {
-            Stopwatch timer = new Stopwatch();
-            timer.Start();
-
             // Vixen tells us when to turn lights ON, but not when to turn them off.
             // We turn all the lights OFF and then turn just the ones one that Vixen tells us to
             // in the next step. 
@@ -205,6 +208,16 @@ namespace VixenModules.Preview.VixenPreview
             //Task task = new Task(() => ProcessUpdate(ElementStates));
             //task.Start();
             ProcessUpdate(ElementStates);
+        }
+
+        delegate void ProcessUpdateDelegate(ElementIntentStates elementStates);
+        private void ProcessUpdate(ElementIntentStates elementStates)
+        {
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+
+            displayForm.PreviewControl.ProcessUpdate(elementStates);
+            //displayForm.PreviewControl.BeginInvoke(new ProcessUpdateDelegate(displayForm.PreviewControl.ProcessUpdate), new object[] {elementStates});
 
             timer.Stop();
 
@@ -212,44 +225,64 @@ namespace VixenModules.Preview.VixenPreview
             VixenPreviewControl.lastUpdateTime = timer.ElapsedMilliseconds;
             VixenPreviewControl.totalUpdateTime += timer.ElapsedMilliseconds;
             VixenPreviewControl.averageUpdateTime = VixenPreviewControl.totalUpdateTime / VixenPreviewControl.updateCount;
-        }
 
-        private void ProcessUpdate(ElementIntentStates elementStates)
-        {
-            PreviewPixel.IntentNodeToColor.Clear();
-            Color c;
-
-            PreviewPixel.intentStates.Clear();
             
-            foreach (var channelIntentState in elementStates)
-            {
-                var elementId = channelIntentState.Key;
-                Element element = VixenSystem.Elements.GetElement(elementId);
-                if (element == null) continue;
-                ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
-                if (node == null) continue;
+            //PreviewPixel.IntentNodeToColor.Clear();
+            //Color c;
+            //foreach (var channelIntentState in elementStates)
+            //{
+            //    var elementId = channelIntentState.Key;
+            //    Element element = VixenSystem.Elements.GetElement(elementId);
+            //    if (element == null) continue;
+            //    ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
+            //    if (node == null) continue;
 
-                //IIntentStates intentStates;
-                //if (PreviewPixel.intentStates.TryGetValue(node.Id, out intentStates)) {
-                //    intentStates = channelIntentState.Value;
-                //} else {
-                //    PreviewPixel.intentStates.Add(node.Id, channelIntentState.Value);                    
-                //}
+            //    //IIntentStates intentStates;
+            //    //if (PreviewPixel.intentStates.TryGetValue(node.Id, out intentStates)) {
+            //    //    intentStates = channelIntentState.Value;
+            //    //} else {
+            //    //    PreviewPixel.intentStates.Add(node.Id, channelIntentState.Value);                    
+            //    //}
 
-                foreach (IIntentState<LightingValue> intentState in channelIntentState.Value)
-                {
-                    if (PreviewPixel.IntentNodeToColor.TryGetValue(node, out c))
-                    {
-                        PreviewPixel.IntentNodeToColor[node] = intentState.GetValue().GetAlphaChannelIntensityAffectedColor();
-                    }
-                    else
-                    {
-                        PreviewPixel.IntentNodeToColor.Add(node, intentState.GetValue().GetAlphaChannelIntensityAffectedColor());
-                    }
-                }
-            }
+            //    foreach (IIntentState<LightingValue> intentState in channelIntentState.Value)
+            //    {
 
-            //displayForm.PreviewControl.RenderInBackground();            
+            //        c = intentState.GetValue().GetAlphaChannelIntensityAffectedColor();
+            //        if (c.A != 0)
+            //        {
+            //            if (!PreviewPixel.IntentNodeToColor.Keys.Contains(node))
+            //            {
+            //                PreviewPixel.IntentNodeToColor.Add(node, c);
+            //            }
+            //            else
+            //            {
+            //                PreviewPixel.IntentNodeToColor[node] = c;
+            //            }
+            //        }
+            //        else
+            //        {
+            //        }
+
+
+            //        //    if (PreviewPixel.IntentNodeToColor.TryGetValue(node, out c))
+            //        //    {
+            //        //        PreviewPixel.IntentNodeToColor[node] = intentState.GetValue().GetAlphaChannelIntensityAffectedColor();
+            //        //    }
+            //        //    else
+            //        //    {
+            //        //        PreviewPixel.IntentNodeToColor.Add(node, intentState.GetValue().GetAlphaChannelIntensityAffectedColor(););
+            //        //    }
+            //    }
+            //}
+
+            //timer.Stop();
+
+            //VixenPreviewControl.updateCount += 1;
+            //VixenPreviewControl.lastUpdateTime = timer.ElapsedMilliseconds;
+            //VixenPreviewControl.totalUpdateTime += timer.ElapsedMilliseconds;
+            //VixenPreviewControl.averageUpdateTime = VixenPreviewControl.totalUpdateTime / VixenPreviewControl.updateCount;
+
+            ////displayForm.PreviewControl.RenderInBackground();            
             //displayForm.PreviewControl.RenderInForeground();
         }
     }

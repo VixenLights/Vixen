@@ -24,6 +24,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             InitializeComponent();
             _shapes = shapes;
+            int i = 1;
             foreach (PreviewBaseShape shape in _shapes)
             {
                 PreviewSetElementString newString = new PreviewSetElementString();
@@ -31,8 +32,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 {
                     newString.Pixels.Add(pixel.Clone());
                 }
-                newString.StringName = "String";
+                newString.StringName = "String " + i.ToString();
                 _strings.Add(newString);
+
+                i++;
             }
         }
 

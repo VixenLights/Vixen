@@ -431,6 +431,7 @@
             this.trackBarDegrees.TickFrequency = 10;
             this.trackBarDegrees.TickStyle = System.Windows.Forms.TickStyle.None;
             this.trackBarDegrees.Value = 90;
+            this.trackBarDegrees.Scroll += new System.EventHandler(this.trackBarDegrees_Scroll);
             this.trackBarDegrees.ValueChanged += new System.EventHandler(this.trackBarDegrees_ValueChanged);
             // 
             // numericUpDownDegrees

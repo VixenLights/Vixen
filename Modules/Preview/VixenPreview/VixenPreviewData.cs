@@ -21,7 +21,7 @@ namespace VixenModules.Preview.VixenPreview
     [DataContract]
     public class VixenPreviewData : ModuleDataModelBase
     {
-        private int _top, _left, _width, _height;
+        private int _setupTop, _setupLeft, _setupWidth, _setupHeight, _top, _left, _width, _height;
         private List<DisplayItem> _displayItems = new List<DisplayItem>();
         private string _backgroundFileName;
         private int _backgroundAlpha = 255;
@@ -67,6 +67,34 @@ namespace VixenModules.Preview.VixenPreview
         {
             get { return _left; }
             set { _left = value; }
+        }
+
+        [DataMember]
+        public int SetupTop
+        {
+            get { return _setupTop; }
+            set { _setupTop = value; }
+        }
+
+        [DataMember]
+        public int SetupLeft
+        {
+            get { return _setupLeft; }
+            set { _setupLeft = value; }
+        }
+
+        [DataMember]
+        public int SetupWidth
+        {
+            get { return _setupWidth; }
+            set { _setupWidth = value; }
+        }
+
+        [DataMember]
+        public int SetupHeight
+        {
+            get { return _setupHeight; }
+            set { _setupHeight = value; }
         }
 
         [DataMember]

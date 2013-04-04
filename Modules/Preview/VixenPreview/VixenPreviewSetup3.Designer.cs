@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VixenPreviewSetup3));
             WeifenLuo.WinFormsUI.Docking.DockPanelSkin dockPanelSkin1 = new WeifenLuo.WinFormsUI.Docking.DockPanelSkin();
             WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin autoHideStripSkin1 = new WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin();
             WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient1 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
@@ -43,8 +44,10 @@
             WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient3 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
             WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient6 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
             WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient7 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VixenPreviewSetup3));
             this.panelToolbar = new System.Windows.Forms.Panel();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.label8 = new System.Windows.Forms.Label();
+            this.buttonSelect = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label5 = new System.Windows.Forms.Label();
             this.buttonSave = new System.Windows.Forms.Button();
@@ -58,7 +61,7 @@
             this.button7 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
-            this.button5 = new System.Windows.Forms.Button();
+            this.buttonMegaTree = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
             this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
             this.label7 = new System.Windows.Forms.Label();
@@ -77,10 +80,8 @@
             this.buttonSetBackground = new System.Windows.Forms.Button();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.dialogSelectBackground = new System.Windows.Forms.OpenFileDialog();
-            this.panel6 = new System.Windows.Forms.Panel();
-            this.label8 = new System.Windows.Forms.Label();
-            this.buttonSelect = new System.Windows.Forms.Button();
             this.panelToolbar.SuspendLayout();
+            this.panel6.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel5.SuspendLayout();
             this.panel4.SuspendLayout();
@@ -89,7 +90,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarBackgroundAlpha)).BeginInit();
-            this.panel6.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelToolbar
@@ -106,6 +106,38 @@
             this.panelToolbar.Name = "panelToolbar";
             this.panelToolbar.Size = new System.Drawing.Size(841, 81);
             this.panelToolbar.TabIndex = 7;
+            // 
+            // panel6
+            // 
+            this.panel6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel6.Controls.Add(this.label8);
+            this.panel6.Controls.Add(this.buttonSelect);
+            this.panel6.Location = new System.Drawing.Point(142, 3);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(54, 74);
+            this.panel6.TabIndex = 12;
+            // 
+            // label8
+            // 
+            this.label8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
+            this.label8.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.label8.Location = new System.Drawing.Point(0, 53);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(52, 19);
+            this.label8.TabIndex = 0;
+            this.label8.Text = "Select";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // buttonSelect
+            // 
+            this.buttonSelect.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.buttonSelect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonSelect.Image = ((System.Drawing.Image)(resources.GetObject("buttonSelect.Image")));
+            this.buttonSelect.Location = new System.Drawing.Point(6, 5);
+            this.buttonSelect.Name = "buttonSelect";
+            this.buttonSelect.Size = new System.Drawing.Size(40, 40);
+            this.buttonSelect.TabIndex = 0;
+            this.buttonSelect.UseVisualStyleBackColor = true;
             // 
             // panel1
             // 
@@ -203,7 +235,7 @@
             this.panel4.Controls.Add(this.button7);
             this.panel4.Controls.Add(this.button6);
             this.panel4.Controls.Add(this.label3);
-            this.panel4.Controls.Add(this.button5);
+            this.panel4.Controls.Add(this.buttonMegaTree);
             this.panel4.Location = new System.Drawing.Point(347, 3);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(172, 74);
@@ -256,17 +288,17 @@
             this.label3.Text = "Smart Objects";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // button5
+            // buttonMegaTree
             // 
-            this.button5.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.button5.Enabled = false;
-            this.button5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button5.Image = ((System.Drawing.Image)(resources.GetObject("button5.Image")));
-            this.button5.Location = new System.Drawing.Point(6, 5);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(40, 40);
-            this.button5.TabIndex = 0;
-            this.button5.UseVisualStyleBackColor = true;
+            this.buttonMegaTree.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.buttonMegaTree.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonMegaTree.Image = ((System.Drawing.Image)(resources.GetObject("buttonMegaTree.Image")));
+            this.buttonMegaTree.Location = new System.Drawing.Point(6, 5);
+            this.buttonMegaTree.Name = "buttonMegaTree";
+            this.buttonMegaTree.Size = new System.Drawing.Size(40, 40);
+            this.buttonMegaTree.TabIndex = 0;
+            this.buttonMegaTree.UseVisualStyleBackColor = true;
+            this.buttonMegaTree.Click += new System.EventHandler(this.toolbarButton_Click);
             // 
             // panel3
             // 
@@ -326,7 +358,6 @@
             // buttonTriangle
             // 
             this.buttonTriangle.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.buttonTriangle.Enabled = false;
             this.buttonTriangle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonTriangle.Image = ((System.Drawing.Image)(resources.GetObject("buttonTriangle.Image")));
             this.buttonTriangle.Location = new System.Drawing.Point(121, 5);
@@ -334,6 +365,7 @@
             this.buttonTriangle.Size = new System.Drawing.Size(24, 24);
             this.buttonTriangle.TabIndex = 5;
             this.buttonTriangle.UseVisualStyleBackColor = true;
+            this.buttonTriangle.Click += new System.EventHandler(this.toolbarButton_Click);
             // 
             // buttonSemiCircle
             // 
@@ -510,39 +542,6 @@
             this.dialogSelectBackground.Filter = "JPG Files|*.jpg|PNG Files|*.png|GIF Files|*.gif|BMP Files|*.bmp|All Files|*.*";
             this.dialogSelectBackground.SupportMultiDottedExtensions = true;
             // 
-            // panel6
-            // 
-            this.panel6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel6.Controls.Add(this.label8);
-            this.panel6.Controls.Add(this.buttonSelect);
-            this.panel6.Location = new System.Drawing.Point(142, 3);
-            this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(54, 74);
-            this.panel6.TabIndex = 12;
-            // 
-            // label8
-            // 
-            this.label8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-            this.label8.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label8.Location = new System.Drawing.Point(0, 53);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(52, 19);
-            this.label8.TabIndex = 0;
-            this.label8.Text = "Select";
-            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // buttonSelect
-            // 
-            this.buttonSelect.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.buttonSelect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonSelect.Image = ((System.Drawing.Image)(resources.GetObject("buttonSelect.Image")));
-            this.buttonSelect.Location = new System.Drawing.Point(6, 5);
-            this.buttonSelect.Name = "buttonSelect";
-            this.buttonSelect.Size = new System.Drawing.Size(40, 40);
-            this.buttonSelect.TabIndex = 0;
-            this.buttonSelect.UseVisualStyleBackColor = true;
-            // 
             // VixenPreviewSetup3
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -556,6 +555,7 @@
             this.Text = "Preview Configuration";
             this.Load += new System.EventHandler(this.VixenPreviewSetup3_Load);
             this.panelToolbar.ResumeLayout(false);
+            this.panel6.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel5.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
@@ -566,7 +566,6 @@
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarBackgroundAlpha)).EndInit();
-            this.panel6.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -584,7 +583,7 @@
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button buttonMegaTree;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button buttonDrawPixel;

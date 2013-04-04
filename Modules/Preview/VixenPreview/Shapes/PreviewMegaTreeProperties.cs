@@ -24,13 +24,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             InitializeComponent();
             _tree = tree;
 
-            trackBarBaseHeight.Value = _tree.BaseHeight;
-            trackBarTopHeight.Value = _tree.TopHeight;
-            trackBarDegrees.Value = _tree.Degrees;
-            trackBarTopWidth.Value = _tree.TopWidth;
-            trackBarLightsPerString.Value = _tree.LightsPerString;
-            trackBarStringCount.Value = _tree.StringCount;
-
             numericUpDownBaseHeight.Minimum = trackBarBaseHeight.Minimum;
             numericUpDownBaseHeight.Maximum = trackBarBaseHeight.Maximum;
             numericUpDownTopHeight.Minimum = trackBarTopHeight.Minimum;
@@ -43,6 +36,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             numericUpDownLightsPerString.Maximum = trackBarLightsPerString.Maximum;
             numericUpDownStringCount.Minimum = trackBarStringCount.Minimum;
             numericUpDownStringCount.Maximum = trackBarStringCount.Maximum;
+
+            trackBarBaseHeight.Value = _tree.BaseHeight;
+            numericUpDownBaseHeight.Value = _tree.BaseHeight;
+            trackBarTopHeight.Value = _tree.TopHeight;
+            numericUpDownTopHeight.Value = _tree.TopHeight;
+            trackBarDegrees.Value = _tree.Degrees;
+            numericUpDownDegrees.Value = _tree.Degrees;
+            trackBarTopWidth.Value = _tree.TopWidth;
+            numericUpDownTopWidth.Value = _tree.TopWidth;
+            trackBarLightsPerString.Value = _tree.LightsPerString;
+            numericUpDownLightsPerString.Value = _tree.LightsPerString;
+            trackBarStringCount.Value = _tree.StringCount;
+            numericUpDownStringCount.Value = _tree.StringCount;
         }
 
         public PreviewMegaTree Tree
@@ -304,6 +310,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         }
 
         private void treeElements_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+
+        }
+
+        private void trackBarDegrees_Scroll(object sender, EventArgs e)
         {
 
         }
