@@ -38,6 +38,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             DoResize += new ResizeEvent(OnResize);
         }
 
+        [OnDeserialized]
+        void OnDeserialized(StreamingContext context)
+        {
+            Layout();
+        }
+
         [CategoryAttribute("Position"),
         DisplayName("Top Left"),
         DescriptionAttribute("An arch is defined by a 2 points of a rectangle. This is point 1.")]
@@ -95,7 +101,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
-        public void Layout()
+        public override void Layout()
         {
             int width = _bottomRight.X - _topLeft.X;
             int height = _bottomRight.Y - _topLeft.Y;

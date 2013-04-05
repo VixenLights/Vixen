@@ -23,6 +23,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //private int height = 50;
         //private double aspect = 1;
 
+        public bool connectStandardStrings = false;
+        private StringTypes _stringType = StringTypes.Standard;
+        public enum StringTypes
+        {
+            Standard,
+            Pixel
+        }
+
         public static Dictionary<ElementNode, List<PreviewPixel>> NodeToPixel = new Dictionary<ElementNode, List<PreviewPixel>>();
         //Hashtable NodeToPixel = new Hashtable();
         //KeyValuePair<ChannelNode, PreviewPixel> NodeToPixel;
@@ -56,13 +64,32 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         public delegate void OnPropertiesChangedHandler(object sender, PreviewBaseShape shape);
         public event OnPropertiesChangedHandler OnPropertiesChanged;
 
-        //[OnDeserialized]
-        //public void OnDeserialized(StreamingContext context)
-        //{
-        //    ResizePixel();
-        //}
+        [OnDeserialized]
+        public void OnDeserialized(StreamingContext context)
+        {
+            ResizePixels();
+        }
 
-        //        ,
+        public abstract void Layout();
+
+        [DataMember,
+        CategoryAttribute("Settings"),
+        DisplayName("String Type")]
+        public StringTypes StringType
+        {
+            get { return _stringType; }
+            set
+            {
+                _stringType = value;
+                if (_strings != null) {
+                    foreach (PreviewBaseShape line in _strings) 
+                    {
+                        line.StringType = _stringType;
+                    }
+                }
+            }
+        }
+
         [DataMember,
         Browsable(false)]
         public virtual List<PreviewPixel> Pixels
@@ -99,6 +126,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         public virtual List<PreviewBaseShape> Strings 
         {
             get {
+                if (_strings != null)
+                {
+                    // set all the sub-strings to match the connection state for elements
+                    foreach (PreviewBaseShape line in _strings)
+                        line.connectStandardStrings = this.connectStandardStrings;
+
+                    // Set all the StringTypes in the substrings
+                    if (_strings != null)
+                    {
+                        foreach (PreviewBaseShape line in _strings)
+                        {
+                            line.StringType = _stringType;
+                        }
+                    }
+                }
+
                 List<PreviewBaseShape> stringsResult = _strings;
                 if (stringsResult == null) 
                 {
@@ -140,7 +183,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 if (pixel.Node != null)
                 {
                     List<PreviewPixel> pixels;
-                    if (PreviewBaseShape.NodeToPixel.TryGetValue(pixel.Node, out pixels)) 
+                    if (PreviewBaseShape.NodeToPixel.TryGetValue(pixel.Node, out pixels))
                     {
                         if (!pixels.Contains(pixel))
                         {
@@ -186,7 +229,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get { return _pixelSize; }
             set {
                 _pixelSize = value;
-                ResizePixel();
+                ResizePixels();
             }
         }
 
@@ -247,8 +290,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             return pixel;
         }
 
-        public void ResizePixel()
+        public void ResizePixels()
         {
+            if (Pixels != null)
+            {
+                foreach (PreviewPixel pixel in Pixels)
+                {
+                    pixel.PixelSize = PixelSize;
+                }
+            }
+
             if (_strings != null && _strings.Count > 0)
             {
                 foreach (PreviewBaseShape shape in _strings)
@@ -314,6 +365,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
 
             //DrawSelectPoints(graphics);
+        }
+
+        public virtual void Draw(FastPixel fp, bool editMode)
+        {
+            foreach (PreviewPixel pixel in Pixels)
+            {
+                pixel.Draw(fp, pixel.editColor);
+            }
+
+            DrawSelectPoints(fp);
         }
 
         private void DrawSelectPoints(FastPixel fp)

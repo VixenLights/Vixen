@@ -35,6 +35,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
     {
         static public System.Object renderLock = new System.Object();
 
+        public static T ParseEnum<T>(string value)
+        {
+            return (T)Enum.Parse(typeof(T), value, true);
+        }
+
+        static public void ComboBoxSetSelectedText(ComboBox comboBox, string text) 
+        {
+            int i = comboBox.FindString(text);
+            if (i >= 0)
+                comboBox.SelectedIndex = i;
+        }
+
         static double Perimeter(PreviewPoint p1, PreviewPoint p2) 
         {
             double p;

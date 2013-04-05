@@ -87,6 +87,15 @@ namespace VixenModules.Preview.VixenPreview
             toolStripStatusLastRenderTime.Text = "Render: " + Math.Round(preview.lastRenderUpdateTime).ToString() + "ms";
         }
 
+        private void VixenPreviewDisplay_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                MessageBox.Show("The preview can only be closed from the Preview Configuration dialog.", "Close", MessageBoxButtons.OKCancel);
+                e.Cancel = true;
+            }
+        }
+
 
     }
 }

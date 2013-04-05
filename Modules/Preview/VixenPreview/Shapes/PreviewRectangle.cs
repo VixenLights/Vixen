@@ -63,6 +63,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             DoResize += new ResizeEvent(OnResize);
         }
 
+        [OnDeserialized]
+        void OnDeserialized(StreamingContext context)
+        {
+            Layout();
+        }
+
         [CategoryAttribute("Position"),
         DisplayName("Top Left"),
         DescriptionAttribute("Rectangles are defined by 4 points. This is point 1.")]
@@ -192,7 +198,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get { return Pixels.Count; }
         }
 
-        public void Layout()
+        public override void Layout()
         {
             double x, y = 0;
             //Top
@@ -298,6 +304,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         public override void Select() 
         {
             base.Select();
+            connectStandardStrings = true;
             SelectDragPoints();
         }
 

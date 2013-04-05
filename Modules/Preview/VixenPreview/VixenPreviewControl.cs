@@ -649,7 +649,7 @@ namespace VixenModules.Preview.VixenPreview
                 foreach (DisplayItem displayItem in DisplayItems)
                 {
                     if (_editMode)
-                        displayItem.Draw(fp, Color.White);
+                        displayItem.Draw(fp, true);
                     else
                         displayItem.Draw(fp);
                 }
@@ -666,11 +666,11 @@ namespace VixenModules.Preview.VixenPreview
                 // Now, draw our "pixel" image using alpha blending
                 bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
                 //}
-                lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
             }
 
             bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
             renderTimer.Stop();
+            lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
         }
 
         public void Reload()
@@ -699,7 +699,7 @@ namespace VixenModules.Preview.VixenPreview
                     }                    
                 }
             }
-
+            SetupBackgroundAlphaImage();
         }
 
         public void ProcessUpdate(ElementIntentStates elementStates)
@@ -756,12 +756,12 @@ namespace VixenModules.Preview.VixenPreview
                 // Now, draw our "pixel" image using alpha blending
                 bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
                 //}
-                lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
 
                 if (!this.Disposing)
                     bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
             }
             renderTimer.Stop();
+            lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
         }
 
         public bool Paused

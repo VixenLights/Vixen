@@ -15,8 +15,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         private PreviewPoint _topLeft;
         [DataMember]
         private PreviewPoint _bottomRight;
-        //[DataMember]
-        //private int _lightCount;
 
         private PreviewPoint topRight, bottomLeft;
 
@@ -41,6 +39,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             Layout();
 
             DoResize += new ResizeEvent(OnResize);
+        }
+
+        [OnDeserialized]
+        void OnDeserialized(StreamingContext context)
+        {
+            Layout();
         }
 
         [CategoryAttribute("Position"),
@@ -132,20 +136,23 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
-        public void Layout()
+        public override void Layout()
         {
-            int width = _bottomRight.X - _topLeft.X;
-            int height = _bottomRight.Y - _topLeft.Y;
-            List<Point> points;
-            points = PreviewTools.GetEllipsePoints(0, 0, width, height, PixelCount, 360);
-            int pointNum = 0;
-            foreach (PreviewPixel pixel in _pixels)
+            if (_bottomRight != null && _topLeft != null)
             {
-                pixel.X = points[pointNum].X + _topLeft.X;
-                pixel.Y = points[pointNum].Y + _topLeft.Y;
-                pointNum++;
+                int width = _bottomRight.X - _topLeft.X;
+                int height = _bottomRight.Y - _topLeft.Y;
+                List<Point> points;
+                points = PreviewTools.GetEllipsePoints(0, 0, width, height, PixelCount, 360);
+                int pointNum = 0;
+                foreach (PreviewPixel pixel in _pixels)
+                {
+                    pixel.X = points[pointNum].X + _topLeft.X;
+                    pixel.Y = points[pointNum].Y + _topLeft.Y;
+                    pointNum++;
+                }
+                //Skew();
             }
-            //Skew();
         }
 
         public override void MouseMove(int x, int y, int changeX, int changeY)

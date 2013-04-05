@@ -68,7 +68,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
-        public void Layout()
+        public override void Layout()
         {
             PreviewPixel pixel = Pixels[0];
             pixel.X = p1.X;

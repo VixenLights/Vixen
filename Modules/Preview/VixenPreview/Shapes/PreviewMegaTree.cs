@@ -69,6 +69,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             DoResize += new ResizeEvent(OnResize);
         }
 
+        [OnDeserialized]
+        void OnDeserialized(StreamingContext context)
+        {
+            Layout();
+        }
+
         public void SetTopLeft(int X, int Y)
         {
             _topLeft.X = X;
@@ -215,7 +221,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
-        public void Layout()
+        public override void Layout()
         {
             int width = _bottomRight.X - _topLeft.X;
             int height = _bottomRight.Y - _topLeft.Y;

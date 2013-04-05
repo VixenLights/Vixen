@@ -18,6 +18,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
     public class PreviewPixel
     {
         private Color color = Color.White;
+        public Color editColor = Color.White;
         private Brush brush;
         private int x = 0;
         private int y = 0;
@@ -43,6 +44,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             Resize();
         }
 
+        [OnDeserialized]
+        void OnDeserialized(StreamingContext context)
+        {
+            editColor = Color.White;
+        }
+
         public PreviewPixel Clone()
         {
             PreviewPixel p = new PreviewPixel(x, y, size);
@@ -54,7 +61,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             return p;
         }
 
-        [DataMember]
         public int MaxAlpha
         {
             get 
@@ -107,7 +113,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             drawArea = new Rectangle(x, y, size, size);
         }
 
-        [DataMember]
         public int X
         {
             get { return x; }
@@ -117,7 +122,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
-        [DataMember]
         public int Y
         {
             get { return y; }
@@ -127,7 +131,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
-        [DataMember]
         public int PixelSize
         {
             get { return size; }
@@ -138,7 +141,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
-        [DataMember]
         public Color PixelColor
         {
             get { return color; }

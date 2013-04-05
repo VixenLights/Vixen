@@ -44,9 +44,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             _shape.Draw(fp);
         }
 
-        public void ResetColors(bool isRunning)
+        //public void ResetColors(bool isRunning)
+        //{
+        //    Shape.ResetNodeToPixelDictionary();
+        //}
+
+        public void Draw(FastPixel fp, bool editMode)
         {
-            Shape.ResetNodeToPixelDictionary();
+            _shape.Draw(fp, editMode);
         }
     }
 }

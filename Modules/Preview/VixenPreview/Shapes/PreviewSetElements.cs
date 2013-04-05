@@ -19,22 +19,33 @@ namespace VixenModules.Preview.VixenPreview.Shapes
     {
         List<PreviewSetElementString> _strings = new List<PreviewSetElementString>();
         List<PreviewBaseShape> _shapes;
+        bool connectStandardStrings;
 
         public PreviewSetElements(List<PreviewBaseShape> shapes)
         {
             InitializeComponent();
             _shapes = shapes;
+            connectStandardStrings = shapes[0].connectStandardStrings;
             int i = 1;
             foreach (PreviewBaseShape shape in _shapes)
             {
                 PreviewSetElementString newString = new PreviewSetElementString();
-                foreach (PreviewPixel pixel in shape.Pixels)
+                // If this is a Standard string, only set the first pixel of the string
+                if (shape.StringType == PreviewBaseShape.StringTypes.Standard)
                 {
+                    PreviewPixel pixel = shape.Pixels[0]; ;
                     newString.Pixels.Add(pixel.Clone());
+                }
+                // If this is a pixel string, let them set every pixel
+                else
+                {
+                    foreach (PreviewPixel pixel in shape.Pixels)
+                    {
+                        newString.Pixels.Add(pixel.Clone());
+                    }
                 }
                 newString.StringName = "String " + i.ToString();
                 _strings.Add(newString);
-
                 i++;
             }
         }
@@ -48,9 +59,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         private void PopulateStringList()
         {
-            foreach (PreviewSetElementString lightString in _strings)
+            if (connectStandardStrings && _shapes[0].StringType == PreviewBaseShape.StringTypes.Standard)
             {
-                comboStrings.Items.Add(new ComboBoxItem(lightString.StringName, lightString));
+                comboStrings.Items.Add(new ComboBoxItem(_strings[0].StringName, _strings[0]));
+            }
+            else
+            {
+                foreach (PreviewSetElementString lightString in _strings)
+                {
+                    comboStrings.Items.Add(new ComboBoxItem(lightString.StringName, lightString));
+                }
             }
             if (_strings.Count > 0)
                 comboStrings.SelectedIndex = 0;
@@ -219,13 +237,41 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < _shapes.Count; i++) {
-                ComboBoxItem item = comboStrings.Items[i] as ComboBoxItem;
-                PreviewSetElementString lightString = item.Value as PreviewSetElementString;
-                PreviewBaseShape shape = _shapes[i];
-                for (int pixelNum = 0; pixelNum < lightString.Pixels.Count; pixelNum++) 
+            if (connectStandardStrings && _shapes[0].StringType == PreviewBaseShape.StringTypes.Standard)
+            {
+                PreviewBaseShape shape = _shapes[0];
+                for (int i = 0; i < _shapes.Count; i++)
                 {
-                    shape.Pixels[pixelNum] = lightString.Pixels[pixelNum];
+                    foreach (PreviewPixel pixel in _shapes[i]._pixels)
+                    {
+                        pixel.Node = _strings[0].Pixels[0].Node;
+                        pixel.NodeId = _strings[0].Pixels[0].NodeId;
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < _shapes.Count; i++)
+                {
+                    ComboBoxItem item = comboStrings.Items[i] as ComboBoxItem;
+                    PreviewSetElementString lightString = item.Value as PreviewSetElementString;
+                    PreviewBaseShape shape = _shapes[i];
+                    for (int pixelNum = 0; pixelNum < lightString.Pixels.Count; pixelNum++)
+                    {
+                        // If this is a standard light string, assing ALL pixels to the first node
+                        if (shape.StringType == PreviewBaseShape.StringTypes.Standard)
+                        {
+                            foreach (PreviewPixel pixel in shape._pixels)
+                            {
+                                pixel.Node = lightString.Pixels[0].Node;
+                                pixel.NodeId = lightString.Pixels[0].NodeId;
+                            }
+                        }
+                        else
+                        {
+                            shape.Pixels[pixelNum] = lightString.Pixels[pixelNum];
+                        }
+                    }
                 }
             }
             

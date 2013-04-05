@@ -76,7 +76,7 @@ namespace VixenModules.Preview.VixenPreview
             VixenSystem.Contexts.ContextCreated += ProgramContextCreated;
             VixenSystem.Contexts.ContextReleased += ProgramContextReleased;
             //Preferences.CurrentPreferences = GetDisplayPreviewModuleDataModel().Preferences;
-            ResetColors(false);
+            //ResetColors(false);
 
 
             //previewForm = new VixenPreviewSetup();
@@ -113,6 +113,7 @@ namespace VixenModules.Preview.VixenPreview
             setupForm.Data = GetDataModel();
             displayForm.PreviewControl.Paused = true;
             setupForm.ShowDialog();
+            displayForm.PreviewControl.Reload();
             displayForm.PreviewControl.Paused = false;
             if (setupForm.DialogResult == DialogResult.OK)
             {
@@ -137,7 +138,7 @@ namespace VixenModules.Preview.VixenPreview
 
         private void ProgramContextProgramEnded(object sender, ProgramEventArgs e)
         {
-            ResetColors(false);
+            //ResetColors(false);
             Console.WriteLine("Stopped");
             Stop();
         }
@@ -145,7 +146,7 @@ namespace VixenModules.Preview.VixenPreview
         private void ProgramContextProgramStarted(object sender, ProgramEventArgs e)
         {
             Console.WriteLine("Started");
-            ResetColors(true);
+            //ResetColors(true);
             Start();
         }
 
@@ -162,14 +163,14 @@ namespace VixenModules.Preview.VixenPreview
             }
         }
 
-        private void ResetColors(bool isRunning)
-        {
-            var data = GetDataModel();
-            foreach (DisplayItem displayItem in data.DisplayItems)
-            {
-                displayItem.ResetColors(isRunning);
-            }
-        }
+        //private void ResetColors(bool isRunning)
+        //{
+        //    var data = GetDataModel();
+        //    foreach (DisplayItem displayItem in data.DisplayItems)
+        //    {
+        //        displayItem.ResetColors(isRunning);
+        //    }
+        //}
 
 
         //bool _updating = false;

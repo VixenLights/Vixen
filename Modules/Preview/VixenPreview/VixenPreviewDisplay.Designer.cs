@@ -84,6 +84,7 @@
             this.preview.EditMode = false;
             this.preview.Location = new System.Drawing.Point(0, 0);
             this.preview.Name = "preview";
+            this.preview.Paused = false;
             this.preview.Size = new System.Drawing.Size(878, 416);
             this.preview.TabIndex = 0;
             this.preview.Load += new System.EventHandler(this.preview_Load);
@@ -98,6 +99,7 @@
             this.MinimumSize = new System.Drawing.Size(640, 480);
             this.Name = "VixenPreviewDisplay";
             this.Text = "Preview";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.VixenPreviewDisplay_FormClosing);
             this.Load += new System.EventHandler(this.VixenPreviewDisplay_Load);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();

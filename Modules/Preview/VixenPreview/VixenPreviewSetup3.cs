@@ -47,7 +47,7 @@ namespace VixenModules.Preview.VixenPreview
             previewForm.Preview.OnSelectDisplayItem += OnSelectDisplayItem;
             previewForm.Preview.OnDeSelectDisplayItem += OnDeSelectDisplayItem;
 
-            elementsForm = new VixenPreviewSetupElementsDocument();
+            elementsForm = new VixenPreviewSetupElementsDocument(previewForm.Preview);
             propertiesForm = new VixenPreviewSetupPropertiesDocument();
             previewForm.Show(dockPanel);
             elementsForm.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft);
@@ -150,6 +150,8 @@ namespace VixenModules.Preview.VixenPreview
             Left = Data.SetupLeft;
             Width = Data.SetupWidth;
             Height = Data.SetupHeight;
+
+            trackBarBackgroundAlpha.Value = Data.BackgroundAlpha;
 
             //if (Data.Width > MinimumSize.Width)
             //    Width = Data.Width;

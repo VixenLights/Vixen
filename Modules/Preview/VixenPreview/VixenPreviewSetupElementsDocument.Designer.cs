@@ -49,6 +49,7 @@
             this.treeElements.Size = new System.Drawing.Size(227, 382);
             this.treeElements.TabIndex = 1;
             this.treeElements.UsingCustomDragCursor = false;
+            this.treeElements.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeElements_AfterSelect);
             // 
             // VixenPreviewSetupElementsDocument
             // 

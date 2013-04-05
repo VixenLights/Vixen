@@ -34,6 +34,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             DoResize += new ResizeEvent(OnResize);
         }
 
+        [OnDeserialized]
+        void OnDeserialized(StreamingContext context)
+        {
+            Layout();
+        }
+
         public void SetPoint0(int X, int Y)
         {
             _points[0].X = X;
@@ -107,7 +113,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
-        public void Layout()
+        public override void Layout()
         {
             double xSpacing = (double)(_points[0].X - _points[1].X) / (double)(PixelCount - 1);
             double ySpacing = (double)(_points[0].Y - _points[1].Y) / (double)(PixelCount - 1);
