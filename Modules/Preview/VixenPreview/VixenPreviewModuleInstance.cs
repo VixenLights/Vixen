@@ -56,12 +56,6 @@ namespace VixenModules.Preview.VixenPreview
             }
         }
 
-        //public delegate void RefreshDelegate();
-        //public void RefreshDelegateMethod()
-        //{
-        //    previewForm.RefreshPreview();
-        //}
-
         public override bool HasSetup
         {
             get
@@ -113,7 +107,7 @@ namespace VixenModules.Preview.VixenPreview
             setupForm.Data = GetDataModel();
             displayForm.PreviewControl.Paused = true;
             setupForm.ShowDialog();
-            displayForm.PreviewControl.Reload();
+            //displayForm.PreviewControl.Reload();
             displayForm.PreviewControl.Paused = false;
             if (setupForm.DialogResult == DialogResult.OK)
             {

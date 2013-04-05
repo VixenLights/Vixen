@@ -58,10 +58,6 @@ namespace VixenModules.Preview.VixenPreview
                 Height = Data.Height;
             else
                 Height = MinimumSize.Height;
-
-            //if (Data.BackgroundAlpha == 0)
-            //    Data.BackgroundAlpha = 255;
-            //scrollBackgroundAlpha.Value = Data.BackgroundAlpha;
         }
 
         public void Save()

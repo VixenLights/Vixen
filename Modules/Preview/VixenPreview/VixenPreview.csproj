@@ -194,12 +194,6 @@
     <Compile Include="VixenPreviewModuleInstance.Designer.cs">
       <DependentUpon>VixenPreviewModuleInstance.cs</DependentUpon>
     </Compile>
-    <Compile Include="VixenPreviewSetup2.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="VixenPreviewSetup2.Designer.cs">
-      <DependentUpon>VixenPreviewSetup2.cs</DependentUpon>
-    </Compile>
     <Compile Include="VixenPreviewSetup3.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -278,9 +272,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="VixenPreviewSetup.resx">
       <DependentUpon>VixenPreviewSetup.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="VixenPreviewSetup2.resx">
-      <DependentUpon>VixenPreviewSetup2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="VixenPreviewSetup3.resx">
       <DependentUpon>VixenPreviewSetup3.cs</DependentUpon>

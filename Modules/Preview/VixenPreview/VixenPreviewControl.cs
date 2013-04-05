@@ -71,7 +71,7 @@ namespace VixenModules.Preview.VixenPreview
 
         Stopwatch renderTimer = new Stopwatch();
 
-        public static Dictionary<ElementNode, List<PreviewPixel>> NodeToPixel = new Dictionary<ElementNode, List<PreviewPixel>>();
+        //public static Dictionary<ElementNode, List<PreviewPixel>> NodeToPixel = new Dictionary<ElementNode, List<PreviewPixel>>();
 
         #endregion
 
@@ -212,6 +212,14 @@ namespace VixenModules.Preview.VixenPreview
             }
 
             SetupBackgroundAlphaImage();
+        }
+
+        public void LoadBackground()
+        {
+            if (Data.BackgroundFileName != null)
+            {
+                LoadBackground(Data.BackgroundFileName);
+            }
         }
 
         private void SetupBackgroundAlphaImage()
@@ -675,7 +683,10 @@ namespace VixenModules.Preview.VixenPreview
 
         public void Reload()
         {
-            NodeToPixel.Clear();
+            Console.WriteLine("Reload");
+            
+            PreviewBaseShape.NodeToPixel.Clear();
+            
             foreach (DisplayItem item in DisplayItems)
             {
                 foreach (PreviewPixel pixel in item.Shape.Pixels)
@@ -699,18 +710,19 @@ namespace VixenModules.Preview.VixenPreview
                     }                    
                 }
             }
-            SetupBackgroundAlphaImage();
+            LoadBackground();
         }
 
         public void ProcessUpdate(ElementIntentStates elementStates)
         {
             renderTimer.Reset();
             renderTimer.Start();
+
+            if (PreviewBaseShape.NodeToPixel.Count == 0 && elementStates.Count != 0) 
+                Reload();
+
             if (!_paused)
             {
-                if (NodeToPixel.Count == 0)
-                    Reload();
-
                 FastPixel fp = new FastPixel(_background.Width, _background.Height);
                 fp.Lock();
 
