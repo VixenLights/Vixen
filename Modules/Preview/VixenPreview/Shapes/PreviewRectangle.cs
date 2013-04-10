@@ -1,13 +1,11 @@
-﻿//
-// ToDo: Property Dialog
-//
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.Runtime.Serialization;
 using System.ComponentModel;
+using System.Windows.Controls;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -15,56 +13,40 @@ namespace VixenModules.Preview.VixenPreview.Shapes
     public class PreviewRectangle: PreviewBaseShape
     {
         [DataMember]
-        private PreviewPoint _p1;
+        private PreviewPoint _topLeft;
         [DataMember]
-        private PreviewPoint _p2;
+        private PreviewPoint _topRight;
         [DataMember]
-        private PreviewPoint _p3;
+        private PreviewPoint _bottomLeft;
         [DataMember]
-        private PreviewPoint _p4;
+        private PreviewPoint _bottomRight;
 
         private bool lockXY = false;
-
-        [DataMember]
-        private int _lightCountX1;
-        [DataMember]
-        private int _lightCountX2;
-        [DataMember]
-        private int _lightCountY1;
-        [DataMember]
-        private int _lightCountY2;
-
-
-        private PreviewPoint p1Start, p2Start, p3Start, p4Start;
+        private PreviewPoint topLeftStart, topRightStart, bottomLeftStart, bottomRightStart;
 
         public PreviewRectangle(PreviewPoint point1)
         {
-            _p1 = point1;
-            _p2 = new PreviewPoint(_p1.X, _p1.Y);
-            _p3 = new PreviewPoint(_p1.X, _p1.Y);
-            _p4 = new PreviewPoint(_p1.X, _p1.Y);
+            _topLeft = point1;
+            _topRight = new PreviewPoint(point1);
+            _bottomLeft = new PreviewPoint(point1);
+            _bottomRight = new PreviewPoint(point1);
 
-            _lightCountX1 = 10;
-            _lightCountX2 = 10;
-            _lightCountY1 = 10;
-            _lightCountY2 = 10;
-
-            int totalLights = _lightCountX1 + _lightCountX2 + _lightCountY1 + _lightCountY2;
-
-            // Just add the pixels, they will get layed out next
-            for (int lightNum = 0; lightNum < totalLights; lightNum++)
+            // Just add lines, they will be layed out in Layout()
+            _strings = new List<PreviewBaseShape>();
+            for (int i = 0; i < 4; i++)
             {
-                PreviewPixel pixel = AddPixel(20, 20);
-                pixel.PixelColor = Color.White;
+                PreviewLine line;
+                line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), 10);
+                line.PixelColor = Color.White;
+                _strings.Add(line);
             }
-            // Lay out the pixels
             Layout();
 
             DoResize += new ResizeEvent(OnResize);
         }
 
         [OnDeserialized]
-        void OnDeserialized(StreamingContext context)
+        public void OnDeserialized(StreamingContext context)
         {
             Layout();
         }
@@ -76,13 +58,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get
             {
-                Point p = new Point(_p1.X, _p1.Y);
+                Point p = new Point(_topLeft.X, _topLeft.Y);
                 return p;
             }
             set
             {
-                _p1.X = value.X;
-                _p1.Y = value.Y;
+                _topLeft.X = value.X;
+                _topLeft.Y = value.Y;
                 Layout();
             }
         }
@@ -94,13 +76,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get
             {
-                Point p = new Point(_p2.X, _p2.Y);
+                Point p = new Point(_topRight.X, _topRight.Y);
                 return p;
             }
             set
             {
-                _p2.X = value.X;
-                _p2.Y = value.Y;
+                _topRight.X = value.X;
+                _topRight.Y = value.Y;
                 Layout();
             }
         }
@@ -112,13 +94,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get
             {
-                Point p = new Point(_p3.X, _p3.Y);
+                Point p = new Point(_bottomRight.X, _bottomRight.Y);
                 return p;
             }
             set
             {
-                _p3.X = value.X;
-                _p3.Y = value.Y;
+                _bottomRight.X = value.X;
+                _bottomRight.Y = value.Y;
                 Layout();
             }
         }
@@ -130,68 +112,68 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get
             {
-                Point p = new Point(_p4.X, _p4.Y);
+                Point p = new Point(_bottomLeft.X, _bottomLeft.Y);
                 return p;
             }
             set
             {
-                _p4.X = value.X;
-                _p4.Y = value.Y;
+                _bottomLeft.X = value.X;
+                _bottomLeft.Y = value.Y;
                 Layout();
             }
         }
 
-        //[CategoryAttribute("Settings"),
-        //DisplayName("Left Light Count"),
-        //DescriptionAttribute("Number of lights in the left string.")]
-        //public int LightCountY1
-        //{
-        //    get { return _lightCountY1; }
-        //    set
-        //    {
-        //        _lightCountY1 = value;
-        //        Layout();
-        //    }
-        //}
+        [CategoryAttribute("Settings"),
+        DisplayName("String 1 Light Count"),
+        DescriptionAttribute("Number of pixels or lights in string 1 of the rectangle.")]
+        public int LightCountString1
+        {
+            get { return Strings[0].Pixels.Count; }
+            set
+            {
+                (Strings[0] as PreviewLine).PixelCount = value;
+                Layout();
+            }
+        }
 
-        //[CategoryAttribute("Settings"),
-        //DisplayName("Right Light Count"),
-        //DescriptionAttribute("Number of lights in the right string.")]
-        //public int LightCountY2
-        //{
-        //    get { return _lightCountY2; }
-        //    set
-        //    {
-        //        _lightCountY2 = value;
-        //        Layout();
-        //    }
-        //}
+        [CategoryAttribute("Settings"),
+        DisplayName("String 2 Light Count"),
+        DescriptionAttribute("Number of pixels or lights in string 2 of the rectangle.")]
+        public int LightCountString2
+        {
+            get { return Strings[1].Pixels.Count; }
+            set
+            {
+                (Strings[1] as PreviewLine).PixelCount = value;
+                Layout();
+            }
+        }
 
-        //[CategoryAttribute("Settings"),
-        //DisplayName("Top Light Count"),
-        //DescriptionAttribute("Number of lights in the top string.")]
-        //public int LightCountX1
-        //{
-        //    get { return _lightCountX1; }
-        //    set
-        //    {
-        //        _lightCountX1 = value;
-        //        Layout();
-        //    }
-        //}
+        [CategoryAttribute("Settings"),
+        DisplayName("String 3 Light Count"),
+        DescriptionAttribute("Number of pixels or lights in string 3 of the rectangle.")]
+        public int LightCountString3
+        {
+            get { return Strings[2].Pixels.Count; }
+            set
+            {
+                (Strings[2] as PreviewLine).PixelCount = value;
+                Layout();
+            }
+        }
 
-        //[CategoryAttribute("Settings"),
-        //DisplayName("Bottom Light Count"),
-        //DescriptionAttribute("Number of lights in the bottom string.")]
-        //public int LightCountX2
-        //{
-        //    get { return _lightCountX2; }
-        //    set
-        //    {
-        //        _lightCountX2 = value;
-        //        Layout();
-        //    }
-        //}
+        [CategoryAttribute("Settings"),
+        DisplayName("String 4 Light Count"),
+        DescriptionAttribute("Number of pixels or lights in string 4 of the rectangle.")]
+        public int LightCountString4
+        {
+            get { return Strings[3].Pixels.Count; }
+            set
+            {
+                (Strings[3] as PreviewLine).PixelCount = value;
+                Layout();
+            }
+        }
 
         public int PixelCount
         {
@@ -200,98 +182,47 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         public override void Layout()
         {
-            double x, y = 0;
-            //Top
-            double X1XSpacing = (double)( _p1.X - _p2.X) / (double)(_lightCountX1 + 1);
-            double X1YSpacing = (double)( _p1.Y - _p2.Y) / (double)(_lightCountX1 + 1);
-            //Bottom
-            double X2XSpacing = (double)( _p3.X - _p4.X) / (double)(_lightCountX2 + 1);
-            double X2YSpacing = (double)( _p3.Y - _p4.Y) / (double)(_lightCountX1 + 1);
-            //Left
-            double Y1XSpacing = (double)( _p4.X - _p1.X) / (double)(_lightCountY1 + 1);
-            double Y1YSpacing = (double)( _p4.Y - _p1.Y) / (double)(_lightCountY1 + 1);
-            //Right
-            double Y2XSpacing = (double)( _p2.X - _p3.X) / (double)(_lightCountY2 + 1);
-            double Y2YSpacing = (double)( _p2.Y - _p3.Y) / (double)(_lightCountY2 + 1);
+            (Strings[0] as PreviewLine).Point1 = TopLeftPoint;
+            (Strings[0] as PreviewLine).Point2 = TopRightPoint;
+            (Strings[0] as PreviewLine).Layout();
 
-            int currentPixel = 0;
+            (Strings[1] as PreviewLine).Point1 = TopRightPoint;
+            (Strings[1] as PreviewLine).Point2 = BottomRightPoint;
+            (Strings[1] as PreviewLine).Layout();
 
-            //Top
-            x = _p1.X - X1XSpacing;
-            y = _p1.Y - X1YSpacing;
-            for (int i = 0; i < _lightCountX1; i++)
-            {
-                Pixels[currentPixel].X = (int)Math.Round(x);
-                Pixels[currentPixel].Y = (int)Math.Round(y);
-                x -= X1XSpacing;
-                y -= X1YSpacing;
-                currentPixel++;
-            }
+            (Strings[2] as PreviewLine).Point1 = BottomLeftPoint;
+            (Strings[2] as PreviewLine).Point2 = BottomRightPoint;
+            (Strings[2] as PreviewLine).Layout();
 
-            //Right
-            x = _p2.X - Y2XSpacing;
-            y = _p2.Y - Y2YSpacing;
-            for (int i = 0; i < _lightCountY1; i++)
-            {
-                Pixels[currentPixel].X = (int)Math.Round(x);
-                Pixels[currentPixel].Y = (int)Math.Round(y);
-                x -= Y2XSpacing;
-                y -= Y2YSpacing;
-                currentPixel++;
-            }
-
-            //Bottom
-            x = _p3.X - X2XSpacing;
-            y = _p3.Y - X2YSpacing;
-            for (int i = 0; i < _lightCountX2; i++)
-            {
-                Pixels[currentPixel].X = (int)Math.Round(x);
-                Pixels[currentPixel].Y = (int)Math.Round(y);
-                x -= X2XSpacing;
-                y -= X2YSpacing;
-                currentPixel++;
-            }
-
-            // Left
-            x = _p4.X - Y1XSpacing;
-            y = _p4.Y - Y1YSpacing;
-            for (int i = 0; i < _lightCountY1; i++)
-            {
-                Pixels[currentPixel].X = (int)Math.Round(x);
-                Pixels[currentPixel].Y = (int)Math.Round(y);
-                x -= Y1XSpacing;
-                y -= Y1YSpacing;
-                currentPixel++;
-            }
+            (Strings[3] as PreviewLine).Point1 = TopLeftPoint;
+            (Strings[3] as PreviewLine).Point2 = BottomLeftPoint;
+            (Strings[3] as PreviewLine).Layout();
         }
 
-        public override void MouseMove(int x, int y, int changeX, int changeY) 
+        public override void MouseMove(int x, int y, int changeX, int changeY)
         {
             if (_selectedPoint != null)
             {
                 _selectedPoint.X = x;
                 _selectedPoint.Y = y;
-
-                if (lockXY)
+                if (lockXY || (_selectedPoint == _bottomRight && System.Windows.Forms.Control.ModifierKeys == System.Windows.Forms.Keys.Control))
                 {
-                    _p2.X = x;
-                    _p4.Y = y;
+                    _topRight.X = x;
+                    _bottomLeft.Y = y;
                 }
-
                 Layout();
-                SelectDragPoints();
             }
             // If we get here, we're moving
             else
             {
-                _p1.X = p1Start.X + changeX;
-                _p1.Y = p1Start.Y + changeY;
-                _p2.X = p2Start.X + changeX;
-                _p2.Y = p2Start.Y + changeY;
-                _p3.X = p3Start.X + changeX;
-                _p3.Y = p3Start.Y + changeY;
-                _p4.X = p4Start.X + changeX;
-                _p4.Y = p4Start.Y + changeY;
+                _topLeft.X = topLeftStart.X + changeX;
+                _topLeft.Y = topLeftStart.Y + changeY;
+                _topRight.X = topRightStart.X + changeX;
+                _topRight.Y = topRightStart.Y + changeY;
+                _bottomLeft.X = bottomLeftStart.X + changeX;
+                _bottomLeft.Y = bottomLeftStart.Y + changeY;
+                _bottomRight.X = bottomRightStart.X + changeX;
+                _bottomRight.Y = bottomRightStart.Y + changeY;
                 Layout();
             }
         }
@@ -311,16 +242,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         private void SelectDragPoints()
         {
             List<PreviewPoint> points = new List<PreviewPoint>();
-            points.Add( _p1);
-            points.Add( _p2);
-            points.Add( _p3);
-            points.Add( _p4);
+            points.Add(_topLeft);
+            points.Add(_topRight);
+            points.Add(_bottomLeft);
+            points.Add(_bottomRight);
             SetSelectPoints(points, null);
         }
 
         public override bool PointInShape(PreviewPoint point)
         {
-            foreach (PreviewPixel pixel in Pixels) 
+            foreach (PreviewPixel pixel in Pixels)
             {
                 Rectangle r = new Rectangle(pixel.X - (SelectPointSize / 2), pixel.Y - (SelectPointSize / 2), SelectPointSize, SelectPointSize);
                 if (point.X >= r.X && point.X <= r.X + r.Width && point.Y >= r.Y && point.Y <= r.Y + r.Height)
@@ -334,20 +265,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         public override void SetSelectPoint(PreviewPoint point)
         {
             lockXY = false;
-
             if (point == null)
             {
-                p1Start = new PreviewPoint( _p1.X, _p1.Y);
-                p2Start = new PreviewPoint( _p2.X, _p2.Y) ;
-                p3Start = new PreviewPoint( _p3.X, _p3.Y);
-                p4Start = new PreviewPoint( _p4.X, _p4.Y);
+                topLeftStart = new PreviewPoint(_topLeft.X, _topLeft.Y);
+                topRightStart = new PreviewPoint(_topRight.X, _topRight.Y);
+                bottomLeftStart = new PreviewPoint(_bottomLeft.X, _bottomLeft.Y);
+                bottomRightStart = new PreviewPoint(_bottomRight.X, _bottomRight.Y);
             }
             _selectedPoint = point;
         }
 
         public override void SelectDefaultSelectPoint()
         {
-            _selectedPoint = _p3;
+            _selectedPoint = _bottomRight;
             lockXY = true;
         }
 

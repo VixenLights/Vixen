@@ -87,7 +87,6 @@
             this.preview.Paused = false;
             this.preview.Size = new System.Drawing.Size(878, 416);
             this.preview.TabIndex = 0;
-            this.preview.Load += new System.EventHandler(this.preview_Load);
             // 
             // VixenPreviewDisplay
             // 
@@ -98,9 +97,12 @@
             this.Controls.Add(this.preview);
             this.MinimumSize = new System.Drawing.Size(640, 480);
             this.Name = "VixenPreviewDisplay";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Preview";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.VixenPreviewDisplay_FormClosing);
             this.Load += new System.EventHandler(this.VixenPreviewDisplay_Load);
+            this.Move += new System.EventHandler(this.VixenPreviewDisplay_Move);
+            this.Resize += new System.EventHandler(this.VixenPreviewDisplay_Resize);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);

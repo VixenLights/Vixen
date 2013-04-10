@@ -10,7 +10,7 @@ using Vixen.Module.Preview;
 using Vixen.Data.Value;
 using Vixen.Sys;
 using VixenModules.Preview.VixenPreview.Shapes;
-
+using System.Xml.Serialization;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -18,7 +18,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
     public class PreviewPixel
     {
         private Color color = Color.White;
-        public Color editColor = Color.White;
+        //public Color editColor = Color.White;
         private Brush brush;
         private int x = 0;
         private int y = 0;
@@ -32,8 +32,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //static Dictionary<Int32, Brush> brushes = new Dictionary<Int32, Brush>();
 
         //public static Hashtable IntentNodeToColor = new Hashtable();
+
+        [XmlIgnore]
         public static Dictionary<ElementNode, Color> IntentNodeToColor = new Dictionary<ElementNode, Color>();
         //public static Dictionary<Guid, IIntentStates> intentStates = new Dictionary<Guid, IIntentStates>();
+
+        public PreviewPixel()
+        {
+        }
 
         public PreviewPixel(int xPosition, int yPositoin, int pixelSize)
         {
@@ -47,7 +53,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         [OnDeserialized]
         void OnDeserialized(StreamingContext context)
         {
-            editColor = Color.White;
+            //editColor = Color.White;
         }
 
         public PreviewPixel Clone()

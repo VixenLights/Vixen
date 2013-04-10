@@ -53,6 +53,9 @@ namespace VixenModules.Preview.VixenPreview
             elementsForm.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft);
             propertiesForm.Show(elementsForm.Pane, WeifenLuo.WinFormsUI.Docking.DockAlignment.Bottom, 0.5);
 
+            previewForm.Preview.LoadBackground(Data.BackgroundFileName);
+            trackBarBackgroundAlpha.Value = Data.BackgroundAlpha;
+            previewForm.Preview.Reload();
             Setup();
         }
 
@@ -144,39 +147,28 @@ namespace VixenModules.Preview.VixenPreview
 
         public void Setup()
         {
-            previewForm.Preview.LoadBackground(Data.BackgroundFileName);
-
-            Top = Data.SetupTop;
-            Left = Data.SetupLeft;
-            Width = Data.SetupWidth;
-            Height = Data.SetupHeight;
-
-            trackBarBackgroundAlpha.Value = Data.BackgroundAlpha;
-
-            //if (Data.Width > MinimumSize.Width)
-            //    Width = Data.Width;
-            //else
-            //    Width = MinimumSize.Width;
-
-            //if (Data.Height > MinimumSize.Height)
-            //    Height = Data.Height;
-            //else
-            //    Height = MinimumSize.Height;
-        }
-
-        public void Save()
-        {
-            Data.SetupTop = Top;
-            Data.SetupLeft = Left;
-            Data.SetupWidth = Width;
-            Data.SetupHeight = Height;
+            SetDesktopLocation(Data.SetupLeft, Data.SetupTop);
+            Size = new Size(Data.SetupWidth, Data.SetupHeight);
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
-            Save();
             DialogResult = System.Windows.Forms.DialogResult.OK;
+            previewForm.Close();
+            Console.WriteLine("Closed");
             Close();
+        }
+
+        private void VixenPreviewSetup3_Move(object sender, EventArgs e)
+        {
+            Data.SetupTop = Top;
+            Data.SetupLeft = Left;
+        }
+
+        private void VixenPreviewSetup3_Resize(object sender, EventArgs e)
+        {
+            Data.SetupWidth = Width;
+            Data.SetupHeight = Height;
         }
     }
 }

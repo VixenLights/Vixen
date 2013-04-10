@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PreviewSetElements));
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label11 = new System.Windows.Forms.Label();
@@ -43,7 +44,10 @@
             this.label6 = new System.Windows.Forms.Label();
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
+            this.contextMenuLinkedElements = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.copyToAllElementsAllStringsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox2.SuspendLayout();
+            this.contextMenuLinkedElements.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -109,6 +113,7 @@
             this.treeElements.TabIndex = 22;
             this.treeElements.UsingCustomDragCursor = false;
             this.treeElements.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.treeElements_ItemDrag);
+            this.treeElements.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.treeElements_MouseDoubleClick);
             // 
             // label7
             // 
@@ -128,7 +133,6 @@
             this.comboStrings.Size = new System.Drawing.Size(123, 21);
             this.comboStrings.TabIndex = 7;
             this.comboStrings.SelectedIndexChanged += new System.EventHandler(this.comboStrings_SelectedIndexChanged);
-            this.comboStrings.SelectedValueChanged += new System.EventHandler(this.comboStrings_SelectedValueChanged);
             // 
             // listLinkedElements
             // 
@@ -138,6 +142,7 @@
             this.listLinkedElements.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
+            this.listLinkedElements.ContextMenuStrip = this.contextMenuLinkedElements;
             this.listLinkedElements.FullRowSelect = true;
             this.listLinkedElements.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listLinkedElements.HideSelection = false;
@@ -202,6 +207,20 @@
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
+            // contextMenuLinkedElements
+            // 
+            this.contextMenuLinkedElements.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyToAllElementsAllStringsToolStripMenuItem});
+            this.contextMenuLinkedElements.Name = "contextMenuLinkedElements";
+            this.contextMenuLinkedElements.Size = new System.Drawing.Size(243, 48);
+            // 
+            // copyToAllElementsAllStringsToolStripMenuItem
+            // 
+            this.copyToAllElementsAllStringsToolStripMenuItem.Name = "copyToAllElementsAllStringsToolStripMenuItem";
+            this.copyToAllElementsAllStringsToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.copyToAllElementsAllStringsToolStripMenuItem.Text = "Copy to All Elements/All Strings";
+            this.copyToAllElementsAllStringsToolStripMenuItem.Click += new System.EventHandler(this.copyToAllElementsAllStringsToolStripMenuItem_Click);
+            // 
             // PreviewSetElements
             // 
             this.AcceptButton = this.buttonOK;
@@ -217,6 +236,7 @@
             this.Load += new System.EventHandler(this.PreviewSetElements_Load);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.contextMenuLinkedElements.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -237,5 +257,7 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.Button buttonCancel;
+        private System.Windows.Forms.ContextMenuStrip contextMenuLinkedElements;
+        private System.Windows.Forms.ToolStripMenuItem copyToAllElementsAllStringsToolStripMenuItem;
     }
 }

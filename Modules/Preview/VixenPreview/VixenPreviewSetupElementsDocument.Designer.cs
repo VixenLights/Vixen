@@ -43,13 +43,18 @@
             this.treeElements.DragDestinationNodeForeColor = System.Drawing.SystemColors.HighlightText;
             this.treeElements.DragSourceNodeBackColor = System.Drawing.SystemColors.ControlLight;
             this.treeElements.DragSourceNodeForeColor = System.Drawing.SystemColors.ControlText;
+            this.treeElements.HideSelection = false;
             this.treeElements.Location = new System.Drawing.Point(0, 0);
             this.treeElements.Name = "treeElements";
             this.treeElements.SelectedNodes = ((System.Collections.Generic.List<System.Windows.Forms.TreeNode>)(resources.GetObject("treeElements.SelectedNodes")));
             this.treeElements.Size = new System.Drawing.Size(227, 382);
             this.treeElements.TabIndex = 1;
             this.treeElements.UsingCustomDragCursor = false;
+            this.treeElements.DragFinishing += new Common.Controls.DragFinishingEventHandler(this.treeElements_DragFinishing);
             this.treeElements.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeElements_AfterSelect);
+            this.treeElements.DragDrop += new System.Windows.Forms.DragEventHandler(this.treeElements_DragDrop);
+            this.treeElements.DragOver += new System.Windows.Forms.DragEventHandler(this.treeElements_DragOver);
+            this.treeElements.MouseClick += new System.Windows.Forms.MouseEventHandler(this.treeElements_MouseClick);
             // 
             // VixenPreviewSetupElementsDocument
             // 

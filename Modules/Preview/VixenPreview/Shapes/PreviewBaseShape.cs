@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Drawing.Design;
 using System.Windows.Forms.Design;
+using System.Xml.Serialization;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -31,6 +32,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             Pixel
         }
 
+        [XmlIgnore]
         public static Dictionary<ElementNode, List<PreviewPixel>> NodeToPixel = new Dictionary<ElementNode, List<PreviewPixel>>();
         //Hashtable NodeToPixel = new Hashtable();
         //KeyValuePair<ChannelNode, PreviewPixel> NodeToPixel;
@@ -38,6 +40,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //public Graphics g;
 
         private bool _selected = false;
+        [XmlIgnore]
         public List<PreviewPoint> _selectPoints = null;
         //private List<PreviewPoint> _skewPoints = null;
         public const int SelectPointSize = 6;
@@ -68,6 +71,65 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         public void OnDeserialized(StreamingContext context)
         {
             ResizePixels();
+        }
+
+        /// <summary>
+        /// Need to override if this is anywhere other than the top left in _pixels
+        /// </summary>
+        public virtual int Top
+        {
+            get
+            {
+                int y = int.MaxValue;
+                foreach (PreviewPixel pixel in Pixels)
+                {
+                    y = Math.Min(y, pixel.Y);
+                }
+                return y;
+            }
+            set
+            {
+                int y = int.MaxValue;
+                foreach (PreviewPixel pixel in Pixels)
+                {
+                    y = Math.Min(y, pixel.Y);
+                }
+                int delta = value - y;
+                foreach (PreviewPixel pixel in Pixels)
+                {
+                    pixel.Y += delta;
+                }
+
+            }
+        }
+
+        /// <summary>
+        /// Need to override if this is anywhere other than the top left in _pixels
+        /// </summary>
+        public virtual int Left
+        {
+            get
+            {
+                int x = int.MaxValue;
+                foreach (PreviewPixel pixel in Pixels)
+                {
+                    x = Math.Min(x, pixel.X);
+                }
+                return x;
+            }
+            set
+            {
+                int x = int.MaxValue;
+                foreach (PreviewPixel pixel in Pixels)
+                {
+                    x = Math.Min(x, pixel.X);
+                }
+                int delta = value - x;
+                foreach (PreviewPixel pixel in Pixels)
+                {
+                    pixel.X += delta;
+                }
+            }
         }
 
         public abstract void Layout();
@@ -367,11 +429,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             //DrawSelectPoints(graphics);
         }
 
-        public virtual void Draw(FastPixel fp, bool editMode)
+        public virtual void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements)
         {
             foreach (PreviewPixel pixel in Pixels)
             {
-                pixel.Draw(fp, pixel.editColor);
+                if (highlightedElements.Contains(pixel.Node))
+                    pixel.Draw(fp, Color.HotPink);
+                else
+                    pixel.Draw(fp, Color.White);
             }
 
             DrawSelectPoints(fp);

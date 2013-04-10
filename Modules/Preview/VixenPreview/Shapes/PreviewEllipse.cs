@@ -120,7 +120,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
-        public int Top
+        public override int Top
         {
             set
             {
@@ -128,7 +128,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
-        public int Left
+        public override int Left
         {
             set
             {

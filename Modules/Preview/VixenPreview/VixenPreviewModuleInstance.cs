@@ -85,7 +85,7 @@ namespace VixenModules.Preview.VixenPreview
 
             displayForm = new VixenPreviewDisplay();
             displayForm.Data = GetDataModel();
-            //displayForm.Setup();
+            displayForm.Setup();
             return displayForm;
         }
 
@@ -105,10 +105,13 @@ namespace VixenModules.Preview.VixenPreview
         {
             setupForm = new VixenPreviewSetup3();
             setupForm.Data = GetDataModel();
+            //setupForm.Setup();
             displayForm.PreviewControl.Paused = true;
+            Console.WriteLine("Paused");
             setupForm.ShowDialog();
             //displayForm.PreviewControl.Reload();
             displayForm.PreviewControl.Paused = false;
+            Console.WriteLine("Un-Paused");
             if (setupForm.DialogResult == DialogResult.OK)
             {
                 displayForm.PreviewControl.Reload();
@@ -147,7 +150,6 @@ namespace VixenModules.Preview.VixenPreview
         private void ProgramContextReleased(object sender, ContextEventArgs contextEventArgs)
         {
             Console.WriteLine("Context Released");
-            displayForm.Save();
             var programContext = contextEventArgs.Context as IProgramContext;
             if (programContext != null)
             {

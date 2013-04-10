@@ -167,10 +167,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
-        private void comboStrings_SelectedValueChanged(object sender, EventArgs e)
-        {
-        }
-
         private void comboStrings_SelectedIndexChanged(object sender, EventArgs e)
         {
             //Console.Write(comboStrings.SelectedIndex);
@@ -253,18 +249,21 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 for (int i = 0; i < _shapes.Count; i++)
                 {
+                    //Console.WriteLine("i=" + i.ToString());
                     ComboBoxItem item = comboStrings.Items[i] as ComboBoxItem;
                     PreviewSetElementString lightString = item.Value as PreviewSetElementString;
                     PreviewBaseShape shape = _shapes[i];
                     for (int pixelNum = 0; pixelNum < lightString.Pixels.Count; pixelNum++)
                     {
+                        //Console.WriteLine("   pixelNum=" + pixelNum.ToString());
                         // If this is a standard light string, assing ALL pixels to the first node
                         if (shape.StringType == PreviewBaseShape.StringTypes.Standard)
                         {
                             foreach (PreviewPixel pixel in shape._pixels)
                             {
-                                pixel.Node = lightString.Pixels[0].Node;
-                                pixel.NodeId = lightString.Pixels[0].NodeId;
+                                //Console.WriteLine("       pixel:" + lightString.Pixels[0].Node.Id.ToString());
+                                pixel.Node = _strings[i].Pixels[0].Node;
+                                pixel.NodeId = _strings[i].Pixels[0].NodeId;
                             }
                         }
                         else
@@ -277,6 +276,34 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             
             DialogResult = System.Windows.Forms.DialogResult.OK;
             Close();
+        }
+
+        private void treeElements_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (treeElements.SelectedNode != null && listLinkedElements.FocusedItem != null)
+            {
+                foreach (ListViewItem item in listLinkedElements.SelectedItems)
+                {
+                    SetLinkedElementItems(item, treeElements.SelectedNode.Tag as ElementNode);
+                }
+            }
+        }
+
+        private void copyToAllElementsAllStringsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ListViewItem item = listLinkedElements.FocusedItem;
+            if (item != null)
+            {
+                ElementNode node = (item.Tag as PreviewPixel).Node;
+                for (int i = 0; i < _strings.Count; i++)
+                {
+                    foreach (PreviewPixel pixel in _strings[i].Pixels)
+                    {
+                        pixel.Node = node;
+                    }
+                }
+                comboStrings.SelectedIndex = 0;
+            }
         }
 
     }

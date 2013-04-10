@@ -182,8 +182,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get { return Pixels.Count; }
         }
 
-        [DataMember,
-        Browsable(false)]
+        
+        [Browsable(false)]
         public override List<PreviewPixel> Pixels
         {
             get
@@ -212,7 +212,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 else
                 {
                     return _pixels;
-                }            
+                }
             }
             set
             {
@@ -230,16 +230,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             List<Point> _baseEllipsePoints;
 
             // First we'll get the top and bottom ellipses
+            //double _topLeftOffset = _topLeft.X + (width / 2) - (_topWidth / 2);
+            //_topEllipsePoints = PreviewTools.GetEllipsePoints(_topLeftOffset, _topLeft.Y, _topWidth, _topHeight, _stringCount, _degrees);
+            //double bottomTopOffset = _bottomRight.Y - _baseHeight;
+            //_baseEllipsePoints = PreviewTools.GetEllipsePoints(_topLeft.X, bottomTopOffset, width, _baseHeight, _stringCount, _degrees);
             double _topLeftOffset = _topLeft.X + (width / 2) - (_topWidth / 2);
-            _topEllipsePoints = PreviewTools.GetEllipsePoints(_topLeftOffset, _topLeft.Y, _topWidth, _topHeight, _stringCount, _degrees);
+            _topEllipsePoints = PreviewTools.GetEllipsePoints(_topLeftOffset, _topLeft.Y, _topWidth, _topHeight, _stringCount, 360);
             double bottomTopOffset = _bottomRight.Y - _baseHeight;
-            _baseEllipsePoints = PreviewTools.GetEllipsePoints(_topLeft.X, bottomTopOffset, width, _baseHeight, _stringCount, _degrees);
+            _baseEllipsePoints = PreviewTools.GetEllipsePoints(_topLeft.X, bottomTopOffset, width, _baseHeight, _stringCount, 360);
 
             _stringsInDegrees = (double)_stringCount * ((double)_degrees / 360);
 
-            for (int stringNum = 0; stringNum < _stringCount; stringNum++)
+            for (int stringNum = 0; stringNum < (int)_stringCount; stringNum++)
             {
-                if (stringNum < _topEllipsePoints.Count)
+                if (stringNum < (int)_stringsInDegrees)
                 {
                     Point topPixel = _topEllipsePoints[stringNum];
                     Point basePixel = _baseEllipsePoints[stringNum];
@@ -368,7 +372,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             if (_strings != null) {
                 _stringsInDegrees = (double)_stringCount * ((double)_degrees / 360);
-                for (int i = 0; i < _stringsInDegrees; i++)
+                for (int i = 0; i < (int)_stringsInDegrees; i++)
                 {
                     _strings[i].Draw(fp, color);
                 }
@@ -379,14 +383,32 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         public override void Draw(FastPixel fp)
         {
             if (_strings != null) {
-                //foreach (PreviewBaseShape line in _strings)
-                //    line.Draw(fp);
                 _stringsInDegrees = (double)_stringCount * ((double)_degrees / 360);
                 for (int i = 0; i < _stringsInDegrees; i++)
                 {
                     _strings[i].Draw(fp);
                 }
             }
+            base.Draw(fp);
+        }
+
+        public override void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements)
+        {
+            if (_strings != null)
+            {
+                _stringsInDegrees = (double)_stringCount * ((double)_degrees / 360);
+                for (int i = 0; i < _stringsInDegrees; i++)
+                {
+                    foreach (PreviewPixel pixel in _strings[i]._pixels)
+                    {
+                        if (highlightedElements.Contains(pixel.Node))
+                            pixel.Draw(fp, Color.HotPink);
+                        else
+                            pixel.Draw(fp, Color.White);
+                    }
+                }
+            }
+
             base.Draw(fp);
         }
 
@@ -423,7 +445,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     for (int i = 0; i < _stringsInDegrees; i++)
                     {
                         stringsResult.Add(_strings[i]);
-                        Console.WriteLine(i);
+                        Console.WriteLine("Added String: " + i.ToString());
                     }
                 }
                 else

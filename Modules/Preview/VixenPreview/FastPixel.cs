@@ -222,46 +222,49 @@ namespace VixenModules.Preview.VixenPreview
         {
             lock (Shapes.PreviewTools.renderLock)
             {
-                // Default drawing tools don't draw circles that are either 1 or 2 pixels,
-                // so we do it manually
-                if (rect.Width == 1)
+                if (rect.Width > 0 && rect.Height > 0)
                 {
-                    SetPixel(rect.Left, rect.Top, color);
-                }
-                else if (rect.Width == 2)
-                {
-                    // Row 1
-                    SetPixel(rect.Left, rect.Top, color);
-                    // Row 2
-                    SetPixel(rect.Left, rect.Top + 1, color);
-                }
-                else
-                {
-                    Bitmap b;
-                    FastPixel fp;
-                    if (!FastPixel.circleCache.TryGetValue(rect.Width, out fp))
+                    // Default drawing tools don't draw circles that are either 1 or 2 pixels,
+                    // so we do it manually
+                    if (rect.Width == 1)
                     {
-                        b = new Bitmap(rect.Width, rect.Height);
-                        Graphics g = Graphics.FromImage(b);
-                        //g.Clear(Color.Black);
-                        g.Clear(Color.Transparent);
-                        SolidBrush brush = new SolidBrush(color);
-                        g.FillEllipse(brush, new Rectangle(0, 0, rect.Width - 1, rect.Height - 1));
-                        //b = new Bitmap(rect.Width, rect.Height, g);
-                        fp = new FastPixel(b);
-                        FastPixel.circleCache.Add(rect.Width, fp);
+                        SetPixel(rect.Left, rect.Top, color);
                     }
-                    fp.Lock();
-                    for (int x = 0; x < rect.Width; x++)
+                    else if (rect.Width == 2)
                     {
-                        for (int y = 0; y < rect.Height; y++)
+                        // Row 1
+                        SetPixel(rect.Left, rect.Top, color);
+                        // Row 2
+                        SetPixel(rect.Left, rect.Top + 1, color);
+                    }
+                    else
+                    {
+                        Bitmap b;
+                        FastPixel fp;
+                        if (!FastPixel.circleCache.TryGetValue(rect.Width, out fp))
                         {
-                            Color newColor = fp.GetPixel(x, y);
-                            if (newColor.A != 0)
-                                SetPixel(new Point(rect.Left + x, rect.Top + y), color);
+                            b = new Bitmap(rect.Width, rect.Height);
+                            Graphics g = Graphics.FromImage(b);
+                            //g.Clear(Color.Black);
+                            g.Clear(Color.Transparent);
+                            SolidBrush brush = new SolidBrush(color);
+                            g.FillEllipse(brush, new Rectangle(0, 0, rect.Width - 1, rect.Height - 1));
+                            //b = new Bitmap(rect.Width, rect.Height, g);
+                            fp = new FastPixel(b);
+                            FastPixel.circleCache.Add(rect.Width, fp);
                         }
+                        fp.Lock();
+                        for (int x = 0; x < rect.Width; x++)
+                        {
+                            for (int y = 0; y < rect.Height; y++)
+                            {
+                                Color newColor = fp.GetPixel(x, y);
+                                if (newColor.A != 0)
+                                    SetPixel(new Point(rect.Left + x, rect.Top + y), color);
+                            }
+                        }
+                        fp.Unlock(false);
                     }
-                    fp.Unlock(false);
                 }
             }
 

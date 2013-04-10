@@ -37,41 +37,21 @@ namespace VixenModules.Preview.VixenPreview
             get { return preview; }
         }
 
-        private void preview_Load(object sender, EventArgs e)
-        {
-        }
-
         public void Setup()
         {
             preview.LoadBackground(Data.BackgroundFileName);
 
-            Top = Data.Top;
+            SetDesktopLocation(Data.Left, Data.Top);
+            Size = new Size(Data.Width, Data.Height);
+            //if (Data.Width > MinimumSize.Width)
+            //    Width = Data.Width;
+            //else
+            //    Width = MinimumSize.Width;
 
-            Left = Data.Left;
-
-            if (Data.Width > MinimumSize.Width)
-                Width = Data.Width;
-            else
-                Width = MinimumSize.Width;
-
-            if (Data.Height > MinimumSize.Height)
-                Height = Data.Height;
-            else
-                Height = MinimumSize.Height;
-        }
-
-        public void Save()
-        {
-            Data.Top = Top;
-            Data.Left = Left;
-            Data.Width = Width;
-            Data.Height = Height;
-            //Data.BackgroundAlpha = scrollBackgroundAlpha.Value;
-        }
-
-        private void VixenPreviewDisplay_Load(object sender, EventArgs e)
-        {
-            Setup();
+            //if (Data.Height > MinimumSize.Height)
+            //    Height = Data.Height;
+            //else
+            //    Height = MinimumSize.Height;
         }
 
         private void timerStatus_Tick(object sender, EventArgs e)
@@ -90,6 +70,23 @@ namespace VixenModules.Preview.VixenPreview
                 MessageBox.Show("The preview can only be closed from the Preview Configuration dialog.", "Close", MessageBoxButtons.OKCancel);
                 e.Cancel = true;
             }
+        }
+
+        private void VixenPreviewDisplay_Move(object sender, EventArgs e)
+        {
+            Data.Top = Top;
+            Data.Left = Left;
+        }
+
+        private void VixenPreviewDisplay_Resize(object sender, EventArgs e)
+        {
+            Data.Width = Width;
+            Data.Height = Height;
+        }
+
+        private void VixenPreviewDisplay_Load(object sender, EventArgs e)
+        {
+            preview.Reload();
         }
 
 

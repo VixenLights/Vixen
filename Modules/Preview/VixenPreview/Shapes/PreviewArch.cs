@@ -21,6 +21,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         private PreviewPoint p1Start, p2Start;
 
+        public PreviewArch()
+        {
+        }
+
         public PreviewArch(PreviewPoint point1)
         {
             _topLeft = point1;
@@ -110,9 +114,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             int pointNum = 0;
             foreach (PreviewPixel pixel in _pixels)
             {
-                pixel.X = points[pointNum].X + _topLeft.X;
-                pixel.Y = points[pointNum].Y + _topLeft.Y;
-                pointNum++;
+                if (pointNum < points.Count)
+                {
+                    pixel.X = points[pointNum].X + _topLeft.X;
+                    pixel.Y = points[pointNum].Y + _topLeft.Y;
+                    pointNum++;
+                }
             }
         }
 
@@ -201,6 +208,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         public override void SelectDefaultSelectPoint()
         {
             _selectedPoint = _bottomRight;
+        }
+
+        public override object Clone()
+        {
+            //PreviewArch arch = (PreviewArch)this.MemberwiseClone();
+            //arch.Pixels = new List<PreviewPixel>();
+            //foreach (PreviewPixel pixel in Pixels)
+            //{
+            //}
+            //return arch;
+            return this.MemberwiseClone();
         }
 
     }

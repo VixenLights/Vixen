@@ -20,6 +20,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             SkewWE
         }
 
+        public PreviewPoint()
+        {
+        }
+
         public PointTypes PointType
         {
             get { return _pointType; }

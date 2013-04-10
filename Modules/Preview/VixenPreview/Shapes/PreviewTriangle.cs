@@ -28,9 +28,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             _point2 = new PreviewPoint(point1);
             _point3 = new PreviewPoint(point1);
 
-            // This tells things later that all three of the lines/strings 
-            // should be the same element
-
             // Just add lines, they will be layed out in Layout()
             _strings = new List<PreviewBaseShape>();
             for (int i = 0; i < 3; i++)
@@ -157,20 +154,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             (Strings[2] as PreviewLine).Point1 = Point3;
             (Strings[2] as PreviewLine).Point2 = Point1;
             (Strings[2] as PreviewLine).Layout();
-
-            //if (_topPoint == null)
-            //    _topPoint = new PreviewPoint(10, 10);
-            //_topPoint.X = Math.Min(Point1.X, Point2.X);
-            //_topPoint.X = Math.Min(_topPoint.X, Point3.X);
-            //_topPoint.Y = Math.Min(Point1.Y, Point2.Y);
-            //_topPoint.Y = Math.Min(_topPoint.Y, Point3.Y);
-            //_topPoint.Y = _topPoint.Y / 2;
-            //if (_bottomPoint == null)
-            //    _bottomPoint = new PreviewPoint(10, 10);
-            //_bottomPoint.X = Math.Max(Point1.X, Point2.X);
-            //_bottomPoint.X = Math.Max(_bottomPoint.X, _point3.X);
-            //_bottomPoint.Y = Math.Max(Point1.Y, Point2.Y);
-            //_bottomPoint.Y = Math.Max(_bottomPoint.Y, _point3.Y);
         }
 
         public override void MouseMove(int x, int y, int changeX, int changeY) 
@@ -230,16 +213,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             points.Add(_point1);
             points.Add(_point2);
             points.Add(_point3);
-            //// Create resize box points
-            //_topPoint = new PreviewPoint(Math.Min(Point1.X, Point2.X), Math.Min(Point1.Y, Point2.Y));
-            //_topPoint.X = Math.Min(_topPoint.X, Point3.X);
-            //_topPoint.Y = Math.Min(_topPoint.Y, Point3.Y);
-            //_topPoint.Y = _topPoint.Y / 2;
-            //points.Add(_topPoint);
-            //_bottomPoint = new PreviewPoint(Math.Max(Point1.X, Point2.X), Math.Max(Point1.Y, Point2.Y));
-            //_bottomPoint.X = Math.Max(_bottomPoint.X, _point3.X);
-            //_bottomPoint.Y = Math.Max(_bottomPoint.Y, _point3.Y);
-            //points.Add(_bottomPoint);
             SetSelectPoints(points, null);
         }
 
@@ -263,8 +236,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 p1Start = new PreviewPoint(_point1.X, _point1.Y);
                 p2Start = new PreviewPoint(_point2.X, _point2.Y);
                 p3Start = new PreviewPoint(_point3.X, _point3.Y);
-                //pTopStart = new PreviewPoint(_topPoint);
-                //pBottomStart = new PreviewPoint(_bottomPoint);
             }
             _selectedPoint = point;
         }

@@ -6,6 +6,12 @@ using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Data.Value;
 using System.Runtime.Serialization;
 using System.Drawing;
+using Vixen.Data.Flow;
+using Vixen.Module;
+using Vixen.Module.OutputFilter;
+using Vixen.Services;
+using Vixen.Sys;
+using Vixen.Sys.Output;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -49,9 +55,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //    Shape.ResetNodeToPixelDictionary();
         //}
 
-        public void Draw(FastPixel fp, bool editMode)
+        public void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements)
         {
-            _shape.Draw(fp, editMode);
+            _shape.Draw(fp, editMode, highlightedElements);
         }
     }
 }

@@ -12,6 +12,10 @@ using Vixen.Module.OutputFilter;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Output;
+using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using System.IO;
+
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
     public class ComboBoxItem
@@ -94,11 +98,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             double C_x = Width / 2;
             double C_y = Height;
             double radianIncrement = Math.PI / (NumPoints - 1);
-            for (double t = Math.PI; t <= 2 * Math.PI; t += radianIncrement)
+            while (points.Count < NumPoints)
             {
-                double X = C_x + (Width / 2) * Math.Cos(t);
-                double Y = C_y + (Height) * Math.Sin(t);
-                points.Add(new Point((int)X, (int)Y));
+                for (double t = Math.PI; t <= 2 * Math.PI; t += radianIncrement)
+                {
+                    double X = C_x + (Width / 2) * Math.Cos(t);
+                    double Y = C_y + (Height) * Math.Sin(t);
+                    points.Add(new Point((int)X, (int)Y));
+                }
+                radianIncrement += .001;
             }
             return points;
         }
@@ -152,5 +160,34 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
+        public static string SerializeToString(object obj)
+        {
+            var serializer = new DataContractSerializer(obj.GetType());
+            using (var backing = new System.IO.StringWriter())
+            using (var writer = new System.Xml.XmlTextWriter(backing))
+            {
+                serializer.WriteObject(writer, obj);
+                return backing.ToString();
+            }
+        }
+
+        public static object DeSerializeToObject(string st, Type type)
+        {
+            var serializer = new DataContractSerializer(type);
+            using (var backing = new System.IO.StringReader(st))
+            {
+                try
+                {
+                    using (var reader = new System.Xml.XmlTextReader(backing))
+                    {
+                        return serializer.ReadObject(reader);
+                    }
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+        }
     }
 }
