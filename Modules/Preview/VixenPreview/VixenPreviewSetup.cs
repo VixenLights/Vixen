@@ -220,7 +220,7 @@ namespace VixenModules.Preview.VixenPreview
                 for (int i = 0; i < treeStrings; i++)
                 {
                     DisplayItem displayItem = new DisplayItem();
-                    displayItem.Shape = new PreviewLine(new PreviewPoint(currentTopX, topPoint.Y), new PreviewPoint(currentBottomX, topPoint.Y + treeHeight), lightCount);
+                    displayItem.Shape = new PreviewLine(new PreviewPoint(currentTopX, topPoint.Y), new PreviewPoint(currentBottomX, topPoint.Y + treeHeight), lightCount, null);
                     displayItem.Shape.PixelSize = 3;
                     preview.AddDisplayItem(displayItem);
                     pixelCount += displayItem.Shape.Pixels.Count();
@@ -241,7 +241,7 @@ namespace VixenModules.Preview.VixenPreview
                 for (int i = 0; i < treeStrings; i++)
                 {
                     DisplayItem displayItem = new DisplayItem();
-                    displayItem.Shape = new PreviewLine(new PreviewPoint(currentTopX, topPoint.Y), new PreviewPoint(currentBottomX, topPoint.Y + treeHeight), lightCount);
+                    displayItem.Shape = new PreviewLine(new PreviewPoint(currentTopX, topPoint.Y), new PreviewPoint(currentBottomX, topPoint.Y + treeHeight), lightCount, null);
                     preview.AddDisplayItem(displayItem);
                     pixelCount += displayItem.Shape.Pixels.Count();
                     foreach (PreviewPixel pixel in displayItem.Shape.Pixels)
@@ -263,7 +263,7 @@ namespace VixenModules.Preview.VixenPreview
                 for (int i = 0; i < treeStrings; i++)
                 {
                     DisplayItem displayItem = new DisplayItem();
-                    displayItem.Shape = new PreviewLine(new PreviewPoint(currentTopX, topPoint.Y), new PreviewPoint(currentBottomX, topPoint.Y + treeHeight), lightCount);
+                    displayItem.Shape = new PreviewLine(new PreviewPoint(currentTopX, topPoint.Y), new PreviewPoint(currentBottomX, topPoint.Y + treeHeight), lightCount, null);
                     preview.AddDisplayItem(displayItem);
                     pixelCount += displayItem.Shape.Pixels.Count();
                     currentBottomX += bottomOffset;
@@ -283,7 +283,7 @@ namespace VixenModules.Preview.VixenPreview
                 for (int i = 0; i < treeStrings; i++)
                 {
                     DisplayItem displayItem = new DisplayItem();
-                    displayItem.Shape = new PreviewLine(new PreviewPoint(currentTopX, topPoint.Y), new PreviewPoint(currentBottomX, topPoint.Y + treeHeight), lightCount);
+                    displayItem.Shape = new PreviewLine(new PreviewPoint(currentTopX, topPoint.Y), new PreviewPoint(currentBottomX, topPoint.Y + treeHeight), lightCount, null);
                     preview.AddDisplayItem(displayItem);
                     pixelCount += displayItem.Shape.Pixels.Count();
                     currentBottomX += bottomOffset;

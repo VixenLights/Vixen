@@ -5,6 +5,7 @@ using System.Text;
 using System.Drawing;
 using System.Runtime.Serialization;
 using System.ComponentModel;
+using Vixen.Sys;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -25,17 +26,59 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
         }
 
-        public PreviewArch(PreviewPoint point1)
+        public PreviewArch(PreviewPoint point1, ElementNode selectedNode)
         {
             _topLeft = point1;
             _bottomRight = new PreviewPoint(_topLeft.X, _topLeft.Y);
 
-            // Just add the pixels, they will get layed out next
-            for (int lightNum = 0; lightNum < 25; lightNum++)
+            int lightCount = 25;
+
+            //// Just add the pixels, they will get layed out next
+            //for (int lightNum = 0; lightNum < 25; lightNum++)
+            //{
+            //    PreviewPixel pixel = AddPixel(10, 10);
+            //    pixel.PixelColor = Color.White;
+            //}
+            
+            if (selectedNode != null)
             {
-                PreviewPixel pixel = AddPixel(10, 10);
-                pixel.PixelColor = Color.White;
+                List<ElementNode> children = selectedNode.Children.ToList();
+                // is this a single node?
+                if (children.Count >= 4)
+                {
+                    StringType = StringTypes.Pixel;
+                    lightCount = children.Count;
+                    // Just add the pixels, they will get layed out next
+                    foreach (ElementNode child in children)
+                    {
+                        {
+                            PreviewPixel pixel = AddPixel(10, 10);
+                            pixel.Node = child;
+                            pixel.NodeId = child.Id;
+                            pixel.PixelColor = Color.White;
+                        }
+                    }
+                }
             }
+
+            if (_pixels.Count == 0)
+            {
+                // Just add the pixels, they will get layed out next
+                for (int lightNum = 0; lightNum < lightCount; lightNum++)
+                {
+                    PreviewPixel pixel = AddPixel(10, 10);
+                    pixel.PixelColor = Color.White;
+                    if (selectedNode != null)
+                    {
+                        pixel.Node = selectedNode;
+                        pixel.NodeId = selectedNode.Id;
+                    }
+                }
+            }
+
+
+
+
             // Lay out the pixels
             Layout();
 
@@ -111,15 +154,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             int height = _bottomRight.Y - _topLeft.Y;
             List<Point> points;
             points = PreviewTools.GetArcPoints(width, height, PixelCount);
+            //points = PreviewTools.GetEllipsePoints(0, 0, width/2, height/2, PixelCount*2, 180);
             int pointNum = 0;
             foreach (PreviewPixel pixel in _pixels)
             {
-                if (pointNum < points.Count)
-                {
+                //if (pointNum < points.Count)
+                //{
                     pixel.X = points[pointNum].X + _topLeft.X;
                     pixel.Y = points[pointNum].Y + _topLeft.Y;
                     pointNum++;
-                }
+                //}
             }
         }
 
@@ -219,6 +263,26 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             //}
             //return arch;
             return this.MemberwiseClone();
+        }
+
+        public override void MoveTo(int x, int y)
+        {
+            Point topLeft = new Point();
+            topLeft.X = Math.Min(TopLeft.X, BottomRight.X);
+            topLeft.Y = Math.Min(TopLeft.Y, BottomRight.Y);
+
+            int deltaX = x - topLeft.X;
+            int deltaY = y - topLeft.Y;
+
+            TopLeft = new Point(TopLeft.X + deltaX, TopLeft.Y + deltaY);
+            BottomRight = new Point(BottomRight.X + deltaX, BottomRight.Y + deltaY);
+
+            topRight.X = _bottomRight.X;
+            topRight.Y = _topLeft.Y;
+            bottomLeft.X = _topLeft.X;
+            bottomLeft.Y = _bottomRight.Y;
+            
+            Layout();
         }
 
     }

@@ -59,7 +59,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             // Just add the pixels, we don't care where they go... they get positioned in Layout()
             for (int stringNum = 0; stringNum < _stringCount; stringNum++)
             {
-                PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), _lightsPerString);
+                PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), _lightsPerString, null);
                 _strings.Add(line);
             }
 
@@ -86,6 +86,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             _bottomRight.X = X;
             _bottomRight.Y = Y;
         }
+
+#region "Properties'
 
         public int TopHeight
         {
@@ -140,17 +142,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get { return _lightsPerString; }
         }
 
-        public void SetStrings(List<PreviewBaseShape> strings)
-        {
-            _strings = new List<PreviewBaseShape>();
-            foreach (PreviewBaseShape line in strings)
-            {
-                PreviewBaseShape newLine = (PreviewLine)line.Clone();
-                _strings.Add(newLine);
-            }
-            _stringCount = _strings.Count();
-        }
-
         public int StringCount
         {
             set
@@ -162,13 +153,45 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 }
                 while (_strings.Count < _stringCount)
                 {
-                    PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), _lightsPerString);
+                    PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), _lightsPerString, null);
                     _strings.Add(line);
                 }
                 Layout();
             }
             get { return _stringCount; }
         }
+
+        public override int Top
+        {
+            get
+            {
+                return _topLeft.Y;
+            }
+            set { }
+        }
+
+        public override int Left
+        {
+            get
+            {
+                return _topLeft.X;
+            }
+            set
+            { }
+        }
+#endregion
+
+        public void SetStrings(List<PreviewBaseShape> strings)
+        {
+            _strings = new List<PreviewBaseShape>();
+            foreach (PreviewBaseShape line in strings)
+            {
+                PreviewBaseShape newLine = (PreviewLine)line.Clone();
+                _strings.Add(newLine);
+            }
+            _stringCount = _strings.Count();
+        }
+
 
         public int PixelCount
         {
@@ -462,6 +485,27 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             set { }
         }
 
+        public override void MoveTo(int x, int y)
+        {
+            Point newTopLeft = new Point();
+            newTopLeft.X = Math.Min(_topLeft.X, _bottomRight.X);
+            newTopLeft.Y = Math.Min(_topLeft.Y, _bottomRight.Y);
+
+            int deltaX = x - newTopLeft.X;
+            int deltaY = y - newTopLeft.Y;
+
+            _topLeft.X += deltaX;
+            _topLeft.Y += deltaY;
+            _bottomRight.X += deltaX;
+            _bottomRight.Y += + deltaY;
+
+            _topRight.X = _bottomRight.X;
+            _topRight.Y = _topLeft.Y;
+            _bottomLeft.X = _topLeft.X;
+            _bottomLeft.Y = _bottomRight.Y;
+
+            Layout();
+        }
 
     }
 }

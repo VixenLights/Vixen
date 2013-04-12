@@ -5,6 +5,7 @@ using System.Text;
 using System.Drawing;
 using System.Runtime.Serialization;
 using System.ComponentModel;
+using Vixen.Sys;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -16,17 +17,51 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         private PreviewPoint p1Start, p2Start;
 
-        public PreviewLine(PreviewPoint point1, PreviewPoint point2, int lightCount)
+        public PreviewLine(PreviewPoint point1, PreviewPoint point2, int lightCount, ElementNode selectedNode)
         {
             AddPoint(point1);
             AddPoint(point2);
 
-            // Just add the pixels, they will get layed out next
-            for (int lightNum = 0; lightNum < lightCount; lightNum++)
+            if (selectedNode != null)
             {
-                //Console.WriteLine("Added: " + lightNum.ToString());
-                PreviewPixel pixel = AddPixel(10, 10);
-                pixel.PixelColor = Color.White;
+                List<ElementNode> children = selectedNode.Children.ToList();
+                // is this a single node?
+                if (children.Count == 0)
+                {
+                    StringType = StringTypes.Standard;
+                    // Just add the pixels, they will get layed out next
+                    for (int lightNum = 0; lightNum < lightCount; lightNum++)
+                    {
+                        //Console.WriteLine("Added: " + lightNum.ToString());
+                        PreviewPixel pixel = AddPixel(10, 10);
+                        pixel.PixelColor = Color.White;
+                        pixel.Node = selectedNode;
+                        pixel.NodeId = selectedNode.Id;
+                    }
+                }
+                else
+                {
+                    StringType = StringTypes.Pixel;
+                    lightCount = children.Count;
+                    // Just add the pixels, they will get layed out next
+                    foreach (ElementNode child in children)
+                    {
+                        {
+                            PreviewPixel pixel = AddPixel(10, 10);
+                            pixel.Node = child;
+                            pixel.NodeId = child.Id;
+                            pixel.PixelColor = Color.White;
+                        }
+                    }
+                }
+            } else {
+                // Just add the pixels, they will get layed out next
+                for (int lightNum = 0; lightNum < lightCount; lightNum++)
+                {
+                    //Console.WriteLine("Added: " + lightNum.ToString());
+                    PreviewPixel pixel = AddPixel(10, 10);
+                    pixel.PixelColor = Color.White;
+                }  
             }
             // Lay out the pixels
             Layout();
@@ -213,5 +248,21 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             return newLine;
         }
 
+        public override void MoveTo(int x, int y)
+        {
+            Point topLeft = new Point();
+            topLeft.X = Math.Min(_points[0].X, _points[1].X);
+            topLeft.Y = Math.Min(_points[0].Y, _points[1].Y);
+
+            int deltaX = x - topLeft.X;
+            int deltaY = y - topLeft.Y;
+
+            _points[0].X += deltaX;
+            _points[0].Y += deltaY;
+            _points[1].X += deltaX;
+            _points[1].Y += deltaY;
+
+            Layout();
+        }
     }
 }

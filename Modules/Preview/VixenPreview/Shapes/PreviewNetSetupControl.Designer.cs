@@ -1,6 +1,6 @@
-﻿namespace VixenModules.Preview.VixenPreview
+﻿namespace VixenModules.Preview.VixenPreview.Shapes
 {
-    partial class VixenPreviewControl
+    partial class PreviewNetSetupControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,24 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.propertyGrid = new System.Windows.Forms.PropertyGrid();
             this.SuspendLayout();
             // 
-            // VixenPreviewControl
+            // propertyGrid
+            // 
+            this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.propertyGrid.Location = new System.Drawing.Point(0, 0);
+            this.propertyGrid.Name = "propertyGrid";
+            this.propertyGrid.Size = new System.Drawing.Size(233, 255);
+            this.propertyGrid.TabIndex = 1;
+            // 
+            // PreviewRectangleSetupControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Name = "VixenPreviewControl";
-            this.Size = new System.Drawing.Size(290, 240);
-            this.Load += new System.EventHandler(this.VixenPreviewControl_Load);
-            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.VixenPreviewControl_KeyUp);
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.VixenPreviewControl_MouseDown);
-            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.VixenPreviewControl_MouseMove);
-            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.VixenPreviewControl_MouseUp);
-            this.Resize += new System.EventHandler(this.VixenPreviewControl_Resize);
+            this.Controls.Add(this.propertyGrid);
+            this.Name = "PreviewRectangleSetupControl";
+            this.Size = new System.Drawing.Size(233, 255);
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private System.Windows.Forms.PropertyGrid propertyGrid;
     }
 }

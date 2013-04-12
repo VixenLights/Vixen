@@ -18,14 +18,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
     [DataContract]
     public abstract class PreviewBaseShape: ICloneable
     {
-        //private int top = 0;
-        //private int left = 0;
-        //private int width = 50;
-        //private int height = 50;
-        //private double aspect = 1;
-
         public bool connectStandardStrings = false;
-        private StringTypes _stringType = StringTypes.Standard;
+        public StringTypes _stringType = StringTypes.Standard;
         public enum StringTypes
         {
             Standard,
@@ -34,32 +28,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         [XmlIgnore]
         public static Dictionary<ElementNode, List<PreviewPixel>> NodeToPixel = new Dictionary<ElementNode, List<PreviewPixel>>();
-        //Hashtable NodeToPixel = new Hashtable();
-        //KeyValuePair<ChannelNode, PreviewPixel> NodeToPixel;
-
-        //public Graphics g;
 
         private bool _selected = false;
         [XmlIgnore]
         public List<PreviewPoint> _selectPoints = null;
-        //private List<PreviewPoint> _skewPoints = null;
         public const int SelectPointSize = 6;
 
         private Color _pixelColor = Color.White;
         private int _pixelSize = 2;
 
         public List<PreviewPixel> _pixels = new List<PreviewPixel>();
-        //public List<PreviewPixel> _skewedPixels = new List<PreviewPixel>();
 
         [DataMember]
         public List<PreviewBaseShape> _strings;
 
 
         public PreviewPoint _selectedPoint;
-        //public PreviewPoint _selectedSkewPoint;
-
-        //private int _skewX = 0;
-        //private int _skewY = 0;
 
         public event ResizeEvent DoResize;
         public delegate void ResizeEvent(EventArgs e);
@@ -137,7 +121,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         [DataMember,
         CategoryAttribute("Settings"),
         DisplayName("String Type")]
-        public StringTypes StringType
+        public virtual StringTypes StringType
         {
             get { return _stringType; }
             set
@@ -539,6 +523,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         public virtual object Clone()
         {
             return this.MemberwiseClone();
+        }
+
+        public abstract void MoveTo(int x, int y);
+
+        public virtual void Nudge(int x, int y)
+        {
+            MoveTo(Left + x, Top + y);
         }
     }
 }

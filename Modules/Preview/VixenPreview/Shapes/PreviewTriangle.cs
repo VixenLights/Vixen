@@ -5,6 +5,7 @@ using System.Text;
 using System.Drawing;
 using System.Runtime.Serialization;
 using System.ComponentModel;
+using Vixen.Sys;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -21,22 +22,65 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         private PreviewPoint p1Start, p2Start, p3Start, pBottomRightStart;//pTopStart, pBottomStart, 
 
-        public PreviewTriangle(PreviewPoint point1)
+        public PreviewTriangle(PreviewPoint point1, ElementNode selectedNode)
         {
             _bottomRightPoint = new PreviewPoint(point1);
             _point1 = new PreviewPoint(point1);
             _point2 = new PreviewPoint(point1);
             _point3 = new PreviewPoint(point1);
 
-            // Just add lines, they will be layed out in Layout()
             _strings = new List<PreviewBaseShape>();
-            for (int i = 0; i < 3; i++)
+
+            if (selectedNode != null)
             {
-                PreviewLine line;
-                line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), 10);
-                line.PixelColor = Color.White;
-                _strings.Add(line);
+                List<ElementNode> children = selectedNode.Children.ToList();
+                if (children.Count >= 6)
+                {
+                    int increment = children.Count / 3;
+                    int pixelsLeft = children.Count;
+
+                    StringType = StringTypes.Pixel;
+
+                    // Just add lines, they will be layed out in Layout()
+                    for (int i = 0; i < 3; i++)
+                    {
+                        PreviewLine line;
+                        if (pixelsLeft >= increment)
+                        {
+                            line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), increment, null);
+                        }
+                        else
+                        {
+                            line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), pixelsLeft, null);
+                        }
+                        line.PixelColor = Color.White;
+                        _strings.Add(line);
+
+                        pixelsLeft -= increment;
+                    }
+
+                    int pixelNum = 0;
+                    foreach (PreviewPixel pixel in Pixels)
+                    {
+                        pixel.Node = children[pixelNum];
+                        pixel.NodeId = children[pixelNum].Id;
+                        pixelNum++;
+                    }
+                }
             }
+
+            if (_strings.Count == 0)
+            {
+                // Just add lines, they will be layed out in Layout()
+                for (int i = 0; i < 3; i++)
+                {
+                    PreviewLine line;
+                    line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(20, 20), 10, selectedNode);
+                    line.PixelColor = Color.White;
+                    _strings.Add(line);
+                }
+            }
+
             Layout();
 
             DoResize += new ResizeEvent(OnResize);
@@ -99,6 +143,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 _point3.X = value.X;
                 _point3.Y = value.Y;
                 Layout();
+            }
+        }
+
+        public List<PreviewPixel> Pixels
+        {
+            get
+            {
+                List<PreviewPixel> pixels = new List<PreviewPixel>();
+                for (int i = 0; i < 3; i++)
+                {
+                    foreach (PreviewPixel pixel in _strings[i]._pixels)
+                    {
+                        pixels.Add(pixel);
+                    }
+                }
+                return pixels;
             }
         }
 
@@ -253,6 +313,25 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             _selectPoints.Add(_bottomRightPoint);
             _selectedPoint = _bottomRightPoint;
             pBottomRightStart = new PreviewPoint(_bottomRightPoint.X, _bottomRightPoint.Y);
+        }
+
+        public override void MoveTo(int x, int y)
+        {
+            Point topLeft = new Point();
+            topLeft.X = Math.Min(_point1.X, Math.Min(_point2.X, _point3.X));
+            topLeft.Y = Math.Min(_point1.Y, Math.Min(_point2.Y, _point3.Y));
+
+            int deltaX = x - topLeft.X;
+            int deltaY = y - topLeft.Y;
+
+            _point1.X += deltaX;
+            _point1.Y += deltaY;
+            _point2.X += deltaX;
+            _point2.Y += deltaY;
+            _point3.X += deltaX;
+            _point3.Y += deltaY;
+
+            Layout();
         }
 
     }

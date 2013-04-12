@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
+using System.Drawing;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -54,6 +55,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get { return _y; }
             set { _y = value; }
+        }
+
+        public Point ToPoint()
+        {
+            return new Point(_x, _y);
         }
     }
 }

@@ -94,13 +94,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         static public List<Point> GetArcPoints(double Width, double Height, double NumPoints)
         {
             List<Point> points = new List<Point>();
-
-            double C_x = Width / 2;
+            double degrees = 180;
+            double C_x = Width/2;
             double C_y = Height;
-            double radianIncrement = Math.PI / (NumPoints - 1);
+            double totalRadians = ((degrees * 2) * Math.PI) / 180;
+            double radianIncrement = Math.PI / (NumPoints-1);
+
             while (points.Count < NumPoints)
             {
-                for (double t = Math.PI; t <= 2 * Math.PI; t += radianIncrement)
+                for (double t = Math.PI; t <= (Math.PI*2)+1; t += radianIncrement)
                 {
                     double X = C_x + (Width / 2) * Math.Cos(t);
                     double Y = C_y + (Height) * Math.Sin(t);

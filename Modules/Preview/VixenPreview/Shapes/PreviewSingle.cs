@@ -26,13 +26,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         private PreviewPoint p1Start;
         //, p2Start;
 
-        public PreviewSingle(PreviewPoint point)
+        public PreviewSingle(PreviewPoint point, ElementNode selectedNode)
         {
             p1 = point; // new PreviewPoint(point.X, point.Y);
             //p2 = new PreviewPoint(point.X, point.Y);
 
             PreviewPixel pixel = AddPixel(10, 10);
             pixel.PixelColor = Color.White;
+
+            if (selectedNode != null)
+            {
+                if (selectedNode.IsLeaf)
+                {
+                    pixel.Node = selectedNode;
+                    pixel.NodeId = selectedNode.Id;
+                }
+            }
 
             // Lay out the pixels
             Layout();
@@ -167,6 +176,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             _selectedPoint = p1;
         }
 
-       
+        public override void MoveTo(int x, int y)
+        {
+            p1.X = x;
+            p1.Y = y;
+            Layout();
+        }
+
     }
 }

@@ -123,6 +123,7 @@ namespace VixenModules.Preview.VixenPreview
             }
             // Finally, highlight the node passed to us
             _preview.HighlightedElements.Add(node.Tag as ElementNode);
+            _preview.DeSelectSelectedDisplayItemNoNotify();
         }
 
         private void treeElements_AfterSelect(object sender, TreeViewEventArgs e)
@@ -153,6 +154,20 @@ namespace VixenModules.Preview.VixenPreview
         private void treeElements_MouseClick(object sender, MouseEventArgs e)
         {
             _preview.HighlightedElements.Clear();
+        }
+
+        public ElementNode SelectedNode {
+            get 
+            {
+                if (treeElements.SelectedNode != null)
+                {
+                    return treeElements.SelectedNode.Tag as ElementNode;
+                }
+                else
+                {
+                    return null;
+                }
+            }
         }
     }
 }

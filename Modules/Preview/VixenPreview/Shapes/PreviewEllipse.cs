@@ -5,6 +5,7 @@ using System.Text;
 using System.Drawing;
 using System.Runtime.Serialization;
 using System.ComponentModel;
+using Vixen.Sys;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -23,18 +24,48 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         
         private PreviewPoint p1Start, p2Start;
 
-        public PreviewEllipse(PreviewPoint point1, int lightCount)
+        public PreviewEllipse(PreviewPoint point1, int lightCount, ElementNode selectedNode)
         {
             _topLeft = point1;
             _bottomRight = new PreviewPoint(_topLeft.X, _topLeft.Y);
             //_lightCount = lightCount;
 
-            // Just add the pixels, they will get layed out next
-            for (int lightNum = 0; lightNum < lightCount; lightNum++)
+            if (selectedNode != null)
             {
-                PreviewPixel pixel = AddPixel(10, 10);
-                pixel.PixelColor = Color.White;
+                List<ElementNode> children = selectedNode.Children.ToList();
+                // is this a single node?
+                if (children.Count >= 4)
+                {
+                    StringType = StringTypes.Pixel;
+                    lightCount = children.Count;
+                    // Just add the pixels, they will get layed out next
+                    foreach (ElementNode child in children)
+                    {
+                        {
+                            PreviewPixel pixel = AddPixel(10, 10);
+                            pixel.Node = child;
+                            pixel.NodeId = child.Id;
+                            pixel.PixelColor = Color.White;
+                        }
+                    }
+                }
             }
+
+            if (_pixels.Count == 0)
+            {
+                // Just add the pixels, they will get layed out next
+                for (int lightNum = 0; lightNum < lightCount; lightNum++)
+                {
+                    PreviewPixel pixel = AddPixel(10, 10);
+                    pixel.PixelColor = Color.White;
+                    if (selectedNode != null)
+                    {
+                        pixel.Node = selectedNode;
+                        pixel.NodeId = selectedNode.Id;
+                    }
+                }
+            }
+
             // Lay out the pixels
             Layout();
 
@@ -278,6 +309,21 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             _selectedPoint = _bottomRight;
         }
 
+        public override void MoveTo(int x, int y)
+        {
+            int deltaX = x - TopLeft.X;
+            int deltaY = y - TopLeft.Y;
+
+            TopLeft = new Point(x, y);
+            BottomRight = new Point(BottomRight.X + deltaX, BottomRight.Y + deltaY);
+
+            topRight.X = _bottomRight.X;
+            topRight.Y = _topLeft.Y;
+            bottomLeft.X = _topLeft.X;
+            bottomLeft.Y = _bottomRight.Y;
+            
+            Layout();
+        }
 
     }
 }

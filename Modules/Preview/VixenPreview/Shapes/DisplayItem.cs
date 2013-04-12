@@ -23,6 +23,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
     [KnownType(typeof(PreviewSingle))]
     [KnownType(typeof(PreviewEllipse))]
     [KnownType(typeof(PreviewTriangle))]
+    [KnownType(typeof(PreviewNet))]
     [KnownType(typeof(PreviewMegaTree))]
     public class DisplayItem
     {
@@ -30,7 +31,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         public DisplayItem()
         {
-            _shape = new PreviewLine(new PreviewPoint(1, 1), new PreviewPoint(10, 10), 1);
+            _shape = new PreviewLine(new PreviewPoint(1, 1), new PreviewPoint(10, 10), 1, null);
         }
 
         [DataMember]

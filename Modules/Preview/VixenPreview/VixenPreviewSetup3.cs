@@ -10,6 +10,7 @@ using Vixen.Execution.Context;
 using Vixen.Module.Preview;
 using Vixen.Data.Value;
 using Vixen.Sys;
+using System.IO;
 
 namespace VixenModules.Preview.VixenPreview
 {
@@ -53,6 +54,9 @@ namespace VixenModules.Preview.VixenPreview
             elementsForm.Show(dockPanel, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft);
             propertiesForm.Show(elementsForm.Pane, WeifenLuo.WinFormsUI.Docking.DockAlignment.Bottom, 0.5);
 
+            previewForm.Preview.elementsForm = elementsForm;
+            previewForm.Preview.propertiesForm = propertiesForm;
+
             previewForm.Preview.LoadBackground(Data.BackgroundFileName);
             trackBarBackgroundAlpha.Value = Data.BackgroundAlpha;
             previewForm.Preview.Reload();
@@ -63,7 +67,17 @@ namespace VixenModules.Preview.VixenPreview
         {
             if (dialogSelectBackground.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                Data.BackgroundFileName = dialogSelectBackground.FileName;
+                // Copy the file to the Vixen folder
+                var imageFile = new System.IO.FileInfo(dialogSelectBackground.FileName);
+                var destFileName = Path.Combine(VixenPreviewDescriptor.ModulePath, imageFile.Name);
+                var sourceFileName = imageFile.FullName;
+                if (sourceFileName != destFileName)
+                {
+                    File.Copy(sourceFileName, destFileName, true);
+                }
+
+                // Set the backgrounds
+                Data.BackgroundFileName = destFileName;
                 previewForm.Preview.LoadBackground(dialogSelectBackground.FileName);
                 trackBarBackgroundAlpha.Value = trackBarBackgroundAlpha.Maximum;
                 previewForm.Preview.BackgroundAlpha = trackBarBackgroundAlpha.Value;
@@ -108,6 +122,10 @@ namespace VixenModules.Preview.VixenPreview
             {
                 setupControl = new Shapes.PreviewTriangleSetupControl(displayItem);
             }
+            else if (displayItem.Shape.GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewNet")
+            {
+                setupControl = new Shapes.PreviewNetSetupControl(displayItem);
+            }
 
             if (setupControl != null)
             {
@@ -135,6 +153,8 @@ namespace VixenModules.Preview.VixenPreview
                 previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Ellipse;
             else if (button == buttonTriangle)
                 previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Triangle;
+            else if (button == buttonNet)
+                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Net;
             // Smart Shape Buttons
             else if (button == buttonMegaTree)
                 previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MegaTree;
