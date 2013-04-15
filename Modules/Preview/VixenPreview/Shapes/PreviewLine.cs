@@ -160,7 +160,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 pixel.Y = (int)Math.Round(y);
                 x -= xSpacing;
                 y -= ySpacing;
-                //Console.WriteLine(pixel.X.ToString());
             }
         }
 
@@ -262,6 +261,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             _points[1].X += deltaX;
             _points[1].Y += deltaY;
 
+            Layout();
+        }
+
+        public override void Resize(double aspect)
+        {
+            _points[0].X = (int)(_points[0].X * aspect);
+            _points[0].Y = (int)(_points[0].Y * aspect);
+            _points[1].X = (int)(_points[1].X * aspect);
+            _points[1].Y = (int)(_points[1].Y * aspect);
             Layout();
         }
     }

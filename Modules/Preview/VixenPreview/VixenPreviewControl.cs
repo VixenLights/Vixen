@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -55,7 +56,7 @@ namespace VixenModules.Preview.VixenPreview
         private PreviewBaseShape _copiedShape;
         private bool _editMode = false;
 
-        private Image _background;
+        private Bitmap _background;
         private Bitmap _alphaBackground;
 
         private VixenPreviewData _data;
@@ -175,6 +176,11 @@ namespace VixenModules.Preview.VixenPreview
             //StartRefresh();
         }
 
+        public Bitmap Background
+        {
+            get { return _background; }
+        }
+
         public void LoadBackground(string fileName)
         {
             lock (PreviewTools.renderLock)
@@ -183,7 +189,9 @@ namespace VixenModules.Preview.VixenPreview
                 {
                     try
                     {
-                        _background = Image.FromFile(fileName);
+                        //_background = Image.FromFile(fileName);
+                        Bitmap loadedBitmap = new Bitmap(fileName);
+                        _background = loadedBitmap.Clone(new Rectangle(0, 0, loadedBitmap.Width, loadedBitmap.Height), PixelFormat.Format32bppPArgb);
                         Console.WriteLine("Load: " + fileName);
                     }
                     catch (Exception ex)
@@ -211,9 +219,15 @@ namespace VixenModules.Preview.VixenPreview
 
         private void SetupBackgroundAlphaImage()
         {
+            
             if (_background != null)
             {
-                _alphaBackground = new Bitmap(_background.Width, _background.Height);
+                AllocateGraphicsBuffer();
+                //_alphaBackground = new Bitmap(_background.Width, _background.Height);
+                _alphaBackground = new Bitmap(_background.Width, _background.Height, PixelFormat.Format32bppPArgb);
+
+                //bitmapFinal = bitmap.Clone(new Rectangle(0, 0, bitmap.Width, bitmap.Height), PixelFormat.Format32bppPArgb);bitmapFinal = bitmap.Clone(new Rectangle(0, 0, bitmap.Width, bitmap.Height), PixelFormat.Format32bppPArgb);
+
                 using (Graphics gfx = Graphics.FromImage(_alphaBackground))
 
                 using (SolidBrush brush = new SolidBrush(Color.FromArgb(255 - BackgroundAlpha, 0, 0, 0)))
@@ -359,7 +373,7 @@ namespace VixenModules.Preview.VixenPreview
                         else if (_currentTool == Tools.MegaTree)
                         {
                             newDisplayItem = new DisplayItem();
-                            newDisplayItem.Shape = new PreviewMegaTree(new PreviewPoint(e.X, e.Y));
+                            newDisplayItem.Shape = new PreviewMegaTree(new PreviewPoint(e.X, e.Y), elementsForm.SelectedNode);
                         }
 
                         // Now add the newely created display item to the screen.
@@ -502,24 +516,16 @@ namespace VixenModules.Preview.VixenPreview
         {
             if (e.KeyCode == Keys.Delete)
             {
-                if (_selectedDisplayItem != null)
-                {
-                    DisplayItems.Remove(_selectedDisplayItem);
-                    DeSelectSelectedDisplayItem();
-                }
+                Delete();
             }
             // Copy
             else if (e.KeyCode == Keys.C && e.Modifiers == Keys.Control)
             {
-                if (_selectedDisplayItem != null)
-                {
-                    string xml = PreviewTools.SerializeToString(_selectedDisplayItem);
-                    Clipboard.SetData(DataFormats.Text, xml);
-                    Console.WriteLine("Copied: " + _selectedDisplayItem.Shape.GetType().ToString());
-                } else 
-                {
-                    Console.WriteLine("Selected Display Item = null");
-                }
+                Copy();
+            }
+            else if (e.KeyCode == Keys.X && e.Modifiers == Keys.Control)
+            {
+                Cut();
             }
             else if (e.KeyCode == Keys.V && e.Modifiers == Keys.Control)
             {
@@ -788,6 +794,8 @@ namespace VixenModules.Preview.VixenPreview
                 lock (PreviewTools.renderLock)
                 {
                     FastPixel fp = new FastPixel(_background.Width, _background.Height);
+                    //Bitmap backBitmap = _alphaBackground.Clone(new Rectangle(0, 0, _alphaBackground.Width, _alphaBackground.Height), PixelFormat.Format32bppPArgb);
+                    //FastPixel fp = new FastPixel(backBitmap);
                     fp.Lock();
 
                     foreach (var channelIntentState in elementStates)
@@ -825,13 +833,12 @@ namespace VixenModules.Preview.VixenPreview
 
                     // First, draw our background image opaque
                     bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-                    //bufferedGraphics.Graphics.DrawImage(_background, 0, 0, _background.Width, _background.Height);
                     bufferedGraphics.Graphics.DrawImage(_alphaBackground, 0, 0, _alphaBackground.Width, _alphaBackground.Height);
+                    //bufferedGraphics.Graphics.DrawImage(backBitmap, 0, 0, backBitmap.Width, backBitmap.Height);
 
                     bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
                     // Now, draw our "pixel" image using alpha blending
                     bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
-                    //}
 
                     if (!this.Disposing)
                         bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
@@ -857,5 +864,51 @@ namespace VixenModules.Preview.VixenPreview
             get { return _paused; }
         }
 
+        public void Cut()
+        {
+            Copy();
+            Delete();
+        }
+
+        public void Delete()
+        {
+            if (_selectedDisplayItem != null)
+            {
+                DisplayItems.Remove(_selectedDisplayItem);
+                DeSelectSelectedDisplayItem();
+            }
+        }
+
+        public void Copy()
+        {
+            if (_selectedDisplayItem != null)
+            {
+                string xml = PreviewTools.SerializeToString(_selectedDisplayItem);
+                Clipboard.SetData(DataFormats.Text, xml);
+                Console.WriteLine("Copied: " + _selectedDisplayItem.Shape.GetType().ToString());
+            }
+            else
+            {
+                Console.WriteLine("Selected Display Item = null");
+            }
+        }
+
+        public void ResizeBackground(int width, int height)
+        {
+            double aspect = (double)width / (double)_background.Width;
+            //Console.WriteLine("Resizing background to: " + width + ", " + height);
+            Bitmap newBackground = PreviewTools.ResizeBitmap(new Bitmap(_background), new Size(width, height));
+            // Copy the file to the Vixen folder
+            string imageFileName = Guid.NewGuid().ToString() + ".jpg";
+            var destFileName = System.IO.Path.Combine(VixenPreviewDescriptor.ModulePath, imageFileName);
+            newBackground.Save(destFileName, ImageFormat.Jpeg);
+            Data.BackgroundFileName = destFileName;
+            LoadBackground(destFileName);
+
+            foreach (Shapes.DisplayItem item in DisplayItems)
+            {
+                item.Shape.Resize(aspect);
+            }
+        }
     }
 }

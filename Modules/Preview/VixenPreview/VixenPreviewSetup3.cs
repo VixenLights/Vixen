@@ -190,5 +190,39 @@ namespace VixenModules.Preview.VixenPreview
             Data.SetupWidth = Width;
             Data.SetupHeight = Height;
         }
+
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            previewForm.Preview.Cut();
+        }
+
+        private void copyToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            previewForm.Preview.Copy();
+        }
+
+        private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            previewForm.Preview.Paste();
+        }
+
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            previewForm.Preview.Delete();
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void backgroundPropertiesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ResizePreviewForm resizeForm = new ResizePreviewForm(previewForm.Preview.Background.Width, previewForm.Preview.Background.Height);
+            if (resizeForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                previewForm.Preview.ResizeBackground(resizeForm.Width, resizeForm.Height);
+            }
+        }
     }
 }

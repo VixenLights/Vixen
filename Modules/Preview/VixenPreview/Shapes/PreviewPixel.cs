@@ -194,47 +194,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             if (newColor.A > 0)
             {
-                //if (PixelSize == 1)
-                //{
-                //    fp.SetPixel(drawArea.Left, drawArea.Top, newColor);
-                //}
-                //else if (PixelSize == 2)
-                //{
-                //    // Row 1
-                //    fp.SetPixel(drawArea.Left, drawArea.Top, newColor);
-                //    //fp.SetPixel(drawArea.Left+1, drawArea.Top, newColor);
-                //    // Row 2
-                //    fp.SetPixel(drawArea.Left, drawArea.Top+1, newColor);
-                //    //fp.SetPixel(drawArea.Left+1, drawArea.Top+1, newColor);
-                //}
-                //else if (PixelSize == 3)
-                //{
-                //    // Row 1
-                //    //fp.SetPixel(drawArea.Left - 1, drawArea.Top - 1, newColor);
-                //    fp.SetPixel(drawArea.Left, drawArea.Top - 1, newColor);
-                //    //fp.SetPixel(drawArea.Left + 1, drawArea.Top - 1, newColor);
-                //    // Row 2
-                //    fp.SetPixel(drawArea.Left - 1, drawArea.Top, newColor);
-                //    fp.SetPixel(drawArea.Left, drawArea.Top, newColor);
-                //    fp.SetPixel(drawArea.Left + 1, drawArea.Top, newColor);
-                //    // Row 1
-                //    //fp.SetPixel(drawArea.Left - 1, drawArea.Top + 1, newColor);
-                //    fp.SetPixel(drawArea.Left, drawArea.Top + 1, newColor);
-                //    //fp.SetPixel(drawArea.Left + 1, drawArea.Top + 1, newColor);
-                //}
-                //else
-                //{
-                    if (MaxAlpha != 255)
-                    {
-                        double newAlpha = ((double)newColor.A / 255) * (double)MaxAlpha;
-                        Color outColor = Color.FromArgb((int)newAlpha, newColor.R, newColor.G, newColor.B);
-                        fp.DrawCircle(drawArea, outColor);
-                    }
-                    else
-                    {
-                        fp.DrawCircle(drawArea, newColor);
-                    }
-                //}
+                if (MaxAlpha != 255)
+                {
+                    double newAlpha = ((double)newColor.A / 255) * (double)MaxAlpha;
+                    Color outColor = Color.FromArgb((int)newAlpha, newColor.R, newColor.G, newColor.B);
+                    fp.DrawCircle(drawArea, outColor);
+                }
+                else
+                {
+                    fp.DrawCircle(drawArea, newColor);
+                }
             }
         }
     }

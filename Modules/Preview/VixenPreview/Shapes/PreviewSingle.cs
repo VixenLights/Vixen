@@ -183,5 +183,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             Layout();
         }
 
+        public override void Resize(double aspect)
+        {
+            p1.X = (int)(p1.X * aspect);
+            p1.Y = (int)(p1.Y * aspect);
+            Layout();
+        }
+
     }
 }

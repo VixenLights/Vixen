@@ -60,6 +60,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         /// <summary>
         /// Need to override if this is anywhere other than the top left in _pixels
         /// </summary>
+        [Browsable(false)]
         public virtual int Top
         {
             get
@@ -90,6 +91,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         /// <summary>
         /// Need to override if this is anywhere other than the top left in _pixels
         /// </summary>
+        [Browsable(false)]
         public virtual int Left
         {
             get
@@ -531,5 +533,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             MoveTo(Left + x, Top + y);
         }
+
+        public abstract void Resize(double aspect);
     }
 }

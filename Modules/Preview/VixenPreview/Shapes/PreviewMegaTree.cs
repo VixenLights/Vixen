@@ -42,7 +42,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         private PreviewPoint p1Start, p2Start;
 
-        public PreviewMegaTree(PreviewPoint point1)
+        public PreviewMegaTree(PreviewPoint point1, ElementNode selectedNode)
         {
             _topLeft = point1;
             _bottomRight = new PreviewPoint(_topLeft.X, _topLeft.Y);
@@ -56,17 +56,114 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
             _strings = new List<PreviewBaseShape>();
 
-            // Just add the pixels, we don't care where they go... they get positioned in Layout()
-            for (int stringNum = 0; stringNum < _stringCount; stringNum++)
+            int childLightCount;
+            if (IsPixelTreeSelected(selectedNode, out childLightCount)) 
             {
-                PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), _lightsPerString, null);
-                _strings.Add(line);
+                StringType = StringTypes.Pixel;
+                _lightsPerString = childLightCount;
+                foreach (ElementNode child in selectedNode.Children) 
+                {
+                    PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), _lightsPerString, child);
+                    _strings.Add(line);
+                }
+                _stringCount = _strings.Count;
+            }
+            else if (IsStandardTreeSelected(selectedNode))
+            {
+                StringType = StringTypes.Standard;
+                foreach (ElementNode child in selectedNode.Children)
+                {
+                    PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), _lightsPerString, child);
+                    _strings.Add(line);
+                }
+                _stringCount = _strings.Count;
+            }
+            else
+            {
+                // Just add the pixels, we don't care where they go... they get positioned in Layout()
+                for (int stringNum = 0; stringNum < _stringCount; stringNum++)
+                {
+                    PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), _lightsPerString, null);
+                    _strings.Add(line);
+                }
             }
 
             // Lay out the pixels
             Layout();
 
             DoResize += new ResizeEvent(OnResize);
+        }
+
+        private bool IsPixelTreeSelected(ElementNode selectedNode, out int childLightCount)
+        {
+            int lastChildLightCount = -1;
+            childLightCount = -1;
+            if (selectedNode != null && selectedNode.Children != null)
+            {
+                int parentStringCount = selectedNode.Children.ToList().Count;
+                // Selected node has to be a group!
+                if (!selectedNode.IsLeaf && parentStringCount >= 4)
+                {
+                    // Iterate through the strings in the tree
+                    parentStringCount = selectedNode.Children.ToList().Count;
+                    foreach (ElementNode parent in selectedNode.Children)
+                    {
+                        int childCount = parent.Children.ToList().Count;
+                        if (lastChildLightCount == -1)
+                        {
+                            lastChildLightCount = childCount;
+                        }
+                        // All the strings have to have the same light count for this to work!
+                        else if (lastChildLightCount != childCount)
+                        {
+                            return false;
+                        }
+                        lastChildLightCount = childCount;
+
+                        foreach (ElementNode child in parent.Children)
+                        {
+                            // If there are sub-groups this is not a mega tree element!
+                            if (!child.IsLeaf)
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+
+                if (lastChildLightCount > 4 && parentStringCount >= 4)
+                {
+                    childLightCount = lastChildLightCount;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else 
+            {
+                return false;
+            }
+        }
+
+        private bool IsStandardTreeSelected(ElementNode selectedNode)
+        {
+            int parentStringCount = 0;
+            // Selected node has to be a group!
+            if (selectedNode != null && !selectedNode.IsLeaf)
+            {
+                // Iterate through the strings in the tree
+                foreach (ElementNode parent in selectedNode.Children)
+                {
+                    parentStringCount += 1;
+                    // If there are more groups, this is not a Mega Tree
+                    if (!parent.IsLeaf)
+                        return false;
+                }
+            }
+            // Gotta have at least 4 strings to make a Mega Tree!
+            return (parentStringCount >= 4);
         }
 
         [OnDeserialized]
@@ -506,6 +603,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
             Layout();
         }
+
+        public override void Resize(double aspect)
+        {
+            _topLeft.X = (int)(_topLeft.X * aspect);
+            _topLeft.Y = (int)(_topLeft.Y * aspect);
+            _bottomRight.X = (int)(_bottomRight.X * aspect);
+            _bottomRight.Y = (int)(_bottomRight.Y * aspect);
+
+            Layout();
+        }
+
 
     }
 }

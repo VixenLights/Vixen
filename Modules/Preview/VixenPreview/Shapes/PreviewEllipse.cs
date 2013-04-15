@@ -325,5 +325,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             Layout();
         }
 
+        public override void Resize(double aspect)
+        {
+            TopLeft = new Point((int)(TopLeft.X * aspect), (int)(TopLeft.Y * aspect));
+            BottomRight = new Point((int)(BottomRight.X * aspect), (int)(BottomRight.Y * aspect));
+            //topRight.X = _bottomRight.X;
+            //topRight.Y = _topLeft.Y;
+            //bottomLeft.X = _topLeft.X;
+            //bottomLeft.Y = _bottomRight.Y;
+            Layout();
+        }
+
     }
 }
