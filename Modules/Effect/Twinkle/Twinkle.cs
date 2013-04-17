@@ -37,8 +37,10 @@ namespace VixenModules.Effect.Twinkle
 			int totalNodes = targetNodes.Count();
 			int i = 0;
 
-			foreach (ElementNode node in targetNodes) {
-				_elementData.Add(RenderElement(node, i++ / (double)totalNodes, twinkles));
+			foreach (ElementNode node in targetNodes)
+			{
+				if (node != null)
+					_elementData.Add(RenderElement(node, i++ / (double)totalNodes, twinkles));
 			}
 		}
 
@@ -162,7 +164,8 @@ namespace VixenModules.Effect.Twinkle
 			pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { MinimumLevel * 100.0, MinimumLevel * 100.0 }));
 
 			// figure out what color gradient to use for the pulse
-			switch (ColorHandling) {
+			switch (ColorHandling)
+			{
 				case TwinkleColorHandling.GradientForEachPulse:
 					pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(0));
 					break;
@@ -184,7 +187,8 @@ namespace VixenModules.Effect.Twinkle
 			result.Add(pulseData);
 
 			// render all the individual twinkles
-			foreach (IndividualTwinkleDetails twinkle in twinkles) {
+			foreach (IndividualTwinkleDetails twinkle in twinkles)
+			{
 				{
 					// make a pulse for it
 					pulse = new Pulse.Pulse();
@@ -193,7 +197,8 @@ namespace VixenModules.Effect.Twinkle
 					pulse.LevelCurve = twinkle.TwinkleCurve;
 
 					// figure out what color gradient to use for the pulse
-					switch (ColorHandling) {
+					switch (ColorHandling)
+					{
 						case TwinkleColorHandling.GradientForEachPulse:
 							pulse.ColorGradient = ColorGradient;
 							break;
@@ -236,12 +241,13 @@ namespace VixenModules.Effect.Twinkle
 			// the maximum amount of time an individual flicker/twinkle can vary off the average by
 			int maxDurationVariation = (int)((PulseTimeVariation / 100.0) * AveragePulseTime);
 
-			for (TimeSpan current = TimeSpan.Zero; current < TimeSpan; ) {
+			for (TimeSpan current = TimeSpan.Zero; current < TimeSpan; )
+			{
 
 				// calculate how long until the next flicker, and clamp it (since there's a small chance it's huge)
 				double nextTime = Math.Log(1.0 - _random.NextDouble()) * -meanMillisecondsBetweenTwinkles;
 				if (nextTime > maxMillisecondsBetweenTwinkles)
-				    nextTime = maxMillisecondsBetweenTwinkles;
+					nextTime = maxMillisecondsBetweenTwinkles;
 
 				// check if the timespan will be off the end, if so, bail
 				current += TimeSpan.FromMilliseconds(nextTime);
@@ -253,11 +259,15 @@ namespace VixenModules.Effect.Twinkle
 				TimeSpan twinkleDuration = TimeSpan.FromMilliseconds(twinkleDurationMs);
 
 				// it might have to be capped to fit within the duration of the whole effect, so figure that out
-				if (current + twinkleDuration > TimeSpan) {
+				if (current + twinkleDuration > TimeSpan)
+				{
 					// it's past the end of the effect. If it can be reduced to fit in the acceptable range, do that, otherwise skip it
-					if ((TimeSpan - current).TotalMilliseconds >= AveragePulseTime - maxDurationVariation) {
+					if ((TimeSpan - current).TotalMilliseconds >= AveragePulseTime - maxDurationVariation)
+					{
 						twinkleDuration = (TimeSpan - current);
-					} else {
+					}
+					else
+					{
 						// if we can't fit anything else into this time gap, not much point continuing the iteration
 						break;
 					}

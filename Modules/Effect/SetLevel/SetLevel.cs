@@ -26,8 +26,10 @@ namespace VixenModules.Effect.SetLevel
 		{
 			_elementData = new EffectIntents();
 
-			foreach (ElementNode node in TargetNodes) {
-				RenderNode(node);
+			foreach (ElementNode node in TargetNodes)
+			{
+				if (node != null)
+					RenderNode(node);
 			}
 		}
 
@@ -60,7 +62,8 @@ namespace VixenModules.Effect.SetLevel
 		// not a element, will recursively descend until we render its elements.
 		private void RenderNode(ElementNode node)
 		{
-			foreach(Element element in node) {
+			foreach (Element element in node)
+			{
 				LightingValue lightingValue = new LightingValue(Color, (float)IntensityLevel);
 				IIntent intent = new LightingIntent(lightingValue, lightingValue, TimeSpan);
 				_elementData.AddIntentForElement(element.Id, intent, TimeSpan.Zero);

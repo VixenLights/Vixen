@@ -28,8 +28,10 @@ namespace VixenModules.Effect.Pulse
 		{
 			_elementData = new EffectIntents();
 
-			foreach (ElementNode node in TargetNodes) {
-				RenderNode(node);
+			foreach (ElementNode node in TargetNodes)
+			{
+				if (node != null)
+					RenderNode(node);
 			}
 		}
 
@@ -62,7 +64,8 @@ namespace VixenModules.Effect.Pulse
 		// not a element, will recursively descend until we render its elements.
 		private void RenderNode(ElementNode node)
 		{
-			foreach(Element element in node) {
+			foreach (Element element in node)
+			{
 				// this is probably always going to be a single element for the given node, as
 				// we have iterated down to leaf nodes in RenderNode() above. May as well do
 				// it this way, though, in case something changes in future.
@@ -73,33 +76,37 @@ namespace VixenModules.Effect.Pulse
 				Debug.Assert(allPointsTimeOrdered.Length > 1);
 
 				double lastPosition = allPointsTimeOrdered[0];
-				for(int i=1; i<allPointsTimeOrdered.Length; i++) {
+				for (int i = 1; i < allPointsTimeOrdered.Length; i++)
+				{
 					double position = allPointsTimeOrdered[i];
 
 					LightingValue startValue = new LightingValue(ColorGradient.GetColorAt(lastPosition), (float)LevelCurve.GetValue(lastPosition * 100) / 100);
 					LightingValue endValue = new LightingValue(ColorGradient.GetColorAt(position), (float)LevelCurve.GetValue(position * 100) / 100);
-					
+
 					TimeSpan startTime = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds * lastPosition);
 					TimeSpan timeSpan = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds * (position - lastPosition));
-					
+
 					IIntent intent = new LightingIntent(startValue, endValue, timeSpan);
 
 					_elementData.AddIntentForElement(element.Id, intent, startTime);
-					
+
 					lastPosition = position;
 				}
 			}
 		}
 
-		private IEnumerable<double> _GetAllSignificantDataPoints() {
+		private IEnumerable<double> _GetAllSignificantDataPoints()
+		{
 			HashSet<double> allPoints = new HashSet<double>();
 
 			allPoints.Add(0.0);
 
-			foreach(PointPair point in LevelCurve.Points) {
+			foreach (PointPair point in LevelCurve.Points)
+			{
 				allPoints.Add(point.X / 100);
 			}
-			foreach(ColorPoint point in ColorGradient.Colors) {
+			foreach (ColorPoint point in ColorGradient.Colors)
+			{
 				allPoints.Add(point.Position);
 			}
 
