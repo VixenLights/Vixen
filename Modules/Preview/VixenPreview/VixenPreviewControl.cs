@@ -20,6 +20,8 @@ namespace VixenModules.Preview.VixenPreview
     
     public partial class VixenPreviewControl : UserControl
     {
+        bool UseFloods = true;
+
         #region "Variables"
         public VixenPreviewSetupElementsDocument elementsForm;
         public VixenPreviewSetupPropertiesDocument propertiesForm;
@@ -44,7 +46,9 @@ namespace VixenModules.Preview.VixenPreview
             Single,
             Triangle,
             MegaTree,
-            Net
+            Net,
+            Flood,
+            Cane
         }
 
         private List<DisplayItem> selectedDisplayItems = new List<DisplayItem>();
@@ -53,11 +57,12 @@ namespace VixenModules.Preview.VixenPreview
         private int changeX;
         private int changeY;
         private DisplayItem _selectedDisplayItem = null;
-        private PreviewBaseShape _copiedShape;
+        //private PreviewBaseShape _copiedShape;
         private bool _editMode = false;
 
         private Bitmap _background;
         private Bitmap _alphaBackground;
+        private Bitmap _blankAlphaBackground;
 
         private VixenPreviewData _data;
 
@@ -67,6 +72,7 @@ namespace VixenModules.Preview.VixenPreview
         private Random random = new Random();
         Stopwatch renderTimer = new Stopwatch();
 
+        TextureBrush _backgroundBrush;
 
         #endregion
 
@@ -235,6 +241,11 @@ namespace VixenModules.Preview.VixenPreview
                     gfx.DrawImage(_background, 0, 0, _background.Width, _background.Height);
                     gfx.FillRectangle(brush, 0, 0, _alphaBackground.Width, _alphaBackground.Height);
                 }
+
+                _blankAlphaBackground = new Bitmap(_background.Width, _background.Height, PixelFormat.Format32bppPArgb);
+                Graphics g = Graphics.FromImage(_blankAlphaBackground);
+                g.Clear(Color.FromArgb(255 - BackgroundAlpha, 0, 0, 0));
+                _backgroundBrush = new TextureBrush(_blankAlphaBackground);
             }
         }
 
@@ -246,27 +257,30 @@ namespace VixenModules.Preview.VixenPreview
 
         private void AllocateGraphicsBuffer()
         {
-            lock (PreviewTools.renderLock)
+            if (!Disposing)
             {
-
-                if (context != null)
+                lock (PreviewTools.renderLock)
                 {
-                    context.MaximumBuffer = new Size(this.Width + 1, this.Height + 1);
 
-                    if (bufferedGraphics != null)
+                    if (context != null)
                     {
-                        lock (bufferedGraphics)
+                        context.MaximumBuffer = new Size(this.Width + 1, this.Height + 1);
+
+                        if (bufferedGraphics != null)
                         {
-                            bufferedGraphics.Dispose();
-                            bufferedGraphics = null;
-                            bufferedGraphics = context.Allocate(this.CreateGraphics(),
-                                new Rectangle(0, 0, this.Width + 1, this.Height + 1));
+                            lock (bufferedGraphics)
+                            {
+                                bufferedGraphics.Dispose();
+                                bufferedGraphics = null;
+                                bufferedGraphics = context.Allocate(this.CreateGraphics(),
+                                    new Rectangle(0, 0, this.Width + 1, this.Height + 1));
+                            }
                         }
-                    }
-                    else
-                    {
-                        bufferedGraphics = context.Allocate(this.CreateGraphics(),
-                        new Rectangle(0, 0, this.Width + 1, this.Height + 1));
+                        else
+                        {
+                            bufferedGraphics = context.Allocate(this.CreateGraphics(),
+                            new Rectangle(0, 0, this.Width + 1, this.Height + 1));
+                        }
                     }
                 }
             }
@@ -369,6 +383,16 @@ namespace VixenModules.Preview.VixenPreview
                         {
                             newDisplayItem = new DisplayItem();
                             newDisplayItem.Shape = new PreviewNet(new PreviewPoint(e.X, e.Y), elementsForm.SelectedNode);
+                        }
+                        else if (_currentTool == Tools.Cane)
+                        {
+                            newDisplayItem = new DisplayItem();
+                            newDisplayItem.Shape = new PreviewCane(new PreviewPoint(e.X, e.Y), elementsForm.SelectedNode);
+                        }
+                        else if (_currentTool == Tools.Flood)
+                        {
+                            newDisplayItem = new DisplayItem();
+                            newDisplayItem.Shape = new PreviewFlood(new PreviewPoint(e.X, e.Y), elementsForm.SelectedNode);
                         }
                         else if (_currentTool == Tools.MegaTree)
                         {
@@ -712,53 +736,17 @@ namespace VixenModules.Preview.VixenPreview
         //    lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
         //}
 
-        public void RenderInForeground()
-        {
-            renderTimer.Reset();
-            renderTimer.Start();
-
-            if (_background != null)
-            {
-                FastPixel fp = new FastPixel(_background.Width, _background.Height);
-                fp.Lock();
-                foreach (DisplayItem displayItem in DisplayItems)
-                {
-                    if (_editMode)
-                        displayItem.Draw(fp, true, HighlightedElements);
-                    else
-                        displayItem.Draw(fp);
-                }
-                fp.Unlock(true);
-
-                //lock (renderLock)
-                //{
-                // First, draw our background image opaque
-                bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-                //bufferedGraphics.Graphics.DrawImage(_background, 0, 0, _background.Width, _background.Height);
-                bufferedGraphics.Graphics.DrawImage(_alphaBackground, 0, 0, fp.Width, fp.Height);
-
-                bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
-                // Now, draw our "pixel" image using alpha blending
-                bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
-                //}
-            }
-
-            bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
-            renderTimer.Stop();
-            lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
-        }
-
         public void Reload()
         {
             lock (PreviewTools.renderLock)
             {
-
-                Console.WriteLine("Reload: " + Parent.Name);
-
+                if (PreviewBaseShape.NodeToPixel == null) PreviewTools.Throw("PreviewBase.NodeToPixel == null");
                 PreviewBaseShape.NodeToPixel.Clear();
 
+                if (DisplayItems == null) PreviewTools.Throw("DisplayItems == null");
                 foreach (DisplayItem item in DisplayItems)
                 {
+                    if (item.Shape.Pixels == null) PreviewTools.Throw("item.Shape.Pixels == null");
                     foreach (PreviewPixel pixel in item.Shape.Pixels)
                     {
                         if (pixel.Node != null)
@@ -783,72 +771,7 @@ namespace VixenModules.Preview.VixenPreview
                 LoadBackground();
             }
         }
-
-        public void ProcessUpdate(ElementIntentStates elementStates)
-        {
-            renderTimer.Reset();
-            renderTimer.Start();
-
-            if (!_paused)
-            {
-                lock (PreviewTools.renderLock)
-                {
-                    FastPixel fp = new FastPixel(_background.Width, _background.Height);
-                    //Bitmap backBitmap = _alphaBackground.Clone(new Rectangle(0, 0, _alphaBackground.Width, _alphaBackground.Height), PixelFormat.Format32bppPArgb);
-                    //FastPixel fp = new FastPixel(backBitmap);
-                    fp.Lock();
-
-                    foreach (var channelIntentState in elementStates)
-                    {
-                        var elementId = channelIntentState.Key;
-                        Element element = VixenSystem.Elements.GetElement(elementId);
-                        if (element == null) continue;
-                        ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
-                        if (node == null) continue;
-
-                        foreach (IIntentState<LightingValue> intentState in channelIntentState.Value)
-                        {
-
-                            if (_background != null)
-                            {
-                                //foreach (DisplayItem displayItem in DisplayItems)
-                                //{
-                                //    if (_editMode)
-                                //        displayItem.Draw(fp, Color.White);
-                                //    else
-                                //        displayItem.Draw(fp);
-                                //}
-                                List<PreviewPixel> pixels;
-                                if (PreviewBaseShape.NodeToPixel.TryGetValue(node, out pixels))
-                                {
-                                    foreach (PreviewPixel pixel in pixels)
-                                    {
-                                        pixel.Draw(fp, intentState.GetValue().GetAlphaChannelIntensityAffectedColor());
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    fp.Unlock(true);
-
-                    // First, draw our background image opaque
-                    bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-                    bufferedGraphics.Graphics.DrawImage(_alphaBackground, 0, 0, _alphaBackground.Width, _alphaBackground.Height);
-                    //bufferedGraphics.Graphics.DrawImage(backBitmap, 0, 0, backBitmap.Width, backBitmap.Height);
-
-                    bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
-                    // Now, draw our "pixel" image using alpha blending
-                    bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
-
-                    if (!this.Disposing)
-                        bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
-
-                }
-            }
-            renderTimer.Stop();
-            lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
-        }
-
+        
         public bool Paused
         {
             set
@@ -909,6 +832,181 @@ namespace VixenModules.Preview.VixenPreview
             {
                 item.Shape.Resize(aspect);
             }
+        }
+
+        //
+        // This is used in edit mode only!!
+        //
+        public void RenderInForeground()
+        {
+            renderTimer.Reset();
+            renderTimer.Start();
+
+            if (_background != null)
+            {
+                FastPixel fp = new FastPixel(_background.Width, _background.Height);
+                Bitmap floodBG = null;
+                if (UseFloods)
+                {
+                    floodBG = PreviewTools.Copy32BPPBitmapSafe(_blankAlphaBackground);
+                    //floodBG = new Bitmap(_blankAlphaBackground);
+                    //floodBG = new Bitmap(_blankAlphaBackground.Width, _blankAlphaBackground.Height);
+                    //Graphics g = Graphics.FromImage(floodBG);
+                    //g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+                    //SolidBrush brush = new SolidBrush(Color.FromArgb(50, 255, 0, 0));
+                    //g.FillEllipse(brush, new Rectangle(200, 200, 300, 300));
+                    //g.DrawImage(_blankAlphaBackground, 0, 0);
+                    //g.FillRectangle(_backgroundBrush, new Rectangle(0, 0, _blankAlphaBackground.Width, _blankAlphaBackground.Height));
+                }
+                fp.Lock();
+                foreach (DisplayItem displayItem in DisplayItems)
+                {
+                    if (UseFloods && displayItem.Shape.StringType == PreviewBaseShape.StringTypes.Flood)
+                    {
+                        displayItem.Shape.Draw(floodBG, _editMode, null);
+                    }
+                    else
+                    {
+                        if (_editMode)
+                            displayItem.Draw(fp, true, HighlightedElements);
+                        else
+                            displayItem.Draw(fp, false, null);
+                    }
+                }
+                fp.Unlock(true);
+
+                //lock (renderLock)
+                //{
+                // First, draw our background image opaque
+                bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+                //bufferedGraphics.Graphics.DrawImage(_background, 0, 0, _background.Width, _background.Height);
+                if (UseFloods)
+                {
+                    bufferedGraphics.Graphics.DrawImage(_background, 0, 0, _background.Width, _background.Height);
+                }
+                else
+                {
+                    bufferedGraphics.Graphics.DrawImage(_alphaBackground, 0, 0, _alphaBackground.Width, _alphaBackground.Height);
+                }
+
+                bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
+                if (UseFloods)
+                {
+                    bufferedGraphics.Graphics.DrawImage(floodBG, 0, 0, _blankAlphaBackground.Width, _blankAlphaBackground.Height);
+                }
+                // Now, draw our "pixel" image using alpha blending
+                bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
+                //}
+            }
+
+            bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
+            renderTimer.Stop();
+            lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
+        }
+
+        public void ProcessUpdate(ElementIntentStates elementStates)
+        {
+            renderTimer.Reset();
+            renderTimer.Start();
+
+            if (!_paused)
+            {
+                lock (PreviewTools.renderLock)
+                {
+                    FastPixel fp = new FastPixel(_background.Width, _background.Height);
+
+                    Bitmap floodBG = null;
+                    if (UseFloods)
+                    {
+                        floodBG = PreviewTools.Copy32BPPBitmapSafe(_blankAlphaBackground);
+                        //floodBG = new Bitmap(_blankAlphaBackground);
+                        //floodBG = new Bitmap(_blankAlphaBackground.Width, _blankAlphaBackground.Height);
+                        //Graphics g = Graphics.FromImage(floodBG);
+                        //g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+                        //SolidBrush brush = new SolidBrush(Color.FromArgb(50, 255, 0, 0));
+                        //g.FillEllipse(brush, new Rectangle(200, 200, 300, 300));
+                        //g.DrawImage(_blankAlphaBackground, 0, 0);
+                        //g.FillRectangle(_backgroundBrush, new Rectangle(0, 0, _blankAlphaBackground.Width, _blankAlphaBackground.Height));
+                    }
+                    fp.Lock();
+
+                    foreach (var channelIntentState in elementStates)
+                    {
+                        var elementId = channelIntentState.Key;
+                        Element element = VixenSystem.Elements.GetElement(elementId);
+                        if (element == null) continue;
+                        ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
+                        if (node == null) continue;
+
+                        foreach (IIntentState<LightingValue> intentState in channelIntentState.Value)
+                        {
+
+                            if (_background != null)
+                            {
+                                List<PreviewPixel> pixels;
+                                if (PreviewBaseShape.NodeToPixel.TryGetValue(node, out pixels))
+                                {
+                                    foreach (PreviewPixel pixel in pixels)
+                                    {
+                                        
+                                        //Color.FromArgb((int)(Intensity * byte.MaxValue), Color.R, Color.G, Color.B);
+                                        //LightingValue v = intentState.GetValue();
+                                        //Color c = v.GetOpaqueIntensityAffectedColor();
+                                        //Color c = v.GetAlphaChannelIntensityAffectedColor();
+                                        Color c = intentState.GetValue().GetAlphaChannelIntensityAffectedColor();
+                                        //Color c = Color.White;
+                                        pixel.Draw(fp, c);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    foreach (DisplayItem displayItem in DisplayItems)
+                    {
+                        if (displayItem.Shape.StringType == PreviewBaseShape.StringTypes.Flood)
+                        {
+                            Color c = displayItem.Shape._pixels[0].PixelColor;
+                            int alpha = c.A;
+                            //int maxAlpha = 255 - BackgroundAlpha;
+                            //if (maxAlpha < 255)
+                            //{
+
+                            //}
+                            displayItem.Shape._pixels[0].PixelColor = Color.FromArgb(alpha, c.R, c.G, c.B);
+                            displayItem.Shape.Draw(floodBG, false, null);
+                            displayItem.Shape._pixels[0].PixelColor = Color.FromArgb(255 - BackgroundAlpha, 0, 0, 0);
+                        }
+                    }
+
+                    fp.Unlock(true);
+
+                    // First, draw our background image opaque
+                    bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+                    if (UseFloods)
+                    {
+                        bufferedGraphics.Graphics.DrawImage(_background, 0, 0, _background.Width, _background.Height);
+                    }
+                    else
+                    {
+                        bufferedGraphics.Graphics.DrawImage(_alphaBackground, 0, 0, _alphaBackground.Width, _alphaBackground.Height);
+                    }
+
+                    // Now, draw our "pixel" image using alpha blending
+                    bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
+                    if (UseFloods)
+                    {
+                        bufferedGraphics.Graphics.DrawImage(floodBG, 0, 0, _blankAlphaBackground.Width, _blankAlphaBackground.Height);
+                    }
+                    bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
+
+                    if (!this.Disposing)
+                        bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
+
+                }
+            }
+            renderTimer.Stop();
+            lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
         }
     }
 }

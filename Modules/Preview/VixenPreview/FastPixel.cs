@@ -67,6 +67,14 @@ namespace VixenModules.Preview.VixenPreview
             SetupBitmap(width, height);
         }
 
+        // slow!
+        public FastPixel(int width, int height, Color backgroundColor)
+        {
+            SetupBitmap(width, height);
+            Graphics g = Graphics.FromImage(_bitmap);
+            g.Clear(backgroundColor);
+        }
+
         public void SetupBitmap(int width, int height)
         {
             //_bitmap = new Bitmap(width, height, PixelFormat.Format32bppPArgb);

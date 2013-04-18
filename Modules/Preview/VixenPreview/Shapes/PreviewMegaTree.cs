@@ -167,7 +167,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         }
 
         [OnDeserialized]
-        void OnDeserialized(StreamingContext context)
+        new void OnDeserialized(StreamingContext context)
         {
             Layout();
         }
@@ -488,29 +488,29 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //    base.Draw(graphics, color);
         //}
 
-        public override void Draw(FastPixel fp, Color color)
-        {
-            if (_strings != null) {
-                _stringsInDegrees = (double)_stringCount * ((double)_degrees / 360);
-                for (int i = 0; i < (int)_stringsInDegrees; i++)
-                {
-                    _strings[i].Draw(fp, color);
-                }
-            }
-            base.Draw(fp, color);
-        }
+        //public override void Draw(FastPixel fp, Color color)
+        //{
+        //    if (_strings != null) {
+        //        _stringsInDegrees = (double)_stringCount * ((double)_degrees / 360);
+        //        for (int i = 0; i < (int)_stringsInDegrees; i++)
+        //        {
+        //            _strings[i].Draw(fp, color);
+        //        }
+        //    }
+        //    base.Draw(fp, color);
+        //}
 
-        public override void Draw(FastPixel fp)
-        {
-            if (_strings != null) {
-                _stringsInDegrees = (double)_stringCount * ((double)_degrees / 360);
-                for (int i = 0; i < _stringsInDegrees; i++)
-                {
-                    _strings[i].Draw(fp);
-                }
-            }
-            base.Draw(fp);
-        }
+        //public override void Draw(FastPixel fp)
+        //{
+        //    if (_strings != null) {
+        //        _stringsInDegrees = (double)_stringCount * ((double)_degrees / 360);
+        //        for (int i = 0; i < _stringsInDegrees; i++)
+        //        {
+        //            _strings[i].Draw(fp);
+        //        }
+        //    }
+        //    base.Draw(fp);
+        //}
 
         public override void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements)
         {
@@ -529,7 +529,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 }
             }
 
-            base.Draw(fp);
+            base.Draw(fp, editMode, highlightedElements);
         }
 
         public override object Clone()

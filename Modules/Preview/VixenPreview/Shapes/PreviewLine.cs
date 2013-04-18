@@ -70,7 +70,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         }
 
         [OnDeserialized]
-        void OnDeserialized(StreamingContext context)
+        new void OnDeserialized(StreamingContext context)
         {
             Layout();
         }

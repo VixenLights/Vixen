@@ -11,7 +11,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 {
     public partial class PreviewRectangleSetupControl : DisplayItemBaseControl
     {
-        private DisplayItem _displayItem;
+        //private DisplayItem _displayItem;
 
         public PreviewRectangleSetupControl(DisplayItem displayItem): base(displayItem)
         {

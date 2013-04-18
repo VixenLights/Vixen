@@ -235,7 +235,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             _tree.SetTopLeft(LeftMargin, TopMargin);
             _tree.SetBottomRight(pictureBoxSample.Width - (LeftMargin * 2), pictureBoxSample.Height - (TopMargin * 2));
             _tree.Layout();
-            _tree.Draw(e.Graphics, Color.White);
+            //_tree.Draw(e.Graphics, Color.White);
         }
 
         private void numericUpDownStringCount_ValueChanged(object sender, EventArgs e)

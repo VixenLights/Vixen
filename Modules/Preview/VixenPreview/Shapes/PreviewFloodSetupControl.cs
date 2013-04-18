@@ -9,11 +9,10 @@ using System.Windows.Forms;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
-    public partial class PreviewArchSetupControl : DisplayItemBaseControl
+    public partial class PreviewFloodSetupControl : DisplayItemBaseControl
     {
-        //private DisplayItem _displayItem;
-
-        public PreviewArchSetupControl(DisplayItem displayItem): base(displayItem)
+        public PreviewFloodSetupControl(DisplayItem displayItem)
+            : base(displayItem)
         {
             InitializeComponent();
             _displayItem = displayItem;
@@ -21,7 +20,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             displayItem.Shape.OnPropertiesChanged += OnPropertiesChanged;
         }
 
-        ~PreviewArchSetupControl()
+        ~PreviewFloodSetupControl()
         {
             _displayItem.Shape.OnPropertiesChanged -= OnPropertiesChanged;
         }

@@ -23,7 +23,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         public enum StringTypes
         {
             Standard,
-            Pixel
+            Pixel,
+            Flood
         }
 
         [XmlIgnore]
@@ -35,7 +36,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         public const int SelectPointSize = 6;
 
         private Color _pixelColor = Color.White;
-        private int _pixelSize = 2;
+        public int _pixelSize = 2;
 
         public List<PreviewPixel> _pixels = new List<PreviewPixel>();
 
@@ -272,7 +273,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         CategoryAttribute("Settings"),
         DescriptionAttribute("The size of the light point on the preview."),
         DisplayName("Light Size")]
-        public int PixelSize
+        public virtual int PixelSize
         {
             get { return _pixelSize; }
             set {
@@ -385,34 +386,37 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //    }
         //}
 
-        public virtual void Draw(FastPixel fp, Color color)
-        {
-            foreach (PreviewPixel pixel in Pixels)
-            {
-                pixel.Draw(fp, color);
-            }
+        //public virtual void Draw(FastPixel fp, Color color)
+        //{
+        //    foreach (PreviewPixel pixel in Pixels)
+        //    {
+        //        pixel.Draw(fp, color);
+        //    }
 
-            DrawSelectPoints(fp);
-        }
+        //    DrawSelectPoints(fp);
+        //}
         
-        public virtual void Draw(FastPixel fp)
+        //public virtual void Draw(FastPixel fp)
+        //{
+        //    foreach (PreviewPixel pixel in Pixels)
+        //    {
+        //        pixel.Draw(fp);
+        //    }
+
+        //    DrawSelectPoints(fp);
+        //}
+
+        //public virtual void Draw(Graphics graphics, Color color)
+        //{
+        //    foreach (PreviewPixel pixel in Pixels)
+        //    {
+        //        pixel.Draw(graphics, color);
+        //    }
+        //}
+
+        public virtual void Draw(Bitmap b, bool editMode, List<ElementNode> highlightedElements)
         {
-            foreach (PreviewPixel pixel in Pixels)
-            {
-                pixel.Draw(fp);
-            }
-
-            DrawSelectPoints(fp);
-        }
-
-        public virtual void Draw(Graphics graphics, Color color)
-        {
-            foreach (PreviewPixel pixel in Pixels)
-            {
-                pixel.Draw(graphics, color);
-            }
-
-            //DrawSelectPoints(graphics);
+            throw new NotImplementedException();
         }
 
         public virtual void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements)
@@ -512,7 +516,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             //        pixel.PixelColor = newColor;
             //}
 
-            PreviewPixel pixel;
+            //PreviewPixel pixel;
             //if (PreviewBaseShape.NodeToPixel.TryGetValue(node, out pixel))
             //    pixel.PixelColor = newColor;
 

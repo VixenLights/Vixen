@@ -90,6 +90,20 @@
     <Compile Include="ResizePreviewForm.Designer.cs">
       <DependentUpon>ResizePreviewForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Shapes\PreviewCaneSetupControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shapes\PreviewCaneSetupControl.Designer.cs">
+      <DependentUpon>PreviewCaneSetupControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shapes\PreviewCane.cs" />
+    <Compile Include="Shapes\PreviewFloodSetupControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shapes\PreviewFloodSetupControl.Designer.cs">
+      <DependentUpon>PreviewFloodSetupControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shapes\PreviewFlood.cs" />
     <Compile Include="Shapes\PreviewNetSetupControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -244,6 +258,12 @@
     <EmbeddedResource Include="ResizePreviewForm.resx">
       <DependentUpon>ResizePreviewForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Shapes\PreviewCaneSetupControl.resx">
+      <DependentUpon>PreviewCaneSetupControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shapes\PreviewFloodSetupControl.resx">
+      <DependentUpon>PreviewFloodSetupControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Shapes\PreviewNetSetupControl.resx">
       <DependentUpon>PreviewNetSetupControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -319,6 +339,12 @@
       <Project>{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}</Project>
       <Name>Controls</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\FloodImage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Flood.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -87,7 +87,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         }
 
         [OnDeserialized]
-        void OnDeserialized(StreamingContext context)
+        new void OnDeserialized(StreamingContext context)
         {
             Layout();
         }
@@ -146,7 +146,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
-        public List<PreviewPixel> Pixels
+        public override List<PreviewPixel> Pixels
         {
             get
             {

@@ -24,6 +24,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
     [KnownType(typeof(PreviewEllipse))]
     [KnownType(typeof(PreviewTriangle))]
     [KnownType(typeof(PreviewNet))]
+    [KnownType(typeof(PreviewFlood))]
+    [KnownType(typeof(PreviewCane))]
     [KnownType(typeof(PreviewMegaTree))]
     public class DisplayItem
     {
@@ -41,15 +43,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             set { _shape = value; }
         }
 
-        public void Draw(FastPixel fp, Color color)
-        {
-            _shape.Draw(fp, color);
-        }
+        //public void Draw(FastPixel fp, Color color)
+        //{
+        //    _shape.Draw(fp, color);
+        //}
 
-        public void Draw(FastPixel fp)
-        {
-            _shape.Draw(fp);
-        }
+        //public void Draw(FastPixel fp)
+        //{
+        //    _shape.Draw(fp);
+        //}
 
         //public void ResetColors(bool isRunning)
         //{

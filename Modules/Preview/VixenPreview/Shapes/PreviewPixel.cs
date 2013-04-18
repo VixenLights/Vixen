@@ -204,6 +204,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 {
                     fp.DrawCircle(drawArea, newColor);
                 }
+                color = newColor;
             }
         }
     }

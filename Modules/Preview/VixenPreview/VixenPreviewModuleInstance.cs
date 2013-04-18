@@ -27,7 +27,7 @@ namespace VixenModules.Preview.VixenPreview
 
         private void VixenPreviewModuleInstance_Load(object sender, EventArgs e)
         {
-
+            Console.WriteLine("Load");
         }
 
         public override void Stop()
@@ -66,6 +66,7 @@ namespace VixenModules.Preview.VixenPreview
 
         protected override Form Initialize()
         {
+            Console.WriteLine("Initialize");
             //Execution.NodesChanged += ExecutionNodesChanged;
             VixenSystem.Contexts.ContextCreated += ProgramContextCreated;
             VixenSystem.Contexts.ContextReleased += ProgramContextReleased;
@@ -103,18 +104,22 @@ namespace VixenModules.Preview.VixenPreview
 
         public override bool Setup()
         {
+            Console.WriteLine("Setup");
             setupForm = new VixenPreviewSetup3();
             setupForm.Data = GetDataModel();
             //setupForm.Setup();
-            displayForm.PreviewControl.Paused = true;
+            if (displayForm != null) 
+                displayForm.PreviewControl.Paused = true;
             Console.WriteLine("Paused");
             setupForm.ShowDialog();
             //displayForm.PreviewControl.Reload();
-            displayForm.PreviewControl.Paused = false;
+            if (displayForm != null)
+                displayForm.PreviewControl.Paused = false;
             Console.WriteLine("Un-Paused");
             if (setupForm.DialogResult == DialogResult.OK)
             {
-                displayForm.PreviewControl.Reload();
+                if (displayForm != null) 
+                    displayForm.PreviewControl.Reload();
             }
             //return setupForm;
             return base.Setup();

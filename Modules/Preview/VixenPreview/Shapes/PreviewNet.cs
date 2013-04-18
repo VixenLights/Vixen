@@ -46,7 +46,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         }
 
         [OnDeserialized]
-        public void OnDeserialized(StreamingContext context)
+        new void OnDeserialized(StreamingContext context)
         {
             if (_pixelSpacing == 0)
                 _pixelSpacing = 8;

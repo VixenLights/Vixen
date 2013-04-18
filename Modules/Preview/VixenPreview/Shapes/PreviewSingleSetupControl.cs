@@ -11,7 +11,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 {
     public partial class PreviewSingleSetupControl : DisplayItemBaseControl
     {
-        private DisplayItem _displayItem;
+        //private DisplayItem _displayItem;
 
         public PreviewSingleSetupControl(DisplayItem displayItem)
             : base(displayItem)
