@@ -26,6 +26,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
     [KnownType(typeof(PreviewNet))]
     [KnownType(typeof(PreviewFlood))]
     [KnownType(typeof(PreviewCane))]
+    [KnownType(typeof(PreviewStar))]
     [KnownType(typeof(PreviewMegaTree))]
     public class DisplayItem
     {

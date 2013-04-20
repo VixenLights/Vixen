@@ -20,7 +20,7 @@ namespace VixenModules.Preview.VixenPreview
     
     public partial class VixenPreviewControl : UserControl
     {
-        bool UseFloods = true;
+        bool UseFloods = false;
 
         #region "Variables"
         public VixenPreviewSetupElementsDocument elementsForm;
@@ -48,6 +48,7 @@ namespace VixenModules.Preview.VixenPreview
             MegaTree,
             Net,
             Flood,
+            Star,
             Cane
         }
 
@@ -388,6 +389,11 @@ namespace VixenModules.Preview.VixenPreview
                         {
                             newDisplayItem = new DisplayItem();
                             newDisplayItem.Shape = new PreviewCane(new PreviewPoint(e.X, e.Y), elementsForm.SelectedNode);
+                        }
+                        else if (_currentTool == Tools.Star)
+                        {
+                            newDisplayItem = new DisplayItem();
+                            newDisplayItem.Shape = new PreviewStar(new PreviewPoint(e.X, e.Y), elementsForm.SelectedNode);
                         }
                         else if (_currentTool == Tools.Flood)
                         {

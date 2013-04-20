@@ -123,7 +123,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             double Width, 
             double Height, 
             double totalPoints, 
-            double degrees)
+            double degrees,
+            double degreeOffset)
         {
 
             //const double C_x = 10, C_y = 20, w = 40, h = 50;
@@ -155,8 +156,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
             else
             {
+                //radianIncrement = (Math.PI * 2) / totalPoints;
+                //for (double t = 0; t < totalRadians; t += radianIncrement)
+                //{
+                //    double X = (C_x + (Width / 2) * Math.Cos(t)) + leftOffset;
+                //    double Y = (C_y + (Height / 2) * Math.Sin(t)) + topOffset;
+                //    points.Add(new Point((int)X, (int)Y));
+                //}
+                double radianOffset = (degreeOffset * Math.PI) / 180;
+                double startRadian = radianOffset;
+                double endRadian = totalRadians + radianOffset;
                 radianIncrement = (Math.PI * 2) / totalPoints;
-                for (double t = 0; t < totalRadians; t += radianIncrement)
+                for (double t = startRadian; t < endRadian; t += radianIncrement)
                 {
                     double X = (C_x + (Width / 2) * Math.Cos(t)) + leftOffset;
                     double Y = (C_y + (Height / 2) * Math.Sin(t)) + topOffset;

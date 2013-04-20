@@ -90,6 +90,13 @@
     <Compile Include="ResizePreviewForm.Designer.cs">
       <DependentUpon>ResizePreviewForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Shapes\PreviewStarSetupControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shapes\PreviewStarSetupControl.Designer.cs">
+      <DependentUpon>PreviewStarSetupControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shapes\PreviewStar.cs" />
     <Compile Include="Shapes\PreviewCaneSetupControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -143,12 +150,6 @@
       <DependentUpon>PreviewLineSetupControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Shapes\PreviewMegaTree.cs" />
-    <Compile Include="Shapes\PreviewMegaTreeProperties.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Shapes\PreviewMegaTreeProperties.Designer.cs">
-      <DependentUpon>PreviewMegaTreeProperties.cs</DependentUpon>
-    </Compile>
     <Compile Include="Shapes\PreviewMegaTreeSetupControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -181,21 +182,9 @@
     <Compile Include="Shapes\PreviewArch.cs" />
     <Compile Include="Shapes\DisplayItem.cs" />
     <Compile Include="Shapes\PreviewLine.cs" />
-    <Compile Include="Shapes\PreviewLineProperties.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Shapes\PreviewLineProperties.Designer.cs">
-      <DependentUpon>PreviewLineProperties.cs</DependentUpon>
-    </Compile>
     <Compile Include="Shapes\PreviewPixel.cs" />
     <Compile Include="Shapes\PreviewPoint.cs" />
     <Compile Include="Shapes\PreviewBaseShape.cs" />
-    <Compile Include="Shapes\PreviewSingleProperties.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Shapes\PreviewSingleProperties.Designer.cs">
-      <DependentUpon>PreviewSingleProperties.cs</DependentUpon>
-    </Compile>
     <Compile Include="Shapes\PreviewTools.cs" />
     <Compile Include="VixenPreviewControl.cs">
       <SubType>UserControl</SubType>
@@ -258,6 +247,9 @@
     <EmbeddedResource Include="ResizePreviewForm.resx">
       <DependentUpon>ResizePreviewForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Shapes\PreviewStarSetupControl.resx">
+      <DependentUpon>PreviewStarSetupControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Shapes\PreviewCaneSetupControl.resx">
       <DependentUpon>PreviewCaneSetupControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -276,14 +268,8 @@
     <EmbeddedResource Include="Shapes\PreviewEllipseSetupControl.resx">
       <DependentUpon>PreviewEllipseSetupControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Shapes\PreviewLineProperties.resx">
-      <DependentUpon>PreviewLineProperties.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Shapes\PreviewLineSetupControl.resx">
       <DependentUpon>PreviewLineSetupControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Shapes\PreviewMegaTreeProperties.resx">
-      <DependentUpon>PreviewMegaTreeProperties.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Shapes\PreviewMegaTreeSetupControl.resx">
       <DependentUpon>PreviewMegaTreeSetupControl.cs</DependentUpon>
@@ -293,9 +279,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Shapes\PreviewSetElements.resx">
       <DependentUpon>PreviewSetElements.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Shapes\PreviewSingleProperties.resx">
-      <DependentUpon>PreviewSingleProperties.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Shapes\PreviewSingleSetupControl.resx">
       <DependentUpon>PreviewSingleSetupControl.cs</DependentUpon>

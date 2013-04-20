@@ -83,7 +83,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
             Layout();
 
-            DoResize += new ResizeEvent(OnResize);
+            //DoResize += new ResizeEvent(OnResize);
         }
 
         [OnDeserialized]
@@ -151,11 +151,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get
             {
                 List<PreviewPixel> pixels = new List<PreviewPixel>();
-                for (int i = 0; i < 3; i++)
+                if (_strings != null)
                 {
-                    foreach (PreviewPixel pixel in _strings[i]._pixels)
+                    for (int i = 0; i < 3; i++)
                     {
-                        pixels.Add(pixel);
+                        foreach (PreviewPixel pixel in _strings[i]._pixels)
+                        {
+                            pixels.Add(pixel);
+                        }
                     }
                 }
                 return pixels;
@@ -255,10 +258,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
-        private void OnResize(EventArgs e)
-        {
-            Layout();
-        }
+        //private void OnResize(EventArgs e)
+        //{
+        //    Layout();
+        //}
 
         public override void Select() 
         {

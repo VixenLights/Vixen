@@ -46,8 +46,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         public PreviewPoint _selectedPoint;
 
-        public event ResizeEvent DoResize;
-        public delegate void ResizeEvent(EventArgs e);
+        //public event ResizeEvent DoResize;
+        //public delegate void ResizeEvent(EventArgs e);
 
         public delegate void OnPropertiesChangedHandler(object sender, PreviewBaseShape shape);
         public event OnPropertiesChangedHandler OnPropertiesChanged;

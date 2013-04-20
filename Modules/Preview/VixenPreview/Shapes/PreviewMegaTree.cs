@@ -91,7 +91,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             // Lay out the pixels
             Layout();
 
-            DoResize += new ResizeEvent(OnResize);
+            //DoResize += new ResizeEvent(OnResize);
         }
 
         private bool IsPixelTreeSelected(ElementNode selectedNode, out int childLightCount)
@@ -355,9 +355,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             //double bottomTopOffset = _bottomRight.Y - _baseHeight;
             //_baseEllipsePoints = PreviewTools.GetEllipsePoints(_topLeft.X, bottomTopOffset, width, _baseHeight, _stringCount, _degrees);
             double _topLeftOffset = _topLeft.X + (width / 2) - (_topWidth / 2);
-            _topEllipsePoints = PreviewTools.GetEllipsePoints(_topLeftOffset, _topLeft.Y, _topWidth, _topHeight, _stringCount, 360);
+            _topEllipsePoints = PreviewTools.GetEllipsePoints(_topLeftOffset, _topLeft.Y, _topWidth, _topHeight, _stringCount, 360, 0);
             double bottomTopOffset = _bottomRight.Y - _baseHeight;
-            _baseEllipsePoints = PreviewTools.GetEllipsePoints(_topLeft.X, bottomTopOffset, width, _baseHeight, _stringCount, 360);
+            _baseEllipsePoints = PreviewTools.GetEllipsePoints(_topLeft.X, bottomTopOffset, width, _baseHeight, _stringCount, 360, 0);
 
             _stringsInDegrees = (double)_stringCount * ((double)_degrees / 360);
 
@@ -412,10 +412,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             Layout();
         }
 
-        private void OnResize(EventArgs e)
-        {
-            Layout();
-        }
+        //private void OnResize(EventArgs e)
+        //{
+        //    Layout();
+        //}
 
         public override void Select()
         {

@@ -69,7 +69,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             // Lay out the pixels
             Layout();
 
-            DoResize += new ResizeEvent(OnResize);
+            //DoResize += new ResizeEvent(OnResize);
         }
 
         [OnDeserialized]
@@ -174,7 +174,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 int width = _bottomRight.X - _topLeft.X;
                 int height = _bottomRight.Y - _topLeft.Y;
                 List<Point> points;
-                points = PreviewTools.GetEllipsePoints(0, 0, width, height, PixelCount, 360);
+                points = PreviewTools.GetEllipsePoints(0, 0, width, height, PixelCount, 360, 0);
                 int pointNum = 0;
                 foreach (PreviewPixel pixel in _pixels)
                 {
@@ -241,10 +241,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             //}
         }
 
-        private void OnResize(EventArgs e)
-        {
-            Layout();
-        }
+        //private void OnResize(EventArgs e)
+        //{
+        //    Layout();
+        //}
 
         public override void Select()
         {

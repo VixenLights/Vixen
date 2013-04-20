@@ -130,6 +130,10 @@ namespace VixenModules.Preview.VixenPreview
             {
                 setupControl = new Shapes.PreviewCaneSetupControl(displayItem);
             }
+            else if (displayItem.Shape.GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewStar")
+            {
+                setupControl = new Shapes.PreviewStarSetupControl(displayItem);
+            }
             else if (displayItem.Shape.GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewNet")
             {
                 setupControl = new Shapes.PreviewNetSetupControl(displayItem);
@@ -167,6 +171,8 @@ namespace VixenModules.Preview.VixenPreview
                 previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Flood;
             else if (button == buttonCane)
                 previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Cane;
+            else if (button == buttonStar)
+                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Star;
             // Smart Shape Buttons
             else if (button == buttonMegaTree)
                 previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MegaTree;

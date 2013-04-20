@@ -44,7 +44,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             // Lay out the flood
             Layout();
 
-            DoResize += new ResizeEvent(OnResize);
+            //DoResize += new ResizeEvent(OnResize);
         }
 
         [OnDeserialized]
@@ -164,10 +164,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
-        private void OnResize(EventArgs e)
-        {
-            Layout();
-        }
+        //private void OnResize(EventArgs e)
+        //{
+        //    Layout();
+        //}
 
         public override void Select() 
         {
