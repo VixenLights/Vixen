@@ -16,6 +16,8 @@ using Vixen.Sys.Output;
 using System.Xml.Serialization;
 using System.Runtime.Serialization;
 using System.IO;
+using System.Resources;
+using System.Reflection;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -294,5 +296,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         //    return result;
         //}
+
+        static public void ShowHelp(string target)
+        {
+            System.Diagnostics.Process.Start(target);
+        }
     }
 }

@@ -28,7 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PreviewNetSetupControl));
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
+            this.buttonHelp = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // propertyGrid
@@ -39,12 +41,28 @@
             this.propertyGrid.Size = new System.Drawing.Size(233, 255);
             this.propertyGrid.TabIndex = 1;
             // 
-            // PreviewRectangleSetupControl
+            // buttonHelp
+            // 
+            this.buttonHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.buttonHelp.Image = ((System.Drawing.Image)(resources.GetObject("buttonHelp.Image")));
+            this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.buttonHelp.Location = new System.Drawing.Point(172, 1);
+            this.buttonHelp.Name = "buttonHelp";
+            this.buttonHelp.Size = new System.Drawing.Size(60, 23);
+            this.buttonHelp.TabIndex = 65;
+            this.buttonHelp.Text = "Help";
+            this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.buttonHelp.UseVisualStyleBackColor = true;
+            this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
+            // 
+            // PreviewNetSetupControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.buttonHelp);
             this.Controls.Add(this.propertyGrid);
-            this.Name = "PreviewRectangleSetupControl";
+            this.Name = "PreviewNetSetupControl";
             this.Size = new System.Drawing.Size(233, 255);
             this.ResumeLayout(false);
 
@@ -53,5 +71,6 @@
         #endregion
 
         private System.Windows.Forms.PropertyGrid propertyGrid;
+        private System.Windows.Forms.Button buttonHelp;
     }
 }

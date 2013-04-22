@@ -22,5 +22,113 @@ namespace VixenModules.Preview.VixenPreview.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://vixenlights.com/wiki/index.php?title=Mega_Tree")]
+        public string Help_MegaTree {
+            get {
+                return ((string)(this["Help_MegaTree"]));
+            }
+            set {
+                this["Help_MegaTree"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://vixenlights.com/wiki/index.php?title=Star")]
+        public string Help_Star {
+            get {
+                return ((string)(this["Help_Star"]));
+            }
+            set {
+                this["Help_Star"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://vixenlights.com/wiki/index.php?title=Element_Links_Screen")]
+        public string Help_LinkElements {
+            get {
+                return ((string)(this["Help_LinkElements"]));
+            }
+            set {
+                this["Help_LinkElements"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://vixenlights.com/wiki/index.php?title=Background_Image")]
+        public string Help_BackgroundImage {
+            get {
+                return ((string)(this["Help_BackgroundImage"]));
+            }
+            set {
+                this["Help_BackgroundImage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://vixenlights.com/wiki/index.php?title=Vixen_3_Manual")]
+        public string Help_Main {
+            get {
+                return ((string)(this["Help_Main"]));
+            }
+            set {
+                this["Help_Main"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://vixenlights.com/wiki/index.php?title=Basic_Shapes")]
+        public string Help_BasicShapes {
+            get {
+                return ((string)(this["Help_BasicShapes"]));
+            }
+            set {
+                this["Help_BasicShapes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://vixenlights.com/wiki/index.php?title=Net")]
+        public string Help_Net {
+            get {
+                return ((string)(this["Help_Net"]));
+            }
+            set {
+                this["Help_Net"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://vixenlights.com/wiki/index.php?title=Arch")]
+        public string Help_Arch {
+            get {
+                return ((string)(this["Help_Arch"]));
+            }
+            set {
+                this["Help_Arch"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://vixenlights.com/wiki/index.php?title=Candy_Cane")]
+        public string Help_Cane {
+            get {
+                return ((string)(this["Help_Cane"]));
+            }
+            set {
+                this["Help_Cane"] = value;
+            }
+        }
     }
 }

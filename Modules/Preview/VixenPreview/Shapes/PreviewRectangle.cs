@@ -100,11 +100,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get
             {
                 List<PreviewPixel> pixels = new List<PreviewPixel>();
-                for (int i = 0; i < 4; i++)
+                if (_strings != null)
                 {
-                    foreach (PreviewPixel pixel in _strings[i]._pixels)
+                    for (int i = 0; i < 4; i++)
                     {
-                        pixels.Add(pixel);
+                        foreach (PreviewPixel pixel in _strings[i]._pixels)
+                        {
+                            pixels.Add(pixel);
+                        }
                     }
                 }
                 return pixels;

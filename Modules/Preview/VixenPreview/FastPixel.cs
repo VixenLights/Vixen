@@ -157,8 +157,55 @@ namespace VixenModules.Preview.VixenPreview
             this.SetPixel(location.X, location.Y, colour);
         }
 
+        public void SetPixelAlpha(int x, int y, Color color)
+        {
+            if (!this.locked)
+                throw new Exception("Bitmap not locked.");
+
+            if (x >= 0 && x < _width && y >= 0 && y < _height)
+            {
+                if (this.IsAlphaBitmap)
+                {
+                    //displayColor = sourceColor×alpha / 255 + backgroundColor×(255 – alpha) / 255 
+                    //New_R = CInt((255 - R) * (A / 255.0) + R)
+                    //New_G = CInt((255 - G) * (A / 255.0) + G)
+                    //New_B = CInt((255 - G) * (A / 255.0) + B)
+                    //Final Color = (Source Color x alpha / 255) + [Background Color x (255 - alpha) / 255]
+                    int index = ((y * this.Width + x) * 4);
+
+                    float b = rgbValues[index];
+                    float g = rgbValues[index + 1];
+                    float r = rgbValues[index + 2];
+                    float a = rgbValues[index + 3];
+
+                    //float New_R = ((255f-color.R) * (color.A / 255f) + color.R);
+                    //float New_G = ((255f - color.G) * (color.A / 255f) + color.G);
+                    //float New_B = ((255f - color.B) * (color.A / 255f) + color.B);
+                    float New_R = color.R * color.A / 255 + r * (255 - color.A) / 255;
+                    float New_G = color.G * color.A / 255 + g * (255 - color.A) / 255;
+                    float New_B = color.B * color.A / 255 + b * (255 - color.A) / 255;
+                    rgbValues[index] = (byte)New_B;
+                    rgbValues[index + 1] = (byte)New_G;
+                    rgbValues[index + 2] = (byte)New_R;
+                    //this.rgbValues[index + 0] = (byte)(((float)color.B * ((float)color.A / 255f)) + ((float)rgbValues[index + 0] * (255f - (float)color.A) / 255f));
+                    //this.rgbValues[index + 1] = (byte)(((float)color.G * ((float)color.A / 255f)) + ((float)rgbValues[index + 1] * (255f - (float)color.A) / 255f));
+                    //this.rgbValues[index + 1] = (byte)(((float)color.R * ((float)color.A / 255f)) + ((float)rgbValues[index + 2] * (255f - (float)color.A) / 255f));
+                    //this.rgbValues[index+3] = (byte)((color.A * (color.A / 255)) + (rgbValues[index+3] * (255 - color.A) / 255));
+                }
+                else
+                {
+                    int index = ((y * this.Width + x) * 3);
+                    this.rgbValues[index] = color.B;
+                    this.rgbValues[index + 1] = color.G;
+                    this.rgbValues[index + 2] = color.R;
+                }
+            }
+        }
+
         public void SetPixel(int x, int y, Color colour)
         {
+            SetPixelAlpha(x, y, colour);
+            return;
             if (!this.locked)
                 throw new Exception("Bitmap not locked.");
 

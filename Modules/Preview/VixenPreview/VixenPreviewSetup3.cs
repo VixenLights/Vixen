@@ -173,7 +173,8 @@ namespace VixenModules.Preview.VixenPreview
                 previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Cane;
             else if (button == buttonStar)
                 previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Star;
-            // Smart Shape Buttons
+            else if (button == buttonHelp)
+                Shapes.PreviewTools.ShowHelp(Properties.Settings.Default.Help_Main);
             else if (button == buttonMegaTree)
                 previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MegaTree;
         }
@@ -242,5 +243,6 @@ namespace VixenModules.Preview.VixenPreview
                 previewForm.Preview.ResizeBackground(resizeForm.Width, resizeForm.Height);
             }
         }
+
     }
 }

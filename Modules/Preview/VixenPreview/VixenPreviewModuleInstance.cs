@@ -1,18 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using Vixen.Execution.Context;
 using Vixen.Module.Preview;
-using Vixen.Data.Value;
 using Vixen.Sys;
-using VixenModules.Preview.VixenPreview.Shapes;
 using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace VixenModules.Preview.VixenPreview
 {
@@ -125,6 +116,14 @@ namespace VixenModules.Preview.VixenPreview
             return base.Setup();
         }
 
+        public override void Dispose()
+        {
+            if (displayForm != null && !displayForm.Disposing)
+                displayForm.Close();
+            VixenSystem.Contexts.ContextCreated -= ProgramContextCreated;
+            VixenSystem.Contexts.ContextReleased -= ProgramContextReleased;
+            base.Dispose();
+        }
 
         private void ProgramContextCreated(object sender, ContextEventArgs contextEventArgs)
         {
@@ -218,8 +217,8 @@ namespace VixenModules.Preview.VixenPreview
             Stopwatch timer = new Stopwatch();
             timer.Start();
 
-            displayForm.PreviewControl.ProcessUpdate(elementStates);
-            //displayForm.PreviewControl.BeginInvoke(new ProcessUpdateDelegate(displayForm.PreviewControl.ProcessUpdate), new object[] {elementStates});
+            //displayForm.PreviewControl.ProcessUpdate(elementStates);
+            displayForm.PreviewControl.BeginInvoke(new ProcessUpdateDelegate(displayForm.PreviewControl.ProcessUpdate), new object[] {elementStates});
 
             timer.Stop();
 

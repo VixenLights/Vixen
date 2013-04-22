@@ -31,5 +31,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             propertyGrid.Refresh();
         }
+
+        private void buttonHelp_Click(object sender, EventArgs e)
+        {
+            Shapes.PreviewTools.ShowHelp(Properties.Settings.Default.Help_BasicShapes);
+        }
     }
 }

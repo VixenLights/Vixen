@@ -51,6 +51,11 @@ namespace VixenModules.Preview.VixenPreview
             numericHeight.Value = (int)((double)_origHeight * aspect);
         }
 
+        private void buttonHelp_Click(object sender, EventArgs e)
+        {
+            Shapes.PreviewTools.ShowHelp(Properties.Settings.Default.Help_BackgroundImage);
+        }
+
 
     }
 }

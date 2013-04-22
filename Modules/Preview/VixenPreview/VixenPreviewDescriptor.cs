@@ -27,7 +27,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		public override Type ModuleDataClass { get { return typeof(VixenPreviewData); } }
 
-		public override string Author { get { return "Vixen Team"; } }
+		public override string Author { get { return "Derek Backus"; } }
 
 		public override string TypeName { get { return "Vixen Display Preview"; } }
 

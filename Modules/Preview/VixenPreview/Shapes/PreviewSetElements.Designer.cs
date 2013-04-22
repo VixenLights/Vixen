@@ -40,12 +40,13 @@
             this.listLinkedElements = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.contextMenuLinkedElements = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.copyToAllElementsAllStringsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
-            this.contextMenuLinkedElements = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.copyToAllElementsAllStringsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.buttonHelp = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             this.contextMenuLinkedElements.SuspendLayout();
             this.SuspendLayout();
@@ -166,6 +167,20 @@
             this.columnHeader2.Text = "Linked Element";
             this.columnHeader2.Width = 150;
             // 
+            // contextMenuLinkedElements
+            // 
+            this.contextMenuLinkedElements.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyToAllElementsAllStringsToolStripMenuItem});
+            this.contextMenuLinkedElements.Name = "contextMenuLinkedElements";
+            this.contextMenuLinkedElements.Size = new System.Drawing.Size(243, 26);
+            // 
+            // copyToAllElementsAllStringsToolStripMenuItem
+            // 
+            this.copyToAllElementsAllStringsToolStripMenuItem.Name = "copyToAllElementsAllStringsToolStripMenuItem";
+            this.copyToAllElementsAllStringsToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.copyToAllElementsAllStringsToolStripMenuItem.Text = "Copy to All Elements/All Strings";
+            this.copyToAllElementsAllStringsToolStripMenuItem.Click += new System.EventHandler(this.copyToAllElementsAllStringsToolStripMenuItem_Click);
+            // 
             // label5
             // 
             this.label5.AutoSize = true;
@@ -207,19 +222,19 @@
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
-            // contextMenuLinkedElements
+            // buttonHelp
             // 
-            this.contextMenuLinkedElements.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.copyToAllElementsAllStringsToolStripMenuItem});
-            this.contextMenuLinkedElements.Name = "contextMenuLinkedElements";
-            this.contextMenuLinkedElements.Size = new System.Drawing.Size(243, 48);
-            // 
-            // copyToAllElementsAllStringsToolStripMenuItem
-            // 
-            this.copyToAllElementsAllStringsToolStripMenuItem.Name = "copyToAllElementsAllStringsToolStripMenuItem";
-            this.copyToAllElementsAllStringsToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
-            this.copyToAllElementsAllStringsToolStripMenuItem.Text = "Copy to All Elements/All Strings";
-            this.copyToAllElementsAllStringsToolStripMenuItem.Click += new System.EventHandler(this.copyToAllElementsAllStringsToolStripMenuItem_Click);
+            this.buttonHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.buttonHelp.Image = ((System.Drawing.Image)(resources.GetObject("buttonHelp.Image")));
+            this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.buttonHelp.Location = new System.Drawing.Point(12, 444);
+            this.buttonHelp.Name = "buttonHelp";
+            this.buttonHelp.Size = new System.Drawing.Size(54, 23);
+            this.buttonHelp.TabIndex = 22;
+            this.buttonHelp.Text = "Help";
+            this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.buttonHelp.UseVisualStyleBackColor = true;
+            this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
             // 
             // PreviewSetElements
             // 
@@ -228,10 +243,12 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(456, 479);
+            this.Controls.Add(this.buttonHelp);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.groupBox2);
             this.Name = "PreviewSetElements";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Link Elements";
             this.Load += new System.EventHandler(this.PreviewSetElements_Load);
             this.groupBox2.ResumeLayout(false);
@@ -259,5 +276,6 @@
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.ContextMenuStrip contextMenuLinkedElements;
         private System.Windows.Forms.ToolStripMenuItem copyToAllElementsAllStringsToolStripMenuItem;
+        private System.Windows.Forms.Button buttonHelp;
     }
 }

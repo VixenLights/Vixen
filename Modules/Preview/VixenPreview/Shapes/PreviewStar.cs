@@ -88,6 +88,23 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             Layout();
         }
 
+
+        public override int Top
+        {
+            get
+            {
+                return _topLeftPoint.Y;
+            }
+        }
+
+        public override int Left
+        {
+            get
+            {
+                return _topLeftPoint.X;
+            }
+        }
+
         [CategoryAttribute("Settings"),
         DisplayName("Light Count"),
         DescriptionAttribute("The number of lights in the star.")]
@@ -320,7 +337,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 _selectedPoint.X = x;
                 _selectedPoint.Y = y;
-                
+
+                if (_selectedPoint == _bottomRightPoint && System.Windows.Forms.Control.ModifierKeys == System.Windows.Forms.Keys.Control)
+                {
+                    //int diffX = _bottomRightPoint.X - _topLeftPoint.X;
+                    //int diffY = _bottomRightPoint.Y - _topLeftPoint.Y;
+                    //_topLeftPoint.X = ;
+                    //_bottomRightPoint.X += 
+                    //_bottomRightPoint.Y = y;
+                    _bottomRightPoint.Y = _topLeftPoint.Y + (_bottomRightPoint.X - _topLeftPoint.X);
+                }
+
                 Layout();
                 SelectDragPoints();
             }

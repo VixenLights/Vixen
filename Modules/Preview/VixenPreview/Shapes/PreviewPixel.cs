@@ -192,20 +192,21 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         public void Draw(FastPixel fp, Color newColor)
         {
-            if (newColor.A > 0)
-            {
-                if (MaxAlpha != 255)
-                {
-                    double newAlpha = ((double)newColor.A / 255) * (double)MaxAlpha;
-                    Color outColor = Color.FromArgb((int)newAlpha, newColor.R, newColor.G, newColor.B);
-                    fp.DrawCircle(drawArea, outColor);
-                }
-                else
-                {
-                    fp.DrawCircle(drawArea, newColor);
-                }
-                color = newColor;
-            }
+            fp.DrawCircle(drawArea, newColor);
+            //if (newColor.A > 0)
+            //{
+            //    if (MaxAlpha != 255)
+            //    {
+            //        double newAlpha = ((double)newColor.A / 255) * (double)MaxAlpha;
+            //        Color outColor = Color.FromArgb((int)newAlpha, newColor.R, newColor.G, newColor.B);
+            //        fp.DrawCircle(drawArea, outColor);
+            //    }
+            //    else
+            //    {
+            //        fp.DrawCircle(drawArea, newColor);
+            //    }
+            //    color = newColor;
+            //}
         }
     }
 }

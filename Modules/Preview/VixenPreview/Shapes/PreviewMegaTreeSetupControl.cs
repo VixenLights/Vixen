@@ -217,5 +217,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
+        private void buttonHelp_Click(object sender, EventArgs e)
+        {
+            Shapes.PreviewTools.ShowHelp(Properties.Settings.Default.Help_MegaTree);
+        }
+
     }
 }

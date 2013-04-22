@@ -1,7 +1,33 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="VixenModules.Preview.VixenPreview.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Help_MegaTree" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://vixenlights.com/wiki/index.php?title=Mega_Tree</Value>
+    </Setting>
+    <Setting Name="Help_Star" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://vixenlights.com/wiki/index.php?title=Star</Value>
+    </Setting>
+    <Setting Name="Help_LinkElements" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://vixenlights.com/wiki/index.php?title=Element_Links_Screen</Value>
+    </Setting>
+    <Setting Name="Help_BackgroundImage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://vixenlights.com/wiki/index.php?title=Background_Image</Value>
+    </Setting>
+    <Setting Name="Help_Main" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://vixenlights.com/wiki/index.php?title=Vixen_3_Manual</Value>
+    </Setting>
+    <Setting Name="Help_BasicShapes" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://vixenlights.com/wiki/index.php?title=Basic_Shapes</Value>
+    </Setting>
+    <Setting Name="Help_Net" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://vixenlights.com/wiki/index.php?title=Net</Value>
+    </Setting>
+    <Setting Name="Help_Arch" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://vixenlights.com/wiki/index.php?title=Arch</Value>
+    </Setting>
+    <Setting Name="Help_Cane" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://vixenlights.com/wiki/index.php?title=Candy_Cane</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>
