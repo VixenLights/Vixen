@@ -192,7 +192,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 if (initiallyAssignedNode.IsLeaf)
                 {
                     node = initiallyAssignedNode;
-                    nodeId = initiallyAssignedNode.Id;
+                    //nodeId = initiallyAssignedNode.Id;
                 }
             }
 

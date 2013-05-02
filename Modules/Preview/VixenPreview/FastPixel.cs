@@ -302,45 +302,45 @@ namespace VixenModules.Preview.VixenPreview
                         // Row 2
                         SetPixel(rect.Left, rect.Top + 1, color);
                     }
-                    else if (rect.Width == 4)
-                    {
-                        // Row 1
-                        SetPixel(rect.Left, rect.Top, color);
-                        // Row 1
-                        SetPixel(rect.Left + 1, rect.Top, color);
-                        // Row 2
-                        SetPixel(rect.Left, rect.Top + 1, color);
-                        // Row 2
-                        SetPixel(rect.Left + 1, rect.Top + 1, color);
-                    }
-                    else if (rect.Width == 5)
-                    {
-                        // Row 1
-                        SetPixel(rect.Left, rect.Top, color);
-                        // Row 1
-                        SetPixel(rect.Left + 1, rect.Top, color);
-                        // Row 1
-                        SetPixel(rect.Left + 2, rect.Top, color);
-                        // Row 2
-                        SetPixel(rect.Left, rect.Top + 1, color);
-                        // Row 2
-                        SetPixel(rect.Left + 1, rect.Top + 1, color);
-                    }
-                    else if (rect.Width == 6)
-                    {
-                        // Row 1
-                        SetPixel(rect.Left, rect.Top, color);
-                        // Row 1
-                        SetPixel(rect.Left + 1, rect.Top, color);
-                        // Row 1
-                        SetPixel(rect.Left + 2, rect.Top, color);
-                        // Row 2
-                        SetPixel(rect.Left, rect.Top + 1, color);
-                        // Row 2
-                        SetPixel(rect.Left + 1, rect.Top + 1, color);
-                        // Row 3
-                        SetPixel(rect.Left + 2, rect.Top + 1, color);
-                    }
+                    //else if (rect.Width == 4)
+                    //{
+                    //    // Row 1
+                    //    SetPixel(rect.Left, rect.Top, color);
+                    //    // Row 1
+                    //    SetPixel(rect.Left + 1, rect.Top, color);
+                    //    // Row 2
+                    //    SetPixel(rect.Left, rect.Top + 1, color);
+                    //    // Row 2
+                    //    SetPixel(rect.Left + 1, rect.Top + 1, color);
+                    //}
+                    //else if (rect.Width == 5)
+                    //{
+                    //    // Row 1
+                    //    SetPixel(rect.Left, rect.Top, color);
+                    //    // Row 1
+                    //    SetPixel(rect.Left + 1, rect.Top, color);
+                    //    // Row 1
+                    //    SetPixel(rect.Left + 2, rect.Top, color);
+                    //    // Row 2
+                    //    SetPixel(rect.Left, rect.Top + 1, color);
+                    //    // Row 2
+                    //    SetPixel(rect.Left + 1, rect.Top + 1, color);
+                    //}
+                    //else if (rect.Width == 6)
+                    //{
+                    //    // Row 1
+                    //    SetPixel(rect.Left, rect.Top, color);
+                    //    // Row 1
+                    //    SetPixel(rect.Left + 1, rect.Top, color);
+                    //    // Row 1
+                    //    SetPixel(rect.Left + 2, rect.Top, color);
+                    //    // Row 2
+                    //    SetPixel(rect.Left, rect.Top + 1, color);
+                    //    // Row 2
+                    //    SetPixel(rect.Left + 1, rect.Top + 1, color);
+                    //    // Row 3
+                    //    SetPixel(rect.Left + 2, rect.Top + 1, color);
+                    //}
                     else
                     {
                         Bitmap b;
@@ -350,8 +350,8 @@ namespace VixenModules.Preview.VixenPreview
                             b = new Bitmap(rect.Width, rect.Height);
                             Graphics g = Graphics.FromImage(b);
                             //g.Clear(Color.Transparent);
-                            SolidBrush brush = new SolidBrush(color);
-                            g.FillEllipse(brush, new Rectangle(0, 0, rect.Width - 1, rect.Height - 1));
+                            //SolidBrush brush = new SolidBrush(Color.White);
+                            g.FillEllipse(Brushes.White, new Rectangle(0, 0, rect.Width - 1, rect.Height - 1));
                             fp = new FastPixel(b);
                             FastPixel.circleCache.Add(rect.Width, fp);
                         }
@@ -362,7 +362,7 @@ namespace VixenModules.Preview.VixenPreview
                             {
                                 Color newColor = fp.GetPixel(x, y);
                                 if (newColor.A != 0)
-                                    SetPixel(new Point(rect.Left + x, rect.Top + y), color);
+                                    SetPixel(rect.Left + x, rect.Top + y, color);
                             }
                         }
                         fp.Unlock(false);
@@ -371,5 +371,6 @@ namespace VixenModules.Preview.VixenPreview
             //}
 
         }
+
     }
 }

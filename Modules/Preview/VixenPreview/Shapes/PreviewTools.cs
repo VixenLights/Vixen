@@ -301,5 +301,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             System.Diagnostics.Process.Start(target);
         }
+
+        static public List<ElementNode> GetLeafNodes(ElementNode node) 
+        {
+            List<ElementNode> children = new List<ElementNode>();
+            foreach (ElementNode child in node.Children)
+            {
+                if (child.IsLeaf)
+                    children.Add(child);
+            }
+            return children;
+        }
     }
 }

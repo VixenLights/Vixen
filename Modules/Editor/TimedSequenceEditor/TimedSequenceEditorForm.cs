@@ -72,6 +72,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_effectNodeToElement = new Dictionary<EffectNode, Element>();
 			_elementNodeToRows = new Dictionary<ElementNode, List<Row>>();
 
+            timelineControl.grid.RenderProgressChanged += OnRenderProgressChanged;
+
 			timelineControl.ElementChangedRows += ElementChangedRowsHandler;
 			timelineControl.ElementsMovedNew += timelineControl_ElementsMovedNew;
 			timelineControl.ElementDoubleClicked += ElementDoubleClickedHandler;
@@ -359,6 +361,30 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Event Handlers
 
+        private void OnRenderProgressChanged(object sender, RenderElementEventArgs e)
+        {
+            try
+            {
+                if (!Disposing)
+                {
+                    toolStripProgressBar_RenderingElements.Value = e.Percent;
+                    if (e.Percent == 100)
+                    {
+                        toolStripProgressBar_RenderingElements.Visible = false;
+                        toolStripStatusLabel_RenderingElements.Visible = false;
+                    }
+                    else if (!toolStripProgressBar_RenderingElements.Visible)
+                    {
+                        toolStripProgressBar_RenderingElements.Visible = true;
+                        toolStripStatusLabel_RenderingElements.Visible = true;
+                    }
+                }
+            }
+            catch
+            {
+            }
+        }
+
 		private void TimelineSequenceTimeLineSequenceClipboardContentsChanged(object sender, EventArgs eventArgs) {
 			UpdatePasteMenuStates();
 		}
@@ -561,6 +587,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				MessageBox.Show("Unable to play this sequence.  See error log for details.");
 				return;
 			}
+            timelineControl.grid.Context = _context;
 			_context.SequenceStarted += context_SequenceStarted;
 			_context.SequenceEnded += context_SequenceEnded;
 			//_context.ProgramEnded += _context_ProgramEnded;

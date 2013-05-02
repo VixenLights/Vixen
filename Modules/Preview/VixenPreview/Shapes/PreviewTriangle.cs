@@ -33,11 +33,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
             if (selectedNode != null)
             {
-                List<ElementNode> children = selectedNode.Children.ToList();
+                //List<ElementNode> children = selectedNode.Children.ToList();
+                List<ElementNode> children = PreviewTools.GetLeafNodes(selectedNode);
                 if (children.Count >= 6)
+                //int childCount = PreviewTools.CountChildElementsInNode(selectedNode);
+                //if (childCount >= 6)
                 {
                     int increment = children.Count / 3;
                     int pixelsLeft = children.Count;
+                    //int increment = childCount / 3;
+                    //int pixelsLeft = childCount;
 
                     StringType = StringTypes.Pixel;
 

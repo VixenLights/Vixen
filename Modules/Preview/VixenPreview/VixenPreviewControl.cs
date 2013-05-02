@@ -14,10 +14,11 @@ using Vixen.Sys;
 using VixenModules.Preview.VixenPreview.Shapes;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace VixenModules.Preview.VixenPreview
 {
-    
+
     public partial class VixenPreviewControl : UserControl
     {
         bool UseFloods = false;
@@ -197,8 +198,14 @@ namespace VixenModules.Preview.VixenPreview
                     try
                     {
                         //_background = Image.FromFile(fileName);
-                        Bitmap loadedBitmap = new Bitmap(fileName);
-                        _background = loadedBitmap.Clone(new Rectangle(0, 0, loadedBitmap.Width, loadedBitmap.Height), PixelFormat.Format32bppPArgb);
+                        using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+                        {
+                            using (Bitmap loadedBitmap= new Bitmap(fs))
+                            {
+                                _background = loadedBitmap.Clone(new Rectangle(0, 0, loadedBitmap.Width, loadedBitmap.Height), PixelFormat.Format32bppPArgb);
+                            }
+                        }
+                        //Bitmap loadedBitmap = new Bitmap(fileName);
                         Console.WriteLine("Load: " + fileName);
                     }
                     catch (Exception ex)
@@ -439,7 +446,7 @@ namespace VixenModules.Preview.VixenPreview
             {
                 PreviewPoint point = new PreviewPoint(e.X, e.Y);
 
-                if (_mouseCaptured)
+                if (_mouseCaptured && _selectedDisplayItem != null)
                 {
                     dragCurrent.X = e.X;
                     dragCurrent.Y = e.Y;
@@ -915,7 +922,6 @@ namespace VixenModules.Preview.VixenPreview
         {
             renderTimer.Reset();
             renderTimer.Start();
-
             if (!_paused)
             {
                 lock (PreviewTools.renderLock)
@@ -944,6 +950,11 @@ namespace VixenModules.Preview.VixenPreview
                         if (element == null) continue;
                         ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
                         if (node == null) continue;
+
+                        //foreach (IIntentState intentState in channelIntentState.Value)
+                        //{
+                        //    intentState.Dispatch(DisplayItems[0]);
+                        //}
 
                         foreach (IIntentState<LightingValue> intentState in channelIntentState.Value)
                         {
@@ -1012,10 +1023,17 @@ namespace VixenModules.Preview.VixenPreview
                     if (!this.Disposing)
                         bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
 
+                    fp = null;
                 }
+                
             }
+            
+
             renderTimer.Stop();
             lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
         }
+
+
+
     }
 }

@@ -39,7 +39,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 if (selectedNode.IsLeaf)
                 {
                     pixel.Node = selectedNode;
-                    pixel.NodeId = selectedNode.Id;
+                    //pixel.NodeId = selectedNode.Id;
                 }
             }
 

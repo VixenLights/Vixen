@@ -419,12 +419,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             throw new NotImplementedException();
         }
 
+        //public virtual bool IsPropHighlighted(List<ElementNode> highlightedElements) 
+        //{
+        //}
+
         public virtual void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements)
         {
             foreach (PreviewPixel pixel in Pixels)
             {
                 if (highlightedElements.Contains(pixel.Node))
+                {
                     pixel.Draw(fp, Color.HotPink);
+                    //Console.WriteLine(pixel.Node.Name);
+                }
                 else
                     pixel.Draw(fp, Color.White);
             }

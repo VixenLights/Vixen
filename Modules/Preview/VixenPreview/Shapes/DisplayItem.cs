@@ -28,7 +28,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
     [KnownType(typeof(PreviewCane))]
     [KnownType(typeof(PreviewStar))]
     [KnownType(typeof(PreviewMegaTree))]
-    public class DisplayItem
+    public class DisplayItem : IHandler<IIntentState<LightingValue>>, IHandler<IIntentState<CommandValue>>
     {
         private PreviewBaseShape _shape;
 
@@ -62,6 +62,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         public void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements)
         {
             _shape.Draw(fp, editMode, highlightedElements);
+        }
+
+        public void Handle(IIntentState<LightingValue> state)
+        {
+            //System.Drawing.Color color = state.GetValue().GetOpaqueIntensityAffectedColor();
+            //AddColorToNode(Color.FromArgb(color.A, color.R, color.G, color.B));
+        }
+
+        public void Handle(IIntentState<CommandValue> state)
+        {
+            Console.WriteLine("Handle 2");
         }
     }
 }

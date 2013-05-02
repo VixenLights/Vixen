@@ -42,7 +42,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             
             if (selectedNode != null)
             {
-                List<ElementNode> children = selectedNode.Children.ToList();
+                //List<ElementNode> children = selectedNode.Children.ToList();
+                List<ElementNode> children = PreviewTools.GetLeafNodes(selectedNode);
                 // is this a single node?
                 if (children.Count >= 4)
                 {
@@ -54,7 +55,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                         {
                             PreviewPixel pixel = AddPixel(10, 10);
                             pixel.Node = child;
-                            pixel.NodeId = child.Id;
+                            //pixel.NodeId = child.Id;
                             pixel.PixelColor = Color.White;
                         }
                     }
@@ -68,10 +69,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 {
                     PreviewPixel pixel = AddPixel(10, 10);
                     pixel.PixelColor = Color.White;
-                    if (selectedNode != null)
+                    if (selectedNode != null && selectedNode.IsLeaf)
                     {
                         pixel.Node = selectedNode;
-                        pixel.NodeId = selectedNode.Id;
+                        //pixel.NodeId = selectedNode.Id;
                     }
                 }
             }

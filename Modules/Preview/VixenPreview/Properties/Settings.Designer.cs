@@ -25,7 +25,8 @@ namespace VixenModules.Preview.VixenPreview.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://vixenlights.com/wiki/index.php?title=Mega_Tree")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://wordpress.vixenlights.com/vixen-3-documentation/preview/adding-items-to-th" +
+            "e-preview/smart-objects/mega-tree/")]
         public string Help_MegaTree {
             get {
                 return ((string)(this["Help_MegaTree"]));
@@ -37,7 +38,8 @@ namespace VixenModules.Preview.VixenPreview.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://vixenlights.com/wiki/index.php?title=Star")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://wordpress.vixenlights.com/vixen-3-documentation/preview/adding-items-to-th" +
+            "e-preview/smart-objects/star/")]
         public string Help_Star {
             get {
                 return ((string)(this["Help_Star"]));
@@ -49,7 +51,8 @@ namespace VixenModules.Preview.VixenPreview.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://vixenlights.com/wiki/index.php?title=Element_Links_Screen")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://wordpress.vixenlights.com/vixen-3-documentation/preview/how-to/linking-ele" +
+            "ments/")]
         public string Help_LinkElements {
             get {
                 return ((string)(this["Help_LinkElements"]));
@@ -61,7 +64,7 @@ namespace VixenModules.Preview.VixenPreview.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://vixenlights.com/wiki/index.php?title=Background_Image")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://wordpress.vixenlights.com/vixen-3-documentation/preview/background-image/")]
         public string Help_BackgroundImage {
             get {
                 return ((string)(this["Help_BackgroundImage"]));
@@ -73,7 +76,8 @@ namespace VixenModules.Preview.VixenPreview.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://vixenlights.com/wiki/index.php?title=Vixen_3_Manual")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://wordpress.vixenlights.com/vixen-3-documentation/preview/main-preview-scree" +
+            "n/")]
         public string Help_Main {
             get {
                 return ((string)(this["Help_Main"]));
@@ -85,7 +89,8 @@ namespace VixenModules.Preview.VixenPreview.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://vixenlights.com/wiki/index.php?title=Basic_Shapes")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://wordpress.vixenlights.com/vixen-3-documentation/preview/adding-items-to-th" +
+            "e-preview/basic-shapes/")]
         public string Help_BasicShapes {
             get {
                 return ((string)(this["Help_BasicShapes"]));
@@ -97,7 +102,8 @@ namespace VixenModules.Preview.VixenPreview.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://vixenlights.com/wiki/index.php?title=Net")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://wordpress.vixenlights.com/vixen-3-documentation/preview/adding-items-to-th" +
+            "e-preview/smart-objects/net/")]
         public string Help_Net {
             get {
                 return ((string)(this["Help_Net"]));
@@ -109,7 +115,8 @@ namespace VixenModules.Preview.VixenPreview.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://vixenlights.com/wiki/index.php?title=Arch")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://wordpress.vixenlights.com/vixen-3-documentation/preview/adding-items-to-th" +
+            "e-preview/smart-objects/arch/")]
         public string Help_Arch {
             get {
                 return ((string)(this["Help_Arch"]));
@@ -121,13 +128,27 @@ namespace VixenModules.Preview.VixenPreview.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://vixenlights.com/wiki/index.php?title=Candy_Cane")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://wordpress.vixenlights.com/vixen-3-documentation/preview/adding-items-to-th" +
+            "e-preview/smart-objects/candy-cane/")]
         public string Help_Cane {
             get {
                 return ((string)(this["Help_Cane"]));
             }
             set {
                 this["Help_Cane"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://wordpress.vixenlights.com/vixen-3-documentation/preview/how-to/resize-the-" +
+            "preview-image/")]
+        public string Help_ResizeBackground {
+            get {
+                return ((string)(this["Help_ResizeBackground"]));
+            }
+            set {
+                this["Help_ResizeBackground"] = value;
             }
         }
     }
