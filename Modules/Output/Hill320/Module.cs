@@ -5,17 +5,17 @@ using System.Runtime.InteropServices;
 using Vixen.Commands;
 using Vixen.Module;
 using Vixen.Module.Controller;
-using Vixen.Sys;
+using System.Diagnostics;
 
 namespace VixenModules.Output.Hill320 {
 	internal class LoadInpOutDLL {
 		[DllImport("inpout32", EntryPoint = "Out32")]
-		private static extern short Out32(ushort port, short data);
+		private static extern short Out32(ushort port, ushort data);
 
 		[DllImport("inpoutx64", EntryPoint = "Out32")]
-		private static extern short Out64(ushort port, short data);
+		private static extern short Out64(ushort port, ushort data);
 
-		public static short outputData(ushort port, short data) {
+		public static short outputData(ushort port, ushort data) {
 			if(Environment.Is64BitOperatingSystem) {
 				return Out64(port, data);
 			} else {
@@ -62,65 +62,44 @@ namespace VixenModules.Output.Hill320 {
 
 			int loopCount = outputStates.Length >> 3;
 
-			for(int box = 0; box < loopCount; box++) {
+			for(int box = 0; box < loopCount; box++) 
+			{
 				value = 0;
-				for(bitCount = 0; bitCount < 8; bitCount++) {
-					ICommand command = outputStates[valueIndex++];
+				for(bitCount = 0; bitCount < 8; bitCount++)
+				{
 					_commandHandler.Reset();
-					if(command != null) {
+
+					ICommand command = outputStates[valueIndex++];
+
+					if (command != null)
+					{
 						command.Dispatch(_commandHandler);
+
+						value >>= 1;
+						if (_commandHandler.Value > 0)
+							value |= (byte)0x80;
+						else
+							value |= (byte)0;
+					}
+					else
+					{
+						value >>= 1;
+						value |= (byte)0;
 					}
 
-					value >>= 1;
-					if(_commandHandler.Value > 0) {
-						value |= 0x80;
-					}
 				}
 
 				bank = (byte)(8 << (box >> 3));
 				bankBox = (byte)(box % 8);
 
-
-				//Write #1
-				//Outputs data byte	(D0-D7)	on pins	2-9 of parallel port.  This is the data
-				//we are trying to send	to box XX.
 				LoadInpOutDLL.outputData(_moduleData.PortAddress, value);
-
-
-				//Write #2:
-				//Outputs a 1 (high) on C0 and C1 (pins 1 and 14) since they are inverted
-				//without changing any states on the data pins.  This opens the 
-				//"data buffer" flip-flop so that it can read the data on D0-D7.  
-				//It also opens up the decoders for each bank solely to	avoid the need for a 7th write.
 				LoadInpOutDLL.outputData(_moduleData.ControlPort, 0);
-
-
-				//Write #3
-				//Outputs a 0 (low) on C0 and a 1 (high) on C1 since they are inverted. Again, not
-				//changing any states on the data pins.  This "locks" the data presently on	D0-D7
-				//into the data buffer (C0) but leaves the state of the decoders (C1) unchanged.
 				LoadInpOutDLL.outputData(_moduleData.ControlPort, 1);
-
-				// Write #4
-				// Outputs the steering (addressing) data on the data pins
-				LoadInpOutDLL.outputData(_moduleData.ControlPort, (short)(bank | bankBox));
-				if(value > 0) {
-					Console.Out.WriteLine((short)(bank | bankBox) + "," + value);
-				}
-
-				//Write	#5
-				//Outputs a 0 (low) on both	C0 and C1 since	they are inverted.  This locks
-				//the data into	the	correct decoder which sends a "low" single to the clock
-				//port of one of the 40	flip flops allowing	the	data from the "buffer" flip	flop
-				//to flow in.
+				LoadInpOutDLL.outputData(_moduleData.PortAddress, (ushort)(bank | bankBox));
 				LoadInpOutDLL.outputData(_moduleData.ControlPort, 3);
-
-				//Write #6
-				//Outputs a 0 (low) on C0 and a 1 (high) on C1 since they are inverted. Again, not
-				//changing any states on the data pins.  This locks	the	data into the correct
-				//flip flop and will remain transmitting this data to the relays until the next time
-				//this box needs to	be modified.
 				LoadInpOutDLL.outputData(_moduleData.ControlPort, 1);
+
+				Debug.WriteLine(String.Format("{0} {1} {2}",_moduleData.PortAddress, value, ((ushort)(bank | bankBox))));
 			}
 		}
 	}

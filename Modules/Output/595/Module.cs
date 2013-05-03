@@ -3,13 +3,31 @@ using System.Runtime.InteropServices;
 using Vixen.Module;
 using Vixen.Module.Controller;
 using Vixen.Commands;
+using System;
 
 namespace VixenModules.Output.Olsen595
 {
-	public class Module : ControllerModuleInstanceBase {
+	internal class LoadInpOutDLL
+	{
 		[DllImport("inpout32", EntryPoint = "Out32")]
-		private static extern void Out(ushort port, short data);
+		private static extern short Out32(ushort port, short data);
 
+		[DllImport("inpoutx64", EntryPoint = "Out32")]
+		private static extern short Out64(ushort port, short data);
+
+		public static short outputData(ushort port, short data)
+		{
+			if (Environment.Is64BitOperatingSystem)
+			{
+				return Out64(port, data);
+			}
+			else
+			{
+				return Out32(port, data);
+			}
+		}
+	}
+	public class Module : ControllerModuleInstanceBase {
 		private Data _moduleData;
 		private CommandHandler _commandHandler;
 
@@ -43,13 +61,13 @@ namespace VixenModules.Output.Olsen595
 						command.Dispatch(_commandHandler);
 					}
 
-					Out(_moduleData.Port, _commandHandler.Value);
-					Out(controlPort, 2);
-					Out(controlPort, 3);
+					LoadInpOutDLL.outputData(_moduleData.Port, _commandHandler.Value);
+					LoadInpOutDLL.outputData(controlPort, 2);
+					LoadInpOutDLL.outputData(controlPort, 3);
 				}
 
-				Out(controlPort, 1);
-				Out(controlPort, 3);
+				LoadInpOutDLL.outputData(controlPort, 1);
+				LoadInpOutDLL.outputData(controlPort, 3);
 			}
 		}
 	}
