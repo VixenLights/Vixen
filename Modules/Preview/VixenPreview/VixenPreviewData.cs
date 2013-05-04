@@ -125,26 +125,5 @@ namespace VixenModules.Preview.VixenPreview
             }
         }
 
-        //public List<PreviewBaseShape> DisplayItems
-        //{
-        //    get
-        //    {
-        //        if (_displayItems == null)
-        //        {
-        //            _displayItems = new List<PreviewBaseShape>();
-        //            Console.WriteLine("_displayItems==null");
-        //        }
-        //        return _displayItems;
-        //    }
-
-        //    set
-        //    {
-        //        _displayItems = value;
-        //        Console.WriteLine("_displayItems Set");
-        //        //_displayItems = value ?? new List<PreviewBaseShape>();
-        //        //PropertyChanged.NotifyPropertyChanged("DisplayItems", this);
-        //    }
-        //}
-
     }
 }

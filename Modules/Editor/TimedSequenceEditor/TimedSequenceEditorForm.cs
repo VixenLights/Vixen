@@ -145,8 +145,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				toolStripEffects.Items.Add(tsItem);
 				toolStripExVirtualEffects.Items.Add(tsItem);
 			}
-
-
 		}
 
 		private void LoadAvailableEffects() {
@@ -871,8 +869,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							_effectNodeToElement[node] = element;
 						//else
 						//    VixenSystem.Logging.Debug("TimedSequenceEditor: Making a new element, but the map already has one!");
-
-						row.AddElement(element);
+                        //Render this effect now to get it into the cache.
+                        element.EffectNode.Effect.Render(); 
+                        row.AddElement(element);
 					}
 				} else {
 					// we don't have a row for the element this effect is referencing; most likely, the row has

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
-using Vixen.Sys;
 using System.Runtime.Serialization;
 using System.Diagnostics;
 using System.ComponentModel;
@@ -12,6 +11,9 @@ using System.Windows.Forms;
 using System.Drawing.Design;
 using System.Windows.Forms.Design;
 using System.Xml.Serialization;
+using Vixen.Sys;
+using Vixen.Data.Value;
+using Vixen.Execution.Context;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -24,31 +26,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             Standard,
             Pixel,
-            Flood
+//            Flood
         }
-
-        [XmlIgnore]
-        public static Dictionary<ElementNode, List<PreviewPixel>> NodeToPixel = new Dictionary<ElementNode, List<PreviewPixel>>();
 
         private bool _selected = false;
         [XmlIgnore]
         public List<PreviewPoint> _selectPoints = null;
         public const int SelectPointSize = 6;
-
         private Color _pixelColor = Color.White;
         public int _pixelSize = 2;
-
         public List<PreviewPixel> _pixels = new List<PreviewPixel>();
 
         [DataMember]
         public List<PreviewBaseShape> _strings;
-
-
         public PreviewPoint _selectedPoint;
-
-        //public event ResizeEvent DoResize;
-        //public delegate void ResizeEvent(EventArgs e);
-
         public delegate void OnPropertiesChangedHandler(object sender, PreviewBaseShape shape);
         public event OnPropertiesChangedHandler OnPropertiesChanged;
 
@@ -165,7 +156,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             set
             {
                 _pixels = value;
-                ResetNodeToPixelDictionary();
             }
         }
 
@@ -202,54 +192,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             set { }
         }
 
-        //[DataMember]
-        //public int SkewX
-        //{
-        //    get { return _skewX; }
-        //    set { _skewX = value; }
-        //}
-
-        //[DataMember]
-        //public int SkewY
-        //{
-        //    get { return _skewY; }
-        //    set { _skewY = value; }
-        //}
-
-        public void ResetNodeToPixelDictionary()
-        {
-            if (PreviewBaseShape.NodeToPixel == null)
-            {
-                PreviewBaseShape.NodeToPixel = new Dictionary<ElementNode, List<PreviewPixel>>();
-                //NodeToPixel = new Hashtable();
-            }
-            else
-            {
-                //PreviewBaseShape.NodeToPixel.Clear();
-            }
-            foreach (PreviewPixel pixel in _pixels)
-            {
-                if (pixel.Node != null)
-                {
-                    List<PreviewPixel> pixels;
-                    if (PreviewBaseShape.NodeToPixel.TryGetValue(pixel.Node, out pixels))
-                    {
-                        if (!pixels.Contains(pixel))
-                        {
-                            pixels.Add(pixel);
-                            //PreviewBaseShape.NodeToPixel.Add(pixel.Node, pixels);
-                        }
-                    }
-                    else
-                    {
-                        pixels = new List<PreviewPixel>();
-                        pixels.Add(pixel);
-                        PreviewBaseShape.NodeToPixel.Add(pixel.Node, pixels);
-                    }
-                }
-            }
-        }
-
         [Browsable(false)]
         public Color PixelColor
         {
@@ -262,12 +204,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 }
             }
         }
-
-        //public void SetGraphics(Graphics graphics) {
-        //    g = graphics;
-        //    foreach (PreviewPixel pixel in Pixels) 
-        //        pixel.SetGraphics(g);
-        //}
 
         [DataMember,
         CategoryAttribute("Settings"),
@@ -285,7 +221,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         public void SetPixelNode(int pixelNum, ElementNode node) 
         {
             Pixels[pixelNum].Node = node;
-            ResetNodeToPixelDictionary();
         }
 
         public void SetPixelColor(int pixelNum, Color color) 
@@ -315,14 +250,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             _selected = false;
             if (_selectPoints != null) 
                 _selectPoints.Clear();
-            //if (_skewPoints != null)
-            //    _skewPoints.Clear();
         }
 
         public void SetSelectPoints(List<PreviewPoint> selectPoints, List<PreviewPoint> skewPoints)
         {
             _selectPoints = selectPoints;
-            //_skewPoints = skewPoints;
 
             foreach (PreviewPoint p in _selectPoints)
                 if (p != null)
@@ -335,7 +267,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             PreviewPixel pixel = new PreviewPixel(x, y, PixelSize);
             pixel.PixelColor = PixelColor;
             Pixels.Add(pixel);
-            ResetNodeToPixelDictionary();
             return pixel;
         }
 
@@ -369,59 +300,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
-        //public void Draw(Graphics graphics)
-        //{
-        //    foreach (PreviewPixel pixel in Pixels)
-        //    {
-        //        pixel.Draw(graphics);
-        //    }
-
-        //    if (_selectPoints != null)
-        //    {
-        //        foreach (PreviewPoint point in _selectPoints)
-        //        {
-        //            Pen pen = new Pen(Color.White, 1);
-        //            graphics.DrawRectangle(pen, new Rectangle(point.X - (SelectPointSize / 2), point.Y - (SelectPointSize / 2), SelectPointSize, SelectPointSize));
-        //        }
-        //    }
-        //}
-
-        //public virtual void Draw(FastPixel fp, Color color)
-        //{
-        //    foreach (PreviewPixel pixel in Pixels)
-        //    {
-        //        pixel.Draw(fp, color);
-        //    }
-
-        //    DrawSelectPoints(fp);
-        //}
-        
-        //public virtual void Draw(FastPixel fp)
-        //{
-        //    foreach (PreviewPixel pixel in Pixels)
-        //    {
-        //        pixel.Draw(fp);
-        //    }
-
-        //    DrawSelectPoints(fp);
-        //}
-
-        //public virtual void Draw(Graphics graphics, Color color)
-        //{
-        //    foreach (PreviewPixel pixel in Pixels)
-        //    {
-        //        pixel.Draw(graphics, color);
-        //    }
-        //}
-
         public virtual void Draw(Bitmap b, bool editMode, List<ElementNode> highlightedElements)
         {
             throw new NotImplementedException();
         }
-
-        //public virtual bool IsPropHighlighted(List<ElementNode> highlightedElements) 
-        //{
-        //}
 
         public virtual void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements)
         {
@@ -430,7 +312,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 if (highlightedElements.Contains(pixel.Node))
                 {
                     pixel.Draw(fp, Color.HotPink);
-                    //Console.WriteLine(pixel.Node.Name);
                 }
                 else
                     pixel.Draw(fp, Color.White);
@@ -492,46 +373,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             return null;
         }
 
-        public PreviewPoint PointInSkewPoint(PreviewPoint point)
-        {
-            //if (_skewPoints != null)
-            //{
-            //    foreach (PreviewPoint skewPoint in _skewPoints)
-            //    {
-            //        if (point.X >= skewPoint.X - (SelectPointSize / 2) &&
-            //            point.Y >= skewPoint.Y - (SelectPointSize / 2) &&
-            //            point.X <= skewPoint.X + (SelectPointSize / 2) &&
-            //            point.Y <= skewPoint.Y + (SelectPointSize / 2))
-            //        {
-            //            return skewPoint;
-            //        }
-            //    }
-            //}
-            return null;
-        }
-
         public abstract void SetSelectPoint(PreviewPoint point = null);
 
         public abstract void SelectDefaultSelectPoint();
-
-        public void UpdateColors(ElementNode node, Color newColor)
-        {
-            //if (NodeToPixel.ContainsKey(node))
-            //{
-            //    PreviewPixel pixel = NodeToPixel[node];
-            //    if (pixel != null)
-            //        pixel.PixelColor = newColor;
-            //}
-
-            //PreviewPixel pixel;
-            //if (PreviewBaseShape.NodeToPixel.TryGetValue(node, out pixel))
-            //    pixel.PixelColor = newColor;
-
-            //PreviewPixel pixel = NodeToPixel[node] as PreviewPixel;
-            //if (pixel != null)
-            //    pixel.PixelColor = newColor;
-            //_pixels[0].PixelColor = newColor;
-        }
 
         public virtual object Clone()
         {
@@ -546,5 +390,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         }
 
         public abstract void Resize(double aspect);
+
     }
 }

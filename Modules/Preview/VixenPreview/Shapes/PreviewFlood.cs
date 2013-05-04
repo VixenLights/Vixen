@@ -27,7 +27,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
             PixelSize = 40;
 
-            StringType = StringTypes.Flood;
+            StringType = StringTypes.Standard;
 
             PreviewPixel pixel = AddPixel(10, 10);
             pixel.PixelColor = Color.White;
@@ -50,14 +50,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         [OnDeserialized]
         new void OnDeserialized(StreamingContext context)
         {
-            StringType = StringTypes.Flood;
+            StringType = StringTypes.Standard;
             Layout();
         }
 
         [Browsable(false)]
         public override StringTypes StringType
         {
-            get { return StringTypes.Flood; }
+            get { return StringTypes.Standard; }
             set
             {
                 _stringType = value;

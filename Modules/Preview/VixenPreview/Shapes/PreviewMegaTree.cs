@@ -337,7 +337,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             set
             {
                 _pixels = value;
-                ResetNodeToPixelDictionary();
+                //ResetNodeToPixelDictionary();
             }
         }
 

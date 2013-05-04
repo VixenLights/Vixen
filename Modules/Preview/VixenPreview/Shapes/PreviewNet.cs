@@ -179,12 +179,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         public override void Layout()
         {
             ElementNode node = null;
-            Guid nodeId = Guid.Empty;
+            //Guid nodeId = Guid.Empty;
             if (PixelCount > 0)
             {
                 node = _pixels[0].Node;
-                nodeId = _pixels[0].NodeId;
-                Console.WriteLine(_pixels[0].NodeId);
                 _pixels.Clear();
             }
             else if (initiallyAssignedNode != null)
@@ -192,7 +190,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 if (initiallyAssignedNode.IsLeaf)
                 {
                     node = initiallyAssignedNode;
-                    //nodeId = initiallyAssignedNode.Id;
                 }
             }
 
@@ -240,7 +237,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                                 if (newColor.A != 0)
                                 {
                                     PreviewPixel pixel = new PreviewPixel(x + boundsTopLeft.X, y + boundsTopLeft.Y, PixelSize);
-                                    pixel.NodeId = nodeId;
+                                    pixel.Node = node;
                                     _pixels.Add(pixel);
                                 }
                             }

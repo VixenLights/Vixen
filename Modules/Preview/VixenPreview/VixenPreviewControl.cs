@@ -1,20 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
+using System.IO;
 using System.Windows.Forms;
-using Vixen.Execution.Context;
-using Vixen.Module.Preview;
 using Vixen.Data.Value;
+using Vixen.Execution.Context;
 using Vixen.Sys;
 using VixenModules.Preview.VixenPreview.Shapes;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using System.IO;
 
 namespace VixenModules.Preview.VixenPreview
 {
@@ -84,6 +79,10 @@ namespace VixenModules.Preview.VixenPreview
 
         public delegate void DeSelectDisplayItemEventHandler(object sender, DisplayItem displayItem);
         public event DeSelectDisplayItemEventHandler OnDeSelectDisplayItem;
+
+        public Dictionary<ElementNode, List<PreviewPixel>> NodeToPixel = new Dictionary<ElementNode, List<PreviewPixel>>();
+
+        public ISequenceContext vixenContext = null;
 
         #endregion
 
@@ -174,6 +173,8 @@ namespace VixenModules.Preview.VixenPreview
             context = BufferedGraphicsManager.Current;
             AllocateGraphicsBuffer();
 
+
+
             //renderBackgroundWorker.DoWork += new DoWorkEventHandler(DoRenderWork);
             //renderBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(RenderWorkCompleted);
         }
@@ -191,8 +192,8 @@ namespace VixenModules.Preview.VixenPreview
 
         public void LoadBackground(string fileName)
         {
-            lock (PreviewTools.renderLock)
-            {
+            //lock (PreviewTools.renderLock)
+            //{
                 if (System.IO.File.Exists(fileName))
                 {
                     try
@@ -218,7 +219,7 @@ namespace VixenModules.Preview.VixenPreview
                 {
                     _background = new Bitmap(640, 480);
                 }
-            }
+            //}
 
             SetupBackgroundAlphaImage();
         }
@@ -267,8 +268,8 @@ namespace VixenModules.Preview.VixenPreview
         {
             if (!Disposing)
             {
-                lock (PreviewTools.renderLock)
-                {
+                //lock (PreviewTools.renderLock)
+                //{
 
                     if (context != null)
                     {
@@ -290,7 +291,7 @@ namespace VixenModules.Preview.VixenPreview
                             new Rectangle(0, 0, this.Width + 1, this.Height + 1));
                         }
                     }
-                }
+                //}
             }
         }
 
@@ -314,7 +315,7 @@ namespace VixenModules.Preview.VixenPreview
                         {
                             // Lets see if we've got a drag point.
                             PreviewPoint selectedPoint = _selectedDisplayItem.Shape.PointInSelectPoint(point);
-                            PreviewPoint skewPoint = _selectedDisplayItem.Shape.PointInSkewPoint(point);
+                            //PreviewPoint skewPoint = _selectedDisplayItem.Shape.PointInSkewPoint(point);
                             if (selectedPoint != null)
                             {
                                 dragStart.X = e.X;
@@ -323,14 +324,14 @@ namespace VixenModules.Preview.VixenPreview
                                 Capture = true;
                                 _mouseCaptured = true;
                             }
-                            else if (skewPoint != null)
-                            {
-                                dragStart.X = e.X;
-                                dragStart.Y = e.Y;
-                                _selectedDisplayItem.Shape.SetSelectPoint(skewPoint);
-                                Capture = true;
-                                _mouseCaptured = true;
-                            }
+                            //else if (skewPoint != null)
+                            //{
+                            //    dragStart.X = e.X;
+                            //    dragStart.Y = e.Y;
+                            //    _selectedDisplayItem.Shape.SetSelectPoint(skewPoint);
+                            //    Capture = true;
+                            //    _mouseCaptured = true;
+                            //}
                             // If we're not resizing, see if we're moving
                             else if (_selectedDisplayItem.Shape.PointInShape(point))
                             {
@@ -460,23 +461,23 @@ namespace VixenModules.Preview.VixenPreview
                     if (_selectedDisplayItem != null)
                     {
                         PreviewPoint selectPoint = _selectedDisplayItem.Shape.PointInSelectPoint(point);
-                        PreviewPoint skewPoint = _selectedDisplayItem.Shape.PointInSkewPoint(point);
+                        //PreviewPoint skewPoint = _selectedDisplayItem.Shape.PointInSkewPoint(point);
                         if (selectPoint != null)
                         {
                             Cursor.Current = Cursors.Cross;
                         }
-                        else if (skewPoint != null)
-                        {
-                            if (skewPoint.PointType == PreviewPoint.PointTypes.SkewNS)
-                            {
-                                Cursor.Current = Cursors.SizeNS;
-                            }
-                            else if (skewPoint.PointType == PreviewPoint.PointTypes.SkewWE)
-                            {
-                                Cursor.Current = Cursors.SizeWE;
-                            }
+                        //else if (skewPoint != null)
+                        //{
+                        //    if (skewPoint.PointType == PreviewPoint.PointTypes.SkewNS)
+                        //    {
+                        //        Cursor.Current = Cursors.SizeNS;
+                        //    }
+                        //    else if (skewPoint.PointType == PreviewPoint.PointTypes.SkewWE)
+                        //    {
+                        //        Cursor.Current = Cursors.SizeWE;
+                        //    }
 
-                        }
+                        //}
                         else if (_selectedDisplayItem.Shape.PointInShape(point))
                         {
                             Cursor.Current = Cursors.SizeAll;
@@ -609,25 +610,6 @@ namespace VixenModules.Preview.VixenPreview
             }
         }
 
-        public bool Paste()
-        {
-            string xml = Clipboard.GetText();
-            DisplayItem newDisplayItem = (DisplayItem)PreviewTools.DeSerializeToObject(xml, typeof(DisplayItem));
-            if (newDisplayItem != null)
-            {
-                DeSelectSelectedDisplayItem();
-                Console.WriteLine("Pasted: " + newDisplayItem.Shape.GetType().ToString());
-                AddDisplayItem(newDisplayItem);
-                _selectedDisplayItem = newDisplayItem;
-                _selectedDisplayItem.Shape.Select();
-                _selectedDisplayItem.Shape.SetSelectPoint(null);
-                OnSelectDisplayItem(this, _selectedDisplayItem);
-                return true;
-            }
-            else
-                return false;
-        }
-
         public void DeSelectSelectedDisplayItem()
         {
             if (_selectedDisplayItem != null)
@@ -656,7 +638,7 @@ namespace VixenModules.Preview.VixenPreview
         public void UpdateColors(ElementNode node, Color newColor)
         {
             List<PreviewPixel> pixels;
-            if (PreviewBaseShape.NodeToPixel.TryGetValue(node, out pixels))
+            if (NodeToPixel.TryGetValue(node, out pixels))
             {
                 foreach (PreviewPixel pixel in pixels)
                 {
@@ -667,7 +649,7 @@ namespace VixenModules.Preview.VixenPreview
 
         public void ResetColors()
         {
-            foreach (List<PreviewPixel> pixels in PreviewBaseShape.NodeToPixel.Values)
+            foreach (List<PreviewPixel> pixels in NodeToPixel.Values)
             {
                 foreach (PreviewPixel pixel in pixels)
                 {
@@ -683,78 +665,13 @@ namespace VixenModules.Preview.VixenPreview
             }
         }
 
-        //public void RenderInBackground()
-        //{
-        //    if (!DesignMode)
-        //    {
-        //        if (renderBackgroundWorker.IsBusy != true)
-        //        {
-        //            // Start the asynchronous operation.
-        //            renderTimer.Reset();
-        //            renderTimer.Start();
-
-        //            renderBackgroundWorker.RunWorkerAsync();
-        //        }
-        //    }
-        //}
-
-        //private void DoRenderWork(object sender, DoWorkEventArgs e)
-        //{
-        //    BackgroundWorker worker = sender as BackgroundWorker;
-
-        //    if (_background != null)
-        //    {
-        //        FastPixel fp = new FastPixel(_background.Width, _background.Height);
-        //        fp.Lock();
-        //        foreach (DisplayItem displayItem in DisplayItems)
-        //        {
-        //            if (_editMode)
-        //                displayItem.Draw(fp, Color.White);
-        //            else
-        //                displayItem.Draw(fp);
-        //        }
-        //        fp.Unlock(true);
-
-        //        lock (PreviewTools.renderLock)
-        //        {
-        //            // First, draw our background image opaque
-        //            bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-        //            //bufferedGraphics.Graphics.DrawImage(_background, 0, 0, _background.Width, _background.Height);
-        //            bufferedGraphics.Graphics.DrawImage(_alphaBackground, 0, 0, fp.Width, fp.Height);
-
-        //            bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
-        //            // Now, draw our "pixel" image using alpha blending
-        //            bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
-        //        }
-        //    }
-        //}
-
-        //private void RenderWorkCompleted(object sender, RunWorkerCompletedEventArgs e)
-        //{
-        //    if ((e.Cancelled == true))
-        //    {
-        //    }
-
-        //    else if (!(e.Error == null))
-        //    {
-        //    }
-
-        //    else
-        //    {
-        //        if (bufferedGraphics != null && !this.Disposing)
-        //            bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
-        //    }
-
-        //    renderTimer.Stop();
-        //    lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
-        //}
-
         public void Reload()
         {
-            lock (PreviewTools.renderLock)
-            {
-                if (PreviewBaseShape.NodeToPixel == null) PreviewTools.Throw("PreviewBase.NodeToPixel == null");
-                PreviewBaseShape.NodeToPixel.Clear();
+            //lock (PreviewTools.renderLock)
+            //{
+            Console.WriteLine("Reload");
+            if (NodeToPixel == null) PreviewTools.Throw("PreviewBase.NodeToPixel == null");
+            NodeToPixel.Clear();
 
                 if (DisplayItems == null) PreviewTools.Throw("DisplayItems == null");
                 foreach (DisplayItem item in DisplayItems)
@@ -765,7 +682,7 @@ namespace VixenModules.Preview.VixenPreview
                         if (pixel.Node != null)
                         {
                             List<PreviewPixel> pixels;
-                            if (PreviewBaseShape.NodeToPixel.TryGetValue(pixel.Node, out pixels))
+                            if (NodeToPixel.TryGetValue(pixel.Node, out pixels))
                             {
                                 if (!pixels.Contains(pixel))
                                 {
@@ -776,13 +693,13 @@ namespace VixenModules.Preview.VixenPreview
                             {
                                 pixels = new List<PreviewPixel>();
                                 pixels.Add(pixel);
-                                PreviewBaseShape.NodeToPixel.Add(pixel.Node, pixels);
+                                NodeToPixel.Add(pixel.Node, pixels);
                             }
                         }
                     }
                 }
                 LoadBackground();
-            }
+            //}
         }
         
         public bool Paused
@@ -800,10 +717,32 @@ namespace VixenModules.Preview.VixenPreview
             get { return _paused; }
         }
 
+        #region Clipboard
+
         public void Cut()
         {
             Copy();
             Delete();
+        }
+
+
+        public bool Paste()
+        {
+            string xml = Clipboard.GetText();
+            DisplayItem newDisplayItem = (DisplayItem)PreviewTools.DeSerializeToObject(xml, typeof(DisplayItem));
+            if (newDisplayItem != null)
+            {
+                DeSelectSelectedDisplayItem();
+                Console.WriteLine("Pasted: " + newDisplayItem.Shape.GetType().ToString());
+                AddDisplayItem(newDisplayItem);
+                _selectedDisplayItem = newDisplayItem;
+                _selectedDisplayItem.Shape.Select();
+                _selectedDisplayItem.Shape.SetSelectPoint(null);
+                OnSelectDisplayItem(this, _selectedDisplayItem);
+                return true;
+            }
+            else
+                return false;
         }
 
         public void Delete()
@@ -829,6 +768,8 @@ namespace VixenModules.Preview.VixenPreview
             }
         }
 
+        #endregion
+
         public void ResizeBackground(int width, int height)
         {
             double aspect = (double)width / (double)_background.Width;
@@ -847,9 +788,10 @@ namespace VixenModules.Preview.VixenPreview
             }
         }
 
-        //
-        // This is used in edit mode only!!
-        //
+        /// <summary>
+        /// This is used in edit mode only!!
+        /// Need to make it go away so we only have one render engine
+        /// </summary>
         public void RenderInForeground()
         {
             renderTimer.Reset();
@@ -875,17 +817,17 @@ namespace VixenModules.Preview.VixenPreview
                 fp.Lock();
                 foreach (DisplayItem displayItem in DisplayItems)
                 {
-                    if (UseFloods && displayItem.Shape.StringType == PreviewBaseShape.StringTypes.Flood)
-                    {
-                        displayItem.Shape.Draw(floodBG, _editMode, null);
-                    }
-                    else
-                    {
+                    //if (UseFloods && displayItem.Shape.StringType == PreviewBaseShape.StringTypes.Flood)
+                    //{
+                    //    displayItem.Shape.Draw(floodBG, _editMode, null);
+                    //}
+                    //else
+                    //{
                         if (_editMode)
                             displayItem.Draw(fp, true, HighlightedElements);
                         else
                             displayItem.Draw(fp, false, null);
-                    }
+                    //}
                 }
                 fp.Unlock(true);
 
@@ -924,116 +866,143 @@ namespace VixenModules.Preview.VixenPreview
             renderTimer.Start();
             if (!_paused)
             {
-                lock (PreviewTools.renderLock)
+                //FastPixel fp = new FastPixel(_background.Width, _background.Height);
+                FastPixel fp = new FastPixel(new Bitmap(_alphaBackground));
+                Bitmap floodBG = null;
+                if (UseFloods)
                 {
-                    //FastPixel fp = new FastPixel(_background.Width, _background.Height);
-                    FastPixel fp = new FastPixel(new Bitmap(_alphaBackground));
-                    Bitmap floodBG = null;
-                    if (UseFloods)
+                    floodBG = PreviewTools.Copy32BPPBitmapSafe(_blankAlphaBackground);
+                    //floodBG = new Bitmap(_blankAlphaBackground);
+                    //floodBG = new Bitmap(_blankAlphaBackground.Width, _blankAlphaBackground.Height);
+                    //Graphics g = Graphics.FromImage(floodBG);
+                    //g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+                    //SolidBrush brush = new SolidBrush(Color.FromArgb(50, 255, 0, 0));
+                    //g.FillEllipse(brush, new Rectangle(200, 200, 300, 300));
+                    //g.DrawImage(_blankAlphaBackground, 0, 0);
+                    //g.FillRectangle(_backgroundBrush, new Rectangle(0, 0, _blankAlphaBackground.Width, _blankAlphaBackground.Height));
+                }
+                fp.Lock();
+
+                foreach (var channelIntentState in elementStates)
+                {
+                    var elementId = channelIntentState.Key;
+                    Element element = VixenSystem.Elements.GetElement(elementId);
+                    if (element == null) continue;
+                    ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
+                    if (node == null) continue;
+
+                    //foreach (IIntentState intentState in channelIntentState.Value)
+                    //{
+                    //    intentState.Dispatch(DisplayItems[0]);
+                    //}
+
+                    foreach (IIntentState<LightingValue> intentState in channelIntentState.Value)
                     {
-                        floodBG = PreviewTools.Copy32BPPBitmapSafe(_blankAlphaBackground);
-                        //floodBG = new Bitmap(_blankAlphaBackground);
-                        //floodBG = new Bitmap(_blankAlphaBackground.Width, _blankAlphaBackground.Height);
-                        //Graphics g = Graphics.FromImage(floodBG);
-                        //g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-                        //SolidBrush brush = new SolidBrush(Color.FromArgb(50, 255, 0, 0));
-                        //g.FillEllipse(brush, new Rectangle(200, 200, 300, 300));
-                        //g.DrawImage(_blankAlphaBackground, 0, 0);
-                        //g.FillRectangle(_backgroundBrush, new Rectangle(0, 0, _blankAlphaBackground.Width, _blankAlphaBackground.Height));
-                    }
-                    fp.Lock();
 
-                    foreach (var channelIntentState in elementStates)
-                    {
-                        var elementId = channelIntentState.Key;
-                        Element element = VixenSystem.Elements.GetElement(elementId);
-                        if (element == null) continue;
-                        ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
-                        if (node == null) continue;
-
-                        //foreach (IIntentState intentState in channelIntentState.Value)
-                        //{
-                        //    intentState.Dispatch(DisplayItems[0]);
-                        //}
-
-                        foreach (IIntentState<LightingValue> intentState in channelIntentState.Value)
+                        if (_background != null)
                         {
-
-                            if (_background != null)
+                            List<PreviewPixel> pixels;
+                            if (NodeToPixel.TryGetValue(node, out pixels))
                             {
-                                List<PreviewPixel> pixels;
-                                if (PreviewBaseShape.NodeToPixel.TryGetValue(node, out pixels))
+                                foreach (PreviewPixel pixel in pixels)
                                 {
-                                    foreach (PreviewPixel pixel in pixels)
-                                    {
-                                        
-                                        //Color.FromArgb((int)(Intensity * byte.MaxValue), Color.R, Color.G, Color.B);
-                                        //LightingValue v = intentState.GetValue();
-                                        //Color c = v.GetOpaqueIntensityAffectedColor();
-                                        //Color c = v.GetAlphaChannelIntensityAffectedColor();
-                                        Color c = intentState.GetValue().GetAlphaChannelIntensityAffectedColor();
-                                        //Color c = Color.White;
-                                        pixel.Draw(fp, c);
-                                    }
+
+                                    //Color.FromArgb((int)(Intensity * byte.MaxValue), Color.R, Color.G, Color.B);
+                                    //LightingValue v = intentState.GetValue();
+                                    //Color c = v.GetOpaqueIntensityAffectedColor();
+                                    //Color c = v.GetAlphaChannelIntensityAffectedColor();
+                                    Color c = intentState.GetValue().GetAlphaChannelIntensityAffectedColor();
+                                    //Color c = Color.White;
+                                    pixel.Draw(fp, c);
                                 }
                             }
                         }
                     }
-
-                    if (UseFloods)
-                    {
-                        foreach (DisplayItem displayItem in DisplayItems)
-                        {
-                            if (displayItem.Shape.StringType == PreviewBaseShape.StringTypes.Flood)
-                            {
-                                Color c = displayItem.Shape._pixels[0].PixelColor;
-                                int alpha = c.A;
-                                //int maxAlpha = 255 - BackgroundAlpha;
-                                //if (maxAlpha < 255)
-                                //{
-
-                                //}
-                                displayItem.Shape._pixels[0].PixelColor = Color.FromArgb(alpha, c.R, c.G, c.B);
-                                displayItem.Shape.Draw(floodBG, false, null);
-                                displayItem.Shape._pixels[0].PixelColor = Color.FromArgb(255 - BackgroundAlpha, 0, 0, 0);
-                            }
-                        }
-                    }
-                    fp.Unlock(true);
-
-                    // First, draw our background image opaque
-                    bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-                    //if (UseFloods)
-                    //{
-                    //    bufferedGraphics.Graphics.DrawImage(_background, 0, 0, _background.Width, _background.Height);
-                    //}
-                    //else
-                    //{
-                    //    bufferedGraphics.Graphics.DrawImage(_alphaBackground, 0, 0, _alphaBackground.Width, _alphaBackground.Height);
-                    //}
-
-                    // Now, draw our "pixel" image using alpha blending
-                    ///bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
-                    if (UseFloods)
-                    {
-                        bufferedGraphics.Graphics.DrawImage(floodBG, 0, 0, _blankAlphaBackground.Width, _blankAlphaBackground.Height);
-                    }
-                    bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
-
-                    if (!this.Disposing)
-                        bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
-
-                    fp = null;
                 }
-                
+
+                //if (UseFloods)
+                //{
+                //    foreach (DisplayItem displayItem in DisplayItems)
+                //    {
+                //        if (displayItem.Shape.StringType == PreviewBaseShape.StringTypes.Flood)
+                //        {
+                //            Color c = displayItem.Shape._pixels[0].PixelColor;
+                //            int alpha = c.A;
+                //            //int maxAlpha = 255 - BackgroundAlpha;
+                //            //if (maxAlpha < 255)
+                //            //{
+
+                //            //}
+                //            displayItem.Shape._pixels[0].PixelColor = Color.FromArgb(alpha, c.R, c.G, c.B);
+                //            displayItem.Shape.Draw(floodBG, false, null);
+                //            displayItem.Shape._pixels[0].PixelColor = Color.FromArgb(255 - BackgroundAlpha, 0, 0, 0);
+                //        }
+                //    }
+                //}
+                fp.Unlock(true);
+
+                // First, draw our background image opaque
+                bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+                //if (UseFloods)
+                //{
+                //    bufferedGraphics.Graphics.DrawImage(_background, 0, 0, _background.Width, _background.Height);
+                //}
+                //else
+                //{
+                //    bufferedGraphics.Graphics.DrawImage(_alphaBackground, 0, 0, _alphaBackground.Width, _alphaBackground.Height);
+                //}
+
+                // Now, draw our "pixel" image using alpha blending
+                ///bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
+                if (UseFloods)
+                {
+                    bufferedGraphics.Graphics.DrawImage(floodBG, 0, 0, _blankAlphaBackground.Width, _blankAlphaBackground.Height);
+                }
+                bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
+
+                if (!this.Disposing)
+                    bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
+
+                fp = null;
             }
-            
 
             renderTimer.Stop();
             lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
         }
 
+        //public void ResetNodeToPixelDictionary()
+        //{
+        //    Console.WriteLine("ResetNodeToPixelDictionary");
+        //    if (NodeToPixel == null)
+        //        NodeToPixel = new Dictionary<ElementNode, List<PreviewPixel>>();
+        //    else
+        //        NodeToPixel.Clear();
 
+        //    foreach (DisplayItem item in DisplayItems)
+        //    {
+
+        //        foreach (PreviewPixel pixel in item.Shape._pixels)
+        //        {
+        //            if (pixel.Node != null)
+        //            {
+        //                List<PreviewPixel> pixels;
+        //                if (NodeToPixel.TryGetValue(pixel.Node, out pixels))
+        //                {
+        //                    if (!pixels.Contains(pixel))
+        //                    {
+        //                        pixels.Add(pixel);
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    pixels = new List<PreviewPixel>();
+        //                    pixels.Add(pixel);
+        //                    NodeToPixel.Add(pixel.Node, pixels);
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
     }
 }

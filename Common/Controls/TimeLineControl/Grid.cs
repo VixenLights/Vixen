@@ -40,7 +40,6 @@ namespace Common.Controls.Timeline
         BackgroundWorker renderWorker = null;
         public ISequenceContext Context = null;
 
-
 		#region Initialization
 
 		public Grid(TimeInfo timeinfo)
@@ -1305,6 +1304,7 @@ namespace Common.Controls.Timeline
 
                         Size size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
                         Bitmap elementImage = currentElement.Draw(size, Context.IsRunning);
+                        //Bitmap elementImage = currentElement.Draw(size, false);
                         bitmapsToDraw.Add(new BitmapDrawDetails() { bmp = elementImage, startTime = currentElement.StartTime, duration = currentElement.Duration });
 
                         // oh god make it stop

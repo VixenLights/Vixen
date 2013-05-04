@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
+using System.Diagnostics;
 using Vixen.Execution.Context;
 using Vixen.Module.Preview;
 using Vixen.Sys;
-using System.Diagnostics;
 
 namespace VixenModules.Preview.VixenPreview
 {
@@ -114,13 +114,19 @@ namespace VixenModules.Preview.VixenPreview
 
         private void ProgramContextCreated(object sender, ContextEventArgs contextEventArgs)
         {
-            Console.WriteLine("Context Created");
             var programContext = contextEventArgs.Context as IProgramContext;
+            //
+            // This is always null... why does this event get called?
+            //
             if (programContext != null)
             {
                 //_programContexts.Add(programContext);
                 programContext.ProgramStarted += ProgramContextProgramStarted;
                 programContext.ProgramEnded += ProgramContextProgramEnded;
+                programContext.SequenceStarted += context_SequenceStarted;
+                programContext.SequenceEnded += context_SequenceEnded;
+
+                Console.WriteLine("Context Created");
             }
         }
 
@@ -133,9 +139,19 @@ namespace VixenModules.Preview.VixenPreview
 
         private void ProgramContextProgramStarted(object sender, ProgramEventArgs e)
         {
-            Console.WriteLine("Started");
-            //ResetColors(true);
+            Console.WriteLine("ProgramContextProgramStarted");
             Start();
+        }
+
+        protected void context_SequenceStarted(object sender, SequenceStartedEventArgs e)
+        {
+            Console.WriteLine("Squence Started");
+            //displayForm.PreviewControl.ResetNodeToPixelDictionary();
+        }
+
+        protected void context_SequenceEnded(object sender, SequenceEventArgs e)
+        {
+            //Nada
         }
 
         private void ProgramContextReleased(object sender, ContextEventArgs contextEventArgs)
@@ -146,6 +162,8 @@ namespace VixenModules.Preview.VixenPreview
             {
                 programContext.ProgramStarted -= ProgramContextProgramStarted;
                 programContext.ProgramEnded -= ProgramContextProgramEnded;
+                programContext.SequenceStarted -= context_SequenceStarted;
+                programContext.SequenceEnded -= context_SequenceEnded;
                 //_programContexts.Remove(programContext);
             }
         }
