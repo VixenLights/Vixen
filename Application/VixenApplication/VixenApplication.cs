@@ -31,6 +31,9 @@ namespace VixenApplication
 				_ProcessArg(arg);
 			}
 
+            if (_rootDataDirectory  == null)
+                ProcessProfiles();
+
 			_applicationData = new VixenApplicationData(_rootDataDirectory);
 
 			stopping = false;
@@ -89,6 +92,48 @@ namespace VixenApplication
 					break;
 			}
 		}
+
+        private void ProcessProfiles()
+        {
+            XMLProfileSettings profile = new XMLProfileSettings();
+            string loadAction = profile.GetSetting("Profiles/LoadAction", "LoadSelected");
+            int profileCount = profile.GetSetting("Profiles/ProfileCount", 0);
+            int profileToLoad = profile.GetSetting("Profiles/ProfileToLoad", -1);
+            // why ask if there is 0 or 1 profile?
+            if (loadAction == "Ask" && profileCount > 1)
+            {
+                SelectProfile f = new SelectProfile();
+                if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    _rootDataDirectory = f.DataFolder;
+                }
+            }
+            else 
+            // So we're to use the "selected" one...
+            {
+                // If we don't have any profiles, get outta here
+                if (profileCount == 0 || profileToLoad < 0)
+                {
+                    return;
+                }
+                else
+                {
+                    if (profileToLoad < profileCount)
+                    {
+                        _rootDataDirectory = profile.GetSetting("Profiles/Profile" + profileToLoad.ToString() + "/DataFolder", "");
+                        if (_rootDataDirectory != "")
+                        {
+                            if (!System.IO.Directory.Exists(_rootDataDirectory))
+                                System.IO.Directory.CreateDirectory(_rootDataDirectory);
+                        }
+                        else
+                        {
+                            _rootDataDirectory = null;
+                        }
+                    }
+                }
+            }
+        }
 
 		#region IApplication implemetation
 
@@ -427,6 +472,16 @@ namespace VixenApplication
 		}
 
 		#endregion
+
+        private void profilesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DataProfileForm f = new DataProfileForm();
+            if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                // Do something...
+                MessageBox.Show("You must re-start Vixen for the changes to take effect.", "Profiles Changed", MessageBoxButtons.OK);
+            }
+        }
 
 	}
 }

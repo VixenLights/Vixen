@@ -54,6 +54,8 @@
   </PropertyGroup>
   <Import Project="$(SolutionDir)\commonProject.props" />
   <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Microsoft.VisualBasic.PowerPacks.Vs, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
@@ -72,6 +74,12 @@
     </Compile>
     <Compile Include="ConfigControllersOutputs.Designer.cs">
       <DependentUpon>ConfigControllersOutputs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataProfileForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataProfileForm.Designer.cs">
+      <DependentUpon>DataProfileForm.cs</DependentUpon>
     </Compile>
     <Compile Include="FiltersAndPatching\ConfigFiltersAndPatching-Shapes.cs" />
     <Compile Include="FiltersAndPatching\ConfigFiltersAndPatching-Tools.cs" />
@@ -125,11 +133,18 @@
     <Compile Include="InstalledModules.Designer.cs">
       <DependentUpon>InstalledModules.cs</DependentUpon>
     </Compile>
+    <Compile Include="ProfileItem.cs" />
     <Compile Include="RuleEditorContainer.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="RuleEditorContainer.Designer.cs">
       <DependentUpon>RuleEditorContainer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SelectProfile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SelectProfile.Designer.cs">
+      <DependentUpon>SelectProfile.cs</DependentUpon>
     </Compile>
     <Compile Include="VixenApplication.cs">
       <SubType>Form</SubType>
@@ -152,11 +167,15 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VixenApplicationData.cs" />
+    <Compile Include="XMLProfileSettings.cs" />
     <EmbeddedResource Include="ConfigControllersOutputs.resx">
       <DependentUpon>ConfigControllersOutputs.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ConfigPreviews.resx">
       <DependentUpon>ConfigPreviews.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataProfileForm.resx">
+      <DependentUpon>DataProfileForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EffectParametersForm.resx">
       <DependentUpon>EffectParametersForm.cs</DependentUpon>
@@ -181,6 +200,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="RuleEditorContainer.resx">
       <DependentUpon>RuleEditorContainer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SelectProfile.resx">
+      <DependentUpon>SelectProfile.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="VixenApplication.resx">
       <DependentUpon>VixenApplication.cs</DependentUpon>
