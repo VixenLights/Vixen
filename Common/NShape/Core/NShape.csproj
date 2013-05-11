@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9EFE1059-E2DC-4576-B9E3-4AE3F998CB28}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Dataweb.NShape</RootNamespace>
+    <AssemblyName>Dataweb.NShape</AssemblyName>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <Win32Resource>
+    </Win32Resource>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\Dataweb.nShape.snk</AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(SolutionDir)\Output\Common\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;DEBUG_UI;REPOSITORY_CHECK</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DocumentationFile>
+    </DocumentationFile>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>$(SolutionDir)\Release\Common\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
+    <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Buffers.cs" />
+    <Compile Include="CircularArcBase.cs" />
+    <Compile Include="CursorProvider.cs" />
+    <Compile Include="FlowLayouter.cs" />
+    <Compile Include="FreeHandTool.cs" />
+    <Compile Include="FuzzyLogic.cs" />
+    <Compile Include="Layer.cs" />
+    <Compile Include="MenuItemDef.cs" />
+    <Compile Include="AdoNetStore.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DiagramPresenter.cs" />
+    <Compile Include="Exceptions.cs" />
+    <Compile Include="GdiHelpers.cs" />
+    <Compile Include="LayerPresenter.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MultiHashList.cs" />
+    <Compile Include="Polygone.cs" />
+    <Compile Include="PolyLineBase.cs" />
+    <Compile Include="PropertyMappings.cs" />
+    <Compile Include="RectangularLineBase.cs" />
+    <Compile Include="ShapeCollection.cs" />
+    <Compile Include="ShapeDuplicator.cs" />
+    <Compile Include="ShapeGroup.cs" />
+    <Compile Include="DiameterShape.cs" />
+    <Compile Include="ImageBasedShape.cs" />
+    <Compile Include="RectangleShape.cs" />
+    <Compile Include="Caption.cs" />
+    <Compile Include="Collections.cs" />
+    <Compile Include="Command.cs" />
+    <Compile Include="Core.cs" />
+    <Compile Include="DesignController.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Design.cs" />
+    <Compile Include="Diagram.cs" />
+    <Compile Include="DiagramController.cs">
+    </Compile>
+    <Compile Include="DiagramSetController.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="EmfHelper.cs" />
+    <Compile Include="Geometry.cs" />
+    <Compile Include="GridLayouter.cs" />
+    <Compile Include="History.cs" />
+    <Compile Include="LinearShape.cs" />
+    <Compile Include="PathBasedShape.cs" />
+    <Compile Include="Repository.cs" />
+    <Compile Include="ModelController.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="LayerController.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Layouter.cs" />
+    <Compile Include="Model.cs" />
+    <Compile Include="CachedRepository.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Optimizer.cs" />
+    <Compile Include="Entity.cs" />
+    <Compile Include="Security.cs" />
+    <Compile Include="ShapeType.cs" />
+    <Compile Include="Project.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyController.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Resources.cs" />
+    <Compile Include="Shape.cs" />
+    <Compile Include="ShapeAggregation.cs" />
+    <Compile Include="ShapeBase.cs" />
+    <Compile Include="Shaper.cs" />
+    <Compile Include="ShapeUtils.cs" />
+    <Compile Include="SqlStore.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Store.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Styles.cs" />
+    <Compile Include="Template.cs" />
+    <Compile Include="TemplateController.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TextMeasurer.cs" />
+    <Compile Include="TextShape.cs" />
+    <Compile Include="Tool.cs" />
+    <Compile Include="ToolSetController.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ToolCache.cs" />
+    <Compile Include="TriangleBase.cs" />
+    <Compile Include="TypeDescriptionProviders.cs" />
+    <Compile Include="XmlStore.cs">
+      <SubType>Component</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\DeleteBtn.bmp" />
+    <EmbeddedResource Include="Resources\UnlockIcon.bmp" />
+    <EmbeddedResource Include="Resources\RenameBtn.bmp" />
+    <EmbeddedResource Include="Resources\NewLayer.bmp" />
+    <EmbeddedResource Include="Resources\LockIcon.bmp" />
+    <EmbeddedResource Include="Resources\LibrariesBtn.bmp" />
+    <EmbeddedResource Include="Resources\Invisible.bmp" />
+    <EmbeddedResource Include="Resources\Enabled.bmp" />
+    <EmbeddedResource Include="Resources\Disabled.bmp" />
+    <EmbeddedResource Include="Resources\DesignEditorBtn.bmp" />
+    <EmbeddedResource Include="Resources\Visible.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Project.bmp" />
+    <EmbeddedResource Include="..\Dataweb.NShape.ico">
+      <Link>Resources\Dataweb.NShape.ico</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AdoNetStore.bmp" />
+    <EmbeddedResource Include="Advanced.CachedRepository.bmp" />
+    <EmbeddedResource Include="Controllers.DesignController.bmp" />
+    <EmbeddedResource Include="Controllers.DiagramSetController.bmp" />
+    <EmbeddedResource Include="Controllers.LayerController.bmp" />
+    <EmbeddedResource Include="Controllers.LayerPresenter.bmp" />
+    <EmbeddedResource Include="Controllers.ModelController.bmp" />
+    <EmbeddedResource Include="Controllers.PropertyController.bmp" />
+    <EmbeddedResource Include="Resources\PenPlusCursor.cur" />
+    <EmbeddedResource Include="Resources\FindShapes.bmp" />
+    <EmbeddedResource Include="Resources\ActionDeniedCursor.cur" />
+    <EmbeddedResource Include="Resources\AddToLayer.bmp" />
+    <EmbeddedResource Include="Resources\AggregateShapeBtn.bmp" />
+    <None Include="..\Dataweb.NShape.snk">
+      <Link>Dataweb.NShape.snk</Link>
+    </None>
+    <EmbeddedResource Include="Resources\FreehandIconLarge.bmp" />
+    <EmbeddedResource Include="Resources\FreehandIconSmall.bmp" />
+    <EmbeddedResource Include="Resources\CopyBtn.bmp" />
+    <EmbeddedResource Include="Resources\CrossCursor.cur" />
+    <EmbeddedResource Include="Resources\CutBtn.bmp" />
+    <EmbeddedResource Include="Resources\DefaultBitmapSmall.bmp" />
+    <EmbeddedResource Include="Resources\DefaultBitmapLarge.bmp" />
+    <EmbeddedResource Include="Resources\DiagramPropertiesBtn.bmp" />
+    <EmbeddedResource Include="Resources\EditTextCursor.cur" />
+    <EmbeddedResource Include="Resources\GroupBtn.bmp" />
+    <EmbeddedResource Include="Resources\PointerIconLarge.bmp" />
+    <EmbeddedResource Include="Resources\PointerIconSmall.bmp" />
+    <EmbeddedResource Include="Resources\HandCursor.cur" />
+    <EmbeddedResource Include="Resources\MovePointCursor.cur" />
+    <EmbeddedResource Include="Resources\MoveShapeCursor.cur" />
+    <EmbeddedResource Include="Resources\PasteBtn.bmp" />
+    <EmbeddedResource Include="Resources\PenCursor.cur" />
+    <EmbeddedResource Include="Resources\RedoBtn.bmp" />
+    <EmbeddedResource Include="Resources\RemoveFromLayer.bmp" />
+    <EmbeddedResource Include="Resources\RotateCursor.cur" />
+    <EmbeddedResource Include="Resources\SplitShapeAggregationBtn.bmp" />
+    <EmbeddedResource Include="Resources\ToBackground.bmp" />
+    <EmbeddedResource Include="Resources\ToForeground.bmp" />
+    <EmbeddedResource Include="Resources\UndoBtn.bmp" />
+    <EmbeddedResource Include="Resources\UngroupBtn.bmp" />
+    <EmbeddedResource Include="Controllers.TemplateController.bmp" />
+    <EmbeddedResource Include="Controllers.ToolSetController.bmp" />
+    <EmbeddedResource Include="SqlStore.bmp" />
+    <EmbeddedResource Include="XmlStore.bmp" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

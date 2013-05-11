@@ -1,0 +1,117 @@
+﻿<Window x:Class="VixenModules.Preview.DisplayPreview.Views.VisualizerView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:WPF="clr-namespace:VixenModules.Preview.DisplayPreview.WPF"
+        xmlns:Model1="clr-namespace:VixenModules.Preview.DisplayPreview.Model"
+        xmlns:ViewModels="clr-namespace:VixenModules.Preview.DisplayPreview.ViewModels"
+        mc:Ignorable="d"
+        SizeToContent="WidthAndHeight"
+        Title="Display Preview"
+        d:DataContext="{d:DesignInstance ViewModels:VisualizerViewModel}" Closing="DisplayPreview_Closing">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Shapes.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+			<WPF:ImageBrushConverter x:Key="ImageBrushConverter" />
+            <DataTemplate DataType="{x:Type Model1:NodeLayout}">
+                <ContentControl Content="{Binding Shape}"
+                                Width="{Binding Width}"
+                                Height="{Binding Height}"
+                                ClipToBounds="True"
+                                ToolTip="{Binding NodeName}" />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type Model1:DisplayItem}">
+                <Border Canvas.Top="{Binding TopOffset}"
+                        Canvas.Left="{Binding LeftOffset}"
+                        BorderBrush="Transparent"
+                        BorderThickness="0"
+                        Background="Transparent"
+                        Height="{Binding Height}"
+                        Width="{Binding Width}">
+                    <ItemsControl ItemsSource="{Binding NodeLayouts}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Canvas ClipToBounds="True"
+                                        HorizontalAlignment="Left"
+                                        MaxWidth="{Binding Width}"
+                                        MaxHeight="{Binding Height}"
+                                        MinWidth="{Binding Width}"
+                                        MinHeight="{Binding Height}"
+                                        Width="{Binding Width}"
+                                        Height="{Binding Height}">
+                                </Canvas>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="ContentPresenter">
+                                <Setter Property="Canvas.Left"
+                                        Value="{Binding Path=LeftOffset, Mode=TwoWay}" />
+                                <Setter Property="Canvas.Top"
+                                        Value="{Binding Path=TopOffset, Mode=TwoWay}" />
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+                    </ItemsControl>
+                </Border>
+            </DataTemplate>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid d:DataContext="{d:DesignInstance Model1:DisplayPreviewModuleDataModel}">
+
+        <GroupBox Header="Display Canvas"
+                  Grid.Column="1"
+                  VerticalAlignment="Top"
+                  HorizontalAlignment="Left">
+            <Border Grid.Row="1"
+                    Background="Transparent"
+                    Margin="0"
+                    Padding="0"
+                    x:Name="ListBorder">
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Auto"
+                              HorizontalContentAlignment="Left"
+                              VerticalContentAlignment="Top"
+                              Width="{Binding ElementName=ListBorder, Path=Width}"
+                              Height="{Binding ElementName=ListBorder, Path=Height}">
+                    <ItemsControl Background="Black"
+                                  MinWidth="{Binding DisplayWidth}"
+                                  MaxWidth="{Binding DisplayWidth}"
+                                  Height="{Binding DisplayHeight}"
+                                  Width="{Binding DisplayWidth}"
+                                  MinHeight="{Binding DisplayHeight}"
+                                  MaxHeight="{Binding DisplayHeight}"
+                                  ItemsSource="{Binding DisplayItems}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Canvas IsItemsHost="True"
+                                        MinWidth="{Binding DisplayWidth}"
+                                        MaxWidth="{Binding DisplayWidth}"
+                                        Height="{Binding DisplayHeight}"
+                                        Width="{Binding DisplayWidth}"
+                                        MinHeight="{Binding DisplayHeight}"
+                                        MaxHeight="{Binding DisplayHeight}"
+                                        ScrollViewer.CanContentScroll="True">
+                                    <Canvas.Background>
+										<ImageBrush ImageSource="{Binding BackgroundImage}"
+                                                    Opacity="{Binding Opacity}"
+                                                    Stretch="Fill" />
+                                    </Canvas.Background>
+                                </Canvas>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="ContentPresenter">
+                                <Setter Property="Canvas.Left"
+                                        Value="{Binding Path=LeftOffset, Mode=TwoWay}" />
+                                <Setter Property="Canvas.Top"
+                                        Value="{Binding Path=TopOffset, Mode=TwoWay}" />
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Border>
+        </GroupBox>
+    </Grid>
+</Window>

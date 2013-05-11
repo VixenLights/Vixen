@@ -1,0 +1,306 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2572F3DF-7CF2-4B6C-9FC2-8E11D0BC08D6}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VixenApplication</RootNamespace>
+    <AssemblyName>VixenApplication</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>3.0.4.0</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>$(SolutionDir)\Output\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>$(SolutionDir)\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>VixenApplication.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>V3.ico</ApplicationIcon>
+  </PropertyGroup>
+  <Import Project="$(SolutionDir)\commonProject.props" />
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ConfigControllersOutputs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigControllersOutputs.Designer.cs">
+      <DependentUpon>ConfigControllersOutputs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FiltersAndPatching\ConfigFiltersAndPatching-Shapes.cs" />
+    <Compile Include="FiltersAndPatching\ConfigFiltersAndPatching-Tools.cs" />
+    <Compile Include="ConfigPreviews.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigPreviews.Designer.cs">
+      <DependentUpon>ConfigPreviews.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CpuUsage.cs" />
+    <Compile Include="EffectParametersForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EffectParametersForm.Designer.cs">
+      <DependentUpon>EffectParametersForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FiltersAndPatching\ConfigFiltersAndPatching.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FiltersAndPatching\ConfigFiltersAndPatching.Designer.cs">
+      <DependentUpon>ConfigFiltersAndPatching.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FiltersAndPatching\PatchingWizard-1-Sources.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FiltersAndPatching\PatchingWizard-1-Sources.Designer.cs">
+      <DependentUpon>PatchingWizard-1-Sources.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FiltersAndPatching\PatchingWizard-2-Filters.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FiltersAndPatching\PatchingWizard-2-Filters.Designer.cs">
+      <DependentUpon>PatchingWizard-2-Filters.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FiltersAndPatching\PatchingWizard-3-Destinations.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FiltersAndPatching\PatchingWizard-3-Destinations.Designer.cs">
+      <DependentUpon>PatchingWizard-3-Destinations.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FiltersAndPatching\PatchingWizard-4-Summary.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FiltersAndPatching\PatchingWizard-4-Summary.Designer.cs">
+      <DependentUpon>PatchingWizard-4-Summary.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FiltersAndPatching\PatchingWizard.cs" />
+    <Compile Include="InstalledModules.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InstalledModules.Designer.cs">
+      <DependentUpon>InstalledModules.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RuleEditorContainer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RuleEditorContainer.Designer.cs">
+      <DependentUpon>RuleEditorContainer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VixenApplication.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VixenApplication.Designer.cs">
+      <DependentUpon>VixenApplication.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConfigElements.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigElements.Designer.cs">
+      <DependentUpon>ConfigElements.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConfigControllers.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigControllers.Designer.cs">
+      <DependentUpon>ConfigControllers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VixenApplicationData.cs" />
+    <EmbeddedResource Include="ConfigControllersOutputs.resx">
+      <DependentUpon>ConfigControllersOutputs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConfigPreviews.resx">
+      <DependentUpon>ConfigPreviews.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EffectParametersForm.resx">
+      <DependentUpon>EffectParametersForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FiltersAndPatching\ConfigFiltersAndPatching.resx">
+      <DependentUpon>ConfigFiltersAndPatching.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FiltersAndPatching\PatchingWizard-1-Sources.resx">
+      <DependentUpon>PatchingWizard-1-Sources.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FiltersAndPatching\PatchingWizard-2-Filters.resx">
+      <DependentUpon>PatchingWizard-2-Filters.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FiltersAndPatching\PatchingWizard-3-Destinations.resx">
+      <DependentUpon>PatchingWizard-3-Destinations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FiltersAndPatching\PatchingWizard-4-Summary.resx">
+      <DependentUpon>PatchingWizard-4-Summary.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InstalledModules.resx">
+      <DependentUpon>InstalledModules.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RuleEditorContainer.resx">
+      <DependentUpon>RuleEditorContainer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VixenApplication.resx">
+      <DependentUpon>VixenApplication.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConfigElements.resx">
+      <DependentUpon>ConfigElements.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConfigControllers.resx">
+      <DependentUpon>ConfigControllers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 Client Profile %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Controls\Controls.csproj">
+      <Project>{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}</Project>
+      <Name>Controls</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\NShape\Core\NShape.csproj">
+      <Project>{9EFE1059-E2DC-4576-B9E3-4AE3F998CB28}</Project>
+      <Name>NShape</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\NShape\GeneralShapes\NShapeGeneralShapes.csproj">
+      <Project>{1272F77E-D926-4310-AE8B-858909B10F0C}</Project>
+      <Name>NShapeGeneralShapes</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\NShape\WinFormsUI\NShapeWinFormsUI.csproj">
+      <Project>{5EAB131C-1C93-4C3F-A1D8-D711053DE33C}</Project>
+      <Name>NShapeWinFormsUI</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\MoveShapeCursor.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\MovePointCursor.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\HandCursor.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ZoomIn32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ZoomOut32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DownArrowShort_Blue_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\UpArrowShort_Blue_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\add-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\delete-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="V3.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

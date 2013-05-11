@@ -1,0 +1,360 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{5EAB131C-1C93-4C3F-A1D8-D711053DE33C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Dataweb.NShape.WinFormsUI</RootNamespace>
+    <AssemblyName>Dataweb.NShape.WinFormsUI</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ApplicationIcon>..\Dataweb.NShape.ico</ApplicationIcon>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\Dataweb.nShape.snk</AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(SolutionDir)\Output\Common\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;DEBUG_UI</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>$(SolutionDir)\Release\Common\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\bin\Release\Dataweb.NShape.WinFormsUI.xml</DocumentationFile>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Design.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="DesignEditorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DesignEditorDialog.designer.cs">
+      <DependentUpon>DesignEditorDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Designers.cs" />
+    <Compile Include="DesignPresenter.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DesignPresenter.designer.cs">
+      <DependentUpon>DesignPresenter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ExportDiagramDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ExportDiagramDialog.Designer.cs">
+      <DependentUpon>ExportDiagramDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LayerEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LayerEditor.Designer.cs">
+      <DependentUpon>LayerEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LayoutDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LayoutDialog.designer.cs">
+      <DependentUpon>LayoutDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ShapeInfoDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShapeInfoDialog.Designer.cs">
+      <DependentUpon>ShapeInfoDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TemplatePresenter.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TemplatePresenter.Designer.cs">
+      <DependentUpon>TemplatePresenter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolSetToolStripPresenter.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ToolSetToolStripPresenter.Designer.cs">
+      <DependentUpon>ToolSetToolStripPresenter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UITypeEditors.cs" />
+    <Compile Include="Display.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Display.designer.cs">
+      <DependentUpon>Display.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FontFamilyListBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="FontFamilyListBox.designer.cs">
+      <DependentUpon>FontFamilyListBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ImageEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ImageEditor.designer.cs">
+      <DependentUpon>ImageEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InplaceTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="InplaceTextBox.designer.cs">
+      <DependentUpon>InplaceTextBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LayerListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="LayerListView.Designer.cs">
+      <DependentUpon>LayerListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LibraryManagementDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LibraryManagementDialog.designer.cs">
+      <DependentUpon>LibraryManagementDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ModelTreeViewPresenter.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ModelTreeViewPresenter.designer.cs">
+      <DependentUpon>ModelTreeViewPresenter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPresenter.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="StyleListBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="StyleListBox.designer.cs">
+      <DependentUpon>StyleListBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TemplateEditorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TemplateEditorDialog.designer.cs">
+      <DependentUpon>TemplateEditorDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TextEditorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TextEditorDialog.designer.cs">
+      <DependentUpon>TextEditorDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolSetListViewPresenter.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ToolSetListViewPresenter.designer.cs">
+      <DependentUpon>ToolSetListViewPresenter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VerticalTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="VerticalTabControl.designer.cs">
+      <DependentUpon>VerticalTabControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinFormHelpers.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DesignEditorDialog.resx">
+      <DependentUpon>DesignEditorDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DesignPresenter.resx">
+      <DependentUpon>DesignPresenter.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Display.resx">
+      <DependentUpon>Display.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ExportDiagramDialog.resx">
+      <DependentUpon>ExportDiagramDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ImageEditor.resx">
+      <DependentUpon>ImageEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InplaceTextBox.resx">
+      <DependentUpon>InplaceTextBox.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LayerEditor.resx">
+      <DependentUpon>LayerEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LayerListView.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>LayerListView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LibraryManagementDialog.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>LibraryManagementDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ModelTreeViewPresenter.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ModelTreeViewPresenter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShapeInfoDialog.resx">
+      <DependentUpon>ShapeInfoDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StyleListBox.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>StyleListBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TemplateEditorDialog.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TemplateEditorDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TemplatePresenter.resx">
+      <DependentUpon>TemplatePresenter.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TextEditorDialog.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TextEditorDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolSetListViewPresenter.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ToolSetListViewPresenter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VerticalTabControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>VerticalTabControl.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Dataweb.NShape.snk">
+      <Link>Dataweb.NShape.snk</Link>
+    </None>
+    <EmbeddedResource Include="Resources\Visible.bmp" />
+    <EmbeddedResource Include="Resources\ActivateDesign.bmp" />
+    <EmbeddedResource Include="Resources\CopyBtn.bmp" />
+    <EmbeddedResource Include="Resources\CutBtn.bmp" />
+    <EmbeddedResource Include="Resources\DeleteBtn.bmp" />
+    <EmbeddedResource Include="Resources\DiagramPropertiesBtn3.bmp" />
+    <EmbeddedResource Include="Resources\Disabled.bmp" />
+    <EmbeddedResource Include="Resources\Enabled.bmp" />
+    <EmbeddedResource Include="Resources\FreehandIconLarge.bmp" />
+    <EmbeddedResource Include="Resources\FreehandIconSmall.bmp" />
+    <EmbeddedResource Include="Resources\GroupBtn.bmp" />
+    <EmbeddedResource Include="Resources\Invisible.bmp" />
+    <EmbeddedResource Include="Resources\Layers.bmp" />
+    <EmbeddedResource Include="Resources\NewBtn.bmp" />
+    <EmbeddedResource Include="Resources\NewItemsBtn.bmp" />
+    <EmbeddedResource Include="Resources\NewLayer.bmp" />
+    <EmbeddedResource Include="Resources\PasteBtn.bmp" />
+    <EmbeddedResource Include="Resources\PointerIconLarge.bmp" />
+    <EmbeddedResource Include="Resources\PointerIconSmall.bmp" />
+    <EmbeddedResource Include="Resources\RedoBtn.bmp" />
+    <EmbeddedResource Include="Resources\RenameBtn.bmp" />
+    <EmbeddedResource Include="Resources\ToBackground.bmp" />
+    <EmbeddedResource Include="Resources\ToForeground.bmp" />
+    <EmbeddedResource Include="Resources\UndoBtn.bmp" />
+    <EmbeddedResource Include="Resources\UngroupBtn.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Display.bmp" />
+    <EmbeddedResource Include="LayoutDialog.resx">
+      <DependentUpon>LayoutDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ModelTreeViewPresenter.bmp" />
+    <EmbeddedResource Include="PropertyPresenter.bmp" />
+    <EmbeddedResource Include="..\Dataweb.NShape.ico">
+      <Link>Resources\Dataweb.NShape.ico</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\AddToLayer.bmp" />
+    <EmbeddedResource Include="Resources\AggregateShapeBtn.bmp" />
+    <EmbeddedResource Include="Resources\ModelObjectAttached.bmp" />
+    <EmbeddedResource Include="Resources\ModelObjectDetached.bmp" />
+    <EmbeddedResource Include="Resources\RemoveFromLayer.bmp" />
+    <EmbeddedResource Include="Resources\SplitShapeAggregationBtn.bmp" />
+    <EmbeddedResource Include="ToolSetListViewPresenter.bmp" />
+    <EmbeddedResource Include="ToolSetToolStripPresenter.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\AssignToLayer.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\RemoveFromAllLayers.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Information.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\NShape.csproj">
+      <Project>{9EFE1059-E2DC-4576-B9E3-4AE3F998CB28}</Project>
+      <Name>NShape</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Checked.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Unchecked.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CopyAsImage.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DesignPresenter.bmp" />
+    <EmbeddedResource Include="LayerEditor.bmp" />
+    <EmbeddedResource Include="LayerListView.bmp" />
+    <EmbeddedResource Include="TemplatePresenter.bmp" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

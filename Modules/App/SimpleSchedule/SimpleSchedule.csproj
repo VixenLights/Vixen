@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0963F179-7EAB-47A3-B84B-FC3C8FB0BD26}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VixenModules.App.SimpleSchedule</RootNamespace>
+    <AssemblyName>SimpleSchedule</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(SolutionDir)\Output\Modules\App\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>$(SolutionDir)\Release\Modules\App\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <Import Project="$(SolutionDir)\commonProject.props" />
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.Calendar35">
+      <HintPath>..\..\..\Common\System.Windows.Forms.Calendar35.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Forms\ConfigureSchedule.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ConfigureSchedule.Designer.cs">
+      <DependentUpon>ConfigureSchedule.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ConfigureProgram.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ConfigureProgram.Designer.cs">
+      <DependentUpon>ConfigureProgram.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ConfigureScheduledItems.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ConfigureScheduledItems.Designer.cs">
+      <DependentUpon>ConfigureScheduledItems.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IItemScheduler.cs" />
+    <Compile Include="IScheduledItem.cs" />
+    <Compile Include="IScheduledItemStateObject.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScheduledItem.cs" />
+    <Compile Include="SchedulerLog.cs" />
+    <Compile Include="Service\ScheduledItemService.cs" />
+    <Compile Include="SimpleSchedulerData.cs" />
+    <Compile Include="SimpleScheduleDescriptor.cs" />
+    <Compile Include="SimpleScheduleModule.cs" />
+    <Compile Include="StateObject\ScheduledProgram.cs" />
+    <Compile Include="StateObject\ScheduledSequence.cs" />
+    <Compile Include="ScheduleStates.cs" />
+    <Compile Include="States.cs" />
+    <Compile Include="State\CompletedState.cs" />
+    <Compile Include="State\ExecutingState.cs" />
+    <Compile Include="State\PostExecuteState.cs" />
+    <Compile Include="State\PreExecuteState.cs" />
+    <Compile Include="State\WaitingState.cs" />
+    <Compile Include="Transition\ExecutingToPostExecute.cs" />
+    <Compile Include="Transition\PostExecuteToCompleted.cs" />
+    <Compile Include="Transition\PostExecuteToExecuting.cs" />
+    <Compile Include="Transition\PreExecuteToExecuting.cs" />
+    <Compile Include="Transition\WaitingToPreExecute.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\StateMach\StateMach.csproj">
+      <Project>{8F61BFE3-8D89-41E8-B296-C01537B03707}</Project>
+      <Name>StateMach</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Forms\ConfigureSchedule.resx">
+      <DependentUpon>ConfigureSchedule.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ConfigureProgram.resx">
+      <DependentUpon>ConfigureProgram.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ConfigureScheduledItems.resx">
+      <DependentUpon>ConfigureScheduledItems.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
