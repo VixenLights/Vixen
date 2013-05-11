@@ -61,7 +61,8 @@ namespace VixenModules.Effect.Candle {
 			_r = new Random();
 
 			foreach (Element element in TargetNodes.SelectMany(x => x)) {
-				_RenderCandleOnElement(element);
+				if (element != null)
+					_RenderCandleOnElement(element);
 			}
 		}
 
@@ -94,8 +95,16 @@ namespace VixenModules.Effect.Candle {
 				LightingValue startValue = new LightingValue(Color.White, currentLevel);
 				LightingValue endValue = new LightingValue(Color.White, nextLevel);
 				IIntent intent = new LightingIntent(startValue, endValue, TimeSpan.FromMilliseconds(stateLength));
-				_effectIntents.AddIntentForElement(element.Id, intent, TimeSpan.FromMilliseconds(startTime));
+				try
+				{
+					_effectIntents.AddIntentForElement(element.Id, intent, TimeSpan.FromMilliseconds(startTime));
 
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine(e.ToString());
+					throw;
+				}
 				startTime += stateLength;
 				currentLevel = nextLevel;
 			}

@@ -27,7 +27,8 @@ namespace VixenModules.Effect.SetLevel
 			_elementData = new EffectIntents();
 
 			foreach (ElementNode node in TargetNodes) {
-				RenderNode(node);
+				if (node != null)
+					RenderNode(node);
 			}
 		}
 

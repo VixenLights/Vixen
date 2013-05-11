@@ -132,34 +132,38 @@ namespace VixenModules.Effect.Chase
 
 			// apply the 'background' values to all targets
 			int i = 0;
-			foreach (ElementNode target in renderNodes) {
-				pulse = new Pulse.Pulse();
-				pulse.TargetNodes = new ElementNode[] { target };
-				pulse.TimeSpan = TimeSpan;
-				pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { DefaultLevel * 100, DefaultLevel * 100 }));
+			foreach (ElementNode target in renderNodes)
+			{
+				if (target != null)
+				{
+					pulse = new Pulse.Pulse();
+					pulse.TargetNodes = new ElementNode[] { target };
+					pulse.TimeSpan = TimeSpan;
+					pulse.LevelCurve = new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { DefaultLevel * 100, DefaultLevel * 100 }));
 
-				// figure out what color gradient to use for the pulse
-				switch (ColorHandling) {
-					case ChaseColorHandling.GradientForEachPulse:
-						pulse.ColorGradient = new ColorGradient(StaticColor);
-						break;
+					// figure out what color gradient to use for the pulse
+					switch (ColorHandling) {
+						case ChaseColorHandling.GradientForEachPulse:
+							pulse.ColorGradient = new ColorGradient(StaticColor);
+							break;
 
-					case ChaseColorHandling.GradientThroughWholeEffect:
-						pulse.ColorGradient = ColorGradient;
-						break;
+						case ChaseColorHandling.GradientThroughWholeEffect:
+							pulse.ColorGradient = ColorGradient;
+							break;
 
-					case ChaseColorHandling.StaticColor:
-						pulse.ColorGradient = new ColorGradient(StaticColor);
-						break;
+						case ChaseColorHandling.StaticColor:
+							pulse.ColorGradient = new ColorGradient(StaticColor);
+							break;
 
-					case ChaseColorHandling.ColorAcrossItems:
-						pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt((double)i / (double)targetNodeCount));
-						break;
+						case ChaseColorHandling.ColorAcrossItems:
+							pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt((double)i / (double)targetNodeCount));
+							break;
+					}
+
+					pulseData = pulse.Render();
+					_elementData.Add(pulseData);
+					i++;
 				}
-
-				pulseData = pulse.Render();
-				_elementData.Add(pulseData);
-				i++;
 			}
 
 

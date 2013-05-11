@@ -38,7 +38,8 @@ namespace VixenModules.Effect.Twinkle
 			int i = 0;
 
 			foreach (ElementNode node in targetNodes) {
-				_elementData.Add(RenderElement(node, i++ / (double)totalNodes, twinkles));
+				if (node != null)
+					_elementData.Add(RenderElement(node, i++ / (double)totalNodes, twinkles));
 			}
 		}
 
@@ -241,7 +242,7 @@ namespace VixenModules.Effect.Twinkle
 				// calculate how long until the next flicker, and clamp it (since there's a small chance it's huge)
 				double nextTime = Math.Log(1.0 - _random.NextDouble()) * -meanMillisecondsBetweenTwinkles;
 				if (nextTime > maxMillisecondsBetweenTwinkles)
-				    nextTime = maxMillisecondsBetweenTwinkles;
+					nextTime = maxMillisecondsBetweenTwinkles;
 
 				// check if the timespan will be off the end, if so, bail
 				current += TimeSpan.FromMilliseconds(nextTime);

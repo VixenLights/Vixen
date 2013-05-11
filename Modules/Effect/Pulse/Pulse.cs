@@ -29,7 +29,8 @@ namespace VixenModules.Effect.Pulse
 			_elementData = new EffectIntents();
 
 			foreach (ElementNode node in TargetNodes) {
-				RenderNode(node);
+				if (node != null)
+					RenderNode(node);
 			}
 		}
 
@@ -78,14 +79,14 @@ namespace VixenModules.Effect.Pulse
 
 					LightingValue startValue = new LightingValue(ColorGradient.GetColorAt(lastPosition), (float)LevelCurve.GetValue(lastPosition * 100) / 100);
 					LightingValue endValue = new LightingValue(ColorGradient.GetColorAt(position), (float)LevelCurve.GetValue(position * 100) / 100);
-					
+
 					TimeSpan startTime = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds * lastPosition);
 					TimeSpan timeSpan = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds * (position - lastPosition));
-					
+
 					IIntent intent = new LightingIntent(startValue, endValue, timeSpan);
 
 					_elementData.AddIntentForElement(element.Id, intent, startTime);
-					
+
 					lastPosition = position;
 				}
 			}
