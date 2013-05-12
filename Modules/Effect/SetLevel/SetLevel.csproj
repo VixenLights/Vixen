@@ -34,7 +34,13 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
-  <Import Project="$(SolutionDir)\commonProject.props" />
+  <ItemGroup>
+	<ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
+		<Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
+		<Name>Vixen</Name>
+		<Private>False</Private>
+	</ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="SetLevel.cs" />
     <Compile Include="SetLevelData.cs" />
