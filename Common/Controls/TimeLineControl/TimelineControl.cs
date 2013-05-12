@@ -25,7 +25,7 @@ namespace Common.Controls.Timeline
 
         // Right side (Panel 2)
 		private Ruler ruler;
-		private Grid grid;
+		public Grid grid;
     	private Waveform waveform;
 
         #endregion
@@ -474,10 +474,6 @@ namespace Common.Controls.Timeline
 			add { ruler.TimeRangeDragged += value; }
 			remove { ruler.TimeRangeDragged -= value; }
 		}
-
-
-
-
 
 		#endregion
 

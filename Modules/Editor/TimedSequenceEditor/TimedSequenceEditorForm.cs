@@ -72,6 +72,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_effectNodeToElement = new Dictionary<EffectNode, Element>();
 			_elementNodeToRows = new Dictionary<ElementNode, List<Row>>();
 
+            timelineControl.grid.RenderProgressChanged += OnRenderProgressChanged;
+
 			timelineControl.ElementChangedRows += ElementChangedRowsHandler;
 			timelineControl.ElementsMovedNew += timelineControl_ElementsMovedNew;
 			timelineControl.ElementDoubleClicked += ElementDoubleClickedHandler;
@@ -143,8 +145,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				toolStripEffects.Items.Add(tsItem);
 				toolStripExVirtualEffects.Items.Add(tsItem);
 			}
-
-
 		}
 
 		private void LoadAvailableEffects() {
@@ -359,6 +359,30 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Event Handlers
 
+        private void OnRenderProgressChanged(object sender, RenderElementEventArgs e)
+        {
+            try
+            {
+                if (!Disposing)
+                {
+                    toolStripProgressBar_RenderingElements.Value = e.Percent;
+                    if (e.Percent == 100)
+                    {
+                        toolStripProgressBar_RenderingElements.Visible = false;
+                        toolStripStatusLabel_RenderingElements.Visible = false;
+                    }
+                    else if (!toolStripProgressBar_RenderingElements.Visible)
+                    {
+                        toolStripProgressBar_RenderingElements.Visible = true;
+                        toolStripStatusLabel_RenderingElements.Visible = true;
+                    }
+                }
+            }
+            catch
+            {
+            }
+        }
+
 		private void TimelineSequenceTimeLineSequenceClipboardContentsChanged(object sender, EventArgs eventArgs) {
 			UpdatePasteMenuStates();
 		}
@@ -561,6 +585,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				MessageBox.Show("Unable to play this sequence.  See error log for details.");
 				return;
 			}
+            timelineControl.grid.Context = _context;
 			_context.SequenceStarted += context_SequenceStarted;
 			_context.SequenceEnded += context_SequenceEnded;
 			//_context.ProgramEnded += _context_ProgramEnded;
@@ -844,8 +869,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							_effectNodeToElement[node] = element;
 						//else
 						//    VixenSystem.Logging.Debug("TimedSequenceEditor: Making a new element, but the map already has one!");
-
-						row.AddElement(element);
+                        //Render this effect now to get it into the cache.
+                        element.EffectNode.Effect.Render(); 
+                        row.AddElement(element);
 					}
 				} else {
 					// we don't have a row for the element this effect is referencing; most likely, the row has

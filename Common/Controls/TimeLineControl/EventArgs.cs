@@ -123,4 +123,13 @@ namespace Common.Controls.Timeline
 		public IEnumerable<Element> ElementsUnderCursor { get; private set; }
 		public bool AutomaticallyHandleSelection { get; set; }
 	}
+
+    public class RenderElementEventArgs : EventArgs
+    {
+        public RenderElementEventArgs(int percent)
+        {
+            Percent = percent;
+        }
+        public int Percent { get; set; }
+    }
 }
