@@ -829,24 +829,6 @@
   <ItemGroup>
     <None Include="Resources\Effect64.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\Public\Modules\Editor\ScriptEditor\SciLexer.dll">
-      <Link>SciLexer.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\Public\Modules\Editor\ScriptEditor\SciLexer64.dll">
-      <Link>SciLexer64.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\Public\Modules\Output\595\inpout32.dll">
-      <Link>inpout32.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\Public\Modules\Output\595\inpoutx64.dll">
-      <Link>inpoutx64.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
