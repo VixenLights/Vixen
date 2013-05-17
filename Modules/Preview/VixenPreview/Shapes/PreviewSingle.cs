@@ -49,6 +49,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             //DoResize += new ResizeEvent(OnResize);
         }
 
+        [OnDeserialized]
+        new void OnDeserialized(StreamingContext context)
+        {
+            Layout();
+        }
+
         [CategoryAttribute("Position"),
         DisplayName("Position"),
         DescriptionAttribute("An point is defined by a point on the screen.")]
@@ -110,13 +116,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //    Layout();
         //}
 
-        public override void Select() 
-        {
-            base.Select();
-            SelectDragPoints();
-        }
-
-        private void SelectDragPoints()
+        public override void SelectDragPoints()
         {
             List<PreviewPoint> points = new List<PreviewPoint>();
             points.Add(p1);
@@ -168,6 +168,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 p1Start = new PreviewPoint(p1.X, p1.Y);
                 //p2Start = new PreviewPoint(p2.X, p2.Y);
             }
+
             _selectedPoint = point;
         }
 
@@ -188,6 +189,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             p1.X = (int)(p1.X * aspect);
             p1.Y = (int)(p1.Y * aspect);
             Layout();
+        }
+
+        public override void ResizeFromOriginal(double aspect)
+        {
+            p1.X = p1Start.X;
+            p1.Y = p1Start.Y;
+            Resize(aspect);
         }
 
     }

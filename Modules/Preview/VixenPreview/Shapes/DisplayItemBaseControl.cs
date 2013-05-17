@@ -11,7 +11,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 {
     public partial class DisplayItemBaseControl : UserControl
     {
-        public  DisplayItem _displayItem;
+        public PreviewBaseShape _shape;
         private string _title;
 
         public DisplayItemBaseControl()
@@ -19,20 +19,28 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             InitializeComponent();
         }
 
-        public DisplayItemBaseControl(DisplayItem displayItem)
+        public DisplayItemBaseControl(PreviewBaseShape shape)
         {
+            _shape = shape;
             InitializeComponent();
         }
 
         public string Title
         {
-            get {return _title;}
-            set {_title = value; }
+            get { return _title; }
+            set { _title = value; }
         }
 
-        public DisplayItem DisplayItem
+        //public DisplayItem DisplayItem
+        //{
+        //    get { return _displayItem; }
+        //    set { _displayItem = value; }
+        //}    }
+
+        public PreviewBaseShape Shape
         {
-            get { return _displayItem; }
-            set { _displayItem = value; }
-        }    }
+            get { return _shape; }
+            set { _shape = value; }
+        }
+    }
 }

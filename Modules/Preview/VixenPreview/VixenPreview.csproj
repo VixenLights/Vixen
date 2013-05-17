@@ -77,6 +77,25 @@
     <Compile Include="ResizePreviewForm.Designer.cs">
       <DependentUpon>ResizePreviewForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Shapes\PreviewCustom.cs" />
+    <Compile Include="Shapes\PreviewCustomCreateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Shapes\PreviewCustomCreateForm.Designer.cs">
+      <DependentUpon>PreviewCustomCreateForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shapes\PreviewCustomDefineDisplayItems.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Shapes\PreviewCustomDefineDisplayItems.Designer.cs">
+      <DependentUpon>PreviewCustomDefineDisplayItems.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shapes\PreviewCustomSetupControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shapes\PreviewCustomSetupControl.Designer.cs">
+      <DependentUpon>PreviewCustomSetupControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Shapes\PreviewStarSetupControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -173,6 +192,7 @@
     <Compile Include="Shapes\PreviewPoint.cs" />
     <Compile Include="Shapes\PreviewBaseShape.cs" />
     <Compile Include="Shapes\PreviewTools.cs" />
+    <Compile Include="TemplateComboBoxItem.cs" />
     <Compile Include="VixenPreviewControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -233,6 +253,15 @@
     </Compile>
     <EmbeddedResource Include="ResizePreviewForm.resx">
       <DependentUpon>ResizePreviewForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shapes\PreviewCustomCreateForm.resx">
+      <DependentUpon>PreviewCustomCreateForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shapes\PreviewCustomDefineDisplayItems.resx">
+      <DependentUpon>PreviewCustomDefineDisplayItems.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shapes\PreviewCustomSetupControl.resx">
+      <DependentUpon>PreviewCustomSetupControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Shapes\PreviewStarSetupControl.resx">
       <DependentUpon>PreviewStarSetupControl.cs</DependentUpon>

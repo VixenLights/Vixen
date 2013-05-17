@@ -135,14 +135,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
-        public override void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements)
+        public override void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected)
         {
             foreach (PreviewPixel pixel in Pixels)
             {
-                if (highlightedElements != null && highlightedElements.Contains(pixel.Node))
-                    pixel.Draw(fp, Color.HotPink);
-                else
-                    pixel.Draw(fp, Color.White);
+                //if (highlightedElements != null && highlightedElements.Contains(pixel.Node))
+                //    pixel.Draw(fp, Color.HotPink);
+                //else
+                //    pixel.Draw(fp, Color.White);
+                DrawPixel(pixel, fp, editMode, highlightedElements, selected);
             }
         }
 
@@ -169,13 +170,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //    Layout();
         //}
 
-        public override void Select() 
-        {
-            base.Select();
-            SelectDragPoints();
-        }
-
-        private void SelectDragPoints()
+        public override void SelectDragPoints()
         {
             List<PreviewPoint> points = new List<PreviewPoint>();
             points.Add(_p1);
@@ -225,8 +220,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             if (point == null)
             {
                 p1Start = new PreviewPoint(_p1.X, _p1.Y);
-                //p2Start = new PreviewPoint(_p2.X, _p2.Y);
             }
+
             _selectedPoint = point;
         }
 
@@ -247,6 +242,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             _p1.X = (int)(_p1.X * aspect);
             _p1.Y = (int)(_p1.Y * aspect);
             Layout();
+        }
+
+        public override void ResizeFromOriginal(double aspect)
+        {
+            _p1.X = p1Start.X;
+            _p1.Y = p1Start.Y;
+            Resize(aspect);
         }
 
     }

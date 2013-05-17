@@ -207,13 +207,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     _selectedPoint.X = x;
                     _selectedPoint.Y = y;
                     //SelectDragPoints();
-                }
                 // If we get here, we're moving
-                else if (_selectedPoint != null && _selectedPoint.PointType == PreviewPoint.PointTypes.SkewNS)
-                {
-                } 
-                else if (_selectedPoint != null && _selectedPoint.PointType == PreviewPoint.PointTypes.SkewWE)
-                {
                 } else
                 {
                     _topLeft.X = p1Start.X + changeX;
@@ -222,23 +216,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     _bottomRight.Y = p2Start.Y + changeY;
                 }
 
-                topRight.X = _bottomRight.X;
-                topRight.Y = _topLeft.Y;
-                bottomLeft.X = _topLeft.X;
-                bottomLeft.Y = _bottomRight.Y;
+                if (topRight != null)
+                {
+                    topRight.X = _bottomRight.X;
+                    topRight.Y = _topLeft.Y;
+                    bottomLeft.X = _topLeft.X;
+                    bottomLeft.Y = _bottomRight.Y;
+                }
 
                 // Layout the standard shape
                 Layout();
-
-                // Now, we skew the shape
-                int width = topRight.X - _topLeft.X;
-                int height = bottomLeft.Y - _topLeft.Y;
-
-                // Finally, add the skew points to the shape
-                skewXPoint.X = _topLeft.X + (width / 2);
-                skewXPoint.Y = topRight.Y;
-                skewYPoint.X = topRight.X;
-                skewYPoint.Y = topRight.Y + (height / 2);
             //}
         }
 
@@ -247,13 +234,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //    Layout();
         //}
 
-        public override void Select()
-        {
-            base.Select();
-            SelectDragPoints();
-        }
-
-        private void SelectDragPoints()
+        public override void SelectDragPoints()
         {
             // Create the size points
             List<PreviewPoint> selectPoints = new List<PreviewPoint>();
@@ -302,6 +283,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 p1Start = new PreviewPoint(_topLeft.X, _topLeft.Y);
                 p2Start = new PreviewPoint(_bottomRight.X, _bottomRight.Y);
             }
+
             _selectedPoint = point;
         }
 
@@ -318,10 +300,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             TopLeft = new Point(x, y);
             BottomRight = new Point(BottomRight.X + deltaX, BottomRight.Y + deltaY);
 
-            topRight.X = _bottomRight.X;
-            topRight.Y = _topLeft.Y;
-            bottomLeft.X = _topLeft.X;
-            bottomLeft.Y = _bottomRight.Y;
+            if (topRight != null)
+            {
+                topRight.X = _bottomRight.X;
+                topRight.Y = _topLeft.Y;
+                bottomLeft.X = _topLeft.X;
+                bottomLeft.Y = _bottomRight.Y;
+            }
             
             Layout();
         }
@@ -330,11 +315,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             TopLeft = new Point((int)(TopLeft.X * aspect), (int)(TopLeft.Y * aspect));
             BottomRight = new Point((int)(BottomRight.X * aspect), (int)(BottomRight.Y * aspect));
-            //topRight.X = _bottomRight.X;
-            //topRight.Y = _topLeft.Y;
-            //bottomLeft.X = _topLeft.X;
-            //bottomLeft.Y = _bottomRight.Y;
             Layout();
+        }
+
+        public override void ResizeFromOriginal(double aspect)
+        {
+            _topLeft.X = p1Start.X;
+            _topLeft.Y = p1Start.Y;
+            _bottomRight.X = p2Start.X;
+            _bottomRight.Y = p2Start.Y;
+            Resize(aspect);
         }
 
     }

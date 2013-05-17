@@ -31,6 +31,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         private bool justPlaced = false;
         private PreviewPoint bottomRightStart, topLeftStart, archStart;
 
+        // For templates
+        Point archLeftPointStart;
+
         public PreviewCane(PreviewPoint point, ElementNode selectedNode)
         {
             _topLeftPoint = point; 
@@ -270,13 +273,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //    Layout();
         //}
 
-        public override void Select() 
-        {
-            base.Select();
-            SelectDragPoints();
-        }
-
-        private void SelectDragPoints()
+        public override void SelectDragPoints()
         {
             List<PreviewPoint> points = new List<PreviewPoint>();
             points.Add(_bottomRightPoint);
@@ -307,6 +304,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 bottomRightStart = new PreviewPoint(_bottomRightPoint.X, _bottomRightPoint.Y);
                 archStart = new PreviewPoint(_archLeftPoint.X, _archLeftPoint.Y);
             }
+
             _selectedPoint = point;
         }
 
@@ -343,5 +341,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             Layout();
         }
 
+        public override void ResizeFromOriginal(double aspect)
+        {
+            _topLeftPoint.X = topLeftStart.X;
+            _topLeftPoint.Y = topLeftStart.Y;
+            _bottomRightPoint.X = bottomRightStart.X;
+            _bottomRightPoint.Y = bottomRightStart.Y;
+            _archLeftPoint.X = archStart.X;
+            _archLeftPoint.Y = archStart.Y;
+            Resize(aspect);
+        }
     }
 }

@@ -17,8 +17,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         [DataMember]
         private PreviewPoint _bottomRight;
 
-        private PreviewPoint topRight = new PreviewPoint(10, 10);
-        private PreviewPoint bottomLeft = new PreviewPoint(10, 10);
+        private PreviewPoint _topRight = new PreviewPoint(10, 10);
+        private PreviewPoint _bottomLeft = new PreviewPoint(10, 10);
 
         private PreviewPoint p1Start, p2Start;
 
@@ -90,6 +90,38 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         new void OnDeserialized(StreamingContext context)
         {
             Layout();
+        }
+
+        public PreviewPoint TopRight
+        {
+            get
+            {
+                if (_topRight == null)
+                    _topRight = new PreviewPoint(10, 10);
+                return _topRight;
+            }
+            set
+            {
+                if (_topRight == null)
+                    _topRight = new PreviewPoint(10, 10);
+                _topRight = value;
+            }
+        }
+
+        public PreviewPoint BottomLeft
+        {
+            get
+            {
+                if (_bottomLeft == null)
+                    _bottomLeft = new PreviewPoint(10, 10);
+                return _bottomLeft;
+            }
+            set
+            {
+                if (_bottomLeft == null)
+                    _bottomLeft = new PreviewPoint(10, 10);
+                _bottomLeft = value;
+            }
         }
 
         [CategoryAttribute("Position"),
@@ -173,12 +205,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             // See if we're resizing
             if (_selectedPoint != null)
             {
-                if (_selectedPoint == topRight)
+                if (_selectedPoint == TopRight)
                 {
                     _topLeft.Y = y;
                     _bottomRight.X = x;
                 }
-                else if (_selectedPoint == bottomLeft)
+                else if (_selectedPoint == BottomLeft)
                 {
                     _topLeft.X = x;
                     _bottomRight.Y = y;
@@ -198,10 +230,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 Layout();
             }
 
-            topRight.X = _bottomRight.X;
-            topRight.Y = _topLeft.Y;
-            bottomLeft.X = _topLeft.X;
-            bottomLeft.Y = _bottomRight.Y;
+            TopRight.X = _bottomRight.X;
+            TopRight.Y = _topLeft.Y;
+            BottomLeft.X = _topLeft.X;
+            BottomLeft.Y = _bottomRight.Y;
         }
 
         //private void OnResize(EventArgs e)
@@ -209,21 +241,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //    Layout();
         //}
 
-        public override void Select() 
-        {
-            base.Select();
-            SelectDragPoints();
-        }
-
-        private void SelectDragPoints()
+        public override void SelectDragPoints()
         {
             List<PreviewPoint> points = new List<PreviewPoint>();
             points.Add(_topLeft);
             points.Add(_bottomRight);
-            topRight = new PreviewPoint(_bottomRight.X, _topLeft.Y);
-            points.Add(topRight);
-            bottomLeft = new PreviewPoint(_topLeft.X, _bottomRight.Y);
-            points.Add(bottomLeft);
+            TopRight = new PreviewPoint(_bottomRight.X, _topLeft.Y);
+            points.Add(TopRight);
+            BottomLeft = new PreviewPoint(_topLeft.X, _bottomRight.Y);
+            points.Add(BottomLeft);
             SetSelectPoints(points, null);
         }
 
@@ -247,6 +273,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 p1Start = new PreviewPoint(_topLeft.X, _topLeft.Y);
                 p2Start = new PreviewPoint(_bottomRight.X, _bottomRight.Y);
             }
+
             _selectedPoint = point;
         }
 
@@ -278,11 +305,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             TopLeft = new Point(TopLeft.X + deltaX, TopLeft.Y + deltaY);
             BottomRight = new Point(BottomRight.X + deltaX, BottomRight.Y + deltaY);
 
-            topRight.X = _bottomRight.X;
-            topRight.Y = _topLeft.Y;
-            bottomLeft.X = _topLeft.X;
-            bottomLeft.Y = _bottomRight.Y;
-            
+            if (TopRight != null)
+            {
+                TopRight.X = _bottomRight.X;
+                TopRight.Y = _topLeft.Y;
+                BottomLeft.X = _topLeft.X;
+                BottomLeft.Y = _bottomRight.Y;
+            }
+
             Layout();
         }
 
@@ -290,11 +320,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             TopLeft = new Point((int)(TopLeft.X * aspect), (int)(TopLeft.Y * aspect));
             BottomRight = new Point((int)(BottomRight.X * aspect), (int)(BottomRight.Y * aspect));
-            //topRight.X = _bottomRight.X;
-            //topRight.Y = _topLeft.Y;
-            //bottomLeft.X = _topLeft.X;
-            //bottomLeft.Y = _bottomRight.Y;
             Layout();
+        }
+
+        public override void ResizeFromOriginal(double aspect)
+        {
+            _topLeft.X = p1Start.X;
+            _topLeft.Y = p1Start.Y;
+            _bottomRight.X = p2Start.X;
+            _bottomRight.Y = p2Start.Y;
+            Resize(aspect);
         }
 
     }

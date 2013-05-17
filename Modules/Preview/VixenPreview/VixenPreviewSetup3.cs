@@ -11,6 +11,7 @@ using Vixen.Module.Preview;
 using Vixen.Data.Value;
 using Vixen.Sys;
 using System.IO;
+using VixenModules.Preview.VixenPreview.Shapes;
 
 namespace VixenModules.Preview.VixenPreview
 {
@@ -60,6 +61,9 @@ namespace VixenModules.Preview.VixenPreview
             previewForm.Preview.LoadBackground(Data.BackgroundFileName);
             trackBarBackgroundAlpha.Value = Data.BackgroundAlpha;
             previewForm.Preview.Reload();
+
+            PopulateTemplateList();
+
             Setup();
         }
 
@@ -91,53 +95,7 @@ namespace VixenModules.Preview.VixenPreview
 
         private void OnSelectDisplayItem(object sender, Shapes.DisplayItem displayItem)
         {
-            Console.WriteLine("Item: " + displayItem.Shape.ToString());
-            Shapes.DisplayItemBaseControl setupControl = null;
-
-            if (displayItem.Shape.GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewSingle")
-            {
-                setupControl = new Shapes.PreviewSingleSetupControl(displayItem);
-            }
-            else if (displayItem.Shape.GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewLine")
-            {
-                setupControl = new Shapes.PreviewLineSetupControl(displayItem);
-            }
-            else if (displayItem.Shape.GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewRectangle")
-            {
-                setupControl = new Shapes.PreviewRectangleSetupControl(displayItem);
-            }
-            else if (displayItem.Shape.GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewEllipse")
-            {
-                setupControl = new Shapes.PreviewEllipseSetupControl(displayItem);
-            }
-            else if (displayItem.Shape.GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewArch")
-            {
-                setupControl = new Shapes.PreviewArchSetupControl(displayItem);
-            }
-            else if (displayItem.Shape.GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewMegaTree")
-            {
-                setupControl = new Shapes.PreviewMegaTreeSetupControl(displayItem);
-            }
-            else if (displayItem.Shape.GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewTriangle")
-            {
-                setupControl = new Shapes.PreviewTriangleSetupControl(displayItem);
-            }
-            else if (displayItem.Shape.GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewFlood")
-            {
-                setupControl = new Shapes.PreviewFloodSetupControl(displayItem);
-            }
-            else if (displayItem.Shape.GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewCane")
-            {
-                setupControl = new Shapes.PreviewCaneSetupControl(displayItem);
-            }
-            else if (displayItem.Shape.GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewStar")
-            {
-                setupControl = new Shapes.PreviewStarSetupControl(displayItem);
-            }
-            else if (displayItem.Shape.GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewNet")
-            {
-                setupControl = new Shapes.PreviewNetSetupControl(displayItem);
-            }
+            Shapes.DisplayItemBaseControl setupControl = displayItem.Shape.GetSetupControl();
 
             if (setupControl != null)
             {
@@ -148,7 +106,6 @@ namespace VixenModules.Preview.VixenPreview
         private void toolbarButton_Click(object sender, EventArgs e)
         {
             Button button = sender as Button;
-            Console.WriteLine(button.Name);
             // Select Button
             if (button == buttonSelect)
                 previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Select;
@@ -194,7 +151,6 @@ namespace VixenModules.Preview.VixenPreview
         {
             DialogResult = System.Windows.Forms.DialogResult.OK;
             previewForm.Close();
-            Console.WriteLine("Closed");
             Close();
         }
 
@@ -243,6 +199,76 @@ namespace VixenModules.Preview.VixenPreview
                 previewForm.Preview.ResizeBackground(resizeForm.Width, resizeForm.Height);
             }
         }
+
+        #region Templates
+
+        private void PopulateTemplateList() 
+        {
+            TemplateComboBoxItem selectedTemplateItem = comboBoxTemplates.SelectedItem as TemplateComboBoxItem;
+            comboBoxTemplates.Items.Clear();
+
+            IEnumerable<string> files = System.IO.Directory.EnumerateFiles(PreviewTools.TemplateFolder, "*.xml");
+            foreach (string file in files)
+            {
+                string fileName = PreviewTools.TemplateWithFolder(file);
+                try
+                {
+                    // Read the entire template file (stoopid waste of resources, but how else?)
+                    string xml = System.IO.File.ReadAllText(fileName);
+                    DisplayItem newDisplayItem = (DisplayItem)PreviewTools.DeSerializeToObject(xml, typeof(DisplayItem));
+                    TemplateComboBoxItem newTemplateItem = new TemplateComboBoxItem(newDisplayItem.Shape.Name, fileName);
+                    comboBoxTemplates.Items.Add(newTemplateItem);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("There was an error loading the template file (" + file + "): " + ex.Message, "Error Loading Template", MessageBoxButtons.OKCancel);
+                }
+                finally
+                {
+                    if (selectedTemplateItem != null && comboBoxTemplates.Items.IndexOf(selectedTemplateItem) >= 0)
+                    {
+                        comboBoxTemplates.SelectedItem = selectedTemplateItem;
+                    }
+                    if (comboBoxTemplates.SelectedItem == null && comboBoxTemplates.Items.Count > 0)
+                    {
+                        comboBoxTemplates.SelectedIndex = 0;
+                    }
+                }
+            }
+        }
+
+        private void buttonAddTemplate_Click(object sender, EventArgs e)
+        {
+            previewForm.Preview.GroupItems();
+            PopulateTemplateList();
+        }
+
+        private void buttonAddToPreview_Click(object sender, EventArgs e)
+        {
+            TemplateComboBoxItem templateItem = comboBoxTemplates.SelectedItem as TemplateComboBoxItem;
+            if (templateItem != null)
+            {
+                previewForm.Preview.AddTtemplateToPreview(templateItem.FileName);
+            }
+        }
+
+        private void buttonDeleteTemplate_Click(object sender, EventArgs e)
+        {
+            TemplateComboBoxItem templateItem = comboBoxTemplates.SelectedItem as TemplateComboBoxItem;
+            if (templateItem != null)
+            {
+                if (System.IO.File.Exists(templateItem.FileName))
+                {
+                    if (MessageBox.Show("Are you sure you want to delete the template '" + templateItem.FileName + "'", "Delete Template", MessageBoxButtons.YesNoCancel) == System.Windows.Forms.DialogResult.Yes)
+                    {
+                        System.IO.File.Delete(templateItem.FileName);
+                        PopulateTemplateList();
+                    }
+                }
+            }
+        }
+
+        #endregion // Templates
 
     }
 }

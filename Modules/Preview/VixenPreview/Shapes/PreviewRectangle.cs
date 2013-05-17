@@ -36,7 +36,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
             if (selectedNode != null)
             {
-                //List<ElementNode> children = selectedNode.Children.ToList();
                 List<ElementNode> children = PreviewTools.GetLeafNodes(selectedNode);
                 if (children.Count >= 8)
                 {
@@ -122,6 +121,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get
             {
+                if (_topLeft == null)
+                    _topLeft = new PreviewPoint(10, 10);
                 Point p = new Point(_topLeft.X, _topLeft.Y);
                 return p;
             }
@@ -296,14 +297,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //    Layout();
         //}
 
-        public override void Select() 
+        public override void Select(bool selectDragPoints) 
         {
-            base.Select();
+            base.Select(selectDragPoints);
             connectStandardStrings = true;
-            SelectDragPoints();
         }
 
-        private void SelectDragPoints()
+        public override void SelectDragPoints()
         {
             List<PreviewPoint> points = new List<PreviewPoint>();
             points.Add(_topLeft);
@@ -336,6 +336,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 bottomLeftStart = new PreviewPoint(_bottomLeft.X, _bottomLeft.Y);
                 bottomRightStart = new PreviewPoint(_bottomRight.X, _bottomRight.Y);
             }
+
             _selectedPoint = point;
         }
 
@@ -380,5 +381,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             Layout();
         }
 
+        public override void ResizeFromOriginal(double aspect)
+        {
+            _topLeft.X = topLeftStart.X;
+            _topLeft.Y = topLeftStart.Y;
+            _bottomRight.X = bottomRightStart.X;
+            _bottomRight.Y = bottomRightStart.Y;
+            _topRight.X = topRightStart.X;
+            _topRight.Y = topRightStart.Y;
+            _bottomLeft.X = bottomLeftStart.X;
+            _bottomLeft.Y = bottomLeftStart.Y;
+
+            Resize(aspect);
+        }
     }
 }

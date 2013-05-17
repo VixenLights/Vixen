@@ -30,7 +30,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         private bool lockXY = false;
         private PreviewPoint topLeftStart, topRightStart, bottomLeftStart, bottomRightStart;
-
+        
         public PreviewNet(PreviewPoint point1, ElementNode selectedNode)
         {
             _topLeft = point1;
@@ -283,14 +283,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //    Layout();
         //}
 
-        public override void Select()
+        public override void Select(bool selectDragPoints)
         {
-            base.Select();
+            base.Select(selectDragPoints);
             connectStandardStrings = true;
-            SelectDragPoints();
         }
 
-        private void SelectDragPoints()
+        public override void SelectDragPoints()
         {
             List<PreviewPoint> points = new List<PreviewPoint>();
             points.Add(_topLeft);
@@ -323,6 +322,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 bottomLeftStart = new PreviewPoint(_bottomLeft.X, _bottomLeft.Y);
                 bottomRightStart = new PreviewPoint(_bottomRight.X, _bottomRight.Y);
             }
+
             _selectedPoint = point;
         }
 
@@ -365,6 +365,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             _bottomLeft.Y = (int)(_bottomLeft.Y * aspect);
 
             Layout();
+        }
+
+        public override void ResizeFromOriginal(double aspect)
+        {
+            _topLeft.X = topLeftStart.X;
+            _topLeft.Y = topLeftStart.Y;
+            _bottomRight.X = bottomRightStart.X; 
+            _bottomRight.Y = bottomRightStart.Y;
+            _topRight.X = topRightStart.X;
+            _topRight.Y = topRightStart.Y;
+            _bottomLeft.X = bottomLeftStart.X;
+            _bottomLeft.Y = bottomLeftStart.Y;
+            Resize(aspect);
         }
 
     }

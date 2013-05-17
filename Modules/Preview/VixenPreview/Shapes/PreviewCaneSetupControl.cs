@@ -11,20 +11,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 {
     public partial class PreviewCaneSetupControl : DisplayItemBaseControl
     {
-        //private DisplayItem _displayItem;
-
-        public PreviewCaneSetupControl(DisplayItem displayItem)
-            : base(displayItem)
+        public PreviewCaneSetupControl(PreviewBaseShape shape): base(shape)
         {
             InitializeComponent();
-            _displayItem = displayItem;
-            propertyGrid.SelectedObject = displayItem.Shape;
-            displayItem.Shape.OnPropertiesChanged += OnPropertiesChanged;
+            propertyGrid.SelectedObject = Shape;
+            Shape.OnPropertiesChanged += OnPropertiesChanged;
         }
 
         ~PreviewCaneSetupControl()
         {
-            _displayItem.Shape.OnPropertiesChanged -= OnPropertiesChanged;
+            Shape.OnPropertiesChanged -= OnPropertiesChanged;
         }
 
         private void OnPropertiesChanged(object sender, PreviewBaseShape shape)
@@ -34,7 +30,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         private void buttonHelp_Click(object sender, EventArgs e)
         {
-            Shapes.PreviewTools.ShowHelp(Properties.Settings.Default.Help_Arch);
+            Shapes.PreviewTools.ShowHelp(Properties.Settings.Default.Help_Cane);
         }
     }
 }

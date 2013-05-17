@@ -191,13 +191,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //    Layout();
         //}
 
-        public override void Select() 
-        {
-            base.Select();
-            SelectDragPoints();
-        }
-
-        private void SelectDragPoints()
+        public override void SelectDragPoints()
         {
             if (_points.Count >= 2)
             {
@@ -228,6 +222,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 p1Start = new PreviewPoint(_points[0].X, _points[0].Y);
                 p2Start = new PreviewPoint(_points[1].X, _points[1].Y);
             }
+
             _selectedPoint = point;
         }
 
@@ -274,5 +269,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             _points[1].Y = (int)(_points[1].Y * aspect);
             Layout();
         }
+
+        public override void ResizeFromOriginal(double aspect)
+        {
+            _points[0].X = p1Start.X;
+            _points[0].Y = p1Start.Y;
+            _points[1].X = p2Start.X;
+            _points[1].Y = p2Start.Y;
+            Resize(aspect);
+        }
+
     }
 }

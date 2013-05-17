@@ -13,19 +13,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
     {
         private PreviewMegaTree _tree;
 
-        public PreviewMegaTreeSetupControl(DisplayItem displayItem): base(displayItem)
+        public PreviewMegaTreeSetupControl(PreviewBaseShape shape): base(shape)
         {
             InitializeComponent();
-            _displayItem = displayItem;
-            _tree = _displayItem.Shape as PreviewMegaTree;
+            _tree = Shape as PreviewMegaTree;
             Setup();
 
-            displayItem.Shape.OnPropertiesChanged += OnPropertiesChanged;
+            Shape.OnPropertiesChanged += OnPropertiesChanged;
         }
 
         ~PreviewMegaTreeSetupControl()
         {
-            _displayItem.Shape.OnPropertiesChanged -= OnPropertiesChanged;
+            Shape.OnPropertiesChanged -= OnPropertiesChanged;
         }
 
         private void OnPropertiesChanged(object sender, PreviewBaseShape shape)
@@ -69,7 +68,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         private void buttonLinkElements_Click(object sender, EventArgs e)
         {
-            List<PreviewBaseShape> shapes = _displayItem.Shape.Strings;
+            List<PreviewBaseShape> shapes = Shape.Strings;
             PreviewSetElements elementsDialog = new PreviewSetElements(shapes);
             elementsDialog.ShowDialog();
         }

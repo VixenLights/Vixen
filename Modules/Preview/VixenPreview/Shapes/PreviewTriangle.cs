@@ -208,7 +208,29 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 Layout();
             }
         }
-        
+
+        public int Width
+        {
+            get
+            {
+                int x = _point1.X;
+                x = Math.Max(x, _point2.X);
+                x = Math.Max(x, _point3.X);
+                return x;
+            }
+        }
+
+        public int Height
+        {
+            get
+            {
+                int y = _point1.Y;
+                y = Math.Max(y, _point2.Y);
+                y = Math.Max(y, _point3.Y);
+                return y;
+            }
+        }
+
         public override void Layout()
         {
             (Strings[0] as PreviewLine).Point1 = Point1;
@@ -268,14 +290,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //    Layout();
         //}
 
-        public override void Select() 
+        public override void Select(bool selectDragPoints) 
         {
-            base.Select();
+            base.Select(selectDragPoints);
             connectStandardStrings = true;
-            SelectDragPoints();
         }
 
-        private void SelectDragPoints()
+        public override void SelectDragPoints()
         {
             List<PreviewPoint> points = new List<PreviewPoint>();
             points.Add(_point1);
@@ -305,6 +326,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 p2Start = new PreviewPoint(_point2.X, _point2.Y);
                 p3Start = new PreviewPoint(_point3.X, _point3.Y);
             }
+
             _selectedPoint = point;
         }
 
@@ -354,6 +376,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             Layout();
         }
 
+        public override void ResizeFromOriginal(double aspect)
+        {
+            _point1.X = p1Start.X;
+            _point1.Y = p1Start.Y;
+            _point2.X = p2Start.X;
+            _point2.Y = p2Start.Y;
+            _point3.X = p3Start.X;
+            _point3.Y = p3Start.Y;
+            Resize(aspect);
+        }
 
     }
 }

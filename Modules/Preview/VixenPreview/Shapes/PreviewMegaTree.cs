@@ -425,13 +425,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //    Layout();
         //}
 
-        public override void Select()
-        {
-            base.Select();
-            SelectDragPoints();
-        }
-
-        private void SelectDragPoints()
+        public override void SelectDragPoints()
         {
             // Create the size points
             List<PreviewPoint> selectPoints = new List<PreviewPoint>();
@@ -468,6 +462,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 p1Start = new PreviewPoint(_topLeft.X, _topLeft.Y);
                 p2Start = new PreviewPoint(_bottomRight.X, _bottomRight.Y);
             }
+
             _selectedPoint = point;
         }
 
@@ -520,7 +515,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //    base.Draw(fp);
         //}
 
-        public override void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements)
+        public override void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected)
         {
             if (_strings != null)
             {
@@ -529,15 +524,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 {
                     foreach (PreviewPixel pixel in _strings[i]._pixels)
                     {
-                        if (highlightedElements.Contains(pixel.Node))
-                            pixel.Draw(fp, Color.HotPink);
-                        else
-                            pixel.Draw(fp, Color.White);
+                        DrawPixel(pixel, fp, editMode, highlightedElements, selected);
+
+                        //if (highlightedElements.Contains(pixel.Node))
+                        //    pixel.Draw(fp, PreviewTools.HighlightedElementColor);
+                        //else
+                        //    pixel.Draw(fp, Color.White);
                     }
                 }
             }
 
-            base.Draw(fp, editMode, highlightedElements);
+            base.Draw(fp, editMode, highlightedElements, selected);
         }
 
         public override object Clone()
@@ -622,6 +619,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             Layout();
         }
 
+        public override void ResizeFromOriginal(double aspect)
+        {
+            _topLeft.X = p1Start.X;
+            _topLeft.Y = p1Start.Y;
+            _bottomRight.X = p2Start.X;
+            _bottomRight.Y = p2Start.Y;
+            Resize(aspect);
+        }
 
     }
 }

@@ -19,6 +19,7 @@ using System.IO;
 using System.Resources;
 using System.Reflection;
 
+
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
     public class ComboBoxItem
@@ -41,6 +42,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
     class PreviewTools
     {
         static public System.Object renderLock = new System.Object();
+        static public Color SelectedItemColor = Color.LimeGreen;
+        static public Color HighlightedElementColor = Color.Pink;
 
         public static T ParseEnum<T>(string value)
         {
@@ -190,23 +193,24 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
-        public static object DeSerializeToObject(string st, Type type)
+        public static DisplayItem DeSerializeToObject(string st, Type type)
         {
             var serializer = new DataContractSerializer(type);
+            DisplayItem item = null;
             using (var backing = new System.IO.StringReader(st))
             {
                 try
                 {
                     using (var reader = new System.Xml.XmlTextReader(backing))
                     {
-                        return serializer.ReadObject(reader);
+                        item = serializer.ReadObject(reader) as DisplayItem;
                     }
                 }
                 catch
                 {
-                    return null;
                 }
             }
+            return item;
         }
 
         public static Bitmap ResizeBitmap(Bitmap imgToResize, Size size)
@@ -311,6 +315,24 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     children.Add(child);
             }
             return children;
+        }
+
+        static public string TemplateFolder
+        {
+            get
+            {
+                string destFolder = System.IO.Path.Combine(VixenPreviewDescriptor.ModulePath, "Templates");
+                if (!System.IO.Directory.Exists(destFolder))
+                {
+                    System.IO.Directory.CreateDirectory(destFolder);
+                }
+                return destFolder;
+            }
+        }
+
+        static public string TemplateWithFolder(string templateName)
+        {
+            return System.IO.Path.Combine(TemplateFolder, templateName);
         }
     }
 }

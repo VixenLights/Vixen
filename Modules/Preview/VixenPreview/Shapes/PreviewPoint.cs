@@ -43,6 +43,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             _y = pointToClone.Y;
         }
 
+        public PreviewPoint(Point point)
+        {
+            _x = point.X;
+            _y = point.Y;
+        }
+
         [DataMember]
         public int X
         {

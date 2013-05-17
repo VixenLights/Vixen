@@ -55,8 +55,10 @@
             this.label5 = new System.Windows.Forms.Label();
             this.buttonSave = new System.Windows.Forms.Button();
             this.panel5 = new System.Windows.Forms.Panel();
-            this.button4 = new System.Windows.Forms.Button();
-            this.comboBoxStamp = new System.Windows.Forms.ComboBox();
+            this.buttonDeleteTemplate = new System.Windows.Forms.Button();
+            this.buttonAddToPreview = new System.Windows.Forms.Button();
+            this.buttonAddTemplate = new System.Windows.Forms.Button();
+            this.comboBoxTemplates = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
             this.buttonFlood = new System.Windows.Forms.Button();
@@ -223,36 +225,66 @@
             // panel5
             // 
             this.panel5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel5.Controls.Add(this.button4);
-            this.panel5.Controls.Add(this.comboBoxStamp);
+            this.panel5.Controls.Add(this.buttonDeleteTemplate);
+            this.panel5.Controls.Add(this.buttonAddToPreview);
+            this.panel5.Controls.Add(this.buttonAddTemplate);
+            this.panel5.Controls.Add(this.comboBoxTemplates);
             this.panel5.Controls.Add(this.label4);
-            this.panel5.Enabled = false;
             this.panel5.Location = new System.Drawing.Point(361, 3);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(171, 74);
+            this.panel5.Size = new System.Drawing.Size(195, 74);
             this.panel5.TabIndex = 10;
-            this.panel5.Visible = false;
             // 
-            // button4
+            // buttonDeleteTemplate
             // 
-            this.button4.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.button4.FlatAppearance.BorderSize = 0;
-            this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button4.Image = ((System.Drawing.Image)(resources.GetObject("button4.Image")));
-            this.button4.Location = new System.Drawing.Point(141, 3);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(24, 24);
-            this.button4.TabIndex = 4;
-            this.button4.UseVisualStyleBackColor = true;
+            this.buttonDeleteTemplate.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonDeleteTemplate.BackgroundImage")));
+            this.buttonDeleteTemplate.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.buttonDeleteTemplate.FlatAppearance.BorderSize = 0;
+            this.buttonDeleteTemplate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonDeleteTemplate.Location = new System.Drawing.Point(167, 5);
+            this.buttonDeleteTemplate.Name = "buttonDeleteTemplate";
+            this.buttonDeleteTemplate.Size = new System.Drawing.Size(22, 22);
+            this.buttonDeleteTemplate.TabIndex = 6;
+            this.buttonDeleteTemplate.Tag = "Delete Template";
+            this.buttonDeleteTemplate.UseVisualStyleBackColor = true;
+            this.buttonDeleteTemplate.Click += new System.EventHandler(this.buttonDeleteTemplate_Click);
             // 
-            // comboBoxStamp
+            // buttonAddToPreview
             // 
-            this.comboBoxStamp.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxStamp.FormattingEnabled = true;
-            this.comboBoxStamp.Location = new System.Drawing.Point(6, 5);
-            this.comboBoxStamp.Name = "comboBoxStamp";
-            this.comboBoxStamp.Size = new System.Drawing.Size(133, 21);
-            this.comboBoxStamp.TabIndex = 1;
+            this.buttonAddToPreview.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.buttonAddToPreview.Image = ((System.Drawing.Image)(resources.GetObject("buttonAddToPreview.Image")));
+            this.buttonAddToPreview.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.buttonAddToPreview.Location = new System.Drawing.Point(32, 28);
+            this.buttonAddToPreview.Name = "buttonAddToPreview";
+            this.buttonAddToPreview.Size = new System.Drawing.Size(107, 23);
+            this.buttonAddToPreview.TabIndex = 5;
+            this.buttonAddToPreview.Text = "Add to Preview";
+            this.buttonAddToPreview.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.buttonAddToPreview.UseVisualStyleBackColor = true;
+            this.buttonAddToPreview.Click += new System.EventHandler(this.buttonAddToPreview_Click);
+            // 
+            // buttonAddTemplate
+            // 
+            this.buttonAddTemplate.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonAddTemplate.BackgroundImage")));
+            this.buttonAddTemplate.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.buttonAddTemplate.FlatAppearance.BorderSize = 0;
+            this.buttonAddTemplate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonAddTemplate.Location = new System.Drawing.Point(141, 5);
+            this.buttonAddTemplate.Name = "buttonAddTemplate";
+            this.buttonAddTemplate.Size = new System.Drawing.Size(22, 22);
+            this.buttonAddTemplate.TabIndex = 4;
+            this.buttonAddTemplate.Tag = "Create Template";
+            this.buttonAddTemplate.UseVisualStyleBackColor = true;
+            this.buttonAddTemplate.Click += new System.EventHandler(this.buttonAddTemplate_Click);
+            // 
+            // comboBoxTemplates
+            // 
+            this.comboBoxTemplates.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxTemplates.FormattingEnabled = true;
+            this.comboBoxTemplates.Location = new System.Drawing.Point(6, 5);
+            this.comboBoxTemplates.Name = "comboBoxTemplates";
+            this.comboBoxTemplates.Size = new System.Drawing.Size(133, 21);
+            this.comboBoxTemplates.TabIndex = 1;
             // 
             // label4
             // 
@@ -260,9 +292,9 @@
             this.label4.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.label4.Location = new System.Drawing.Point(0, 53);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(169, 19);
+            this.label4.Size = new System.Drawing.Size(193, 19);
             this.label4.TabIndex = 0;
-            this.label4.Text = "Staps";
+            this.label4.Text = "Templates";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // panel4
@@ -588,7 +620,7 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -687,8 +719,8 @@
 
         private System.Windows.Forms.Panel panelToolbar;
         private System.Windows.Forms.Panel panel5;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.ComboBox comboBoxStamp;
+        private System.Windows.Forms.Button buttonAddTemplate;
+        private System.Windows.Forms.ComboBox comboBoxTemplates;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Button buttonStar;
@@ -730,6 +762,8 @@
         private System.Windows.Forms.Panel panel7;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button buttonHelp;
+        private System.Windows.Forms.Button buttonAddToPreview;
+        private System.Windows.Forms.Button buttonDeleteTemplate;
 
     }
 }

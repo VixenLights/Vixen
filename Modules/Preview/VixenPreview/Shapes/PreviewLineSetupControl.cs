@@ -11,19 +11,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 {
     public partial class PreviewLineSetupControl : DisplayItemBaseControl
     {
-        //private DisplayItem _displayItem;
-
-        public PreviewLineSetupControl(DisplayItem displayItem): base(displayItem)
+        public PreviewLineSetupControl(PreviewBaseShape shape): base(shape)
         {
             InitializeComponent();
-            _displayItem = displayItem;
-            propertyGrid.SelectedObject = displayItem.Shape;
-            displayItem.Shape.OnPropertiesChanged += OnPropertiesChanged;
+            propertyGrid.SelectedObject = Shape;
+            Shape.OnPropertiesChanged += OnPropertiesChanged;
         }
 
         ~PreviewLineSetupControl()
         {
-            _displayItem.Shape.OnPropertiesChanged -= OnPropertiesChanged;
+            Shape.OnPropertiesChanged -= OnPropertiesChanged;
         }
 
         private void OnPropertiesChanged(object sender, PreviewBaseShape shape)
