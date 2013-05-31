@@ -74,8 +74,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			using (Brush b = new SolidBrush(TextColor)) {
 				graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 				graphics.DrawString(EffectNode.Effect.EffectName, f, b, new RectangleF(5, 3, 50, 12));
-				graphics.DrawString("Start: " + EffectNode.StartTime.ToString(@"m\:ss\.fff"), f, b, new PointF(60, 3));
-				graphics.DrawString("Length: " + EffectNode.TimeSpan.ToString(@"m\:ss\.fff"), f, b, new PointF(60, 16));
+				graphics.DrawString(string.Format("Start: {0}", EffectNode.StartTime.ToString(@"m\:ss\.fff")), f, b, new PointF(60, 3));
+				graphics.DrawString(string.Format("Length: {0}" , EffectNode.TimeSpan.ToString(@"m\:ss\.fff")), f, b, new PointF(60, 16));
 			}
 
 			ElementTimeHasChangedSinceDraw = false;

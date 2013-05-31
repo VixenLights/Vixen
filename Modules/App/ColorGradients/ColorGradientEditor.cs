@@ -75,8 +75,8 @@ namespace VixenModules.App.ColorGradients
 					labelCurve.Text = "This gradient is a library gradient.";
 					Text = "Color Gradient Editor: Library Gradient";
 				} else {
-					labelCurve.Text = "This gradient is the library gradient: " + LibraryItemName;
-					Text = "Color Gradient Editor: Library Gradient " + LibraryItemName;
+					labelCurve.Text = string.Format("This gradient is the library gradient: {0}" , LibraryItemName);
+					Text = string.Format("Color Gradient Editor: Library Gradient {0}", LibraryItemName);
 				}
 
 				gradientEditPanel.ReadOnly = false;
@@ -87,7 +87,7 @@ namespace VixenModules.App.ColorGradients
 
 			} else {
 				if (item.IsLibraryReference) {
-					labelCurve.Text = "This gradient is linked to the library: " + item.LibraryReferenceName;
+					labelCurve.Text = string.Format("This gradient is linked to the library: {0}", item.LibraryReferenceName);
 				} else {
 					labelCurve.Text = "This gradient is not linked to any in the library.";
 				}

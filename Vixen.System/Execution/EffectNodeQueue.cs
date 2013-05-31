@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Vixen.Sys;
 
 namespace Vixen.Execution {
-	class EffectNodeQueue {
+	class EffectNodeQueue: IDisposable {
 		private Queue<IEffectNode> _queue;
 		//private ConcurrentQueue<IEffectNode> _queue;
 
@@ -40,6 +40,13 @@ namespace Vixen.Execution {
 				
 				if(effectNode != null) yield return effectNode;
 			} while(effectNode != null); 
+		}
+
+		public void Dispose()
+		{
+			_queue.Clear();
+			_queue = null;
+			GC.SuppressFinalize(this);
 		}
 	}
 }

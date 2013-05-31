@@ -39,7 +39,7 @@ namespace Common.Controls.Timeline
         private ElementMoveInfo m_elemMoveInfo;
         BackgroundWorker renderWorker = null;
         public ISequenceContext Context = null;
-
+		public bool SequenceLoading { get; set; }
 		#region Initialization
 
 		public Grid(TimeInfo timeinfo)
@@ -111,17 +111,21 @@ namespace Common.Controls.Timeline
 		}
 
 
-
 		private void ResizeGridHorizontally()
 		{
-			// resize the scroll canvas to be the new size of the whole display time, and cap it to not go past the end
-			AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), AutoScrollMinSize.Height);
+			if (this.InvokeRequired)
+				this.Invoke(new Vixen.Delegates.GenericDelegate(ResizeGridHorizontally));
+			else
+			{
+				// resize the scroll canvas to be the new size of the whole display time, and cap it to not go past the end
+				AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), AutoScrollMinSize.Height);
 
-            if (VisibleTimeEnd > TotalTime)
-                VisibleTimeStart = TotalTime - VisibleTimeSpan;
+				if (VisibleTimeEnd > TotalTime)
+					VisibleTimeStart = TotalTime - VisibleTimeSpan;
 
-			//shuffle the grid position to line up with where the visible time start should be
-			AutoScrollPosition = new Point((int)timeToPixels(VisibleTimeStart), -AutoScrollPosition.Y);
+				//shuffle the grid position to line up with where the visible time start should be
+				AutoScrollPosition = new Point((int)timeToPixels(VisibleTimeStart), -AutoScrollPosition.Y);
+			}
 		}
 
 
@@ -1035,8 +1039,14 @@ namespace Common.Controls.Timeline
 
 		private void ResizeGridHeight()
 		{
-			AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), CalculateAllRowsHeight());
-			Invalidate();
+			if (this.InvokeRequired) {
+				this.Invoke(new Vixen.Delegates.GenericDelegate(ResizeGridHeight));
+			}
+			else
+			{
+				AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), CalculateAllRowsHeight());
+				Invalidate();
+			}
 		}
 
 		public void SelectElement(Element element)
@@ -1611,6 +1621,7 @@ namespace Common.Controls.Timeline
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
+			if (!SequenceLoading)
 			try
 			{
 				e.Graphics.TranslateTransform(this.AutoScrollPosition.X, this.AutoScrollPosition.Y);

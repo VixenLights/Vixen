@@ -89,13 +89,19 @@ namespace Common.Controls.Timeline
 
 
 		#region Methods
-
+		delegate void AddRowLabelDelegate(RowLabel trl);
 		public void AddRowLabel(RowLabel trl)
 		{
-			RowLabels.Add(trl);
-			Controls.Add(trl);
-			trl.VisibleChanged += LabelVisibleChangedHandler;
-			DoLayout();
+			if (this.InvokeRequired) {
+				this.Invoke(new AddRowLabelDelegate(AddRowLabel), trl);
+			}
+			else
+			{
+				RowLabels.Add(trl);
+				Controls.Add(trl);
+				trl.VisibleChanged += LabelVisibleChangedHandler;
+				DoLayout();
+			}
 		}
 
 		public void RemoveRowLabel(RowLabel trl)

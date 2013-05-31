@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Drawing;
 using System.Collections.Generic;
+using Common.Controls.ControlsEx;
 
 namespace Common.Controls.Timeline
 {
 	[Serializable]
-    public class Element : IComparable<Element>, ITimePeriod
-    {
+	public class Element : IComparable<Element>, ITimePeriod, IDisposable
+	{
 		private TimeSpan m_startTime;
 		private TimeSpan m_duration;
 		private Color m_backColor = Color.White;
 		private Color m_borderColor = Color.Black;
 		private object m_tag = null;
 		private bool m_selected = false;
-        private bool m_redraw = false;
-        private bool m_rendered = false;
+		private bool m_redraw = false;
+		private bool m_rendered = false;
 
-        public Element()
-        {
-        }
+		public Element()
+		{
+		}
 
 		/// <summary>
 		/// Copy constructor. Creates a shallow copy of other.
@@ -34,37 +35,37 @@ namespace Common.Controls.Timeline
 		}
 
 
-        #region Begin/End update
+		#region Begin/End update
 
-        private TimeSpan m_origStartTime, m_origDuration;
+		private TimeSpan m_origStartTime, m_origDuration;
 
-        ///<summary>Suspends raising events until EndUpdate is called.</summary>
-        public void BeginUpdate()
-        {
-            m_origStartTime = this.StartTime;
-            m_origDuration = this.Duration;
-        }
+		///<summary>Suspends raising events until EndUpdate is called.</summary>
+		public void BeginUpdate()
+		{
+			m_origStartTime = this.StartTime;
+			m_origDuration = this.Duration;
+		}
 
-        public void EndUpdate()
-        {
-            if ((StartTime != m_origStartTime) || (Duration != m_origDuration))
-            {
-                OnTimeChanged();
-            }
-        }
+		public void EndUpdate()
+		{
+			if ((StartTime != m_origStartTime) || (Duration != m_origDuration))
+			{
+				OnTimeChanged();
+			}
+		}
 
-        #endregion
+		#endregion
 
 
 
-        #region Properties
+		#region Properties
 
-        /// <summary>
-        /// Gets or sets the starting time of this element (left side).
-        /// </summary>
-        public TimeSpan StartTime
-        {
-            get { return m_startTime; }
+		/// <summary>
+		/// Gets or sets the starting time of this element (left side).
+		/// </summary>
+		public TimeSpan StartTime
+		{
+			get { return m_startTime; }
 			set
 			{
 				if (value < TimeSpan.Zero)
@@ -76,14 +77,14 @@ namespace Common.Controls.Timeline
 				m_startTime = value;
 				OnTimeChanged();
 			}
-        }
+		}
 
 		/// <summary>
 		/// Gets or sets the time duration of this element (width).
 		/// </summary>
-        public TimeSpan Duration
-        {
-            get { return m_duration; }
+		public TimeSpan Duration
+		{
+			get { return m_duration; }
 			set
 			{
 				if (m_duration == value)
@@ -92,7 +93,7 @@ namespace Common.Controls.Timeline
 				m_duration = value;
 				OnTimeChanged();
 			}
-        }
+		}
 
 		/// <summary>
 		/// Gets or sets the ending time of this element (right side).
@@ -105,20 +106,20 @@ namespace Common.Controls.Timeline
 		}
 
 
-        public Color BackColor
-        {
-            get { return m_backColor; }
+		public Color BackColor
+		{
+			get { return m_backColor; }
 			set
 			{
 				m_backColor = value;
 				CachedCanvasIsCurrent = false;
 				OnContentChanged();
 			}
-        }
+		}
 
 		public Color BorderColor
 		{
-            get { return m_borderColor; }
+			get { return m_borderColor; }
 			set
 			{
 				m_borderColor = value;
@@ -127,11 +128,11 @@ namespace Common.Controls.Timeline
 			}
 		}
 
-        public object Tag
-        {
-            get { return m_tag; }
+		public object Tag
+		{
+			get { return m_tag; }
 			set { m_tag = value; OnContentChanged(); }
-        }
+		}
 
 		public bool Selected
 		{
@@ -140,9 +141,9 @@ namespace Common.Controls.Timeline
 			{
 				if (m_selected == value)
 					return;
-				
+
 				m_selected = value;
-                m_redraw = true;
+				m_redraw = true;
 				CachedCanvasIsCurrent = false;
 				OnSelectedChanged();
 			}
@@ -152,51 +153,51 @@ namespace Common.Controls.Timeline
 
 		#region Events
 
-        /// <summary>
-        /// Occurs when some of this element's other content changes.
-        /// </summary>
+		/// <summary>
+		/// Occurs when some of this element's other content changes.
+		/// </summary>
 		public event EventHandler ContentChanged;
 
-        /// <summary>
-        /// Occurs when this element's Selected state changes.
-        /// </summary>
+		/// <summary>
+		/// Occurs when this element's Selected state changes.
+		/// </summary>
 		public event EventHandler SelectedChanged;
 
-        /// <summary>
-        /// Occurs when one of this element's time propeties changes.
-        /// </summary>
+		/// <summary>
+		/// Occurs when one of this element's time propeties changes.
+		/// </summary>
 		public event EventHandler TimeChanged;
 
-        #endregion
+		#endregion
 
-        #region Virtual Methods
+		#region Virtual Methods
 
-        /// <summary>
-        /// Raises the ContentChanged event.
-        /// </summary>
+		/// <summary>
+		/// Raises the ContentChanged event.
+		/// </summary>
 		protected virtual void OnContentChanged()
-        {
-            if (ContentChanged != null)
-                ContentChanged(this, EventArgs.Empty);
-        }
+		{
+			if (ContentChanged != null)
+				ContentChanged(this, EventArgs.Empty);
+		}
 
-        /// <summary>
-        /// Raises the SelectedChanged event.
-        /// </summary>
-        protected virtual void OnSelectedChanged()
-        {
-            if (SelectedChanged != null)
-                SelectedChanged(this, EventArgs.Empty);
-        }
+		/// <summary>
+		/// Raises the SelectedChanged event.
+		/// </summary>
+		protected virtual void OnSelectedChanged()
+		{
+			if (SelectedChanged != null)
+				SelectedChanged(this, EventArgs.Empty);
+		}
 
-        /// <summary>
-        /// Raises the TimeChanged event.
-        /// </summary>
-        protected virtual void OnTimeChanged()
-        {
-            if (TimeChanged != null)
-                TimeChanged(this, EventArgs.Empty);
-        }
+		/// <summary>
+		/// Raises the TimeChanged event.
+		/// </summary>
+		protected virtual void OnTimeChanged()
+		{
+			if (TimeChanged != null)
+				TimeChanged(this, EventArgs.Empty);
+		}
 
 		#endregion
 
@@ -232,19 +233,25 @@ namespace Common.Controls.Timeline
 
 		protected virtual Bitmap SetupCanvas(Size imageSize)
 		{
-            Bitmap result = new Bitmap(imageSize.Width, imageSize.Height);
-			Graphics g = Graphics.FromImage(result);
-            using (Brush b = new SolidBrush(BackColor))
-            {
-                g.FillRectangle(b, 0, 0, imageSize.Width, imageSize.Height);
-            }
+			using (Bitmap result = new Bitmap(imageSize.Width, imageSize.Height))
+			{
 
-			return result;
+				using (Graphics g = Graphics.FromImage(result))
+				{
+					using (Brush b = new SolidBrush(BackColor))
+					{
+						g.FillRectangle(b, 0, 0, imageSize.Width, imageSize.Height);
+					}
+
+					return new Bitmap(result);
+				}
+			}
+
 		}
 
 		protected virtual void AddSelectionOverlayToCanvas(Graphics g)
 		{
-            // Width - bold if selected
+			// Width - bold if selected
 			int b_wd = Selected ? 3 : 1;
 
 			// Adjust the rect such that the border is completely inside it.
@@ -256,11 +263,12 @@ namespace Common.Controls.Timeline
 				);
 
 			// Draw it!
-			using (Pen border = new Pen(BorderColor)) {
+			using (Pen border = new Pen(BorderColor))
+			{
 				border.Width = b_wd;
 				g.DrawRectangle(border, b_rect);
 			}
-        }
+		}
 
 		protected virtual void DrawCanvasContent(Graphics graphics) { }
 
@@ -271,65 +279,82 @@ namespace Common.Controls.Timeline
 
 		public Bitmap Draw(Size imageSize, bool useCachedImage)
 		{
-            if ((CachedElementCanvas == null || !IsCanvasContentCurrent(imageSize) || CachedElementCanvas.Width != imageSize.Width || CachedElementCanvas.Height != imageSize.Height))
-            {
-                if (CachedElementCanvas != null)
-                    CachedElementCanvas.Dispose();
-                CachedElementCanvas = SetupCanvas(imageSize);
-                if (!useCachedImage || m_redraw)
-                {
-                    using (Graphics g = Graphics.FromImage(CachedElementCanvas))
-                    {
-                        DrawCanvasContent(g);
-                        AddSelectionOverlayToCanvas(g);
-                        m_rendered = true;
-                    }
-                    CachedCanvasIsCurrent = true;
-                    m_redraw = false;
-                }
-                else
-                {
-                    using (Graphics g = Graphics.FromImage(CachedElementCanvas))
-                    {
-                        AddSelectionOverlayToCanvas(g);
-                    }
-                }
+			if ((CachedElementCanvas == null || !IsCanvasContentCurrent(imageSize) || CachedElementCanvas.Width != imageSize.Width || CachedElementCanvas.Height != imageSize.Height))
+			{
+				if (CachedElementCanvas != null)
+					CachedElementCanvas.Dispose();
+				CachedElementCanvas = SetupCanvas(imageSize);
+				if (!useCachedImage || m_redraw)
+				{
+					using (Graphics g = Graphics.FromImage(CachedElementCanvas))
+					{
+						DrawCanvasContent(g);
+						AddSelectionOverlayToCanvas(g);
+						m_rendered = true;
+					}
+					CachedCanvasIsCurrent = true;
+					m_redraw = false;
+				}
+				else
+				{
+					using (Graphics g = Graphics.FromImage(CachedElementCanvas))
+					{
+						AddSelectionOverlayToCanvas(g);
+					}
+				}
 
-            }
-            else
-            {
-                if (!useCachedImage && !m_rendered)
-                {
-                    if (CachedElementCanvas != null)
-                        CachedElementCanvas.Dispose();
-                    CachedElementCanvas = SetupCanvas(imageSize);
-                    using (Graphics g = Graphics.FromImage(CachedElementCanvas))
-                    {
-                        DrawCanvasContent(g);
-                        AddSelectionOverlayToCanvas(g);
-                        m_rendered = true;
-                    }
+			}
+			else
+			{
+				if (!useCachedImage && !m_rendered)
+				{
+					if (CachedElementCanvas != null)
+						CachedElementCanvas.Dispose();
+					CachedElementCanvas = SetupCanvas(imageSize);
+					using (Graphics g = Graphics.FromImage(CachedElementCanvas))
+					{
+						DrawCanvasContent(g);
+						AddSelectionOverlayToCanvas(g);
+						m_rendered = true;
+					}
 
-                }
-            }
-            return CachedElementCanvas;
-        }
+				}
+			}
+			return CachedElementCanvas;
+		}
 
-		#endregion        
+		#endregion
+		~Element()
+		{
+			Dispose(false);
+		}
+		protected void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+
+			}
+			if (CachedElementCanvas != null)
+				CachedElementCanvas.Dispose();
+		}
+		public void Dispose()
+		{
+			Dispose(true);
+		}
 	}
 
 
 
-    public class ElementTimeInfo : ITimePeriod
-    {
-        public ElementTimeInfo(Element elem)
-        {
-            StartTime = elem.StartTime;
-            Duration = elem.Duration;
-        }
-        public TimeSpan StartTime { get; set; }
-        public TimeSpan Duration { get; set; }
-        public TimeSpan EndTime { get { return StartTime + Duration; } }
+	public class ElementTimeInfo : ITimePeriod
+	{
+		public ElementTimeInfo(Element elem)
+		{
+			StartTime = elem.StartTime;
+			Duration = elem.Duration;
+		}
+		public TimeSpan StartTime { get; set; }
+		public TimeSpan Duration { get; set; }
+		public TimeSpan EndTime { get { return StartTime + Duration; } }
 
 		public static void SwapTimes(ITimePeriod lhs, ITimePeriod rhs)
 		{
@@ -343,11 +368,11 @@ namespace Common.Controls.Timeline
 			lhs.Duration = rhs.Duration;
 			rhs.Duration = temp;
 		}
-    }
+	}
 
-    public interface ITimePeriod
-    {
-        TimeSpan StartTime { get; set; }
-        TimeSpan Duration { get; set; }
-    }
+	public interface ITimePeriod
+	{
+		TimeSpan StartTime { get; set; }
+		TimeSpan Duration { get; set; }
+	}
 }

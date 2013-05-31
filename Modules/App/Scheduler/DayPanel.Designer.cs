@@ -12,14 +12,19 @@
 		protected override void Dispose(bool disposing) {
 			if(disposing && (components != null)) {
 				components.Dispose();
+
 			}
+			if (disposing) {
+
+				_backgroundBrush.Dispose();
+				_hourPen.Dispose();
+				_halfHourPen.Dispose();
+				_timeLargeFont.Dispose();
+				_timeSmallFont.Dispose();
+				_timeLinePen.Dispose();
+			}
+
 			base.Dispose(disposing);
-			_backgroundBrush.Dispose();
-			_hourPen.Dispose();
-			_halfHourPen.Dispose();
-			_timeLargeFont.Dispose();
-			_timeSmallFont.Dispose();
-			_timeLinePen.Dispose();
 		}
 
 		#region Component Designer generated code
@@ -47,4 +52,4 @@
 		#endregion
 
 	}
-}
+} 

@@ -95,6 +95,8 @@ namespace Common.Controls.Timeline
 			//invalidate the control after the samples are created
 			this.Invalidate();	
 		}
+		
+		 
 
 		/// <summary>
 		/// sets the associated audio module to produce a waveform on
@@ -102,6 +104,19 @@ namespace Common.Controls.Timeline
 		public Audio Audio
 		{
 			set
+			{
+				SetAudio(value);
+				 
+			}
+
+			get { return audio; }
+		}
+		delegate void SetAudioDelegate(VixenModules.Media.Audio.Audio value);
+		private void SetAudio(VixenModules.Media.Audio.Audio value)
+		{
+			if (this.InvokeRequired)
+				this.Invoke(new SetAudioDelegate(SetAudio), value);
+			else
 			{
 				//Clean up any existing audio. 
 				if (audio != null)
@@ -117,17 +132,18 @@ namespace Common.Controls.Timeline
 					}
 					CreateWorker();
 					bw.RunWorkerAsync();
-					Visible = true;// Make us visible if we have audio to display.
+					Visible = true;
+					// Make us visible if we have audio to display.
+
 				}
 				else
 				{
 					Visible = false;
+
 				}
 
 				this.Invalidate();
 			}
-
-			get { return audio; }
 		}
 
 		protected override Size DefaultSize

@@ -27,7 +27,6 @@ namespace VixenModules.Effect.Pulse
 		protected override void _PreRender()
 		{
 			_elementData = new EffectIntents();
-
 			foreach (ElementNode node in TargetNodes) {
 				if (node != null)
 					RenderNode(node);

@@ -116,5 +116,26 @@ namespace Vixen.Module.SequenceType {
 			SequenceFilterData.AddData(sequenceFilterNodes);
 		}
 
+		~SequenceTypeDataModelBase() {
+			Dispose(false);
+		}
+		protected void Dispose(bool disposing) {
+			if (disposing) {
+				LocalDataSet.Dispose();
+				Media.Clear();
+				Media = null;
+				_effectNodeSurrogates = null;
+				_filterNodeSurrogates = null;
+				SequenceFilterData.Dispose();
+				DataStreams.Dispose();
+				SequenceFilterData = null;
+				DataStreams = null;
+			}
+		}
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
 	}
 }

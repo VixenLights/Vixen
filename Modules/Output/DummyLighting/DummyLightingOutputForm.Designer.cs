@@ -16,6 +16,11 @@
 			if (disposing && (components != null)) {
 				components.Dispose();
 			}
+			if (disposing) {
+				if (_brush != null)
+					_brush.Dispose();
+				_brush = null;
+			}
 			base.Dispose(disposing);
 		}
 

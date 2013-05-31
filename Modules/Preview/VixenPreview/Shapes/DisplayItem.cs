@@ -29,7 +29,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
     [KnownType(typeof(PreviewStar))]
     [KnownType(typeof(PreviewMegaTree))]
     [KnownType(typeof(PreviewCustom))]
-    public class DisplayItem : IHandler<IIntentState<LightingValue>>, IHandler<IIntentState<CommandValue>>
+    public class DisplayItem : IHandler<IIntentState<LightingValue>>, IHandler<IIntentState<CommandValue>>, IDisposable
     {
         private PreviewBaseShape _shape;
 
@@ -71,5 +71,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             Console.WriteLine("Handle 2");
         }
 
-    }
+		~DisplayItem() {
+			Dispose(false);
+		}
+		protected void Dispose(bool disposing) {
+			if (disposing) {
+				if (_shape != null)
+					_shape.Dispose();
+			}
+			_shape = null;
+		}
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+	}
 }

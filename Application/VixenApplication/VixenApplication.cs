@@ -466,9 +466,10 @@ namespace VixenApplication
 		private void statsTimer_Tick(object sender, EventArgs e)
 		{
 			long memUsage = _thisProc.PrivateMemorySize64 / 1024 / 1024;
+			long sharedMem = _thisProc.VirtualMemorySize64 / 1024 / 1024;
 
-			toolStripStatusLabel_memory.Text = String.Format("Mem: {0} MB   CPU: {1}%",
-				memUsage, _cpuUsage.GetUsage());
+			toolStripStatusLabel_memory.Text = String.Format("Mem: {0}/{2} MB   CPU: {1}%",
+				memUsage, _cpuUsage.GetUsage(), sharedMem);
 		}
 
 		#endregion

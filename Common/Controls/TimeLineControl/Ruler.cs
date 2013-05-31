@@ -19,7 +19,7 @@ namespace Common.Controls.Timeline
 
 
 		public Ruler(TimeInfo timeinfo)
-			:base(timeinfo)
+			: base(timeinfo)
 		{
 			BackColor = Color.Gray;
 			recalculate();
@@ -44,7 +44,7 @@ namespace Common.Controls.Timeline
 		#region Drawing
 
 		protected override void OnPaint(PaintEventArgs e)
-        {
+		{
 			try
 			{
 				// Translate the graphics to work the same way the timeline grid does
@@ -55,7 +55,8 @@ namespace Common.Controls.Timeline
 				drawTicks(e.Graphics, MinorTick, 1, 0.25);
 				drawTimes(e.Graphics);
 
-				using (Pen p = new Pen(Color.Black, 2)) {
+				using (Pen p = new Pen(Color.Black, 2))
+				{
 					e.Graphics.DrawLine(p, 0, Height - 1, timeToPixels(TotalTime), Height - 1);
 				}
 
@@ -65,26 +66,26 @@ namespace Common.Controls.Timeline
 			{
 				MessageBox.Show("Exception in Timeline.Ruler.OnPaint():\n\n\t" + ex.Message + "\n\nBacktrace:\n\n\t" + ex.StackTrace);
 			}
-        }
+		}
 
 		private void drawTicks(Graphics graphics, TimeSpan interval, int width, double height)
-        {
-            Single pxint = timeToPixels(interval);
+		{
+			Single pxint = timeToPixels(interval);
 
-            // calculate first tick - (it is the first multiple of interval greater than start)
-            // believe it or not, this math is correct :-)
+			// calculate first tick - (it is the first multiple of interval greater than start)
+			// believe it or not, this math is correct :-)
 			Single start = timeToPixels(VisibleTimeStart) - (timeToPixels(VisibleTimeStart) % pxint) + pxint;
-            Single end = timeToPixels(VisibleTimeEnd);
+			Single end = timeToPixels(VisibleTimeEnd);
 
-            for (Single x = start; x <= end; x += pxint)   
-            {
-                Pen p = new Pen(Color.Black);
-                p.Width = width;
-                p.Alignment = PenAlignment.Right;
-                graphics.DrawLine(p, x, (Single)(Height * (1.0-height)), x, Height);
+			for (Single x = start; x <= end; x += pxint)
+			{
+				Pen p = new Pen(Color.Black);
+				p.Width = width;
+				p.Alignment = PenAlignment.Right;
+				graphics.DrawLine(p, x, (Single)(Height * (1.0 - height)), x, Height);
 
-            }
-        }
+			}
+		}
 
 		private void drawTimes(Graphics graphics)
 		{
@@ -193,7 +194,7 @@ namespace Common.Controls.Timeline
 			base.OnResize(e);
 		}
 
-		protected override void  OnTimePerPixelChanged(object sender, EventArgs e)
+		protected override void OnTimePerPixelChanged(object sender, EventArgs e)
 		{
 			recalculate();
 			base.OnTimePerPixelChanged(sender, e);
@@ -202,7 +203,7 @@ namespace Common.Controls.Timeline
 		protected override void OnVisibleTimeStartChanged(object sender, EventArgs e)
 		{
 			// not ideal, but looks a *shitload* better.
-			Refresh(); 
+			Refresh();
 		}
 
 
@@ -231,19 +232,23 @@ namespace Common.Controls.Timeline
 				{
 					m_MinorTick = TimeSpan.FromMilliseconds(100);
 					m_minorTicksPerMajor = 5;
-				} else if (t.TotalSeconds < 0.25)
+				}
+				else if (t.TotalSeconds < 0.25)
 				{
 					m_MinorTick = TimeSpan.FromMilliseconds(250);
 					m_minorTicksPerMajor = 4;
-				} else if (t.TotalSeconds < 0.5)
+				}
+				else if (t.TotalSeconds < 0.5)
 				{
 					m_MinorTick = TimeSpan.FromMilliseconds(500);
 					m_minorTicksPerMajor = 4;
-				} else if (t.TotalSeconds < 1)
+				}
+				else if (t.TotalSeconds < 1)
 				{
 					m_MinorTick = TimeSpan.FromSeconds(1);
 					m_minorTicksPerMajor = 5;
-				} else if (t.TotalSeconds < 5)
+				}
+				else if (t.TotalSeconds < 5)
 				{
 					m_MinorTick = TimeSpan.FromSeconds(5);
 					m_minorTicksPerMajor = 6; //major = 30.0;
@@ -313,7 +318,7 @@ namespace Common.Controls.Timeline
 			{
 				// Fractional seconds
 				double d = 0.000001;
-				for (;;)
+				for (; ; )
 				{
 					if (t.TotalSeconds < d)
 					{
@@ -415,7 +420,7 @@ namespace Common.Controls.Timeline
 		}
 
 
-		
+
 
 
 		#region Mouse
@@ -486,7 +491,7 @@ namespace Common.Controls.Timeline
 			{
 				case MouseState.Normal:
 					break; // this is okay and will happen
-					//throw new Exception("MouseUp in MouseState.Normal - WTF?");
+				//throw new Exception("MouseUp in MouseState.Normal - WTF?");
 
 				case MouseState.DragWait:
 					// Didn't move enough to be considered dragging. Just a click.
@@ -517,10 +522,10 @@ namespace Common.Controls.Timeline
 			base.OnMouseLeave(e);
 		}
 
-		
-		
-		
-		
+
+
+
+
 		public event EventHandler<RulerClickedEventArgs> ClickedAtTime;
 		public event EventHandler<ModifierKeysEventArgs> TimeRangeDragged;
 		public event EventHandler BeginDragTimeRange;
@@ -542,13 +547,25 @@ namespace Common.Controls.Timeline
 			if (BeginDragTimeRange != null)
 				BeginDragTimeRange(this, EventArgs.Empty);
 		}
-		
+
 
 		#endregion
 
 
 
-
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (m_font != null)
+					m_font.Dispose();
+				if (m_textBrush != null)
+					m_textBrush.Dispose();
+				m_font = null;
+				m_textBrush = null;
+			}
+			base.Dispose(disposing);
+		}
 
 	}
 
@@ -576,4 +593,5 @@ namespace Common.Controls.Timeline
 		public TimeSpan Time { get; private set; }
 		public Keys ModifierKeys { get; private set; }
 	}
+
 }

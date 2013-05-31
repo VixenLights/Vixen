@@ -30,7 +30,7 @@ namespace Vixen.IO.Xml.Serializer {
 						new XAttribute(ATTR_MODULE_INSTANCE, value.ModuleInstanceId),
 						XElement.Parse(objectData));
 				} catch(Exception ex) {
-					VixenSystem.Logging.Error("Error when serializing data model of type " + value.GetType().Name, ex);
+					VixenSystem.Logging.Error(string.Format("Error when serializing data model of type {0}", value.GetType().Name), ex);
 					return null;
 				}
 			}

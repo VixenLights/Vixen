@@ -7,7 +7,7 @@ using System.Linq;
 // to the system for immediate execution at the appropriate time.
 
 namespace Vixen.Sys {
-	public class DataStreams {
+	public class DataStreams: IDisposable {
 		// Data in these streams is pulled only at execution start.
 		// There will always be at least one stream.
 		private List<DataStream> _dataStreams = new List<DataStream>();
@@ -140,5 +140,21 @@ namespace Vixen.Sys {
 			_dataStreams.Remove(dataStream);
 		}
 		#endregion
+		~DataStreams() {
+			Dispose(false);
+		}
+		protected void Dispose(bool disposing) {
+			if (disposing) {
+				_dataStreams.ForEach(d => d.Dispose());
+				_dataStreams = null;
+				_mainStream.Dispose();
+				_mainStream = null;
+			}
+		}
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
 	}
 }

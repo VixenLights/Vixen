@@ -180,9 +180,11 @@ namespace VixenModules.Preview.VixenPreview
             timer.Start();
 
             //displayForm.PreviewControl.ProcessUpdate(elementStates);
-            displayForm.PreviewControl.BeginInvoke(new ProcessUpdateDelegate(displayForm.PreviewControl.ProcessUpdate), new object[] {elementStates});
-
-            timer.Stop();
+            //displayForm.PreviewControl.BeginInvoke(new ProcessUpdateDelegate(displayForm.PreviewControl.ProcessUpdate), new object[] {elementStates});
+			displayForm.PreviewControl.ProcessUpdateParallel(elementStates);
+			
+			//displayForm.PreviewControl.ProcessUpdateParallel(elementStates);
+			timer.Stop();
 
             VixenPreviewControl.updateCount += 1;
             VixenPreviewControl.lastUpdateTime = timer.ElapsedMilliseconds;

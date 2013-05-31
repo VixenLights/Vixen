@@ -3,43 +3,58 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Vixen.Sys {
-	public abstract class Log {
-		public event EventHandler<LogItemEventArgs> ItemLogged;
+namespace Vixen.Sys
+{
+    public abstract class Log
+    {
+        public event EventHandler<LogItemEventArgs> ItemLogged;
 
-		protected Log(string name) {
-			Name = name;
-		}
-		
-		public string Name { get; private set; }
+        protected Log(string name)
+        {
+            Name = name;
+        }
 
-		public virtual void Write(string qualifyingMessage, Exception ex) {
-			string text = qualifyingMessage + ": " + ex.Message + Environment.NewLine;
-			while(ex.InnerException != null) {
-				text += ex.InnerException.Message + Environment.NewLine;
-				ex = ex.InnerException;
-			}
-			Write(text);
-		}
+        public string Name { get; private set; }
 
-		public virtual void Write(Exception ex) {
-			string text = ex.Message + Environment.NewLine;
-			while(ex.InnerException != null) {
-				text += ex.InnerException.Message + Environment.NewLine;
-				ex = ex.InnerException;
-			}
-			Write(text);
-		}
+        public virtual void Write(string qualifyingMessage, Exception ex)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendFormat("{0}: {1}\n", qualifyingMessage, ex.Message);
 
-		public virtual void Write(string text) {
-			text = "[" + DateTime.Now + "]: " + text + Environment.NewLine;
-			OnItemLogged(new LogItemEventArgs(text));
-		}
+            while (ex.InnerException != null)
+            {
+                sb.AppendLine(ex.InnerException.Message);
+                ex = ex.InnerException;
+            }
+            Write(sb.ToString());
+        }
 
-		protected virtual void OnItemLogged(LogItemEventArgs e) {
-			if(ItemLogged != null) {
-				ItemLogged(this, e);
-			}
-		}
-	}
+        public virtual void Write(Exception ex)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(ex.Message);
+
+            while (ex.InnerException != null)
+            {
+                sb.AppendLine(ex.InnerException.Message);
+                ex = ex.InnerException;
+            }
+            Write(sb.ToString());
+
+        }
+
+        public virtual void Write(string text)
+        {
+            text = string.Format("[{0}]: {1}\n", DateTime.Now, text);
+            OnItemLogged(new LogItemEventArgs(text));
+        }
+
+        protected virtual void OnItemLogged(LogItemEventArgs e)
+        {
+            if (ItemLogged != null)
+            {
+                ItemLogged(this, e);
+            }
+        }
+    }
 }

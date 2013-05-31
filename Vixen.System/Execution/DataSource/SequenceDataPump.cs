@@ -5,7 +5,7 @@ using System.Threading;
 using Vixen.Sys;
 
 namespace Vixen.Execution.DataSource {
-	class SequenceDataPump : IDataSource {
+	class SequenceDataPump : IDataSource, IDisposable {
 		private EffectNodeQueue _effectNodeQueue;
 		private Thread _dataPumpThread;
 
@@ -66,6 +66,24 @@ namespace Vixen.Execution.DataSource {
 			} finally {
 				dataEnumerator.Dispose();
 			}
+		}
+		~SequenceDataPump() {
+			Dispose(false);
+		}
+		protected void Dispose(bool disposing) {
+			if (disposing) {
+
+				if (_dataPumpThread != null)
+					_dataPumpThread.Abort();
+				_dataPumpThread = null;
+				_effectNodeQueue.Dispose();
+				Sequence.Dispose();
+			}
+		}
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
 		}
 	}
 }

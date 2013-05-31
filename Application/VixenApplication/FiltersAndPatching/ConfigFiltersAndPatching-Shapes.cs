@@ -14,7 +14,7 @@ using Vixen.Sys.Output;
 
 namespace VixenApplication
 {
-	public abstract class FilterSetupShapeBase : RoundedBox
+	public abstract class FilterSetupShapeBase : RoundedBox, IDisposable
 	{
 		protected virtual void _init()
 		{
@@ -34,7 +34,8 @@ namespace VixenApplication
 		public override void CopyFrom(Shape source)
 		{
 			base.CopyFrom(source);
-			if (source is FilterSetupShapeBase) {
+			if (source is FilterSetupShapeBase)
+			{
 				FilterSetupShapeBase src = (FilterSetupShapeBase)source;
 			}
 		}
@@ -55,7 +56,8 @@ namespace VixenApplication
 		protected void _CopyControlPointsFrom(FilterSetupShapeBase source)
 		{
 			controlPoints = new Point[ControlPointCount];
-			for (int i = 0; i < source.ControlPoints.Length; i++) {
+			for (int i = 0; i < source.ControlPoints.Length; i++)
+			{
 				controlPoints[i] = source.ControlPoints[i];
 			}
 		}
@@ -137,23 +139,30 @@ namespace VixenApplication
 			// resize the font smaller until it fits in 90% of the shape width (or until it hits 6 pixels in size)
 			SizeF stringSize = graphics.MeasureString(Title, _font);
 
-			while (stringSize.Width > (Width * 0.9) && (_font.Size > 6)) {
+			while (stringSize.Width > (Width * 0.9) && (_font.Size > 6))
+			{
 				float newSize = (float)(_font.Size * 0.9);
 				_font = new Font("Arial", newSize, GraphicsUnit.Pixel);
 				stringSize = graphics.MeasureString(Title, _font);
 			}
 
 			float x;
-			if (centerX) {
+			if (centerX)
+			{
 				x = X - (stringSize.Width / 2f);
-			} else {
+			}
+			else
+			{
 				x = X - (Width / 2f) + xOffset - (stringSize.Width / 2f);
 			}
 
 			float y;
-			if (centerY) {
+			if (centerY)
+			{
 				y = Y - (stringSize.Height / 2f);
-			} else {
+			}
+			else
+			{
 				y = Y - (Height / 2f) + yOffset - (stringSize.Height / 2f);
 			}
 
@@ -170,12 +179,14 @@ namespace VixenApplication
 				return true;
 
 			int index = GetControlPointIndex(controlPointId);
-			if (index > 0 && index <= InputCount + OutputCount) {
+			if (index > 0 && index <= InputCount + OutputCount)
+			{
 				return ((controlPointCapability & ControlPointCapabilities.Connect) > 0 ||
 						(controlPointCapability & ControlPointCapabilities.Resize) > 0);
 			}
 
-			if (controlPointId == ControlPointId.Reference || index == 0) {
+			if (controlPointId == ControlPointId.Reference || index == 0)
+			{
 				return ReferenceControlPointHasCapability(controlPointCapability);
 			}
 
@@ -208,7 +219,8 @@ namespace VixenApplication
 		// returns the (0-indexed) output number for the given control point
 		public int GetOutputNumberForControlPoint(ControlPointId controlPoint)
 		{
-			if (controlPoint == ControlPointId.None || controlPoint == ControlPointId.Any) {
+			if (controlPoint == ControlPointId.None || controlPoint == ControlPointId.Any)
+			{
 				Debugger.Break();
 				return 0;
 			}
@@ -224,7 +236,8 @@ namespace VixenApplication
 		// returns the (0-indexed) input number for the given control point
 		public int GetInputNumberForControlPoint(ControlPointId controlPoint)
 		{
-			if (controlPoint == ControlPointId.None || controlPoint == ControlPointId.Any) {
+			if (controlPoint == ControlPointId.None || controlPoint == ControlPointId.Any)
+			{
 				Debugger.Break();
 				return 0;
 			}
@@ -239,7 +252,8 @@ namespace VixenApplication
 
 		public FilterShapeControlPointType GetTypeForControlPoint(ControlPointId controlPoint)
 		{
-			if (controlPoint == ControlPointId.None || controlPoint == ControlPointId.Any) {
+			if (controlPoint == ControlPointId.None || controlPoint == ControlPointId.Any)
+			{
 				Debugger.Break();
 				return FilterShapeControlPointType.Other;
 			}
@@ -269,14 +283,16 @@ namespace VixenApplication
 			ControlPoints[0].X = 0;
 			ControlPoints[0].Y = 0;
 
-			for (int i = 0; i < InputCount; i++) {
+			for (int i = 0; i < InputCount; i++)
+			{
 				ControlPoints[offset + i].X = left;
 				ControlPoints[offset + i].Y = (int)Math.Round((-Height / 2f) + Height * GetProportionalDistanceForPoint(i, InputCount));
 			}
 
 			offset += InputCount;
 
-			for (int i = 0; i < OutputCount; i++) {
+			for (int i = 0; i < OutputCount; i++)
+			{
 				ControlPoints[offset + i].X = right;
 				ControlPoints[offset + i].Y = (int)Math.Round((-Height / 2f) + Height * GetProportionalDistanceForPoint(i, OutputCount));
 			}
@@ -314,6 +330,29 @@ namespace VixenApplication
 			Output,
 			Other
 		}
+
+
+		~FilterSetupShapeBase()
+		{
+			Dispose(false);
+		}
+		protected void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (_customFont != null) _customFont.Dispose();
+				if (_defaultFont != null) _defaultFont.Dispose();
+				if (_customTextBrush != null) _customTextBrush.Dispose();
+				if (_defaultTextBrush != null) _defaultTextBrush.Dispose();
+				_customTextBrush = null;
+				_customFont = null;
+				
+			}
+		}
+		void IDisposable.Dispose()
+		{
+			Dispose(true);
+		}
 	}
 
 
@@ -339,7 +378,8 @@ namespace VixenApplication
 		public override void CopyFrom(Shape source)
 		{
 			base.CopyFrom(source);
-			if (source is NestingSetupShape) {
+			if (source is NestingSetupShape)
+			{
 				NestingSetupShape src = (NestingSetupShape)source;
 				ChildFilterShapes = new List<FilterSetupShapeBase>(src.ChildFilterShapes);
 			}
@@ -351,7 +391,8 @@ namespace VixenApplication
 
 		public override void DrawCustom(Graphics graphics)
 		{
-			if (ChildFilterShapes.Count == 0) {
+			if (ChildFilterShapes.Count == 0)
+			{
 				base.DrawCustom(graphics);
 				return;
 			}
@@ -379,7 +420,8 @@ namespace VixenApplication
 		public override void CopyFrom(Shape source)
 		{
 			base.CopyFrom(source);
-			if (source is ElementNodeShape) {
+			if (source is ElementNodeShape)
+			{
 				ElementNodeShape src = (ElementNodeShape)source;
 				_node = src.Node;
 				_CopyControlPointsFrom(src);
@@ -481,7 +523,8 @@ namespace VixenApplication
 		public override void CopyFrom(Shape source)
 		{
 			base.CopyFrom(source);
-			if (source is OutputShape) {
+			if (source is OutputShape)
+			{
 				OutputShape src = (OutputShape)source;
 				_controller = src.Controller;
 				_output = src.Output;
@@ -556,7 +599,8 @@ namespace VixenApplication
 		public override void CopyFrom(Shape source)
 		{
 			base.CopyFrom(source);
-			if (source is FilterShape) {
+			if (source is FilterShape)
+			{
 				FilterShape src = (FilterShape)source;
 				_filterInstance = src.FilterInstance;
 				_CopyControlPointsFrom(src);
@@ -603,7 +647,8 @@ namespace VixenApplication
 		public bool RunSetup()
 		{
 			bool result = false;
-			if (FilterInstance.HasSetup) {
+			if (FilterInstance.HasSetup)
+			{
 				result = FilterInstance.Setup();
 				if (result)
 					_recalcControlPoints();
@@ -628,7 +673,8 @@ namespace VixenApplication
 		public override void CopyFrom(Shape source)
 		{
 			base.CopyFrom(source);
-			if (source is DataFlowConnectionLine) {
+			if (source is DataFlowConnectionLine)
+			{
 				DataFlowConnectionLine src = (DataFlowConnectionLine)source;
 				SourceDataFlowComponentReference = src.SourceDataFlowComponentReference;
 				DestinationDataComponent = src.DestinationDataComponent;

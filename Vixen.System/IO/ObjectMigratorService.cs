@@ -52,7 +52,7 @@ namespace Vixen.IO {
 				try {
 					content = migrator.MigrateContent(content, migrationSegment.FromVersion, migrationSegment.ToVersion);
 				} catch(Exception ex) {
-					throw new Exception("Error when migrating from version " + contentVersion + " to version " + targetVersion, ex);
+					throw new Exception(string.Format("Error when migrating from version {0} to version {1}" , contentVersion , targetVersion), ex);
 				}
 			}
 			

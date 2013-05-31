@@ -5,7 +5,7 @@ using Vixen.Module;
 using Vixen.Module.Media;
 
 namespace Vixen.Sys {
-	public interface ISequenceTypeDataModel {
+	public interface ISequenceTypeDataModel: IDisposable {
 		//int Version { get; set; }
 		TimeSpan Length { get; set; }
 		SelectedTimingProvider SelectedTimingProvider { get; set; }

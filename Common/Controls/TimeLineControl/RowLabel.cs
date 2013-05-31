@@ -84,12 +84,15 @@ namespace Common.Controls.Timeline
 			if (MousePosContainsResizeBar(e))
 				return;
 
-			
-			if ((ParentRow.ChildRows.Count > 0) && IconArea.Contains(e.Location)) {
+
+			if ((ParentRow.ChildRows.Count > 0) && IconArea.Contains(e.Location))
+			{
 				// if it's within the toggle button, toggle the tree
 				_TreeToggled();
 				Invalidate();
-			} else if (LabelArea.Contains(e.Location) || ((ParentRow.ChildRows.Count == 0) && IconArea.Contains(e.Location))) {
+			}
+			else if (LabelArea.Contains(e.Location) || ((ParentRow.ChildRows.Count == 0) && IconArea.Contains(e.Location)))
+			{
 				_LabelClicked(Form.ModifierKeys);
 			}
 		}
@@ -98,8 +101,10 @@ namespace Common.Controls.Timeline
 		{
 			base.OnMouseDown(e);
 
-			if (e.Button == MouseButtons.Left) {
-				if (MousePosContainsResizeBar(e)) {
+			if (e.Button == MouseButtons.Left)
+			{
+				if (MousePosContainsResizeBar(e))
+				{
 					Resizing = true;
 					LastMouseLocation = e.Location;
 				}
@@ -110,7 +115,8 @@ namespace Common.Controls.Timeline
 		{
 			base.OnMouseUp(e);
 
-			if (e.Button == MouseButtons.Left) {
+			if (e.Button == MouseButtons.Left)
+			{
 				Resizing = false;
 			}
 		}
@@ -124,7 +130,8 @@ namespace Common.Controls.Timeline
 			else
 				this.Cursor = Cursors.Default;
 
-			if (Resizing) {
+			if (Resizing)
+			{
 				int dy = e.Y - LastMouseLocation.Y;
 				LastMouseLocation = e.Location;
 				_HeightChanged(dy);
@@ -143,39 +150,54 @@ namespace Common.Controls.Timeline
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			SolidBrush backgroundBrush = new SolidBrush(SystemColors.ControlLight);
-			SolidBrush toggleBrush = new SolidBrush(SystemColors.ActiveCaption);
-			SolidBrush nodeIconBrush = new SolidBrush(SystemColors.ControlDark);
-			SolidBrush textBrush = new SolidBrush(Color.Black);
+			using (SolidBrush backgroundBrush = new SolidBrush(SystemColors.ControlLight))
+			{
+				using (SolidBrush toggleBrush = new SolidBrush(SystemColors.ActiveCaption))
+				{
+					using (SolidBrush nodeIconBrush = new SolidBrush(SystemColors.ControlDark))
+					{
+						using (SolidBrush textBrush = new SolidBrush(Color.Black))
+						{
+							using (Pen wholeBorderPen = new Pen(SystemColors.ControlDarkDark, 1))
+							{
+								wholeBorderPen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
+								using (Pen toggleBorderPen = new Pen(SystemColors.ControlDark, 1))
+								{
+									toggleBorderPen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
 
-			Pen wholeBorderPen = new Pen(SystemColors.ControlDarkDark, 1);
-			wholeBorderPen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
-			Pen toggleBorderPen = new Pen(SystemColors.ControlDark, 1);
-			toggleBorderPen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
+									int fontHeight = 12;
+									fontHeight = Math.Min(fontHeight, (int)(Height * 0.4));
+									using (Font font = new Font("Arial", fontHeight))
+									{
 
-			int fontHeight = 12;
-			fontHeight = Math.Min(fontHeight, (int)(Height * 0.4));
-			Font font = new Font("Arial", fontHeight);
+										IconArea = new Rectangle(0, 0, ToggleTreeButtonWidth, Height);
+										LabelArea = new Rectangle(ToggleTreeButtonWidth, 0, Width - ToggleTreeButtonWidth, Height);
 
-			IconArea = new Rectangle(0, 0, ToggleTreeButtonWidth, Height);
-			LabelArea = new Rectangle(ToggleTreeButtonWidth, 0, Width - ToggleTreeButtonWidth, Height);
+										Rectangle wholeBorderArea = new Rectangle(0, -1, Width - 1, Height);
+										Rectangle iconBorderArea = new Rectangle(0, -1, IconArea.Width, IconArea.Height);
+										
+										e.Graphics.FillRectangle((ParentRow.ChildRows.Count == 0) ? nodeIconBrush : toggleBrush, IconArea);
+										e.Graphics.FillRectangle(backgroundBrush, LabelArea);
 
-			Rectangle wholeBorderArea = new Rectangle(0, -1, Width - 1, Height);
-			Rectangle iconBorderArea = new Rectangle(0, -1, IconArea.Width, IconArea.Height);
+										e.Graphics.DrawRectangle(toggleBorderPen, iconBorderArea);
+										e.Graphics.DrawRectangle(wholeBorderPen, wholeBorderArea);
 
-			e.Graphics.FillRectangle((ParentRow.ChildRows.Count == 0) ? nodeIconBrush : toggleBrush, IconArea);
-			e.Graphics.FillRectangle(backgroundBrush, LabelArea);
-
-			e.Graphics.DrawRectangle(toggleBorderPen, iconBorderArea);
-			e.Graphics.DrawRectangle(wholeBorderPen, wholeBorderArea);
-
-			StringFormat sf = new StringFormat();
-			sf.Alignment = StringAlignment.Near;
-			sf.LineAlignment = StringAlignment.Center;
-			sf.Trimming = StringTrimming.EllipsisCharacter;
-			sf.FormatFlags = StringFormatFlags.NoWrap;
-			Rectangle stringPos = new Rectangle(LabelArea.X + 6, LabelArea.Y, LabelArea.Width - 6, LabelArea.Height);
-			e.Graphics.DrawString(Name, font, textBrush, stringPos, sf);
+										using (StringFormat sf = new StringFormat())
+										{
+											sf.Alignment = StringAlignment.Near;
+											sf.LineAlignment = StringAlignment.Center;
+											sf.Trimming = StringTrimming.EllipsisCharacter;
+											sf.FormatFlags = StringFormatFlags.NoWrap;
+											Rectangle stringPos = new Rectangle(LabelArea.X + 6, LabelArea.Y, LabelArea.Width - 6, LabelArea.Height);
+											e.Graphics.DrawString(Name, font, textBrush, stringPos, sf);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 
 		#endregion

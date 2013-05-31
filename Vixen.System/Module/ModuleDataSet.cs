@@ -4,14 +4,17 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Vixen.IO;
 
-namespace Vixen.Module {
+namespace Vixen.Module
+{
 	[DataContract]
-    public abstract class ModuleDataSet : IModuleDataSet {
+	public abstract class ModuleDataSet : IModuleDataSet, IDisposable
+	{
 		// Type data     = (type id, type id)     : data model
 		// Instance data = (type id, instance id) : data model
 		private List<IModuleDataModel> _dataModels;
 
-		protected ModuleDataSet() {
+		protected ModuleDataSet()
+		{
 			_Init();
 		}
 
@@ -21,8 +24,10 @@ namespace Vixen.Module {
 		/// type can be in the dataset.
 		/// </summary>
 		/// <param name="module"></param>
-		public void AssignModuleTypeData(IModuleInstance module) {
-			if(module != null) {
+		public void AssignModuleTypeData(IModuleInstance module)
+		{
+			if (module != null)
+			{
 				// 1. Module has a data object, we don't.
 				//    - Add the module's data object
 				// 2. Module has no data object, we do.
@@ -32,10 +37,13 @@ namespace Vixen.Module {
 				// 4. Neither has a data object.
 				//    - We create one within ourselves and assign it in the module.
 				IModuleDataModel dataModel = _GetDataInstance(module);
-				if(!_ContainsTypeData(module.Descriptor.TypeId) && dataModel != null) {
+				if (!_ContainsTypeData(module.Descriptor.TypeId) && dataModel != null)
+				{
 					// We have no data, but the module does.  Add it.
 					_AddAsTypeData(dataModel, module);
-				} else {
+				}
+				else
+				{
 					// In every other case, we have or can create data.
 					//module.ModuleData = RetrieveTypeData(module.Descriptor);
 					module.ModuleData = _GetOrCreateAsTypeData(module);
@@ -55,7 +63,8 @@ namespace Vixen.Module {
 		/// <summary>
 		/// Retrieves the module type data without assigning it to a module instance.
 		/// </summary>
-		public IModuleDataModel GetTypeData(IModuleInstance module) {
+		public IModuleDataModel GetTypeData(IModuleInstance module)
+		{
 			//return _GetModuleData(descriptor, descriptor.TypeId);
 			return _GetOrCreateAsTypeData(module);
 		}
@@ -66,8 +75,10 @@ namespace Vixen.Module {
 		/// of a module type in the dataset.
 		/// </summary>
 		/// <param name="module"></param>
-		public void AssignModuleInstanceData(IModuleInstance module) {
-			if(module != null) {
+		public void AssignModuleInstanceData(IModuleInstance module)
+		{
+			if (module != null)
+			{
 				// 1. Module has a data object, we don't.
 				//    - Add the module's data object
 				// 2. Module has no data object, we do.
@@ -77,10 +88,13 @@ namespace Vixen.Module {
 				// 4. Neither has a data object.
 				//    - We create one within ourselves and assign it in the module.
 				IModuleDataModel dataModel = _GetDataInstance(module);
-				if(!_ContainsInstanceData(module.Descriptor.TypeId, module.InstanceId) && dataModel != null) {
+				if (!_ContainsInstanceData(module.Descriptor.TypeId, module.InstanceId) && dataModel != null)
+				{
 					// We have no data, but the module does.  Add it.
 					_AddAsInstanceData(dataModel, module);
-				} else {
+				}
+				else
+				{
 					// In every other case, we have or can create data.
 					module.ModuleData = _GetOrCreateAsInstanceData(module);
 				}
@@ -99,36 +113,44 @@ namespace Vixen.Module {
 		/// <summary>
 		/// Retrieves the module data without assigning it to a module instance.
 		/// </summary>
-		public IModuleDataModel GetInstanceData(IModuleInstance module) {
+		public IModuleDataModel GetInstanceData(IModuleInstance module)
+		{
 			return _GetOrCreateAsInstanceData(module);
 		}
 
-		private bool _ContainsTypeData(Guid moduleTypeId) {
+		private bool _ContainsTypeData(Guid moduleTypeId)
+		{
 			return _dataModels.Any(x => x.ModuleTypeId.Equals(moduleTypeId));
 		}
 
-		private bool _ContainsInstanceData(Guid moduleTypeId, Guid instanceId) {
+		private bool _ContainsInstanceData(Guid moduleTypeId, Guid instanceId)
+		{
 			return _dataModels.Any(x => x.ModuleTypeId.Equals(moduleTypeId) && x.ModuleInstanceId.Equals(instanceId));
 		}
 
-		private IModuleDataModel _GetAsTypeData(IModuleInstance module) {
+		private IModuleDataModel _GetAsTypeData(IModuleInstance module)
+		{
 			return _dataModels.FirstOrDefault(x => x.ModuleTypeId.Equals(module.Descriptor.TypeId));
 		}
 
-		private IModuleDataModel _GetAsInstanceData(IModuleInstance module) {
+		private IModuleDataModel _GetAsInstanceData(IModuleInstance module)
+		{
 			return _dataModels.FirstOrDefault(x => x.ModuleTypeId.Equals(module.Descriptor.TypeId) && x.ModuleInstanceId.Equals(module.InstanceId));
 		}
 
-		private void _AddAsTypeData(IModuleDataModel dataModel, IModuleInstance module) {
+		private void _AddAsTypeData(IModuleDataModel dataModel, IModuleInstance module)
+		{
 			_Add(dataModel, module.Descriptor.TypeId, module.Descriptor.TypeId);
 		}
 
-		private void _AddAsInstanceData(IModuleDataModel dataModel, IModuleInstance module) {
+		private void _AddAsInstanceData(IModuleDataModel dataModel, IModuleInstance module)
+		{
 			_Add(dataModel, module.Descriptor.TypeId, module.InstanceId);
 		}
 
-		private void _Add(IModuleDataModel dataModel, Guid moduleTypeId, Guid moduleInstanceId) {
-			if(dataModel == null) return;// throw new ArgumentNullException("dataModel");
+		private void _Add(IModuleDataModel dataModel, Guid moduleTypeId, Guid moduleInstanceId)
+		{
+			if (dataModel == null) return;// throw new ArgumentNullException("dataModel");
 
 			_dataModels.Add(dataModel);
 			dataModel.ModuleTypeId = moduleTypeId;
@@ -136,82 +158,100 @@ namespace Vixen.Module {
 			dataModel.ModuleDataSet = this;
 		}
 
-		private void _RemoveTypeData(IModuleInstance module) {
+		private void _RemoveTypeData(IModuleInstance module)
+		{
 			IModuleDataModel dataModel = _GetAsTypeData(module);
-			if(dataModel != null) {
+			if (dataModel != null)
+			{
 				_dataModels.Remove(dataModel);
 			}
 		}
 
-		private void _RemoveInstanceData(IModuleInstance module) {
+		private void _RemoveInstanceData(IModuleInstance module)
+		{
 			IModuleDataModel dataModel = _GetAsInstanceData(module);
-			if(dataModel != null) {
+			if (dataModel != null)
+			{
 				_dataModels.Remove(dataModel);
 			}
 		}
 
-		public void RemoveModuleTypeData(IModuleInstance module) {
+		public void RemoveModuleTypeData(IModuleInstance module)
+		{
 			_RemoveTypeData(module);
 		}
 
-		public void RemoveModuleInstanceData(IModuleInstance module) {
+		public void RemoveModuleInstanceData(IModuleInstance module)
+		{
 			_RemoveInstanceData(module);
 		}
 
-		public void Clear() {
+		public void Clear()
+		{
 			_dataModels.Clear();
 		}
 
-		public IModuleDataSet Clone() {
+		public IModuleDataSet Clone()
+		{
 			ModuleDataSet newDataSet = Activator.CreateInstance(GetType()) as ModuleDataSet;
 			_Clone(this, newDataSet);
 			return newDataSet;
 		}
 
-		public void Clone(IModuleDataSet sourceDataSet) {
+		public void Clone(IModuleDataSet sourceDataSet)
+		{
 			Clear();
 			_Clone(sourceDataSet as ModuleDataSet, this);
 		}
 
-		private void _Clone(ModuleDataSet source, ModuleDataSet destination) {
-			if(source == null) throw new ArgumentNullException("source");
-			if(destination == null) throw new ArgumentNullException("destination");
+		private void _Clone(ModuleDataSet source, ModuleDataSet destination)
+		{
+			if (source == null) throw new ArgumentNullException("source");
+			if (destination == null) throw new ArgumentNullException("destination");
 
 			// Clone exactly, assuming unchanged type and instance ids for the
 			// modules the data belongs to.
-			foreach(IModuleDataModel dataModel in source._dataModels) {
+			foreach (IModuleDataModel dataModel in source._dataModels)
+			{
 				IModuleDataModel newModel = dataModel.Clone();
 				destination._Add(newModel, dataModel.ModuleTypeId, dataModel.ModuleInstanceId);
 			}
 		}
 
-		protected IModuleDataModel _GetOrCreateAsTypeData(IModuleInstance module) {
+		protected IModuleDataModel _GetOrCreateAsTypeData(IModuleInstance module)
+		{
 			IModuleDataModel dataModel = _GetAsTypeData(module);
-			if(dataModel == null) {
+			if (dataModel == null)
+			{
 				dataModel = _CreateDataModel(module);
 				_AddAsTypeData(dataModel, module);
 			}
 			return dataModel;
 		}
 
-		protected IModuleDataModel _GetOrCreateAsInstanceData(IModuleInstance module) {
+		protected IModuleDataModel _GetOrCreateAsInstanceData(IModuleInstance module)
+		{
 			IModuleDataModel dataModel = _GetAsInstanceData(module);
-			if(dataModel == null) {
+			if (dataModel == null)
+			{
 				dataModel = _CreateDataModel(module);
 				_AddAsInstanceData(dataModel, module);
 			}
 			return dataModel;
 		}
 
-		protected IModuleDataModel _CreateDataModel(IModuleInstance module) {
+		protected IModuleDataModel _CreateDataModel(IModuleInstance module)
+		{
 			Type dataModelType = _GetDataModelType(module.Descriptor);
 			return _CreateDataModel(dataModelType);
 		}
 
-		static protected IModuleDataModel _CreateDataModel(Type dataModelType) {
+		static protected IModuleDataModel _CreateDataModel(Type dataModelType)
+		{
 			IModuleDataModel dataModel = null;
 
-			if(dataModelType != null) {
+			if (dataModelType != null)
+			{
 				dataModel = Activator.CreateInstance(dataModelType) as IModuleDataModel;
 			}
 
@@ -221,30 +261,55 @@ namespace Vixen.Module {
 		abstract protected Type _GetDataModelType(IModuleDescriptor descriptor);
 		abstract protected IModuleDataModel _GetDataInstance(IModuleInstance module);
 
-		public void Serialize(IModuleDataModelCollectionSerializer dataModelCollectionSerializer) {
+		public void Serialize(IModuleDataModelCollectionSerializer dataModelCollectionSerializer)
+		{
 			dataModelCollectionSerializer.Write(_dataModels);
 		}
 
-		public void Deserialize(IModuleDataModelCollectionSerializer dataModelCollectionSerializer) {
+		public void Deserialize(IModuleDataModelCollectionSerializer dataModelCollectionSerializer)
+		{
 			_dataModels.Clear();
 			IEnumerable<IModuleDataModel> dataModels = dataModelCollectionSerializer.Read();
-			foreach(IModuleDataModel dataModel in dataModels) {
+			foreach (IModuleDataModel dataModel in dataModels)
+			{
 				_Add(dataModel, dataModel.ModuleTypeId, dataModel.ModuleInstanceId);
 			}
 		}
 
-		private void _Init() {
+		private void _Init()
+		{
 			_dataModels = new List<IModuleDataModel>();
 		}
 
 		[OnDeserializing]
-		void OnDeserializing(StreamingContext streamingContext) {
+		void OnDeserializing(StreamingContext streamingContext)
+		{
 			_Init();
 		}
 
-		internal IEnumerable<IModuleDataModel> DataModels {
+		internal IEnumerable<IModuleDataModel> DataModels
+		{
 			get { return _dataModels; }
 			set { _dataModels = value.ToList(); }
 		}
-    }
+		~ModuleDataSet()
+		{
+			Dispose(false);
+		}
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		protected void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (_dataModels != null)
+					_dataModels.Clear();
+				_dataModels = null;
+			}
+			
+		}
+	}
 }

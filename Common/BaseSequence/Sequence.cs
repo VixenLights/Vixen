@@ -140,5 +140,22 @@ namespace BaseSequence {
 			// Do not cancel the event.
 			return false;
 		}
+
+
+		~Sequence() {
+			Dispose(false);
+		}
+		protected void Dispose(bool disposing) {
+			if (disposing) {
+				if (SequenceData != null)
+					SequenceData.Dispose();
+			
+			}
+		}
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
 	}
 }

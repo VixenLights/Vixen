@@ -384,5 +384,6 @@ namespace VixenModules.App.Scheduler {
 				ItemClick(this, e);
 			}
 		}
+		
 	}
 }
