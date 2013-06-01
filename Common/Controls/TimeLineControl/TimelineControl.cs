@@ -262,7 +262,15 @@ namespace Common.Controls.Timeline
 				r.Height = (int)(r.Height * scale);
 			}
 		}
-
+        public void ResizeGrid()
+        {
+            grid.AllowGridResize = true;
+            grid.ResizeGridHeight();
+        }
+        public bool AllowGridResize { 
+            get { return grid.AllowGridResize; } 
+            set { grid.AllowGridResize = value; } 
+        }
 		private void AddRowToControls(Row row, RowLabel label)
 		{
 			grid.AddRow(row);

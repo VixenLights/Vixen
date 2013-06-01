@@ -46,7 +46,7 @@ namespace Common.Controls.Timeline
 			:base(timeinfo)
 		{
 			this.AutoScroll = true;
-
+            AllowGridResize = true;
 			AutoScrollMargin = new Size(24, 24);
 			TotalTime = TimeSpan.FromMinutes(1);
 			RowSeparatorColor = Color.Black;
@@ -1036,18 +1036,22 @@ namespace Common.Controls.Timeline
 			
 			return total;
 		}
-
-		private void ResizeGridHeight()
-		{
-			if (this.InvokeRequired) {
-				this.Invoke(new Vixen.Delegates.GenericDelegate(ResizeGridHeight));
-			}
-			else
-			{
-				AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), CalculateAllRowsHeight());
-				Invalidate();
-			}
-		}
+        public bool AllowGridResize { get; set; }
+        public void ResizeGridHeight()
+        {
+            if (AllowGridResize)
+            {
+                if (this.InvokeRequired)
+                {
+                    this.Invoke(new Vixen.Delegates.GenericDelegate(ResizeGridHeight));
+                }
+                else
+                {
+                    AutoScrollMinSize = new Size((int)timeToPixels(TotalTime), CalculateAllRowsHeight());
+                    Invalidate();
+                }
+            }
+        }
 
 		public void SelectElement(Element element)
 		{
