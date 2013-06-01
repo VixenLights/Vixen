@@ -18,7 +18,7 @@ namespace Vixen.IO.Xml.Serializer {
 			XElement filesElement = element.Element(ELEMENT_FILES);
 			if(filesElement != null) {
 				XmlCompressedFileSerializer compressedFileSerializer = new XmlCompressedFileSerializer();
-				files.AddRange(filesElement.Elements().Select(compressedFileSerializer.ReadObject).NotNull());
+				files.AddRange(filesElement.Elements().Select(compressedFileSerializer.ReadObject).Where(x => x != null));
 			}
 
 			return files;

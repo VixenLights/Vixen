@@ -69,7 +69,7 @@ namespace Vixen.Sys {
 			// a state for the element.  This versus creating a new list in
 			// ElementStateSourceCollection.GetState (or maybe Context.GetState instead, may
 			// make more sense there) on a dictionary miss.
-			IEnumerable<IIntentState> intentStates = _dataSource.NotNull().SelectMany(x => x.State);
+			IEnumerable<IIntentState> intentStates = _dataSource.Where(x => x != null).SelectMany(x => x.State);
 			return new IntentStateList(intentStates);
 		}
 	}

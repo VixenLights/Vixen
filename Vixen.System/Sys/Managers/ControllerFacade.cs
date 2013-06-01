@@ -40,7 +40,7 @@ namespace Vixen.Sys.Managers {
 		}
 
 		public IDataFlowComponent GetDataFlowComponentForOutput(IOutputDevice controller, int outputIndex) {
-			return _controllerFacadeParticipants.Select(x => x.GetDataFlowComponentForOutput(controller, outputIndex)).NotNull().FirstOrDefault();
+			return _controllerFacadeParticipants.Select(x => x.GetDataFlowComponentForOutput(controller, outputIndex)).Where(x => x != null).FirstOrDefault();
 		}
 
 		public IEnumerable<IOutputDevice> Devices {

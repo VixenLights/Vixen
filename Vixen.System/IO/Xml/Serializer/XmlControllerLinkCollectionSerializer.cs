@@ -22,7 +22,7 @@ namespace Vixen.IO.Xml.Serializer {
 
 			XElement parentNode = element.Element(ELEMENT_CONTROLLER_LINKS);
 			if(parentNode != null) {
-				controllerLinks.AddRange(parentNode.Elements().Select(_ReadControllerLink).NotNull());
+				controllerLinks.AddRange(parentNode.Elements().Select(_ReadControllerLink).Where(x => x != null));
 			}
 
 			return controllerLinks;

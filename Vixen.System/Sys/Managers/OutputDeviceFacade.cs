@@ -40,7 +40,7 @@ namespace Vixen.Sys.Managers {
 		}
 
 		public IOutputDevice GetDevice(Guid id) {
-			return _participants.Select(x => x.GetDevice(id)).NotNull().FirstOrDefault();
+			return _participants.Select(x => x.GetDevice(id)).Where(x => x != null).FirstOrDefault();
 		}
 
 		private void _ForAllParticipants(Action<IOutputDeviceFacadeParticipant> action) {

@@ -20,7 +20,7 @@ namespace Vixen.IO.Xml.Serializer {
 			XElement parentNode = element.Element(ELEMENT_PREVIEWS);
 			if(parentNode != null) {
 				XmlPreviewSerializer previewSerializer = new XmlPreviewSerializer();
-				previews.AddRange(parentNode.Elements().Select(previewSerializer.ReadObject).NotNull());
+				previews.AddRange(parentNode.Elements().Select(previewSerializer.ReadObject).Where(x => x != null));
 			}
 
 			return previews;

@@ -46,7 +46,7 @@ namespace Vixen.Services {
 		}
 
 		static private IEnumerable<Type> _GetAllModuleDataTypes() {
-			return ApplicationServices.GetTypesOfModules().SelectMany(Modules.GetDescriptors).Select(x => x.ModuleDataClass).NotNull();
+			return ApplicationServices.GetTypesOfModules().SelectMany(Modules.GetDescriptors).Select(x => x.ModuleDataClass).Where(x => x != null);
 		}
 	}
 }

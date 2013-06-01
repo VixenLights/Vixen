@@ -123,10 +123,10 @@ namespace Vixen.Sys
 			}
 		}
 
-		static public IEnumerable<T> NotNull<T>(this IEnumerable<T> values)
-			where T : class {
-			return values.Where(x => x != null);
-		}
+        //static public IEnumerable<T> NotNull<T>(this IEnumerable<T> values)
+        //    where T : class {
+        //    return values.Where(x => x != null);
+        //}
 
 		static public T[] SubArray<T>(this T[] data, int index, int length) {
 			T[] result = new T[length];

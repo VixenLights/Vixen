@@ -26,7 +26,7 @@ namespace Vixen.IO.Xml.Serializer {
 			XElement parentNode = element.Element(ELEMENT_NODES);
 			if(parentNode != null) {
 				XmlElementNodeSerializer elementNodeSerializer = new XmlElementNodeSerializer(_elements);
-				IEnumerable<ElementNode> childNodes = parentNode.Elements().Select(elementNodeSerializer.ReadObject).NotNull();
+				IEnumerable<ElementNode> childNodes = parentNode.Elements().Select(elementNodeSerializer.ReadObject).Where(x => x != null);
 				elementNodes.AddRange(childNodes);
 			}
 

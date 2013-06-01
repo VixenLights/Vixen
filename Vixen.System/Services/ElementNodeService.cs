@@ -38,7 +38,7 @@ namespace Vixen.Services {
 		}
 
 		public ElementNode[] ImportTemplateMany(string templateFileName, ElementNode parentNode, int count) {
-			return Enumerable.Range(0, count).Select(x => ImportTemplateOnce(templateFileName, parentNode)).NotNull().ToArray();
+			return Enumerable.Range(0, count).Select(x => ImportTemplateOnce(templateFileName, parentNode)).Where(x => x != null).ToArray();
 		}
 
 		public void Rename(ElementNode elementNode, string name) {

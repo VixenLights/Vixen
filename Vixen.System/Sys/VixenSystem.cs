@@ -88,7 +88,7 @@ namespace Vixen.Sys {
 
 		static public void SaveDisabledDevices() {
 			if (SystemConfig != null) {
-				SystemConfig.DisabledDevices = OutputDeviceManagement.Devices.NotNull().Where(x => !x.IsRunning);
+				SystemConfig.DisabledDevices = OutputDeviceManagement.Devices.Where(x => x != null).Where(x => !x.IsRunning);
 			}
 		}
 

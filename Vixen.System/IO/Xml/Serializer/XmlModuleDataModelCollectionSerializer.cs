@@ -23,7 +23,7 @@ namespace Vixen.IO.Xml.Serializer {
 		//called by the dataset
 		public void Write(IEnumerable<IModuleDataModel> dataModels) {
 			XmlModuleDataModelSerializer dataModelSerializer = new XmlModuleDataModelSerializer();
-			_containerElement.Add(dataModels.Select(dataModelSerializer.WriteObject).NotNull());
+			_containerElement.Add(dataModels.Select(dataModelSerializer.WriteObject).Where(x => x != null));
 		}
 
 		//called by the dataset
@@ -32,7 +32,7 @@ namespace Vixen.IO.Xml.Serializer {
 
 			XmlModuleDataModelSerializer dataModelSerializer = new XmlModuleDataModelSerializer();
 
-			dataModels.AddRange(_containerElement.Elements().Select(dataModelSerializer.ReadObject).NotNull());
+			dataModels.AddRange(_containerElement.Elements().Select(dataModelSerializer.ReadObject).Where(x => x != null));
 
 			return dataModels;
 		}

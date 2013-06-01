@@ -29,7 +29,7 @@ namespace Vixen.IO.Xml.Serializer {
 			List<IOutputFilterModuleInstance> filters = new List<IOutputFilterModuleInstance>();
 
 			XmlOutputFilterSerializer serializer = new XmlOutputFilterSerializer();
-			filters.AddRange(element.Elements().Select(serializer.ReadObject).NotNull());
+			filters.AddRange(element.Elements().Select(serializer.ReadObject).Where(x => x != null));
 
 			return filters;
 		}
@@ -58,7 +58,7 @@ namespace Vixen.IO.Xml.Serializer {
 	//        OutputFilterCollection filters = new OutputFilterCollection();
 
 	//        XmlOutputFilterSerializer serializer = new XmlOutputFilterSerializer();
-	//        filters.AddRange(element.Elements().Select(serializer.ReadObject).NotNull());
+	//        filters.AddRange(element.Elements().Select(serializer.ReadObject).Where(x => x != null));
 
 	//        return filters;
 	//    }

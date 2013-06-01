@@ -146,7 +146,7 @@ namespace Vixen.IO.Xml.SystemConfig {
 			IEnumerable<XElement> deviceElements = deviceElementSelector(systemConfigContent);
 			if(deviceElements == null) return null;
 
-			var idStrings = deviceElements.Select(x => x.Attribute("hardwareId")).NotNull().Select(x => x.Value);
+			var idStrings = deviceElements.Select(x => x.Attribute("hardwareId")).Where(x => x != null).Select(x => x.Value);
 			return idStrings.Select(x => new Guid(x)).ToArray();
 		}
 

@@ -67,7 +67,7 @@ namespace Vixen.IO.Xml.Serializer {
 			Guid? elementId = XmlHelper.GetGuidAttribute(element, ATTR_ELEMENT_ID);
 			if(elementId == null) {
 				// Branch
-				IEnumerable<ElementNode> childNodes = element.Elements(ELEMENT_NODE).Select(ReadObject).NotNull();
+				IEnumerable<ElementNode> childNodes = element.Elements(ELEMENT_NODE).Select(ReadObject).Where(x => x != null);
 				node = new ElementNode(id.Value, name, null, childNodes);
 			} else {
 				// Leaf

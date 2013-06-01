@@ -12,7 +12,7 @@ namespace Vixen.Sys {
 		public Guid Key { get; set; }
 
 		public IEnumerator<IStateSource<IEnumerable<IIntentState>>> GetEnumerator() {
-			return VixenSystem.Contexts.Select(x => x.GetState(Key)).NotNull().GetEnumerator();
+			return VixenSystem.Contexts.Select(x => x.GetState(Key)).Where(x => x != null).GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator() {

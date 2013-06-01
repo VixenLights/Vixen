@@ -20,7 +20,7 @@ namespace Vixen.IO.Xml.Serializer {
 			XElement parentNode = element.Element(ELEMENT_SMART_CONTROLLERS);
 			if(parentNode != null) {
 				XmlSmartControllerSerializer serializer = new XmlSmartControllerSerializer();
-				controllers.AddRange(parentNode.Elements().Select(serializer.ReadObject).NotNull());
+				controllers.AddRange(parentNode.Elements().Select(serializer.ReadObject).Where(x => x != null));
 			}
 
 			return controllers;
