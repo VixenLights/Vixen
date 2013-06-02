@@ -377,10 +377,12 @@ namespace VixenModules.Effect.Nutcracker
             int CycleLen = colorcnt * SpeedFactor;
             if (State > (colorcnt - 1) * SpeedFactor * RepeatCount && RepeatCount < 10)
             {
+                //Console.WriteLine("1");
                 color = GetMultiColorBlend((double)(RepeatCount % 2), false);
             }
             else
             {
+                //Console.WriteLine("2");
                 color = GetMultiColorBlend((double)(State % CycleLen) / (double)CycleLen, true);
             }
             HSV hsv = HSV.ColorToHSV(color);
@@ -393,7 +395,9 @@ namespace VixenModules.Effect.Nutcracker
                     hsv2.SetToHSV(hsv);
                     if (HorizFade) hsv2.Value *= (float)(1.0 - Math.Abs(HalfWi - x) / HalfWi);
                     if (VertFade) hsv2.Value *= (float)(1.0 - Math.Abs(HalfHt - y) / HalfHt);
+                    //SetPixel(x, y, hsv);
                     SetPixel(x, y, hsv2);
+                    //SetPixel(x, y, color);
                 }
             }
         }
@@ -1051,8 +1055,6 @@ namespace VixenModules.Effect.Nutcracker
         public void SetPixel(int x, int y, HSV hsv)
         {
             Color color = HSV.HSVtoColor(hsv);
-            //Console.WriteLine("h:" + hsv.Hue + " s:" + hsv.Saturation + " v:" + hsv.Value + " r:" + color.R + " g:" + color.G + " b:" + color.B + " a:" + color.A);
-            //Console.WriteLine(" r:" + color.R + " g:" + color.G + " b:" + color.B + " a:" + color.A);
             SetPixel(x, y, color);
         }
 
