@@ -251,12 +251,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			loadTimer.Enabled = true;
 			timelineControl.SequenceLoading = true;
 
-#if DEBUG
 			try {
-
-
-
-#endif
 				// default the sequence to 1 minute if it's not set
 				if (_sequence.Length == TimeSpan.Zero)
 					_sequence.Length = _defaultSequenceTime;
@@ -281,8 +276,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						//addElementForEffectNode(node);
 						addElementForEffectNodeTPL(node);
 					}
-
-
 				});
 				populateGridWithMarks();
 				var t2 = Task.Factory.StartNew(() => populateWaveformAudio());
@@ -301,12 +294,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				} else {
 					sequenceNotModified();
 				}
-#if DEBUG
-				MessageBox.Show(string.Format("Sequence {0} took {1} to load. ", sequence.Name, loadingWatch.Elapsed), "Sequence Load Times", MessageBoxButtons.OK);
+				VixenSystem.Logging.Debug(string.Format("Sequence {0} took {1} to load. ", sequence.Name, loadingWatch.Elapsed));
 			} catch (Exception ee) {
-				Console.WriteLine(ee.ToString());
+				VixenSystem.Logging.Error("Error loading sequence.", ee);
 			}
-#endif
 			loadingWatch.Stop();
 			timelineControl.SequenceLoading = false;
 			loadTimer.Enabled = false;
