@@ -75,6 +75,7 @@ namespace VixenModules.Preview.VixenPreview
 
         public override void Start()
         {
+            //System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.LowLatency;
             Console.WriteLine("Start");
             var dataModel = GetDataModel();
             base.Start();
@@ -180,7 +181,10 @@ namespace VixenModules.Preview.VixenPreview
             timer.Start();
 
             //displayForm.PreviewControl.ProcessUpdate(elementStates);
-            displayForm.PreviewControl.BeginInvoke(new ProcessUpdateDelegate(displayForm.PreviewControl.ProcessUpdate), new object[] {elementStates});
+            //displayForm.PreviewControl.BeginInvoke(new ProcessUpdateDelegate(displayForm.PreviewControl.ProcessUpdate), new object[] {elementStates});
+            //displayForm.PreviewControl.Process(elementStates);
+            //displayForm.PreviewControl.ProcessUpdateInTask(elementStates);
+            displayForm.PreviewControl.RenderInForeground(elementStates);
 
             timer.Stop();
 

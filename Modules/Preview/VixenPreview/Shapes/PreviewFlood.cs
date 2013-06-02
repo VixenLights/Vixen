@@ -135,7 +135,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
-        public override void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected)
+        public override void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected, bool forceDraw)
         {
             foreach (PreviewPixel pixel in Pixels)
             {
@@ -143,7 +143,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 //    pixel.Draw(fp, Color.HotPink);
                 //else
                 //    pixel.Draw(fp, Color.White);
-                DrawPixel(pixel, fp, editMode, highlightedElements, selected);
+                DrawPixel(pixel, fp, editMode, highlightedElements, selected, forceDraw);
             }
         }
 

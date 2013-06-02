@@ -239,7 +239,7 @@ namespace VixenModules.Preview.VixenPreview
 
         private void buttonAddTemplate_Click(object sender, EventArgs e)
         {
-            previewForm.Preview.GroupItems();
+            previewForm.Preview.CreateTemplate();
             PopulateTemplateList();
         }
 
@@ -268,7 +268,18 @@ namespace VixenModules.Preview.VixenPreview
             }
         }
 
+        private void buttonTemplateHelp_Click(object sender, EventArgs e)
+        {
+            Shapes.PreviewTools.ShowHelp(Properties.Settings.Default.Help_CustomShape);
+        }
+
         #endregion // Templates
+
+        private void buttonSelect_Click(object sender, EventArgs e)
+        {
+            previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Select;
+        }
+
 
     }
 }

@@ -33,7 +33,7 @@
       <Value Profile="(Default)">http://www.vixenlights.com/vixen-3-documentation/preview/how-to/resize-the-preview-image/</Value>
     </Setting>
     <Setting Name="Help_CustomShape" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/custom-props/</Value>
+      <Value Profile="(Default)">http://www.vixenlights.com/vixen-3-documentation/preview/custom-props/</Value>
     </Setting>
   </Settings>
 </SettingsFile>
