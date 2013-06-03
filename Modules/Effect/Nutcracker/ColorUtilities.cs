@@ -53,7 +53,7 @@ namespace VixenModules.Effect.Nutcracker
             float max = Math.Max(color.R, Math.Max(color.G, color.B));
             float min = Math.Min(color.R, Math.Min(color.G, color.B));
 
-            float hue = color.GetHue();
+            float hue = color.GetHue() / 360;
             float saturation = ((float)max == 0) ? 0 : 1f - (1f * (float)min / (float)max);
             float value = max / 255f;
 
@@ -153,14 +153,11 @@ namespace VixenModules.Effect.Nutcracker
             //2:65025:0:65025:0
             //Console.WriteLine("1");
             HSV hsv = new HSV(inHsv.Hue, inHsv.Saturation, inHsv.Value);
-            //Console.WriteLine("2");
-            if (hsv.Hue > 0 && hsv.Hue < 1)
-            {
-                //Console.WriteLine("3");
-                hsv.Hue *= 360;
-            }
-            //Console.WriteLine("4");
-            int hi = Convert.ToInt32(Math.Floor(hsv.Hue / 60)) % 6;
+            //if (hsv.Hue > 0 && hsv.Hue < 1)
+            //{
+            hsv.Hue *= 360;
+            //}
+            int hi = Convert.ToInt32(Math.Floor(hsv.Hue / 60) % 6);
             double f = hsv.Hue / 60f - Math.Floor(hsv.Hue / 60f);
 
             hsv.Value = hsv.Value * 255f;
@@ -170,18 +167,31 @@ namespace VixenModules.Effect.Nutcracker
             int t = Convert.ToInt32(hsv.Value * (1 - (1 - f) * hsv.Saturation));
             //Console.WriteLine("1:" + inHsv.Hue + ":" + inHsv.Saturation + ":" + inHsv.Value);
             //Console.WriteLine("2:" + v + ":" + p + ":" + q + ":" + t);
+            //Console.WriteLine("hi:" + hi);
             if (hi == 0)
+            {
                 return Color.FromArgb(255, v, t, p);
+            }
             else if (hi == 1)
+            {
                 return Color.FromArgb(255, q, v, p);
+            }
             else if (hi == 2)
+            {
                 return Color.FromArgb(255, p, v, t);
+            }
             else if (hi == 3)
+            {
                 return Color.FromArgb(255, p, q, v);
+            }
             else if (hi == 4)
+            {
                 return Color.FromArgb(255, t, p, v);
+            }
             else
+            {
                 return Color.FromArgb(255, v, p, q);
+            }
         }
 
         //public static Color HSVtoColor(HSV hsv)

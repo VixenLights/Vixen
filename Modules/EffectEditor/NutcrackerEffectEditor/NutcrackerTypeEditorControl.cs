@@ -125,6 +125,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
             LoadLife();
             LoadMeteor();
             LoadFireworks();
+            LoadSnowflakes();
             LoadColors();
 
             timerRender.Start();
@@ -453,6 +454,23 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 
         #endregion
 
+        #region Snowflakes
+
+        private void LoadSnowflakes()
+        {
+            trackSnowflakeMax.Value = Data.Snowflakes_Max;
+            trackSnowflakeType.Value = Data.Snowflakes_Type;
+        }
+
+        private void Snowflake_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender, Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+        {
+            if (loading) return;
+            Data.Snowflakes_Max = trackSnowflakeMax.Value;
+            Data.Snowflakes_Type = trackSnowflakeType.Value;
+        }        
+
+        #endregion // Snowflakes
+
         private void DeletePreviewDisplayItem()
         {
             if (preview.DisplayItems != null && preview.DisplayItems.Count > 0)
@@ -556,6 +574,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
             }
             SetupPreview();
         }
+
 
     }
 }

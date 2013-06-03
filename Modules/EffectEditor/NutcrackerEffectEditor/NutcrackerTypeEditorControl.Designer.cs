@@ -30,6 +30,8 @@
             this.components = new System.ComponentModel.Container();
             this.timerRender = new System.Windows.Forms.Timer(this.components);
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.comboBoxDisplayType = new System.Windows.Forms.ComboBox();
+            this.label22 = new System.Windows.Forms.Label();
             this.preview = new VixenModules.Preview.VixenPreview.VixenPreviewControl();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -46,6 +48,11 @@
             this.checkBoxColor1 = new System.Windows.Forms.CheckBox();
             this.panelColor1 = new System.Windows.Forms.Panel();
             this.tabEffectProperties = new System.Windows.Forms.TabControl();
+            this.Snowflakes = new System.Windows.Forms.TabPage();
+            this.label24 = new System.Windows.Forms.Label();
+            this.trackSnowflakeType = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
+            this.label23 = new System.Windows.Forms.Label();
+            this.trackSnowflakeMax = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
             this.Fireworks = new System.Windows.Forms.TabPage();
             this.label21 = new System.Windows.Forms.Label();
             this.trackFireworkFade = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
@@ -101,11 +108,10 @@
             this.trackBarSpeed = new System.Windows.Forms.TrackBar();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
-            this.label22 = new System.Windows.Forms.Label();
-            this.comboBoxDisplayType = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabEffectProperties.SuspendLayout();
+            this.Snowflakes.SuspendLayout();
             this.Fireworks.SuspendLayout();
             this.Meteors.SuspendLayout();
             this.Butterfly.SuspendLayout();
@@ -134,6 +140,31 @@
             this.groupBox1.Size = new System.Drawing.Size(285, 430);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
+            // 
+            // comboBoxDisplayType
+            // 
+            this.comboBoxDisplayType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxDisplayType.FormattingEnabled = true;
+            this.comboBoxDisplayType.Items.AddRange(new object[] {
+            "90 Degree Mega Tree",
+            "180 Degree Mega Tree",
+            "270 Degree Mega Tree",
+            "360 Degree Mega Tree",
+            "Arch"});
+            this.comboBoxDisplayType.Location = new System.Drawing.Point(83, 13);
+            this.comboBoxDisplayType.Name = "comboBoxDisplayType";
+            this.comboBoxDisplayType.Size = new System.Drawing.Size(196, 21);
+            this.comboBoxDisplayType.TabIndex = 2;
+            this.comboBoxDisplayType.SelectedIndexChanged += new System.EventHandler(this.comboBoxDisplayType_SelectedIndexChanged);
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(6, 16);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(71, 13);
+            this.label22.TabIndex = 1;
+            this.label22.Text = "Display Type:";
             // 
             // preview
             // 
@@ -301,6 +332,7 @@
             // tabEffectProperties
             // 
             this.tabEffectProperties.Appearance = System.Windows.Forms.TabAppearance.Buttons;
+            this.tabEffectProperties.Controls.Add(this.Snowflakes);
             this.tabEffectProperties.Controls.Add(this.Fireworks);
             this.tabEffectProperties.Controls.Add(this.Meteors);
             this.tabEffectProperties.Controls.Add(this.Butterfly);
@@ -316,6 +348,60 @@
             this.tabEffectProperties.Size = new System.Drawing.Size(274, 158);
             this.tabEffectProperties.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabEffectProperties.TabIndex = 5;
+            // 
+            // Snowflakes
+            // 
+            this.Snowflakes.Controls.Add(this.label24);
+            this.Snowflakes.Controls.Add(this.trackSnowflakeType);
+            this.Snowflakes.Controls.Add(this.label23);
+            this.Snowflakes.Controls.Add(this.trackSnowflakeMax);
+            this.Snowflakes.Location = new System.Drawing.Point(4, 5);
+            this.Snowflakes.Name = "Snowflakes";
+            this.Snowflakes.Size = new System.Drawing.Size(266, 149);
+            this.Snowflakes.TabIndex = 8;
+            this.Snowflakes.Text = "tabPage1";
+            this.Snowflakes.UseVisualStyleBackColor = true;
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(9, 37);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(31, 13);
+            this.label24.TabIndex = 21;
+            this.label24.Text = "Type";
+            // 
+            // trackSnowflakeType
+            // 
+            this.trackSnowflakeType.Location = new System.Drawing.Point(96, 34);
+            this.trackSnowflakeType.Maximum = 5;
+            this.trackSnowflakeType.Name = "trackSnowflakeType";
+            this.trackSnowflakeType.Size = new System.Drawing.Size(167, 23);
+            this.trackSnowflakeType.TabIndex = 22;
+            this.trackSnowflakeType.Text = "hMiniTracker2";
+            this.trackSnowflakeType.Value = 1;
+            this.trackSnowflakeType.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.Snowflake_ValueChanged);
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(9, 8);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(64, 13);
+            this.label23.TabIndex = 19;
+            this.label23.Text = "Max Flakes:";
+            // 
+            // trackSnowflakeMax
+            // 
+            this.trackSnowflakeMax.Location = new System.Drawing.Point(96, 5);
+            this.trackSnowflakeMax.Maximum = 20;
+            this.trackSnowflakeMax.Minimum = 1;
+            this.trackSnowflakeMax.Name = "trackSnowflakeMax";
+            this.trackSnowflakeMax.Size = new System.Drawing.Size(167, 23);
+            this.trackSnowflakeMax.TabIndex = 20;
+            this.trackSnowflakeMax.Text = "hMiniTracker1";
+            this.trackSnowflakeMax.Value = 5;
+            this.trackSnowflakeMax.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.Snowflake_ValueChanged);
             // 
             // Fireworks
             // 
@@ -912,31 +998,6 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Effect 2";
             // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(6, 16);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(71, 13);
-            this.label22.TabIndex = 1;
-            this.label22.Text = "Display Type:";
-            // 
-            // comboBoxDisplayType
-            // 
-            this.comboBoxDisplayType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxDisplayType.FormattingEnabled = true;
-            this.comboBoxDisplayType.Items.AddRange(new object[] {
-            "90 Degree Mega Tree",
-            "180 Degree Mega Tree",
-            "270 Degree Mega Tree",
-            "360 Degree Mega Tree",
-            "Arch"});
-            this.comboBoxDisplayType.Location = new System.Drawing.Point(83, 13);
-            this.comboBoxDisplayType.Name = "comboBoxDisplayType";
-            this.comboBoxDisplayType.Size = new System.Drawing.Size(196, 21);
-            this.comboBoxDisplayType.TabIndex = 2;
-            this.comboBoxDisplayType.SelectedIndexChanged += new System.EventHandler(this.comboBoxDisplayType_SelectedIndexChanged);
-            // 
             // NutcrackerTypeEditorControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -952,6 +1013,8 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.tabEffectProperties.ResumeLayout(false);
+            this.Snowflakes.ResumeLayout(false);
+            this.Snowflakes.PerformLayout();
             this.Fireworks.ResumeLayout(false);
             this.Fireworks.PerformLayout();
             this.Meteors.ResumeLayout(false);
@@ -1050,5 +1113,10 @@
         private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackFireworkNumberOfExplosions;
         private System.Windows.Forms.ComboBox comboBoxDisplayType;
         private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.TabPage Snowflakes;
+        private System.Windows.Forms.Label label24;
+        private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackSnowflakeType;
+        private System.Windows.Forms.Label label23;
+        private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackSnowflakeMax;
 	}
 }

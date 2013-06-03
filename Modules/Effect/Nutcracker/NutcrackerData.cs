@@ -87,9 +87,18 @@ namespace VixenModules.Effect.Nutcracker
         // Fireworks
         [DataMember]
         public int Fireworks_Explosions = 5;
+        [DataMember]
         public int Fireworks_Particles = 20;
+        [DataMember]
         public int Fireworks_Velocity = 50;
+        [DataMember]
         public int Fireworks_Fade = 50;
+
+        // Snowflakes
+        [DataMember]
+        public int Snowflakes_Max;
+        [DataMember]
+        public int Snowflakes_Type;
 
         [OnDeserialized]
         void OnDeserialized(StreamingContext context)
