@@ -14,7 +14,6 @@ namespace VixenModules.Effect.Nutcracker
         Color[] _colors;
         [DataMember]
         bool[] _colorsActive;
-        Random random;
 
         public Palette()
         {
@@ -70,12 +69,12 @@ namespace VixenModules.Effect.Nutcracker
             {
                 ColorsActive[colorNum - 1] = true;
             }
-            Colors[colorNum - 1] = color;
+            _colors[colorNum - 1] = color;
         }
 
         public Color GetColor(int index) 
         {
-            if (index == 0 && Colors.Count() == 0)
+            if (index == 0 && Count() == 0)
             {
                 return Color.Transparent;
             }
@@ -90,7 +89,7 @@ namespace VixenModules.Effect.Nutcracker
                     currentIndex++;
                     if (currentIndex == index)
                     {
-                        color = Colors[currentColor];
+                        color = _colors[currentColor];
                         break;
                     }
                 }
@@ -104,40 +103,6 @@ namespace VixenModules.Effect.Nutcracker
             return HSV.ColorToHSV(GetColor(index));
             //return HSV.ColorToHSV(Colors[index]);
         }
-
-        // generates a random number between num1 and num2 inclusive
-        private float RandomRange(float num1, float num2)
-        {
-            double hi,lo;
-            InitRandom();
-
-            if (num1 < num2)
-            {
-                lo = num1;
-                hi = num2;
-            }
-            else
-            {
-                lo = num2;
-                hi = num1;
-            }
-
-            //return random.Next(lo, hi);
-            return (float)(random.NextDouble()*(hi-lo)+ lo);
-        }
-
-        private void InitRandom() 
-        {
-            if (random == null)
-                random = new Random();
-        }
-
-	    public void SetRangeColor(HSV hsv1, HSV hsv2, HSV newhsv)
-	    {
-		    newhsv.Hue = RandomRange(hsv1.Hue,hsv2.Hue);
-		    newhsv.Saturation = RandomRange(hsv1.Saturation,hsv2.Saturation);
-		    newhsv.Value = 1.0f;
-	    }
 
     }
 }

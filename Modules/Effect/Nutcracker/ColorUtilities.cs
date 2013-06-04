@@ -11,6 +11,7 @@ namespace VixenModules.Effect.Nutcracker
     public class HSV
     {
         private float _hue, _saturation, _value;
+        static private Random random;
 
         public HSV(float hue = 0f, float saturation = 0f, float value = 0f)
         {
@@ -361,5 +362,41 @@ namespace VixenModules.Effect.Nutcracker
         //    if (i > 255) return 255;
         //    return i;
         //}
+
+        // generates a random number between num1 and num2 inclusive
+        static private float RandomRange(float num1, float num2)
+        {
+            double hi, lo;
+            InitRandom();
+
+            if (num1 < num2)
+            {
+                lo = num1;
+                hi = num2;
+            }
+            else
+            {
+                lo = num2;
+                hi = num1;
+            }
+
+            //return random.Next(lo, hi);
+            return (float)(random.NextDouble() * (hi - lo) + lo);
+        }
+
+        static private void InitRandom()
+        {
+            if (random == null)
+                random = new Random();
+        }
+
+        static public HSV SetRangeColor(HSV hsv1, HSV hsv2)
+        {
+            HSV newHsv = new HSV(RandomRange(hsv1.Hue, hsv2.Hue),
+                                 RandomRange(hsv1.Saturation, hsv2.Saturation),
+                                 1.0f);
+            return newHsv;
+        }
+
     }
 }

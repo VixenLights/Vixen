@@ -31,7 +31,10 @@ namespace VixenModules.Effect.Nutcracker
             Life,
             Meteors,
             Fireworks,
-            Snowflakes
+            Snowflakes,
+            Snowstorm,
+            Spirals,
+            Twinkles
         }
         
         public enum PreviewType
@@ -100,6 +103,11 @@ namespace VixenModules.Effect.Nutcracker
         private int rand()
         {
             return random.Next();
+        }
+
+        private void srand(int seed)
+        {
+            random = new Random(seed);
         }
 
         // return a random number between 0 and 1 inclusive
@@ -726,7 +734,7 @@ namespace VixenModules.Effect.Nutcracker
                 switch (MeteorType)
                 {
                     case 1:
-                        Palette.SetRangeColor(hsv0, hsv1, m.hsv);
+                        m.hsv = HSV.SetRangeColor(hsv0, hsv1);
                         break;
                     case 2:
                         m.hsv = Palette.GetHSV(rand() % colorcnt);
@@ -839,10 +847,10 @@ namespace VixenModules.Effect.Nutcracker
                 x75 = (int)(BufferWi * 0.75);
                 y25 = (int)(BufferHt * 0.25);
                 y75 = (int)(BufferHt * 0.75);
-                startX = (int)BufferWi / 2;
-                startY = (int)BufferHt / 2;
-                startX = x25 + rand() % (x75 - x25);
-                startY = y25 + rand() % (y75 - y25);
+                //startX = (int)(BufferWi / 2);
+                //startY = (int)(BufferHt / 2);
+                startX = x25 + (rand() % (x75 - x25));
+                startY = y25 + (rand() % (y75 - y25));
                 // turn off all bursts
 
                 // Create new bursts
@@ -1112,6 +1120,284 @@ namespace VixenModules.Effect.Nutcracker
 
         #endregion // Snowflakes
 
+        #region Snowstorm
+
+        class SnowstormClass
+        {
+            public List<Point> points = new List<Point>();
+            public HSV hsv;
+            public int idx,ssDecay;
+            public SnowstormClass()
+            {
+                points.Clear();
+            }
+        };
+
+        //List<SnowstormClass> SnowstormList = new List<SnowstormClass>();
+        List<SnowstormClass> SnowstormItems = new List<SnowstormClass>();
+        int LastSnowstormCount = 0;
+
+        private Point SnowstormVector(int idx)
+        {
+            Point xy = new Point();
+            switch (idx)
+            {
+            case 0:
+                xy.X=-1;
+                xy.Y=0;
+                break;
+            case 1:
+                xy.X=-1;
+                xy.Y=-1;
+                break;
+            case 2:
+                xy.X=0;
+                xy.Y=-1;
+                break;
+            case 3:
+                xy.X=1;
+                xy.Y=-1;
+                break;
+            case 4:
+                xy.X=1;
+                xy.Y=0;
+                break;
+            case 5:
+                xy.X=1;
+                xy.Y=1;
+                break;
+            case 6:
+                xy.X=0;
+                xy.Y=1;
+                break;
+            default:
+                xy.X=-1;
+                xy.Y=1;
+                break;
+            }
+            return xy;
+        }
+
+        private void SnowstormAdvance(SnowstormClass ssItem)
+        {
+            const int cnt = 8;  // # of integers in each set in arr[]
+            int[] arr = { 30, 20, 10, 5, 0, 5, 10, 20, 20, 15, 10, 10, 10, 10, 10, 15 }; // 2 sets of 8 numbers, each of which add up to 100
+            Point adv = SnowstormVector(7);
+            int i0 = ssItem.idx % 7 <= 4 ? 0 : cnt;
+            int r = rand() % 100;
+            for (int i = 0, val = 0; i < cnt; i++)
+            {
+                val += arr[i0 + i];
+                if (r < val)
+                {
+                    adv = SnowstormVector(i);
+                    break;
+                }
+            }
+            if (ssItem.idx % 3 == 0)
+            {
+                adv.X *= 2;
+                adv.Y *= 2;
+            }
+            //Point xy = ssItem.points.back() + adv;
+            Point xy = ssItem.points[ssItem.points.Count - 1];
+            xy.X += adv.X;
+            xy.Y += adv.Y;
+
+            xy.X %= BufferWi;
+            xy.Y %= BufferHt;
+            if (xy.X < 0) xy.X += BufferWi;
+            if (xy.Y < 0) xy.Y += BufferHt;
+            //ssItem.points.push_back(xy);
+            ssItem.points.Add(xy);
+        }
+
+        public void RenderSnowstorm(int Count, int Length)
+        {
+            HSV hsv, hsv0, hsv1;
+            hsv0 = Palette.GetHSV(0);
+            hsv1 = Palette.GetHSV(1);
+            int colorcnt = GetColorCount();
+            Count = Convert.ToInt32(BufferWi * BufferHt * Count / 2000) + 1;
+            int TailLength = BufferWi * BufferHt * Length / 2000 + 2;
+            SnowstormClass ssItem;
+            Point xy = new Point();
+            int r;
+            if (State == 0 || Count != LastSnowstormCount)
+            {
+                // create snowstorm elements
+                LastSnowstormCount = Count;
+                SnowstormItems.Clear();
+                for (int i = 0; i < Count; i++)
+                {
+                    ssItem = new SnowstormClass();
+                    ssItem.idx = i;
+                    ssItem.ssDecay = 0;
+                    ssItem.points.Clear();
+                    ssItem.hsv = HSV.SetRangeColor(hsv0, hsv1);
+                    // start in a random state
+                    r = rand() % (2 * TailLength);
+                    if (r > 0)
+                    {
+                        xy.X = rand() % BufferWi;
+                        xy.Y = rand() % BufferHt;
+                        //ssItem.points.push_back(xy);
+                        ssItem.points.Add(xy);
+                    }
+                    if (r >= TailLength)
+                    {
+                        ssItem.ssDecay = r - TailLength;
+                        r = TailLength;
+                    }
+                    for (int j = 1; j < r; j++)
+                    {
+                        SnowstormAdvance(ssItem);
+                    }
+                    //SnowstormItems.push_back(ssItem);
+                    SnowstormItems.Add(ssItem);
+                }
+            }
+
+            // render Snowstorm Items
+            int sz;
+            //int cnt = 0;
+            //for (SnowstormList::iterator it = SnowstormItems.begin(); it != SnowstormItems.end(); ++it)
+            foreach (SnowstormClass it in SnowstormItems)
+            {
+                if (it.points.Count() > TailLength)
+                {
+                    if (it.ssDecay > TailLength)
+                    {
+                        it.points.Clear();  // start over
+                        it.ssDecay = 0;
+                    }
+                    else if (rand() % 20 < Data.Speed)
+                    {
+                        it.ssDecay++;
+                    }
+                }
+                if (it.points.Count == 0)
+                {
+                    xy.X = rand() % BufferWi;
+                    xy.Y = rand() % BufferHt;
+                    //it.points.push_back(xy);
+                    it.points.Add(xy);
+                }
+                else if (rand() % 20 < Data.Speed)
+                {
+                    SnowstormAdvance(it);
+                }
+                sz = it.points.Count();
+                for (int pt = 0; pt < sz; pt++)
+                {
+                    hsv = it.hsv;
+                    hsv.Value = (float)(1.0 - (double)(sz - pt + it.ssDecay) / TailLength);
+                    if (hsv.Value < 0.0) hsv.Value = 0.0f;
+                    SetPixel(it.points[pt].X, it.points[pt].Y, hsv);
+                }
+                //cnt++;
+            }
+        }
+
+        #endregion // Snowstorm
+
+        #region Spirals
+
+        public void RenderSpirals(int PaletteRepeat, int Direction, int Rotation, int Thickness, bool Blend, bool Show3D)
+        {
+            int strand_base, strand, thick, x, y, ColorIdx;
+            int colorcnt = GetColorCount();
+            int SpiralCount = colorcnt * PaletteRepeat;
+            int deltaStrands = BufferWi / SpiralCount;
+            int SpiralThickness = (deltaStrands * Thickness / 100) + 1;
+            long SpiralState = State * Direction;
+            HSV hsv;
+            Color color;
+            for (int ns = 0; ns < SpiralCount; ns++)
+            {
+                strand_base = ns * deltaStrands;
+                ColorIdx = ns % colorcnt;
+                color = Palette.GetColor(ColorIdx);
+                for (thick = 0; thick < SpiralThickness; thick++)
+                {
+                    strand = (strand_base + thick) % BufferWi;
+                    for (y = 0; y < BufferHt; y++)
+                    {
+                        x = (strand + ((int)SpiralState / 10) + (y * Rotation / BufferHt)) % BufferWi;
+                        if (x < 0) x += BufferWi;
+                        if (Blend)
+                        {
+                            color = GetMultiColorBlend((double)(BufferHt - y - 1) / (double)BufferHt, false);
+                        }
+                        if (Show3D)
+                        {
+                            hsv = HSV.ColorToHSV(color);
+                            if (Rotation < 0)
+                            {
+                                hsv.Value = (float)((double)(thick + 1) / SpiralThickness);
+                            }
+                            else
+                            {
+                                hsv.Value = (float)((double)(SpiralThickness - thick) / SpiralThickness);
+                            }
+                            SetPixel(x, y, hsv);
+                        }
+                        else
+                        {
+                            SetPixel(x, y, color);
+                        }
+                    }
+                }
+            }
+        }
+
+        #endregion // Spirals
+
+        #region Twinkles
+
+        public void RenderTwinkle(int Count)
+        {
+            Console.WriteLine("Twikle");
+            int x, y, i, i7, ColorIdx;
+            int lights = Convert.ToInt32((BufferHt * BufferWi) * (Count / 100.0)); // Count is in range of 1-100 from slider bar
+            Console.WriteLine(lights);
+            int step = (BufferHt * BufferWi) / lights;
+            if (step < 1) step = 1;
+            srand(1); // always have the same random numbers for each frame (state)
+            HSV hsv; //   we will define an hsv color model. The RGB colot model would have been "wxColour color;"
+
+            int colorcnt = GetColorCount();
+
+            i = 0;
+
+            for (y = 0; y < BufferHt; y++) // For my 20x120 megatree, BufferHt=120
+            {
+                for (x = 0; x < BufferWi; x++) // BufferWi=20 in the above example
+                {
+                    i++;
+                    if (i % step == 0) // Should we draw a light?
+                    {
+                        // Yes, so now decide on what color it should be
+
+                        ColorIdx = rand() % colorcnt; // Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
+                        hsv = Palette.GetHSV(ColorIdx); // Now go and get the hsv value for this ColorIdx
+                        i7 = Convert.ToInt32((State / 4 + rand()) % 9); // Our twinkle is 9 steps. 4 ramping up, 5th at full brightness and then 4 more ramping down
+                        //  Note that we are adding state to this calculation, this causes a different blink rate for each light
+
+                        if (i7 == 0 || i7 == 8) hsv.Value = 0.1f;
+                        if (i7 == 1 || i7 == 7) hsv.Value = 0.3f;
+                        if (i7 == 2 || i7 == 6) hsv.Value = 0.5f;
+                        if (i7 == 3 || i7 == 5) hsv.Value = 0.7f;
+                        if (i7 == 4) hsv.Value = 1.0f;
+                        //  we left the Hue and Saturation alone, we are just modifiying the Brightness Value
+                        SetPixel(x, y, hsv); // Turn pixel on
+                    }
+                }
+            }
+        }
+
+        #endregion // Twinkle
+
         #endregion // Nutcracker Effects
 
         #region Pixels
@@ -1255,7 +1541,7 @@ namespace VixenModules.Effect.Nutcracker
                 //return tempbuf[y*BufferWi+x];
                 return _tempbuf[x][y];
             }
-            return Color.Transparent;
+            return Color.Black;
         }
 
         void ClearTempBuf()
@@ -1324,6 +1610,15 @@ namespace VixenModules.Effect.Nutcracker
                     break;
                 case Effects.Snowflakes:
                     RenderSnowflakes(Data.Snowflakes_Max, Data.Snowflakes_Type);
+                    break;
+                case Effects.Snowstorm:
+                    RenderSnowstorm(Data.Snowstorm_MaxFlakes, Data.Snowstorm_TrailLength);
+                    break;
+                case Effects.Spirals:
+                    RenderSpirals(Data.Spirals_PaletteRepeat, Data.Spirals_Direction, Data.Spirals_Rotation, Data.Spirals_Thickness, Data.Spirals_Blend, Data.Spirals_3D);
+                    break;
+                case Effects.Twinkles:
+                    RenderTwinkle(Data.Twinkles_Count);
                     break;
             }
             SetNextState(false);

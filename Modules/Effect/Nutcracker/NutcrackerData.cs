@@ -100,6 +100,30 @@ namespace VixenModules.Effect.Nutcracker
         [DataMember]
         public int Snowflakes_Type;
 
+        // Snowstorm
+        [DataMember]
+        public int Snowstorm_MaxFlakes = 10;
+        [DataMember]
+        public int Snowstorm_TrailLength = 10;
+
+        // Spirals
+        [DataMember]
+        public int Spirals_PaletteRepeat = 1;
+        [DataMember]
+        public int Spirals_Direction = 0;
+        [DataMember]
+        public int Spirals_Rotation = 1;
+        [DataMember]
+        public int Spirals_Thickness = 5;
+        [DataMember]
+        public bool Spirals_Blend = false;
+        [DataMember]
+        public bool Spirals_3D = false;
+
+        // Twinkles
+        [DataMember]
+        public int Twinkles_Count = 50;
+
         [OnDeserialized]
         void OnDeserialized(StreamingContext context)
         {
@@ -113,6 +137,12 @@ namespace VixenModules.Effect.Nutcracker
                 Meteor_Count = 10;
             if (Meteor_TrailLength < 1)
                 Meteor_TrailLength = 8;
+
+            if (Spirals_PaletteRepeat == 0)
+                Spirals_PaletteRepeat = 1;
+
+            if (Twinkles_Count < 2)
+                Twinkles_Count = 10;
         }
     }
 }

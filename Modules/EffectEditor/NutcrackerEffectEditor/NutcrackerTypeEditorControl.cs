@@ -126,6 +126,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
             LoadMeteor();
             LoadFireworks();
             LoadSnowflakes();
+            LoadSnowstorm();
+            LoadSpirals();
             LoadColors();
 
             timerRender.Start();
@@ -471,6 +473,61 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 
         #endregion // Snowflakes
 
+        #region Snowstorm
+
+        private void LoadSnowstorm()
+        {
+            trackSnowstormMaxFlakes.Value = Data.Snowstorm_MaxFlakes;
+            trackSnowstormTrailLength.Value = Data.Snowstorm_TrailLength;
+        }
+
+        private void Snowstorm_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender, Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+        {
+            if (loading) return;
+            Data.Snowstorm_TrailLength = trackSnowstormTrailLength.Value;
+            Data.Snowstorm_MaxFlakes = trackSnowstormMaxFlakes.Value;
+        }
+
+        #endregion // Snowstorm
+
+        #region Spirals
+
+        private void LoadSpirals()
+        {
+            trackSpiralsDirection.Value = Data.Spirals_Direction;
+            trackSpiralsRepeat.Value = Data.Spirals_PaletteRepeat;
+            trackSpiralsRotations.Value = Data.Spirals_Rotation;
+            trackSpiralsThickness.Value = Data.Spirals_Thickness;
+            checkSpirals3D.Checked = Data.Spirals_3D;
+            checkSpiralsBlend.Checked = Data.Spirals_Blend;
+        }
+
+        private void Spirals_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender, Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+        {
+            if (loading) return;
+            Data.Spirals_Direction = trackSpiralsDirection.Value;
+            Data.Spirals_PaletteRepeat = trackSpiralsRepeat.Value;
+            Data.Spirals_Rotation = trackSpiralsRotations.Value;
+            Data.Spirals_Thickness = trackSpiralsThickness.Value;
+        }
+
+        #endregion // Twinkles
+
+        #region Twinkles
+
+        private void LoadTwinkles()
+        {
+            trackTwinkleCount.Value = Data.Twinkles_Count;
+        }
+
+        private void trackTwinkleCount_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender, Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+        {
+            if (loading) return;
+            Data.Twinkles_Count = trackTwinkleCount.Value;
+        }
+
+        #endregion // Twinkles
+
         private void DeletePreviewDisplayItem()
         {
             if (preview.DisplayItems != null && preview.DisplayItems.Count > 0)
@@ -575,6 +632,12 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
             SetupPreview();
         }
 
+        private void Spirals_CheckedChanged(object sender, EventArgs e)
+        {
+            if (loading) return;
+            Data.Spirals_3D = checkSpirals3D.Checked;
+            Data.Spirals_Blend = checkSpiralsBlend.Checked;
+        }
 
     }
 }

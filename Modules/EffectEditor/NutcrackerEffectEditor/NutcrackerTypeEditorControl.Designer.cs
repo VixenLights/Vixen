@@ -48,6 +48,22 @@
             this.checkBoxColor1 = new System.Windows.Forms.CheckBox();
             this.panelColor1 = new System.Windows.Forms.Panel();
             this.tabEffectProperties = new System.Windows.Forms.TabControl();
+            this.Spirals = new System.Windows.Forms.TabPage();
+            this.checkSpirals3D = new System.Windows.Forms.CheckBox();
+            this.checkSpiralsBlend = new System.Windows.Forms.CheckBox();
+            this.label29 = new System.Windows.Forms.Label();
+            this.trackSpiralsDirection = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
+            this.label30 = new System.Windows.Forms.Label();
+            this.trackSpiralsThickness = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
+            this.label27 = new System.Windows.Forms.Label();
+            this.trackSpiralsRotations = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
+            this.label28 = new System.Windows.Forms.Label();
+            this.trackSpiralsRepeat = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
+            this.Snowstorm = new System.Windows.Forms.TabPage();
+            this.label25 = new System.Windows.Forms.Label();
+            this.trackSnowstormTrailLength = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
+            this.label26 = new System.Windows.Forms.Label();
+            this.trackSnowstormMaxFlakes = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
             this.Snowflakes = new System.Windows.Forms.TabPage();
             this.label24 = new System.Windows.Forms.Label();
             this.trackSnowflakeType = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
@@ -108,9 +124,14 @@
             this.trackBarSpeed = new System.Windows.Forms.TrackBar();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
+            this.Twinkles = new System.Windows.Forms.TabPage();
+            this.label31 = new System.Windows.Forms.Label();
+            this.trackTwinkleCount = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabEffectProperties.SuspendLayout();
+            this.Spirals.SuspendLayout();
+            this.Snowstorm.SuspendLayout();
             this.Snowflakes.SuspendLayout();
             this.Fireworks.SuspendLayout();
             this.Meteors.SuspendLayout();
@@ -121,6 +142,7 @@
             this.Fire.SuspendLayout();
             this.Garlands.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).BeginInit();
+            this.Twinkles.SuspendLayout();
             this.SuspendLayout();
             // 
             // timerRender
@@ -332,6 +354,9 @@
             // tabEffectProperties
             // 
             this.tabEffectProperties.Appearance = System.Windows.Forms.TabAppearance.Buttons;
+            this.tabEffectProperties.Controls.Add(this.Twinkles);
+            this.tabEffectProperties.Controls.Add(this.Spirals);
+            this.tabEffectProperties.Controls.Add(this.Snowstorm);
             this.tabEffectProperties.Controls.Add(this.Snowflakes);
             this.tabEffectProperties.Controls.Add(this.Fireworks);
             this.tabEffectProperties.Controls.Add(this.Meteors);
@@ -348,6 +373,180 @@
             this.tabEffectProperties.Size = new System.Drawing.Size(274, 158);
             this.tabEffectProperties.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabEffectProperties.TabIndex = 5;
+            // 
+            // Spirals
+            // 
+            this.Spirals.Controls.Add(this.checkSpirals3D);
+            this.Spirals.Controls.Add(this.checkSpiralsBlend);
+            this.Spirals.Controls.Add(this.label29);
+            this.Spirals.Controls.Add(this.trackSpiralsDirection);
+            this.Spirals.Controls.Add(this.label30);
+            this.Spirals.Controls.Add(this.trackSpiralsThickness);
+            this.Spirals.Controls.Add(this.label27);
+            this.Spirals.Controls.Add(this.trackSpiralsRotations);
+            this.Spirals.Controls.Add(this.label28);
+            this.Spirals.Controls.Add(this.trackSpiralsRepeat);
+            this.Spirals.Location = new System.Drawing.Point(4, 5);
+            this.Spirals.Name = "Spirals";
+            this.Spirals.Size = new System.Drawing.Size(266, 149);
+            this.Spirals.TabIndex = 10;
+            this.Spirals.Text = "tabPage1";
+            this.Spirals.UseVisualStyleBackColor = true;
+            // 
+            // checkSpirals3D
+            // 
+            this.checkSpirals3D.AutoSize = true;
+            this.checkSpirals3D.Location = new System.Drawing.Point(155, 121);
+            this.checkSpirals3D.Name = "checkSpirals3D";
+            this.checkSpirals3D.Size = new System.Drawing.Size(40, 17);
+            this.checkSpirals3D.TabIndex = 36;
+            this.checkSpirals3D.Text = "3D";
+            this.checkSpirals3D.UseVisualStyleBackColor = true;
+            this.checkSpirals3D.CheckedChanged += new System.EventHandler(this.Spirals_CheckedChanged);
+            // 
+            // checkSpiralsBlend
+            // 
+            this.checkSpiralsBlend.AutoSize = true;
+            this.checkSpiralsBlend.Location = new System.Drawing.Point(96, 121);
+            this.checkSpiralsBlend.Name = "checkSpiralsBlend";
+            this.checkSpiralsBlend.Size = new System.Drawing.Size(53, 17);
+            this.checkSpiralsBlend.TabIndex = 35;
+            this.checkSpiralsBlend.Text = "Blend";
+            this.checkSpiralsBlend.UseVisualStyleBackColor = true;
+            this.checkSpiralsBlend.CheckedChanged += new System.EventHandler(this.Spirals_CheckedChanged);
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Location = new System.Drawing.Point(9, 96);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(52, 13);
+            this.label29.TabIndex = 33;
+            this.label29.Text = "Direction:";
+            // 
+            // trackSpiralsDirection
+            // 
+            this.trackSpiralsDirection.Location = new System.Drawing.Point(96, 93);
+            this.trackSpiralsDirection.Maximum = 1;
+            this.trackSpiralsDirection.Minimum = -1;
+            this.trackSpiralsDirection.Name = "trackSpiralsDirection";
+            this.trackSpiralsDirection.Size = new System.Drawing.Size(167, 23);
+            this.trackSpiralsDirection.TabIndex = 34;
+            this.trackSpiralsDirection.Text = "trackSpiralsDirection";
+            this.trackSpiralsDirection.Value = 1;
+            this.trackSpiralsDirection.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.Spirals_ValueChanged);
+            // 
+            // label30
+            // 
+            this.label30.AutoSize = true;
+            this.label30.Location = new System.Drawing.Point(9, 67);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(59, 13);
+            this.label30.TabIndex = 31;
+            this.label30.Text = "Thickness:";
+            // 
+            // trackSpiralsThickness
+            // 
+            this.trackSpiralsThickness.Location = new System.Drawing.Point(96, 64);
+            this.trackSpiralsThickness.Name = "trackSpiralsThickness";
+            this.trackSpiralsThickness.Size = new System.Drawing.Size(167, 23);
+            this.trackSpiralsThickness.TabIndex = 32;
+            this.trackSpiralsThickness.Text = "trackSpiralsThickness";
+            this.trackSpiralsThickness.Value = 50;
+            this.trackSpiralsThickness.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.Spirals_ValueChanged);
+            // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Location = new System.Drawing.Point(9, 38);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(55, 13);
+            this.label27.TabIndex = 29;
+            this.label27.Text = "Rotations:";
+            // 
+            // trackSpiralsRotations
+            // 
+            this.trackSpiralsRotations.Location = new System.Drawing.Point(96, 35);
+            this.trackSpiralsRotations.Maximum = 50;
+            this.trackSpiralsRotations.Minimum = -50;
+            this.trackSpiralsRotations.Name = "trackSpiralsRotations";
+            this.trackSpiralsRotations.Size = new System.Drawing.Size(167, 23);
+            this.trackSpiralsRotations.TabIndex = 30;
+            this.trackSpiralsRotations.Text = "t";
+            this.trackSpiralsRotations.Value = 20;
+            this.trackSpiralsRotations.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.Spirals_ValueChanged);
+            // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Location = new System.Drawing.Point(9, 9);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(81, 13);
+            this.label28.TabIndex = 27;
+            this.label28.Text = "Palette Repeat:";
+            // 
+            // trackSpiralsRepeat
+            // 
+            this.trackSpiralsRepeat.Location = new System.Drawing.Point(96, 6);
+            this.trackSpiralsRepeat.Maximum = 5;
+            this.trackSpiralsRepeat.Minimum = 1;
+            this.trackSpiralsRepeat.Name = "trackSpiralsRepeat";
+            this.trackSpiralsRepeat.Size = new System.Drawing.Size(167, 23);
+            this.trackSpiralsRepeat.TabIndex = 28;
+            this.trackSpiralsRepeat.Text = "trackPaletteRepeat";
+            this.trackSpiralsRepeat.Value = 1;
+            this.trackSpiralsRepeat.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.Spirals_ValueChanged);
+            // 
+            // Snowstorm
+            // 
+            this.Snowstorm.Controls.Add(this.label25);
+            this.Snowstorm.Controls.Add(this.trackSnowstormTrailLength);
+            this.Snowstorm.Controls.Add(this.label26);
+            this.Snowstorm.Controls.Add(this.trackSnowstormMaxFlakes);
+            this.Snowstorm.Location = new System.Drawing.Point(4, 5);
+            this.Snowstorm.Name = "Snowstorm";
+            this.Snowstorm.Size = new System.Drawing.Size(266, 149);
+            this.Snowstorm.TabIndex = 9;
+            this.Snowstorm.Text = "tabPage1";
+            this.Snowstorm.UseVisualStyleBackColor = true;
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Location = new System.Drawing.Point(9, 37);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(66, 13);
+            this.label25.TabIndex = 25;
+            this.label25.Text = "Trail Length:";
+            // 
+            // trackSnowstormTrailLength
+            // 
+            this.trackSnowstormTrailLength.Location = new System.Drawing.Point(96, 34);
+            this.trackSnowstormTrailLength.Name = "trackSnowstormTrailLength";
+            this.trackSnowstormTrailLength.Size = new System.Drawing.Size(167, 23);
+            this.trackSnowstormTrailLength.TabIndex = 26;
+            this.trackSnowstormTrailLength.Text = "hMiniTracker2";
+            this.trackSnowstormTrailLength.Value = 5;
+            this.trackSnowstormTrailLength.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.Snowstorm_ValueChanged);
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Location = new System.Drawing.Point(9, 8);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(64, 13);
+            this.label26.TabIndex = 23;
+            this.label26.Text = "Max Flakes:";
+            // 
+            // trackSnowstormMaxFlakes
+            // 
+            this.trackSnowstormMaxFlakes.Location = new System.Drawing.Point(96, 5);
+            this.trackSnowstormMaxFlakes.Name = "trackSnowstormMaxFlakes";
+            this.trackSnowstormMaxFlakes.Size = new System.Drawing.Size(167, 23);
+            this.trackSnowstormMaxFlakes.TabIndex = 24;
+            this.trackSnowstormMaxFlakes.Text = "hMiniTracker1";
+            this.trackSnowstormMaxFlakes.Value = 20;
+            this.trackSnowstormMaxFlakes.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.Snowstorm_ValueChanged);
             // 
             // Snowflakes
             // 
@@ -998,6 +1197,37 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Effect 2";
             // 
+            // Twinkles
+            // 
+            this.Twinkles.Controls.Add(this.label31);
+            this.Twinkles.Controls.Add(this.trackTwinkleCount);
+            this.Twinkles.Location = new System.Drawing.Point(4, 5);
+            this.Twinkles.Name = "Twinkles";
+            this.Twinkles.Size = new System.Drawing.Size(266, 149);
+            this.Twinkles.TabIndex = 11;
+            this.Twinkles.Text = "tabPage1";
+            this.Twinkles.UseVisualStyleBackColor = true;
+            // 
+            // label31
+            // 
+            this.label31.AutoSize = true;
+            this.label31.Location = new System.Drawing.Point(9, 8);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(60, 13);
+            this.label31.TabIndex = 29;
+            this.label31.Text = "# of Lights:";
+            // 
+            // trackTwinkleCount
+            // 
+            this.trackTwinkleCount.Location = new System.Drawing.Point(96, 5);
+            this.trackTwinkleCount.Minimum = 2;
+            this.trackTwinkleCount.Name = "trackTwinkleCount";
+            this.trackTwinkleCount.Size = new System.Drawing.Size(167, 23);
+            this.trackTwinkleCount.TabIndex = 30;
+            this.trackTwinkleCount.Text = "trackPaletteRepeat";
+            this.trackTwinkleCount.Value = 10;
+            this.trackTwinkleCount.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.trackTwinkleCount_ValueChanged);
+            // 
             // NutcrackerTypeEditorControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1013,6 +1243,10 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.tabEffectProperties.ResumeLayout(false);
+            this.Spirals.ResumeLayout(false);
+            this.Spirals.PerformLayout();
+            this.Snowstorm.ResumeLayout(false);
+            this.Snowstorm.PerformLayout();
             this.Snowflakes.ResumeLayout(false);
             this.Snowflakes.PerformLayout();
             this.Fireworks.ResumeLayout(false);
@@ -1032,6 +1266,8 @@
             this.Garlands.ResumeLayout(false);
             this.Garlands.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).EndInit();
+            this.Twinkles.ResumeLayout(false);
+            this.Twinkles.PerformLayout();
             this.ResumeLayout(false);
 
 		}
@@ -1118,5 +1354,24 @@
         private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackSnowflakeType;
         private System.Windows.Forms.Label label23;
         private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackSnowflakeMax;
+        private System.Windows.Forms.TabPage Snowstorm;
+        private System.Windows.Forms.Label label25;
+        private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackSnowstormTrailLength;
+        private System.Windows.Forms.Label label26;
+        private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackSnowstormMaxFlakes;
+        private System.Windows.Forms.TabPage Spirals;
+        private System.Windows.Forms.CheckBox checkSpirals3D;
+        private System.Windows.Forms.CheckBox checkSpiralsBlend;
+        private System.Windows.Forms.Label label29;
+        private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackSpiralsDirection;
+        private System.Windows.Forms.Label label30;
+        private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackSpiralsThickness;
+        private System.Windows.Forms.Label label27;
+        private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackSpiralsRotations;
+        private System.Windows.Forms.Label label28;
+        private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackSpiralsRepeat;
+        private System.Windows.Forms.TabPage Twinkles;
+        private System.Windows.Forms.Label label31;
+        private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackTwinkleCount;
 	}
 }
