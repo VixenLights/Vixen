@@ -128,6 +128,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
             LoadSnowflakes();
             LoadSnowstorm();
             LoadSpirals();
+            LoadTwinkles();
+            LoadText();
             LoadColors();
 
             timerRender.Start();
@@ -511,6 +513,13 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
             Data.Spirals_Thickness = trackSpiralsThickness.Value;
         }
 
+        private void Spirals_CheckedChanged(object sender, EventArgs e)
+        {
+            if (loading) return;
+            Data.Spirals_3D = checkSpirals3D.Checked;
+            Data.Spirals_Blend = checkSpiralsBlend.Checked;
+        }
+
         #endregion // Twinkles
 
         #region Twinkles
@@ -527,6 +536,43 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
         }
 
         #endregion // Twinkles
+
+        #region Text
+
+        private void LoadText()
+        {
+            textTextLine1.Text = Data.Text_Line1;
+            textTextLine2.Text = Data.Text_Line2;
+            comboBoxTextDirection.SelectedIndex = Data.Text_Direction;
+            trackTextTop.Value = Data.Text_Top;
+        }
+
+        private void Text_TextChanged(object sender, EventArgs e)
+        {
+            if (loading) return;
+            Data.Text_Line1 = textTextLine1.Text;
+            Data.Text_Line2 = textTextLine2.Text;
+            Data.Text_Direction = comboBoxTextDirection.SelectedIndex;
+            //Data.Text_TextRotation = 
+            //Data.Text_Left = 
+        }
+
+        private void trackTextTop_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender, Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+        {
+            if (loading) return;
+            Data.Text_Top = trackTextTop.Value;
+        }
+
+        private void buttonTextFont_Click(object sender, EventArgs e)
+        {
+            fontDialog.Font = Data.Text_Font;
+            if (fontDialog.ShowDialog() == DialogResult.OK)
+            {
+                Data.Text_Font = fontDialog.Font;
+            }
+        }
+
+        #endregion // Text
 
         private void DeletePreviewDisplayItem()
         {
@@ -632,12 +678,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
             SetupPreview();
         }
 
-        private void Spirals_CheckedChanged(object sender, EventArgs e)
-        {
-            if (loading) return;
-            Data.Spirals_3D = checkSpirals3D.Checked;
-            Data.Spirals_Blend = checkSpiralsBlend.Checked;
-        }
+
 
     }
 }

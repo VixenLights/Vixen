@@ -17,6 +17,9 @@ using Vixen.Sys.Attribute;
 namespace VixenModules.Effect.Nutcracker
 {
     [DataContract]
+    [KnownType(typeof(SerializableFont)),
+    KnownType(typeof(System.Drawing.FontStyle)),
+    KnownType(typeof(System.Drawing.GraphicsUnit))]
     public class NutcrackerData
     {
         public ElementNode[] TargetNodes;
@@ -124,6 +127,22 @@ namespace VixenModules.Effect.Nutcracker
         [DataMember]
         public int Twinkles_Count = 50;
 
+        // Text
+        [DataMember]
+        public int Text_Top = 5;
+        [DataMember]
+        public int Text_Left = 5;
+        [DataMember]
+        public string Text_Line1 = "";
+        [DataMember]
+        public string Text_Line2 = "";
+        [DataMember]
+        public int Text_Direction = 0;
+        [DataMember]
+        public SerializableFont Text_Font { get; set; }
+        [DataMember]
+        public int Text_TextRotation = 0;
+
         [OnDeserialized]
         void OnDeserialized(StreamingContext context)
         {
@@ -143,6 +162,16 @@ namespace VixenModules.Effect.Nutcracker
 
             if (Twinkles_Count < 2)
                 Twinkles_Count = 10;
+
+            if (Text_Line1 == null)
+                Text_Line1 = "";
+            if (Text_Line2 == null)
+                Text_Line2 = "";
+
+            if (Text_Font == null)
+            {
+                Text_Font = new SerializableFont(new Font("Arial", 8));
+            }
         }
     }
 }

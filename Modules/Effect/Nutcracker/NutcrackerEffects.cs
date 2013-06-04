@@ -34,7 +34,8 @@ namespace VixenModules.Effect.Nutcracker
             Snowflakes,
             Snowstorm,
             Spirals,
-            Twinkles
+            Twinkles,
+            Text
         }
         
         public enum PreviewType
@@ -1357,10 +1358,8 @@ namespace VixenModules.Effect.Nutcracker
 
         public void RenderTwinkle(int Count)
         {
-            Console.WriteLine("Twikle");
             int x, y, i, i7, ColorIdx;
             int lights = Convert.ToInt32((BufferHt * BufferWi) * (Count / 100.0)); // Count is in range of 1-100 from slider bar
-            Console.WriteLine(lights);
             int step = (BufferHt * BufferWi) / lights;
             if (step < 1) step = 1;
             srand(1); // always have the same random numbers for each frame (state)
@@ -1397,6 +1396,113 @@ namespace VixenModules.Effect.Nutcracker
         }
 
         #endregion // Twinkle
+
+        #region Text
+
+        public void RenderText(int Top, int Left, string Line1, string Line2, Font font, int dir, int TextRotation)
+        {
+            Color c;
+            Bitmap bitmap = new Bitmap(BufferWi, BufferHt);
+            Graphics graphics = Graphics.FromImage(bitmap);
+            //wxMemoryDC dc(bitmap);
+            int ColorIdx, itmp;
+            int colorcnt = GetColorCount();
+            srand(1); // always have the same random numbers for each frame (state)
+            HSV hsv; //   we will define an hsv color model. The RGB colot model would have been "wxColour color;"
+            Point point;
+
+            ColorIdx = rand() % colorcnt; // Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
+            hsv = Palette.GetHSV(ColorIdx); // Now go and get the hsv value for this ColorIdx
+
+            //font.SetNativeFontInfoUserDesc(FontString);
+            //dc.SetFont(font);
+            c = Palette.GetColor(0);
+            Brush brush = new SolidBrush(c);
+
+            //dc.SetTextForeground(c);
+            string msg = Line1;
+
+            if (Line2.Length > 0)
+            {
+                if (colorcnt > 1)
+                {
+                    //  palette.GetColor(1,c);
+                }
+                msg += "\n" + Line2;
+                //      dc.SetTextForeground(c);
+            }
+
+            SizeF sz1 = graphics.MeasureString(Line1, font);
+            SizeF sz2 = graphics.MeasureString(Line2, font);
+            //wxSize sz1 = dc.GetTextExtent(Line1);
+            //wxSize sz2 = dc.GetTextExtent(Line2);
+            int maxwidth = Convert.ToInt32(sz1.Width > sz2.Width ? sz1.Width : sz2.Width);
+            int maxht = Convert.ToInt32(sz1.Height > sz2.Height ? sz1.Height : sz2.Height);
+            if (TextRotation == 1)
+            {
+                itmp = maxwidth;
+                maxwidth = maxht;
+                maxht = itmp;
+            }
+            int dctop = Top * BufferHt / 50 - BufferHt / 2;
+            int xlimit = (BufferWi + maxwidth) * 8 + 1;
+            int ylimit = (BufferHt + maxht) * 8 + 1;
+            //  int xcentered=(BufferWi-maxwidth)/2;  // original way
+            int xcentered = Left * BufferWi / 50 - BufferWi / 2;
+
+
+            TextRotation *= 90;
+            switch (dir)
+            {
+                case 0:
+                    // left
+                    // dc.DrawText(msg,BufferWi-state % xlimit/8,dctop);
+                    //dc.DrawRotatedText(msg,BufferWi-state % xlimit/8,dctop,TextRotation);
+                    point = new Point(Convert.ToInt32(BufferWi - State % xlimit / 8), dctop);
+                    graphics.DrawString(msg, font, brush, point);
+                    break;
+                case 1:
+                    // right
+                    // dc.DrawText(msg,state % xlimit/8-BufferWi,dctop);
+                    point = new Point(Convert.ToInt32(State % xlimit / 8 - BufferWi), dctop);
+                    graphics.DrawString(msg, font, brush, point);
+                    break;
+                case 2:
+                    // up
+                    //  dc.DrawText(msg,xcentered,BufferHt-state % ylimit/8);
+                    //dc.DrawRotatedText(msg,xcentered,BufferHt-state % ylimit/8,TextRotation);
+                    point = new Point(xcentered, Convert.ToInt32(BufferHt - State % ylimit / 8));
+                    graphics.DrawString(msg, font, brush, point);
+                    break;
+                case 3:
+                    // down
+                    //  dc.DrawText(msg,xcentered,state % ylimit / 8 - BufferHt);
+                    //dc.DrawRotatedText(msg,xcentered,state % ylimit / 8 - BufferHt,TextRotation);
+                    point = new Point(xcentered, Convert.ToInt32(State % ylimit / 8 - BufferHt));
+                    graphics.DrawString(msg, font, brush, point);
+                    break;
+                default:
+                    // no movement - centered
+                    //   dc.DrawText(msg,xcentered,dctop);
+                    //dc.DrawRotatedText(msg,xcentered,dctop,TextRotation);
+                    point = new Point(xcentered, dctop);
+                    graphics.DrawString(msg, font, brush, point);
+                    break;
+            }
+
+            // copy dc to buffer
+            for (int x = 0; x < BufferWi; x++)
+            {
+                for (int y = 0; y < BufferHt; y++)
+                {
+                    //dc.GetPixel(x,BufferHt-y-1,&c);
+                    c = bitmap.GetPixel(x, BufferHt-y-1);
+                    SetPixel(x, y, c);
+                }
+            }
+        }
+
+        #endregion // Text
 
         #endregion // Nutcracker Effects
 
@@ -1619,6 +1725,10 @@ namespace VixenModules.Effect.Nutcracker
                     break;
                 case Effects.Twinkles:
                     RenderTwinkle(Data.Twinkles_Count);
+                    break;
+                case Effects.Text:
+                    RenderText(Data.Text_Top, Data.Text_Left, Data.Text_Line1, Data.Text_Line2, Data.Text_Font, Data.Text_Direction, Data.Text_TextRotation);
+                    //, 20, "Derek", "Backus", new Font("Arial", 12), 0, 0);
                     break;
             }
             SetNextState(false);

@@ -48,6 +48,20 @@
             this.checkBoxColor1 = new System.Windows.Forms.CheckBox();
             this.panelColor1 = new System.Windows.Forms.Panel();
             this.tabEffectProperties = new System.Windows.Forms.TabControl();
+            this.Text = new System.Windows.Forms.TabPage();
+            this.comboBoxTextDirection = new System.Windows.Forms.ComboBox();
+            this.label35 = new System.Windows.Forms.Label();
+            this.textBoxTextFont = new System.Windows.Forms.TextBox();
+            this.buttonTextFont = new System.Windows.Forms.Button();
+            this.textTextLine2 = new System.Windows.Forms.TextBox();
+            this.textTextLine1 = new System.Windows.Forms.TextBox();
+            this.label34 = new System.Windows.Forms.Label();
+            this.label33 = new System.Windows.Forms.Label();
+            this.label32 = new System.Windows.Forms.Label();
+            this.trackTextTop = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
+            this.Twinkles = new System.Windows.Forms.TabPage();
+            this.label31 = new System.Windows.Forms.Label();
+            this.trackTwinkleCount = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
             this.Spirals = new System.Windows.Forms.TabPage();
             this.checkSpirals3D = new System.Windows.Forms.CheckBox();
             this.checkSpiralsBlend = new System.Windows.Forms.CheckBox();
@@ -124,12 +138,12 @@
             this.trackBarSpeed = new System.Windows.Forms.TrackBar();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
-            this.Twinkles = new System.Windows.Forms.TabPage();
-            this.label31 = new System.Windows.Forms.Label();
-            this.trackTwinkleCount = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
+            this.fontDialog = new System.Windows.Forms.FontDialog();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabEffectProperties.SuspendLayout();
+            this.Text.SuspendLayout();
+            this.Twinkles.SuspendLayout();
             this.Spirals.SuspendLayout();
             this.Snowstorm.SuspendLayout();
             this.Snowflakes.SuspendLayout();
@@ -142,7 +156,6 @@
             this.Fire.SuspendLayout();
             this.Garlands.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).BeginInit();
-            this.Twinkles.SuspendLayout();
             this.SuspendLayout();
             // 
             // timerRender
@@ -354,6 +367,7 @@
             // tabEffectProperties
             // 
             this.tabEffectProperties.Appearance = System.Windows.Forms.TabAppearance.Buttons;
+            this.tabEffectProperties.Controls.Add(this.Text);
             this.tabEffectProperties.Controls.Add(this.Twinkles);
             this.tabEffectProperties.Controls.Add(this.Spirals);
             this.tabEffectProperties.Controls.Add(this.Snowstorm);
@@ -373,6 +387,152 @@
             this.tabEffectProperties.Size = new System.Drawing.Size(274, 158);
             this.tabEffectProperties.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabEffectProperties.TabIndex = 5;
+            // 
+            // Text
+            // 
+            this.Text.Controls.Add(this.comboBoxTextDirection);
+            this.Text.Controls.Add(this.label35);
+            this.Text.Controls.Add(this.textBoxTextFont);
+            this.Text.Controls.Add(this.buttonTextFont);
+            this.Text.Controls.Add(this.textTextLine2);
+            this.Text.Controls.Add(this.textTextLine1);
+            this.Text.Controls.Add(this.label34);
+            this.Text.Controls.Add(this.label33);
+            this.Text.Controls.Add(this.label32);
+            this.Text.Controls.Add(this.trackTextTop);
+            this.Text.Location = new System.Drawing.Point(4, 5);
+            this.Text.Name = "Text";
+            this.Text.Size = new System.Drawing.Size(266, 149);
+            this.Text.TabIndex = 12;
+            this.Text.Text = "tabPage1";
+            this.Text.UseVisualStyleBackColor = true;
+            // 
+            // comboBoxTextDirection
+            // 
+            this.comboBoxTextDirection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxTextDirection.FormattingEnabled = true;
+            this.comboBoxTextDirection.Items.AddRange(new object[] {
+            "Left",
+            "Right",
+            "Up",
+            "Down",
+            "None"});
+            this.comboBoxTextDirection.Location = new System.Drawing.Point(96, 53);
+            this.comboBoxTextDirection.Name = "comboBoxTextDirection";
+            this.comboBoxTextDirection.Size = new System.Drawing.Size(167, 21);
+            this.comboBoxTextDirection.TabIndex = 40;
+            this.comboBoxTextDirection.SelectedIndexChanged += new System.EventHandler(this.Text_TextChanged);
+            // 
+            // label35
+            // 
+            this.label35.AutoSize = true;
+            this.label35.Location = new System.Drawing.Point(9, 56);
+            this.label35.Name = "label35";
+            this.label35.Size = new System.Drawing.Size(52, 13);
+            this.label35.TabIndex = 39;
+            this.label35.Text = "Direction:";
+            // 
+            // textBoxTextFont
+            // 
+            this.textBoxTextFont.Location = new System.Drawing.Point(96, 107);
+            this.textBoxTextFont.Name = "textBoxTextFont";
+            this.textBoxTextFont.ReadOnly = true;
+            this.textBoxTextFont.Size = new System.Drawing.Size(167, 20);
+            this.textBoxTextFont.TabIndex = 38;
+            // 
+            // buttonTextFont
+            // 
+            this.buttonTextFont.Location = new System.Drawing.Point(12, 105);
+            this.buttonTextFont.Name = "buttonTextFont";
+            this.buttonTextFont.Size = new System.Drawing.Size(75, 23);
+            this.buttonTextFont.TabIndex = 37;
+            this.buttonTextFont.Text = "Font";
+            this.buttonTextFont.UseVisualStyleBackColor = true;
+            this.buttonTextFont.Click += new System.EventHandler(this.buttonTextFont_Click);
+            // 
+            // textTextLine2
+            // 
+            this.textTextLine2.Location = new System.Drawing.Point(96, 30);
+            this.textTextLine2.Name = "textTextLine2";
+            this.textTextLine2.Size = new System.Drawing.Size(167, 20);
+            this.textTextLine2.TabIndex = 36;
+            this.textTextLine2.TextChanged += new System.EventHandler(this.Text_TextChanged);
+            // 
+            // textTextLine1
+            // 
+            this.textTextLine1.Location = new System.Drawing.Point(96, 7);
+            this.textTextLine1.Name = "textTextLine1";
+            this.textTextLine1.Size = new System.Drawing.Size(167, 20);
+            this.textTextLine1.TabIndex = 35;
+            this.textTextLine1.TextChanged += new System.EventHandler(this.Text_TextChanged);
+            // 
+            // label34
+            // 
+            this.label34.AutoSize = true;
+            this.label34.Location = new System.Drawing.Point(9, 33);
+            this.label34.Name = "label34";
+            this.label34.Size = new System.Drawing.Size(39, 13);
+            this.label34.TabIndex = 34;
+            this.label34.Text = "Line 2:";
+            // 
+            // label33
+            // 
+            this.label33.AutoSize = true;
+            this.label33.Location = new System.Drawing.Point(9, 10);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(39, 13);
+            this.label33.TabIndex = 33;
+            this.label33.Text = "Line 1:";
+            // 
+            // label32
+            // 
+            this.label32.AutoSize = true;
+            this.label32.Location = new System.Drawing.Point(9, 82);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(29, 13);
+            this.label32.TabIndex = 31;
+            this.label32.Text = "Top:";
+            // 
+            // trackTextTop
+            // 
+            this.trackTextTop.Location = new System.Drawing.Point(96, 79);
+            this.trackTextTop.Name = "trackTextTop";
+            this.trackTextTop.Size = new System.Drawing.Size(167, 23);
+            this.trackTextTop.TabIndex = 32;
+            this.trackTextTop.Text = "trackPaletteRepeat";
+            this.trackTextTop.Value = 50;
+            this.trackTextTop.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.trackTextTop_ValueChanged);
+            // 
+            // Twinkles
+            // 
+            this.Twinkles.Controls.Add(this.label31);
+            this.Twinkles.Controls.Add(this.trackTwinkleCount);
+            this.Twinkles.Location = new System.Drawing.Point(4, 5);
+            this.Twinkles.Name = "Twinkles";
+            this.Twinkles.Size = new System.Drawing.Size(266, 149);
+            this.Twinkles.TabIndex = 11;
+            this.Twinkles.Text = "tabPage1";
+            this.Twinkles.UseVisualStyleBackColor = true;
+            // 
+            // label31
+            // 
+            this.label31.AutoSize = true;
+            this.label31.Location = new System.Drawing.Point(9, 8);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(60, 13);
+            this.label31.TabIndex = 29;
+            this.label31.Text = "# of Lights:";
+            // 
+            // trackTwinkleCount
+            // 
+            this.trackTwinkleCount.Location = new System.Drawing.Point(96, 5);
+            this.trackTwinkleCount.Minimum = 2;
+            this.trackTwinkleCount.Name = "trackTwinkleCount";
+            this.trackTwinkleCount.Size = new System.Drawing.Size(167, 23);
+            this.trackTwinkleCount.TabIndex = 30;
+            this.trackTwinkleCount.Text = "trackPaletteRepeat";
+            this.trackTwinkleCount.Value = 10;
+            this.trackTwinkleCount.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.trackTwinkleCount_ValueChanged);
             // 
             // Spirals
             // 
@@ -1197,37 +1357,6 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Effect 2";
             // 
-            // Twinkles
-            // 
-            this.Twinkles.Controls.Add(this.label31);
-            this.Twinkles.Controls.Add(this.trackTwinkleCount);
-            this.Twinkles.Location = new System.Drawing.Point(4, 5);
-            this.Twinkles.Name = "Twinkles";
-            this.Twinkles.Size = new System.Drawing.Size(266, 149);
-            this.Twinkles.TabIndex = 11;
-            this.Twinkles.Text = "tabPage1";
-            this.Twinkles.UseVisualStyleBackColor = true;
-            // 
-            // label31
-            // 
-            this.label31.AutoSize = true;
-            this.label31.Location = new System.Drawing.Point(9, 8);
-            this.label31.Name = "label31";
-            this.label31.Size = new System.Drawing.Size(60, 13);
-            this.label31.TabIndex = 29;
-            this.label31.Text = "# of Lights:";
-            // 
-            // trackTwinkleCount
-            // 
-            this.trackTwinkleCount.Location = new System.Drawing.Point(96, 5);
-            this.trackTwinkleCount.Minimum = 2;
-            this.trackTwinkleCount.Name = "trackTwinkleCount";
-            this.trackTwinkleCount.Size = new System.Drawing.Size(167, 23);
-            this.trackTwinkleCount.TabIndex = 30;
-            this.trackTwinkleCount.Text = "trackPaletteRepeat";
-            this.trackTwinkleCount.Value = 10;
-            this.trackTwinkleCount.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.trackTwinkleCount_ValueChanged);
-            // 
             // NutcrackerTypeEditorControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1243,6 +1372,10 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.tabEffectProperties.ResumeLayout(false);
+            this.Text.ResumeLayout(false);
+            this.Text.PerformLayout();
+            this.Twinkles.ResumeLayout(false);
+            this.Twinkles.PerformLayout();
             this.Spirals.ResumeLayout(false);
             this.Spirals.PerformLayout();
             this.Snowstorm.ResumeLayout(false);
@@ -1266,8 +1399,6 @@
             this.Garlands.ResumeLayout(false);
             this.Garlands.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).EndInit();
-            this.Twinkles.ResumeLayout(false);
-            this.Twinkles.PerformLayout();
             this.ResumeLayout(false);
 
 		}
@@ -1373,5 +1504,17 @@
         private System.Windows.Forms.TabPage Twinkles;
         private System.Windows.Forms.Label label31;
         private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackTwinkleCount;
+        private System.Windows.Forms.TabPage Text;
+        private System.Windows.Forms.Button buttonTextFont;
+        private System.Windows.Forms.TextBox textTextLine2;
+        private System.Windows.Forms.TextBox textTextLine1;
+        private System.Windows.Forms.Label label34;
+        private System.Windows.Forms.Label label33;
+        private System.Windows.Forms.Label label32;
+        private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackTextTop;
+        private System.Windows.Forms.FontDialog fontDialog;
+        private System.Windows.Forms.TextBox textBoxTextFont;
+        private System.Windows.Forms.ComboBox comboBoxTextDirection;
+        private System.Windows.Forms.Label label35;
 	}
 }
