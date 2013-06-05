@@ -161,10 +161,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			graphics.FillEllipse(new SolidBrush(c), drawArea);
 		}
 
-		public void Draw(FastPixel fp)
+        public void Draw(FastPixel fp, bool forceDraw)
 		{
-			if (Node != null)
+            if (forceDraw)
 			{
+                Draw(fp, color);
+            } 
+            else if (Node != null)
+            {
 				//IIntentStates nodeIntentStates;
 				//if (intentStates.TryGetValue(Node.Id, out nodeIntentStates))
 				//{
@@ -176,7 +180,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				//        }
 				//    }
 				//}
-				Color color;
+                //Color color;
 				if (PreviewPixel.IntentNodeToColor.TryGetValue(Node, out color))
 				{
 					//if (nodeIntentStates != null)
@@ -193,6 +197,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public void Draw(FastPixel fp, Color newColor)
 		{
 			fp.DrawCircle(drawArea, newColor);
+
 			//if (newColor.A > 0)
 			//{
 			//    if (MaxAlpha != 255)

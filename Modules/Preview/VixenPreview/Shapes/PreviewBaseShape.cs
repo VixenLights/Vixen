@@ -391,25 +391,31 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			throw new NotImplementedException();
 		}
 
-		public virtual void DrawPixel(PreviewPixel pixel, FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected)
+        public virtual void DrawPixel(PreviewPixel pixel, FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected, bool forceDraw)
 		{
-			if (selected)
+            if (forceDraw)
 			{
+                pixel.Draw(fp, forceDraw);
+            } 
+            else if (selected)
+            {
 				pixel.Draw(fp, PreviewTools.SelectedItemColor);
 			}
-			else if (highlightedElements.Contains(pixel.Node))
+            else if (highlightedElements != null && highlightedElements.Contains(pixel.Node))
 			{
 				pixel.Draw(fp, Color.HotPink);
 			}
 			else
+            {
 				pixel.Draw(fp, Color.White);
+			}
 		}
 
-		public virtual void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected)
+        public virtual void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected, bool forceDraw)
 		{
 			foreach (PreviewPixel pixel in Pixels)
 			{
-				DrawPixel(pixel, fp, editMode, highlightedElements, selected);
+                DrawPixel(pixel, fp, editMode, highlightedElements, selected, forceDraw);
 				//if (selected) 
 				//{
 				//    pixel.Draw(fp, PreviewTools.SelectedItemColor);

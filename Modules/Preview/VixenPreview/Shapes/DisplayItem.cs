@@ -55,9 +55,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //    _shape.Draw(fp);
         //}
 
-        public void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected)
+        public void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected, bool forceDraw)
         {
-            _shape.Draw(fp, editMode, highlightedElements, selected);
+            _shape.Draw(fp, editMode, highlightedElements, selected, forceDraw);
         }
 
         public void Handle(IIntentState<LightingValue> state)

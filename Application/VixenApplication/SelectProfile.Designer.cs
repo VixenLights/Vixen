@@ -40,7 +40,7 @@
             this.listBoxProfiles.Name = "listBoxProfiles";
             this.listBoxProfiles.Size = new System.Drawing.Size(194, 95);
             this.listBoxProfiles.TabIndex = 0;
-            this.listBoxProfiles.SelectedIndexChanged += new System.EventHandler(this.listBoxProfiles_SelectedIndexChanged);
+            this.listBoxProfiles.DoubleClick += new System.EventHandler(this.listBoxProfiles_DoubleClick);
             // 
             // label1
             // 

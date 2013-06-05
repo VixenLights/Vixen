@@ -38,11 +38,6 @@ namespace VixenApplication
             }
         }
 
-        private void listBoxProfiles_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            LoadSelectedProfile();
-        }
-
         private void buttonLoad_Click(object sender, EventArgs e)
         {
             LoadSelectedProfile();
@@ -57,6 +52,11 @@ namespace VixenApplication
                 DialogResult = System.Windows.Forms.DialogResult.OK;
                 Close();
             }
+        }
+
+        private void listBoxProfiles_DoubleClick(object sender, EventArgs e)
+        {
+            LoadSelectedProfile();
         }
     }
 }
