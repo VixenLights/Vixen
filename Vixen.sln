@@ -318,9 +318,13 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VixenPreview", "Modules\Preview\VixenPreview\VixenPreview.csproj", "{F7975FD4-E1E1-4E96-88FD-6CA89A7DD77C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nutcracker", "Modules\Effect\Nutcracker\Nutcracker.csproj", "{49EC1F56-362B-4880-805C-474B6B5BC91B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{50B78623-FCF4-48AF-93FF-FA87C937028F} = {50B78623-FCF4-48AF-93FF-FA87C937028F}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NutcrackerEffectEditor", "Modules\EffectEditor\NutcrackerEffectEditor\NutcrackerEffectEditor.csproj", "{C259F8FF-5210-4475-BD40-374B1F7F7599}"
 	ProjectSection(ProjectDependencies) = postProject
+		{49EC1F56-362B-4880-805C-474B6B5BC91B} = {49EC1F56-362B-4880-805C-474B6B5BC91B}
 		{F7975FD4-E1E1-4E96-88FD-6CA89A7DD77C} = {F7975FD4-E1E1-4E96-88FD-6CA89A7DD77C}
 	EndProjectSection
 EndProject

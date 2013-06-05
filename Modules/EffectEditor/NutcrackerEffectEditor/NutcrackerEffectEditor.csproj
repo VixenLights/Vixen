@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\Output\Modules\EffectEditor\</OutputPath>
+    <OutputPath>$(SolutionDir)\Output\Modules\EffectEditor\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,20 +25,12 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>$(SolutionDir)\Release\Modules\EffectEditor\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Controls">
-      <HintPath>..\..\..\Output\Common\Controls.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Nutcracker">
-      <HintPath>..\..\..\Output\Modules\Effect\Nutcracker.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -48,14 +40,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Vixen">
-      <HintPath>..\..\..\Output\Vixen.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="VixenPreview">
-      <HintPath>..\..\Preview\VixenPreview\obj\Debug\VixenPreview.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NutcrackerTypeEditor.cs" />
@@ -72,6 +56,24 @@
     <EmbeddedResource Include="NutcrackerTypeEditorControl.resx">
       <DependentUpon>NutcrackerTypeEditorControl.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
+      <Project>{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}</Project>
+      <Name>Controls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
+      <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
+      <Name>Vixen</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Effect\Nutcracker\Nutcracker.csproj">
+      <Project>{49EC1F56-362B-4880-805C-474B6B5BC91B}</Project>
+      <Name>Nutcracker</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Preview\VixenPreview\VixenPreview.csproj">
+      <Project>{F7975FD4-E1E1-4E96-88FD-6CA89A7DD77C}</Project>
+      <Name>VixenPreview</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
