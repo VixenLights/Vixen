@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColorUtilities.cs" />
+    <Compile Include="FastPixel.cs" />
     <Compile Include="NutcrackerData.cs" />
     <Compile Include="NutcrackerEffects.cs" />
     <Compile Include="Palette.cs" />

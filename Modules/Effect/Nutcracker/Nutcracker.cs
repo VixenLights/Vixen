@@ -89,31 +89,67 @@ namespace VixenModules.Effect.Nutcracker
 		// not a element, will recursively descend until we render its elements.
 		private void RenderNode(ElementNode node)
 		{
+            Console.WriteLine("RenderNode:" + node.Name);
+            bool CW = true;
+            Color color;
             int framesToRender = (int)TimeSpan.TotalMilliseconds / 50;
             NutcrackerEffects effect = new NutcrackerEffects(_data.NutcrackerData);
             //
             // Need to change this!!!!!!!!
             //
-            effect.InitBuffer(StringCount, 50);
+            int pixelsPerString = 50;
+            effect.InitBuffer(StringCount, pixelsPerString);
             int totalPixels = effect.PixelCount();
             TimeSpan startTime = TimeSpan.Zero;
             TimeSpan ms50 = new TimeSpan(0, 0, 0, 0, 50);
+
             for (int frameNum = 0; frameNum < framesToRender; frameNum++)
             {
                 effect.RenderNextEffect(_data.NutcrackerData.CurrentEffect);
+                //int elementNum = 0;
                 int pixelNum = 0;
-                foreach (Element element in node)
+                for (int stringNum = 0; stringNum < StringCount; stringNum++)
                 {
-                    Color color = effect.GetPixel(pixelNum);
-                    
-                    LightingValue lightingValue = new LightingValue(color, (float)color.A);
-                    IIntent intent = new LightingIntent(lightingValue, lightingValue, ms50);
-                    _elementData.AddIntentForElement(element.Id, intent, startTime);
+                    for (int elementNum = 0; elementNum < pixelsPerString; elementNum++)
+                    {
+                        //Console.WriteLine("s:" + ((StringCount - stringNum) * pixelsPerString - (pixelsPerString - elementNum)));
+                        Element element = node.ElementAt((StringCount-stringNum) * pixelsPerString - (pixelsPerString - elementNum));
 
-                    pixelNum++;
+                        color = effect.GetPixel(pixelNum);
+
+                        LightingValue lightingValue = new LightingValue(color, (float)color.A);
+                        IIntent intent = new LightingIntent(lightingValue, lightingValue, ms50);
+                        _elementData.AddIntentForElement(element.Id, intent, startTime);
+
+                        pixelNum++;
+                    }
                 }
                 startTime = startTime.Add(ms50);
             }
+
+            //for (int frameNum = 0; frameNum < framesToRender; frameNum++)
+            //{
+            //    effect.RenderNextEffect(_data.NutcrackerData.CurrentEffect);
+            //    int pixelNum = 0;
+            //    foreach (Element element in node)
+            //    {
+            //        if (CW)
+            //        {
+            //            color = effect.GetPixel(pixelNum);
+            //        }
+            //        else
+            //        {
+            //            color = effect.GetPixel(pixelNum);
+            //        }
+                    
+            //        LightingValue lightingValue = new LightingValue(color, (float)color.A);
+            //        IIntent intent = new LightingIntent(lightingValue, lightingValue, ms50);
+            //        _elementData.AddIntentForElement(element.Id, intent, startTime);
+
+            //        pixelNum++;
+            //    }
+            //    startTime = startTime.Add(ms50);
+            //}
 		}
 	}
 }

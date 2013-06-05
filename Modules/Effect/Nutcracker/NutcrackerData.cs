@@ -22,6 +22,11 @@ namespace VixenModules.Effect.Nutcracker
     KnownType(typeof(System.Drawing.GraphicsUnit))]
     public class NutcrackerData
     {
+        public NutcrackerData()
+        {
+            Text_Font = new SerializableFont(new Font("Arial", 8));
+        }
+
         public ElementNode[] TargetNodes;
 
         [DataMember]
@@ -143,6 +148,14 @@ namespace VixenModules.Effect.Nutcracker
         [DataMember]
         public int Text_TextRotation = 0;
 
+        // Picture
+        [DataMember]
+        public string Picture_FileName = "";
+        [DataMember]
+        public int Picture_Direction = 0;
+        [DataMember]
+        public int Picture_GifSpeed = 1;
+
         [OnDeserialized]
         void OnDeserialized(StreamingContext context)
         {
@@ -172,6 +185,11 @@ namespace VixenModules.Effect.Nutcracker
             {
                 Text_Font = new SerializableFont(new Font("Arial", 8));
             }
+
+            if (Picture_FileName == null)
+                Picture_FileName = "";
+            if (Picture_GifSpeed < 1)
+                Picture_GifSpeed = 1;
         }
     }
 }

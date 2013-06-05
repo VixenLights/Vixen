@@ -72,21 +72,15 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
             PreviewMegaTree tree = displayItem.Shape as PreviewMegaTree;
             for (int stringNum = 0; stringNum < StringCount; stringNum++)
             {
-                PreviewBaseShape treeString = tree._strings[stringNum % StringCount];
+                int currentString = StringCount - stringNum - 1;
+                //Console.WriteLine("sc:" + StringCount + " sn:" + Convert.ToInt32(stringNum+1).ToString() + " cs:" + currentString);
+                PreviewBaseShape treeString = tree._strings[currentString];
                 for (int pixelNum = 0; pixelNum < treeString.Pixels.Count; pixelNum++)
                 {
                     treeString.Pixels[pixelNum].PixelColor = effect.Pixels[stringNum][pixelNum];
                 }
             }
 
-            //for (int stringNum = 0; stringNum < displayItem.Shape._strings.Count; stringNum++)
-            //{
-            //    PreviewBaseShape treeString = displayItem.Shape._strings[stringNum % displayItem.Shape._strings.Count];
-            //    for (int pixelNum = 0; pixelNum < treeString.Pixels.Count; pixelNum++)
-            //    {
-            //        treeString.Pixels[pixelNum].PixelColor = effect.Pixels[stringNum][pixelNum];
-            //    }
-            //}
             preview.RenderInForeground();
         }
 
@@ -130,6 +124,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
             LoadSpirals();
             LoadTwinkles();
             LoadText();
+            LoadPicture();
             LoadColors();
 
             timerRender.Start();
@@ -189,6 +184,110 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
             //if (loading) return;
             effect.SetNextState(true);
             SetCurrentEffect(comboBoxEffect.SelectedItem.ToString());
+        }
+
+        private void DeletePreviewDisplayItem()
+        {
+            if (preview.DisplayItems != null && preview.DisplayItems.Count > 0)
+            {
+                preview.DisplayItems.RemoveAt(0);
+            }
+        }
+
+        private int StringCount
+        {
+            get
+            {
+                int childCount = TargetEffect.TargetNodes.FirstOrDefault().Children.Count();
+                //Console.WriteLine("StringCount:" + childCount);
+                //return TargetEffect.TargetNodes.Count();
+                return childCount;
+            }
+        }
+
+        private void SetupMegaTree(int degrees)
+        {
+            preview.Data = new VixenPreviewData();
+            preview.LoadBackground();
+            preview.BackgroundAlpha = 0;
+            displayItem = new DisplayItem();
+            tree = new PreviewMegaTree(new PreviewPoint(10, 10), null);
+            tree.BaseHeight = 25;
+            tree.TopHeight = 1;
+            tree.TopWidth = 1;
+            tree.StringType = PreviewBaseShape.StringTypes.Pixel;
+            tree.Degrees = degrees;
+
+            if (degrees == 90)
+                tree.StringCount = StringCount * 4;
+            if (degrees == 180)
+                tree.StringCount = StringCount * 2;
+            if (degrees == 270)
+                tree.StringCount = (int)(StringCount * 1.25);
+            if (degrees == 360)
+                tree.StringCount = StringCount;
+
+            Console.WriteLine("degrees:" + degrees + " StringCount:" + StringCount + " tree.StringCount:" + tree.StringCount);
+
+            tree.PixelCount = 50;
+            tree.PixelSize = 3;
+            tree.PixelColor = Color.White;
+            tree.Top = 10;
+            tree.Left = 10;
+            tree.BottomRight.X = preview.Width - 10;
+            tree.BottomRight.Y = preview.Height - 10;
+            tree.Layout();
+            displayItem.Shape = tree;
+
+            preview.AddDisplayItem(displayItem);
+        }
+
+        private void SetupArch()
+        {
+        }
+
+        public void SetupPreview()
+        {
+            DeletePreviewDisplayItem();
+            Console.WriteLine("SetupPreview:" + Data.PreviewType.ToString());
+
+            effect.InitBuffer(StringCount, 50);
+
+            switch (Data.PreviewType)
+            {
+                case NutcrackerEffects.PreviewType.Tree90:
+                    SetupMegaTree(90);
+                    break;
+                case NutcrackerEffects.PreviewType.Tree180:
+                    SetupMegaTree(180);
+                    break;
+                case NutcrackerEffects.PreviewType.Tree270:
+                    SetupMegaTree(270);
+                    break;
+                case NutcrackerEffects.PreviewType.Tree360:
+                    SetupMegaTree(360);
+                    break;
+                case NutcrackerEffects.PreviewType.Arch:
+                    SetupArch();
+                    break;
+                default:
+                    SetupMegaTree(180);
+                    break;
+            }
+        }
+
+        private void comboBoxDisplayType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (comboBoxDisplayType.SelectedIndex)
+            {
+                case 0: Data.PreviewType = NutcrackerEffects.PreviewType.Tree90; break;
+                case 1: Data.PreviewType = NutcrackerEffects.PreviewType.Tree180; break;
+                case 2: Data.PreviewType = NutcrackerEffects.PreviewType.Tree270; break;
+                case 3: Data.PreviewType = NutcrackerEffects.PreviewType.Tree360; break;
+                case 4: Data.PreviewType = NutcrackerEffects.PreviewType.Arch; break;
+                default: Data.PreviewType = NutcrackerEffects.PreviewType.Tree180; break;
+            }
+            SetupPreview();
         }
 
         #region Colors
@@ -574,110 +673,47 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 
         #endregion // Text
 
-        private void DeletePreviewDisplayItem()
+        #region Picture
+
+        private void LoadPicture()
         {
-            if (preview.DisplayItems != null && preview.DisplayItems.Count > 0)
+            textPictureFileName.Text = Data.Picture_FileName;
+            comboBoxPictureDirection.SelectedIndex = Data.Picture_Direction;
+            trackPictureGifSpeed.Value = Data.Picture_GifSpeed;
+        }
+
+        #endregion // Picture
+
+        private void buttonPictureSelect_Click(object sender, EventArgs e)
+        {
+            fileDialog.Filter = "jpg|*.jpg|jpeg|*.jpeg|gif|.gif|png|*.png|bmp|*.bmp|All Files|*.*";
+            if (fileDialog.ShowDialog() == DialogResult.OK)
             {
-                preview.DisplayItems.RemoveAt(0);
+                // Copy the file to the Vixen folder
+                var imageFile = new System.IO.FileInfo(fileDialog.FileName);
+                var destFileName = System.IO.Path.Combine(NutcrackerDescriptor.ModulePath, imageFile.Name);
+                var sourceFileName = imageFile.FullName;
+                if (sourceFileName != destFileName)
+                {
+                    System.IO.File.Copy(sourceFileName, destFileName, true);
+                }
+
+                textPictureFileName.Text = destFileName;
+                Data.Picture_FileName = destFileName;
             }
         }
 
-        private int StringCount
+        private void comboBoxPictureDirection_SelectedIndexChanged(object sender, EventArgs e)
         {
-            get
-            {
-                int childCount = TargetEffect.TargetNodes.FirstOrDefault().Children.Count();
-                //Console.WriteLine("StringCount:" + childCount);
-                //return TargetEffect.TargetNodes.Count();
-                return childCount;
-            }
+            if (loading) return;
+            Data.Picture_Direction = comboBoxPictureDirection.SelectedIndex;
         }
 
-        private void SetupMegaTree(int degrees)
+        private void trackPictureGifSpeed_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender, Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
         {
-            preview.Data = new VixenPreviewData();
-            preview.LoadBackground();
-            preview.BackgroundAlpha = 0;
-            displayItem = new DisplayItem();
-            tree = new PreviewMegaTree(new PreviewPoint(10, 10), null);
-            tree.BaseHeight = 15;
-            tree.TopHeight = 1;
-            tree.TopWidth = 1;
-            tree.StringType = PreviewBaseShape.StringTypes.Pixel;
-            tree.Degrees = degrees;
-
-            if (degrees == 90)
-                tree.StringCount = StringCount * 4;
-            if (degrees == 180)
-                tree.StringCount = StringCount * 2;
-            if (degrees == 270)
-                tree.StringCount = (int)(StringCount * 1.25);
-            if (degrees == 360)
-                tree.StringCount = StringCount;
-
-            Console.WriteLine("degrees:" + degrees + " StringCount:" + StringCount + " tree.StringCount:" + tree.StringCount);
-
-            tree.PixelCount = 50;
-            tree.PixelSize = 3;
-            tree.PixelColor = Color.White;
-            tree.Top = 10;
-            tree.Left = 10;
-            tree.BottomRight.X = preview.Width - 10;
-            tree.BottomRight.Y = preview.Height - 10;
-            tree.Layout();
-            displayItem.Shape = tree;
-
-            preview.AddDisplayItem(displayItem);
+            if (loading) return;
+            Data.Picture_GifSpeed = trackPictureGifSpeed.Value;
         }
-
-        private void SetupArch() 
-        {
-        }
-
-        public void SetupPreview()
-        {
-            DeletePreviewDisplayItem();
-            Console.WriteLine("SetupPreview:" + Data.PreviewType.ToString());
-
-            effect.InitBuffer(StringCount, 50);
-
-            switch (Data.PreviewType)
-            {
-                case NutcrackerEffects.PreviewType.Tree90:
-                    SetupMegaTree(90);
-                    break;
-                case NutcrackerEffects.PreviewType.Tree180:
-                    SetupMegaTree(180);
-                    break;
-                case NutcrackerEffects.PreviewType.Tree270:
-                    SetupMegaTree(270);
-                    break;
-                case NutcrackerEffects.PreviewType.Tree360:
-                    SetupMegaTree(360);
-                    break;
-                case NutcrackerEffects.PreviewType.Arch:
-                    SetupArch();
-                    break;
-                default:
-                    SetupMegaTree(180);
-                    break;
-            }
-        }
-
-        private void comboBoxDisplayType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            switch (comboBoxDisplayType.SelectedIndex)
-            {
-                case 0: Data.PreviewType = NutcrackerEffects.PreviewType.Tree90; break;
-                case 1: Data.PreviewType = NutcrackerEffects.PreviewType.Tree180; break;
-                case 2: Data.PreviewType = NutcrackerEffects.PreviewType.Tree270; break;
-                case 3: Data.PreviewType = NutcrackerEffects.PreviewType.Tree360; break;
-                case 4: Data.PreviewType = NutcrackerEffects.PreviewType.Arch; break;
-                default: Data.PreviewType = NutcrackerEffects.PreviewType.Tree180; break;
-            }
-            SetupPreview();
-        }
-
 
 
     }

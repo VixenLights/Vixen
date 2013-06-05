@@ -35,7 +35,8 @@ namespace VixenModules.Effect.Nutcracker
             Snowstorm,
             Spirals,
             Twinkles,
-            Text
+            Text,
+            Picture
         }
         
         public enum PreviewType
@@ -1404,7 +1405,6 @@ namespace VixenModules.Effect.Nutcracker
             Color c;
             Bitmap bitmap = new Bitmap(BufferWi, BufferHt);
             Graphics graphics = Graphics.FromImage(bitmap);
-            //wxMemoryDC dc(bitmap);
             int ColorIdx, itmp;
             int colorcnt = GetColorCount();
             srand(1); // always have the same random numbers for each frame (state)
@@ -1414,12 +1414,9 @@ namespace VixenModules.Effect.Nutcracker
             ColorIdx = rand() % colorcnt; // Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
             hsv = Palette.GetHSV(ColorIdx); // Now go and get the hsv value for this ColorIdx
 
-            //font.SetNativeFontInfoUserDesc(FontString);
-            //dc.SetFont(font);
             c = Palette.GetColor(0);
             Brush brush = new SolidBrush(c);
 
-            //dc.SetTextForeground(c);
             string msg = Line1;
 
             if (Line2.Length > 0)
@@ -1434,8 +1431,6 @@ namespace VixenModules.Effect.Nutcracker
 
             SizeF sz1 = graphics.MeasureString(Line1, font);
             SizeF sz2 = graphics.MeasureString(Line2, font);
-            //wxSize sz1 = dc.GetTextExtent(Line1);
-            //wxSize sz2 = dc.GetTextExtent(Line2);
             int maxwidth = Convert.ToInt32(sz1.Width > sz2.Width ? sz1.Width : sz2.Width);
             int maxht = Convert.ToInt32(sz1.Height > sz2.Height ? sz1.Height : sz2.Height);
             if (TextRotation == 1)
@@ -1447,44 +1442,36 @@ namespace VixenModules.Effect.Nutcracker
             int dctop = Top * BufferHt / 50 - BufferHt / 2;
             int xlimit = (BufferWi + maxwidth) * 8 + 1;
             int ylimit = (BufferHt + maxht) * 8 + 1;
-            //  int xcentered=(BufferWi-maxwidth)/2;  // original way
             int xcentered = Left * BufferWi / 50 - BufferWi / 2;
 
 
             TextRotation *= 90;
+            if (TextRotation > 0)
+                graphics.RotateTransform(TextRotation);
             switch (dir)
             {
                 case 0:
                     // left
-                    // dc.DrawText(msg,BufferWi-state % xlimit/8,dctop);
-                    //dc.DrawRotatedText(msg,BufferWi-state % xlimit/8,dctop,TextRotation);
                     point = new Point(Convert.ToInt32(BufferWi - State % xlimit / 8), dctop);
                     graphics.DrawString(msg, font, brush, point);
                     break;
                 case 1:
                     // right
-                    // dc.DrawText(msg,state % xlimit/8-BufferWi,dctop);
                     point = new Point(Convert.ToInt32(State % xlimit / 8 - BufferWi), dctop);
                     graphics.DrawString(msg, font, brush, point);
                     break;
                 case 2:
                     // up
-                    //  dc.DrawText(msg,xcentered,BufferHt-state % ylimit/8);
-                    //dc.DrawRotatedText(msg,xcentered,BufferHt-state % ylimit/8,TextRotation);
                     point = new Point(xcentered, Convert.ToInt32(BufferHt - State % ylimit / 8));
                     graphics.DrawString(msg, font, brush, point);
                     break;
                 case 3:
                     // down
-                    //  dc.DrawText(msg,xcentered,state % ylimit / 8 - BufferHt);
-                    //dc.DrawRotatedText(msg,xcentered,state % ylimit / 8 - BufferHt,TextRotation);
                     point = new Point(xcentered, Convert.ToInt32(State % ylimit / 8 - BufferHt));
                     graphics.DrawString(msg, font, brush, point);
                     break;
                 default:
                     // no movement - centered
-                    //   dc.DrawText(msg,xcentered,dctop);
-                    //dc.DrawRotatedText(msg,xcentered,dctop,TextRotation);
                     point = new Point(xcentered, dctop);
                     graphics.DrawString(msg, font, brush, point);
                     break;
@@ -1495,7 +1482,6 @@ namespace VixenModules.Effect.Nutcracker
             {
                 for (int y = 0; y < BufferHt; y++)
                 {
-                    //dc.GetPixel(x,BufferHt-y-1,&c);
                     c = bitmap.GetPixel(x, BufferHt-y-1);
                     SetPixel(x, y, c);
                 }
@@ -1503,6 +1489,120 @@ namespace VixenModules.Effect.Nutcracker
         }
 
         #endregion // Text
+
+        #region Pictures
+
+        string PictureName = "";
+        FastPixel fp;
+        public void RenderPictures(int dir, string NewPictureName, int GifSpeed)
+        {
+            const int speedfactor = 4;
+            Image image = null;
+
+            if (NewPictureName != PictureName)
+            {
+                image = Image.FromFile(NewPictureName);
+                fp = new FastPixel(new Bitmap(image));
+
+                //Console.WriteLine("Loaded picture: " + NewPictureName);
+                //    imageCount = wxImage::GetImageCount(NewPictureName);
+                //    imageIndex = 0;
+                //    if (!image.LoadFile(NewPictureName,wxBITMAP_TYPE_ANY,0))
+                //    {
+                //        //wxMessageBox("Error loading image file: "+NewPictureName);
+                //        image.Clear();
+                //    }
+                PictureName=NewPictureName;
+                //    if (!image.IsOk())
+                //        return;
+
+                //}
+                //if(imageCount>1)
+                //{
+                //    // The 10 could be animation speed. I did notice that state is jumping numbers
+                //    // so state%someNumber == 0 may not hit every time. There could be a better way.
+                //    if(state%(21-GifSpeed)==0)  // change 1-20 in Gimspeed to be 20 to 1. This makes right hand slider fastest
+                //    {
+                //        if(imageIndex == imageCount-1)
+                //        {
+                //            imageIndex = 0;
+                //        }
+                //        else
+                //        {
+                //            imageIndex++;
+                //        }
+
+
+                //        if (!image.LoadFile(PictureName,wxBITMAP_TYPE_ANY,imageIndex))
+                //        {
+                //            //wxMessageBox("Error loading image file: "+NewPictureName);
+                //            image.Clear();
+                //        }
+                //        if (!image.IsOk())
+                //            return;
+                //    }
+            }
+
+            if (fp != null)
+            {
+                int imgwidth = fp.Width;
+                int imght = fp.Height;
+                int yoffset = (BufferHt + imght) / 2;
+                int xoffset = (imgwidth - BufferWi) / 2;
+                int limit = (dir < 2) ? imgwidth + BufferWi : imght + BufferHt;
+                int movement = Convert.ToInt32((State % (limit * speedfactor)) / speedfactor);
+
+                // copy image to buffer
+                Color c;
+                fp.Lock();
+                Color fpColor = new Color();
+                for (int x = 0; x < imgwidth; x++)
+                {
+                    for (int y = 0; y < imght; y++)
+                    {
+                        //if (!image.IsTransparent(x,y))
+                        fpColor = fp.GetPixel(x, y);
+                        if (fpColor != Color.Transparent)
+                        {
+                            //c.Set(image.GetRed(x,y),image.GetGreen(x,y),image.GetBlue(x,y));
+                            //c = Color.FromArgb(fpColor.R, fpColor.G, fpColor.B);
+                            switch (dir)
+                            {
+                                case 0:
+                                    // left
+                                    //SetPixel(x+BufferWi-movement,yoffset-y,c);
+                                    SetPixel(x + BufferWi - movement, yoffset - y, fpColor);
+                                    break;
+                                case 1:
+                                    // right
+                                    //SetPixel(x+movement-imgwidth,yoffset-y,c);
+                                    SetPixel(x + movement - imgwidth, yoffset - y, fpColor);
+                                    break;
+                                case 2:
+                                    // up
+                                    //SetPixel(x-xoffset,movement-y,c);
+                                    SetPixel(x - xoffset, movement - y, fpColor);
+                                    break;
+                                case 3:
+                                    // down
+                                    //SetPixel(x-xoffset,BufferHt+imght-y-movement,c);
+                                    SetPixel(x - xoffset, BufferHt + imght - y - movement, fpColor);
+                                    break;
+                                default:
+                                    // no movement - centered
+                                    //SetPixel(x-xoffset,yoffset-y,c);
+                                    SetPixel(x - xoffset, yoffset - y, fpColor);
+                                    break;
+                            }
+                        }
+                    }
+                }
+                fp.Unlock(false);
+            }
+        }
+        
+
+        #endregion //Picture
 
         #endregion // Nutcracker Effects
 
@@ -1618,13 +1718,13 @@ namespace VixenModules.Effect.Nutcracker
             return BufferWi * BufferHt;
         }
 
-        public void ClearPixels()
+        public void ClearPixels(Color color)
         {
             foreach (List<Color> column in Pixels)
             {
                 for (int row = 0; row < column.Count; row++)
                 {
-                    column[row] = Color.Transparent;
+                    column[row] = color;
                 }
             }
         }
@@ -1687,7 +1787,7 @@ namespace VixenModules.Effect.Nutcracker
 
         public void RenderNextEffect(Effects effect)
         {
-            ClearPixels();
+            ClearPixels(Color.Transparent);
             switch (effect) 
             {
                 case Effects.Bars:
@@ -1728,7 +1828,10 @@ namespace VixenModules.Effect.Nutcracker
                     break;
                 case Effects.Text:
                     RenderText(Data.Text_Top, Data.Text_Left, Data.Text_Line1, Data.Text_Line2, Data.Text_Font, Data.Text_Direction, Data.Text_TextRotation);
-                    //, 20, "Derek", "Backus", new Font("Arial", 12), 0, 0);
+                    break;
+                case Effects.Picture:
+                    //string pictureName = "C:\\Users\\Derek\\Desktop\\Icons\\fatcow-hosting-icon\\16x16\\64_bit.png";
+                    RenderPictures(Data.Picture_Direction, Data.Picture_FileName, Data.Picture_GifSpeed);
                     break;
             }
             SetNextState(false);
