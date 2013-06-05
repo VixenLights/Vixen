@@ -47,7 +47,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 //List<ElementNode> children = selectedNode.Children.ToList();
                 List<ElementNode> children = PreviewTools.GetLeafNodes(selectedNode);
                 // is this a single node?
-                if (children.Count >= 20)
+                if (children.Count >= 10)
                 {
                     StringType = StringTypes.Pixel;
                     // Just add the pixels, they will get layed out next

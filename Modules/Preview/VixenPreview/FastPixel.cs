@@ -304,17 +304,17 @@ namespace VixenModules.Preview.VixenPreview
 					// Row 2
 					SetPixel(rect.Left, rect.Top + 1, color);
 				}
-				//else if (rect.Width == 4)
-				//{
-				//    // Row 1
-				//    SetPixel(rect.Left, rect.Top, color);
-				//    // Row 1
-				//    SetPixel(rect.Left + 1, rect.Top, color);
-				//    // Row 2
-				//    SetPixel(rect.Left, rect.Top + 1, color);
-				//    // Row 2
-				//    SetPixel(rect.Left + 1, rect.Top + 1, color);
-				//}
+                    else if (rect.Width == 4)
+                    {
+                        // Row 1
+                        SetPixel(rect.Left, rect.Top, color);
+                        // Row 1
+                        SetPixel(rect.Left + 1, rect.Top, color);
+                        // Row 2
+                        SetPixel(rect.Left, rect.Top + 1, color);
+                        // Row 2
+                        SetPixel(rect.Left + 1, rect.Top + 1, color);
+                    }
 				//else if (rect.Width == 5)
 				//{
 				//    // Row 1

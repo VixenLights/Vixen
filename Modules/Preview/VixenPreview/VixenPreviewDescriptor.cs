@@ -33,7 +33,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		public override string Description { get { return "Vixen Display Preview"; } }
 
-		public override string Version { get { return "0.1"; } }
+		public override string Version { get { return "0.0.3"; } }
 
         public override int UpdateInterval
         {

@@ -153,8 +153,7 @@ namespace VixenModules.Preview.VixenPreview.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-prev" +
-            "iew/custom-props/")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://www.vixenlights.com/vixen-3-documentation/preview/custom-props/")]
         public string Help_CustomShape {
             get {
                 return ((string)(this["Help_CustomShape"]));

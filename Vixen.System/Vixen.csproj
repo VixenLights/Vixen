@@ -819,6 +819,7 @@
     <EmbeddedResource Include="ImageResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ImageResource.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

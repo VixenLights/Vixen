@@ -184,6 +184,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             _bottomRight.Y = Y;
         }
 
+        public int VisibleStringCount()
+        {
+            int count = Convert.ToInt32((double)_stringCount * ((double)Degrees / 360.0));
+            return count;
+        }
+
 #region "Properties'
 
         public int TopHeight
@@ -275,6 +281,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
             set
             { }
+        }
+
+        public PreviewPoint BottomRight
+        {
+            get { return _bottomRight; }
+            set { _bottomRight = value; }
         }
 #endregion
 
@@ -515,7 +527,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //    base.Draw(fp);
         //}
 
-        public override void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected)
+        public override void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected, bool forceDraw)
         {
             if (_strings != null)
             {
@@ -524,7 +536,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 {
                     foreach (PreviewPixel pixel in _strings[i]._pixels)
                     {
-                        DrawPixel(pixel, fp, editMode, highlightedElements, selected);
+                        //Console.WriteLine(pixel.X + ":" + pixel.Y);
+                        DrawPixel(pixel, fp, editMode, highlightedElements, selected, forceDraw);
 
                         //if (highlightedElements.Contains(pixel.Node))
                         //    pixel.Draw(fp, PreviewTools.HighlightedElementColor);
@@ -534,7 +547,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 }
             }
 
-            base.Draw(fp, editMode, highlightedElements, selected);
+            base.Draw(fp, editMode, highlightedElements, selected, forceDraw);
         }
 
         public override object Clone()

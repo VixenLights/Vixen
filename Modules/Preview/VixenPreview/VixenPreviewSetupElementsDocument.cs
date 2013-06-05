@@ -38,21 +38,6 @@ namespace VixenModules.Preview.VixenPreview
             treeElements.SelectedNodes = null;
         }
 
-        //Dictionary<ElementNode, TreeNode> ElementNodeToTreeNode = new Dictionary<ElementNode, TreeNode>();
-        //private void CreateElementNodeToTreeNode()
-        //{
-        //    ElementNodeToTreeNode.Clear();
-        //    AddElementNodesToTreeNode(treeElements.Nodes);
-        //}
-        //private void AddElementNodesToTreeNode(TreeNodeCollection treeNodes)
-        //{
-        //    foreach (TreeNode treeNode in treeNodes)
-        //    {
-        //        ElementNodeToTreeNode.Add(treeNode.Tag as ElementNode, treeNode);
-        //        AddElementNodesToTreeNode(treeNode.Nodes);
-        //    }
-        //}
-
         //
         //
         // This is just very slow, so I've disabled it...

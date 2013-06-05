@@ -115,21 +115,22 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(8, 9);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(103, 13);
+            this.label6.Size = new System.Drawing.Size(37, 13);
             this.label6.TabIndex = 54;
-            this.label6.Text = "String / Prop to Edit:";
+            this.label6.Text = "String:";
             // 
             // comboBoxStringToEdit
             // 
-            this.comboBoxStringToEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxStringToEdit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxStringToEdit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxStringToEdit.FormattingEnabled = true;
             this.comboBoxStringToEdit.Items.AddRange(new object[] {
             "Standard",
             "Pixel"});
-            this.comboBoxStringToEdit.Location = new System.Drawing.Point(302, 6);
+            this.comboBoxStringToEdit.Location = new System.Drawing.Point(51, 6);
             this.comboBoxStringToEdit.Name = "comboBoxStringToEdit";
-            this.comboBoxStringToEdit.Size = new System.Drawing.Size(158, 21);
+            this.comboBoxStringToEdit.Size = new System.Drawing.Size(409, 21);
             this.comboBoxStringToEdit.TabIndex = 55;
             this.comboBoxStringToEdit.SelectedIndexChanged += new System.EventHandler(this.comboBoxStringToEdit_SelectedIndexChanged);
             // 

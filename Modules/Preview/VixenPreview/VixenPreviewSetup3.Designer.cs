@@ -55,6 +55,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.buttonSave = new System.Windows.Forms.Button();
             this.panel5 = new System.Windows.Forms.Panel();
+            this.buttonTemplateHelp = new System.Windows.Forms.Button();
             this.buttonDeleteTemplate = new System.Windows.Forms.Button();
             this.buttonAddToPreview = new System.Windows.Forms.Button();
             this.buttonAddTemplate = new System.Windows.Forms.Button();
@@ -186,6 +187,7 @@
             this.buttonSelect.Size = new System.Drawing.Size(40, 40);
             this.buttonSelect.TabIndex = 0;
             this.buttonSelect.UseVisualStyleBackColor = true;
+            this.buttonSelect.Click += new System.EventHandler(this.buttonSelect_Click);
             // 
             // panel1
             // 
@@ -225,6 +227,7 @@
             // panel5
             // 
             this.panel5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel5.Controls.Add(this.buttonTemplateHelp);
             this.panel5.Controls.Add(this.buttonDeleteTemplate);
             this.panel5.Controls.Add(this.buttonAddToPreview);
             this.panel5.Controls.Add(this.buttonAddTemplate);
@@ -232,8 +235,22 @@
             this.panel5.Controls.Add(this.label4);
             this.panel5.Location = new System.Drawing.Point(361, 3);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(195, 74);
+            this.panel5.Size = new System.Drawing.Size(224, 74);
             this.panel5.TabIndex = 10;
+            // 
+            // buttonTemplateHelp
+            // 
+            this.buttonTemplateHelp.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonTemplateHelp.BackgroundImage")));
+            this.buttonTemplateHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.buttonTemplateHelp.FlatAppearance.BorderSize = 0;
+            this.buttonTemplateHelp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonTemplateHelp.Location = new System.Drawing.Point(193, 5);
+            this.buttonTemplateHelp.Name = "buttonTemplateHelp";
+            this.buttonTemplateHelp.Size = new System.Drawing.Size(22, 22);
+            this.buttonTemplateHelp.TabIndex = 7;
+            this.buttonTemplateHelp.Tag = "Delete Template";
+            this.buttonTemplateHelp.UseVisualStyleBackColor = true;
+            this.buttonTemplateHelp.Click += new System.EventHandler(this.buttonTemplateHelp_Click);
             // 
             // buttonDeleteTemplate
             // 
@@ -292,7 +309,7 @@
             this.label4.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.label4.Location = new System.Drawing.Point(0, 53);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(193, 19);
+            this.label4.Size = new System.Drawing.Size(222, 19);
             this.label4.TabIndex = 0;
             this.label4.Text = "Templates";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -764,6 +781,7 @@
         private System.Windows.Forms.Button buttonHelp;
         private System.Windows.Forms.Button buttonAddToPreview;
         private System.Windows.Forms.Button buttonDeleteTemplate;
+        private System.Windows.Forms.Button buttonTemplateHelp;
 
     }
 }

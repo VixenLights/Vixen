@@ -53,11 +53,11 @@
     <ApplicationIcon>V3.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-	<ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
-		<Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
-		<Name>Vixen</Name>
-		<Private>False</Private>
-	</ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
+      <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
+      <Name>Vixen</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
@@ -80,6 +80,12 @@
     </Compile>
     <Compile Include="ConfigControllersOutputs.Designer.cs">
       <DependentUpon>ConfigControllersOutputs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConfigureElements\AddMegatree.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigureElements\AddMegatree.Designer.cs">
+      <DependentUpon>AddMegatree.cs</DependentUpon>
     </Compile>
     <Compile Include="DataProfileForm.cs">
       <SubType>Form</SubType>
@@ -179,6 +185,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ConfigPreviews.resx">
       <DependentUpon>ConfigPreviews.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConfigureElements\AddMegatree.resx">
+      <DependentUpon>AddMegatree.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DataProfileForm.resx">
       <DependentUpon>DataProfileForm.cs</DependentUpon>
