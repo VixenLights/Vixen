@@ -5,6 +5,10 @@ using System.Text;
 using System.Drawing;
 using System.Diagnostics;
 using VixenModules.Effect.Nutcracker;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Collections.Concurrent;
 
 namespace VixenModules.Effect.Nutcracker
 {    
@@ -20,6 +24,7 @@ namespace VixenModules.Effect.Nutcracker
         private int[] FireBuffer, WaveBuffer0, WaveBuffer1, WaveBuffer2 = new int[1];
         private Random random = new Random();
         private List<Color> FirePalette = new List<Color>();
+        private Stopwatch timer = new Stopwatch();
 
         public enum Effects
         {
@@ -1315,6 +1320,9 @@ namespace VixenModules.Effect.Nutcracker
             long SpiralState = State * Direction;
             HSV hsv;
             Color color;
+
+            //timer.Reset(); timer.Start();
+
             for (int ns = 0; ns < SpiralCount; ns++)
             {
                 strand_base = ns * deltaStrands;
@@ -1351,6 +1359,8 @@ namespace VixenModules.Effect.Nutcracker
                     }
                 }
             }
+
+            //timer.Stop(); Console.WriteLine("RenderSpirals:" + timer.ElapsedMilliseconds);
         }
 
         #endregion // Spirals
@@ -1787,8 +1797,14 @@ namespace VixenModules.Effect.Nutcracker
 
         public void RenderNextEffect(Effects effect)
         {
+            RenderEffect(effect);
+            SetNextState(false);
+        }
+
+        public void RenderEffect(Effects effect)
+        {
             ClearPixels(Color.Transparent);
-            switch (effect) 
+            switch (effect)
             {
                 case Effects.Bars:
                     RenderBars(Data.Bars_PaletteRepeat, Data.Bars_Direction, Data.Bars_Highlight, Data.Bars_3D);
@@ -1830,11 +1846,9 @@ namespace VixenModules.Effect.Nutcracker
                     RenderText(Data.Text_Top, Data.Text_Left, Data.Text_Line1, Data.Text_Line2, Data.Text_Font, Data.Text_Direction, Data.Text_TextRotation);
                     break;
                 case Effects.Picture:
-                    //string pictureName = "C:\\Users\\Derek\\Desktop\\Icons\\fatcow-hosting-icon\\16x16\\64_bit.png";
                     RenderPictures(Data.Picture_Direction, Data.Picture_FileName, Data.Picture_GifSpeed);
                     break;
             }
-            SetNextState(false);
         }
 
     }

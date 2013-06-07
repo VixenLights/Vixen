@@ -271,15 +271,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				//    .WithCancellation(cancellationTokenSource.Token)
 				//    .ForAll(node => addElementForEffectNode((EffectNode)node));
 
-				var t1 = Task.Factory.StartNew(() => {
+				
+                //var t1 = Task.Factory.StartNew(() => {
 					foreach (EffectNode node in _sequence.SequenceData.EffectData) {
-						//addElementForEffectNode(node);
-						addElementForEffectNodeTPL(node);
+						addElementForEffectNode(node);
+						//addElementForEffectNodeTPL(node);
 					}
-				});
+                //});
+                //t1.Wait();
+
 				populateGridWithMarks();
-				var t2 = Task.Factory.StartNew(() => populateWaveformAudio());
-				//populateWaveformAudio();
+
+				//var t2 = Task.Factory.StartNew(() => populateWaveformAudio());
+                //t2.Wait();
+				populateWaveformAudio();
 
 				//Task.WaitAll(t1, t2);
 				//Original code set modified to always be true upon loading a sequence.
@@ -302,6 +307,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			timelineControl.SequenceLoading = false;
 			loadTimer.Enabled = false;
 			updateToolStrip4(string.Empty);
+
+            timelineControl.grid.StartBackgroundRendering();
+            //timelineControl.grid.RenderAllElements();
 		}
 
 		/// <summary>
@@ -832,8 +840,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			//Debug.WriteLine("{0}   AddEffectNode({1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, node.Effect.InstanceId);
 			_sequence.InsertData(node);
-			//return addElementForEffectNode(node);
-			return addElementForEffectNodeTPL(node);
+			return addElementForEffectNode(node);
+			//return addElementForEffectNodeTPL(node);
 		}
 
 
@@ -948,7 +956,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						//else
 						//    VixenSystem.Logging.Debug("TimedSequenceEditor: Making a new element, but the map already has one!");
 						//Render this effect now to get it into the cache.
-						element.EffectNode.Effect.Render();
+						//element.EffectNode.Effect.Render();
 						row.AddElement(element);
 					}
 				} else {
@@ -980,7 +988,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						//else
 						//    VixenSystem.Logging.Debug("TimedSequenceEditor: Making a new element, but the map already has one!");
 						//Render this effect now to get it into the cache.
-						element.EffectNode.Effect.Render();
+						//element.EffectNode.Effect.Render();
 						row.AddElement(element);
 					}
 
@@ -1825,11 +1833,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			var token = cancellationTokenSource.Token;
 			this.Enabled = false;
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-			loadingTask = Task.Factory.StartNew(() => loadSequence(_sequence), token);
-			//loadSequence(_sequence);
+			//loadingTask = Task.Factory.StartNew(() => loadSequence(_sequence), token);
+			loadSequence(_sequence);
 		}
-
-
 	}
 
 	[Serializable]
