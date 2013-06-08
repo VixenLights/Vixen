@@ -1192,31 +1192,11 @@ namespace VixenModules.Preview.VixenPreview
 			if (!_paused)
 			{
 				//FastPixel fp = new FastPixel(_background.Width, _background.Height);
+                //FastPixel fp = new FastPixel(new Bitmap(_alphaBackground));
 				using (FastPixel fp = new FastPixel(new Bitmap(_alphaBackground)))
 				{
 					try
 					{
-
-                        // Removed floods, not used at this point
-                        //var floodBDTask = Task.Factory.StartNew<Bitmap>(() =>
-                        //{
-
-                        //    Bitmap floodBG = null;
-                        //    if (UseFloods)
-                        //    {
-                        //        floodBG = PreviewTools.Copy32BPPBitmapSafe(_blankAlphaBackground);
-                        //        //floodBG = new Bitmap(_blankAlphaBackground);
-                        //        //floodBG = new Bitmap(_blankAlphaBackground.Width, _blankAlphaBackground.Height);
-                        //        //Graphics g = Graphics.FromImage(floodBG);
-                        //        //g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-                        //        //SolidBrush brush = new SolidBrush(Color.FromArgb(50, 255, 0, 0));
-                        //        //g.FillEllipse(brush, new Rectangle(200, 200, 300, 300));
-                        //        //g.DrawImage(_blankAlphaBackground, 0, 0);
-                        //        //g.FillRectangle(_backgroundBrush, new Rectangle(0, 0, _blankAlphaBackground.Width, _blankAlphaBackground.Height));
-                        //    }
-                        //    return floodBG;
-                        //}, tokenSource.Token);
-
 						fp.Lock();
 						elementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState =>
 						{
@@ -1247,13 +1227,7 @@ namespace VixenModules.Preview.VixenPreview
 												//pixels.AsParallel().WithCancellation(tokenSource.Token).ForAll(pixel =>
                                                 foreach (PreviewPixel pixel in pixels)
 												{
-
-													//Color.FromArgb((int)(Intensity * byte.MaxValue), Color.R, Color.G, Color.B);
-													//LightingValue v = intentState.GetValue();
-													//Color c = v.GetOpaqueIntensityAffectedColor();
-													//Color c = v.GetAlphaChannelIntensityAffectedColor();
 													Color c = ((IIntentState<LightingValue>)intentState).GetValue().GetAlphaChannelIntensityAffectedColor();
-													//Color c = Color.White;
 													pixel.Draw(fp, c);
 												};
 											}
@@ -1268,25 +1242,6 @@ namespace VixenModules.Preview.VixenPreview
 							
 							
 						});
-						//if (UseFloods)
-						//{
-						//    foreach (DisplayItem displayItem in DisplayItems)
-						//    {
-						//        if (displayItem.Shape.StringType == PreviewBaseShape.StringTypes.Flood)
-						//        {
-						//            Color c = displayItem.Shape._pixels[0].PixelColor;
-						//            int alpha = c.A;
-						//            //int maxAlpha = 255 - BackgroundAlpha;
-						//            //if (maxAlpha < 255)
-						//            //{
-
-						//            //}
-						//            displayItem.Shape._pixels[0].PixelColor = Color.FromArgb(alpha, c.R, c.G, c.B);
-						//            displayItem.Shape.Draw(floodBG, false, null);
-						//            displayItem.Shape._pixels[0].PixelColor = Color.FromArgb(255 - BackgroundAlpha, 0, 0, 0);
-						//        }
-						//    }
-						//}
 						fp.Unlock(true);
 
 						//RenderBufferedGraphics(fp, floodBDTask.Result);
