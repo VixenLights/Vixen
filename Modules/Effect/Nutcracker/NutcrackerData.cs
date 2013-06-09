@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
 using System.Drawing;
-using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Module;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;

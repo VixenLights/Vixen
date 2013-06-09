@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using VixenModules.Sequence.Timed;
 using Vixen.Execution;
 using Vixen.Module.Timing;
+using VixenModules.Media.Audio;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -867,6 +868,42 @@ namespace VixenModules.Editor.TimedSequenceEditor
         }
 
         #endregion
+
+        private void chkHighPass_CheckedChanged(object sender, EventArgs e)
+        {
+            var media = _timedSequenceEditorForm.Sequence.GetAllMedia().First();
+            // IMediaModuleInstance media = _sequence.GetAllMedia().First();
+            Audio audio = media as Audio;
+            audio.HighPassFilterEnabled = this.chkHighPass.Checked;
+            audio.HighPassFilterValue = (float)this.numHighPass.Value;
+
+        }
+
+        private void chkLowPass_CheckedChanged(object sender, EventArgs e)
+        {
+            var media = _timedSequenceEditorForm.Sequence.GetAllMedia().First();
+            // IMediaModuleInstance media = _sequence.GetAllMedia().First();
+            Audio audio = media as Audio;
+            audio.LowPassFilterEnabled = this.chkLowPass.Checked;
+            audio.LowPassFilterValue = (float)this.numLowPass.Value;
+          
+        }
+        private void numLowPass_ValueChanged(object sender, EventArgs e)
+        {
+            var media = _timedSequenceEditorForm.Sequence.GetAllMedia().First();
+            // IMediaModuleInstance media = _sequence.GetAllMedia().First();
+            Audio audio = media as Audio;
+            audio.LowPassFilterValue = (float)this.numLowPass.Value;
+
+        }
+        private void numHighPass_ValueChanged(object sender, EventArgs e)
+        {
+            var media = _timedSequenceEditorForm.Sequence.GetAllMedia().First();
+            // IMediaModuleInstance media = _sequence.GetAllMedia().First();
+            Audio audio = media as Audio;
+            audio.HighPassFilterValue = (float)this.numHighPass.Value;
+
+        }
 
         
 	}
