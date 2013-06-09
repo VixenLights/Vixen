@@ -186,38 +186,41 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[DataMember,
-		Browsable(false)]
-		public virtual List<PreviewPixel> Pixels
-		{
-			get
-			{
-				if (_strings != null && _strings.Count > 0)
-				{
-					ConcurrentBag<PreviewPixel> outPixels = new ConcurrentBag<PreviewPixel>();
-					_strings.AsParallel().ForAll(line =>
-					{
-						line.Pixels.AsParallel().ForAll(pixel => outPixels.Add(pixel));
-					});
-					//foreach (PreviewBaseShape line in _strings)
-					//{
-					//	foreach (PreviewPixel pixel in line.Pixels)
-					//	{
-					//		outPixels.Add(pixel);
-					//	}
-					//}
-					return outPixels.ToList();
-				}
-				else
-				{
-					return _pixels;
-				}
-			}
-			set
-			{
-				_pixels = value;
-			}
-		}
+        [DataMember,
+        Browsable(false)]
+        public virtual List<PreviewPixel> Pixels
+        {
+            get
+            {
+                if (_strings != null && _strings.Count > 0)
+                {
+                    ConcurrentBag<PreviewPixel> outPixels = new ConcurrentBag<PreviewPixel>();
+                    _strings.AsParallel().ForAll(line =>
+                    {
+                        line.Pixels.AsParallel().ForAll(pixel => outPixels.Add(pixel));
+                    });
+                    return outPixels.ToList();
+
+                    //List<PreviewPixel> outPixels = new List<PreviewPixel>();
+                    //foreach (PreviewBaseShape line in _strings)
+                    //{
+                    //    foreach (PreviewPixel pixel in line.Pixels)
+                    //    {
+                    //        outPixels.Add(pixel);
+                    //    }
+                    //}
+                    //return outPixels.ToList();
+                }
+                else
+                {
+                    return _pixels;
+                }
+            }
+            set
+            {
+                _pixels = value;
+            }
+        }
 
 		[Editor(typeof(PreviewSetElementsUIEditor), typeof(UITypeEditor)),
 		CategoryAttribute("Settings"),
@@ -270,11 +273,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set
 			{
 				_pixelColor = value;
-				_pixels.AsParallel().ForAll(p => p.PixelColor = _pixelColor);
-				//foreach (PreviewPixel pixel in _pixels)
-				//{
-				//	pixel.PixelColor = _pixelColor;
-				//}
+                // Never enough items to justify parallel
+				//_pixels.AsParallel().ForAll(p => p.PixelColor = _pixelColor);
+				foreach (PreviewPixel pixel in _pixels)
+				{
+                    pixel.PixelColor = _pixelColor;
+                }
 			}
 		}
 
@@ -334,10 +338,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public void SetSelectPoints(List<PreviewPoint> selectPoints, List<PreviewPoint> skewPoints)
 		{
 			_selectPoints = selectPoints;
-			_selectPoints.Where(p => p != null).AsParallel().ForAll(p => p.PointType = PreviewPoint.PointTypes.Size);
-			//foreach (PreviewPoint p in _selectPoints)
-			//	if (p != null)
-			//		p.PointType = PreviewPoint.PointTypes.Size;
+            // Not enough points here to justify parallel
+			//_selectPoints.Where(p => p != null).AsParallel().ForAll(p => p.PointType = PreviewPoint.PointTypes.Size);
+            foreach (PreviewPoint p in _selectPoints)
+                if (p != null)
+                    p.PointType = PreviewPoint.PointTypes.Size;
 		}
 
 		// Add a pxiel at a specific location

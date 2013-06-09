@@ -20,7 +20,7 @@ namespace VixenModules.Preview.VixenPreview
 
 	public partial class VixenPreviewControl : UserControl
 	{
-		bool UseFloods = false;
+		//bool UseFloods = false;
 
 		#region "Variables"
 		public VixenPreviewSetupElementsDocument elementsForm;
@@ -938,7 +938,6 @@ namespace VixenModules.Preview.VixenPreview
 							pixels = new List<PreviewPixel>();
 							pixels.Add(pixel);
 							NodeToPixel.TryAdd(pixel.Node, pixels);
-
 						}
 					}
 				}
@@ -1191,60 +1190,49 @@ namespace VixenModules.Preview.VixenPreview
 			CancellationTokenSource tokenSource = new CancellationTokenSource();
 			if (!_paused)
 			{
-				//FastPixel fp = new FastPixel(_background.Width, _background.Height);
-                //FastPixel fp = new FastPixel(new Bitmap(_alphaBackground));
 				using (FastPixel fp = new FastPixel(new Bitmap(_alphaBackground)))
 				{
-					try
-					{
+                    try
+                    {
 						fp.Lock();
-						elementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState =>
-						{
-							//foreach (var channelIntentState in elementStates)
-							//{
+                        //Console.WriteLine("----");
+                        elementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState =>
+                        {
 							var elementId = channelIntentState.Key;
 							Element element = VixenSystem.Elements.GetElement(elementId);
-							if (element != null)
-							{
-								ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
-								if (node != null)
-								{
-
-									//foreach (IIntentState intentState in channelIntentState.Value)
-									//{
-									//    intentState.Dispatch(DisplayItems[0]);
-									//}
-									
-									foreach (IIntentState<LightingValue> intentState in channelIntentState.Value)
-									{
-										if (_background != null)
-										{
-
-											List<PreviewPixel> pixels;
-											if (NodeToPixel.TryGetValue(node, out pixels))
-											{
-                                                // Removed parallel -- there is usually only 1 or 2 of these
-												//pixels.AsParallel().WithCancellation(tokenSource.Token).ForAll(pixel =>
+                            Debug.Assert(element != null, "element==null");
+                            if (element != null)
+                            {
+                                ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
+                                Debug.Assert(node != null, "node==null");
+                                if (node != null)
+                                {
+                                    //Console.WriteLine("n:" + node.Name);
+                                    // Getting stuck right here. No intentStates passed!
+                                    foreach (IIntentState<LightingValue> intentState in channelIntentState.Value)
+                                    {
+                                        Color c = ((IIntentState<LightingValue>)intentState).GetValue().GetAlphaChannelIntensityAffectedColor();
+                                        //Debug.Assert(_background != null, "_background==null");
+                                        if (_background != null)
+                                        {
+                                            //Console.WriteLine("b:" + node.Name);
+                                            List<PreviewPixel> pixels;
+                                            if (NodeToPixel.TryGetValue(node, out pixels))
+                                            {
+                                                //Console.WriteLine("tgv:" + node.Name + pixels.Count());
                                                 foreach (PreviewPixel pixel in pixels)
-												{
-													Color c = ((IIntentState<LightingValue>)intentState).GetValue().GetAlphaChannelIntensityAffectedColor();
-													pixel.Draw(fp, c);
-												};
-											}
-
-										}
-									}
-
-
-								}
-							}
-							//}
-							
-							
+                                                {
+                                                    pixel.Draw(fp, c);
+                                                    //Console.WriteLine("d:" + node.Name);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
 						});
 						fp.Unlock(true);
 
-						//RenderBufferedGraphics(fp, floodBDTask.Result);
                         RenderBufferedGraphics(fp);
 					}
 					catch (Exception e)
@@ -1274,23 +1262,7 @@ namespace VixenModules.Preview.VixenPreview
 				{
 					// First, draw our background image opaque
 					bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-					//if (UseFloods)
-					//{
-					//    bufferedGraphics.Graphics.DrawImage(_background, 0, 0, _background.Width, _background.Height);
-					//}
-					//else
-					//{
-					//    bufferedGraphics.Graphics.DrawImage(_alphaBackground, 0, 0, _alphaBackground.Width, _alphaBackground.Height);
-					//}
-
-					// Now, draw our "pixel" image using alpha blending
-					///bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
-                    //if (UseFloods)
-                    //{
-                    //    bufferedGraphics.Graphics.DrawImage(floodBG, 0, 0, _blankAlphaBackground.Width, _blankAlphaBackground.Height);
-                    //}
 					bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
-
 					if (!this.Disposing && bufferedGraphics != null)
 						bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
 				}

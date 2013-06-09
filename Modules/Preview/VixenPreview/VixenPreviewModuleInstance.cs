@@ -187,9 +187,8 @@ namespace VixenModules.Preview.VixenPreview
             //displayForm.PreviewControl.RenderInForeground(elementStates);
 
             //displayForm.PreviewControl.BeginInvoke(new ProcessUpdateDelegate(displayForm.PreviewControl.ProcessUpdate), new object[] {elementStates});
-			displayForm.PreviewControl.ProcessUpdateParallel(elementStates);
 			
-			//displayForm.PreviewControl.ProcessUpdateParallel(elementStates);
+			displayForm.PreviewControl.ProcessUpdateParallel(elementStates);
 			timer.Stop();
 
             VixenPreviewControl.updateCount += 1;

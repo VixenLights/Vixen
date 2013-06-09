@@ -227,7 +227,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void updateToolStrip4(string text)
 		{
-			if (this.InvokeRequired) {
+            if (this.InvokeRequired)
+            {
 				this.Invoke(new updateToolStrip4Delegate(updateToolStrip4), text);
 			} else {
 				this.toolStripStatusLabel4.Text = text;
@@ -395,13 +396,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// </summary>
 		private void setTitleBarText()
 		{
-			if (this.InvokeRequired)
-				this.Invoke(new Vixen.Delegates.GenericDelegate(setTitleBarText));
-			else
-				//Set sequence name in title bar based on the module name and current sequence name JU 8/1/2012
-				//Made this more generic to support importing 12 FEB 2013 - JEMA
-				Text = String.Format("{0} - [{1}{2}]", ((OwnerModule.Descriptor) as EditorModuleDescriptorBase).TypeName,
-									 _sequence.Name, IsModified ? " *" : "");
+            if (this.InvokeRequired)
+                this.Invoke(new Vixen.Delegates.GenericDelegate(setTitleBarText));
+            else
+            {
+                //Set sequence name in title bar based on the module name and current sequence name JU 8/1/2012
+                //Made this more generic to support importing 12 FEB 2013 - JEMA
+                Text = String.Format("{0} - [{1}{2}]", ((OwnerModule.Descriptor) as EditorModuleDescriptorBase).TypeName,
+                                     _sequence.Name, IsModified ? " *" : "");
+            }
 		}
 
 		/// <summary>Called when the sequence is modified.</summary>
@@ -799,31 +802,39 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void updateButtonStates()
 		{
-			if (this.InvokeRequired)
-				this.Invoke(new Vixen.Delegates.GenericDelegate(updateButtonStates));
-			else
-				if (_context == null) {
-					toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = false;
-					toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
-					toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
-					return;
-				}
-
-			if (_context.IsRunning) {
-				if (_context.IsPaused) {
-					toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
-					toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
-				} else {
-					toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = false;
-					toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = true;
-				}
-				toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = true;
-			} else // Stopped
+            if (this.InvokeRequired)
+                this.Invoke(new Vixen.Delegates.GenericDelegate(updateButtonStates));
+            else
             {
-				toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
-				toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
-				toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
-			}
+                if (_context == null)
+                {
+                    toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = false;
+                    toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
+                    toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
+                    return;
+                }
+
+                if (_context.IsRunning)
+                {
+                    if (_context.IsPaused)
+                    {
+                        toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
+                        toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
+                    }
+                    else
+                    {
+                        toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = false;
+                        toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = true;
+                    }
+                    toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = true;
+                }
+                else // Stopped
+                {
+                    toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
+                    toolStripButton_Pause.Enabled = pauseToolStripMenuItem.Enabled = false;
+                    toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
+                }
+            }
 		}
 
 		#endregion
@@ -1724,10 +1735,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void _SetTimingToolStripEnabledState()
 		{
-			if (this.InvokeRequired)
+            if (this.InvokeRequired)
 				this.Invoke(new Vixen.Delegates.GenericDelegate(_SetTimingToolStripEnabledState));
 			else {
-				ITiming timingSource = _sequence.GetTiming();
+                ITiming timingSource = _sequence.GetTiming();
 				toolStripTiming.Enabled = timingSource != null && timingSource.SupportsVariableSpeeds;
 			}
 		}

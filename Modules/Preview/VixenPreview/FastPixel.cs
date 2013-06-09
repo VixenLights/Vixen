@@ -302,44 +302,44 @@ namespace VixenModules.Preview.VixenPreview
 					// Row 2
 					SetPixel(rect.Left, rect.Top + 1, color);
 				}
-                    else if (rect.Width == 4)
-                    {
-                        // Row 1
-                        SetPixel(rect.Left, rect.Top, color);
-                        // Row 1
-                        SetPixel(rect.Left + 1, rect.Top, color);
-                        // Row 2
-                        SetPixel(rect.Left, rect.Top + 1, color);
-                        // Row 2
-                        SetPixel(rect.Left + 1, rect.Top + 1, color);
+                else if (rect.Width == 4)
+                {
+                    // Row 1
+                    SetPixel(rect.Left, rect.Top, color);
+                    // Row 1
+                    SetPixel(rect.Left + 1, rect.Top, color);
+                    // Row 2
+                    SetPixel(rect.Left, rect.Top + 1, color);
+                    // Row 2
+                    SetPixel(rect.Left + 1, rect.Top + 1, color);
                 }
 				else
 				{
-                        Bitmap b;
-                        FastPixel fp;
-                        if (!FastPixel.circleCache.TryGetValue(rect.Width, out fp))
+                    Bitmap b;
+                    FastPixel fp;
+                    if (!FastPixel.circleCache.TryGetValue(rect.Width, out fp))
+                    {
+                        b = new Bitmap(rect.Width, rect.Height);
+                        using (Graphics g = Graphics.FromImage(b))
                         {
-                            b = new Bitmap(rect.Width, rect.Height);
-                            using (Graphics g = Graphics.FromImage(b))
-                            {
-                                g.FillEllipse(Brushes.White, new Rectangle(0, 0, rect.Width - 1, rect.Height - 1));
-                                fp = new FastPixel(b);
-                                // Lock the bitmap (loads pixels into memory buffer) now
-                                // and leave it that way because we'll never need to unlock it
-                                // to modify it -- it is just a circle after all
-                                fp.Lock();
-                                FastPixel.circleCache.TryAdd(rect.Width, fp);
-                            }
+                            g.FillEllipse(Brushes.White, new Rectangle(0, 0, rect.Width - 1, rect.Height - 1));
+                            fp = new FastPixel(b);
+                            // Lock the bitmap (loads pixels into memory buffer) now
+                            // and leave it that way because we'll never need to unlock it
+                            // to modify it -- it is just a circle after all
+                            fp.Lock();
+                            FastPixel.circleCache.TryAdd(rect.Width, fp);
                         }
-                        for (int x = 0; x < rect.Width; x++)
+                    }
+                    for (int x = 0; x < rect.Width; x++)
+                    {
+                        for (int y = 0; y < rect.Height; y++)
                         {
-                            for (int y = 0; y < rect.Height; y++)
-                            {
-                                Color newColor = fp.GetPixel(x, y);
-                                if (newColor.A != 0)
-                                    SetPixel(rect.Left + x, rect.Top + y, color);
-                            }
+                            Color newColor = fp.GetPixel(x, y);
+                            if (newColor.A != 0)
+                                SetPixel(rect.Left + x, rect.Top + y, color);
                         }
+                    }
 				}
 			}
 		}
