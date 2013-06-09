@@ -96,7 +96,6 @@ namespace VixenModules.Effect.Nutcracker
 		{
             //Console.WriteLine("Nutcracker Node:" + node.Name);
             //bool CW = true;
-            Color color;
             int stringCount = StringCount;
             int framesToRender = (int)TimeSpan.TotalMilliseconds / 50;
             NutcrackerEffects effect = new NutcrackerEffects(_data.NutcrackerData);
@@ -109,34 +108,51 @@ namespace VixenModules.Effect.Nutcracker
             TimeSpan startTime = TimeSpan.Zero;
             TimeSpan ms50 = new TimeSpan(0, 0, 0, 0, 50);
 
+            Stopwatch timer = new Stopwatch(); timer.Start();
+
             // Parallel will NOT work here. Nutcracker effects must be run in order
             for (int frameNum = 0; frameNum < framesToRender; frameNum++)
             {
-                effect.RenderNextEffect(_data.NutcrackerData.CurrentEffect);
-                
-                //Stopwatch timer = new Stopwatch(); timer.Start();
+                //Console.WriteLine(node.Name + ":" + frameNum);
 
-                int elementNum = 0;
-                int elementCount = node.Count();
-                int stringNum = 0;
-                int pixelNum = 0;
-                foreach (Element element in node)
+                effect.RenderNextEffect(_data.NutcrackerData.CurrentEffect);
+
+                //int elementNum = 0;
+                //int elementCount = node.Count();
+                //int stringNum = 0;
+                //int pixelNum = 0;
+                //Color color;
+                //foreach (Element element in node)
+                //{
+                //    stringNum = stringCount - (elementNum / pixelsPerString);
+                //    pixelNum = (stringNum * pixelsPerString) - (pixelsPerString - (elementNum % pixelsPerString));
+                //    color = effect.GetPixel(pixelNum);
+
+                //    LightingValue lightingValue = new LightingValue(color, (float)color.A);
+                //    IIntent intent = new LightingIntent(lightingValue, lightingValue, ms50);
+                //    _elementData.AddIntentForElement(element.Id, intent, startTime);
+
+                //    elementNum++;
+                //}
+
+                // Parallel 
+                // ElementAt is fucking slow so convert it to a list first!
+                List<Element> elements = node.ToList();
+                int elementCount = node.Count() - 1;
+                Parallel.For(0, elementCount, elementNum =>
                 {
-                    stringNum = stringCount - (elementNum / pixelsPerString);
-                    pixelNum = (stringNum * pixelsPerString) - (pixelsPerString - (elementNum % pixelsPerString));
-                    color = effect.GetPixel(pixelNum);
+                    int stringNum = stringCount - (elementNum / pixelsPerString);
+                    int pixelNum = (stringNum * pixelsPerString) - (pixelsPerString - (elementNum % pixelsPerString));
+                    Color color = effect.GetPixel(pixelNum);
 
                     LightingValue lightingValue = new LightingValue(color, (float)color.A);
                     IIntent intent = new LightingIntent(lightingValue, lightingValue, ms50);
-                    _elementData.AddIntentForElement(element.Id, intent, startTime);
-
-                    elementNum++;
-                }
-                
-                //timer.Stop(); Console.WriteLine("Nutcracker Render:" + timer.ElapsedMilliseconds + " Frames:" + framesToRender);
+                    _elementData.AddIntentForElement(elements[elementNum].Id, intent, startTime);
+                });
 
                 startTime = startTime.Add(ms50);
             };
-		}
+            timer.Stop(); Console.WriteLine("Nutcracker Render:" + timer.ElapsedMilliseconds + "ms Frames:" + framesToRender);
+        }
 	}
 }

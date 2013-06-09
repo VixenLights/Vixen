@@ -1258,16 +1258,15 @@ namespace VixenModules.Preview.VixenPreview
 				this.Invoke(new RenderBufferedGraphicsDelgate(RenderBufferedGraphics), fp/*, floodBG*/);
 			}
 			else
-				lock (lockObject)
-				{
+                //lock (lockObject)
+                //{
 					// First, draw our background image opaque
 					bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
 					bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
 					if (!this.Disposing && bufferedGraphics != null)
 						bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
-				}
+                //}
 		}
-
 
 		//public void ResetNodeToPixelDictionary()
 		//{
