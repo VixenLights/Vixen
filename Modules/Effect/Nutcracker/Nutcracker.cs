@@ -39,7 +39,7 @@ namespace VixenModules.Effect.Nutcracker
 
 		protected override EffectIntents _Render()
 		{
-			return _elementData;
+            return _elementData;
 		}
 
 		public override IModuleDataModel ModuleData
@@ -116,16 +116,21 @@ namespace VixenModules.Effect.Nutcracker
                 
                 //Stopwatch timer = new Stopwatch(); timer.Start();
 
+                int elementNum = 0;
+                int elementCount = node.Count();
+                int stringNum = 0;
                 int pixelNum = 0;
                 foreach (Element element in node)
                 {
+                    stringNum = stringCount - (elementNum / pixelsPerString);
+                    pixelNum = (stringNum * pixelsPerString) - (pixelsPerString - (elementNum % pixelsPerString));
                     color = effect.GetPixel(pixelNum);
 
                     LightingValue lightingValue = new LightingValue(color, (float)color.A);
                     IIntent intent = new LightingIntent(lightingValue, lightingValue, ms50);
                     _elementData.AddIntentForElement(element.Id, intent, startTime);
 
-                    pixelNum++;
+                    elementNum++;
                 }
                 
                 //timer.Stop(); Console.WriteLine("Nutcracker Render:" + timer.ElapsedMilliseconds + " Frames:" + framesToRender);
