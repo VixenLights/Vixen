@@ -110,11 +110,9 @@ namespace VixenModules.Effect.Nutcracker
 
             Stopwatch timer = new Stopwatch(); timer.Start();
 
-            // Parallel will NOT work here. Nutcracker effects must be run in order
             for (int frameNum = 0; frameNum < framesToRender; frameNum++)
             {
-                //Console.WriteLine(node.Name + ":" + frameNum);
-
+                // Parallel will not work here. Nutcracker effects must be run in order
                 effect.RenderNextEffect(_data.NutcrackerData.CurrentEffect);
 
                 //int elementNum = 0;

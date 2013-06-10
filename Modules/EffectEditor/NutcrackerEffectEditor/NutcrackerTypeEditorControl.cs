@@ -125,6 +125,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
             LoadTwinkles();
             LoadText();
             LoadPicture();
+            LoadSpirograph();
             LoadColors();
 
             timerRender.Start();
@@ -682,8 +683,6 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
             trackPictureGifSpeed.Value = Data.Picture_GifSpeed;
         }
 
-        #endregion // Picture
-
         private void buttonPictureSelect_Click(object sender, EventArgs e)
         {
             fileDialog.Filter = "jpg|*.jpg|jpeg|*.jpeg|gif|.gif|png|*.png|bmp|*.bmp|All Files|*.*";
@@ -714,7 +713,34 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
             if (loading) return;
             Data.Picture_GifSpeed = trackPictureGifSpeed.Value;
         }
+        
+        #endregion // Picture
 
+        #region Spirograph
+
+        private void LoadSpirograph()
+        {
+            trackSpirographROuter.Value = Data.Spirograph_ROuter;
+            trackSpirographRInner.Value = Data.Spirograph_RInner;
+            trackSpirographDistance.Value = Data.Spirograph_Distance;
+            checkBoxSpirographAnimate.Checked = Data.Spirograph_Animate;
+        }
+
+        private void checkBoxSpirographAnimate_CheckedChanged(object sender, EventArgs e)
+        {
+            if (loading) return;
+            Data.Spirograph_Animate = checkBoxSpirographAnimate.Checked;
+        }
+
+        private void Spirograph_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender, Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+        {
+            if (loading) return;
+            Data.Spirograph_Distance = trackSpirographDistance.Value;
+            Data.Spirograph_ROuter = trackSpirographROuter.Value;
+            Data.Spirograph_RInner = trackSpirographRInner.Value;
+        }
+
+        #endregion
 
     }
 }

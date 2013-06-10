@@ -156,6 +156,16 @@ namespace VixenModules.Effect.Nutcracker
         [DataMember]
         public int Picture_GifSpeed = 1;
 
+        // Spirograph
+        [DataMember]
+        public int Spirograph_ROuter = 20;
+        [DataMember]
+        public int Spirograph_RInner = 10;
+        [DataMember]
+        public int Spirograph_Distance = 30;
+        [DataMember]
+        public bool Spirograph_Animate = false;
+
         [OnDeserialized]
         void OnDeserialized(StreamingContext context)
         {
@@ -190,6 +200,13 @@ namespace VixenModules.Effect.Nutcracker
                 Picture_FileName = "";
             if (Picture_GifSpeed < 1)
                 Picture_GifSpeed = 1;
+
+            if (Spirograph_ROuter < 1)
+                Spirograph_ROuter = 20;
+            if (Spirograph_RInner < 1)
+                Spirograph_RInner = 10;
+            if (Spirograph_Distance < 1)
+                Spirograph_Distance = 30;
         }
     }
 }

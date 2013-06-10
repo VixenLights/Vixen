@@ -32,16 +32,17 @@ namespace VixenModules.Effect.Nutcracker
             Butterfly,
             ColorWash,
             Fire,
+            Fireworks,
             Garlands,
             Life,
             Meteors,
-            Fireworks,
+            Picture,
             Snowflakes,
             Snowstorm,
             Spirals,
+            Spirograph, 
             Twinkles,
-            Text,
-            Picture
+            Text
         }
         
         public enum PreviewType
@@ -202,6 +203,187 @@ namespace VixenModules.Effect.Nutcracker
         }
 
         #endregion
+
+        
+        #region Pixels
+
+        public void InitBuffer(int bufferWidth, int bufferHeight)
+        {
+            _pixels.Clear();
+            _tempbuf.Clear();
+
+            List<Color> column;
+            for (int width = 0; width < bufferWidth; width++)
+            {
+                column = new List<Color>();
+                _pixels.Add(column);
+                column = new List<Color>();
+                _tempbuf.Add(column);
+                for (int height = 0; height < bufferHeight; height++)
+                {
+                    _pixels[width].Add(Color.Transparent);
+                    _tempbuf[width].Add(Color.Transparent);
+                }
+            }
+
+            Array.Resize(ref FireBuffer, bufferWidth * bufferHeight);
+            Array.Resize(ref WaveBuffer0, bufferWidth * bufferHeight);
+            Array.Resize(ref WaveBuffer1, bufferWidth * bufferHeight);
+            Array.Resize(ref WaveBuffer2, bufferWidth * bufferHeight);
+
+            InitFirePalette();
+
+            State = 0;
+        }
+
+        // initialize FirePalette[]
+        private void InitFirePalette()
+        {
+            HSV hsv = new HSV();
+            Color color;
+
+            FirePalette.Clear();
+            //wxImage::HSVValue hsv;
+            //wxImage::RGBValue rgb;
+            //wxColour color;
+            int i;
+            // calc 100 reds, black to bright red
+            hsv.Hue = 0.0f;
+            hsv.Saturation = 1.0f;
+            for (i = 0; i < 100; i++)
+            {
+                hsv.Value = (float)i / 100.0f;
+                //rgb = wxImage::HSVtoRGB(hsv);
+                //color.Set(rgb.red,rgb.green,rgb.blue);
+                color = HSV.HSVtoColor(hsv);
+                FirePalette.Add(color);
+                //FirePalette.push_back(color);
+            }
+
+            // gives 100 hues red to yellow
+            hsv.Value = 1.0f;
+            for (i = 0; i < 100; i++)
+            {
+                //rgb = wxImage::HSVtoRGB(hsv);
+                //color.Set(rgb.red,rgb.green,rgb.blue);
+                color = HSV.HSVtoColor(hsv);
+                //FirePalette.push_back(color);
+                FirePalette.Add(color);
+                hsv.Hue += 0.00166666f;
+            }
+        }
+
+        // 0,0 is lower left
+        public void SetPixel(int x, int y, Color color)
+        {
+            if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt)
+            {
+                _pixels[x][y] = color;
+            }
+        }
+
+        // 0,0 is lower left
+        public void SetPixel(int x, int y, HSV hsv)
+        {
+            Color color = HSV.HSVtoColor(hsv);
+            SetPixel(x, y, color);
+        }
+
+        public Color GetPixel(int x, int y)
+        {
+            return _pixels[x][y];
+        }
+
+        public Color GetPixel(int pixelToGet)
+        {
+            Color color = Color.White;
+            int pixelNum = 0;
+            for (int x = 0; x < BufferWi; x++)
+            {
+                for (int y = 0; y < BufferHt; y++)
+                {
+                    if (pixelNum == pixelToGet)
+                    {
+                        return _pixels[x][y]; 
+                    }
+                    pixelNum++;
+                }
+            }
+            return color;
+        }
+
+        public int PixelCount()
+        {
+            return BufferWi * BufferHt;
+        }
+
+        public void ClearPixels(Color color)
+        {
+            foreach (List<Color> column in Pixels)
+            {
+                for (int row = 0; row < column.Count; row++)
+                {
+                    column[row] = color;
+                }
+            }
+        }
+
+        // 0,0 is lower left
+        private void SetTempPixel(int x, int y, Color color)
+        {
+            if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt)
+            {
+                //tempbuf[y*BufferWi+x]=color;
+                _tempbuf[x][y] = color;
+            }
+        }
+
+        // 0,0 is lower left
+        private Color GetTempPixel(int x, int y)
+        {
+            if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt)
+            {
+                //return tempbuf[y*BufferWi+x];
+                return _tempbuf[x][y];
+            }
+            return Color.Black;
+        }
+
+        void ClearTempBuf()
+        {
+            for (int x = 0; x < BufferWi; x++)
+            {
+                for (int y = 0; y < BufferHt; y++)
+                {
+                    _tempbuf[x][y] = Color.Black;
+                }
+            }
+        }
+
+        private void CopyTempBufToPixels()
+        {
+            for (int x = 0; x < BufferWi; x++)
+            {
+                for (int y = 0; y < BufferHt; y++)
+                {
+                    Pixels[x][y] = _tempbuf[x][y];
+                }
+            }
+        }
+
+        private void CopyPixelsToTempBuf()
+        {
+            for (int x = 0; x < BufferWi; x++)
+            {
+                for (int y = 0; y < BufferHt; y++)
+                {
+                    _tempbuf[x][y] = Pixels[x][y];
+                }
+            }
+        }
+
+#endregion
+
 
         #region Nutcracker Effects
 
@@ -1614,186 +1796,73 @@ namespace VixenModules.Effect.Nutcracker
 
         #endregion //Picture
 
+        #region Spirograph
+
+
+        #endregion // Spirograph
+
+        public void RenderSpirograph(int int_R, int int_r, int int_d, bool Animate)
+        {
+            int i, x, y, k, xc, yc, ColorIdx;
+            int mod1440, state360, d_mod;
+            srand(1);
+            float R, r, d, d_orig, t;
+            double hyp, x2, y2;
+            HSV hsv, hsv0, hsv1; //   we will define an hsv color model. The RGB colot model would have been "wxColour color;"
+            int colorcnt = GetColorCount();
+
+            xc = (int)(BufferWi / 2); // 20x100 flex strips with 2 fols per strip = 40x50
+            yc = (int)(BufferHt / 2);
+            R = (float)(xc * (int_R / 100.0));   //  Radius of the large circle just fits in the width of model
+            r = (float)(xc * (int_r / 100.0)); // start little circle at 1/4 of max width
+            if (r > R) r = R;
+            d = (float)(xc * (int_d / 100.0));
+
+            //  palette.GetHSV(1, hsv1);
+            //
+            //    A hypotrochoid is a roulette traced by a point attached to a circle of radius r rolling around the inside of a fixed circle of radius R, where the point is a distance d from the center of the interior circle.
+            //The parametric equations for a hypotrochoid are:[citation needed]
+            //
+            //  more info: http://en.wikipedia.org/wiki/Hypotrochoid
+            //
+            //x(t) = (R-r) * cos t + d*cos ((R-r/r)*t);
+            //y(t) = (R-r) * sin t + d*sin ((R-r/r)*t);
+
+            mod1440 = Convert.ToInt32(State % 1440);
+            state360 = Convert.ToInt32(State % 360);
+            d_orig = d;
+            for (i = 1; i <= 360; i++)
+            {
+                if (Animate) d = (int)(d_orig + State / 2) % 100; // should we modify the distance variable each pass through?
+                t = (float)((i + mod1440) * Math.PI / 180);
+                x = Convert.ToInt32((R - r) * Math.Cos(t) + d * Math.Cos(((R - r) / r) * t) + xc);
+                y = Convert.ToInt32((R - r) * Math.Sin(t) + d * Math.Sin(((R - r) / r) * t) + yc);
+
+                if (colorcnt > 0) d_mod = (int)BufferWi / colorcnt;
+                else d_mod = 1;
+
+                x2 = Math.Pow((x - xc), 2);
+                y2 = Math.Pow((y - yc), 2);
+                hyp = (Math.Sqrt(x2 + y2) / BufferWi) * 100.0;
+                ColorIdx = (int)(hyp / d_mod); // Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
+
+                if (ColorIdx >= colorcnt) ColorIdx = colorcnt - 1;
+
+                hsv = Palette.GetHSV(ColorIdx); // Now go and get the hsv value for this ColorIdx
+
+
+                hsv0 = Palette.GetHSV(0);
+                ColorIdx = Convert.ToInt32((State + rand()) % colorcnt); // Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
+                hsv1 = Palette.GetHSV(ColorIdx); // Now go and get the hsv value for this ColorIdx
+
+                SetPixel(x, y, hsv);
+                //        if(i<=state360) SetPixel(x,y,hsv); // Turn pixel on
+                //        else SetPixel(x,y,hsv1);
+            }
+        }
+
+
         #endregion // Nutcracker Effects
-
-        #region Pixels
-
-        public void InitBuffer(int bufferWidth, int bufferHeight)
-        {
-            _pixels.Clear();
-            _tempbuf.Clear();
-
-            List<Color> column;
-            for (int width = 0; width < bufferWidth; width++)
-            {
-                column = new List<Color>();
-                _pixels.Add(column);
-                column = new List<Color>();
-                _tempbuf.Add(column);
-                for (int height = 0; height < bufferHeight; height++)
-                {
-                    _pixels[width].Add(Color.Transparent);
-                    _tempbuf[width].Add(Color.Transparent);
-                }
-            }
-
-            Array.Resize(ref FireBuffer, bufferWidth * bufferHeight);
-            Array.Resize(ref WaveBuffer0, bufferWidth * bufferHeight);
-            Array.Resize(ref WaveBuffer1, bufferWidth * bufferHeight);
-            Array.Resize(ref WaveBuffer2, bufferWidth * bufferHeight);
-
-            InitFirePalette();
-
-            State = 0;
-        }
-
-        // initialize FirePalette[]
-        private void InitFirePalette()
-        {
-            HSV hsv = new HSV();
-            Color color;
-
-            FirePalette.Clear();
-            //wxImage::HSVValue hsv;
-            //wxImage::RGBValue rgb;
-            //wxColour color;
-            int i;
-            // calc 100 reds, black to bright red
-            hsv.Hue = 0.0f;
-            hsv.Saturation = 1.0f;
-            for (i = 0; i < 100; i++)
-            {
-                hsv.Value = (float)i / 100.0f;
-                //rgb = wxImage::HSVtoRGB(hsv);
-                //color.Set(rgb.red,rgb.green,rgb.blue);
-                color = HSV.HSVtoColor(hsv);
-                FirePalette.Add(color);
-                //FirePalette.push_back(color);
-            }
-
-            // gives 100 hues red to yellow
-            hsv.Value = 1.0f;
-            for (i = 0; i < 100; i++)
-            {
-                //rgb = wxImage::HSVtoRGB(hsv);
-                //color.Set(rgb.red,rgb.green,rgb.blue);
-                color = HSV.HSVtoColor(hsv);
-                //FirePalette.push_back(color);
-                FirePalette.Add(color);
-                hsv.Hue += 0.00166666f;
-            }
-        }
-
-        // 0,0 is lower left
-        public void SetPixel(int x, int y, Color color)
-        {
-            if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt)
-            {
-                _pixels[x][y] = color;
-            }
-        }
-
-        // 0,0 is lower left
-        public void SetPixel(int x, int y, HSV hsv)
-        {
-            Color color = HSV.HSVtoColor(hsv);
-            SetPixel(x, y, color);
-        }
-
-        public Color GetPixel(int x, int y)
-        {
-            return _pixels[x][y];
-        }
-
-        public Color GetPixel(int pixelToGet)
-        {
-            Color color = Color.White;
-            int pixelNum = 0;
-            for (int x = 0; x < BufferWi; x++)
-            {
-                for (int y = 0; y < BufferHt; y++)
-                {
-                    if (pixelNum == pixelToGet)
-                    {
-                        return _pixels[x][y]; 
-                    }
-                    pixelNum++;
-                }
-            }
-            return color;
-        }
-
-        public int PixelCount()
-        {
-            return BufferWi * BufferHt;
-        }
-
-        public void ClearPixels(Color color)
-        {
-            foreach (List<Color> column in Pixels)
-            {
-                for (int row = 0; row < column.Count; row++)
-                {
-                    column[row] = color;
-                }
-            }
-        }
-
-        // 0,0 is lower left
-        private void SetTempPixel(int x, int y, Color color)
-        {
-            if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt)
-            {
-                //tempbuf[y*BufferWi+x]=color;
-                _tempbuf[x][y] = color;
-            }
-        }
-
-        // 0,0 is lower left
-        private Color GetTempPixel(int x, int y)
-        {
-            if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt)
-            {
-                //return tempbuf[y*BufferWi+x];
-                return _tempbuf[x][y];
-            }
-            return Color.Black;
-        }
-
-        void ClearTempBuf()
-        {
-            for (int x = 0; x < BufferWi; x++)
-            {
-                for (int y = 0; y < BufferHt; y++)
-                {
-                    _tempbuf[x][y] = Color.Black;
-                }
-            }
-        }
-
-        private void CopyTempBufToPixels()
-        {
-            for (int x = 0; x < BufferWi; x++)
-            {
-                for (int y = 0; y < BufferHt; y++)
-                {
-                    Pixels[x][y] = _tempbuf[x][y];
-                }
-            }
-        }
-
-        private void CopyPixelsToTempBuf()
-        {
-            for (int x = 0; x < BufferWi; x++)
-            {
-                for (int y = 0; y < BufferHt; y++)
-                {
-                    _tempbuf[x][y] = Pixels[x][y];
-                }
-            }
-        }
-
-#endregion
 
         public void RenderNextEffect(Effects effect)
         {
@@ -1847,6 +1916,9 @@ namespace VixenModules.Effect.Nutcracker
                     break;
                 case Effects.Picture:
                     RenderPictures(Data.Picture_Direction, Data.Picture_FileName, Data.Picture_GifSpeed);
+                    break;
+                case Effects.Spirograph:
+                    RenderSpirograph(Data.Spirograph_ROuter, Data.Spirograph_RInner, Data.Spirograph_Distance, Data.Spirograph_Animate);
                     break;
             }
         }

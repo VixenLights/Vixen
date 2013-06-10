@@ -48,20 +48,15 @@
             this.checkBoxColor1 = new System.Windows.Forms.CheckBox();
             this.panelColor1 = new System.Windows.Forms.Panel();
             this.tabEffectProperties = new System.Windows.Forms.TabControl();
-            this.Text = new System.Windows.Forms.TabPage();
-            this.comboBoxTextDirection = new System.Windows.Forms.ComboBox();
-            this.label35 = new System.Windows.Forms.Label();
-            this.textBoxTextFont = new System.Windows.Forms.TextBox();
-            this.buttonTextFont = new System.Windows.Forms.Button();
-            this.textTextLine2 = new System.Windows.Forms.TextBox();
-            this.textTextLine1 = new System.Windows.Forms.TextBox();
-            this.label34 = new System.Windows.Forms.Label();
-            this.label33 = new System.Windows.Forms.Label();
-            this.label32 = new System.Windows.Forms.Label();
-            this.trackTextTop = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
-            this.Twinkles = new System.Windows.Forms.TabPage();
-            this.label31 = new System.Windows.Forms.Label();
-            this.trackTwinkleCount = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
+            this.Spirograph = new System.Windows.Forms.TabPage();
+            this.label42 = new System.Windows.Forms.Label();
+            this.checkBoxSpirographAnimate = new System.Windows.Forms.CheckBox();
+            this.label41 = new System.Windows.Forms.Label();
+            this.trackSpirographDistance = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
+            this.label40 = new System.Windows.Forms.Label();
+            this.trackSpirographRInner = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
+            this.label39 = new System.Windows.Forms.Label();
+            this.trackSpirographROuter = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
             this.Spirals = new System.Windows.Forms.TabPage();
             this.checkSpirals3D = new System.Windows.Forms.CheckBox();
             this.checkSpiralsBlend = new System.Windows.Forms.CheckBox();
@@ -73,6 +68,28 @@
             this.trackSpiralsRotations = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
             this.label28 = new System.Windows.Forms.Label();
             this.trackSpiralsRepeat = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
+            this.Text = new System.Windows.Forms.TabPage();
+            this.comboBoxTextDirection = new System.Windows.Forms.ComboBox();
+            this.label35 = new System.Windows.Forms.Label();
+            this.textBoxTextFont = new System.Windows.Forms.TextBox();
+            this.buttonTextFont = new System.Windows.Forms.Button();
+            this.textTextLine2 = new System.Windows.Forms.TextBox();
+            this.textTextLine1 = new System.Windows.Forms.TextBox();
+            this.label34 = new System.Windows.Forms.Label();
+            this.label33 = new System.Windows.Forms.Label();
+            this.label32 = new System.Windows.Forms.Label();
+            this.trackTextTop = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
+            this.Picture = new System.Windows.Forms.TabPage();
+            this.textPictureFileName = new System.Windows.Forms.TextBox();
+            this.label38 = new System.Windows.Forms.Label();
+            this.comboBoxPictureDirection = new System.Windows.Forms.ComboBox();
+            this.label36 = new System.Windows.Forms.Label();
+            this.buttonPictureSelect = new System.Windows.Forms.Button();
+            this.label37 = new System.Windows.Forms.Label();
+            this.trackPictureGifSpeed = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
+            this.Twinkles = new System.Windows.Forms.TabPage();
+            this.label31 = new System.Windows.Forms.Label();
+            this.trackTwinkleCount = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
             this.Snowstorm = new System.Windows.Forms.TabPage();
             this.label25 = new System.Windows.Forms.Label();
             this.trackSnowstormTrailLength = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
@@ -139,21 +156,15 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.fontDialog = new System.Windows.Forms.FontDialog();
-            this.Picture = new System.Windows.Forms.TabPage();
-            this.comboBoxPictureDirection = new System.Windows.Forms.ComboBox();
-            this.label36 = new System.Windows.Forms.Label();
-            this.buttonPictureSelect = new System.Windows.Forms.Button();
-            this.label37 = new System.Windows.Forms.Label();
-            this.trackPictureGifSpeed = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
-            this.label38 = new System.Windows.Forms.Label();
-            this.textPictureFileName = new System.Windows.Forms.TextBox();
             this.fileDialog = new System.Windows.Forms.OpenFileDialog();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabEffectProperties.SuspendLayout();
-            this.Text.SuspendLayout();
-            this.Twinkles.SuspendLayout();
+            this.Spirograph.SuspendLayout();
             this.Spirals.SuspendLayout();
+            this.Text.SuspendLayout();
+            this.Picture.SuspendLayout();
+            this.Twinkles.SuspendLayout();
             this.Snowstorm.SuspendLayout();
             this.Snowflakes.SuspendLayout();
             this.Fireworks.SuspendLayout();
@@ -165,7 +176,6 @@
             this.Fire.SuspendLayout();
             this.Garlands.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).BeginInit();
-            this.Picture.SuspendLayout();
             this.SuspendLayout();
             // 
             // timerRender
@@ -377,10 +387,11 @@
             // tabEffectProperties
             // 
             this.tabEffectProperties.Appearance = System.Windows.Forms.TabAppearance.Buttons;
-            this.tabEffectProperties.Controls.Add(this.Picture);
-            this.tabEffectProperties.Controls.Add(this.Text);
-            this.tabEffectProperties.Controls.Add(this.Twinkles);
+            this.tabEffectProperties.Controls.Add(this.Spirograph);
             this.tabEffectProperties.Controls.Add(this.Spirals);
+            this.tabEffectProperties.Controls.Add(this.Text);
+            this.tabEffectProperties.Controls.Add(this.Picture);
+            this.tabEffectProperties.Controls.Add(this.Twinkles);
             this.tabEffectProperties.Controls.Add(this.Snowstorm);
             this.tabEffectProperties.Controls.Add(this.Snowflakes);
             this.tabEffectProperties.Controls.Add(this.Fireworks);
@@ -399,151 +410,102 @@
             this.tabEffectProperties.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabEffectProperties.TabIndex = 5;
             // 
-            // Text
+            // Spirograph
             // 
-            this.Text.Controls.Add(this.comboBoxTextDirection);
-            this.Text.Controls.Add(this.label35);
-            this.Text.Controls.Add(this.textBoxTextFont);
-            this.Text.Controls.Add(this.buttonTextFont);
-            this.Text.Controls.Add(this.textTextLine2);
-            this.Text.Controls.Add(this.textTextLine1);
-            this.Text.Controls.Add(this.label34);
-            this.Text.Controls.Add(this.label33);
-            this.Text.Controls.Add(this.label32);
-            this.Text.Controls.Add(this.trackTextTop);
-            this.Text.Location = new System.Drawing.Point(4, 5);
-            this.Text.Name = "Text";
-            this.Text.Size = new System.Drawing.Size(266, 149);
-            this.Text.TabIndex = 12;
-            this.Text.Text = "tabPage1";
-            this.Text.UseVisualStyleBackColor = true;
+            this.Spirograph.Controls.Add(this.label42);
+            this.Spirograph.Controls.Add(this.checkBoxSpirographAnimate);
+            this.Spirograph.Controls.Add(this.label41);
+            this.Spirograph.Controls.Add(this.trackSpirographDistance);
+            this.Spirograph.Controls.Add(this.label40);
+            this.Spirograph.Controls.Add(this.trackSpirographRInner);
+            this.Spirograph.Controls.Add(this.label39);
+            this.Spirograph.Controls.Add(this.trackSpirographROuter);
+            this.Spirograph.Location = new System.Drawing.Point(4, 5);
+            this.Spirograph.Name = "Spirograph";
+            this.Spirograph.Size = new System.Drawing.Size(266, 149);
+            this.Spirograph.TabIndex = 14;
+            this.Spirograph.Text = "tabPage1";
+            this.Spirograph.UseVisualStyleBackColor = true;
             // 
-            // comboBoxTextDirection
+            // label42
             // 
-            this.comboBoxTextDirection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxTextDirection.FormattingEnabled = true;
-            this.comboBoxTextDirection.Items.AddRange(new object[] {
-            "Left",
-            "Right",
-            "Up",
-            "Down",
-            "None"});
-            this.comboBoxTextDirection.Location = new System.Drawing.Point(96, 53);
-            this.comboBoxTextDirection.Name = "comboBoxTextDirection";
-            this.comboBoxTextDirection.Size = new System.Drawing.Size(167, 21);
-            this.comboBoxTextDirection.TabIndex = 40;
-            this.comboBoxTextDirection.SelectedIndexChanged += new System.EventHandler(this.Text_TextChanged);
+            this.label42.AutoSize = true;
+            this.label42.Location = new System.Drawing.Point(9, 125);
+            this.label42.Name = "label42";
+            this.label42.Size = new System.Drawing.Size(114, 13);
+            this.label42.TabIndex = 36;
+            this.label42.Text = "Note: r should be <= R";
             // 
-            // label35
+            // checkBoxSpirographAnimate
             // 
-            this.label35.AutoSize = true;
-            this.label35.Location = new System.Drawing.Point(9, 56);
-            this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(52, 13);
-            this.label35.TabIndex = 39;
-            this.label35.Text = "Direction:";
+            this.checkBoxSpirographAnimate.AutoSize = true;
+            this.checkBoxSpirographAnimate.Location = new System.Drawing.Point(131, 92);
+            this.checkBoxSpirographAnimate.Name = "checkBoxSpirographAnimate";
+            this.checkBoxSpirographAnimate.Size = new System.Drawing.Size(109, 17);
+            this.checkBoxSpirographAnimate.TabIndex = 35;
+            this.checkBoxSpirographAnimate.Text = "Animate Distance";
+            this.checkBoxSpirographAnimate.UseVisualStyleBackColor = true;
+            this.checkBoxSpirographAnimate.CheckedChanged += new System.EventHandler(this.checkBoxSpirographAnimate_CheckedChanged);
             // 
-            // textBoxTextFont
+            // label41
             // 
-            this.textBoxTextFont.Location = new System.Drawing.Point(96, 107);
-            this.textBoxTextFont.Name = "textBoxTextFont";
-            this.textBoxTextFont.ReadOnly = true;
-            this.textBoxTextFont.Size = new System.Drawing.Size(167, 20);
-            this.textBoxTextFont.TabIndex = 38;
+            this.label41.AutoSize = true;
+            this.label41.Location = new System.Drawing.Point(9, 66);
+            this.label41.Name = "label41";
+            this.label41.Size = new System.Drawing.Size(64, 13);
+            this.label41.TabIndex = 33;
+            this.label41.Text = "d - Distance";
             // 
-            // buttonTextFont
+            // trackSpirographDistance
             // 
-            this.buttonTextFont.Location = new System.Drawing.Point(12, 105);
-            this.buttonTextFont.Name = "buttonTextFont";
-            this.buttonTextFont.Size = new System.Drawing.Size(75, 23);
-            this.buttonTextFont.TabIndex = 37;
-            this.buttonTextFont.Text = "Font";
-            this.buttonTextFont.UseVisualStyleBackColor = true;
-            this.buttonTextFont.Click += new System.EventHandler(this.buttonTextFont_Click);
+            this.trackSpirographDistance.Location = new System.Drawing.Point(131, 63);
+            this.trackSpirographDistance.Minimum = 1;
+            this.trackSpirographDistance.Name = "trackSpirographDistance";
+            this.trackSpirographDistance.Size = new System.Drawing.Size(132, 23);
+            this.trackSpirographDistance.TabIndex = 34;
+            this.trackSpirographDistance.Text = "trackPaletteRepeat";
+            this.trackSpirographDistance.Value = 30;
+            this.trackSpirographDistance.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.Spirograph_ValueChanged);
             // 
-            // textTextLine2
+            // label40
             // 
-            this.textTextLine2.Location = new System.Drawing.Point(96, 30);
-            this.textTextLine2.Name = "textTextLine2";
-            this.textTextLine2.Size = new System.Drawing.Size(167, 20);
-            this.textTextLine2.TabIndex = 36;
-            this.textTextLine2.TextChanged += new System.EventHandler(this.Text_TextChanged);
+            this.label40.AutoSize = true;
+            this.label40.Location = new System.Drawing.Point(9, 37);
+            this.label40.Name = "label40";
+            this.label40.Size = new System.Drawing.Size(116, 13);
+            this.label40.TabIndex = 31;
+            this.label40.Text = "r - radius of inner circle:";
             // 
-            // textTextLine1
+            // trackSpirographRInner
             // 
-            this.textTextLine1.Location = new System.Drawing.Point(96, 7);
-            this.textTextLine1.Name = "textTextLine1";
-            this.textTextLine1.Size = new System.Drawing.Size(167, 20);
-            this.textTextLine1.TabIndex = 35;
-            this.textTextLine1.TextChanged += new System.EventHandler(this.Text_TextChanged);
+            this.trackSpirographRInner.Location = new System.Drawing.Point(131, 34);
+            this.trackSpirographRInner.Minimum = 1;
+            this.trackSpirographRInner.Name = "trackSpirographRInner";
+            this.trackSpirographRInner.Size = new System.Drawing.Size(132, 23);
+            this.trackSpirographRInner.TabIndex = 32;
+            this.trackSpirographRInner.Text = "trackPaletteRepeat";
+            this.trackSpirographRInner.Value = 10;
+            this.trackSpirographRInner.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.Spirograph_ValueChanged);
             // 
-            // label34
+            // label39
             // 
-            this.label34.AutoSize = true;
-            this.label34.Location = new System.Drawing.Point(9, 33);
-            this.label34.Name = "label34";
-            this.label34.Size = new System.Drawing.Size(39, 13);
-            this.label34.TabIndex = 34;
-            this.label34.Text = "Line 2:";
+            this.label39.AutoSize = true;
+            this.label39.Location = new System.Drawing.Point(9, 8);
+            this.label39.Name = "label39";
+            this.label39.Size = new System.Drawing.Size(122, 13);
+            this.label39.TabIndex = 29;
+            this.label39.Text = "R - radius of outer circle:";
             // 
-            // label33
+            // trackSpirographROuter
             // 
-            this.label33.AutoSize = true;
-            this.label33.Location = new System.Drawing.Point(9, 10);
-            this.label33.Name = "label33";
-            this.label33.Size = new System.Drawing.Size(39, 13);
-            this.label33.TabIndex = 33;
-            this.label33.Text = "Line 1:";
-            // 
-            // label32
-            // 
-            this.label32.AutoSize = true;
-            this.label32.Location = new System.Drawing.Point(9, 82);
-            this.label32.Name = "label32";
-            this.label32.Size = new System.Drawing.Size(29, 13);
-            this.label32.TabIndex = 31;
-            this.label32.Text = "Top:";
-            // 
-            // trackTextTop
-            // 
-            this.trackTextTop.Location = new System.Drawing.Point(96, 79);
-            this.trackTextTop.Name = "trackTextTop";
-            this.trackTextTop.Size = new System.Drawing.Size(167, 23);
-            this.trackTextTop.TabIndex = 32;
-            this.trackTextTop.Text = "trackPaletteRepeat";
-            this.trackTextTop.Value = 50;
-            this.trackTextTop.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.trackTextTop_ValueChanged);
-            // 
-            // Twinkles
-            // 
-            this.Twinkles.Controls.Add(this.label31);
-            this.Twinkles.Controls.Add(this.trackTwinkleCount);
-            this.Twinkles.Location = new System.Drawing.Point(4, 5);
-            this.Twinkles.Name = "Twinkles";
-            this.Twinkles.Size = new System.Drawing.Size(266, 149);
-            this.Twinkles.TabIndex = 11;
-            this.Twinkles.Text = "tabPage1";
-            this.Twinkles.UseVisualStyleBackColor = true;
-            // 
-            // label31
-            // 
-            this.label31.AutoSize = true;
-            this.label31.Location = new System.Drawing.Point(9, 8);
-            this.label31.Name = "label31";
-            this.label31.Size = new System.Drawing.Size(60, 13);
-            this.label31.TabIndex = 29;
-            this.label31.Text = "# of Lights:";
-            // 
-            // trackTwinkleCount
-            // 
-            this.trackTwinkleCount.Location = new System.Drawing.Point(96, 5);
-            this.trackTwinkleCount.Minimum = 2;
-            this.trackTwinkleCount.Name = "trackTwinkleCount";
-            this.trackTwinkleCount.Size = new System.Drawing.Size(167, 23);
-            this.trackTwinkleCount.TabIndex = 30;
-            this.trackTwinkleCount.Text = "trackPaletteRepeat";
-            this.trackTwinkleCount.Value = 10;
-            this.trackTwinkleCount.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.trackTwinkleCount_ValueChanged);
+            this.trackSpirographROuter.Location = new System.Drawing.Point(131, 5);
+            this.trackSpirographROuter.Minimum = 1;
+            this.trackSpirographROuter.Name = "trackSpirographROuter";
+            this.trackSpirographROuter.Size = new System.Drawing.Size(132, 23);
+            this.trackSpirographROuter.TabIndex = 30;
+            this.trackSpirographROuter.Text = "trackPaletteRepeat";
+            this.trackSpirographROuter.Value = 5;
+            this.trackSpirographROuter.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.Spirograph_ValueChanged);
             // 
             // Spirals
             // 
@@ -667,6 +629,243 @@
             this.trackSpiralsRepeat.Text = "trackPaletteRepeat";
             this.trackSpiralsRepeat.Value = 1;
             this.trackSpiralsRepeat.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.Spirals_ValueChanged);
+            // 
+            // Text
+            // 
+            this.Text.Controls.Add(this.comboBoxTextDirection);
+            this.Text.Controls.Add(this.label35);
+            this.Text.Controls.Add(this.textBoxTextFont);
+            this.Text.Controls.Add(this.buttonTextFont);
+            this.Text.Controls.Add(this.textTextLine2);
+            this.Text.Controls.Add(this.textTextLine1);
+            this.Text.Controls.Add(this.label34);
+            this.Text.Controls.Add(this.label33);
+            this.Text.Controls.Add(this.label32);
+            this.Text.Controls.Add(this.trackTextTop);
+            this.Text.Location = new System.Drawing.Point(4, 5);
+            this.Text.Name = "Text";
+            this.Text.Size = new System.Drawing.Size(266, 149);
+            this.Text.TabIndex = 12;
+            this.Text.Text = "tabPage1";
+            this.Text.UseVisualStyleBackColor = true;
+            // 
+            // comboBoxTextDirection
+            // 
+            this.comboBoxTextDirection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxTextDirection.FormattingEnabled = true;
+            this.comboBoxTextDirection.Items.AddRange(new object[] {
+            "Left",
+            "Right",
+            "Up",
+            "Down",
+            "None"});
+            this.comboBoxTextDirection.Location = new System.Drawing.Point(96, 53);
+            this.comboBoxTextDirection.Name = "comboBoxTextDirection";
+            this.comboBoxTextDirection.Size = new System.Drawing.Size(167, 21);
+            this.comboBoxTextDirection.TabIndex = 40;
+            this.comboBoxTextDirection.SelectedIndexChanged += new System.EventHandler(this.Text_TextChanged);
+            // 
+            // label35
+            // 
+            this.label35.AutoSize = true;
+            this.label35.Location = new System.Drawing.Point(9, 56);
+            this.label35.Name = "label35";
+            this.label35.Size = new System.Drawing.Size(52, 13);
+            this.label35.TabIndex = 39;
+            this.label35.Text = "Direction:";
+            // 
+            // textBoxTextFont
+            // 
+            this.textBoxTextFont.Location = new System.Drawing.Point(96, 107);
+            this.textBoxTextFont.Name = "textBoxTextFont";
+            this.textBoxTextFont.ReadOnly = true;
+            this.textBoxTextFont.Size = new System.Drawing.Size(167, 20);
+            this.textBoxTextFont.TabIndex = 38;
+            // 
+            // buttonTextFont
+            // 
+            this.buttonTextFont.Location = new System.Drawing.Point(12, 105);
+            this.buttonTextFont.Name = "buttonTextFont";
+            this.buttonTextFont.Size = new System.Drawing.Size(75, 23);
+            this.buttonTextFont.TabIndex = 37;
+            this.buttonTextFont.Text = "Font";
+            this.buttonTextFont.UseVisualStyleBackColor = true;
+            this.buttonTextFont.Click += new System.EventHandler(this.buttonTextFont_Click);
+            // 
+            // textTextLine2
+            // 
+            this.textTextLine2.Location = new System.Drawing.Point(96, 30);
+            this.textTextLine2.Name = "textTextLine2";
+            this.textTextLine2.Size = new System.Drawing.Size(167, 20);
+            this.textTextLine2.TabIndex = 36;
+            this.textTextLine2.TextChanged += new System.EventHandler(this.Text_TextChanged);
+            // 
+            // textTextLine1
+            // 
+            this.textTextLine1.Location = new System.Drawing.Point(96, 7);
+            this.textTextLine1.Name = "textTextLine1";
+            this.textTextLine1.Size = new System.Drawing.Size(167, 20);
+            this.textTextLine1.TabIndex = 35;
+            this.textTextLine1.TextChanged += new System.EventHandler(this.Text_TextChanged);
+            // 
+            // label34
+            // 
+            this.label34.AutoSize = true;
+            this.label34.Location = new System.Drawing.Point(9, 33);
+            this.label34.Name = "label34";
+            this.label34.Size = new System.Drawing.Size(39, 13);
+            this.label34.TabIndex = 34;
+            this.label34.Text = "Line 2:";
+            // 
+            // label33
+            // 
+            this.label33.AutoSize = true;
+            this.label33.Location = new System.Drawing.Point(9, 10);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(39, 13);
+            this.label33.TabIndex = 33;
+            this.label33.Text = "Line 1:";
+            // 
+            // label32
+            // 
+            this.label32.AutoSize = true;
+            this.label32.Location = new System.Drawing.Point(9, 82);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(29, 13);
+            this.label32.TabIndex = 31;
+            this.label32.Text = "Top:";
+            // 
+            // trackTextTop
+            // 
+            this.trackTextTop.Location = new System.Drawing.Point(96, 79);
+            this.trackTextTop.Name = "trackTextTop";
+            this.trackTextTop.Size = new System.Drawing.Size(167, 23);
+            this.trackTextTop.TabIndex = 32;
+            this.trackTextTop.Text = "trackPaletteRepeat";
+            this.trackTextTop.Value = 50;
+            this.trackTextTop.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.trackTextTop_ValueChanged);
+            // 
+            // Picture
+            // 
+            this.Picture.Controls.Add(this.textPictureFileName);
+            this.Picture.Controls.Add(this.label38);
+            this.Picture.Controls.Add(this.comboBoxPictureDirection);
+            this.Picture.Controls.Add(this.label36);
+            this.Picture.Controls.Add(this.buttonPictureSelect);
+            this.Picture.Controls.Add(this.label37);
+            this.Picture.Controls.Add(this.trackPictureGifSpeed);
+            this.Picture.Location = new System.Drawing.Point(4, 5);
+            this.Picture.Name = "Picture";
+            this.Picture.Size = new System.Drawing.Size(266, 149);
+            this.Picture.TabIndex = 13;
+            this.Picture.Text = "tabPage1";
+            this.Picture.UseVisualStyleBackColor = true;
+            // 
+            // textPictureFileName
+            // 
+            this.textPictureFileName.Location = new System.Drawing.Point(65, 30);
+            this.textPictureFileName.Name = "textPictureFileName";
+            this.textPictureFileName.ReadOnly = true;
+            this.textPictureFileName.Size = new System.Drawing.Size(195, 20);
+            this.textPictureFileName.TabIndex = 48;
+            // 
+            // label38
+            // 
+            this.label38.AutoSize = true;
+            this.label38.Location = new System.Drawing.Point(6, 10);
+            this.label38.Name = "label38";
+            this.label38.Size = new System.Drawing.Size(52, 13);
+            this.label38.TabIndex = 47;
+            this.label38.Text = "Filename:";
+            // 
+            // comboBoxPictureDirection
+            // 
+            this.comboBoxPictureDirection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxPictureDirection.FormattingEnabled = true;
+            this.comboBoxPictureDirection.Items.AddRange(new object[] {
+            "Left",
+            "Right",
+            "Up",
+            "Down",
+            "None"});
+            this.comboBoxPictureDirection.Location = new System.Drawing.Point(65, 55);
+            this.comboBoxPictureDirection.Name = "comboBoxPictureDirection";
+            this.comboBoxPictureDirection.Size = new System.Drawing.Size(103, 21);
+            this.comboBoxPictureDirection.TabIndex = 46;
+            this.comboBoxPictureDirection.SelectedIndexChanged += new System.EventHandler(this.comboBoxPictureDirection_SelectedIndexChanged);
+            // 
+            // label36
+            // 
+            this.label36.AutoSize = true;
+            this.label36.Location = new System.Drawing.Point(6, 58);
+            this.label36.Name = "label36";
+            this.label36.Size = new System.Drawing.Size(52, 13);
+            this.label36.TabIndex = 45;
+            this.label36.Text = "Direction:";
+            // 
+            // buttonPictureSelect
+            // 
+            this.buttonPictureSelect.Location = new System.Drawing.Point(64, 4);
+            this.buttonPictureSelect.Name = "buttonPictureSelect";
+            this.buttonPictureSelect.Size = new System.Drawing.Size(75, 23);
+            this.buttonPictureSelect.TabIndex = 43;
+            this.buttonPictureSelect.Text = "Select File";
+            this.buttonPictureSelect.UseVisualStyleBackColor = true;
+            this.buttonPictureSelect.Click += new System.EventHandler(this.buttonPictureSelect_Click);
+            // 
+            // label37
+            // 
+            this.label37.AutoSize = true;
+            this.label37.Enabled = false;
+            this.label37.Location = new System.Drawing.Point(6, 85);
+            this.label37.Name = "label37";
+            this.label37.Size = new System.Drawing.Size(61, 13);
+            this.label37.TabIndex = 41;
+            this.label37.Text = "GIF Speed:";
+            // 
+            // trackPictureGifSpeed
+            // 
+            this.trackPictureGifSpeed.Enabled = false;
+            this.trackPictureGifSpeed.Location = new System.Drawing.Point(65, 81);
+            this.trackPictureGifSpeed.Maximum = 20;
+            this.trackPictureGifSpeed.Minimum = 1;
+            this.trackPictureGifSpeed.Name = "trackPictureGifSpeed";
+            this.trackPictureGifSpeed.Size = new System.Drawing.Size(195, 23);
+            this.trackPictureGifSpeed.TabIndex = 42;
+            this.trackPictureGifSpeed.Text = "trackPaletteRepeat";
+            this.trackPictureGifSpeed.Value = 5;
+            this.trackPictureGifSpeed.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.trackPictureGifSpeed_ValueChanged);
+            // 
+            // Twinkles
+            // 
+            this.Twinkles.Controls.Add(this.label31);
+            this.Twinkles.Controls.Add(this.trackTwinkleCount);
+            this.Twinkles.Location = new System.Drawing.Point(4, 5);
+            this.Twinkles.Name = "Twinkles";
+            this.Twinkles.Size = new System.Drawing.Size(266, 149);
+            this.Twinkles.TabIndex = 11;
+            this.Twinkles.Text = "tabPage1";
+            this.Twinkles.UseVisualStyleBackColor = true;
+            // 
+            // label31
+            // 
+            this.label31.AutoSize = true;
+            this.label31.Location = new System.Drawing.Point(9, 8);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(60, 13);
+            this.label31.TabIndex = 29;
+            this.label31.Text = "# of Lights:";
+            // 
+            // trackTwinkleCount
+            // 
+            this.trackTwinkleCount.Location = new System.Drawing.Point(96, 5);
+            this.trackTwinkleCount.Minimum = 2;
+            this.trackTwinkleCount.Name = "trackTwinkleCount";
+            this.trackTwinkleCount.Size = new System.Drawing.Size(167, 23);
+            this.trackTwinkleCount.TabIndex = 30;
+            this.trackTwinkleCount.Text = "trackPaletteRepeat";
+            this.trackTwinkleCount.Value = 10;
+            this.trackTwinkleCount.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.trackTwinkleCount_ValueChanged);
             // 
             // Snowstorm
             // 
@@ -1368,97 +1567,6 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Effect 2";
             // 
-            // Picture
-            // 
-            this.Picture.Controls.Add(this.textPictureFileName);
-            this.Picture.Controls.Add(this.label38);
-            this.Picture.Controls.Add(this.comboBoxPictureDirection);
-            this.Picture.Controls.Add(this.label36);
-            this.Picture.Controls.Add(this.buttonPictureSelect);
-            this.Picture.Controls.Add(this.label37);
-            this.Picture.Controls.Add(this.trackPictureGifSpeed);
-            this.Picture.Location = new System.Drawing.Point(4, 5);
-            this.Picture.Name = "Picture";
-            this.Picture.Size = new System.Drawing.Size(266, 149);
-            this.Picture.TabIndex = 13;
-            this.Picture.Text = "tabPage1";
-            this.Picture.UseVisualStyleBackColor = true;
-            // 
-            // comboBoxPictureDirection
-            // 
-            this.comboBoxPictureDirection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxPictureDirection.FormattingEnabled = true;
-            this.comboBoxPictureDirection.Items.AddRange(new object[] {
-            "Left",
-            "Right",
-            "Up",
-            "Down",
-            "None"});
-            this.comboBoxPictureDirection.Location = new System.Drawing.Point(65, 55);
-            this.comboBoxPictureDirection.Name = "comboBoxPictureDirection";
-            this.comboBoxPictureDirection.Size = new System.Drawing.Size(103, 21);
-            this.comboBoxPictureDirection.TabIndex = 46;
-            this.comboBoxPictureDirection.SelectedIndexChanged += new System.EventHandler(this.comboBoxPictureDirection_SelectedIndexChanged);
-            // 
-            // label36
-            // 
-            this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(6, 58);
-            this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(52, 13);
-            this.label36.TabIndex = 45;
-            this.label36.Text = "Direction:";
-            // 
-            // buttonPictureSelect
-            // 
-            this.buttonPictureSelect.Location = new System.Drawing.Point(64, 4);
-            this.buttonPictureSelect.Name = "buttonPictureSelect";
-            this.buttonPictureSelect.Size = new System.Drawing.Size(75, 23);
-            this.buttonPictureSelect.TabIndex = 43;
-            this.buttonPictureSelect.Text = "Select File";
-            this.buttonPictureSelect.UseVisualStyleBackColor = true;
-            this.buttonPictureSelect.Click += new System.EventHandler(this.buttonPictureSelect_Click);
-            // 
-            // label37
-            // 
-            this.label37.AutoSize = true;
-            this.label37.Enabled = false;
-            this.label37.Location = new System.Drawing.Point(6, 85);
-            this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(61, 13);
-            this.label37.TabIndex = 41;
-            this.label37.Text = "GIF Speed:";
-            // 
-            // trackPictureGifSpeed
-            // 
-            this.trackPictureGifSpeed.Enabled = false;
-            this.trackPictureGifSpeed.Location = new System.Drawing.Point(65, 81);
-            this.trackPictureGifSpeed.Maximum = 20;
-            this.trackPictureGifSpeed.Minimum = 1;
-            this.trackPictureGifSpeed.Name = "trackPictureGifSpeed";
-            this.trackPictureGifSpeed.Size = new System.Drawing.Size(195, 23);
-            this.trackPictureGifSpeed.TabIndex = 42;
-            this.trackPictureGifSpeed.Text = "trackPaletteRepeat";
-            this.trackPictureGifSpeed.Value = 5;
-            this.trackPictureGifSpeed.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.trackPictureGifSpeed_ValueChanged);
-            // 
-            // label38
-            // 
-            this.label38.AutoSize = true;
-            this.label38.Location = new System.Drawing.Point(6, 10);
-            this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(52, 13);
-            this.label38.TabIndex = 47;
-            this.label38.Text = "Filename:";
-            // 
-            // textPictureFileName
-            // 
-            this.textPictureFileName.Location = new System.Drawing.Point(65, 30);
-            this.textPictureFileName.Name = "textPictureFileName";
-            this.textPictureFileName.ReadOnly = true;
-            this.textPictureFileName.Size = new System.Drawing.Size(195, 20);
-            this.textPictureFileName.TabIndex = 48;
-            // 
             // fileDialog
             // 
             this.fileDialog.FileName = "Select a File";
@@ -1479,12 +1587,16 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.tabEffectProperties.ResumeLayout(false);
-            this.Text.ResumeLayout(false);
-            this.Text.PerformLayout();
-            this.Twinkles.ResumeLayout(false);
-            this.Twinkles.PerformLayout();
+            this.Spirograph.ResumeLayout(false);
+            this.Spirograph.PerformLayout();
             this.Spirals.ResumeLayout(false);
             this.Spirals.PerformLayout();
+            this.Text.ResumeLayout(false);
+            this.Text.PerformLayout();
+            this.Picture.ResumeLayout(false);
+            this.Picture.PerformLayout();
+            this.Twinkles.ResumeLayout(false);
+            this.Twinkles.PerformLayout();
             this.Snowstorm.ResumeLayout(false);
             this.Snowstorm.PerformLayout();
             this.Snowflakes.ResumeLayout(false);
@@ -1506,8 +1618,6 @@
             this.Garlands.ResumeLayout(false);
             this.Garlands.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).EndInit();
-            this.Picture.ResumeLayout(false);
-            this.Picture.PerformLayout();
             this.ResumeLayout(false);
 
 		}
@@ -1634,5 +1744,14 @@
         private System.Windows.Forms.Label label37;
         private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackPictureGifSpeed;
         private System.Windows.Forms.OpenFileDialog fileDialog;
+        private System.Windows.Forms.TabPage Spirograph;
+        private System.Windows.Forms.Label label42;
+        private System.Windows.Forms.CheckBox checkBoxSpirographAnimate;
+        private System.Windows.Forms.Label label41;
+        private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackSpirographDistance;
+        private System.Windows.Forms.Label label40;
+        private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackSpirographRInner;
+        private System.Windows.Forms.Label label39;
+        private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackSpirographROuter;
 	}
 }
