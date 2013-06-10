@@ -5,7 +5,6 @@ using System.Text;
 using System.Drawing;
 using System.Diagnostics;
 using VixenModules.Effect.Nutcracker;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Concurrent;
@@ -753,8 +752,7 @@ namespace VixenModules.Effect.Nutcracker
                 y = (y0 + n_y[i]) % BufferHt;
                 if (x < 0) x += BufferWi;
                 if (y < 0) y += BufferHt;
-                //if (GetTempPixelRGB(x, y) != 0) cnt++;
-                if (GetTempPixel(x, y) != Color.Black) cnt++;
+                if ((GetTempPixel(x, y) != Color.Black) && (GetTempPixel(x, y) != Color.Transparent)) cnt++;
             }
             return cnt;
         }
@@ -773,15 +771,15 @@ namespace VixenModules.Effect.Nutcracker
                 LastLifeCount=Count;
                 LastLifeType=Type;
                 ClearTempBuf();
-                for(i=0; i<Count; i++)
+                for (i = 0; i < Count; i++)
                 {
-                    x=rand() % BufferWi;
-                    y=rand() % BufferHt;
-                    color = GetMultiColorBlend(rand01(),false);
-                    SetTempPixel(x,y,color);
+                    x = rand() % BufferWi;
+                    y = rand() % BufferHt;
+                    color = GetMultiColorBlend(rand01(), false);
+                    SetTempPixel(x, y, color);
                 }
             }
-            long TempState = State % 400 / 20;
+            long TempState = (State % 400) / 20;
             if (TempState == LastLifeState)
             {
                 //Pixels=tempbuf;
@@ -799,7 +797,7 @@ namespace VixenModules.Effect.Nutcracker
                 {
                     color = GetTempPixel(x, y);
                     //isLive=(color.GetRGB() != 0);
-                    isLive = (color != Color.Black);
+                    isLive = (color != Color.Black && color != Color.Transparent);
                     cnt=Life_CountNeighbors(x,y);
                     switch (Type)
                     {
