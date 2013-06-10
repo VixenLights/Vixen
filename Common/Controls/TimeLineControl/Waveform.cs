@@ -111,8 +111,10 @@ namespace Common.Controls.Timeline
 
 			get { return audio; }
 		}
+
 		delegate void SetAudioDelegate(VixenModules.Media.Audio.Audio value);
-		private void SetAudio(VixenModules.Media.Audio.Audio value)
+		
+        private void SetAudio(VixenModules.Media.Audio.Audio value)
 		{
 			if (this.InvokeRequired)
 				this.Invoke(new SetAudioDelegate(SetAudio), value);

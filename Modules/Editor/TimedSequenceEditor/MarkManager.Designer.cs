@@ -1,38 +1,43 @@
 ﻿namespace VixenModules.Editor.TimedSequenceEditor
 {
-	partial class MarkManager
-	{
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+    partial class MarkManager
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && (components != null)) {
-				components.Dispose();
-			}
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+
+            }
             if (_audio != null)
             {
                 _audio.DetectFrequeniesEnabled = false;
                 _audio.FrequencyDetected -= _audio_FrequencyDetected;
                 _audio = null;
             }
-			base.Dispose(disposing);
-		}
+            if (audioDetectionSettings != null && disposing)
+                audioDetectionSettings.Dispose();
 
-		#region Windows Form Designer generated code
+            base.Dispose(disposing);
+        }
 
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MarkManager));
             this.groupBoxMarkCollections = new System.Windows.Forms.GroupBox();
@@ -74,7 +79,13 @@
             this.buttonCancel = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.groupBoxPlayback = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.btnCreateCollections = new System.Windows.Forms.Button();
+            this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
+            this.radioSelected = new System.Windows.Forms.RadioButton();
+            this.radioAll = new System.Windows.Forms.RadioButton();
+            this.btnAutoDetectionSettings = new System.Windows.Forms.Button();
             this.ChkAutoTapper = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.numHighPass = new System.Windows.Forms.NumericUpDown();
@@ -99,12 +110,6 @@
             this.radioButtonTapper = new System.Windows.Forms.RadioButton();
             this.timerPlayback = new System.Windows.Forms.Timer(this.components);
             this.timerMarkHit = new System.Windows.Forms.Timer(this.components);
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.chkLimitDetection = new System.Windows.Forms.CheckBox();
-            this.comboHighDetection = new System.Windows.Forms.ComboBox();
-            this.comboLowDetection = new System.Windows.Forms.ComboBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
             this.groupBoxMarkCollections.SuspendLayout();
             this.groupBoxSelectedMarkCollection.SuspendLayout();
             this.groupBoxDetails.SuspendLayout();
@@ -113,12 +118,12 @@
             this.groupBoxSelectedMarks.SuspendLayout();
             this.groupBoxMarks.SuspendLayout();
             this.groupBoxPlayback.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numHighPass)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numLowPass)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarPlayBack)).BeginInit();
             this.groupBoxMode.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBoxMarkCollections
@@ -522,7 +527,6 @@
             // groupBoxPlayback
             // 
             this.groupBoxPlayback.Controls.Add(this.groupBox2);
-            this.groupBoxPlayback.Controls.Add(this.label8);
             this.groupBoxPlayback.Controls.Add(this.groupBox1);
             this.groupBoxPlayback.Controls.Add(this.label6);
             this.groupBoxPlayback.Controls.Add(this.trackBarPlayBack);
@@ -545,14 +549,81 @@
             this.groupBoxPlayback.TabStop = false;
             this.groupBoxPlayback.Text = "Playback";
             // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.btnCreateCollections);
+            this.groupBox2.Controls.Add(this.label9);
+            this.groupBox2.Controls.Add(this.label8);
+            this.groupBox2.Controls.Add(this.radioSelected);
+            this.groupBox2.Controls.Add(this.radioAll);
+            this.groupBox2.Controls.Add(this.btnAutoDetectionSettings);
+            this.groupBox2.Controls.Add(this.ChkAutoTapper);
+            this.groupBox2.Location = new System.Drawing.Point(298, 84);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(171, 118);
+            this.groupBox2.TabIndex = 19;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Automatic Frequency Detection";
+            // 
+            // btnCreateCollections
+            // 
+            this.btnCreateCollections.Location = new System.Drawing.Point(90, 95);
+            this.btnCreateCollections.Name = "btnCreateCollections";
+            this.btnCreateCollections.Size = new System.Drawing.Size(75, 23);
+            this.btnCreateCollections.TabIndex = 23;
+            this.btnCreateCollections.Text = "Create";
+            this.btnCreateCollections.UseVisualStyleBackColor = true;
+            this.btnCreateCollections.Click += new System.EventHandler(this.btnCreateCollections_Click);
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(9, 62);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(119, 13);
+            this.label9.TabIndex = 22;
+            this.label9.Text = "Create Collection(s) For:";
+            // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(295, 205);
+            this.label8.Location = new System.Drawing.Point(9, 39);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(19, 13);
             this.label8.TabIndex = 18;
             this.label8.Text = "    ";
+            // 
+            // radioSelected
+            // 
+            this.radioSelected.AutoSize = true;
+            this.radioSelected.Location = new System.Drawing.Point(62, 78);
+            this.radioSelected.Name = "radioSelected";
+            this.radioSelected.Size = new System.Drawing.Size(67, 17);
+            this.radioSelected.TabIndex = 21;
+            this.radioSelected.Text = "Selected";
+            this.radioSelected.UseVisualStyleBackColor = true;
+            // 
+            // radioAll
+            // 
+            this.radioAll.AutoSize = true;
+            this.radioAll.Checked = true;
+            this.radioAll.Location = new System.Drawing.Point(20, 78);
+            this.radioAll.Name = "radioAll";
+            this.radioAll.Size = new System.Drawing.Size(36, 17);
+            this.radioAll.TabIndex = 20;
+            this.radioAll.TabStop = true;
+            this.radioAll.Text = "All";
+            this.radioAll.UseVisualStyleBackColor = true;
+            // 
+            // btnAutoDetectionSettings
+            // 
+            this.btnAutoDetectionSettings.Location = new System.Drawing.Point(90, 15);
+            this.btnAutoDetectionSettings.Name = "btnAutoDetectionSettings";
+            this.btnAutoDetectionSettings.Size = new System.Drawing.Size(75, 23);
+            this.btnAutoDetectionSettings.TabIndex = 18;
+            this.btnAutoDetectionSettings.Text = "Settings";
+            this.btnAutoDetectionSettings.UseVisualStyleBackColor = true;
+            this.btnAutoDetectionSettings.Click += new System.EventHandler(this.btnAutoDetectionSettings_Click);
             // 
             // ChkAutoTapper
             // 
@@ -725,7 +796,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(518, 201);
+            this.label4.Location = new System.Drawing.Point(300, 205);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(73, 13);
             this.label4.TabIndex = 4;
@@ -743,7 +814,7 @@
             // 
             // textBoxCurrentMark
             // 
-            this.textBoxCurrentMark.Location = new System.Drawing.Point(597, 198);
+            this.textBoxCurrentMark.Location = new System.Drawing.Point(379, 202);
             this.textBoxCurrentMark.Name = "textBoxCurrentMark";
             this.textBoxCurrentMark.ReadOnly = true;
             this.textBoxCurrentMark.Size = new System.Drawing.Size(90, 20);
@@ -804,65 +875,6 @@
             this.timerMarkHit.Interval = 40;
             this.timerMarkHit.Tick += new System.EventHandler(this.timerMarkHit_Tick);
             // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.label10);
-            this.groupBox2.Controls.Add(this.label9);
-            this.groupBox2.Controls.Add(this.comboLowDetection);
-            this.groupBox2.Controls.Add(this.comboHighDetection);
-            this.groupBox2.Controls.Add(this.chkLimitDetection);
-            this.groupBox2.Controls.Add(this.ChkAutoTapper);
-            this.groupBox2.Location = new System.Drawing.Point(298, 84);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(171, 118);
-            this.groupBox2.TabIndex = 19;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Automatic Detection";
-            // 
-            // chkLimitDetection
-            // 
-            this.chkLimitDetection.AutoSize = true;
-            this.chkLimitDetection.Location = new System.Drawing.Point(10, 42);
-            this.chkLimitDetection.Name = "chkLimitDetection";
-            this.chkLimitDetection.Size = new System.Drawing.Size(96, 17);
-            this.chkLimitDetection.TabIndex = 18;
-            this.chkLimitDetection.Text = "Limit Detection";
-            this.chkLimitDetection.UseVisualStyleBackColor = true;
-            // 
-            // comboHighDetection
-            // 
-            this.comboHighDetection.FormattingEnabled = true;
-            this.comboHighDetection.Location = new System.Drawing.Point(47, 61);
-            this.comboHighDetection.Name = "comboHighDetection";
-            this.comboHighDetection.Size = new System.Drawing.Size(62, 21);
-            this.comboHighDetection.TabIndex = 19;
-            // 
-            // comboLowDetection
-            // 
-            this.comboLowDetection.FormattingEnabled = true;
-            this.comboLowDetection.Location = new System.Drawing.Point(47, 84);
-            this.comboLowDetection.Name = "comboLowDetection";
-            this.comboLowDetection.Size = new System.Drawing.Size(62, 21);
-            this.comboLowDetection.TabIndex = 20;
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(12, 66);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(29, 13);
-            this.label9.TabIndex = 21;
-            this.label9.Text = "High";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(12, 87);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(27, 13);
-            this.label10.TabIndex = 22;
-            this.label10.Text = "Low";
-            // 
             // MarkManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -900,6 +912,8 @@
             this.groupBoxMarks.PerformLayout();
             this.groupBoxPlayback.ResumeLayout(false);
             this.groupBoxPlayback.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numHighPass)).EndInit();
@@ -907,47 +921,45 @@
             ((System.ComponentModel.ISupportInitialize)(this.trackBarPlayBack)).EndInit();
             this.groupBoxMode.ResumeLayout(false);
             this.groupBoxMode.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
-		}
+        }
 
-		#endregion
+        #endregion
 
-		private System.Windows.Forms.GroupBox groupBoxMarkCollections;
-		private System.Windows.Forms.Button buttonRemoveCollection;
-		private System.Windows.Forms.Button buttonAddCollection;
-		private System.Windows.Forms.ListView listViewMarkCollections;
-		private System.Windows.Forms.ColumnHeader columnHeader1;
-		private System.Windows.Forms.ColumnHeader columnHeader2;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.GroupBox groupBoxSelectedMarkCollection;
-		private System.Windows.Forms.GroupBox groupBoxMarks;
-		private System.Windows.Forms.Button buttonSelectAllMarks;
+        private System.Windows.Forms.GroupBox groupBoxMarkCollections;
+        private System.Windows.Forms.Button buttonRemoveCollection;
+        private System.Windows.Forms.Button buttonAddCollection;
+        private System.Windows.Forms.ListView listViewMarkCollections;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.Button buttonOK;
+        private System.Windows.Forms.GroupBox groupBoxSelectedMarkCollection;
+        private System.Windows.Forms.GroupBox groupBoxMarks;
+        private System.Windows.Forms.Button buttonSelectAllMarks;
         private System.Windows.Forms.GroupBox groupBoxOperations;
-		private System.Windows.Forms.Button buttonAddOrUpdateMark;
-		private System.Windows.Forms.TextBox textBoxTime;
-		private System.Windows.Forms.Button buttonOffsetMarks;
-		private System.Windows.Forms.Button buttonGenerateSubmarks;
-		private System.Windows.Forms.Button buttonEvenlySpaceMarks;
-		private System.Windows.Forms.ColumnHeader columnHeader3;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.ListView listViewMarks;
-		private System.Windows.Forms.ColumnHeader Times;
-		private System.Windows.Forms.GroupBox groupBoxDetails;
-		private System.Windows.Forms.CheckBox checkBoxEnabled;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Panel panelColor;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.NumericUpDown numericUpDownWeight;
-		private System.Windows.Forms.TextBox textBoxCollectionName;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Button buttonPasteEffectsToMarks;
-		private System.Windows.Forms.Button buttonCopyAndOffsetMarks;
-		private System.Windows.Forms.Button buttonGenerateBeatMarks;
-		private System.Windows.Forms.Button generateGrid;
-		private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Button buttonAddOrUpdateMark;
+        private System.Windows.Forms.TextBox textBoxTime;
+        private System.Windows.Forms.Button buttonOffsetMarks;
+        private System.Windows.Forms.Button buttonGenerateSubmarks;
+        private System.Windows.Forms.Button buttonEvenlySpaceMarks;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.Button buttonCancel;
+        private System.Windows.Forms.ListView listViewMarks;
+        private System.Windows.Forms.ColumnHeader Times;
+        private System.Windows.Forms.GroupBox groupBoxDetails;
+        private System.Windows.Forms.CheckBox checkBoxEnabled;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Panel panelColor;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.NumericUpDown numericUpDownWeight;
+        private System.Windows.Forms.TextBox textBoxCollectionName;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button buttonPasteEffectsToMarks;
+        private System.Windows.Forms.Button buttonCopyAndOffsetMarks;
+        private System.Windows.Forms.Button buttonGenerateBeatMarks;
+        private System.Windows.Forms.Button generateGrid;
+        private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.GroupBox groupBoxPlayback;
         private System.Windows.Forms.GroupBox groupBoxMode;
         private System.Windows.Forms.RadioButton radioButtonTapper;
@@ -971,7 +983,7 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox textBoxTimeIncrement;
         private System.Windows.Forms.Label labelTapperInstructions;
-		private System.Windows.Forms.TrackBar trackBarPlayBack;
+        private System.Windows.Forms.TrackBar trackBarPlayBack;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.NumericUpDown numHighPass;
         private System.Windows.Forms.NumericUpDown numLowPass;
@@ -980,11 +992,11 @@
         private System.Windows.Forms.CheckBox ChkAutoTapper;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Button btnAutoDetectionSettings;
+        private System.Windows.Forms.Button btnCreateCollections;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.ComboBox comboLowDetection;
-        private System.Windows.Forms.ComboBox comboHighDetection;
-        private System.Windows.Forms.CheckBox chkLimitDetection;
+        private System.Windows.Forms.RadioButton radioSelected;
+        private System.Windows.Forms.RadioButton radioAll;
 
-	}
+    }
 }

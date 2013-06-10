@@ -60,7 +60,7 @@ namespace VixenModules.Media.Audio
             {
                 if (detectionTimer != null)
                     detectionTimer.Stop();
-                detectionTimer = new Timer() { Interval = 50 };
+                detectionTimer = new Timer() { Interval = 5 };
                 detectionTimer.Elapsed += detectionTimer_Elapsed;
                 detectionTimer.Enabled = true;
             }
@@ -68,7 +68,7 @@ namespace VixenModules.Media.Audio
             {
                 if (detectionTimer != null)
                     detectionTimer.Stop();
-                
+
                 detectionTimer = null;
             }
         }
@@ -85,63 +85,71 @@ namespace VixenModules.Media.Audio
         }
         void detectionTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (_channel != null && _channel.Channel != null)
+            try
             {
-                FMOD.RESULT result;
-                float[] spectrum = new float[SPECTRUMSIZE];
-                float dominanthz = 0;
-                float max = 0;
-                int dominantnote = 0;
-                int count = 0;
-                int bin = 0;
-
-                var position = TimeSpan.FromMilliseconds(Position);
-                result = _channel.Channel.getSpectrum(spectrum, SPECTRUMSIZE, 0, FMOD.DSP_FFT_WINDOW.TRIANGLE);
 
 
-                for (count = 0; count < SPECTRUMSIZE; count++)
+                if (_channel != null && _channel.Channel != null)
                 {
-                    if (spectrum[count] > 0.01f && spectrum[count] > max)
-                    {
-                        max = spectrum[count];
-                        bin = count;
-                    }
-                }
-                dominanthz = (float)bin * BINSIZE;       /* dominant frequency min */
+                    FMOD.RESULT result;
+                    float[] spectrum = new float[SPECTRUMSIZE];
+                    float dominanthz = 0;
+                    float max = 0;
+                    int dominantnote = 0;
+                    int count = 0;
+                    int bin = 0;
 
-                dominantnote = 0;
-                for (count = 0; count < 120; count++)
-                {
-                    if (dominanthz >= NOTE_FREQ[count] && dominanthz < NOTE_FREQ[count + 1])
+                    var position = TimeSpan.FromMilliseconds(Position);
+                    result = _channel.Channel.getSpectrum(spectrum, SPECTRUMSIZE, 0, FMOD.DSP_FFT_WINDOW.TRIANGLE);
+
+
+                    for (count = 0; count < SPECTRUMSIZE; count++)
                     {
-                        // which is it closer to.  This note or the next note
-                        if (Math.Abs(dominanthz - NOTE_FREQ[count]) < Math.Abs(dominanthz - NOTE_FREQ[count + 1]))
+                        if (spectrum[count] > 0.01f && spectrum[count] > max)
                         {
-                            dominantnote = count;
+                            max = spectrum[count];
+                            bin = count;
                         }
-                        else
-                        {
-                            dominantnote = count + 1;
-                        }
-                        break;
                     }
-                }
+                    dominanthz = (float)bin * BINSIZE;       /* dominant frequency min */
+
+                    dominantnote = 0;
+                    for (count = 0; count < 120; count++)
+                    {
+                        if (dominanthz >= NOTE_FREQ[count] && dominanthz < NOTE_FREQ[count + 1])
+                        {
+                            // which is it closer to.  This note or the next note
+                            if (Math.Abs(dominanthz - NOTE_FREQ[count]) < Math.Abs(dominanthz - NOTE_FREQ[count + 1]))
+                            {
+                                dominantnote = count;
+                            }
+                            else
+                            {
+                                dominantnote = count + 1;
+                            }
+                            break;
+                        }
+                    }
 #if DEBUG
-                Console.WriteLine("Detected rate : " + dominanthz + " -> " + (((float)bin + 0.99f) * BINSIZE) + " Detected musical note : " + NOTE[dominantnote] + " (" + NOTE_FREQ[dominantnote] + ")");
+                    Console.WriteLine("Detected rate : " + dominanthz + " -> " + (((float)bin + 0.99f) * BINSIZE) + " Detected musical note : " + NOTE[dominantnote] + " (" + NOTE_FREQ[dominantnote] + ")");
 #endif
-                OnFrequencyDetected(new FrequencyEventArgs()
-                {
-                    Frequency = NOTE_FREQ[dominantnote],
-                    Note = NOTE[dominantnote],
-                    Time = position
-                });
+                    OnFrequencyDetected(new FrequencyEventArgs()
+                    {
+                        Frequency = NOTE_FREQ[dominantnote],
+                        Note = NOTE[dominantnote],
+                        Index = dominantnote,
+                        Time = position
+                    });
+                }
             }
+            catch (AccessViolationException) { }
         }
     }
     public class FrequencyEventArgs : EventArgs
     {
         public string Note { get; set; }
         public float Frequency { get; set; }
+        public int Index { get; set; }
         public TimeSpan Time { get; set; }
     }
 }

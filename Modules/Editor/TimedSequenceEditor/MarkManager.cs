@@ -10,6 +10,7 @@ using VixenModules.Sequence.Timed;
 using Vixen.Execution;
 using Vixen.Module.Timing;
 using VixenModules.Media.Audio;
+using System.Collections.Concurrent;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -45,7 +46,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
             PopulateFormWithMarkCollection(null, true);
             updateTimingSpeedTextbox();
             trackBarPlayBack.SetRange(0, (int)_timedSequenceEditorForm.Sequence.Length.TotalMilliseconds);
-
         }
 
 
@@ -732,6 +732,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
         private void buttonPlay_Click(object sender, EventArgs e)
         {
+            detectedActions.Clear();
             sequencePlay(TimeSpan.FromMilliseconds(trackBarPlayBack.Value));
             _sequencePlaySelected = true;
             updateControlsforPlaying();
@@ -1033,30 +1034,101 @@ namespace VixenModules.Editor.TimedSequenceEditor
             var e = args as FrequencyEventArgs;
             if (args != null)
             {
-                this.label8.Text = string.Format("Note {0} Detected at {1}", e.Note, e.Time);
+                this.label8.Text = string.Format("Note {0} at {1}", e.Note, e.Time);
             }
         }
+
         void _audio_FrequencyDetected(object sender, FrequencyEventArgs e)
         {
+            if (!detectedActions.ContainsKey(e.Index))
+                detectedActions.TryAdd(e.Index, new ConcurrentBag<TimeSpan>() { e.Time });
+            else
+            {
+                ConcurrentBag<TimeSpan> spans = new ConcurrentBag<TimeSpan>();
+
+                detectedActions.TryGetValue(e.Index, out spans);
+                ConcurrentBag<TimeSpan> spans2 = spans;
+
+                spans.Add(e.Time);
+                detectedActions.TryUpdate(e.Index, spans, spans2);
+            }
 
             if (this.InvokeRequired)
                 this.Invoke(new Vixen.Delegates.GenericValue(_audio_FrequencyDetectedSetText), e);
             else
                 _audio_FrequencyDetectedSetText(e);
         }
-        void _fillDetectionCombos()
+
+        ConcurrentDictionary<int, ConcurrentBag<TimeSpan>> detectedActions = new ConcurrentDictionary<int, ConcurrentBag<TimeSpan>>();
+
+        List<int> detectionIndexes = new List<int>();
+        AutomaticMusicDetection audioDetectionSettings = null;
+        Properties.Settings settings = new Properties.Settings();
+
+        private void btnAutoDetectionSettings_Click(object sender, EventArgs e)
         {
-            var media = _timedSequenceEditorForm.Sequence.GetAllMedia().First();
-            // IMediaModuleInstance media = _sequence.GetAllMedia().First();
-            _audio = media as Audio;
-            comboHighDetection.Items.Clear();
-            comboLowDetection.Items.Clear();
-            if (_audio.DetectionNoteFreq != null)
+            if (_audio == null)
             {
-                for (int i = 0; i < _audio.DetectionNotes.Length; i++)
+                var media = _timedSequenceEditorForm.Sequence.GetAllMedia().First();
+                // IMediaModuleInstance media = _sequence.GetAllMedia().First();
+                _audio = media as Audio;
+            }
+
+            if (audioDetectionSettings == null)
+                audioDetectionSettings = new AutomaticMusicDetection(_audio);
+            audioDetectionSettings.Indexes = detectionIndexes;
+
+            var result = audioDetectionSettings.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                detectionIndexes = audioDetectionSettings.Indexes;
+
+            }
+        }
+
+        private void btnCreateCollections_Click(object sender, EventArgs e)
+        {
+            List<int> indexes = new List<int>();
+            if (radioAll.Checked)
+            {
+                for (int i = 0; i < 120; i++)
                 {
-                    comboLowDetection.Items.Add(_audio.DetectionNotes[i]);
-                    comboHighDetection.Items.Add(_audio.DetectionNotes[i]);
+                    indexes.Add(i);
+                }
+            }
+            else
+            {
+                indexes = detectionIndexes;
+            }
+            // indexes.AsParallel().ForAll(i => GenerateCollection(i));
+            indexes.ForEach(i => GenerateCollection(i));
+            PopulateMarkCollectionsList();
+        }
+        private void GenerateCollection(int index)
+        {
+            ConcurrentBag<TimeSpan> values = new ConcurrentBag<TimeSpan>();
+            if (detectedActions.TryGetValue(index, out values))
+            {
+                MarkCollection collection = new MarkCollection();
+                collection.MarkColor = Color.Blue;
+                collection.Name = string.Format("Note {0} Freq. {1}", _audio.DetectionNotes[index], _audio.DetectionNoteFreq[index]);
+              
+                TimeSpan lastValue = TimeSpan.FromMilliseconds(0);
+               
+                values.OrderBy(a => a).ToList().ForEach(v =>
+                {
+                    var xtime = v - TimeSpan.FromMilliseconds(settings.MusicAccuracy);
+                    if (xtime > lastValue)
+                    {
+                        collection.Marks.Add(v);
+                        lastValue = v;
+                    }
+                });
+
+                lock (MarkCollections)
+                {
+                    MarkCollections.RemoveAll(r => r.Name == collection.Name);
+                    MarkCollections.Add(collection);
                 }
             }
         }
