@@ -15,7 +15,22 @@ namespace VixenModules.Media.Audio
     {
         private FmodInstance _audioSystem;
         private AudioData _data;
-
+        public string[] DetectionNotes
+        {
+            get
+            {
+                if (_audioSystem == null) return null;
+                return _audioSystem.NOTE;
+            }
+        }
+        public float[] DetectionNoteFreq
+        {
+            get
+            {
+                if (_audioSystem == null) return null;
+                return _audioSystem.NOTE_FREQ;
+            }
+        }
         public bool MediaLoaded
         {
             get
@@ -23,7 +38,19 @@ namespace VixenModules.Media.Audio
                 return _audioSystem != null;
             }
         }
-
+        public bool DetectFrequeniesEnabled
+        {
+            get
+            {
+                if (_audioSystem == null) return false;
+                else return _audioSystem.DetectFrequeniesEnabled;
+            }
+            set
+            {
+                if (_audioSystem != null)
+                    _audioSystem.DetectFrequeniesEnabled = value;
+            }
+        }
         public bool LowPassFilterEnabled
         {
             get
@@ -198,6 +225,7 @@ namespace VixenModules.Media.Audio
             if (_audioSystem != null)
             {
                 _audioSystem.Stop();
+                _audioSystem.FrequencyDetected -= _audioSystem_FrequencyDetected;
                 _audioSystem.Dispose();
                 _audioSystem = null;
             }
@@ -230,6 +258,7 @@ namespace VixenModules.Media.Audio
             if (File.Exists(MediaFilePath))
             {
                 _audioSystem = new FmodInstance(MediaFilePath);
+                _audioSystem.FrequencyDetected += _audioSystem_FrequencyDetected;
                 _audioSystem.SetStartTime(startTime);
             }
             else
@@ -237,6 +266,16 @@ namespace VixenModules.Media.Audio
                 throw new FileNotFoundException("Media file doe not exist: " + MediaFilePath);
             }
 
+        }
+        public delegate void FrequencyDetectedHandler(object sender, FrequencyEventArgs e);
+        public event FrequencyDetectedHandler FrequencyDetected;
+
+        void _audioSystem_FrequencyDetected(object sender, FrequencyEventArgs e)
+        {
+            if (FrequencyDetected != null)
+            {
+                FrequencyDetected(this, e);
+            }
         }
 
         public TimeSpan Position
@@ -276,5 +315,5 @@ namespace VixenModules.Media.Audio
     }
 
 
-  
+
 }

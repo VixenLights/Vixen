@@ -16,6 +16,12 @@
 			if (disposing && (components != null)) {
 				components.Dispose();
 			}
+            if (_audio != null)
+            {
+                _audio.DetectFrequeniesEnabled = false;
+                _audio.FrequencyDetected -= _audio_FrequencyDetected;
+                _audio = null;
+            }
 			base.Dispose(disposing);
 		}
 
@@ -68,6 +74,8 @@
             this.buttonCancel = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.groupBoxPlayback = new System.Windows.Forms.GroupBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.ChkAutoTapper = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.numHighPass = new System.Windows.Forms.NumericUpDown();
             this.numLowPass = new System.Windows.Forms.NumericUpDown();
@@ -91,6 +99,12 @@
             this.radioButtonTapper = new System.Windows.Forms.RadioButton();
             this.timerPlayback = new System.Windows.Forms.Timer(this.components);
             this.timerMarkHit = new System.Windows.Forms.Timer(this.components);
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.chkLimitDetection = new System.Windows.Forms.CheckBox();
+            this.comboHighDetection = new System.Windows.Forms.ComboBox();
+            this.comboLowDetection = new System.Windows.Forms.ComboBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
             this.groupBoxMarkCollections.SuspendLayout();
             this.groupBoxSelectedMarkCollection.SuspendLayout();
             this.groupBoxDetails.SuspendLayout();
@@ -104,6 +118,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numLowPass)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarPlayBack)).BeginInit();
             this.groupBoxMode.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBoxMarkCollections
@@ -506,6 +521,8 @@
             // 
             // groupBoxPlayback
             // 
+            this.groupBoxPlayback.Controls.Add(this.groupBox2);
+            this.groupBoxPlayback.Controls.Add(this.label8);
             this.groupBoxPlayback.Controls.Add(this.groupBox1);
             this.groupBoxPlayback.Controls.Add(this.label6);
             this.groupBoxPlayback.Controls.Add(this.trackBarPlayBack);
@@ -528,15 +545,35 @@
             this.groupBoxPlayback.TabStop = false;
             this.groupBoxPlayback.Text = "Playback";
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(295, 205);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(19, 13);
+            this.label8.TabIndex = 18;
+            this.label8.Text = "    ";
+            // 
+            // ChkAutoTapper
+            // 
+            this.ChkAutoTapper.AutoSize = true;
+            this.ChkAutoTapper.Location = new System.Drawing.Point(10, 19);
+            this.ChkAutoTapper.Name = "ChkAutoTapper";
+            this.ChkAutoTapper.Size = new System.Drawing.Size(65, 17);
+            this.ChkAutoTapper.TabIndex = 17;
+            this.ChkAutoTapper.Text = "Enabled";
+            this.ChkAutoTapper.UseVisualStyleBackColor = true;
+            this.ChkAutoTapper.CheckedChanged += new System.EventHandler(this.ChkAutoTapper_CheckedChanged);
+            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.numHighPass);
             this.groupBox1.Controls.Add(this.numLowPass);
             this.groupBox1.Controls.Add(this.chkHighPass);
             this.groupBox1.Controls.Add(this.chkLowPass);
-            this.groupBox1.Location = new System.Drawing.Point(457, 97);
+            this.groupBox1.Location = new System.Drawing.Point(475, 84);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(246, 75);
+            this.groupBox1.Size = new System.Drawing.Size(229, 75);
             this.groupBox1.TabIndex = 16;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Audio Filter";
@@ -633,7 +670,7 @@
             // labelTapperInstructions
             // 
             this.labelTapperInstructions.AutoSize = true;
-            this.labelTapperInstructions.Location = new System.Drawing.Point(241, 213);
+            this.labelTapperInstructions.Location = new System.Drawing.Point(19, 201);
             this.labelTapperInstructions.Name = "labelTapperInstructions";
             this.labelTapperInstructions.Size = new System.Drawing.Size(248, 13);
             this.labelTapperInstructions.TabIndex = 14;
@@ -669,7 +706,7 @@
             // panelMarkView
             // 
             this.panelMarkView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelMarkView.Location = new System.Drawing.Point(286, 131);
+            this.panelMarkView.Location = new System.Drawing.Point(110, 116);
             this.panelMarkView.Name = "panelMarkView";
             this.panelMarkView.Size = new System.Drawing.Size(147, 73);
             this.panelMarkView.TabIndex = 8;
@@ -726,7 +763,7 @@
             // 
             this.groupBoxMode.Controls.Add(this.radioButtonPlayback);
             this.groupBoxMode.Controls.Add(this.radioButtonTapper);
-            this.groupBoxMode.Location = new System.Drawing.Point(28, 136);
+            this.groupBoxMode.Location = new System.Drawing.Point(16, 107);
             this.groupBoxMode.Name = "groupBoxMode";
             this.groupBoxMode.Size = new System.Drawing.Size(88, 68);
             this.groupBoxMode.TabIndex = 0;
@@ -766,6 +803,65 @@
             // 
             this.timerMarkHit.Interval = 40;
             this.timerMarkHit.Tick += new System.EventHandler(this.timerMarkHit_Tick);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.label10);
+            this.groupBox2.Controls.Add(this.label9);
+            this.groupBox2.Controls.Add(this.comboLowDetection);
+            this.groupBox2.Controls.Add(this.comboHighDetection);
+            this.groupBox2.Controls.Add(this.chkLimitDetection);
+            this.groupBox2.Controls.Add(this.ChkAutoTapper);
+            this.groupBox2.Location = new System.Drawing.Point(298, 84);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(171, 118);
+            this.groupBox2.TabIndex = 19;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Automatic Detection";
+            // 
+            // chkLimitDetection
+            // 
+            this.chkLimitDetection.AutoSize = true;
+            this.chkLimitDetection.Location = new System.Drawing.Point(10, 42);
+            this.chkLimitDetection.Name = "chkLimitDetection";
+            this.chkLimitDetection.Size = new System.Drawing.Size(96, 17);
+            this.chkLimitDetection.TabIndex = 18;
+            this.chkLimitDetection.Text = "Limit Detection";
+            this.chkLimitDetection.UseVisualStyleBackColor = true;
+            // 
+            // comboHighDetection
+            // 
+            this.comboHighDetection.FormattingEnabled = true;
+            this.comboHighDetection.Location = new System.Drawing.Point(47, 61);
+            this.comboHighDetection.Name = "comboHighDetection";
+            this.comboHighDetection.Size = new System.Drawing.Size(62, 21);
+            this.comboHighDetection.TabIndex = 19;
+            // 
+            // comboLowDetection
+            // 
+            this.comboLowDetection.FormattingEnabled = true;
+            this.comboLowDetection.Location = new System.Drawing.Point(47, 84);
+            this.comboLowDetection.Name = "comboLowDetection";
+            this.comboLowDetection.Size = new System.Drawing.Size(62, 21);
+            this.comboLowDetection.TabIndex = 20;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(12, 66);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(29, 13);
+            this.label9.TabIndex = 21;
+            this.label9.Text = "High";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(12, 87);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(27, 13);
+            this.label10.TabIndex = 22;
+            this.label10.Text = "Low";
             // 
             // MarkManager
             // 
@@ -811,6 +907,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.trackBarPlayBack)).EndInit();
             this.groupBoxMode.ResumeLayout(false);
             this.groupBoxMode.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
 		}
@@ -879,6 +977,14 @@
         private System.Windows.Forms.NumericUpDown numLowPass;
         private System.Windows.Forms.CheckBox chkHighPass;
         private System.Windows.Forms.CheckBox chkLowPass;
+        private System.Windows.Forms.CheckBox ChkAutoTapper;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ComboBox comboLowDetection;
+        private System.Windows.Forms.ComboBox comboHighDetection;
+        private System.Windows.Forms.CheckBox chkLimitDetection;
 
 	}
 }

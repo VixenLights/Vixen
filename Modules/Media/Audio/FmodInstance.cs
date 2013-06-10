@@ -8,13 +8,13 @@ using FMOD;
 
 namespace VixenModules.Media.Audio
 {
-    internal class FmodInstance : IDisposable
+    internal partial class FmodInstance : IDisposable
     {
         private fmod _audioSystem;
         private FMOD.DSP dsplowpass = null;
         private FMOD.DSP dsphighpass = null;
         private FMOD.DSPConnection dspconnectiontemp = null;
-
+      
         private SoundChannel _channel;
         private TimeSpan _startTime;
         private uint lengthPcmBytes;
@@ -249,6 +249,7 @@ namespace VixenModules.Media.Audio
                 _audioSystem.Play(_channel, true);
                 _channel.Position = (uint)_startTime.TotalMilliseconds;
                 _channel.Paused = false;
+                IsFrequencyDetectionEnabled();
             }
         }
 

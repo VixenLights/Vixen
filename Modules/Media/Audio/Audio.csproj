@@ -52,6 +52,7 @@
     <Compile Include="AudioDescriptor.cs" />
     <Compile Include="Audio.cs" />
     <Compile Include="FmodInstance.cs" />
+    <Compile Include="FmodInstance_AudioDetection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
