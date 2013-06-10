@@ -796,7 +796,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(300, 205);
+            this.label4.Location = new System.Drawing.Point(507, 184);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(73, 13);
             this.label4.TabIndex = 4;
@@ -814,7 +814,7 @@
             // 
             // textBoxCurrentMark
             // 
-            this.textBoxCurrentMark.Location = new System.Drawing.Point(379, 202);
+            this.textBoxCurrentMark.Location = new System.Drawing.Point(586, 181);
             this.textBoxCurrentMark.Name = "textBoxCurrentMark";
             this.textBoxCurrentMark.ReadOnly = true;
             this.textBoxCurrentMark.Size = new System.Drawing.Size(90, 20);
