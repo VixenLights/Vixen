@@ -972,8 +972,6 @@ namespace VixenModules.Effect.Nutcracker
 
         #endregion // Meteors
 
-
-        // FIREWORKS IS BROKEN
         #region Fireworks
 
         //private RgbFireworks[] fireworkBursts = new RgbFireworks[20000];
@@ -995,18 +993,16 @@ namespace VixenModules.Effect.Nutcracker
         public void RenderFireworks(int Number_Explosions, int Count, float Velocity, int Fade)
         {
             int idxFlakes = 0;
-            int i = 0, x, y, mod100;
+            int i = 0;
+            int mod100;
             int x25, x75, y25, y75, stateChunk, denom;
             const int maxFlakes = 1000;
-            //float velocity = 3.5;
             int startX;
             int startY; //, ColorIdx;
             float v;
             HSV hsv = new HSV();
-            Color color, rgbcolor;
+            Color rgbcolor;
             int colorcnt = GetColorCount();
-
-            //Console.WriteLine(Number_Explosions + ":" + Count + ":" + Velocity + ":" + Fade);
 
             InitFireworksBuffer();
 
@@ -1022,13 +1018,7 @@ namespace VixenModules.Effect.Nutcracker
             stateChunk = (int)State / denom;
             if (stateChunk < 1) stateChunk = 1;
 
-
-            //mod100 = (int)(State % ((101 - Number_Explosions) * 10));
             mod100 = (int)(State % (101 - Number_Explosions) * 10);
-            //Console.WriteLine("s:" + State + " ne:" + ((101 - Number_Explosions) * 10));
-            //Console.WriteLine("mod100:" + mod100);
-            //        mod100 = (int)(state/stateChunk);
-            //        mod100 = mod100%10;
             if (mod100 == 0)
             {
 
@@ -1036,8 +1026,6 @@ namespace VixenModules.Effect.Nutcracker
                 x75 = (int)(BufferWi * 0.75);
                 y25 = (int)(BufferHt * 0.25);
                 y75 = (int)(BufferHt * 0.75);
-                //startX = (int)(BufferWi / 2);
-                //startY = (int)(BufferHt / 2);
                 startX = x25 + (rand() % (x75 - x25));
                 startY = y25 + (rand() % (y75 - y25));
                 // turn off all bursts
@@ -1094,25 +1082,6 @@ namespace VixenModules.Effect.Nutcracker
                     }
                 }
             }
-            //// Clear all Pixels
-            //color = Color.Black;
-            //hsv = HSV.ColorToHSV(color);
-            //for (y = 0;
-            //        y < BufferHt;
-            //        y++)
-            //{
-            //    for (x = 0; x < BufferWi; x++)
-            //    {
-            //        SetPixel(x, y, hsv);
-            //    }
-            //}
-
-            // Draw bursts with fixed color
-            //    if(state%300<=300) rgbcolor = wxColour(0,255,0);
-            //    if(state%300<=250) rgbcolor = wxColour(255,0,255);
-            //    if(state%300<=150) rgbcolor = wxColour(255,255,0);
-            //    if(state%300<=100) rgbcolor = wxColour(255,0,0);
-            //    if(state%300<=50) rgbcolor = wxColour(255,255,255);
 
             if (mod100 == 0) rgbcolor = Color.FromArgb(0, 255, 255);
             else if (mod100 == 1) rgbcolor = Color.FromArgb(255, 0, 0);
@@ -1122,13 +1091,6 @@ namespace VixenModules.Effect.Nutcracker
             else if (mod100 == 5) rgbcolor = Color.FromArgb(0, 255, 0);
             else rgbcolor = Color.White;
             hsv = HSV.ColorToHSV(rgbcolor);
-
-
-            //ColorIdx=rand() % colorcnt; // Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
-            //ColorIdx=0;
-            //       palette.GetHSV(ColorIdx, hsv); // Now go and get the hsv value for this ColorIdx
-
-
 
             for (i = 0; i < 1000; i++)
             {
@@ -1145,32 +1107,29 @@ namespace VixenModules.Effect.Nutcracker
 
         public class RgbFireworks
         {
-            //static const float velocity = 2.5;
-            const int maxCycle = 4096;
-            const int maxNewBurstFlakes = 10;
-            public float _x;
-            public float _y;
-            public float _dx;
-            public float _dy;
-            public float vel;
-            public float angle;
-            public bool _bActive;
-            public int _cycles;
-            private Random random = new Random();
+	        public const int maxCycle = 4096;
+	        public const int maxNewBurstFlakes = 10;
+	        public float _x;
+	        public float _y;
+	        public float _dx;
+	        public float _dy;
+	        public float vel;
+	        public float angle;
+	        public bool _bActive;
+	        public int _cycles;
+            static private Random random = new Random();
 
-            public void Reset(int x, int y, bool active, float velocity)
-            {
-                _x = x;
-                _y = y;
+	        public void Reset(int x, int y, bool active, float velocity)
+	        {
+		        _x = x;
+		        _y = y;
                 vel = (random.Next() - int.MaxValue / 2) * velocity / (int.MaxValue / 2);
-                angle = (float)(2.0 * Math.PI * (double)random.Next() / (double)int.MaxValue);
-                _dx = (float)(vel * Math.Cos(angle));
-                _dy = (float)(vel * Math.Sin(angle));
-                _bActive = active;
-                _cycles = 0;
-
-                //Console.WriteLine("vel:" + vel + " angle:" + angle + " _dx:" + _dx + " _dy:" + _dy);
-            }
+                angle = (float)(2 * Math.PI * random.Next() / int.MaxValue);
+		        _dx = (float)(vel * Math.Cos(angle));
+		        _dy = (float)(vel * Math.Sin(angle));
+		        _bActive = active;
+		        _cycles = 0;
+	        }
         }
 
         #endregion
@@ -1798,9 +1757,6 @@ namespace VixenModules.Effect.Nutcracker
 
         #region Spirograph
 
-
-        #endregion // Spirograph
-
         public void RenderSpirograph(int int_R, int int_r, int int_d, bool Animate)
         {
             int i, x, y, k, xc, yc, ColorIdx;
@@ -1861,6 +1817,7 @@ namespace VixenModules.Effect.Nutcracker
             }
         }
 
+        #endregion // Spirograph
 
         #endregion // Nutcracker Effects
 
