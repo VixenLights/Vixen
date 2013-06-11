@@ -126,6 +126,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
             LoadText();
             LoadPicture();
             LoadSpirograph();
+            LoadTree();
             LoadColors();
 
             timerRender.Start();
@@ -167,7 +168,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
         {
             foreach (TabPage tab in tabEffectProperties.TabPages)
             {
-                if (tab.Name == tabName)
+                if (tab.Text == tabName)
                 {
                     tabEffectProperties.SelectedTab = tab;
                     break;
@@ -184,6 +185,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
         {
             //if (loading) return;
             effect.SetNextState(true);
+            
             SetCurrentEffect(comboBoxEffect.SelectedItem.ToString());
         }
 
@@ -741,6 +743,21 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
         }
 
         #endregion
+
+        #region Tree
+
+        private void LoadTree()
+        {
+            trackTreeBranches.Value = Data.Tree_Branches;
+        }
+
+        private void trackTreeBranches_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender, Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+        {
+            if (loading) return;
+            Data.Tree_Branches = trackTreeBranches.Value;
+        }
+
+        #endregion //Tree
 
     }
 }

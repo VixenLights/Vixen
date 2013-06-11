@@ -166,6 +166,10 @@ namespace VixenModules.Effect.Nutcracker
         [DataMember]
         public bool Spirograph_Animate = false;
 
+        // Tree
+        [DataMember]
+        public int Tree_Branches = 5;
+
         [OnDeserialized]
         void OnDeserialized(StreamingContext context)
         {
@@ -207,6 +211,9 @@ namespace VixenModules.Effect.Nutcracker
                 Spirograph_RInner = 10;
             if (Spirograph_Distance < 1)
                 Spirograph_Distance = 30;
+
+            if (Tree_Branches == 0)
+                Tree_Branches = 5;
         }
     }
 }

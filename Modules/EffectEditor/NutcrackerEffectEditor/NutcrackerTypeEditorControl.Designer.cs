@@ -157,6 +157,9 @@
             this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.fontDialog = new System.Windows.Forms.FontDialog();
             this.fileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.TreePage = new System.Windows.Forms.TabPage();
+            this.label43 = new System.Windows.Forms.Label();
+            this.trackTreeBranches = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabEffectProperties.SuspendLayout();
@@ -176,6 +179,7 @@
             this.Fire.SuspendLayout();
             this.Garlands.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).BeginInit();
+            this.TreePage.SuspendLayout();
             this.SuspendLayout();
             // 
             // timerRender
@@ -387,6 +391,7 @@
             // tabEffectProperties
             // 
             this.tabEffectProperties.Appearance = System.Windows.Forms.TabAppearance.Buttons;
+            this.tabEffectProperties.Controls.Add(this.TreePage);
             this.tabEffectProperties.Controls.Add(this.Spirograph);
             this.tabEffectProperties.Controls.Add(this.Spirals);
             this.tabEffectProperties.Controls.Add(this.Text);
@@ -523,7 +528,7 @@
             this.Spirals.Name = "Spirals";
             this.Spirals.Size = new System.Drawing.Size(266, 149);
             this.Spirals.TabIndex = 10;
-            this.Spirals.Text = "tabPage1";
+            this.Spirals.Text = "Spirals";
             this.Spirals.UseVisualStyleBackColor = true;
             // 
             // checkSpirals3D
@@ -646,7 +651,7 @@
             this.Text.Name = "Text";
             this.Text.Size = new System.Drawing.Size(266, 149);
             this.Text.TabIndex = 12;
-            this.Text.Text = "tabPage1";
+            this.Text.Text = "Text";
             this.Text.UseVisualStyleBackColor = true;
             // 
             // comboBoxTextDirection
@@ -758,7 +763,7 @@
             this.Picture.Name = "Picture";
             this.Picture.Size = new System.Drawing.Size(266, 149);
             this.Picture.TabIndex = 13;
-            this.Picture.Text = "tabPage1";
+            this.Picture.Text = "Picture";
             this.Picture.UseVisualStyleBackColor = true;
             // 
             // textPictureFileName
@@ -844,7 +849,7 @@
             this.Twinkles.Name = "Twinkles";
             this.Twinkles.Size = new System.Drawing.Size(266, 149);
             this.Twinkles.TabIndex = 11;
-            this.Twinkles.Text = "tabPage1";
+            this.Twinkles.Text = "Twinkles";
             this.Twinkles.UseVisualStyleBackColor = true;
             // 
             // label31
@@ -877,7 +882,7 @@
             this.Snowstorm.Name = "Snowstorm";
             this.Snowstorm.Size = new System.Drawing.Size(266, 149);
             this.Snowstorm.TabIndex = 9;
-            this.Snowstorm.Text = "tabPage1";
+            this.Snowstorm.Text = "Snowstorm";
             this.Snowstorm.UseVisualStyleBackColor = true;
             // 
             // label25
@@ -928,7 +933,7 @@
             this.Snowflakes.Name = "Snowflakes";
             this.Snowflakes.Size = new System.Drawing.Size(266, 149);
             this.Snowflakes.TabIndex = 8;
-            this.Snowflakes.Text = "tabPage1";
+            this.Snowflakes.Text = "Snowflakes";
             this.Snowflakes.UseVisualStyleBackColor = true;
             // 
             // label24
@@ -986,7 +991,7 @@
             this.Fireworks.Name = "Fireworks";
             this.Fireworks.Size = new System.Drawing.Size(266, 149);
             this.Fireworks.TabIndex = 4;
-            this.Fireworks.Text = "tabPage1";
+            this.Fireworks.Text = "Fireworks";
             this.Fireworks.UseVisualStyleBackColor = true;
             // 
             // label21
@@ -1454,7 +1459,7 @@
             this.Fire.Padding = new System.Windows.Forms.Padding(3);
             this.Fire.Size = new System.Drawing.Size(266, 149);
             this.Fire.TabIndex = 3;
-            this.Fire.Text = "RenderFire";
+            this.Fire.Text = "Fire";
             this.Fire.UseVisualStyleBackColor = true;
             // 
             // label12
@@ -1487,7 +1492,7 @@
             this.Garlands.Name = "Garlands";
             this.Garlands.Size = new System.Drawing.Size(266, 149);
             this.Garlands.TabIndex = 5;
-            this.Garlands.Text = "tabPage1";
+            this.Garlands.Text = "Garlands";
             this.Garlands.UseVisualStyleBackColor = true;
             // 
             // label4
@@ -1572,6 +1577,38 @@
             this.fileDialog.FileName = "Select a File";
             this.fileDialog.Title = "Select a File";
             // 
+            // TreePage
+            // 
+            this.TreePage.Controls.Add(this.label43);
+            this.TreePage.Controls.Add(this.trackTreeBranches);
+            this.TreePage.Location = new System.Drawing.Point(4, 5);
+            this.TreePage.Name = "TreePage";
+            this.TreePage.Size = new System.Drawing.Size(266, 149);
+            this.TreePage.TabIndex = 15;
+            this.TreePage.Text = "Tree";
+            this.TreePage.UseVisualStyleBackColor = true;
+            // 
+            // label43
+            // 
+            this.label43.AutoSize = true;
+            this.label43.Location = new System.Drawing.Point(9, 8);
+            this.label43.Name = "label43";
+            this.label43.Size = new System.Drawing.Size(55, 13);
+            this.label43.TabIndex = 31;
+            this.label43.Text = "Branches:";
+            // 
+            // trackTreeBranches
+            // 
+            this.trackTreeBranches.Location = new System.Drawing.Point(70, 5);
+            this.trackTreeBranches.Maximum = 10;
+            this.trackTreeBranches.Minimum = 1;
+            this.trackTreeBranches.Name = "trackTreeBranches";
+            this.trackTreeBranches.Size = new System.Drawing.Size(193, 23);
+            this.trackTreeBranches.TabIndex = 32;
+            this.trackTreeBranches.Text = "trackPaletteRepeat";
+            this.trackTreeBranches.Value = 3;
+            this.trackTreeBranches.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.trackTreeBranches_ValueChanged);
+            // 
             // NutcrackerTypeEditorControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1618,6 +1655,8 @@
             this.Garlands.ResumeLayout(false);
             this.Garlands.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).EndInit();
+            this.TreePage.ResumeLayout(false);
+            this.TreePage.PerformLayout();
             this.ResumeLayout(false);
 
 		}
@@ -1753,5 +1792,8 @@
         private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackSpirographRInner;
         private System.Windows.Forms.Label label39;
         private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackSpirographROuter;
+        private System.Windows.Forms.TabPage TreePage;
+        private System.Windows.Forms.Label label43;
+        private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackTreeBranches;
 	}
 }
