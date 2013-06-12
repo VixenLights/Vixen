@@ -42,7 +42,8 @@ using Vixen.Module.SequenceType;
 using Vixen.Module.Effect;
 using Vixen.Module.Script;
 using Vixen.Commands;
-
+using Vixen.Module.App;
+using VixenModules.App.ColorGradients;
 namespace ");
             
             #line 1 "C:\Git\vixen\Public\Modules\Script\CSharp\CSharp_ScriptFramework.tt"
