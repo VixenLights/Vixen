@@ -204,12 +204,6 @@
             // 
             this.comboBoxDisplayType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxDisplayType.FormattingEnabled = true;
-            this.comboBoxDisplayType.Items.AddRange(new object[] {
-            "90 Degree Mega Tree",
-            "180 Degree Mega Tree",
-            "270 Degree Mega Tree",
-            "360 Degree Mega Tree",
-            "Arch"});
             this.comboBoxDisplayType.Location = new System.Drawing.Point(83, 13);
             this.comboBoxDisplayType.Name = "comboBoxDisplayType";
             this.comboBoxDisplayType.Size = new System.Drawing.Size(196, 21);
