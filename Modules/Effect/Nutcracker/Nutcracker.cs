@@ -83,11 +83,56 @@ namespace VixenModules.Effect.Nutcracker
         {
             get
             {
-                int childCount = TargetNodes.FirstOrDefault().Children.Count();
-                //Console.WriteLine("StringCount:" + childCount);
-                //return TargetEffect.TargetNodes.Count();
+                int childCount = 0;
+                foreach (ElementNode node in TargetNodes.FirstOrDefault().Children)
+                {
+                    if (!node.IsLeaf)
+                    {
+                        childCount++;
+                    }
+                }
+                if (childCount == 0 && TargetNodes.FirstOrDefault().Children.Count() > 0)
+                {
+                    childCount = 1;
+                }
                 return childCount;
             }
+        }
+
+        private int PixelsPerString()
+        {
+            int pps = PixelsPerString(TargetNodes.FirstOrDefault());
+            //Console.WriteLine("StringCount:" + StringCount);
+            //Console.WriteLine("PixelsPerString:" + pps);
+            return pps;
+        }
+
+        private int PixelsPerString(ElementNode parentNode)
+        {
+            int pps = 0;
+            // Is this a single string?
+            int leafCount = 0;
+            int groupCount = 0;
+            foreach (ElementNode node in parentNode.Children)
+            {
+                if (node.IsLeaf)
+                {
+                    leafCount++;
+                }
+                else
+                {
+                    groupCount++;
+                }
+            }
+            if (groupCount == 0)
+            {
+                pps = leafCount;
+            }
+            else
+            {
+                pps = PixelsPerString(parentNode.Children.FirstOrDefault());
+            }
+            return pps;
         }
 
 		// renders the given node to the internal ElementData dictionary. If the given node is
@@ -99,15 +144,11 @@ namespace VixenModules.Effect.Nutcracker
             int stringCount = StringCount;
             int framesToRender = (int)TimeSpan.TotalMilliseconds / 50;
             NutcrackerEffects effect = new NutcrackerEffects(_data.NutcrackerData);
-            //
-            // Need to change this!!!!!!!!
-            //
-            int pixelsPerString = 50;
+            int pixelsPerString = PixelsPerString();
             effect.InitBuffer(stringCount, pixelsPerString);
             int totalPixels = effect.PixelCount();
             TimeSpan startTime = TimeSpan.Zero;
             TimeSpan ms50 = new TimeSpan(0, 0, 0, 0, 50);
-
             Stopwatch timer = new Stopwatch(); timer.Start();
 
             for (int frameNum = 0; frameNum < framesToRender; frameNum++)
@@ -134,7 +175,7 @@ namespace VixenModules.Effect.Nutcracker
                 //}
 
                 // Parallel 
-                // ElementAt is fucking slow so convert it to a list first!
+                // ElementAt is slow so convert it to a list first!
                 List<Element> elements = node.ToList();
                 int elementCount = node.Count() - 1;
                 Parallel.For(0, elementCount, elementNum =>

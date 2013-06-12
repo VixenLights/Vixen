@@ -52,7 +52,9 @@ namespace VixenModules.Effect.Nutcracker
             Tree180,
             Tree270,
             Tree360,
-            Arch
+            Arch,
+            HorizontalLine,
+            VerticalLine,
         }
 
         public NutcrackerEffects()
@@ -1003,104 +1005,112 @@ namespace VixenModules.Effect.Nutcracker
             Color rgbcolor;
             int colorcnt = GetColorCount();
 
-            InitFireworksBuffer();
-
-            if (State == 0)
-            {
-                for (i = 0; i < maxFlakes; i++)
-                {
-                    fireworkBursts[i]._bActive = false;
-                }
-            }
-            denom = (101 - Number_Explosions) * 100;
-            if (denom < 1) denom = 1;
-            stateChunk = (int)State / denom;
-            if (stateChunk < 1) stateChunk = 1;
-
-            mod100 = (int)(State % (101 - Number_Explosions) * 10);
-            if (mod100 == 0)
+            // This does not work with 1 string, so use a try/catch block to prevent errors
+            try
             {
 
-                x25 = (int)(BufferWi * 0.25);
-                x75 = (int)(BufferWi * 0.75);
-                y25 = (int)(BufferHt * 0.25);
-                y75 = (int)(BufferHt * 0.75);
-                startX = x25 + (rand() % (x75 - x25));
-                startY = y25 + (rand() % (y75 - y25));
-                // turn off all bursts
+                InitFireworksBuffer();
 
-                // Create new bursts
-                for (i = 0; i < Count; i++)
+                if (State == 0)
                 {
-                    do
+                    for (i = 0; i < maxFlakes; i++)
                     {
-                        idxFlakes = (idxFlakes + 1) % maxFlakes;
+                        fireworkBursts[i]._bActive = false;
                     }
-                    while (fireworkBursts[idxFlakes]._bActive);
-                    fireworkBursts[idxFlakes].Reset(startX, startY, true, Velocity);
                 }
-            }
-            else
-            {
-                for (i = 0; i < maxFlakes; i++)
+                denom = (101 - Number_Explosions) * 100;
+                if (denom < 1) denom = 1;
+                stateChunk = (int)State / denom;
+                if (stateChunk < 1) stateChunk = 1;
+
+                mod100 = (int)(State % (101 - Number_Explosions) * 10);
+                if (mod100 == 0)
                 {
-                    // ... active flakes:
-                    if (fireworkBursts[i]._bActive)
+
+                    x25 = (int)(BufferWi * 0.25);
+                    x75 = (int)(BufferWi * 0.75);
+                    y25 = (int)(BufferHt * 0.25);
+                    y75 = (int)(BufferHt * 0.75);
+                    startX = x25 + (rand() % (x75 - x25));
+                    startY = y25 + (rand() % (y75 - y25));
+                    // turn off all bursts
+
+                    // Create new bursts
+                    for (i = 0; i < Count; i++)
                     {
-                        // Update position
-                        fireworkBursts[i]._x += fireworkBursts[i]._dx;
-                        fireworkBursts[i]._y += (float)(-fireworkBursts[i]._dy - fireworkBursts[i]._cycles * fireworkBursts[i]._cycles / 10000000.0);
-                        // If this flake run for more than maxCycle, time to switch it off
-                        fireworkBursts[i]._cycles += 20;
-                        if (10000 == fireworkBursts[i]._cycles) // if (10000 == fireworkBursts[i]._cycles)
+                        do
                         {
-                            fireworkBursts[i]._bActive = false;
-                            continue;
+                            idxFlakes = (idxFlakes + 1) % maxFlakes;
                         }
-                        // If this flake hit the earth, time to switch it off
-                        if (fireworkBursts[i]._y >= BufferHt)
+                        while (fireworkBursts[idxFlakes]._bActive);
+                        fireworkBursts[idxFlakes].Reset(startX, startY, true, Velocity);
+                    }
+                }
+                else
+                {
+                    for (i = 0; i < maxFlakes; i++)
+                    {
+                        // ... active flakes:
+                        if (fireworkBursts[i]._bActive)
                         {
-                            fireworkBursts[i]._bActive = false;
-                            continue;
-                        }
-                        // Draw the flake, if its X-pos is within frame
-                        if (fireworkBursts[i]._x >= 0.0 && fireworkBursts[i]._x < BufferWi)
-                        {
-                            // But only if it is "under" the roof!
-                            if (fireworkBursts[i]._y >= 0.0)
+                            // Update position
+                            fireworkBursts[i]._x += fireworkBursts[i]._dx;
+                            fireworkBursts[i]._y += (float)(-fireworkBursts[i]._dy - fireworkBursts[i]._cycles * fireworkBursts[i]._cycles / 10000000.0);
+                            // If this flake run for more than maxCycle, time to switch it off
+                            fireworkBursts[i]._cycles += 20;
+                            if (10000 == fireworkBursts[i]._cycles) // if (10000 == fireworkBursts[i]._cycles)
                             {
-                                // sean we need to set color here
+                                fireworkBursts[i]._bActive = false;
+                                continue;
+                            }
+                            // If this flake hit the earth, time to switch it off
+                            if (fireworkBursts[i]._y >= BufferHt)
+                            {
+                                fireworkBursts[i]._bActive = false;
+                                continue;
+                            }
+                            // Draw the flake, if its X-pos is within frame
+                            if (fireworkBursts[i]._x >= 0.0 && fireworkBursts[i]._x < BufferWi)
+                            {
+                                // But only if it is "under" the roof!
+                                if (fireworkBursts[i]._y >= 0.0)
+                                {
+                                    // sean we need to set color here
+                                }
+                            }
+                            else
+                            {
+                                // otherwise it just got outside the valid X-pos, so switch it off
+                                fireworkBursts[i]._bActive = false;
+                                continue;
                             }
                         }
-                        else
-                        {
-                            // otherwise it just got outside the valid X-pos, so switch it off
-                            fireworkBursts[i]._bActive = false;
-                            continue;
-                        }
+                    }
+                }
+
+                if (mod100 == 0) rgbcolor = Color.FromArgb(0, 255, 255);
+                else if (mod100 == 1) rgbcolor = Color.FromArgb(255, 0, 0);
+                else if (mod100 == 2) rgbcolor = Color.FromArgb(0, 255, 0);
+                else if (mod100 == 3) rgbcolor = Color.FromArgb(0, 0, 255);
+                else if (mod100 == 4) rgbcolor = Color.FromArgb(255, 255, 0);
+                else if (mod100 == 5) rgbcolor = Color.FromArgb(0, 255, 0);
+                else rgbcolor = Color.White;
+                hsv = HSV.ColorToHSV(rgbcolor);
+
+                for (i = 0; i < 1000; i++)
+                {
+                    if (fireworkBursts[i]._bActive == true)
+                    {
+                        v = (float)(((Fade * 10.0) - fireworkBursts[i]._cycles) / (Fade * 10.0));
+                        if (v < 0) v = 0.0f;
+
+                        hsv.Value = v;
+                        SetPixel((int)fireworkBursts[i]._x, (int)fireworkBursts[i]._y, hsv);
                     }
                 }
             }
-
-            if (mod100 == 0) rgbcolor = Color.FromArgb(0, 255, 255);
-            else if (mod100 == 1) rgbcolor = Color.FromArgb(255, 0, 0);
-            else if (mod100 == 2) rgbcolor = Color.FromArgb(0, 255, 0);
-            else if (mod100 == 3) rgbcolor = Color.FromArgb(0, 0, 255);
-            else if (mod100 == 4) rgbcolor = Color.FromArgb(255, 255, 0);
-            else if (mod100 == 5) rgbcolor = Color.FromArgb(0, 255, 0);
-            else rgbcolor = Color.White;
-            hsv = HSV.ColorToHSV(rgbcolor);
-
-            for (i = 0; i < 1000; i++)
+            catch
             {
-                if (fireworkBursts[i]._bActive == true)
-                {
-                    v = (float)(((Fade * 10.0) - fireworkBursts[i]._cycles) / (Fade * 10.0));
-                    if (v < 0) v = 0.0f;
-
-                    hsv.Value = v;
-                    SetPixel((int)fireworkBursts[i]._x, (int)fireworkBursts[i]._y, hsv);
-                }
             }
         }
 
@@ -1783,36 +1793,43 @@ namespace VixenModules.Effect.Nutcracker
             //x(t) = (R-r) * cos t + d*cos ((R-r/r)*t);
             //y(t) = (R-r) * sin t + d*sin ((R-r/r)*t);
 
-            mod1440 = Convert.ToInt32(State % 1440);
-            state360 = Convert.ToInt32(State % 360);
-            d_orig = d;
-            for (i = 1; i <= 360; i++)
+            // Doesn't work with single strings so capture errors
+            try
             {
-                if (Animate) d = (int)(d_orig + State / 2) % 100; // should we modify the distance variable each pass through?
-                t = (float)((i + mod1440) * Math.PI / 180);
-                x = Convert.ToInt32((R - r) * Math.Cos(t) + d * Math.Cos(((R - r) / r) * t) + xc);
-                y = Convert.ToInt32((R - r) * Math.Sin(t) + d * Math.Sin(((R - r) / r) * t) + yc);
+                mod1440 = Convert.ToInt32(State % 1440);
+                state360 = Convert.ToInt32(State % 360);
+                d_orig = d;
+                for (i = 1; i <= 360; i++)
+                {
+                    if (Animate) d = (int)(d_orig + State / 2) % 100; // should we modify the distance variable each pass through?
+                    t = (float)((i + mod1440) * Math.PI / 180);
+                    x = Convert.ToInt32((R - r) * Math.Cos(t) + d * Math.Cos(((R - r) / r) * t) + xc);
+                    y = Convert.ToInt32((R - r) * Math.Sin(t) + d * Math.Sin(((R - r) / r) * t) + yc);
 
-                if (colorcnt > 0) d_mod = (int)BufferWi / colorcnt;
-                else d_mod = 1;
+                    if (colorcnt > 0) d_mod = (int)BufferWi / colorcnt;
+                    else d_mod = 1;
 
-                x2 = Math.Pow((x - xc), 2);
-                y2 = Math.Pow((y - yc), 2);
-                hyp = (Math.Sqrt(x2 + y2) / BufferWi) * 100.0;
-                ColorIdx = (int)(hyp / d_mod); // Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
+                    x2 = Math.Pow((x - xc), 2);
+                    y2 = Math.Pow((y - yc), 2);
+                    hyp = (Math.Sqrt(x2 + y2) / BufferWi) * 100.0;
+                    ColorIdx = (int)(hyp / d_mod); // Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
 
-                if (ColorIdx >= colorcnt) ColorIdx = colorcnt - 1;
+                    if (ColorIdx >= colorcnt) ColorIdx = colorcnt - 1;
 
-                hsv = Palette.GetHSV(ColorIdx); // Now go and get the hsv value for this ColorIdx
+                    hsv = Palette.GetHSV(ColorIdx); // Now go and get the hsv value for this ColorIdx
 
 
-                hsv0 = Palette.GetHSV(0);
-                ColorIdx = Convert.ToInt32((State + rand()) % colorcnt); // Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
-                hsv1 = Palette.GetHSV(ColorIdx); // Now go and get the hsv value for this ColorIdx
+                    hsv0 = Palette.GetHSV(0);
+                    ColorIdx = Convert.ToInt32((State + rand()) % colorcnt); // Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
+                    hsv1 = Palette.GetHSV(ColorIdx); // Now go and get the hsv value for this ColorIdx
 
-                SetPixel(x, y, hsv);
-                //        if(i<=state360) SetPixel(x,y,hsv); // Turn pixel on
-                //        else SetPixel(x,y,hsv1);
+                    SetPixel(x, y, hsv);
+                    //        if(i<=state360) SetPixel(x,y,hsv); // Turn pixel on
+                    //        else SetPixel(x,y,hsv1);
+                }
+            }
+            catch
+            {
             }
         }
 
