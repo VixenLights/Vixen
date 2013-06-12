@@ -35,12 +35,14 @@ namespace VixenModules.Media.Audio
             4186.01f, 4434.92f, 4698.64f, 4978.03f,  5274.04f,  5587.65f,  5919.91f,  6271.92f,  6644.87f,  7040.00f,  7458.62f,  7902.13f, 
             8372.01f, 8869.84f, 9397.27f, 9956.06f, 10548.08f, 11175.30f, 11839.82f, 12543.85f, 13289.75f, 14080.00f, 14917.24f, 15804.26f
         };
+
         private const int OUTPUTRATE = 48000;
         private const int SPECTRUMSIZE = 8192;
         private const float SPECTRUMRANGE = ((float)OUTPUTRATE / 2.0f);     /* 0 to nyquist */
         private const float BINSIZE = (SPECTRUMRANGE / (float)SPECTRUMSIZE);
         private Timer detectionTimer;
         static bool detectFrequenciesEnabled = false;
+
         public bool DetectFrequeniesEnabled
         {
             get
@@ -83,6 +85,7 @@ namespace VixenModules.Media.Audio
                 FrequencyDetected(this, args);
             }
         }
+
         void detectionTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             try
@@ -100,6 +103,7 @@ namespace VixenModules.Media.Audio
                     int bin = 0;
 
                     var position = TimeSpan.FromMilliseconds(Position);
+
                     result = _channel.Channel.getSpectrum(spectrum, SPECTRUMSIZE, 0, FMOD.DSP_FFT_WINDOW.TRIANGLE);
 
 
@@ -145,6 +149,7 @@ namespace VixenModules.Media.Audio
             catch (AccessViolationException) { }
         }
     }
+
     public class FrequencyEventArgs : EventArgs
     {
         public string Note { get; set; }
