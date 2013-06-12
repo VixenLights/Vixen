@@ -10,7 +10,6 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 	{
 		override public IEffectEditorControl CreateEditorControl()
 		{
-            Console.WriteLine("---->CreateEditorControl");
             return new NutcrackerTypeEditorControl();
 		}
 	}

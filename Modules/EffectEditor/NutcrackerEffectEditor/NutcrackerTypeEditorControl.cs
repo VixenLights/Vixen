@@ -67,15 +67,15 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
         private void timerRender_Tick(object sender, EventArgs e)
         {
             effect.RenderNextEffect(Data.CurrentEffect);
-
+            int stringCount = StringCount;
             if (displayItem != null && displayItem.Shape != null)
             {
                 if (displayItem.Shape is PreviewMegaTree)
                 {
                     PreviewMegaTree tree = displayItem.Shape as PreviewMegaTree;
-                    for (int stringNum = 0; stringNum < StringCount; stringNum++)
+                    for (int stringNum = 0; stringNum < stringCount; stringNum++)
                     {
-                        int currentString = StringCount - stringNum - 1;
+                        int currentString = stringCount - stringNum - 1;
                         //Console.WriteLine("sc:" + StringCount + " sn:" + Convert.ToInt32(stringNum+1).ToString() + " cs:" + currentString);
                         PreviewBaseShape treeString = tree._strings[currentString];
                         for (int pixelNum = 0; pixelNum < treeString.Pixels.Count; pixelNum++)
@@ -239,15 +239,12 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
         private int PixelsPerString()
         {
             int pps = PixelsPerString(TargetEffect.TargetNodes.FirstOrDefault());
-            //Console.WriteLine("StringCount:" + StringCount);
-            //Console.WriteLine("PixelsPerString:" + pps);
             return pps;
         }
 
         private int PixelsPerString(ElementNode parentNode) 
         {
             int pps = 0;
-            // Is this a single string?
             int leafCount = 0;
             int groupCount = 0;
             foreach (ElementNode node in parentNode.Children)
@@ -276,7 +273,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 
         private void SetupMegaTree(int degrees)
         {
-            if (StringCount < 2) return;
+            int stringCount = StringCount;
+            if (stringCount < 2) return;
             preview.Data = new VixenPreviewData();
             preview.LoadBackground();
             preview.BackgroundAlpha = 0;
@@ -289,15 +287,15 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
             tree.Degrees = degrees;
 
             if (degrees == 90)
-                tree.StringCount = StringCount * 4;
+                tree.StringCount = stringCount * 4;
             if (degrees == 180)
-                tree.StringCount = StringCount * 2;
+                tree.StringCount = stringCount * 2;
             if (degrees == 270)
-                tree.StringCount = (int)(StringCount * 1.25);
+                tree.StringCount = (int)(stringCount * 1.25);
             if (degrees == 360)
-                tree.StringCount = StringCount;
+                tree.StringCount = stringCount;
 
-            Console.WriteLine("degrees:" + degrees + " StringCount:" + StringCount + " tree.StringCount:" + tree.StringCount);
+            //Console.WriteLine("degrees:" + degrees + " StringCount:" + stringCount + " tree.StringCount:" + tree.StringCount);
 
             tree.PixelCount = PixelsPerString();
             tree.PixelSize = 3;
@@ -362,9 +360,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
         public void SetupPreview()
         {
             DeletePreviewDisplayItem();
-            Console.WriteLine("SetupPreview:" + Data.PreviewType.ToString());
 
-            Console.WriteLine(PixelsPerString());
             effect.InitBuffer(StringCount, PixelsPerString());
 
             switch (Data.PreviewType)

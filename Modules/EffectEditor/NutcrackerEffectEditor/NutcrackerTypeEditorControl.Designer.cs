@@ -48,6 +48,9 @@
             this.checkBoxColor1 = new System.Windows.Forms.CheckBox();
             this.panelColor1 = new System.Windows.Forms.Panel();
             this.tabEffectProperties = new System.Windows.Forms.TabControl();
+            this.TreePage = new System.Windows.Forms.TabPage();
+            this.label43 = new System.Windows.Forms.Label();
+            this.trackTreeBranches = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
             this.Spirograph = new System.Windows.Forms.TabPage();
             this.label42 = new System.Windows.Forms.Label();
             this.checkBoxSpirographAnimate = new System.Windows.Forms.CheckBox();
@@ -153,16 +156,14 @@
             this.comboBoxEffect = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.trackBarSpeed = new System.Windows.Forms.TrackBar();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.fontDialog = new System.Windows.Forms.FontDialog();
             this.fileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.TreePage = new System.Windows.Forms.TabPage();
-            this.label43 = new System.Windows.Forms.Label();
-            this.trackTreeBranches = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabEffectProperties.SuspendLayout();
+            this.TreePage.SuspendLayout();
             this.Spirograph.SuspendLayout();
             this.Spirals.SuspendLayout();
             this.Text.SuspendLayout();
@@ -179,7 +180,7 @@
             this.Fire.SuspendLayout();
             this.Garlands.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).BeginInit();
-            this.TreePage.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // timerRender
@@ -189,10 +190,9 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.groupBox1.Controls.Add(this.comboBoxDisplayType);
-            this.groupBox1.Controls.Add(this.label22);
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.preview);
             this.groupBox1.Location = new System.Drawing.Point(10, 3);
             this.groupBox1.Name = "groupBox1";
@@ -204,16 +204,16 @@
             // 
             this.comboBoxDisplayType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxDisplayType.FormattingEnabled = true;
-            this.comboBoxDisplayType.Location = new System.Drawing.Point(83, 13);
+            this.comboBoxDisplayType.Location = new System.Drawing.Point(96, 23);
             this.comboBoxDisplayType.Name = "comboBoxDisplayType";
-            this.comboBoxDisplayType.Size = new System.Drawing.Size(196, 21);
+            this.comboBoxDisplayType.Size = new System.Drawing.Size(288, 21);
             this.comboBoxDisplayType.TabIndex = 2;
             this.comboBoxDisplayType.SelectedIndexChanged += new System.EventHandler(this.comboBoxDisplayType_SelectedIndexChanged);
             // 
             // label22
             // 
             this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(6, 16);
+            this.label22.Location = new System.Drawing.Point(19, 26);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(71, 13);
             this.label22.TabIndex = 1;
@@ -227,10 +227,10 @@
             this.preview.BackgroundAlpha = 255;
             this.preview.CurrentTool = VixenModules.Preview.VixenPreview.VixenPreviewControl.Tools.Select;
             this.preview.EditMode = false;
-            this.preview.Location = new System.Drawing.Point(6, 40);
+            this.preview.Location = new System.Drawing.Point(6, 12);
             this.preview.Name = "preview";
             this.preview.Paused = false;
-            this.preview.Size = new System.Drawing.Size(273, 384);
+            this.preview.Size = new System.Drawing.Size(273, 412);
             this.preview.TabIndex = 0;
             // 
             // groupBox2
@@ -252,12 +252,12 @@
             this.groupBox2.Controls.Add(this.comboBoxEffect);
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.trackBarSpeed);
-            this.groupBox2.Location = new System.Drawing.Point(301, 3);
+            this.groupBox2.Location = new System.Drawing.Point(301, 67);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(408, 212);
             this.groupBox2.TabIndex = 6;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Effect 1";
+            this.groupBox2.Text = "Effect";
             // 
             // label6
             // 
@@ -408,6 +408,38 @@
             this.tabEffectProperties.Size = new System.Drawing.Size(274, 158);
             this.tabEffectProperties.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabEffectProperties.TabIndex = 5;
+            // 
+            // TreePage
+            // 
+            this.TreePage.Controls.Add(this.label43);
+            this.TreePage.Controls.Add(this.trackTreeBranches);
+            this.TreePage.Location = new System.Drawing.Point(4, 5);
+            this.TreePage.Name = "TreePage";
+            this.TreePage.Size = new System.Drawing.Size(266, 149);
+            this.TreePage.TabIndex = 15;
+            this.TreePage.Text = "Tree";
+            this.TreePage.UseVisualStyleBackColor = true;
+            // 
+            // label43
+            // 
+            this.label43.AutoSize = true;
+            this.label43.Location = new System.Drawing.Point(9, 8);
+            this.label43.Name = "label43";
+            this.label43.Size = new System.Drawing.Size(55, 13);
+            this.label43.TabIndex = 31;
+            this.label43.Text = "Branches:";
+            // 
+            // trackTreeBranches
+            // 
+            this.trackTreeBranches.Location = new System.Drawing.Point(70, 5);
+            this.trackTreeBranches.Maximum = 10;
+            this.trackTreeBranches.Minimum = 1;
+            this.trackTreeBranches.Name = "trackTreeBranches";
+            this.trackTreeBranches.Size = new System.Drawing.Size(193, 23);
+            this.trackTreeBranches.TabIndex = 32;
+            this.trackTreeBranches.Text = "trackPaletteRepeat";
+            this.trackTreeBranches.Value = 3;
+            this.trackTreeBranches.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.trackTreeBranches_ValueChanged);
             // 
             // Spirograph
             // 
@@ -1557,51 +1589,21 @@
             this.trackBarSpeed.Value = 1;
             this.trackBarSpeed.ValueChanged += new System.EventHandler(this.trackBarSpeed_ValueChanged);
             // 
-            // groupBox3
-            // 
-            this.groupBox3.Location = new System.Drawing.Point(301, 221);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(408, 212);
-            this.groupBox3.TabIndex = 7;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Effect 2";
-            // 
             // fileDialog
             // 
             this.fileDialog.FileName = "Select a File";
             this.fileDialog.Title = "Select a File";
             // 
-            // TreePage
+            // groupBox3
             // 
-            this.TreePage.Controls.Add(this.label43);
-            this.TreePage.Controls.Add(this.trackTreeBranches);
-            this.TreePage.Location = new System.Drawing.Point(4, 5);
-            this.TreePage.Name = "TreePage";
-            this.TreePage.Size = new System.Drawing.Size(266, 149);
-            this.TreePage.TabIndex = 15;
-            this.TreePage.Text = "Tree";
-            this.TreePage.UseVisualStyleBackColor = true;
-            // 
-            // label43
-            // 
-            this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(9, 8);
-            this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(55, 13);
-            this.label43.TabIndex = 31;
-            this.label43.Text = "Branches:";
-            // 
-            // trackTreeBranches
-            // 
-            this.trackTreeBranches.Location = new System.Drawing.Point(70, 5);
-            this.trackTreeBranches.Maximum = 10;
-            this.trackTreeBranches.Minimum = 1;
-            this.trackTreeBranches.Name = "trackTreeBranches";
-            this.trackTreeBranches.Size = new System.Drawing.Size(193, 23);
-            this.trackTreeBranches.TabIndex = 32;
-            this.trackTreeBranches.Text = "trackPaletteRepeat";
-            this.trackTreeBranches.Value = 3;
-            this.trackTreeBranches.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.trackTreeBranches_ValueChanged);
+            this.groupBox3.Controls.Add(this.label22);
+            this.groupBox3.Controls.Add(this.comboBoxDisplayType);
+            this.groupBox3.Location = new System.Drawing.Point(301, 3);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(408, 58);
+            this.groupBox3.TabIndex = 7;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Preview Display";
             // 
             // NutcrackerTypeEditorControl
             // 
@@ -1614,10 +1616,11 @@
             this.Size = new System.Drawing.Size(718, 442);
             this.Load += new System.EventHandler(this.NutcrackerTypeEditorControl_Load);
             this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.tabEffectProperties.ResumeLayout(false);
+            this.TreePage.ResumeLayout(false);
+            this.TreePage.PerformLayout();
             this.Spirograph.ResumeLayout(false);
             this.Spirograph.PerformLayout();
             this.Spirals.ResumeLayout(false);
@@ -1649,8 +1652,8 @@
             this.Garlands.ResumeLayout(false);
             this.Garlands.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).EndInit();
-            this.TreePage.ResumeLayout(false);
-            this.TreePage.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
 
 		}
@@ -1660,7 +1663,6 @@
         private System.Windows.Forms.Timer timerRender;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.GroupBox groupBox3;
         private Preview.VixenPreview.VixenPreviewControl preview;
         private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackBarPaletteRepeat;
         private System.Windows.Forms.Label label2;
@@ -1789,5 +1791,6 @@
         private System.Windows.Forms.TabPage TreePage;
         private System.Windows.Forms.Label label43;
         private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackTreeBranches;
+        private System.Windows.Forms.GroupBox groupBox3;
 	}
 }

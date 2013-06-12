@@ -77,13 +77,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 					ec.TargetEffect = effectNode.Effect;
 
-					Label l = new Label();
-					l.Width = 1;
-					l.Height = 1;
-					l.Text = _effectNode.Effect.Parameters[i].Name + ":";
-					l.AutoSize = true;
-					l.Anchor = AnchorStyles.None;
-					tableLayoutPanelEffectEditors.Controls.Add(l);
+                    if (_effectNode.Effect.Parameters[i].ShowLabel)
+                    {
+                        Label l = new Label();
+                        l.Width = 1;
+                        l.Height = 1;
+                        l.Text = _effectNode.Effect.Parameters[i].Name + ":";
+                        l.AutoSize = true;
+                        l.Anchor = AnchorStyles.None;
+                        tableLayoutPanelEffectEditors.Controls.Add(l);
+                    }
 
 					(ec as Control).Anchor = AnchorStyles.None;
 					tableLayoutPanelEffectEditors.Controls.Add(ec as Control);

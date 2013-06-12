@@ -6,10 +6,13 @@ namespace Vixen.Sys {
 
 		private string _name;
 
-		public ParameterSpecification(string name, Type type) {
+		public ParameterSpecification(string name, Type type, bool showLabel = true) {
 			Name = name;
 			Type = type;
+            ShowLabel = showLabel;
 		}
+
+        public bool ShowLabel { get; set; }
 
 		internal ParameterSpecification(string parameterString) {
 			string[] parts = parameterString.Split(TYPE_NAME_DELIMITER);
