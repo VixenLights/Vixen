@@ -184,13 +184,15 @@ namespace VixenModules.Preview.VixenPreview
 		public VixenPreviewControl()
 			: base()
 		{
+            VixenSystem.Logging.Debug("----------------- Preview:VixenPreviewControl Init ---------------------");
+
 			InitializeComponent();
 
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
 
-			context = BufferedGraphicsManager.Current;
-			AllocateGraphicsBuffer();
+			//context = BufferedGraphicsManager.Current;
+			//AllocateGraphicsBuffer();
 
 
 
@@ -258,8 +260,8 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void SetupBackgroundAlphaImage()
 		{
-
-			if (_background != null)
+            VixenSystem.Logging.Debug("Preview: SetupBackgroundAlphaImage");
+            if (_background != null)
 			{
 				AllocateGraphicsBuffer();
 				//_alphaBackground = new Bitmap(_background.Width, _background.Height);
@@ -284,40 +286,53 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void InitializeGraphics()
 		{
-			context = BufferedGraphicsManager.Current;
+            VixenSystem.Logging.Debug("Preview:InitializeGraphics");
+            context = BufferedGraphicsManager.Current;
 			AllocateGraphicsBuffer();
 		}
 
-		private void AllocateGraphicsBuffer()
-		{
-			if (!Disposing)
-			{
-				//lock (PreviewTools.renderLock)
-				//{
+        int lastWidth = 0, lastHeight = 0;
+        private void AllocateGraphicsBuffer()
+        {
+            if (!Disposing)
+            {
+                lock (PreviewTools.renderLock)
+                {
+                    //VixenSystem.Logging.Debug("Preview:AllocateGraphicsBuffer");
+                    if (context != null)
+                    {
+                        //VixenSystem.Logging.Debug("    - context != null");
+                        //VixenSystem.Logging.Debug("    - context.MaximumBuffer.Width:" + context.MaximumBuffer.Width + " context.MaximumBuffer.Height: " + context.MaximumBuffer.Height);
+                        if (this.Width > 0 && this.Height > 0 && this.Height != lastHeight && this.Width != lastWidth)
+                        {
+                            lastHeight = this.Height;
+                            lastWidth = this.Width;
+                            //VixenSystem.Logging.Debug("    - this.Width" + this.Width + " this.Height: " + this.Height);
 
-				if (context != null)
-				{
-					context.MaximumBuffer = new Size(this.Width + 1, this.Height + 1);
+                            context.MaximumBuffer = new Size(this.Width + 1, this.Height + 1);
 
-					if (bufferedGraphics != null)
-					{
-						//lock (bufferedGraphics)
-						//{
-						bufferedGraphics.Dispose();
-						bufferedGraphics = null;
-						bufferedGraphics = context.Allocate(this.CreateGraphics(),
-							new Rectangle(0, 0, this.Width + 1, this.Height + 1));
-						//}
-					}
-					else
-					{
-						bufferedGraphics = context.Allocate(this.CreateGraphics(),
-						new Rectangle(0, 0, this.Width + 1, this.Height + 1));
-					}
-				}
-				//}
-			}
-		}
+                            if (bufferedGraphics != null)
+                            {
+                                //lock (bufferedGraphics)
+                                //{
+                                bufferedGraphics.Dispose();
+                                bufferedGraphics = null;
+                                bufferedGraphics = context.Allocate(this.CreateGraphics(),
+                                    new Rectangle(0, 0, this.Width + 1, this.Height + 1));
+                                //}
+                                //VixenSystem.Logging.Debug("    - Existing bufferedGraphics allocated");
+                            }
+                            else
+                            {
+                                bufferedGraphics = context.Allocate(this.CreateGraphics(),
+                                new Rectangle(0, 0, this.Width + 1, this.Height + 1));
+                                //VixenSystem.Logging.Debug("    - New bufferedGraphcis allocated");
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
 		public void AddDisplayItem(DisplayItem displayItem)
 		{
@@ -759,7 +774,8 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void VixenPreviewControl_Resize(object sender, EventArgs e)
 		{
-			AllocateGraphicsBuffer();
+            VixenSystem.Logging.Debug("Preview:Resize");
+            AllocateGraphicsBuffer();
 		}
 
 		private void VixenPreviewControl_KeyUp(object sender, KeyEventArgs e)
@@ -1200,15 +1216,14 @@ namespace VixenModules.Preview.VixenPreview
                         {
 							var elementId = channelIntentState.Key;
 							Element element = VixenSystem.Elements.GetElement(elementId);
-                            Debug.Assert(element != null, "element==null");
+                            //Debug.Assert(element != null, "element==null");
                             if (element != null)
                             {
                                 ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
-                                Debug.Assert(node != null, "node==null");
+                                //Debug.Assert(node != null, "node==null");
                                 if (node != null)
                                 {
                                     //Console.WriteLine("n:" + node.Name);
-                                    // Getting stuck right here. No intentStates passed!
                                     foreach (IIntentState<LightingValue> intentState in channelIntentState.Value)
                                     {
                                         Color c = ((IIntentState<LightingValue>)intentState).GetValue().GetAlphaChannelIntensityAffectedColor();
