@@ -184,7 +184,7 @@ namespace VixenModules.Preview.VixenPreview
 		public VixenPreviewControl()
 			: base()
 		{
-            VixenSystem.Logging.Debug("----------------- Preview:VixenPreviewControl Init ---------------------");
+            //VixenSystem.Logging.Debug("----------------- Preview:VixenPreviewControl Init ---------------------");
 
 			InitializeComponent();
 
@@ -194,16 +194,13 @@ namespace VixenModules.Preview.VixenPreview
 			//context = BufferedGraphicsManager.Current;
 			//AllocateGraphicsBuffer();
 
-
-
 			//renderBackgroundWorker.DoWork += new DoWorkEventHandler(DoRenderWork);
 			//renderBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(RenderWorkCompleted);
 		}
 
 		private void VixenPreviewControl_Load(object sender, EventArgs e)
 		{
-			InitializeGraphics();
-			//StartRefresh();
+			//InitializeGraphics();
 		}
 
 		public Bitmap Background
@@ -260,14 +257,11 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void SetupBackgroundAlphaImage()
 		{
-            VixenSystem.Logging.Debug("Preview: SetupBackgroundAlphaImage");
+            //VixenSystem.Logging.Debug("Preview: SetupBackgroundAlphaImage");
             if (_background != null)
 			{
 				AllocateGraphicsBuffer();
-				//_alphaBackground = new Bitmap(_background.Width, _background.Height);
 				_alphaBackground = new Bitmap(_background.Width, _background.Height, PixelFormat.Format32bppPArgb);
-
-				//bitmapFinal = bitmap.Clone(new Rectangle(0, 0, bitmap.Width, bitmap.Height), PixelFormat.Format32bppPArgb);bitmapFinal = bitmap.Clone(new Rectangle(0, 0, bitmap.Width, bitmap.Height), PixelFormat.Format32bppPArgb);
 
 				using (Graphics gfx = Graphics.FromImage(_alphaBackground))
 
@@ -284,26 +278,27 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		private void InitializeGraphics()
-		{
-            VixenSystem.Logging.Debug("Preview:InitializeGraphics");
-            context = BufferedGraphicsManager.Current;
-			AllocateGraphicsBuffer();
-		}
+        //private void InitializeGraphics()
+        //{
+        //    //VixenSystem.Logging.Debug("Preview:InitializeGraphics");
+        //    context = BufferedGraphicsManager.Current;
+        //    AllocateGraphicsBuffer();
+        //}
 
         int lastWidth = 0, lastHeight = 0;
         private void AllocateGraphicsBuffer()
         {
             if (!Disposing)
             {
-                lock (PreviewTools.renderLock)
-                {
+                //lock (PreviewTools.renderLock)
+                //{
                     //VixenSystem.Logging.Debug("Preview:AllocateGraphicsBuffer");
+                    context = BufferedGraphicsManager.Current;
                     if (context != null)
                     {
                         //VixenSystem.Logging.Debug("    - context != null");
                         //VixenSystem.Logging.Debug("    - context.MaximumBuffer.Width:" + context.MaximumBuffer.Width + " context.MaximumBuffer.Height: " + context.MaximumBuffer.Height);
-                        if (this.Width > 0 && this.Height > 0 && this.Height != lastHeight && this.Width != lastWidth)
+                        if (this.Width > 0 && this.Height > 0 && (this.Height != lastHeight || this.Width != lastWidth))
                         {
                             lastHeight = this.Height;
                             lastWidth = this.Width;
@@ -330,7 +325,7 @@ namespace VixenModules.Preview.VixenPreview
                             }
                         }
                     }
-                }
+                //}
             }
         }
 
@@ -774,7 +769,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void VixenPreviewControl_Resize(object sender, EventArgs e)
 		{
-            VixenSystem.Logging.Debug("Preview:Resize");
+            if (!DesignMode) VixenSystem.Logging.Debug("Preview:Resize");
             AllocateGraphicsBuffer();
 		}
 
