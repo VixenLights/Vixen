@@ -31,7 +31,6 @@
             this.components = new System.ComponentModel.Container();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusCurrentUpdate = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLastRenderTime = new System.Windows.Forms.ToolStripStatusLabel();
             this.timerStatus = new System.Windows.Forms.Timer(this.components);
             this.preview = new VixenModules.Preview.VixenPreview.VixenPreviewControl();
@@ -42,7 +41,6 @@
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1,
-            this.toolStripStatusCurrentUpdate,
             this.toolStripStatusLastRenderTime});
             this.statusStrip1.Location = new System.Drawing.Point(0, 419);
             this.statusStrip1.Name = "statusStrip1";
@@ -55,12 +53,6 @@
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(90, 17);
             this.toolStripStatusLabel1.Text = "toolStripStatus1";
-            // 
-            // toolStripStatusCurrentUpdate
-            // 
-            this.toolStripStatusCurrentUpdate.Name = "toolStripStatusCurrentUpdate";
-            this.toolStripStatusCurrentUpdate.Size = new System.Drawing.Size(118, 17);
-            this.toolStripStatusCurrentUpdate.Text = "toolStripStatusLabel2";
             // 
             // toolStripStatusLastRenderTime
             // 
@@ -115,7 +107,6 @@
         private VixenPreviewControl preview;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusCurrentUpdate;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLastRenderTime;
         private System.Windows.Forms.Timer timerStatus;
     }

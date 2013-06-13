@@ -15,6 +15,7 @@ using Vixen.Sys;
 using Vixen.Data.Value;
 using Vixen.Execution.Context;
 using System.Collections.Concurrent;
+using System.Threading;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -418,20 +419,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         public virtual void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected, bool forceDraw)
 		{
+            //Pixels.AsParallel().ForAll(pixel => {
 			foreach (PreviewPixel pixel in Pixels)
 			{
                 DrawPixel(pixel, fp, editMode, highlightedElements, selected, forceDraw);
-				//if (selected) 
-				//{
-				//    pixel.Draw(fp, PreviewTools.SelectedItemColor);
-				//}
-				//if (highlightedElements.Contains(pixel.Node))
-				//{
-				//    pixel.Draw(fp, Color.HotPink);
-				//}
-				//else
-				//    pixel.Draw(fp, Color.White);
 			}
+            //});
 
 			DrawSelectPoints(fp);
 		}
