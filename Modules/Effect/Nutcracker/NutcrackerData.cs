@@ -36,6 +36,8 @@ namespace VixenModules.Effect.Nutcracker
         public NutcrackerEffects.Effects CurrentEffect = NutcrackerEffects.Effects.Bars;
         [DataMember]
         public int Speed = 5;
+        [DataMember]
+        public int PixelSize = 2;
 
         [DataMember]
         public Palette Palette = new Palette();
@@ -219,6 +221,9 @@ namespace VixenModules.Effect.Nutcracker
 
             if (Tree_Branches == 0)
                 Tree_Branches = 5;
+
+            if (PixelSize == 0)
+                PixelSize = 3;
         }
     }
 }

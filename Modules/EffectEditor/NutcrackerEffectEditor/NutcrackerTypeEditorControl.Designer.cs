@@ -28,11 +28,11 @@
 		private void InitializeComponent()
 		{
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NutcrackerTypeEditorControl));
             this.timerRender = new System.Windows.Forms.Timer(this.components);
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.comboBoxDisplayType = new System.Windows.Forms.ComboBox();
             this.label22 = new System.Windows.Forms.Label();
-            this.preview = new VixenModules.Preview.VixenPreview.VixenPreviewControl();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label6 = new System.Windows.Forms.Label();
             this.checkBoxColor6 = new System.Windows.Forms.CheckBox();
@@ -160,6 +160,10 @@
             this.fontDialog = new System.Windows.Forms.FontDialog();
             this.fileDialog = new System.Windows.Forms.OpenFileDialog();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.scrollPixelSize = new Common.Controls.ControlsEx.ValueControls.HValueScrollBar();
+            this.label44 = new System.Windows.Forms.Label();
+            this.buttonHelp = new System.Windows.Forms.Button();
+            this.preview = new VixenModules.Preview.VixenPreview.VixenPreviewControl();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabEffectProperties.SuspendLayout();
@@ -219,20 +223,6 @@
             this.label22.TabIndex = 1;
             this.label22.Text = "Display Type:";
             // 
-            // preview
-            // 
-            this.preview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.preview.BackgroundAlpha = 255;
-            this.preview.CurrentTool = VixenModules.Preview.VixenPreview.VixenPreviewControl.Tools.Select;
-            this.preview.EditMode = false;
-            this.preview.Location = new System.Drawing.Point(6, 12);
-            this.preview.Name = "preview";
-            this.preview.Paused = false;
-            this.preview.Size = new System.Drawing.Size(273, 412);
-            this.preview.TabIndex = 0;
-            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.label6);
@@ -252,7 +242,7 @@
             this.groupBox2.Controls.Add(this.comboBoxEffect);
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.trackBarSpeed);
-            this.groupBox2.Location = new System.Drawing.Point(301, 67);
+            this.groupBox2.Location = new System.Drawing.Point(301, 98);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(408, 212);
             this.groupBox2.TabIndex = 6;
@@ -1596,19 +1586,74 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.scrollPixelSize);
+            this.groupBox3.Controls.Add(this.label44);
             this.groupBox3.Controls.Add(this.label22);
             this.groupBox3.Controls.Add(this.comboBoxDisplayType);
             this.groupBox3.Location = new System.Drawing.Point(301, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(408, 58);
+            this.groupBox3.Size = new System.Drawing.Size(408, 89);
             this.groupBox3.TabIndex = 7;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Preview Display";
+            // 
+            // scrollPixelSize
+            // 
+            this.scrollPixelSize.Location = new System.Drawing.Point(96, 50);
+            this.scrollPixelSize.Maximum = 10;
+            this.scrollPixelSize.Minimum = 1;
+            this.scrollPixelSize.Name = "scrollPixelSize";
+            this.scrollPixelSize.Size = new System.Drawing.Size(288, 23);
+            this.scrollPixelSize.TabIndex = 5;
+            this.scrollPixelSize.Text = "hValueScrollBar1";
+            this.scrollPixelSize.Value = 3;
+            this.scrollPixelSize.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.scrollPixelSize_ValueChanged);
+            // 
+            // label44
+            // 
+            this.label44.AutoSize = true;
+            this.label44.Location = new System.Drawing.Point(19, 54);
+            this.label44.Name = "label44";
+            this.label44.Size = new System.Drawing.Size(55, 13);
+            this.label44.TabIndex = 3;
+            this.label44.Text = "Pixel Size:";
+            // 
+            // buttonHelp
+            // 
+            this.buttonHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.buttonHelp.Image = ((System.Drawing.Image)(resources.GetObject("buttonHelp.Image")));
+            this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.buttonHelp.Location = new System.Drawing.Point(649, 316);
+            this.buttonHelp.Name = "buttonHelp";
+            this.buttonHelp.Size = new System.Drawing.Size(60, 23);
+            this.buttonHelp.TabIndex = 59;
+            this.buttonHelp.Tag = "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/nutcracker-eff" +
+    "ects/";
+            this.buttonHelp.Text = "Help";
+            this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.buttonHelp.UseVisualStyleBackColor = true;
+            this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
+            // 
+            // preview
+            // 
+            this.preview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.preview.BackgroundAlpha = 255;
+            this.preview.CurrentTool = VixenModules.Preview.VixenPreview.VixenPreviewControl.Tools.Select;
+            this.preview.EditMode = false;
+            this.preview.Location = new System.Drawing.Point(6, 12);
+            this.preview.Name = "preview";
+            this.preview.Paused = false;
+            this.preview.Size = new System.Drawing.Size(273, 412);
+            this.preview.TabIndex = 0;
             // 
             // NutcrackerTypeEditorControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.buttonHelp);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -1792,5 +1837,8 @@
         private System.Windows.Forms.Label label43;
         private Common.Controls.ControlsEx.ValueControls.HMiniTracker trackTreeBranches;
         private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Button buttonHelp;
+        private Common.Controls.ControlsEx.ValueControls.HValueScrollBar scrollPixelSize;
+        private System.Windows.Forms.Label label44;
 	}
 }

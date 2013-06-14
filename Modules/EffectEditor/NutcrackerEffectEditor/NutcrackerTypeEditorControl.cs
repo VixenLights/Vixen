@@ -148,6 +148,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
             LoadColors();
             LoadPreview();
 
+            scrollPixelSize.Value = Data.PixelSize;
+
             timerRender.Start();
 
             loading = false;
@@ -298,7 +300,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
             //Console.WriteLine("degrees:" + degrees + " StringCount:" + stringCount + " tree.StringCount:" + tree.StringCount);
 
             tree.PixelCount = PixelsPerString();
-            tree.PixelSize = 3;
+            tree.PixelSize = Data.PixelSize;
             tree.PixelColor = Color.White;
             tree.Top = 10;
             tree.Left = 10;
@@ -319,7 +321,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
             PreviewArch arch = new PreviewArch(new PreviewPoint(10, 10), null);
 
             arch.PixelCount = PixelsPerString();
-            arch.PixelSize = 3;
+            arch.PixelSize = Data.PixelSize;
             arch.PixelColor = Color.White;
             arch.TopLeft = new Point(10, preview.Height / 2);
             arch.BottomRight = new Point((int)(preview.Width - 10), (int)(preview.Height - 10));
@@ -349,7 +351,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
             PreviewLine line = new PreviewLine(p1, p2, PixelsPerString(), null);
 
             line.PixelCount = PixelsPerString();
-            line.PixelSize = 3;
+            line.PixelSize = Data.PixelSize;
             line.PixelColor = Color.White;
             line.Layout();
             displayItem.Shape = line;
@@ -884,6 +886,18 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
         }
 
         #endregion //Tree
+
+        private void buttonHelp_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(buttonHelp.Tag.ToString());
+        }
+
+        private void scrollPixelSize_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender, Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+        {
+            Data.PixelSize = scrollPixelSize.Value;
+            displayItem.Shape.PixelSize = Data.PixelSize;
+        }
+
 
     }
 }
