@@ -57,15 +57,6 @@ namespace VixenModules.Preview.VixenPreview
 
 			SetDesktopLocation(Data.Left, Data.Top);
 			Size = new Size(Data.Width, Data.Height);
-			//if (Data.Width > MinimumSize.Width)
-			//    Width = Data.Width;
-			//else
-			//    Width = MinimumSize.Width;
-
-			//if (Data.Height > MinimumSize.Height)
-			//    Height = Data.Height;
-			//else
-			//    Height = MinimumSize.Height;
 		}
 
 		private void timerStatus_Tick(object sender, EventArgs e)
