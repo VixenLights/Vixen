@@ -112,21 +112,26 @@ namespace Vixen.Execution.DataSource {
 			IEnumerator<IEffectNode> dataEnumerator = _effectNodeSource.GetEnumerator();
 			try {
 				while(IsRunning) {
-					while(_IsBufferInadequate() && IsRunning && dataEnumerator.MoveNext()) {
+					while(_IsBufferInadequate() && IsRunning && dataEnumerator.MoveNext() && _effectNodeQueue != null) {
 						_AddToQueue(dataEnumerator.Current);
 					}
 
 					// Wait until the buffer is read from.
-					_bufferReadSignal.WaitOne();
+                    if (_bufferReadSignal != null)
+					    _bufferReadSignal.WaitOne();
 				}
 			} finally {
 				dataEnumerator.Dispose();
-				_bufferReadSignal.Close();
-				_bufferReadSignal.Dispose();
+                if (_bufferReadSignal != null)
+                {
+                    _bufferReadSignal.Close();
+                    _bufferReadSignal.Dispose();
+                }
 			}
 		}
 
 		private void _AddToQueue(IEffectNode effectNode) {
+          
 			_effectNodeQueue.Add(effectNode);
 			_LastBufferWritePoint = effectNode.StartTime;
 		}
