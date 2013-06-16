@@ -213,22 +213,26 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			//    color = newColor;
 			//}
 		}
-		~PreviewPixel() {
-			Dispose(false);
-		}
-		protected void Dispose(bool disposing) {
-			if (disposing) {
-				if (brush != null)
-					brush.Dispose();
-				
-			}
-			brush = null;
-			_node = null;
-		}
-		public void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
+
+        ~PreviewPixel()
+        {
+            Dispose(false);
+        }
+        protected void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (brush != null)
+                    brush.Dispose();
+
+            }
+            brush = null;
+            _node = null;
+        }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 	}
 }

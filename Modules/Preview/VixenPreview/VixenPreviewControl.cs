@@ -20,7 +20,7 @@ namespace VixenModules.Preview.VixenPreview
 
 	public partial class VixenPreviewControl : UserControl
 	{
-		bool UseFloods = false;
+		//bool UseFloods = false;
 
 		#region "Variables"
 		public VixenPreviewSetupElementsDocument elementsForm;
@@ -184,15 +184,15 @@ namespace VixenModules.Preview.VixenPreview
 		public VixenPreviewControl()
 			: base()
 		{
+            //VixenSystem.Logging.Debug("----------------- Preview:VixenPreviewControl Init ---------------------");
+
 			InitializeComponent();
 
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
 
-			context = BufferedGraphicsManager.Current;
-			AllocateGraphicsBuffer();
-
-
+			//context = BufferedGraphicsManager.Current;
+			//AllocateGraphicsBuffer();
 
 			//renderBackgroundWorker.DoWork += new DoWorkEventHandler(DoRenderWork);
 			//renderBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(RenderWorkCompleted);
@@ -200,8 +200,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void VixenPreviewControl_Load(object sender, EventArgs e)
 		{
-			InitializeGraphics();
-			//StartRefresh();
+			//InitializeGraphics();
 		}
 
 		public Bitmap Background
@@ -258,14 +257,10 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void SetupBackgroundAlphaImage()
 		{
-
-			if (_background != null)
+            //VixenSystem.Logging.Debug("Preview: SetupBackgroundAlphaImage");
+            if (_background != null)
 			{
-				AllocateGraphicsBuffer();
-				//_alphaBackground = new Bitmap(_background.Width, _background.Height);
 				_alphaBackground = new Bitmap(_background.Width, _background.Height, PixelFormat.Format32bppPArgb);
-
-				//bitmapFinal = bitmap.Clone(new Rectangle(0, 0, bitmap.Width, bitmap.Height), PixelFormat.Format32bppPArgb);bitmapFinal = bitmap.Clone(new Rectangle(0, 0, bitmap.Width, bitmap.Height), PixelFormat.Format32bppPArgb);
 
 				using (Graphics gfx = Graphics.FromImage(_alphaBackground))
 
@@ -282,42 +277,46 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		private void InitializeGraphics()
-		{
-			context = BufferedGraphicsManager.Current;
-			AllocateGraphicsBuffer();
-		}
+        int lastWidth = 0, lastHeight = 0;
+        private void AllocateGraphicsBuffer()
+        {
+            if (!Disposing)
+            {
+                //VixenSystem.Logging.Debug("Preview:AllocateGraphicsBuffer");
+                context = BufferedGraphicsManager.Current;
+                if (context != null)
+                {
+                    //VixenSystem.Logging.Debug("    - context != null");
+                    //VixenSystem.Logging.Debug("    - context.MaximumBuffer.Width:" + context.MaximumBuffer.Width + " context.MaximumBuffer.Height: " + context.MaximumBuffer.Height);
+                    if (this.Width > 0 && this.Height > 0 && (this.Height != lastHeight || this.Width != lastWidth))
+                    {
+                        lastHeight = this.Height;
+                        lastWidth = this.Width;
+                        //VixenSystem.Logging.Debug("    - this.Width" + this.Width + " this.Height: " + this.Height);
 
-		private void AllocateGraphicsBuffer()
-		{
-			if (!Disposing)
-			{
-				//lock (PreviewTools.renderLock)
-				//{
+                        context.MaximumBuffer = new Size(this.Width + 1, this.Height + 1);
 
-				if (context != null)
-				{
-					context.MaximumBuffer = new Size(this.Width + 1, this.Height + 1);
-
-					if (bufferedGraphics != null)
-					{
-						//lock (bufferedGraphics)
-						//{
-						bufferedGraphics.Dispose();
-						bufferedGraphics = null;
-						bufferedGraphics = context.Allocate(this.CreateGraphics(),
-							new Rectangle(0, 0, this.Width + 1, this.Height + 1));
-						//}
-					}
-					else
-					{
-						bufferedGraphics = context.Allocate(this.CreateGraphics(),
-						new Rectangle(0, 0, this.Width + 1, this.Height + 1));
-					}
-				}
-				//}
-			}
-		}
+                        if (bufferedGraphics != null)
+                        {
+                            //lock (bufferedGraphics)
+                            //{
+                            bufferedGraphics.Dispose();
+                            bufferedGraphics = null;
+                            bufferedGraphics = context.Allocate(this.CreateGraphics(),
+                                new Rectangle(0, 0, this.Width + 1, this.Height + 1));
+                            //}
+                            //VixenSystem.Logging.Debug("    - Existing bufferedGraphics allocated");
+                        }
+                        else
+                        {
+                            bufferedGraphics = context.Allocate(this.CreateGraphics(),
+                            new Rectangle(0, 0, this.Width + 1, this.Height + 1));
+                            //VixenSystem.Logging.Debug("    - New bufferedGraphcis allocated");
+                        }
+                    }
+                }
+            }
+        }
 
 		public void AddDisplayItem(DisplayItem displayItem)
 		{
@@ -759,7 +758,8 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void VixenPreviewControl_Resize(object sender, EventArgs e)
 		{
-			AllocateGraphicsBuffer();
+            if (!DesignMode) VixenSystem.Logging.Debug("Preview:Resize");
+            //AllocateGraphicsBuffer();
 		}
 
 		private void VixenPreviewControl_KeyUp(object sender, KeyEventArgs e)
@@ -873,41 +873,41 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		public void DrawDisplayItemsInBackground()
-		{
-			//Thread drawThread = new Thread(() => DrawDisplayItems(bufferedGraphics.Graphics));
-			//drawThread.Start();
-		}
+        //public void DrawDisplayItemsInBackground()
+        //{
+        //    //Thread drawThread = new Thread(() => DrawDisplayItems(bufferedGraphics.Graphics));
+        //    //drawThread.Start();
+        //}
 
-		public void UpdateColors(ElementNode node, Color newColor)
-		{
-			List<PreviewPixel> pixels;
-			if (NodeToPixel.TryGetValue(node, out pixels))
-			{
-				foreach (PreviewPixel pixel in pixels)
-				{
-					pixel.PixelColor = newColor;
-				}
-			}
-		}
+        //public void UpdateColors(ElementNode node, Color newColor)
+        //{
+        //    List<PreviewPixel> pixels;
+        //    if (NodeToPixel.TryGetValue(node, out pixels))
+        //    {
+        //        foreach (PreviewPixel pixel in pixels)
+        //        {
+        //            pixel.PixelColor = newColor;
+        //        }
+        //    }
+        //}
 
-		public void ResetColors()
-		{
-			foreach (List<PreviewPixel> pixels in NodeToPixel.Values)
-			{
-				foreach (PreviewPixel pixel in pixels)
-				{
-					if (_editMode)
-					{
-						pixel.PixelColor = Color.White;
-					}
-					else
-					{
-						pixel.PixelColor = Color.Transparent;
-					}
-				}
-			}
-		}
+        //public void ResetColors()
+        //{
+        //    foreach (List<PreviewPixel> pixels in NodeToPixel.Values)
+        //    {
+        //        foreach (PreviewPixel pixel in pixels)
+        //        {
+        //            if (_editMode)
+        //            {
+        //                pixel.PixelColor = Color.White;
+        //            }
+        //            else
+        //            {
+        //                pixel.PixelColor = Color.Transparent;
+        //            }
+        //        }
+        //    }
+        //}
 
 		public void Reload()
 		{
@@ -938,7 +938,6 @@ namespace VixenModules.Preview.VixenPreview
 							pixels = new List<PreviewPixel>();
 							pixels.Add(pixel);
 							NodeToPixel.TryAdd(pixel.Node, pixels);
-
 						}
 					}
 				}
@@ -1183,6 +1182,7 @@ namespace VixenModules.Preview.VixenPreview
 			lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
 		}
         #endregion
+
 		public void ProcessUpdateParallel(ElementIntentStates elementStates)
 		{
 			renderTimer.Reset();
@@ -1190,153 +1190,80 @@ namespace VixenModules.Preview.VixenPreview
 			CancellationTokenSource tokenSource = new CancellationTokenSource();
 			if (!_paused)
 			{
-				//FastPixel fp = new FastPixel(_background.Width, _background.Height);
 				using (FastPixel fp = new FastPixel(new Bitmap(_alphaBackground)))
 				{
-					try
-					{
-
-
-						var floodBDTask = Task.Factory.StartNew<Bitmap>(() =>
-						{
-
-							Bitmap floodBG = null;
-							if (UseFloods)
-							{
-								floodBG = PreviewTools.Copy32BPPBitmapSafe(_blankAlphaBackground);
-								//floodBG = new Bitmap(_blankAlphaBackground);
-								//floodBG = new Bitmap(_blankAlphaBackground.Width, _blankAlphaBackground.Height);
-								//Graphics g = Graphics.FromImage(floodBG);
-								//g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-								//SolidBrush brush = new SolidBrush(Color.FromArgb(50, 255, 0, 0));
-								//g.FillEllipse(brush, new Rectangle(200, 200, 300, 300));
-								//g.DrawImage(_blankAlphaBackground, 0, 0);
-								//g.FillRectangle(_backgroundBrush, new Rectangle(0, 0, _blankAlphaBackground.Width, _blankAlphaBackground.Height));
-							}
-							return floodBG;
-						}, tokenSource.Token);
-
+                    try
+                    {
 						fp.Lock();
-						elementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState =>
-						{
-							//foreach (var channelIntentState in elementStates)
-							//{
+                        elementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState =>
+                        {
 							var elementId = channelIntentState.Key;
 							Element element = VixenSystem.Elements.GetElement(elementId);
-							if (element != null)
-							{
-								ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
-								if (node != null)
-								{
 
-									//foreach (IIntentState intentState in channelIntentState.Value)
-									//{
-									//    intentState.Dispatch(DisplayItems[0]);
-									//}
-									
-									foreach (IIntentState<LightingValue> intentState in channelIntentState.Value)
-									{
-										if (_background != null)
-										{
+                            if (element != null)
+                            {
+                                ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
 
-											List<PreviewPixel> pixels;
-											if (NodeToPixel.TryGetValue(node, out pixels))
-											{
-												pixels.AsParallel().WithCancellation(tokenSource.Token).ForAll(pixel =>
-												{
-
-													//Color.FromArgb((int)(Intensity * byte.MaxValue), Color.R, Color.G, Color.B);
-													//LightingValue v = intentState.GetValue();
-													//Color c = v.GetOpaqueIntensityAffectedColor();
-													//Color c = v.GetAlphaChannelIntensityAffectedColor();
-													Color c = ((IIntentState<LightingValue>)intentState).GetValue().GetAlphaChannelIntensityAffectedColor();
-													//Color c = Color.White;
-													pixel.Draw(fp, c);
-												});
-											}
-
-										}
-									}
-
-
-								}
-							}
-							//}
-							
-							
+                                if (node != null)
+                                {
+                                    foreach (IIntentState<LightingValue> intentState in channelIntentState.Value)
+                                    {
+                                        Color c = ((IIntentState<LightingValue>)intentState).GetValue().GetAlphaChannelIntensityAffectedColor();
+                                        if (_background != null)
+                                        {
+                                            List<PreviewPixel> pixels;
+                                            if (NodeToPixel.TryGetValue(node, out pixels))
+                                            {
+                                                foreach (PreviewPixel pixel in pixels)
+                                                {
+                                                    pixel.Draw(fp, c);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
 						});
-						//if (UseFloods)
-						//{
-						//    foreach (DisplayItem displayItem in DisplayItems)
-						//    {
-						//        if (displayItem.Shape.StringType == PreviewBaseShape.StringTypes.Flood)
-						//        {
-						//            Color c = displayItem.Shape._pixels[0].PixelColor;
-						//            int alpha = c.A;
-						//            //int maxAlpha = 255 - BackgroundAlpha;
-						//            //if (maxAlpha < 255)
-						//            //{
-
-						//            //}
-						//            displayItem.Shape._pixels[0].PixelColor = Color.FromArgb(alpha, c.R, c.G, c.B);
-						//            displayItem.Shape.Draw(floodBG, false, null);
-						//            displayItem.Shape._pixels[0].PixelColor = Color.FromArgb(255 - BackgroundAlpha, 0, 0, 0);
-						//        }
-						//    }
-						//}
 						fp.Unlock(true);
 
-						RenderBufferedGraphics(fp, floodBDTask.Result);
+                        RenderBufferedGraphics(fp);
 					}
 					catch (Exception e)
 					{
 						tokenSource.Cancel();
 						Console.WriteLine(e.Message);
 					}
-
 				}
-
 			}
 
 			renderTimer.Stop();
 			lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
-
 		}
+
 		private object lockObject = new object();
-		delegate void RenderBufferedGraphicsDelgate(FastPixel fp, Bitmap floodBG);
-		private void RenderBufferedGraphics(FastPixel fp, Bitmap floodBG)
+		delegate void RenderBufferedGraphicsDelgate(FastPixel fp/*, Bitmap floodBG*/);
+		private void RenderBufferedGraphics(FastPixel fp/*, Bitmap floodBG*/)
 		{
-			if (this.InvokeRequired)
-			{
-				this.Invoke(new RenderBufferedGraphicsDelgate(RenderBufferedGraphics), fp, floodBG);
-			}
-			else
-				lock (lockObject)
-				{
-					// First, draw our background image opaque
-					bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-					//if (UseFloods)
-					//{
-					//    bufferedGraphics.Graphics.DrawImage(_background, 0, 0, _background.Width, _background.Height);
-					//}
-					//else
-					//{
-					//    bufferedGraphics.Graphics.DrawImage(_alphaBackground, 0, 0, _alphaBackground.Width, _alphaBackground.Height);
-					//}
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new RenderBufferedGraphicsDelgate(RenderBufferedGraphics), fp/*, floodBG*/);
+            }
+            else
+                //lock (lockObject)
+                //{
 
-					// Now, draw our "pixel" image using alpha blending
-					///bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
-					if (UseFloods)
-					{
-						bufferedGraphics.Graphics.DrawImage(floodBG, 0, 0, _blankAlphaBackground.Width, _blankAlphaBackground.Height);
-					}
-					bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
+                // No, this doesn't allocate every time. It first checks to see if the screen is 
+                // resized or the graphics buffer is not allocated. So it is checked for validity every time
+                // and re-allocated only if the something changed.
+                AllocateGraphicsBuffer();
 
-					if (!this.Disposing && bufferedGraphics != null)
-						bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
-				}
+				// First, draw our background image opaque
+				bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+				bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
+				if (!this.Disposing && bufferedGraphics != null)
+					bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
+                //}
 		}
-
 
 		//public void ResetNodeToPixelDictionary()
 		//{
@@ -1430,6 +1357,8 @@ namespace VixenModules.Preview.VixenPreview
         {
             renderTimer.Reset();
             renderTimer.Start();
+
+            AllocateGraphicsBuffer();
 
             if (_background != null)
             {

@@ -35,6 +35,8 @@ namespace VixenModules.Effect.Nutcracker
         public NutcrackerEffects.Effects CurrentEffect = NutcrackerEffects.Effects.Bars;
         [DataMember]
         public int Speed = 5;
+        [DataMember]
+        public int PixelSize = 2;
 
         [DataMember]
         public Palette Palette = new Palette();
@@ -155,9 +157,28 @@ namespace VixenModules.Effect.Nutcracker
         [DataMember]
         public int Picture_GifSpeed = 1;
 
+        // Spirograph
+        [DataMember]
+        public int Spirograph_ROuter = 20;
+        [DataMember]
+        public int Spirograph_RInner = 10;
+        [DataMember]
+        public int Spirograph_Distance = 30;
+        [DataMember]
+        public bool Spirograph_Animate = false;
+
+        // Tree
+        [DataMember]
+        public int Tree_Branches = 5;
+
         [OnDeserialized]
         void OnDeserialized(StreamingContext context)
         {
+            if (PreviewType == null)
+                PreviewType = NutcrackerEffects.PreviewType.Tree180;
+            else if (PreviewType.ToString() == "")
+                PreviewType = NutcrackerEffects.PreviewType.Tree180;
+
             if (Palette == null)
                 Palette = new Palette();
             if (Fire_Height < 1)
@@ -189,6 +210,19 @@ namespace VixenModules.Effect.Nutcracker
                 Picture_FileName = "";
             if (Picture_GifSpeed < 1)
                 Picture_GifSpeed = 1;
+
+            if (Spirograph_ROuter < 1)
+                Spirograph_ROuter = 20;
+            if (Spirograph_RInner < 1)
+                Spirograph_RInner = 10;
+            if (Spirograph_Distance < 1)
+                Spirograph_Distance = 30;
+
+            if (Tree_Branches == 0)
+                Tree_Branches = 5;
+
+            if (PixelSize == 0)
+                PixelSize = 3;
         }
     }
 }

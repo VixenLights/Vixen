@@ -13,7 +13,8 @@ namespace VixenApplication
         {
             try
             {
-                documentPath = Application.UserAppDataPath + "\\settings.xml";
+                //documentPath = Application.UserAppDataPath + "\\settings.xml";
+                documentPath = System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), "Vixen", "Settings.xml");
                 xmlDocument.Load(documentPath);
             }
             catch { xmlDocument.LoadXml("<settings></settings>"); }

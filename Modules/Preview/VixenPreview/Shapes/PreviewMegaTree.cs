@@ -385,13 +385,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 if (stringNum < (int)_stringsInDegrees)
                 {
-                    Point topPixel = _topEllipsePoints[stringNum];
-                    Point basePixel = _baseEllipsePoints[stringNum];
+                    if (stringNum < _topEllipsePoints.Count())
+                    {
+                        Point topPixel = _topEllipsePoints[stringNum];
+                        Point basePixel = _baseEllipsePoints[stringNum];
 
-                    PreviewLine line = _strings[stringNum] as PreviewLine;
-                    line.SetPoint0(basePixel.X, basePixel.Y);
-                    line.SetPoint1(topPixel.X, topPixel.Y);
-                    line.Layout();
+                        PreviewLine line = _strings[stringNum] as PreviewLine;
+                        line.SetPoint0(basePixel.X, basePixel.Y);
+                        line.SetPoint1(topPixel.X, topPixel.Y);
+                        line.Layout();
+                    }
                 }
             }
         }

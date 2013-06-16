@@ -70,10 +70,13 @@ namespace Vixen.Sys.Managers {
 		}
 
 		public Element GetElement(Guid id) {
-			if (_instances.ContainsKey(id)) {
-				return _instances[id];
-			}
-			return null;
+            //if (_instances.ContainsKey(id)) {
+            //    return _instances[id];
+            //}
+            //return null;
+            Element element;
+            _instances.TryGetValue(id, out element);
+            return element;
 		}
 
 		public bool SetElementNodeForElement(Element element, ElementNode node)
@@ -92,10 +95,13 @@ namespace Vixen.Sys.Managers {
 			if (element == null)
 				return null;
 
-			if (_elementToElementNode.ContainsKey(element))
-				return _elementToElementNode[element];
+            ElementNode node;
+            _elementToElementNode.TryGetValue(element, out node);
+            return node;
+            //if (_elementToElementNode.ContainsKey(element))
+            //    return _elementToElementNode[element];
 
-			return null;
+            //return null;
 		}
 
 		public void Update() {

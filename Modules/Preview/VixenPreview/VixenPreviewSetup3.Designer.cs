@@ -62,7 +62,6 @@
             this.comboBoxTemplates = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
-            this.buttonFlood = new System.Windows.Forms.Button();
             this.buttonStar = new System.Windows.Forms.Button();
             this.buttonNet = new System.Windows.Forms.Button();
             this.buttonCane = new System.Windows.Forms.Button();
@@ -317,7 +316,6 @@
             // panel4
             // 
             this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel4.Controls.Add(this.buttonFlood);
             this.panel4.Controls.Add(this.buttonStar);
             this.panel4.Controls.Add(this.buttonNet);
             this.panel4.Controls.Add(this.buttonCane);
@@ -328,20 +326,6 @@
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(84, 74);
             this.panel4.TabIndex = 9;
-            // 
-            // buttonFlood
-            // 
-            this.buttonFlood.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonFlood.BackgroundImage")));
-            this.buttonFlood.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.buttonFlood.Enabled = false;
-            this.buttonFlood.FlatAppearance.BorderSize = 0;
-            this.buttonFlood.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonFlood.Location = new System.Drawing.Point(56, 28);
-            this.buttonFlood.Name = "buttonFlood";
-            this.buttonFlood.Size = new System.Drawing.Size(22, 22);
-            this.buttonFlood.TabIndex = 11;
-            this.buttonFlood.UseVisualStyleBackColor = true;
-            this.buttonFlood.Click += new System.EventHandler(this.toolbarButton_Click);
             // 
             // buttonStar
             // 
@@ -775,7 +759,6 @@
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem backgroundPropertiesToolStripMenuItem;
-        private System.Windows.Forms.Button buttonFlood;
         private System.Windows.Forms.Panel panel7;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button buttonHelp;
