@@ -124,8 +124,8 @@ namespace VixenModules.Preview.VixenPreview
                 previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Triangle;
             else if (button == buttonNet)
                 previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Net;
-            else if (button == buttonFlood)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Flood;
+            //else if (button == buttonFlood)
+            //    previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Flood;
             else if (button == buttonCane)
                 previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Cane;
             else if (button == buttonStar)

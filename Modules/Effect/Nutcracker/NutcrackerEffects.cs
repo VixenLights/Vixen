@@ -5,6 +5,9 @@ using System.Text;
 using System.Drawing;
 using System.Diagnostics;
 using VixenModules.Effect.Nutcracker;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Collections.Concurrent;
 
 namespace VixenModules.Effect.Nutcracker
 {    
@@ -20,6 +23,7 @@ namespace VixenModules.Effect.Nutcracker
         private int[] FireBuffer, WaveBuffer0, WaveBuffer1, WaveBuffer2 = new int[1];
         private Random random = new Random();
         private List<Color> FirePalette = new List<Color>();
+        private Stopwatch timer = new Stopwatch();
 
         public enum Effects
         {
@@ -27,16 +31,18 @@ namespace VixenModules.Effect.Nutcracker
             Butterfly,
             ColorWash,
             Fire,
+            Fireworks,
             Garlands,
             Life,
             Meteors,
-            Fireworks,
+            Picture,
             Snowflakes,
             Snowstorm,
             Spirals,
-            Twinkles,
+            Spirograph, 
             Text,
-            Picture
+            Tree,
+            Twinkles
         }
         
         public enum PreviewType
@@ -46,7 +52,9 @@ namespace VixenModules.Effect.Nutcracker
             Tree180,
             Tree270,
             Tree360,
-            Arch
+            Arch,
+            HorizontalLine,
+            VerticalLine,
         }
 
         public NutcrackerEffects()
@@ -197,6 +205,187 @@ namespace VixenModules.Effect.Nutcracker
         }
 
         #endregion
+
+        
+        #region Pixels
+
+        public void InitBuffer(int bufferWidth, int bufferHeight)
+        {
+            _pixels.Clear();
+            _tempbuf.Clear();
+
+            List<Color> column;
+            for (int width = 0; width < bufferWidth; width++)
+            {
+                column = new List<Color>();
+                _pixels.Add(column);
+                column = new List<Color>();
+                _tempbuf.Add(column);
+                for (int height = 0; height < bufferHeight; height++)
+                {
+                    _pixels[width].Add(Color.Transparent);
+                    _tempbuf[width].Add(Color.Transparent);
+                }
+            }
+
+            Array.Resize(ref FireBuffer, bufferWidth * bufferHeight);
+            Array.Resize(ref WaveBuffer0, bufferWidth * bufferHeight);
+            Array.Resize(ref WaveBuffer1, bufferWidth * bufferHeight);
+            Array.Resize(ref WaveBuffer2, bufferWidth * bufferHeight);
+
+            InitFirePalette();
+
+            State = 0;
+        }
+
+        // initialize FirePalette[]
+        private void InitFirePalette()
+        {
+            HSV hsv = new HSV();
+            Color color;
+
+            FirePalette.Clear();
+            //wxImage::HSVValue hsv;
+            //wxImage::RGBValue rgb;
+            //wxColour color;
+            int i;
+            // calc 100 reds, black to bright red
+            hsv.Hue = 0.0f;
+            hsv.Saturation = 1.0f;
+            for (i = 0; i < 100; i++)
+            {
+                hsv.Value = (float)i / 100.0f;
+                //rgb = wxImage::HSVtoRGB(hsv);
+                //color.Set(rgb.red,rgb.green,rgb.blue);
+                color = HSV.HSVtoColor(hsv);
+                FirePalette.Add(color);
+                //FirePalette.push_back(color);
+            }
+
+            // gives 100 hues red to yellow
+            hsv.Value = 1.0f;
+            for (i = 0; i < 100; i++)
+            {
+                //rgb = wxImage::HSVtoRGB(hsv);
+                //color.Set(rgb.red,rgb.green,rgb.blue);
+                color = HSV.HSVtoColor(hsv);
+                //FirePalette.push_back(color);
+                FirePalette.Add(color);
+                hsv.Hue += 0.00166666f;
+            }
+        }
+
+        // 0,0 is lower left
+        public void SetPixel(int x, int y, Color color)
+        {
+            if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt)
+            {
+                _pixels[x][y] = color;
+            }
+        }
+
+        // 0,0 is lower left
+        public void SetPixel(int x, int y, HSV hsv)
+        {
+            Color color = HSV.HSVtoColor(hsv);
+            SetPixel(x, y, color);
+        }
+
+        public Color GetPixel(int x, int y)
+        {
+            return _pixels[x][y];
+        }
+
+        public Color GetPixel(int pixelToGet)
+        {
+            Color color = Color.White;
+            int pixelNum = 0;
+            for (int x = 0; x < BufferWi; x++)
+            {
+                for (int y = 0; y < BufferHt; y++)
+                {
+                    if (pixelNum == pixelToGet)
+                    {
+                        return _pixels[x][y]; 
+                    }
+                    pixelNum++;
+                }
+            }
+            return color;
+        }
+
+        public int PixelCount()
+        {
+            return BufferWi * BufferHt;
+        }
+
+        public void ClearPixels(Color color)
+        {
+            foreach (List<Color> column in Pixels)
+            {
+                for (int row = 0; row < column.Count; row++)
+                {
+                    column[row] = color;
+                }
+            }
+        }
+
+        // 0,0 is lower left
+        private void SetTempPixel(int x, int y, Color color)
+        {
+            if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt)
+            {
+                //tempbuf[y*BufferWi+x]=color;
+                _tempbuf[x][y] = color;
+            }
+        }
+
+        // 0,0 is lower left
+        private Color GetTempPixel(int x, int y)
+        {
+            if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt)
+            {
+                //return tempbuf[y*BufferWi+x];
+                return _tempbuf[x][y];
+            }
+            return Color.Black;
+        }
+
+        void ClearTempBuf()
+        {
+            for (int x = 0; x < BufferWi; x++)
+            {
+                for (int y = 0; y < BufferHt; y++)
+                {
+                    _tempbuf[x][y] = Color.Black;
+                }
+            }
+        }
+
+        private void CopyTempBufToPixels()
+        {
+            for (int x = 0; x < BufferWi; x++)
+            {
+                for (int y = 0; y < BufferHt; y++)
+                {
+                    Pixels[x][y] = _tempbuf[x][y];
+                }
+            }
+        }
+
+        private void CopyPixelsToTempBuf()
+        {
+            for (int x = 0; x < BufferWi; x++)
+            {
+                for (int y = 0; y < BufferHt; y++)
+                {
+                    _tempbuf[x][y] = Pixels[x][y];
+                }
+            }
+        }
+
+#endregion
+
 
         #region Nutcracker Effects
 
@@ -566,8 +755,7 @@ namespace VixenModules.Effect.Nutcracker
                 y = (y0 + n_y[i]) % BufferHt;
                 if (x < 0) x += BufferWi;
                 if (y < 0) y += BufferHt;
-                //if (GetTempPixelRGB(x, y) != 0) cnt++;
-                if (GetTempPixel(x, y) != Color.Black) cnt++;
+                if ((GetTempPixel(x, y) != Color.Black) && (GetTempPixel(x, y) != Color.Transparent)) cnt++;
             }
             return cnt;
         }
@@ -586,15 +774,15 @@ namespace VixenModules.Effect.Nutcracker
                 LastLifeCount=Count;
                 LastLifeType=Type;
                 ClearTempBuf();
-                for(i=0; i<Count; i++)
+                for (i = 0; i < Count; i++)
                 {
-                    x=rand() % BufferWi;
-                    y=rand() % BufferHt;
-                    color = GetMultiColorBlend(rand01(),false);
-                    SetTempPixel(x,y,color);
+                    x = rand() % BufferWi;
+                    y = rand() % BufferHt;
+                    color = GetMultiColorBlend(rand01(), false);
+                    SetTempPixel(x, y, color);
                 }
             }
-            long TempState = State % 400 / 20;
+            long TempState = (State % 400) / 20;
             if (TempState == LastLifeState)
             {
                 //Pixels=tempbuf;
@@ -612,7 +800,7 @@ namespace VixenModules.Effect.Nutcracker
                 {
                     color = GetTempPixel(x, y);
                     //isLive=(color.GetRGB() != 0);
-                    isLive = (color != Color.Black);
+                    isLive = (color != Color.Black && color != Color.Transparent);
                     cnt=Life_CountNeighbors(x,y);
                     switch (Type)
                     {
@@ -785,8 +973,6 @@ namespace VixenModules.Effect.Nutcracker
 
         #endregion // Meteors
 
-
-        // FIREWORKS IS BROKEN
         #region Fireworks
 
         //private RgbFireworks[] fireworkBursts = new RgbFireworks[20000];
@@ -808,182 +994,151 @@ namespace VixenModules.Effect.Nutcracker
         public void RenderFireworks(int Number_Explosions, int Count, float Velocity, int Fade)
         {
             int idxFlakes = 0;
-            int i = 0, x, y, mod100;
+            int i = 0;
+            int mod100;
             int x25, x75, y25, y75, stateChunk, denom;
             const int maxFlakes = 1000;
-            //float velocity = 3.5;
             int startX;
             int startY; //, ColorIdx;
             float v;
             HSV hsv = new HSV();
-            Color color, rgbcolor;
+            Color rgbcolor;
             int colorcnt = GetColorCount();
 
-            //Console.WriteLine(Number_Explosions + ":" + Count + ":" + Velocity + ":" + Fade);
-
-            InitFireworksBuffer();
-
-            if (State == 0)
-            {
-                for (i = 0; i < maxFlakes; i++)
-                {
-                    fireworkBursts[i]._bActive = false;
-                }
-            }
-            denom = (101 - Number_Explosions) * 100;
-            if (denom < 1) denom = 1;
-            stateChunk = (int)State / denom;
-            if (stateChunk < 1) stateChunk = 1;
-
-
-            //mod100 = (int)(State % ((101 - Number_Explosions) * 10));
-            mod100 = (int)(State % (101 - Number_Explosions) * 10);
-            //Console.WriteLine("s:" + State + " ne:" + ((101 - Number_Explosions) * 10));
-            //Console.WriteLine("mod100:" + mod100);
-            //        mod100 = (int)(state/stateChunk);
-            //        mod100 = mod100%10;
-            if (mod100 == 0)
+            // This does not work with 1 string, so use a try/catch block to prevent errors
+            try
             {
 
-                x25 = (int)(BufferWi * 0.25);
-                x75 = (int)(BufferWi * 0.75);
-                y25 = (int)(BufferHt * 0.25);
-                y75 = (int)(BufferHt * 0.75);
-                //startX = (int)(BufferWi / 2);
-                //startY = (int)(BufferHt / 2);
-                startX = x25 + (rand() % (x75 - x25));
-                startY = y25 + (rand() % (y75 - y25));
-                // turn off all bursts
+                InitFireworksBuffer();
 
-                // Create new bursts
-                for (i = 0; i < Count; i++)
+                if (State == 0)
                 {
-                    do
+                    for (i = 0; i < maxFlakes; i++)
                     {
-                        idxFlakes = (idxFlakes + 1) % maxFlakes;
+                        fireworkBursts[i]._bActive = false;
                     }
-                    while (fireworkBursts[idxFlakes]._bActive);
-                    fireworkBursts[idxFlakes].Reset(startX, startY, true, Velocity);
                 }
-            }
-            else
-            {
-                for (i = 0; i < maxFlakes; i++)
+                denom = (101 - Number_Explosions) * 100;
+                if (denom < 1) denom = 1;
+                stateChunk = (int)State / denom;
+                if (stateChunk < 1) stateChunk = 1;
+
+                mod100 = (int)(State % (101 - Number_Explosions) * 10);
+                if (mod100 == 0)
                 {
-                    // ... active flakes:
-                    if (fireworkBursts[i]._bActive)
+
+                    x25 = (int)(BufferWi * 0.25);
+                    x75 = (int)(BufferWi * 0.75);
+                    y25 = (int)(BufferHt * 0.25);
+                    y75 = (int)(BufferHt * 0.75);
+                    startX = x25 + (rand() % (x75 - x25));
+                    startY = y25 + (rand() % (y75 - y25));
+                    // turn off all bursts
+
+                    // Create new bursts
+                    for (i = 0; i < Count; i++)
                     {
-                        // Update position
-                        fireworkBursts[i]._x += fireworkBursts[i]._dx;
-                        fireworkBursts[i]._y += (float)(-fireworkBursts[i]._dy - fireworkBursts[i]._cycles * fireworkBursts[i]._cycles / 10000000.0);
-                        // If this flake run for more than maxCycle, time to switch it off
-                        fireworkBursts[i]._cycles += 20;
-                        if (10000 == fireworkBursts[i]._cycles) // if (10000 == fireworkBursts[i]._cycles)
+                        do
                         {
-                            fireworkBursts[i]._bActive = false;
-                            continue;
+                            idxFlakes = (idxFlakes + 1) % maxFlakes;
                         }
-                        // If this flake hit the earth, time to switch it off
-                        if (fireworkBursts[i]._y >= BufferHt)
+                        while (fireworkBursts[idxFlakes]._bActive);
+                        fireworkBursts[idxFlakes].Reset(startX, startY, true, Velocity);
+                    }
+                }
+                else
+                {
+                    for (i = 0; i < maxFlakes; i++)
+                    {
+                        // ... active flakes:
+                        if (fireworkBursts[i]._bActive)
                         {
-                            fireworkBursts[i]._bActive = false;
-                            continue;
-                        }
-                        // Draw the flake, if its X-pos is within frame
-                        if (fireworkBursts[i]._x >= 0.0 && fireworkBursts[i]._x < BufferWi)
-                        {
-                            // But only if it is "under" the roof!
-                            if (fireworkBursts[i]._y >= 0.0)
+                            // Update position
+                            fireworkBursts[i]._x += fireworkBursts[i]._dx;
+                            fireworkBursts[i]._y += (float)(-fireworkBursts[i]._dy - fireworkBursts[i]._cycles * fireworkBursts[i]._cycles / 10000000.0);
+                            // If this flake run for more than maxCycle, time to switch it off
+                            fireworkBursts[i]._cycles += 20;
+                            if (10000 == fireworkBursts[i]._cycles) // if (10000 == fireworkBursts[i]._cycles)
                             {
-                                // sean we need to set color here
+                                fireworkBursts[i]._bActive = false;
+                                continue;
+                            }
+                            // If this flake hit the earth, time to switch it off
+                            if (fireworkBursts[i]._y >= BufferHt)
+                            {
+                                fireworkBursts[i]._bActive = false;
+                                continue;
+                            }
+                            // Draw the flake, if its X-pos is within frame
+                            if (fireworkBursts[i]._x >= 0.0 && fireworkBursts[i]._x < BufferWi)
+                            {
+                                // But only if it is "under" the roof!
+                                if (fireworkBursts[i]._y >= 0.0)
+                                {
+                                    // sean we need to set color here
+                                }
+                            }
+                            else
+                            {
+                                // otherwise it just got outside the valid X-pos, so switch it off
+                                fireworkBursts[i]._bActive = false;
+                                continue;
                             }
                         }
-                        else
-                        {
-                            // otherwise it just got outside the valid X-pos, so switch it off
-                            fireworkBursts[i]._bActive = false;
-                            continue;
-                        }
+                    }
+                }
+
+                if (mod100 == 0) rgbcolor = Color.FromArgb(0, 255, 255);
+                else if (mod100 == 1) rgbcolor = Color.FromArgb(255, 0, 0);
+                else if (mod100 == 2) rgbcolor = Color.FromArgb(0, 255, 0);
+                else if (mod100 == 3) rgbcolor = Color.FromArgb(0, 0, 255);
+                else if (mod100 == 4) rgbcolor = Color.FromArgb(255, 255, 0);
+                else if (mod100 == 5) rgbcolor = Color.FromArgb(0, 255, 0);
+                else rgbcolor = Color.White;
+                hsv = HSV.ColorToHSV(rgbcolor);
+
+                for (i = 0; i < 1000; i++)
+                {
+                    if (fireworkBursts[i]._bActive == true)
+                    {
+                        v = (float)(((Fade * 10.0) - fireworkBursts[i]._cycles) / (Fade * 10.0));
+                        if (v < 0) v = 0.0f;
+
+                        hsv.Value = v;
+                        SetPixel((int)fireworkBursts[i]._x, (int)fireworkBursts[i]._y, hsv);
                     }
                 }
             }
-            //// Clear all Pixels
-            //color = Color.Black;
-            //hsv = HSV.ColorToHSV(color);
-            //for (y = 0;
-            //        y < BufferHt;
-            //        y++)
-            //{
-            //    for (x = 0; x < BufferWi; x++)
-            //    {
-            //        SetPixel(x, y, hsv);
-            //    }
-            //}
-
-            // Draw bursts with fixed color
-            //    if(state%300<=300) rgbcolor = wxColour(0,255,0);
-            //    if(state%300<=250) rgbcolor = wxColour(255,0,255);
-            //    if(state%300<=150) rgbcolor = wxColour(255,255,0);
-            //    if(state%300<=100) rgbcolor = wxColour(255,0,0);
-            //    if(state%300<=50) rgbcolor = wxColour(255,255,255);
-
-            if (mod100 == 0) rgbcolor = Color.FromArgb(0, 255, 255);
-            else if (mod100 == 1) rgbcolor = Color.FromArgb(255, 0, 0);
-            else if (mod100 == 2) rgbcolor = Color.FromArgb(0, 255, 0);
-            else if (mod100 == 3) rgbcolor = Color.FromArgb(0, 0, 255);
-            else if (mod100 == 4) rgbcolor = Color.FromArgb(255, 255, 0);
-            else if (mod100 == 5) rgbcolor = Color.FromArgb(0, 255, 0);
-            else rgbcolor = Color.White;
-            hsv = HSV.ColorToHSV(rgbcolor);
-
-
-            //ColorIdx=rand() % colorcnt; // Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
-            //ColorIdx=0;
-            //       palette.GetHSV(ColorIdx, hsv); // Now go and get the hsv value for this ColorIdx
-
-
-
-            for (i = 0; i < 1000; i++)
+            catch
             {
-                if (fireworkBursts[i]._bActive == true)
-                {
-                    v = (float)(((Fade * 10.0) - fireworkBursts[i]._cycles) / (Fade * 10.0));
-                    if (v < 0) v = 0.0f;
-
-                    hsv.Value = v;
-                    SetPixel((int)fireworkBursts[i]._x, (int)fireworkBursts[i]._y, hsv);
-                }
             }
         }
 
         public class RgbFireworks
         {
-            //static const float velocity = 2.5;
-            const int maxCycle = 4096;
-            const int maxNewBurstFlakes = 10;
-            public float _x;
-            public float _y;
-            public float _dx;
-            public float _dy;
-            public float vel;
-            public float angle;
-            public bool _bActive;
-            public int _cycles;
-            private Random random = new Random();
+	        public const int maxCycle = 4096;
+	        public const int maxNewBurstFlakes = 10;
+	        public float _x;
+	        public float _y;
+	        public float _dx;
+	        public float _dy;
+	        public float vel;
+	        public float angle;
+	        public bool _bActive;
+	        public int _cycles;
+            static private Random random = new Random();
 
-            public void Reset(int x, int y, bool active, float velocity)
-            {
-                _x = x;
-                _y = y;
+	        public void Reset(int x, int y, bool active, float velocity)
+	        {
+		        _x = x;
+		        _y = y;
                 vel = (random.Next() - int.MaxValue / 2) * velocity / (int.MaxValue / 2);
-                angle = (float)(2.0 * Math.PI * (double)random.Next() / (double)int.MaxValue);
-                _dx = (float)(vel * Math.Cos(angle));
-                _dy = (float)(vel * Math.Sin(angle));
-                _bActive = active;
-                _cycles = 0;
-
-                //Console.WriteLine("vel:" + vel + " angle:" + angle + " _dx:" + _dx + " _dy:" + _dy);
-            }
+                angle = (float)(2 * Math.PI * random.Next() / int.MaxValue);
+		        _dx = (float)(vel * Math.Cos(angle));
+		        _dy = (float)(vel * Math.Sin(angle));
+		        _bActive = active;
+		        _cycles = 0;
+	        }
         }
 
         #endregion
@@ -1315,6 +1470,9 @@ namespace VixenModules.Effect.Nutcracker
             long SpiralState = State * Direction;
             HSV hsv;
             Color color;
+
+            //timer.Reset(); timer.Start();
+
             for (int ns = 0; ns < SpiralCount; ns++)
             {
                 strand_base = ns * deltaStrands;
@@ -1351,6 +1509,8 @@ namespace VixenModules.Effect.Nutcracker
                     }
                 }
             }
+
+            //timer.Stop(); Console.WriteLine("RenderSpirals:" + timer.ElapsedMilliseconds);
         }
 
         #endregion // Spirals
@@ -1604,191 +1764,179 @@ namespace VixenModules.Effect.Nutcracker
 
         #endregion //Picture
 
+        #region Spirograph
+
+        public void RenderSpirograph(int int_R, int int_r, int int_d, bool Animate)
+        {
+            int i, x, y, k, xc, yc, ColorIdx;
+            int mod1440, state360, d_mod;
+            srand(1);
+            float R, r, d, d_orig, t;
+            double hyp, x2, y2;
+            HSV hsv, hsv0, hsv1; //   we will define an hsv color model. The RGB colot model would have been "wxColour color;"
+            int colorcnt = GetColorCount();
+
+            xc = (int)(BufferWi / 2); // 20x100 flex strips with 2 fols per strip = 40x50
+            yc = (int)(BufferHt / 2);
+            R = (float)(xc * (int_R / 100.0));   //  Radius of the large circle just fits in the width of model
+            r = (float)(xc * (int_r / 100.0)); // start little circle at 1/4 of max width
+            if (r > R) r = R;
+            d = (float)(xc * (int_d / 100.0));
+
+            //  palette.GetHSV(1, hsv1);
+            //
+            //    A hypotrochoid is a roulette traced by a point attached to a circle of radius r rolling around the inside of a fixed circle of radius R, where the point is a distance d from the center of the interior circle.
+            //The parametric equations for a hypotrochoid are:[citation needed]
+            //
+            //  more info: http://en.wikipedia.org/wiki/Hypotrochoid
+            //
+            //x(t) = (R-r) * cos t + d*cos ((R-r/r)*t);
+            //y(t) = (R-r) * sin t + d*sin ((R-r/r)*t);
+
+            // Doesn't work with single strings so capture errors
+            try
+            {
+                mod1440 = Convert.ToInt32(State % 1440);
+                state360 = Convert.ToInt32(State % 360);
+                d_orig = d;
+                for (i = 1; i <= 360; i++)
+                {
+                    if (Animate) d = (int)(d_orig + State / 2) % 100; // should we modify the distance variable each pass through?
+                    t = (float)((i + mod1440) * Math.PI / 180);
+                    x = Convert.ToInt32((R - r) * Math.Cos(t) + d * Math.Cos(((R - r) / r) * t) + xc);
+                    y = Convert.ToInt32((R - r) * Math.Sin(t) + d * Math.Sin(((R - r) / r) * t) + yc);
+
+                    if (colorcnt > 0) d_mod = (int)BufferWi / colorcnt;
+                    else d_mod = 1;
+
+                    x2 = Math.Pow((x - xc), 2);
+                    y2 = Math.Pow((y - yc), 2);
+                    hyp = (Math.Sqrt(x2 + y2) / BufferWi) * 100.0;
+                    ColorIdx = (int)(hyp / d_mod); // Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
+
+                    if (ColorIdx >= colorcnt) ColorIdx = colorcnt - 1;
+
+                    hsv = Palette.GetHSV(ColorIdx); // Now go and get the hsv value for this ColorIdx
+
+
+                    hsv0 = Palette.GetHSV(0);
+                    ColorIdx = Convert.ToInt32((State + rand()) % colorcnt); // Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
+                    hsv1 = Palette.GetHSV(ColorIdx); // Now go and get the hsv value for this ColorIdx
+
+                    SetPixel(x, y, hsv);
+                    //        if(i<=state360) SetPixel(x,y,hsv); // Turn pixel on
+                    //        else SetPixel(x,y,hsv1);
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        #endregion // Spirograph
+
+        #region Tree
+
+        public void RenderTree(int Branches)
+        {
+
+            int x,y,i,i7,r,ColorIdx,Count,pixels_per_branch;
+            int maxFrame, mod, branch, row;
+            int b, f_mod, m, frame;
+            int number_garlands,f_mod_odd,s_odd_row,odd_even;
+            float V,H;
+
+            number_garlands=1;
+            srand(1); // always have the same random numbers for each frame (state)
+            HSV hsv; //   we will define an hsv color model. The RGB colot model would have been "wxColour color;"
+            pixels_per_branch=(int)(0.5+BufferHt/Branches);
+            maxFrame=(Branches+1) *BufferWi;
+            int colorcnt=GetColorCount();
+            frame = (int)((State/4)%maxFrame);
+
+            i=0;
+
+            for (y=0; y<BufferHt; y++) // For my 20x120 megatree, BufferHt=120
+            {
+                for (x=0; x<BufferWi; x++) // BufferWi=20 in the above example
+                {
+                    mod=y%pixels_per_branch;
+                    if(mod==0) mod=pixels_per_branch;
+                    V=(float)(1-(1.0*mod/pixels_per_branch)*0.70);
+                    i++;
+
+                    ColorIdx=rand() % colorcnt; // Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
+                    ColorIdx=0;
+                    hsv = Palette.GetHSV(ColorIdx); // Now go and get the hsv value for this ColorIdx
+                    hsv.Value = V; // we have now set the color for the background tree
+
+                    //   $orig_rgbval=$rgb_val;
+                    branch = (int)((y-1)/pixels_per_branch);
+                    row = pixels_per_branch-mod; // now row=0 is bottom of branch, row=1 is one above bottom
+                    //  mod = which pixel we are in the branch
+                    //	mod=1,row=pixels_per_branch-1   top picrl in branch
+                    //	mod=2, second pixel down into branch
+                    //	mod=pixels_per_branch,row=0  last pixel in branch
+                    //
+                    //	row = 0, the $p is in the bottom row of tree
+                    //	row =1, the $p is in second row from bottom
+                    b = (int) ((State)/BufferWi)%Branches; // what branch we are on based on frame #
+                    //
+                    //	b = 0, we are on bottomow row of tree during frames 1 to BufferWi
+                    //	b = 1, we are on second row from bottom, frames = BufferWi+1 to 2*BufferWi
+                    //	b = 2, we are on third row from bottome, frames - 2*BufferWi+1 to 3*BufferWi
+                    f_mod = (int)((State/4)%BufferWi);
+                    //   if(f_mod==0) f_mod=BufferWi;
+                    //	f_mod is  to BufferWi-1 on each row
+                    //	f_mod == 0, left strand of this row
+                    //	f_mod==BufferWi, right strand of this row
+                    //
+                    m=(x%6);
+                    if(m==0) m=6;  // use $m to indicate where we are in horizontal pattern
+                    // m=1, 1sr strand
+                    // m=2, 2nd strand
+                    // m=6, last strand in 6 strand pattern
+
+                    r=branch%5;
+                    H = (float)(r/4.0);
+
+                    odd_even=b%2;
+                    s_odd_row = BufferWi-x+1;
+                    f_mod_odd = BufferWi-f_mod+1;
+
+                    if(branch<=b && x<=frame && // for branches below or equal to current row
+                            (((row==3 || (number_garlands==2 && row==6)) && (m==1 || m==6))
+                             ||
+                             ((row==2 || (number_garlands==2 && row==5)) && (m==2 || m==5))
+                             ||
+                             ((row==1 || (number_garlands==2 && row==4)) && (m==3 || m==4))
+                            ))
+                        if((odd_even ==0 && x<=f_mod) || (odd_even ==1 && s_odd_row<=f_mod))
+                        {
+                            hsv.Hue = H;
+                            hsv.Saturation=1.0f;
+                            hsv.Value=1.0f;
+                        }
+                    //  we left the Hue and Saturation alone, we are just modifiying the Brightness Value
+                    SetPixel(x,y,hsv); // Turn pixel on
+                }
+            }
+        }
+
+        #endregion // Tree
+
         #endregion // Nutcracker Effects
-
-        #region Pixels
-
-        public void InitBuffer(int bufferWidth, int bufferHeight)
-        {
-            _pixels.Clear();
-            _tempbuf.Clear();
-
-            List<Color> column;
-            for (int width = 0; width < bufferWidth; width++)
-            {
-                column = new List<Color>();
-                _pixels.Add(column);
-                column = new List<Color>();
-                _tempbuf.Add(column);
-                for (int height = 0; height < bufferHeight; height++)
-                {
-                    _pixels[width].Add(Color.Transparent);
-                    _tempbuf[width].Add(Color.Transparent);
-                }
-            }
-
-            Array.Resize(ref FireBuffer, bufferWidth * bufferHeight);
-            Array.Resize(ref WaveBuffer0, bufferWidth * bufferHeight);
-            Array.Resize(ref WaveBuffer1, bufferWidth * bufferHeight);
-            Array.Resize(ref WaveBuffer2, bufferWidth * bufferHeight);
-
-            InitFirePalette();
-
-            State = 0;
-        }
-
-        // initialize FirePalette[]
-        private void InitFirePalette()
-        {
-            HSV hsv = new HSV();
-            Color color;
-
-            FirePalette.Clear();
-            //wxImage::HSVValue hsv;
-            //wxImage::RGBValue rgb;
-            //wxColour color;
-            int i;
-            // calc 100 reds, black to bright red
-            hsv.Hue = 0.0f;
-            hsv.Saturation = 1.0f;
-            for (i = 0; i < 100; i++)
-            {
-                hsv.Value = (float)i / 100.0f;
-                //rgb = wxImage::HSVtoRGB(hsv);
-                //color.Set(rgb.red,rgb.green,rgb.blue);
-                color = HSV.HSVtoColor(hsv);
-                FirePalette.Add(color);
-                //FirePalette.push_back(color);
-            }
-
-            // gives 100 hues red to yellow
-            hsv.Value = 1.0f;
-            for (i = 0; i < 100; i++)
-            {
-                //rgb = wxImage::HSVtoRGB(hsv);
-                //color.Set(rgb.red,rgb.green,rgb.blue);
-                color = HSV.HSVtoColor(hsv);
-                //FirePalette.push_back(color);
-                FirePalette.Add(color);
-                hsv.Hue += 0.00166666f;
-            }
-        }
-
-        // 0,0 is lower left
-        public void SetPixel(int x, int y, Color color)
-        {
-            if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt)
-            {
-                _pixels[x][y] = color;
-            }
-        }
-
-        // 0,0 is lower left
-        public void SetPixel(int x, int y, HSV hsv)
-        {
-            Color color = HSV.HSVtoColor(hsv);
-            SetPixel(x, y, color);
-        }
-
-        public Color GetPixel(int x, int y)
-        {
-            return _pixels[x][y];
-        }
-
-        public Color GetPixel(int pixelToGet)
-        {
-            Color color = Color.White;
-            int pixelNum = 0;
-            for (int x = 0; x < BufferWi; x++)
-            {
-                for (int y = 0; y < BufferHt; y++)
-                {
-                    if (pixelNum == pixelToGet)
-                    {
-                        return _pixels[x][y]; 
-                    }
-                    pixelNum++;
-                }
-            }
-            return color;
-        }
-
-        public int PixelCount()
-        {
-            return BufferWi * BufferHt;
-        }
-
-        public void ClearPixels(Color color)
-        {
-            foreach (List<Color> column in Pixels)
-            {
-                for (int row = 0; row < column.Count; row++)
-                {
-                    column[row] = color;
-                }
-            }
-        }
-
-        // 0,0 is lower left
-        private void SetTempPixel(int x, int y, Color color)
-        {
-            if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt)
-            {
-                //tempbuf[y*BufferWi+x]=color;
-                _tempbuf[x][y] = color;
-            }
-        }
-
-        // 0,0 is lower left
-        private Color GetTempPixel(int x, int y)
-        {
-            if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt)
-            {
-                //return tempbuf[y*BufferWi+x];
-                return _tempbuf[x][y];
-            }
-            return Color.Black;
-        }
-
-        void ClearTempBuf()
-        {
-            for (int x = 0; x < BufferWi; x++)
-            {
-                for (int y = 0; y < BufferHt; y++)
-                {
-                    _tempbuf[x][y] = Color.Black;
-                }
-            }
-        }
-
-        private void CopyTempBufToPixels()
-        {
-            for (int x = 0; x < BufferWi; x++)
-            {
-                for (int y = 0; y < BufferHt; y++)
-                {
-                    Pixels[x][y] = _tempbuf[x][y];
-                }
-            }
-        }
-
-        private void CopyPixelsToTempBuf()
-        {
-            for (int x = 0; x < BufferWi; x++)
-            {
-                for (int y = 0; y < BufferHt; y++)
-                {
-                    _tempbuf[x][y] = Pixels[x][y];
-                }
-            }
-        }
-
-#endregion
 
         public void RenderNextEffect(Effects effect)
         {
+            RenderEffect(effect);
+            SetNextState(false);
+        }
+
+        public void RenderEffect(Effects effect)
+        {
             ClearPixels(Color.Transparent);
-            switch (effect) 
+            switch (effect)
             {
                 case Effects.Bars:
                     RenderBars(Data.Bars_PaletteRepeat, Data.Bars_Direction, Data.Bars_Highlight, Data.Bars_3D);
@@ -1830,11 +1978,15 @@ namespace VixenModules.Effect.Nutcracker
                     RenderText(Data.Text_Top, Data.Text_Left, Data.Text_Line1, Data.Text_Line2, Data.Text_Font, Data.Text_Direction, Data.Text_TextRotation);
                     break;
                 case Effects.Picture:
-                    //string pictureName = "C:\\Users\\Derek\\Desktop\\Icons\\fatcow-hosting-icon\\16x16\\64_bit.png";
                     RenderPictures(Data.Picture_Direction, Data.Picture_FileName, Data.Picture_GifSpeed);
                     break;
+                case Effects.Spirograph:
+                    RenderSpirograph(Data.Spirograph_ROuter, Data.Spirograph_RInner, Data.Spirograph_Distance, Data.Spirograph_Animate);
+                    break;
+                case Effects.Tree:
+                    RenderTree(Data.Tree_Branches);
+                    break;
             }
-            SetNextState(false);
         }
 
     }

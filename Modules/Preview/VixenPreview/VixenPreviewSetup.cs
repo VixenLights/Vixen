@@ -65,10 +65,10 @@ namespace VixenModules.Preview.VixenPreview
             preview.CurrentTool = VixenPreviewControl.Tools.String;
         }
 
-        public void UpdateColors(Vixen.Sys.ElementNode node, Color newColor)
-        {
-            preview.UpdateColors(node, newColor);
-        }
+        //public void UpdateColors(Vixen.Sys.ElementNode node, Color newColor)
+        //{
+        //    preview.UpdateColors(node, newColor);
+        //}
 
         private void preview_Load(object sender, EventArgs e)
         {
@@ -89,10 +89,10 @@ namespace VixenModules.Preview.VixenPreview
             toolStripStatusLastRenderTime.Text = "Render: " + Math.Round(preview.lastRenderUpdateTime).ToString() + "ms";
         }
 
-        public void ResetColors()
-        {
-            preview.ResetColors();
-        }
+        //public void ResetColors()
+        //{
+        //    preview.ResetColors();
+        //}
 
         private void toolStripButtonArch_Click(object sender, EventArgs e)
         {

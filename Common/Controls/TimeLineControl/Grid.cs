@@ -252,6 +252,7 @@ namespace Common.Controls.Timeline
 		{
 			if (ElementsFinishedMoving != null)
 				ElementsFinishedMoving(this, args);
+            StartBackgroundRendering();
 		}
 
 		private void _CursorMoved(TimeSpan t)
@@ -292,12 +293,10 @@ namespace Common.Controls.Timeline
             if (RenderProgressChanged != null)
             {
                 EventArgs args = new EventArgs();
-
                 RenderProgressChanged(this, new RenderElementEventArgs(percent));
-                //Console.WriteLine(percent);
             }
         }
-        
+
         #endregion
 
 
@@ -306,8 +305,8 @@ namespace Common.Controls.Timeline
 		protected void RowChangedHandler(object sender, EventArgs e)
 		{
 			// when dragging, the control will invalidate after it's done, in case multiple elements are changing.
-			if (m_dragState != DragState.Moving)
-				Invalidate();
+            if (m_dragState != DragState.Moving)
+                Invalidate();
 		}
 
 		protected void RowSelectedChangedHandler(object sender, ModifierKeysEventArgs e)
@@ -378,7 +377,6 @@ namespace Common.Controls.Timeline
 		private void RowToggledHandler(object sender, EventArgs e)
 		{
 			ResizeGridHeight();
-            RestartBackgroundRendering();
 		}
 
 		private void RowHeightChangedHandler(object sender, EventArgs e)
@@ -1149,7 +1147,7 @@ namespace Common.Controls.Timeline
         private bool _useBackgroundRendering = true;
         // Keep a list of rows we've processed -- and don't process them again
         private List<Row> renderedRows = new List<Row>();
-        private bool startRendering = true;
+        //private bool startRendering = false;
 
         public bool UseBackgroundRendering
         {
@@ -1157,10 +1155,10 @@ namespace Common.Controls.Timeline
             set { _useBackgroundRendering = value; }
         }
 
-        private void RestartBackgroundRendering()
-        {
-            startRendering = true;
-        }
+        //private void RestartBackgroundRendering()
+        //{
+        //    startRendering = true;
+        //}
 
         private void renderWorker_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -1182,62 +1180,89 @@ namespace Common.Controls.Timeline
                     }
                 }
             }
-            
-            // Continue looping through the elements to see if they need to be rendered.
-            // They will the first time and when a row is expanded.
-            while (!renderWorker.CancellationPending)
+
+            // Count the rows for progress reporting
+            int totalElements = 0;
+            foreach (Row row in Rows)
             {
-                if (startRendering)
-                {
-                    startRendering = false;
-
-                    // Count the rows for progress reporting
-                    int totalElements = 0;
-                    foreach (Row row in Rows)
-                    {
-                        if (row.Visible && renderedRows.IndexOf(row) < 0)
-                        {
-                            totalElements += row.ElementCount;
-                        }
-                    }
-
-                    int currentElementNum = 0;
-                    foreach (Row row in Rows)
-                    {
-                        if (row.Visible && renderedRows.IndexOf(row) < 0)
-                        {
-                            for (int i = 0; i < row.ElementCount; i++)
-                            {
-                                if (renderWorker.CancellationPending)
-                                    return;
-
-                                // If we have a sequence playing, stop rendering the effects in the background
-                                while (Context != null && Context.IsRunning)
-                                    Thread.Sleep(1000);
-
-                                Element currentElement = row.GetElementAtIndex(i);
-                                Size size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
-                                lock (drawLock)
-                                {
-                                    Bitmap elementImage = currentElement.Draw(size, false);
-                                }
-                                if (currentElement.StartTime <= VisibleTimeEnd && currentElement.EndTime >= VisibleTimeStart)
-                                        Invalidate();
-
-                                currentElementNum++;
-                                Thread.Sleep(0);
-                                renderWorker.ReportProgress((int)((double)currentElementNum / (double)totalElements * 100.0));
-                            }
-                            renderedRows.Add(row);
-
-                            // Is Sleep or Yield better?
-                            Thread.Sleep(0);
-                        }
-                    }
-                }
-                // Sleep between each iteration
-                Thread.Sleep(1500);
+                totalElements += row.ElementCount;
             }
+
+            int elementNum = 1;
+            foreach (Row row in Rows)
+            {
+                for (int i = 0; i < row.ElementCount; i++)
+                {
+                    Element element = row.GetElementAtIndex(i);
+                    Size size = new Size((int)Math.Ceiling(timeToPixels(element.Duration)), row.Height - 1);
+                    lock (drawLock)
+                    {
+                        Bitmap elementImage = element.Draw(size, false);
+                    }
+                    //if (element.StartTime <= VisibleTimeEnd && element.EndTime >= VisibleTimeStart)
+                    //    Invalidate();
+                    renderWorker.ReportProgress((int)(((double)elementNum / (double)totalElements) * 100.0));
+                    //Console.WriteLine("elmentNum:" + elementNum + " totalElements:" + totalElements + " " + (i / totalElements) * 100);
+                    elementNum++;
+                }
+            }
+
+            
+            //// Continue looping through the elements to see if they need to be rendered.
+            //// They will the first time and when a row is expanded.
+            //while (!renderWorker.CancellationPending)
+            //{
+            //    if (startRendering)
+            //    {
+            //        startRendering = false;
+
+            //        // Count the rows for progress reporting
+            //        int totalElements = 0;
+            //        foreach (Row row in Rows)
+            //        {
+            //            if (row.Visible && renderedRows.IndexOf(row) < 0)
+            //            {
+            //                totalElements += row.ElementCount;
+            //            }
+            //        }
+
+            //        int currentElementNum = 0;
+            //        foreach (Row row in Rows)
+            //        {
+            //            if (row.Visible && renderedRows.IndexOf(row) < 0)
+            //            {
+            //                for (int i = 0; i < row.ElementCount; i++)
+            //                {
+            //                    if (renderWorker.CancellationPending)
+            //                        return;
+
+            //                    // If we have a sequence playing, stop rendering the effects in the background
+            //                    while (Context != null && Context.IsRunning)
+            //                        Thread.Sleep(1000);
+
+            //                    Element currentElement = row.GetElementAtIndex(i);
+            //                    Size size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
+            //                    lock (drawLock)
+            //                    {
+            //                        Bitmap elementImage = currentElement.Draw(size, false);
+            //                    }
+            //                    if (currentElement.StartTime <= VisibleTimeEnd && currentElement.EndTime >= VisibleTimeStart)
+            //                            Invalidate();
+
+            //                    currentElementNum++;
+            //                    Thread.Sleep(0);
+            //                    renderWorker.ReportProgress((int)((double)currentElementNum / (double)totalElements * 100.0));
+            //                }
+            //                renderedRows.Add(row);
+
+            //                // Is Sleep or Yield better?
+            //                Thread.Sleep(0);
+            //            }
+            //        }
+            //    }
+            //    // Sleep between each iteration
+            //    Thread.Sleep(1500);
+            //}
         }
 
         private void renderWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -1251,7 +1276,13 @@ namespace Common.Controls.Timeline
 
         private void StartBackgroundWorker()
         {
-            if (renderWorker == null)
+            if (renderWorker != null)
+            {
+                //while (renderWorker.IsBusy) { Thread.Sleep(10); }; 
+                if (!renderWorker.IsBusy) 
+                    renderWorker.RunWorkerAsync();
+            }
+            else
             {
                 renderWorker = new BackgroundWorker();
                 renderWorker.WorkerReportsProgress = true;
@@ -1263,13 +1294,42 @@ namespace Common.Controls.Timeline
             }
         }
 
+        public void StartBackgroundRendering()
+        {
+            if (UseBackgroundRendering)
+                StartBackgroundWorker();
+        }
+
+        //public void RenderAllElements()
+        //{
+        //    // Count the rows for progress reporting
+        //    int totalElements = 0;
+        //    foreach (Row row in Rows)
+        //    {
+        //        totalElements += row.ElementCount;
+        //    }
+
+        //    int elementNum = 1;
+        //    foreach (Row row in Rows)
+        //    {
+        //        for (int i = 0; i < row.ElementCount; i++)
+        //        {
+        //            Element element = row.GetElementAtIndex(i);
+        //            Size size = new Size((int)Math.Ceiling(timeToPixels(element.Duration)), row.Height - 1);
+        //            Bitmap elementImage = element.Draw(size, false);
+        //            _RenderProgressChanged((int)(((double)elementNum / (double)totalElements)*100.0));
+        //            Console.WriteLine("elmentNum:" + elementNum + " totalElements:" + totalElements + " " + (i / totalElements) * 100);
+        //            elementNum++;
+        //        }
+        //    }
+        //    Invalidate();
+        //}
+
         #endregion
 
         static public System.Object drawLock = new System.Object();
         private void _drawElements(Graphics g)
         {
-            if (UseBackgroundRendering)
-                StartBackgroundWorker();
             // Lock here so we don't step on our background process!
             lock (drawLock)
             {
@@ -1318,7 +1378,6 @@ namespace Common.Controls.Timeline
 
                         Size size = new Size((int)Math.Ceiling(timeToPixels(currentElement.Duration)), row.Height - 1);
                         Bitmap elementImage = currentElement.Draw(size, Context.IsRunning);
-                        //Bitmap elementImage = currentElement.Draw(size, false);
                         bitmapsToDraw.Add(new BitmapDrawDetails() { bmp = elementImage, startTime = currentElement.StartTime, duration = currentElement.Duration });
 
                         // oh god make it stop

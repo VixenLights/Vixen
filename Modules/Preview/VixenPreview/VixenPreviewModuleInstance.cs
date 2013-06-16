@@ -87,7 +87,7 @@ namespace VixenModules.Preview.VixenPreview
             setupForm = new VixenPreviewSetup3();
             setupForm.Data = GetDataModel();
             //setupForm.Setup();
-            if (displayForm != null) 
+            if (displayForm != null)
                 displayForm.PreviewControl.Paused = true;
             Console.WriteLine("Paused");
             setupForm.ShowDialog();
@@ -97,7 +97,7 @@ namespace VixenModules.Preview.VixenPreview
             Console.WriteLine("Un-Paused");
             if (setupForm.DialogResult == DialogResult.OK)
             {
-                if (displayForm != null) 
+                if (displayForm != null)
                     displayForm.PreviewControl.Reload();
             }
             //return setupForm;
@@ -171,30 +171,23 @@ namespace VixenModules.Preview.VixenPreview
 
         protected override void Update()
         {
-            ProcessUpdate(ElementStates);
+            displayForm.PreviewControl.ProcessUpdateParallel(ElementStates);
+            //ProcessUpdate(ElementStates);
         }
 
-        delegate void ProcessUpdateDelegate(ElementIntentStates elementStates);
-        private void ProcessUpdate(ElementIntentStates elementStates)
-        {
-            Stopwatch timer = new Stopwatch();
-            timer.Start();
+        //delegate void ProcessUpdateDelegate(ElementIntentStates elementStates);
+        //private void ProcessUpdate(ElementIntentStates elementStates)
+        //{
+        //    //Stopwatch timer = new Stopwatch();
+        //    //timer.Start();
 
-            //displayForm.PreviewControl.ProcessUpdate(elementStates);
-            //displayForm.PreviewControl.BeginInvoke(new ProcessUpdateDelegate(displayForm.PreviewControl.ProcessUpdate), new object[] {elementStates});
-            //displayForm.PreviewControl.Process(elementStates);
-            //displayForm.PreviewControl.ProcessUpdateInTask(elementStates);
-            //displayForm.PreviewControl.RenderInForeground(elementStates);
+        //    displayForm.PreviewControl.ProcessUpdateParallel(elementStates);
+        //    //timer.Stop();
 
-            //displayForm.PreviewControl.BeginInvoke(new ProcessUpdateDelegate(displayForm.PreviewControl.ProcessUpdate), new object[] {elementStates});
-			displayForm.PreviewControl.ProcessUpdateParallel(elementStates);
-			
-			//displayForm.PreviewControl.ProcessUpdateParallel(elementStates);
-			timer.Stop();
-
-            VixenPreviewControl.updateCount += 1;
-            VixenPreviewControl.lastUpdateTime = timer.ElapsedMilliseconds;
-            VixenPreviewControl.totalUpdateTime += timer.ElapsedMilliseconds;
-            VixenPreviewControl.averageUpdateTime = VixenPreviewControl.totalUpdateTime / VixenPreviewControl.updateCount;        }
+        //    //VixenPreviewControl.updateCount += 1;
+        //    //VixenPreviewControl.lastUpdateTime = timer.ElapsedMilliseconds;
+        //    //VixenPreviewControl.totalUpdateTime += timer.ElapsedMilliseconds;
+        //    //VixenPreviewControl.averageUpdateTime = VixenPreviewControl.totalUpdateTime / VixenPreviewControl.updateCount;        }
+        //}
     }
 }

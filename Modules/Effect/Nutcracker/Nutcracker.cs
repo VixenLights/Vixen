@@ -9,6 +9,11 @@ using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Sys.Attribute;
 using System.Drawing;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Collections.Concurrent;
+using System.Diagnostics;
 
 namespace VixenModules.Effect.Nutcracker
 {
@@ -34,7 +39,7 @@ namespace VixenModules.Effect.Nutcracker
 
 		protected override EffectIntents _Render()
 		{
-			return _elementData;
+            return _elementData;
 		}
 
 		public override IModuleDataModel ModuleData
@@ -78,78 +83,115 @@ namespace VixenModules.Effect.Nutcracker
         {
             get
             {
-                int childCount = TargetNodes.FirstOrDefault().Children.Count();
-                //Console.WriteLine("StringCount:" + childCount);
-                //return TargetEffect.TargetNodes.Count();
+                int childCount = 0;
+                foreach (ElementNode node in TargetNodes.FirstOrDefault().Children)
+                {
+                    if (!node.IsLeaf)
+                    {
+                        childCount++;
+                    }
+                }
+                if (childCount == 0 && TargetNodes.FirstOrDefault().Children.Count() > 0)
+                {
+                    childCount = 1;
+                }
                 return childCount;
             }
+        }
+
+        private int PixelsPerString()
+        {
+            int pps = PixelsPerString(TargetNodes.FirstOrDefault());
+            //Console.WriteLine("StringCount:" + StringCount);
+            //Console.WriteLine("PixelsPerString:" + pps);
+            return pps;
+        }
+
+        private int PixelsPerString(ElementNode parentNode)
+        {
+            int pps = 0;
+            // Is this a single string?
+            int leafCount = 0;
+            int groupCount = 0;
+            foreach (ElementNode node in parentNode.Children)
+            {
+                if (node.IsLeaf)
+                {
+                    leafCount++;
+                }
+                else
+                {
+                    groupCount++;
+                }
+            }
+            if (groupCount == 0)
+            {
+                pps = leafCount;
+            }
+            else
+            {
+                pps = PixelsPerString(parentNode.Children.FirstOrDefault());
+            }
+            return pps;
         }
 
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
 		private void RenderNode(ElementNode node)
 		{
-            Console.WriteLine("RenderNode:" + node.Name);
-            bool CW = true;
-            Color color;
+            //Console.WriteLine("Nutcracker Node:" + node.Name);
+            //bool CW = true;
+            int stringCount = StringCount;
             int framesToRender = (int)TimeSpan.TotalMilliseconds / 50;
             NutcrackerEffects effect = new NutcrackerEffects(_data.NutcrackerData);
-            //
-            // Need to change this!!!!!!!!
-            //
-            int pixelsPerString = 50;
-            effect.InitBuffer(StringCount, pixelsPerString);
+            int pixelsPerString = PixelsPerString();
+            effect.InitBuffer(stringCount, pixelsPerString);
             int totalPixels = effect.PixelCount();
             TimeSpan startTime = TimeSpan.Zero;
             TimeSpan ms50 = new TimeSpan(0, 0, 0, 0, 50);
+            Stopwatch timer = new Stopwatch(); timer.Start();
 
             for (int frameNum = 0; frameNum < framesToRender; frameNum++)
             {
+                // Parallel will not work here. Nutcracker effects must be run in order
                 effect.RenderNextEffect(_data.NutcrackerData.CurrentEffect);
+
                 //int elementNum = 0;
-                int pixelNum = 0;
-                for (int stringNum = 0; stringNum < StringCount; stringNum++)
+                //int elementCount = node.Count();
+                //int stringNum = 0;
+                //int pixelNum = 0;
+                //Color color;
+                //foreach (Element element in node)
+                //{
+                //    stringNum = stringCount - (elementNum / pixelsPerString);
+                //    pixelNum = (stringNum * pixelsPerString) - (pixelsPerString - (elementNum % pixelsPerString));
+                //    color = effect.GetPixel(pixelNum);
+
+                //    LightingValue lightingValue = new LightingValue(color, (float)color.A);
+                //    IIntent intent = new LightingIntent(lightingValue, lightingValue, ms50);
+                //    _elementData.AddIntentForElement(element.Id, intent, startTime);
+
+                //    elementNum++;
+                //}
+
+                // Parallel 
+                // ElementAt is slow so convert it to a list first!
+                List<Element> elements = node.ToList();
+                int elementCount = node.Count() - 1;
+                Parallel.For(0, elementCount, elementNum =>
                 {
-                    for (int elementNum = 0; elementNum < pixelsPerString; elementNum++)
-                    {
-                        //Console.WriteLine("s:" + ((StringCount - stringNum) * pixelsPerString - (pixelsPerString - elementNum)));
-                        Element element = node.ElementAt((StringCount-stringNum) * pixelsPerString - (pixelsPerString - elementNum));
+                    int stringNum = stringCount - (elementNum / pixelsPerString);
+                    int pixelNum = (stringNum * pixelsPerString) - (pixelsPerString - (elementNum % pixelsPerString));
+                    Color color = effect.GetPixel(pixelNum);
 
-                        color = effect.GetPixel(pixelNum);
+                    LightingValue lightingValue = new LightingValue(color, (float)color.A);
+                    IIntent intent = new LightingIntent(lightingValue, lightingValue, ms50);
+                    _elementData.AddIntentForElement(elements[elementNum].Id, intent, startTime);
+                });
 
-                        LightingValue lightingValue = new LightingValue(color, (float)color.A);
-                        IIntent intent = new LightingIntent(lightingValue, lightingValue, ms50);
-                        _elementData.AddIntentForElement(element.Id, intent, startTime);
-
-                        pixelNum++;
-                    }
-                }
                 startTime = startTime.Add(ms50);
-            }
-
-            //for (int frameNum = 0; frameNum < framesToRender; frameNum++)
-            //{
-            //    effect.RenderNextEffect(_data.NutcrackerData.CurrentEffect);
-            //    int pixelNum = 0;
-            //    foreach (Element element in node)
-            //    {
-            //        if (CW)
-            //        {
-            //            color = effect.GetPixel(pixelNum);
-            //        }
-            //        else
-            //        {
-            //            color = effect.GetPixel(pixelNum);
-            //        }
-                    
-            //        LightingValue lightingValue = new LightingValue(color, (float)color.A);
-            //        IIntent intent = new LightingIntent(lightingValue, lightingValue, ms50);
-            //        _elementData.AddIntentForElement(element.Id, intent, startTime);
-
-            //        pixelNum++;
-            //    }
-            //    startTime = startTime.Add(ms50);
-            //}
-		}
+            };
+            timer.Stop(); Console.WriteLine("Nutcracker Render:" + timer.ElapsedMilliseconds + "ms Frames:" + framesToRender);
+        }
 	}
 }

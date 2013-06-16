@@ -57,22 +57,13 @@ namespace VixenModules.Preview.VixenPreview
 
 			SetDesktopLocation(Data.Left, Data.Top);
 			Size = new Size(Data.Width, Data.Height);
-			//if (Data.Width > MinimumSize.Width)
-			//    Width = Data.Width;
-			//else
-			//    Width = MinimumSize.Width;
-
-			//if (Data.Height > MinimumSize.Height)
-			//    Height = Data.Height;
-			//else
-			//    Height = MinimumSize.Height;
 		}
 
 		private void timerStatus_Tick(object sender, EventArgs e)
 		{
-			toolStripStatusLabel1.Text = preview.PixelCount.ToString();
+			toolStripStatusLabel1.Text = "Lights: " + preview.PixelCount.ToString();
 			//toolStripAverageUpdate.Text = "Average: " + Math.Round(VixenPreviewControl.averageUpdateTime).ToString() + "ms";
-			toolStripStatusCurrentUpdate.Text = "Last: " + Math.Round(VixenPreviewControl.lastUpdateTime).ToString() + "ms";
+			//toolStripStatusCurrentUpdate.Text = "Last: " + Math.Round(VixenPreviewControl.lastUpdateTime).ToString() + "ms";
 			//toolStripStatusLastRenderTime.Text = "Render: " + Math.Round(lastRenderTime).ToString() + "ms";
 			toolStripStatusLastRenderTime.Text = "Render: " + Math.Round(preview.lastRenderUpdateTime).ToString() + "ms";
 		}

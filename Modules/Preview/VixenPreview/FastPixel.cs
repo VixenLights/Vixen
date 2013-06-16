@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Collections;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace VixenModules.Preview.VixenPreview
 {
@@ -275,11 +275,9 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		static public Dictionary<int, FastPixel> circleCache = new Dictionary<int, FastPixel>();
+        static public ConcurrentDictionary<int, FastPixel> circleCache = new ConcurrentDictionary<int, FastPixel>();
 		public void DrawCircle(Rectangle rect, Color color)
 		{
-			//lock (Shapes.PreviewTools.renderLock)
-			//{
 			if (rect.Width > 0 && rect.Height > 0)
 			{
 				// Default drawing tools don't draw circles that are either 1 or 2 pixels,
@@ -304,99 +302,66 @@ namespace VixenModules.Preview.VixenPreview
 					// Row 2
 					SetPixel(rect.Left, rect.Top + 1, color);
 				}
-                    else if (rect.Width == 4)
-                    {
-                        // Row 1
-                        SetPixel(rect.Left, rect.Top, color);
-                        // Row 1
-                        SetPixel(rect.Left + 1, rect.Top, color);
-                        // Row 2
-                        SetPixel(rect.Left, rect.Top + 1, color);
-                        // Row 2
-                        SetPixel(rect.Left + 1, rect.Top + 1, color);
-                    }
-				//else if (rect.Width == 5)
-				//{
-				//    // Row 1
-				//    SetPixel(rect.Left, rect.Top, color);
-				//    // Row 1
-				//    SetPixel(rect.Left + 1, rect.Top, color);
-				//    // Row 1
-				//    SetPixel(rect.Left + 2, rect.Top, color);
-				//    // Row 2
-				//    SetPixel(rect.Left, rect.Top + 1, color);
-				//    // Row 2
-				//    SetPixel(rect.Left + 1, rect.Top + 1, color);
-				//}
-				//else if (rect.Width == 6)
-				//{
-				//    // Row 1
-				//    SetPixel(rect.Left, rect.Top, color);
-				//    // Row 1
-				//    SetPixel(rect.Left + 1, rect.Top, color);
-				//    // Row 1
-				//    SetPixel(rect.Left + 2, rect.Top, color);
-				//    // Row 2
-				//    SetPixel(rect.Left, rect.Top + 1, color);
-				//    // Row 2
-				//    SetPixel(rect.Left + 1, rect.Top + 1, color);
-				//    // Row 3
-				//    SetPixel(rect.Left + 2, rect.Top + 1, color);
-				//}
+                else if (rect.Width == 4)
+                {
+                    // Row 1
+                    SetPixel(rect.Left, rect.Top, color);
+                    // Row 1
+                    SetPixel(rect.Left + 1, rect.Top, color);
+                    // Row 2
+                    SetPixel(rect.Left, rect.Top + 1, color);
+                    // Row 2
+                    SetPixel(rect.Left + 1, rect.Top + 1, color);
+                }
 				else
 				{
-					Bitmap b;
-
-
-					FastPixel fp;
-					if (!FastPixel.circleCache.TryGetValue(rect.Width, out fp))
-					{
-						b = new Bitmap(rect.Width, rect.Height);
-						using (Graphics g = Graphics.FromImage(b))
-						{
-							//g.Clear(Color.Transparent);
-							//SolidBrush brush = new SolidBrush(Color.White);
-							g.FillEllipse(Brushes.White, new Rectangle(0, 0, rect.Width - 1, rect.Height - 1));
-							fp = new FastPixel(b);
-							FastPixel.circleCache.Add(rect.Width, fp);
-						}
-					}
-					fp.Lock();
-					for (int x = 0; x < rect.Width; x++)
-					{
-						for (int y = 0; y < rect.Height; y++)
-						{
-							Color newColor = fp.GetPixel(x, y);
-							if (newColor.A != 0)
-								SetPixel(rect.Left + x, rect.Top + y, color);
-						}
-					}
-					fp.Unlock(false);
-
+                    Bitmap b;
+                    FastPixel fp;
+                    if (!FastPixel.circleCache.TryGetValue(rect.Width, out fp))
+                    {
+                        b = new Bitmap(rect.Width, rect.Height);
+                        using (Graphics g = Graphics.FromImage(b))
+                        {
+                            g.FillEllipse(Brushes.White, new Rectangle(0, 0, rect.Width - 1, rect.Height - 1));
+                            fp = new FastPixel(b);
+                            // Lock the bitmap (loads pixels into memory buffer) now
+                            // and leave it that way because we'll never need to unlock it
+                            // to modify it -- it is just a circle after all
+                            fp.Lock();
+                            FastPixel.circleCache.TryAdd(rect.Width, fp);
+                        }
+                    }
+                    for (int x = 0; x < rect.Width; x++)
+                    {
+                        for (int y = 0; y < rect.Height; y++)
+                        {
+                            Color newColor = fp.GetPixel(x, y);
+                            if (newColor.A != 0)
+                                SetPixel(rect.Left + x, rect.Top + y, color);
+                        }
+                    }
 				}
 			}
-			//}
-
 		}
 
-		~FastPixel()
-		{
-			Dispose(false);
-		}
-		protected void Dispose(bool disposing)
-		{
-			if (disposing)
-			{
-				if (_bitmap != null)
-					_bitmap.Dispose();
+        ~FastPixel()
+        {
+            Dispose(false);
+        }
+        protected void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (_bitmap != null)
+                    _bitmap.Dispose();
 
-			}
-			_bitmap = null;
-		}
-		public void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
+            }
+            _bitmap = null;
+        }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 	}
 }
