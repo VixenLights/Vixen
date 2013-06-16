@@ -13,7 +13,17 @@ namespace Common.ScriptSequence.Script {
 		private string[] _standardReferences = {
             "System.dll",
             "System.Drawing.dll",
-			"System.Core.dll",
+			"System.Core.dll", 
+            "Vixen.dll",
+            "Common\\Controls.dll",
+            "Modules\\App\\ColorGradients.dll",
+            "Modules\\App\\Curves.dll",
+            "Modules\\Effect\\Candle.dll",
+            "Modules\\Effect\\Chase.dll",
+            "Modules\\Effect\\Nutcracker.dll",
+            "Modules\\Effect\\Spin.dll",
+            "Modules\\Effect\\Twinkle.dll",
+            //"Modules\\Effect\\SetPosition.dll",
 			"Microsoft.CSharp.dll" // Required for dynamic.
         };
 

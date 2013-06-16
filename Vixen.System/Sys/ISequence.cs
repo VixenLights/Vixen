@@ -5,7 +5,7 @@ using Vixen.Execution;
 using Vixen.Module;
 
 namespace Vixen.Sys {
-	public interface ISequence : IHasMedia, IHasSequenceFilterNodes, IDisposable {
+	public interface ISequence : IHasMedia, IHasSequenceFilterNodes {
         string Name { get; }
 		void Save();
 		void Save(string fileName);

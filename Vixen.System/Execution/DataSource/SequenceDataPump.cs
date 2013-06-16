@@ -77,8 +77,7 @@ namespace Vixen.Execution.DataSource {
 					_dataPumpThread.Abort();
 	            if (_effectNodeQueue != null)
 				    _effectNodeQueue.Dispose();
-                if (Sequence != null)
-				    Sequence.Dispose();
+              
 			}
 		}
 		public void Dispose()

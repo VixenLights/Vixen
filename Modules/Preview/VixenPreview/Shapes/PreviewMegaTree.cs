@@ -53,7 +53,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             _baseHeight = 40;
             _lightsPerString = 50;
             _degrees = 360;
-
+            
             _strings = new List<PreviewBaseShape>();
 
             int childLightCount;

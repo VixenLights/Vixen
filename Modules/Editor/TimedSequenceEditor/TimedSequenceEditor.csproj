@@ -50,11 +50,11 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-	<ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
-		<Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
-		<Name>Vixen</Name>
-		<Private>False</Private>
-	</ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
+      <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
+      <Name>Vixen</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
@@ -67,6 +67,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutomaticMusicDetection.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AutomaticMusicDetection.Designer.cs">
+      <DependentUpon>AutomaticMusicDetection.cs</DependentUpon>
+    </Compile>
     <Compile Include="EffectRasterizer.cs" />
     <Compile Include="IntentRasterizer.cs" />
     <Compile Include="MarkManager.cs">
@@ -86,6 +92,11 @@
     </Compile>
     <Compile Include="ParameterEditor.Designer.cs">
       <DependentUpon>ParameterEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="TimedSequenceEditor.cs" />
     <Compile Include="TimedSequenceEditorDescriptor.cs" />
@@ -110,10 +121,11 @@
     <Compile Include="TimedSequenceRowLabel.cs" />
     <Compile Include="Undo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
+    <EmbeddedResource Include="AutomaticMusicDetection.resx">
+      <DependentUpon>AutomaticMusicDetection.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MarkManager.resx">
       <DependentUpon>MarkManager.cs</DependentUpon>
     </EmbeddedResource>
@@ -135,6 +147,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Resources\minus-button.png" />
   </ItemGroup>
   <ItemGroup>
