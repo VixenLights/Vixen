@@ -558,7 +558,7 @@
             this.groupBox2.Controls.Add(this.radioAll);
             this.groupBox2.Controls.Add(this.btnAutoDetectionSettings);
             this.groupBox2.Controls.Add(this.ChkAutoTapper);
-            this.groupBox2.Location = new System.Drawing.Point(298, 84);
+            this.groupBox2.Location = new System.Drawing.Point(298, 101);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(171, 118);
             this.groupBox2.TabIndex = 19;
@@ -642,7 +642,7 @@
             this.groupBox1.Controls.Add(this.numLowPass);
             this.groupBox1.Controls.Add(this.chkHighPass);
             this.groupBox1.Controls.Add(this.chkLowPass);
-            this.groupBox1.Location = new System.Drawing.Point(475, 84);
+            this.groupBox1.Location = new System.Drawing.Point(475, 101);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(229, 75);
             this.groupBox1.TabIndex = 16;
@@ -693,7 +693,7 @@
             // chkHighPass
             // 
             this.chkHighPass.AutoSize = true;
-            this.chkHighPass.Location = new System.Drawing.Point(15, 48);
+            this.chkHighPass.Location = new System.Drawing.Point(15, 46);
             this.chkHighPass.Name = "chkHighPass";
             this.chkHighPass.Size = new System.Drawing.Size(74, 17);
             this.chkHighPass.TabIndex = 1;
@@ -796,7 +796,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(507, 184);
+            this.label4.Location = new System.Drawing.Point(507, 201);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(73, 13);
             this.label4.TabIndex = 4;
@@ -814,7 +814,7 @@
             // 
             // textBoxCurrentMark
             // 
-            this.textBoxCurrentMark.Location = new System.Drawing.Point(586, 181);
+            this.textBoxCurrentMark.Location = new System.Drawing.Point(586, 198);
             this.textBoxCurrentMark.Name = "textBoxCurrentMark";
             this.textBoxCurrentMark.ReadOnly = true;
             this.textBoxCurrentMark.Size = new System.Drawing.Size(90, 20);
