@@ -49,7 +49,8 @@ namespace VixenModules.Preview.VixenPreview
 			Net,
 			Flood,
 			Star,
-			Cane
+			Cane,
+            PixelGrid
 		}
 
 		//private List<DisplayItem> selectedDisplayItems = new List<DisplayItem>();
@@ -468,6 +469,11 @@ namespace VixenModules.Preview.VixenPreview
 							newDisplayItem = new DisplayItem();
 							newDisplayItem.Shape = new PreviewMegaTree(new PreviewPoint(e.X, e.Y), elementsForm.SelectedNode);
 						}
+                        else if (_currentTool == Tools.PixelGrid)
+                        {
+                            newDisplayItem = new DisplayItem();
+                            newDisplayItem.Shape = new PreviewPixelGrid(new PreviewPoint(e.X, e.Y), elementsForm.SelectedNode);
+                        }
 
 						// Now add the newely created display item to the screen.
 						if (newDisplayItem != null)

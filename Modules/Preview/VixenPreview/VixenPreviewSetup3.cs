@@ -134,6 +134,8 @@ namespace VixenModules.Preview.VixenPreview
                 Shapes.PreviewTools.ShowHelp(Properties.Settings.Default.Help_Main);
             else if (button == buttonMegaTree)
                 previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MegaTree;
+            else if (button == buttonPixelGrid)
+                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.PixelGrid;
         }
 
         private void trackBarBackgroundAlpha_ValueChanged(object sender, EventArgs e)

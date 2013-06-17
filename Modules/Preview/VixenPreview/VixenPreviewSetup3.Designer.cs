@@ -62,6 +62,7 @@
             this.comboBoxTemplates = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.buttonPixelGrid = new System.Windows.Forms.Button();
             this.buttonStar = new System.Windows.Forms.Button();
             this.buttonNet = new System.Windows.Forms.Button();
             this.buttonCane = new System.Windows.Forms.Button();
@@ -316,6 +317,7 @@
             // panel4
             // 
             this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel4.Controls.Add(this.buttonPixelGrid);
             this.panel4.Controls.Add(this.buttonStar);
             this.panel4.Controls.Add(this.buttonNet);
             this.panel4.Controls.Add(this.buttonCane);
@@ -326,6 +328,19 @@
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(84, 74);
             this.panel4.TabIndex = 9;
+            // 
+            // buttonPixelGrid
+            // 
+            this.buttonPixelGrid.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonPixelGrid.BackgroundImage")));
+            this.buttonPixelGrid.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.buttonPixelGrid.FlatAppearance.BorderSize = 0;
+            this.buttonPixelGrid.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonPixelGrid.Location = new System.Drawing.Point(56, 28);
+            this.buttonPixelGrid.Name = "buttonPixelGrid";
+            this.buttonPixelGrid.Size = new System.Drawing.Size(22, 22);
+            this.buttonPixelGrid.TabIndex = 11;
+            this.buttonPixelGrid.UseVisualStyleBackColor = true;
+            this.buttonPixelGrid.Click += new System.EventHandler(this.toolbarButton_Click);
             // 
             // buttonStar
             // 
@@ -343,7 +358,7 @@
             // buttonNet
             // 
             this.buttonNet.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonNet.BackgroundImage")));
-            this.buttonNet.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.buttonNet.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.buttonNet.FlatAppearance.BorderSize = 0;
             this.buttonNet.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonNet.Location = new System.Drawing.Point(31, 5);
@@ -765,6 +780,7 @@
         private System.Windows.Forms.Button buttonAddToPreview;
         private System.Windows.Forms.Button buttonDeleteTemplate;
         private System.Windows.Forms.Button buttonTemplateHelp;
+        private System.Windows.Forms.Button buttonPixelGrid;
 
     }
 }
