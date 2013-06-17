@@ -656,8 +656,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				CloseSequenceContext();
 			}
 			//_context = (ProgramContext)VixenSystem.Contexts.CreateContext(Sequence);
-			_context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.ContextLevelCaching), Sequence);
-			if (_context == null) {
+			//_context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.ContextLevelCaching), Sequence);
+            _context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.NoCaching), Sequence);
+            if (_context == null)
+            {
 				MessageBox.Show("Unable to play this sequence.  See error log for details.");
 				return;
 			}

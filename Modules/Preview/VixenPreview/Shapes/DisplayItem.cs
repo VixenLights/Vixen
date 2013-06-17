@@ -29,6 +29,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
     [KnownType(typeof(PreviewStar))]
     [KnownType(typeof(PreviewMegaTree))]
     [KnownType(typeof(PreviewCustom))]
+    [KnownType(typeof(PreviewPixelGrid))]
     public class DisplayItem : IHandler<IIntentState<LightingValue>>, IHandler<IIntentState<CommandValue>>, IDisposable
     {
         private PreviewBaseShape _shape;
@@ -44,16 +45,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get { return _shape; }
             set { _shape = value; }
         }
-
-        //public void Draw(FastPixel fp, Color color)
-        //{
-        //    _shape.Draw(fp, color);
-        //}
-
-        //public void Draw(FastPixel fp)
-        //{
-        //    _shape.Draw(fp);
-        //}
 
         public void Draw(FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected, bool forceDraw)
         {

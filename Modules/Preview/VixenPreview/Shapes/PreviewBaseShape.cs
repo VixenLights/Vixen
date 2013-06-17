@@ -569,6 +569,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				setupControl = new Shapes.PreviewCustomSetupControl(this);
 			}
+            else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewPixelGrid")
+            {
+                setupControl = new Shapes.PreviewPixelGridSetupControl(this);
+            }
 
 			return setupControl;
 		}

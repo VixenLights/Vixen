@@ -96,6 +96,11 @@
     <Compile Include="Shapes\PreviewCustomSetupControl.Designer.cs">
       <DependentUpon>PreviewCustomSetupControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Shapes\PreviewPixelGrid.cs" />
+    <Compile Include="Shapes\PreviewPixelGridSetupControl.cs" />
+    <Compile Include="Shapes\PreviewPixelGridSetupControl.Designer.cs">
+      <DependentUpon>PreviewPixelGridSetupControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Shapes\PreviewStarSetupControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -262,6 +267,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Shapes\PreviewCustomSetupControl.resx">
       <DependentUpon>PreviewCustomSetupControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shapes\PreviewPixelGridSetupControl.resx">
+      <DependentUpon>PreviewPixelGridSetupControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Shapes\PreviewStarSetupControl.resx">
       <DependentUpon>PreviewStarSetupControl.cs</DependentUpon>
