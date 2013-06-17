@@ -17,8 +17,9 @@ namespace Vixen.Execution.DataSource {
 
 		public void Start() {
 			if(Sequence == null) throw new InvalidOperationException("Sequence has not been set in the data pump.");
-
-			if(!IsRunning) {
+       
+            if (!IsRunning)
+            {
 				_StartThread();
 			}
 		}
@@ -38,8 +39,10 @@ namespace Vixen.Execution.DataSource {
 			return Enumerable.Empty<IEffectNode>();
 		}
 
-		private void _StartThread() {
-			_dataPumpThread = new Thread(_DataPumpThread) { IsBackground = true, Name = Sequence.Name + " data pump" };
+		private void _StartThread() 
+        {
+            _effectNodeQueue = new EffectNodeQueue();
+            _dataPumpThread = new Thread(_DataPumpThread) { IsBackground = true, Name = Sequence.Name + " data pump" };
 			_dataPumpThread.Start();
 		}
 
@@ -47,6 +50,7 @@ namespace Vixen.Execution.DataSource {
 			IsRunning = false;
 			_dataPumpThread.Join(1000);
 			_dataPumpThread = null;
+            _effectNodeQueue = null;
 		}
 
 		private void _DataPumpThread() {
