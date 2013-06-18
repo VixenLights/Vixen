@@ -33,7 +33,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 // If this is a Standard string, only set the first pixel of the string
                 if (shape.StringType == PreviewBaseShape.StringTypes.Standard)
                 {
+                    //Console.WriteLine("Standard String");
                     PreviewPixel pixel = shape.Pixels[0]; ;
+                    //Console.WriteLine(shape.Pixels[0].Node.Name.ToString());
                     newString.Pixels.Add(pixel.Clone());
                 }
                 // If this is a pixel string, let them set every pixel

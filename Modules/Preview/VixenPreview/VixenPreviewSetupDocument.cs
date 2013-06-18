@@ -37,7 +37,6 @@ namespace VixenModules.Preview.VixenPreview
         private void VixenPreviewSetupDocument_FormClosing(object sender, FormClosingEventArgs e)
         {
             timerRender.Stop();
-            Console.WriteLine("Closing");
         }
 
     }

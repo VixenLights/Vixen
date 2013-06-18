@@ -27,7 +27,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         private int _pixelSpacing = 8;
 
         private ElementNode initiallyAssignedNode = null;
-
         private bool lockXY = false;
         private PreviewPoint topLeftStart, topRightStart, bottomLeftStart, bottomRightStart;
         
@@ -50,7 +49,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             if (_pixelSpacing == 0)
                 _pixelSpacing = 8;
-            Layout();
+            //Layout();
         }
 
         #region "Properties"
@@ -178,6 +177,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         public override void Layout()
         {
+            //Console.WriteLine("Layout");
+            //if (_pixels == null) return;
+            //if (_pixels.Count() > 0 && _pixels[0].Node == null) return;
+
             ElementNode node = null;
             //Guid nodeId = Guid.Empty;
             if (PixelCount > 0)

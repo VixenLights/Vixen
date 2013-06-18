@@ -97,7 +97,9 @@
       <DependentUpon>PreviewCustomSetupControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Shapes\PreviewPixelGrid.cs" />
-    <Compile Include="Shapes\PreviewPixelGridSetupControl.cs" />
+    <Compile Include="Shapes\PreviewPixelGridSetupControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Shapes\PreviewPixelGridSetupControl.Designer.cs">
       <DependentUpon>PreviewPixelGridSetupControl.cs</DependentUpon>
     </Compile>
@@ -354,6 +356,7 @@
   <ItemGroup>
     <None Include="Resources\Flood.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

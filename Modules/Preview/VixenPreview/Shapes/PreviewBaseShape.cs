@@ -51,6 +51,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public void OnDeserialized(StreamingContext context)
 		{
 			ResizePixels();
+            //Layout();
 		}
 
 		[DataMember,
@@ -195,25 +196,35 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 if (_strings != null && _strings.Count > 0)
                 {
-                    ConcurrentBag<PreviewPixel> outPixels = new ConcurrentBag<PreviewPixel>();
-                    _strings.AsParallel().ForAll(line =>
-                    {
-                        line.Pixels.AsParallel().ForAll(pixel => outPixels.Add(pixel));
-                    });
-                    return outPixels.ToList();
-
-                    //List<PreviewPixel> outPixels = new List<PreviewPixel>();
-                    //foreach (PreviewBaseShape line in _strings)
+                    //ConcurrentBag<PreviewPixel> outPixels = new ConcurrentBag<PreviewPixel>();
+                    //_strings.AsParallel().ForAll(line =>
                     //{
-                    //    foreach (PreviewPixel pixel in line.Pixels)
-                    //    {
-                    //        outPixels.Add(pixel);
-                    //    }
-                    //}
+                    //    line.Pixels.AsParallel().ForAll(pixel => outPixels.Add(pixel));
+                    //});
                     //return outPixels.ToList();
+
+                    List<PreviewPixel> outPixels = new List<PreviewPixel>();
+                    foreach (PreviewBaseShape line in _strings)
+                    {
+                        foreach (PreviewPixel pixel in line.Pixels)
+                        {
+                            outPixels.Add(pixel);
+                        }
+                    }
+                    return outPixels.ToList();
                 }
                 else
                 {
+                    //if (_pixels != null)
+                    //{
+                    //    if (this.GetType().ToString().ToLower() == "PreviewNet") 
+                    //        Console.WriteLine(this.GetType().ToString() + ": " + _pixels.Count);
+                    //}
+                    //else 
+                    //{
+                    //    Console.WriteLine(this.GetType().ToString() + ": " + "_pixels=null");
+                    //}
+
                     return _pixels;
                 }
             }
@@ -232,25 +243,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				if (_strings != null)
 				{
+                    // No parallel here. There's not much going on
+
 					//Instead of going through the strings multiple times.. do it once
-					//// set all the sub-strings to match the connection state for elements
-					//foreach (PreviewBaseShape line in _strings)
-					//	line.connectStandardStrings = this.connectStandardStrings;
+                    // set all the sub-strings to match the connection state for elements
+                    foreach (PreviewBaseShape line in _strings)
+                        line.connectStandardStrings = this.connectStandardStrings;
 
 					// Set all the StringTypes in the substrings
-					if (_strings != null)
-					{
-						_strings.AsParallel().ForAll(line =>
-						{
-							line.connectStandardStrings = this.connectStandardStrings;
-
-							line.StringType = _stringType;
-						});
-						//foreach (PreviewBaseShape line in _strings)
-						//{
-						//	line.StringType = _stringType;
-						//}
-					}
+                    foreach (PreviewBaseShape line in _strings)
+                    {
+                        line.StringType = _stringType;
+                    }
 				}
 
 				List<PreviewBaseShape> stringsResult = _strings;
@@ -359,35 +363,35 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			if (Pixels != null)
 			{
-				Pixels.AsParallel().ForAll(p => p.PixelSize = PixelSize);
-				//foreach (PreviewPixel pixel in Pixels)
-				//{
-				//	pixel.PixelSize = PixelSize;
-				//}
+				//Pixels.AsParallel().ForAll(p => p.PixelSize = PixelSize);
+                foreach (PreviewPixel pixel in Pixels)
+                {
+                    pixel.PixelSize = PixelSize;
+                }
 			}
 
 			if (_strings != null && _strings.Count > 0)
 			{
-				_strings.AsParallel().ForAll(s => s.PixelSize = PixelSize);
+				//_strings.AsParallel().ForAll(s => s.PixelSize = PixelSize);
 
-				//foreach (PreviewBaseShape shape in _strings)
-				//{
-				//	shape.PixelSize = PixelSize;
-				//}
+                foreach (PreviewBaseShape shape in _strings)
+                {
+                    shape.PixelSize = PixelSize;
+                }
 			}
 			else
 			{
 				if (Pixels != null)
 				{
-					Pixels.AsParallel().ForAll(p => {
-						p.PixelSize = PixelSize;
-						p.Resize();
-					});
-					//foreach (PreviewPixel pixel in Pixels)
-					//{
-					//	pixel.PixelSize = PixelSize;
-					//	pixel.Resize();
-					//}
+                    //Pixels.AsParallel().ForAll(p => {
+                    //    p.PixelSize = PixelSize;
+                    //    p.Resize();
+                    //});
+                    foreach (PreviewPixel pixel in Pixels)
+                    {
+                        pixel.PixelSize = PixelSize;
+                        pixel.Resize();
+                    }
 				}
 			}
 		}

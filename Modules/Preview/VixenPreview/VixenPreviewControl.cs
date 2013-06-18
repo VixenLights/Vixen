@@ -202,7 +202,16 @@ namespace VixenModules.Preview.VixenPreview
 		private void VixenPreviewControl_Load(object sender, EventArgs e)
 		{
 			//InitializeGraphics();
+            LayoutProps();
 		}
+
+        public void LayoutProps() 
+        {
+            foreach (DisplayItem item in DisplayItems)
+            {
+                item.Shape.Layout();
+            }
+        }
 
 		public Bitmap Background
 		{
