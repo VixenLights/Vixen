@@ -53,6 +53,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>$(SolutionDir)\Release\Modules\Controller\</OutputPath>
     <Optimize>true</Optimize>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
 	<ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">

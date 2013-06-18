@@ -114,9 +114,12 @@
         // -------------------------------------------------------------
         public static void CopySeqNumSlots(byte[] phyBuffer, byte[] values, int offset, int slots, byte seqNum)
         {
-            const int INDEX = E131Root.PHYBUFFER_SIZE + E131Framing.PHYBUFFER_SIZE + E131DeviceManagementProtocol.PROPERTYVALUES_OFFSET + 1;
-            Array.Copy(values, offset, phyBuffer, INDEX, slots);
-            phyBuffer[E131Root.PHYBUFFER_SIZE + E131Framing.SEQUENCENUMBER_OFFSET] = seqNum;
+            if (values.Length > 0)
+            {
+                const int INDEX = E131Root.PHYBUFFER_SIZE + E131Framing.PHYBUFFER_SIZE + E131DeviceManagementProtocol.PROPERTYVALUES_OFFSET + 1;
+                Array.Copy(values, offset, phyBuffer, INDEX, slots);
+                phyBuffer[E131Root.PHYBUFFER_SIZE + E131Framing.SEQUENCENUMBER_OFFSET] = seqNum;
+            }
         }
 
         private void SetBuffer(byte[] bfr)

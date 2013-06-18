@@ -146,7 +146,7 @@ namespace VixenModules.Media.Audio
                     });
                 }
             }
-            catch (AccessViolationException) { }
+            catch (Exception) { }
         }
     }
 
