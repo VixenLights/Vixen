@@ -207,9 +207,12 @@ namespace VixenModules.Preview.VixenPreview
 
         public void LayoutProps() 
         {
-            foreach (DisplayItem item in DisplayItems)
+            if (DisplayItems != null)
             {
-                item.Shape.Layout();
+                foreach (DisplayItem item in DisplayItems)
+                {
+                    item.Shape.Layout();
+                }
             }
         }
 
