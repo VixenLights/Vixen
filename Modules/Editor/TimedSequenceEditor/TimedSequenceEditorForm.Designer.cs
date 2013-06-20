@@ -672,7 +672,7 @@
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripEffects);
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripOperations);
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripTiming);
-			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripExVirtualEffects);
+			//this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripExVirtualEffects);
 			// 
 			// timelineControl
 			// 
