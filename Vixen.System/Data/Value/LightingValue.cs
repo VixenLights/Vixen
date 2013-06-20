@@ -20,12 +20,6 @@ namespace Vixen.Data.Value {
 		/// between black (0,0,0) for a lighting value with an intensity of 0 and the solid color with an intensity of 100%.
 		/// </summary>
 		public Color GetOpaqueIntensityAffectedColor() {
-#if DEBUG
-			if (Intensity < 0.0)
-				Intensity = 0;
-			if (Intensity > 1.0)
-				Intensity = 1;
-#endif
 			return Color.FromArgb((int)(Color.R * Intensity), (int)(Color.G * Intensity), (int)(Color.B * Intensity));
 		}
 
@@ -35,12 +29,6 @@ namespace Vixen.Data.Value {
 		/// </summary>
 		public Color GetAlphaChannelIntensityAffectedColor()
 		{
-#if DEBUG
-			if (Intensity < 0.0)
-				Intensity = 0;
-			if (Intensity > 1.0)
-				Intensity = 1;
-#endif
 			// as this is a lighting value, the lower the intensity (brightness), the more transparent it should be.
 			return Color.FromArgb((int)(Intensity * byte.MaxValue), Color.R, Color.G, Color.B);
 		}
