@@ -1,4 +1,24 @@
 
+== 3.0.6 ============================
+
+
+- Display preview! There's now a new display preview module, written by Derek Backus. Still in development, so feel free to give feedback.
+- Nutcracker effects! Derek's also been hard at work on Nutcracker effects, which are fresh off the blocks. Still in development; feedback welcome.
+
+- Huge performance improvements, for application responsiveness, UI improvements, etc.  Still more to go...
+
+- Controllers: 595 and Hill320 fixups to get working.
+
+- Sequencer: mono audio files now work.
+- Sequencer: audio detection/frequency detection implemented.
+
+- Admin: setup dialogs won't prompt to save changes if nothing has changed.
+
+- There's now an installer for the application.
+
+
+
+
 == 3.0.5 ============================
 
 
