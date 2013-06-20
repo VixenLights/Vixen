@@ -9,7 +9,6 @@ using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Sys.Attribute;
 using System.Drawing;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Concurrent;
@@ -184,7 +183,7 @@ namespace VixenModules.Effect.Nutcracker
                     int pixelNum = (stringNum * pixelsPerString) - (pixelsPerString - (elementNum % pixelsPerString));
                     Color color = effect.GetPixel(pixelNum);
 
-                    LightingValue lightingValue = new LightingValue(color, (float)color.A);
+                    LightingValue lightingValue = new LightingValue(color, (float)(color.A / byte.MaxValue));
                     IIntent intent = new LightingIntent(lightingValue, lightingValue, ms50);
                     _elementData.AddIntentForElement(elements[elementNum].Id, intent, startTime);
                 });
