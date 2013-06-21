@@ -8,7 +8,7 @@ SetCompressorDictSize 64
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Vixen"
 !define PRODUCT_NAME_FULL "Vixen 3"
-!define PRODUCT_VERSION "X.X.X.X"
+!define PRODUCT_VERSION "3.0.6"
 !define PRODUCT_PUBLISHER "Vixen - Lighting Automation"
 !define PRODUCT_WEB_SITE "http://www.vixenlights.com/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\VixenApplication.exe"
@@ -46,7 +46,7 @@ SetCompressorDictSize 64
 !define MUI_LICENSEPAGE_TEXT_TOP "Press Page Down to see the rest of the release notes file."
 !define MUI_LICENSEPAGE_TEXT_BOTTOM "When you have finished reading, click on Next to proceed."
 !define MUI_LICENSEPAGE_BUTTON $(^NextBtn)
-!insertmacro MUI_PAGE_LICENSE "..\Release\releasenotes.txt"
+!insertmacro MUI_PAGE_LICENSE "..\Release\Release Notes.txt"
 
 ; Directory page
 DirText "Setup will install ${PRODUCT_NAME_FULL} in the following folder. $\n$\nTo install in a different folder (such as a USB Drive), click Browse and select another folder. $\nWhen ready, click next to continue."
@@ -63,7 +63,7 @@ var ICONS_GROUP
 !insertmacro MUI_PAGE_INSTFILES
 ; Finish page
 !define MUI_FINISHPAGE_RUN "$INSTDIR\VixenApplication.exe"
-!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\ChangeLog.txt"
+!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\Release Notes.txt"
 !insertmacro MUI_PAGE_FINISH
 
 ; Uninstaller pages
