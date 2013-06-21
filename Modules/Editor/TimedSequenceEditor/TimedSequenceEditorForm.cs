@@ -214,27 +214,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			foreach (ElementNode node in VixenSystem.Nodes.GetRootNodes()) {
 				addNodeAsRow(node, null);
 			}
+
 			timelineControl.ResizeGrid();
 		}
 
 		void loadTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
 		{
-			updateToolStrip4(string.Format("Please Wait. Loading: {1}", _sequence.Name, loadingWatch.Elapsed));
+            updateToolStrip4(string.Format("Please Wait. Loading: {1}", _sequence.Name, loadingWatch.Elapsed));
+        }
 
-
-		}
-		delegate void updateToolStrip4Delegate(string text);
-
-		private void updateToolStrip4(string text)
+        delegate void updateToolStrip4Delegate(string text);
+        private void updateToolStrip4(string text)
 		{
             if (this.InvokeRequired)
             {
-				this.Invoke(new updateToolStrip4Delegate(updateToolStrip4), text);
+                this.Invoke(new updateToolStrip4Delegate(updateToolStrip4), text);
 			} else {
-				this.toolStripStatusLabel4.Text = text;
+                this.toolStripStatusLabel4.Text = text;
 				if (string.IsNullOrWhiteSpace(text)) {
 					this.Invalidate();
-					this.Enabled = true;
+                    this.Enabled = true;
 					this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
 				}
 			}
@@ -252,40 +251,62 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			loadTimer.Enabled = true;
 			timelineControl.SequenceLoading = true;
 
+            // Let's get the window on the screen. Make it appear to instantly load.
+            Invalidate(true);
+            Update();
+
 			try {
+                Console.WriteLine("Loading 1: " + loadingWatch.ElapsedMilliseconds);
 				// default the sequence to 1 minute if it's not set
 				if (_sequence.Length == TimeSpan.Zero)
 					_sequence.Length = _defaultSequenceTime;
+                Console.WriteLine("Loading 2: " + loadingWatch.ElapsedMilliseconds);
 
 				SequenceLength = _sequence.Length;
+                Console.WriteLine("Loading 3: " + loadingWatch.ElapsedMilliseconds);
 
 				// update our program context with this sequence
 				OpenSequenceContext(sequence);
+                Console.WriteLine("Loading 4: " + loadingWatch.ElapsedMilliseconds);
 
 				// clear out all the old data
 				loadSystemNodesToRows();
+                Console.WriteLine("Loading 5: " + loadingWatch.ElapsedMilliseconds);
 
 				// load the new data: get all the commands in the sequence, and make a new element for each of them.
 				_effectNodeToElement = new Dictionary<EffectNode, Element>();
-				//_sequence.SequenceData.EffectData
-				//    .AsParallel()
-				//    .WithCancellation(cancellationTokenSource.Token)
-				//    .ForAll(node => addElementForEffectNode((EffectNode)node));
+                Console.WriteLine("Loading 6: " + loadingWatch.ElapsedMilliseconds);
 
-				
-                //var t1 = Task.Factory.StartNew(() => {
-					foreach (EffectNode node in _sequence.SequenceData.EffectData) {
-						addElementForEffectNode(node);
-						//addElementForEffectNodeTPL(node);
-					}
-                //});
-                //t1.Wait();
+                // This takes quite a bit of time so queue it up
+                var taskQueue = new Queue<Task>();
+                taskQueue.Enqueue(Task.Factory.StartNew(() =>
+                {
+                    foreach (EffectNode node in _sequence.SequenceData.EffectData)
+                    {
+                        addElementForEffectNodeTPL(node);
+                        //updateToolStrip4();
+                    }
+                }));
+                // Now that it is queued up, let 'er rip and start background rendering when complete.
+                Task.Factory.ContinueWhenAll(taskQueue.ToArray(), completedTasks =>
+                {
+                    // Clear the loading toolbar
+                    loadingWatch.Stop();
+                    timelineControl.SequenceLoading = false;
+                    loadTimer.Enabled = false;
+                    updateToolStrip4(string.Empty);
+                    timelineControl.grid.StartBackgroundRendering();
+                    Console.WriteLine("Done Loading Effects");
+                });
+                Console.WriteLine("Loading 7: " + loadingWatch.ElapsedMilliseconds);
 
 				populateGridWithMarks();
+                Console.WriteLine("Loading 8: " + loadingWatch.ElapsedMilliseconds);
 
-				//var t2 = Task.Factory.StartNew(() => populateWaveformAudio());
+				var t2 = Task.Factory.StartNew(() => populateWaveformAudio());
+
                 //t2.Wait();
-				populateWaveformAudio();
+				//populateWaveformAudio();
 
 				//Task.WaitAll(t1, t2);
 				//Original code set modified to always be true upon loading a sequence.
@@ -294,22 +315,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				//Added logic to determine if the sequence has a filepath to set modified JU 8/1/2012. 
 
 				_SetTimingToolStripEnabledState();
+                Console.WriteLine("Loading 9: " + loadingWatch.ElapsedMilliseconds);
 
 				if (String.IsNullOrEmpty(_sequence.FilePath)) {
 					sequenceModified();
 				} else {
 					sequenceNotModified();
 				}
+                Console.WriteLine("Loading 10: " + loadingWatch.ElapsedMilliseconds);
+
 				VixenSystem.Logging.Debug(string.Format("Sequence {0} took {1} to load. ", sequence.Name, loadingWatch.Elapsed));
 			} catch (Exception ee) {
 				VixenSystem.Logging.Error("Error loading sequence.", ee);
 			}
-			loadingWatch.Stop();
-			timelineControl.SequenceLoading = false;
-			loadTimer.Enabled = false;
-			updateToolStrip4(string.Empty);
+            //loadingWatch.Stop();
+            //loadTimer.Enabled = false;
 
-            timelineControl.grid.StartBackgroundRendering();
+            //timelineControl.grid.StartBackgroundRendering();
             //timelineControl.grid.RenderAllElements();
 		}
 
@@ -853,8 +875,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			//Debug.WriteLine("{0}   AddEffectNode({1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, node.Effect.InstanceId);
 			_sequence.InsertData(node);
-			return addElementForEffectNode(node);
-			//return addElementForEffectNodeTPL(node);
+			//return addElementForEffectNode(node);
+			return addElementForEffectNodeTPL(node);
 		}
 
 
@@ -984,41 +1006,42 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			return element;
 		}
-		private TimedSequenceElement addElementForEffectNodeTPL(EffectNode node)
-		{
-			TimedSequenceElement element = new TimedSequenceElement(node);
-			element.ContentChanged += ElementContentChangedHandler;
-			element.TimeChanged += ElementTimeChangedHandler;
+        private TimedSequenceElement addElementForEffectNodeTPL(EffectNode node)
+        {
+            TimedSequenceElement element = new TimedSequenceElement(node);
+            element.ContentChanged += ElementContentChangedHandler;
+            element.TimeChanged += ElementTimeChangedHandler;
 
-			// for the effect, make a single element and add it to every row that represents its target elements
-			node.Effect.TargetNodes.AsParallel().WithCancellation(cancellationTokenSource.Token).ForAll(target => {
+            // for the effect, make a single element and add it to every row that represents its target elements
+            node.Effect.TargetNodes.AsParallel().WithCancellation(cancellationTokenSource.Token).ForAll(target =>
+            {
+                if (_elementNodeToRows.ContainsKey(target))
+                {
+                    // Add the element to each row that represents the element this command is in.
+                    foreach (Row row in _elementNodeToRows[target])
+                    {
+                        if (!_effectNodeToElement.ContainsKey(node))
+                            _effectNodeToElement[node] = element;
+                        //else
+                        //    VixenSystem.Logging.Debug("TimedSequenceEditor: Making a new element, but the map already has one!");
+                        //Render this effect now to get it into the cache.
+                        //element.EffectNode.Effect.Render();
+                        row.AddElement(element);
+                    }
+                }
+                else
+                {
+                    // we don't have a row for the element this effect is referencing; most likely, the row has
+                    // been deleted, or we're opening someone else's sequence, etc. Big fat TODO: here for that, then.
+                    // dunno what we want to do: prompt to add new elements for them? map them to others? etc.
+                    string message = "No Timeline.Row is associated with a target ElementNode for this EffectNode. It now exists in the sequence, but not in the GUI.";
+                    MessageBox.Show(message);
+                    VixenSystem.Logging.Error(message);
+                }
+            });
 
-				if (_elementNodeToRows.ContainsKey(target)) {
-					// Add the element to each row that represents the element this command is in.
-					foreach (Row row in _elementNodeToRows[target]) {
-						if (!_effectNodeToElement.ContainsKey(node))
-							_effectNodeToElement[node] = element;
-						//else
-						//    VixenSystem.Logging.Debug("TimedSequenceEditor: Making a new element, but the map already has one!");
-						//Render this effect now to get it into the cache.
-						//element.EffectNode.Effect.Render();
-						row.AddElement(element);
-					}
-
-				} else {
-					// we don't have a row for the element this effect is referencing; most likely, the row has
-					// been deleted, or we're opening someone else's sequence, etc. Big fat TODO: here for that, then.
-					// dunno what we want to do: prompt to add new elements for them? map them to others? etc.
-					string message = "No Timeline.Row is associated with a target ElementNode for this EffectNode. It now exists in the sequence, but not in the GUI.";
-					MessageBox.Show(message);
-					VixenSystem.Logging.Error(message);
-				}
-
-			});
-
-
-			return element;
-		}
+            return element;
+        }
 
 
 		private void removeSelectedElements()
