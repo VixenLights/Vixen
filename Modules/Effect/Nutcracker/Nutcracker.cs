@@ -155,25 +155,7 @@ namespace VixenModules.Effect.Nutcracker
                 // Parallel will not work here. Nutcracker effects must be run in order
                 effect.RenderNextEffect(_data.NutcrackerData.CurrentEffect);
 
-                //int elementNum = 0;
-                //int elementCount = node.Count();
-                //int stringNum = 0;
-                //int pixelNum = 0;
-                //Color color;
-                //foreach (Element element in node)
-                //{
-                //    stringNum = stringCount - (elementNum / pixelsPerString);
-                //    pixelNum = (stringNum * pixelsPerString) - (pixelsPerString - (elementNum % pixelsPerString));
-                //    color = effect.GetPixel(pixelNum);
-
-                //    LightingValue lightingValue = new LightingValue(color, (float)color.A);
-                //    IIntent intent = new LightingIntent(lightingValue, lightingValue, ms50);
-                //    _elementData.AddIntentForElement(element.Id, intent, startTime);
-
-                //    elementNum++;
-                //}
-
-                // Parallel 
+                // Parallel works well here
                 // ElementAt is slow so convert it to a list first!
                 List<Element> elements = node.ToList();
                 int elementCount = node.Count() - 1;
@@ -183,7 +165,7 @@ namespace VixenModules.Effect.Nutcracker
                     int pixelNum = (stringNum * pixelsPerString) - (pixelsPerString - (elementNum % pixelsPerString));
                     Color color = effect.GetPixel(pixelNum);
 
-                    LightingValue lightingValue = new LightingValue(color, (float)(color.A / byte.MaxValue));
+                    LightingValue lightingValue = new LightingValue(color, (float)((float)color.A / (float)byte.MaxValue));
                     IIntent intent = new LightingIntent(lightingValue, lightingValue, ms50);
                     _elementData.AddIntentForElement(elements[elementNum].Id, intent, startTime);
                 });

@@ -305,7 +305,7 @@ namespace Common.Controls.Timeline
 		protected void RowChangedHandler(object sender, EventArgs e)
 		{
 			// when dragging, the control will invalidate after it's done, in case multiple elements are changing.
-            if (m_dragState != DragState.Moving)
+            if (m_dragState != DragState.Moving && !SequenceLoading)
                 Invalidate();
 		}
 
@@ -1276,22 +1276,27 @@ namespace Common.Controls.Timeline
 
         private void StartBackgroundWorker()
         {
-            if (renderWorker != null)
-            {
-                //while (renderWorker.IsBusy) { Thread.Sleep(10); }; 
-                if (!renderWorker.IsBusy) 
-                    renderWorker.RunWorkerAsync();
-            }
+            if (this.InvokeRequired)
+                this.Invoke(new Vixen.Delegates.GenericDelegate(StartBackgroundWorker));
             else
             {
-                renderWorker = new BackgroundWorker();
-                renderWorker.WorkerReportsProgress = true;
-                renderWorker.WorkerSupportsCancellation = true;
-                renderWorker.DoWork += new DoWorkEventHandler(renderWorker_DoWork);
-                renderWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(renderWorker_RunWorkerCompleted);
-                renderWorker.ProgressChanged += new ProgressChangedEventHandler(renderWorker_ProgressChanged);
-                renderWorker.RunWorkerAsync();
-            }
+                if (renderWorker != null)
+                {
+                    //while (renderWorker.IsBusy) { Thread.Sleep(10); }; 
+                    if (!renderWorker.IsBusy) 
+                        renderWorker.RunWorkerAsync();
+                }
+                else
+                {
+                    renderWorker = new BackgroundWorker();
+                    renderWorker.WorkerReportsProgress = true;
+                    renderWorker.WorkerSupportsCancellation = true;
+                    renderWorker.DoWork += new DoWorkEventHandler(renderWorker_DoWork);
+                    renderWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(renderWorker_RunWorkerCompleted);
+                    renderWorker.ProgressChanged += new ProgressChangedEventHandler(renderWorker_ProgressChanged);
+                    renderWorker.RunWorkerAsync();
+                }
+            }        
         }
 
         public void StartBackgroundRendering()
