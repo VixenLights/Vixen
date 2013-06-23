@@ -69,7 +69,7 @@ namespace Common.Controls.Timeline
 
 		protected void RowLabelChangedHandler(object sender, EventArgs e)
 		{
-			DoLayout();
+            DoLayout();
 		}
 
 		protected override void OnLayout(LayoutEventArgs e)
@@ -80,9 +80,9 @@ namespace Common.Controls.Timeline
 
 		protected override void OnVisibleChanged(EventArgs e)
 		{
-			base.OnVisibleChanged(e);
-			if (Visible)
-				DoLayout();
+            base.OnVisibleChanged(e);
+            if (Visible)
+                DoLayout();
 		}
 
 		#endregion
@@ -98,9 +98,12 @@ namespace Common.Controls.Timeline
 			else
 			{
 				RowLabels.Add(trl);
+                // Addint a control is VERY slow!
 				Controls.Add(trl);
+
 				trl.VisibleChanged += LabelVisibleChangedHandler;
-				DoLayout();
+                // Don't call DoLayout. It'll get called after all the rows have been added!
+				//DoLayout();
 			}
 		}
 
@@ -137,7 +140,6 @@ namespace Common.Controls.Timeline
 		{
 			if (RowLabels == null)
 				return;
-
 			int inset = RowLabel.ToggleTreeButtonWidth;
 			// TODO: here's to hoping they don't want to go more than 20 levels deep...
 			int[] dottedLineTops = new int[20];

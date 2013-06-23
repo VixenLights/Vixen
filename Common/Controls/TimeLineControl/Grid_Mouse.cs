@@ -309,7 +309,10 @@ namespace Common.Controls.Timeline
         private void elementsFinishedMoving(ElementMoveType type)
         {
             foreach (var elem in SelectedElements)
+            {
+                elem.Changed = true;
                 elem.EndUpdate();
+            }
 
             endAllDrag();
 

@@ -142,12 +142,24 @@ namespace Common.Controls.Timeline
 				if (m_selected == value)
 					return;
 
-				m_selected = value;
-				m_redraw = true;
-				CachedCanvasIsCurrent = false;
+                m_selected = value;
+				//m_redraw = true;
+				//CachedCanvasIsCurrent = false;
 				OnSelectedChanged();
 			}
 		}
+
+        bool _changed = true;
+        public bool Changed
+        {
+            set
+            {
+                m_redraw = true;
+                CachedCanvasIsCurrent = false;
+                _changed = value;
+            }
+            get { return _changed; }
+        }
 
 		#endregion
 
@@ -229,7 +241,7 @@ namespace Common.Controls.Timeline
 
 		private Bitmap CachedElementCanvas { get; set; }
 
-		private bool CachedCanvasIsCurrent { get; set; }
+		public bool CachedCanvasIsCurrent { get; set; }
 
 		protected virtual Bitmap SetupCanvas(Size imageSize)
 		{
@@ -277,49 +289,100 @@ namespace Common.Controls.Timeline
 			return CachedCanvasIsCurrent;
 		}
 
-		public Bitmap Draw(Size imageSize, bool useCachedImage)
+        public bool CheckForCurrentCanvas(Size imageSize) 
+        {
+            if (CachedElementCanvas == null || !IsCanvasContentCurrent(imageSize) || CachedElementCanvas.Width != imageSize.Width || CachedElementCanvas.Height != imageSize.Height)
+            {
+                if (CachedElementCanvas != null)
+                    CachedElementCanvas.Dispose();
+                CachedElementCanvas = SetupCanvas(imageSize);
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public Bitmap SetupCachedImage(Size imageSize)
+        {
+            if (!CheckForCurrentCanvas(imageSize))
+            {
+                using (Graphics g = Graphics.FromImage(CachedElementCanvas))
+                {
+                    DrawCanvasContent(g);
+                    AddSelectionOverlayToCanvas(g);
+                    CachedCanvasIsCurrent = true;
+                    m_rendered = true;
+                }
+                m_redraw = false;
+            }
+            return CachedElementCanvas;
+        }
+
+        public void DrawPlaceholder(Graphics g) 
+        {
+            g.FillRectangle(new SolidBrush(Color.FromArgb(122,122,122)), new Rectangle((int)g.VisibleClipBounds.Left, (int)g.VisibleClipBounds.Top, (int)g.VisibleClipBounds.Width, (int)g.VisibleClipBounds.Height));
+        }
+
+		public Bitmap Draw(Size imageSize)
 		{
-			if ((CachedElementCanvas == null || !IsCanvasContentCurrent(imageSize) || CachedElementCanvas.Width != imageSize.Width || CachedElementCanvas.Height != imageSize.Height))
-			{
-				if (CachedElementCanvas != null)
-					CachedElementCanvas.Dispose();
-				CachedElementCanvas = SetupCanvas(imageSize);
-				if (!useCachedImage || m_redraw)
-				{
-					using (Graphics g = Graphics.FromImage(CachedElementCanvas))
-					{
-						DrawCanvasContent(g);
-						AddSelectionOverlayToCanvas(g);
-						m_rendered = true;
-					}
-					CachedCanvasIsCurrent = true;
-					m_redraw = false;
-				}
-				else
-				{
-					using (Graphics g = Graphics.FromImage(CachedElementCanvas))
-					{
-						AddSelectionOverlayToCanvas(g);
-					}
-				}
+            if (CheckForCurrentCanvas(imageSize)) 
+            {
+                using (Graphics g = Graphics.FromImage(CachedElementCanvas))
+                {
+                    DrawCanvasContent(g);
+                    AddSelectionOverlayToCanvas(g);
+                    //CachedCanvasIsCurrent = true;
+                    //m_rendered = true;
+                }
+                //m_redraw = false;
+            } 
+            else 
+            {
+                using (Graphics g = Graphics.FromImage(CachedElementCanvas))
+                {
+                    DrawPlaceholder(g);
+                    AddSelectionOverlayToCanvas(g);
+                    m_rendered = false;
+                }
+            }
+            //    if (!useCachedImage || m_redraw)
+            //    {
+            //        using (Graphics g = Graphics.FromImage(CachedElementCanvas))
+            //        {
+            //            DrawCanvasContent(g);
+            //            AddSelectionOverlayToCanvas(g);
+            //            m_rendered = true;
+            //        }
+            //        CachedCanvasIsCurrent = true;
+            //        m_redraw = false;
+            //    }
+            //    else
+            //    {
+            //        using (Graphics g = Graphics.FromImage(CachedElementCanvas))
+            //        {
+            //            AddSelectionOverlayToCanvas(g);
+            //        }
+            //    }
 
-			}
-			else
-			{
-				if (!useCachedImage && !m_rendered)
-				{
-					if (CachedElementCanvas != null)
-						CachedElementCanvas.Dispose();
-					CachedElementCanvas = SetupCanvas(imageSize);
-					using (Graphics g = Graphics.FromImage(CachedElementCanvas))
-					{
-						DrawCanvasContent(g);
-						AddSelectionOverlayToCanvas(g);
-						m_rendered = true;
-					}
+            //}
+            //else
+            //{
+            //    if (!useCachedImage && !m_rendered)
+            //    {
+            //        if (CachedElementCanvas != null)
+            //            CachedElementCanvas.Dispose();
+            //        CachedElementCanvas = SetupCanvas(imageSize);
+            //        using (Graphics g = Graphics.FromImage(CachedElementCanvas))
+            //        {
+            //            DrawCanvasContent(g);
+            //            AddSelectionOverlayToCanvas(g);
+            //            m_rendered = true;
+            //        }
 
-				}
-			}
+            //    }
+            //}
 			return CachedElementCanvas;
 		}
 

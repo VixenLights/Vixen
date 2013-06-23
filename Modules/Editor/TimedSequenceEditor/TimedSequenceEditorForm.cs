@@ -211,11 +211,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (clearCurrentRows)
 				timelineControl.ClearAllRows();
 
-			foreach (ElementNode node in VixenSystem.Nodes.GetRootNodes()) {
-				addNodeAsRow(node, null);
-			}
-
-			timelineControl.ResizeGrid();
+            foreach (ElementNode node in VixenSystem.Nodes.GetRootNodes())
+            {
+                addNodeAsRow(node, null);
+            }
+            timelineControl.LayoutRows();
+            timelineControl.ResizeGrid();
 		}
 
 		void loadTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -229,9 +230,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
             if (this.InvokeRequired)
             {
                 this.Invoke(new updateToolStrip4Delegate(updateToolStrip4), text);
-			} else {
+            }
+            else
+            {
                 this.toolStripStatusLabel4.Text = text;
-				if (string.IsNullOrWhiteSpace(text)) {
+                if (string.IsNullOrWhiteSpace(text))
+                {
 					this.Invalidate();
                     this.Enabled = true;
 					this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
@@ -242,7 +246,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		Stopwatch loadingWatch = null;
 		private void loadSequence(Vixen.Sys.ISequence sequence)
 		{
-			if (loadTimer == null) {
+            var taskQueue = new Queue<Task>();
+            
+            if (loadTimer == null)
+            {
 				loadTimer = new System.Timers.Timer();
 				loadTimer.Elapsed += loadTimer_Elapsed;
 				loadTimer.Interval = 250;
@@ -271,6 +278,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				// clear out all the old data
 				loadSystemNodesToRows();
+                //taskQueue.Enqueue(Task.Factory.StartNew(() => { loadSystemNodesToRows(); }));
                 Console.WriteLine("Loading 5: " + loadingWatch.ElapsedMilliseconds);
 
 				// load the new data: get all the commands in the sequence, and make a new element for each of them.
@@ -278,7 +286,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 Console.WriteLine("Loading 6: " + loadingWatch.ElapsedMilliseconds);
 
                 // This takes quite a bit of time so queue it up
-                var taskQueue = new Queue<Task>();
                 taskQueue.Enqueue(Task.Factory.StartNew(() =>
                 {
                     foreach (EffectNode node in _sequence.SequenceData.EffectData)
@@ -454,13 +461,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			try {
 				if (!Disposing) {
-					toolStripProgressBar_RenderingElements.Value = e.Percent;
+                    if (e.Percent >= 0 && e.Percent <= 100)
+                    {
+                        toolStripProgressBar_RenderingElements.Value = e.Percent;
+                    }
 					if (e.Percent == 100) {
 						toolStripProgressBar_RenderingElements.Visible = false;
 						toolStripStatusLabel_RenderingElements.Visible = false;
 					} else if (!toolStripProgressBar_RenderingElements.Visible) {
-						toolStripProgressBar_RenderingElements.Visible = true;
-						toolStripStatusLabel_RenderingElements.Visible = true;
+                        toolStripProgressBar_RenderingElements.Visible = true;
+                        toolStripStatusLabel_RenderingElements.Visible = true;
 					}
 				}
 			} catch {
@@ -558,8 +568,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			using (TimedSequenceEditorEffectEditor editor = new TimedSequenceEditorEffectEditor(elements.Select(x => x.EffectNode))) {
 				DialogResult result = editor.ShowDialog();
-				if (result == DialogResult.OK)
-					sequenceModified();
+                if (result == DialogResult.OK)
+                {
+                    foreach (Element element in elements)
+                        element.Changed = true;
+                    sequenceModified();
+                }
 			}
 		}
 
@@ -1072,24 +1086,33 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// </summary>
 		/// <param name="node">The node to generate a row for.</param>
 		/// <param name="parentRow">The parent node the row should belong to, if any.</param>
+        int doEventsCounter = 0;
 		private void addNodeAsRow(ElementNode node, Row parentRow)
 		{
 			// made the new row from the given node and add it to the control.
 			TimedSequenceRowLabel label = new TimedSequenceRowLabel();
 			label.Name = node.Name;
 			Row newRow = timelineControl.AddRow(label, parentRow, 32);
-			newRow.ElementRemoved += ElementRemovedFromRowHandler;
+            newRow.ElementRemoved += ElementRemovedFromRowHandler;
 			newRow.ElementAdded += ElementAddedToRowHandler;
 
 			// Tag it with the node it refers to, and take note of which row the given element node will refer to.
 			newRow.Tag = node;
-			if (_elementNodeToRows.ContainsKey(node))
-				_elementNodeToRows[node].Add(newRow);
-			else
-				_elementNodeToRows[node] = new List<Row> { newRow };
+            if (_elementNodeToRows.ContainsKey(node))
+                _elementNodeToRows[node].Add(newRow);
+            else
+                _elementNodeToRows[node] = new List<Row> { newRow };
+
+            // This slows the load down just a little, but it
+            // allows the update of the load timer on the bottom of the 
+            // screen so Vixen doesn't appear to be locked up for very large sequences
+            if (doEventsCounter % 600 == 0)
+                Application.DoEvents();
+            doEventsCounter++;
 
 			// iterate through all if its children, adding them as needed
-			foreach (ElementNode child in node.Children) {
+            foreach (ElementNode child in node.Children)
+            {
 				addNodeAsRow(child, newRow);
 			}
 		}
