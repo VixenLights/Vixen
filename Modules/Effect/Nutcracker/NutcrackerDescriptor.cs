@@ -42,7 +42,7 @@ namespace VixenModules.Effect.Nutcracker
 			get
 			{
 				return new ParameterSignature(
-					new ParameterSpecification("NutcrackerData", typeof(NutcrackerData))
+					new ParameterSpecification("NutcrackerData", typeof(NutcrackerData), false)
 					);
 			}
 		}

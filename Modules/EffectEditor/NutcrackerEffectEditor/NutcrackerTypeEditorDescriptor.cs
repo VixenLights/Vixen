@@ -3,11 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Vixen.Module.EffectEditor;
+using Vixen.Sys.Attribute;
 
 namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 {
     class NutcrackerTypeEditorDescriptor : EffectEditorModuleDescriptorBase
 	{
+        static NutcrackerTypeEditorDescriptor()
+        {
+            ModulePath = "Nutcracker";            
+        }
+
         private static Guid _typeId = new Guid("{4577B52A-EF00-4766-A49B-D94A59805742}");
 
         public override string Author { get { return "Sean Meighan/Derek Backus"; } }
@@ -22,15 +28,16 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 
 		public override string TypeName { get { return "Nutcracker Type Editor"; } }
 
+        [ModuleDataPath]
+        public static string ModulePath { get; set; }
+
 		public override string Version { get { return "1.0"; } }
 
 		public override Type[] ParameterSignature
 		{
 			get
 			{
-                Console.WriteLine("---->ParameterSignature");
                 return new[] { typeof(VixenModules.Effect.Nutcracker.NutcrackerData) };
-                //return new[] { typeof(double) };
             }
 		}
 	}
