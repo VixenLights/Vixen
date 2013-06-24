@@ -568,7 +568,7 @@ namespace Common.Controls.Timeline
 
 		protected override void OnLayout(LayoutEventArgs e)
 		{
-            Console.WriteLine("Layout");
+            //Console.WriteLine("Layout");
 			timelineRowList.Top = grid.Top;
 			base.OnLayout(e);
 		}

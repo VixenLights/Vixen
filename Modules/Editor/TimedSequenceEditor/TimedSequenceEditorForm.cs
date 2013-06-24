@@ -263,27 +263,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
             Update();
 
 			try {
-                Console.WriteLine("Loading 1: " + loadingWatch.ElapsedMilliseconds);
 				// default the sequence to 1 minute if it's not set
 				if (_sequence.Length == TimeSpan.Zero)
 					_sequence.Length = _defaultSequenceTime;
-                Console.WriteLine("Loading 2: " + loadingWatch.ElapsedMilliseconds);
 
 				SequenceLength = _sequence.Length;
-                Console.WriteLine("Loading 3: " + loadingWatch.ElapsedMilliseconds);
 
 				// update our program context with this sequence
 				OpenSequenceContext(sequence);
-                Console.WriteLine("Loading 4: " + loadingWatch.ElapsedMilliseconds);
 
 				// clear out all the old data
 				loadSystemNodesToRows();
                 //taskQueue.Enqueue(Task.Factory.StartNew(() => { loadSystemNodesToRows(); }));
-                Console.WriteLine("Loading 5: " + loadingWatch.ElapsedMilliseconds);
 
 				// load the new data: get all the commands in the sequence, and make a new element for each of them.
 				_effectNodeToElement = new Dictionary<EffectNode, Element>();
-                Console.WriteLine("Loading 6: " + loadingWatch.ElapsedMilliseconds);
+                //Console.WriteLine("Loading 6: " + loadingWatch.ElapsedMilliseconds);
 
                 // This takes quite a bit of time so queue it up
                 taskQueue.Enqueue(Task.Factory.StartNew(() =>
@@ -291,7 +286,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
                     foreach (EffectNode node in _sequence.SequenceData.EffectData)
                     {
                         addElementForEffectNodeTPL(node);
-                        //updateToolStrip4();
                     }
                 }));
                 // Now that it is queued up, let 'er rip and start background rendering when complete.
@@ -305,41 +299,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
                     timelineControl.grid.StartBackgroundRendering();
                     Console.WriteLine("Done Loading Effects");
                 });
-                Console.WriteLine("Loading 7: " + loadingWatch.ElapsedMilliseconds);
 
 				populateGridWithMarks();
-                Console.WriteLine("Loading 8: " + loadingWatch.ElapsedMilliseconds);
 
 				var t2 = Task.Factory.StartNew(() => populateWaveformAudio());
 
-                //t2.Wait();
-				//populateWaveformAudio();
-
-				//Task.WaitAll(t1, t2);
-				//Original code set modified to always be true upon loading a sequence.
-				//sequenceModified();
 				//This path is followed for new and existing sequences so we need to determine which we have and set modified accordingly.
 				//Added logic to determine if the sequence has a filepath to set modified JU 8/1/2012. 
 
-				_SetTimingToolStripEnabledState();
-                Console.WriteLine("Loading 9: " + loadingWatch.ElapsedMilliseconds);
+                _SetTimingToolStripEnabledState();
 
 				if (String.IsNullOrEmpty(_sequence.FilePath)) {
 					sequenceModified();
 				} else {
 					sequenceNotModified();
 				}
-                Console.WriteLine("Loading 10: " + loadingWatch.ElapsedMilliseconds);
 
 				VixenSystem.Logging.Debug(string.Format("Sequence {0} took {1} to load. ", sequence.Name, loadingWatch.Elapsed));
 			} catch (Exception ee) {
 				VixenSystem.Logging.Error("Error loading sequence.", ee);
 			}
-            //loadingWatch.Stop();
-            //loadTimer.Enabled = false;
-
-            //timelineControl.grid.StartBackgroundRendering();
-            //timelineControl.grid.RenderAllElements();
 		}
 
 		/// <summary>

@@ -246,6 +246,7 @@ namespace Common.Controls.Timeline
 			m_elements.Add(element);
 			if (element.Selected)
 				m_selectedElements.Add(element);
+            element.Row = this;
 			element.ContentChanged += ElementContentChangedHandler;
 			element.TimeChanged += ElementMovedHandler;
 			element.SelectedChanged += ElementSelectedHandler;
