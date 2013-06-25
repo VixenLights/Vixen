@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using Vixen.Sys;
+using Vixen.Module.Property;
 
 namespace Vixen.IO.Xml.Serializer {
 	class XmlElementNodeSerializer : IXmlSerializer<ElementNode> {
@@ -34,7 +35,8 @@ namespace Vixen.IO.Xml.Serializer {
 			}
 
 			XmlPropertyCollectionSerializer propertyCollectionSerializer = new XmlPropertyCollectionSerializer();
-			XElement propertyCollectionElement = propertyCollectionSerializer.WriteObject(value.Properties.Select(x => x.Descriptor.TypeId));
+			XElement propertyCollectionElement = propertyCollectionSerializer.WriteObject(value.Properties);
+			//XElement propertyCollectionElement = propertyCollectionSerializer.WriteObject(value.Properties.Select(x => x.Descriptor.TypeId));
 			//XmlModuleLocalDataSetSerializer dataSetSerializer = new XmlModuleLocalDataSetSerializer();
 			//XElement propertyDataElement = dataSetSerializer.WriteObject(value.Properties.PropertyData);
 			return new XElement(ELEMENT_NODE,
@@ -67,7 +69,7 @@ namespace Vixen.IO.Xml.Serializer {
 			Guid? elementId = XmlHelper.GetGuidAttribute(element, ATTR_ELEMENT_ID);
 			if(elementId == null) {
 				// Branch
-				IEnumerable<ElementNode> childNodes = element.Elements(ELEMENT_NODE).Select(ReadObject).NotNull();
+				IEnumerable<ElementNode> childNodes = element.Elements(ELEMENT_NODE).Select(ReadObject).Where(x => x != null);
 				node = new ElementNode(id.Value, name, null, childNodes);
 			} else {
 				// Leaf
@@ -86,8 +88,9 @@ namespace Vixen.IO.Xml.Serializer {
 
 				// Properties
 				XmlPropertyCollectionSerializer propertyCollectionSerializer = new XmlPropertyCollectionSerializer();
-				foreach(Guid propertyTypeId in propertyCollectionSerializer.ReadObject(element)) {
-					node.Properties.Add(propertyTypeId);
+				IEnumerable<IPropertyModuleInstance> properties = propertyCollectionSerializer.ReadObject(element);
+				foreach(IPropertyModuleInstance instance in properties ){
+				    node.Properties.Add(instance);
 				}
 			}
 
