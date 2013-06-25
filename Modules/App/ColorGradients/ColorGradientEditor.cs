@@ -14,11 +14,17 @@ namespace VixenModules.App.ColorGradients
 {
 	public partial class ColorGradientEditor : Form
 	{
-		public ColorGradientEditor(ColorGradient gradient)
+		private bool _discreteColors;
+		private IEnumerable<Color> _validDiscreteColors;
+		
+		public ColorGradientEditor(ColorGradient gradient, bool discreteColors, IEnumerable<Color> validDiscreteColors)
 		{
 			InitializeComponent();
 			gradientEditPanel.GradientChanged += GradientChangedHandler;
 			Gradient = gradient;
+			_discreteColors = discreteColors;
+			_validDiscreteColors = validDiscreteColors;
+			PopulateFormWithGradient(_gradient);
 		}
 
 		private ColorGradient _gradient;
@@ -68,6 +74,8 @@ namespace VixenModules.App.ColorGradients
 		private void PopulateFormWithGradient(ColorGradient item)
 		{
 			gradientEditPanel.Gradient = item;
+			gradientEditPanel.DiscreteColors = _discreteColors;
+			gradientEditPanel.ValidDiscreteColors = _validDiscreteColors;
 
 			// if we're editing one from the library, treat it special
 			if (item.IsCurrentLibraryGradient) {

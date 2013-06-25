@@ -10,18 +10,53 @@ using Vixen.Sys;
 using Vixen.Module.EffectEditor;
 using Vixen.Module.Effect;
 using VixenModules.App.ColorGradients;
+using VixenModules.Property.Color;
 
 namespace VixenModules.EffectEditor.ColorGradientTypeEditor
 {
 	public partial class ColorGradientTypeEditorControl : UserControl, IEffectEditorControl
 	{
+		private bool _discreteColors;
+		private IEnumerable<Color> _validDiscreteColors; 
+
 		public ColorGradientTypeEditorControl()
 		{
 			InitializeComponent();
 			ColorGradientValue = new ColorGradient();
+			_discreteColors = false;
 		}
 
-		public IEffect TargetEffect { get; set; }
+		private IEffect _targetEffect;
+		public IEffect TargetEffect
+		{
+			get { return _targetEffect; }
+			set
+			{
+				_targetEffect = value;
+				_discreteColors = false;
+				HashSet<Color> validColors = new HashSet<Color>();
+
+				// look for the color property of the target effect element, and restrict the gradient.
+				// If it's a group, iterate through all children (and their children, etc.), finding as many color
+				// properties as possible; then we can decide what to do based on that.
+				foreach (ElementNode elementNode in _targetEffect.TargetNodes) {
+					switch (ColorModule.getColorTypeForElementNode(elementNode)) {
+						case ElementColorType.FullColor:
+							continue;
+
+						case ElementColorType.MultipleDiscreteColors:
+						case ElementColorType.SingleColor:
+							_discreteColors = true;
+							validColors.AddRange(ColorModule.getValidColorsForElementNode(elementNode));
+							break;
+					}
+				}
+
+				_validDiscreteColors = validColors;
+
+				UpdateGradientImage();
+			}
+		}
 
 		public object[] EffectParameterValues
 		{
@@ -46,12 +81,12 @@ namespace VixenModules.EffectEditor.ColorGradientTypeEditor
 
 		private void UpdateGradientImage()
 		{
-			panelGradient.BackgroundImage = ColorGradientValue.GenerateColorGradientImage(panelGradient.Size);
+			panelGradient.BackgroundImage = ColorGradientValue.GenerateColorGradientImage(panelGradient.Size, _discreteColors);
 		}
 
 		private void panelGradient_Click(object sender, EventArgs e)
 		{
-			using (ColorGradientEditor cge = new ColorGradientEditor(ColorGradientValue)) {
+			using (ColorGradientEditor cge = new ColorGradientEditor(ColorGradientValue, _discreteColors, _validDiscreteColors)) {
 				DialogResult result = cge.ShowDialog();
 				if (result == DialogResult.OK) {
 					ColorGradientValue = cge.Gradient;

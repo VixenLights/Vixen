@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.ControlsEx.ValueControls;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.ColorManagement.ColorPicker;
@@ -42,15 +44,20 @@ namespace VixenModules.App.ColorGradients
 			else
 			{
 				grpStops.Enabled = true;
-				ColorPoint cpt = edit.Selection as ColorPoint;
-				if (cpt != null)
+				//ColorPoint cpt = edit.Selection as ColorPoint;
+				if (edit.Selection.Count > 0)
 				{
 					vColorLoc.Enabled = true;
 					lblColorSelect.Enabled = btnDeleteColor.Enabled = !edit.FocusSelection;
 					//
-					vColorLoc.Value = (int)((edit.FocusSelection ? cpt.Focus : cpt.Position) * 100.0);
-					lblColorSelect.Color = edit.FocusSelection ? Color.DimGray :
-						lblColorSelect.OldColor = (_xyz = cpt.Color).ToRGB().ToArgb();
+					vColorLoc.Value = (int)((edit.FocusSelection ? edit.Selection.First().Focus : edit.Selection.First().Position) * 100.0);
+
+					if (edit.Selection.Count == 0)
+						lblColorSelect.Color = Color.DimGray;
+					else {
+						ColorPoint cpt = edit.Selection.First() as ColorPoint;
+						lblColorSelect.Color = edit.FocusSelection ? Color.DimGray : lblColorSelect.OldColor = (_xyz = cpt.Color).ToRGB().ToArgb();
+					}
 				}
 				else
 				{
@@ -75,7 +82,7 @@ namespace VixenModules.App.ColorGradients
 			if (ReadOnly)
 				return;
 
-			editSelectedColor();
+			editSelectedPoints();
 		}
 
 
@@ -85,25 +92,67 @@ namespace VixenModules.App.ColorGradients
 			if (ReadOnly)
 				return;
 
-			editSelectedColor();
+			editSelectedPoints();
 		}
 
 		// edits the selected color in the 'edit' control
-		private void editSelectedColor()
+		private void editSelectedPoints()
 		{
 			if (edit.Gradient == null || edit.FocusSelection)
 				return;
-			ColorPoint pt = edit.Selection as ColorPoint;
-			if (pt == null)
-				return;
-			using (ColorPicker frm = new ColorPicker(_mode, _fader)) {
-				frm.LockValue_V = LockColorEditorHSV_Value;
-				frm.Color = _xyz;
-				if (frm.ShowDialog(this.FindForm()) == DialogResult.OK) {
-					pt.Color = _xyz = frm.Color;
-					lblColorSelect.Color = _xyz.ToRGB().ToArgb();
-					_mode = frm.SecondaryMode;
-					_fader = frm.PrimaryFader;
+
+			if (DiscreteColors) {
+				List<Color> selectedColors = new List<Color>();
+				foreach (ColorGradient.Point point in edit.Selection) {
+					ColorPoint pt = point as ColorPoint;
+					if (pt == null)
+						continue;
+					selectedColors.Add(pt.Color.ToRGB().ToArgb());
+				}
+
+				using (DiscreteColorPicker picker = new DiscreteColorPicker()) {
+					picker.ValidColors = ValidDiscreteColors;
+					picker.SelectedColors = selectedColors;
+					if (picker.ShowDialog() == DialogResult.OK) {
+						if (picker.SelectedColors.Count() == 0) {
+							DeleteColor();
+						} else if (picker.SelectedColors.Count() == selectedColors.Count) {
+							int i = 0;
+							foreach (Color selectedColor in picker.SelectedColors) {
+								ColorPoint pt = edit.Selection[i] as ColorPoint;
+								pt.Color = XYZ.FromRGB(selectedColor);
+							}
+						} else {
+							double position = edit.Selection.First().Position;
+
+							foreach (ColorGradient.Point point in edit.Selection) {
+								edit.Gradient.Colors.Remove(point as ColorPoint);
+							}
+
+							foreach (Color selectedColor in picker.SelectedColors) {
+								ColorPoint newPoint = new ColorPoint(selectedColor, position);
+								edit.Gradient.Colors.Add(newPoint);
+							}	
+						}
+					}
+				}
+
+
+			} else {
+				if (edit.Selection.Count > 1)
+					MessageBox.Show("Non-discrete color gradient, >1 selected point. oops! please report it.");
+				ColorPoint pt = edit.Selection.FirstOrDefault() as ColorPoint;
+				if (pt == null)
+					return;
+				using (ColorPicker frm = new ColorPicker(_mode, _fader)) {
+					frm.LockValue_V = LockColorEditorHSV_Value;
+					frm.Color = _xyz;
+					if (frm.ShowDialog(this.FindForm()) == DialogResult.OK) {
+						pt.Color = _xyz = frm.Color;
+						lblColorSelect.Color = _xyz.ToRGB().ToArgb();
+						_mode = frm.SecondaryMode;
+						_fader = frm.PrimaryFader;
+					}
 				}
 			}
 		}
@@ -114,7 +163,11 @@ namespace VixenModules.App.ColorGradients
 		{
 			if (edit.Gradient == null || edit.FocusSelection)
 				return;
-			ColorPoint pt = edit.Selection as ColorPoint;
+
+			if (edit.Selection.Count > 1)
+				return;
+
+			ColorPoint pt = edit.Selection.FirstOrDefault() as ColorPoint;
 			if (pt != null)
 				pt.Color = XYZ.FromRGB(new RGB(lblColorSelect.Color));
 		}
@@ -124,13 +177,15 @@ namespace VixenModules.App.ColorGradients
 		{
 			if (edit.Gradient == null)
 				return;
-			ColorPoint pt = edit.Selection as ColorPoint;
-			if (pt == null)
-				return;
-			if (edit.FocusSelection)
-				pt.Focus = (double)vColorLoc.Value / 100.0;
-			else
-				pt.Position = (double)vColorLoc.Value / 100.0;
+			foreach (ColorGradient.Point point in edit.Selection) {
+				ColorPoint pt = point as ColorPoint;
+				if (pt == null)
+					return;
+				if (edit.FocusSelection)
+					pt.Focus = (double)vColorLoc.Value / 100.0;
+				else
+					pt.Position = (double)vColorLoc.Value / 100.0;
+			}
 		}
 
 		//delete active color point
@@ -143,10 +198,11 @@ namespace VixenModules.App.ColorGradients
 		{
 			if (edit.Gradient == null || edit.FocusSelection || ReadOnly)
 				return;
-			int index = edit.SelectedColorIndex;
-			if (index == -1) return;
-			edit.Gradient.Colors.RemoveAt(index);
-			UpdateUI();
+			foreach (int i in edit.SelectedColorIndex) {
+				if (i == -1) return;
+				edit.Gradient.Colors.RemoveAt(i);
+				UpdateUI();
+			}
 		}
 
 		#endregion
@@ -163,6 +219,18 @@ namespace VixenModules.App.ColorGradients
 		{
 			get { return edit.Gradient; }
 			set { edit.Gradient = value; UpdateUI(); }
+		}
+
+		public IEnumerable<Color> ValidDiscreteColors
+		{
+			get { return edit.ValidDiscreteColors; }
+			set { edit.ValidDiscreteColors = value; UpdateUI(); }
+		}
+
+		public bool DiscreteColors
+		{
+			get { return edit.DiscreteColors; }
+			set { edit.DiscreteColors = value; UpdateUI(); }
 		}
 
 		public bool LockColorEditorHSV_Value { get; set; }
