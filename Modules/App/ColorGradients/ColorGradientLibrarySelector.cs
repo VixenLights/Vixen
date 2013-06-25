@@ -49,7 +49,7 @@ namespace VixenModules.App.ColorGradients
 				string name = kvp.Key;
 
 				listViewColorGradients.LargeImageList.ImageSize = new Size(64, 64);
-				listViewColorGradients.LargeImageList.Images.Add(name, gradient.GenerateColorGradientImage(new Size(64, 64)));
+				listViewColorGradients.LargeImageList.Images.Add(name, gradient.GenerateColorGradientImage(new Size(64, 64), false));
 
 				ListViewItem item = new ListViewItem();
 				item.Text = name;

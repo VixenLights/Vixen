@@ -78,6 +78,7 @@
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.textBoxName);
 			this.Controls.Add(this.panelColor);
+			this.DoubleBuffered = true;
 			this.Name = "ColorBreakdownItemControl";
 			this.Size = new System.Drawing.Size(300, 46);
 			this.ResumeLayout(false);

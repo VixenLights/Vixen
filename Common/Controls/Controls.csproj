@@ -33,11 +33,11 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-	<ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
-		<Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
-		<Name>Vixen</Name>
-		<Private>False</Private>
-	</ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
+      <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
+      <Name>Vixen</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -53,6 +53,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DiscreteColorPicker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DiscreteColorPicker.Designer.cs">
+      <DependentUpon>DiscreteColorPicker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DiscreteColorPickerItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DiscreteColorPickerItem.Designer.cs">
+      <DependentUpon>DiscreteColorPickerItem.cs</DependentUpon>
+    </Compile>
     <Compile Include="Wizard\Wizard.cs" />
     <Compile Include="Wizard\WizardForm.cs">
       <SubType>Form</SubType>
@@ -250,6 +262,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ColorPicker\ColorSelectionPlane.resx">
       <DependentUpon>ColorSelectionPlane.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DiscreteColorPicker.resx">
+      <DependentUpon>DiscreteColorPicker.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DiscreteColorPickerItem.resx">
+      <DependentUpon>DiscreteColorPickerItem.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Wizard\WizardForm.resx">
       <DependentUpon>WizardForm.cs</DependentUpon>

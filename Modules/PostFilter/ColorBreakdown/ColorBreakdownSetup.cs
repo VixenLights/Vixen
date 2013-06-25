@@ -12,7 +12,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 {
 	public partial class ColorBreakdownSetup : Form
 	{
-		private ColorBreakdownData _data;
+		private readonly ColorBreakdownData _data;
 		public ColorBreakdownSetup(ColorBreakdownData breakdownData)
 		{
 			InitializeComponent();
@@ -34,6 +34,8 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 			foreach (ColorBreakdownItem breakdownItem in _data.BreakdownItems) {
 				addControl(new ColorBreakdownItemControl(breakdownItem));
 			}
+
+			checkBoxMixColors.Checked = _data.MixColors;
 
 			// let's just make up some hardcoded templates. Can expand on this later; probably don't need to,
 			// people can request new ones and stuff if they want.
@@ -122,5 +124,9 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 			}
 		}
 
+		private void checkBoxMixColors_CheckedChanged(object sender, EventArgs e)
+		{
+			_data.MixColors = checkBoxMixColors.Checked;
+		}
 	}
 }

@@ -74,7 +74,7 @@ namespace VixenModules.App.ColorGradients
 			if (cg == null)
 				return false;
 
-			ColorGradientEditor editor = new ColorGradientEditor(cg);
+			ColorGradientEditor editor = new ColorGradientEditor(cg, false, null);
 			editor.LibraryItemName = name;
 
 			if (editor.ShowDialog() == System.Windows.Forms.DialogResult.OK) {

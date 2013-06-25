@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
 using System.Runtime.Serialization;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.ControlsEx;
@@ -12,10 +13,6 @@ using Vixen.Module.App;
 
 namespace VixenModules.App.ColorGradients
 {
-    public class Test
-    {
-         
-    }
     /// <summary>
     /// ColorBlend object
     /// </summary>
@@ -231,6 +228,7 @@ namespace VixenModules.App.ColorGradients
 
         // doesn't get serialized; it's instantiated as needed.
         private ColorBlend _blend = null;
+		private Color? _blendFilterColor = null; 
 
         #endregion
 
@@ -301,40 +299,103 @@ namespace VixenModules.App.ColorGradients
         /// creates color blend out of color point data
         /// </summary>
         /// <returns></returns>
-        private ColorBlend CreateColorBlend()
+		private ColorBlend CreateColorBlend(Color? filterColor = null)
         {
             //sort all points
             ColorPoint[] colpoints = Colors.SortedArray();
             AlphaPoint[] alphapoints = Alphas.SortedArray();
             //init out vars
             SortedList<float, Color> positions = new SortedList<float, Color>();
+
+			// if we're filtering the colors, the iterate through the color list, setting all non-matching colors to black
+			if (filterColor != null) {
+				List<ColorPoint> newColorPoints = new List<ColorPoint>();
+				foreach (ColorPoint colorPoint in colpoints) {
+					ColorPoint newPoint = (ColorPoint)colorPoint.Clone();
+					if (newPoint.Color.ToRGB().ToArgb() != filterColor) {
+						// it's not the desired color. Make it black and add it, but only if there's
+						// not an entry in the list with this position already
+						if (newColorPoints.Where(x => x.Position == newPoint.Position).Count() == 0) {
+							newPoint.Color = XYZ.FromRGB(Color.Black);
+							newColorPoints.Add(newPoint);
+						}
+					} else {
+						// it's the desired color. Find any others in the list that are in this position
+						// and black, remove them, and then replace it with this one
+						newColorPoints.RemoveAll(x => x.Position == newPoint.Position && x.Color.ToRGB().ToArgb().ToArgb() == Color.Black.ToArgb());
+						newColorPoints.Add(newPoint);
+					}
+
+				}
+				colpoints = newColorPoints.ToArray();
+			}
             //add color points
             for (int c = 0; c < colpoints.Length; c++)
             {
-                if (c > 0 && colpoints[c].Focus != .5)//focus
+				// focus point; if filtered, non-standard focus points aren't supported.
+				if (c > 0 && colpoints[c].Focus != .5  &&  filterColor == null) {
                     AddPosition(colpoints, alphapoints, positions,
-                        colpoints[c - 1].Position + (colpoints[c].Position - colpoints[c - 1].Position) * colpoints[c].Focus);
+					            colpoints[c - 1].Position + (colpoints[c].Position - colpoints[c - 1].Position)*colpoints[c].Focus);
+				}
                 //color
                 AddPosition(colpoints, alphapoints, positions, colpoints[c].Position);
             }
-            //add alpha points
-            for (int a = 0; a < alphapoints.Length; a++)
-            {
-                if (a > 0 && alphapoints[a].Focus != .5)//focus
-                    AddPosition(colpoints, alphapoints, positions,
-                        alphapoints[a - 1].Position + (alphapoints[a].Position - alphapoints[a - 1].Position) * alphapoints[a].Focus);
-                //alpha
-                AddPosition(colpoints, alphapoints, positions, alphapoints[a].Position);
-            }
 
-            //add first/last point
-            if (positions.Count < 1 || !positions.ContainsKey(0f))
-                positions.Add(0f, positions.Count < 1 ?
-                    Color.Transparent : positions.Values[0]);
-            if (positions.Count < 2 || !positions.ContainsKey(1f))
-                positions.Add(1f, positions.Count < 2 ?
-                    Color.Transparent : positions.Values[positions.Count - 1]);
-            //
+			// We aren't using alpha points, and first/last points get added below
+
+			////add alpha points
+			//for (int a = 0; a < alphapoints.Length; a++)
+			//{
+			//    if (a > 0 && alphapoints[a].Focus != .5)//focus
+			//        AddPosition(colpoints, alphapoints, positions,
+			//            alphapoints[a - 1].Position + (alphapoints[a].Position - alphapoints[a - 1].Position) * alphapoints[a].Focus);
+			//    //alpha
+			//    AddPosition(colpoints, alphapoints, positions, alphapoints[a].Position);
+			//}
+
+			//add first/last point
+			if (positions.Count < 1) {
+				positions.Add(0f, Color.Transparent);
+            }
+			if (!positions.ContainsKey(0f)) {
+				if (filterColor != null) {
+					float earliest = positions.Keys[0];
+					Color c = Color.Black;
+					for (int i = 0; i < positions.Count && positions.Keys[i] == earliest; i++) {
+						if (positions.Values[i].ToArgb() != Color.Black.ToArgb()) {
+							c = positions.Values[i];
+							break;
+						}
+					}
+					positions.Add(0f, c);
+				} else {
+					positions.Add(0f, positions.Values[0]);
+				}
+			}
+
+			if (positions.Count < 2) {
+				Color c = positions.Values[0];
+				if (filterColor != null && c.ToArgb() != ((Color)filterColor).ToArgb())
+					c = Color.Black;
+				positions.Add(1f, c);
+			}
+
+			if (!positions.ContainsKey(1f)) {
+				if (filterColor != null) {
+					float latest = positions.Keys[positions.Count - 1];
+					Color c = Color.Black;
+					for (int i = positions.Count - 1; i >= 0 && positions.Keys[i] == latest; i--) {
+						if (positions.Values[i].ToArgb() != Color.Black.ToArgb()) {
+							c = positions.Values[i];
+							break;
+						}
+					}
+					positions.Add(1f, c);
+				} else {
+					positions.Add(1f, positions.Values[positions.Count - 1]);
+				}
+			}
+
             ColorBlend ret = new ColorBlend();
             Color[] col = new Color[positions.Count];
             positions.Values.CopyTo(col, 0);
@@ -393,8 +454,13 @@ namespace VixenModules.App.ColorGradients
         private void AddPosition(ColorPoint[] colpoints, AlphaPoint[] alphapoints,
             SortedList<float, Color> positions, double pos)
         {
-            if (positions.ContainsKey((float)pos))
-                return;
+			if (positions.ContainsKey((float)pos)) {
+				if (positions[(float)pos].ToArgb() == Color.Black.ToArgb()) {
+					positions.Remove((float) pos);
+				} else {
+					return;
+				}
+			}
             int alpha_a, alpha_b;
             int color_a, color_b;
             //evaluate positions
@@ -449,6 +515,33 @@ namespace VixenModules.App.ColorGradients
                 (int)((float)list[a].B + bal * (float)(list[b].B - list[a].B)));
         }
 
+		// interpolate a fractional proportion of a given color at the given position
+		private float InterpolateProportionOfColor(Color color, Color[] list, float[] positions, int a, int b, float pos)
+		{
+			if (b < a)
+				return 0;
+
+			if (a == b || positions[a] >= positions[b]) {
+				return (list[a].ToArgb() == color.ToArgb() ? 1 : 0);
+			}
+
+			if (list[a].ToArgb() == color.ToArgb() && list[b].ToArgb() == color.ToArgb()) {
+				return 1;
+			}
+
+			if (list[a].ToArgb() != color.ToArgb() && list[b].ToArgb() != color.ToArgb()) {
+				return 0;
+			}
+
+			float bal = (pos - positions[a]) / (positions[b] - positions[a]);
+
+			if (list[a].ToArgb() == color.ToArgb()) {
+				return (float) (1.0 - bal);
+			}
+
+			return (bal);
+		}
+
         //generic interval searching in O(log(n))
         private void SearchPos<T, K>(T[] list, K pos, out int a, out int b) where T : IComparable<K>
         {
@@ -489,11 +582,13 @@ namespace VixenModules.App.ColorGradients
         /// creates a System.Drawing.Drawing2D.ColorBlend
         /// out of this gradient
         /// </summary>
-        public ColorBlend GetColorBlend()
+		public ColorBlend GetColorBlend(Color? filterColor = null)
         {
             CheckLibraryReference();
-            if (_blend == null)
-                _blend = CreateColorBlend();
+			if (_blend == null || _blendFilterColor != filterColor) {
+				_blend = CreateColorBlend(filterColor);
+				_blendFilterColor = filterColor;
+			}
             return _blend;
         }
 
@@ -510,10 +605,26 @@ namespace VixenModules.App.ColorGradients
             return Interpolate(blend.Colors, blend.Positions, a, b, pos);
         }
 
+		public float GetProportionOfColorAt(float pos, Color color)
+		{
+			ColorBlend blend = GetColorBlend(color);
+			pos = Clamp(pos);
+
+			int a, b;
+			SearchPos<float, float>(blend.Positions, pos, out a, out b);
+
+			return InterpolateProportionOfColor(color, blend.Colors, blend.Positions, a, b, pos);
+		}
+
         public Color GetColorAt(double pos)
         {
             return GetColorAt((float)pos);
         }
+
+		public double GetProportionOfColorAt(double pos, Color color)
+		{
+			return GetProportionOfColorAt((float) pos, color);
+		}
 
         #region properties
         /// <summary>
@@ -715,18 +826,52 @@ namespace VixenModules.App.ColorGradients
             }
         }
 
-        public Bitmap GenerateColorGradientImage(Size size)
+		public Bitmap GenerateColorGradientImage(Size size, bool discreteColors)
         {
             Bitmap result = new Bitmap(size.Width, size.Height);
-            System.Drawing.Point point1 = new System.Drawing.Point(0, size.Height / 2);
-            System.Drawing.Point point2 = new System.Drawing.Point(size.Width, size.Height / 2);
 
-            using (LinearGradientBrush lnbrs = new LinearGradientBrush(point1, point2, Color.Transparent, Color.Transparent))
-            using (Graphics g = Graphics.FromImage(result))
-            {
-                lnbrs.InterpolationColors = GetColorBlend();
-                g.FillRectangle(lnbrs, 0, 0, size.Width, size.Height);
-            }
+			if (discreteColors) {
+				// count the number of unique colors in this gradient, and figure out how high to make each 'slice'
+				Dictionary<int, XYZ> uniqueColors = new Dictionary<int, XYZ>();
+				foreach (ColorPoint colorPoint in Colors) {
+					int colorHash = colorPoint.Color.ToRGB().ToArgb().ToArgb();
+					if (!uniqueColors.ContainsKey(colorHash))
+						uniqueColors.Add(colorHash, colorPoint.Color);
+				}
+				float sliceHeight = size.Height/(float) uniqueColors.Count;
+
+				using (Graphics g = Graphics.FromImage(result)) {
+
+					int i = 0;
+					foreach (XYZ color in uniqueColors.Values) {
+						float startY = sliceHeight * i;
+						float endY = sliceHeight * (i + 1);
+						float midY = (startY + endY) / 2;
+						PointF point1 = new PointF(0, midY);
+						PointF point2 = new PointF(size.Width, midY);
+
+						using (LinearGradientBrush lnbrs = new LinearGradientBrush(point1, point2, Color.Transparent, Color.Transparent))
+						using (Graphics subg = Graphics.FromImage(result)) {
+							ColorBlend cb = GetColorBlend(color.ToRGB());
+							lnbrs.InterpolationColors = cb;
+							subg.FillRectangle(lnbrs, 0, startY, size.Width, sliceHeight);
+						}
+
+						i++;
+					}
+				}
+
+			}
+			else {
+				System.Drawing.Point point1 = new System.Drawing.Point(0, size.Height/2);
+				System.Drawing.Point point2 = new System.Drawing.Point(size.Width, size.Height/2);
+
+				using (LinearGradientBrush lnbrs = new LinearGradientBrush(point1, point2, Color.Transparent, Color.Transparent))
+				using (Graphics g = Graphics.FromImage(result)) {
+					lnbrs.InterpolationColors = GetColorBlend();
+					g.FillRectangle(lnbrs, 0, 0, size.Width, size.Height);
+				}
+			}
 
             return result;
         }

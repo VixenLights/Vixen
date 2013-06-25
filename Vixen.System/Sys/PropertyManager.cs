@@ -14,6 +14,25 @@ namespace Vixen.Sys {
 			//PropertyData = new ModuleLocalDataSet();
 		}
 
+		public IPropertyModuleInstance Add(IPropertyModuleInstance instance)
+		{
+			//IPropertyModuleInstance instance = null;
+
+			if (!_items.ContainsKey(instance.TypeId))
+			{
+				//instance = Modules.ModuleManagement.GetProperty(id);
+				if (instance != null)
+				{
+					instance.Owner = _owner;
+					instance.SetDefaultValues();
+					_items[instance.TypeId] = instance;
+					PropertyData.AssignModuleInstanceData(instance);
+				}
+			}
+
+			return instance;
+		}
+
 		public IPropertyModuleInstance Add(Guid id) {
 			IPropertyModuleInstance instance = null;
 
@@ -23,7 +42,7 @@ namespace Vixen.Sys {
 					instance.Owner = _owner;
 					instance.SetDefaultValues();
 					_items[id] = instance;
-					PropertyData.AssignModuleTypeData(instance);
+					PropertyData.AssignModuleInstanceData(instance);
 				}
 			}
 
