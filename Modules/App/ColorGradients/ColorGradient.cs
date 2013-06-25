@@ -374,7 +374,10 @@ namespace VixenModules.App.ColorGradients
 			}
 
 			if (positions.Count < 2) {
-				positions.Add(1f, filterColor == null ? positions.Values[0] : Color.Black);
+				Color c = positions.Values[0];
+				if (filterColor != null && c.ToArgb() != ((Color)filterColor).ToArgb())
+					c = Color.Black;
+				positions.Add(1f, c);
 			}
 
 			if (!positions.ContainsKey(1f)) {
