@@ -222,21 +222,29 @@ namespace Common.Controls.Timeline
 		protected override void WndProc(ref Message m)
 		{
 			base.WndProc(ref m);
-			if (m.HWnd != this.Handle)
-			{
-				return;
-			}
-			switch (m.Msg)
-			{
-				case WM_MOUSEHWHEEL:
-					mouseHWheelMsg(m.WParam, m.LParam);
-					m.Result = (IntPtr)1;
-					break;
+            try
+            {
+                if (m.HWnd != this.Handle)
+                {
+                    return;
+                }
+                switch (m.Msg)
+                {
+                    case WM_MOUSEHWHEEL:
+                        mouseHWheelMsg(m.WParam, m.LParam);
+                        m.Result = (IntPtr)1;
+                        break;
 
-				default:
-					break;
+                    default:
+                        break;
 
-			}
+                }
+            }
+            catch
+            {
+                // This even fires when the grid is disposed and gives an error.
+                // Not entirely sure how to check for this so, try/catch
+            }
 		}
 
 		public event EventHandler<MouseEventArgs> MouseHWheel;

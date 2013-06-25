@@ -90,6 +90,7 @@ namespace Common.Controls.Timeline
                 renderWorker.CancelAsync();
                 while (renderWorker.IsBusy) Application.DoEvents();
             }
+
             base.Dispose(disposing);
         }
 
@@ -1146,23 +1147,7 @@ namespace Common.Controls.Timeline
 			}
 		}
 
-        #region Element rendering background worker - Derek
-
-        ConcurrentQueue<Task> tasks = new ConcurrentQueue<Task>();
-        public void AddRenderTask(Element element)
-        {
-            Task task = new Task(() => {
-                Size size = new Size((int)Math.Ceiling(timeToPixels(element.Duration)), element.Row.Height - 1);
-                if (element.Changed || !element.CachedCanvasIsCurrent)
-                {
-                    Bitmap elementImage = element.SetupCachedImage(size);
-                    if (element.StartTime <= VisibleTimeEnd && element.EndTime >= VisibleTimeStart)
-                        Invalidate();
-                }
-            });
-            tasks.Enqueue(task);
-            task.Start();
-        }
+        #region Element rendering background worker
 
         private void renderWorker_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -1192,7 +1177,7 @@ namespace Common.Controls.Timeline
                 int currentElementNum = 0;
                 foreach (Row row in Rows)
                 {
-                    if (row.Visible/* && renderedRows.IndexOf(row) < 0 */)
+                    if (row.Visible)
                     {
                         for (int i = 0; i < row.ElementCount; i++)
                         {
@@ -1229,10 +1214,6 @@ namespace Common.Controls.Timeline
             }
         }
 
-        private void renderWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            Invalidate(true);
-        }
         private void renderWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             _RenderProgressChanged(e.ProgressPercentage);
@@ -1245,29 +1226,10 @@ namespace Common.Controls.Timeline
             else
             {
 
-                //while (true)
-                //{
-                //    if (tasks.Count > 0)
-                //    {
-                //        Task task;
-                //        if (tasks.TryDequeue(out task))
-                //        {
-                //            task.Start();
-                //            while (!task.IsCompleted)
-                //            {
-                //                Application.DoEvents();
-                //            }
-                //        }
-                //    }
-                //    Application.DoEvents();
-                //}
-
-
-
                 if (renderWorker != null)
                 {
                     //while (renderWorker.IsBusy) { Thread.Sleep(10); }; 
-                    if (!renderWorker.IsBusy) 
+                    if (!renderWorker.IsBusy)
                         renderWorker.RunWorkerAsync();
                 }
                 else
@@ -1276,11 +1238,11 @@ namespace Common.Controls.Timeline
                     renderWorker.WorkerReportsProgress = true;
                     renderWorker.WorkerSupportsCancellation = true;
                     renderWorker.DoWork += new DoWorkEventHandler(renderWorker_DoWork);
-                    renderWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(renderWorker_RunWorkerCompleted);
+                    //renderWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(renderWorker_RunWorkerCompleted);
                     renderWorker.ProgressChanged += new ProgressChangedEventHandler(renderWorker_ProgressChanged);
                     renderWorker.RunWorkerAsync();
                 }
-            }        
+            }
         }
 
         #endregion

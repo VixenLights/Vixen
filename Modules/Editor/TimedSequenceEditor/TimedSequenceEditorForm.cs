@@ -475,7 +475,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		protected void ElementTimeChangedHandler(object sender, EventArgs e)
 		{
-			sequenceModified();
+            TimedSequenceElement element = sender as TimedSequenceElement;
+            sequenceModified();
 		}
 
 		protected void ElementRemovedFromRowHandler(object sender, ElementEventArgs e)
