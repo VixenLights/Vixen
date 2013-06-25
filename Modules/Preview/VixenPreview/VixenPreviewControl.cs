@@ -238,7 +238,7 @@ namespace VixenModules.Preview.VixenPreview
 						}
 					}
 					//Bitmap loadedBitmap = new Bitmap(fileName);
-					Console.WriteLine("Load: " + fileName);
+					//Console.WriteLine("Load: " + fileName);
 				}
 				catch (Exception ex)
 				{
@@ -1208,15 +1208,22 @@ namespace VixenModules.Preview.VixenPreview
 			CancellationTokenSource tokenSource = new CancellationTokenSource();
 			if (!_paused)
 			{
+                //Bitmap clone = (Bitmap)_alphaBackground.Clone();
+                //BitmapData odata = _alphaBackground.LockBits(new Rectangle(0, 0, _alphaBackground.Width, _alphaBackground.Height), ImageLockMode.ReadWrite, _alphaBackground.PixelFormat);
+                //BitmapData cdata = clone.LockBits(new Rectangle(0, 0, clone.Width, clone.Height), ImageLockMode.ReadWrite, clone.PixelFormat);
+                //Assert.AreNotEqual(odata.Scan0, cdata.Scan0);
 				using (FastPixel fp = new FastPixel(new Bitmap(_alphaBackground)))
+                //using (FastPixel fp = new FastPixel(clone))
 				{
                     try
                     {
-						fp.Lock();
+                        //Console.WriteLine("0: " + renderTimer.ElapsedMilliseconds);
+                        fp.Lock();
+                        //Console.WriteLine("1: " + renderTimer.ElapsedMilliseconds);
                         elementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState =>
                         {
-							var elementId = channelIntentState.Key;
-							Element element = VixenSystem.Elements.GetElement(elementId);
+                            var elementId = channelIntentState.Key;
+                            Element element = VixenSystem.Elements.GetElement(elementId);
 
                             if (element != null)
                             {
@@ -1241,11 +1248,13 @@ namespace VixenModules.Preview.VixenPreview
                                     }
                                 }
                             }
-						});
-						fp.Unlock(true);
-
+                        });
+                        //Console.WriteLine("2: " + renderTimer.Elapsed);
+                        fp.Unlock(true);
+                        //Console.WriteLine("3: " + renderTimer.Elapsed);
                         RenderBufferedGraphics(fp);
-					}
+                        //Console.WriteLine("4: " + renderTimer.Elapsed);
+                    }
 					catch (Exception e)
 					{
 						tokenSource.Cancel();
@@ -1267,9 +1276,6 @@ namespace VixenModules.Preview.VixenPreview
                 this.Invoke(new RenderBufferedGraphicsDelgate(RenderBufferedGraphics), fp/*, floodBG*/);
             }
             else
-                //lock (lockObject)
-                //{
-
                 // No, this doesn't allocate every time. It first checks to see if the screen is 
                 // resized or the graphics buffer is not allocated. So it is checked for validity every time
                 // and re-allocated only if the something changed.
@@ -1280,7 +1286,6 @@ namespace VixenModules.Preview.VixenPreview
 				bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
 				if (!this.Disposing && bufferedGraphics != null)
 					bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
-                //}
 		}
 
 		//public void ResetNodeToPixelDictionary()
@@ -1301,12 +1306,15 @@ namespace VixenModules.Preview.VixenPreview
         delegate void RenderDelegate(Bitmap bitmap);
         private void Render(Bitmap bitmap)
         {
-            // First, draw our background image opaque
-            bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-            bufferedGraphics.Graphics.DrawImage(bitmap, 0, 0, bitmap.Width, bitmap.Height);
+            if (bufferedGraphics != null)
+            {
+                // First, draw our background image opaque
+                bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+                bufferedGraphics.Graphics.DrawImage(bitmap, 0, 0, bitmap.Width, bitmap.Height);
 
-            if (!this.Disposing && bufferedGraphics != null)
-                bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
+                if (!this.Disposing && bufferedGraphics != null)
+                    bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
+            }
         }
 
         private void ProcessUpdatesTask(ElementIntentStates elementStates)
@@ -1451,7 +1459,8 @@ namespace VixenModules.Preview.VixenPreview
 
                 fp.Unlock(true);
 
-                Render(fp.Bitmap);
+                //Render(fp.Bitmap);
+                RenderBufferedGraphics(fp);
             }
 
             renderTimer.Stop();

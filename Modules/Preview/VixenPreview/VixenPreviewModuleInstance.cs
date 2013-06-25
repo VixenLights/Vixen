@@ -172,6 +172,7 @@ namespace VixenModules.Preview.VixenPreview
         protected override void Update()
         {
             displayForm.PreviewControl.ProcessUpdateParallel(ElementStates);
+            //displayForm.PreviewControl.RenderInForeground(ElementStates);
             //ProcessUpdate(ElementStates);
         }
 
