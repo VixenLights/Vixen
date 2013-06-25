@@ -37,13 +37,13 @@
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonAddColor = new System.Windows.Forms.Button();
 			this.tableLayoutPanelControls = new System.Windows.Forms.TableLayoutPanel();
+			this.checkBoxMixColors = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(31, 26);
-			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label1.Location = new System.Drawing.Point(23, 21);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(323, 13);
 			this.label1.TabIndex = 0;
@@ -52,8 +52,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(31, 49);
-			this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label2.Location = new System.Drawing.Point(23, 40);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(179, 13);
 			this.label2.TabIndex = 1;
@@ -62,8 +61,7 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(41, 96);
-			this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label3.Location = new System.Drawing.Point(31, 78);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(54, 13);
 			this.label3.TabIndex = 2;
@@ -72,18 +70,16 @@
 			// comboBoxTemplates
 			// 
 			this.comboBoxTemplates.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxTemplates.Location = new System.Drawing.Point(128, 92);
-			this.comboBoxTemplates.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.comboBoxTemplates.Location = new System.Drawing.Point(96, 75);
 			this.comboBoxTemplates.Name = "comboBoxTemplates";
-			this.comboBoxTemplates.Size = new System.Drawing.Size(160, 24);
+			this.comboBoxTemplates.Size = new System.Drawing.Size(121, 21);
 			this.comboBoxTemplates.TabIndex = 3;
 			// 
 			// buttonApplyTemplate
 			// 
-			this.buttonApplyTemplate.Location = new System.Drawing.Point(308, 89);
-			this.buttonApplyTemplate.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.buttonApplyTemplate.Location = new System.Drawing.Point(231, 72);
 			this.buttonApplyTemplate.Name = "buttonApplyTemplate";
-			this.buttonApplyTemplate.Size = new System.Drawing.Size(148, 31);
+			this.buttonApplyTemplate.Size = new System.Drawing.Size(111, 25);
 			this.buttonApplyTemplate.TabIndex = 5;
 			this.buttonApplyTemplate.Text = "Apply Template";
 			this.buttonApplyTemplate.UseVisualStyleBackColor = true;
@@ -93,10 +89,9 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(389, 498);
-			this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.buttonCancel.Location = new System.Drawing.Point(292, 425);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(107, 31);
+			this.buttonCancel.Size = new System.Drawing.Size(80, 25);
 			this.buttonCancel.TabIndex = 6;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
@@ -105,10 +100,9 @@
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOK.Location = new System.Drawing.Point(275, 498);
-			this.buttonOK.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.buttonOK.Location = new System.Drawing.Point(206, 425);
 			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(107, 31);
+			this.buttonOK.Size = new System.Drawing.Size(80, 25);
 			this.buttonOK.TabIndex = 7;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
@@ -116,10 +110,9 @@
 			// buttonAddColor
 			// 
 			this.buttonAddColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonAddColor.Location = new System.Drawing.Point(35, 468);
-			this.buttonAddColor.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.buttonAddColor.Location = new System.Drawing.Point(26, 400);
 			this.buttonAddColor.Name = "buttonAddColor";
-			this.buttonAddColor.Size = new System.Drawing.Size(133, 31);
+			this.buttonAddColor.Size = new System.Drawing.Size(100, 25);
 			this.buttonAddColor.TabIndex = 8;
 			this.buttonAddColor.Text = "Add Color";
 			this.buttonAddColor.UseVisualStyleBackColor = true;
@@ -134,19 +127,30 @@
 			this.tableLayoutPanelControls.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
 			this.tableLayoutPanelControls.ColumnCount = 1;
 			this.tableLayoutPanelControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanelControls.Location = new System.Drawing.Point(35, 144);
-			this.tableLayoutPanelControls.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.tableLayoutPanelControls.Location = new System.Drawing.Point(26, 117);
 			this.tableLayoutPanelControls.Name = "tableLayoutPanelControls";
 			this.tableLayoutPanelControls.RowCount = 1;
 			this.tableLayoutPanelControls.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanelControls.Size = new System.Drawing.Size(440, 305);
+			this.tableLayoutPanelControls.Size = new System.Drawing.Size(330, 237);
 			this.tableLayoutPanelControls.TabIndex = 9;
+			// 
+			// checkBoxMixColors
+			// 
+			this.checkBoxMixColors.AutoSize = true;
+			this.checkBoxMixColors.Location = new System.Drawing.Point(26, 369);
+			this.checkBoxMixColors.Name = "checkBoxMixColors";
+			this.checkBoxMixColors.Size = new System.Drawing.Size(290, 17);
+			this.checkBoxMixColors.TabIndex = 10;
+			this.checkBoxMixColors.Text = "These colors should be mixed to produce the input color";
+			this.checkBoxMixColors.UseVisualStyleBackColor = true;
+			this.checkBoxMixColors.CheckedChanged += new System.EventHandler(this.checkBoxMixColors_CheckedChanged);
 			// 
 			// ColorBreakdownSetup
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(512, 544);
+			this.ClientSize = new System.Drawing.Size(384, 462);
+			this.Controls.Add(this.checkBoxMixColors);
 			this.Controls.Add(this.tableLayoutPanelControls);
 			this.Controls.Add(this.buttonAddColor);
 			this.Controls.Add(this.buttonOK);
@@ -157,10 +161,9 @@
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(528, 582);
+			this.MinimumSize = new System.Drawing.Size(400, 480);
 			this.Name = "ColorBreakdownSetup";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Color Breakdown Filter Setup";
@@ -181,5 +184,6 @@
 		private System.Windows.Forms.Button buttonOK;
 		private System.Windows.Forms.Button buttonAddColor;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanelControls;
+		private System.Windows.Forms.CheckBox checkBoxMixColors;
 	}
 }

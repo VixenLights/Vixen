@@ -113,7 +113,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 
 		private void _CreateOutputs()
 		{
-			_outputs = _data.BreakdownItems.Select(x => new ColorBreakdownOutput(x)).ToArray();
+			_outputs = _data.BreakdownItems.Select(x => new ColorBreakdownOutput(x, _data.MixColors)).ToArray();
 		}
 	}
 
@@ -134,6 +134,9 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 
 		[DataMember]
 		public List<ColorBreakdownItem> BreakdownItems { get; set; }
+
+		[DataMember]
+		public bool MixColors { get; set; }
 	}
 
 
@@ -159,10 +162,12 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 	{
 		private IIntentState _intentValue;
 		private readonly ColorBreakdownItem _breakdownItem;
+		private readonly bool _mixColors;
 
-		public ColorBreakdownFilter(ColorBreakdownItem breakdownItem)
+		public ColorBreakdownFilter(ColorBreakdownItem breakdownItem, bool mixColors)
 		{
 			_breakdownItem = breakdownItem;
+			_mixColors = mixColors;
 		}
 
 		public IIntentState Filter(IIntentState intentValue)
@@ -190,15 +195,33 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		public override void Handle(IIntentState<ColorValue> obj)
 		{
 			ColorValue colorValue = obj.GetValue();
-			float maxProportion = _getMaxProportion(colorValue.Color);
-			Color finalColor = Color.FromArgb((int)(_breakdownItem.Color.R * maxProportion), (int)(_breakdownItem.Color.G * maxProportion), (int)(_breakdownItem.Color.B * maxProportion));
-			_intentValue = new StaticIntentState<ColorValue>(obj, new ColorValue(finalColor));
+			if (_mixColors) {
+				float maxProportion = _getMaxProportion(colorValue.Color);
+				Color finalColor = Color.FromArgb((int)(_breakdownItem.Color.R * maxProportion), (int)(_breakdownItem.Color.G * maxProportion), (int)(_breakdownItem.Color.B * maxProportion));
+				_intentValue = new StaticIntentState<ColorValue>(obj, new ColorValue(finalColor));
+			} else {
+				if (colorValue.Color.ToArgb() == _breakdownItem.Color.ToArgb()) {
+					_intentValue = new StaticIntentState<ColorValue>(obj, colorValue);
+				} else {
+					// TODO: return 'null', or some osrt of empty intent state here instead. (null isn't handled well, and we don't have an 'empty' state class.)
+					_intentValue = new StaticIntentState<ColorValue>(obj, new ColorValue(Color.Black));
+				}
+			}
 		}
 
 		public override void Handle(IIntentState<LightingValue> obj)
 		{
 			LightingValue lightingValue = obj.GetValue();
-			_intentValue = new StaticIntentState<LightingValue>(obj, new LightingValue(_breakdownItem.Color, lightingValue.Intensity * _getMaxProportion(lightingValue.Color)));
+			if (_mixColors) {
+				_intentValue = new StaticIntentState<LightingValue>(obj, new LightingValue(_breakdownItem.Color, lightingValue.Intensity * _getMaxProportion(lightingValue.Color)));
+			} else {
+				if (lightingValue.Color.ToArgb() == _breakdownItem.Color.ToArgb()) {
+					_intentValue = new StaticIntentState<LightingValue>(obj, lightingValue);
+				} else {
+					// TODO: return 'null', or some osrt of empty intent state here instead. (null isn't handled well, and we don't have an 'empty' state class.)
+					_intentValue = new StaticIntentState<LightingValue>(obj, new LightingValue(_breakdownItem.Color, 0));
+				}
+			}
 		}
 	}
 
@@ -207,11 +230,13 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 	{
 		private readonly ColorBreakdownFilter _filter;
 		private readonly ColorBreakdownItem _breakdownItem;
+		private readonly bool _mixColors;
 
-		public ColorBreakdownOutput(ColorBreakdownItem breakdownItem)
+		public ColorBreakdownOutput(ColorBreakdownItem breakdownItem, bool mixColors)
 		{
-			_filter = new ColorBreakdownFilter(breakdownItem);
+			_filter = new ColorBreakdownFilter(breakdownItem, mixColors);
 			_breakdownItem = breakdownItem;
+			_mixColors = mixColors;
 		}
 
 		public void ProcessInputData(IntentsDataFlowData data)
