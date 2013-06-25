@@ -89,6 +89,13 @@ namespace VixenModules.Effect.Chase
 			set { _data.StaticColor = value; IsDirty = true; }
 		}
 
+		//Created to hold a ColorGradient version of color rather than continually creating them from Color for static colors.
+		protected ColorGradient StaticColorGradient
+		{
+			get { return _data.StaticColorGradient; }
+			set { _data.StaticColorGradient = value; }
+		}
+
 		[Value]
 		public ColorGradient ColorGradient
 		{
@@ -126,7 +133,7 @@ namespace VixenModules.Effect.Chase
 			List<ElementNode> renderNodes = GetNodesToRenderOn();
 						
 			int targetNodeCount = renderNodes.Count;
-
+			
 			Pulse.Pulse pulse;
 			EffectIntents pulseData;
 
@@ -144,7 +151,7 @@ namespace VixenModules.Effect.Chase
 					// figure out what color gradient to use for the pulse
 					switch (ColorHandling) {
 						case ChaseColorHandling.GradientForEachPulse:
-							pulse.ColorGradient = new ColorGradient(StaticColor);
+							pulse.ColorGradient = StaticColorGradient;
 							break;
 
 						case ChaseColorHandling.GradientThroughWholeEffect:
@@ -152,7 +159,7 @@ namespace VixenModules.Effect.Chase
 							break;
 
 						case ChaseColorHandling.StaticColor:
-							pulse.ColorGradient = new ColorGradient(StaticColor);
+							pulse.ColorGradient = StaticColorGradient;  
 							break;
 
 						case ChaseColorHandling.ColorAcrossItems:
@@ -268,7 +275,7 @@ namespace VixenModules.Effect.Chase
 					break;
 
 				case ChaseColorHandling.StaticColor:
-					pulse.ColorGradient = new ColorGradient(StaticColor);
+					pulse.ColorGradient = StaticColorGradient;
 					break;
 
 				case ChaseColorHandling.ColorAcrossItems:
