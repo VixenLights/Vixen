@@ -294,68 +294,58 @@ namespace VixenModules.App.ColorGradients
 		//draw gradient and faders
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			try {
-				base.OnPaint(e);
-				if (this.Width < BORDER*2 || this.Height < BORDER*2)
-					return;
-				e.Graphics.SmoothingMode =
-					System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-				//draw gradient
-				Rectangle area = new Rectangle(BORDER, BORDER,
-				                               this.Width - BORDER*2 - 1, this.Height - BORDER*2 - 1);
-				if (_blend != null) {
-					using (HatchBrush brs = new HatchBrush(HatchStyle.LargeCheckerBoard,
-					                                       Color.Silver, Color.White)) {
-						e.Graphics.FillRectangle(brs, area);
-					}
-					Bitmap bmp = _blend.GenerateColorGradientImage(area.Size, DiscreteColors);
-					e.Graphics.DrawImage(bmp, area.X, area.Y);
+			base.OnPaint(e);
+			if (this.Width < BORDER*2 || this.Height < BORDER*2)
+				return;
+			e.Graphics.SmoothingMode =
+				System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+			//draw gradient
+			Rectangle area = new Rectangle(BORDER, BORDER,
+				                            this.Width - BORDER*2 - 1, this.Height - BORDER*2 - 1);
+			if (_blend != null) {
+				using (HatchBrush brs = new HatchBrush(HatchStyle.LargeCheckerBoard,
+					                                    Color.Silver, Color.White)) {
+					e.Graphics.FillRectangle(brs, area);
 				}
-				//border
-				e.Graphics.DrawRectangle(Pens.Silver, area);
-				if (_blend != null) {
-					List<ColorPoint> sortedColors = new List<ColorPoint>(_blend.Colors.SortedArray());
-					// we'll assume they're sorted, so any colorpoints at the same position are contiguous in the array
-					for (int i = 0; i < sortedColors.Count; i++) {
-						ColorPoint currentPoint = sortedColors[i];
-						double currentPos = currentPoint.Position;
-						List<Color> currentColors = new List<Color>();
-						currentColors.Add(currentPoint.GetColor(Color.Black));
-
-						while (i + 1 < sortedColors.Count && sortedColors[i + 1].Position == currentPos) {
-							currentColors.Add(sortedColors[i + 1].GetColor(Color.Black));
-							i++;
-						}
-
-						try {
-							DrawFader(e.Graphics, currentPoint.Position, currentColors, false,
-									  __selection != null && __selection.Contains(currentPoint) && !_focussel);
-						} catch (Exception qwer) {
-							Console.WriteLine("asdfasdf");							
-						}
-					}
-
-					////draw color points
-					//foreach (ColorPoint pnt in _blend.Colors)
-					//    DrawFader(e.Graphics, pnt.Position,
-					//        pnt.GetColor(Color.Black),
-					//        false, pnt == _selection && !_focussel);
-					// MS: 25/09/11: disable drawing alpha points, we don't want to use them (yet).
-					// draw alpha points
-					//foreach (AlphaPoint pnt in _blend.Alphas)
-					//    DrawFader(e.Graphics, pnt.Position,
-					//        pnt.GetColor(Color.Black),
-					//        true, pnt == _selection && !_focussel);
-
-					// draw selected focus
-					if (__selection != null && __selection.Count > 0)
-						DrawDiamond(e.Graphics, _blend.GetFocusPosition(__selection.First()),
-						            __selection.First() is AlphaPoint, _focussel);
-				}
+				Bitmap bmp = _blend.GenerateColorGradientImage(area.Size, DiscreteColors);
+				e.Graphics.DrawImage(bmp, area.X, area.Y);
 			}
-			catch (Exception eee)
-			{
-				Console.WriteLine("asdfasdf");
+			//border
+			e.Graphics.DrawRectangle(Pens.Silver, area);
+			if (_blend != null) {
+				List<ColorPoint> sortedColors = new List<ColorPoint>(_blend.Colors.SortedArray());
+				// we'll assume they're sorted, so any colorpoints at the same position are contiguous in the array
+				for (int i = 0; i < sortedColors.Count; i++) {
+					ColorPoint currentPoint = sortedColors[i];
+					double currentPos = currentPoint.Position;
+					List<Color> currentColors = new List<Color>();
+					currentColors.Add(currentPoint.GetColor(Color.Black));
+
+					while (i + 1 < sortedColors.Count && sortedColors[i + 1].Position == currentPos) {
+						currentColors.Add(sortedColors[i + 1].GetColor(Color.Black));
+						i++;
+					}
+
+					DrawFader(e.Graphics, currentPoint.Position, currentColors, false,
+						        __selection != null && __selection.Contains(currentPoint) && !_focussel);
+				}
+
+				////draw color points
+				//foreach (ColorPoint pnt in _blend.Colors)
+				//    DrawFader(e.Graphics, pnt.Position,
+				//        pnt.GetColor(Color.Black),
+				//        false, pnt == _selection && !_focussel);
+				// MS: 25/09/11: disable drawing alpha points, we don't want to use them (yet).
+				// draw alpha points
+				//foreach (AlphaPoint pnt in _blend.Alphas)
+				//    DrawFader(e.Graphics, pnt.Position,
+				//        pnt.GetColor(Color.Black),
+				//        true, pnt == _selection && !_focussel);
+
+				// draw selected focus
+				if (__selection != null && __selection.Count > 0)
+					DrawDiamond(e.Graphics, _blend.GetFocusPosition(__selection.First()),
+						        __selection.First() is AlphaPoint, _focussel);
 			}
 		}
 
