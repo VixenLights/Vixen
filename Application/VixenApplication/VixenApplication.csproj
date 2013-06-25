@@ -53,11 +53,11 @@
     <ApplicationIcon>V3.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-	<ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
-		<Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
-		<Name>Vixen</Name>
-		<Private>False</Private>
-	</ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
+      <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
+      <Name>Vixen</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
@@ -272,7 +272,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\Common\NShape\Core\NShape.csproj">
       <Project>{9EFE1059-E2DC-4576-B9E3-4AE3F998CB28}</Project>
-      <Name>NShape</Name>
+      <Name>NShape %28VixenModules\Common\NShape\NShape%29</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Common\NShape\GeneralShapes\NShapeGeneralShapes.csproj">
