@@ -76,7 +76,7 @@ namespace VixenModules.Effect.Pulse
 
 				if (colorType == ElementColorType.FullColor) {
 					addIntentsToElement(elementNode.Element);
-				} else if (colorType == ElementColorType.MultipleDiscreteColors) {
+				} else {
 					IEnumerable<Color> colors = ColorModule.getValidColorsForElementNode(elementNode);
 					foreach (Color color in colors) {
 						addIntentsToElement(elementNode.Element, color);
