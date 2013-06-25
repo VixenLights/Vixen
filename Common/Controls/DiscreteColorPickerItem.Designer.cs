@@ -29,6 +29,7 @@
 		{
 			this.checkBoxSelected = new System.Windows.Forms.CheckBox();
 			this.panelColor = new System.Windows.Forms.Panel();
+			this.radioButtonSelected = new System.Windows.Forms.RadioButton();
 			this.SuspendLayout();
 			// 
 			// checkBoxSelected
@@ -39,6 +40,7 @@
 			this.checkBoxSelected.Size = new System.Drawing.Size(15, 14);
 			this.checkBoxSelected.TabIndex = 0;
 			this.checkBoxSelected.UseVisualStyleBackColor = true;
+			this.checkBoxSelected.CheckedChanged += new System.EventHandler(this.checkBoxSelected_CheckedChanged);
 			// 
 			// panelColor
 			// 
@@ -48,10 +50,23 @@
 			this.panelColor.Size = new System.Drawing.Size(40, 40);
 			this.panelColor.TabIndex = 1;
 			// 
+			// radioButtonSelected
+			// 
+			this.radioButtonSelected.AutoSize = true;
+			this.radioButtonSelected.Location = new System.Drawing.Point(8, 17);
+			this.radioButtonSelected.Name = "radioButtonSelected";
+			this.radioButtonSelected.Size = new System.Drawing.Size(14, 13);
+			this.radioButtonSelected.TabIndex = 2;
+			this.radioButtonSelected.TabStop = true;
+			this.radioButtonSelected.UseVisualStyleBackColor = true;
+			this.radioButtonSelected.Visible = false;
+			this.radioButtonSelected.CheckedChanged += new System.EventHandler(this.radioButtonSelected_CheckedChanged);
+			// 
 			// DiscreteColorPickerItem
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.radioButtonSelected);
 			this.Controls.Add(this.panelColor);
 			this.Controls.Add(this.checkBoxSelected);
 			this.DoubleBuffered = true;
@@ -66,5 +81,6 @@
 
 		private System.Windows.Forms.CheckBox checkBoxSelected;
 		private System.Windows.Forms.Panel panelColor;
+		private System.Windows.Forms.RadioButton radioButtonSelected;
 	}
 }

@@ -31,15 +31,37 @@ namespace Common.Controls
 			foreach (Color validColor in ValidColors) {
 				DiscreteColorPickerItem control = new DiscreteColorPickerItem();
 				control.Color = validColor;
+				control.SingleColorOnly = SingleColorOnly;
 				if (_selectedColors.Any(x => x.ToArgb() == validColor.ToArgb())) {
 					control.Selected = true;
 				}
+				control.SelectedChanged += control_SelectedChanged;
 				tableLayoutPanelColors.Controls.Add(control);
 			}
 
 		}
 
+		void control_SelectedChanged(object sender, EventArgs e)
+		{
+			if (!SingleColorOnly)
+				return;
+
+			DiscreteColorPickerItem dcpi = sender as DiscreteColorPickerItem;
+			if (dcpi == null)
+				return;
+
+			if (!dcpi.Selected)
+				return;
+
+			foreach (Control control in tableLayoutPanelColors.Controls) {
+				if (control != sender) {
+					(control as DiscreteColorPickerItem).Selected = false;
+				}
+			}
+		}
+
 		public IEnumerable<Color> ValidColors { get; set; }
+		public bool SingleColorOnly { get; set; }
 
 		private IEnumerable<Color> _selectedColors;
 		public IEnumerable<Color> SelectedColors
@@ -57,6 +79,5 @@ namespace Common.Controls
 			}
 			set { _selectedColors = value; }
 		}
-
 	}
 }
