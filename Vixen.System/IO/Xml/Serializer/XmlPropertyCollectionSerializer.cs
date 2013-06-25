@@ -14,33 +14,27 @@ namespace Vixen.IO.Xml.Serializer {
 
 		public XElement WriteObject(IEnumerable<IPropertyModuleInstance> value)
 		{
-			return new XElement(ELEMENT_PROPERTIES,
-				new XElement(ELEMENT_PROPERTY, 
-					value.Select(x => new XAttribute(ELEMENT_TYPE_ID, x.Descriptor.TypeId)),
-					value.Select(x => new XAttribute(ELEMENT_INSTANCE_ID, x.InstanceId)))
-				);
+			if (value.Count() <= 0)
+				return null;
+
+			XElement result = new XElement(ELEMENT_PROPERTIES);
+			foreach (IPropertyModuleInstance instance in value) {
+				XElement elem = new XElement(ELEMENT_PROPERTY);
+				elem.Add(new XAttribute(ELEMENT_TYPE_ID, instance.Descriptor.TypeId));
+				elem.Add(new XAttribute(ELEMENT_INSTANCE_ID, instance.InstanceId));
+				result.Add(elem);
+			}
+			return result;
 		}
-
-		//public XElement WriteObject(IEnumerable<Guid> value) {
-
-		//    return new XElement(ELEMENT_PROPERTIES,
-		//        value.Select(x => new XElement(ELEMENT_PROPERTY, x)));
-		//}
-
-		//public IEnumerable<Guid> ReadObject(XElement element)
-		//{
-		//    element = element.Element(ELEMENT_PROPERTIES);
-		//    if (element != null)
-		//    {
-		//        return element.Elements(ELEMENT_PROPERTY).Select(x => Guid.Parse(x.Value));
-		//    }
-		//    return Enumerable.Empty<Guid>();
-		//}
 
 		public IEnumerable<IPropertyModuleInstance> ReadObject(XElement element)
 		{
 			List<IPropertyModuleInstance> properties = new List<IPropertyModuleInstance>();
 			element = element.Element(ELEMENT_PROPERTIES);
+
+			if (element == null)
+				return properties;
+
 			foreach (XElement prop in element.Elements(ELEMENT_PROPERTY))
 			{
 				//figure out how to get props.
