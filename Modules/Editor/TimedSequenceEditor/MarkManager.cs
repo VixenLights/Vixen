@@ -189,6 +189,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
             // so that the displayed collection is remembered and selected in the list.
             PopulateFormWithMarkCollection(newCollection);
             PopulateMarkCollectionsList();
+
+			//enable Tapper as long as a collection is selected.
+			radioButtonTapper.Enabled = (listViewMarkCollections.SelectedItems.Count > 0);
+			radioButtonPlayback.Checked = true;
         }
 
         private void buttonRemoveCollection_Click(object sender, EventArgs e)
