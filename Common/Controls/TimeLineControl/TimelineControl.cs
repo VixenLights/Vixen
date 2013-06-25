@@ -236,6 +236,11 @@ namespace Common.Controls.Timeline
 
 		#region Methods
 
+        public void LayoutRows()
+        {
+            timelineRowList.DoLayout();
+        }
+
 		// Zoom in or out (ie. change the visible time span): give a scale < 1.0
 		// and it zooms in, > 1.0 and it zooms out.
 		public void Zoom(double scale)
@@ -274,7 +279,7 @@ namespace Common.Controls.Timeline
 		private void AddRowToControls(Row row, RowLabel label)
 		{
 			grid.AddRow(row);
-			timelineRowList.AddRowLabel(label);
+		    timelineRowList.AddRowLabel(label);
 		}
 
 		private void RemoveRowFromControls(Row row)
@@ -563,6 +568,7 @@ namespace Common.Controls.Timeline
 
 		protected override void OnLayout(LayoutEventArgs e)
 		{
+            //Console.WriteLine("Layout");
 			timelineRowList.Top = grid.Top;
 			base.OnLayout(e);
 		}

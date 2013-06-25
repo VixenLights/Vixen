@@ -3,6 +3,10 @@ using System.Drawing;
 using Vixen.Module.Effect;
 using Vixen.Sys;
 using System.Diagnostics;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Linq;
 
 namespace VixenModules.Editor.TimedSequenceEditor {
 	class EffectRasterizer {
@@ -24,13 +28,13 @@ namespace VixenModules.Editor.TimedSequenceEditor {
             //Console.WriteLine("Effect Render:" + timer.ElapsedMilliseconds);
 
             // Is this a Nutcracker effect?
-            if (effect.TypeId.ToString().ToLower() == "82334cb3-9472-42fe-a221-8482f5c731db")
-            {
-                g.FillRectangle(Brushes.Purple, new Rectangle(0, 0, (int)width, (int)height));
-                //intentRasterizer.Rasterize(elementIntentNode.Intent, new RectangleF((float)startPixelX, (float)y, (float)widthPixelX, (float)heightPerElement), g);
-            }
-            else
-            {
+            //if (effect.TypeId.ToString().ToLower() == "82334cb3-9472-42fe-a221-8482f5c731db")
+            //{
+            //    g.FillRectangle(Brushes.Purple, new Rectangle(0, 0, (int)width, (int)height));
+            //    //intentRasterizer.Rasterize(elementIntentNode.Intent, new RectangleF((float)startPixelX, (float)y, (float)widthPixelX, (float)heightPerElement), g);
+            //}
+            //else
+            //{
                 //timer.Reset();
                 //timer.Start();
                 IntentRasterizer intentRasterizer = new IntentRasterizer();
@@ -64,7 +68,7 @@ namespace VixenModules.Editor.TimedSequenceEditor {
                 }
                 //timer.Stop();
                 //Console.WriteLine("Effect Draw:" + timer.ElapsedMilliseconds);
-            }
+            //}
 		}
 
 		private double _GetPercentage(TimeSpan offset, TimeSpan totalTimeSpan)

@@ -150,54 +150,54 @@ namespace Common.Controls.Timeline
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			using (SolidBrush backgroundBrush = new SolidBrush(SystemColors.ControlLight))
-			{
-				using (SolidBrush toggleBrush = new SolidBrush(SystemColors.ActiveCaption))
-				{
-					using (SolidBrush nodeIconBrush = new SolidBrush(SystemColors.ControlDark))
-					{
-						using (SolidBrush textBrush = new SolidBrush(Color.Black))
-						{
-							using (Pen wholeBorderPen = new Pen(SystemColors.ControlDarkDark, 1))
-							{
-								wholeBorderPen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
-								using (Pen toggleBorderPen = new Pen(SystemColors.ControlDark, 1))
-								{
-									toggleBorderPen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
+            using (SolidBrush backgroundBrush = new SolidBrush(SystemColors.ControlLight))
+            {
+                using (SolidBrush toggleBrush = new SolidBrush(SystemColors.ActiveCaption))
+                {
+                    using (SolidBrush nodeIconBrush = new SolidBrush(SystemColors.ControlDark))
+                    {
+                        using (SolidBrush textBrush = new SolidBrush(Color.Black))
+                        {
+                            using (Pen wholeBorderPen = new Pen(SystemColors.ControlDarkDark, 1))
+                            {
+                                wholeBorderPen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
+                                using (Pen toggleBorderPen = new Pen(SystemColors.ControlDark, 1))
+                                {
+                                    toggleBorderPen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
 
-									int fontHeight = 12;
-									fontHeight = Math.Min(fontHeight, (int)(Height * 0.4));
-									using (Font font = new Font("Arial", fontHeight))
-									{
+                                    int fontHeight = 12;
+                                    fontHeight = Math.Min(fontHeight, (int)(Height * 0.4));
+                                    using (Font font = new Font("Arial", fontHeight))
+                                    {
 
-										IconArea = new Rectangle(0, 0, ToggleTreeButtonWidth, Height);
-										LabelArea = new Rectangle(ToggleTreeButtonWidth, 0, Width - ToggleTreeButtonWidth, Height);
+                                        IconArea = new Rectangle(0, 0, ToggleTreeButtonWidth, Height);
+                                        LabelArea = new Rectangle(ToggleTreeButtonWidth, 0, Width - ToggleTreeButtonWidth, Height);
 
-										Rectangle wholeBorderArea = new Rectangle(0, -1, Width - 1, Height);
-										Rectangle iconBorderArea = new Rectangle(0, -1, IconArea.Width, IconArea.Height);
-										
-										e.Graphics.FillRectangle((ParentRow.ChildRows.Count == 0) ? nodeIconBrush : toggleBrush, IconArea);
-										e.Graphics.FillRectangle(backgroundBrush, LabelArea);
+                                        Rectangle wholeBorderArea = new Rectangle(0, -1, Width - 1, Height);
+                                        Rectangle iconBorderArea = new Rectangle(0, -1, IconArea.Width, IconArea.Height);
 
-										e.Graphics.DrawRectangle(toggleBorderPen, iconBorderArea);
-										e.Graphics.DrawRectangle(wholeBorderPen, wholeBorderArea);
+                                        e.Graphics.FillRectangle((ParentRow.ChildRows.Count == 0) ? nodeIconBrush : toggleBrush, IconArea);
+                                        e.Graphics.FillRectangle(backgroundBrush, LabelArea);
 
-										using (StringFormat sf = new StringFormat())
-										{
-											sf.Alignment = StringAlignment.Near;
-											sf.LineAlignment = StringAlignment.Center;
-											sf.Trimming = StringTrimming.EllipsisCharacter;
-											sf.FormatFlags = StringFormatFlags.NoWrap;
-											Rectangle stringPos = new Rectangle(LabelArea.X + 6, LabelArea.Y, LabelArea.Width - 6, LabelArea.Height);
-											e.Graphics.DrawString(Name, font, textBrush, stringPos, sf);
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
+                                        e.Graphics.DrawRectangle(toggleBorderPen, iconBorderArea);
+                                        e.Graphics.DrawRectangle(wholeBorderPen, wholeBorderArea);
+
+                                        using (StringFormat sf = new StringFormat())
+                                        {
+                                            sf.Alignment = StringAlignment.Near;
+                                            sf.LineAlignment = StringAlignment.Center;
+                                            sf.Trimming = StringTrimming.EllipsisCharacter;
+                                            sf.FormatFlags = StringFormatFlags.NoWrap;
+                                            Rectangle stringPos = new Rectangle(LabelArea.X + 6, LabelArea.Y, LabelArea.Width - 6, LabelArea.Height);
+                                            e.Graphics.DrawString(Name, font, textBrush, stringPos, sf);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 		}
 
 		#endregion

@@ -65,6 +65,13 @@
     <Compile Include="DiscreteColorPickerItem.Designer.cs">
       <DependentUpon>DiscreteColorPickerItem.cs</DependentUpon>
     </Compile>
+    <Compile Include="PictureComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PictureComboBox.Designer.cs">
+      <DependentUpon>PictureComboBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PictureComboBoxItem.cs" />
     <Compile Include="Wizard\Wizard.cs" />
     <Compile Include="Wizard\WizardForm.cs">
       <SubType>Form</SubType>

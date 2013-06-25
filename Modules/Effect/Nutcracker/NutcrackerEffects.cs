@@ -8,6 +8,7 @@ using VixenModules.Effect.Nutcracker;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Concurrent;
+using System.IO;
 
 namespace VixenModules.Effect.Nutcracker
 {    
@@ -35,7 +36,9 @@ namespace VixenModules.Effect.Nutcracker
             Garlands,
             Life,
             Meteors,
+            Movie,
             Picture,
+            PictureTile,
             Snowflakes,
             Snowstorm,
             Spirals,
@@ -55,6 +58,7 @@ namespace VixenModules.Effect.Nutcracker
             Arch,
             HorizontalLine,
             VerticalLine,
+            Grid
         }
 
         public NutcrackerEffects()
@@ -204,8 +208,43 @@ namespace VixenModules.Effect.Nutcracker
             return Get2ColorBlend(coloridx1, coloridx2, ratio);
         }
 
-        #endregion
+        public static Image ConvertToGrayScale(Image srce)
+        {
+            Bitmap bmp = new Bitmap(srce.Width, srce.Height);
+            using (Graphics gr = Graphics.FromImage(bmp))
+            {
+                var matrix = new float[][] {
+                    new float[] { 0.299f, 0.299f, 0.299f, 0, 0 },
+                    new float[] { 0.587f, 0.587f, 0.587f, 0, 0 },
+                    new float[] { 0.114f, 0.114f, 0.114f, 0, 0 },
+                    new float[] { 0,      0,      0,      1, 0 },
+                    new float[] { 0,      0,      0,      0, 1 }
+                };
+                var ia = new System.Drawing.Imaging.ImageAttributes();
+                ia.SetColorMatrix(new System.Drawing.Imaging.ColorMatrix(matrix));
+                var rc = new Rectangle(0, 0, srce.Width, srce.Height);
+                gr.DrawImage(srce, rc, 0, 0, srce.Width, srce.Height, GraphicsUnit.Pixel, ia);
+                return bmp;
+            }
+        }
 
+        public Bitmap ScaleImage(Image image, double scale)
+        {
+            int maxWidth = Convert.ToInt32((double)image.Width * scale);
+            int maxHeight = Convert.ToInt32((double)image.Height * scale);
+            var ratioX = (double)maxWidth / image.Width;
+            var ratioY = (double)maxHeight / image.Height;
+            var ratio = Math.Min(ratioX, ratioY);
+
+            var newWidth = (int)(image.Width * ratio);
+            var newHeight = (int)(image.Height * ratio);
+
+            var newImage = new Bitmap(newWidth, newHeight);
+            Graphics.FromImage(newImage).DrawImage(image, 0, 0, newWidth, newHeight);
+            return newImage;
+        }
+
+        #endregion
         
         #region Pixels
 
@@ -733,9 +772,6 @@ namespace VixenModules.Effect.Nutcracker
 
         #endregion // Fire
 
-        //
-        // LIFE IS BROKEN
-        //
         #region Life
 
         private int LastLifeCount, LastLifeType = 0;
@@ -1654,6 +1690,9 @@ namespace VixenModules.Effect.Nutcracker
 
         string PictureName = "";
         FastPixel fp;
+        //
+        // TODO: Load animated GIF images
+        //
         public void RenderPictures(int dir, string NewPictureName, int GifSpeed)
         {
             const int speedfactor = 4;
@@ -1925,6 +1964,275 @@ namespace VixenModules.Effect.Nutcracker
 
         #endregion // Tree
 
+        #region Movie
+
+        List<FastPixel> moviePictures;
+
+        public void LoadPictures(string DataFilePath)
+        {
+            moviePictures = new List<FastPixel>();
+            if (Data.Movie_DataPath.Length > 0)
+            {
+                var imageFolder = System.IO.Path.Combine(NutcrackerDescriptor.ModulePath, DataFilePath);
+                List<string> sortedFiles = Directory.GetFiles(imageFolder).OrderBy(f => f).ToList();
+
+                foreach (string file in sortedFiles)
+                {
+                        Image image = Image.FromFile(file);
+                        FastPixel imageFp = new FastPixel(new Bitmap(image));
+                        moviePictures.Add(imageFp);
+                }
+            }
+        }
+
+
+        double currentMovieImageNum = 0.0;
+        public void RenderMovie(int dir, string DataFilePath, int movieSpeed)
+        {
+            const int speedfactor = 4;
+
+            if (moviePictures == null || State == 0)
+            {
+                LoadPictures(DataFilePath);
+            }
+
+            int pictureCount = moviePictures.Count;
+
+            // If we don't have any pictures, do nothing!
+            if (pictureCount == 0)
+                return;
+
+            if (movieSpeed > 0)
+            {
+                currentMovieImageNum += ((movieSpeed * .01) + 1);
+            }
+            else if (movieSpeed < 0)
+            {
+                currentMovieImageNum += (100+movieSpeed) * .01;
+            }
+            else
+            {
+                currentMovieImageNum++;
+            }
+
+            if (Convert.ToInt32(currentMovieImageNum) >= pictureCount || Convert.ToInt32(currentMovieImageNum) < 0)
+                currentMovieImageNum = 0;
+
+            FastPixel currentMovieImage = moviePictures[Convert.ToInt32(currentMovieImageNum)];
+            if (currentMovieImage != null)
+            {
+                int imgwidth = currentMovieImage.Width;
+                int imght = currentMovieImage.Height;
+                int yoffset = (BufferHt + imght) / 2;
+                int xoffset = (imgwidth - BufferWi) / 2;
+                int limit = (dir < 2) ? imgwidth + BufferWi : imght + BufferHt;
+                int movement = Convert.ToInt32((State % (limit * speedfactor)) / speedfactor);
+
+                // copy image to buffer
+                currentMovieImage.Lock();
+                Color fpColor = new Color();
+                for (int x = 0; x < imgwidth; x++)
+                {
+                    for (int y = 0; y < imght; y++)
+                    {
+                        fpColor = currentMovieImage.GetPixel(x, y);
+                        if (fpColor != Color.Transparent && fpColor != Color.Black)
+                        {
+                            switch (dir)
+                            {
+                                case 1:
+                                    // left
+                                    SetPixel(x + BufferWi - movement, yoffset - y, fpColor);
+                                    break;
+                                case 2:
+                                    // right
+                                    SetPixel(x + movement - imgwidth, yoffset - y, fpColor);
+                                    break;
+                                case 3:
+                                    // up
+                                    SetPixel(x - xoffset, movement - y, fpColor);
+                                    break;
+                                case 4:
+                                    // down
+                                    SetPixel(x - xoffset, BufferHt + imght - y - movement, fpColor);
+                                    break;
+                                default:
+                                    // no movement - centered
+                                    SetPixel(x - xoffset, yoffset - y, fpColor);
+                                    break;
+                            }
+                        }
+                    }
+                }
+                currentMovieImage.Unlock(false);
+            }
+        }
+
+
+        #endregion // Movie
+
+        #region PictureTile
+
+        double movementX = 0.0;
+        double movementY = 0.0;
+        int lastState = 0;
+        double lastScale = -1;
+        public void RenderPictureTile(int dir, double scale, bool useColor, bool useAlpha, int ColorReplacementSensitivity, string NewPictureName)
+        {
+            const int speedfactor = 4;
+            Image image = null;
+
+            if (NewPictureName == null || NewPictureName.Length == 0)
+                return;
+
+            if (State == 0)
+            {
+                //Console.WriteLine("RenderPictureTile: -------- RESET --------");
+                lastState = 0;
+                movementX = 0.0;
+                movementY = 0.0;
+                lastScale = -1;
+            }
+
+            //Console.WriteLine("RenderPictureTile:" + dir + ":" + scale + ":" + useColor + ":" + useAlpha + ":" + ColorReplacementSensitivity + ":" + NewPictureName);
+
+            if (NewPictureName != PictureName || scale != lastScale)
+            {
+                //Console.WriteLine("RenderPictuerTile: SET PICTURE");
+                if (!System.IO.File.Exists(NewPictureName))
+                {
+                    return;
+                }
+                image = Image.FromFile(NewPictureName);
+                if (scale != 0.0)
+                {
+                    image = ScaleImage(image, scale / 100);
+                }
+                if (useColor)
+                {
+                    image = ConvertToGrayScale(image);
+                }
+                fp = new FastPixel(new Bitmap(image));
+
+                PictureName = NewPictureName;
+                lastScale = scale;
+            }
+
+            if (fp != null)
+            {
+                int imageWidth = fp.Width;
+                int imageHeight = fp.Height;
+                double deltaX = 0;
+                double deltaY = 0;
+
+                if (dir > 0 && dir < 90)
+                {
+                    deltaX = (double)dir / 90;
+                }
+                else if (dir > 90 && dir < 180)
+                {
+                    deltaX = (double)Math.Abs(dir - 180) / 90;
+                }
+                else if (dir > 180 && dir < 270)
+                {
+                    deltaX = -1 * ((double)Math.Abs(dir - 180) / 90);
+                }
+                else if (dir > 270 && dir < 360)
+                {
+                    deltaX = -1 * ((double)Math.Abs(dir - 360) / 90);
+                }
+
+                if (dir >= 0 && dir < 90)
+                {
+                    deltaY = (double)Math.Abs(dir - 90) / 90;
+                }
+                else if (dir > 90 && dir <= 180)
+                {
+                    deltaY = -1 * ((double)Math.Abs(dir - 90) / 90);
+                }
+                else if (dir > 180 && dir < 270)
+                {
+                    deltaY = -1 * ((double)Math.Abs(dir - 270) / 90);
+                }
+                else if (dir > 270 && dir <= 360)
+                {
+                    deltaY = (double)Math.Abs(270 - dir) / 90;
+                }
+
+                movementX += (double)((double)(State - lastState) / (double)speedfactor) * deltaX;
+                movementY += (double)((double)(State - lastState) / (double)speedfactor) * deltaY;
+                lastState = (int)State;
+
+                fp.Lock();
+                Color fpColor = new Color();
+                int colorX = 0;
+                int colorY = 0;
+
+                for (int x = 0; x < BufferWi; x++)
+                {
+                    for (int y = 0; y < BufferHt; y++)
+                    {
+                        colorX = x + Convert.ToInt32(movementX);
+                        colorY = y + Convert.ToInt32(movementY);
+
+                        if (colorX >= 0)
+                        {
+                            colorX = colorX % imageWidth;
+                        }
+                        else if (colorX < 0)
+                        {
+                            colorX = Convert.ToInt32(colorX % imageWidth) + imageWidth - 1;
+                        }
+
+                        if (colorY >= 0)
+                        {
+                            colorY = Convert.ToInt32(colorY % imageHeight);
+                        }
+                        else if (colorY < 0)
+                        {
+                            colorY = Convert.ToInt32(colorY % imageHeight) + imageHeight - 1;
+                        }
+                        if (colorX <= fp.Width && colorY <= fp.Height)
+                        {
+                            fpColor = fp.GetPixel(colorX, colorY);
+
+                            if (fpColor != Color.Transparent)
+                            {
+                                // Are we re-assigning the colors for this
+                                if (useColor)
+                                {
+                                    // For now, we're always going to use alpha. Maybe later, we'll 
+                                    // Convert black and white to a single color
+                                    //if (useAlpha)
+                                    //{
+                                    Color newColor = Palette.GetColor(0);
+                                    // TODO
+                                    // How high can GetBrightness go? Is it 0-100?
+                                    // How about alpha? Is it 0-255?
+                                    int a = Convert.ToInt32(fpColor.GetBrightness() * 255);
+                                    fpColor = Color.FromArgb(a, newColor.R, newColor.G, newColor.B);
+                                    //}
+                                    //else
+                                    //{
+                                    //    fpColor = Palette.GetColor(0);
+                                    //}
+                                }
+                                else
+                                {
+                                    //fpColor = Color.FromArgb(255, fpColor);
+                                }
+                                SetPixel(x, y, fpColor);
+                            }
+                        }
+                    }
+                }
+                fp.Unlock(false);
+            }
+        }
+
+        #endregion //PictureTile
+
+
         #endregion // Nutcracker Effects
 
         public void RenderNextEffect(Effects effect)
@@ -1985,6 +2293,12 @@ namespace VixenModules.Effect.Nutcracker
                     break;
                 case Effects.Tree:
                     RenderTree(Data.Tree_Branches);
+                    break;
+                case Effects.Movie:
+                    RenderMovie(Data.Movie_MovementDirection, Data.Movie_DataPath, Data.Movie_PlaybackSpeed);
+                    break;
+                case Effects.PictureTile:
+                    RenderPictureTile(Data.PictureTile_Direction, Data.PictureTile_Scaling, Data.PictureTile_ReplaceColor, Data.PictureTile_UseSaturation, Data.PictureTile_ColorReplacementSensitivity, Data.PictureTile_FileName);
                     break;
             }
         }

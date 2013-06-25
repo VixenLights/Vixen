@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
 using System.Drawing;
+using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Module;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
@@ -171,6 +172,28 @@ namespace VixenModules.Effect.Nutcracker
         [DataMember]
         public int Tree_Branches = 5;
 
+        // Movie
+        [DataMember]
+        public string Movie_DataPath = "";
+        [DataMember]
+        public int Movie_PlaybackSpeed = 0; // -100=Slow, 0=Normal, 100=Fast
+        [DataMember]
+        public int Movie_MovementDirection = 0;
+
+        // PictureTile
+        [DataMember]
+        public string PictureTile_FileName = "";
+        [DataMember]
+        public int PictureTile_Direction = 0;
+        [DataMember]
+        public double PictureTile_Scaling = 100.0;
+        [DataMember]
+        public bool PictureTile_ReplaceColor = false;
+        [DataMember]
+        public bool PictureTile_UseSaturation = false;
+        [DataMember]
+        public int PictureTile_ColorReplacementSensitivity = 0;
+
         [OnDeserialized]
         void OnDeserialized(StreamingContext context)
         {
@@ -223,6 +246,14 @@ namespace VixenModules.Effect.Nutcracker
 
             if (PixelSize == 0)
                 PixelSize = 3;
+
+            if (Movie_DataPath == null) 
+                Movie_DataPath = "";
+
+            if (PictureTile_Scaling == 0.0)
+            {
+                PictureTile_Scaling = 100.0;
+            }
         }
     }
 }

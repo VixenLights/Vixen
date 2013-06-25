@@ -12,6 +12,11 @@ using Vixen.Sys;
 using VixenModules.Preview.VixenPreview;
 using VixenModules.Preview.VixenPreview.Shapes;
 using VixenModules.Effect.Nutcracker;
+using Common.Controls;
+using System.Collections;
+using System.Globalization;
+using System.Resources;
+using System.IO;
 
 namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 {
@@ -84,6 +89,19 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
                         }
                     }
                 }
+                if (displayItem.Shape is PreviewPixelGrid)
+                {
+                    PreviewPixelGrid grid = displayItem.Shape as PreviewPixelGrid;
+                    for (int stringNum = 0; stringNum < stringCount; stringNum++)
+                    {
+                        int currentString = stringCount - stringNum - 1;
+                        PreviewBaseShape gridString = grid._strings[currentString];
+                        for (int pixelNum = 0; pixelNum < gridString.Pixels.Count; pixelNum++)
+                        {
+                            gridString.Pixels[pixelNum].PixelColor = effect.Pixels[stringNum][pixelNum];
+                        }
+                    }
+                }
                 else if (displayItem.Shape is PreviewArch)
                 {
                     PreviewArch arch = displayItem.Shape as PreviewArch;
@@ -145,6 +163,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
             LoadPicture();
             LoadSpirograph();
             LoadTree();
+            LoadMovie();
+            LoadPictureTile();
             LoadColors();
             LoadPreview();
 
@@ -359,6 +379,30 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
             preview.AddDisplayItem(displayItem);
         }
 
+        private void SetupPixelGrid()
+        {
+            if (StringCount < 2) return;
+            preview.Data = new VixenPreviewData();
+            preview.LoadBackground();
+            preview.BackgroundAlpha = 0;
+            displayItem = new DisplayItem();
+            PreviewPixelGrid grid = new PreviewPixelGrid(new PreviewPoint(10, 10), null);
+            grid.StringType = PreviewBaseShape.StringTypes.Pixel;
+            grid.StringCount = StringCount;
+            grid.LightsPerString = PixelsPerString();
+            //tree.PixelCount = PixelsPerString();
+            grid.PixelSize = Data.PixelSize;
+            grid.PixelColor = Color.White;
+            grid.Top = 10;
+            grid.Left = 10;
+            grid.BottomRight.X = preview.Width - 10;
+            grid.BottomRight.Y = preview.Height - 10;
+            grid.Layout();
+            displayItem.Shape = grid;
+
+            preview.AddDisplayItem(displayItem);
+        }
+
         public void SetupPreview()
         {
             DeletePreviewDisplayItem();
@@ -378,6 +422,9 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
                     break;
                 case NutcrackerEffects.PreviewType.Tree360:
                     SetupMegaTree(360);
+                    break;
+                case NutcrackerEffects.PreviewType.Grid:
+                    SetupPixelGrid();
                     break;
                 case NutcrackerEffects.PreviewType.Arch:
                     SetupArch();
@@ -815,7 +862,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 
         private void buttonPictureSelect_Click(object sender, EventArgs e)
         {
-            fileDialog.Filter = "jpg|*.jpg|jpeg|*.jpeg|gif|.gif|png|*.png|bmp|*.bmp|All Files|*.*";
+            fileDialog.Filter = "All Files|*.*|jpg|*.jpg|jpeg|*.jpeg|gif|.gif|png|*.png|bmp|*.bmp";
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
                 // Copy the file to the Vixen folder
@@ -887,6 +934,170 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 
         #endregion //Tree
 
+        #region Movie
+
+        private void LoadMovie()
+        {
+            trackMoviePlaybackSpeed.Value = Data.Movie_PlaybackSpeed;
+            comboBoxMovieMovementDirection.SelectedIndex = Data.Movie_MovementDirection;
+        }
+
+        private void DeleteExistingMovieFiles(string folder)
+        {
+            System.IO.DirectoryInfo folderInfo = new System.IO.DirectoryInfo(folder);
+
+            foreach (System.IO.FileInfo file in folderInfo.GetFiles())
+            {
+                file.Delete();
+            }
+            foreach (System.IO.DirectoryInfo dir in folderInfo.GetDirectories())
+            {
+                dir.Delete(true);
+            }
+        }
+
+        private void ProcessMovie(string movieFileName, string destinationFolder)
+        {
+            try
+            {
+                NutcrackerProcessingMovie f = new NutcrackerProcessingMovie();
+                f.Show();
+                ffmpeg.ffmpeg converter = new ffmpeg.ffmpeg(movieFileName);
+                converter.MakeThumbnails(50, 50, destinationFolder);
+                f.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("There was a problem converting " + movieFileName + ": " + ex.Message, "Error Converting Movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+            }
+        }
+
+        private void buttonMovieSelectFile_Click(object sender, EventArgs e)
+        {
+            fileDialog.Filter = "All Files|*.*";
+            if (fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                // If this effect doesn't have working folder make one.
+                // TODO: delete the folder if the effect is removed from the timeline?
+                if (Data.Movie_DataPath.Length == 0)
+                {
+                    Data.Movie_DataPath = Guid.NewGuid().ToString();
+                }
+                var destFolder = System.IO.Path.Combine(NutcrackerDescriptor.ModulePath, Data.Movie_DataPath);
+                if (!System.IO.Directory.Exists(destFolder))
+                {
+                    System.IO.Directory.CreateDirectory(destFolder);
+                }
+                DeleteExistingMovieFiles(destFolder);
+                ProcessMovie(fileDialog.FileName, destFolder);
+                effect.SetNextState(true);
+            }
+        }
+
+        private void Movie_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender, Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+        {
+            if (loading) return;
+            Data.Movie_PlaybackSpeed = trackMoviePlaybackSpeed.Value;
+        }
+
+        private void comboBoxMovieMovementDirection_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (loading) return;
+            Data.Movie_MovementDirection = comboBoxMovieMovementDirection.SelectedIndex;
+        }
+
+        #endregion // Movies
+
+        #region PictureTile
+
+        private void LoadPictureTile()
+        {
+
+            string folder = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules\\Effect\\PictureTiles");
+            //System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\Modules\\Effect\\PictureTiles";
+            Console.WriteLine(folder);
+            System.IO.DirectoryInfo folderInfo = new System.IO.DirectoryInfo(folder);
+
+            foreach (System.IO.FileInfo file in folderInfo.GetFiles())
+            {
+                // TODO: check for valid image formats
+                if (file.Extension.ToLower() != ".db")
+                {
+                    string title = file.Name;
+                    PictureComboBoxItem item = new PictureComboBoxItem(title, file, comboBoxPictureTileFileName.ItemHeight, comboBoxPictureTileFileName.ItemHeight);
+                    comboBoxPictureTileFileName.Items.Add(item);
+
+                    if (item.File.FullName == Data.PictureTile_FileName)
+                    {
+                        comboBoxPictureTileFileName.SelectedIndex = comboBoxPictureTileFileName.Items.Count - 1;
+                    }
+                }
+            }
+
+            if (comboBoxPictureTileFileName.Items.Count > 0 && comboBoxPictureTileFileName.SelectedIndex < 0)
+                comboBoxPictureTileFileName.SelectedIndex = 0;
+
+            trackPictureTileMovementDirection.Value = Data.PictureTile_Direction;
+            numericPictureTileScale.Value = Convert.ToDecimal(Data.PictureTile_Scaling);
+            checkPictureTileReplaceColor.Checked = Data.PictureTile_ReplaceColor;
+            checkPictureTileCopySaturation.Checked = Data.PictureTile_UseSaturation;
+        }
+
+        private void comboBoxPictureTileFileName_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (loading) return;
+            PictureComboBoxItem item = comboBoxPictureTileFileName.SelectedItem as PictureComboBoxItem;
+            if (item != null)
+            {
+                FileInfo file = item.File;
+                Data.PictureTile_FileName = file.FullName;
+                //Data.PictureTile_Direction = 1;
+            }
+            effect.SetNextState(true);
+        }
+
+        private void PictureTile_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender, Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+        {
+            if (loading) return;
+            Data.PictureTile_Direction = trackPictureTileMovementDirection.Value;
+        }
+
+        private void numericPictureTileScale_ValueChanged(object sender, EventArgs e)
+        {
+            if (loading) return;
+            Data.PictureTile_Scaling = Convert.ToDouble(numericPictureTileScale.Value);
+            effect.SetNextState(true);
+        }
+
+        private void PictureTile_CheckedChanged(object sender, EventArgs e)
+        {
+            if (loading) return;
+            Data.PictureTile_ReplaceColor = checkPictureTileReplaceColor.Checked;
+            Data.PictureTile_UseSaturation = checkPictureTileCopySaturation.Checked;
+            effect.SetNextState(true);
+        }
+
+        private void buttonPictureTileSelect_Click(object sender, EventArgs e)
+        {
+            fileDialog.Filter = "All Files|*.*|jpg|*.jpg|jpeg|*.jpeg|gif|.gif|png|*.png|bmp|*.bmp";
+            if (fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                // Copy the file to the Vixen folder
+                var imageFile = new System.IO.FileInfo(fileDialog.FileName);
+                var destFileName = System.IO.Path.Combine(NutcrackerDescriptor.ModulePath, imageFile.Name);
+                var sourceFileName = imageFile.FullName;
+                if (sourceFileName != destFileName)
+                {
+                    System.IO.File.Copy(sourceFileName, destFileName, true);
+                }
+
+                textPictureTileFileName.Text = destFileName;
+                Data.PictureTile_FileName = destFileName;
+            }
+        }
+
+        #endregion // PictureTile
+
         private void buttonHelp_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start(buttonHelp.Tag.ToString());
@@ -897,6 +1108,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
             Data.PixelSize = scrollPixelSize.Value;
             displayItem.Shape.PixelSize = Data.PixelSize;
         }
+
+
 
 
     }
