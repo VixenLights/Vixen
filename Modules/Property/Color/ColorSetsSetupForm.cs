@@ -1,0 +1,141 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using Common.Controls;
+
+namespace VixenModules.Property.Color
+{
+	public partial class ColorSetsSetupForm : Form
+	{
+		private ColorStaticData _data;
+
+		public ColorSetsSetupForm(ColorStaticData colorStaticData)
+		{
+			_data = colorStaticData;
+			InitializeComponent();
+		}
+
+		private void ColorSetsSetupForm_Load(object sender, EventArgs e)
+		{
+			UpdateColorSetsList();
+			UpdateGroupBoxWithColorSet(null, null);
+		}
+
+		private void UpdateColorSetsList()
+		{
+			listViewColorSets.BeginUpdate();
+			listViewColorSets.Items.Clear();
+			foreach (string colorSetName in _data.GetColorSetNames()) {
+				listViewColorSets.Items.Add(colorSetName);
+			}
+			listViewColorSets.EndUpdate();
+		}
+
+		private void UpdateGroupBoxWithColorSet(string name, ColorSet cs)
+		{
+			if (cs == null) {
+				groupBoxColorSet.Enabled = false;
+				textBoxName.Text = "";
+				tableLayoutPanelColors.Controls.Clear();
+				return;
+			}
+
+			groupBoxColorSet.Enabled = true;
+			textBoxName.Text = name;
+
+			tableLayoutPanelColors.Controls.Clear();
+
+			foreach (System.Drawing.Color color in cs) {
+				ColorPanel colorPanel = new ColorPanel(color);
+				tableLayoutPanelColors.Controls.Add(colorPanel);
+			}
+		}
+
+		private void listViewColorSets_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			bool selected = listViewColorSets.SelectedItems.Count > 0;
+
+			if (selected) {
+				string name = listViewColorSets.SelectedItems[0].Text;
+				UpdateGroupBoxWithColorSet(name, _data.GetColorSet(name));
+			} else {
+				UpdateGroupBoxWithColorSet(null, null);
+			}
+
+			buttonRemoveColorSet.Enabled = selected;
+		}
+
+		private void buttonAddColorSet_Click(object sender, EventArgs e)
+		{
+			using (TextDialog textDialog = new TextDialog("New Color Set name?", "New Color Set")) {
+				if (textDialog.ShowDialog() == DialogResult.OK) {
+					string newName = textDialog.Response;
+
+					if (_data.ContainsColorSet(newName)) {
+						MessageBox.Show("Color Set already exists.");
+						return;
+					}
+
+					ColorSet newcs = new ColorSet();
+					_data.SetColorSet(newName, newcs);
+					UpdateGroupBoxWithColorSet(newName, newcs);
+					UpdateColorSetsList();
+				}
+			}
+		}
+
+		private void buttonRemoveColorSet_Click(object sender, EventArgs e)
+		{
+			if (listViewColorSets.SelectedItems.Count > 0) {
+				string item = listViewColorSets.SelectedItems[0].Text;
+				if (!_data.RemoveColorSet(item)) {
+					MessageBox.Show("Error removing Color Set!");
+				}
+			}
+			UpdateColorSetsList();
+			UpdateGroupBoxWithColorSet(null, null);
+		}
+
+		private void buttonUpdate_Click(object sender, EventArgs e)
+		{
+			string name = textBoxName.Text;
+			ColorSet newColorSet = new ColorSet();
+
+			if (name.Length <= 0) {
+				MessageBox.Show("You must enter a name for the Color Set.", "Name Requred", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			foreach (var control in tableLayoutPanelColors.Controls) {
+				ColorPanel cp = (ColorPanel)control;
+				newColorSet.Add(cp.Color);
+			}
+
+			_data.SetColorSet(textBoxName.Text, newColorSet);
+			UpdateColorSetsList();
+		}
+
+		private void buttonAddColor_Click(object sender, EventArgs e)
+		{
+			ColorPanel colorPanel = new ColorPanel(System.Drawing.Color.White);
+			tableLayoutPanelColors.Controls.Add(colorPanel);
+		}
+
+		private void textBoxName_TextChanged(object sender, EventArgs e)
+		{
+			if (textBoxName.Text.Length <= 0)
+				return;
+			
+			if (_data.ContainsColorSet(textBoxName.Text)) {
+				buttonUpdate.Text = "Update Color Set";
+			} else {
+				buttonUpdate.Text = "Make New Color Set";
+			}
+		}
+	}
+}
