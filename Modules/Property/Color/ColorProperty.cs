@@ -133,7 +133,7 @@ namespace VixenModules.Property.Color {
 		// gets a enumerable of valid colors for the given element node. If the element is full color, an empty enumeration
 		// will be returned; otherwise one of more colors will be returned (for single or multiple discrete colors).
 		// wIt will recurse the children to collect from all parts of the element
-		public static IEnumerable<System.Drawing.Color> getValidColorsForElementNode(ElementNode element)
+		public static IEnumerable<System.Drawing.Color> getValidColorsForElementNode(ElementNode element, bool includeChildren)
 		{
 			HashSet<System.Drawing.Color> result = new HashSet<System.Drawing.Color>();
 			ColorModule colorModule = element.Properties.Get(ColorDescriptor.ModuleId) as ColorModule;
@@ -154,10 +154,14 @@ namespace VixenModules.Property.Color {
 			}
 			
 			//recurse the children
-			if (element.Children.Any())
+			if (includeChildren)
 			{
-				result.AddRange(element.Children.SelectMany(x => getValidColorsForElementNode(x)));
+				if (element.Children.Any())
+				{
+					result.AddRange(element.Children.SelectMany(x => getValidColorsForElementNode(x, true)));
+				}
 			}
+			
 
 			return result;
 		}

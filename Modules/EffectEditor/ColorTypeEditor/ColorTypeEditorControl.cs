@@ -41,7 +41,7 @@ namespace VixenModules.EffectEditor.ColorTypeEditor
 				// look for the color property of the target effect element, and restrict the gradient.
 				// If it's a group, iterate through all children (and their children, etc.), finding as many color
 				// properties as possible; then we can decide what to do based on that.
-				validColors.AddRange(_targetEffect.TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x)));
+				validColors.AddRange(_targetEffect.TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
 				_discreteColors = validColors.Any();
 				_validDiscreteColors = validColors;
 			}

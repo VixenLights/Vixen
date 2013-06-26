@@ -29,6 +29,15 @@ namespace VixenModules.Effect.Pulse
 		protected override void _PreRender()
 		{
 			_elementData = new EffectIntents();
+
+			if (ColorGradient == null) //We have a new effect
+			{
+				//Try to set a default color gradient from our available colors if we have discrete colors
+				HashSet<Color> validColors = new HashSet<Color>();
+				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+				ColorGradient = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
+			}
+
 			foreach (ElementNode node in TargetNodes) {
 				if (node != null)
 					RenderNode(node);
@@ -76,7 +85,7 @@ namespace VixenModules.Effect.Pulse
 				if (colorType == ElementColorType.FullColor) {
 					addIntentsToElement(elementNode.Element);
 				} else {
-					IEnumerable<Color> colors = ColorModule.getValidColorsForElementNode(elementNode);
+					IEnumerable<Color> colors = ColorModule.getValidColorsForElementNode(elementNode, false);
 					foreach (Color color in colors) {
 						addIntentsToElement(elementNode.Element, color);
 					}
