@@ -39,23 +39,36 @@ namespace VixenModules.EffectEditor.ColorGradientTypeEditor
 				// look for the color property of the target effect element, and restrict the gradient.
 				// If it's a group, iterate through all children (and their children, etc.), finding as many color
 				// properties as possible; then we can decide what to do based on that.
-				foreach (ElementNode elementNode in _targetEffect.TargetNodes) {
-					switch (ColorModule.getColorTypeForElementNode(elementNode)) {
-						case ElementColorType.FullColor:
-							continue;
-
-						case ElementColorType.MultipleDiscreteColors:
-						case ElementColorType.SingleColor:
-							_discreteColors = true;
-							validColors.AddRange(ColorModule.getValidColorsForElementNode(elementNode));
-							break;
-					}
-				}
+				validColors.AddRange(_targetEffect.TargetNodes.SelectMany(x => GetValidColorsForElementNode(x)));
 
 				_validDiscreteColors = validColors;
 
 				UpdateGradientImage();
 			}
+		}
+
+		private HashSet<Color> GetValidColorsForElementNode(ElementNode elementNode)
+		{
+			HashSet<Color> validColors = new HashSet<Color>();
+			switch (ColorModule.getColorTypeForElementNode(elementNode))
+			{
+				case ElementColorType.FullColor:
+					break;
+
+				case ElementColorType.MultipleDiscreteColors:
+				case ElementColorType.SingleColor:
+					_discreteColors = true;
+					validColors.AddRange(ColorModule.getValidColorsForElementNode(elementNode));
+					break;
+			}
+
+			//recurse the children
+			if (elementNode.Children.Any())
+			{
+				validColors.AddRange(elementNode.Children.SelectMany(x => GetValidColorsForElementNode(x)));
+			}
+
+			return validColors;
 		}
 
 		public object[] EffectParameterValues
