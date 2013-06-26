@@ -302,16 +302,20 @@ namespace Common.Controls.Timeline
         {
             if (CachedElementCanvas == null || !IsCanvasContentCurrent(imageSize) || Changed)
             {
-                CachedElementCanvas = SetupCanvas(imageSize);
-                using (Graphics g = Graphics.FromImage(CachedElementCanvas))
+                Bitmap b;
+                lock (drawLock)
                 {
-                    DrawCanvasContent(g);
-                }
+                    CachedElementCanvas = SetupCanvas(imageSize);
+                    using (Graphics g = Graphics.FromImage(CachedElementCanvas))
+                    {
+                        DrawCanvasContent(g);
+                    }
 
-                Bitmap b = new Bitmap(CachedElementCanvas);
-                using (Graphics g = Graphics.FromImage(b))
-                {
-                    AddSelectionOverlayToCanvas(g);
+                    b = new Bitmap(CachedElementCanvas);
+                    using (Graphics g = Graphics.FromImage(b))
+                    {
+                        AddSelectionOverlayToCanvas(g);
+                    }
                 }
                 CachedCanvasIsCurrent = true;
                 Changed = false;
