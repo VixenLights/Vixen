@@ -1208,12 +1208,12 @@ namespace VixenModules.Preview.VixenPreview
 			CancellationTokenSource tokenSource = new CancellationTokenSource();
 			if (!_paused)
 			{
-                //Bitmap clone = (Bitmap)_alphaBackground.Clone();
+                Bitmap clone = (Bitmap)_alphaBackground.Clone();
                 //BitmapData odata = _alphaBackground.LockBits(new Rectangle(0, 0, _alphaBackground.Width, _alphaBackground.Height), ImageLockMode.ReadWrite, _alphaBackground.PixelFormat);
                 //BitmapData cdata = clone.LockBits(new Rectangle(0, 0, clone.Width, clone.Height), ImageLockMode.ReadWrite, clone.PixelFormat);
                 //Assert.AreNotEqual(odata.Scan0, cdata.Scan0);
-				using (FastPixel fp = new FastPixel(new Bitmap(_alphaBackground)))
-                //using (FastPixel fp = new FastPixel(clone))
+				//using (FastPixel fp = new FastPixel(new Bitmap(_alphaBackground)))
+                using (FastPixel fp = new FastPixel(clone))
 				{
                     try
                     {
@@ -1249,11 +1249,9 @@ namespace VixenModules.Preview.VixenPreview
                                 }
                             }
                         });
-                        //Console.WriteLine("2: " + renderTimer.Elapsed);
+                        //Console.WriteLine("2: " + renderTimer.ElapsedMilliseconds);renderTimer.Reset();
                         fp.Unlock(true);
-                        //Console.WriteLine("3: " + renderTimer.Elapsed);
                         RenderBufferedGraphics(fp);
-                        //Console.WriteLine("4: " + renderTimer.Elapsed);
                     }
 					catch (Exception e)
 					{
