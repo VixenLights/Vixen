@@ -152,21 +152,33 @@ namespace VixenModules.Effect.Nutcracker
 			}
 		}
 
+		private int _bufferHt = 0;
+
 		public int BufferHt
 		{
 			get
 			{
-				if (_pixels.Count() > 0)
-					return _pixels[0].Count();
-				else
-					return 0;
+				//if (_pixels.Count() > 0)
+				//    return _pixels[0].Count();
+				//else
+				//    return 0;
+				return _bufferHt;
 			}
+			set { _bufferHt = value; }
 		}
+
+		private int _bufferWi = 0;
 
 		public int BufferWi
 		{
-			get { return _pixels.Count(); }
+			get
+			{
+				//return _pixels.Count(); 
+				return _bufferWi;
+			}
+			set { _bufferWi = value; }
 		}
+
 
 		// return a value between c1 and c2
 		private int ChannelBlend(int c1, int c2, double ratio)
@@ -263,6 +275,9 @@ namespace VixenModules.Effect.Nutcracker
 				}
 			}
 
+			_bufferWi = Pixels.Count();
+			_bufferHt = Pixels[0].Count();
+
 			Array.Resize(ref FireBuffer, bufferWidth*bufferHeight);
 			Array.Resize(ref WaveBuffer0, bufferWidth*bufferHeight);
 			Array.Resize(ref WaveBuffer1, bufferWidth*bufferHeight);
@@ -323,25 +338,19 @@ namespace VixenModules.Effect.Nutcracker
 			SetPixel(x, y, color);
 		}
 
+		public Color GetPixel(int pixelToGet)
+		{
+			int x = pixelToGet/BufferHt;
+			int y = pixelToGet%BufferHt;
+			Color color = _pixels[x][y];
+			return color;
+		}
+
 		public Color GetPixel(int x, int y)
 		{
 			return _pixels[x][y];
 		}
 
-		public Color GetPixel(int pixelToGet)
-		{
-			Color color = Color.White;
-			int pixelNum = 0;
-			for (int x = 0; x < BufferWi; x++) {
-				for (int y = 0; y < BufferHt; y++) {
-					if (pixelNum == pixelToGet) {
-						return _pixels[x][y];
-					}
-					pixelNum++;
-				}
-			}
-			return color;
-		}
 
 		public int PixelCount()
 		{
@@ -1260,7 +1269,7 @@ namespace VixenModules.Effect.Nutcracker
 		{
 			const int cnt = 8; // # of integers in each set in arr[]
 			int[] arr = {30, 20, 10, 5, 0, 5, 10, 20, 20, 15, 10, 10, 10, 10, 10, 15};
-				// 2 sets of 8 numbers, each of which add up to 100
+			// 2 sets of 8 numbers, each of which add up to 100
 			Point adv = SnowstormVector(7);
 			int i0 = ssItem.idx%7 <= 4 ? 0 : cnt;
 			int r = rand()%100;
@@ -1439,10 +1448,10 @@ namespace VixenModules.Effect.Nutcracker
 						// Yes, so now decide on what color it should be
 
 						ColorIdx = rand()%colorcnt;
-							// Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
+						// Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
 						hsv = Palette.GetHSV(ColorIdx); // Now go and get the hsv value for this ColorIdx
 						i7 = Convert.ToInt32((State/4 + rand())%9);
-							// Our twinkle is 9 steps. 4 ramping up, 5th at full brightness and then 4 more ramping down
+						// Our twinkle is 9 steps. 4 ramping up, 5th at full brightness and then 4 more ramping down
 						//  Note that we are adding state to this calculation, this causes a different blink rate for each light
 
 						if (i7 == 0 || i7 == 8) hsv.Value = 0.1f;
@@ -1473,7 +1482,7 @@ namespace VixenModules.Effect.Nutcracker
 			Point point;
 
 			ColorIdx = rand()%colorcnt;
-				// Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
+			// Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
 			hsv = Palette.GetHSV(ColorIdx); // Now go and get the hsv value for this ColorIdx
 
 			c = Palette.GetColor(0);
@@ -1703,7 +1712,7 @@ namespace VixenModules.Effect.Nutcracker
 					y2 = Math.Pow((y - yc), 2);
 					hyp = (Math.Sqrt(x2 + y2)/BufferWi)*100.0;
 					ColorIdx = (int) (hyp/d_mod);
-						// Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
+					// Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
 
 					if (ColorIdx >= colorcnt) ColorIdx = colorcnt - 1;
 
@@ -1712,7 +1721,7 @@ namespace VixenModules.Effect.Nutcracker
 
 					hsv0 = Palette.GetHSV(0);
 					ColorIdx = Convert.ToInt32((State + rand())%colorcnt);
-						// Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
+					// Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
 					hsv1 = Palette.GetHSV(ColorIdx); // Now go and get the hsv value for this ColorIdx
 
 					SetPixel(x, y, hsv);
@@ -1756,7 +1765,7 @@ namespace VixenModules.Effect.Nutcracker
 					i++;
 
 					ColorIdx = rand()%colorcnt;
-						// Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
+					// Select random numbers from 0 up to number of colors the user has checked. 0-5 if 6 boxes checked
 					ColorIdx = 0;
 					hsv = Palette.GetHSV(ColorIdx); // Now go and get the hsv value for this ColorIdx
 					hsv.Value = V; // we have now set the color for the background tree
