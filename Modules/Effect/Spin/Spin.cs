@@ -9,6 +9,7 @@ using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using System.Drawing;
 using ZedGraph;
+using VixenModules.Property.Color;
 
 namespace VixenModules.Effect.Spin
 {
@@ -25,6 +26,17 @@ namespace VixenModules.Effect.Spin
 		protected override void _PreRender()
 		{
 			_elementData = new EffectIntents();
+			if (StaticColor.IsEmpty) //We have a new effect
+			{
+				//Try to set a default color gradient from our available colors if we have discrete colors
+				HashSet<Color> validColors = new HashSet<Color>();
+				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+				ColorGradient = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
+
+				//Set a default color 
+				StaticColor = validColors.DefaultIfEmpty(Color.White).First();
+
+			}
 			DoRendering();
 		}
 
