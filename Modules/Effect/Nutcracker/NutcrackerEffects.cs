@@ -155,20 +155,35 @@ namespace VixenModules.Effect.Nutcracker
             }
         }
 
+        int _bufferHt = 0;
         public int BufferHt
         {
             get 
             {
-                if (_pixels.Count() > 0)
-                    return _pixels[0].Count();
-                else
-                    return 0;
+                //if (_pixels.Count() > 0)
+                //    return _pixels[0].Count();
+                //else
+                //    return 0;
+                return _bufferHt;
+            }
+            set
+            {
+                _bufferHt = value;
             }
         }
 
+        int _bufferWi = 0;
         public int BufferWi
         {
-            get { return _pixels.Count(); }
+            get 
+            { 
+                //return _pixels.Count(); 
+                return _bufferWi;
+            }
+            set
+            {
+                _bufferWi = value;
+            }
         }
 
         // return a value between c1 and c2
@@ -267,6 +282,9 @@ namespace VixenModules.Effect.Nutcracker
                 }
             }
 
+            _bufferWi = Pixels.Count();
+            _bufferHt = Pixels[0].Count();
+
             Array.Resize(ref FireBuffer, bufferWidth * bufferHeight);
             Array.Resize(ref WaveBuffer0, bufferWidth * bufferHeight);
             Array.Resize(ref WaveBuffer1, bufferWidth * bufferHeight);
@@ -337,19 +355,9 @@ namespace VixenModules.Effect.Nutcracker
 
         public Color GetPixel(int pixelToGet)
         {
-            Color color = Color.White;
-            int pixelNum = 0;
-            for (int x = 0; x < BufferWi; x++)
-            {
-                for (int y = 0; y < BufferHt; y++)
-                {
-                    if (pixelNum == pixelToGet)
-                    {
-                        return _pixels[x][y]; 
-                    }
-                    pixelNum++;
-                }
-            }
+            int x = pixelToGet / BufferHt;
+            int y = pixelToGet % BufferHt;
+            Color color = _pixels[x][y];
             return color;
         }
 
