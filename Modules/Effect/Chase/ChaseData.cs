@@ -51,7 +51,7 @@ namespace VixenModules.Effect.Chase
 			ColorHandling = ChaseColorHandling.StaticColor;
 			PulseOverlap = 0;
 			DefaultLevel = 0;
-			StaticColor = Color.White;
+			StaticColor = Color.Empty;
 			ColorGradient = new ColorGradient();
 			PulseCurve = new Curve();
 			ChaseMovement = new Curve();

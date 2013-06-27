@@ -63,7 +63,7 @@ namespace VixenModules.Effect.Spin
 			PulseTime = 100;
 			PulsePercentage = 10;
 			DefaultLevel = 0;
-			StaticColor = Color.White;
+			StaticColor = Color.Empty;
 			ColorGradient = new ColorGradient();
 			PulseCurve = new Curve();
 			ReverseSpin = false;

@@ -9,6 +9,7 @@ using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Sys.Attribute;
 using System.Drawing;
+using VixenModules.Property.Color;
 
 namespace VixenModules.Effect.SetLevel
 {
@@ -25,6 +26,15 @@ namespace VixenModules.Effect.SetLevel
 		protected override void _PreRender()
 		{
 			_elementData = new EffectIntents();
+
+			if (Color.ToArgb() == Color.Black.ToArgb()) //We have a new effect as empty is black in RGB.
+			{
+				//Set a default color if we have discrete colors
+				HashSet<Color> validColors = new HashSet<Color>();
+				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+				Color = validColors.DefaultIfEmpty(Color.White).First();
+				
+			}
 
 			foreach (ElementNode node in TargetNodes) {
 				if (node != null)
@@ -75,5 +85,7 @@ namespace VixenModules.Effect.SetLevel
 				_elementData.AddIntentForElement(elementNode.Element.Id, intent, TimeSpan.Zero);
 			}
 		}
+
+		
 	}
 }

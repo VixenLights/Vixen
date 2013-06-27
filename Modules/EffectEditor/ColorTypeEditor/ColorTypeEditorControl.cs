@@ -25,9 +25,7 @@ namespace VixenModules.EffectEditor.ColorTypeEditor
 
 		private bool _discreteColors;
 		private IEnumerable<Color> _validDiscreteColors;
-
 		private IEffect _targetEffect;
-
 		public IEffect TargetEffect
 		{
 			get { return _targetEffect; }
@@ -35,61 +33,32 @@ namespace VixenModules.EffectEditor.ColorTypeEditor
 			{
 				_targetEffect = value;
 				_discreteColors = false;
+				if (_targetEffect == null) return;
+				
 				HashSet<Color> validColors = new HashSet<Color>();
 
 				// look for the color property of the target effect element, and restrict the gradient.
 				// If it's a group, iterate through all children (and their children, etc.), finding as many color
 				// properties as possible; then we can decide what to do based on that.
-				validColors.AddRange(_targetEffect.TargetNodes.SelectMany(x => GetValidColorsForElementNode(x)));
-
+				validColors.AddRange(_targetEffect.TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+				_discreteColors = validColors.Any();
 				_validDiscreteColors = validColors;
 			}
 		}
 
-		private HashSet<Color> GetValidColorsForElementNode(ElementNode elementNode)
-		{
-			HashSet<Color> validColors = new HashSet<Color>();
-			switch (ColorModule.getColorTypeForElementNode(elementNode)) {
-				case ElementColorType.FullColor:
-					break;
-
-				case ElementColorType.MultipleDiscreteColors:
-				case ElementColorType.SingleColor:
-					_discreteColors = true;
-					validColors.AddRange(ColorModule.getValidColorsForElementNode(elementNode));
-					break;
-			}
-
-			//recurse the children
-			if (elementNode.Children.Any()) {
-				validColors.AddRange(elementNode.Children.SelectMany(x => GetValidColorsForElementNode(x)));
-			}
-
-			return validColors;
-		}
-
-
 		public object[] EffectParameterValues
 		{
-			get { return new object[] {ColorValue}; }
-			set
+			get { return new object[] {ColorValue}; }			set
 			{
 				if (value.Length >= 1)
-					ColorValue = (Color) value[0];
-			}
+					ColorValue = (Color) value[0];			}
 		}
 
 		private Color _color;
-
 		public Color ColorValue
 		{
 			get { return _color; }
-			set
-			{
-				_color = value;
-				panelColor.BackColor = value;
-			}
-		}
+			set			{				_color = value;				panelColor.BackColor = value;			}		}
 
 		private void panelColor_Click(object sender, EventArgs e)
 		{
@@ -97,20 +66,15 @@ namespace VixenModules.EffectEditor.ColorTypeEditor
 				using (DiscreteColorPicker dcp = new DiscreteColorPicker()) {
 					dcp.ValidColors = _validDiscreteColors;
 					dcp.SingleColorOnly = true;
-					dcp.SelectedColors = new List<Color> {ColorValue};
-					DialogResult result = dcp.ShowDialog();
+					dcp.SelectedColors = new List<Color> {ColorValue};					DialogResult result = dcp.ShowDialog();
 					if (result == DialogResult.OK) {
 						if (dcp.SelectedColors.Count() == 0) {
 							ColorValue = Color.White;
-						}
-						else {
-							ColorValue = dcp.SelectedColors.First();
+						}						else {							ColorValue = dcp.SelectedColors.First();
 						}
 					}
 				}
-			}
-			else {
-				using (ColorPicker cp = new ColorPicker()) {
+			}			else {				using (ColorPicker cp = new ColorPicker()) {
 					cp.LockValue_V = true;
 					cp.Color = XYZ.FromRGB(ColorValue);
 					DialogResult result = cp.ShowDialog();

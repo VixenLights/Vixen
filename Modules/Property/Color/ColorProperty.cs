@@ -122,7 +122,6 @@ namespace VixenModules.Property.Color
 			}
 		}
 
-
 		// static 'helper' methods in the color property
 		// gets the color type for a given element node. If no color properties are defined, it's assumed to be "full color".
 		public static ElementColorType getColorTypeForElementNode(ElementNode element)
@@ -136,25 +135,36 @@ namespace VixenModules.Property.Color
 
 		// gets a enumerable of valid colors for the given element node. If the element is full color, an empty enumeration
 		// will be returned; otherwise one of more colors will be returned (for single or multiple discrete colors).
-		public static IEnumerable<System.Drawing.Color> getValidColorsForElementNode(ElementNode element)
+		// wIt will recurse the children to collect from all parts of the element
+		public static IEnumerable<System.Drawing.Color> getValidColorsForElementNode(ElementNode element, bool includeChildren)
 		{
 			HashSet<System.Drawing.Color> result = new HashSet<System.Drawing.Color>();
 			ColorModule colorModule = element.Properties.Get(ColorDescriptor.ModuleId) as ColorModule;
-			if (colorModule == null) {
-				return result;
-			}
-			switch (colorModule.ColorType) {
-				case ElementColorType.FullColor:
-					break;
+			if (colorModule != null) {
+				switch (colorModule.ColorType)
+				{
+					case ElementColorType.FullColor:
+						break;
 
-				case ElementColorType.MultipleDiscreteColors:
-					colorModule.Colors.ForEach(x => result.Add(x));
-					break;
+					case ElementColorType.MultipleDiscreteColors:
+						colorModule.Colors.ForEach(x => result.Add(x));
+						break;
 
-				case ElementColorType.SingleColor:
-					result.Add(colorModule.SingleColor);
-					break;
+					case ElementColorType.SingleColor:
+						result.Add(colorModule.SingleColor);
+						break;
+				}
 			}
+			
+			//recurse the children
+			if (includeChildren)
+			{
+				if (element.Children.Any())
+				{
+					result.AddRange(element.Children.SelectMany(x => getValidColorsForElementNode(x, true)));
+				}
+			}
+			
 
 			return result;
 		}
