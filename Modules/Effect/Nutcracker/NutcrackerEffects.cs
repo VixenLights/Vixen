@@ -14,6 +14,8 @@ namespace VixenModules.Effect.Nutcracker
 {    
     public class NutcrackerEffects
     {
+        #region Variables
+
         private NutcrackerData _data = null;
         private long _state;
         private int _lastPeriod;
@@ -60,6 +62,8 @@ namespace VixenModules.Effect.Nutcracker
             VerticalLine,
             Grid
         }
+
+        #endregion // Variables
 
         public NutcrackerEffects()
         {
@@ -345,7 +349,7 @@ namespace VixenModules.Effect.Nutcracker
         public void SetPixel(int x, int y, HSV hsv)
         {
             Color color = HSV.HSVtoColor(hsv);
-            SetPixel(x, y, color);
+            SetPixel(x, y, color);            
         }
 
         public Color GetPixel(int x, int y)
@@ -382,7 +386,6 @@ namespace VixenModules.Effect.Nutcracker
         {
             if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt)
             {
-                //tempbuf[y*BufferWi+x]=color;
                 _tempbuf[x][y] = color;
             }
         }
@@ -392,7 +395,6 @@ namespace VixenModules.Effect.Nutcracker
         {
             if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt)
             {
-                //return tempbuf[y*BufferWi+x];
                 return _tempbuf[x][y];
             }
             return Color.Black;
@@ -442,8 +444,6 @@ namespace VixenModules.Effect.Nutcracker
             bool IsMovingDown, IsHighlightRow;
             HSV hsv;
             int colorcnt = Palette.Count();
-            // If we don't have any colors, we can't do anything!
-            //if (colorcnt == 0) return;
             int BarCount = PaletteRepeat * colorcnt;
             int BarHt = BufferHt / BarCount + 1;
             int HalfHt = BufferHt/2;
@@ -773,7 +773,10 @@ namespace VixenModules.Effect.Nutcracker
                 for (x=0; x<BufferWi; x++)
                 {
                     //SetPixel(x,y,FirePalette[y]);
-                    SetPixel(x,y,FirePalette[GetFireBuffer(x,y)]);
+                    Color color = FirePalette[GetFireBuffer(x, y)];
+                    if (color.R == 0 && color.G == 0 && color.B == 0)
+                        color = Color.Transparent;
+                    SetPixel(x,y,color);
                 }
             }
         }
@@ -1771,33 +1774,26 @@ namespace VixenModules.Effect.Nutcracker
                         fpColor = fp.GetPixel(x, y);
                         if (fpColor != Color.Transparent)
                         {
-                            //c.Set(image.GetRed(x,y),image.GetGreen(x,y),image.GetBlue(x,y));
-                            //c = Color.FromArgb(fpColor.R, fpColor.G, fpColor.B);
                             switch (dir)
                             {
                                 case 0:
                                     // left
-                                    //SetPixel(x+BufferWi-movement,yoffset-y,c);
                                     SetPixel(x + BufferWi - movement, yoffset - y, fpColor);
                                     break;
                                 case 1:
                                     // right
-                                    //SetPixel(x+movement-imgwidth,yoffset-y,c);
                                     SetPixel(x + movement - imgwidth, yoffset - y, fpColor);
                                     break;
                                 case 2:
                                     // up
-                                    //SetPixel(x-xoffset,movement-y,c);
                                     SetPixel(x - xoffset, movement - y, fpColor);
                                     break;
                                 case 3:
                                     // down
-                                    //SetPixel(x-xoffset,BufferHt+imght-y-movement,c);
                                     SetPixel(x - xoffset, BufferHt + imght - y - movement, fpColor);
                                     break;
                                 default:
                                     // no movement - centered
-                                    //SetPixel(x-xoffset,yoffset-y,c);
                                     SetPixel(x - xoffset, yoffset - y, fpColor);
                                     break;
                             }
@@ -2095,18 +2091,14 @@ namespace VixenModules.Effect.Nutcracker
 
             if (State == 0)
             {
-                //Console.WriteLine("RenderPictureTile: -------- RESET --------");
                 lastState = 0;
                 movementX = 0.0;
                 movementY = 0.0;
                 lastScale = -1;
             }
 
-            //Console.WriteLine("RenderPictureTile:" + dir + ":" + scale + ":" + useColor + ":" + useAlpha + ":" + ColorReplacementSensitivity + ":" + NewPictureName);
-
             if (NewPictureName != PictureName || scale != lastScale)
             {
-                //Console.WriteLine("RenderPictuerTile: SET PICTURE");
                 if (!System.IO.File.Exists(NewPictureName))
                 {
                     return;
